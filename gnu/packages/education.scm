@@ -449,7 +449,7 @@ specialized device.")
     (license license:gpl3)))
 
 (define-public openboard
-  ;; The last release builds from qtwebkit, which is planned for removal in
+  ;; The last release builds from qtwebkit, which has been removed from
   ;; Guix, so use the latest commit of the 1.7-dev branch, which builds with
   ;; qtwebengine-5.
   (let ((commit "39e914f600d26565706f0e5b6ea2482b8b4038c7") ;1.6.2-rc0311
@@ -582,7 +582,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.8.0")
+    (version "6.8.4")
     (source
      (origin
        (method url-fetch)
@@ -591,7 +591,7 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "12hbw87d6aza77615apvbkdgrn3gqdw0q9xp2pw64w2513z0a2jm"))))
+        (base32 "0bwm6j0drxkrmx8zbr78a7xbbzb1i9365qv93fkwjg9v92b9clhr"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -805,7 +805,7 @@ stored and user can review his performance in any time.")
        ("python-pyaudio" ,python-pyaudio)
        ;; `python-pyqtwebengine' must precede `python-pyqt' in PYTHONPATH.
        ("python-pyqtwebengine" ,python-pyqtwebengine)
-       ("python-pyqt" ,python-pyqt-without-qtwebkit)
+       ("python-pyqt" ,python-pyqt)
        ("python-requests" ,python-requests)
        ("python-send2trash" ,python-send2trash)
        ("python-sip" ,python-sip)

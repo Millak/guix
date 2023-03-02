@@ -61,17 +61,17 @@
 (define-public php
   (package
     (name "php")
-    (version "7.4.30")
-    (home-page "https://secure.php.net/")
+    (version "8.2.2")
+    (home-page "https://www.php.net/")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "distributions/"
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "03d7icwys4ikl45q3rgsxv1m3i7kfxhykpx75nn7jzn6697s6wpa"))
-              (patches (search-patches "php-bug-74093-test.patch"
-                                       "php-curl-compat.patch"))
+                "0czflx9ikxymjfgnzaifjx9kc30ww2x4063075hcifjjwqwami5x"))
+              (patches
+               (search-patches "php-fix-streams-copy-length.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -83,8 +83,7 @@
                             ;;"bcmath/libbcmath"
                             ;;"fileinfo/libmagic" ; a patched version of libmagic
                             '("gd/libgd"
-                              "pcre/pcre2lib"
-                              "xmlrpc/libxmlrpc"))))))
+                              "pcre/pcre2lib"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -176,12 +175,13 @@
              (substitute* "ext/standard/tests/streams/bug60602.phpt"
                (("'ls'") (string-append "'" (which "ls") "'")))
 
-             ,@(if (string-prefix? "arm" (or (%current-system)
-                                             (%current-target-system)))
+             ,@(if (target-arm32?)
                    ;; Drop tests known to fail on armhf.
                    '((for-each delete-file
-                              (list
+                               (list
                                 "ext/calendar/tests/unixtojd_error1.phpt"
+                                "ext/opcache/tests/preload_006.phpt"
+                                "ext/opcache/tests/preload_011.phpt"
                                 ;; arm can be a lot slower, so a time-related test fails
                                 "ext/fileinfo/tests/cve-2014-3538-nojit.phpt"
                                 "ext/pcntl/tests/pcntl_unshare_01.phpt"
@@ -199,6 +199,13 @@
                                 "Zend/tests/concat_003.phpt")))
                    '())
 
+             ,@(if (target-x86-32?)
+                   ;; Drop tests known to fail on i686.
+                   '((for-each delete-file
+                               (list
+                                "ext/dba/tests/dba_gdbm.phpt")))
+                   '())
+
              ,@(if (target-ppc64le?)
                    ;; Drop tests known to fail on powerpc64le.
                    '((for-each delete-file
@@ -211,6 +218,12 @@
                                 "sapi/phpdbg/tests/watch_004.phpt"
                                 "sapi/phpdbg/tests/watch_005.phpt"
                                 "sapi/phpdbg/tests/watch_006.phpt")))
+                   '())
+
+             ,@(if (target-riscv64?)
+                   ;; Drop tests known to fail on riscv64.
+                   '((for-each delete-file
+                               (list "sapi/cli/tests/upload_2G.phpt")))
                    '())
 
              ;; Drop tests that are known to fail.
@@ -272,8 +285,6 @@
                          ;; Some WebP related tests fail.
                          "ext/gd/tests/webp_basic.phpt"
                          "ext/gd/tests/imagecreatefromstring_webp.phpt"
-                         ;; Expected error message, but from the wrong function
-                         "ext/gd/tests/bug77269.phpt"
                          ;; TODO: Enable these when libgd is built with xpm support.
                          "ext/gd/tests/xpm2gd.phpt"
                          "ext/gd/tests/xpm2jpg.phpt"
@@ -291,6 +302,14 @@
                          ;; The following test fails with "The image size
                          ;; differs: expected 114x115, got 117x117".
                          "ext/gd/tests/bug79068.phpt"
+                         ;; AVIF support disabled
+                         "ext/gd/tests/avif_decode_encode.phpt"
+                         ;; Typo in expected outputs
+                         "ext/gd/tests/bug72339.phpt"
+                         "ext/gd/tests/bug77272.phpt"
+                         "ext/gd/tests/bug66356.phpt"
+                         ;; AVIF support disabled
+                         "ext/gd/tests/imagecreatefromstring_avif.phpt"
 
                          ;; XXX: These iconv tests have the expected outcome,
                          ;; but with different error messages.
@@ -310,6 +329,17 @@
                          ;; XXX: These test failures appear legitimate, needs investigation.
                          ;; open_basedir() restriction failure.
                          "ext/curl/tests/bug61948-unix.phpt"
+                         ;; Same error reason but error code slightly different
+                         "ext/curl/tests/curl_setopt_ssl.phpt"
+
+                         ;; Fail because there is no "root" in the build container's
+                         ;; /etc/passwd
+                         "sapi/fpm/tests/bug68591-conf-test-group.phpt"
+                         "sapi/fpm/tests/bug68591-conf-test-listen-group.phpt"
+                         "sapi/fpm/tests/bug68591-conf-test-listen-owner.phpt"
+
+                         ;; Wrong error name
+                         "ext/dba/tests/dba_gdbm_creation_matrix.phpt"
                          ;; Expects a false boolean, gets empty array from glob().
                          "ext/standard/tests/file/bug41655_1.phpt"
                          "ext/standard/tests/file/glob_variation5.phpt"
@@ -395,7 +425,7 @@
        ("procps" ,procps)))             ; for tests
     (synopsis "PHP programming language")
     (description
-      "PHP (PHP Hypertext Processor) is a server-side (CGI) scripting
+     "PHP (PHP Hypertext Processor) is a server-side (CGI) scripting
 language designed primarily for web development but is also used as
 a general-purpose programming language.  PHP code may be embedded into
 HTML code, or it can be used in combination with various web template

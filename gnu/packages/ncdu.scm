@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,14 +62,14 @@ ncurses installed.")
   (package
     (inherit ncdu-1)
     (name "ncdu")
-    (version "2.2.1")
+    (version "2.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0hfimrr7z9zrfkiyj09i8nh4a1rjn7d00y9xzpc7mkyqpkvghjjy"))
+                "14zrmcxnrczamqjrib99jga05ixk0dzfav3pd6s1h8vm9q121nch"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
@@ -97,7 +97,7 @@ ncurses installed.")
                (when tests?
                  (invoke "zig" "test" "build.zig")))))))
     (native-inputs
-     (list perl zig))))
+     (list perl zig-0.10))))
 
 (define-public ncdu-2
   (deprecated-package "ncdu2" ncdu))

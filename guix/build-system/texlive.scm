@@ -182,6 +182,7 @@ level package ID."
     (gexp->derivation name builder
                       #:system system
                       #:target #f
+                      #:graft? #f
                       #:substitutable? substitutable?
                       #:guile-for-build guile)))
 

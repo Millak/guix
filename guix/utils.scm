@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2023 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,6 +105,7 @@
             target-riscv64?
             target-mips64el?
             target-64bit?
+            target-little-endian?
             ar-for-target
             as-for-target
             cc-for-target
@@ -742,6 +744,12 @@ architecture (x86_64)?"
                                                (%current-system))))
   (any (cut string-prefix? <> system) '("x86_64" "aarch64" "mips64"
                                         "powerpc64" "riscv64")))
+
+(define* (target-little-endian? #:optional (target (or (%current-target-system)
+                                                       (%current-system))))
+  "Is the architecture of TARGET little-endian?"
+  ;; At least in Guix.  Aarch64 and 32-bit arm have a big-endian mode as well.
+  (not (target-ppc32? target)))
 
 (define* (ar-for-target #:optional (target (%current-target-system)))
   (if target

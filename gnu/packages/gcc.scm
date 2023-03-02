@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -1087,8 +1087,11 @@ provides the GNU compiler for the Go programming language.")
                  (substitute* "libgo/Makefile.in"
                    (("(GccgoToolDir = \\\")[^\\\"]+" _ start)
                     (string-append start "/nonexistent"))
-                   (("(DefaultGoroot = \\\")[^\\\"]+" _ start)
-                    (string-append start "/nonexistent"))
+                   ,@(if (version>=? (package-version gccgo) "12.0")
+                       '((("(defaultGOROOT = `)[^`]+" _ start)
+                          (string-append start "/nonexistent")))
+                       '((("(DefaultGoroot = \\\")[^\\\"]+" _ start)
+                          (string-append start "/nonexistent"))))
                    (("(defaultGOROOTValue.*?return `)[^`]+" _ start)
                     (string-append start "/nonexistent"))))))))))))
 
@@ -1111,6 +1114,9 @@ provides the GNU compiler for the Go programming language."))
 
 (define-public gccgo-11
   (make-gccgo gcc-11))
+
+(define-public gccgo-12
+  (make-gccgo gcc-12))
 
 (define %objc-search-paths
   (list (search-path-specification

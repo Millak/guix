@@ -31,6 +31,7 @@
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
@@ -292,6 +293,15 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                (substitute* (jlpath "libblastrampoline")
                  (("libblastrampoline\\.so")
                   (search-input-file inputs "/lib/libblastrampoline.so"))))))
+         (add-before 'build 'use-ssl-cert-file
+           (lambda _
+             ;; We must adapt MozillaCACerts to use SSL_CERT_FILE.
+             (substitute* "stdlib/MozillaCACerts_jll/src/MozillaCACerts_jll.jl"
+               (("global cacert = .*")
+                (string-append
+                  "global cacert = get(ENV, \"SSL_CERT_FILE\","
+                  ;; our fallback location.
+                  "\"/etc/ssl/certs/ca-certificates.crt\")\n")))))
          (add-after 'unpack 'enable-parallel-tests
            (lambda* (#:key parallel-tests? #:allow-other-keys)
              (when parallel-tests?
@@ -309,6 +319,8 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                (("4.1.0") ,(package-version (this-package-input "mpfr"))))
              (substitute* "stdlib/GMP_jll/test/runtests.jl"
                (("6.2.1") ,(package-version (this-package-input "gmp"))))
+             (substitute* "stdlib/LibGit2_jll/test/runtests.jl"
+               (("1.3.0") ,(package-version (this-package-input "libgit2"))))
              (substitute* "stdlib/nghttp2_jll/test/runtests.jl"
                (("1.48.0") ,(package-version (this-package-input "libnghttp2"))))
              (substitute* "stdlib/Zlib_jll/test/runtests.jl"
@@ -525,7 +537,8 @@ using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
               (files (list "share/julia/loadpath/")))
             (search-path-specification
               (variable "JULIA_DEPOT_PATH")
-              (files (list "share/julia/")))))
+              (files (list "share/julia/")))
+            $SSL_CERT_FILE))
     ;; Julia only officially supports some of our platforms:
     ;; https://julialang.org/downloads/#supported_platforms
     (supported-systems '("i686-linux" "x86_64-linux" "aarch64-linux"))

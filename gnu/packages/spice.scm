@@ -3,7 +3,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +22,8 @@
 
 (define-module (gnu packages spice)
   #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -39,8 +41,11 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages virtualization)
@@ -51,6 +56,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
@@ -60,19 +66,18 @@
   (package
     (name "usbredir")
     (home-page "https://spice-space.org")
-    (version "0.9.0")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "/download/" name "/" name "-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "19jnpzlanq0a1m5lmlcsp50wxf7icxvpvclx7hnf0zxw8azngqd3"))))
-    (build-system gnu-build-system)
-    (propagated-inputs
-     (list libusb))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
+                "0vn4gnd8nmnrvvj2rm7akf4sbcslmdk3v22k9kmxxrha5jhgm9jb"))))
+    (build-system meson-build-system)
+    (propagated-inputs (list libusb))
+    (inputs (list glib))
+    (native-inputs (list pkg-config))
     (synopsis "Tools for sending USB device traffic over a network")
     (description
      "Usbredir is a network protocol for sending USB device traffic over a
@@ -83,50 +88,46 @@ different (virtual) machine than the one to which the USB device is attached.")
 (define-public virglrenderer
   (package
     (name "virglrenderer")
-    (version "0.6.0")
+    (version "0.10.4")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                "https://www.freedesktop.org/software/virgl/"
-                "virglrenderer-" version ".tar.bz2"))
-              (patches (search-patches "virglrenderer-CVE-2017-6386.patch"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/virgl/virglrenderer")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "06kf0q4l52gzx5p63l8850hff8pmhp7xv1hk8zgx2apbw18y6jd5"))))
-    (build-system gnu-build-system)
-    (inputs
-      (list libepoxy mesa eudev))
-    (native-inputs
-      (list pkg-config))
+                "06pwavrknyhghlxyh7ckq4scjx47v9fhy08r6pn194whzvzivmqg"))))
+    (build-system meson-build-system)
+    (inputs (list libepoxy mesa))
+    (native-inputs (list pkg-config python))
     (synopsis "Virtual 3D GPU library")
     (description "A virtual 3D GPU library that enables a virtualized operating
 system to use the host GPU to accelerate 3D rendering.")
-    (home-page "https://virgil3d.github.io")
+    (home-page "https://gitlab.freedesktop.org/virgl/virglrenderer")
     (license (list license:expat license:bsd-3))))
 
 (define-public spice-protocol
   (package
     (name "spice-protocol")
-    (version "0.14.3")
+    (version "0.14.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                "https://www.spice-space.org/download/releases/"
-                "spice-protocol-" version ".tar.xz"))
+                    "https://www.spice-space.org/download/releases/"
+                    "spice-protocol-" version ".tar.xz"))
               (sha256
                (base32
-                "0yj8k7gcirrsf21w0q6146n5g4nzn2pqky4p90n5760m5ayfb1pr"))))
+                "04nr2w6ymy5jinfi3lj6205yd5h0swss3ykxqk7l3m4z1mhvmzq4"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/"
-                                        ,name "-" ,version)))
-               (install-file "COPYING" doc)
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'install-documentation
+                 (lambda _
+                   (install-file "COPYING"
+                                 (string-append #$output "/share/doc/"
+                                                #$name "-" #$version)))))))
     (synopsis "Protocol headers for the SPICE protocol")
     (description "SPICE (the Simple Protocol for Independent Computing
 Environments) is a remote-display system built for virtual environments
@@ -137,77 +138,88 @@ which allows users to view a desktop computing environment.")
 (define-public spice-gtk
   (package
     (name "spice-gtk")
-    (version "0.37")
+    (version "0.42")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                "https://spice-space.org/download/gtk/"
-                "spice-gtk-" version ".tar.bz2"))
+                    "https://spice-space.org/download/gtk/"
+                    "spice-gtk-" version ".tar.xz"))
               (sha256
                (base32
-                "1drvj8y35gnxbnrxsipwi15yh0vs9ixzv4wslz6r3lra8w3bfa0z"))))
-    (build-system gnu-build-system)
-    (propagated-inputs
-      (list gstreamer
-            gst-plugins-base
-            gst-plugins-good
-            spice-protocol
-            ;; These are required by the pkg-config files.
-            gtk+
-            pixman
-            openssl-1.1))
-    (inputs
-      `(("glib-networking" ,glib-networking)
-        ("gobject-introspection" ,gobject-introspection)
-        ("json-glib" ,json-glib)
-        ("libepoxy" ,libepoxy)
-        ("libjpeg" ,libjpeg-turbo)
-        ("libxcb" ,libxcb)
-        ("lz4" ,lz4)
-        ("mesa" ,mesa)
-        ("pulseaudio" ,pulseaudio)
-        ("python" ,python)
-        ("opus" ,opus)
-        ("usbredir" ,usbredir)))
-    (native-inputs
-      `(("glib:bin" ,glib "bin")
-        ("intltool" ,intltool)
-        ("pkg-config" ,pkg-config)
-        ("vala" ,vala)))
+                "0n3s1rn7yzs28hnl9k6ql3a90qlv8w16djqj32m1zb8i31zi304k"))))
+    (build-system meson-build-system)
     (arguments
-      `(#:configure-flags
-        '("--enable-gstaudio"
-          "--enable-gstvideo"
-          "--enable-pulse"
-          "--enable-vala"
-          "--enable-introspection")
-        #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'disable-session-test
-             (lambda _
-               ;; XXX: Disable session tests, because they require USB support,
-               ;; which is not available in the build container.
-               (substitute* "tests/Makefile"
-                 (("test-session\\$\\(EXEEXT\\) ") ""))
-               #t))
-           (add-after 'install 'patch-la-files
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (libjpeg (assoc-ref inputs "libjpeg")))
-                 ;; Add an absolute reference for libjpeg in the .la files
-                 ;; so it does not have to be propagated.
-                 (substitute* (find-files (string-append out "/lib") "\\.la$")
-                   (("-ljpeg")
-                    (string-append "-L" libjpeg "/lib -ljpeg")))
-                 #t)))
-           (add-after
-            'install 'wrap-spicy
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((out             (assoc-ref outputs "out"))
-                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-                (wrap-program (string-append out "/bin/spicy")
-                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))
-              #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              ;; XXX: Disable the session and cd-emu tests, because they
+              ;; require USB support, which is not available in the build
+              ;; container.
+              (substitute* "tests/meson.build"
+                ((".*'session.c',.*") "")
+                (("tests_sources \\+= 'cd-emu.c'" all)
+                 (string-append "# " all)))))
+          (add-after 'unpack 'adjust-default-acl-helper-path
+            (lambda _
+              ;; The USB ACL helper used to allow USB redirection as a
+              ;; non-privileged user needs to be setuid, as configured by the
+              ;; gnome-desktop-service-type.  A user can still change the
+              ;; location by specifying the SPICE_USB_ACL_BINARY environment
+              ;; variable.
+              (substitute* "src/usb-acl-helper.c"
+                (("ACL_HELPER_PATH\"/spice-client-glib-usb-acl-helper\"")
+                 "\"/run/setuid-programs/spice-client-glib-usb-acl-helper\""))))
+          (add-before 'configure 'correct-polkit-dir
+            (lambda _
+              (substitute* "meson.build"
+                (("d.get_variable\\(pkgconfig: 'policydir')")
+                 (string-append "'" #$output "/share/polkit-1/actions'")))))
+          (add-before 'install 'fake-pkexec
+            (lambda _ (setenv "PKEXEC_UID" "-1")))
+          (add-after 'install 'wrap-spicy
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/spicy")
+                `("GST_PLUGIN_SYSTEM_PATH" ":"
+                  prefix (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+    (native-inputs
+     (list `(,glib "bin")
+           intltool
+           pkg-config
+           python
+           python-pyparsing
+           python-six
+           vala))
+    (inputs
+     (list cyrus-sasl
+           glib-networking
+           gobject-introspection
+           json-glib
+           acl
+           libcap-ng
+           libepoxy
+           libxcb
+           mesa
+           polkit
+           pulseaudio
+           usbutils))
+    (propagated-inputs
+     (list gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           spice-protocol
+           ;; These are required by the pkg-config files (needed for example
+           ;; when building GNOME Boxes).
+           gtk+
+           openssl-1.1
+           opus
+           libcacard
+           libjpeg-turbo
+           lz4
+           phodav
+           pixman
+           usbredir))
     (synopsis "Gtk client and libraries for SPICE remote desktop servers")
     (description "Gtk client and libraries for SPICE remote desktop servers.")
     (home-page "https://www.spice-space.org")
@@ -216,7 +228,7 @@ which allows users to view a desktop computing environment.")
 (define-public spice
   (package
     (name "spice")
-    (version "0.15.0")
+    (version "0.15.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -224,7 +236,7 @@ which allows users to view a desktop computing environment.")
                 "spice-server/spice-" version ".tar.bz2"))
               (sha256
                (base32
-                "1xd0xffw0g5vvwbq4ksmm3jjfq45f9dw20xpmi82g1fj9f7wy85k"))))
+                "0ym3n60gq0kzzknk5ir8ib09cxsak9hkv7mmgsyic69jmdkszadd"))))
     (build-system gnu-build-system)
     (propagated-inputs
       (list openssl-1.1 pixman spice-protocol))
@@ -270,7 +282,7 @@ Internet and from a wide variety of machine architectures.")
 (define-public spice-vdagent
   (package
     (name "spice-vdagent")
-    (version "0.21.0")
+    (version "0.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -278,9 +290,7 @@ Internet and from a wide variety of machine architectures.")
                 "spice-vdagent-" version ".tar.bz2"))
               (sha256
                (base32
-                "0n8jlc1pv6mkry161y656b1nk9hhhminjq6nymzmmyjl7k95ymzx"))
-              (patches
-               (search-patches "spice-vdagent-glib-2.68.patch"))))
+                "18472sqr0gibzgzi48dpcbnvm78l05qrl5wv6xywqqj7r9dd3c4k"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -346,17 +356,11 @@ resolution scaling on graphical console window resize.")
                (base32
                 "1rrjlclm6ad63gah1fa4yfwrz4z6vgq2yrybbvzvvdbxrgl4vgzv"))))
     (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags
-           ;; XXX: For some reason NSS is not automatically added on RUNPATH
-           ;; with newer versions of Meson (after 0.60).
-           #~(list (string-append "-Dc_link_args=-Wl,-rpath="
-                                  (search-input-directory
-                                   %build-inputs "lib/nss")))))
     (propagated-inputs
-     (list glib ; Requires: in the pkg-config file
-           nss ; Requires.private: in the pkg-config
-           pcsc-lite))       ; file
+     ;; The following inputs are required in the pkg-config file.
+     (list glib
+           nss
+           pcsc-lite))
     (native-inputs
      (list openssl
            `(,nss "bin")

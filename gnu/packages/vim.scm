@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -72,13 +72,14 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages terminals)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.1073")
+    (version "9.0.1303")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -87,7 +88,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0vifinbxjcs7j3zs290q91009cdqijn2awyva2332if7qbx48ssw"))))
+               "16difqsdl3v9irjiaj2zqiyn5q94r70ws4i1ygrrcpzk6127mk2q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -692,7 +693,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -701,7 +702,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jjw9a42l7wrziki2qznn7wiw5r59n4hs9i6g2hxnjyzixpg9xvl"))))
+                "1zff73yxbnxym6sn43xk6r0zc2ncingsib81v9g39ibrcinpwaa9"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules

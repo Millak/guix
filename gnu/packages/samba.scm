@@ -172,7 +172,7 @@ The library is small, thread safe, and written in portable ANSI C with no
 external dependencies.")
     (license license:x11)))
 
-(define-public samba/fixed
+(define-public samba/pinned
   (hidden-package
    (package
      (name "samba")
@@ -282,7 +282,7 @@ Desktops into Active Directory environments using the winbind daemon.")
 
 (define-public samba
   (package
-    (inherit samba/fixed)
+    (inherit samba/pinned)
     (name "samba")
     (version "4.17.0")
     (source
@@ -294,7 +294,7 @@ Desktops into Active Directory environments using the winbind daemon.")
                            "samba-" version ".tar.gz"))
        (sha256
         (base32 "0fl2y5avmyxjadh6zz0fwz35akd6c4j9lldzp2kyvjrgm36qx1h4"))))
-    (properties (alist-delete 'hidden? (package-properties samba/fixed)))))
+    (properties (alist-delete 'hidden? (package-properties samba/pinned)))))
 
 (define-public talloc
   (package

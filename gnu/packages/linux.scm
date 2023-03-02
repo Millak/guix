@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
@@ -481,17 +481,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.1-version "6.1.8")
+(define-public linux-libre-6.1-version "6.1.14")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
    (base32 "0p1cg5khpp8xkfaqy0cnp1m273z3xiz0m97rkrkggz9gr2klrjym")
-   (base32 "0va28vs359r0rfmzh8pw58055kgd8sb62gi78vrg9p8wmj4s87v6")))
+   (base32 "1g9xqc8ajs0g2yq9xizlgr7k47x75rk3y99yicky01fm13rvfvv3")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0vc1ggjy4wvna7g6xgbjzhk93whssj9ixcal0hkhldxsp0xba2xn")))
+        (hash (base32 "03c1pszgm0qwwz7l5fnmbr6ank632bsl81pdx48svizy3q0pcw52")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -499,52 +499,52 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.90")
+(define-public linux-libre-5.15-version "5.15.96")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
    (base32 "0vj60bra81fmbx3lz924czbhxs4dmvd4d584g9mcs80b7c4q52kg")
-   (base32 "1m73pgx8v047xb2gck2g7j7khniis8c9akn9vhzgsdfglrf8p6fj")))
+   (base32 "1lwmax7078w5p6li1gf66m494xijy4bwa7nm5dlx0k09cfif9q2f")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0hiv74mxkp3v04lphnyw16akgavaz527bzhnfnpm6rv848047zg6")))
+        (hash (base32 "167g34xjbqxr5klqp127j2j15pms4jmgs0y7gr8zipiz2i69g39l")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.165")
+(define-public linux-libre-5.10-version "5.10.170")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
    (base32 "0mw7qn77y9c6wrnw4rjvf75cpm1w6n1aqqhf8cnghcb97p2yxxrf")
-   (base32 "0a96g4pjdgwvxn2wpz6rfc8nwdlkw138r9pp66kvfrrn08i313ii")))
+   (base32 "0fk954nniva8a7s423fnfn2wz9j9jdhscc4pqyvwn0wlxxbjgyap")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "03dg8yx0gdzm8zbwd1f9jn4c5jhr8qilhjzxgwm0mv8riz2fy7cp")))
+        (hash (base32 "0pw2jnsnq2yxxvl4dkx6f7a8gczj8l484qpd4ibw737vprv1idd2")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.230")
+(define-public linux-libre-5.4-version "5.4.233")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
    linux-libre-5.4-gnu-revision
    (base32 "1nlgk8ajb5wl3aa96h9a0pb9j5a5wmrbpk63varn557x1d00r7wj")
-   (base32 "1bgblfkcnrabnr9hpdl07qgps57h6bq4v5pjrxs798vq43db66va")))
+   (base32 "19yydaws3vfiz9qilg665q3lysf1hy9pzx0414dis01ikyd27qr2")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0bz6hfhsahymys2g9s4nzf862z0zfq4346577cpvf98hrhnd6kx7")))
+        (hash (base32 "09vnp4qcv7kwahbbvjznnv7pxq1cvbn11n0rn5rzx97jnia5f7js")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.271")
+(define-public linux-libre-4.19-version "4.19.274")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -554,12 +554,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0g1yhzxm3ixfll6n630v7lddcyvf888sg114nimh0lkvzd180s99")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "06lxh9skp9213n29ynx7a9cinz7wggaxjsz52kghdbwfnjf3yvb3")))
+        (hash (base32 "1a2w6knszfqg7ilnvxrs0kbgcviq90iqw9wp2d6y3qy9jfhnb8k4")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.304")
+(define-public linux-libre-4.14-version "4.14.307")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -569,7 +569,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1ma9qpsx0nvi0szlivf8v5l3pjykqwrv4x6y5g0nn6bcwhsb5jv4")))
+        (hash (base32 "00dp0vj9572ig4zsnmhl2a2v5vx40hnjibyifw24x1q6qdaia72f")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -1354,7 +1354,7 @@ and should be used with caution, especially on untested models.")
 (define-public corefreq
   (package
     (name "corefreq")
-    (version "1.90.1")
+    (version "1.95.2")
     (source
      (origin
        (method git-fetch)
@@ -1363,7 +1363,7 @@ and should be used with caution, especially on untested models.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fpmrqjwxvjbs23r73agjs322fbi4v1013cncbfyk6lcjghxab76"))))
+        (base32 "108fr056zmbipiv1nsrjccn3ky0jbcwan43big34nyq1c9dqjq1x"))))
     (build-system linux-module-build-system)
     (outputs (list "out" "linux-module"))
     (arguments
@@ -1676,7 +1676,7 @@ application by hooking GStreamer into the loopback device.")
 (define-public xpadneo
   (package
     (name "xpadneo")
-    (version "0.9.1")
+    (version "0.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1685,7 +1685,7 @@ application by hooking GStreamer into the loopback device.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xr0zx134s56h4ij6c3fh8ki0h58h61minbfxcl3sgpgxkh14ism"))))
+                "1pq7p9sxlw1v9rnny9070b39rpwfq6rip0z92mwlw4qzinmqqgdd"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no `check' target
@@ -2284,14 +2284,14 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
 (define-public usbutils
   (package
     (name "usbutils")
-    (version "014")
+    (version "015")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kernel.org/linux/utils/usb/usbutils/"
                           "usbutils-" version ".tar.xz"))
       (sha256
-       (base32 "0sgwfvr1b5w3ai1c0rmvzhk67y9vh7bq490rcxxj4q05svx9q1rs"))))
+       (base32 "0vnsdzx997v8ksi5dbsi2vc8b3mcm5b6jnmcdhszdyag3yxm3d63"))))
     (build-system gnu-build-system)
     (outputs (list "out" "python"))
     (arguments
@@ -2424,7 +2424,7 @@ module.")
                    (for-each (lambda (file)
                                (chmod file #o666))
                              archives))))))))
-    (home-page "http://e2fsprogs.sourceforge.net/")
+    (home-page "https://e2fsprogs.sourceforge.net/")
     (synopsis "Creating and checking ext2/ext3/ext4 file systems")
     (description
      "This package provides tools for manipulating ext2/ext3/ext4 file systems.")
@@ -2489,7 +2489,7 @@ from the e2fsprogs package.  It is meant to be used in initrds.")
        (patches (search-patches "extundelete-e2fsprogs-1.44.patch"))))
     (build-system gnu-build-system)
     (inputs (list e2fsprogs))
-    (home-page "http://extundelete.sourceforge.net/")
+    (home-page "https://extundelete.sourceforge.net/")
     (synopsis "Recover deleted files from ext2/3/4 partitions")
     (description
      "Extundelete is a set of tools that can recover deleted files from an
@@ -2833,7 +2833,7 @@ external rate conversion.")
     (native-inputs
      (list pkg-config flex bison))
     (inputs
-     (list libmnl libnftnl/fixed))
+     (list libmnl libnftnl/pinned))
     (arguments
      (list #:tests? #f             ; no test suite
            #:configure-flags       ; add $libdir to the RUNPATH of executables
@@ -2968,7 +2968,7 @@ early boot when entropy may be low, especially in virtualised environments.")
                "0jp458m2b3wckr18qkln69i01152qlwz33zm49103lq8fgx0n6d4"))))
     (build-system gnu-build-system)
     (synopsis "Lists information about SCSI or NVMe devices in Linux")
-    (home-page "http://sg.danny.cz/scsi/lsscsi.html")
+    (home-page "https://sg.danny.cz/scsi/lsscsi.html")
     (description
      "@command{lsscsi} lists SCSI logical units or SCSI targets.  It can
 also list NVMe namespaces or controllers and show the relationship between a
@@ -3083,7 +3083,7 @@ inadequately in modern network environments, and both should be deprecated.")
                (sha256
                 (base32
                  "0hz9fda9d78spp774b6rr5xaxav7cm4h0qcpxf70rvdbrf6qx7vy"))))
-      (home-page "http://net-tools.sourceforge.net/")
+      (home-page "https://net-tools.sourceforge.net/")
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -3878,7 +3878,7 @@ NUMA performance on your system.")
             ;; run (for example) ‘loadkeys en-latin9’ instead of having to find
             ;; and type ‘i386/colemak/en-latin9’ on a mislabelled keyboard.
             (files (list "share/keymaps/**")))))
-    (home-page "http://kbd-project.org/")
+    (home-page "https://kbd-project.org/")
     (synopsis "Linux keyboard utilities and keyboard maps")
     (description
      "This package contains keytable files and keyboard utilities compatible
@@ -5022,10 +5022,39 @@ IDE driver subsystem.  Many external USB drive enclosures with SCSI-ATA Command
 Translation (@dfn{SAT}) are also supported.")
     (license (license:non-copyleft "file://LICENSE.TXT"))))
 
+(define-public libnvme
+  (package
+    (name "libnvme")
+    (version "1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/linux-nvme/libnvme.git")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32 "1fngj5acp2sl4162xalq5simfasnika6gy0xrbi41x09wikvhn7y"))
+              (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list (format #f "-Dhtmldir=~a/share/doc/~a/html"
+                                        #$output #$name)
+                                "-Ddocs-build=true" "-Ddocs=all")))
+    (native-inputs (list pkg-config perl python python-sphinx))
+    ;; libnvme.pc, libnvme-mi.pc lists these in Requires.private.
+    (propagated-inputs (list dbus json-c openssl))
+    (home-page "https://github.com/linux-nvme/libnvme")
+    (synopsis "C Library for NVM Express on Linux")
+    (description "libnvme provides type definitions for NVMe specification
+structures, enumerations, and bit fields, helper functions to construct,
+dispatch, and decode commands and payloads, and utilities to connect, scan,
+and manage nvme devices on a Linux system.")
+    (license license:lgpl2.1+)))
+
 (define-public nvme-cli
   (package
     (name "nvme-cli")
-    (version "1.16")
+    (version "2.3")
     (home-page "https://github.com/linux-nvme/nvme-cli")
     (source (origin
               (method git-fetch)
@@ -5033,22 +5062,16 @@ Translation (@dfn{SAT}) are also supported.")
                     (url home-page)
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "130x5cf6kkcnyg5qd35igii249ysfjnbxp1pxfwkickmqg3d007z"))
+               (base32 "1f3bhxh2kr94s6glzibrmgxxgs66qyabn8plnw5y0v9cpi78b3qs"))
               (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "CC=" #$(cc-for-target)))
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)      ; no ./configure script
-               (replace 'install
-                 (lambda _
-                   (invoke "make" "install-spec" "PREFIX="
-                           (string-append "DESTDIR=" #$output)))))
-           ;; The tests require sysfs, which is not accessible from from the
-           ;; build environment.
-           #:tests? #f))
+     (list
+      #:configure-flags #~(list (format #f "-Dhtmldir=~a/share/doc/~a/html"
+                                        #$output #$name)
+                                "-Ddocs=all")))
+    (native-inputs (list pkg-config))
+    (inputs (list libnvme json-c zlib))
     (synopsis "NVM-Express user space tooling for Linux")
     (description "Nvme-cli is a utility to provide standards compliant tooling
 for NVM-Express drives.  It was made specifically for Linux as it relies on the
@@ -5140,7 +5163,7 @@ specified in /etc/acpi/events and execute the rules that match the event.")
        (sha256
         (base32 "12i0ip11xbfcjzxz4r10cvz7mbzgq1hfcdn97w6zz7sm3wndwrg8"))))
     (build-system gnu-build-system)
-    (home-page "http://linux-diag.sourceforge.net/Sysfsutils.html")
+    (home-page "https://linux-diag.sourceforge.net/Sysfsutils.html")
     (synopsis "System utilities based on Linux sysfs")
     (description
      "These are a set of utilities built upon sysfs, a virtual file system in
@@ -7620,9 +7643,13 @@ libnftnl has been previously known as libnftables.  This library is currently
 used by nftables.")
     (license license:gpl2+)))
 
+;;; The symbol libnftl/fixed should be used when libnftnl needs fixes
+;;; (security or else) and this deprecation could be removed.
+(define-deprecated/public-alias libnftnl/fixed libnftnl/pinned)
+
 ;; This is used in iptables, which contributes to rust.  We're pinning this
 ;; variant to avoid accidental rebuilds of rust.
-(define-public libnftnl/fixed
+(define-public libnftnl/pinned
   (package (inherit libnftnl)
     (version "1.2.3")
     (source
@@ -8172,7 +8199,7 @@ available in the kernel Linux.")
                       (assoc-ref outputs "out"))))))))
     (inputs (list perl))
     (supported-systems '("i686-linux" "x86_64-linux"))
-    (home-page "http://www.etallen.com/cpuid.html")
+    (home-page "https://www.etallen.com/cpuid.html")
     (synopsis "Dump x86 CPUID processor information")
     (description "cpuid dumps detailed information about the CPU(s) gathered
 from the CPUID instruction, and also determines the exact model of CPU(s).  It
@@ -8539,25 +8566,23 @@ privileges.")
                 "062hg4r6gz7pla9df70nqs5i2a3mp1wszmp4l0g771fykhhrxsjg"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       `(,(string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'patch-Makefiles
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("/lib64") "/lib")
-                        (("/usr") ""))
-                      (substitute* "compat/Makefile"
-                        (("/lib64") "/lib")
-                        (("/usr") ""))
-                      #t))
-                  (replace 'install
-                    (lambda _
-                      (setenv "DESTDIR" %output)
-                      (invoke "make" "install")
-                      #t)))))
+     (list #:make-flags
+           #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+           #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-after 'unpack 'patch-Makefiles
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("/lib64") "/lib")
+                              (("/usr") ""))
+                            (substitute* "compat/Makefile"
+                              (("/lib64") "/lib")
+                              (("/usr") ""))))
+                        (replace 'install
+                          (lambda _
+                            (setenv "DESTDIR" #$output)
+                            (invoke "make" "install"))))))
     (inputs
      (list rdma-core numactl))
     (synopsis "Intel Performance Scaled Messaging 2 (PSM2) library")
@@ -8616,7 +8641,7 @@ the OS-specific data structures needed by the kernel to setup the event.
 
 libpfm4 provides support for the @code{perf_events} interface, which was
 introduced in Linux 2.6.31.")
-    (home-page "http://perfmon2.sourceforge.net/")
+    (home-page "https://perfmon2.sourceforge.net/")
     (license license:expat)))
 
 (define-public libnfnetlink
@@ -9113,7 +9138,7 @@ tools for managing PipeWire.")
 (define-public ell
   (package
     (name "ell")
-    (version "0.54")
+    (version "0.56")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9122,7 +9147,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vsv5ibiyli1cvk32l5avms6ngv6i0jxxqd5vw5kbfcp6ph94brs"))))
+                "084mc9377k2a61wyqnfnsgfrdvv1rinn9wzw8l8crip0hlikn938"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests launch dbus-daemon instances that all try to bind to
@@ -9494,7 +9519,7 @@ provides user-space tools for creating EROFS file systems.")
 (define-public rasdaemon
   (package
     (name "rasdaemon")
-    (version "0.6.8")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -9503,7 +9528,7 @@ provides user-space tools for creating EROFS file systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r0339mg4rc12p63iiq2kwdqn1zjakyiv014i2a2l9s8v5rjik41"))))
+        (base32 "1a3ycx1g2zyshlna9fg8c9329m8wia42vkmlh2awfab0ngwi3g50"))))
     (native-inputs (list autoconf automake libtool))
     (inputs (list perl perl-dbd-sqlite sqlite dmidecode kmod))
     (arguments
@@ -9804,7 +9829,7 @@ directly by @code{make localmodconfig} as described above.")
 (define-public kconfig-hardened-check
   (package
     (name "kconfig-hardened-check")
-    (version "0.5.17")
+    (version "0.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9813,7 +9838,7 @@ directly by @code{make localmodconfig} as described above.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p9pywfxwyk4yfgaf7bhqrf72ywc6w6k77dbi7lldynha886ih4a"))))
+                "0bpdy2a7l75y5cqzzc92nh4gapzgza8ml5i8ximr6brf6pr3681z"))))
     (build-system python-build-system)
     (home-page "https://github.com/a13xp0p0v/kconfig-hardened-check")
     (synopsis

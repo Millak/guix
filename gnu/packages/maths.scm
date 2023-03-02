@@ -930,7 +930,7 @@ large scale eigenvalue problems.")
        (base32
         "1155qixp26c12yrxc76z9mlfw2h3xxymxxv5znpgzh5gaykpndgj"))))
     (build-system cmake-build-system)
-    (home-page "http://www.netlib.org/lapack/")
+    (home-page "https://www.netlib.org/lapack/")
     (inputs `(("fortran" ,gfortran)
               ("python" ,python-wrapper)))
     (arguments
@@ -1033,7 +1033,7 @@ provide LAPACK for someone who does not have access to a Fortran compiler.")
                       (substitute* "TESTING/CMakeLists.txt"
                         (("^add_test\\(x[sd]hseqr.*" all)
                          (string-append "# " all "\n"))))))))
-    (home-page "http://www.netlib.org/scalapack/")
+    (home-page "https://www.netlib.org/scalapack/")
     (synopsis "Library for scalable numerical linear algebra")
     (description
      "ScaLAPACK is a Fortran 90 library of high-performance linear algebra
@@ -1655,7 +1655,7 @@ System (Grid, Point and Swath).")
      "HDF-EOS5 is a software library built on HDF5 to support the construction
 of data structures used in NASA's Earth Observing System (Grid, Point and
 Swath).")
-    (home-page "http://www.hdfeos.org/software/library.php#HDF-EOS5")
+    (home-page "https://www.hdfeos.org/software/library.php#HDF-EOS5")
 
     ;; Source files carry a permissive license header.
     (license (license:non-copyleft home-page))))
@@ -1840,7 +1840,7 @@ the resulting text.")
      `(("texlive" ,texlive-tiny)
        ("ghostscript" ,ghostscript)
        ("doxygen" ,doxygen)))
-    (home-page "http://itpp.sourceforge.net")
+    (home-page "https://itpp.sourceforge.net")
     (synopsis "C++ library of maths, signal processing and communication classes")
     (description "IT++ is a C++ library of mathematical, signal processing and
 communication classes and functions.  Its main use is in simulation of
@@ -2703,12 +2703,20 @@ satisfiability checking (SAT).")
   (package
     (inherit clingo)
     (name "python-clingo")
+    (version (package-version clingo)) ; for #$version in arguments
     (arguments
      (substitute-keyword-arguments (package-arguments clingo)
        ((#:configure-flags flags #~'())
         #~(cons* "-DCLINGO_BUILD_WITH_PYTHON=pip"
                  "-DCLINGO_USE_LIB=yes"
                  #$flags))
+       ((#:imported-modules _ '())
+        `(,@%cmake-build-system-modules
+          (guix build python-build-system)))
+       ((#:modules _ '())
+        '((guix build cmake-build-system)
+          ((guix build python-build-system) #:prefix python:)
+          (guix build utils)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'fix-failing-tests
@@ -2717,7 +2725,17 @@ satisfiability checking (SAT).")
                   (("ctl\\.solve\\(on_statistics=on_statistics\\)" all)
                    (string-append
                     all
-                    "; self.skipTest(\"You shall not fail.\")")))))))))
+                    "; self.skipTest(\"You shall not fail.\")")))))
+            (add-after 'install 'install-distinfo
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (with-directory-excursion (python:site-packages inputs outputs)
+                   (let ((dir (string-append "clingo-" #$version ".dist-info")))
+                     (mkdir-p dir)
+                     (call-with-output-file (string-append dir "/METADATA")
+                       (lambda (port)
+                         (format port "Metadata-Version: 1.1~%")
+                         (format port "Name: clingo~%")
+                         (format port "Version: ~a~%" #$version)))))))))))
     (inputs (list clingo python-wrapper))
     (propagated-inputs (list python-cffi))
     (native-inputs (modify-inputs (package-native-inputs clingo)
@@ -2726,6 +2744,41 @@ satisfiability checking (SAT).")
     (description "This package provides Python bindings to the clingo package,
 making it so that you can write @acronym{ASPs, Answer Set Programs} through
 Python code.")))
+
+(define-public python-clorm
+  (package
+   (name "python-clorm")
+   (version "1.4.1")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/potassco/clorm")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0jx99y71mrgdicn1da5dwz5nzgvvpabrikff783sg4shbv2cf0b5"))))
+   (build-system pyproject-build-system)
+   (arguments
+    (list #:phases
+          #~(modify-phases %standard-phases
+              (add-before 'check 'fix-breaking-tests
+                (lambda _
+                  ;; noclingo tests rely on this being set
+                  (setenv "CLORM_NOCLINGO" "1")
+                  (delete-file "tests/test_mypy_query.py")
+                  (substitute* "tests/test_clingo.py"
+                    (("self\\.assertTrue\\(os_called\\)" all)
+                     (string-append "# " all))))))))
+   (propagated-inputs (list python-clingo))
+   (native-inputs (list python-typing-extensions))
+   (home-page "https://potassco.org")
+   (synopsis "Object relational mapping to clingo")
+   (description "@acronym{Clorm, Clingo ORM} provides an @acronym{ORM,
+Object Relational Mapping} interface to the @acronym{ASP, answer set
+programming} solver clingo.  Its goal is to make integration of clingo
+into Python programs easier.")
+   (license license:expat)))
 
 (define-public python-telingo
   (package
@@ -2968,61 +3021,6 @@ script files.")
                #t))))))
     (synopsis "High-level language for numerical computation (with GUI)")))
 
-(define-public opencascade-oce
-  (package
-    (name "opencascade-oce")
-    (version "0.17.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/tpaviot/oce")
-              (commit (string-append "OCE-" version))))
-        (file-name (git-file-name name version))
-        (patches (search-patches "opencascade-oce-glibc-2.26.patch"))
-        (sha256
-          (base32 "0rg5wzkvfmzfl6v2amyryb8dnjad0nn9kyr607wy2gch6rciah69"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags
-        (list "-DOCE_TESTING:BOOL=ON"
-              "-DOCE_USE_TCL_TEST_FRAMEWORK:BOOL=ON"
-              "-DOCE_DRAW:BOOL=ON"
-              (string-append "-DOCE_INSTALL_PREFIX:PATH="
-                        (assoc-ref %outputs "out"))
-              "-UCMAKE_INSTALL_RPATH")))
-    (inputs
-      (list freetype
-            glu
-            libxmu
-            mesa
-            tcl
-            tk))
-    (native-inputs
-      `(("python" ,python-wrapper)))
-    (home-page "https://github.com/tpaviot/oce")
-    (synopsis "Libraries for 3D modeling and numerical simulation")
-    (description
-     "Open CASCADE is a set of libraries for the development of applications
-dealing with 3D CAD data or requiring industrial 3D capabilities.  It includes
-C++ class libraries providing services for 3D surface and solid modeling, CAD
-data exchange, and visualization.  It is used for development of specialized
-software dealing with 3D models in design (CAD), manufacturing (CAM),
-numerical simulation (CAE), measurement equipment (CMM), and quality
-control (CAQ) domains.
-
-This is the ``Community Edition'' (OCE) of Open CASCADE, which gathers
-patches, improvements, and experiments contributed by users over the official
-Open CASCADE library.")
-    (license (list license:lgpl2.1; OCE libraries, with an exception for the
-                                  ; use of header files; see
-                                  ; OCCT_LGPL_EXCEPTION.txt
-                   license:public-domain; files
-                                  ; src/Standard/Standard_StdAllocator.hxx and
-                                  ; src/NCollection/NCollection_StdAllocator.hxx
-                   license:expat; file src/OpenGl/OpenGl_glext.h
-                   license:bsd-3)))); test framework gtest
-
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")
@@ -3179,7 +3177,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                (substitute* "api/gmsh.py"
                  (("find_library\\(\"gmsh\"\\)")
                   (simple-format #f "\"~a\"" libgmsh)))))))))
-    (home-page "http://gmsh.info/")
+    (home-page "https://gmsh.info/")
     (synopsis "3D finite element grid generator")
     (description "Gmsh is a 3D finite element grid generator with a built-in
 CAD engine and post-processor.  Its design goal is to provide a fast, light
@@ -3239,7 +3237,7 @@ ASCII text files using Gmsh's own scripting language.")
      (list ghostscript ;optional, for EPS/PS output
            python-dbus
            python-h5py ;optional, for HDF5 data
-           python-pyqt-without-qtwebkit
+           python-pyqt
            qtbase-5
            qtsvg-5))
     (propagated-inputs
@@ -3703,7 +3701,7 @@ bindings to almost all functions of SLEPc.")
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
-    (home-page "http://us.metamath.org/")
+    (home-page "https://us.metamath.org/")
     (synopsis "Proof verifier based on a minimalistic formalism")
     (description
      "Metamath is a tiny formal language and that can express theorems in
@@ -4382,7 +4380,7 @@ schemes.")
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'mpi-setup
 		    ,%openmpi-setup))))
-    (home-page "http://www.p4est.org")
+    (home-page "https://www.p4est.org")
     (synopsis "Adaptive mesh refinement on forests of octrees")
     (description
      "The p4est software library enables the dynamic management of a
@@ -4551,28 +4549,27 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "22.05.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/wxMaxima-developers/wxmaxima")
-             (commit (string-append "Version-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1va56v9dys97yln4m1z3fz3k90lpy8i3kvcq0v1cbg36689aghm5"))))
+    (version "22.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wxMaxima-developers/wxmaxima")
+                    (commit (string-append "Version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12bjadmy2mf7d8v4iszmzckahfcwjzaba8wpbigksh4brvhb4gj5"))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (inputs
-     (list wxwidgets
-           maxima
-           ;; Runtime support.
-           adwaita-icon-theme
-           gtk+
-           shared-mime-info))
+    (native-inputs (list gettext-minimal))
+    (inputs (list bash-minimal
+                  wxwidgets
+                  maxima
+                  ;; Runtime support.
+                  adwaita-icon-theme
+                  gtk+
+                  shared-mime-info))
     (arguments
-     `(#:tests? #f                      ; tests fail non-deterministically
+     `(#:tests? #f ; tests fail non-deterministically
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-doc-path
@@ -4581,8 +4578,8 @@ point numbers.")
              ;; documentation.  Only licensing information is placed there by
              ;; Guix.
              (substitute* "src/Dirstructure.cpp"
-               (("/doc/wxmaxima-\\%s") "/doc/wxmaxima"))
-             #t))
+               (("/doc/wxmaxima-\\%s")
+                "/doc/wxmaxima"))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
@@ -4595,15 +4592,15 @@ point numbers.")
                  (,(string-append (assoc-ref inputs "gtk+")
                                   "/share/glib-2.0/schemas")))
                `("XDG_DATA_DIRS" ":" prefix
-                 (;; Needed by gdk-pixbuf to know supported icon formats.
-                  ,(string-append
-                    (assoc-ref inputs "shared-mime-info") "/share")
+                 ( ;; Needed by gdk-pixbuf to know supported icon formats.
+                  ,(string-append (assoc-ref inputs "shared-mime-info")
+                                  "/share")
                   ;; The default icon theme of GTK+.
-                  ,(string-append
-                    (assoc-ref inputs "adwaita-icon-theme") "/share"))))
-             #t)))))
+                  ,(string-append (assoc-ref inputs "adwaita-icon-theme")
+                                  "/share")))))))))
     (home-page "https://wxmaxima-developers.github.io/wxmaxima/")
-    (synopsis "Graphical user interface for the Maxima computer algebra system")
+    (synopsis
+     "Graphical user interface for the Maxima computer algebra system")
     (description
      "wxMaxima is a graphical user interface for the Maxima computer algebra
 system.  It eases the use of Maxima by making most of its commands available
@@ -4635,7 +4632,7 @@ full text searching.")
      `(("openblas" ,openblas)
        ("lapack" ,lapack)
        ("arpack" ,arpack-ng)))
-    (home-page "http://arma.sourceforge.net/")
+    (home-page "https://arma.sourceforge.net/")
     (synopsis "C++ linear algebra library")
     (description
      "Armadillo is a C++ linear algebra library, aiming towards a good balance
@@ -5054,7 +5051,7 @@ Fresnel integrals, and similar related functions as well.")
     (native-inputs
      `(("cmake" ,cmake-minimal)
        ("m4" ,m4)))
-    (home-page "http://faculty.cse.tamu.edu/davis/suitesparse.html")
+    (home-page "https://faculty.cse.tamu.edu/davis/suitesparse.html")
     (synopsis "Suite of sparse matrix software")
     (description
      "SuiteSparse is a suite of sparse matrix algorithms, including: UMFPACK,
@@ -5082,7 +5079,7 @@ packages.")
                (base32
                 "1dyjlq3fiparvm8ypwk6rsmjzmnwk81l88gkishphpvc79ryp216"))))
     (build-system gnu-build-system)
-    (home-page "http://math-atlas.sourceforge.net/")
+    (home-page "https://math-atlas.sourceforge.net/")
     (inputs `(("gfortran" ,gfortran)
               ("lapack-tar" ,(package-source lapack))))
     (outputs '("out" "doc"))
@@ -5345,7 +5342,7 @@ specifications.")
                              (install-file name include))
                            (find-files "." "\\.h$")))
                #t))))))
-    (home-page "http://lpsolve.sourceforge.net/")
+    (home-page "https://lpsolve.sourceforge.net/")
     (synopsis "Mixed integer linear programming (MILP) solver")
     (description
      "lp_solve is a mixed integer linear programming solver based on the
@@ -5692,7 +5689,7 @@ FLANN is written in C++ and contains bindings for C, Octave and Python.")
      (list mpfr readline))
     (native-inputs
      (list bison flex))
-    (home-page "http://w-calc.sourceforge.net/index.php")
+    (home-page "https://w-calc.sourceforge.net/index.php")
     (synopsis "Flexible command-line scientific calculator")
     (description "Wcalc is a very capable calculator.  It has standard functions
 (sin, asin, and sinh for example, in either radians or degrees), many
@@ -7901,7 +7898,7 @@ numeric differences and differences in numeric formats.")
             (invoke "make" "byte")
             (invoke "make" "install-lib")
             #t)))))
-    (home-page "http://why3.lri.fr")
+    (home-page "https://why3.lri.fr")
     (synopsis "Deductive program verification")
     (description "Why3 provides a language for specification and programming,
 called WhyML, and relies on external theorem provers, both automated and
@@ -7954,7 +7951,7 @@ of C, Java, or Ada programs.")
             (variable "FRAMAC_LIB")
             (files '("lib/frama-c"))
             (separator #f))))
-    (home-page "http://frama-c.com")
+    (home-page "https://frama-c.com")
     (synopsis "C source code analysis platform")
     (description "Frama-C is an extensible and collaborative platform dedicated
 to source-code analysis of C software.  The Frama-C analyzers assist you in

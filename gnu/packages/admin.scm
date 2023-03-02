@@ -53,8 +53,10 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Andreas Rammhold <andreas@rammhold.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2022, 2023 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -767,7 +769,7 @@ on memory usage on GNU/Linux systems.")
 (define-public htop
   (package
     (name "htop")
-    (version "3.2.1")
+    (version "3.2.2")
     (source
      (origin
        (method git-fetch)
@@ -775,7 +777,7 @@ on memory usage on GNU/Linux systems.")
              (url "https://github.com/htop-dev/htop")
              (commit version)))
        (sha256
-        (base32 "0yfmkw3y4qyd42svhpiijif7krvmnb8z88y6h9g4fwf7sfynq2rk"))
+        (base32 "0cyaprgnhfrc7rqq053903bjylaplvxkb65b04bsxmiva09lvf9s"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -1151,7 +1153,7 @@ ONC RPC numbers.")
        (let ((out (assoc-ref %outputs "out")))
          (list (string-append "--mandir=" out "/share/man")
                (string-append "--infodir=" out "/share/info")))))
-    (home-page "http://netcat.sourceforge.net")
+    (home-page "https://netcat.sourceforge.net")
     (synopsis "Read and write data over TCP/IP")
     (description
      "Netcat is a featured networking utility which reads and writes data
@@ -1268,7 +1270,7 @@ IPv6, proxies, and Unix sockets.")
                   "1gpvd2kjyhs18sh6sga5bk9wj8s78blfd4c0m38r0wl92jx2yv1b"))))))
     (inputs
      (list ncurses))
-    (home-page "http://nmon.sourceforge.net/")
+    (home-page "https://nmon.sourceforge.net/")
     (synopsis
      "Monitor system performance in a terminal or to a @file{.csv} log file")
     (description
@@ -1958,7 +1960,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.12p2")
+    (version "1.9.13p2")
     (source (origin
               (method url-fetch)
               (uri
@@ -1968,7 +1970,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "0fc55axh2hfd8hn66dpmyrrgb0gf0nz71zpaygkrpp8x1ypb385r"))
+                "0kapjhgyzaqk2nfzzz04ss9x6cy61s79afd3vhgkn0y1wkyh886z"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2211,6 +2213,10 @@ command.")
     (name "wpa-supplicant")
     (inputs (modify-inputs (package-inputs wpa-supplicant-minimal)
               (prepend dbus)))
+    (source (origin
+              (inherit (package-source wpa-supplicant-minimal))
+              (patches (search-patches
+                        "wpa-supplicant-dbus-group-policy.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments wpa-supplicant-minimal)
        ((#:phases phases)
@@ -2756,7 +2762,7 @@ degradation and failure.")
 (define-public fdupes
   (package
     (name "fdupes")
-    (version "2.1.2")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
@@ -2764,7 +2770,7 @@ degradation and failure.")
                            "releases/download/v" version "/"
                            "fdupes-" version ".tar.gz"))
        (sha256
-        (base32 "1g9p50xhi2sp0hqxml4w2k0kq9jv988q2yxm347z5349dlxvap6d"))))
+        (base32 "13b9qph8nmxwns9n28im3f7bdzhpjas51vckm9b7h5ghlffbfsw4"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses pcre2))
@@ -3297,14 +3303,14 @@ rules is done with the @code{auditctl} utility.")
 (define-public nmap
   (package
     (name "nmap")
-    (version "7.92")
+    (version "7.93")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nmap.org/dist/nmap-" version
                                   ".tar.bz2"))
               (sha256
                (base32
-                "18bifn67kz2wxkbnfwcrin2xrhc6qf4p2bvxfqb2a2vbi8pryix5"))
+                "0lb6s4nmmicfnc221mzgx2w51dcd4b2dhx22pabcqnp2jd3zxg2m"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3317,18 +3323,7 @@ rules is done with the @code{auditctl} utility.")
                               ;; Remove pre-compiled binares.
                               "mswin32"))))))
     (build-system gnu-build-system)
-    (inputs
-     `(("openssl" ,openssl)
-       ("libpcap" ,libpcap)
-       ("pcre" ,pcre)
-       ("lua" ,lua)
-       ("zlib" ,zlib)                   ;for NSE compression support
-
-       ;; For 'ndiff'.
-       ("python" ,python-2)))
-
-    ;; TODO Add zenmap output.
-    (outputs '("out" "ndiff"))
+    (outputs '("out" "ndiff"))          ; TODO Add zenmap output
     (arguments
      `(#:configure-flags '("--without-zenmap")
        #:phases
@@ -3371,6 +3366,13 @@ rules is done with the @code{auditctl} utility.")
                        "check-dns")))))
        ;; Nmap can't cope with out-of-source building.
        #:out-of-source? #f))
+    (inputs
+     (list libpcap
+           lua
+           openssl-3.0
+           pcre
+           zlib                         ; for NSE compression
+           python-2))                   ; for ndiff
     (home-page "https://nmap.org/")
     (synopsis "Network discovery and security auditing tool")
     (description
@@ -3379,7 +3381,7 @@ tool.  It is also useful for tasks such as network inventory, managing service
 upgrade schedules, and monitoring host or service uptime.  It also provides an
 advanced netcat implementation (ncat), a utility for comparing scan
 results (ndiff), and a packet generation and response analysis tool (nping).")
-    ;; See <https://github.com/nmap/nmap/issues/2199#issuecomment-894812634>.
+    ;; See <https://github.com/nmap/nmap/issues/2199#issuecomment-1380592744>.
     ;; This package uses nmap's bundled versions of libdnet and liblinear, which
     ;; both use a 3-clause BSD license.
     (license (list license:nmap license:bsd-3))))
@@ -3729,7 +3731,7 @@ in order to be able to find it.
 (define-public xfel
   (package
     (name "xfel")
-    (version "1.2.4")
+    (version "1.2.9")
     (source
      (origin
        (method git-fetch)
@@ -3737,7 +3739,7 @@ in order to be able to find it.
               (url "https://github.com/xboot/xfel.git")
               (commit (string-append "v" version))))
        (sha256
-         (base32 "0r4j63vh6279fj1yh71h08d1av3nc0majlad5yh6admsxiig101m"))
+         (base32 "0gs37w5zjfmyadm49hdalq6vr6gidc683agz3shncgj93x2hxx02"))
        (file-name (git-file-name name version))))
     (native-inputs
      (list pkg-config))
@@ -3755,12 +3757,14 @@ in order to be able to find it.
                 (("/usr/local") out)
                 (("/usr") out)
                 (("/etc/udev/rules.d")
-                 (string-append out "/lib/udev/rules.d"))))))
+                 (string-append out "/lib/udev/rules.d"))
+                (("udevadm control --reload") ; next version will remove this
+                  "")))))
          (delete 'configure))))
     (home-page "https://github.com/xboot/xfel")
-    (synopsis "Remote debugging tool for Allwinner D1 computers")
-    (description "This package contains a debugging tool for Allwinner D1
-devices (connects via USB OTG).")
+    (synopsis "Remote debugging tool for Allwinner devices")
+    (description "This package contains a debugging tool for Allwinner devices
+(connects via USB OTG).")
     (license license:expat)))
 
 (define-public sedsed
@@ -3828,17 +3832,16 @@ buffers.")
 (define-public igt-gpu-tools
   (package
     (name "igt-gpu-tools")
-    ;; You should very likely remove the 'fix-meson.build phase when upgrading.
-    (version "1.26")
+    (version "1.27.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.freedesktop.org/drm/igt-gpu-tools.git")
-             (commit (string-append "igt-gpu-tools-" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m124pqv7zna25jnvk566c4kk628jr0w8mgnp8mr5xqz9cprgczm"))))
+        (base32 "0d6jsj77qddccv0vfmqmbw3k2prvxzvmgc8zdi83gdi3wpp5i7zd"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f              ; many of the tests try to load kernel modules
@@ -3847,13 +3850,7 @@ buffers.")
          (add-after 'unpack 'find-rst2man.py
            (lambda _
              (substitute* "man/meson.build"
-               (("'rst2man'") "'rst2man.py'"))))
-         (add-after 'unpack 'fix-meson.build
-           ;; Fix ‘ERROR: Function does not take positional arguments.’
-           (lambda _
-             (substitute* "lib/meson.build"
-               (("f\\.underscorify\\(f\\)")
-                "f.underscorify()")))))))
+               (("'rst2man'") "'rst2man.py'")))))))
     (inputs
      (list cairo
            elfutils ; libdw
@@ -3911,19 +3908,19 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.4")
+    (version "1.4.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "HyFetch" version))
-        (sha256
-          (base32 "1k3pcl16y2czkk7wd79yk0w1kqpi4fp8h8szhjs5ywwy20nqmms8"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hykilpikonna/hyfetch")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1w0wzai73rr7iliii77f15ck5ki03xcvrhgzbp72nn7xcpix9wqd"))))
     (build-system python-build-system)
-    (inputs (list python-hypy-utils python-typing-extensions))
-    (arguments `(#:phases (modify-phases %standard-phases
-                            (add-before 'build 'set-HOME
-                              (lambda _  ;; Tries to set files in .config
-                                (setenv "HOME" "/tmp"))))))
+    (inputs (list python-typing-extensions))
     (home-page "https://github.com/hykilpikonna/HyFetch")
     (synopsis "@code{neofetch} with pride flags <3")
     (description "HyFetch is a command-line system information tool fork of
@@ -3933,6 +3930,48 @@ the pattern of the pride flag of your choice.  The main purpose of HyFetch is to
 be used in screenshots to show other users what operating system or distribution
 you are running, what theme or icon set you are using, etc.")
     (license license:expat)))
+
+(define-public uwufetch
+  (package
+    (name "uwufetch")
+    (version "2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/TheDarkBug/uwufetch")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s4pzaqmlq6rn54kgmlpcrc0sy3q5zn6lxh4448k9iimshljsjfs"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:make-flags
+      #~(list (string-append "DESTDIR=" #$output)
+              (string-append "ETC_DIR=" #$output "/etc")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'path-source-paths
+            (lambda _
+              (substitute* "uwufetch.c"
+                (("(/usr(/local)?)(.*;)" all _ _ rest)
+                 (string-append #$output rest))))))))
+    (inputs (list lshw
+                  ;; viu XXX not yet packaged in Guix
+                  xwininfo))
+    (home-page "https://github.com/TheDarkBug/uwufetch")
+    (synopsis "Meme system info tool based on Nyan/UwU trend")
+    (description
+     "UwUFetch is a system information tool in the lineage of NeoFetch,
+PFetch, HyFetch, and the like.  It prints ASCII art of your system's logo as
+well as a summary of system information.  UwUFetch's unique contribution is the
+uwu-ification of various words used in the description.  For example, Guix
+becomes gUwUix.")
+    (license license:gpl3+)))
 
 (define-public screenfetch
   (package
@@ -4301,7 +4340,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.24-1")
+      (version "3.3.25-1")
       (source
        (origin
          (method git-fetch)
@@ -4310,7 +4349,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "1nai43251r791qvc1c4hhvcaa6hq7zcjlww7k3ip7br6zgxqjaxm"))))
+          (base32 "0mak2f06xzalccgaij9fsi20600sg05v0pmg0blvy6hvq5kh97k3"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
@@ -5189,7 +5228,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
 (define-public greetd
   (package
     (name "greetd")
-    (version "0.8.0")
+    (version "0.9.0")
     (home-page "https://git.sr.ht/~kennylevinsen/greetd")
     (source (origin
               (method git-fetch)
@@ -5198,11 +5237,11 @@ it won't take longer to install 15 machines than it would to install just 2.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0x5c3jkw09kvj2grcxm899y2n6ws8p990cyp9cs0fy6lm4fzlh6v"))))
+               (base32 "1b79lb0vikh5vwpdlyga6zwzm11gpsd7ghp8zb0q2m6mlqlj5by3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.19)
+       (("rust-nix" ,rust-nix-0.26)
         ("rust-pam-sys" ,rust-pam-sys-0.5)
         ("rust-rpassword" ,rust-rpassword-5)
         ("rust-users" ,rust-users-0.11)
@@ -5249,8 +5288,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
                  (install-file "greetd-ipc.7" man7)
                  (install-file "agreety.1" man1))))))))
     (native-inputs
-     `(("linux-pam" ,linux-pam)
-       ("scdoc" ,scdoc)))
+     (list linux-pam scdoc))
     (synopsis "Minimal and flexible login manager daemon")
     (description
      "greetd is a minimal and flexible login manager daemon
@@ -5665,7 +5703,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.92.0")
+    (version "1.92.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5674,7 +5712,7 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0n8xajr9s0y7a43is24q0f9nznmr2sjhlhgg9fpyx4s4nr3s5yqw"))))
+                "1zb7vx7nqg8q9vdgb90cwmrr1cijv8gfryni8yrd99bb9vgg6pyv"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"

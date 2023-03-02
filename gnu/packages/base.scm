@@ -674,8 +674,7 @@ included.")
                      (substitute* "gold/Makefile.in"
                        ((" testsuite") " ")))))
                '())))))
-    (native-inputs
-     `(("bc" ,bc)))))
+    (native-inputs (list bc))))
 
 (define* (make-ld-wrapper name #:key
                           (target (const #f))

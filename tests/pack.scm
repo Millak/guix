@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,13 +28,16 @@
   #:use-module (guix tests)
   #:use-module (guix gexp)
   #:use-module (guix modules)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module ((gnu packages base) #:select (glibc-utf8-locales))
   #:use-module (gnu packages bootstrap)
+  #:use-module ((gnu packages package-management) #:select (rpm))
   #:use-module ((gnu packages compression) #:select (squashfs-tools))
   #:use-module ((gnu packages debian) #:select (dpkg))
   #:use-module ((gnu packages guile) #:select (guile-sqlite3))
   #:use-module ((gnu packages gnupg) #:select (guile-gcrypt))
+  #:use-module ((gnu packages linux) #:select (fakeroot))
   #:use-module (srfi srfi-64))
 
 (define %store
@@ -59,6 +62,17 @@
 
 (define %ar-bootstrap %bootstrap-binutils)
 
+;;; This is a variant of the RPM package configured so that its database can
+;;; be created on a writable location readily available inside the build
+;;; container ("/tmp").
+(define rpm-for-tests
+  (package
+    (inherit rpm)
+    (arguments (substitute-keyword-arguments (package-arguments rpm)
+                 ((#:configure-flags flags '())
+                  #~(cons "--localstatedir=/tmp"
+                          (delete "--localstatedir=/var" #$flags)))))))
+
 
 (test-begin "pack")
 
@@ -74,44 +88,43 @@
                                                       -> "bin/guile"))
                                         #:compressor %gzip-compressor
                                         #:archiver %tar-bootstrap))
-       (check   (gexp->derivation
-                 "check-tarball"
-                 (with-imported-modules '((guix build utils))
-                   #~(begin
-                       (use-modules (guix build utils)
-                                    (srfi srfi-1))
+       (check   (gexp->derivation "check-tarball"
+                  (with-imported-modules '((guix build utils))
+                    #~(begin
+                        (use-modules (guix build utils)
+                                     (srfi srfi-1))
 
-                       (define store
-                         ;; The unpacked store.
-                         (string-append "." (%store-directory) "/"))
+                        (define store
+                          ;; The unpacked store.
+                          (string-append "." (%store-directory) "/"))
 
-                       (define (canonical? file)
-                         ;; Return #t if FILE is read-only and its mtime is 1.
-                         (let ((st (lstat file)))
-                           (or (not (string-prefix? store file))
-                               (eq? 'symlink (stat:type st))
-                               (and (= 1 (stat:mtime st))
-                                    (zero? (logand #o222
-                                                   (stat:mode st)))))))
+                        (define (canonical? file)
+                          ;; Return #t if FILE is read-only and its mtime is 1.
+                          (let ((st (lstat file)))
+                            (or (not (string-prefix? store file))
+                                (eq? 'symlink (stat:type st))
+                                (and (= 1 (stat:mtime st))
+                                     (zero? (logand #o222
+                                                    (stat:mode st)))))))
 
-                       (define bin
-                         (string-append "." #$profile "/bin"))
+                        (define bin
+                          (string-append "." #$profile "/bin"))
 
-                       (setenv "PATH"
-                               (string-append #$%tar-bootstrap "/bin"))
-                       (system* "tar" "xvf" #$tarball)
-                       (mkdir #$output)
-                       (exit
-                        (and (file-exists? (string-append bin "/guile"))
-                             (file-exists? store)
-                             (every canonical?
-                                    (find-files "." (const #t)
-                                                #:directories? #t))
-                             (string=? (string-append #$%bootstrap-guile "/bin")
-                                       (readlink bin))
-                             (string=? (string-append ".." #$profile
-                                                      "/bin/guile")
-                                       (readlink "bin/Guile")))))))))
+                        (setenv "PATH"
+                                (string-append #$%tar-bootstrap "/bin"))
+                        (system* "tar" "xvf" #$tarball)
+                        (mkdir #$output)
+                        (exit
+                         (and (file-exists? (string-append bin "/guile"))
+                              (file-exists? store)
+                              (every canonical?
+                                     (find-files "." (const #t)
+                                                 #:directories? #t))
+                              (string=? (string-append #$%bootstrap-guile "/bin")
+                                        (readlink bin))
+                              (string=? (string-append ".." #$profile
+                                                       "/bin/guile")
+                                        (readlink "bin/Guile")))))))))
     (built-derivations (list check))))
 
 ;; The following test needs guile-sqlite3, libgcrypt, etc. as a consequence of
@@ -125,23 +138,22 @@
   (test-assertm "self-contained-tarball + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (tarball (self-contained-tarball "tar-pack" profile
                                           #:localstatedir? #t))
-         (check   (gexp->derivation
-                   "check-tarball"
-                   #~(let ((bin (string-append "." #$profile "/bin")))
-                       (setenv "PATH"
-                               (string-append #$%tar-bootstrap "/bin"))
-                       (system* "tar" "xvf" #$tarball)
-                       (mkdir #$output)
-                       (exit
-                        (and (file-exists? "var/guix/db/db.sqlite")
-                             (string=? (string-append #$%bootstrap-guile "/bin")
-                                       (readlink bin))))))))
+         (check   (gexp->derivation "check-tarball"
+                    #~(let ((bin (string-append "." #$profile "/bin")))
+                        (setenv "PATH"
+                                (string-append #$%tar-bootstrap "/bin"))
+                        (system* "tar" "xvf" #$tarball)
+                        (mkdir #$output)
+                        (exit
+                         (and (file-exists? "var/guix/db/db.sqlite")
+                              (string=? (string-append #$%bootstrap-guile "/bin")
+                                        (readlink bin))))))))
       (built-derivations (list check))))
 
   (unless store (test-skip 1))
@@ -154,135 +166,132 @@
                      ("λ" regular (data "lambda")))))
          (tarball (self-contained-tarball "tar-pack" tree
                                           #:localstatedir? #t))
-         (check   (gexp->derivation
-                   "check-tarball"
-                   (with-extensions (list guile-sqlite3 guile-gcrypt)
-                     (with-imported-modules (source-module-closure
-                                             '((guix store database)))
-                       #~(begin
-                           (use-modules (guix store database)
-                                        (rnrs io ports)
-                                        (srfi srfi-1))
+         (check   (gexp->derivation "check-tarball"
+                    (with-extensions (list guile-sqlite3 guile-gcrypt)
+                      (with-imported-modules (source-module-closure
+                                              '((guix store database)))
+                        #~(begin
+                            (use-modules (guix store database)
+                                         (rnrs io ports)
+                                         (srfi srfi-1))
 
-                           (define (valid-file? basename data)
-                             (define file
-                               (string-append "./" #$tree "/" basename))
+                            (define (valid-file? basename data)
+                              (define file
+                                (string-append "./" #$tree "/" basename))
 
-                             (string=? (call-with-input-file (pk 'file file)
-                                         get-string-all)
-                                       data))
+                              (string=? (call-with-input-file (pk 'file file)
+                                          get-string-all)
+                                        data))
 
-                           (setenv "PATH"
-                                   (string-append #$%tar-bootstrap "/bin"))
-                           (system* "tar" "xvf" #$tarball)
+                            (setenv "PATH"
+                                    (string-append #$%tar-bootstrap "/bin"))
+                            (system* "tar" "xvf" #$tarball)
 
-                           (sql-schema
-                            #$(local-file (search-path %load-path
-                                                       "guix/store/schema.sql")))
-                           (with-database "var/guix/db/db.sqlite" db
-                             ;; Make sure non-ASCII file names are properly
-                             ;; handled.
-                             (setenv "GUIX_LOCPATH"
-                                     #+(file-append glibc-utf8-locales
-                                                    "/lib/locale"))
-                             (setlocale LC_ALL "en_US.utf8")
+                            (sql-schema
+                             #$(local-file (search-path %load-path
+                                                        "guix/store/schema.sql")))
+                            (with-database "var/guix/db/db.sqlite" db
+                              ;; Make sure non-ASCII file names are properly
+                              ;; handled.
+                              (setenv "GUIX_LOCPATH"
+                                      #+(file-append glibc-utf8-locales
+                                                     "/lib/locale"))
+                              (setlocale LC_ALL "en_US.utf8")
 
-                             (mkdir #$output)
-                             (exit
-                              (and (every valid-file?
-                                          '("α" "λ")
-                                          '("alpha" "lambda"))
-                                   (integer? (path-id db #$tree)))))))))))
+                              (mkdir #$output)
+                              (exit
+                               (and (every valid-file?
+                                           '("α" "λ")
+                                           '("alpha" "lambda"))
+                                    (integer? (path-id db #$tree)))))))))))
       (built-derivations (list check))))
 
   (unless store (test-skip 1))
   (test-assertm "docker-image + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (tarball (docker-image "docker-pack" profile
                                 #:symlinks '(("/bin/Guile" -> "bin/guile"))
                                 #:localstatedir? #t))
-         (check   (gexp->derivation
-                   "check-tarball"
-                   (with-imported-modules '((guix build utils))
-                     #~(begin
-                         (use-modules (guix build utils)
-                                      (ice-9 match))
+         (check   (gexp->derivation "check-tarball"
+                    (with-imported-modules '((guix build utils))
+                      #~(begin
+                          (use-modules (guix build utils)
+                                       (ice-9 match))
 
-                         (define bin
-                           (string-append "." #$profile "/bin"))
+                          (define bin
+                            (string-append "." #$profile "/bin"))
 
-                         (setenv "PATH" (string-append #$%tar-bootstrap "/bin"))
-                         (mkdir "base")
-                         (with-directory-excursion "base"
-                           (invoke "tar" "xvf" #$tarball))
+                          (setenv "PATH" (string-append #$%tar-bootstrap "/bin"))
+                          (mkdir "base")
+                          (with-directory-excursion "base"
+                            (invoke "tar" "xvf" #$tarball))
 
-                         (match (find-files "base" "layer.tar")
-                           ((layer)
-                            (invoke "tar" "xvf" layer)))
+                          (match (find-files "base" "layer.tar")
+                            ((layer)
+                             (invoke "tar" "xvf" layer)))
 
-                         (when
-                          (and (file-exists? (string-append bin "/guile"))
-                               (file-exists? "var/guix/db/db.sqlite")
-                               (file-is-directory? "tmp")
-                               (string=? (string-append #$%bootstrap-guile "/bin")
-                                         (pk 'binlink (readlink bin)))
-                               (string=? (string-append #$profile "/bin/guile")
-                                         (pk 'guilelink (readlink "bin/Guile"))))
-                          (mkdir #$output)))))))
+                          (when
+                              (and (file-exists? (string-append bin "/guile"))
+                                   (file-exists? "var/guix/db/db.sqlite")
+                                   (file-is-directory? "tmp")
+                                   (string=? (string-append #$%bootstrap-guile "/bin")
+                                             (pk 'binlink (readlink bin)))
+                                   (string=? (string-append #$profile "/bin/guile")
+                                             (pk 'guilelink (readlink "bin/Guile"))))
+                            (mkdir #$output)))))))
       (built-derivations (list check))))
 
   (unless store (test-skip 1))
   (test-assertm "squashfs-image + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (image   (squashfs-image "squashfs-pack" profile
                                   #:symlinks '(("/bin" -> "bin"))
                                   #:localstatedir? #t))
-         (check   (gexp->derivation
-                   "check-tarball"
-                   (with-imported-modules '((guix build utils))
-                     #~(begin
-                         (use-modules (guix build utils)
-                                      (ice-9 match))
+         (check   (gexp->derivation "check-tarball"
+                    (with-imported-modules '((guix build utils))
+                      #~(begin
+                          (use-modules (guix build utils)
+                                       (ice-9 match))
 
-                         (define bin
-                           (string-append "." #$profile "/bin"))
+                          (define bin
+                            (string-append "." #$profile "/bin"))
 
-                         (setenv "PATH"
-                                 (string-append #$squashfs-tools "/bin"))
-                         (invoke "unsquashfs" #$image)
-                         (with-directory-excursion "squashfs-root"
-                           (when (and (file-exists? (string-append bin
-                                                                   "/guile"))
-                                      (file-exists? "var/guix/db/db.sqlite")
-                                      (string=? (string-append #$%bootstrap-guile "/bin")
-                                                (pk 'binlink (readlink bin)))
+                          (setenv "PATH"
+                                  (string-append #$squashfs-tools "/bin"))
+                          (invoke "unsquashfs" #$image)
+                          (with-directory-excursion "squashfs-root"
+                            (when (and (file-exists? (string-append bin
+                                                                    "/guile"))
+                                       (file-exists? "var/guix/db/db.sqlite")
+                                       (string=? (string-append #$%bootstrap-guile "/bin")
+                                                 (pk 'binlink (readlink bin)))
 
-                                      ;; This is a relative symlink target.
-                                      (string=? (string-drop
-                                                 (string-append #$profile "/bin")
-                                                 1)
-                                                (pk 'guilelink (readlink "bin"))))
-                             (mkdir #$output))))))))
+                                       ;; This is a relative symlink target.
+                                       (string=? (string-drop
+                                                  (string-append #$profile "/bin")
+                                                  1)
+                                                 (pk 'guilelink (readlink "bin"))))
+                              (mkdir #$output))))))))
       (built-derivations (list check))))
 
   (unless store (test-skip 1))
   (test-assertm "deb archive with symlinks and control files" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (deb (debian-archive
                "deb-pack" profile
                #:compressor %gzip-compressor
@@ -360,6 +369,47 @@
                                                  (stat "postinst"))))))
                   (assert (file-exists? "triggers"))
 
+                  (mkdir #$output))))))
+      (built-derivations (list check))))
+
+  (unless store (test-skip 1))
+  (test-assertm "rpm archive can be installed/uninstalled" store
+    (mlet* %store-monad
+        ((guile   (set-guile-for-build (default-guile)))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
+         (rpm-pack (rpm-archive "rpm-pack" profile
+                                #:compressor %gzip-compressor
+                                #:symlinks '(("/bin/guile" -> "bin/guile"))
+                                #:extra-options '(#:relocatable? #t)))
+         (check
+          (gexp->derivation "check-rpm-pack"
+            (with-imported-modules (source-module-closure
+                                    '((guix build utils)))
+              #~(begin
+                  (use-modules (guix build utils))
+
+                  (define fakeroot #+(file-append fakeroot "/bin/fakeroot"))
+                  (define rpm #+(file-append rpm-for-tests "/bin/rpm"))
+                  (mkdir-p "/tmp/lib/rpm")
+
+                  ;; Install the RPM package.  This causes RPM to validate the
+                  ;; signatures, header as well as the file digests, which
+                  ;; makes it a rather thorough test.
+                  (mkdir "test-prefix")
+                  (invoke fakeroot rpm "--install"
+                          (string-append "--prefix=" (getcwd) "/test-prefix")
+                          #$rpm-pack)
+
+                  ;; Invoke the installed Guile command.
+                  (invoke "./test-prefix/bin/guile" "--version")
+
+                  ;; Uninstall the RPM package.
+                  (invoke fakeroot rpm "--erase" "guile-bootstrap")
+
+                  ;; Required so the above is run.
                   (mkdir #$output))))))
       (built-derivations (list check)))))
 

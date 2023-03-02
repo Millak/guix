@@ -9,7 +9,7 @@
 ;;; Copyright © 2019 Evan Straw <evan.straw99@gmail.com>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2020–2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2020–2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Noah Evans <noah@nevans.me>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -49,6 +49,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cmake) ;for MPD
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages freedesktop) ;elogind
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
@@ -81,7 +82,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xiph))
+  #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xml))
 
 (define-public libmpdclient
   (package
@@ -116,7 +118,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.23.11")
+    (version "0.23.12")
     (source (origin
               (method url-fetch)
               (uri
@@ -125,7 +127,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1afwvw2670yz3kxzlqjlg9r8ra8fjihj97hgc6skiwnzz6lfgd7d"))))
+                "1rq2hyfvwwri3sivab747csza2i096y7m8563rl5mhpchhiadz5p"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -144,41 +146,50 @@ interfacing MPD in the C, C++ & Objective C languages.")
                  (string-append "_" all)))
               (substitute* "meson.build"
                 (("systemd_dep,") "systemd_dep, _systemd_dep,")))))))
-    (inputs (list ao
-                  alsa-lib
-                  avahi
-                  boost
-                  curl
-                  elogind
-                  ffmpeg
-                  flac
-                  fmt
-                  glib
-                  icu4c
-                  ;; The LAME decoder comes from FFmpeg, but is added here so that
-                  ;; configure picks up the LAME encoder.
-                  lame
-                  libid3tag
-                  libmpdclient
-                  libsamplerate
-                  libsndfile
-                  libvorbis
-                  opus
-                  pipewire
-                  pulseaudio
-                  sqlite
-                  zlib))
+    (inputs (append
+             (if (target-linux?) (list liburing) '())
+             (list ao
+                   alsa-lib
+                   avahi
+                   boost
+                   chromaprint
+                   curl
+                   elogind
+                   expat
+                   ffmpeg
+                   flac
+                   fmt
+                   glib
+                   icu4c
+                   ;; The LAME decoder comes from FFmpeg, but is added here so that
+                   ;; configure picks up the LAME encoder.
+                   lame
+                   libgme
+                   libid3tag
+                   libmpdclient
+                   libnfs
+                   libopenmpt
+                   libsamplerate
+                   libshout
+                   libsndfile
+                   libvorbis
+                   opus
+                   pcre2
+                   pipewire
+                   pulseaudio
+                   soxr
+                   sqlite
+                   yajl
+                   zlib
+                   zziplib)))
     (native-inputs (list cmake pkg-config python-sphinx))
     ;; Missing optional inputs:
-    ;;   yajl
     ;;   libcdio_paranoia
     ;;   libmms
     ;;   libadplug
     ;;   libaudiofile
     ;;   faad2
     ;;   fluidsynth
-    ;;   libgme
-    ;;   libshout
     ;;   libmpg123
     ;;   libmodplug
     ;;   libmpcdec
@@ -433,27 +444,30 @@ other MPD frontends.")
     (build-system gnu-build-system)
     ;; Manually wrap the binary, because we’re not using python-build-system.
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out         (assoc-ref outputs "out"))
-                   (python-path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/mpDris2")
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python-path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (string-append #$output "/bin/mpDris2")
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (inputs
-     (list python-mpd2 python-dbus python-pygobject python))             ; Sets GUIX_PYTHONPATH.
-    ;; For bootstrapping.
+     (list bash-minimal
+           python
+           python-dbus
+           python-mpd2
+           python-mutagen
+           python-pygobject))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("which" ,which)
-       ("intltool" ,intltool)))
+     (list autoconf
+           automake
+           gettext-minimal
+           intltool
+           which))
     (synopsis "MPRIS V2.1 support for MPD")
-    (description "Client for the Music Player Daemon providing MPRIS 2
-support")
+    (description "mpDris2 is a client for the Music Player Daemon providing
+MPRIS 2 support.")
     (home-page "https://github.com/eonpatapon/mpDris2")
     (license license:gpl3+)))
 
@@ -586,7 +600,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "10.2.0")
+    (version "10.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -595,7 +609,7 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16f4yyjjgl6d6pqnnal5d00s5cgrg1m6b6i2bmg5n86gns8n9chv"))))
+                "0544vx9x103394mz2x92ycfj5lh59xrzcvagi4q0jb9b1hh44s6p"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ; no test target

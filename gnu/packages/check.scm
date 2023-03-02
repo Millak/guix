@@ -41,6 +41,8 @@
 ;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +72,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -78,6 +82,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml)
   #:use-module (guix utils)
@@ -90,6 +95,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -351,7 +357,7 @@ testing of Unix command lines.")
                      (lambda _ (invoke "autoreconf" "-vfi"))))))
     (native-inputs
      (list automake autoconf libtool))
-    (home-page "http://cunit.sourceforge.net/")
+    (home-page "https://cunit.sourceforge.net/")
     (synopsis "Automated testing framework for C")
     (description
      "CUnit is a lightweight system for writing, administering, and running
@@ -1024,6 +1030,76 @@ C++ but is used in C and C++ projects and frequently used in embedded systems
 but it works for any C/C++ project.")
     (license license:bsd-3)))
 
+;; Required by actionlint. The version of `go-github-com-robfig-cron'
+;; packaged in Guix is newer and changed some error messages, causing
+;; unit tests in actionlint to fail.
+(define-public go-github-com-robfig-cron-1.2
+  (package
+    (inherit go-github-com-robfig-cron)
+    (name "go-github-com-robfig-cron")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/robfig/cron")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nv31m3940d9kf38lw2zs4hpj435bdi9mmim098rb3n4l07qrvva"))))))
+
+(define-public actionlint
+  (package
+    (name "actionlint")
+    (version "1.6.23")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rhysd/actionlint")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07is4920a40zrl7mfldg0az2pisi7f6dv4vh3ijn3nzb4i7fqbni"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/rhysd/actionlint/cmd/actionlint"
+       #:unpack-path "github.com/rhysd/actionlint"
+       #:install-source? #f))
+    (inputs (list go-github-com-fatih-color
+                  go-github-com-mattn-go-colorable
+                  go-github-com-mattn-go-runewidth
+                  go-github-com-robfig-cron-1.2
+                  go-golang.org-x-sync-errgroup
+                  go-golang.org-x-sync-semaphore
+                  go-gopkg-in-yaml-v3))
+    (native-inputs (list go-github-com-google-go-cmp-cmp))
+    (home-page "https://rhysd.github.io/actionlint/")
+    (synopsis "Static checker for GitHub Actions workflow files")
+    (description
+     "actionlint is a static checker for GitHub Actions
+workflow files.  Features include:
+
+@itemize
+@item Syntax check for workflow files to check unexpected or missing
+keys following workflow syntax
+@item Strong type check for @code{$@{@{ @}@}} expressions to catch
+several semantic errors like access to not existing property, type
+mismatches, ...
+@item Actions usage check to check that inputs at @code{with:} and
+outputs in @code{steps.@{id@}.outputs} are correct
+@item Reusable workflow check to check inputs/outputs/secrets of
+reusable workflows and workflow calls
+@item shellcheck and pyflakes integrations for scripts at @code{run:}
+@item Security checks; script injection by untrusted inputs,
+hard-coded credentials
+@item Other several useful checks; glob syntax validation,
+dependencies check for @code{needs:}, runner label validation, cron
+syntax validation, ...
+@end itemize
+")
+    (license license:expat)))
+
 (define-public python-parameterized
   (package
     (name "python-parameterized")
@@ -1115,7 +1191,7 @@ available via the @code{unittest.mock} module.")
                   (add-after 'unpack 'invoke-2to3
                     (lambda _
                       (invoke "2to3" "-w" "."))))))
-    (home-page "http://readthedocs.org/docs/nose/")
+    (home-page "https://readthedocs.org/docs/nose/")
     (synopsis "Python testing library")
     (description
      "Nose extends the unittest library to make testing easier.")
@@ -2623,6 +2699,24 @@ pragmas to control it from within your code.  Additionally, it is
 possible to write plugins to add your own checks.")
     (license license:gpl2+)))
 
+(define-public python-setuptools-lint
+  (package
+    (name "python-setuptools-lint")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "setuptools-lint" version))
+              (sha256
+               (base32
+                "16a1ac5n7k7sx15cnk03gw3fmslab3a7m74dc45rgpldgiff3577"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pylint))
+    (home-page "https://github.com/johnnoone/setuptools-pylint")
+    (synopsis "Run pylint with @command{python setup.py lint}")
+    (description "This package expose pylint as a lint command into
+setup.py.")
+    (license license:bsd-3)))
+
 (define-public python-paramunittest
   (package
     (name "python-paramunittest")
@@ -3029,7 +3123,7 @@ retried.")
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (add-installed-pythonpath inputs outputs)
                       (invoke "pytest" "-vv"))))))
-    (home-page "http://hamcrest.org/")
+    (home-page "https://hamcrest.org/")
     (synopsis "Hamcrest matchers for Python")
     (description "PyHamcrest is a framework for writing matcher objects,
 allowing you to declaratively define \"match\" rules.")
@@ -3395,3 +3489,79 @@ directories and files.")
 tables by saving expected data in a data directory (courtesy of pytest-datadir)
 that can be used to verify that future runs produce the same data.")
     (license license:expat)))
+
+(define-public guile-proba
+  (package
+    (name "guile-proba")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/luis-felipe/guile-proba")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mjnrbb6gv5f95i1ihn75yh7ya445pcnj13cy34x2v58h9n2r80s"))))
+    (build-system guile-build-system)
+    (inputs (list bash-minimal guile-3.0))
+    (native-inputs (list texinfo))
+    (propagated-inputs (list guile-config guile-lib))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'set-paths 'add-output-to-guile-load-paths
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (guile-version (target-guile-effective-version))
+                     (scm-path (string-append out
+                                              "/share/guile/site/"
+                                              guile-version))
+                     (go-path (string-append out
+                                             "/lib/guile/"
+                                             guile-version
+                                             "/site-ccache")))
+                (setenv "GUILE_LOAD_PATH"
+                        (string-append scm-path ":"
+                                       (getenv "GUILE_LOAD_PATH")))
+                (setenv "GUILE_LOAD_COMPILED_PATH"
+                        (string-append
+                         go-path ":"
+                         (getenv "GUILE_LOAD_COMPILED_PATH"))))))
+          (add-after 'build 'build-manual
+            (lambda _
+              (invoke "makeinfo" "manual/main.texi")))
+          (add-after 'build 'check
+            (lambda _
+              (invoke "guile" "proba.scm" "run" "tests")))
+          (add-after 'install 'install-wrapped-script
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin-dir (string-append out "/bin"))
+                     (script (string-append bin-dir "/proba")))
+                (mkdir-p bin-dir)
+                (copy-file "proba.scm" script)
+                (chmod script #o555)
+                (wrap-program script
+                  `("GUILE_LOAD_PATH" = (,(getenv "GUILE_LOAD_PATH")))
+                  `("GUILE_LOAD_COMPILED_PATH" =
+                    (,(getenv "GUILE_LOAD_COMPILED_PATH")))))))
+          (add-after 'install 'install-manual
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (info-dir (string-append out "/share/info")))
+                (mkdir-p info-dir)
+                (install-file "guile-proba" info-dir)))))
+      #:scheme-file-regexp
+      #~(begin
+          (use-modules (ice-9 regex))
+          (lambda (file stat) (string-match "/proba/.*\\.scm$" file)))))
+    (home-page "https://luis-felipe.gitlab.io/guile-proba/")
+    (synopsis "Testing tools for GNU Guile projects with SRFI 64 test suites")
+    (description
+     "This software is a set of testing tools for GNU Guile projects
+with SRFI 64-based test suites.  It comes with a command-line interface
+to run test collections, and a library that includes a test runner and
+helpers for writing tests.")
+    (license license:public-domain)))

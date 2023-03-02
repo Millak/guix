@@ -42,7 +42,7 @@
     (arguments
      `(#:configure-flags
        (list "--disable-static")))
-    (home-page "http://sg.danny.cz/sg/sg3_utils.html")
+    (home-page "https://sg.danny.cz/sg/sg3_utils.html")
     (synopsis "SCSI device utilities")
     (description
      "sg3-utils is a collection of utilities for devices that use the Small

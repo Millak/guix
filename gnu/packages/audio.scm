@@ -41,6 +41,7 @@
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -501,7 +502,7 @@ by MusicIP.")
     (description "LibTiMidity is a MIDI to WAVE converter library that uses
 Gravis Ultrasound-compatible patch files to generate digital audio data from
 General MIDI files.")
-    (home-page "http://libtimidity.sourceforge.net/")
+    (home-page "https://libtimidity.sourceforge.net/")
     (license
      ;; This project is dual-licensed.
      ;; Either of the following licenses can be exercised.
@@ -572,7 +573,7 @@ implementation of Adaptive Multi Rate Narrowband and Wideband
            qtbase-5))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://alsamodular.sourceforge.net/")
+    (home-page "https://alsamodular.sourceforge.net/")
     (synopsis "Realtime modular synthesizer and effect processor")
     (description
      "AlsaModularSynth is a digital implementation of a classical analog
@@ -855,7 +856,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.2.3")
+    (version "3.2.4")
     (source
      (origin
        (method git-fetch)
@@ -864,7 +865,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wg75fblxlnrn5kqvg0w1fi2pwdkn1nd6vgya3sad84l3ki7wpyh"))
+        (base32 "06kfxbfvvhbhwfzkvar6hir351606g29ij8b4hksxpzq338shgc3"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -1090,45 +1091,56 @@ formant warp.")
     (license license:gpl2+)))
 
 (define-public azr3
-  (package
-    (name "azr3")
-    (version "1.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/ll-plugins/azr3-jack-"
-                                  version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "18mdw6nc0vgj6k9rsy0x8w64wvzld0frqshrxxbxfj9qi9843vlc"))
-              (patches (search-patches "azr3.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; no check target
-       #:make-flags
-       (list "LV2PEG=ttl2c"
-             (string-append "prefix=" %output)
-             (string-append "pkgdatadir=" %output "/share/azr3-jack"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'fix-timestamp
-           (lambda _
-             (let ((early-1980 315619200)) ; 1980-01-02 UTC
-               (utime "azr3.1" early-1980 early-1980))
-             #t)))))
-    (inputs
-     (list gtkmm-2 lvtk jack-1 lash))
-    (native-inputs
-     (list pkg-config))
-    (home-page "http://ll-plugins.nongnu.org/azr3/")
-    (synopsis "Tonewheel organ synthesizer")
-    (description
-     "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ
+  (let ((commit "3391a0a509e7fa3fb46c7627fd5979b67e468038")
+        (revision "1"))
+    (package
+      (name "azr3")
+      (version (git-version "1.2.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/ll-plugins/azr3-jack.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09wy0z4kiid7mwf5b5j8rzzgxafi4mg88xs550n7864p0n351chx"))
+                (patches (search-patches "azr3.patch"
+                                         "azr3-remove-lash.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                       ; no check target
+        #:make-flags
+        #~(list "LV2PEG=ttl2c"
+                (string-append "prefix=" #$output)
+                (string-append "pkgdatadir=" #$output "/share/azr3-jack"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                (call-with-output-file "Makefile.config"
+                  (lambda (port) (display "" port)))
+                (substitute* "Makefile"
+                  (("^PACKAGE_VERSION =.*")
+                   (string-append "PACKAGE_VERSION = \"" #$version "\"\n")))))
+            (add-before 'install 'fix-timestamp
+              (lambda _
+                (let ((early-1980 315619200)) ; 1980-01-02 UTC
+                  (utime "azr3.1" early-1980 early-1980)))))))
+      (inputs
+       (list gtkmm-2 jack-2 lvtk))
+      (native-inputs
+       (list pkg-config))
+      (home-page "https://ll-plugins.nongnu.org/azr3/")
+      (synopsis "Tonewheel organ synthesizer")
+      (description
+       "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ
 with drawbars, distortion and rotating speakers.  The organ has three
 sections, two polyphonic sections with nine drawbars each and one monophonic
 bass section with five drawbars.  A standalone JACK application and LV2
 plugins are provided.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public calf
   (package
@@ -1148,7 +1160,6 @@ plugins are provided.")
            glib
            gtk+-2
            cairo
-           lash
            jack-1
            lv2
            ladspa
@@ -1477,7 +1488,7 @@ formats used to store information about DJ record libraries.")
            bison
            sed
            grep))
-    (home-page "http://taopm.sourceforge.net/")
+    (home-page "https://taopm.sourceforge.net/")
     (synopsis "Sound Synthesis with Physical Models")
     (description "Tao is a software package for sound synthesis using physical
 models.  It provides a virtual acoustic material constructed from masses and
@@ -2148,7 +2159,7 @@ also play midifiles using a Soundfont.")
                      #t))))
     (native-inputs
      (list tar bzip2))
-    (home-page "http://freepats.zenvoid.org")
+    (home-page "https://freepats.zenvoid.org")
     (synopsis "GUS compatible patches for MIDI players")
     (description
      "FreePats is a project to create a free and open set of GUS compatible
@@ -2302,7 +2313,7 @@ auto-wah.")
            libsndfile
            libsamplerate
            zlib))
-    (home-page "http://rakarrack.sourceforge.net/")
+    (home-page "https://rakarrack.sourceforge.net/")
     (synopsis "Audio effects processor")
     (description
      "Rakarrack is a richly featured multi-effects processor emulating a
@@ -2566,13 +2577,12 @@ audio signal streaming.")
      (list lv2
            lilv
            suil
-           gtk
-           gtkmm
+           gtk+
            qtbase-5
            jack-1))
     (native-inputs
      (list pkg-config))
-    (home-page "https://drobilla.net/software/jalv/")
+    (home-page "https://drobilla.net/software/jalv.html")
     (synopsis "Simple LV2 host for JACK")
     (description
      "Jalv is a simple but fully featured LV2 host for JACK.  It runs LV2
@@ -2742,7 +2752,7 @@ with applications that support them (e.g. PulseAudio).")
      `(;; liblo test FAILED
        ;; liblo server error 19 in setsockopt(IP_ADD_MEMBERSHIP): No such device
        #:tests? #f))
-    (home-page "http://liblo.sourceforge.net")
+    (home-page "https://liblo.sourceforge.net")
     (synopsis "Implementation of the Open Sound Control protocol")
     (description
      "liblo is a lightweight library that provides an easy to use
@@ -3512,7 +3522,7 @@ using Guix System.")
      (list pkg-config))
     (inputs
      (list libogg libtheora libvorbis speex))
-    (home-page "http://idjc.sourceforge.net/")
+    (home-page "https://idjc.sourceforge.net/")
     (synopsis "Broadcast streaming library with IDJC extensions")
     (description "This package provides libshout plus IDJC extensions.")
     ;; GNU Library (not Lesser) General Public License.
@@ -3592,7 +3602,7 @@ tempo and pitch of an audio recording independently of one another.")
                 "1ff2yfq3k4l209fr71v3w98fpjjv1chs09vkbmxj03lcikahxns8"))))
     (build-system gnu-build-system)
     (inputs
-     (list jack-1 alsa-lib))
+     (list alsa-lib jack-2))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://www.music.mcgill.ca/~gary/rtmidi")
@@ -3748,7 +3758,7 @@ for loudness normalisation.")
            freepats))
     (native-inputs
      (list pkg-config))
-    (home-page "http://timidity.sourceforge.net/")
+    (home-page "https://timidity.sourceforge.net/")
     (synopsis "Software synthesizer for playing MIDI files")
     (description
      "TiMidity++ is a software synthesizer.  It can play MIDI files by
@@ -3833,7 +3843,7 @@ analysis plugins or audio feature extraction plugins.")
                                                "/ar-lib"))
              "ar-lib")
             #t)))))
-    (home-page "http://sbsms.sourceforge.net/")
+    (home-page "https://sbsms.sourceforge.net/")
     (synopsis "Library for time stretching and pitch scaling of audio")
     (description
      "SBSMS (Subband Sinusoidal Modeling Synthesis) is software for time
@@ -3911,7 +3921,7 @@ encode and decode wavpack files.")
                (base32
                 "1pnri98a603xk47smnxr551svbmgbzcw018mq1k6srbrq6kaaz25"))))
     (build-system gnu-build-system)
-    (home-page "http://modplug-xmms.sourceforge.net/")
+    (home-page "https://modplug-xmms.sourceforge.net/")
     (synopsis "Mod file playing library")
     (description
      "Libmodplug renders mod music files as raw audio data, for playing or
@@ -3932,7 +3942,7 @@ surround and reverb.")
                (base32
                 "1kycz4jsyvmf7ny9227b497wc7y5ligydi6fvvldmkf8hk63ad9m"))))
     (build-system gnu-build-system)
-    (home-page "http://xmp.sourceforge.net/")
+    (home-page "https://xmp.sourceforge.net/")
     (synopsis "Module player library")
     (description
      "Libxmp is a library that renders module files to PCM data.  It supports
@@ -3956,7 +3966,7 @@ Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT).")
      (list pkg-config))
     (inputs
      (list libxmp pulseaudio))
-    (home-page "http://xmp.sourceforge.net/")
+    (home-page "https://xmp.sourceforge.net/")
     (synopsis "Extended module player")
     (description
      "Xmp is a portable module player that plays over 90 mainstream and
@@ -4020,7 +4030,7 @@ control functionality, or just for playing around with the sound effects.")
            libpng
            libvorbis
            pulseaudio))
-    (home-page "http://sox.sourceforge.net")
+    (home-page "https://sox.sourceforge.net")
     (synopsis "Sound processing utility")
     (description
      "SoX (Sound eXchange) is a command line utility that can convert
@@ -4135,7 +4145,7 @@ interface.")
 (define-public qsynth
   (package
     (name "qsynth")
-    (version "0.5.7")
+    (version "0.9.9")
     (source
      (origin
        (method url-fetch)
@@ -4145,14 +4155,14 @@ interface.")
               (string-append "mirror://sourceforge/qsynth/qsynth (attic)"
                              "/qsynth-" version ".tar.gz")))
        (sha256
-        (base32 "18im4w8agj60nkppwbkxqnhpp13z5li3w30kklv4lgs20rvgbvl6"))))
-    (build-system gnu-build-system)
+        (base32 "1cjg25nva5ivahr0qqlvf6ybnpcx9jgrxbp4vgwkk64b4k9wnd4n"))))
+    (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" phase
     (native-inputs
-     (list qttools-5 pkg-config))
+     (list qttools pkg-config))
     (inputs
-     (list fluidsynth qtbase-5 qtx11extras))
+     (list fluidsynth qtbase qtsvg qtwayland))
     (home-page "https://qsynth.sourceforge.io")
     (synopsis "Graphical user interface for FluidSynth")
     (description
@@ -4517,7 +4527,7 @@ with support for HD extensions.")
       '(modify-phases %standard-phases
          (delete 'configure))))
     (inputs (list fftw))
-    (home-page "http://drc-fir.sourceforge.net/")
+    (home-page "https://drc-fir.sourceforge.net/")
     (synopsis "Digital room correction")
     (description
      "DRC is a program used to generate correction filters for acoustic
@@ -4643,7 +4653,7 @@ code, used in @code{libtoxcore}.")
     (synopsis "GSM 06.10 lossy speech compression library")
     (description "This C library provides an encoder and a decoder for the GSM
 06.10 RPE-LTP lossy speech compression algorithm.")
-    (home-page "http://quut.com/gsm/")
+    (home-page "https://quut.com/gsm/")
     (license (license:non-copyleft "file://COPYRIGHT"))))
 
 (define-public python-pyalsaaudio
@@ -5162,7 +5172,7 @@ developing fully accurate DirectX Audio runtime libraries.")
      (list alsa-lib gtk+-2 libsndfile portaudio))
     (native-inputs
      (list pkg-config))
-    (home-page "http://gnaural.sourceforge.net/")
+    (home-page "https://gnaural.sourceforge.net/")
     (synopsis "Binaural beat synthesizer")
     (description "Gnaural is a programmable auditory binaural beat synthesizer
 intended to be used for brainwave entrainment.  Gnaural supports creation of
@@ -6152,10 +6162,46 @@ managed by PipeWire.")
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list faad2 glib libmad libvorbis))
-    (home-page "http://streamripper.sourceforge.net")
+    (home-page "https://streamripper.sourceforge.net")
     (synopsis "Record audio streams to your hard drive")
     (description "Streamripper records shoutcast-compatible
 streams.  For shoutcast style streams it finds the “meta data” or track
 separation data, and uses that as a marker for where the track should
 be separated.")
     (license license:gpl2+)))
+
+(define-public cubeb
+  (let ((commit "9e29d728b0025c674904f83f5a13a88d1a6a5edc")
+        (revision "1"))
+    (package
+      (name "cubeb")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mozilla/cubeb")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1sxkr3h8a4hd3c3a3cjydrszz6npxk3vh6ra3y67lds3zgc69c7n"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags
+         ;; Sanitizers-cmake requires a git submodule.
+         '("-DUSE_SANITIZERS=0"
+           ;; Tests require a git submodule for googletest.
+           "-DBUILD_TESTS=0"
+           ;; Use our speex, not a bundled one.
+           "-DBUNDLE_SPEEX=0"
+           ;; A static library would be built by default.
+           "-DBUILD_SHARED_LIBS=1"
+           ;; Explicitly link against audio libraries so they are on the
+           ;; runpath.  Otherwise cubeb tries to dlopen them at runtime.
+           "-DCMAKE_SHARED_LINKER_FLAGS=-lasound -lpulse -lspeex")
+         #:tests? #f))
+      (inputs (list alsa-lib pulseaudio speex))
+      (synopsis "Cross-platform audio library")
+      (description "Cubeb is Mozilla's cross-platform audio library.")
+      (home-page "https://github.com/mozilla/cubeb")
+      (license license:isc))))

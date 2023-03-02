@@ -77,6 +77,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -97,6 +98,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
@@ -107,6 +109,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -128,6 +131,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages xml)
@@ -764,7 +768,7 @@ and Matrox.")
           "1q700h9dqcm3zl6c3gj0qxxjcx6ibw2c51wjijydhwdcm26v5mqm"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-static")))
-    (home-page "http://bitmath.org/code/mtdev/")
+    (home-page "https://bitmath.org/code/mtdev/")
     (synopsis "Multitouch protocol translation library")
     (description "Mtdev is a stand-alone library which transforms all
 variants of kernel MT events to the slotted type B protocol.  The events
@@ -1357,7 +1361,7 @@ Escape key when Left Control is pressed and released on its own.")
 (define-public libwacom
   (package
     (name "libwacom")
-    (version "2.4.0")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1365,18 +1369,11 @@ Escape key when Left Control is pressed and released on its own.")
                     "libwacom-" version "/libwacom-" version ".tar.xz"))
               (sha256
                (base32
-                "056l5dndd8654bmwlxxhvx8082s7pp9bg0wm68zb56iz3rv25l6h"))))
+                "13x978gzyw28cqd985m5smiqgza0xp3znb1s0msmn8vmjjlwqxi3"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--default-library=shared")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'fix-tests
-                     (lambda _
-                       ;; Do not attempt to run systemd-specific commands.
-                       (substitute* "test/test_udev_rules.py"
-                         (("(systemd-hwdb|systemctl)")
-                          "true")))))))
+      #:configure-flags #~(list "--default-library=shared")))
     (native-inputs
      (list pkg-config
            ;; For tests.
@@ -1391,9 +1388,9 @@ Escape key when Left Control is pressed and released on its own.")
      ;; libwacom.pc 'Requires' these:
      (list glib libgudev))
     (home-page "https://linuxwacom.github.io/")
-    (synopsis "Helper library for Wacom tablet settings")
+    (synopsis "Helper library for graphics tablet settings")
     (description
-     "Libwacom is a library to help implement Wacom tablet settings.  It is
+     "Libwacom is a library to help implement graphics tablet settings.  It is
 intended to be used by client-programs that need model identification.  It is
 already being used by the gnome-settings-daemon and the GNOME Control Center
 Wacom tablet applet.")
@@ -1785,7 +1782,7 @@ Saver extension) library.")
       (native-inputs (list autoconf automake libtool))
       (inputs
        (list libxt))
-      (home-page "http://www.vergenet.net/~conrad/software/xsel/")
+      (home-page "https://www.vergenet.net/~conrad/software/xsel/")
       (synopsis "Manipulate X selection")
       (description
        "XSel is a command-line program for getting and setting the contents of
@@ -1982,6 +1979,36 @@ The taskbar includes transparency and color settings for the font, icons,
 border, and background.  It also supports multihead setups, customized mouse
 actions, a built-in clock, a battery monitor and a system tray.")
     (license license:gpl2)))
+
+(define-public tofi
+  (package
+    (name "tofi")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/philj56/tofi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11bfi9his0cc5mzikamr5icv5mh2fyj9jy5l3sbbayj6jk51f68y"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.63))         ;requires meson 0.61 or later
+    (native-inputs (list pkg-config))
+    (inputs (list cairo
+                  harfbuzz
+                  libxkbcommon
+                  pango
+                  wayland
+                  wayland-protocols))
+    (home-page "https://github.com/philj56/tofi")
+    (synopsis "Application launcher for Wayland")
+    (description
+     "Tofi is a Dmenu and Rofi replacement for wlroots-based Wayland
+compositors such as Sway.")
+    (license license:expat)))
 
 (define-public dzen
   (let ((commit "488ab66019f475e35e067646621827c18a879ba1")
@@ -2929,6 +2956,48 @@ depending on the value of @code{CM_LAUNCHER}) to let the user select a clip.
 After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
       (license license:public-domain))))
 
+(define-public clipman
+  (package
+    (name "clipman")
+    (version "1.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/yory8/" name "/"))
+                    (commit (string-append "v" version))))
+              (sha256 (base32
+                        "0b9kvj0dif4221dy6c1npknhhjxvbc4kygzhwxjirpwjws0yv6v9"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/yory8/clipman"
+           #:install-source? #f
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'patch
+                          (lambda _
+                            (substitute* "src/github.com/yory8/clipman/main.go"
+                              (("gopkg.in/alecthomas/kingpin.v2")
+                               "github.com/alecthomas/kingpin")
+                              (("\"wl-copy\"")
+                               (string-append "\"" (which "wl-copy") "\"")))))
+                        (delete 'install-license-files))))
+    (native-inputs (list go-github-com-alecthomas-template
+                         go-github-com-alecthomas-units))
+    (inputs (list go-github-com-kballard-go-shellquote
+                  go-github-com-alecthomas-kingpin
+                  libnotify
+                  wl-clipboard))
+    (synopsis "Basic clipboard manager with support for persisting copy buffers")
+    (description
+     "A clipboard manager for Wayland that relies on an external selector,
+such as @code{wofi}, @code{bemenu}, @code{dmenu}, or @code{rofi}.
+
+Run the binary in your session by adding @command{exec wl-paste -t text --watch
+clipman store} (or @command{exec wl-paste -t text --watch clipman store 1>>
+PATH/TO/LOGFILE 2>&1 &} to log errors) at the beginning of wherever you
+initialize programs.")
+    (home-page "https://github.com/yory8/clipman")
+    (license license:gpl3)))
+
 (define-public kbdd
   (package
     (name "kbdd")
@@ -3059,6 +3128,29 @@ applications.  The font and colors can be configured.")
      "Wofi is a launcher/menu program for wlroots based wayland compositors
 such as sway, similar to @command{rofi}.")
     (home-page "https://hg.sr.ht/~scoopta/wofi")
+    (license license:gpl3+)))
+
+(define-public nwg-launchers
+  (package
+    (name "nwg-launchers")
+    (version "0.7.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nwg-piotr/nwg-launchers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hq2qiqxvrw3g515ywcb676ljc8mdw3pyslgxr3vahizfljah1pv"))))
+    (build-system meson-build-system)
+    (native-inputs (list json-modern-cxx pkg-config))
+    (inputs (list gtk-layer-shell gtkmm-3 librsvg))
+    (home-page "https://github.com/nwg-piotr/nwg-launchers")
+    (synopsis "Application launchers for wlroots")
+    (description
+     "This package provides an application grid, button bar, and dmenu
+applications for Sway and other wlroots-based Wayland compositors.")
     (license license:gpl3+)))
 
 (define-public dex

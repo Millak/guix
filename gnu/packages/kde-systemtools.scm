@@ -119,7 +119,7 @@ The main features of Dolphin are:
            kxmlgui
            breeze-icons ;; default icon set
            qtbase-5))
-    (home-page "http://www.kde.org/")
+    (home-page "https://www.kde.org/")
     (synopsis "VCS-Plugins for Dolphin")
     (description "This package contains plugins that offer integration in
 Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
@@ -227,7 +227,7 @@ document meta data file.")
            qtscript))
     (arguments
      `(#:tests? #f)) ;; TODO: 2/15 tests fail even with HOME, offscreen, SHELL, debus
-    (home-page "http://www.kde.org/")
+    (home-page "https://www.kde.org/")
     (synopsis "Terminal emulator similar for KDE")
     (description "Konsole is a terminal emulator, similar to xterm, built on
 the KDE Platform.  It can contain multiple terminal sessions inside one window

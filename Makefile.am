@@ -111,6 +111,7 @@ MODULES =					\
   guix/derivations.scm				\
   guix/grafts.scm				\
   guix/repl.scm					\
+  guix/rpm.scm					\
   guix/transformations.scm			\
   guix/inferior.scm				\
   guix/describe.scm				\
@@ -179,6 +180,7 @@ MODULES =					\
   guix/build-system/ruby.scm			\
   guix/build-system/scons.scm			\
   guix/build-system/texlive.scm			\
+  guix/build-system/tree-sitter.scm		\
   guix/build-system/trivial.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
@@ -235,6 +237,7 @@ MODULES =					\
   guix/build/ruby-build-system.scm		\
   guix/build/scons-build-system.scm		\
   guix/build/texlive-build-system.scm		\
+  guix/build/tree-sitter-build-system.scm	\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
   guix/build/julia-build-system.scm		\
@@ -534,6 +537,7 @@ SCM_TESTS =					\
   tests/pypi.scm				\
   tests/read-print.scm				\
   tests/records.scm				\
+  tests/rpm.scm					\
   tests/scripts.scm				\
   tests/search-paths.scm			\
   tests/services.scm				\

@@ -85,7 +85,7 @@
              (substitute* "desktopfiles/Makefile.am"
                (("gzip") "gzip -n"))
              #t)))))
-    (home-page "http://djvu.sourceforge.net/")
+    (home-page "https://djvu.sourceforge.net/")
     (synopsis "Implementation of DjVu, the document format")
     (description "DjVuLibre is an implementation of DjVu,
 including viewers, browser plugins, decoders, simple encoders, and
@@ -124,7 +124,7 @@ utilities.")
              (for-each make-file-writable
                        (find-files "."))
              #t)))))
-    (home-page "http://djvu.sourceforge.net/djview4.html")
+    (home-page "https://djvu.sourceforge.net/djview4.html")
     (synopsis "Viewer for the DjVu image format")
     (description "DjView is a standalone viewer for DjVu files.
 

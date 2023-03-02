@@ -113,7 +113,7 @@ over IRC, instant messaging, network games, and most server software.")
      ;; https://lists.gnu.org/archive/html/guix-devel/2015-01/msg00312.html.
      `(#:tests? #f
        #:configure-flags '("--disable-static")))
-    (home-page "http://pupnp.sourceforge.net")
+    (home-page "https://pupnp.sourceforge.net")
     (synopsis "Portable SDK for UPnP Devices")
     (description
      "The portable SDK for UPnP Devices (libupnp) provides developers with an

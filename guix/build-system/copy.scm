@@ -133,6 +133,7 @@
                       #:system system
                       #:target #f
                       #:substitutable? substitutable?
+                      #:graft? #f
                       #:guile-for-build guile)))
 
 (define copy-build-system

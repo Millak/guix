@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages fabric-management)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix licenses)
   #:use-module (guix download)
@@ -108,28 +109,30 @@ running the opensm daemon.")
      ;; FIXME: needs rst2man for man pages
      (list perl pkg-config))
     (arguments
-     '(#:configure-flags
-       (list (string-append "CPPFLAGS=-I" (assoc-ref %build-inputs "opensm")
-                            "/include/infiniband")
-             (string-append "--with-perl-installdir=" (assoc-ref %outputs "lib")
-                            "/lib/perl5/vendor_perl")
-             "--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'licence
-           (lambda _
-             (let ((doc (string-append (assoc-ref %outputs "lib") "/share/doc")))
-               (mkdir-p doc)
-               (install-file "COPYING" doc))))
-         (add-after 'install-file 'move-perl
-           ;; Avoid perl in lib closure
-           (lambda _
-             (let ((perlout (string-append (assoc-ref %outputs "out") "/lib"))
-                   (perlin (string-append (assoc-ref %outputs "lib")
-                                          "/lib/perl5")))
-               (mkdir-p perlout)
-               (rename-file perlin perlout)
-               #t))))))
+     (list #:configure-flags
+           #~(list (string-append "CPPFLAGS=-I"
+                                  #$(this-package-input "opensm")
+                                  "/include/infiniband")
+                   (string-append "--with-perl-installdir=" #$output:lib
+                                  "/lib/perl5/vendor_perl")
+                   "--disable-static")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'licence
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((doc (string-append (assoc-ref outputs "lib")
+                                             "/share/doc")))
+                     (mkdir-p doc)
+                     (install-file "COPYING" doc))))
+               (add-after 'install-file 'move-perl
+                 ;; Avoid perl in lib closure
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((perlout (string-append (assoc-ref outputs "out")
+                                                 "/lib"))
+                         (perlin (string-append (assoc-ref outputs "lib")
+                                                "/lib/perl5")))
+                     (mkdir-p perlout)
+                     (rename-file perlin perlout)))))))
     (home-page "https://github.com/linux-rdma/infiniband-diags")
     (synopsis "Infiniband diagnostic tools")
     (description "This is a set of command-line utilities to help configure,
@@ -161,10 +164,16 @@ interface to this library is not guaranteed to be stable.")
                   perl))
     (native-inputs (list swig))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-osm="  (assoc-ref %build-inputs "opensm"))
-             (string-append "--with-tk-lib=" (assoc-ref %build-inputs "tk") "/lib")
-             "--disable-static")))
+     (list #:configure-flags
+           #~(list (string-append "--with-osm="
+                                  #$(this-package-input "opensm"))
+                   (string-append "--with-tk-lib="
+                                  #$(this-package-input "tk") "/lib")
+                   "--disable-static"
+
+                   ;; Address this link error:
+                   ;; ld: .libs/ibis.o:/ibis/src/ibis.c:55: multiple definition of `IbisObj'; .libs/ibis_wrap.o:/ibis/src/ibis_wrap.c:3007: first defined here
+                   "CFLAGS=-O2 -g -fcommon")))
     (synopsis "InfiniBand network utilities")
     (description "These command-line utilities allow for diagnosing and
 testing InfiniBand networks.")
@@ -187,30 +196,29 @@ testing InfiniBand networks.")
                 "0i0ji5ivzxjqh3ys1m517ghw3am7cw1hvf40ma7hsq3wznsyx5s1"))))
     (build-system gnu-build-system)
     (arguments
-     '( ;; These are some of the flags found in 'contrib/configure-release'.
-       #:configure-flags (list
-                          "--disable-static"
+     (list
+      ;; These are some of the flags found in ;; 'contrib/configure-release'.
+      #:configure-flags #~(list
+                           "--disable-static"
 
-                          ;; XXX: Disable optimizations specific to the build
-                          ;; machine (AVX, etc.)  There's apparently no way to
-                          ;; have them picked up at load time.
-                          "--disable-optimizations"
+                           ;; XXX: Disable optimizations specific to the build
+                           ;; machine (AVX, etc.)  There's apparently no way to
+                           ;; have them picked up at load time.
+                           "--disable-optimizations"
 
-                          "--disable-logging"
-                          "--disable-debug"
-                          "--disable-assertions"
-                          "--disable-params-check"
+                           "--disable-logging"
+                           "--disable-debug"
+                           "--disable-assertions"
+                           "--disable-params-check"
 
-                          (string-append "--with-verbs="
-                                         (assoc-ref %build-inputs
-                                                    "rdma-core"))
+                           (string-append "--with-verbs="
+                                          #$(this-package-input "rdma-core"))
 
-                          (string-append "--with-rdmacm="
-                                         (assoc-ref %build-inputs
-                                                    "rdma-core")))
+                           (string-append "--with-rdmacm="
+                                          #$(this-package-input "rdma-core")))
 
-       ;; Be verbose so that compiler flags are displayed.
-       #:make-flags '("V=1")))
+      ;; Be verbose so that compiler flags are displayed.
+      #:make-flags #~'("V=1")))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
@@ -228,4 +236,4 @@ memory mechanisms for efficient intra-node communication.")
 
     ;; <ucm/bistro/bistro.h> lists only PowerPC64, AArch64, and x86_64 as
     ;; supported.
-    (supported-systems '("x86_64-linux" "aarch64-linux"))))
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))))

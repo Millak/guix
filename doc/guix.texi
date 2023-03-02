@@ -30,7 +30,7 @@ Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
 Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023 Leo Famulari@*
-Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus@*
+Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
@@ -79,9 +79,9 @@ Copyright @copyright{} 2020 Jack Hill@*
 Copyright @copyright{} 2020 Naga Malleswari@*
 Copyright @copyright{} 2020, 2021 Brice Waegeneire@*
 Copyright @copyright{} 2020 R Veera Kumar@*
-Copyright @copyright{} 2020, 2021 Pierre Langlois@*
+Copyright @copyright{} 2020, 2021, 2022 Pierre Langlois@*
 Copyright @copyright{} 2020 pinoaffe@*
-Copyright @copyright{} 2020 André Batista@*
+Copyright @copyright{} 2020, 2023 André Batista@*
 Copyright @copyright{} 2020, 2021 Alexandru-Sergiu Marton@*
 Copyright @copyright{} 2020 raingloom@*
 Copyright @copyright{} 2020 Daniel Brooks@*
@@ -109,6 +109,7 @@ Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
 Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
+Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
 Copyright @copyright{} 2023 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
@@ -5411,6 +5412,25 @@ From there on, @command{guix pull} will fetch code from the @code{super-hacks}
 branch of the repository at @code{example.org}.  The authentication concern is
 addressed below (@pxref{Channel Authentication}).
 
+Note that you can specify a local directory on the @code{url} field above if
+the channel that you intend to use resides on a local file system.  However,
+in this case @command{guix} checks said directory for ownership before any
+further processing.  This means that if the user is not the directory owner,
+but wants to use it as their default, they will then need to set it as a safe
+directory in their global git configuration file.  Otherwise, @command{guix}
+will refuse to even read it.  Supposing your system-wide local directory is at
+@code{/src/guix.git}, you would then create a git configuration file at
+@code{~/.gitconfig} with the following contents:
+
+@example
+[safe]
+        directory = /src/guix.git
+@end example
+
+@noindent
+This also applies to the root user unless when called with @command{sudo} by
+the directory owner.
+
 @node Replicating Guix
 @section Replicating Guix
 
@@ -6894,6 +6914,7 @@ such file or directory'' message.
 @end quotation
 
 @item deb
+@cindex Debian, build a .deb package with guix pack
 This produces a Debian archive (a package with the @samp{.deb} file
 extension) containing all the specified binaries and symbolic links,
 that can be installed on top of any dpkg-based GNU(/Linux) distribution.
@@ -6910,7 +6931,8 @@ guix pack -f deb -C xz -S /usr/bin/hello=bin/hello hello
 Because archives produced with @command{guix pack} contain a collection
 of store items and because each @command{dpkg} package must not have
 conflicting files, in practice that means you likely won't be able to
-install more than one such archive on a given system.
+install more than one such archive on a given system.  You can
+nonetheless pack as many Guix packages as you want in one such archive.
 @end quotation
 
 @quotation Warning
@@ -6919,6 +6941,48 @@ that it does @emph{not} know about.  It is unwise to install
 Guix-produced @samp{.deb} files on a system where @file{/gnu/store} is
 shared by other software, such as a Guix installation or other, non-deb
 packs.
+@end quotation
+
+@item rpm
+@cindex RPM, build an RPM archive with guix pack
+This produces an RPM archive (a package with the @samp{.rpm} file
+extension) containing all the specified binaries and symbolic links,
+that can be installed on top of any RPM-based GNU/Linux distribution.
+The RPM format embeds checksums for every file it contains, which the
+@command{rpm} command uses to validate the integrity of the archive.
+
+Advanced RPM-related options are revealed via the
+@option{--help-rpm-format} option.  These options allow embedding
+maintainer scripts that can run before or after the installation of the
+RPM archive, for example.
+
+The RPM format supports relocatable packages via the @option{--prefix}
+option of the @command{rpm} command, which can be handy to install an
+RPM package to a specific prefix.
+
+@example
+guix pack -f rpm -R -C xz -S /usr/bin/hello=bin/hello hello
+@end example
+
+@example
+sudo rpm --install --prefix=/opt /gnu/store/...-hello.rpm
+@end example
+
+@quotation Note
+Contrary to Debian packages, conflicting but @emph{identical} files in
+RPM packages can be installed simultaneously, which means multiple
+@command{guix pack}-produced RPM packages can usually be installed side
+by side without any problem.
+@end quotation
+
+@quotation Warning
+@command{rpm} assumes ownership of any files contained in the pack,
+which means it will remove @file{/gnu/store} upon uninstalling a
+Guix-generated RPM package, unless the RPM package was installed with
+the @option{--prefix} option of the @command{rpm} command.  It is unwise
+to install Guix-produced @samp{.rpm} packages on a system where
+@file{/gnu/store} is shared by other software, such as a Guix
+installation or other, non-rpm packs.
 @end quotation
 
 @end table
@@ -9762,6 +9826,25 @@ Which Node.js package is used to interpret the @code{npm} commands can
 be specified with the @code{#:node} parameter which defaults to
 @code{node}.
 @end defvar
+
+@defvr {Scheme Variable} tree-sitter-build-system
+
+This variable is exported by @code{(guix build-system tree-sitter)}.  It
+implements procedures to compile grammars for the
+@url{https://tree-sitter.github.io/tree-sitter/, Tree-sitter} parsing
+library.  It essentially runs @code{tree-sitter generate} to translate
+@code{grammar.js} grammars to JSON and then to C.  Which it then
+compiles to native code.
+
+Tree-sitter packages may support multiple grammars, so this build system
+supports a @code{#:grammar-directories} keyword to specify a list of
+locations where a @code{grammar.js} file may be found.
+
+Grammars sometimes depend on each other, such as C++ depending on C and
+TypeScript depending on JavaScript.  You may use inputs to declare such
+dependencies.
+
+@end defvr
 
 Lastly, for packages that do not need anything as sophisticated, a
 ``trivial'' build system is provided.  It is trivial in the sense that
@@ -16488,13 +16571,6 @@ supported hardware.
 @item @code{host-name}
 The host name.
 
-@item @code{hosts-file}
-@cindex hosts file
-A file-like object (@pxref{G-Expressions, file-like objects}) for use as
-@file{/etc/hosts} (@pxref{Host Names,,, libc, The GNU C Library
-Reference Manual}).  The default is a file with entries for
-@code{localhost} and @var{host-name}.
-
 @item @code{mapped-devices} (default: @code{'()})
 A list of mapped devices.  @xref{Mapped Devices}.
 
@@ -17971,6 +18047,64 @@ package or any valid argument to @command{setfont}, as in this example:
                 "/share/consolefonts/ter-132n"))) ; for HDPI
 @end lisp
 @end defvar
+
+@defvar hosts-service-type
+Type of the service that populates the entries for (@file{/etc/hosts}).
+This service type can be @emph{extended} by passing it a list of
+@code{host} records.
+
+The example below shows how to add two entries to @file{/etc/hosts}:
+
+@c TRANSLATORS: The domain names below SHOULD NOT be translated.
+@c They're domains reserved for use in documentation. (RFC6761 Section 6.5)
+@c The addresses used are explained in RFC3849 and RFC5737.
+@lisp
+(simple-service 'add-extra-hosts
+                hosts-service-type
+                (list (host "192.0.2.1" "example.com"
+                            '("example.net" "example.org"))
+                      (host "2001:db8::1" "example.com"
+                            '("example.net" "example.org"))))
+@end lisp
+
+@quotation Note
+@cindex @file{/etc/hosts} default entries
+By default @file{/etc/hosts} comes with the following entries:
+@example
+127.0.0.1 localhost @var{host-name}
+::1       localhost @var{host-name}
+@end example
+
+For most setups this is what you want though if you find yourself in
+the situation where you want to change the default entries, you can
+do so in @code{operating-system} via @code{modify-services}
+(@pxref{Service Reference,@code{modify-services}}).
+
+The following example shows how to unset @var{host-name} from being an
+alias of @code{localhost}.
+@lisp
+(operating-system
+  ;; @dots{}
+
+  (essential-services
+   (modify-services
+     (operating-system-default-essential-services this-operating-system)
+     (hosts-service-type config => (list
+                                     (host "127.0.0.1" "localhost")
+                                     (host "::1"       "localhost"))))))
+@end lisp
+@end quotation
+@end defvar
+
+
+@defun host @var{address} @var{canonical-name} [@var{aliases}]
+Return a new record for the host at @var{address} with the given
+@var{canonical-name} and possibly @var{aliases}.
+
+@var{address} must be a string denoting a valid IPv4 or IPv6 address, and
+@var{canonical-name} and the strings listed in @var{aliases} must be valid
+host names.
+@end defun
 
 @deffn {Scheme Procedure} login-service @var{config}
 Return a service to run login according to @var{config}, a
@@ -21012,30 +21146,13 @@ Logging level.
 @end table
 @end deftp
 
-@defvar %facebook-host-aliases
-This variable contains a string for use in @file{/etc/hosts}
-(@pxref{Host Names,,, libc, The GNU C Library Reference Manual}).  Each
-line contains a entry that maps a known server name of the Facebook
+@defvar block-facebook-hosts-service-type
+This service type adds a list of known Facebook hosts to the
+@file{/etc/hosts} file.
+(@pxref{Host Names,,, libc, The GNU C Library Reference Manual})
+Each line contains a entry that maps a known server name of the Facebook
 on-line service---e.g., @code{www.facebook.com}---to the local
 host---@code{127.0.0.1} or its IPv6 equivalent, @code{::1}.
-
-This variable is typically used in the @code{hosts-file} field of an
-@code{operating-system} declaration (@pxref{operating-system Reference,
-@file{/etc/hosts}}):
-
-@lisp
-(use-modules (gnu) (guix))
-
-(operating-system
-  (host-name "mymachine")
-  ;; ...
-  (hosts-file
-    ;; Create a /etc/hosts file with aliases for "localhost"
-    ;; and "mymachine", as well as for Facebook servers.
-    (plain-file "hosts"
-                (string-append (local-host-aliases host-name)
-                               %facebook-host-aliases))))
-@end lisp
 
 This mechanism can prevent programs running locally, such as Web
 browsers, from accessing Facebook.
@@ -21875,7 +21992,7 @@ disable security:
 @end lisp
 
 Or to set a PasswordFile for the classic (unsecure) VncAuth
-mecanism:
+mechanism:
 
 @lisp
 (vnc-server-command (file-append tigervnc-server "/bin/Xvnc"
@@ -21911,9 +22028,7 @@ Available @code{lightdm-gtk-greeter-configuration} fields are:
 @item @code{lightdm-gtk-greeter} (default: @code{lightdm-gtk-greeter}) (type: file-like)
 The lightdm-gtk-greeter package to use.
 
-@item @code{assets} @
-(default: @code{(adwaita-icon-theme gnome-themes-extrahicolor-icon-theme)}) @
-(type: list-of-file-likes)
+@item @code{assets} (default: @code{(adwaita-icon-theme gnome-themes-extra hicolor-icon-theme)}) (type: list-of-file-likes)
 The list of packages complementing the greeter, such as package
 providing icon themes.
 
@@ -21939,8 +22054,7 @@ The background image to use.
 Enable accessibility support through the Assistive Technology Service
 Provider Interface (AT-SPI).
 
-@item @code{a11y-states} @
-(default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
+@item @code{a11y-states} (default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
 The accessibility features to enable, given as list of symbols.
 
 @item @code{reader} (type: maybe-file-like)
@@ -21974,8 +22088,7 @@ The type of the seat, either the @code{local} or @code{xremote} symbol.
 @item @code{autologin-user} (type: maybe-string)
 The username to automatically log in with by default.
 
-@item @code{greeter-session} @
-(default: @code{lightdm-gtk-greeter}) (type: greeter-session)
+@item @code{greeter-session} (default: @code{lightdm-gtk-greeter}) (type: greeter-session)
 The greeter session to use, specified as a symbol.  Currently, only
 @code{lightdm-gtk-greeter} is supported.
 
@@ -23042,6 +23155,49 @@ Configuration record for the LXQt desktop environment.
 The LXQT package to use.
 @end table
 @end deftp
+
+@defvar sugar-desktop-service-type
+This is the type of the service that runs the
+@uref{https://www.sugarlabs.org, Sugar desktop environment}.  Its value
+is a @code{sugar-desktop-configuration} object (see below).
+
+This service adds the @code{sugar} package to the system profile, as
+well as any selected Sugar activities.  By default it only includes a
+minimal set of activities.
+@end defvar
+
+@deftp {Data Type} sugar-desktop-configuration
+Configuration record for the Sugar desktop environment.
+
+@table @asis
+@item @code{sugar} (default: @code{sugar})
+The Sugar package to use.
+@item @code{gobject-introspection} (default: @code{gobject-introspection})
+The @code{gobject-introspection} package to use.  This package is used
+to access libraries installed as dependencies of Sugar activities.
+@item @code{activities} (default: @code{(list sugar-help-activity)})
+A list of Sugar activities to install.
+@end table
+@end deftp
+
+The following example configures the Sugar desktop environment with a
+number of useful activities:
+
+@lisp
+(use-modules (gnu))
+(use-package-modules sugar)
+(use-service-modules desktop)
+(operating-system
+  ...
+  (services (cons* (service sugar-desktop-service-type
+                            (sugar-desktop-configuration
+                              (activities (list sugar-browse-activity
+                                                sugar-help-activity
+                                                sugar-jukebox-activity
+                                                sugar-typing-turtle-activity))))
+                   %desktop-services))
+  ...)
+@end lisp
 
 @defvar enlightenment-desktop-service-type
 Return a service that adds the @code{enlightenment} package to the system
@@ -33161,79 +33317,190 @@ The service type for @command{mpd}
 Data type representing the configuration of @command{mpd}.
 
 @table @asis
-@item @code{user} (default: @code{"mpd"})
+@item @code{package} (default: @code{mpd}) (type: file-like)
+The MPD package.
+
+@item @code{user} (default: @code{"mpd"}) (type: string)
 The user to run mpd as.
 
-@item @code{music-dir} (default: @code{"~/Music"})
+@item @code{group} (default: @code{"mpd"}) (type: string)
+The group to run mpd as.
+
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@item @code{environment-variables} (default: @code{()}) (type: list-of-string)
+A list of strings specifying environment variables.
+
+@item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
+The location of the log file.  Set to @code{syslog} to use the local
+syslog daemon or @code{%unset-value} to omit this directive from the
+configuration file.
+
+@item @code{log-level} (type: maybe-string)
+Supress any messages below this threshold.  Available values:
+@code{notice}, @code{info}, @code{verbose}, @code{warning} and
+@code{error}.
+
+@item @code{music-directory} (type: maybe-string)
 The directory to scan for music files.
 
-@item @code{playlist-dir} (default: @code{"~/.mpd/playlists"})
+@item @code{playlist-directory} (type: maybe-string)
 The directory to store playlists.
 
-@item @code{db-file} (default: @code{"~/.mpd/tag_cache"})
+@item @code{db-file} (type: maybe-string)
 The location of the music database.
 
-@item @code{state-file} (default: @code{"~/.mpd/state"})
+@item @code{state-file} (type: maybe-string)
 The location of the file that stores current MPD's state.
 
-@item @code{sticker-file} (default: @code{"~/.mpd/sticker.sql"})
+@item @code{sticker-file} (type: maybe-string)
 The location of the sticker database.
 
-@item @code{port} (default: @code{"6600"})
-The port to run mpd on.
+@item @code{default-port} (default: @code{6600}) (type: maybe-integer)
+The default port to run mpd on.
 
-@item @code{address} (default: @code{"any"})
-The address that mpd will bind to.  To use a Unix domain socket,
-an absolute path can be specified here.
+@item @code{endpoints} (type: maybe-list-of-string)
+The addresses that mpd will bind to.  A port different from @var{default-port}
+may be specified, e.g. @code{localhost:6602} and IPv6 addresses must be
+enclosed in square brackets when a different port is used.
+To use a Unix domain socket, an absolute path or a path starting with @code{~}
+can be specified here.
 
-@item @code{outputs} (default: @code{"(list (mpd-output))"})
-The audio outputs that MPD can use.  By default this is a single output using pulseaudio.
+@item @code{database} (type: maybe-mpd-plugin)
+MPD database plugin configuration.
+
+@item @code{partitions} (default: @code{()}) (type: list-of-mpd-partition)
+List of MPD "partitions".
+
+@item @code{neighbors} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD neighbor plugin configurations.
+
+@item @code{inputs} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD input plugin configurations.
+
+@item @code{archive-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD archive plugin configurations.
+
+@item @code{input-cache-size} (type: maybe-string)
+MPD input cache size.
+
+@item @code{decoders} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD decoder plugin configurations.
+
+@item @code{resampler} (type: maybe-mpd-plugin)
+MPD resampler plugin configuration.
+
+@item @code{filters} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD filter plugin configurations.
+
+@item @code{outputs} (type: list-of-mpd-plugin-or-output)
+The audio outputs that MPD can use.  By default this is a single output
+using pulseaudio.
+
+@item @code{playlist-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD playlist plugin configurations.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the configuration.
+
+@end table
+@end deftp
+
+@deftp {Data Type} mpd-plugin
+Data type representing a @command{mpd} plugin.
+
+@table @asis
+@item @code{plugin} (type: maybe-string)
+Plugin name.
+
+@item @code{name} (type: maybe-string)
+Name.
+
+@item @code{enabled?} (type: maybe-boolean)
+Whether the plugin is enabled/disabled.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the plugin configuration.  See
+@uref{https://mpd.readthedocs.io/en/latest/plugins.html,MPD plugin
+reference} for available options.
+
+@end table
+@end deftp
+
+@deftp {Data Type} mpd-partition
+Data type representing a @command{mpd} partition.
+
+@table @asis
+@item @code{name} (type: string)
+Partition name.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the partition configuration.  See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#configuring-partitions,Configuring
+Partitions} for available options.
 
 @end table
 @end deftp
 
 @deftp {Data Type} mpd-output
-Data type representing an @command{mpd} audio output.
+Data type representing a @command{mpd} audio output.
 
 @table @asis
-@item @code{name} (default: @code{"MPD"})
+@item @code{name} (default: @code{"MPD"}) (type: string)
 The name of the audio output.
 
-@item @code{type} (default: @code{"pulse"})
+@item @code{type} (default: @code{"pulse"}) (type: string)
 The type of audio output.
 
-@item @code{enabled?} (default: @code{#t})
+@item @code{enabled?} (default: @code{#t}) (type: boolean)
 Specifies whether this audio output is enabled when MPD is started.  By
 default, all audio outputs are enabled.  This is just the default
 setting when there is no state file; with a state file, the previous
 state is restored.
 
-@item @code{tags?} (default: @code{#t})
+@item @code{format} (type: maybe-string)
+Force a specific audio format on output.  See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#audio-output-format,Global
+Audio Format} for a more detailed description.
+
+@item @code{tags?} (default: @code{#t}) (type: boolean)
 If set to @code{#f}, then MPD will not send tags to this output.  This
 is only useful for output plugins that can receive tags, for example the
 @code{httpd} output plugin.
 
-@item @code{always-on?} (default: @code{#f})
+@item @code{always-on?} (default: @code{#f}) (type: boolean)
 If set to @code{#t}, then MPD attempts to keep this audio output always
-open.  This may be useful for streaming servers, when you don’t want to
+open.  This may be useful for streaming servers, when you don?t want to
 disconnect all listeners even when playback is accidentally stopped.
 
-@item @code{mixer-type}
-This field accepts a symbol that specifies which mixer should be used
+@item @code{mixer-type} (default: @code{"none"}) (type: string)
+This field accepts a string that specifies which mixer should be used
 for this audio output: the @code{hardware} mixer, the @code{software}
 mixer, the @code{null} mixer (allows setting the volume, but with no
 effect; this can be used as a trick to implement an external mixer
 External Mixer) or no mixer (@code{none}).
 
-@item @code{extra-options} (default: @code{'()})
-An association list of option symbols to string values to be appended to
-the audio output configuration.
+@item @code{replay-gain-handler} (type: maybe-string)
+This field accepts a string that specifies how
+@uref{https://mpd.readthedocs.io/en/latest/user.html#replay-gain,Replay
+Gain} is to be applied.  @code{software} uses an internal software
+volume control, @code{mixer} uses the configured (hardware) mixer
+control and @code{none} disables replay gain on this audio output.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the audio output configuration.
 
 @end table
 @end deftp
 
-The following example shows a configuration of @code{mpd} that provides
-an HTTP audio streaming output.
+The following example shows a configuration of @command{mpd} that
+configures some of its plugins and provides a HTTP audio streaming output.
 
 @lisp
 (service mpd-service-type
@@ -33245,9 +33512,140 @@ an HTTP audio streaming output.
                      (mixer-type 'null)
                      (extra-options
                       `((encoder . "vorbis")
-                        (port    . "8080"))))))))
+                        (port    . "8080"))))))
+           (decoders
+             (list (mpd-plugin
+                     (plugin "mikmod")
+                     (enabled? #f))
+                   (mpd-plugin
+                     (plugin "openmpt")
+                     (enabled? #t)
+                     (extra-options `((repeat-count . -1)
+                                      (interpolation-filter . 1))))))
+           (resampler (mpd-plugin
+                        (plugin "libsamplerate")
+                        (extra-options `((type . 0)))))))
 @end lisp
 
+@subsubheading myMPD
+
+@cindex MPD, web interface
+@cindex myMPD service
+
+@uref{https://jcorporation.github.io/myMPD/, myMPD} is a web server
+frontend for MPD that provides a mobile friendly web client for MPD.
+
+The following example shows a myMPD instance listening on port 80,
+with album cover caching disabled.
+
+@lisp
+(service mympd-service-type
+         (mympd-configuration
+          (port 80)
+          (covercache-ttl 0)))
+@end lisp
+
+@defvar mympd-service-type
+The service type for @command{mympd}.
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} mympd-configuration
+Available @code{mympd-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{mympd}) (type: file-like)
+The package object of the myMPD server.
+
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@item @code{user} (default: @code{"mympd"}) (type: string)
+Owner of the @command{mympd} process.
+
+@item @code{group} (default: @code{"nogroup"}) (type: string)
+Owner group of the @command{mympd} process.
+
+@item @code{work-directory} (default: @code{"/var/lib/mympd"}) (type: string)
+Where myMPD will store its data.
+
+@item @code{cache-directory} (default: @code{"/var/cache/mympd"}) (type: string)
+Where myMPD will store its cache.
+
+@item @code{acl} (type: maybe-mympd-ip-acl)
+ACL to access the myMPD webserver.
+
+@item @code{covercache-ttl} (default: @code{31}) (type: maybe-integer)
+How long to keep cached covers, @code{0} disables cover caching.
+
+@item @code{http?} (default: @code{#t}) (type: boolean)
+HTTP support.
+
+@item @code{host} (default: @code{"[::]"}) (type: string)
+Host name to listen on.
+
+@item @code{port} (default: @code{80}) (type: maybe-port)
+HTTP port to listen on.
+
+@item @code{log-level} (default: @code{5}) (type: integer)
+How much detail to include in logs, possible values: @code{0} to
+@code{7}.
+
+@item @code{log-to} (default: @code{"/var/log/mympd/log"}) (type: string-or-symbol)
+Where to send logs.  By default, the service logs to
+@file{/var/log/mympd.log}.  The alternative is @code{'syslog}, which
+sends output to the running syslog service under the @samp{daemon}
+facility.
+
+@item @code{lualibs} (default: @code{"all"}) (type: maybe-string)
+See
+@uref{https://jcorporation.github.io/myMPD/scripting/#lua-standard-libraries}.
+
+@item @code{uri} (type: maybe-string)
+Override URI to myMPD.  See
+@uref{https://github.com/jcorporation/myMPD/issues/950}.
+
+@item @code{script-acl} (default: @code{(mympd-ip-acl (allow '("127.0.0.1")))}) (type: maybe-mympd-ip-acl)
+ACL to access the myMPD script backend.
+
+@item @code{ssl?} (default: @code{#f}) (type: boolean)
+SSL/TLS support.
+
+@item @code{ssl-port} (default: @code{443}) (type: maybe-port)
+Port to listen for HTTPS.
+
+@item @code{ssl-cert} (type: maybe-string)
+Path to PEM encoded X.509 SSL/TLS certificate (public key).
+
+@item @code{ssl-key} (type: maybe-string)
+Path to PEM encoded SSL/TLS private key.
+
+@item @code{pin-hash} (type: maybe-string)
+SHA-256 hashed pin used by myMPD to control settings access by prompting
+a pin from the user.
+
+@item @code{save-caches?} (type: maybe-boolean)
+Whether to preserve caches between service restarts.
+
+@end table
+@end deftp
+@c %end of fragment
+
+@c %start of fragment
+@deftp {Data Type} mympd-ip-acl
+Available @code{mympd-ip-acl} fields are:
+
+@table @asis
+@item @code{allow} (default: @code{()}) (type: list-of-string)
+Allowed IP addresses.
+
+@item @code{deny} (default: @code{()}) (type: list-of-string)
+Disallowed IP addresses.
+
+@end table
+@end deftp
+@c %end of fragment
 
 @node Virtualization Services
 @subsection Virtualization Services
@@ -34287,7 +34685,7 @@ and to make maintenance and recovery tasks easy.  It consists of multiple
 services which are described later in this section.  In addition to the Ganeti
 service, you will need the OpenSSH service (@pxref{Networking Services,
 @code{openssh-service-type}}), and update the @file{/etc/hosts} file
-(@pxref{operating-system Reference, @code{hosts-file}}) with the cluster name
+(@pxref{Service Reference, @code{hosts-service-type}}) with the cluster name
 and address (or use a DNS server).
 
 All nodes participating in a Ganeti cluster should have the same Ganeti and
@@ -34301,14 +34699,6 @@ cluster node that supports multiple storage backends, and installs the
 (operating-system
   ;; @dots{}
   (host-name "node1")
-  (hosts-file (plain-file "hosts" (format #f "
-127.0.0.1       localhost
-::1             localhost
-
-192.168.1.200   ganeti.example.com
-192.168.1.201   node1.example.com node1
-192.168.1.202   node2.example.com node2
-")))
 
   ;; Install QEMU so we can use KVM-based instances, and LVM, DRBD and Ceph
   ;; in order to use the "plain", "drbd" and "rbd" storage backends.
@@ -34335,6 +34725,14 @@ cluster node that supports multiple storage backends, and installs the
                  (service openssh-service-type
                           (openssh-configuration
                            (permit-root-login 'prohibit-password)))
+
+                 (simple-service 'ganeti-hosts-entries hosts-service-type
+                                 (list
+                                   (host "192.168.1.200" "ganeti.example.com")
+                                   (host "192.168.1.201" "node1.example.com"
+                                         '("node1"))
+                                   (host "192.168.1.202" "node2.example.com"
+                                         '("node2"))))
 
                  (service ganeti-service-type
                           (ganeti-configuration
@@ -36811,6 +37209,42 @@ advertised.
 @item @code{log-level} (default: @code{'DEBUG})
 Log level to use, specify a log level like @code{'INFO} to stop logging
 individual requests.
+
+@item @code{cached-compressions} (default: @code{'()})
+Activate generating cached nars with different compression details from
+the stored nars.  This is a list of
+nar-herder-cached-compression-configuration records.
+
+@item @code{min-uses} (default: @code{3})
+When cached-compressions are enabled, generate cached nars when at least
+this number of requests are made for a nar.
+
+@item @code{workers} (default: @code{2})
+Number of cached nars to generate at a time.
+
+@item @code{nar-source} (default: @code{#f})
+Location to fetch nars from when computing cached compressions.  By
+default, the storage location will be used.
+
+@end table
+@end deftp
+
+@deftp {Data Type} nar-herder-cached-compression-configuration
+Data type representing the cached compression configuration.
+
+@table @asis
+@item @code{type}
+Type of compression to use, e.g. @code{'zstd}.
+
+@item @code{workers} (default: @code{#f})
+Level of the compression to use.
+
+@item @code{directory} (default: @code{#f})
+Location to store the cached nars.  If unspecified, they will be stored
+in /var/cache/nar-herder/nar/TYPE.
+
+@item @code{directory-max-size} (default: @code{#f})
+Maximum size in bytes of the directory.
 
 @end table
 @end deftp
@@ -41106,6 +41540,7 @@ services)}.
 * SSH: Secure Shell.                                   Setting up the secure shell client.
 * Desktop: Desktop Home Services.                      Services for graphical environments.
 * Guix: Guix Home Services.                            Services for Guix.
+* Fonts: Fonts Home Services.                          Services for managing User's fonts.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -41987,6 +42422,35 @@ A typical extension for adding a channel might look like this:
                  (channel
                   (name 'variant-packages)
                   (url "https://example.org/variant-packages.git"))))
+@end lisp
+@end defvar
+
+@node Fonts Home Services
+@subsection Fonts Home Services
+
+The @code{(gnu home services fontutils)} module provides services for
+user-specific Fontconfig setup.  The
+@uref{https://www.freedesktop.org/wiki/Software/fontconfig,Fontconfig}
+library is used by many applications to access fonts on the system.
+
+@defvar home-fontconfig-service-type
+This is the service type for generating configurations for Fontconfig.
+Its associated value is a list of strings (or gexps) pointing to fonts
+locations.
+
+Generally, it is better to extend this service than to directly
+configure it, as its default value is the default Guix Home's profile
+font installation path (@file{~/.guix-home/profile/share/fonts}).  If
+you configure this service directly, be sure to include the above
+directory.
+
+A typical extension for adding an additional font directory might look
+like this:
+
+@lisp
+(simple-service 'additional-fonts-service
+                home-fontconfig-service-type
+                (list "~/.nix-profile/share/fonts"))
 @end lisp
 @end defvar
 

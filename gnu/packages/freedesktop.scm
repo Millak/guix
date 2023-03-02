@@ -134,7 +134,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.15.5")
+    (version "0.15.6")
     (source
      (origin
        (method url-fetch)
@@ -143,7 +143,7 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "1hh41r82a2p7anyadfsp9lmylrrj1a6gknx2g4w6ha97riifs5fb"))))
+        (base32 "03pirmc5r4izl6mzff879g7pk1nxq03kgpr2yvnnqnlb6r0ckmi3"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -835,7 +835,8 @@ of a the system to know what users are logged in, and where.")
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python gperf))
-    (inputs
+    (propagated-inputs
+     ;; Propagated because of pkg-config
      (list libcap))
     (synopsis "The sd-bus library, extracted from systemd")
     (description "Some projects rely on the sd-bus library for DBus support.
@@ -1531,7 +1532,7 @@ formats.")
      (list pkg-config))
     (inputs
      (list eudev))
-    (home-page "http://0pointer.de/blog/projects/being-smart.html")
+    (home-page "https://0pointer.de/blog/projects/being-smart.html")
     (synopsis "ATA S.M.A.R.T. reading and parsing library")
     (description
      "This library supports a subset of the ATA S.M.A.R.T. (Self-Monitoring,
@@ -2659,7 +2660,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.14.4")
+    (version "1.14.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2667,7 +2668,7 @@ compatible with the well-known scripts of the same name.")
                     version "/xdg-desktop-portal-" version ".tar.xz"))
               (sha256
                (base32
-                "0wqc9x3k7lf3mig53i4rjazi0xi8bcykwaaw7r7prvnscnd1k405"))))
+                "1q0djpnwlrqm0h0alyh1r6dlkqdrr7mj5hiam4mqzxqa5jbqkrgj"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)

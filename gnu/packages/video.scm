@@ -48,7 +48,7 @@
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
 ;;; Copyright © 2021,2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -63,6 +63,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Ott Joon <oj@vern.cc>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -306,7 +307,7 @@ audio/video everything to everything converter primarily focused on producing
 AVI video files with MP3 audio, but also including a program to read all the
 video and audio streams from a DVD.")
     (home-page
-     "http://linuxfromscratch.org/blfs/view/svn/multimedia/transcode.html")
+     "https://linuxfromscratch.org/blfs/view/svn/multimedia/transcode.html")
     (license license:gpl2+)))
 
 (define-public svt-hevc
@@ -468,7 +469,7 @@ as a joint effort between the BBC and Fluendo.")
     (synopsis "Quick Time Library")
     (description "The goal of this project is to enhance the quicktime4linux
 library.")
-    (home-page "http://libquicktime.sourceforge.net/")
+    (home-page "https://libquicktime.sourceforge.net/")
     (license license:lgpl2.1+)))
 
 (define-public mjpg-streamer
@@ -537,7 +538,7 @@ receiving MJPG streams.")
     (description "Mjpeg tools is a suite of programs which support video capture,
 editing, playback, and compression to MPEG of MJPEG video.  Edit, play and
 compression software is hardware independent.")
-    (home-page "http://mjpeg.sourceforge.net/")
+    (home-page "https://mjpeg.sourceforge.net/")
     (license license:gpl2+)))
 
 (define-public libmms
@@ -765,7 +766,7 @@ stream decoding")
                               (string-append "--build=" build)
                               (string-append "--with-ncurses="
                                              ncurses))))))))
-    (home-page "http://aa-project.sourceforge.net/aalib/")
+    (home-page "https://aa-project.sourceforge.net/aalib/")
     (synopsis "ASCII-art library")
     (description
      "AA-lib is a low level gfx library which does not require graphics device.
@@ -838,7 +839,7 @@ mpv's powerful playback capabilities.")
                    ;; system fixes above.
                    (replace 'bootstrap
                      (lambda _ (invoke "sh" "bootstrap"))))))
-    (home-page "http://liba52.sourceforge.net/")
+    (home-page "https://liba52.sourceforge.net/")
     (synopsis "ATSC A/52 audio stream decoder")
     (description "liba52 is a library for decoding ATSC A/52 audio streams.
 The A/52 standard is used in a variety of applications, including digital
@@ -906,7 +907,7 @@ shared library and encoder and decoder command-line executables.")
            libice
            sdl))
     (build-system gnu-build-system)
-    (home-page "http://libmpeg2.sourceforge.net/")
+    (home-page "https://libmpeg2.sourceforge.net/")
     (synopsis "MPEG1 and MPEG2 video decoder library")
     (description
      "libmpeg2 is a library which can decode MPEG1 and MPEG2 video streams.")
@@ -1341,7 +1342,7 @@ on the Invidious instances only as a fallback method.")
                      (rename-file file
                                   (string-append static "/lib/" file)))
                    (find-files "." "\\.a$")))))))))
-    (home-page "http://x265.org/")
+    (home-page "https://x265.org/")
     (synopsis "Library for encoding h.265/HEVC video streams")
     (description "x265 is a H.265 / HEVC video encoder application library,
 designed to encode video or images into an H.265 / HEVC encoded bitstream.")
@@ -1444,7 +1445,7 @@ streams.")
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libxv))
-    (home-page "http://libdv.sourceforge.net/")
+    (home-page "https://libdv.sourceforge.net/")
     (synopsis "DV video (IEC 61834 and SMPTE 314M) codec")
     (description "The Quasar DV codec (libdv) is a software codec for DV
 video, the encoding format used by most digital camcorders, typically those
@@ -1641,6 +1642,7 @@ operate properly.")
             libvdpau
             libvorbis
             libvpx
+            libwebp
             libx11
             libx264
             mesa
@@ -1738,6 +1740,7 @@ operate properly.")
          "--enable-libvidstab"
          "--enable-libvorbis"
          "--enable-libvpx"
+         "--enable-libwebp"
          "--enable-libxvid"
          "--enable-libx264"
          "--enable-libx265"
@@ -1884,7 +1887,11 @@ audio/video codec library.")
              (let* ((dso  (find-files "." "\\.so$"))
                     (path (string-join (map dirname dso) ":")))
                (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
-               (setenv "LD_LIBRARY_PATH" path)))))))))
+               (setenv "LD_LIBRARY_PATH" path)))))))
+    ;; FFmpeg 2.8 does support libwebp, but we don't enable it while configuring
+    ;; the build, and we'd rather not add features to this old package anymore.
+    (inputs (modify-inputs (package-inputs ffmpeg-3.4)
+              (delete "libwebp")))))
 
 (define-public ffmpeg ffmpeg-5)
 
@@ -2189,7 +2196,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.35.0")
+    (version "0.35.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2197,7 +2204,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1jnk1arwhf82s6q90jp70izk1wy0bkx3lr3il2jgbqsp355l6wsk"))))
+               (base32 "1lzaijqddr4ir9nb27cv9ki20b0k5jns2k47v4xvmi30v1gi71ha"))))
     (build-system waf-build-system)
     (arguments
      (list
@@ -2572,7 +2579,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.01.06")
+    (version "2023.02.17")
     (source
      (origin
        (method git-fetch)
@@ -2581,7 +2588,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13kg6zsc0js4smqj6v4qpiycl9jlijj3pvp49wif6ilgv87sq7v3"))))
+        (base32 "08m626ij0jij5vbvfbbalwr97jdhl1n2w2cwwgbj5a4s7vhvp84x"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
@@ -2863,7 +2870,7 @@ installed).")
     (synopsis "Generates a DVD-Video movie from a MPEG-2 stream")
     (description "@command{dvdauthor} will generate a DVD-Video movie from a
 MPEG-2 stream containing VOB packets.")
-    (home-page "http://dvdauthor.sourceforge.net")
+    (home-page "https://dvdauthor.sourceforge.net")
     (license license:gpl3+)))
 
 (define-public libdvdnav
@@ -3406,7 +3413,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "27.2.4")
+    (version "29.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3416,7 +3423,7 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13bfzjqmvabli99yr1h0306w5lx72mbl5sxrnr46hjig1a6rw91s"))
+                "15nvvlpryvlbf76918jvygg1985glz38cndfgnc2c0009vdb9qbk"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -3425,6 +3432,8 @@ be used for realtime video capture via Linux-specific APIs.")
       #:configure-flags
       #~(list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
               "-DENABLE_UNIT_TESTS=ON"
+              "-DENABLE_NEW_MPEGTS_OUTPUT=OFF"
+              "-DENABLE_AJA=OFF"
               ;; Browser plugin requires cef, but it is not packaged yet.
               ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
               "-DBUILD_BROWSER=OFF")
@@ -3458,6 +3467,8 @@ be used for realtime video capture via Linux-specific APIs.")
       glib
       jack-1
       jansson
+      libglvnd
+      libva
       libx264
       libxcomposite
       libxkbcommon
@@ -3474,6 +3485,7 @@ be used for realtime video capture via Linux-specific APIs.")
       qtwayland-5
       speexdsp
       v4l-utils
+      vlc
       wayland
       wayland-protocols
       zlib))
@@ -3555,7 +3567,7 @@ programs on your current machine or on other machines.")
 (define-public obs-wlrobs
   (package
     (name "obs-wlrobs")
-    (version "1.0")
+    (version "1.1")
     (source
       (origin
         (method hg-fetch)
@@ -3565,7 +3577,7 @@ programs on your current machine or on other machines.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1faiq2gdb7qis3m1hilm4pz8lkmkab75vzm608dbiazahhybf96p"))))
+          "1whdb2ykisz50qw19nv1djw5qp17rpnpkc8s8470ja8iz894mmwd"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
@@ -3578,6 +3590,38 @@ programs on your current machine or on other machines.")
      "This OBS plugin allows you to capture the screen on wlroots-based
 Wayland compositors.")
     (license license:gpl3+)))
+
+(define-public obs-vkcapture
+  (package
+    (name "obs-vkcapture")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nowrep/obs-vkcapture")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18v15bfzm31qkpwipvbqgzak4z6f2hhq6mnz2bvhwnv57whirln6"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
+    (inputs (list mesa
+                  obs
+                  libx11
+                  libxcb
+                  vulkan-headers
+                  vulkan-loader
+                  wayland))
+    (home-page "https://github.com/nowrep/obs-vkcapture")
+    (synopsis "OBS plugin for Vulkan/OpenGL game capture on Linux")
+    (description
+     "This OBS plugin lets you record an OpenGL or Vulkan
+game by adding the Game Capture source to your scene and starting an
+application with @code{obs-gamecapture}.")
+    (license license:gpl2)))
 
 (define-public libvdpau
   (package
@@ -4422,7 +4466,7 @@ programmers to access a standard API to open and decompress media files.")
            wxwidgets-gtk2))
     (native-inputs
      (list intltool desktop-file-utils pkg-config))
-    (home-page "http://www.aegisub.org/")
+    (home-page "https://www.aegisub.org/")
     (synopsis "Subtitle engine")
     (description
       "Aegisub is a tool for creating and modifying subtitles.  Aegisub makes
@@ -4497,7 +4541,7 @@ tools for styling them, including a built-in real-time video preview.")
                ;; precedence in case they have e.g. the full gst-plugins-bad.
                `("GST_PLUGIN_SYSTEM_PATH" suffix
                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
-    (home-page "http://www.pitivi.org")
+    (home-page "https://www.pitivi.org")
     (synopsis "Video editor based on GStreamer Editing Services")
     (description "Pitivi is a video editor built upon the GStreamer Editing
 Services.  It aims to be an intuitive and flexible application that can appeal
@@ -4523,7 +4567,7 @@ to newbies and professionals alike.")
      '(#:configure-flags '("LIBS=-lm")))
     (native-inputs
      (list pkg-config doxygen))
-    (home-page "http://gmerlin.sourceforge.net")
+    (home-page "https://gmerlin.sourceforge.net")
     (synopsis "Low level library for multimedia API building")
     (description
      "Gavl is short for Gmerlin Audio Video Library.  It is a low level
@@ -4842,7 +4886,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
            font-dejavu
            libopenshot
            python
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-pyqtwebengine
            python-pyzmq
            python-requests
@@ -4972,7 +5016,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "0.9.2")
+    (version "1.0.0")
     (source
       (origin
         (method git-fetch)
@@ -4981,7 +5025,7 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0bkps488h9s15ylvkm4fmfywgrpbw570glawpnv6khpq9n223dzl"))))
+         (base32 "0jkvb5as7danpalzlwd0w1dc9i2vijvmf39z0j6fwqvialsgnnj5"))))
     (build-system meson-build-system)
     (native-inputs (list nasm))
     (home-page "https://code.videolan.org/videolan/dav1d")
@@ -5143,7 +5187,7 @@ Theora videos.  Theorafile was written to be used for FNA's VideoPlayer.")
     (build-system gnu-build-system)
     (inputs
      (list libdvdcss libdvdread))
-    (home-page "http://dvdbackup.sourceforge.net")
+    (home-page "https://dvdbackup.sourceforge.net")
     (synopsis "DVD video ripper")
     (description
      "A simple command line tool to backup video from a DVD.  Decrypts the
@@ -5477,7 +5521,7 @@ wlroots-based compositors.  More specifically, those that support
            gsl
            portaudio
            alsa-lib))
-    (home-page "http://guvcview.sourceforge.net/")
+    (home-page "https://guvcview.sourceforge.net/")
     (synopsis "Control your webcam and capture videos and images")
     (description
      "GTK+ UVC Viewer (guvcview) is a graphical application to control a
@@ -5637,7 +5681,7 @@ create video contact sheets (previews) of videos.  Any video supported by
 MPlayer and FFmpeg can be used.  A note of warning: Unlike most similar tools
 VCS, by default, makes screenshots the same size as the video, see the manual
 for details on how to change this.")
-   (home-page "http://p.outlyer.net/vcs/")
+   (home-page "https://p.outlyer.net/vcs/")
    (license license:lgpl2.1+)))
 
 (define-public svtplay-dl

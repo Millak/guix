@@ -42,7 +42,6 @@
   #:use-module (gnu packages texinfo)
   #:use-module (guix build-system dune)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system ocaml)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)

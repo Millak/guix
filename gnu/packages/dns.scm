@@ -19,6 +19,8 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +66,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
@@ -81,6 +84,7 @@
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -290,7 +294,7 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.88")
+    (version "2.89")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -298,7 +302,7 @@ prompt the user with the option to go with insecure DNS only.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "1cy1zci6vyhzczy6ncc5m9d7zsnnzs9mmwd6pr9w0h03l7nlsm13"))))
+                "02dnxfnman38armn3sw56w80f9wb2vgm3qgm15crs2yg8q1j7g82"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -312,7 +316,7 @@ prompt the user with the option to go with insecure DNS only.")
                           (string-append "PKG_CONFIG=" ,(pkg-config-for-target))
                           "COPTS=\"-DHAVE_DBUS\"")
        #:tests? #f))                    ; no ‘check’ target
-    (home-page "http://www.thekelleys.org.uk/dnsmasq/doc.html")
+    (home-page "https://www.thekelleys.org.uk/dnsmasq/doc.html")
     (synopsis "Small caching DNS proxy and DHCP/TFTP server")
     (description
      "Dnsmasq is a light-weight DNS forwarder and DHCP server.  It is designed
@@ -333,14 +337,14 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.37")
+    (version "9.16.38")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ftp.isc.org/isc/bind9/" version
                            "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "1az2y8zdpn6vfmx4xqnsh5znagcrsvkqa1hz3h8izzm24ban2ihf"))
+        (base32 "03y52iyc2g63lkk9x2vaizpr0jv27g1z6mcxnjw8m8l4kaflrx4d"))
        (patches
         (search-patches "bind-re-add-attr-constructor-priority.patch"))))
     (build-system gnu-build-system)
@@ -871,7 +875,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.2.4")
+    (version "3.2.5")
     (source
      (origin
        (method git-fetch)
@@ -880,7 +884,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b6fnrdy5zqn3mnn5cl92j0m7k9l6hh4gnr92qpirqf54bl2lfm2"))
+        (base32 "0xhr6i5qq0yhxqj50hsm51lb1v5lj4vfkzdcsvh7lw8wg6j1d03b"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1098,7 +1102,7 @@ LuaJIT, both a resolver library and a daemon.")
 (define-public ddclient
   (package
     (name "ddclient")
-    (version "3.9.1")
+    (version "3.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1107,62 +1111,46 @@ LuaJIT, both a resolver library and a daemon.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hf377g4j9r9sac75xp17nk2h58mazswz4vkg4g2gl2yyhvzq91w"))))
-    (build-system trivial-build-system) ; no Makefile.PL
+        (base32 "0l87d72apwrg6ipc9gix5gv64d4hr1ykxmss8x4r8d8mgj6j8rf1"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; XXX: erroneous version value, this is fixed in master
+        #~(begin
+            (substitute* "configure.ac"
+              (("3.10.0_2") #$version))))
+       (patches (search-patches "ddclient-skip-test.patch"))))
+    (build-system gnu-build-system)
     (native-inputs
-     (list bash perl))
+     (list autoconf automake libtool
+           perl-test-warnings perl-test-mockmodule))
     (inputs
      (list inetutils ; logger
            net-tools
-           perl-data-validate-ip
+           bash-minimal                           ;for 'wrap-program'
+           perl
            perl-digest-sha1
-           perl-io-socket-ssl))
+           perl-io-socket-ssl
+           perl-io-socket-inet6  ;; XXX: this is likely to be removed in a future ddclient release
+                                 ;; https://github.com/ddclient/ddclient/issues/461
+           perl-json))
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 match)
-                      (srfi srfi-26))
-         (setenv "PATH" (string-append
-                         (assoc-ref %build-inputs "bash") "/bin" ":"
-                         (assoc-ref %build-inputs "perl") "/bin"))
-
-         ;; Copy the (read-only) source into the (writable) build directory.
-         (copy-recursively (assoc-ref %build-inputs "source") ".")
-
-         ;; Install.
-         (let* ((out (assoc-ref %outputs "out"))
-                (bin (string-append out "/bin")))
-           (let ((file "ddclient"))
-             (substitute* file
-               (("/usr/bin/perl") (which "perl"))
-               ;; Strictly use ‘/etc/ddclient/ddclient.conf’.
-               (("\\$\\{program\\}\\.conf") "/etc/ddclient/ddclient.conf")
-               (("\\$etc\\$program.conf") "/etc/ddclient/ddclient.conf")
-               ;; Strictly use ‘/var/cache/ddclient/ddclient.cache’
-               (("\\$cachedir\\$program\\.cache")
-                "/var/cache/ddclient/ddclient.cache"))
-             (install-file file bin)
-             (wrap-program (string-append bin "/" file)
-               `("PATH" ":" =
-                 ("$PATH"
-                  ,@(map (lambda (input)
-                           (match input
-                                  ((name . store)
-                                   (string-append store "/bin"))))
-                         %build-inputs)))
-               `("PERL5LIB" ":" =
-                 ,(delete
-                   ""
-                   (map (match-lambda
-                         (((? (cut string-prefix? "perl-" <>) name) . dir)
-                          (string-append dir "/lib/perl5/site_perl"))
-                         (_ ""))
-                        %build-inputs)))))
-           (for-each (cut install-file <> (string-append out
-                                                         "/share/ddclient"))
-                     (find-files "." "sample.*$"))))))
+     (list
+      #:configure-flags #~(list "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              ;; XXX: Do not create /var
+              (invoke "make" "localstatedir=/tmp/discard" "install")))
+          (add-after 'wrap 'wrap-ddclient
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/ddclient")
+                `("PERL5LIB" ":" prefix ,(string-split (getenv "PERL5LIB") #\:))
+                `("PATH" prefix ,(map (lambda (x)
+                                        (string-append (assoc-ref inputs x) "/bin"))
+                                      '("inetutils" "net-tools")))))))))
+    (native-search-paths
+     (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (home-page "https://ddclient.net/")
     (synopsis "Address updating utility for dynamic DNS services")
     (description "This package provides a client to update dynamic IP
@@ -1389,3 +1377,39 @@ interface.  It then calls all the helper scripts it knows about so it can
 configure the real @file{/etc/resolv.conf} and optionally any local
 nameservers other than libc.")
     (license license:bsd-2)))
+
+(define-public smartdns
+  (package
+    (name "smartdns")
+    (version "40")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pymumu/smartdns")
+                    (commit (string-append "Release" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet '(substitute* "Makefile"
+                          ((".*SYSTEMDSYSTEMUNITDIR.*") "")))
+              (sha256
+               (base32
+                "0ibbj96s40xgk6q7dsgpx65rjkknl1pn7nca5fcbbhcm2m80nzjj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "DESTDIR=" #$output)
+                   "PREFIX=''")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
+    (inputs (list openssl))
+    (home-page "https://github.com/pymumu/smartdns")
+    (synopsis "Local DNS server")
+    (description
+     "SmartDNS is a DNS server that accepts DNS query requests from local
+clients, obtains DNS query results from multiple upstream DNS servers, and
+returns the fastest access results to clients.")
+    (license license:gpl3+)))
+

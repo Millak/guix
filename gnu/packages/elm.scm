@@ -56,7 +56,8 @@
         (base32 "1rdg3xp3js9xadclk3cdypkscm5wahgsfmm4ldcw3xswzhw6ri8w"))
        (patches
         (search-patches "elm-reactor-static-files.patch"
-                        "elm-offline-package-registry.patch"))))
+                        "elm-offline-package-registry.patch"
+                        "elm-ghc9.2.patch"))))
     (build-system haskell-build-system)
     (arguments
      (list
@@ -70,7 +71,7 @@
           (add-before 'configure 'update-constraints
             (lambda _
               (substitute* "elm.cabal"
-                (("(ansi-terminal|containers|network|http-client|language-glsl)\\s+[^,]+" all dep)
+                (("(ansi-terminal|bytestring|containers|network|HTTP|http-client|language-glsl)\\s+[^,]+" all dep)
                  dep)))))))
     (inputs
      (list ghc-ansi-terminal

@@ -37,7 +37,7 @@
 ;;; Copyright © 2020 Holger Peters <holger.peters@posteo.de>
 ;;; Copyright © 2020 Noisytoot <noisytoot@gmail.com>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020, 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
@@ -1855,7 +1855,7 @@ for clients and servers.")
      (list unzip))               ; for unpacking the source
     (arguments
      `(#:tests? #f))                    ; tests require python-pbr < 1.7.0
-    (home-page "http://cthedot.de/cssutils/")
+    (home-page "https://cthedot.de/cssutils/")
     (synopsis
       "CSS Cascading Style Sheets library for Python")
     (description
@@ -2059,22 +2059,17 @@ RFC6455, regardless of your programming paradigm.")
 (define-public hypercorn
   (package
     (name "hypercorn")
-    (version "0.11.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Hypercorn" version))
-       (sha256
-        (base32 "16kai5d12f05jr89mj611zslxqri4cd7ixcgd6yhl211qlcyg8av"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+    (version "0.14.3")
+    (source (origin
+              (method git-fetch) ;PyPI does not have tests
+              (uri (git-reference
+                    (url "https://github.com/pgjones/hypercorn")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hkph0sdr94hxmrq1grnh842snm561sw4az5q6a3ba9hqnrl890h"))))
+    (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
     (propagated-inputs
      (list python-h11
@@ -2086,6 +2081,7 @@ RFC6455, regardless of your programming paradigm.")
     (native-inputs
      (list python-hypothesis
            python-mock
+           python-poetry-core
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
@@ -2096,8 +2092,8 @@ RFC6455, regardless of your programming paradigm.")
     (description
      "Hypercorn is an ASGI web server based on the sans-io hyper, h11, h2, and
 wsproto libraries and inspired by Gunicorn.  It supports HTTP/1, HTTP/2,
-WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It can
-utilise asyncio, uvloop, or trio worker types.")
+WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It
+can utilise asyncio, uvloop, or trio worker types.")
     (license license:expat)))
 
 (define-public python-hypercorn
@@ -4603,23 +4599,23 @@ available in Django, but is a standalone package.")
 (define-public python-paste
   (package
     (name "python-paste")
-    (version "3.0.6")
+    (version "3.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Paste" version))
        (sha256
         (base32
-         "14lbi9asn5agsdf7r97prkjpz7amgmp529lbvfhf0nv881xczah6"))
+         "1xjakxrdvy4kgfy170gb9bl8zp9hqjjwh1h1vlik1pxw606399ym"))
        (patches (search-patches "python-paste-remove-timing-test.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; This test calls out to the internet.
            (delete-file "tests/test_proxy.py") #t))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-runner python-nose))
+     (list python-pytest python-nose))
     (propagated-inputs
      (list python-six))
     (home-page "https://pythonpaste.readthedocs.io/")
@@ -4832,14 +4828,14 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public whoogle-search
   (package
     (name "whoogle-search")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "whoogle-search" version))
               (sha256
                (base32
-                "0h8cl9bkd3vx17kbvcnmc8cy6pc29lxr0drxm84kj37ka788cj2g"))))
-    (build-system python-build-system)
+                "1kqkb23wb9a4a8zdky2066887vgv7ywhivhxi5nipkx07mf8v01k"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; The tests need network access
@@ -6111,7 +6107,7 @@ displaying warnings when usaged in application code.")
                (base32
                 "0bdpcnd9pv0131dl08h4zbcwmgc45lyvq3pa224xwan5b3x4rr2f"))))
     (build-system python-build-system)
-    (home-page "http://docs.pylonsproject.org/projects/translationstring")
+    (home-page "https://docs.pylonsproject.org/projects/translationstring")
     (synopsis "Internationalization tooling for the Pylons project")
     (description "This package provides a library used by various Pylons
 project packages for internationalization (i18n) duties related to

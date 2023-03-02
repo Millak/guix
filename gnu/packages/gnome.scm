@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014, 2016, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@openmailbox.org>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -907,7 +907,7 @@ tomorrow, the rest of the week and for special occasions.")
      (list dbus
            desktop-file-utils
            gettext-minimal
-           git-minimal/fixed
+           git-minimal/pinned
            `(,glib "bin")
            gobject-introspection
            gsettings-desktop-schemas
@@ -1143,6 +1143,55 @@ freedesktop.org desktop notification specification.")
     (home-page "https://wiki.gnome.org/Projects/NotificationDaemon")
     (license license:gpl2+)))
 
+(define-public metacity
+  (package
+    (name "metacity")
+    (version "3.46.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/metacity/"
+                                  (version-major+minor version) "/"
+                                  "metacity-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1ifnbpiflaw72m0flysa5qy44c1axd2rr9zcparz5210c7vlkfh0"))))
+    (build-system glib-or-gtk-build-system)
+    (native-inputs
+     (list gettext-minimal
+           libtool
+           autoconf
+           automake
+           pkg-config
+           (list glib "bin")
+           grep))
+    (inputs
+     (list libcanberra
+           zenity
+           libsm
+           libice
+           gtk+
+           pango
+           gsettings-desktop-schemas
+           gobject-introspection
+           libgtop
+           libxcomposite
+           libxcursor
+           libxfixes
+           libxdamage
+           libxext
+           libxpresent
+           libxres
+           libxrender
+           libxinerama
+           libx11
+           libxrandr))
+    (home-page "https://gitlab.gnome.org/GNOME/metacity")
+    (synopsis "Simple compositing window manager")
+    (description "Metacity is a window manager with a focus on simplicity and
+usability rather than novelties or gimmicks.  Its author has characterized it
+as a \"boring window manager for the adult in you.\"")
+    (license license:gpl2+)))
+
 (define-public mm-common
   (package
     (name "mm-common")
@@ -1220,8 +1269,12 @@ Library reference documentation.")
            pkg-config))
     (inputs
      (list avahi
-           libgudev
-           libsoup))
+           libgudev))
+    (propagated-inputs
+     ;; These inputs are required by the pkg-config file.
+     (list glib
+           libsoup
+           libxml2))
     (synopsis "WebDav server implementation using libsoup")
     (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
 but it is generic enough to be reused in other projects,
@@ -2870,7 +2923,7 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
 (define-public adwaita-icon-theme
   (package
     (name "adwaita-icon-theme")
-    (version "42.0")
+    (version "43")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2878,7 +2931,7 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1q5i31zd5jzr12p6vn831afwnzbzf6x73wna1y86drnyr2nvb1ay"))))
+                "1iiflc6rfpshipl23mszlv2lzm8d1a7pxwsx2ma5bam669ywffif"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -4239,7 +4292,8 @@ Hints specification (EWMH).")
      (list license:gpl2 license:gpl3))))
 
 (define-public goffice-0.8
-  (package (inherit goffice)
+  (package
+    (inherit goffice)
     (version "0.8.17")
     (source (origin
               (method url-fetch)
@@ -4262,9 +4316,8 @@ Hints specification (EWMH).")
     (propagated-inputs
      ;; libgoffice-0.8.pc mentions libgsf-1
      (list libgsf))
-    (inputs
-     `(("gtk" ,gtk+-2)
-       ,@(alist-delete "gtk" (package-inputs goffice))))))
+    (inputs (modify-inputs (package-inputs goffice)
+              (replace "gtk+" gtk+-2)))))
 
 (define-public gnumeric
   (package
@@ -5107,7 +5160,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            sqlite
            zlib))
     (inputs
-     (list mit-krb5 samba/fixed))     ; For ntlm_auth support
+     (list mit-krb5 samba/pinned))     ; For ntlm_auth support
     (home-page "https://wiki.gnome.org/Projects/libsoup")
     (synopsis "GLib-based HTTP Library")
     (description
@@ -6279,7 +6332,7 @@ throughout GNOME for API documentation).")
                    #t)
                  (format #t "test suite not run~%"))
              #t)))))
-    (home-page "http://www.clutter-project.org")
+    (home-page "https://www.clutter-project.org")
     (synopsis "Object oriented GL/GLES Abstraction/Utility Layer")
     (description
      "Cogl is a small library for using 3D graphics hardware to draw pretty
@@ -6365,7 +6418,7 @@ presentations, kiosk style applications and so on.")
     (propagated-inputs
      ;; clutter-gtk.pc refers to all these.
      (list clutter gtk+))
-    (home-page "http://www.clutter-project.org")
+    (home-page "https://www.clutter-project.org")
     (synopsis "OpenGL-based interactive canvas library GTK+ widget")
     (description
      "Clutter is an OpenGL-based interactive canvas library, designed for
@@ -6391,7 +6444,7 @@ presentations, kiosk style applications and so on.")
            pkg-config gobject-introspection))
     (inputs
      (list clutter gstreamer gst-plugins-base))
-    (home-page "http://www.clutter-project.org")
+    (home-page "https://www.clutter-project.org")
     (synopsis "Integration library for using GStreamer with Clutter")
     (description
      "Clutter-Gst is an integration library for using GStreamer with Clutter.
@@ -7114,7 +7167,7 @@ USB transfers with your high-level application or system daemon.")
 (define-public simple-scan
   (package
     (name "simple-scan")
-    (version "42.1")
+    (version "42.5")
     (source
      (origin
        (method url-fetch)
@@ -7122,7 +7175,7 @@ USB transfers with your high-level application or system daemon.")
                            (version-major version) "/"
                            "simple-scan-" version ".tar.xz"))
        (sha256
-        (base32 "09i23f8j3knppyxmikzfq9s09xarsgp9sqx9mfyvas8p3ihw16w5"))))
+        (base32 "0l201qjig6bk34bw8d77jcbhjhn4swfqdj84sjlyy1p2x6jdzx85"))))
     (build-system meson-build-system)
     ;; TODO: Fix icons in home screen, About dialogue, and scan menu.
     (arguments
@@ -8682,7 +8735,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/network-manager-applet/"
@@ -8690,7 +8743,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
                                   "network-manager-applet-" version ".tar.xz"))
               (sha256
                (base32
-                "17742kgmbj9w545zwnirgr0i40zl0xzp8jx7b8c1krp93mc4h0sw"))))
+                "1lswxfxjfbiknspwli8d65i0bnyfazzcnrqckaw0s44zkm7bh5lm"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -8711,7 +8764,6 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
      (list gcr
            libappindicator
            libgudev
-           libnotify
            libsecret
            libselinux
            jansson ; for team support
@@ -10935,7 +10987,7 @@ supports both X and Wayland display servers.")
      (list desktop-file-utils intltool pkg-config))
     (inputs
      (list enchant gtk+ python-wrapper libxml2 gucharmap))
-    (home-page "http://bluefish.openoffice.nl")
+    (home-page "https://bluefish.openoffice.nl")
     (synopsis "Web development studio")
     (description
      "Bluefish is an editor aimed at programmers and web developers,
@@ -11559,7 +11611,7 @@ configurable file renaming.")
      "Workrave is a program that assists in the recovery and prevention of
 repetitive strain injury (@dfn{RSI}).  The program frequently alerts you to take
 micro-pauses and rest breaks, and restricts you to your daily limit.")
-    (home-page "http://www.workrave.org")
+    (home-page "https://www.workrave.org")
     (license license:gpl3+)))
 
 (define-public ghex
@@ -12272,7 +12324,7 @@ integrate seamlessly with the GNOME desktop.")
 (define-public gnome-boxes
   (package
     (name "gnome-boxes")
-    (version "42.3")
+    (version "43.3")
     (source
      (origin
        (method url-fetch)
@@ -12280,18 +12332,16 @@ integrate seamlessly with the GNOME desktop.")
                            (version-major version) "/"
                            "gnome-boxes-" version ".tar.xz"))
        (sha256
-        (base32 "1lv0bdh935qj6wkv3ixg2pcv8yrapj79z02gw4fal3rhz3xggvsn"))))
+        (base32 "14zd5ii3igy0am4zqw2jg1xshf2zxsy96yv5pss2vf6rh3svmnzf"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
-           #:configure-flags #~(list "-Drdp=false"
-                                     (string-append "-Dc_link_args=-Wl,-rpath="
-                                                    #$output
-                                                    "/lib/gnome-boxes"))
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'disable-gtk-update-icon-cache
                           (lambda _
-                            (setenv "DESTDIR" "/")))
+                            (substitute* "meson.build"
+                              (("gtk_update_icon_cache: true")
+                               "gtk_update_icon_cache: false"))))
                         (add-before 'configure 'set-qemu-file-name
                           (lambda* (#:key inputs #:allow-other-keys)
                             (substitute* "src/installed-media.vala"
@@ -12305,11 +12355,11 @@ integrate seamlessly with the GNOME desktop.")
            itstool
            pkg-config
            python
-           vala))
+           vala-next))
     (inputs
      (list glib-networking              ;for TLS support
            gsettings-desktop-schemas
-           gtk+
+           gtk
            gtk-vnc
            gtksourceview-4
            json-glib
@@ -12318,24 +12368,29 @@ integrate seamlessly with the GNOME desktop.")
            libhandy
            libosinfo
            libsecret
-           libsoup-minimal-2
+           libsoup
            libusb
            libvirt
            libvirt-glib
            libxml2
-           qemu-minimal                           ;for qemu-img
+           qemu-minimal                 ;for qemu-img
            sparql-query
            spice-gtk
            tracker
            vte
-           webkitgtk-with-libsoup2))    ;for webkit2gtk-4.0
+           webkitgtk))
     (home-page "https://wiki.gnome.org/Apps/Boxes")
     (synopsis "View, access, and manage remote and virtual systems")
     (description "GNOME Boxes is a simple application to view, access, and
 manage remote and virtual systems.  Note that this application requires the
 @code{libvirt} and @code{virtlog} daemons to run.  Use the command
 @command{info '(guix) Virtualization Services'} to learn how to configure
-these services on the Guix System.")
+these services on the Guix System.  If you do not use the
+@code{gnome-desktop-service-type}, you will also want to extend the
+@code{polkit-service-type} with the @code{spice-gtk} package, as well as
+configure the @file{libexec/spice-client-glib-usb-acl-helper} executable of
+@code{spice-gtk} as setuid, to make it possible to redirect USB devices as a
+non-privileged user.")
     (license (list
               ;; For data/icons/empty-boxes.png.
               license:cc-by2.0
@@ -13050,7 +13105,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.9.0")
+    (version "1.11.1")
     (source
      (origin
        (method git-fetch)
@@ -13060,7 +13115,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0vz7mw9kvp3yhn7iqg11dvmk77l65wjp6p1rpn4xnr335zfacmjh"))))
+         "0wvz7ca427x16vrjqzq7b9k1xlgdyhykdix41f48b1m3ry4wcqp2"))))
     (build-system meson-build-system)
     (arguments
      (list

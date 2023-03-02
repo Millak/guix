@@ -156,6 +156,7 @@ provides a 'setup.ml' file as its build system."
   (gexp->derivation name builder
                     #:system system
                     #:target #f
+                    #:graft? #f
                     #:guile-for-build guile))
 
 (define dune-build-system

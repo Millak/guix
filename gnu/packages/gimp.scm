@@ -302,6 +302,19 @@ buffers.")
                "doc"))                  ; 9 MiB of gtk-doc HTML
     (arguments
      (list
+      #:modules `((ice-9 popen)
+                  (ice-9 rdelim)
+                  ,@%gnu-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-gcc-reference
+            ;; Avoid reference to GCC.
+            (lambda _
+              (let* ((port (open-input-pipe "gcc -v 2>&1 | tail -n 1"))
+                     (cc-version (read-line port)))
+                (close-pipe port)
+                (substitute* "app/gimp-version.c"
+                  (("CC_VERSION") (string-append "\"" cc-version "\"")))))))
       #:configure-flags
       #~(list (string-append "--with-html-dir=" #$output "/share/gtk-doc/html")
 

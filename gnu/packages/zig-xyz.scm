@@ -41,7 +41,7 @@
                (base32
                 "1hhs7dz9rpshfd1a7x5swmix2rmh53vsqskh3mzqlrj2lgb3cnii"))))
     (build-system gnu-build-system)
-    (inputs (list zig python))
+    (inputs (list zig-0.9 python))
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         (delete 'configure)

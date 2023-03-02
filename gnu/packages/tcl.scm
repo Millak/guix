@@ -134,7 +134,7 @@
      (list tcl))
     (inputs
      (list tcllib))
-    (home-page "http://incrtcl.sourceforge.net/")
+    (home-page "https://incrtcl.sourceforge.net/")
     (synopsis "Object Oriented programming (OOP) extension for Tcl")
     (description
      "[incr Tcl] is a widely used object-oriented system for Tcl.  The name is
@@ -392,7 +392,7 @@ modules for Tk, all written in high-level Tcl.  Examples of provided widgets:
                             (assoc-ref %build-inputs "libxslt")
                             "/bin/xslt-config"))
        #:test-target "test"))
-    (home-page "http://tclxml.sourceforge.net/")
+    (home-page "https://tclxml.sourceforge.net/")
     (synopsis "Tcl library for XML parsing")
     (description "TclXML provides event-based parsing of XML documents.  The
 application may register callback scripts for certain document features, and
@@ -424,7 +424,7 @@ callback is evaluated.")
                                               "/lib"))))
     (inputs
      (list tcl tk))
-    (home-page "http://tclx.sourceforge.net/")
+    (home-page "https://tclx.sourceforge.net/")
     (synopsis "System programming extensions for Tcl")
     (description
      "Extended Tcl is oriented towards system programming tasks and large

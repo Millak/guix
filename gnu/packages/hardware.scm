@@ -325,7 +325,7 @@ operability and find drivers.")
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "21.82")
+    (version "22.2")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -336,7 +336,7 @@ operability and find drivers.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ih6vrgh64408cijywy9by2snynkw91p3h0ry5pzk3lyqsl0wnlh"))
+        (base32 "1lfzcyiipxwi8rh0aw5sy7n8x986b9f9pa9g048rxn6k7anfpxk7"))
        (modules
         '((guix build utils)))
        (snippet
@@ -824,7 +824,7 @@ specific SMBIOS tables.")
 (define-public memtest86+
   (package
     (name "memtest86+")
-    (version "6.00")
+    (version "6.10")
     (source
      (origin
        (method git-fetch)
@@ -833,7 +833,7 @@ specific SMBIOS tables.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fv605blaf4z0jyl1wp37x5x014dkp0z0a0fh114ws62fhnhdnlv"))
+        (base32 "1igb648rsmbp0s95790qib6mhdsvbsrpigl91gk7yfkz32bip3bz"))
        (patches
         (search-patches "memtest86+-build-reproducibly.patch"))))
     (build-system gnu-build-system)
@@ -897,15 +897,22 @@ can scan as much of your RAM as possible for hardware defects.")
 (define-public memtester
   (package
     (name "memtester")
-    (version "4.5.1")
+    (version "4.6.0")
     (source
      (origin
        (method url-fetch)
        ;; Even the latest release is available under 'old-versions/'.
-       (uri (string-append "http://pyropus.ca/software/memtester/old-versions/"
-                           "memtester-" version ".tar.gz"))
+       (uri (list
+             (string-append "https://pyropus.ca/software/memtester/old-versions/"
+                            "memtester-" version ".tar.gz")
+             ;; XXX ‘pyropus.ca’ redirects to ‘pyropus.ca.’.  Valid, but wreaks
+             ;; havoc with Guile's Web stack & TLS verification.
+             ;; Remove this random mirror when that changes.
+             (string-append "https://ftp.dimensiondata.com/mirrors/"
+                            "ftp.gentoo.org/distfiles/3e/"
+                            "memtester-" version ".tar.gz")))
        (sha256
-        (base32 "0issrasdihav8jgsqb49cfyj0v564z8k9lyg2jrq9h3n4lwc4pqw"))))
+        (base32 "0bmv7n7gj02pda8mwif08xk63xc20r65q1pr099fz30cx2vlxzn9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

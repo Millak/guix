@@ -44,7 +44,6 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system trivial)
   #:use-module (guix store)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
@@ -70,8 +69,8 @@
   #:use-module (gnu packages xml))
 
 (define-public c-intro-and-ref
-  (let ((revision "0")
-        (commit "f88559678feeb1391a0e9c7cf060c4429ef22ffc"))
+  (let ((revision "1")
+        (commit "47e5a234a7c036392e0f9e1e8e48ff3e6855840d"))
     (package
       (name "c-intro-and-ref")
       (version (git-version "0.0.0" revision commit))
@@ -83,7 +82,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0c08h8k7wkn5lw0jqnnaayx55d3vf1q11pgsixfw31i58rnwa5y2"))))
+                  "0aza4vvlg2w0ss6n5xp741ycvg16d041c1x87yh5hpnzcb6y0ii3"))))
       (build-system copy-build-system)
       (arguments
        (list #:phases #~(modify-phases %standard-phases
@@ -255,7 +254,7 @@ compiler while still keeping it small, simple, fast and understandable.")
 (define-public qbe
   (package
     (name "qbe")
-    (version "1.0")
+    (version "1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -264,7 +263,7 @@ compiler while still keeping it small, simple, fast and understandable.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qx4a3fjjrp2m4dsn19rpbjf89k9w7w7l09s96jx8vv15vzsdgis"))))
+                "07nl1kdgpz7hwfkng0yy4xihk0fmv1a2hq9bxzgvhy3vk9r7fmn8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

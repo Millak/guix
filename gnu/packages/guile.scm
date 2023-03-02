@@ -400,7 +400,11 @@ without requiring the source code to be rewritten.")
 
 (define-public guile-3.0-latest guile-3.0)
 
-(define-public guile-3.0/fixed
+;;; The symbol guile-3.0/fixed should be used when guile-3.0 needs fixes
+;;; (security or else) and this deprecation could be removed.
+(define-deprecated/public-alias guile-3.0/fixed guile-3.0/pinned)
+
+(define-public guile-3.0/pinned
   ;; A package of Guile that's rarely changed.  It is the one used in the
   ;; `base' module, and thus changing it entails a full rebuild.
   (package

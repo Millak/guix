@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2018, 2019, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2017, 2018, 2019, 2021, 2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -46,6 +46,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -256,7 +257,7 @@ networks.")
 (define-public onionshare-cli
   (package
     (name "onionshare-cli")
-    (version "2.5")
+    (version "2.6")
     (source
      (origin
        (method git-fetch)
@@ -265,7 +266,8 @@ networks.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16m5ll0v0qjbirwwzbzxg53kq4ry1n3ay5x0h8zkij73v3x0q864"))))
+        (base32 "1bhrp019a0923h7dnfxhgvgvdp81blvnsbnvzy34hp827abxf3ic"))
+       (patches (search-patches "onionshare-cli-async-mode.patch"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
@@ -329,6 +331,11 @@ OnionShare.")
      (substitute-keyword-arguments (package-arguments onionshare-cli)
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'absolutize
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "desktop/onionshare/tab/mode/history.py"
+                  (("Popen\\(\\[\"xdg-open\"")
+                   (string-append "Popen([\"" (which "xdg-open") "\"")))))
             (replace 'change-directory
               (lambda _ (chdir "desktop/")))
             (add-after 'install 'install-data
@@ -353,15 +360,9 @@ OnionShare.")
                   (setenv "QT_QPA_PLATFORM" "offscreen")
                   (setenv "HOME" "/tmp")
                   (apply invoke "xvfb-run" "pytest" "-vv"
-                         (find-files "tests" "^test_gui.*\\.py$")))))))
-       ;; Most tests fail: "2 failed, 8 warnings, 44 errors in 6.06s", due to
-       ;; error "RuntimeError: Please destroy the Application singleton before
-       ;; creating a new Application instance." (see:
-       ;; https://github.com/onionshare/onionshare/issues/1603).
-       ((#:tests? _ #f)
-        #f)))
+                         (find-files "tests" "^test_gui.*\\.py$")))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest xvfb-run))
     (inputs
      ;; The desktop client uses onionshare-cli like a python module.  But
      ;; propagating onionshare-cli's inputs is not great, since a user would
@@ -372,7 +373,7 @@ OnionShare.")
                 python-shiboken-2
                 python-pyside-2
                 python-qrcode
-                xvfb-run)))
+                xdg-utils)))
     (description "OnionShare lets you securely and anonymously share files,
 host websites, and chat with friends using the Tor network.")))
 

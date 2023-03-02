@@ -117,7 +117,7 @@ textfiles to roff for terminal display, and also to HTML for the web.")
                (base32
                 "1c5dl017xil2ssb6a5vg927bnsbc9vymfgi9ahvqbb8gypx0igsx"))))
     (build-system gnu-build-system)
-    (home-page "http://libpipeline.nongnu.org/")
+    (home-page "https://libpipeline.nongnu.org/")
     (synopsis "C library for manipulating pipelines of subprocesses")
     (description
      "libpipeline is a C library for manipulating pipelines of subprocesses in
@@ -211,7 +211,7 @@ a flexible and convenient way.")
      (list (search-path-specification
             (variable "MANPATH")
             (files '("share/man")))))
-    (home-page "http://man-db.nongnu.org/")
+    (home-page "https://man-db.nongnu.org/")
     (synopsis "Standard Unix documentation system")
     (description
      "Man-db is an implementation of the standard Unix documentation system

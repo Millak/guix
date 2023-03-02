@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
@@ -410,6 +410,7 @@ immediately.  Return the exit status of the process in the container."
                          network?)
   "Perform ACTION for home environment. "
 
+  (ensure-profile-directory)
   (define println
     (cut format #t "~a~%" <>))
 
@@ -474,7 +475,6 @@ ACTION must be one of the sub-commands that takes a home environment
 declaration as an argument (a file name.)  OPTS is the raw alist of options
 resulting from command-line parsing."
   (define (ensure-home-environment file-or-exp obj)
-    (ensure-profile-directory)
     (unless (home-environment? obj)
       (leave (G_ "'~a' does not return a home environment~%")
              file-or-exp))
@@ -573,10 +573,10 @@ argument list and OPTS is the option alist."
          (cut import-manifest manifest destination <>))
        (info (G_ "'~a' populated with all the Home configuration files~%")
              destination)
-       (display-hint (format #f (G_ "\
+       (display-hint (G_ "\
 Run @command{guix home reconfigure ~a/home-configuration.scm} to effectively
 deploy the home environment described by these files.\n")
-                             destination))))
+                     destination)))
     ((describe)
      (let ((list-installed-regex (assoc-ref opts 'list-installed)))
        (match (generation-number %guix-home)

@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Raimon Grau <raimonster@gmail.com>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +112,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -673,7 +675,7 @@ the Stream Control Transmission Protocol} (@file{libsctp}) and C language header
 files (@file{netinet/sctp.h}) for accessing SCTP-specific @acronym{APIs,
 application programming interfaces} not provided by the standard sockets.
 It also includes some SCTP-related helper utilities.")
-    (home-page "http://lksctp.sourceforge.net/")
+    (home-page "https://lksctp.sourceforge.net/")
     (license
      (list
       ;; Library.
@@ -1237,7 +1239,7 @@ or server shell scripts with network connections.")
     (native-inputs
      (list which))
     (inputs (list openssl))
-    (home-page "http://www.maier-komor.de/mbuffer.html")
+    (home-page "https://www.maier-komor.de/mbuffer.html")
     (synopsis
      "Swiss army knife for data stream buffering (network aware)")
     (description
@@ -1515,14 +1517,14 @@ receiving NDP messages.")
 (define-public ethtool
   (package
     (name "ethtool")
-    (version "5.15")
+    (version "6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/software/network/"
                                   "ethtool/ethtool-" version ".tar.xz"))
               (sha256
                (base32
-                "0v8i592vwjypf111w0lfvaxdwhzybp6w600g28m9rm490c8xcvv8"))))
+                "1qbhwp8d4nh0cnxd3hg0kr8lm5ikbkl07gvjpzv76kad0qa03pw6"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -1562,7 +1564,7 @@ Ethernet devices.")
                                  (string-append bin "/ifstatus")))
                     #t)))))
     (inputs (list ncurses))
-    (home-page "http://ifstatus.sourceforge.net/graphic/index.html")
+    (home-page "https://ifstatus.sourceforge.net/graphic/index.html")
     (synopsis "Text based network interface status monitor")
     (description
      "IFStatus is a simple, easy-to-use program for displaying commonly
@@ -1754,14 +1756,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.2")
+    (version "4.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "07a18jx88jaa2j1i949w9n1yb149xi02s80inbfji6rgkxliangk"))))
+        (base32 "04cmgvmkyvxdpfy08adxf3smklgzakrvyvb89rrr7yqaridy2lbc"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -2302,6 +2304,28 @@ private (reserved).")
     "Perl Interface to the Domain Name System")
   (description "Net::DNS is the Perl Interface to the Domain Name System.")
   (license license:x11)))
+
+(define-public perl-net-bonjour
+  (package
+    (name "perl-net-bonjour")
+    (version "0.96")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/C/CH/CHLIGE/Net-Bonjour-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "15qzkfk0isn6c4js3ih95k3dylq6scijp863s0485c00n8x1z2n3"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-net-dns))
+    (home-page "https://metacpan.org/release/Net-Bonjour")
+    (synopsis "Module for DNS service discovery (Apple's Bonjour)")
+    (description "Net::Bonjour is a set of modules that allow one to
+discover local services via multicast DNS (mDNS) or enterprise services
+via traditional DNS.  This method of service discovery has been branded
+as Bonjour by Apple Computer.")
+    (license license:perl-license)))
 
 (define-public perl-socket6
  (package
@@ -3708,7 +3732,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
   (package
     (name "opendht")
-    (version "2.4.10")
+    (version "2.4.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3717,8 +3741,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kcc9vmi4swvahq2gikflgba9xfmix80dr9wa3v6xcj1ba2fjd6s"))))
-    (outputs '("out" "tools" "debug"))
+                "0yji5pziqxfvyfizk3fn9j59bqlfdwfa1a0y9jjfknb2mmlwwb9w"))))
+    (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3728,7 +3752,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                   (guix build gnu-build-system)
                   (guix build utils))
       #:configure-flags
-      #~(list "--enable-tests"
+      #~(list "--disable-static"        ;to reduce size
+              "--enable-tests"
               "--enable-proxy-server"
               "--enable-push-notifications"
               "--enable-proxy-server-identity"
@@ -3752,7 +3777,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (substitute* "python/Makefile.am"
                 (("--root=\\$\\(DESTDIR)/")
                  (string-append "--root=/ --single-version-externally-managed "
-                                "--prefix=" #$output)))))
+                                "--prefix=" #$output:python)))))
           (add-after 'unpack 'specify-runpath-for-python-module
             (lambda _
               (substitute* "python/setup.py.in"
@@ -3790,7 +3815,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            gnutls
            jsoncpp
            nettle
-           openssl))                    ;required for the DHT proxy
+           openssl                      ;required for the DHT proxy
+           python))
     (native-inputs
      (list autoconf
            automake
@@ -3873,7 +3899,7 @@ protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
              (substitute* "Makefile.in"
                ((" \\$\\(DESTDIR)/\\$\\(runstatedir)") "")))))))
     (build-system gnu-build-system)
-    (home-page "http://bird.network.cz")
+    (home-page "https://bird.network.cz")
     (synopsis "Internet Routing Daemon")
     (description "BIRD is an Internet routing daemon with full support for all
 the major routing protocols.  It allows redistribution between protocols with a
@@ -3883,7 +3909,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "2.0")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3892,7 +3918,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0icrmd0361yy24sa7wdd388ykaknv1va4678h9ksysz1dmykdr7m"))))
+                "1hp38rh6vpfxkx2f036719b0v9g9yj169l8fd9l9lncqpjbz73y4"))))
     (build-system gnu-build-system)
     (inputs
      (list dbus ell (package-source ell) readline))
@@ -4110,7 +4136,7 @@ easy-to-understand binary values.")
                     (bin (string-append out "/bin")))
                (install-file "tunctl" bin))
              #t)))))
-    (home-page "http://tunctl.sourceforge.net")
+    (home-page "https://tunctl.sourceforge.net")
     (synopsis  "Utility to set up and maintain TUN/TAP network interfaces")
     (description "Tunctl is used to set up and maintain persistent TUN/TAP
 network interfaces, enabling user applications to simulate network traffic.
@@ -4167,7 +4193,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
                ((" \\$\\(LIBDEPS\\)") "$(filter-out -l%,$(LIBDEPS))"))))
          (delete 'bootstrap)            ;no configure.ac file
          (delete 'configure))))         ;no configure script
-    (home-page "http://traceroute.sourceforge.net/")
+    (home-page "https://traceroute.sourceforge.net/")
     (synopsis "Tracks the route taken by packets over an IP network")
     (description "This package provides a modern, but Linux-specific
 implementation of the @command{traceroute} command that can be used to follow
@@ -4478,6 +4504,45 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
    (home-page "https://github.com/netdiscover-scanner/netdiscover")
    (license license:gpl3+)))
 
+(define-public phantomsocks
+  (package
+    (name "phantomsocks")
+    (version "0.0.0-20221222155609-14291e2c889e")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/macronut/phantomsocks")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13lllmh46xwns5ksqqdkl2p7vvnbzkzb6va005nk37bx6c4x2ixp"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:import-path "github.com/macronut/phantomsocks"
+           #:build-flags #~'("-tags" #$(if (target-linux?)
+                                           "rawsocket"
+                                           "pcap"))))
+    (propagated-inputs
+     (list go-github-com-google-gopacket
+           go-github-com-macronut-go-tproxy))
+    (inputs
+     (if (target-linux?)
+         '()
+         (list libpcap)))
+    (home-page "https://github.com/macronut/phantomsocks")
+    (synopsis "Internet censorship circumvention tool")
+    (description
+     "Phantomsocks is an Internet censorship circumvention tool based on the
+desync technique, which was introduced in the 2017 paper
+@url{https://doi.org/10.1145/3131365.3131374, @cite{Your State is Not Mine: A
+Closer Look at Evading Stateful Internet Censorship}}.
+
+Further information on the usage could be found on the Wikibooks page
+@url{https://zh.wikibooks.org/wiki/Phantomsocks, @cite{Phantomsocks}}.")
+    (license license:lgpl3+)))
+
 (define-public putty
   (package
     (name "putty")
@@ -4523,7 +4588,7 @@ implementations.")
 (define-public vnstat
   (package
    (name "vnstat")
-   (version "2.9")
+   (version "2.10")
    (source
     (origin
       (method url-fetch)
@@ -4531,20 +4596,21 @@ implementations.")
                           version ".tar.gz"))
       (sha256
        (base32
-        "1iwxmnpabfljvyng7c8k3z83yw1687i66z5s1980c5x9vrsi98hi"))))
+        "09bx8mz9jdq94i0mpmjbc7dis0klvjx85lml5mp3d36dwm21gim9"))))
    (build-system gnu-build-system)
-   (inputs (list sqlite))
+   (inputs (list sqlite gd))
    (native-inputs (list pkg-config check))
    (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-before 'check 'disable-id-tests
-          (lambda _
-            (substitute*
-                '("Makefile" "tests/vnstat_tests.c")
-              (("tests/id_tests.c \\$") "\\")
-              (("tests/id_tests.h h") "h")
-              (("^.*id_tests.*$") "")))))))
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-before 'check 'disable-id-tests
+           (lambda _
+             (substitute*
+                 '("Makefile" "tests/vnstat_tests.c")
+               (("tests/id_tests.c \\$") "\\")
+               (("tests/id_tests.h h") "h")
+               (("^.*id_tests.*$") "")))))))
    (home-page "https://humdi.net/vnstat/")
    (synopsis "Network traffic monitoring tool")
    (description "vnStat is a console-based network traffic monitor that keeps

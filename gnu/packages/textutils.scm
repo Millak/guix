@@ -79,25 +79,24 @@
 (define-public dos2unix
   (package
     (name "dos2unix")
-    (version "7.4.3")
+    (version "7.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://waterlan.home.xs4all.nl/dos2unix/"
                            "dos2unix-" version ".tar.gz"))
        (sha256
-        (base32 "0wnacvz99rnlx0ayf5jrxwljvh801r8k1ai3hj137yfsaqcv93dn"))))
+        (base32 "0vj3wix17vl7a85hg673qqyrhw9sbq0xiadbbij7v0nm1gdl3a18"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)))) ; no configure script
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)))) ; no configure script
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)))
+     (list gettext-minimal perl))
     (home-page "https://waterlan.home.xs4all.nl/dos2unix.html")
     (synopsis "DOS/Mac to Unix and vice versa text file format converter")
     (description
@@ -852,7 +851,7 @@ categories.")
                             (invoke "sh" "test_all.sh")))))))))
     (native-inputs (list which)) ;for tests
     (inputs (list pcre))
-    (home-page "http://drmtools.sourceforge.net/")
+    (home-page "https://drmtools.sourceforge.net/")
     (synopsis "Utilities to manipulate text and binary files")
     (description "The drm_tools package contains the following commands:
 @table @command
@@ -1082,7 +1081,7 @@ names like Euro.
 @item Handling (bullet, decimal, letter, roman) lists along with (attempt at)
 indentation.
 @end itemize\n")
-    (home-page "http://docx2txt.sourceforge.net")
+    (home-page "https://docx2txt.sourceforge.net")
     (license license:gpl3+)))
 
 (define-public html2text

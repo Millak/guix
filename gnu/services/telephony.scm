@@ -267,7 +267,7 @@ consistent state."))
 CONFIG, a <jami-configuration> object."
   (match-record config <jami-configuration>
     (libjami dbus enable-logging? debug? auto-answer?)
-    `(,(file-append libjami "/libexec/jamid")
+    `(,#~(string-append #$libjami:bin "/libexec/jamid")
       "--persistent"                    ;stay alive after client quits
       ,@(if enable-logging?
             '()                         ;logs go to syslog by default
@@ -524,7 +524,8 @@ argument, either a registered username or the fingerprint of the account.")
                    #:environment-variables
                    ;; This is so that the cx.ring.Ring service D-Bus
                    ;; definition is found by dbus-daemon.
-                   (list (string-append "XDG_DATA_DIRS=" #$libjami "/share"))))
+                   (list (string-append "XDG_DATA_DIRS="
+                                        #$libjami:bin "/share"))))
                (stop #~(make-kill-destructor)))
 
               (shepherd-service
@@ -595,7 +596,8 @@ argument, either a registered username or the fingerprint of the account.")
                     ;; Start the daemon.
                     (define daemon-pid
                       ((make-forkexec-constructor/container
-                        '#$(jami-configuration->command-line-arguments config)
+                        (list #$@(jami-configuration->command-line-arguments
+                                  config))
                         #:mappings
                         (list (file-system-mapping
                                (source "/dev/log") ;for syslog

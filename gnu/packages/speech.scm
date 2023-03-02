@@ -169,7 +169,7 @@ building tools.")
        (inputs
         (list portaudio pulseaudio))
        (native-inputs (list unzip))
-       (home-page "http://espeak.sourceforge.net/")
+       (home-page "https://espeak.sourceforge.net/")
        (synopsis "Software speech synthesizer")
        (description "eSpeak is a software speech synthesizer for English and
 other languages.  eSpeak uses a \"formant synthesis\" method.  This allows many

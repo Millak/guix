@@ -39,6 +39,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -62,10 +63,12 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages kde)
@@ -583,6 +586,79 @@ interface for those who are accustomed to the ircII way of doing things.")
                    ;; "Redistribution is permitted" clause of the license if you
                    ;; distribute binaries.
                    (license:non-copyleft "http://epicsol.org/copyright")))))
+
+(define-public go-gopkg-in-irc-v3
+  (package
+    (name "go-gopkg-in-irc-v3")
+    (version "3.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gopkg.in/irc.v3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f2vv947yf9ygy8ylwqkd9yshybfdsbsp9pffjyvm7l7rnq5da60"))))
+    (build-system go-build-system)
+    (arguments
+     '(;; TODO 3 tests fail because of missing files
+       ;; https://paste.sr.ht/~whereiseveryone/784d068887a65c1b869caa7d7c2077d28a2b2187
+       #:tests? #f
+       #:import-path "gopkg.in/irc.v3" #:unpack-path "gopkg.in/irc.v3"))
+    (propagated-inputs
+     `(("go-gopkg-in-yaml-v2" ,go-gopkg-in-yaml-v2)
+       ("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+    (home-page "https://gopkg.in/irc.v3")
+    (synopsis "Low-level IRC library for Go")
+    (description "Package irc provides a simple IRC library meant as a
+building block for other projects.")
+    (license license:expat)))
+
+(define-public chathistorysync
+  (package
+    (name "chathistorysync")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/chathistorysync")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03dxr178wnicggx0k95wvyzgyk4s4g0adbi2z0md517a5qd1lh23"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~emersion/chathistorysync"
+           #:install-source? #f ; chathistorysync is an end-user application.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'doc
+                 (lambda _
+                   (with-directory-excursion
+                       "src/git.sr.ht/~emersion/chathistorysync"
+                     (invoke "sh" "-c"
+                             "scdoc <chathistorysync.1.scd >chathistorysync.1"))))
+               (add-after 'install 'install-doc
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out")))
+                     (with-directory-excursion
+                         "src/git.sr.ht/~emersion/chathistorysync"
+                       (install-file
+                        "chathistorysync.1"
+                        (string-append out "/share/man/man1")))))))))
+    (inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-crypto
+           go-gopkg-in-irc-v3))
+    (native-inputs (list scdoc))
+    (home-page "https://git.sr.ht/~emersion/chathistorysync")
+    (synopsis "Synchronization tool for IRC chat history")
+    (description
+     "This package provides a synchronization tool for IRC chat history.")
+    (license license:agpl3)))
 
 (define-public litterbox
   (package

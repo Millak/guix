@@ -239,7 +239,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.2
   (package
     (inherit ruby-3.1)
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
@@ -248,7 +248,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1d18ifvdbf21cncpany948vc2gjw3qa36ck9b4i97pg60rrmgx6j"))))
+         "0333xln2jkqdfk5zwxas6rpyd4rff2910z99qnyrqi15mrhqcv3l"))))
     (inputs
      (modify-inputs (package-inputs ruby-3.1)
        (prepend libyaml)))))
@@ -3668,7 +3668,7 @@ use GNU gettext tools for maintenance.")
     (synopsis "Utility library to package internationalized libraries")
     (description
      "Packnga is a library to translate to many languages using YARD.")
-    (home-page "http://ranguba.org/packnga/")
+    (home-page "https://ranguba.org/packnga/")
     (license license:lgpl2.0+)))
 
 (define-public ruby-test-construct
@@ -5080,7 +5080,7 @@ to reproduce user environments.")
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
-    (home-page "http://www.nokogiri.org/")
+    (home-page "https://www.nokogiri.org/")
     (license license:expat)))
 
 (define-public ruby-method-source
@@ -6437,7 +6437,7 @@ lock with a counter.")
     (description
      "Oj is a JSON parser and generator for Ruby, where the encoding and
 decoding of JSON is implemented as a C extension to Ruby.")
-    (home-page "http://www.ohler.com/oj/")
+    (home-page "https://www.ohler.com/oj/")
     (license (list license:expat     ; Ruby code
                    license:bsd-3)))) ; extension code
 
@@ -6461,7 +6461,7 @@ decoding of JSON is implemented as a C extension to Ruby.")
 written as a native C extension.  It was designed to be an alternative to
 Nokogiri and other Ruby XML parsers for generic XML parsing and as an
 alternative to Marshal for Object serialization.")
-    (home-page "http://www.ohler.com/ox")
+    (home-page "https://www.ohler.com/ox")
     (license license:expat)))
 
 (define-public ruby-redcloth
@@ -11668,7 +11668,7 @@ entities.")
     (description
      "Sinatra is a DSL for quickly creating web applications in Ruby with
 minimal effort.")
-    (home-page "http://sinatrarb.com/")
+    (home-page "https://sinatrarb.com/")
     (license license:expat)))
 
 (define-public ruby-thin
@@ -12524,7 +12524,7 @@ reference object.  This object is not created until the first method dispatch.")
        (sha256
         (base32 "197wrgqrddgm1xs3yvjvd8vkvil4h4mdrcp16jmd4b57rxrrr769"))))
     (build-system ruby-build-system)
-    (home-page "http://mjackson.github.io/citrus/")
+    (home-page "https://mjackson.github.io/citrus/")
     (synopsis "Parsing Expressions for Ruby")
     (description "Citrus is a parsing library for Ruby that combines the
 expressiveness of the language with the parsing expressions.")
@@ -12548,7 +12548,7 @@ expressiveness of the language with the parsing expressions.")
       ruby-rspec
       ruby-rake-compiler
       ruby-yard))
-    (home-page "http://cbor.io/")
+    (home-page "https://cbor.io/")
     (synopsis "Concise Binary Object Representation")
     (description "CBOR is a library for the
 @acronym{CBOR, Concise Binary Object Representation} format, based on
@@ -12738,7 +12738,7 @@ using published rates from open-exchange-rates.  Compatible with the money gem."
      ;; No rakefile
      `(#:tests? #f))
     (propagated-inputs (list ruby-rack))
-    (home-page "http://roda.jeremyevans.net")
+    (home-page "https://roda.jeremyevans.net")
     (synopsis "Routing Tree Web Toolkit")
     (description "Roda is a routing tree web toolkit, designed for building fast
 and maintainable web applications in ruby.")

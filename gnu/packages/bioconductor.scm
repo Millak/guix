@@ -33,6 +33,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
@@ -113,6 +114,33 @@ analysis.")
     (description
      "This package provides genome wide annotations for Bovine, primarily
 based on mapping using Entrez Gene identifiers.")
+    (license license:artistic2.0)))
+
+(define-public r-pd-mapping50k-xba240
+  (package
+    (name "r-pd-mapping50k-xba240")
+    (version "3.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pd.mapping50k.xba240" version
+                              'annotation))
+       (sha256
+        (base32 "1a1f3lh5ywhyjawdbj2fzban85c8jz70lfcv3pagd5piincjwxq8"))))
+    (properties `((upstream-name . "pd.mapping50k.xba240")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-dbi
+           r-iranges
+           r-oligo
+           r-oligoclasses
+           r-rsqlite
+           r-s4vectors))
+    (home-page "https://bioconductor.org/packages/pd.mapping50k.xba240")
+    (synopsis "Platform design info for Affymetrix Mapping50K_Xba240")
+    (description "This package provides platform design info for Affymetrix
+Mapping50K_Xba240 (pd.mapping50k.xba240).")
     (license license:artistic2.0)))
 
 (define-public r-reactome-db
@@ -1248,6 +1276,29 @@ demonstration purposes in the @code{AneuFinder} package.")
 from Illumina 450k methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-bcellviper
+  (package
+    (name "r-bcellviper")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "bcellViper" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1fpgh70x2r68v0ximgcdphnyzq2hgiwbamyhbac3yka8flhrd1fm"))))
+    (properties `((upstream-name . "bcellViper")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/bcellViper")
+    (synopsis
+     "Transcriptional interactome and normal human B-cell expression data")
+    (description
+     "This is a tool for human B-cell context-specific transcriptional
+regulatory network.  In addition, this package provides a human normal B-cells
+dataset for the examples in package viper.")
+    (license license:gpl2+)))
+
 (define-public r-bladderbatch
   (package
     (name "r-bladderbatch")
@@ -1430,6 +1481,25 @@ genomes and gene ID formats, largely based on the UCSC table browser.")
 genomation package.  Included are Chip Seq, Methylation and Cage data,
 downloaded from Encode.")
     (license license:gpl3+)))
+
+(define-public r-italicsdata
+  (package
+    (name "r-italicsdata")
+    (version "2.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ITALICSData" version 'experiment))
+       (sha256
+        (base32 "09d2igic3b5p7wpq98hb2lffxm1nfq9mwmnqlbdn3jv49pgz3hmw"))))
+    (properties `((upstream-name . "ITALICSData")))
+    (build-system r-build-system)
+    (home-page "http://bioinfo.curie.fr")
+    (synopsis "ITALICS data")
+    (description "This package provides data needed to use the ITALICS
+package.")
+    ;; Expanded from GPL
+    (license (list license:gpl2+ license:gpl3+))))
 
 (define-public r-macrophage
   (package
@@ -1755,6 +1825,48 @@ difference between conditions follow a negative binomial distribution.  In
 addition, @code{ABSSeq} moderates the fold-changes by two steps: the
 expression level and gene-specific dispersion, that might facilitate the gene
 ranking by fold-change and visualization.")
+    (license license:gpl3+)))
+
+(define-public r-adacgh2
+  (package
+    (name "r-adacgh2")
+    (version "2.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ADaCGH2" version))
+       (sha256
+        (base32 "0g9x3lnr56035wq9ijdcri4sz5pwj8184yxm415gmsxrii9xvpfd"))))
+    (properties `((upstream-name . "ADaCGH2")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'python3-compatibility
+           (lambda _
+             (substitute* "inst/imagemap-example/toMap.py"
+               (("print nameMap") "print(nameMap)")))))))
+    (inputs (list python-wrapper))
+    (propagated-inputs
+     (list r-acgh
+           r-bit
+           r-cluster
+           r-dnacopy
+           r-ff
+           r-glad
+           r-snapcgh
+           r-tilingarray
+           r-waveslim))
+    (home-page "https://github.com/rdiaz02/adacgh2")
+    (synopsis "Big data analysis from aCGH experiments")
+    (description
+     "This package analyzes and creates plots of array @acronym{CGH,
+comparative genomic hybridization} data.  Also, it allows usage of
+@acronym{CBS, Circular Binary Segementation}, wavelet-based smoothing, HMM,
+BioHMM, GLAD, CGHseg.  Most computations are parallelized (either via forking
+or with clusters, including MPI and sockets clusters) and use @code{ff} for
+storing data.")
     (license license:gpl3+)))
 
 (define-public r-adam
@@ -4467,6 +4579,37 @@ domains etc.) from quantification of all types of RNASeq by tools such as
 Kallisto, Salmon, StringTie, Cufflinks/Cuffdiff etc.")
     (license license:gpl2+)))
 
+(define-public r-italics
+  (package
+    (name "r-italics")
+    (version "2.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ITALICS" version))
+       (sha256
+        (base32 "0g937h9zxkxnm424wh58b46mfasdd7pqy5c04r0a46mx9lxibgbs"))))
+    (properties `((upstream-name . "ITALICS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affxparser
+           r-dbi
+           r-glad
+           r-italicsdata
+           r-oligo
+           r-oligoclasses
+           r-pd-mapping50k-xba240))
+    (home-page "http://bioinfo.curie.fr")
+    (synopsis "Normalizing of the Affymetrix GeneChip human mapping")
+    (description
+     "This package provides tools for normalizing and analyzing of GeneChip
+Mapping 100K and 500K Set.  Affymetrix GeneChip Human Mapping 100K and 500K
+Set allows the DNA copy number mea- surement of respectively 2× 50K and 2×
+250K SNPs along the genome.  Their high density allows a precise localization
+of genomic alterations and makes them a powerful tool for cancer and copy
+number polymorphism study.")
+    (license license:gpl2)))
+
 ;; This is a CRAN package, but it depends on r-biobase and r-limma from Bioconductor.
 (define-public r-absfiltergsea
   (package
@@ -4605,7 +4748,7 @@ mapping.")
            r-stringr))
     (native-inputs
      (list r-knitr))
-    (home-page "http://renozao.github.io/NMF")
+    (home-page "https://renozao.github.io/NMF")
     (synopsis "Algorithms and framework for nonnegative matrix factorization")
     (description
      "This package provides a framework to perform Non-negative Matrix
@@ -4912,14 +5055,14 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
 (define-public r-annotationforge
   (package
     (name "r-annotationforge")
-    (version "1.40.0")
+    (version "1.40.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationForge" version))
        (sha256
         (base32
-         "15shh8rmcx69g3zd256720vh0c3qbly5zrvwm463dws41cjla48x"))))
+         "16wdcl56d5i8wrmin610kzs9ldy7h9w5fbnysjb1crkcgbikq1yy"))))
     (properties
      `((upstream-name . "AnnotationForge")))
     (build-system r-build-system)
@@ -5267,13 +5410,13 @@ effort and encourages consistency.")
 (define-public r-bsgenome
   (package
     (name "r-bsgenome")
-    (version "1.66.2")
+    (version "1.66.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome" version))
               (sha256
                (base32
-                "0p75c52sw464bdqz7dyda9h8k2wsxdpdxxhya5awh977xaly90pf"))))
+                "1ps7s6i9mv8ys8k2xw8fdkh2rl2n3kcf2q4zsz6kcz5qpav95ys6"))))
     (properties
      `((upstream-name . "BSgenome")))
     (build-system r-build-system)
@@ -5439,6 +5582,57 @@ provides a highly flexible way to arrange multiple heatmaps and supports
 self-defined annotation graphics.")
     (license license:gpl2+)))
 
+;; This is a CRAN package, but it depends on r-complexheatmap from
+;; Bioconductor.
+(define-public r-conos
+  (package
+    (name "r-conos")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "conos" version))
+       (sha256
+        (base32 "1wdhb3jxh4id6xaghawzip8s264g9jxp4i5xy7jfhi67yfxszx6w"))))
+    (properties `((upstream-name . "conos")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-abind
+           r-complexheatmap
+           r-cowplot
+           r-dendextend
+           r-dplyr
+           r-ggplot2
+           r-ggrepel
+           r-gridextra
+           r-igraph
+           r-irlba
+           r-leidenalg
+           r-magrittr
+           r-matrix
+           r-n2r
+           r-r6
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppeigen
+           r-rcppprogress
+           r-reshape2
+           r-rlang
+           r-rtsne
+           r-sccore))
+    (home-page "https://github.com/kharchenkolab/conos")
+    (synopsis "Clustering on network of samples")
+    (description
+     "This package wires together large collections of single-cell RNA-seq
+datasets, which allows for both the identification of recurrent cell clusters
+and the propagation of information between datasets in multi-sample or
+atlas-scale collections.  Conos focuses on the uniform mapping of homologous
+cell types across heterogeneous sample collections.  For instance, users could
+investigate a collection of dozens of peripheral blood samples from cancer
+patients combined with dozens of controls, which perhaps includes samples of a
+related tissue such as lymph nodes.")
+    (license license:gpl3)))
+
 (define-public r-copywriter
   (package
     (name "r-copywriter")
@@ -5513,14 +5707,14 @@ distribution.")
 (define-public r-deseq2
   (package
     (name "r-deseq2")
-    (version "1.38.2")
+    (version "1.38.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DESeq2" version))
        (sha256
         (base32
-         "1m81yvcl63h5m7kbbxpjk7hzygxmn4l9mlgqrdmnnls56183h3b4"))))
+         "0kryg9jb6zl4zj1wx09rmljqlhr5vdbcmdnri4q91jpggsaj9nxm"))))
     (properties `((upstream-name . "DESeq2")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5745,18 +5939,18 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "3.40.1")
+    (version "3.40.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "1a0rmczlqmqmip2ix28m4iwcpfj04p6nrcl562bjgaifvgyjqhzg"))))
+                "0ds34b135qd63dh3cxkp8b28270m50bn1njwr49b8svgcgzz9x09"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-limma r-locfit r-rcpp))
-    (home-page "http://bioinf.wehi.edu.au/edgeR")
+    (home-page "https://bioinf.wehi.edu.au/edgeR")
     (synopsis "EdgeR does empirical analysis of digital gene expression data")
     (description "This package can do differential expression analysis of
 RNA-seq expression profiles with biological replication.  It implements a range
@@ -5870,14 +6064,14 @@ analysis using other methods.")
 (define-public r-genefilter
   (package
     (name "r-genefilter")
-    (version "1.80.2")
+    (version "1.80.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "genefilter" version))
        (sha256
         (base32
-         "0f25z0hqmrkimv14j03pgjsxpq5rz9ymk151rlg4j4vpc06n73cq"))))
+         "047p84qxfqqm0d0ik7fxcs37fmg0yazsn9rz7h4g24cksb45p689"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
@@ -5960,13 +6154,13 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.34.6")
+    (version "1.34.9")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "123kp69fmy5pbqh0j6qxdkvkm4g9pdwzms01i8qnix3m1b9j597w"))))
+                "0mn9ddm2xwc2b7zg0n9a056jcr61jv6v8jacxm3q8qmz6r30kfrb"))))
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
@@ -6020,13 +6214,13 @@ alignments.")
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
-    (version "1.50.3")
+    (version "1.50.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicFeatures" version))
               (sha256
                (base32
-                "14pn7lngayascj5k84g2g748assbivpiakss247cdj9ngzx5sfwz"))))
+                "1qsr433nh225pk5ngsrjrf2rfv7ynq4c8qsjfjr7khy2z9czlg6n"))))
     (properties
      `((upstream-name . "GenomicFeatures")))
     (build-system r-build-system)
@@ -6121,6 +6315,30 @@ analyzing high-throughput sequencing data (a.k.a. NGS data).  The
 GenomicRanges package defines general purpose containers for storing and
 manipulating genomic intervals and variables defined along a genome.")
     (license license:artistic2.0)))
+
+(define-public r-glad
+  (package
+    (name "r-glad")
+    (version "2.62.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GLAD" version))
+              (sha256
+               (base32
+                "0gb52ic5r6nkgm2ynm174vcvbmkbhhjgv71lsmxpxzcsb6rr7qj6"))))
+    (properties `((upstream-name . "GLAD")))
+    (build-system r-build-system)
+    (inputs (list gsl))
+    (propagated-inputs (list r-aws))
+    (native-inputs (list pkg-config))
+    (home-page "http://bioinfo.curie.fr")
+    (synopsis "Gain and loss analysis of DNA")
+    (description
+     "This package helps with the analysis of array @acronym{CGH, comparative
+genomic hybridization} data by detecting of the breakpoints in the genomic
+profiles and assignment of a status (gain, normal or loss) to each chromosomal
+regions identified.")
+    (license license:gpl2)))
 
 (define-public r-gostats
   (package
@@ -6261,13 +6479,13 @@ of other R packages who wish to make use of HTSlib.")
 (define-public r-impute
   (package
     (name "r-impute")
-    (version "1.72.2")
+    (version "1.72.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "impute" version))
               (sha256
                (base32
-                "1k697pqlkrwmfszipl9irbzmwhk1vz97j3rh0k5nj2mrj3dr71mv"))))
+                "1qq80za9bkg0wqnlckvahnjz08xacwvpnflwnrmwr2xg0ifkis38"))))
     (native-inputs
      (list gfortran))
     (build-system r-build-system)
@@ -6351,21 +6569,88 @@ Binomial data via estimation of latent structure in the natural parameter.")
 (define-public r-limma
   (package
     (name "r-limma")
-    (version "3.54.0")
+    (version "3.54.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "limma" version))
               (sha256
                (base32
-                "1jy75nbkhl0kgv4gw88acx58r9f1kywrd36405x6g05xy05bprma"))))
+                "0x6wkbw8v0hq9dfr433165jmii05rswjsm97dpxvyvxvya3sxqa1"))))
     (build-system r-build-system)
-    (home-page "http://bioinf.wehi.edu.au/limma")
+    (home-page "https://bioinf.wehi.edu.au/limma")
     (synopsis "Package for linear models for microarray and RNA-seq data")
     (description "This package can be used for the analysis of gene expression
 studies, especially the use of linear models for analysing designed experiments
 and the assessment of differential expression.  The analysis methods apply to
 different technologies, including microarrays, RNA-seq, and quantitative PCR.")
     (license license:gpl2+)))
+
+(define-public r-maaslin2
+  (package
+    (name "r-maaslin2")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Maaslin2" version))
+       (sha256
+        (base32 "0ncvsywn9f8766gjb8nxzg82p3w30g8pjs85sy8s0bz9ilanpy89"))))
+    (properties `((upstream-name . "Maaslin2")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'remove-timestamps
+            (lambda _
+              (with-directory-excursion
+                  (string-append #$output "/site-library/Maaslin2/doc/demo_output/")
+                ;; Delete this log file with timestamps.
+                (delete-file "maaslin2.log")
+                ;; Replace PDF timestamps with an arbitrary fixed timestamp.
+                (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                  (substitute* (find-files "." "\\.pdf$")
+                    (("/CreationDate \\(D:.*\\)")
+                     "/CreationDate (D:20230301143558)")
+                    (("/ModDate \\(D:.*\\)")
+                     "/ModDate (D:20230301143558)")))))))))
+    (propagated-inputs
+     (list r-biglm
+           r-car
+           r-chemometrics
+           r-cplm
+           r-data-table
+           r-dplyr
+           r-edger
+           r-ggplot2
+           r-glmmtmb
+           r-hash
+           r-lme4
+           r-lmertest
+           r-logging
+           r-lpsymphony
+           r-mass
+           r-mumin
+           r-metagenomeseq
+           r-optparse
+           r-pbapply
+           r-pcapp
+           r-pheatmap
+           r-pscl
+           r-rmarkdown
+           r-robustbase
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "http://huttenhower.sph.harvard.edu/maaslin2")
+    (synopsis
+     "Multivariable association discovery in population-scale meta-omics studies")
+    (description
+     "MaAsLin2 is comprehensive R package for efficiently determining multivariable
+association between clinical metadata and microbial meta'omic features.  This
+package relies on general linear models to accommodate most modern epidemiological
+study designs, including cross-sectional and longitudinal, and offers a variety
+of data exploration, normalization, and transformation methods.")
+    (license license:expat)))
 
 (define-public r-made4
   (package
@@ -6423,6 +6708,29 @@ containing the location/probe set membership mapping.  The other one creates a
 package that automatically loads that environment.")
     (license license:gpl2+)))
 
+(define-public r-manor
+  (package
+    (name "r-manor")
+    (version "1.70.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MANOR" version))
+       (sha256
+        (base32 "16b30bmyzml97cjdbh6h9ky5c4h5ws2a3g2xkxnd55sd3jg64jgx"))))
+    (properties `((upstream-name . "MANOR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glad))
+    (native-inputs (list r-knitr))
+    (home-page "http://bioinfo.curie.fr/projects/manor/index.html")
+    (synopsis "CGH micro-array normalization")
+    (description
+     "This package ofers functions for importation, normalization,
+visualization, and quality control to correct identified sources of
+variability in array of @acronym{CGH, comparative genomic hybridization}
+experiments.")
+    (license license:gpl2)))
+
 (define-public r-maser
   (package
     (name "r-maser")
@@ -6454,6 +6762,40 @@ package that automatically loads that environment.")
      "This package provides functionalities for downstream analysis, annotation
 and visualizaton of alternative splicing events generated by rMATS.")
     (license license:expat)))
+
+(define-public r-metagenomeseq
+  (package
+    (name "r-metagenomeseq")
+    (version "1.40.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "metagenomeSeq" version))
+       (sha256
+        (base32 "01wjw4kcm8ysa5sn3cqg4a9i5pyksnwmbdqp5fr6n2l9hllkc9jy"))))
+    (properties `((upstream-name . "metagenomeSeq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-foreach
+           r-glmnet
+           r-gplots
+           r-limma
+           r-matrix
+           r-matrixstats
+           r-rcolorbrewer
+           r-wrench))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/HCBravoLab/metagenomeSeq")
+    (synopsis "Statistical analysis for sparse high-throughput sequencing")
+    (description
+     "MetagenomeSeq is designed to determine features (be it @acronym{OTU,
+Operational Taxanomic Unit}, species, etc.) that are differentially abundant
+between two or more groups of multiple samples.  This package is designed to
+address the effects of both normalization and under-sampling of microbial
+communities on disease association detection and the testing of feature
+correlations.")
+    (license license:artistic2.0)))
 
 (define-public r-metaneighbor
   (package
@@ -6660,6 +7002,37 @@ platform that mimics both single and multi-sample scRNA-seq data.")
 characterization and visualization of a wide range of mutational patterns
 in SNV base substitution data.")
     (license license:expat)))
+
+(define-public r-msa
+  (package
+    (name "r-msa")
+    (version "1.30.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "msa" version))
+              (sha256
+               (base32
+                "064hmry0zhmpchxgjsw0krsybr9v9gbsz26zmj2a39pg1nggwbq4"))))
+    (properties `((upstream-name . "msa")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biostrings
+           r-iranges
+           r-rcpp
+           r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "http://www.bioinf.jku.at/software/msa/")
+    (synopsis "Multiple sequence alignment")
+    (description
+     "The msa package provides a unified R/Bioconductor interface to the
+multiple sequence alignment algorithms ClustalW, ClustalOmega, and Muscle.
+All three algorithms are integrated in the package, therefore, they do not
+depend on any external software tools and are available for all major
+platforms.  The multiple sequence alignment algorithms are complemented by a
+function for pretty-printing multiple sequence alignments using the LaTeX
+package TeXshade.")
+    (license license:gpl2+)))
 
 (define-public r-msnbase
   (package
@@ -8003,13 +8376,13 @@ Biology at
 (define-public r-stringdb
   (package
     (name "r-stringdb")
-    (version "2.10.0")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "STRINGdb" version))
        (sha256
-        (base32 "1md79vx4270wgh07g3m1mypdki1b9d4a558zxplcalwppqh0dsmp"))))
+        (base32 "0qpss8fcf8ll47jv45ypsqd9jf7ajdiya7w4mw1wysk76spcwllm"))))
     (properties `((upstream-name . "STRINGdb")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8272,13 +8645,13 @@ R, enabling interactive analysis and visualization of genome-scale data.")
 (define-public r-variantannotation
   (package
     (name "r-variantannotation")
-    (version "1.44.0")
+    (version "1.44.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "VariantAnnotation" version))
               (sha256
                (base32
-                "08rm27jcx6amawqdh59291r0qzkr5cdhbhm0xbjbd5mvdpp1icl8"))))
+                "13zim7dglsd5w39v22d2qa3d1h5dx33c1r4fz3vzri64kac0lhzx"))))
     (properties
      `((upstream-name . "VariantAnnotation")))
     (propagated-inputs
@@ -8587,14 +8960,14 @@ packages.")
 (define-public r-oligo
   (package
     (name "r-oligo")
-    (version "1.62.1")
+    (version "1.62.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "oligo" version))
        (sha256
         (base32
-         "1rhzav57d092ip9qjsmskj3l8h4xyq8cpa2a2jl8g32fwh0dyvsz"))))
+         "19n0nvgyv2hzzcla93w2bzxvfdqg6walh0s1yykwl5b7ni4cazg9"))))
     (properties `((upstream-name . "oligo")))
     (build-system r-build-system)
     (inputs (list zlib))
@@ -8619,6 +8992,33 @@ packages.")
 arrays (expression/SNP/tiling/exon) at probe-level.  It currently supports
 Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
     (license license:lgpl2.0+)))
+
+(define-public r-quantsmooth
+  (package
+    (name "r-quantsmooth")
+    (version "1.64.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "quantsmooth" version))
+       (sha256
+        (base32 "1adwws3brb01d4g6yidipnd8akkiyc3gpdr876hy57qnmcq8xipp"))))
+    (properties `((upstream-name . "quantsmooth")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-quantreg))
+    (home-page "https://bioconductor.org/packages/quantsmooth")
+    (synopsis "Quantile smoothing and genomic visualization of array data")
+    (description
+     "This package implements quantile smoothing.  It contains a dataset used
+to produce human chromosomal ideograms for plotting purposes and a collection
+of arrays that contains data of chromosome 14 of 3 colorectal tumors.  The
+package provides functions for painting chromosomal icons, chromosome or
+chromosomal idiogram and other types of plots.  Quantsmooth offers options
+like converting chromosomal ids to their numeric form, retrieving the human
+chromosomal length from NCBI data, retrieving regions of interest in a vector
+of intensities using quantile smoothing, determining cytoband position based
+on the location of the probe, and other useful tools.")
+    (license license:gpl2)))
 
 (define-public r-qvalue
   (package
@@ -9296,14 +9696,14 @@ parsing of genetic sequencing data from ribosome profiling experiments.")
 (define-public r-interactionset
   (package
     (name "r-interactionset")
-    (version "1.26.0")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "InteractionSet" version))
        (sha256
         (base32
-         "14fb780f2g24ay28dy9xkmfziavbkj75v4vc2cmqbxfdsfp4yn0w"))))
+         "1nk8jhabbrirpyjd1wdy2fjk8y2qi1bsjmgqzh0qi1c83n0ccz5d"))))
     (properties
      `((upstream-name . "InteractionSet")))
     (build-system r-build-system)
@@ -9519,7 +9919,7 @@ in omics data.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-mass))
-    (home-page "http://www.genopolis.it")
+    (home-page "https://www.genopolis.it")
     (synopsis "Detect differential expression in microarray and proteomics datasets")
     (description
      "The Power Law Global Error Model (PLGEM) has been shown to faithfully
@@ -9977,14 +10377,14 @@ penalized least squares regression method.")
 (define-public r-dnacopy
   (package
     (name "r-dnacopy")
-    (version "1.72.2")
+    (version "1.72.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DNAcopy" version))
        (sha256
         (base32
-         "1f6ilfwhli7bdnr48y2ijdydvw7kjbyz701kgbsw3w7inr6x6ayr"))))
+         "1kxzrny19dqd9pqj27vzr15i071sl8ivznpfd6zlqhcymlcsq7nw"))))
     (properties `((upstream-name . "DNAcopy")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
@@ -10135,14 +10535,14 @@ coordinates.")
 (define-public r-lpsymphony
   (package
     (name "r-lpsymphony")
-    (version "1.26.2")
+    (version "1.26.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lpsymphony" version))
        (sha256
         (base32
-         "167zpf7k7gn7gw2cxkqx89y322qinyzjr1naracp5axj4q2qagm3"))))
+         "0iqc6km4pw50li2q35km8jpa0p3i6a6way910wcz56yd2jjbjyz5"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -12788,14 +13188,14 @@ genes.")
 (define-public r-massspecwavelet
   (package
     (name "r-massspecwavelet")
-    (version "1.64.0")
+    (version "1.64.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MassSpecWavelet" version))
        (sha256
         (base32
-         "0l86gwq073nbx973v99b0lr9cz0pb72c4asmgj5w16jykicrnxn9"))))
+         "0p8cd4r3c8va5gybs1vlm3kn7jcg1xg529hvvg27fybb3g91nvqg"))))
     (properties
      `((upstream-name . "MassSpecWavelet")))
     (build-system r-build-system)
@@ -13145,14 +13545,14 @@ Infinium HumanMethylation 450k assay.")
 (define-public r-biocfilecache
   (package
     (name "r-biocfilecache")
-    (version "2.6.0")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocFileCache" version))
        (sha256
         (base32
-         "0skrvmkm6ch8gbpdi4wr59zk5vxzxs7cyqvz3jhki9d8w492wylg"))))
+         "16316a5pgyl5rppyviibf6z3k3m7xmvqyylf1kxdpg0avs6dk8w7"))))
     (properties `((upstream-name . "BiocFileCache")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13736,23 +14136,20 @@ of the analyses while minimizing technical noise.")
 (define-public r-cytolib
   (package
     (name "r-cytolib")
-    (version "2.10.0")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "1y06x7z3p938kfvjx6zqab9hh1xzlrlhdxczyprx7lsd34ylz46n"))))
+         "0rgqlqasil75b03c8c4nyg71ybysrsbqb0bwk6hbnaw8rljxdmi5"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
     (propagated-inputs
      (list r-bh
-           r-rcpp
-           r-rcpparmadillo
-           r-rcppparallel
            r-rhdf5lib
            r-rprotobuflib))
     (home-page "https://bioconductor.org/packages/cytolib/")
@@ -14842,6 +15239,47 @@ be applied to the analysis of other NGS data obtained from experimental
 procedures that induce nucleotide substitutions (e.g. BisSeq).")
     (license license:gpl2)))
 
+(define-public r-tilingarray
+  (package
+    (name "r-tilingarray")
+    (version "1.76.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "tilingArray" version))
+              (sha256
+               (base32
+                "19bkgblpkcp3w3sdyn82c37gkz1sv3r4d546zpbnh36q2pi3l4zd"))))
+    (properties `((upstream-name . "tilingArray")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affy
+           r-biobase
+           r-genefilter
+           r-pixmap
+           r-rcolorbrewer
+           r-strucchange
+           r-vsn))
+    (home-page "https://bioconductor.org/packages/tilingArray")
+    (synopsis "Transcript mapping with high-density oligonucleotide tiling arrays")
+    (description
+     "The package provides functionality that can be useful for the analysis
+of the high-density tiling microarray data (such as from Affymetrix genechips)
+or for measuring the transcript abundance and the architecture.  The main
+functionalities of the package are:
+
+@enumerate
+@item the class segmentation for representing partitionings of a linear series
+  of data;
+@item the function segment for fitting piecewise constant models using a
+  dynamic programming algorithm that is both fast and exact;
+@item the function @code{confint} for calculating confidence intervals using
+  the @code{strucchange} package;
+@item the function @code{plotAlongChrom} for generating pretty plots;
+@item the function @code{normalizeByReference} for probe-sequence dependent
+  response adjustment from a (set of) reference hybridizations.
+@end enumerate")
+    (license license:artistic2.0)))
+
 (define-public r-timeseriesexperiment
   (package
     (name "r-timeseriesexperiment")
@@ -14992,14 +15430,14 @@ arrays based on fast wavelet-based functional models.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.28.1")
+    (version "1.28.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "0ypw3ckaf4qll83rl2bjzfc7g2m4v0n2mq645ppyfga8wv8kwssy"))))
+         "1ii4r0c76b7rnisy4qba2cp5686j73s6b3s6pj66w91wq65dykpd"))))
     (properties
      `((upstream-name . "variancePartition")))
     (build-system r-build-system)
@@ -16548,14 +16986,14 @@ generated.")
 (define-public r-preprocesscore
   (package
     (name "r-preprocesscore")
-    (version "1.60.1")
+    (version "1.60.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "preprocessCore" version))
        (sha256
         (base32
-         "1rwr31jp4dh3xcfx1kx8rz5xvyx1mrwy85hqrjrfr4m6h0qv28k1"))))
+         "0ikxikmz9dy09g726q1wygymm6z2imlgfiizkgh1cl4s0m35fbbd"))))
     (properties
      `((upstream-name . "preprocessCore")))
     (build-system r-build-system)
@@ -16598,14 +17036,14 @@ S4Vectors package itself.")
 (define-public r-wgcna
   (package
     (name "r-wgcna")
-    (version "1.71")
+    (version "1.72-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "WGCNA" version))
        (sha256
         (base32
-         "027pkc4pyn9bifqbjs05318gvlm06mffw016j50n59wfi2g39x91"))))
+         "1p3zsl5r6l5r6ylnrxmbxjpim5qgmncgdjcgn5j69rzk3rv85gqx"))))
     (properties `((upstream-name . "WGCNA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -16896,6 +17334,26 @@ variety of commonly used matrix types, including sparse and HDF5-backed
 matrices.")
     (license license:gpl3)))
 
+(define-public r-beadarraysnp
+  (package
+    (name "r-beadarraysnp")
+    (version "1.64.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "beadarraySNP" version))
+       (sha256
+        (base32 "06hy89pclbyxjw5yf5i9bc3wr789b9pmhd9sdchgljlijs9vcj6g"))))
+    (properties `((upstream-name . "beadarraySNP")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-quantsmooth))
+    (home-page "https://bioconductor.org/packages/beadarraySNP")
+    (synopsis "Normalization and reporting of Illumina SNP bead arrays")
+    (description
+     "This package is importing data from Illumina SNP experiments and it
+performs copy number calculations and reports.")
+    (license license:gpl2)))
+
 ;; This package includes files that have been taken from kentutils.  Some
 ;; parts of kentutils are not released under a free license, but this package
 ;; only uses files that are also found in the free parts of kentutils.
@@ -17166,14 +17624,14 @@ cell types to infer the cell of origin of each single cell independently.")
 (define-public r-scuttle
   (package
     (name "r-scuttle")
-    (version "1.8.3")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scuttle" version))
        (sha256
         (base32
-         "1wgh28rj8m5dz89s9y4rzfy68d8ign6pcnnwj9g7h4sc3jfsg56i"))))
+         "04257gl995r575md1n3h2gy502yi6c8x3352l96mib7rdv4yg53f"))))
     (properties `((upstream-name . "scuttle")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17246,14 +17704,14 @@ quality control.")
 (define-public r-scran
   (package
     (name "r-scran")
-    (version "1.26.1")
+    (version "1.26.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scran" version))
        (sha256
         (base32
-         "1sqc8pf1qzm24kf1l45da12wbzv0nxsy6l3v9fc8srmnvk37p04p"))))
+         "0r80k4dsk609l9ha1jl64yhpwnf0x37i28k9largqsffsl6hw0fy"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beachmat
@@ -17765,14 +18223,14 @@ family of feature/genome hypotheses.")
 (define-public r-gviz
   (package
     (name "r-gviz")
-    (version "1.42.0")
+    (version "1.42.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Gviz" version))
        (sha256
         (base32
-         "09j94kk3dd3bbfw6a2l14i7vd4rh11g9lxhw4zsm15vg71cm1lv9"))))
+         "01qs60sdh7c8cxkv3qbfcfwpjhab88j872va50fi95xsqnmj5isa"))))
     (properties `((upstream-name . "Gviz")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17934,14 +18392,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "2.7-1")
+    (version "2.7-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "1w3jns96m8b9scvaa4hcla3i88a0cfh9qis2l04yixvda5q91gpr"))))
+         "02qmp3ky671fkpjq1vcb083zzvfn5gkf69rhvdlvg7siy5wrjll3"))))
     (build-system r-build-system)
     (inputs
      (list gsl))
@@ -18026,6 +18484,34 @@ graph with the mapped data.  In addition, @code{r-pathview} also seamlessly
 integrates with pathway and gene set (enrichment) analysis tools for
 large-scale and fully automated analysis.")
     (license license:gpl3+)))
+
+(define-public r-snapcgh
+  (package
+    (name "r-snapcgh")
+    (version "1.68.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "snapCGH" version))
+              (sha256
+               (base32
+                "1zxvl8mkby7yb5kppddag6k9w78d1fm6adx52h4cgrfckn28w64q"))))
+    (properties `((upstream-name . "snapCGH")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-acgh
+           r-cluster
+           r-dnacopy
+           r-glad
+           r-limma
+           r-tilingarray))
+    (home-page "https://bioconductor.org/packages/snapCGH")
+    (synopsis "Segmentation, normalisation and processing of the aCGH data")
+    (description
+     "This package provides methods for segmenting, normalising and processing
+aCGH data.  snapCGH also includes plotting functions for visualising raw and
+segmented data for individual and multiple arrays.")
+    ;; Expanded from GPL
+    (license (list license:gpl2+ license:gpl3+))))
 
 (define-public r-snpstats
   (package
@@ -19240,14 +19726,14 @@ embeddings and functions to build new reference.")
 (define-public r-tximeta
   (package
     (name "r-tximeta")
-    (version "1.16.0")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tximeta" version))
        (sha256
         (base32
-         "0v1s5ssinyrizpg2i88dn2ckzs4i16hjfg2pzxhal3ypsiw24qna"))))
+         "15qf8s9akl5qp5wklph5i61d96d9ifr5ijl796v1vafwrj4f3wpa"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
     (propagated-inputs

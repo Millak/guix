@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2015, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -323,7 +323,7 @@ COCOMO model or user-provided parameters.")
 (define-public cloc
   (package
     (name "cloc")
-    (version "1.94")
+    (version "1.96.1")
     (source
      (origin
        (method git-fetch)
@@ -332,7 +332,7 @@ COCOMO model or user-provided parameters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "082kkzr168lkv35hvijq95b817lyj2azcwld47xpws9h35556jlv"))))
+        (base32 "0j7qwc5n1y05jl3rq83mf1d0pavkz9z0waqi8dxblkgw4pwwnjyv"))))
     (build-system gnu-build-system)
     (inputs
      (list coreutils
@@ -430,7 +430,7 @@ features that are not supported by the standard @code{stdio} implementation.")
 (define-public universal-ctags
   (package
     (name "universal-ctags")
-    (version "6.0.20230122.0")
+    (version "6.0.20230212.0")
     (source
      (origin
        (method git-fetch)
@@ -440,7 +440,7 @@ features that are not supported by the standard @code{stdio} implementation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "121d1dyc3wd4bzv4wky3x66j1va3d6ywbw71abp3l88fv7sc0f73"))
+         "0616y8sqbydh4baixs1fndknjvhfpf57p7a0yr1l5n732lknk2pm"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -475,7 +475,7 @@ features that are not supported by the standard @code{stdio} implementation.")
                       (substitute* "Tmain/utils.sh"
                         (("/bin/echo") (which "echo"))))))))
     (native-inputs
-     (list autoconf automake packcc perl pkg-config))
+     (list autoconf automake packcc perl pkg-config python-docutils))
     (inputs
      (list jansson libseccomp libxml2 libyaml pcre2))
     (home-page "https://ctags.io/")
@@ -580,7 +580,7 @@ stack traces.")
                  `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))
              #t)))))
     (inputs (list perl perl-io-compress perl-json))
-    (home-page "http://ltp.sourceforge.net/coverage/lcov.php")
+    (home-page "https://ltp.sourceforge.net/coverage/lcov.php")
     (synopsis "Code coverage tool that enhances GNU gcov")
     (description "LCOV is an extension of @command{gcov}, a tool part of the
 GNU@tie{}Binutils, which provides information about what parts of a program
@@ -809,7 +809,7 @@ independent targets.")
                            (install-file l etcdir))
                          (find-files "etc" "\\.cfg$")))
              #t)))))
-    (home-page "http://uncrustify.sourceforge.net/")
+    (home-page "https://uncrustify.sourceforge.net/")
     (synopsis "Code formatter for C and other related languages")
     (description
      "Beautify source code in many languages of the C family (C, C++, C#,
@@ -875,7 +875,7 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
                   (make-so-link sofile "(\\.[0-9]){2}$")) ;; link .so.3
                 (find-files libdir "lib.*\\.so\\..*")))
              #t)))))
-    (home-page "http://astyle.sourceforge.net/")
+    (home-page "https://astyle.sourceforge.net/")
     (synopsis "Source code indenter, formatter, and beautifier")
     (description
      "Artistic Style is a source code indenter, formatter, and beautifier for
@@ -1076,7 +1076,7 @@ Readline library.")
        ;; on SysV curses.
        (list (string-append "--with-ncurses="
                             (assoc-ref %build-inputs "ncurses")))))
-    (home-page "http://cscope.sourceforge.net")
+    (home-page "https://cscope.sourceforge.net")
     (synopsis "Tool for browsing source code")
     (description
      "Cscope is a text screen based source browsing tool. Although it is

@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -875,6 +876,13 @@ hanja dictionary and small hangul character classification.")
              (substitute* "meson.build"
                (("update_desktop_database: true")
                 "update_desktop_database: false"))))
+         (add-after 'set-paths 'add-install-to-pythonpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (ibus-stt-dir (string-append out "/share/ibus-stt")))
+               (setenv "GUIX_PYTHONPATH"
+                       (string-append ibus-stt-dir ":"
+                                      (getenv "GUIX_PYTHONPATH"))))))
          (add-after 'install 'wrap-with-additional-paths
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Make sure 'ibus-{setup,engine}-stt' find the gst-vosk plugin
@@ -886,23 +894,14 @@ hanja dictionary and small hangul character classification.")
                                (,(string-append (assoc-ref inputs "gst-vosk")
                                                 "/lib/gstreamer-1.0")
                                 ,(getenv "GST_PLUGIN_SYSTEM_PATH")))
-                             `("GUIX_PYTHONPATH" ":" prefix
-                               (,(getenv "GUIX_PYTHONPATH")
-                                ,(string-append (assoc-ref inputs "ibus")
-                                                "/lib/girepository-1.0")
-                                ,(string-append (assoc-ref outputs "out")
-                                                "/share/ibus-stt")))
-                             `("GI_TYPELIB_PATH" ":" prefix
-                               (,(string-append (assoc-ref inputs "ibus")
-                                                "/lib/girepository-1.0")
-                                ,(string-append (assoc-ref outputs "out")
-                                                "/share/ibus-stt")))))
+                             `("GUIX_PYTHONPATH" =
+                               (,(getenv "GUIX_PYTHONPATH")))
+                             `("GI_TYPELIB_PATH" =
+                               (,(getenv "GI_TYPELIB_PATH")))))
                          (list (string-append out "/libexec/ibus-engine-stt")
                                (string-append out "/libexec/ibus-setup-stt")))))))))
     (inputs
-     (list desktop-file-utils
-           (list glib "bin")
-           gobject-introspection
+     (list bash-minimal
            gst-vosk
            gstreamer
            gtk
@@ -912,7 +911,11 @@ hanja dictionary and small hangul character classification.")
            python-babel
            python-pygobject))
     (native-inputs
-     (list gettext-minimal libxml2 pkg-config))
+     (list desktop-file-utils
+           gettext-minimal
+           (list glib "bin")
+           gobject-introspection
+           libxml2 pkg-config))
     (home-page "https://github.com/PhilippeRo/IBus-Speech-To-Text")
     (synopsis "Speech to text IBus engine using VOSK")
     (description "This Input Method uses VOSK for voice recognition and allows

@@ -29,6 +29,22 @@
 
 # We require Bash but for portability we'd rather not use /bin/bash or
 # /usr/bin/env in the shebang, hence this hack.
+
+# Environment variables
+#
+# GUIX_BINARY_FILE_NAME
+#
+# Can be used to override the automatic download mechanism and point
+# to a local Guix binary archive filename like
+# "/tmp/guix-binary-1.4.0rc2.armhf-linux.tar.xz"
+#
+# GUIX_ALLOW_OVERWRITE
+#
+# Instead of aborting to avoid overwriting a previous installations,
+# allow copying over /var/guix or /gnu.  This can be useful when the
+# installation required the user to extract Guix packs under /gnu to
+# satisfy its dependencies.
+
 if [ "x$BASH_VERSION" = "x" ]
 then
     exec bash "$0" "$@"
@@ -336,16 +352,15 @@ sys_create_store()
 
     _debug "--- [ ${FUNCNAME[0]} ] ---"
 
-    if [[ -e "/var/guix" || -e "/gnu" ]]; then
+    if [[ -z $GUIX_ALLOW_OVERWRITE && (-e /var/guix || -e /gnu) ]]; then
         die "A previous Guix installation was found.  Refusing to overwrite."
+    else
+        _msg "${WAR}Overwriting existing installation!"
     fi
 
     cd "$tmp_path"
-    tar --extract --file "$pkg" && _msg "${PAS}unpacked archive"
-
     _msg "${INF}Installing /var/guix and /gnu..."
-    mv "${tmp_path}/var/guix" /var/
-    mv "${tmp_path}/gnu" /
+    tar --extract --file "$pkg" -C /
 
     _msg "${INF}Linking the root user's profile"
     mkdir -p ~root/.config/guix

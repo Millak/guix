@@ -166,16 +166,47 @@ INTERVAL (a time-duration object), otherwise does nothing and returns #f."
   ;; Number of columns of the terminal.
   (make-parameter 80))
 
+(define-record-type* <progress-bar-style>
+  progress-bar-style make-progress-bar-style progress-bar-style?
+  (start  progress-bar-style-start)
+  (stop   progress-bar-style-stop)
+  (filled progress-bar-style-filled)
+  (steps  progress-bar-style-steps))
+
+(define ascii-bar-style
+  (progress-bar-style
+    (start #\[)
+    (stop #\])
+    (filled #\#)
+    (steps '())))
+
+(define unicode-bar-style
+  (progress-bar-style
+    (start #\x2595)
+    (stop #\x258f)
+    (filled #\x2588)
+    (steps '(#\x258F #\x258E #\x258D #\x258C #\x258B #\x258A #\x2589))))
+
 (define* (progress-bar % #:optional (bar-width 20))
   "Return % as a string representing an ASCII-art progress bar.  The total
 width of the bar is BAR-WIDTH."
-  (let* ((bar-width (max 3 (- bar-width 2)))
-         (fraction (/ % 100))
-         (filled   (inexact->exact (floor (* fraction bar-width))))
-         (empty    (- bar-width filled)))
-    (format #f "[~a~a]"
-            (make-string filled #\#)
-            (make-string empty #\space))))
+  (let* ((bar-style (if (equal? (port-encoding (current-output-port)) "UTF-8")
+                        unicode-bar-style
+                        ascii-bar-style))
+         (bar-width (max 3 (- bar-width 2)))
+         (intermediates (+ (length (progress-bar-style-steps bar-style)) 1))
+         (step     (inexact->exact (floor (/ (* % bar-width intermediates) 100))))
+         (filled   (quotient step intermediates))
+         (intermediate
+           (list-ref (cons #f (progress-bar-style-steps bar-style))
+                     (modulo step intermediates)))
+         (empty    (- bar-width filled (if intermediate 1 0))))
+    (simple-format #f "~a~a~a~a~a"
+                   (string (progress-bar-style-start bar-style))
+                   (make-string filled (progress-bar-style-filled bar-style))
+                   (if intermediate (string intermediate) "")
+                   (make-string empty #\space)
+                   (string (progress-bar-style-stop bar-style)))))
 
 (define (erase-current-line port)
   "Write an ANSI erase-current-line sequence to PORT to erase the whole line and

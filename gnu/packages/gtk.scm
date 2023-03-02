@@ -2366,7 +2366,7 @@ glass artworks done by Venicians glass blowers.")
      (list gobject-introspection gtk+ pango))
     (propagated-inputs
      (list enchant))           ; gtkspell3-3.0.pc refers to it
-    (home-page "http://gtkspell.sourceforge.net")
+    (home-page "https://gtkspell.sourceforge.net")
     (synopsis "Spell-checking addon for GTK's TextView widget")
     (description
      "GtkSpell provides word-processor-style highlighting and replacement of
@@ -2424,7 +2424,7 @@ Parcellite and adds bugfixes and features.")
               '("-Dintrospection=false")
               '()))))
     (native-inputs
-     `(("git" ,git-minimal/fixed)
+     `(("git" ,git-minimal/pinned)
        ("gobject-introspection" ,gobject-introspection)
        ("mutest" ,mutest)
        ("pkg-config" ,pkg-config)))

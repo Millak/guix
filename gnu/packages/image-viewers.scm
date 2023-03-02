@@ -276,7 +276,7 @@ actions.")
            `(,glib "bin") ; glib-gettextize
            intltool
            pkg-config))
-    (home-page "http://www.geeqie.org/")
+    (home-page "https://www.geeqie.org/")
     (synopsis "Lightweight GTK+ based image viewer")
     (description
      "Geeqie is a lightweight GTK+ based image viewer for Unix like operating
@@ -306,7 +306,7 @@ collection.  Geeqie was initially based on GQview.")
     (synopsis "Simple and fast image viewer for X")
     (description "gpicview is a lightweight GTK+ 2.x based image viewer.
 It is the default image viewer on LXDE desktop environment.")
-    (home-page "http://lxde.sourceforge.net/gpicview/")
+    (home-page "https://lxde.sourceforge.net/gpicview/")
     (license license:gpl2+)))
 
 (define-public sxiv
@@ -592,7 +592,7 @@ and WebP.")
                       (dirname
                        (search-input-file inputs "include/OpenEXR/ImathInt64.h"))
                       ":" (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
-    (home-page "http://qtpfsgui.sourceforge.net")
+    (home-page "https://qtpfsgui.sourceforge.net")
     (synopsis "High dynamic range (HDR) imaging application")
     (description
      "Luminance HDR (formerly QtPFSGui) is a graphical user interface
@@ -750,7 +750,7 @@ displayed in a terminal.")
 (define-public imv
   (package
     (name "imv")
-    (version "4.3.1")
+    (version "4.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -758,21 +758,21 @@ displayed in a terminal.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "01x6qg7nhikqh68gnzrdvq0rxma5v9z19il89y8bvdrcr7r1vh40"))
+                "1zlds43z17jrnsrfz3rf3sb3pa5gkmxaibq87509ikc7p1p09c9c"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'record-absolute-file-names
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; 'imv' is a script that execs 'imv-x11' or 'imv-wayland'.
-             ;; Record their absolute file name.
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (substitute* (string-append bin "/imv")
-                 (("imv-")
-                  (string-append bin "/imv-")))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'record-absolute-file-names
+                 (lambda _
+                   ;; 'imv' is a script that execs 'imv-x11' or 'imv-wayland'.
+                   ;; 'imv-dir' execs 'imv'. Record their absolute file names.
+                   (let ((bin (string-append #$output "/bin")))
+                     (substitute* (string-append bin "/imv")
+                       (("imv-") (string-append bin "/imv-")))
+                     (substitute* (string-append bin "/imv-dir")
+                       (("imv") (string-append bin "/imv")))))))))
     (native-inputs
      (list asciidoc
            pkg-config))
@@ -863,7 +863,7 @@ with tiling window managers.  Features include:
        #:make-flags
        (list
         (string-append "PREFIX=" (assoc-ref %outputs "out")))))
-    (home-page "http://spiegl.de/qiv/")
+    (home-page "https://spiegl.de/qiv/")
     (synopsis "Graphical image viewer for X")
     (description
      "Quick Image Viewer is a small and fast GDK/Imlib2 image viewer.

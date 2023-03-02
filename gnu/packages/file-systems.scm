@@ -461,8 +461,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "494421ee6e85514f90bb316d77e1dd4f7dad3420")
-        (revision "15"))
+  (let ((commit "46a6b9210c927ab46fd1227cb6f641be0b4a7505")
+        (revision "16"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -474,7 +474,7 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1sdh9rl8ydnb28646773lsxpdy5jysvjbxs2nwr3hsv4qyv93vc4"))))
+          (base32 "0jblpwz8mxrx0pa2gc5bwj60qjj2c0zmd8r06f2bhgzs75avpkj3"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
@@ -706,7 +706,7 @@ single file can be mounted.")
     (build-system gnu-build-system)
     (inputs
      (list `(,util-linux "lib")))
-    (home-page "http://jfs.sourceforge.net/home.html")
+    (home-page "https://jfs.sourceforge.net/home.html")
     (synopsis "Utilities for managing JFS file systems")
     (description
      "The JFSutils are a collection of utilities for managing the @acronym{JFS,
@@ -926,7 +926,7 @@ All of this is accomplished without a centralized metadata server.")
      (list curl glib fuse))
     (native-inputs
      (list pkg-config))
-    (home-page "http://curlftpfs.sourceforge.net/")
+    (home-page "https://curlftpfs.sourceforge.net/")
     (synopsis "Mount remote file systems over FTP")
     (description
      "This is a file system client based on the FTP File Transfer Protocol.")
@@ -1251,7 +1251,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.7")
+    (version "2.1.9")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1260,7 +1260,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "06x7mjsgqdl1gqyn0gniklphh6i0fgbnxyjgqq8gzrjx30zfcqk4"))))
+           (base32 "1xjhzqi4jqc3mdps93w4b5f0qhy16fmhz44gsvy1fkmm5vgjq5vb"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -1809,7 +1809,7 @@ in FUSE for rootless containers.")
 (define-public bees
   (package
     (name "bees")
-    (version "0.8")
+    (version "0.9.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1826,14 +1826,9 @@ in FUSE for rootless containers.")
                      (("city.o.*") ""))
                    (substitute* "src/bees-hash.cc"
                      (("#include .crucible/city.h.") "#include <city.h>"))))
-              (patches
-               (search-patches
-                ;; XXX: Cherry-picked from upstream, remove the patch when
-                ;; bumping version.
-                "bees-beesd-honor-destdir-on-installation.patch"))
               (sha256
                (base32
-                "1kxpz1p9k5ir385kpvmfjawki5vg22hlx768k7835w6n5z5a65y4"))))
+                "0xik1xg6ma5yglhvs60ny27242iapqwzikmqbgij1avjffs6776a"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
@@ -1867,16 +1862,19 @@ in FUSE for rootless containers.")
                       (search-input-file inputs (string-append "/bin/" command)))
 
                      (("btrfs sub")
-                      (string-append (search-input-file inputs "/bin/btrfs") " sub"))))))))
+                      (string-append (search-input-file inputs "/bin/btrfs")
+                                     " sub"))))))))
     (inputs (list btrfs-progs cityhash util-linux))
     (home-page "https://github.com/Zygo/bees")
-    (synopsis "Best-Effort Extent-Same, a btrfs dedupe agent")
+    (synopsis "Deduplication agent for btrfs file systems")
     (description
-     "@code{bees} is a block-oriented userspace deduplication agent designed
-for large btrfs filesystems.  It is an offline dedupe combined with an
-incremental data scan capability to minimize time data spends on disk from
-write to dedupe.")
-    (license license:gpl3+)))
+     "@acronym{BEES, Best-Effort Extent-Same} is a block-oriented, user-space
+deduplication agent designed for large btrfs file systems.  It combines off-line
+data deduplication with incremental scanning to minimize the time your data
+spend on disk between being written and being deduplicated.")
+    (license (list license:gpl3+     ; the combined work
+                   license:zlib      ; lib/crc64.cc
+                   license:gpl2))))  ; include/crucible/btrfs.h
 
 (define-public dwarfs
   (package

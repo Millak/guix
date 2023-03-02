@@ -36,7 +36,6 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system gnu)
@@ -414,7 +413,7 @@ HTTP.  Features:
          "1bk29w09zcpsv8hp0g0al7nwrxa07z0ycls3mbh83wfavk83aprl"))))
     (build-system python-build-system)
     (native-inputs (list python-six))
-    (home-page "http://graphiteapp.org/")
+    (home-page "https://graphiteapp.org/")
     (synopsis "Fixed size round-robin style database for Graphite")
     (description "Whisper is one of three components within the Graphite
 project.  Whisper is a fixed-size database, similar in design and purpose to
@@ -444,7 +443,7 @@ historical data.")
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
     (propagated-inputs
      (list python-cachetools python-txamqp python-urllib3 python-whisper))
-    (home-page "http://graphiteapp.org/")
+    (home-page "https://graphiteapp.org/")
     (synopsis "Backend data caching and persistence daemon for Graphite")
     (description "Carbon is a backend data caching and persistence daemon for
 Graphite.  Carbon is responsible for receiving metrics over the network,
@@ -666,7 +665,7 @@ future system load (i.e., capacity planning).")
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (arguments '(#:tests? #f)) ;; No included tests.
-    (home-page "http://www.maier-komor.de/hostscope.html")
+    (home-page "https://www.maier-komor.de/hostscope.html")
     (properties `((release-monitoring-url . ,home-page)))
     (synopsis
      "System monitoring tool for multiple hosts")

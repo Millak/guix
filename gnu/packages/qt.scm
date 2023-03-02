@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -682,7 +683,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* (find-files "bin" "\\.in$")
                   (("/bin/pwd")
-                   (search-input-file inputs "bin/pwd")))
+                   (search-input-file inputs "bin/pwd"))
+                  ;; Do not keep a reference to cmake-minimal; it is looked
+                  ;; from PATH anyway.
+                  (("original_cmake_path=\"@CMAKE_COMMAND@\"")
+                   "original_cmake_path=\"\""))
                 (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
                   (("\"xdg-open\"")
                    (format #f "~s" (search-input-file inputs "bin/xdg-open"))))
@@ -693,6 +698,12 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 (substitute* "src/corelib/CMakeLists.txt"
                   (("/bin/ls")
                    (search-input-file inputs "bin/ls")))))
+            (add-after 'patch-source-shebangs 'do-not-capture-python
+              (lambda _
+                (substitute* '("mkspecs/features/uikit/devices.py"
+                               "util/testrunner/qt-testrunner.py")
+                  (((which "python3"))
+                   "/usr/bin/env python3"))))
             (replace 'configure
               (assoc-ref %standard-phases 'configure))
             (replace 'build
@@ -1109,6 +1120,44 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
     (description "The QtX11Extras module includes the library to access X11
 from within Qt 5.")))
 
+(define-public qxlsx
+  (package
+    (name "qxlsx")
+    (version "1.4.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/QtExcel/QXlsx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h95h96vz47cnfp62j7bx6ih725gbv005hm0cfqanfvqd5xd9qsg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "../source/QXlsx"
+              "-DCMAKE_BUILD_TYPE=Release"
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source/TestExcel"
+                  (invoke "qmake")
+                  (invoke "make" "-j" (number->string (parallel-job-count)))
+                  (invoke "./TestExcel"))))))))
+     (inputs
+      (list qtbase-5))
+     (home-page "https://qtexcel.github.io/QXlsx/")
+     (synopsis "C++ library to read/write Excel XLSX files using Qt")
+     (description
+      "QXlsx is a successor of QtXlsx and providies a functionality to work with Excel
+XLSX document format.")
+     (license license:expat)))
+
 (define-public qtxmlpatterns
   (package (inherit qtsvg-5)
     (name "qtxmlpatterns")
@@ -1279,6 +1328,13 @@ with JavaScript and C++.")))
                     ;; qrc). Import paths used:
                     ;; /gnu/store/...-qtbase-6.3.1/lib/qt6/qml"
                     "tst_qmltc_qprocess"
+                    ;; This test is non-deterministic; may fail under high
+                    ;; load (see:
+                    ;; https://bugreports.qt.io/browse/QTBUG-111008).
+                    "tst_qqmlprofilerservice"
+                    ;; This one also causes non-determinstic failures (see:
+                    ;; https://bugreports.qt.io/browse/QTBUG-101488).
+                    "tst_qquickfolderdialogimpl"
                     ;; These test fail when running qmlimportscanner; perhaps
                     ;; an extra CMAKE_PREFIX_PATH location is missing to
                     ;; correctly locate the imports.
@@ -2654,7 +2710,8 @@ using the Enchant spell-checking library.")
                   "src/buildtools/config/linux.pri"
                   (lambda (in out)
                     (display (get-string-all in) out)
-                    (display "\ngn_args += use_system_openh264=true\n" out)))
+                    (display "\ngn_args += use_system_openh264=true\n" out)
+                    (display "\ngn_args += link_pulseaudio = true\n" out)))
                  ;; Qtwebengine is not installed into the same prefix as
                  ;; qtbase.  Some qtbase QTLibraryInfo constants will not
                  ;; work.  Replace with the full path to the qtwebengine-5
@@ -3255,7 +3312,6 @@ module provides support functions to the automatically generated code.")
        ("qtsvg-5" ,qtsvg-5)
        ("qttools-5" ,qttools-5)
        ("qtwebchannel-5" ,qtwebchannel-5)
-       ("qtwebkit" ,qtwebkit)
        ("qtwebsockets-5" ,qtwebsockets-5)
        ("qtx11extras" ,qtx11extras)
        ("qtxmlpatterns" ,qtxmlpatterns)))
@@ -3352,7 +3408,7 @@ contain over 620 classes.")
     (inputs
      `(("python" ,python-wrapper)
        ("python-sip" ,python-sip)
-       ("python-pyqt" ,python-pyqt-without-qtwebkit)
+       ("python-pyqt" ,python-pyqt)
        ("qtbase" ,qtbase-5)
        ("qtsvg-5" ,qtsvg-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
@@ -3409,17 +3465,6 @@ WebEngine libraries.  The bindings sit on top of PyQt5 and are implemented as a
 set of three modules.  Prior to v5.12 these bindings were part of PyQt
 itself.")
     (license license:gpl3)))
-
-;; XXX: This is useful for removing qtwebkit from other packages' dependency
-;; graphs, as well as for preventing python-pyqtwebengine from transitively
-;; depending on qtwebkit.
-;; Ultimately, it would be nicer to have a more modular set of python-pyqt-*
-;; packages that could be used together.
-(define-public python-pyqt-without-qtwebkit
-  (package/inherit python-pyqt
-    (name "python-pyqt-without-qtwebkit")
-    (inputs
-     (alist-delete "qtwebkit" (package-inputs python-pyqt)))))
 
 (define-public python-pyqt-builder
   (package
@@ -3786,7 +3831,7 @@ that can be only started once per user.
              (for-each delete-file (find-files "doc/man/man3" "^_tmp.*"))
              (mkdir-p man)
              (copy-recursively "doc/man" man)))))))
-  (home-page "http://qwt.sourceforge.net")
+  (home-page "https://qwt.sourceforge.net")
   (synopsis "Qt widgets for plots, scales, dials and other technical software
 GUI components")
   (description
@@ -3799,89 +3844,6 @@ different kinds of sliders, and much more.")
     (license:non-copyleft "http://qwt.sourceforge.net/qwtlicense.html")
     ;; textengines/mathml/qwt_mml_document.{cpp,h} is dual LGPL2.1/GPL3 (either).
     license:lgpl2.1 license:gpl3))))
-
-(define-public qtwebkit
-  (package
-    (name "qtwebkit")
-    (version "5.212.0-alpha4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/annulen/webkit/releases/download/"
-                            "qtwebkit-" version "/qtwebkit-" version ".tar.xz"))
-        (sha256
-         (base32
-          "1rm9sjkabxna67dl7myx9d9vpdyfxfdhrk9w7b94srkkjbd2d8cw"))
-        (patches (search-patches "qtwebkit-pbutils-include.patch"
-                                 "qtwebkit-fix-building-with-bison-3.7.patch"
-                                 "qtwebkit-fix-building-with-glib-2.68.patch"
-                                 "qtwebkit-fix-building-with-icu-68.patch"
-                                 "qtwebkit-fix-building-with-python-3.9.patch"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list perl
-           python
-           ruby
-           bison
-           flex
-           gperf
-           pkg-config))
-    (inputs
-     `(("icu" ,icu4c)
-       ("glib" ,glib)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libwebp" ,libwebp)
-       ("sqlite" ,sqlite)
-       ("fontconfig" ,fontconfig)
-       ("libxrender" ,libxrender)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative-5" ,qtdeclarative-5)
-       ("qtlocation" ,qtlocation)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtsensors" ,qtsensors)
-       ("qtwebchannel-5" ,qtwebchannel-5)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)))
-    (arguments
-     `(#:tests? #f ; no apparent tests; it might be necessary to set
-                   ; ENABLE_API_TESTS, see CMakeLists.txt
-
-       ;; Parallel builds fail due to a race condition:
-       ;; <https://bugs.gnu.org/34062>.
-       #:parallel-build? #f
-
-       #:configure-flags (list ;"-DENABLE_API_TESTS=TRUE"
-                               "-DPORT=Qt"
-                               "-DUSE_LIBHYPHEN=OFF"
-                               "-DUSE_SYSTEM_MALLOC=ON"
-                               ;; XXX: relative dir installs to build dir?
-                               (string-append "-DECM_MKSPECS_INSTALL_DIR="
-                                              %output "/lib/qt5/mkspecs/modules")
-                               ;; Sacrifice a little speed in order to link
-                               ;; libraries and test executables in a
-                               ;; reasonable amount of memory.
-                               "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--no-keep-memory"
-                               "-DCMAKE_EXE_LINKER_FLAGS=-Wl,--no-keep-memory")))
-    (home-page "https://www.webkit.org")
-    (synopsis "Web browser engine and classes to render and interact with web
-content")
-    (description "QtWebKit provides a Web browser engine that makes it easy to
-embed content from the World Wide Web into your Qt application.  At the same
-time Web content can be enhanced with native controls.")
-    ;; Building QtWebKit takes around 13 hours on an AArch64 machine.  Give some
-    ;; room for slower or busy hardware.
-    (properties '((timeout . 64800)))   ;18 hours
-
-    ;; XXX: This consumes too much RAM to successfully build on AArch64 (e.g.,
-    ;; SoftIron OverDrive with 8 GiB of RAM), so instead of wasting resources,
-    ;; disable it on non-Intel platforms.
-    (supported-systems '("x86_64-linux" "i686-linux"))
-
-    (license license:lgpl2.1+)))
 
 (define-public dotherside
   (package
@@ -4324,7 +4286,7 @@ generate Python bindings for your C or C++ code.")))
      (list qtbase-5 qttools-5))
     (inputs
      (list glu))
-    (home-page "http://libqglviewer.com")
+    (home-page "https://libqglviewer.com")
     (synopsis "Qt-based C++ library for the creation of OpenGL 3D viewers")
     (description
      "@code{libQGLViewer} is a C++ library based on Qt that eases the creation
@@ -4625,7 +4587,7 @@ a secure way.")
                    (invoke "qmake"
                            (string-append "PREFIX=" #$output)
                            (string-append "LIBDIR=" #$output "/lib")))))))
-    (home-page "http://accounts-sso.gitlab.io/signond/index.html")
+    (home-page "https://accounts-sso.gitlab.io/signond/index.html")
     (synopsis "Perform user authentication over D-Bus")
     (description "This package provides a D-Bus service which performs user
 authentication on behalf of its clients.")

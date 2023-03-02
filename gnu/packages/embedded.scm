@@ -1585,7 +1585,7 @@ plus many of their variants.")
                                "TARGETS += sdcc-misc\n"
                                "PKGS += $(SDCC_MISC)")))
              #t)))))
-    (home-page "http://sdcc.sourceforge.net")
+    (home-page "https://sdcc.sourceforge.net")
     (synopsis "C compiler suite for 8-bit microcontrollers")
     (description "SDCC is a retargetable, optimizing Standard C compiler suite
 that targets 8-bit microcontrollers in the Intel MCS-51 (8051); MOS Technology

@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ellis Kenyo <me@elken.dev>
 ;;; Copyright © 2020 Stefan Reichör <stefan@xsteve.at>
@@ -216,7 +216,21 @@ simple and consistent.")
        (modify-phases %standard-phases
          (delete 'bootstrap)
          (delete 'configure)
-         (delete 'build))))
+         (delete 'build)
+         (add-before 'install 'halve-inode-consumption
+           ;; This package uses over 100K inodes, which is a lot.  We can easily
+           ;; halve that number by using (hard) links, to no ill effect.
+           ;; See <https://logs.guix.gnu.org/guix/2023-01-31.log#171227>.
+           ;; However, the source checkout will still use the full amount!
+           (lambda _
+             (let ((symlink? (lambda (_ stat)
+                               (eq? 'symlink (stat:type stat)))))
+               (for-each (lambda (file)
+                           (let ((target (canonicalize-path file)))
+                             (when (eq? 'regular (stat:type (stat target)))
+                               (delete-file file)
+                               (link target file))))
+                         (find-files "." symlink?))))))))
     (native-inputs
      (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
@@ -224,6 +238,87 @@ simple and consistent.")
     (description "Papirus is a fork of the icon theme Paper with a lot of new icons
 and a few extra features.")
     (license license:gpl3)))
+
+(define-public flat-remix-icon-theme
+  (package
+    (name "flat-remix-icon-theme")
+    (version "20220525")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ygazxccqf7hn1hxnf1mmsp17gm1m4hpcandfz9v5ijrgkd1m596"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no included tests
+       #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (home-page "https://drasite.com/flat-remix")
+    (synopsis "Icon theme with material design")
+    (description "Flat Remix is an icon theme inspired by material design.  It
+is mostly flat using a colorful palette with some shadows, highlights, and
+gradients for some depth.")
+    (license license:gpl3+)))
+
+(define-public flat-remix-gtk-theme
+  (package
+    (name "flat-remix-gtk-theme")
+    (version "20220627")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix-gtk")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kwahlrcm9rfsrd97q9lsbfz5390qafwbv78zl6j2vqgqnxhpwng"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no included tests
+       #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (home-page "https://drasite.com/flat-remix-gtk")
+    (synopsis "GTK application theme with material design")
+    (description "Flat Remix GTK is a GTK application theme inspired by
+material design.  It is mostly flat using a colorful palette with some
+shadows, highlights, and gradients for some depth.")
+    (license license:gpl3+)))
+
+(define-public flat-remix-gnome-theme
+  (package
+    (name "flat-remix-gnome-theme")
+    (version "20221107-1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix-gnome")
+         ;; This commit adds GtkSourceView 5 theme, for GNOME Text Editor.
+         (commit "b5616efc515e9f1417436e67d94718db7529a2ba")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10fgdz8hz8rd7aj4vb3bvl8khzb2fvaia7n00gi0x19yvnnh36pr"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       `(("share" "/")
+         ("themes" "/share/"))))
+    (home-page "https://drasite.com/flat-remix-gnome")
+    (synopsis "GNOME shell theme with material design")
+    (description "Flat Remix GNOME is a GNOME shell theme inspired by material
+design.  It is mostly flat using a colorful palette with some shadows,
+highlights, and gradients for some depth.")
+    (license license:gpl3+)))
 
 (define-public gnome-plots
   (package
@@ -1189,7 +1284,7 @@ of windows.")
 (define-public arc-theme
   (package
     (name "arc-theme")
-    (version "20220405")
+    (version "20221218")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1198,11 +1293,11 @@ of windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gjwf75sg4xyfypb08qiy2cmqyr2mamjc4i46ifrq7snj15gy608"))))
+                "0yznqjz1a1mcwks8z7pybgzrjiwg978bfpdmkaq926wy82qslngd"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags
-       '("-Dthemes=gnome-shell,gtk2,gtk3,metacity,plank,unity,xfwm")
+       '("-Dthemes=gnome-shell,gtk2,gtk3,gtk4,metacity,plank,unity,xfwm")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-home   ;placate Inkscape
@@ -1217,6 +1312,7 @@ of windows.")
            pkg-config
            python
            sassc/libsass-3.5))
+    (inputs (list gtk-engines)) ;for gtk+-2 to work properly
     (synopsis "Flat GTK+ theme with transparent elements")
     (description "Arc is a flat theme with transparent elements for GTK 3, GTK
 2, and GNOME Shell which supports GTK 3 and GTK 2 based desktop environments
@@ -1301,7 +1397,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
 (define-public materia-theme
   (package
     (name "materia-theme")
-    (version "20200916")
+    (version "20210322")
     (source
       (origin
         (method git-fetch)
@@ -1312,7 +1408,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "0qaxxafsn5zd2ysgr0jyv5j73360mfdmxyd55askswlsfphssn74"))))
+            "1fsicmcni70jkl4jb3fvh7yv0v9jhb8nwjzdq8vfwn256qyk0xvl"))))
     (build-system meson-build-system)
     (native-inputs
      (list gtk+ sassc))
@@ -1420,6 +1516,30 @@ variants.")
     (license (list license:gpl3            ; According to COPYING.
                    license:lgpl2.1         ; Some style sheets.
                    license:cc-by-sa4.0)))) ; Some icons
+
+(define-public postmarketos-theme
+  (package
+    (name "postmarketos-theme")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/postmarketOS/postmarketos-theme")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09in7737cirmw2c0ac40ac29szfgdva6q0zl32mdi12marybd2g5"))))
+    (build-system meson-build-system)
+    (native-inputs (list sassc))
+    (home-page "https://gitlab.com/postmarketOS/postmarketos-theme")
+    (synopsis "PostmarketOS themed themes")
+    (description
+     "@code{postmarketos-theme} contains a GTK3 and GTK4 theme which is based
+on Adwaita but replaces the standard blue highlights in the theme with
+postmarketOS green.  There's also the oled and paper variants of the theme
+that are completely black and completely white.")
+    (license license:lgpl2.0+)))
 
 (define-public eiciel
   (package

@@ -36,6 +36,7 @@
   #:use-module (gnu packages xml)
   #:use-module (guix build-system python)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages))
 
@@ -248,20 +249,28 @@ fledged batteries-included asyncio layer using aiohttp.")
          "16ask8v00654q307c55q5gnm8hrj40gibpab5zl52v4i0bgl9j68"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'downgrade-appdirs-requirement
-           (lambda _
-             (substitute* "setup.py"
-               ;; FIXME: Remove this once appdirs is updated.
-               ;; Upgrading python-appdirs requires rebuilting 3000+ packages,
-               ;; when 1.4.4 is a simple maintenance fix from 1.4.3.
-               (("appdirs >= 1.4.4") "appdirs >= 1.4.3"))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv" "tests")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'downgrade-appdirs-requirement
+            (lambda _
+              (substitute* "setup.py"
+                ;; FIXME: Remove this once appdirs is updated.
+                ;; Upgrading python-appdirs requires rebuilting 3000+ packages,
+                ;; when 1.4.4 is a simple maintenance fix from 1.4.3.
+                (("appdirs >= 1.4.4") "appdirs >= 1.4.3"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (with-directory-excursion "docs/man"
+                (let ((man (string-append #$output "/share/man")))
+                  (install-file "panctl.1" (string-append man "/man1"))
+                  (install-file "pantalaimon.5" (string-append man "/man5"))
+                  (install-file "pantalaimon.8" (string-append man "/man8"))))))
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (add-installed-pythonpath inputs outputs)
+                (invoke "pytest" "-vv" "tests")))))))
     (native-inputs
      (list python-aioresponses
            python-faker

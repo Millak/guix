@@ -64,7 +64,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system waf)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -128,7 +127,7 @@ as ASCII text.")
     (propagated-inputs
      ;; Headers from Mesa and GLU are needed.
      (list glu mesa))
-    (home-page "http://freeglut.sourceforge.net/")
+    (home-page "https://freeglut.sourceforge.net/")
     (synopsis "Alternative to the OpenGL Utility Toolkit (GLUT)")
     (description
      "Freeglut is a completely Free/OpenSourced alternative to
@@ -785,6 +784,32 @@ Both GLX and EGL are supported, in any combination with OpenGL and OpenGL ES.")
                    license:x11
                    license:expat))))
 
+(define-public libopenglrecorder
+  (package
+    (name "libopenglrecorder")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Benau/libopenglrecorder")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sfx2kdw2mca3mx4fnk1yy74pilp2i9npcpyj894qkngz5aaz2wl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;no test suite
+    (native-inputs (list pkg-config))
+    (inputs (list libjpeg-turbo))
+    (home-page "https://github.com/Benau/libopenglrecorder")
+    (synopsis "Async readback OpenGL frame buffer with audio recording")
+    (description
+     "libopenglrecorder is a library allowing optional async readback OpenGL
+frame buffer with optional audio recording.  It will do video and audio
+encoding together.")
+    (license license:bsd-3)))
+
 (define-public soil
   (package
     (name "soil")
@@ -909,7 +934,7 @@ and visualizations.")
      (list libpng mesa zlib))
     (arguments
      `(#:tests? #f))                    ; no tests
-    (home-page "http://www.geuz.org/gl2ps/")
+    (home-page "https://www.geuz.org/gl2ps/")
     (synopsis "OpenGL to PostScript printing library")
     (description "GL2PS is a C library providing high quality vector
 output for any OpenGL application.  GL2PS uses sorting algorithms

@@ -213,7 +213,7 @@ files with a system-specific shebang."
      (list
       ;; XXX: Kludge to hide the circular dependency.
       (module-ref (resolve-interface '(gnu packages guile))
-                  'guile-3.0/fixed)
+                  'guile-3.0/pinned)
       autoconf
       bash-minimal))
     (arguments

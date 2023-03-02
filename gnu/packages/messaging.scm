@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016, 2017, 2018, 2019 Clément Lassieur <clement@lassieur.org>
@@ -37,6 +37,7 @@
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,6 +124,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
@@ -191,62 +193,6 @@
 by @acronym{OMEMO, OMEMO Multi-End Message and Object Encryption}, during
 XMPP-based sessions.")
     (license license:lgpl3+)))
-
-(define-public psi
-  (package
-    (name "psi")
-    (version "1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/psi/Psi/"
-                       version "/psi-" version ".tar.xz"))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (delete-file-recursively "3rdparty")))
-       (sha256
-        (base32 "1dxmm1d1zr0pfs51lba732ipm6hm2357jlfb934lvarzsh7karri"))))
-    (build-system qt-build-system)
-    (arguments
-     `(#:tests? #f                      ; No target
-       #:configure-flags
-       (list
-        "-DUSE_ENCHANT=ON"
-        "-DUSE_CCACHE=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-cmake
-           (lambda _
-             (substitute* "cmake/modules/FindHunspell.cmake"
-               (("hunspell-1.6")
-                "hunspell-1.7"))
-             #t)))))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("ruby" ,ruby)))
-    (inputs
-     `(("aspell" ,aspell)
-       ("enchant" ,enchant-1.6)
-       ("hunspell" ,hunspell)
-       ("libidn" ,libidn)
-       ("qca" ,qca)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("qtwebkit" ,qtwebkit)
-       ("qtx11extras" ,qtx11extras)
-       ("x11" ,libx11)
-       ("xext" ,libxext)
-       ("xcb" ,libxcb)
-       ("zlib" ,zlib)))
-    (synopsis "Qt-based XMPP Client")
-    (description "Psi is a capable XMPP client aimed at experienced users.
-Its design goals are simplicity and stability.")
-    (home-page "https://psi-im.org")
-    (license license:gpl2+)))
 
 (define-public libgnt
   (package
@@ -1177,7 +1123,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.4.6")
+    (version "1.4.7")
     (source
      (origin
        (method url-fetch)
@@ -1186,7 +1132,7 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "0ks25hh7ksx0nfydixpixcli556w7qcylxp2z2xsx8mgzqv7c9la"))
+        (base32 "1ww46qlxr14nq0ka8wsf8qpn5qfi5dvgyksfh9411crl7azhfj0s"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
@@ -1375,7 +1321,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
@@ -1383,7 +1329,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "1rs6qpkidiww805cd91q059r2lm5lzblrkyn01zz4g1mls8ghk5a"))))
+        (base32 "115p7mjk0q68nvv8asrm6hsv0dzsz7hy2bnvhwhxmcfbilr8fq68"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1422,12 +1368,13 @@ Encryption to Gajim.")
      (list gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           `(,gtk+ "bin")
+           `(,gtk "bin")
            pkg-config
            vala))
     (inputs
      (list adwaita-icon-theme
            atk
+           bash-minimal
            cairo
            librsvg
            glib
@@ -1438,8 +1385,9 @@ Encryption to Gajim.")
            gstreamer                    ;for A/V support
            gst-plugins-base
            gst-plugins-good
-           gtk+
+           gtk
            icu4c                        ;for emoji support
+           libadwaita
            libcanberra                  ;for sound-notification support
            libgcrypt
            libgee
@@ -1447,7 +1395,7 @@ Encryption to Gajim.")
            libsignal-protocol-c
            libsoup
            libsrtp                      ;for calls support
-           pango
+           pango-next                   ;gtk4 wants pango 1.50+
            qrencode
            sqlite
            webrtc-audio-processing))    ;for A/V support
@@ -1513,14 +1461,14 @@ Qt-based XMPP library QXmpp.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.12.1")
+    (version "0.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "1rch9gzp9ksnniv6r1vskifvfv5wbp8wcfjr0lc2b9013zjbpv57"))))
+                "05ma72wr6iypr62vq748jhzx8i3lmgnsjshrx6w0z7sg24jfhqmn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
@@ -2357,7 +2305,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.8.2")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -2366,7 +2314,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "041ckjvfxapv1q6x9xd8q70x43cz10x7p11aql58lnc0jp0kwry7"))))
+        (base32 "0m8agc3c4n03r92nz3gxkpxmj2c3ncf125nmfdv0jf24gxib126z"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2386,9 +2334,10 @@ QMatrixClient project.")
            curl
            json-modern-cxx
            libevent
-           olm
            libsodium
+           olm
            openssl
+           re2
            spdlog
            zlib))
     (native-inputs
@@ -2402,7 +2351,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.10.2")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
@@ -2411,7 +2360,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "114hbv58209bwar6qjdjg2l1vh3xk20ppv6n301i7zkmwrf7q9w2"))
+        (base32 "0j5y5jfimmflynrg7003wr7i75b102cpv3afyp3j7z69b2apkhys"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2481,6 +2430,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            qtmultimedia-5
            qtquickcontrols2-5
            qtsvg-5
+           re2
            spdlog
            single-application-qt5
            xcb-util-wm
@@ -3139,6 +3089,9 @@ social and chat platform.")
 designed for experienced users.")
     (license license:gpl2+)))
 
+(define-public psi
+  (deprecated-package "psi" psi-plus))
+
 (define-public python-zulip
   (package
     (name "python-zulip")
@@ -3507,6 +3460,23 @@ for notification of events.")
 Discord.")
     (home-page "https://github.com/taylordotfish/harmony")
     (license license:gpl3+)))
+
+(define-public python-pypresence
+  (package
+    (name "python-pypresence")
+    (version "4.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pypresence" version))
+              (sha256
+               (base32
+                "0rp09lfxbc3syd1rhbai2516c3wyfxkzrsw8v4bd57qqr2cay7b9"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/qwertyquerty/pypresence")
+    (synopsis "Discord RPC client")
+    (description "This package provides @code{python-pypresence}, a Discord
+RPC client written in Python.")
+    (license license:expat)))
 
 (define-public pn
   (package

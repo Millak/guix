@@ -151,7 +151,7 @@ icon themes."
    "The name of the cursor theme to use.")
   (cursor-theme-size
    (number 16)
-   "The size to use for the the cursor theme.")
+   "The size to use for the cursor theme.")
   (allow-debugging?
    maybe-boolean
    "Set to #t to enable debug log level.")

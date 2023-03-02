@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
@@ -46,8 +46,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
-  #:use-module (guix build-system scons)
-  #:use-module (guix build-system r)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -831,7 +829,7 @@ pyproj, Rtree, and Shapely.")
       (list python-fiona python-pandas python-pyproj python-shapely))
     (native-inputs
       (list python-pytest))
-    (home-page "http://geopandas.org")
+    (home-page "https://geopandas.org")
     (synopsis "Geographic pandas extensions")
     (description "The goal of GeoPandas is to make working with
 geospatial data in Python easier.  It combines the capabilities of
@@ -1166,13 +1164,13 @@ utilities for data translation and processing.")
   (package
     (name "python-cartopy")
     ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.21.0")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "0hnfs75dcnz12ximah5xn9566r8zz189lxikmj4lrs9jl4l3l7ff"))))
+        (base32 "02i5rjhvrsi3vgj8kfsdx77g1xl59jh2a671qqqj4n682abn9mc9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1414,7 +1412,7 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1423,7 +1421,7 @@ based on the Osmium library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15fxr4xq7siy237763l7nswx7v0swr3qzs2h3zkjzgvajw4p6qii"))
+        (base32 "0ssz7ny4wx8dzl3027p37xc5h7m1aj6bzxzdc6g8fbp7q57ykvxz"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1434,8 +1432,7 @@ based on the Osmium library.")
        #:configure-flags
        (list "-DEXTERNAL_LIBOSMIUM=ON"
              "-DEXTERNAL_PROTOZERO=ON"
-             "-DEXTERNAL_FMT=ON"
-             "-DEXTERNAL_RAPIDJSON=ON")))
+             "-DEXTERNAL_FMT=ON")))
     (inputs
      (list boost
            bzip2
@@ -1446,7 +1443,6 @@ based on the Osmium library.")
            postgresql
            proj
            protozero
-           rapidjson
            zlib))
     (native-inputs
      (list python python-psycopg2))
@@ -1763,7 +1759,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18583")
+    (version "18646")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1772,7 +1768,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "01ghh9kl984lr8f70jsks31p6a4cqpxqjpmbc4x6mzbmvy87dfvy"))
+                "0zr3p1i39wi0f29lgb3xrnv6lijrq5ia8jxn4wnq1yz0xdlbg98i"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -2461,7 +2457,7 @@ visualization.")
 Information System (GIS) software.  It has been designed for an easy and
 effective implementation of spatial algorithms and it offers a comprehensive,
 growing set of geoscientific methods.")
-    (home-page "http://www.saga-gis.org")
+    (home-page "https://www.saga-gis.org")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
 (define-public qgis
@@ -2823,6 +2819,36 @@ path loss.")
 web services.  @code{geopy} makes it easy for Python developers to locate the
 coordinates of addresses, cities, countries, and landmarks across the globe
 using third-party geocoders and other data sources.")
+    (license license:expat)))
+
+(define-public python-haversine
+  (package
+    (name "python-haversine")
+    (version "2.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    ;; There are no tests in the PyPi archive.
+                    (url "https://github.com/mapado/haversine")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0inxyj5n4jzgg5xiadqx9sk83gdx5ff989l9s04smdzbd3b8c0c8"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest python-numpy))
+    (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (replace 'check
+                  (lambda* (#:key tests? inputs #:allow-other-keys)
+                    (when tests?
+                      (invoke "pytest")))))))
+    (home-page "https://github.com/mapado/haversine")
+    (synopsis "Calculate the distance between 2 points on Earth")
+    (description "This package provides functions to calculate the
+distance in various units between two points on Earth using their
+latitude and longitude.")
     (license license:expat)))
 
 (define-public gplates

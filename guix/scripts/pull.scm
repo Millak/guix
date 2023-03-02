@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2015, 2017-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
@@ -469,9 +469,9 @@ true, display what would be built without actually building it."
             ;; Is the 'guix' command previously in $PATH the same as the new
             ;; one?  If the answer is "no", then suggest 'hash guix'.
             (unless (member guix-command new)
-              (display-hint (format #f (G_ "After setting @code{PATH}, run
+              (display-hint (G_ "After setting @code{PATH}, run
 @command{hash guix} to make sure your shell refers to @file{~a}.")
-                                    (first new))))
+                            (first new)))
             (return #f))
           (return #f)))))
 

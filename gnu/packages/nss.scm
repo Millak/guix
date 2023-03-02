@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -99,9 +99,23 @@ in the Mozilla clients.")
               (base32
                "0v3zds1id71j5a5si42a658fjz8nv2f6zp6w4gqrqmdr6ksz8sxv"))))))
 
+(define-public nspr-next
+  (package
+    (inherit nspr)
+    (version "4.35")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
+                    version "/src/nspr-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13xwda56yhp1w7v02qvlxvlqiniw8kr4g3fxlljmv6wnlmz2k8vy"))))))
+
 (define-public nss
   (package
     (name "nss")
+    (replacement nss/fixed)
     ;; Also update and test the nss-certs package, which duplicates version and
     ;; source to avoid a top-level variable reference & module cycle.
     (version "3.82")
@@ -221,3 +235,25 @@ applications.  Applications built with NSS can support SSL v2 and v3, TLS,
 PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
 security standards.")
     (license license:mpl2.0)))
+
+(define-public nss-next
+  (package
+    (inherit nss)
+    (version "3.88.1")
+    (source (origin
+              (inherit (package-source nss))
+              (uri (let ((version-with-underscores
+                          (string-join (string-split version #\.) "_")))
+                     (string-append
+                      "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
+                      "releases/NSS_" version-with-underscores "_RTM/src/"
+                      "nss-" version ".tar.gz")))
+              (sha256
+               (base32
+                "15il9fsmixa1r4446zq1wl627sg0hz9h67w6kjxz273xz3nl7li7"))))
+    (propagated-inputs (list nspr-next)))) ;required by nss.pc
+
+(define nss/fixed
+  (package
+    (inherit nss-next)
+    (version "3.88")))                  ; slight inaccuracy to allow grafting

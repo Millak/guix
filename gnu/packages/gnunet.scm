@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
@@ -258,7 +260,7 @@ supports HTTP, HTTPS and GnuTLS.")
 (define-public gnunet
   (package
    (name "gnunet")
-   (version "0.16.3")
+   (version "0.19.3")
    (source
     (origin
       (method url-fetch)
@@ -266,12 +268,19 @@ supports HTTP, HTTPS and GnuTLS.")
                           ".tar.gz"))
       (sha256
        (base32
-        "12n33r9nnkl5xwx8pwf571l2zvnvfllc8vm6mamrlyjk2cphaf9j"))))
+        "09bspbjl6cll8wcrl1vnb56jwp30pcrg1yyj6xy3i0fl2bzdbdw2"))
+      (modules '((guix build utils)))
+      (snippet
+       #~(begin
+           ;; This is fixed in the upstream repository but the fix
+           ;; has not been released.
+           (substitute* "src/gns/test_proxy.sh"
+             (("test_gnunet_proxy.conf") "test_gns_proxy.conf"))))))
    (build-system gnu-build-system)
    (inputs
     (list bluez
           glpk
-          gnurl
+          curl
           gnutls/dane
           gstreamer
           jansson
@@ -291,7 +300,13 @@ supports HTTP, HTTPS and GnuTLS.")
           zbar
           zlib))
    (native-inputs
-    (list curl openssl pkg-config python xxd
+    (list curl
+          openssl
+          pkg-config
+          python
+          python-sphinx
+          python-sphinx-rtd-theme
+          xxd
           (@ (gnu packages base) which)))
    (arguments
     '(#:parallel-tests? #f ; Parallel tests aren't supported.
@@ -422,29 +437,30 @@ The following services are supported:
 (define-public gnunet-gtk
   (package (inherit gnunet)
     (name "gnunet-gtk")
-    (version "0.13.1")
+    (version "0.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gnunet/gnunet-gtk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1zdzgq16h77w6ybwg3lqjsjr965np6iqvncqvkbj07glqd4wss0j"))))
+                "0z2731l69vnfsa0cdsw8wh8g1d08wz15y5n0a58qjpf7baric01k"))))
     (arguments
-     `(#:configure-flags
-       (list "--with-libunique"
-             "--with-qrencode"
-             (string-append "--with-gnunet="
-                            (assoc-ref %build-inputs "gnunet")))))
+     (list #:configure-flags
+           #~(list "--with-libunique"
+                   "--with-qrencode"
+                   (string-append "--with-gnunet="
+                                  #$(this-package-input "gnunet")))))
     (inputs
-     `(("glade3" ,glade3)
-       ("gnunet" ,gnunet)
-       ("gnutls" ,gnutls/dane)
-       ("gtk+" ,gtk+)
-       ("libextractor" ,libextractor)
-       ("libgcrypt" ,libgcrypt)
-       ("libunique" ,libunique)
-       ("qrencode" ,qrencode)))
+     (list glade3
+           gnunet
+           gnutls/dane
+           gtk+
+           libextractor
+           libgcrypt
+           libsodium
+           libunique
+           qrencode))
     (native-inputs
      (list pkg-config libglade))
     (synopsis "Graphical front-end tools for GNUnet")

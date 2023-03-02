@@ -86,7 +86,7 @@
                (base32
                 "1qqldrp74pzpy5ly421srqn30qppmm9cvjiqdngk8hf47dv2rc0c"))))
     (build-system gnu-build-system)
-    (home-page "http://jikes.sourceforge.net/")
+    (home-page "https://jikes.sourceforge.net/")
     (synopsis "Compiler for the Java language")
     (description "Jikes is a compiler that translates Java source files as
 defined in The Java Language Specification into the bytecoded instruction set
@@ -181,7 +181,7 @@ language.")
            ("automake" ,automake)
            ("libtool" ,libtool))
          '()))
-    (home-page "http://jamvm.sourceforge.net/")
+    (home-page "https://jamvm.sourceforge.net/")
     (synopsis "Small Java Virtual Machine")
     (description "JamVM is a Java Virtual Machine conforming to the JVM
 specification edition 2 (blue book).  It is extremely small.  However, unlike

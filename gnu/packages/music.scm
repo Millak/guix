@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -46,9 +46,11 @@
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022, 2023 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -362,7 +364,7 @@ more.")
      (list wxwidgets glib alsa-lib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://ariamaestosa.sourceforge.net/")
+    (home-page "https://ariamaestosa.sourceforge.net/")
     (synopsis "MIDI sequencer and editor")
     (description
      "Aria Maestosa is a MIDI sequencer and editor.  It lets you compose, edit
@@ -764,17 +766,15 @@ settings (aliasing, linear interpolation and cubic interpolation).")
              (substitute* "CMakeLists.txt"
                (("/usr/share/pixmaps")
                 (string-append (assoc-ref outputs "out")
-                               "/share/pixmaps")))
-             #t)))))
+                               "/share/pixmaps"))))))))
     (native-inputs
-     `(("cppunit" ,cppunit)
-       ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools-5)))
+     (list cppunit
+           pkg-config
+           qttools-5))
     (inputs
      (list alsa-lib
            jack-1
            ;; ("ladspa" ,ladspa) ; require LADSPA_PATH to be set
-           lash
            libarchive
            liblo
            libsndfile
@@ -783,7 +783,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
            qtbase-5
            qtxmlpatterns
            zlib))
-    (home-page "http://www.hydrogen-music.org")
+    (home-page "http://hydrogen-music.org/")
     (synopsis "Drum machine")
     (description
      "Hydrogen is an advanced drum machine for GNU/Linux.  Its main goal is to
@@ -1308,7 +1308,7 @@ biographies, reviews and more.")
            jack-2
            json-c
            pulseaudio))
-    (home-page "http://lingot.nongnu.org/")
+    (home-page "https://lingot.nongnu.org/")
     (synopsis "Accurate & configurable musical instrument tuner")
     (description
      "LINGOT is a musical instrument tuner.  It's accurate, easy to use, and
@@ -1386,7 +1386,7 @@ and auto-mapping slices to MIDI note numbers.")
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.20.0")
+    (version "2.24.0")
     (source
      (origin
        (method url-fetch)
@@ -1394,79 +1394,54 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "0qd6pd4siss016ffmcyw5qc6pr2wihnvrgd4kh1x725w7wr02nar"))))
+        (base32 "0scbyzbxqnzgibls62npg2i3sywnb146gw7jlvinj9dhj8xvxv9w"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;out-test/collated-files.html fails
-       #:out-of-source? #t
-       #:make-flags '("conf=www")       ;to generate images for info manuals
-       #:configure-flags
-       (list "CONFIGURATION=www"
-             (string-append "--with-texgyre-dir="
-                            (assoc-ref %build-inputs "font-tex-gyre")
-                            "/share/fonts/opentype/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-path-references
-           (lambda _
-             (substitute* "scm/backend-library.scm"
-               (("\\(search-executable '\\(\"gs\"\\)\\)")
-                (string-append "\"" (which "gs") "\""))
-               (("\"/bin/sh\"")
-                (string-append "\"" (which "sh") "\"")))))
-         (add-after 'fix-path-references 'adjust-to-API-change
-           (lambda _
-             (substitute* '("Documentation/pictures/GNUmakefile"
-                            "stepmake/stepmake/tex-rules.make")
-               ((".*-c .setpdfwrite.*") ""))
-             (substitute* "scm/backend-library.scm"
-               (("\"-c.setpdfwrite\"") ""))
-             (substitute* "scm/framework-ps.scm"
-               (("\".setpdfwrite ") "\""))))
-         (add-before 'configure 'prepare-configuration
-           (lambda _
-             (substitute* "configure"
-               (("SHELL=/bin/sh") "SHELL=sh")
-               ;; When checking the fontforge version do not consider the
-               ;; version string that's part of the directory.
-               (("head -n") "tail -n")
-               ;; Also allow for SOURCE_DATE_EPOCH = 0 in fontforge.
-               (("20110222") "19700101"))
-             (setenv "out" "www")
-             (setenv "conf" "www")))
-         (add-after 'install 'install-info
-           (lambda _
-             (invoke "make"
-                     "-j" (number->string (parallel-job-count))
-                     "conf=www" "install-info"))))))
+      (list #:tests? #f                      ;out-test/collated-files.html fails
+            #:out-of-source? #t
+            #:configure-flags
+            #~(list "--disable-documentation" "GUILE_FLAVOR=guile-3.0")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'fix-path-references
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* "scm/backend-library.scm"
+                      (("\\(search-executable '\\(\"gs\"\\)\\)")
+                       (string-append "\"" (search-input-file inputs "bin/gs") "\""))
+                      (("\"/bin/sh\"")
+                       (string-append "\"" (search-input-file inputs "bin/sh") "\""))))))))
     (inputs
-     `(("guile" ,guile-1.8)
-       ("font-dejavu" ,font-dejavu)
-       ("font-tex-gyre" ,font-tex-gyre)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("ghostscript" ,ghostscript)
-       ("pango" ,pango)
-       ("python" ,python-2)))
+     (list extractpdfmark
+           font-dejavu
+           font-tex-gyre
+           fontconfig
+           freetype
+           ghostscript
+           guile-3.0
+           pango
+           python))
     (native-inputs
-     `(("bison" ,bison)
-       ("perl" ,perl)
-       ("flex" ,flex)
-       ("fontforge" ,fontforge)
-       ("dblatex" ,dblatex)
-       ("gettext" ,gettext-minimal)
-       ("imagemagick" ,imagemagick)
-       ("netpbm" ,netpbm)               ;for pngtopnm
-       ("texlive" ,(texlive-updmap.cfg (list texlive-metapost
-                                        texlive-epsf
-                                        texlive-lh
-                                        texlive-latex-cyrillic)))
-       ("texinfo" ,texinfo)
-       ("texi2html" ,texi2html-1.82)
-       ("rsync" ,rsync)
-       ("pkg-config" ,pkg-config)
-       ("zip" ,zip)))
-    (home-page "http://www.lilypond.org/")
+     (list bison
+           dblatex
+           flex
+           fontforge
+           gettext-minimal
+           imagemagick
+           netpbm
+           perl
+           pkg-config
+           rsync
+           texinfo
+           texi2html-1.82
+           (texlive-updmap.cfg
+            (list texlive-epsf
+                  texlive-fontinst
+                  texlive-latex-cyrillic
+                  texlive-lh
+                  texlive-lm
+                  texlive-metapost))
+           zip))
+    (home-page "https://lilypond.org")
     (synopsis "Music typesetting")
     (description
      "GNU LilyPond is a music typesetter, which produces high-quality sheet
@@ -2607,7 +2582,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
            font-bitstream-vera))
     (native-inputs
      (list help2man pkg-config))
-    (home-page "http://setbfree.org")
+    (home-page "https://setbfree.org")
     (synopsis "Tonewheel organ")
     (description
      "setBfree is a MIDI-controlled, software synthesizer designed to imitate
@@ -2637,27 +2612,28 @@ Laurens Hammond and Don Leslie.")
              (when (not (or (string-prefix? "x86_64" system)
                             (string-prefix? "i686" system)))
                (substitute* "bristol/Makefile.in"
-                 (("-msse -mfpmath=sse") "")))
-             #t))
+                 (("-msse -mfpmath=sse") "")))))
+         ;; This is needed to build brighton
+         (add-after 'unpack 'add-fcommon
+           (lambda _
+             (setenv "CFLAGS" "-fcommon")))
          ;; alsa-lib 1.1.x no longer provides iatomic.h.  That's okay because
          ;; bristol actually doesn't use it.
          (add-after 'unpack 'do-not-use-alsa-iatomic
            (lambda _
              (substitute* "libbristolaudio/audioEngineJack.c"
-               (("#include <alsa/iatomic.h>") ""))
-             #t))
+               (("#include <alsa/iatomic.h>") ""))))
          ;; We know that Bristol has been linked with JACK and we don't have
          ;; ldd, so we can just skip this check.
          (add-after 'unpack 'do-not-grep-for-jack
            (lambda _
              (substitute* "bin/startBristol.in"
-               (("ldd `which bristol` | grep jack") "echo guix"))
-             #t)))))
+               (("ldd `which bristol` | grep jack") "echo guix")))))))
     (inputs
-     (list alsa-lib jack-1 liblo libx11))
+     (list alsa-lib jack-2 liblo libx11))
     (native-inputs
      (list pkg-config))
-    (home-page "http://bristol.sourceforge.net/")
+    (home-page "https://bristol.sourceforge.net/")
     (synopsis "Synthesizer emulator")
     (description
      "Bristol is an emulation package for a number of different @code{classic}
@@ -2930,7 +2906,7 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
      (list alsa-lib))
     (native-inputs
      (list unzip))
-    (home-page "http://portmedia.sourceforge.net/portmidi/")
+    (home-page "https://portmedia.sourceforge.net/portmidi/")
     (synopsis "Library for MIDI I/O")
     (description
      "PortMidi is a library supporting real-time input and output of MIDI data
@@ -2963,7 +2939,7 @@ using a system-independent interface.")
      (list portmidi alsa-lib))
     (native-inputs
      (list python-cython unzip))
-    (home-page "http://portmedia.sourceforge.net/portmidi/")
+    (home-page "https://portmedia.sourceforge.net/portmidi/")
     (synopsis "Python bindings to PortMidi")
     (description
      "This package provides Python bindings to the PortMidi library.")
@@ -2991,7 +2967,7 @@ using a system-independent interface.")
            python-ly
            python-poppler-qt5
            python-pyportmidi
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-sip))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
@@ -3127,7 +3103,7 @@ instrument or MIDI file player.")
     (native-inputs
      (list pkg-config
            ruby))
-    (home-page "http://zynaddsubfx.sf.net/")
+    (home-page "https://zynaddsubfx.sf.net/")
     (synopsis "Software synthesizer")
     (description
      "ZynAddSubFX is a feature heavy realtime software synthesizer.  It offers
@@ -3149,48 +3125,47 @@ capabilities, custom envelopes, effects, etc.")
         (base32 "1axrbk1qwsiq77g5957db744481zb2v158psnk2w530wxhls2442"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:configure-flags
-       (list (string-append "-DCMAKE_INSTALL_DATAROOTDIR="
-                            (assoc-ref %outputs "out") "/share"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'enter-dir
-           (lambda _ (chdir "src") #t))
-         ;; Move SSE compiler optimization flags from generic target to
-         ;; athlon64 and core2 targets, because otherwise the build would fail
-         ;; on non-Intel machines.
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (list "src/Interface/InterChange.cpp"
-                                "src/Misc/Bank.cpp"
-                                "src/Misc/Config.cpp")
-               (("/usr/share") (string-append (assoc-ref outputs "out")
-                                              "/share")))))
-         (add-after 'unpack 'remove-sse-flags-from-generic-target
-           (lambda _
-             (substitute* "src/CMakeLists.txt"
-               (("-msse -msse2 -mfpmath=sse") "")
-               (("-march=(athlon64|core2)" flag)
-                (string-append flag " -msse -msse2 -mfpmath=sse")))
-             #t)))))
+     (list
+      #:tests? #f                       ; there are no tests
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_DATAROOTDIR="
+                             #$output "/share"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'enter-dir
+            (lambda _ (chdir "src")))
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* (list "src/Interface/InterChange.cpp"
+                                 "src/Misc/Bank.cpp"
+                                 "src/Misc/Config.cpp")
+                (("/usr/share") (string-append #$output "/share")))))
+          ;; Move SSE compiler optimization flags from generic target to
+          ;; athlon64 and core2 targets, because otherwise the build would fail
+          ;; on non-Intel machines.
+          (add-after 'unpack 'remove-sse-flags-from-generic-target
+            (lambda _
+              (substitute* "src/CMakeLists.txt"
+                (("-msse -msse2 -mfpmath=sse") "")
+                (("-march=(athlon64|core2)" flag)
+                 (string-append flag " -msse -msse2 -mfpmath=sse"))))))))
     (inputs
-     `(("boost" ,boost)
-       ("fftwf" ,fftwf)
-       ("alsa-lib" ,alsa-lib)
-       ("jack" ,jack-1)
-       ("fontconfig" ,fontconfig)
-       ("minixml" ,minixml)
-       ("mesa" ,mesa)
-       ("fltk" ,fltk)
-       ("lv2" ,lv2)
-       ("readline" ,readline)
-       ("ncurses" ,ncurses)
-       ("cairo" ,cairo)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           boost
+           cairo
+           fftwf
+           fltk
+           fontconfig
+           jack-2
+           lv2
+           mesa
+           minixml
+           ncurses
+           readline
+           zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://yoshimi.sourceforge.net/")
+    (home-page "https://yoshimi.sourceforge.net/")
     (synopsis "Multi-paradigm software synthesizer")
     (description
      "Yoshimi is a fork of ZynAddSubFX, a feature-heavy real-time software
@@ -3230,7 +3205,7 @@ on the library.")
 (define-public jack-keyboard
   (package
     (name "jack-keyboard")
-    (version "2.5")
+    (version "2.7.2")
     (source
      (origin
        (method url-fetch)
@@ -3238,13 +3213,21 @@ on the library.")
                            version "/jack-keyboard-" version ".tar.gz"))
        (sha256
         (base32
-         "0mzmg8aavybcfdlq2yd9d0vscqd6is5p6jzrgfpfm5j3xdcvh2s3"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list jack-1 lash gtk+-2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "http://jack-keyboard.sourceforge.net/")
+         "1z34ga1z6ivgxbp0afsfghz7rn6s8vc9fxnb9ini8mx0dackr5ar"))))
+    (build-system cmake-build-system)
+    ;; Disable Lash support, as it is unmaintained and depends on Python 2.
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:configure-flags
+           #~(list "-DLashEnable=OFF"
+                   ;; XXX: FindGTK2.cmake from CMake expects the
+                   ;; headers to be in FHS locations; give it some
+                   ;; clues.
+                   (string-append "-DGTK2_ADDITIONAL_SUFFIXES="
+                                  "lib/glib-2.0;" ;for glibconfig.h
+                                  "lib/gtk-2.0")))) ;for gdkconfig.h
+    (inputs (list jack-2 gtk+-2))
+    (home-page "https://jack-keyboard.sourceforge.net/")
     (synopsis "Virtual MIDI keyboard")
     (description "Jack-keyboard is a virtual MIDI keyboard, a program that
 allows you to send JACK MIDI events (i.e. play) using your PC keyboard.")
@@ -3275,7 +3258,7 @@ allows you to send JACK MIDI events (i.e. play) using your PC keyboard.")
      (list pkg-config which))
     (inputs
      (list gtk+-2
-           jack-1
+           jack-2
            libogg
            liblo
            lame
@@ -3325,12 +3308,12 @@ can connect to any JACK port and record the output into a stereo WAV file.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("python" ,python-wrapper)
-       ("python-pyudev" ,python-pyudev)
-       ("python-pyxdg" ,python-pyxdg)
-       ("python-dbus" ,python-dbus)
-       ("python-pygobject" ,python-pygobject)))
+     (list alsa-lib
+           python-dbus
+           python-pygobject
+           python-pyudev
+           python-pyxdg
+           python-wrapper))
     (home-page "https://github.com/SpotlightKid/jack-select")
     (synopsis "Systray application to quickly change the JACK-DBus configuration")
     (description "This application displays an icon in the system tray (also
@@ -3383,7 +3366,7 @@ computer's keyboard.")
      (list minixml jack-1 alsa-lib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://aj-snapshot.sourceforge.net/")
+    (home-page "https://aj-snapshot.sourceforge.net/")
     (synopsis "Snapshot connections between ALSA and JACK clients")
     (description "Aj-snapshot is a small program that can be used to make
 snapshots of the connections made between JACK and/or ALSA clients.  Because
@@ -3695,7 +3678,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.8.3")
+    (version "2.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3703,7 +3686,7 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "0h4yk1y4k23hkfk7k2in27rd34ani857m0vvn7xa8vxizz951dka"))))
+                "1kjl7iqgvvrv7mygsb7491cz872gm334489nyj0v8b79bxnzghdi"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -3726,7 +3709,7 @@ event-based scripts for scrobbling, notifications, etc.")
     (inputs
      (list chromaprint
            python-discid
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-mutagen
            python-fasteners
            python-pyyaml
@@ -4030,28 +4013,27 @@ using the beets FetchArt plugin.")
                '(begin
                   (delete-file-recursively "resources/music")
                   (substitute* "CMakeLists.txt"
-                    (("add_subdirectory\\(resources/music\\)") ""))
-                  #t))))
+                    (("add_subdirectory\\(resources/music\\)") ""))))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; no check target
        ;; This flag ensures that MilkyTracker links with the JACK library.
        #:configure-flags '("-DCMAKE_CXX_FLAGS=-ljack")))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("lhasa" ,lhasa)
-       ("jack" ,jack-1)
-       ("rtmidi" ,rtmidi-4.0)
-       ("sdl" ,sdl2)
-       ("zlib" ,zlib)
-       ("zziplib" ,zziplib)))
+     (list alsa-lib
+           lhasa
+           jack-2
+           rtmidi-4.0
+           sdl2
+           zlib
+           zziplib))
     (native-inputs
      (list pkg-config))
     (synopsis "Music tracker for working with .MOD/.XM module files")
-    (description "MilkyTracker is a music application for creating .MOD and .XM
-    module files.  It attempts to recreate the module replay and user experience of
-    the popular DOS program Fasttracker II, with special playback modes available
-    for improved Amiga ProTracker 2/3 compatibility.")
+    (description "MilkyTracker is a music application for creating .MOD and
+.XM module files.  It attempts to recreate the module replay and user
+experience of the popular DOS program Fasttracker II, with special playback
+modes available for improved Amiga ProTracker 2/3 compatibility.")
     (home-page "https://milkytracker.titandemo.org/")
     ;; 'src/milkyplay' is under Modified BSD, the rest is under GPL3 or later.
     (license (list license:bsd-3 license:gpl3+))))
@@ -4088,7 +4070,7 @@ using the beets FetchArt plugin.")
     (inputs
      (list alsa-lib ; for asound dependency
            libx11 libxext sdl))
-    (home-page "http://schismtracker.org")
+    (home-page "https://schismtracker.org")
     (synopsis "Oldschool sample-based music composition tool")
     (description
      "Schism Tracker is a reimplementation of Impulse Tracker, a program used to
@@ -4218,7 +4200,7 @@ formats, including most audio formats recognized by FFMpeg.")
     (version "1.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.fourmilab.ch/webtools/midicsv/"
+              (uri (string-append "https://www.fourmilab.ch/webtools/midicsv/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
@@ -4236,7 +4218,7 @@ processed by a program to transform the MIDI data (for example, to key
 transpose a composition or extract a track from a multi-track sequence).  A
 CSV file in the format created by midicsv may be converted back into a
 standard MIDI file with the csvmidi program.")
-    (home-page "http://www.fourmilab.ch/webtools/midicsv/")
+    (home-page "https://www.fourmilab.ch/webtools/midicsv/")
     (license license:public-domain)))
 
 (define-public gx-guvnor-lv2
@@ -4601,7 +4583,7 @@ plugins, a switch trigger, a toggle switch, and a peakmeter.")
      (list qtbase-5 alsa-lib jack-1 liblo lv2))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://qmidiarp.sourceforge.net/")
+    (home-page "https://qmidiarp.sourceforge.net/")
     (synopsis "MIDI arpeggiator")
     (description "QMidiArp is an advanced MIDI arpeggiator, programmable step
 sequencer and LFO.  It can hold any number of arpeggiator, sequencer, or LFO
@@ -4627,7 +4609,7 @@ modules running in parallel.")
      (list qtbase-5 alsa-lib))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://alsamodular.sourceforge.net/")
+    (home-page "https://alsamodular.sourceforge.net/")
     (synopsis "MIDI event router and filter")
     (description "QMidiRoute is a MIDI event router and filter.  MIDI note,
 control change, program change and pitch bend events are logged, and can be
@@ -4649,11 +4631,9 @@ defined as tabs in the main control surface.")
                 "12dphdhnvfk1k0vmagi1v2lhyxjyj1j3cz6ksjw0ydcvid1x8ap2"))
               (patches (search-patches "seq24-rename-mutex.patch"))))
     (build-system gnu-build-system)
-    (inputs
-     (list gtkmm-2 alsa-lib jack-1 lash))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://edge.launchpad.net/seq24/")
+    (inputs (list alsa-lib gtkmm-2 jack-2))
+    (native-inputs (list pkg-config))
+    (home-page "https://launchpad.net/seq24/")
     (synopsis "Real-time MIDI sequencer")
     (description "Seq24 is a real-time MIDI sequencer.  It was created to
 provide a very simple interface for editing and playing MIDI loops.")
@@ -4701,21 +4681,19 @@ inventory, and orders.")
     (outputs '("out"
                "static")) ; 88KiB of .a files
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'move-static-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move static libraries to the "static" output.
-             (let* ((out    (assoc-ref outputs "out"))
-                    (lib    (string-append out "/lib"))
-                    (static (assoc-ref outputs "static"))
-                    (slib   (string-append static "/lib")))
-               (mkdir-p slib)
-               (for-each (lambda (file)
-                           (install-file file slib)
-                           (delete-file file))
-                         (find-files lib "\\.a$"))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-static-libraries
+            (lambda _
+              ;; Move static libraries to the "static" output.
+              (let ((lib  (string-append #$output "/lib"))
+                    (slib (string-append #$output:static "/lib")))
+                (mkdir-p slib)
+                (for-each (lambda (file)
+                            (install-file file slib)
+                            (delete-file file))
+                          (find-files lib "\\.a$"))))))))
     (inputs
      (list readline glib))
     (native-inputs
@@ -4723,9 +4701,9 @@ inventory, and orders.")
     (home-page "http://libsmf.sourceforge.net/")
     (synopsis "Standard MIDI File format library")
     (description
-     "LibSMF is a C library for handling SMF (\"*.mid\") files.  It transparently handles
-conversions between time and pulses, tempo map handling and more.  The only dependencies
-are a C compiler and glib.  Full API documentation and examples are included.")
+     "LibSMF is a C library for handling SMF (\"*.mid\") files.  It
+transparently handles conversions between time and pulses, tempo map handling
+and more.  Full API documentation and examples are included.")
     (license license:bsd-2)))
 
 (define-public lmms
@@ -4744,29 +4722,25 @@ are a C compiler and glib.  Full API documentation and examples are included.")
          "11xgf461cnmq0jkgdgx5bddi87ammpik4whg1m4fcvd3i0d5i601"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       ;; Qt 5 support must be explicitly enabled in the 1.2 stable versions of
-       ;; LMMS, so try removing "-DWANT_QT5=ON" in later versions.
-       ;; Also, explicitly disabling VST support gets rid of the in-tree
-       ;; dependency on qt5-x11embed.
-       #:configure-flags '("-DWANT_QT5=ON"
-                           "-DWANT_VST=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-rpmalloc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "rpmalloc")
-                               "src/3rdparty/rpmalloc/rpmalloc")
-             #t))
-         (add-before 'configure 'set-ldflags
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append
-                      "-Wl,-rpath=\""
-                      (assoc-ref outputs "out") "/lib/lmms"
-                      ":"
-                      (assoc-ref outputs "out") "/lib/lmms/ladspa"
-                      "\"")))))))
+     (list
+      #:tests? #f                       ; no tests
+      ;; Qt 5 support must be explicitly enabled in the 1.2 stable versions of
+      ;; LMMS, so try removing "-DWANT_QT5=ON" in later versions.
+      ;; Also, explicitly disabling VST support gets rid of the in-tree
+      ;; dependency on qt5-x11embed.
+      #:configure-flags '(list "-DWANT_QT5=ON" "-DWANT_VST=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-rpmalloc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-recursively (assoc-ref inputs "rpmalloc")
+                                "src/3rdparty/rpmalloc/rpmalloc")))
+          (add-before 'configure 'set-ldflags
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append
+                       "-Wl,-rpath=\"" #$output "/lib/lmms"
+                       ":" #$output "/lib/lmms/ladspa" "\"")))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools-5" ,qttools-5)
@@ -4785,51 +4759,60 @@ are a C compiler and glib.  Full API documentation and examples are included.")
             (base32
              "0g9pls46iggg7rdm65vzfj8nyr3v2n5xkp54c4qbh9hhalpsw4ay"))))))
     (inputs
-     `(("sdl" ,sdl)
-       ("qtbase" ,qtbase-5)
-       ("qtx11extras" ,qtx11extras)
-       ("fltk" ,fltk)
-       ("libogg" ,libogg)
-       ("libsamplerate" ,libsamplerate)
-       ("fluidsynth" ,fluidsynth)
-       ("libvorbis" ,libvorbis)
-       ("alsa-lib" ,alsa-lib)
-       ("portaudio" ,portaudio)
-       ("ladspa" ,ladspa)
-       ("libsndfile1" ,libsndfile)
-       ("libxft" ,libxft)
-       ("freetype2" ,freetype)
-       ("fftw3f" ,fftwf)
-       ("jack" ,jack-1)
-       ("carla" ,carla)))
+     (list alsa-lib
+           carla
+           fftwf
+           fltk
+           fluidsynth
+           freetype
+           jack-2
+           ladspa
+           libogg
+           libsamplerate
+           libsndfile
+           libvorbis
+           libxft
+           portaudio
+           qtbase-5
+           qtx11extras
+           sdl))
     (home-page "https://lmms.io/")
     (synopsis "Music composition tool")
-    (description "LMMS is a digital audio workstation.  It includes tools for sequencing
-melodies and beats and for mixing and arranging songs.  LMMS includes instruments based on
-audio samples and various soft sythesizers.  It can receive input from a MIDI keyboard.")
+    (description "LMMS is a digital audio workstation.  It includes tools for
+sequencing melodies and beats and for mixing and arranging songs.  LMMS
+includes instruments based on audio samples and various soft sythesizers.  It
+can receive input from a MIDI keyboard.")
     (license license:gpl2+)))
 
 (define-public liquidsfz
   (package
     (name "liquidsfz")
-    (version "0.2.3")
+    (version "0.3.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://space.twc.de/~stefan/liquidsfz/"
-                                  "liquidsfz-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/swesterfeld/liquidsfz")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hb4hc3gkvjfbx0ls6wxzavhv2hf9ix11cz8yvndyb6q9lwkimwl"))))
+                "0kijisxv8f8ihv8rk5cg1cmdh29zkr7i2ghds6wz0iq9mdkga12s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-shared")))
+     (list
+      #:configure-flags '(list "--enable-shared")
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             ;; The default 'bootstrap' phase would run 'autogen.sh', which
+             ;; would try to run ./configure and fail due to unpatched
+             ;; shebangs.
+             (invoke "autoreconf" "-v" "--install"))))))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("jack" ,jack-2)
-       ("lv2" ,lv2)
-       ("readline" ,readline)
-       ("libsndfile" ,libsndfile)))
+     (list jack-2 libsndfile lv2 readline))
     (home-page "https://github.com/swesterfeld/liquidsfz")
     (synopsis "Sampler library")
     (description "The main goal of liquidsfz is to provide an SFZ sampler
@@ -4853,7 +4836,9 @@ standalone JACK client and an LV2 plugin is also available.")
               (snippet
                '(for-each delete-file-recursively
                           '("external/abseil-cpp"
-                            "external/simde"
+                            ;; This package needs an unreleased version of
+                            ;; simde.
+                            ;; "external/simde"
                             "plugins/editor/external/vstgui4"
                             "plugins/vst"
                             "src/external/pugixml")))))
@@ -4889,7 +4874,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.0")
+    (version "4.0.1")
     (source
      (origin
        (method git-fetch)
@@ -4898,7 +4883,7 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16rcwr6fzghv8100syzicabqg8jqvng3zzsi6h3ja4zkp9hcbkcr"))
+        (base32 "0x1aahpbvss3sjydcq6xdh198fmslgypixmd2gckfwjqzady662y"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5002,7 +4987,6 @@ sample library.")
            glib
            jack-1
            ladspa
-           lash
            libinstpatch
            liblo
            libsamplerate
@@ -5019,10 +5003,10 @@ sample library.")
            rubberband
            sord))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("qttools-5" ,qttools-5)))
+     (list perl
+           pkg-config
+           python-wrapper
+           qttools-5))
     (home-page "https://muse-sequencer.github.io/")
     (synopsis "MIDI/Audio sequencer")
     (description "MusE is a MIDI/Audio sequencer with recording and editing
@@ -5121,7 +5105,7 @@ It is intended to be simple, GUI-toolkit-agnostic, and slightly biased
 towards familiarity with MIDI.  The DSSI distribution package contains
 a JACK/ALSA-sequencer reference host and some plugins as well as the
 specification and header.")
-    (home-page "http://dssi.sourceforge.net/")
+    (home-page "https://dssi.sourceforge.net/")
     ;; The DSSI interface is LGPL2.1+, some tests and examples are GPL2+.
     ;; The vast majority of examples are in the public domain.
     (license (list license:lgpl2.1+ license:gpl2+))))
@@ -5974,22 +5958,22 @@ and debugging of event signal flows inside plugin graphs.")
          "1drzfyr7mzb58pdv0gsqkg6ds6kbgp6g25rrv1yya1611cljgvjh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f  ; no automated test
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:tests? #f  ; no automated test
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'configure
            (lambda _
              (substitute* "Makefile"
                (("-mtune=native") "")
-               (("-march=native") ""))
-             #t)))))
+               (("-march=native") "")))))))
     (inputs
-     `(("jack" ,jack-1)
-       ("lv2" ,lv2)
-       ("cairo" ,cairo)
-       ("gtk" ,gtk+-2)))
+     (list cairo
+           gtk+-2
+           jack-1
+           lv2))
     (native-inputs
      (list faust pkg-config))
     (home-page "https://foo-yc20.codeforcode.com/")
@@ -6047,7 +6031,7 @@ short-time Fourier transform, available as LV2 audio plugin and JACK client.")
 (define-public x42-plugins
   (package
     (name "x42-plugins")
-    (version "20211016")
+    (version "20221119")
     (source
      (origin
        (method url-fetch)
@@ -6055,20 +6039,21 @@ short-time Fourier transform, available as LV2 audio plugin and JACK client.")
         (string-append "https://gareus.org/misc/x42-plugins/x42-plugins-"
                        version ".tar.xz"))
        (sha256
-        (base32 "11bf6q42ihyk4qxwf83y0847zzyl65kwpbk3hmyz0f0ykil5fsb7"))))
+        (base32 "128h9x7yzhy6q6l0fqk2zd6l48wgs2lhf2pzbiba6h3n6l9n555b"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "LIBZITACONVOLVER=-lzita-convolver"
-             (string-append "FONTFILE="
-                            (assoc-ref %build-inputs "font-dejavu")
-                            "/share/fonts/truetype/DejaVuSans-Bold.ttf")
-             (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:tests? #f                      ; no "check" target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "LIBZITACONVOLVER=-lzita-convolver"
+              (string-append "FONTFILE="
+                             #$(this-package-native-input "font-dejavu")
+                             "/share/fonts/truetype/DejaVuSans-Bold.ttf")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+        (delete 'configure))))
     (inputs
      (list cairo
            fftwf
@@ -6093,7 +6078,7 @@ audio and MIDI plugins that can also run as standalone JACK applications.")
 (define-public zam-plugins
   (package
     (name "zam-plugins")
-    (version "3.13")
+    (version "4.1")
     (source
      (origin
        (method git-fetch)
@@ -6107,19 +6092,20 @@ audio and MIDI plugins that can also run as standalone JACK applications.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02blg0iqich4vx5z1ahj6avkh83yqszdiq83p9jd5qwm0i4llqjq"))))
+        (base32 "0p3y3r2nrhzr0xlcy5rz4c2jsvc10l1n8cwc642r0zppwfabm9il"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "HAVE_ZITA_CONVOLVER=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-CC-variable
-           (lambda _
-             (setenv "CC" "gcc") #t))
-         (delete 'configure))))
+     (list
+      #:tests? #f                      ;no "check" target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "HAVE_ZITA_CONVOLVER=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-CC-variable
+            (lambda _
+              (setenv "CC" "gcc")))
+          (delete 'configure))))
     (inputs
      (list fftwf
            jack-1 ;for the standalone JACK application
@@ -6136,7 +6122,7 @@ LV2 and VST2 formats, as well as standalone JACK versions.  The collection
 includes ZaMaximX2, ZamAutoSat, ZamComp, ZamCompX2, ZamEQ2, ZamGEQ31,
 ZamHeadX2, ZamPhono, ZamGate, ZamGateX2, ZamTube, ZamDelay, ZamDynamicEQ,
 ZaMultiComp, ZaMultiCompX2 and ZamSynth.")
-    (home-page "http://www.zamaudio.com/?p=976")
+    (home-page "https://www.zamaudio.com/?p=976")
     (license license:gpl2+)))
 
 (define-public geonkick
@@ -6669,7 +6655,7 @@ plugin and a standalone JACK application.")
       (description "TAP (Tom's Audio Processing) plugins is a collection of
   audio effect plugins originally released as LADSPA plugins.  This package
   offers an LV2 version ported by moddevices.")
-      (home-page "http://tap-plugins.sourceforge.net/")
+      (home-page "https://tap-plugins.sourceforge.net/")
       (license license:gpl2))))
 
 (define-public wolf-shaper
@@ -6810,7 +6796,7 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
       (description "Shiru plugins is a collection of audio plugins created
   by Shiru, ported to LV2 by the Linux MAO project using the DISTRHO plugin
   framework.")
-      (home-page "http://shiru.untergrund.net/software.shtml")
+      (home-page "https://shiru.untergrund.net/software.shtml")
       (license license:wtfpl2))))
 
 (define-public a2jmidid

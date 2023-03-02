@@ -23,6 +23,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lesstif)   ; motif
   #:use-module (gnu packages linux)     ; alsa-lib, gpm
   #:use-module (gnu packages mail)      ; for mailutils
   #:use-module (gnu packages multiprecision)
@@ -75,6 +77,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages web)       ; for jansson
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml)
@@ -365,7 +368,15 @@
             (files '("lib/emacs/native-site-lisp")))
            (search-path-specification
             (variable "INFOPATH")
-            (files '("share/info")))))
+            (files '("share/info")))
+           ;; tree-sitter support is not yet available in emacs 28, but this
+           ;; search path won't harm and also will be beneficial for
+           ;; emacs-next and other emacs-* packages, which have tree-sitter
+           ;; support enabled.  Please, remove this comment, when emacs
+           ;; package is updated to 29.
+           (search-path-specification
+            (variable "TREE_SITTER_GRAMMAR_PATH")
+            (files '("lib/tree-sitter")))))
 
     (home-page "https://www.gnu.org/software/emacs/")
     (synopsis "The extensible, customizable, self-documenting text editor")
@@ -381,12 +392,12 @@ languages.")
     (license license:gpl3+)))
 
 (define-public emacs-next
-  (let ((commit "6adc193ad66445acd84caba6973424ecbd21da26")
-        (revision "4"))
+  (let ((commit "f1f571e72ae10285762d3a941e56f7c4048272af")
+        (revision "1"))
     (package
       (inherit emacs)
       (name "emacs-next")
-      (version (git-version "29.0.50" revision commit))
+      (version (git-version "29.0.60" revision commit))
       (source
        (origin
          (inherit (package-source emacs))
@@ -401,10 +412,39 @@ languages.")
                                   "emacs-native-comp-driver-options.patch"))
          (sha256
           (base32
-           "0b48qg9w7fzvhva78gzi3cs2m6asj11fk0kgys49fqhwskigzg1f"))))
+           "1rildbxq53yvc2rllg2qccgxzbbnr6qbija0lyqacsy8dlzaysch"))))
       (inputs
        (modify-inputs (package-inputs emacs)
          (prepend sqlite)))
+      (native-inputs
+       (modify-inputs (package-native-inputs emacs)
+         (prepend autoconf))))))
+
+(define-public emacs-next-tree-sitter
+  (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
+        (revision "0"))
+    (package
+      (inherit emacs)
+      (name "emacs-next-tree-sitter")
+      (version (git-version "30.0.50" revision commit))
+      (source
+       (origin
+         (inherit (package-source emacs))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/emacs.git/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         ;; emacs-source-date-epoch.patch is no longer necessary
+         (patches (search-patches "emacs-exec-path.patch"
+                                  "emacs-fix-scheme-indent-function.patch"
+                                  "emacs-native-comp-driver-options.patch"))
+         (sha256
+          (base32
+           "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
+      (inputs
+       (modify-inputs (package-inputs emacs)
+         (prepend sqlite tree-sitter)))
       (native-inputs
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf))))))
@@ -472,6 +512,30 @@ editor (with xwidgets support)")
     (inputs
      (modify-inputs (package-inputs emacs)
        (prepend webkitgtk-with-libsoup2 libxcomposite)))))
+
+(define-public emacs-motif
+  (package/inherit emacs
+    (name "emacs-motif")
+    (synopsis
+     "The extensible, customizable, self-documenting text editor (with Motif
+toolkit)")
+    (build-system gnu-build-system)
+    (inputs (modify-inputs (package-inputs emacs)
+              (delete "gtk+")
+              (prepend inotify-tools motif)))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments
+          emacs)
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-x-toolkit=motif"
+                #$flags))
+       ((#:modules _)
+        (%emacs-modules build-system))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'restore-emacs-pdmp)
+            (delete 'strip-double-wrap)))))))
 
 (define-public emacs-no-x
   (package/inherit emacs

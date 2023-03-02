@@ -137,93 +137,85 @@ For synthesis, the compiler generates netlists in the desired format.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.9")
+    (version "0.26")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/cliffordwolf/yosys")
-                    (commit (string-append "yosys-" version))
-                    (recursive? #t))) ; for the ‘iverilog’ submodule
+                    (url "https://github.com/YosysHQ/yosys")
+                    (commit (string-append "yosys-" version))))
               (sha256
-                (base32
-                   "0lb9r055h8y1vj2z8gm4ip0v06j5mk7f9zx9gi67kkqb7g4rhjli"))
-              (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "Makefile"
-                    (("ABCREV = .*") "ABCREV = default\n"))
-                  #t))))
+               (base32
+                "0s79ljgbcfkm7l9km7dcvlz4mnx38nbyxppscvh5il5lw07n45gx"))
+              (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags (list "CC=gcc"
-                          "CXX=g++"
-                          (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-paths
-           (lambda _
-             (substitute* "./passes/cmds/show.cc"
-               (("exec xdot") (string-append "exec " (which "xdot")))
-               (("dot -") (string-append (which "dot") " -"))
-               (("fuser") (which "fuser")))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "config-gcc" make-flags)))
-         (add-after 'configure 'prepare-abc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((sourceabc (assoc-ref inputs "abc"))
-                    (sourcebin (string-append sourceabc "/bin"))
-                    (source (string-append sourcebin "/abc")))
-                   (mkdir-p "abc")
-                   (call-with-output-file "abc/Makefile"
-                     (lambda (port)
-                       (format port ".PHONY: all\nall:\n\tcp -f abc abc-default\n")))
-                   (copy-file source "abc/abc")
-                   (invoke "chmod" "+w" "abc/abc"))))
-          (add-before 'check 'fix-iverilog-references
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               (let* ((xinputs (or native-inputs inputs))
-                      (xdirname (assoc-ref xinputs "iverilog"))
-                      (iverilog (string-append xdirname "/bin/iverilog")))
-                     (substitute* '("./manual/CHAPTER_StateOfTheArt/synth.sh"
-                                    "./manual/CHAPTER_StateOfTheArt/validate_tb.sh"
-                                    "./techlibs/ice40/tests/test_bram.sh"
-                                    "./techlibs/ice40/tests/test_ffs.sh"
-                                    "./techlibs/xilinx/tests/bram1.sh"
-                                    "./techlibs/xilinx/tests/bram2.sh"
-                                    "./tests/bram/run-single.sh"
-                                    "./tests/realmath/run-test.sh"
-                                    "./tests/simple/run-test.sh"
-                                    "./tests/techmap/mem_simple_4x1_runtest.sh"
-                                    "./tests/tools/autotest.sh"
-                                    "./tests/vloghtb/common.sh")
-                        (("if ! which iverilog") "if ! true")
-                        (("iverilog ") (string-append iverilog " "))
-                        (("iverilog_bin=\".*\"") (string-append "iverilog_bin=\""
-                                                                iverilog "\"")))
-                     #t))))))
+     (list
+      #:test-target "test"
+      #:make-flags #~(list "CC=gcc"
+                           "CXX=g++"
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "./backends/smt2/smtio.py"
+                (("\\['z3")
+                 (string-append "['" (search-input-file inputs "/bin/z3"))))
+              (substitute* "./kernel/fstdata.cc"
+                (("vcd2fst")
+                 (search-input-file inputs "/bin/vcd2fst")))
+              (substitute* '("./passes/cmds/show.cc"
+                             "./passes/cmds/viz.cc")
+                (("exec xdot")
+                 (string-append "exec " (search-input-file inputs
+                                                           "/bin/xdot")))
+                (("dot -")
+                 (string-append (search-input-file inputs "/bin/dot") " -"))
+                (("fuser")
+                 (search-input-file inputs "/bin/fuser")))))
+          (replace 'configure
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "config-gcc" make-flags)))
+          (add-after 'configure 'use-external-abc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("./Makefile")
+                (("ABCEXTERNAL \\?=")
+                 (string-append "ABCEXTERNAL = "
+                                (search-input-file inputs "/bin/abc"))))))
+          (add-after 'install 'add-symbolic-link
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Previously this package provided a copy of the "abc"
+              ;; executable in its output, named "yosys-abc".  Create a
+              ;; symbolic link so any external uses of that name continue to
+              ;; work.
+              (symlink (search-input-file inputs "/bin/abc")
+                       (string-append #$output "/bin/yosys-abc"))))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/yosys-witness")
+                `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (native-inputs
-     (list pkg-config
-           python
-           bison
+     (list bison
            flex
            gawk ; for the tests and "make" progress pretty-printing
-           tcl ; tclsh for the tests
-           iverilog)) ; for the tests
+           iverilog ; for the tests
+           pkg-config
+           python
+           tcl)) ; tclsh for the tests
     (inputs
-     (list tcl
-           readline
-           libffi
+     (list abc
            graphviz
+           gtkwave
+           libffi
            psmisc
+           readline
+           tcl
            xdot
-           abc))
-    (propagated-inputs
-     (list z3)) ; should be in path for yosys-smtbmc
-    (home-page "http://www.clifford.at/yosys/")
+           z3
+           zlib
+           python
+           python-click))
+    (home-page "https://yosyshq.net/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
     (license license:isc)))
@@ -267,7 +259,7 @@ For synthesis, the compiler generates netlists in the desired format.")
     (native-inputs
      `(("python-3" ,python)
        ("pkg-config" ,pkg-config)))
-    (home-page "http://www.clifford.at/icestorm/")
+    (home-page "https://www.clifford.at/icestorm/")
     (synopsis "Project IceStorm - Lattice iCE40 FPGAs bitstream tools")
     (description "Project IceStorm - Lattice iCE40 FPGAs Bitstream Tools.
 Includes the actual FTDI connector.")
@@ -361,7 +353,7 @@ FOSS FPGA place and route tool.")
        (uri (list (string-append "mirror://sourceforge/gtkwave/"
                                  "gtkwave-" version "/"
                                  "gtkwave-" version ".tar.gz")
-                  (string-append "http://gtkwave.sourceforge.net/"
+                  (string-append "https://gtkwave.sourceforge.net/"
                                  "gtkwave-" version ".tar.gz")))
        (sha256
         (base32 "1zqkfchmns5x90qxa8kg39bfhax3vxf1mrdz3lhyb9fz1gp4difn"))))
@@ -381,7 +373,7 @@ FOSS FPGA place and route tool.")
     (synopsis "Waveform viewer for FPGA simulator trace files")
     (description "This package is a waveform viewer for FPGA
 simulator trace files (@dfn{FST}).")
-    (home-page "http://gtkwave.sourceforge.net/")
+    (home-page "https://gtkwave.sourceforge.net/")
     ;; Exception against free government use in tcl_np.c and tcl_np.h.
     (license (list license:gpl2+ license:expat license:tcl/tk))))
 
@@ -424,7 +416,7 @@ constructed by a Python program.")
           (base32
             "04fi59cyn5dsci0ai7djg74ybkqfcjzhj1jfmac2xanbcrw9j3yk"))))
     (build-system python-build-system)
-    (home-page "http://www.myhdl.org/")
+    (home-page "https://www.myhdl.org/")
     (synopsis "Python as a Hardware Description Language")
     (description "This package provides a library to turn Python into
 a hardware description and verification language.")
@@ -433,7 +425,7 @@ a hardware description and verification language.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.7.2")
+    (version "1.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -442,7 +434,7 @@ a hardware description and verification language.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "01b0yhr0fw59nxwi4pz04mp9b71mg6s7zaysp0r8h0m2nd5pbpgc"))))
+                "03dnn77n50b5n06gd81hh36gh0h2nc266yzwl70qjlb00qs8cf7p"))))
     (build-system gnu-build-system)
     (arguments
      `(#:out-of-source? #t
@@ -464,7 +456,8 @@ a hardware description and verification language.")
            check)) ; for the tests
     (inputs
      (list elfutils
-           llvm-9))
+           llvm-9
+           libffi))
     (synopsis "VHDL compiler and simulator")
     (description "This package provides a VHDL compiler and simulator.")
     (home-page "https://www.nickg.me.uk/nvc/")

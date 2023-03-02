@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
                 #:select (coreutils glibc glibc-utf8-locales tar
                           canonical-package))
   #:use-module ((gnu packages compression) #:select (gzip))
+  #:use-module (gnu packages fonts)
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
   #:autoload   (gnu packages hurd) (hurd)
   #:use-module (gnu packages package-management)
@@ -102,6 +104,13 @@
             console-font-service-type
             console-font-service
             virtual-terminal-service-type
+
+            host
+            host?
+            host-address
+            host-canonical-name
+            host-aliases
+            hosts-service-type
 
             static-networking
             static-networking?
@@ -685,6 +694,72 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
            (rngd-configuration
             (rng-tools rng-tools)
             (device device))))
+
+;;;
+;;; /etc/hosts
+;;;
+
+(define (valid-name? name)
+  "Return true if @var{name} is likely to be a valid host name."
+  (false-if-exception (not (string-any char-set:whitespace name))))
+
+(define-compile-time-procedure (assert-valid-name (name valid-name?))
+  "Ensure @var{name} is likely to be a valid host name."
+  ;; TODO: RFC compliant implementation.
+  (unless (valid-name? name)
+    (raise
+     (make-compound-condition
+      (formatted-message (G_ "host name '~a' contains invalid characters")
+                         name)
+      (condition (&error-location
+                  (location
+                   (source-properties->location procedure-call-location)))))))
+  name)
+
+(define-record-type* <host> %host
+  ;; XXX: Using the record type constructor becomes tiresome when
+  ;; there's multiple records to make.
+  make-host host?
+  (address        host-address)
+  (canonical-name host-canonical-name
+                  (sanitize assert-valid-name))
+  (aliases        host-aliases
+                  (default '())
+                  (sanitize (cut map assert-valid-name <>))))
+
+(define* (host address canonical-name #:optional (aliases '()))
+  "Return a new record for the host at @var{address} with the given
+@var{canonical-name} and possibly @var{aliases}.
+
+@var{address} must be a string denoting a valid IPv4 or IPv6 address, and
+@var{canonical-name} and the strings listed in @var{aliases} must be valid
+host names."
+  (%host
+   (address address)
+   (canonical-name canonical-name)
+   (aliases aliases)))
+
+(define hosts-service-type
+  ;; Extend etc-service-type with a entry for @file{/etc/hosts}.
+  (let* ((serialize-host-record
+          (lambda (record)
+            (match-record record <host> (address canonical-name aliases)
+              (format #f "~a~/~a~{~^~/~a~}~%" address canonical-name aliases))))
+         (host-etc-service
+          (lambda (lst)
+            `(("hosts" ,(plain-file "hosts"
+                                    (format #f "~{~a~}"
+                                            (map serialize-host-record
+                                                 lst))))))))
+    (service-type
+     (name 'etc-hosts)
+     (extensions
+      (list
+       (service-extension etc-service-type
+                          host-etc-service)))
+     (compose concatenate)
+     (extend append)
+     (description "Populate the @file{/etc/hosts} file."))))
 
 
 ;;;
@@ -749,10 +824,11 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
 of console keymaps with @command{loadkeys}.")))
 
 (define %default-console-font
-  ;; Note: 'LatGrkCyr-8x16' has the advantage of providing three common
-  ;; scripts as well as glyphs for em dash, quotation marks, and other Unicode
-  ;; codepoints notably found in the UTF-8 manual.
-  "LatGrkCyr-8x16")
+  ;; Note: the 'font-gnu-unifont' package cannot be cross-compiled (yet), but
+  ;; its "psf" output is the same whether it's built natively or not, hence
+  ;; 'ungexp-native'.
+  #~(string-append #+font-gnu-unifont:psf
+                   "/share/consolefonts/Unifont-APL8x16.psf.gz"))
 
 (define (console-font-shepherd-services tty+font)
   "Return a list of Shepherd services for each pair in TTY+FONT."
@@ -2502,7 +2578,7 @@ notably to select, copy, and paste text.  The default options use the
                   ;; TODO: Make this configurable.
                   #:environment-variables
                   (list (string-append "XDG_DATA_DIRS="
-                                       #$font-gnu-unifont "/share"))))
+                                       #+font-gnu-unifont "/share"))))
         (stop #~(make-kill-destructor)))))
    (description "Start the @command{kmscon} virtual terminal emulator for the
 Linux @dfn{kernel mode setting} (KMS).")))
@@ -3071,6 +3147,7 @@ to handle."
        (default-session-command (greetd-default-session-command config)))
     (mixed-text-file
      config-file-name
+     "[general]\n"
      "source_profile = " (if source-profile? "true" "false") "\n"
      "[terminal]\n"
      "vt = " terminal-vt "\n"

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -34,7 +34,6 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -255,7 +254,7 @@ spreadsheets and presentations.")
      (list librevenge)) ; in Requires field of .pkg
     (inputs
      (list zlib))
-    (home-page "http://libwpd.sourceforge.net/")
+    (home-page "https://libwpd.sourceforge.net/")
     (synopsis "Library for importing WordPerfect documents")
     (description "Libwpd is a C++ library designed to help process
 WordPerfect documents.  It is most commonly used to import such documents
@@ -346,7 +345,7 @@ way--presentation and vector drawing interfaces.")
      (list libwpd)) ; in Requires field of .pkg
     (inputs
      (list perl zlib))
-    (home-page "http://libwpg.sourceforge.net/")
+    (home-page "https://libwpg.sourceforge.net/")
     (synopsis "Library and tools for the WordPerfect Graphics format")
     (description "The libwpg project provides a library and tools for
 working with graphics in the WPG (WordPerfect Graphics) format.")
@@ -762,7 +761,7 @@ from the old StarOffice (.sdc, .sdw, ...).")
      (list librevenge))
     (inputs
      (list boost zlib))
-    (home-page "http://libwps.sourceforge.net/")
+    (home-page "https://libwps.sourceforge.net/")
     (synopsis "Import library for Microsoft Works text documents")
     (description "Libwps is a library for importing files in the Microsoft
 Works word processor file format.")
@@ -916,7 +915,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.4.3.2")
+    (version "7.5.0.3")
     (source
      (origin
        (method url-fetch)
@@ -925,7 +924,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "0fyvd4ydh72lmn005h190xa563d4h376pi1fx9lfr5i25qcbpg7z"))))
+        (base32 "0fq0fxwhbhikqzfl2z5xg2swlnrkg1p8l0shh6qdx9w0msihy4pm"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -936,6 +935,18 @@ commonly called @code{ftoa} or @code{dtoa}.")
             (lambda _
               (mkdir-p "external/tarballs")
               (copy-file #$dtoa "external/tarballs/dtoa-20180411.tgz")))
+          (add-after 'unpack 'augment-LD_LIBRARY_PATH
+            ;; Without this, the nsscrypto_initialize procedure in
+            ;; nssinitializer.cxx silently fails to load libnssckbi.so, which
+            ;; causes password encryption to also silently fail (see:
+            ;; https://bugs.documentfoundation.org/show_bug.cgi?id=153714).
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "desktop/scripts/soffice.sh"
+                (("^exec .*oosplash.*" anchor)
+                 (string-append "export LD_LIBRARY_PATH="
+                                (search-input-directory inputs "lib/nss")
+                                "${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}\n"
+                                anchor)))))
           (add-before 'configure 'prepare-src
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute*
@@ -1025,6 +1036,10 @@ commonly called @code{ftoa} or @code{dtoa}.")
       #~(list
          "--enable-release-build"
          "--with-vendor=GNU Guix"
+         ;; Without the SAL logging system enabled, LibreOffice is utterly
+         ;; silent.  Setting the environment variable 'SAL_INFO=+INFO' can be
+         ;; useful to debug problems.
+         "--enable-sal-log"
          ;; Avoid using all cpu cores by default
          (format #f "--with-parallelism=~d" (parallel-job-count))
          "--disable-fetch-external"     ; disable downloads

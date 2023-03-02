@@ -55,6 +55,7 @@
   #:use-module (guix ui)
   #:use-module (guix upstream)
   #:use-module (guix packages)
+  #:use-module (guix sets)
   #:use-module (gnu packages)
   #:export (%input-style
 
@@ -422,6 +423,7 @@ empty list when the FIELD cannot be found."
     ("libarchive_dev" "libarchive")
     ("libbz2" "bzip2")
     ("libexpat" "expat")
+    ("libjpeg" "libjpeg-turbo")
     ("liblz4" "lz4")
     ("liblzma" "xz")
     ("libzstd" "zstd")
@@ -447,6 +449,13 @@ empty list when the FIELD cannot be found."
     (() #f)
     (_ #t)))
 
+(define (directory-needs-esbuild? dir)
+  "Check if the directory DIR contains minified JavaScript files and thus
+needs a JavaScript compiler."
+  (match (find-files dir "\\.min.js$")
+    (() #f)
+    (_ #t)))
+
 (define (files-match-pattern? directory regexp . file-patterns)
   "Return #T if any of the files matching FILE-PATTERNS in the DIRECTORY match
 the given REGEXP."
@@ -462,10 +471,49 @@ the given REGEXP."
                     (else (loop))))))))
          (apply find-files directory file-patterns))))
 
-(define (directory-needs-zlib? dir)
-  "Return #T if any of the Makevars files in the src directory DIR contain a
-zlib linker flag."
-  (files-match-pattern? dir "-lz" "(Makevars.*|configure.*)"))
+(define packages-for-matches
+  '(("-lcrypto"    . "openssl")
+    ("-lcurl"      . "curl")
+    ("-lgit2"      . "libgit2")
+    ("-lpcre"      . "pcre2")
+    ("-lssh"       . "openssh")
+    ("-lssl"       . "openssl")
+    ("-ltbb"       . "tbb")
+    ("-lz"         . "zlib")
+    ("gsl-config"  . "gsl")
+    ("xml2-config" . "libxml2")
+    ("CURL_LIBS"   . "curl")))
+
+(define libraries-pattern
+  (make-regexp
+   (string-append "("
+                  (string-join
+                   (map (compose regexp-quote first) packages-for-matches) "|")
+                  ")")))
+
+(define (needed-libraries-in-directory dir)
+  "Return a list of package names that correspond to libraries that are
+referenced in build system files."
+  (set->list
+   (fold
+    (lambda (file packages)
+      (call-with-input-file file
+        (lambda (port)
+          (let loop ((packages packages))
+            (let ((line (read-line port)))
+              (cond
+               ((eof-object? line) packages)
+               (else
+                (loop
+                 (fold (lambda (match acc)
+                         (or (and=> (assoc-ref packages-for-matches
+                                               (match:substring match))
+                                    (cut set-insert <> acc))
+                             acc))
+                       packages
+                       (list-matches libraries-pattern line))))))))))
+    (set)
+    (find-files dir "(Makevars.in*|configure.*)"))))
 
 (define (directory-needs-pkg-config? dir)
   "Return #T if any of the Makevars files in the src directory DIR reference
@@ -477,8 +525,9 @@ the pkg-config tool."
   "Guess dependencies of R package source in DIR and return two values: a list
 of package names for INPUTS and another list of names of NATIVE-INPUTS."
   (values
-   (if (directory-needs-zlib? dir) '("zlib") '())
+   (needed-libraries-in-directory dir)
    (append
+       (if (directory-needs-esbuild? dir) '("esbuild") '())
        (if (directory-needs-pkg-config? dir) '("pkg-config") '())
        (if (directory-needs-fortran? dir) '("gfortran") '()))))
 
@@ -493,8 +542,8 @@ by TARBALL?"
        (source-dir->dependencies dir)))
     (source-dir->dependencies source)))
 
-(define (needs-knitr? meta)
-  (member "knitr" (listify meta "VignetteBuilder")))
+(define (vignette-builders meta)
+  (map cran-guix-name (listify meta "VignetteBuilder")))
 
 (define* (description->package repository meta #:key (license-prefix identity)
                                (download-source download))
@@ -608,8 +657,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
               ,@(maybe-inputs (map cran-guix-name propagate) 'propagated-inputs)
               ,@(maybe-inputs
                  `(,@source-native-inputs
-                   ,@(if (needs-knitr? meta)
-                         '("r-knitr") '()))
+                   ,@(vignette-builders meta))
                  'native-inputs)
               (home-page ,(if (string-null? home-page)
                               (string-append base-url name)

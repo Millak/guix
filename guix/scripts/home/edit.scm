@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,8 +40,8 @@
                                              '()))
          (closest   (string-closest type available)))
     (unless (or (not closest) (string=? closest type))
-      (display-hint (format #f (G_ "Did you mean @code{~a}?~%")
-                            closest))))
+      (display-hint (G_ "Did you mean @code{~a}?~%")
+                    closest)))
 
   (exit 1))
 

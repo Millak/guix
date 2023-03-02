@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2015, 2016, 2017, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2013, 2015-2017, 2019, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -43,6 +43,7 @@
   #:use-module ((gnu packages hurd) #:select (hurd-target?))
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-compression)
   #:use-module (gnu packages readline))
 
 (define-public texinfo
@@ -111,7 +112,27 @@ is on expressing the content semantically, avoiding physical markup commands.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1balvbkdlwa8zwnzp4irkixq1zhps2wr6njmwj4ilgiqc4rfq4gj"))))))
+                "1balvbkdlwa8zwnzp4irkixq1zhps2wr6njmwj4ilgiqc4rfq4gj"))))
+    (inputs (modify-inputs (package-inputs texinfo)
+              (append perl-archive-zip)))        ;needed for 'tex2any --epub3'
+    (arguments
+     (substitute-keyword-arguments (package-arguments texinfo)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'wrap-program
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (bin (string-append out "/bin"))
+                       (program (string-append bin "/texi2any"))
+                       (zip (car (find-files
+                                  (assoc-ref inputs "perl-archive-zip")
+                                  (lambda (file stat)
+                                    (and (eq? 'directory (stat:type stat))
+                                         (string=? (basename file)
+                                                   "Archive")))
+                                  #:directories? #t))))
+                  (wrap-program program
+                    `("PERL5LIB" prefix (,(dirname zip)))))))))))))
 
 (define-public texinfo-5
   (package (inherit texinfo)

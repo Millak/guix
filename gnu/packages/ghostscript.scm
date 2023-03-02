@@ -45,7 +45,6 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1))
 
 (define-public lcms

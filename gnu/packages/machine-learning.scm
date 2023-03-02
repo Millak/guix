@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -45,7 +45,6 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system r)
   #:use-module (guix build-system trivial)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
@@ -438,7 +437,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                                "CFLAGS=-fcommon")))
     (inputs
      (list perl))
-    (home-page "http://micans.org/mcl/")
+    (home-page "https://micans.org/mcl/")
     (synopsis "Clustering algorithm for graphs")
     (description
      "The MCL algorithm is short for the @dfn{Markov Cluster Algorithm}, a
@@ -565,7 +564,7 @@ sample proximities between pairs of cases.")
                 "0hlbdmjjf1jgsvi3d2hwni5lz3l9a5bzj6ijpbawa8a7cbrpp66y"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-ngram-fsts")))
-    (home-page "http://www.openfst.org")
+    (home-page "https://www.openfst.org")
     (synopsis "Library for weighted finite-state transducers")
     (description "OpenFst is a library for constructing, combining,
 optimizing, and searching weighted finite-state transducers (FSTs).")
@@ -906,7 +905,7 @@ with a single function call.")
              (invoke "ctest"))))))
     (native-inputs
      (list catch-framework))
-    (home-page "http://reactivex.io/")
+    (home-page "https://reactivex.io/")
     (synopsis "Reactive Extensions for C++")
     (description
      "The Reactive Extensions for C++ (RxCpp) is a library of algorithms for
@@ -1399,6 +1398,31 @@ data by providing clean labels during training.")
            python-tqdm))
     (native-inputs
      (list python-pytest))))
+
+(define-public python-cma
+  (package
+    (name "python-cma")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cma" version))
+              (sha256
+               (base32
+                "1v31b2vnnr4v6ack7zfmw7zb47vbzjr9nyvx2lbfhyjf7zhbhj5p"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "cma.test")))))))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/CMA-ES/pycma")
+    (synopsis "Python implementation of CMA-ES")
+    (description "This package provides a Python implementation of the
+@acronym{CMA-ES, Covariance Matrix Adaptation Evolution Strategy} algorithm
+and a few related numerical optimization tools.")
+    (license license:bsd-3)))
 
 (define-public python-cmaes
   (package
@@ -3346,27 +3370,26 @@ Python.")
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
-    (version "0.2.7")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hmmlearn" version))
        (sha256
         (base32
-         "1qgnf1kdxicygy8nvpv866iqvwq0rc6xkd3s6slmvxvsy8h2fjvb"))))
+         "1yd5l9ra37mks41mn5bigav7xpb161a9yqlcnz4ir076vkik2sb9"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion (string-append (assoc-ref outputs "out") "/lib")
-                 (invoke "python" "-m" "pytest"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append #$output "/lib")
+                  (invoke "python" "-m" "pytest"))))))))
     (propagated-inputs
      (list pybind11
-           python-cython
            python-numpy
            python-scikit-learn
            python-scipy
@@ -3384,7 +3407,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3393,7 +3416,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bjd0ym547k46ci8xnwsry7x8w5k65cl86snlcrfn4vs3fald2y9"))))
+        (base32 "1rycs7fgm03fxp8lxj8ljrdwy5whxd4554xzklbcmn4mcwbxgg57"))))
     (build-system cmake-build-system)
     (arguments
      (list

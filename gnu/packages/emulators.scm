@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2021 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2015, 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2018 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2015, 2018, 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -74,6 +74,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
@@ -1506,6 +1507,57 @@ reference frontend for the libretro API, currently used by most as a modular
 multi-system game/emulator system.")
     (license license:gpl3+)))
 
+(define-public wasm4
+  (package
+    (name "wasm4")
+    (version "2.5.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aduros/wasm4")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ycnznwy4i4fw6l507y5xm986rxqvnpl971725q8xinsnq2swpnl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no check target
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_C_FLAGS="
+                             "-I" #$minifb "/include "
+                             "-I" #$wasm3 "/include"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; WASM4's source is a combination of multiple runtimes.  We want to
+         ;; build the native one.
+         (add-after 'unpack 'chdir-to-native-runtime
+           (lambda _
+             (chdir "runtimes/native")))
+         ;; WASM4 uses git submodules to bundle several dependencies, which we
+         ;; have instead made dedicated packages for.  This phase hacks the
+         ;; build system to use our own stuff.
+         (add-after 'chdir-to-native-runtime 'unbundle
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               ;; These directories do not exist because we aren't pulling in
+               ;; submodules.
+               (("add_subdirectory\\(vendor/minifb\\)") "")
+               (("add_subdirectory\\(vendor/cubeb\\)") "")
+               ;; Add additional libraries needed to successfully link the
+               ;; wasm4 executable using the unbundled dependencies.
+               (("target_link_libraries\\(wasm4 minifb cubeb\\)")
+                "target_link_libraries(wasm4 m GL X11 xkbcommon minifb cubeb m3)")))))))
+    (inputs (list cubeb minifb wasm3))
+    (synopsis "WebAssembly fantasy console")
+    (description "WASM-4 is a low-level fantasy game console for building
+small games with WebAssembly.  Game cartridges (ROMs) are small,
+self-contained .wasm files that can be built with any programming language
+that compiles to WebAssembly.")
+    (home-page "https://wasm4.org")
+    (license license:isc)))
+
 (define-public scummvm
   (package
     (name "scummvm")
@@ -1716,7 +1768,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.249")
+    (version "0.251")
     (source
      (origin
        (method git-fetch)
@@ -1725,7 +1777,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1akws4l3b7z5mkf09mdaz640rj41sbg3sh1xlv1sp0yhdjqjpi90"))
+        (base32 "102p6kz4ph9m0sxsyavqhjzg00gmnq8m5mnd5sf14c61d2jc0vzk"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.

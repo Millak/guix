@@ -165,7 +165,7 @@ FTP browser, as well as non-interactive commands such as @code{ncftpput} and
     (build-system gnu-build-system)
     (native-inputs
      (list automake autoconf gettext-minimal))
-    (home-page "http://weex.sourceforge.net/")
+    (home-page "https://weex.sourceforge.net/")
     (synopsis "Non-interactive client for FTP synchronization")
     (description
      "Weex is a utility designed to automate the task of remotely

@@ -138,7 +138,7 @@ UI builder called FLUID that can be used to create applications in minutes.")
      (list cairo libxft libx11))
     (native-inputs
      (list pkg-config))
-    (home-page "http://non.tuxfamily.org/ntk/")
+    (home-page "https://non.tuxfamily.org/ntk/")
     (synopsis "Fork of FLTK with graphics rendering via Cairo")
     (description "The Non Tool Kit (NTK) is a fork of the Fast Light ToolKit
 library, adding improved graphics rendering via Cairo, a streamlined and

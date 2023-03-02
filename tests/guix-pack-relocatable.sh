@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2020 Eric Bavier <bavier@posteo.net>
 #
 # This file is part of GNU Guix.
@@ -82,6 +82,7 @@ then
     tarball="`guix pack -R -S /Bin=bin sed`"
     (cd "$test_directory"; tar xvf "$tarball")
 
+    chmod +w "$test_directory"
     run_without_store "$test_directory/Bin/sed" --version > "$test_directory/output"
     grep 'GNU sed' "$test_directory/output"
 
@@ -104,6 +105,7 @@ case "`uname -m`" in
 	tarball="`guix pack -RR -S /Bin=bin sed`"
 	tar tvf "$tarball" | grep /bin/proot
 	(cd "$test_directory"; tar xf "$tarball")
+	chmod +w "$test_directory"
 	run_without_store GUIX_EXECUTION_ENGINE="proot" \
 	"$test_directory/Bin/sed" --version > "$test_directory/output"
 	grep 'GNU sed' "$test_directory/output"
@@ -195,6 +197,7 @@ EOF
     # Run '/bin/daemon', which forks, then wait for the child, send it SIGHUP
     # so that it dumps its view of the store, and make sure the child and
     # parent both see the same store contents.
+    chmod +w "$test_directory"
     (cd "$test_directory"; run_without_store ./bin/daemon)
     wait_for_file "$test_directory/pid"
     kill -HUP $(cat "$test_directory/pid")
@@ -241,6 +244,7 @@ cat >"$test_directory/manifest.scm" <<'EOF'
 EOF
 tarball="`guix pack -RR -S /opt= -m $test_directory/manifest.scm`"
 (cd "$test_directory"; tar xvf "$tarball")
+chmod +w "$test_directory"
 ( export GUIX_PROFILE=$test_directory/opt
   . $GUIX_PROFILE/etc/profile
   run_without_store "$test_directory/opt/bin/hello" > "$test_directory/output" )

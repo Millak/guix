@@ -34,6 +34,8 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -233,6 +235,52 @@ systems in mind.  It offers maximum hardware accelerated performance at a
 minimum of resource usage and overhead.")
     (home-page "https://github.com/deniskropp/DirectFB")
     (license license:lgpl2.1+)))
+
+(define-public minifb
+  (let ((commit "43f8c1309341f4709a471b592d04434326042483")
+        (revision "1"))
+    (package
+      (name "minifb")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri
+                 (git-reference
+                  (url "https://github.com/emoon/minifb")
+                  (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1z0720azsgi83yg4ysmfvpvsg0566s2cq59xx52w8w5rpkla4cjh"))))
+      (build-system cmake-build-system)
+      (arguments
+       ;; Don't build examples.
+       '(#:configure-flags '("-DMINIFB_BUILD_EXAMPLES=0")
+         #:phases
+         ;; There is no install target, so we have to copy the static library
+         ;; and headers to the output directory ourselves.
+         (modify-phases %standard-phases
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (includedir (string-append out "/include"))
+                      (libdir (string-append out "/lib")))
+                 (mkdir-p includedir)
+                 (mkdir-p libdir)
+                 (for-each (lambda (header)
+                             (copy-file header
+                                        (string-append includedir "/"
+                                                       (basename header))))
+                           (find-files "../source/include" "\\.h$"))
+                 (copy-file "libminifb.a" (string-append libdir "/libminifb.a"))))))
+         ;; No check target.
+         #:tests? #f))
+      ;; libminifb.a won't work without these libraries, so propagate them.
+      (propagated-inputs (list libx11 libxkbcommon mesa))
+      (synopsis "Small library for rendering pixels to a framebuffer")
+      (description "MiniFB (Mini FrameBuffer) is a small, cross-platform
+library that makes it easy to render (32-bit) pixels in a window.")
+      (home-page "https://github.com/emoon/minifb")
+      (license license:expat))))
 
 (define-public flux
   (package
@@ -578,7 +626,7 @@ and export to various formats including the format used by Magicavoxel.")
     (build-system cmake-build-system)
     (inputs
      (list zlib))
-    (home-page "http://www.assimp.org/")
+    (home-page "https://www.assimp.org/")
     (synopsis "Asset import library")
     (description
      "The Open Asset Import Library loads more than 40 3D file formats into
@@ -967,7 +1015,7 @@ other vector formats such as:
      `(#:configure-flags (list "-DUSE_HDF5=ON")))
     (inputs
      (list hdf5 imath zlib))
-    (home-page "http://www.alembic.io/")
+    (home-page "https://www.alembic.io/")
     (synopsis "Framework for storing and sharing scene data")
     (description "Alembic is a computer graphics interchange framework.  It
 distills complex, animated scenes into a set of baked geometric results.")
@@ -1284,17 +1332,53 @@ visual effects work for film.")
         (base32 "00i14h82qg3xzcyd8p02wrarnmby3aiwmz0z43l50byc9f8i05n1"))
        (file-name (git-file-name name version))))
     (properties
-     `((upstream-name . "OpenSceneGraph")))
+     `((upstream-name . "OpenSceneGraph")
+       (output-synopsis "pluginlib" "Plugins as shared libraries")))
     (build-system cmake-build-system)
+    (outputs (list "out" "pluginlib"))
     (arguments
-     `(#:tests? #f                      ; no test target available
-       ;; Without this flag, 'rd' will be added to the name of the
-       ;; library binaries and break linking with other programs.
-       #:build-type "Release"
-       #:configure-flags
-       (list (string-append "-DCMAKE_INSTALL_RPATH="
-                            (assoc-ref %outputs "out") "/lib:"
-                            (assoc-ref %outputs "out") "/lib64"))))
+     (list
+      #:tests? #f                      ; no test target available
+      ;; Without this flag, 'rd' will be added to the name of the
+      ;; library binaries and break linking with other programs.
+      #:build-type "Release"
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_RPATH="
+                             #$output "/lib:"
+                             #$output "/lib64"))
+      #:modules `((guix build cmake-build-system)
+                  (guix build utils)
+                  (ice-9 regex))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'copy-plugins
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (pluginlib (assoc-ref outputs "pluginlib")))
+                (mkdir-p (string-append pluginlib "/lib/pkgconfig"))
+                (with-directory-excursion (string-append out "/lib/osgPlugins-"
+                                                         #$version)
+                  (for-each
+                   (lambda (lib)
+                     (let ((blib (basename lib))
+                           (m (string-match "([^/]*)\\.so$" lib)))
+                       (symlink (canonicalize-path lib)
+                                (string-append pluginlib "/lib/lib" blib))
+                       (call-with-output-file (string-append
+                                               pluginlib
+                                               "/lib/pkgconfig/"
+                                               (match:substring m 1) ".pc")
+                         (lambda (port)
+                           (format port "libdir=~a/lib~%" pluginlib)
+                           (newline port)
+                           (format port "Name: ~a~%" (match:substring m 1))
+                           (format port "Version: ~a~%" #$version)
+                           (display "Description: A plugin for openscenegraph\n"
+                                    port)
+                           (display "Requires: openscenegraph\n" port)
+                           (format port "Libs: -L${libdir} -l~a~%"
+                                   (match:substring m 1))))))
+                   (find-files "." "\\.so")))))))))
     (native-inputs
      (list pkg-config unzip))
     (inputs
@@ -1388,18 +1472,18 @@ in Julia).")
         (substitute-keyword-arguments (package-arguments openscenegraph)
           ((#:configure-flags flags)
            ;; As per the above wiki link, the following plugins are enough:
-           `(append
-             '("-DBUILD_OSG_PLUGINS_BY_DEFAULT=0"
-               "-DBUILD_OSG_PLUGIN_OSG=1"
-               "-DBUILD_OSG_PLUGIN_DDS=1"
-               "-DBUILD_OSG_PLUGIN_TGA=1"
-               "-DBUILD_OSG_PLUGIN_BMP=1"
-               "-DBUILD_OSG_PLUGIN_JPEG=1"
-               "-DBUILD_OSG_PLUGIN_PNG=1"
-               "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0"
-               ;; The jpeg plugin requires conversion between integers and booleans
-               "-DCMAKE_CXX_FLAGS=-fpermissive")
-             ,flags))))))))
+           #~(append
+              '("-DBUILD_OSG_PLUGINS_BY_DEFAULT=0"
+                "-DBUILD_OSG_PLUGIN_OSG=1"
+                "-DBUILD_OSG_PLUGIN_DDS=1"
+                "-DBUILD_OSG_PLUGIN_TGA=1"
+                "-DBUILD_OSG_PLUGIN_BMP=1"
+                "-DBUILD_OSG_PLUGIN_JPEG=1"
+                "-DBUILD_OSG_PLUGIN_PNG=1"
+                "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0"
+                ;; The jpeg plugin requires conversion between integers and booleans
+                "-DCMAKE_CXX_FLAGS=-fpermissive")
+              #$flags))))))))
 
 (define-public povray
   (package
@@ -1480,7 +1564,7 @@ realistic reflections, shading, perspective and other effects.")
     ;; Headers include OpenEXR and IlmBase headers.
     (propagated-inputs (list openexr-2))
 
-    (home-page "http://ampasctl.sourceforge.net")
+    (home-page "https://ampasctl.sourceforge.net")
     (synopsis "Color Transformation Language")
     (description
      "The Color Transformation Language, or CTL, is a small programming
@@ -1596,7 +1680,7 @@ and understanding different BRDFs (and other component functions).")
      (list libx11 freetype sdl))
 
     ;; Antigrain.com was discontinued.
-    (home-page "http://agg.sourceforge.net/antigrain.com/index.html")
+    (home-page "https://agg.sourceforge.net/antigrain.com/index.html")
     (synopsis "High-quality 2D graphics rendering engine for C++")
     (description
      "Anti-Grain Geometry is a high quality rendering engine written in C++.
@@ -1628,19 +1712,72 @@ rendering @acronym{SVG, Scalable Vector Graphics}.")
 your terminal.")
     (license license:expat)))
 
+(define-public facedetect
+  (let ((commit "5f9b9121001bce20f7d87537ff506fcc90df48ca")
+        (revision "0"))
+    (package
+      (name "facedetect")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/wavexx/facedetect")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1jiz72y3ykkxkiij1qqjf45gxg223sghkjir7sr663x91kviwkjd"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~`(("facedetect" "bin/facedetect")
+            ("README.rst" ,(string-append "share/doc/" #$name
+                                          "-" #$version "/README.rst")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "facedetect"
+                  (("^DATA_DIR = .*")
+                   (string-append "DATA_DIR = '"
+                                  #$opencv "/share/opencv"
+                                  #$(version-major (package-version opencv))
+                                  "'\n")))))
+            (add-after 'install 'wrap
+              (lambda _
+                (let ((program (string-append #$output "/bin/facedetect")))
+                  (patch-shebang program)
+                  (wrap-program program
+                    `("GUIX_PYTHONPATH" prefix
+                      ,(search-path-as-string->list
+                        (getenv "GUIX_PYTHONPATH"))))))))))
+      (inputs
+       (list bash-minimal
+             opencv
+             python
+             python-numpy))
+      (home-page "https://www.thregr.org/~wavexx/software/facedetect/")
+      (synopsis "Face detector")
+      (description "@code{facedetect} is a face detector for batch processing.
+It answers the question: \"Is there a face in this image?\" and gives back
+either an exit code or the coordinates of each detect face in the standard
+output.  @code{facedetect} is used in software such as @code{fgallery} to
+improve the thumbnail cutting region, so that faces are always centered.")
+      (license license:gpl2+))))
+
 (define-public fgallery
   (package
     (name "fgallery")
-    (version "1.8.2")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri
                (string-append
-                "http://www.thregr.org/~wavexx/software/fgallery/releases/"
+                "https://www.thregr.org/~wavexx/software/fgallery/releases/"
                 "fgallery-" version ".zip"))
               (sha256
                (base32
-                "18wlvqbxcng8pawimbc8f2422s8fnk840hfr6946lzsxr0ijakvf"))))
+                "0zf6r88m2swgj1ylgh3qa1knzb4if501hzvga37h9psy8k179w8n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -1651,19 +1788,12 @@ your terminal.")
          (replace 'install
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out    (assoc-ref outputs "out"))
-                    (bin    (string-append out "/bin/"))
-                    (share  (string-append out "/share/fgallery"))
-                    (man    (string-append out "/share/man/man1"))
-                    (perl5lib (getenv "PERL5LIB"))
-                    (script (string-append share "/fgallery")))
+                    (script (string-append out "/bin/fgallery"))
+                    (perl5lib (getenv "PERL5LIB")))
                (define (bin-directory input-name)
                  (string-append (assoc-ref inputs input-name) "/bin"))
 
-               (mkdir-p man)
-               (copy-file "fgallery.1" (string-append man "/fgallery.1"))
-
-               (mkdir-p share)
-               (copy-recursively "." share)
+               (invoke "make" "install" (string-append "PREFIX=" out))
 
                ;; fgallery copies files from store when it is run. The
                ;; read-only permissions from the store directories will cause
@@ -1673,37 +1803,35 @@ your terminal.")
                  (("'cp'")
                   "'cp', '--no-preserve=all'"))
 
-               (mkdir-p bin)
-               (symlink script (string-append out "/bin/fgallery"))
-
                (wrap-program script
                  `("PATH" ":" prefix
                    ,(map bin-directory '("imagemagick"
                                          "lcms"
+                                         "facedetect"
                                          "fbida"
-                                         "libjpeg"
+                                         "libjpeg-turbo"
                                          "zip"
                                          "jpegoptim"
                                          "pngcrush"
                                          "p7zip")))
-                 `("PERL5LIB" ":" prefix (,perl5lib)))
-               #t))))))
+                 `("PERL5LIB" ":" prefix (,perl5lib)))))))))
     (native-inputs
      (list unzip))
-    ;; TODO: Add missing optional dependency: facedetect.
     (inputs
-     `(("imagemagick" ,imagemagick)
-       ("lcms" ,lcms)
-       ("fbida" ,fbida)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zip" ,zip)
-       ("perl" ,perl)
-       ("perl-cpanel-json-xs" ,perl-cpanel-json-xs)
-       ("perl-image-exiftool" ,perl-image-exiftool)
-       ("jpegoptim" ,jpegoptim)
-       ("pngcrush" ,pngcrush)
-       ("p7zip" ,p7zip)))
-    (home-page "http://www.thregr.org/~wavexx/software/fgallery/")
+     (list bash-minimal
+           imagemagick
+           lcms
+           facedetect
+           fbida
+           libjpeg-turbo
+           zip
+           perl
+           perl-cpanel-json-xs
+           perl-image-exiftool
+           jpegoptim
+           pngcrush
+           p7zip))
+    (home-page "https://www.thregr.org/~wavexx/software/fgallery/")
     (synopsis "Static photo gallery generator")
     (description
      "FGallery is a static, JavaScript photo gallery generator with minimalist
@@ -1791,7 +1919,7 @@ and GPU architectures.")
 OpenGL.  CSG is an approach for modeling complex 3D-shapes using simpler ones.
 For example, two shapes can be combined by uniting them, by intersecting them,
 or by subtracting one shape from the other.")
-      (home-page "http://www.opencsg.org/")
+      (home-page "https://www.opencsg.org/")
       (license license:gpl2))))
 
 (define-public coin3D
@@ -2438,3 +2566,28 @@ on the command line.  It supports a range of file formats (including animated
 glTF, STL, STEP, PLY, OBJ, FBX), and provides numerous rendering and texturing
 options.")
     (license license:bsd-3)))
+
+(define-public gpaint
+  (package
+    (name "gpaint")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://alpha.gnu.org/gnu/"
+                                  name "/"
+                                  name "-2-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13jv0zqbnyxjw7fa9x0yl08rrkqq0mdvki0yzbj6vqifvs393v5h"))))
+    (build-system gnu-build-system)
+    (inputs (list gtk+-2 libglade))
+    (native-inputs
+     (list gettext-minimal `(,glib "bin") pkg-config))
+    (synopsis "Simple paint program for GNOME")
+    (description
+     "GNU Paint is a simple, easy-to-use paint program for the GNOME
+environment.  It supports drawing freehand as well as basic shapes and text.
+It features cut-and-paste for irregular regions or polygons.")
+    (home-page "https://www.gnu.org/software/gpaint/")
+    (license license:gpl3+)))
+

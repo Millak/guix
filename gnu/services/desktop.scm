@@ -3,10 +3,10 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2017, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
@@ -59,6 +59,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages suckless)
+  #:use-module (gnu packages sugar)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lxqt)
@@ -73,6 +74,7 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (<upower-configuration>
@@ -143,6 +145,10 @@
             lxqt-desktop-configuration?
             lxqt-desktop-service-type
 
+            sugar-desktop-configuration
+            sugar-desktop-configuration?
+            sugar-desktop-service-type
+
             xfce-desktop-configuration
             xfce-desktop-configuration?
             xfce-desktop-service
@@ -183,11 +189,19 @@
 (define (bool value)
   (if value "true\n" "false\n"))
 
-(define (package-direct-input-selector input)
+(define (package-direct-input-selector tree)
+  "Return a procedure that selects TREE from the inputs of PACKAGE.  If TREE
+is a list, it recursively searches it until it locates the last item of TREE."
   (lambda (package)
-    (match (assoc-ref (package-direct-inputs package) input)
-      ((package . _) package))))
-
+    (let loop ((tree (if (pair? tree)
+                         tree
+                         (list tree)))
+               (package package))
+      (if (null? tree)
+          package
+          (loop (cdr tree)
+                (car (assoc-ref (package-direct-inputs package)
+                                (car tree))))))))
 
 
 ;;;
@@ -1339,28 +1353,44 @@ rules.")
 (define-record-type* <gnome-desktop-configuration> gnome-desktop-configuration
   make-gnome-desktop-configuration
   gnome-desktop-configuration?
-  (gnome gnome-package (default gnome)))
+  (gnome gnome-desktop-configuration-gnome
+         (default gnome)))
 
-(define (gnome-packages config packages)
-  "Return the list of GNOME dependencies from CONFIG which names are part of
-the given PACKAGES list."
-  (let ((gnome (gnome-package config)))
-    (map (lambda (name)
-           ((package-direct-input-selector name) gnome))
-         packages)))
+(define (gnome-package gnome name)
+  "Return the package NAME among the GNOME package inputs.  NAME can be a
+single name or a tree-like, e.g. @code{'(\"gnome-boxes\" \"spice-gtk\")} to
+denote the spice-gtk input of the gnome-boxes input of the GNOME meta-package."
+  ((package-direct-input-selector name) gnome))
+
+(define (gnome-packages gnome names)
+  "Return the package NAMES among the GNOME package inputs."
+  (map (cut gnome-package gnome <>) names))
 
 (define (gnome-udev-rules config)
   "Return the list of GNOME dependencies that provide udev rules."
-  (gnome-packages config '("gnome-settings-daemon")))
+  (let ((gnome (gnome-desktop-configuration-gnome config)))
+    (gnome-packages gnome '("gnome-settings-daemon"))))
 
 (define (gnome-polkit-settings config)
   "Return the list of GNOME dependencies that provide polkit actions and
 rules."
-  (gnome-packages config
-                  '("gnome-settings-daemon"
-                    "gnome-control-center"
-                    "gnome-system-monitor"
-                    "gvfs")))
+  (let ((gnome (gnome-desktop-configuration-gnome config)))
+    (gnome-packages gnome
+                    '("gnome-settings-daemon"
+                      "gnome-control-center"
+                      "gnome-system-monitor"
+                      "gvfs"
+                      ;; spice-gtk provides polkit actions for USB redirection
+                      ;; in GNOME Boxes.
+                      ("gnome-boxes" "spice-gtk")))))
+
+(define (gnome-setuid-programs config)
+  "Return the list of GNOME setuid programs."
+  (let* ((gnome (gnome-desktop-configuration-gnome config))
+         (spice-gtk (gnome-package gnome '("gnome-boxes" "spice-gtk"))))
+    (map file-like->setuid-program
+         (list (file-append spice-gtk
+                            "/libexec/spice-client-glib-usb-acl-helper")))))
 
 (define gnome-desktop-service-type
   (service-type
@@ -1370,9 +1400,10 @@ rules."
                              gnome-udev-rules)
           (service-extension polkit-service-type
                              gnome-polkit-settings)
+          (service-extension setuid-program-service-type
+                             gnome-setuid-programs)
           (service-extension profile-service-type
-                             (compose list
-                                      gnome-package))))
+                             (compose list gnome-desktop-configuration-gnome))))
    (default-value (gnome-desktop-configuration))
    (description "Run the GNOME desktop environment.")))
 
@@ -1490,6 +1521,38 @@ rules."
                              (compose list lxqt-package))))
    (default-value (lxqt-desktop-configuration))
    (description "Run LXQt desktop environment.")))
+
+
+;;;
+;;; Sugar desktop service.
+;;;
+
+(define-record-type* <sugar-desktop-configuration> sugar-desktop-configuration
+  make-sugar-desktop-configuration
+  sugar-desktop-configuration?
+  (sugar sugar-package (default sugar))
+  (gobject-introspection
+   sugar-gobject-introspection (default gobject-introspection))
+  (activities
+   sugar-activities (default (list sugar-help-activity))))
+
+(define (sugar-polkit-settings config)
+  "Return the list of packages that provide polkit actions and rules."
+  (list (sugar-package config)))
+
+(define sugar-desktop-service-type
+  (service-type
+   (name 'sugar-desktop)
+   (extensions
+    (list (service-extension polkit-service-type
+                             sugar-polkit-settings)
+          (service-extension profile-service-type
+                             (lambda (config)
+                               (cons* (sugar-package config)
+                                      (sugar-gobject-introspection config)
+                                      (sugar-activities config))))))
+   (default-value (sugar-desktop-configuration))
+   (description "Run the Sugar desktop environment.")))
 
 
 ;;;

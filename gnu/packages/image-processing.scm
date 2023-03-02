@@ -242,7 +242,7 @@ licences similar to the Modified BSD licence."))))
     (native-inputs
      (list pkg-config
            python-wrapper))
-    (home-page "http://mia.sourceforge.net")
+    (home-page "https://mia.sourceforge.net")
     (synopsis "Toolkit for gray scale medical image analysis")
     (description "MIA provides a combination of command line tools, plug-ins,
 and libraries that make it possible run image processing tasks interactively

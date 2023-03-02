@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -67,6 +67,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -668,7 +669,11 @@ everything from small to very large projects with speed and efficiency.")
            perl
            zlib))))
 
-(define-public git-minimal/fixed
+;;; The symbol git-minimal/fixed should be used when git-minimal needs fixes
+;;; (security or else) and this deprecation could be removed.
+(define-deprecated/public-alias git-minimal/fixed git-minimal/pinned)
+
+(define-public git-minimal/pinned
   ;; Version that rarely changes, depended on by Graphene/GTK+.
   (package/inherit git-minimal
     (version "2.33.1")
@@ -797,7 +802,7 @@ to GitHub contributions calendar.")
 (define-public libgit2
   (package
     (name "libgit2")
-    (version "1.4.3")
+    (version "1.5.1")
     (source (origin
               ;; Since v1.1.1, release artifacts are no longer offered (see:
               ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
@@ -808,18 +813,11 @@ to GitHub contributions calendar.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02x1a4zrzpzjd0yxnsi8njh5hgihc1iy1v4r0fnl8m4ckcgp6x2s"))
+                "04ypzpicpgq1wh6anwcmjjyh2b854lvjhxq0hq2hbsx7kb14qc1b"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (delete-file-recursively "deps")
-
-                  ;; The "refs:revparse::date" test is time-dependent: it
-                  ;; assumes "HEAD@{10 years ago}" matches a specific commit.
-                  ;; See <https://github.com/libgit2/libgit2/pull/6299>.
-                  (substitute* "tests/refs/revparse.c"
-                    (("test_object.*10 years ago.*" all)
-                     (string-append "// " all "\n")))))))
+                  (delete-file-recursively "deps")))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -861,10 +859,10 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
-(define-public libgit2-1.3
+(define-public libgit2-1.4
   (package
     (inherit libgit2)
-    (version "1.3.0")
+    (version "1.4.5")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -874,7 +872,22 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0vgpb2175a5dhqiy1iwywwppahgqhi340i8bsvafjpvkw284vazd"))))
+                "0q754ipc6skagszi93lcy6qr09ibavivm2q5i5fhpdblvlnv2p7x"))))))
+
+(define-public libgit2-1.3
+  (package
+    (inherit libgit2-1.4)
+    (version "1.3.2")
+    (source (origin
+              (inherit (package-source libgit2-1.4))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "1dngga8jq419z6ps65wpmh2jihcf70k6r98pb1m1yiwj7qqh9792"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libgit2)
        ((#:phases _ '%standard-phases)
@@ -886,22 +899,6 @@ write native speed custom Git applications in any language with bindings.")
                    (invoke "./libgit2_clar" "-v" "-Q")
                    ;; Tests may be disabled if cross-compiling.
                    (format #t "Test suite not run.~%"))))))))))
-
-(define-public libgit2-1.1
-  (package
-    (inherit libgit2-1.3)
-    (version "1.1.0")
-    (source (origin
-              (inherit (package-source libgit2-1.3))
-              (file-name #f)                      ;use the default name
-              (method url-fetch)
-              (uri (string-append "https://github.com/libgit2/libgit2/"
-                                  "releases/download/v" version
-                                  "/libgit2-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1fjdglkh04qv3b4alg621pxa689i0wlf8m7nf2755zawjr2zhwxd"))
-              (patches (search-patches "libgit2-mtime-0.patch"))))))
 
 (define-public git-crypt
   (package
@@ -1107,20 +1104,23 @@ a built-in cache to decrease server I/O pressure.")
 (define-public python-git-multimail
   (package
     (name "python-git-multimail")
-    (version "1.5.0.post1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "git-multimail" version))
        (sha256
         (base32
-         "1zkrbsa70anwpw86ysfwalrb7nsr064kygfiyikyq1pl9pcl969y"))))
+         "0hwgf2p2dd4z397wj0y558s8xxbkzbsa6yb9n1iax624y7swjng1"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch
            (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "setup.py"
+               (("'git-multimail', 'README.rst'")
+                "'README.rst'"))
              (substitute* "git-multimail/git_multimail.py"
                (("GIT_EXECUTABLE = 'git'")
                 (string-append "GIT_EXECUTABLE = '"
@@ -2163,7 +2163,7 @@ patch associated with a particular revision of an RCS file.")
      '(#:tests? #f
        #:configure-flags (list "--with-external-zlib")))
     (inputs (list zlib nano))                    ; the default editor
-    (home-page "http://cvs.nongnu.org")
+    (home-page "https://cvs.nongnu.org")
     (synopsis "Historical centralized version control system")
     (description
      "CVS is a version control system, an important component of Source
@@ -2400,7 +2400,7 @@ any project with more than one developer, is one of Aegis's major functions.")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.7")
+    (version "2.5.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2408,7 +2408,7 @@ any project with more than one developer, is one of Aegis's major functions.")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "0xna55y1r1jssdmrzpinv96p7w00w9hn39q5l3d8l299dg4bmiyv"))
+                "14b38200bmwvi3030hqnwdsp34854ck3bzncj0wlljnpmr10l3mp"))
               (modules '((guix build utils)))
               (snippet
                '(begin

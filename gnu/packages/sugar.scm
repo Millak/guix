@@ -20,6 +20,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -32,6 +33,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
@@ -80,6 +82,11 @@
               (substitute* "bin/sugar.in"
                 (("exec python3")
                  (string-append "exec " (which "python3"))))
+              (substitute* "src/jarabe/main.py"
+                (("'metacity'")
+                 (string-append "'" (search-input-file inputs "/bin/metacity") "'"))
+                (("'metacity-message")
+                 (string-append "'" (search-input-file inputs "/bin/metacity-message"))))
               (substitute* "extensions/cpsection/datetime/model.py"
                 (("/usr/share/zoneinfo/zone.tab")
                  (search-input-file inputs "/share/zoneinfo/zone.tab")))
@@ -90,16 +97,24 @@
                  (dirname
                   (search-input-file inputs
                                      "/share/mobile-broadband-provider-info/serviceproviders.xml"))))
+              ;; XXX: spawn_command_line_sync is not used correctly here, so
+              ;; we need to patch invocations.
+              (substitute* '("extensions/cpsection/aboutcomputer/model.py"
+                             "src/jarabe/model/brightness.py")
+                (("spawn_command_line_sync\\(cmd\\)")
+                 "spawn_command_line_sync(cmd, 0)"))
+              ;; XXX: The brightness component crashes, so we disable it here.
+              (substitute* "src/jarabe/main.py"
+                (("brightness.get_instance\\(\\)") ""))
               ;; TODO: these locations should be set to places that exist on
               ;; Guix System.
               #;
               (substitute* "extensions/cpsection/background/model.py"
                 (("\\('/usr', 'share', 'backgrounds'\\)")
                  "('TODO')"))
-              #;
               (substitute* "src/jarabe/view/viewhelp.py"
-                (("/usr/share/sugar/activities/Help.activity")
-                 "TODO"))))
+                (("/usr/share/sugar/activities/")
+                 "/run/current-system/profile/share/sugar/activities/"))))
           (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (for-each
@@ -107,27 +122,38 @@
                  (wrap-program executable
                    `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
                                           ,(python:site-packages inputs outputs)))
-                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+                   `("GI_TYPELIB_PATH" prefix
+                     (,(getenv "GI_TYPELIB_PATH")))))
                (find-files (string-append #$output "/bin") "^sugar.*")))))))
     (inputs
-     (list gtk+
+     (list bash-minimal
+           gtk+
+           metacity
            mobile-broadband-provider-info
            python
-           sugar-artwork
-           sugar-datastore
            sugar-toolkit-gtk3
            tzdata))
+    ;; Some packages are propagated so that they can be used with gobject
+    ;; introspection at runtime; others are propagated for their dbus
+    ;; services.
     (propagated-inputs
-     (list gstreamer
+     (list gsettings-desktop-schemas
+           gstreamer
            gtk+
            gtksourceview-3
            libsoup-minimal-2
            libwnck
            libxklavier
            network-manager
+           python-gwebsockets
+           sugar-artwork                ;for cursor theme
+           sugar-datastore              ;for org.laptop.sugar.DataStore
            telepathy-glib
-           webkitgtk-with-libsoup2
-           python-gwebsockets))
+           ;; This is for org.freedesktop.Telepathy.AccountManager at runtime
+           telepathy-mission-control
+           ;; This is for the UPowerGlib namespace
+           upower
+           webkitgtk-with-libsoup2))
     (native-inputs
      (list autoconf automake
            gettext-minimal
@@ -231,7 +257,8 @@ activities and other Sugar components.")
                     (search-input-file outputs "bin/copy-to-journal")
                     (search-input-file outputs "bin/datastore-service"))))))))
     (inputs
-     (list python
+     (list bash-minimal
+           python
            sugar-toolkit-gtk3))
     (propagated-inputs
      (list python-dbus
@@ -271,20 +298,23 @@ and metadata, and the journal with querying and full text search.")
         ((guix build python-build-system) #:prefix python:)
         (guix build utils))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             (substitute* "autogen.sh"
-               (("^\"\\$srcdir/configure" m)
-                (string-append "#" m)))))
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/sugar-activity3")
-               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
-                                      ,(python:site-packages inputs outputs)))
-               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "autogen.sh"
+                (("^\"\\$srcdir/configure" m)
+                 (string-append "#" m)))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/sugar-activity3")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" prefix
+                  (,(getenv "GI_TYPELIB_PATH")
+                   ,(string-append #$output "/lib/girepository-1.0")))))))))
     (inputs
      (list alsa-lib
+           bash-minimal
            libice
            libsm
            libx11
@@ -295,6 +325,8 @@ and metadata, and the journal with querying and full text search.")
      ;; The gi typelib files are needed by users of this library.
      (list gdk-pixbuf
            gobject-introspection
+           gstreamer ;for speech
+           gst-plugins-espeak
            gtk+
            (librsvg-for-system)
 
@@ -305,7 +337,10 @@ and metadata, and the journal with querying and full text search.")
            python-dbus
            python-decorator
            python-pygobject
-           python-six))
+           python-six
+
+           telepathy-glib
+           webkitgtk-with-libsoup2))
     (native-inputs
      (list autoconf automake
            gettext-minimal
@@ -320,3 +355,196 @@ and metadata, and the journal with querying and full text search.")
 build activities and other Sugar components.  This is the GTK+ 3 binding of
 the Sugar Toolkit.")
     (license license:lgpl2.1+)))
+
+
+(define-public sugar-browse-activity
+  (package
+    (name "sugar-browse-activity")
+    (version "207")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/browse-activity")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01p1gfdw9fhn92didc9sq23n6a3krs6findbbmicijz91kx8kfb2"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-reference-to-gschema-compiler
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "browser.py"
+                (("glib-compile-schemas")
+                 (search-input-file inputs "/bin/glib-compile-schemas")))))
+          (add-after 'unpack 'patch-launcher
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "activity/activity.info"
+                (("exec = sugar-activity3")
+                 (string-append "exec = "
+                                (search-input-file inputs "/bin/sugar-activity3"))))))
+          (replace 'install
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "install"
+                      (string-append "--prefix=" #$output)))))))
+    ;; All these libraries are accessed via gobject introspection.
+    (propagated-inputs
+     (list evince
+           gobject-introspection
+           gtk+
+           (librsvg-for-system)
+           libsoup-minimal-2
+           python-pygobject
+           sugar-toolkit-gtk3
+           telepathy-glib
+           webkitgtk-with-libsoup2))
+    (inputs
+     (list (list glib "bin")))
+    (native-inputs
+     (list gettext-minimal))
+    (home-page "https://help.sugarlabs.org/browse.html")
+    (synopsis "Sugar activity to browse the internet")
+    (description "Browse is a web browser activity for the Sugar desktop.")
+    (license (list license:cc0       ;metadata
+                   license:lgpl2.0+
+                   license:gpl2+
+                   license:gpl3+))))
+
+(define-public sugar-help-activity
+  (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
+        (revision "1"))
+    (package
+      (name "sugar-help-activity")
+      (version (git-version "20" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/help-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0awjbqyc9f74dx0d7fgjk42vfsygxr8jhwqiv4hpggqcawc02xv8"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'build
+              (lambda _ (invoke "make" "html")))
+            (replace 'install
+              (lambda _
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      (native-inputs
+       (list sugar-toolkit-gtk3
+             python-sphinx))
+      (home-page "https://github.com/sugarlabs/help-activity")
+      (synopsis "Sugar activity for accessing documentation and manuals")
+      (description "This is an activity for the Sugar environment which aims
+to provide users with easy access to documentation and manuals.")
+      (license license:gpl3+))))
+
+(define-public sugar-jukebox-activity
+  (let ((commit "e11f40c94c1c6302d3e36ddf4dc8101732ffb9d9")
+        (revision "1"))
+    (package
+      (name "sugar-jukebox-activity")
+      (version (git-version "36" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/jukebox-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gm1cj4vrwwdriyshd27w6vc0palwpg9pnnab5axinrnkzczyk1v"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             gstreamer
+             gst-plugins-base
+             sugar-toolkit-gtk3))
+      (inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/jukebox.html")
+      (synopsis "Media player for the Sugar learning environment")
+      (description "Jukebox is the media player to play different kinds of
+audio and video files including online streams.  It also supports playlists
+like @file{.m3u} and @file{.pls}.")
+      (license license:gpl2+))))
+
+(define-public sugar-typing-turtle-activity
+  (package
+    (name "sugar-typing-turtle-activity")
+    (version "32")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/typing-turtle-activity")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0shadv9wgddjvl97kvsqb8iw1wmmfw5lzcqk78hd70pzvh4c1hmd"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-reference-to-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "keyboard.py"
+                (("setxkbmap")
+                 (search-input-file inputs "/bin/setxkbmap")))))
+          (add-after 'unpack 'patch-launcher
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "activity/activity.info"
+                (("exec = sugar-activity3")
+                 (string-append "exec = "
+                                (search-input-file inputs "/bin/sugar-activity3"))))))
+          (replace 'install
+            (lambda _
+              (invoke "python" "setup.py" "install"
+                      (string-append "--prefix=" #$output)))))))
+    (native-inputs
+     (list gettext-minimal sugar-toolkit-gtk3))
+    (inputs
+     (list setxkbmap))
+    (home-page "https://help.sugarlabs.org/en/typing_turtle.html")
+    (synopsis "Learn typing")
+    (description "Need some help typing?  In this activity for the Sugar
+environment you will learn the best way to hold your hands in order for you to
+become a faster typist.")
+    (license license:gpl3+)))

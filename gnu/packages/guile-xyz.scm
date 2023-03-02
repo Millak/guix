@@ -898,32 +898,26 @@ is not available for Guile 2.0.")
 (define-public guile-filesystem
   (package
     (name "guile-filesystem")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.com/leoprikler/guile-filesystem.git")
+                    (url "https://gitlab.com/lilyp/guile-filesystem")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1shmkc0y9r2sj3kw7hrsnamnp7y8xifkhf3m3rnfxczqg63k67vy"))))
+                "0waiaxcha584d0dc15nvs6gxh4clrfm2bwjidjsbqajgb03l4ngm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
      (list guile-3.0))
-    (home-page "https://gitlab.com/leoprikler/guile-filesystem")
+    (home-page "https://gitlab.com/lilyp/guile-filesystem")
     (synopsis "Complementary library to Guile's built-in file system procedures")
     (description "@code{guile-filesystem} provides a set of utility functions,
 that augment Guile's support for handling files and their names.")
     (license license:lgpl3+)))
-
-(define-public guile2.0-filesystem
-  (package
-    (inherit guile-filesystem)
-    (name "guile2.0-filesystem")
-    (inputs (list guile-2.0))))
 
 (define-public guile2.2-filesystem
   (package
@@ -2600,6 +2594,41 @@ for Guile\".  It provides the following modules:
     ;; details.
     (license license:gpl3+)))
 
+(define-public guile-simple-iterators
+  (let ((commit "50f16a2b2aa57e657e52e19fb3c35bdc182cfa36")
+        (revision "0"))
+    (package
+      (name "guile-simple-iterators")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/dustyweb/guile-simple-iterators")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1m1wirlnfwmp5a4rpszd5qsbwabz4ji033w6p2714p1r524ylah8"))))
+      (build-system guile-build-system)
+      (native-inputs (list guile-3.0))
+      (home-page "https://gitlab.com/dustyweb/guile-simple-iterators")
+      (synopsis "Simple iterators for Guile")
+      (description
+       "This is a collection of iteration macros for Guile. They are inspired by
+@code{racket}'s family of iterators. Specifically, the following iterators are
+available:
+@itemize
+@item @code{for}
+@item @code{for/map}
+@item @code{for/c}
+@item @code{for/fold}
+@item @code{for/fold-right}
+@item @code{for/folder}
+@item @code{folder}
+@end itemize")
+      (license license:asl2.0))))
+
 (define-public guile2.0-lib
   (package
     (inherit guile-lib)
@@ -2696,7 +2725,7 @@ See http://minikanren.org/ for more on miniKanren generally.")
        #:source-directory "src"))
     (native-inputs
      (list guile-3.0))
-    (home-page "http://synthcode.com/scheme/irregex")
+    (home-page "https://synthcode.com/scheme/irregex")
     (synopsis "S-expression based regular expressions")
     (description
      "Irregex is an s-expression based alternative to your classic
@@ -5493,44 +5522,37 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.8")
+    (version "0.10")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/spritely/guile-goblins/")
-             (commit (string-append "v" version))))
-       (file-name (string-append name "-" version))
+       (method url-fetch)
+       (uri (string-append "https://spritely.institute/files/releases"
+                           "/guile-goblins/guile-goblins-"
+                           version ".tar.gz"))
        (sha256
         (base32
-         "1mmyykh79jwhrfgnhhw94aw7a8m6qw249kj7k60ynj16mcfm5iyy"))))
+         "13nzmwi4m0j27rmn2ks0p3k620npnhx736q25n8llj2ivkn2vxd2"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
            #~(list "GUILE_AUTO_COMPILE=0")))
     (native-inputs
-     (list autoconf automake pkg-config texinfo))
+     (list pkg-config texinfo))
     (inputs (list guile-3.0))
     (propagated-inputs
      (list guile-fibers guile-gcrypt))
     (home-page "https://spritely.institute/goblins")
     (synopsis "Distributed programming environment for Guile")
-    ;; In guile-goblins 0.9, OCapN support will be added (it already
-    ;; exists in racket-goblins).  At that point we should add the
-    ;; following to this description:
-    ;;
-    ;;   Goblins allows for cooperation between networked programs
-    ;;   in a mutually suspicious network through OCapN, the Object
-    ;;   Capability Network.  This includes collaboration across
-    ;;   runtimes; for instance, programs written in the Guile and Racket
-    ;;   versions of Goblins are able to speak to each other.
     (description
      "@code{guile-goblins} is the Guile version of
-@url{https://spritely.institute/goblins, Spritely Goblins},
-a transactional, distributed programming environment following object
-capability security designs.  Goblins is a general toolkit, and also
-the core layer of Spritely's work to support healthy distributed
-networked communities.")
+@url{https://spritely.institute/goblins, Spritely Goblins}, a transactional,
+distributed programming environment following object capability security
+designs.  Goblins is a general toolkit, and also the core layer of Spritely's
+work to support healthy distributed networked communities.  Goblins allows for
+cooperation between networked programs in a mutually suspicious network
+through OCapN, the Object Capability Network.  This includes collaboration
+across runtimes; for instance, programs written in the Guile and Racket
+versions of Goblins are able to speak to each other.")
     (license license:asl2.0)))
 
 ;;;

@@ -94,7 +94,7 @@
                  (assoc-ref inputs "sound-theme-freedesktop")
                  "/share")))
              #t)))))
-    (home-page "http://0pointer.de/lennart/projects/libcanberra/")
+    (home-page "https://0pointer.de/lennart/projects/libcanberra/")
     (synopsis
      "Implementation of the XDG Sound Theme and Name Specifications")
     (description

@@ -63,7 +63,7 @@
               "test/src/org/simpleframework/xml/core/NoAnnotationsRequiredTest.java"))))))
     (native-inputs
      (list unzip))
-    (home-page "http://simple.sourceforge.net/")
+    (home-page "https://simple.sourceforge.net/")
     (synopsis "XML serialization framework for Java")
     (description "Simple is a high performance XML serialization and
 configuration framework for Java.  Its goal is to provide an XML framework
@@ -92,7 +92,7 @@ maintaining each reference encountered.")
        #:jdk ,icedtea-8
        #:source-dir ".."
        #:tests? #f)); no tests
-    (home-page "http://xerces.apache.org/xml-commons/")
+    (home-page "https://xerces.apache.org/xml-commons/")
     (synopsis "Java XML parser and transformer APIs (DOM, SAX, JAXP, TrAX)")
     (description "Jaxp from the Apache XML Commons project is used by
 the Xerces-J XML parser and Xalan-J XSLT processor and specifies these APIs:
@@ -131,7 +131,7 @@ the Xerces-J XML parser and Xalan-J XSLT processor and specifies these APIs:
        #:tests? #f)); no tests
     (inputs
      (list java-junit))
-    (home-page "http://xerces.apache.org/xml-commons/")
+    (home-page "https://xerces.apache.org/xml-commons/")
     (synopsis "Catalog-based entity and URI resolution")
     (description "The resolver class implements the full semantics of OASIS Technical
 Resolution 9401:1997 (Amendment 2 to TR 9401) catalogs and the 06 Aug

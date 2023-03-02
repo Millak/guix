@@ -45,7 +45,7 @@
     (build-system gnu-build-system)
     (inputs
      (list zlib libmcrypt libmhash))
-    (home-page "http://mcrypt.sourceforge.net/")
+    (home-page "https://mcrypt.sourceforge.net/")
     (synopsis "Replacement for the popular Unix crypt command")
     (description
      "MCrypt is a replacement for the old crypt() package and crypt(1)
@@ -70,7 +70,7 @@ them.")
        (base32
         "0gipgb939vy9m66d3k8il98rvvwczyaw2ixr8yn6icds9c3nrsz4"))))
     (build-system gnu-build-system)
-    (home-page "http://mcrypt.sourceforge.net/")
+    (home-page "https://mcrypt.sourceforge.net/")
     (synopsis "Encryption algorithm library")
     (description
      "Libmcrypt is a data encryption library.  The library is thread safe and
@@ -97,7 +97,7 @@ XTEA, 3WAY, TWOFISH, BLOWFISH, ARCFOUR, WAKE and more.")
     (build-system gnu-build-system)
     (native-inputs
      (list perl))                 ;for tests
-    (home-page "http://mhash.sourceforge.net/")
+    (home-page "https://mhash.sourceforge.net/")
     (synopsis "Thread-safe hash library")
     (description
      "Mhash is a thread-safe hash library, implemented in C, and provides a

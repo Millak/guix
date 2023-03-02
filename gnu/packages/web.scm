@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2020-2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -61,6 +61,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,7 +98,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
@@ -121,6 +121,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
@@ -680,7 +681,7 @@ supported at your website.")
       (source (origin
                 (method hg-fetch)
                 (uri (hg-reference
-                      (url "http://hg.nginx.org/xslscript")
+                      (url "https://hg.nginx.org/xslscript")
                       (changeset changeset)))
                 (file-name (string-append name "-" version))
                 (sha256
@@ -704,7 +705,7 @@ supported at your website.")
                              out-bin
                              "/xslscript.pl"))
                  #t))))))
-      (home-page "http://hg.nginx.org/xslscript")
+      (home-page "https://hg.nginx.org/xslscript")
       (synopsis "XSLScript with NGinx specific modifications")
       (description
        "XSLScript is a terse notation for writing complex XSLT stylesheets.
@@ -1253,7 +1254,7 @@ project)
            (lambda _ (setenv "QT_QPA_PLATFORM" "offscreen") #t)))))
     (inputs
      (list qtbase-5))
-    (home-page "http://qjson.sourceforge.net")
+    (home-page "https://qjson.sourceforge.net")
     (synopsis "Library that maps JSON data to QVariant objects")
     (description "QJson is a Qt-based library that maps JSON data to
 @code{QVariant} objects.  JSON arrays will be mapped to @code{QVariantList}
@@ -1567,6 +1568,53 @@ These tools are intended for use in (or for development of) toolchains or
 other systems that want to manipulate WebAssembly files.")
     (license license:asl2.0)))
 
+(define-public wasm3
+  (package
+    (name "wasm3")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wasm3/wasm3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07zzmk776j8ydyxhrnnjiscbhhmz182a62r6aix6kfk5kq2cwia2"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; The default WASI option "uvwasi" causes CMake to initiate a 'git
+     ;; clone' which cannot happen within the build container.
+     '(#:configure-flags '("-DBUILD_WASI=simple")
+       ;; No check target.  There are tests but they require a network
+       ;; connection to download the WebAssembly core test suite.
+       #:tests? #f
+       ;; There is no install target.  Instead, we have to manually copy the
+       ;; wasm3 build artifacts to the output directory.
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bindir (string-append out "/bin"))
+                    (includedir (string-append out "/include"))
+                    (libdir (string-append out "/lib")))
+               (mkdir-p bindir)
+               (mkdir-p includedir)
+               (mkdir-p libdir)
+               (copy-file "wasm3" (string-append bindir "/wasm3"))
+               (for-each (lambda (header)
+                           (copy-file header
+                                      (string-append includedir "/"
+                                                     (basename header))))
+                         (find-files "../source/source" "\\.h$"))
+               (copy-file "source/libm3.a"
+                          (string-append libdir "/libm3.a"))))))))
+    (home-page "https://github.com/wasm3/wasm3")
+    (synopsis "WebAssembly interpreter")
+    (description "WASM3 is a fast WebAssembly interpreter.")
+    (license license:expat)))
+
 (define-public websocketpp
   (package
     (name "websocketpp")
@@ -1711,7 +1759,7 @@ UTS#46.")
     (synopsis "HTML validator and tidier")
     (description "HTML Tidy is a command-line tool and C library that can be
 used to validate and fix HTML data.")
-    (home-page "http://tidy.sourceforge.net/")
+    (home-page "https://tidy.sourceforge.net/")
     (license (license:x11-style "file:///include/tidy.h"))))
 
 (define-public esbuild
@@ -1929,7 +1977,7 @@ hash/signatures.")
        (sha256
         (base32 "0d0giry6bb57pnidymvdl7i5x9bq3ljk3g4bs294hcr5mj3cq0kw"))))
     (build-system gnu-build-system)
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "This package contains support scripts called by libquvi to
 parse media stream properties.")
@@ -1963,7 +2011,7 @@ parse media stream properties.")
          (list
           (string-append "liblua_CFLAGS=-I" lua "/include")
           (string-append "liblua_LIBS=-L" lua "/libs -llua")))))
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "libquvi is a library with a C API for parsing media stream
 URLs and extracting their actual media files.")
@@ -1985,7 +2033,7 @@ URLs and extracting their actual media files.")
     (native-inputs (list pkg-config))
     (inputs
      (list curl libquvi))
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "quvi is a command-line-tool suite to extract media files
 from streaming URLs.  It is a command-line wrapper for the libquvi library.")
@@ -2955,17 +3003,17 @@ development server with Starman.")
 (define-public perl-cgi
   (package
     (name "perl-cgi")
-    (version "4.52")
+    (version "4.55")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/L/LE/LEEJO/"
                            "CGI-" version ".tar.gz"))
        (sha256
-        (base32 "1bxrpxv95js8yinicminxdg41xvd85haj2gvlywg3zqdb66smqy8"))))
+        (base32 "1ck4ik5i0v394qgg9qah4p6x9hyls311g6iwi6ildprzn6a5x2b7"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-test-deep perl-test-nowarnings perl-test-warn))
+     (list perl-test-nowarnings perl-test-warn))
     (propagated-inputs
      (list perl-html-parser))
     (home-page "https://metacpan.org/release/CGI")
@@ -4723,8 +4771,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "7b69611755ac3b9132710d83a1139b4c5606578d")
-        (revision "36"))
+  (let ((commit "8c2f97eef82412a4309273e22b6edeaf53dc2d0e")
+        (revision "39"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4736,7 +4784,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0lmvmalgfbc6q80f8dwqikdd5kna2vl4jlmf2li206hmcq2hzh6p"))))
+                  "12k930vkg07i9xysli3fxbgn3hbqy2l5s9rybm7ayvbcmbdqmgcn"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4802,7 +4850,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers-1.1
+             guile-fibers-next
              guile-json-4
              guile-email
              guile-prometheus
@@ -6153,7 +6201,7 @@ used to start services with both privileged and non-privileged port numbers.")
                #t))))))
     (native-inputs
      (list libxslt))
-    (home-page "http://www.html-tidy.org/")
+    (home-page "https://www.html-tidy.org/")
     (synopsis "HTML Tidy with HTML5 support")
     (description
      "Tidy is a console application which corrects and cleans up
@@ -6613,7 +6661,7 @@ file links.")
            cairo
            gdk-pixbuf
            gtk+
-           libressl
+           openssl-3.0
            pango))
     (home-page "https://git.sr.ht/~julienxx/castor")
     (synopsis "Graphical client for plain-text protocols")
@@ -7879,17 +7927,41 @@ instructions on how to use Guix in a shared HPC environment.")
 (define-public httrack
   (package
     (name "httrack")
-    (version "3.49.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://mirror.httrack.com/historical/"
-                                  "httrack-" version ".tar.gz"))
-              (sha256
-               (base32
-                "09a0gm67nml86qby1k1gh7rdxamnrnzwr6l9r5iiq94favjs0xrl"))))
+    (version "3.49.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xroche/httrack")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1izn1h7gaxb2barclm2pj5kaz1mmddx2c35n70m0552q8ms4lvks"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'autogen
+            ;; Force reconfiguration to generate "test-driver".
+            (lambda _
+              (substitute* "configure.ac"
+                ;; Fix errors when running "configure" script.
+                (("AX_CHECK_(COMPILE|LINK)_FLAG\\(.*") "")
+                (("AX_CHECK_ALIGNED_ACCESS_REQUIRED") "")
+                (("gl_VISIBILITY") ""))
+              (invoke "autoreconf" "-vif")))
+          (add-after 'unpack 'copy-coucal-source
+            ;; Install Coucal source to work around missing submodule.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each (lambda (f) (install-file f "src/coucal"))
+                        (find-files #$(this-package-input "coucal")
+                                    "\\.(c|h|diff|orig)$")))))))
+    (native-inputs
+     (list autoconf automake libtool))
     (inputs
-     (list libressl zlib))
+     (list coucal libressl zlib))
     (home-page "https://www.httrack.com/")
     (synopsis "Easy-to-use offline browser utility")
     (description "HTTrack allows you to download a World Wide Web site from
@@ -8058,7 +8130,7 @@ returned.")
        (sha256
         (base32 "1j3mzjlczjrk4ahc43s6kzpvzypzjmqz4sillnca5yadrwwgjf2x"))))
     (build-system gnu-build-system)
-    (home-page "http://htmlcxx.sourceforge.net/")
+    (home-page "https://htmlcxx.sourceforge.net/")
     (synopsis "Simple non-validating CSS1 and HTML parser for C++")
     (description "htmlcxx is a simple non-validating CSS1 and HTML parser for
 C++.  Although there are several other HTML parsers available, htmlcxx has some

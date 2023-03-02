@@ -2,7 +2,7 @@
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,10 +25,97 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages llvm))
 
-(define-public zig
+(define-public zig-0.10
   (package
+    (name "zig")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ziglang/zig.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list clang-15 ; Clang propagates llvm.
+           lld-15
+           zlib
+           (list zstd "lib")))
+    ;; Zig compiles fine with GCC, but also needs native LLVM libraries.
+    (native-inputs
+     (list llvm-15))
+    (arguments
+     `(#:configure-flags
+       (list ,@(if (%current-target-system)
+                   '(string-append "-DZIG_TARGET_TRIPLE="
+                                   (%current-target-system))
+                   '())
+             (string-append "-DZIG_LIB_DIR=" (assoc-ref %outputs "out")
+                            "/lib/zig"))
+       #:validate-runpath? #f       ; TODO: zig binary can't find ld-linux.
+       #:out-of-source? #f ; for tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'set-cache-dir
+           (lambda _
+             ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
+             (setenv "ZIG_GLOBAL_CACHE_DIR"
+                     (string-append (getcwd) "/zig-cache"))))
+         (add-after 'patch-source-shebangs 'patch-more-shebangs
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Zig uses information about /usr/bin/env to determine the
+             ;; version of glibc and other data.
+             (substitute* "lib/std/zig/system/NativeTargetInfo.zig"
+               (("/usr/bin/env") (search-input-file inputs "/bin/env")))))
+         (delete 'check)
+         (add-after 'install 'check
+           (lambda* (#:key outputs tests? #:allow-other-keys)
+             (when tests?
+               (invoke (string-append (assoc-ref outputs "out") "/bin/zig")
+                       "build" "test"
+                       ;; We're not testing the compiler bootstrap chain.
+                       "-Dskip-stage1"
+                       "-Dskip-stage2-tests"
+                       ;; Non-native tests try to link and execute non-native
+                       ;; binaries.
+                       "-Dskip-non-native")))))))
+    (native-search-paths
+     (list
+      (search-path-specification
+       (variable "C_INCLUDE_PATH")
+       (files '("include")))
+      (search-path-specification
+       (variable "CPLUS_INCLUDE_PATH")
+       (files '("include/c++" "include")))
+      (search-path-specification
+       (variable "LIBRARY_PATH")
+       (files '("lib" "lib64")))))
+    (synopsis "General purpose programming language and toolchain")
+    (description "Zig is a general-purpose programming language and
+toolchain.  Among other features it provides
+@itemize
+@item an Optional type instead of null pointers,
+@item manual memory management,
+@item generic data structures and functions,
+@item compile-time reflection and compile-time code execution,
+@item integration with C using zig as a C compiler, and
+@item concurrency via async functions.
+@end itemize")
+    (home-page "https://github.com/ziglang/zig")
+    ;; Currently building zig can take up to 10GB of RAM for linking stage1:
+    ;; https://github.com/ziglang/zig/issues/6485
+    (supported-systems %64bit-supported-systems)
+    (license license:expat)))
+
+(define-public zig-0.9
+  (package
+    (inherit zig-0.10)
     (name "zig")
     (version "0.9.1")
     (source
@@ -41,7 +128,6 @@
        (sha256
         (base32 "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
        (patches (search-patches "zig-use-system-paths.patch"))))
-    (build-system cmake-build-system)
     (inputs
      (list clang-13 ; Clang propagates llvm.
            lld-13))
@@ -76,31 +162,6 @@
                        "-Dskip-stage2-tests"
                        ;; Non-native tests try to link and execute non-native
                        ;; binaries.
-                       "-Dskip-non-native")))))))
-    (native-search-paths
-     (list
-      (search-path-specification
-       (variable "C_INCLUDE_PATH")
-       (files '("include")))
-      (search-path-specification
-       (variable "CPLUS_INCLUDE_PATH")
-       (files '("include/c++" "include")))
-      (search-path-specification
-       (variable "LIBRARY_PATH")
-       (files '("lib" "lib64")))))
-    (synopsis "General purpose programming language and toolchain")
-    (description "Zig is a general-purpose programming language and
-toolchain.  Among other features it provides
-@itemize
-@item an Optional type instead of null pointers,
-@item manual memory management,
-@item generic data structures and functions,
-@item compile-time reflection and compile-time code execution,
-@item integration with C using zig as a C compiler, and
-@item concurrency via async functions.
-@end itemize")
-    (home-page "https://github.com/ziglang/zig")
-    ;; Currently building zig can take up to 10GB of RAM for linking stage1:
-    ;; https://github.com/ziglang/zig/issues/6485
-    (supported-systems %64bit-supported-systems)
-    (license license:expat)))
+                       "-Dskip-non-native")))))))))
+
+(define-public zig zig-0.10)

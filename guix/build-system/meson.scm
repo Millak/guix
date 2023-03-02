@@ -74,16 +74,9 @@ for TRIPLET."
                   ;; for selecting optimisations, so set it to something
                   ;; arbitrary.
                   (#t "strawberries")))
-    (endian . ,(cond ((string-prefix? "powerpc64le-" triplet) "little")
-                     ((string-prefix? "mips64el-" triplet) "little")
-                     ((target-x86-32? triplet) "little")
-                     ((target-x86-64? triplet) "little")
-                     ;; At least in Guix.  Aarch64 and 32-bit arm
-                     ;; have a big-endian mode as well.
-                     ((target-arm? triplet) "little")
-                     ((target-ppc32? triplet) "big")
-                     ((target-riscv64? triplet) "little")
-                     (#t (error "meson: unknown architecture"))))))
+    (endian . ,(if (target-little-endian? triplet)
+                   "little"
+                   "big"))))
 
 (define (make-binaries-alist triplet)
   "Make an associatoin list describing what should go into

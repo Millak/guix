@@ -376,14 +376,14 @@ Markdown.")
     (propagated-inputs
      (list erlang-cf))
     (native-inputs
-     (list git-minimal/fixed))  ;; Required for tests
+     (list git-minimal/pinned))  ;; Required for tests
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'check-setup
            (lambda _
              (setenv "TERM" "xterm")))))) ; enable color in logs
-    (home-page "http://erlware.github.io/erlware_commons/")
+    (home-page "https://erlware.github.io/erlware_commons/")
     (synopsis "Additional standard library for Erlang")
     (description "Erlware Commons is an Erlware project focused on all aspects
 of reusable Erlang components.")
@@ -701,7 +701,7 @@ applications as a dependent libraries.")
           (base32 "1dfz56034pa25axly9vqdzv3phkn8ll0qwrkws96pbgcprhky1hx"))))
     (build-system rebar-build-system)
     (inputs
-     (list git-minimal/fixed))
+     (list git-minimal/pinned))
     (arguments
      `(;; Running the tests require binary artifact (tar-file containing
        ;; samples git repos)  TODO: remove these from the source

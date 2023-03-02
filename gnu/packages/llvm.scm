@@ -50,7 +50,6 @@
   #:use-module (guix git-download)
   #:use-module (guix memoization)
   #:use-module (guix utils)
-  #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system python)
@@ -562,11 +561,11 @@ output), and Binutils.")
 
 (define %llvm-monorepo-hashes
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
-    ("15.0.6" . "13vj0q6if5095a3awq8d97l17qdsc7fks6avkai9k80kl0kzxpv6")))
+    ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
-    ("15.0.6" . ("clang-15.0-libc-search-path.patch"))))
+    ("15.0.7" . ("clang-15.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -582,7 +581,7 @@ output), and Binutils.")
 (define-public llvm-15
   (package
     (name "llvm")
-    (version "15.0.6")
+    (version "15.0.7")
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (outputs '("out" "opt-viewer"))
@@ -735,7 +734,7 @@ of programming tools as well as libraries with equivalent functionality.")
                     (package-version llvm-15)))
      (sha256
       (base32
-       "099v2yqg11h0h8qqddzkny6b77pafcr7vy5ksc33kqggji173ccj")))))
+       "1lagnspm5limxh1cp5jlixnzlhf09905d4rqra1kpgj6dps2x6l0")))))
 
 (define-public clang-14
   (clang-from-llvm

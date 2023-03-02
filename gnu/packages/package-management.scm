@@ -165,8 +165,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "d5fece6bfe6b2eaf93f936a4a6dea8fbfe118140")
-        (revision 3))
+        (commit "01fd830f2fdd388f56e6e00df747f052bbde3906")
+        (revision 4))
     (package
       (name "guix")
 
@@ -182,7 +182,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1q7qfxhfayhcia30w60klnv3q29a2n72vvf1wkdvwx55q3p8prsc"))
+                  "1kc4p6sakj57mdcd6avvbbw72q8irddn0cz7l17k0dp1463vjfl1"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -627,6 +627,11 @@ overridden by setting the 'current-guix-package' parameter."
     (arguments
      `(#:modules ((guix build utils)
                   (gnu build svg))
+
+       ;; There's no point in cross-compiling: a native build gives the same
+       ;; result, independently of the system type.
+       #:target #f
+
        #:builder
        ,(with-extensions (list guile-rsvg guile-cairo)
           #~(begin
@@ -824,7 +829,7 @@ symlinks to the files in a common directory such as /usr/local.")
     (description
      "XStow is a replacement of GNU Stow written in C++.  It supports all
 features of Stow with some extensions.")
-    (home-page "http://xstow.sourceforge.net/")
+    (home-page "https://xstow.sourceforge.net/")
     (license license:gpl2)))
 
 (define-public rpm
@@ -839,15 +844,25 @@ features of Stow with some extensions.")
               (sha256
                (base32
                 "0m250plyananjn0790xmwy6kixmxcdj5iyy2ybnk1aw7f4nia5ra"))))
+    (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--enable-python")
+     '(#:configure-flags '("--enable-python"
+                           ;; The RPM database must be writable.
+                           "--localstatedir=/var")
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'fix-lua-check
                     (lambda _
                       (substitute* "configure"
                         (("lua >= ?.?")
-                         "lua-5.3 >= 5.3")))))))
+                         "lua-5.3 >= 5.3"))))
+                  (add-after 'unpack 'patch-build-system
+                    (lambda _
+                      ;; The build system attempts to create /var in the build
+                      ;; chroot, and fails.
+                      (substitute* "Makefile.in"
+                        ((".*MKDIR_P) \\$\\(DESTDIR)\\$\\(localstatedir.*")
+                         "")))))))
     (native-inputs
      (list pkg-config
            python))
@@ -859,7 +874,8 @@ features of Stow with some extensions.")
            lua
            sqlite
            xz
-           zlib))
+           zlib
+           zstd))
     (propagated-inputs
      ;; popt is listed in the 'Requires' of rpm.pc.
      (list popt))
@@ -1347,8 +1363,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "3768aec91daebb8db58e28cffe481e8878b59700")
-        (revision "68"))
+  (let ((commit "c29a46e8d298d3a1f16b2d4f75fa96759741afb8")
+        (revision "71"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1359,7 +1375,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0vh4hndqgpz8rwrlfc6vhypy1hxayb8lvxw1jc41ags3lhw75dcz"))
+                  "1wzgl2naymps9k51ggsw8099da81b0skqjamj9r7jkcvg7i46avm"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1424,14 +1440,7 @@ environments.")
                                          (assoc-ref inputs input)
                                          version))
                                       guile-inputs)
-                                 ":"))))
-                      (when target
-                        ;; XXX work around wrap-program picking bash for the
-                        ;; host rather than target
-                        (let ((bash (assoc-ref inputs "bash")))
-                          (substitute* file
-                            (("^#!.*/bash")
-                             (string-append "#! " bash "/bin/bash")))))))
+                                 ":"))))))
                   (find-files bin)))
                #t))
            (delete 'strip))))             ; As the .go files aren't compatible
@@ -1663,8 +1672,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "8d219e49c8f1623bdd3622f8c024c40acb0004c2")
-        (revision "10"))
+  (let ((commit "8b888de4cff44b42b8215afac5dcdadba9b7394d")
+        (revision "17"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1675,7 +1684,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0bxhwmfywy03iqmy7a039xr4cb9vfjsqpj7w5ybhmiqhf0yv9hpa"))
+                  "19j8dbn9c25x8lj3sa7b0b9v8lxxlkhvb4qpmwc4kkizpkwrqp2a"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -2139,7 +2148,7 @@ from R7RS, which allows most R7RS code to run on R6RS implementations.")
       (list dejagnu autoconf which))
     (inputs
       (list tcl less procps coreutils python-3))
-    (home-page "http://modules.sourceforge.net/")
+    (home-page "https://modules.sourceforge.net/")
     (synopsis "Shell environment variables and aliases management")
     (description "Modules simplify shell initialization and let users
 modify their environment during the session with modulefiles.  Modules are

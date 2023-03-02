@@ -26,7 +26,6 @@
 (define-module (gnu packages syncthing)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)

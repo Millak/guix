@@ -111,6 +111,7 @@ as its build system."
     (gexp->derivation name build
                       #:system system
                       #:target #f
+                      #:graft? #f
                       #:modules imported-modules
                       #:guile-for-build guile)))
 

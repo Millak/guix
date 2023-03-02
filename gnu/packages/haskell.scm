@@ -1169,7 +1169,7 @@ interactive environment for the functional language Haskell.")
             '(substitute* "testsuite/driver/testlib.py"
                (("collections\\.Iterable")
                 "collections.abc.Iterable")))))
-       ("git" ,git-minimal/fixed)                 ; invoked during tests
+       ("git" ,git-minimal/pinned)                 ; invoked during tests
        ,@(filter (match-lambda
                    (("ghc-bootstrap" . _) #f)
                    (("ghc-testsuite" . _) #f)
@@ -1228,7 +1228,7 @@ interactive environment for the functional language Haskell.")
             '(substitute* "testsuite/driver/testlib.py"
                (("collections\\.Iterable")
                 "collections.abc.Iterable")))))
-       ("git" ,git-minimal/fixed)                 ; invoked during tests
+       ("git" ,git-minimal/pinned)                 ; invoked during tests
        ,@(filter (match-lambda
                    (("ghc-bootstrap" . _) #f)
                    (("ghc-testsuite" . _) #f)
@@ -1268,19 +1268,12 @@ interactive environment for the functional language Haskell.")
                                 (file-pattern ".*\\.conf\\.d$")
                                 (file-type 'directory))))))
 
-;; Versions newer than ghc defined below (i.e. the compiler
-;; haskell-build-system uses) should use ghc-next as their name to
-;; ensure ghc (without version specification) and ghc-* packages are
-;; always compatible. See https://issues.guix.gnu.org/issue/47335.
-
 (define-public ghc-8 ghc-8.10)
-
-(define-public ghc ghc-8)
 
 (define-public ghc-9.0
   (package
     (inherit ghc-8.10)
-    (name "ghc-next")
+    (name "ghc")
     (version "9.0.2")
     (source (origin
               (method url-fetch)
@@ -1318,7 +1311,7 @@ interactive environment for the functional language Haskell.")
   (let ((base ghc-8.10))
     (package
       (inherit base)
-      (name "ghc-next")
+      (name "ghc")
       (version "9.2.5")
       (source (origin
                 (method url-fetch)
@@ -1326,7 +1319,8 @@ interactive environment for the functional language Haskell.")
                                     "/ghc-" version "-src.tar.xz"))
                 (sha256
                  (base32
-                  "07028i0hm74svvq9b3jpkczaj6lsdgn3hgr4wa7diqiq3dypj1h6"))))
+                  "07028i0hm74svvq9b3jpkczaj6lsdgn3hgr4wa7diqiq3dypj1h6"))
+                (patches (search-patches "ghc-9.2-glibc-2.33-link-order.patch"))))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)
@@ -1335,7 +1329,20 @@ interactive environment for the functional language Haskell.")
              (replace 'fix-cc-reference
                (lambda _
                  (substitute* "utils/hsc2hs/src/Common.hs"
-                   (("\"cc\"") "\"gcc\""))))))))
+                   (("\"cc\"") "\"gcc\""))))
+             ;; FIXME: Remove i686-specific match on the next rebuild cycle.
+             #$@(match (%current-system)
+                  ("i686-linux"
+                    #~((add-after 'skip-more-tests 'skip-T21694-i686
+                        (lambda _
+                          (substitute* '("testsuite/tests/simplCore/should_compile/all.T")
+                            (("^test\\('T21694', \\[ " all)
+                             (string-append all "when(arch('i386'), skip), ")))))))
+                  (_ #~()))))
+         ;; Increase verbosity, so running the test suite does not time out on CI.
+         ((#:make-flags make-flags ''())
+          #~(cons "VERBOSE=4" #$make-flags))))
+      (properties '((max-silent-time . 36000))) ; 10 hours, for i686.
       (native-inputs
        `(;; GHC 9.2 must be built with GHC >= 8.6.
          ("ghc-bootstrap" ,base)
@@ -1359,6 +1366,12 @@ interactive environment for the functional language Haskell.")
               (files (list (string-append "lib/ghc-" version)))
               (file-pattern ".*\\.conf\\.d$")
               (file-type 'directory)))))))
+
+;; Versions newer than ghc defined below (i.e. the compiler
+;; haskell-build-system uses) should use ghc-next as their name to
+;; ensure ghc (without version specification) and ghc-* packages are
+;; always compatible. See https://issues.guix.gnu.org/issue/47335.
+(define-public ghc ghc-9.2)
 
 ;; 9.4 is the last version to support the make-based build system,
 ;; but it boot with 9.2, only 9.0 is supported.

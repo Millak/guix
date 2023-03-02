@@ -613,7 +613,7 @@ at URI, which may be a file:// URI pointing the package's tree."
 
 (define nmap
   (license "Nmap license"
-           "https://svn.nmap.org/nmap/COPYING"
+           "https://svn.nmap.org/nmap/LICENSE"
            "https://fedoraproject.org/wiki/Licensing/Nmap"))
 
 (define ogl-psi1.0

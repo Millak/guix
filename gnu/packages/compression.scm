@@ -1368,7 +1368,7 @@ for most inputs, but the resulting compressed files are anywhere from 20% to
             ((target-x86-32?)
              (list nasm))
             (else '())))
-    (home-page "http://p7zip.sourceforge.net/")
+    (home-page "https://p7zip.sourceforge.net/")
     (synopsis "Command-line file archiver with high compression ratio")
     (description "p7zip is a command-line port of 7-Zip, a file archiver that
 handles the 7z format which features very high compression ratios.")
@@ -2530,7 +2530,7 @@ file compression algorithm.")
 (define-public xarchiver
   (package
     (name "xarchiver")
-    (version "0.5.4.17")
+    (version "0.5.4.20")
     (source
      (origin
        (method git-fetch)
@@ -2539,7 +2539,7 @@ file compression algorithm.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00adrjpxqlaccrwjf65w3vhxfswdj0as8aj263c6f9b85llypc5v"))))
+        (base32 "1bgc8r2ii96ghslfscpjhswjgscvw65h2rjr0zvfqn8saqh1ydrv"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal intltool libxslt pkg-config))
@@ -2759,6 +2759,27 @@ negotiation.  These design goals make it different from earlier binary
 serializations such as ASN.1 and MessagePack.")
     (license license:expat)
     (home-page "https://github.com/PJK/libcbor")))
+
+(define-public lzfse
+  (package
+    (name "lzfse")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lzfse/lzfse")
+             (commit (string-append "lzfse-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mfh6y6vpvxsdwmqmfbkqkwvxc0pz2dqqc72c6fk9sbsrxxaghd5"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/lzfse/lzfse")
+    (synopsis "LZFSE compression library and command line tool")
+    (description "LZFSE is a Lempel-Ziv style data compression algorithm using
+Finite State Entropy coding.  It targets similar compression rates at higher
+compression and decompression speed compared to Deflate using Zlib.")
+    (license license:bsd-3)))
 
 (define-public fcrackzip
   (package

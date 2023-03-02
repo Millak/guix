@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -762,7 +762,7 @@ animating a series of images.")
 (define-public mujs
   (package
     (name "mujs")
-    (version "1.2.0")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -771,7 +771,7 @@ animating a series of images.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kqw3xhjk4l2jar14a1f9b3m0xq0h2g3nc9m6hsdv7kf8jhfm83l"))
+        (base32 "1kfp2246pzmrb65c0gfcy130zd7sbniclpjx2jv6jbkmpkjs8kb1"))
        (snippet
         #~(begin
             (use-modules (guix build utils))

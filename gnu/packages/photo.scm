@@ -351,7 +351,7 @@ and a wide variety of other metadata.")
      (list perl))                       ; for pod2man
     (inputs
      (list libjpeg-turbo libpng libtiff zlib))
-    (home-page "http://panotools.sourceforge.net/")
+    (home-page "https://panotools.sourceforge.net/")
     (synopsis "Library for panoramic images")
     (description
      "The libpano13 package contains the backend library written by the
@@ -406,7 +406,7 @@ overlapping images, as well as some command line tools.")
                      ;; Fix error: ‘numeric_limits’ is not a member of ‘std’.
                      (("#include <vector>" line)
                       (string-append line "\n#include <limits>"))))))))
-    (home-page "http://enblend.sourceforge.net/")
+    (home-page "https://enblend.sourceforge.net/")
     (synopsis "Tools for combining and blending images")
     (description
      "Enblend blends away the seams in a panoramic image mosaic using a
@@ -746,7 +746,7 @@ off' shooting directly from the controlling computer.")
                 (string-append "wxT(\"" (which "enblend") "\")"))
                (("wxT\\(\"enfuse\"\\)")
                 (string-append "wxT(\"" (which "enfuse") "\")"))))))))
-    (home-page "http://hugin.sourceforge.net/")
+    (home-page "https://hugin.sourceforge.net/")
     (synopsis "Panorama photo stitcher")
     (description
      "Hugin is an easy to use panoramic imaging toolchain with a graphical

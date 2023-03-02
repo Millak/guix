@@ -49,7 +49,7 @@
 ;;; Copyright © 2018 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2016, 2018 Tomáš Čech <sleep_walker@gnu.org>
-;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -80,7 +80,7 @@
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Hendursaga <hendursaga@yahoo.com>
 ;;; Copyright © 2020 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
@@ -94,7 +94,7 @@
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -257,7 +257,6 @@
   #:use-module (gnu packages serialization)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module (guix gexp)
@@ -266,7 +265,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
@@ -291,24 +289,17 @@ similar XML files, in the same way the @command{diff} utility does it.")
 (define-public python-janus
   (package
     (name "python-janus")
-    (version "0.6.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "janus" version))
        (sha256
-        (base32 "030xvl2vghi5ispfalhvch1rl6i2jsy5bf1dgjafa7vifppy04j7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--cov=janus" "--cov=tests")))))))
+        (base32 "04hnrdcf03g1s0x3sr72sh9gnszz6kyfsl9dg8a4n0zvvhn6z5yz"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov python-pytest-asyncio))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/aio-libs/janus/")
     (synopsis
      "Sync-async queue to interoperate between asyncio tasks and classic threads")
@@ -328,7 +319,7 @@ design}.")
 (define-public python-jupytext
   (package
     (name "python-jupytext")
-    (version "1.14.1")
+    (version "1.14.4")
     (source
      (origin
        (method git-fetch)
@@ -337,7 +328,7 @@ design}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gqpvphrp2ja9ggadx0rrk0sqbpz6kqqg62qqmw4k17469lphc8c"))))
+        (base32 "19d443vx597zzxna09qpync9iic3mris80bwm3kd8xaxaq0zq9w4"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -2095,13 +2086,13 @@ conventions and aliases in the same expression.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.10")
+    (version "0.6.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Wand" version))
        (sha256
-        (base32 "0mywzs235skwq670c80achrd34kangwy24793k1nij3651zllgrp"))))
+        (base32 "15d9kxyc7qvknx0kv27m2jamnmisckyf89i7wlqykwgqm46p0qdn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2109,7 +2100,11 @@ conventions and aliases in the same expression.")
          (add-after 'unpack 'find-magickwand
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "MAGICK_HOME" (assoc-ref inputs "imagemagick"))
-             (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16"))))))
+             (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16")))
+         (replace 'check
+           (lambda _
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest))
     (inputs
@@ -2535,7 +2530,7 @@ a library.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                   ;test suite not included in the release
-    (home-page "http://www.grantjenks.com/docs/diskcache/")
+    (home-page "https://www.grantjenks.com/docs/diskcache/")
     (synopsis "Disk and file backed cache library")
     (description "DiskCache is a disk and file backed persistent cache.")
     (license license:asl2.0)))
@@ -3190,7 +3185,7 @@ other Python program.")
                (base32
                 "1f0jjqvamly4hn7f1palvq27z6yr694rfzyxrb6g0ysbbawxkvq9"))))
     (build-system python-build-system)
-    (home-page "http://agateau.com/projects/doxyqml")
+    (home-page "https://agateau.com/projects/doxyqml")
     (synopsis "Doxygen input filter for QML files")
     (description
      "This package provides a Doxygen input filter for QML files.")
@@ -4300,6 +4295,40 @@ modules.  It creates a special virtual environment such that @command{pip} or
 work on your part.")
     (license license:expat)))
 
+(define-public python-virtualenv-clone
+  (package
+    (name "python-virtualenv-clone")
+    (version "0.5.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/edwardgeorge/virtualenv-clone")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p0d1y3axvjfnxlgwjx2374gikc8bmc82g0m7yashihbikh7pcxa"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (delete-file "tox.ini")
+                              (invoke "pytest" "-vvv" "tests")))))))
+    (native-inputs (list python-pytest
+                         python-tox
+                         python-virtualenv
+                         python-coverage
+                         python-wheel
+                         python-tomli
+                         python-hypothesis))
+    (home-page "https://github.com/edwardgeorge/virtualenv-clone")
+    (synopsis "Clone a non-relocatable virtualenv cleanly")
+    (description
+     "Clone non-relocatable virtualenvs without breaking site-packages.")
+    (license license:expat)))
+
 (define-public python-uc-micro-py
   (package
     (name "python-uc-micro-py")
@@ -4851,7 +4880,7 @@ leaf preserving the overall structure.")
                           (invoke "python" "test/alltests.py")
                           (format #t "test suite not run~%"))
                       #t)))))
-    (home-page "http://docutils.sourceforge.net/")
+    (home-page "https://docutils.sourceforge.net/")
     (synopsis "Python Documentation Utilities")
     (description
      "Docutils is a modular system for processing documentation into useful
@@ -6481,24 +6510,16 @@ readable format.")
 (define-public python-pygit2
   (package
     (name "python-pygit2")
-    (version "1.9.2")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pygit2" version))
        (sha256
-        (base32 "068bwhirigbh2435abyv4shdxgxvyfqf4dxfmhd4hihivwrl9290"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-v")))))))
-    (propagated-inputs
-     (list python-cached-property python-cffi libgit2))
-    (native-inputs
-     (list python-pytest))
+        (base32 "1v34xdvh6i5cn5srwicvp0i2kvv8fzsv0v9p72ng081nsczmhgvr"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi libgit2))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/libgit2/pygit2")
     (synopsis "Python bindings for libgit2")
     (description "Pygit2 is a set of Python bindings to the libgit2 shared library.")
@@ -7707,6 +7728,26 @@ a general image processing tool.")
     (description "This package is a fork of Pillow which adds support for SIMD
 parallelism.")))
 
+(define-public python-pixelmatch
+  (package
+    (name "python-pixelmatch")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pixelmatch" version))
+       (sha256
+        (base32 "16b0cz136dcmj4dbr505igpql8dmqmr9vni5nbaa5kygjfjkdynh"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pillow))
+    (home-page "https://github.com/whtsky/pixelmatch-py")
+    (synopsis "A pixel-level image comparison library")
+    (description "This package provides a pixel-level image comparison library
+for Python, originally created to compare screenshots in tests.  Its features
+include accurate anti-aliased pixels detection and perceptual color difference
+metrics.")
+    (license license:isc)))
+
 (define-public python-imagecodecs
   (package
     (name "python-imagecodecs")
@@ -8619,7 +8660,7 @@ wraps Python's standard library threading and multiprocessing objects.")
        ("bash-full" ,bash)))                 ;full Bash for 'test_replwrap.py'
     (propagated-inputs
      (list python-ptyprocess))
-    (home-page "http://pexpect.readthedocs.org/")
+    (home-page "https://pexpect.readthedocs.org/")
     (synopsis "Controlling interactive console applications")
     (description
      "Pexpect is a pure Python module for spawning child applications;
@@ -8681,7 +8722,7 @@ older Python versions.")
                 "1hq626mx5jl9zfl0wdrjkxsnh8qd98fqv322n68b9251xjk4bxqr"))))
     (build-system python-build-system)
     (native-inputs (list python-setuptools-scm python-toml))
-    (home-page "http://importlib-resources.readthedocs.io/")
+    (home-page "https://importlib-resources.readthedocs.io/")
     (synopsis "Read resources from Python packages")
     (description
      "@code{importlib_resources} is a backport of Python 3's standard library
@@ -8970,7 +9011,7 @@ releases.")
     (build-system python-build-system)
     (native-inputs
      (list unzip))
-    (home-page "http://cheeseshop.python.org/pypi/simplegeneric")
+    (home-page "https://cheeseshop.python.org/pypi/simplegeneric")
     (synopsis "Python module for simple generic functions")
     (description
      "The simplegeneric module lets you define simple single-dispatch generic
@@ -9703,7 +9744,7 @@ computing.")
               ;; https://salsa.debian.org/python-team/packages/urwid/-/blob/debian/2.1.2-2/debian/changelog#L141
               (lambda _
                 (delete-file "urwid/tests/test_vterm.py"))))))
-    (home-page "http://urwid.org")
+    (home-page "https://urwid.org")
     (synopsis "Console user interface library for Python")
     (description
      "Urwid is a curses-based UI/widget library for Python.  It includes many
@@ -12391,7 +12432,7 @@ native modules.")
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
-    (home-page "http://www.python-excel.org/")
+    (home-page "https://www.python-excel.org/")
     (synopsis "Library for extracting data from Excel files")
     (description "This package provides a library to extract data from
 spreadsheets using Microsoft Excel proprietary file formats @samp{.xls} and
@@ -12423,7 +12464,7 @@ Unicode-aware.  It is not intended as an end-user tool.")
                (invoke "nosetests" "-v")))))))
     (native-inputs
      `(("nose" ,python-nose)))
-    (home-page "http://www.python-excel.org/")
+    (home-page "https://www.python-excel.org/")
     (synopsis "Library for creating spreadsheet Excel files")
     (description "@code{xlwt} is a library for writing data and formatting
 information to older Excel files (i.e. .xls).  The package itself is pure
@@ -12888,7 +12929,7 @@ primary use case is APIs defined before keyword-only parameters existed.")
         (base32
          "1fnhbi3rmk47l9851gbik0flfr64vs5j0hbqx24cafjap6gprxxf"))))
     (build-system python-build-system)
-    (home-page "http://pyasn1.sourceforge.net/")
+    (home-page "https://pyasn1.sourceforge.net/")
     (synopsis "ASN.1 types and codecs")
     (description
      "This is an implementation of ASN.1 types and codecs in Python.  It is
@@ -14216,7 +14257,7 @@ Jupyter kernels such as IJulia and IRKernel.")
                (("def test_other_output") "def _test_other_output")))))))
     (propagated-inputs
      (list python-ipykernel python-ipython-genutils python-jupyter-client
-           python-jupyter-core python-pygments python-pyqt-without-qtwebkit
+           python-jupyter-core python-pygments python-pyqt
            python-pyzmq python-qtpy python-traitlets))
     (native-inputs
      (list python-flaky python-pytest python-pytest-qt))
@@ -14487,7 +14528,7 @@ tasks.  It includes single-command deployment for the Django Girls tutorial.")
                         #t))))
        #:tests? #f))
     (propagated-inputs (list dialog))
-    (home-page "http://pythondialog.sourceforge.net/")
+    (home-page "https://pythondialog.sourceforge.net/")
     (synopsis "Python interface to the UNIX dialog utility")
     (description
      "A Python wrapper for the dialog utility.  Its purpose is to
@@ -16164,48 +16205,31 @@ ISO 8859, etc.).")
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
-    (version "0.12.1")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqtgraph" version))
        (sha256
-        (base32 "0kc7ncv0lr3spni29i9g8nszyr4xinswqi2zzs6v8kqqi593pvyj"))))
-    (build-system python-build-system)
+        (base32 "026wq2p7h1dmg2ldwhxiv28i5qld0llhnak06dxp4rdrkpsqg3v9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home-and-qpa
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k"
-                     (string-append
-                      ;; These tests try to download online data.
-                      "not test_PolyLineROI"
-                      " and not test_getArrayRegion_axisorder"
-                      " and not test_getArrayRegion"
-                      " and not test_PlotCurveItem"
-                      " and not test_NonUniformImage_colormap"
-                      " and not test_NonUniformImage_lut"
-                      " and not test_ImageItem_axisorder"
-                      " and not test_ImageItem"
-                      ;; The test_reload test fails and suggests adding
-                      ;; "--assert=plain" to the pytest command, but it
-                      ;; doesn't solve the failure.
-                      " and not test_reload")))))))
+     ;; This test fails.  It suggests to disable assert rewriting in Pytest,
+     ;; but it still doesn't pass.
+     (list #:test-flags #~'("-k" "not test_reload")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-qpa
+                 (lambda _
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-xdist))
+     (list python-pytest-7.1 python-pytest-cov python-pytest-xdist))
     (inputs
      (list qtbase-5))
     (propagated-inputs
      (list python-h5py python-numpy python-pyopengl python-scipy
-           python-pyqt-without-qtwebkit))
-    (home-page "http://www.pyqtgraph.org")
+           python-pyqt))
+    (home-page "https://www.pyqtgraph.org")
     (synopsis "Scientific graphics and GUI library for Python")
     (description
      "PyQtGraph is a Pure-python graphics library for PyQt5, PyQt6, PySide2
@@ -16992,7 +17016,7 @@ multiple processes (imagine multiprocessing, billiard, futures, celery etc).
                           (("logging\\.DEBUG")
                            "logging.INFO"))
                         (invoke "python" "-m" "unittest" "t/test.py")))))))
-    (home-page "http://tftpy.sourceforge.net/")
+    (home-page "https://tftpy.sourceforge.net/")
     (synopsis "Python trivial file transfer protocol (TFTP) library")
     (description "TFTPy is a trivial file transfer protocol (TFTP) Python
 library.  It can be used to act both as a TFTP client or TFTP server.")
@@ -18697,7 +18721,7 @@ without requiring an event loop, useful for creative responsive GUIs.")
 (define-public binwalk
   (package
     (name "binwalk")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
@@ -18706,7 +18730,7 @@ without requiring an event loop, useful for creative responsive GUIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0phqyqv34vhh80dgipiggs4n3iq2vfjk9ywx2c5d8g61vzgbd2g8"))
+        (base32 "0cfm1khckq986l0q68kmfyfagc6zmb94hgjjm847fjcil77dnlw6"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -19080,7 +19104,7 @@ numbers, real numbers, mixed types and more, and comes with a shell command
                (search-patches "python-random2-getrandbits-test.patch"))))
     (build-system python-build-system)
     (native-inputs (list unzip))
-    (home-page "http://pypi.python.org/pypi/random2")
+    (home-page "https://pypi.python.org/pypi/random2")
     (synopsis "Python 3 version of the Python 2 @code{random} module")
     (description
      "This package provides a Python 3 ported version of Python 2.7’s
@@ -20304,16 +20328,23 @@ point is the point of maximum curvature.")
 (define-public python-diff-match-patch
   (package
     (name "python-diff-match-patch")
-    (version "20121119")
+    (version "20200713")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "diff-match-patch" version))
         (sha256
          (base32
-          "0k1f3v8nbidcmmrk65m7h8v41jqi37653za9fcs96y7jzc8mdflx"))))
+          "063s8zcxz787xfg7d1wxpqh59fxg3iz85ww9zhyz4vaqm80mlvys"))))
     (build-system python-build-system)
-    (home-page "https://code.google.com/p/google-diff-match-patch")
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "python" "-m" "unittest"
+                                "diff_match_patch.tests")))))))
+    (home-page "https://github.com/diff-match-patch-python/diff-match-patch")
     (synopsis "Synchronize plain text")
     (description "Diff Match and Patch libraries offer robust algorithms to
      perform the operations required for synchronizing plain text.")
@@ -20817,7 +20848,7 @@ while only declaring the test-specific fields.")
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
-    (home-page "http://arcp.readthedocs.io/")
+    (home-page "https://arcp.readthedocs.io/")
     (synopsis
      "Archive and Package URI parser and generator")
     (description
@@ -21258,7 +21289,7 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
                 (string-append "'" (assoc-ref inputs "mesa") "/lib/libGLESv2.so'")))
                ;; Not providing libgle. It seems to be very old.
              #t)))))
-    (home-page "http://pyopengl.sourceforge.net")
+    (home-page "https://pyopengl.sourceforge.net")
     (synopsis "Standard OpenGL bindings for Python")
     (description
      "PyOpenGL is the most common cross platform Python binding to OpenGL and
@@ -23864,7 +23895,7 @@ that is accessible to other projects developed in Cython.")
     (propagated-inputs
      (list python-sortedcontainers))
     (arguments '(#:tests? #f))  ; Tests not included in release tarball.
-    (home-page "http://www.grantjenks.com/docs/sortedcollections/")
+    (home-page "https://www.grantjenks.com/docs/sortedcollections/")
     (synopsis "Python Sorted Collections")
     (description "Sorted Collections is a Python sorted collections library.")
     (license license:asl2.0)))
@@ -24400,19 +24431,33 @@ class in a @acronym{DRY, Don't Repeat Yourself} way.")
 (define-public python-construct
   (package
     (name "python-construct")
-    (version "2.10.56")
+    (version "2.10.68")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "construct" version))
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/construct/construct")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0q86jjzsvy835h3c8pjj4619vbp7ihfg8njmyw86ym4qrpni7flp"))))
+        (base32 "1b59kq8scxhn9afqgmksk45n53gawylqm8gw3k0vmljg274xi7vf"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f)) ; No tests exist.
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-v" "tests/")))))))
+    (native-inputs
+     (list python-pytest python-pytest-benchmark))
     (propagated-inputs
-     (list python-extras python-arrow python-numpy python-ruamel.yaml))
+     (list python-arrow
+           python-cloudpickle
+           python-lz4
+           python-numpy
+           python-ruamel.yaml))
     (home-page "https://construct.readthedocs.io")
     (synopsis "Declarative and symmetrical parser and builder for binary data")
     (description
@@ -25888,7 +25933,7 @@ also be usable with other GSSAPI mechanisms.")
              (invoke "git" "config" "--global"
                      "protocol.file.allow" "always"))))))
     (native-inputs
-     (list git-minimal/fixed python-pytest))
+     (list git-minimal/pinned python-pytest))
     (propagated-inputs
      (list python-pypa-build python-setuptools python-tomli))
     (home-page "https://github.com/mgedmin/check-manifest")
@@ -26979,7 +27024,7 @@ accessor layer.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.12.4")
+    (version "4.12.7")
     (source
      (origin
        (method git-fetch)
@@ -26989,7 +27034,7 @@ accessor layer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10qqilbh7n4z2656qbr9gllvgi7xq11xcm2bv64h02jmkb7m4m6n"))))
+         "15c92l0g3fziyn6cmjrbr57bz70cz8w282yjb370r36x2bpykbii"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -28533,7 +28578,7 @@ and frame grabber interface.")
     (native-inputs
      (list cmake-minimal
            gfortran
-           git-minimal/fixed                      ;for tests
+           git-minimal/pinned                      ;for tests
            ninja
            python-coverage
            python-cython
@@ -30024,7 +30069,7 @@ PyRSS2Gen builds the feed up by using a XML generator.")
         (sha256
           (base32 "12rznbnswfw0w7qfbvmmffr9r317gl1rqg36nijwzsklkjgks4fq"))))
     (build-system python-build-system)
-    (home-page "http://yapsy.sourceforge.net")
+    (home-page "https://yapsy.sourceforge.net")
     (synopsis "Simple plugin system for Python applications")
     (description "Yapsy, or Yet Another Plugin SYstem, is a small library
 implementing the core mechanisms needed to build a plugin system into a wider
@@ -30677,7 +30722,7 @@ running and analyzing benchmarks.  It features a simple API that can:
               (when tests?
                 (invoke "pytest")))))))
     (native-inputs (list python-pytest))
-    (home-page "http://pydispatcher.sourceforge.net")
+    (home-page "https://pydispatcher.sourceforge.net")
     (synopsis "Multi-producer-multi-consumer signal dispatching mechanism")
     (description "PyDispatcher is an enhanced version of Patrick K. O’Brien’s
 original @code{dispatcher.py} module.  It provides the Python programmer with
@@ -30687,6 +30732,27 @@ Included in the package are the robustapply and saferef modules, which
 provide the ability to selectively apply arguments to callable objects
 and to reference instance methods using weak-references.")
     (license license:bsd-3)))
+
+(define-public python-pyee
+  (package
+    (name "python-pyee")
+    (version "9.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyee" version))
+       (sha256
+        (base32 "0cjbxbqr9f8bn2h3ra69d550qj2r1hmsgrh5nx31ywmwia9c8w17"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs (list python-twisted python-trio))
+    (home-page "https://github.com/jfhbrook/pyee")
+    (synopsis "Emit events with Python")
+    (description
+     "This package provides a port of node.js's EventEmitter to python.
+Additionally, it includes a number of subclasses useful for implementing async
+and threaded programming in python, such as async/await.")
+    (license license:expat)))
 
 (define-public python-queuelib
   (package
@@ -30735,7 +30801,7 @@ fashion.")
                    (substitute* "prober.py"
                      (("cmd = .cc")
                       (string-append "cmd = \"" #$(cc-for-target)))))))))
-    (home-page "http://semanchuk.com/philip/posix_ipc/")
+    (home-page "https://semanchuk.com/philip/posix_ipc/")
     (synopsis "POSIX IPC primitives for Python")
     (description
      "This package provides POSIX IPC primitives - semaphores, shared memory and
@@ -31698,6 +31764,52 @@ Storage}.")
 shared objects, and lift them up to the executable referenced by absolute
 path.")
     (license license:expat)))
+
+(define-public staticsite
+  (package
+    (name "staticsite")
+    (version "2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/spanezz/staticsite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rhr25xydvnlrrcz389j3f6nknmczm5x11cagrji1qww70piwy08"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-themes-in-output
+            (lambda _
+              (substitute* "staticsite/global_settings.py"
+                (("/usr/share/staticsite") #$output))))
+          (add-after 'install 'install-themes
+            (lambda _
+              (let ((themedir (string-append #$output "/themes")))
+                (copy-recursively "themes" themedir)))))))
+    (native-inputs
+     (list perl-image-exiftool
+           python-dateutil
+           python-docutils
+           python-jinja2
+           python-markdown
+           python-pillow
+           python-pyinotify
+           python-pytz
+           python-pyyaml
+           python-ruamel.yaml
+           python-slugify
+           python-tornado
+           tzdata-for-tests))
+    (home-page "https://github.com/spanezz/staticsite")
+    (synopsis "Static site generator")
+    (description "Statistic is a static site generator based on Markdown and
+Jinja2.")
+    (license (list license:gpl3+ license:expat))))
 
 (define-public python-pymonad
   (package

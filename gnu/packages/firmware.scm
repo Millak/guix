@@ -456,6 +456,13 @@ provide OpenFirmware functionality on top of an already running system.")
       (inherit base)
       (arguments
        (substitute-keyword-arguments (package-arguments base)
+         ((#:system system (%current-system))
+          (if (string-prefix? "aarch64-linux" (or (%current-system)
+                                                  (%current-target-system)))
+            "armhf-linux"
+            system))
+         ;; No need to cross-compile, package produces reproducible firmware.
+         ((#:target _ #f) #f)
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'install 'rename-executable
@@ -569,6 +576,7 @@ executing in M-mode.")
     (arguments
      (list
       #:tests? #f                       ;no tests
+      #:target #f                       ; Package produces firmware.
       #:make-flags
       ;; If EXTRAVERSION is not set the build system will embed the current
       ;; date in binaries.  Use this opportunity to personalize as recommended
@@ -740,6 +748,7 @@ coreboot.")
                      "HOSTCC=gcc")
              #:parallel-build? #f
              #:tests? #f   ;no tests
+             #:target #f   ; Package produces firmware.
              #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'build-reproducibly

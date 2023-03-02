@@ -286,6 +286,30 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
 50 Cyrillic-based languages as well as Greek and IPA phonetics.")
     (license license:silofl1.1)))
 
+(define-public font-carlito
+  (let ((commit "64cab86c9b602088697294736b86f2831f3f44be")
+        (revision "0"))
+    (package
+      (name "font-carlito")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/carlito")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02wy8vs5m4whm5apl3p6cpz0qa9jwjj9qi219zjspiszha2ivssz"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/carlito")
+      (synopsis "Free alternative to Calibri")
+      (description
+       "Carlito is a font designed by Łukasz Dziedzic derived from
+Lato (also designed by Łukasz Dziedzic) that is metric-compatible with
+Calibri.")
+      (license license:silofl1.1))))
+
 (define-public font-gfs-ambrosia
   ;; Based on
   ;; https://src.fedoraproject.org/rpms/gfs-ambrosia-fonts
@@ -522,7 +546,7 @@ The unified Libertinus family consists of:
                       make-flags)))))))
     (native-inputs
      (list bdftopcf font-util mkfontdir pkg-config python))
-    (home-page "http://terminus-font.sourceforge.net/")
+    (home-page "https://terminus-font.sourceforge.net/")
     (synopsis "Simple bitmap programming font")
     (description "Terminus Font is a clean, fixed-width bitmap font, designed
 for long periods of working with computers (8 or more hours per day).")
@@ -729,7 +753,7 @@ printing old Malayalam books without compromising the writing style.")
         (base32
          "0kph9l3g7jb2bpmxdbdg5zl56wacmnvdvsdn7is1gc750sqvsn31"))))
     (build-system font-build-system)
-    (home-page "http://www.gust.org.pl/projects/e-foundry/tex-gyre/")
+    (home-page "https://www.gust.org.pl/projects/e-foundry/tex-gyre/")
     (synopsis "Remake of Ghostscript fonts")
     (description "The TeX Gyre collection of fonts is the result of an
 extensive remake and extension of the freely available base PostScript fonts
@@ -958,11 +982,15 @@ display all Unicode symbols.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-unsupported
+          (add-after 'unpack 'enter-font-directory
+            (lambda _
+              ;; Note this ensures the correct license file is installed.
+              (chdir "fonts")))
+          (add-after 'enter-font-directory 'remove-unsupported
             (lambda* _
-              (delete-file "fonts/NotoColorEmoji_WindowsCompatible.ttf")
-              (delete-file "fonts/Noto-COLRv1-noflags.ttf")
-              (delete-file "fonts/Noto-COLRv1.ttf"))))))
+              (delete-file "NotoColorEmoji_WindowsCompatible.ttf")
+              (delete-file "Noto-COLRv1-noflags.ttf")
+              (delete-file "Noto-COLRv1.ttf"))))))
     (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
     (synopsis "Font for rendering color emoji characters")
     (description
@@ -1242,6 +1270,30 @@ work well in user interface (UI) environments.")
 Sans Pro family.")
     (license license:silofl1.1)))
 
+(define-public font-microsoft-cascadia
+  (package
+    (name "font-microsoft-cascadia")
+    (version "2111.01")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://github.com/microsoft/cascadia-code/"
+                    "releases/download/v"
+                    version
+                    "/CascadiaCode-"
+                    version
+                    ".zip"))
+              (sha256
+               (base32
+                "04p72jmbafblrliy5phqi6sqi52wgzpilf3rphppxf7zdlbnizai"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/microsoft/cascadia-code")
+    (synopsis "Monospaced font with programming ligatures")
+    (description
+     "Cascadia is a fun new coding font that comes bundled with Windows
+Terminal, and is now the default font in Visual Studio as well.")
+    (license license:silofl1.1)))
+
 (define-public font-fira-sans
   ;; Fira Sans v4.203 (which corresponds to Fira Mono v3.206) is the final
   ;; version to include UFO sources. It is the same version packaged by other
@@ -1508,7 +1560,7 @@ later hand-tweaked with the gbdfed(1) editor:
   </alias>
 </fontconfig>\n"))))
              #t)))))
-    (home-page "http://www.comicneue.com/")
+    (home-page "https://www.comicneue.com/")
     (synopsis "Font that fixes the shortcomings of Comic Sans")
     (description
      "Comic Neue is a font that attempts to create a respectable casual
@@ -2876,7 +2928,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "0.931")
+    (version "0.932")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2884,7 +2936,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "1dba201p8ch09n5wcr5gx263rd2851v76m6f3xac5m3pd9f4i8fg"))))
+                "12yp3q3hhv847qj7a51cjxxqb2rqm4lvbm54wdr2j4awg3g8lflg"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description

@@ -1102,6 +1102,22 @@ partition."))
        (modify-inputs (package-native-inputs base)
          (append arm-trusted-firmware-rk3399))))))
 
+(define-public u-boot-qemu-arm
+  (make-u-boot-package "qemu_arm" "arm-linux-gnueabihf"
+                       ;; Disable features that require OpenSSL due
+                       ;; to GPL/Openssl license incompatibilities.
+                       ;; See https://bugs.gnu.org/34717 for
+                       ;; details.
+                       #:configs '("# CONFIG_FIT_SIGNATURE is not set")))
+
+(define-public u-boot-qemu-arm64
+  (make-u-boot-package "qemu_arm64" "aarch64-linux-gnu"
+                       ;; Disable features that require OpenSSL due
+                       ;; to GPL/Openssl license incompatibilities.
+                       ;; See https://bugs.gnu.org/34717 for
+                       ;; details.
+                       #:configs '("# CONFIG_FIT_SIGNATURE is not set")))
+
 (define-public u-boot-qemu-riscv64
   (make-u-boot-package "qemu-riscv64" "riscv64-linux-gnu"))
 
@@ -1177,7 +1193,7 @@ Documentation} for more information (for example by running @samp{info
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (setenv "BL31 "(search-input-file inputs "bl31.elf"))))))))
+                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))))))
       (inputs
        (modify-inputs (package-inputs base)
          (append arm-trusted-firmware-rk3328))))))
@@ -1501,7 +1517,7 @@ To flash this bootloader, write it to an SD card, then using the U-Boot serial
 console:
 @example
 mmc dev 0
-load mmc 0:1 ${loadaddr} /u-boot.imx
+load mmc 0:1 ${loadaddr} /boot/u-boot.imx
 sf probe
 sf erase 0 0x80000
 sf write ${loadaddr} 0x400 $filesize

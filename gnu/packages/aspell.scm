@@ -13,6 +13,8 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,7 +76,7 @@
                   (string-append "\"filter-path" middle
                                  "\"" libdir "\"")))
                #t))))))
-    (inputs (list perl))
+    (native-inputs (list perl))
 
     (native-search-paths
      ;; This is a Guix-specific environment variable that takes a single
@@ -160,6 +162,14 @@ dictionaries, including personal ones.")
                      #:sha256
                      (base32
                       "1svls9p7rsfi3hs0afh0cssj006qb4v1ik2yzqgj8hm10c6as2sm")))
+
+(define-public aspell-dict-bg
+  (aspell-dictionary "bg" "Bulgarian"
+                     #:version "4.1-0"
+                     #:prefix "aspell6-"
+                     #:sha256
+                     (base32
+                      "1alacmgpfk0yrgq83y23d16fhav1bxmb98kg8d2a5r9bvh2h0mvl")))
 
 (define-public aspell-dict-bn
   (aspell-dictionary "bn" "Bengali"
@@ -291,7 +301,7 @@ dictionaries, including personal ones.")
                              "aspell6-it-" version ".tar.bz2"))
          (hash (content-hash sha256))))
        (home-page
-        "http://linguistico.sourceforge.net/pages/dizionario_italiano.html"))))
+        "https://linguistico.sourceforge.net/pages/dizionario_italiano.html"))))
 
 (define-public aspell-dict-mi
   (aspell-dictionary "mi" "Maori"

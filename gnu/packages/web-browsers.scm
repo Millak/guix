@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -38,7 +38,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages web-browsers)
-  #:use-module (guix build-system asdf)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -469,7 +468,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.5.2")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
@@ -477,7 +476,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "0279fi4lx8sfxz3mx6ar0wz01kiiqa1zkv9fxc6xw0y4vlacxgx9"))))
+        (base32 "10fpr414nadqba33xgvbpaacc5sn0xnpnnljf5a3n8yh6hjg4pl4"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs))               ; for tests
@@ -493,7 +492,7 @@ interface.")
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
            ;; that it's __init__.py is used first.
            python-pyqtwebengine
-           python-pyqt-without-qtwebkit
+           python-pyqt
            ;; While qtwebengine-5 is provided by python-pyqtwebengine, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
            qtwebengine-5))
@@ -712,7 +711,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.14.2")
+    (version "1.15.2")
     (source
      (origin
        (method url-fetch)
@@ -720,7 +719,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "0r4cwpgnz761dvkfijq0p7pcyzq6f8bnmivijpnpf3bkzpvmxc2i"))
+        (base32 "1xgdarwc8cpwb4rcbasdbc2nn5mcvwl7fz7v70x974wpf5xjmd3k"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -836,7 +835,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9.14")
+    (version "0.9.9.141")
     (source
      (origin
        (method git-fetch)
@@ -845,7 +844,7 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xpqakqg4827wv92vvzwcvkqzr8d523fvnyjvnj4ac83d4w6nnls"))))
+        (base32 "0hx52kaq0q9iccalkxk50q1v3mf9ypardjgv56d5sdrbhfqyashl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf

@@ -4,12 +4,12 @@
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;; Copyright © 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
+;; Copyright © 2019, 2020, 2021, 2023 Julien Lepiller <julien@lepiller.eu>
 ;; Copyright © 2019–2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -25,6 +25,47 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "598f4c509bbfec2b983a8ee246cce0a0fe45ec7f")
+        (title
+         (de "Neues Format @samp{rpm} für den Befehl @command{guix pack}")
+         (en "New @samp{rpm} format for the @command{guix pack} command")
+         (fr "Nouveau format @samp{rpm} pour la commande @command{guix pack}"))
+        (body
+         (de "Sie können jetzt auch RPM-Archive (mit der Dateinamenserweiterung
+.rpm) erzeugen mit dem Befehl @command{guix pack --format=rpm}.  Damit
+haben Sie einen alternativen Distributionsweg für mit Guix erstellte
+Software.  Hier sehen Sie ein einfaches Beispiel, wie Sie ein
+RPM-Archiv für das Paket @code{hello} erzeugen:
+
+@example
+guix pack --format=rpm --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+Siehe @command{info \"(guix.de) Aufruf von guix pack\"} für mehr
+Informationen.")
+         (en "RPM archives (with the .rpm file extension) can now be produced
+via the @command{guix pack --format=rpm} command, providing an alternative
+distribution path for software built with Guix.  Here is a simple example that
+generates an RPM archive for the @code{hello} package:
+
+@example
+guix pack --format=rpm --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+See @command{info \"(guix) Invoking guix pack\"} for more information.")
+         (fr "Vous pouvez désormais produire une archive RPM (avec l'extension
+.rpm) avec la commande @command{guix pack --format=rpm} qui propose
+donc une nouvelle manière de distribuer les logiciels construits avec
+Guix.  Voici un exemple permettant de générer une archive RPM pour le
+paquet @code{hello} :
+
+@example
+guix pack --format=rpm --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+Consultez @command{info \"(guix.fr) Invoquer guix pack\"} pour plus
+d'informations.")))
 
  (entry (commit "137b91f03bbb7f1df71cf10c4f79ae57fbcea400")
         (title

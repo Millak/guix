@@ -39,6 +39,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages compton)
@@ -320,7 +321,8 @@ LXQt and the system it's running on.")
            libqtxdg
            polkit-qt
            qtsvg-5
-           qtx11extras))
+           qtx11extras
+           tzdata))
     (native-inputs
      (list lxqt-build-tools qttools-5))
     (arguments
@@ -328,12 +330,14 @@ LXQt and the system it's running on.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("lxqt-admin-user/CMakeLists.txt"
                             "lxqt-admin-time/CMakeLists.txt")
                (("DESTINATION \"\\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
                 "DESTINATION \"share/polkit-1/actions"))
-             #t)))))
+             (substitute* '("lxqt-admin-time/timeadmindialog.cpp")
+               (("/usr/share/zoneinfo/zone.tab")
+                (search-input-file inputs "share/zoneinfo/zone.tab"))))))))
     (home-page "https://lxqt-project.org")
     (synopsis "LXQt system administration tool")
     (description "lxqt-admin is providing two GUI tools to adjust settings of
@@ -479,14 +483,14 @@ of other programs.")
 (define-public lxqt-panel
   (package
     (name "lxqt-panel")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1m0mm07ydmdlyyi6s4q1cwpxp609kcyc3gcmwbmyf0smadan3yd8"))))
+        (base32 "1604rb4yg1lgivvd76gaqb6dvq8bv8xy5f2vzj46prh0rbvhnf2b"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
@@ -782,14 +786,14 @@ for LXQt.")
 (define-public libfm-qt
   (package
     (name "libfm-qt")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0b423s6bkwijjrh14wca49ypz79sxci9lalxc5s29vwbhync09x0"))))
+        (base32 "00r35gb4x6fnsv6z6digr3661cwykxn32xq23an1n044v38lry6x"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no tests
@@ -813,14 +817,14 @@ components to build desktop file managers which belongs to LXDE.")
 (define-public pcmanfm-qt
   (package
     (name "pcmanfm-qt")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1k44a659mval4513p4yv63hqrbg9jqc8vrinl4mx5aja33pww5yg"))))
+        (base32 "0nz66b9mv6hqaxf5k3ijaf1694za5nv121y6jfq39db3a1qx7rm5"))))
     (build-system cmake-build-system)
     (arguments
      (list

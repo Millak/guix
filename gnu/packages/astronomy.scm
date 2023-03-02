@@ -37,6 +37,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
@@ -44,6 +45,8 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gps)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
@@ -51,6 +54,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)
@@ -70,6 +74,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages wxwidgets)
@@ -346,7 +351,7 @@ wide set of telescopes.")
            python
            python-numpy
            wcslib))
-    (home-page "http://casacore.github.io/casacore/")
+    (home-page "https://casacore.github.io/casacore/")
     (synopsis "Suite of C++ libraries for radio astronomy data processing")
     (description
      "The casacore package contains the core libraries of the old
@@ -650,7 +655,7 @@ programs for the manipulation and analysis of astronomical data.")
     (inputs
      `(("openblas" ,openblas)
        ("fftw" ,fftwf)))
-    (home-page "http://www.astromatic.net/software/sextractor")
+    (home-page "https://www.astromatic.net/software/sextractor")
     (synopsis "Extract catalogs of sources from astronomical images")
     (description
      "SExtractor is a program that builds a catalogue of objects from an
@@ -835,45 +840,66 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public stellarium
   (package
     (name "stellarium")
-    (version "0.21.1")
+    (version "1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/Stellarium/stellarium"
-                           "/releases/download/v" version
-                           "/stellarium-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Stellarium/stellarium")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "049jlc8vx06pad5h2syrmf7f1l346yr5iraai0wkn8s8pk30j8q7"))))
+        (base32 "1655lz848k7m4vqs7n3vxjwn5n4pkykwl6x7nbanqcqzlixm5xnk"))))
     (build-system cmake-build-system)
+    ;; TODO: Complete documentation build and split into dedicated outputs.
+    (arguments
+     (list
+      ;; FIXME: Tests keep failing on 100% when preparing test-suit for INDI.
+      #:tests? #f
+      #:test-target "test"
+      #:configure-flags
+      #~(list "-DENABLE_GPS=1"
+              ;; TODO: Enable when all of the dependencies are availalbe for Qt6.
+              "-DENABLE_QT6=0"
+              ;; TODO: Pack missing in Guix https://10110111.github.io/CalcMySky/
+              "-DENABLE_SHOWMYSKY=0"
+              "-DENABLE_TESTING=0"
+              (string-append "-DCMAKE_CXX_FLAGS=-isystem "
+                             #$(this-package-input "qtserialport") "/include/qt5"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-offscreen-display
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              (setenv "HOME" "/tmp"))))))
     (inputs
-     (list qtbase-5
+     (list gpsd
+           indi
+           libnova
+           openssl
+           qtbase-5
+           qtcharts
            qtlocation
            qtmultimedia-5
+           qtpositioning
            qtscript
            qtserialport
+           qttranslations
+           qtwebengine-5
+           qxlsx
            zlib))
     (native-inputs
-     `(("gettext" ,gettext-minimal)     ; xgettext is used at compile time
-       ("perl" ,perl)                   ; for pod2man
-       ("qtbase" ,qtbase-5)               ; Qt MOC is needed at compile time
-       ("qttools-5" ,qttools-5)))
-    (arguments
-     `(#:test-target "test"
-       #:configure-flags (list "-DENABLE_TESTING=1"
-                               (string-append
-                                "-DCMAKE_CXX_FLAGS=-isystem "
-                                (assoc-ref %build-inputs "qtserialport")
-                                "/include/qt5"))
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'set-offscreen-display
-                    (lambda _
-                      ;; Make Qt render "offscreen", required for tests.
-                      (setenv "QT_QPA_PLATFORM" "offscreen")
-                      (setenv "HOME" "/tmp")
-                      #t)))))
+     (list doxygen
+           gettext-minimal
+           graphviz
+           mesa
+           perl
+           python-wrapper
+           qttools-5))
     (home-page "https://stellarium.org/")
     (synopsis "3D sky viewer")
-    (description "Stellarium is a planetarium.  It shows a realistic sky in
+    (description
+     "Stellarium is a planetarium.  It shows a realistic sky in
 3D, just like what you see with the naked eye, binoculars, or a telescope.  It
 can be used to control telescopes over a serial port for tracking celestial
 objects.")
@@ -1655,6 +1681,54 @@ positions of the sun: dawn, sunrise, solar noon, sunset, dusk, solar
 elevation, solar azimuth, rahukaalam, and the phases of the moon.")
     (license license:asl2.0)))
 
+(define-public python-spherical-geometry
+  (package
+    (name "python-spherical-geometry")
+    (version "1.2.22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spacetelescope/spherical_geometry")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kzcncqir4v7nhk9lxj9gxr32p3krkaqa58y2i4kksgxxy24qw4z"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      ;; NOTE: (Sharlatan-20220523T231348+0100): Tests depends on old Python2
+      ;; libarry `sphere'
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _
+              ;; Fixing: setuptools-scm was unable to detect version for ...
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (format #f "version=~s" #$version))
+                (("setup_requires=\\['setuptools_scm'\\],.*")
+                 ""))
+              ;; Use our own libraries in place of bundles.
+              (setenv "USE_SYSTEM_QD" "1"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm))
+    (inputs
+     (list qd))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/spacetelescope/tweakwcs")
+    (synopsis "Python astronimical package for handling spherical polygons")
+    (description
+     "The @code{spherical_geometry} library is a Python package for handling
+spherical polygons that represent arbitrary regions of the sky.")
+    ;; LICENSE.rst Association of Universities for Research in Astronomy (AURA)
+    ;; QD_LIBRARY_LICENSE.rst for bandeled QD source
+    (license license:bsd-3)))
+
 (define-public libnova
   (package
     (name "libnova")
@@ -1683,7 +1757,7 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
     (synopsis "Celestial mechanics, astrometry and astrodynamics library")
     (description "Libnova is a general purpose, double precision, Celestial
 Mechanics, Astrometry and Astrodynamics library.")
-    (home-page "http://libnova.sourceforge.net/")
+    (home-page "https://libnova.sourceforge.net/")
     (license (list license:lgpl2.0+
                    license:gpl2+)))) ; examples/transforms.c & lntest/*.c
 
@@ -1889,7 +1963,7 @@ on FITS files:
                   (string-append "CPPFLAGS=-I" netpbm "/include/netpbm")
                   ;; no nasa jpl cspice support
                   "--without-cspice" )))))
-    (home-page "http://xplanet.sourceforge.net/")
+    (home-page "https://xplanet.sourceforge.net/")
     (synopsis "Planetary body renderer")
     (description
      "Xplanet renders an image of a planet into an X window or file.

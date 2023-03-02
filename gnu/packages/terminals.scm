@@ -425,7 +425,7 @@ multi-seat support, a replacement for @command{mingetty}, and more.")
     (description
      "Libtermkey handles all the necessary logic to recognise special keys, UTF-8
 combining, and so on, with a simple interface.")
-    (home-page "http://www.leonerd.org.uk/code/libtermkey")
+    (home-page "https://www.leonerd.org.uk/code/libtermkey")
     (license license:expat)))
 
 (define-public mlterm
@@ -457,7 +457,7 @@ combining, and so on, with a simple interface.")
            libx11
            libxext
            libxft))
-    (home-page "http://mlterm.sourceforge.net/")
+    (home-page "https://mlterm.sourceforge.net/")
     (synopsis "Multi-Lingual TERMinal emulator")
     (description
      "mlterm is a multi-lingual terminal emulator.  It supports various complex
@@ -650,7 +650,7 @@ should be thread-safe.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.leonerd.org.uk/code/libvterm/"
+       (uri (string-append "https://www.leonerd.org.uk/code/libvterm/"
                            "libvterm-" version ".tar.gz"))
        (sha256
         (base32 "15y3y23kfpcda7n79ym3gp1abzn8mshxrad8s3gnhls82nfava15"))))
@@ -665,7 +665,7 @@ should be thread-safe.")
          (delete 'configure))))
     (native-inputs
      (list libtool perl))
-    (home-page "http://www.leonerd.org.uk/code/libvterm/")
+    (home-page "https://www.leonerd.org.uk/code/libvterm/")
     (synopsis "VT220/xterm/ECMA-48 terminal emulator library")
     (description "Libvterm is an abstract C99 library which implements a VT220
 or xterm-like terminal emulator.  It doesn't use any particular graphics
@@ -870,6 +870,40 @@ eye-candy, customizable, and reasonably lightweight.")
 display server.  It is designed to be fast, lightweight, and independent of
 desktop environments.  It can be used as a standalone terminal and also has
 a server/client mode.")
+    (license license:expat)))
+
+(define-public havoc
+  (package
+    (name "havoc")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ii8/havoc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "052nfli8x4kvly2iwbk0w3i8gk82bz2p8i0ygkwxhy03m5187lnc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no check target
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'set-CC
+            (lambda _
+              (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs
+     (list pkg-config wayland-protocols))
+    (inputs
+     (list libxkbcommon wayland))
+    (home-page "https://github.com/ii8/havoc")
+    (synopsis "Minimal terminal emulator for Wayland")
+    (description
+     "Havoc is a minimal terminal emulator for Wayland.")
     (license license:expat)))
 
 (define-public sakura
@@ -1509,8 +1543,9 @@ basic input/output.")
                        "-o" (string-append share "/terminfo/")
                        "extra/alacritty.info")
                ;; Install completions.
-               (install-file "extra/completions/alacritty.bash"
-                             (string-append out "/etc/bash_completion.d"))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
+               (copy-file "extra/completions/alacritty.bash"
+                          (string-append out "/etc/bash_completion.d/alacritty"))
                (install-file "extra/completions/_alacritty"
                              (string-append share "/zsh/site-functions"))
                (install-file "extra/completions/alacritty.fish"

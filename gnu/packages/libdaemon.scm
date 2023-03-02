@@ -80,7 +80,7 @@
                      (symlink (which "config.sub") "config.sub")))))
              '())))
     ;; XXX: Stale URL, missing replacement.  See <http://bugs.gnu.org/18639>.
-    (home-page "http://0pointer.de/lennart/projects/libdaemon/")
+    (home-page "https://0pointer.de/lennart/projects/libdaemon/")
 
     (synopsis "Lightweight C library that eases the writing of UNIX daemons")
     (description

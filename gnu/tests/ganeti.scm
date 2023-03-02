@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
   #:use-module (gnu tests)
   #:use-module (gnu system vm)
   #:use-module (gnu services)
+  #:use-module (gnu services base)
   #:use-module (gnu services ganeti)
   #:use-module (gnu services networking)
   #:use-module (gnu services ssh)
@@ -46,24 +48,28 @@
                         %base-file-systems))
     (firmware '())
 
-    ;; The hosts file must contain a nonlocal IP for host-name.
-    ;; In addition, the cluster name must resolve to an IP address that
-    ;; is not currently provisioned.
-    (hosts-file (plain-file "hosts" (format #f "
-127.0.0.1       localhost
-::1             localhost
-10.0.2.15       gnt1.example.com gnt1
-192.168.254.254 ganeti.example.com
-")))
-
     (packages (append (list ganeti-instance-debootstrap ganeti-instance-guix)
                       %base-packages))
+
+    ;; The hosts file must contain a nonlocal IP for host-name.
+    (essential-services
+     (modify-services (operating-system-default-essential-services this-operating-system)
+       (hosts-service-type config => (list
+                                      (host "127.0.0.1" "localhost")
+                                      (host "::1"       "localhost")))))
     (services
      (append (list (service static-networking-service-type
                             (list %qemu-static-networking))
                    (service openssh-service-type
                             (openssh-configuration
                              (permit-root-login 'prohibit-password)))
+
+                   ;; In addition, the cluster name must resolve to an IP address that
+                   ;; is not currently provisioned.
+                   (simple-service 'ganeti-host-entries hosts-service-type
+                                   (list
+                                    (host "10.0.2.15" "gnt1.example.com" '("gnt1"))
+                                    (host "192.168.254.254" "ganeti.example.com")))
 
                    (service ganeti-service-type
                             (ganeti-configuration

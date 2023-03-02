@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -687,6 +687,30 @@ should only be used as part of the Guix cups-pk-helper service.")
     (native-inputs
      (list perl pkg-config))))
 
+;;; TODO: Integrate in base hplip package on core-updates.
+(define-public hplip-next
+  (package
+    (inherit hplip)
+    (name "hplip")
+    (version "3.22.10")
+    (source (origin
+              (inherit (package-source hplip))
+              (uri (string-append "mirror://sourceforge/hplip/hplip/" version
+                                  "/hplip-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09366v0x10l35bkda6s5ysh64qdf24givn2gxlyidr2kdcpkyg2k"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments hplip)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-more-hard-coded-file-names
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* (find-files "." "\\.py$")
+                  (("/etc/hp/hplip.conf")
+                   (string-append (assoc-ref outputs "out")
+                                  "/etc/hp/hplip.conf")))))))))))
+
 (define-public hplip-minimal
   (package/inherit hplip
     (name "hplip-minimal")
@@ -862,7 +886,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
 (define-public epson-inkjet-printer-escpr
   (package
     (name "epson-inkjet-printer-escpr")
-    (version "1.7.22")
+    (version "1.7.24")
     ;; XXX: This currently works.  But it will break as soon as a newer
     ;; version is available since the URLs for older versions are not
     ;; preserved.  An alternative source will be added as soon as
@@ -870,11 +894,11 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/13/96/"
-                           "55/c6fced63098ae1ba104f11f572794fd558ffca29/"
-                           "epson-inkjet-printer-escpr-1.7.22-1lsb3.2.tar.gz"))
+       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/14/31/"
+                           "90/d2f5b28fcfaa0a1d1753eac5703aa5d88004ce06/"
+                           "epson-inkjet-printer-escpr-1.7.24-1lsb3.2.tar.gz"))
        (sha256
-        (base32 "0b359krhhjjw5hc4b0gqdqwrm6dzc263mdccfzgnyyq7znkyybqb"))))
+        (base32 "0bwff3p6d0xgghf3bicylbxkv9vxz3gjjbr0iafyxz23kalzz9qj"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules

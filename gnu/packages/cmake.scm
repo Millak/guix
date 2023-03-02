@@ -330,6 +330,23 @@ and workspaces that can be used in the compiler environment of your choice.")
   (package
     (inherit cmake-minimal)
     (name "cmake")
+    (version "3.25.1")
+    (source (origin
+              (inherit (package-source cmake-minimal))
+              (method url-fetch)
+              (uri (string-append "https://cmake.org/files/v"
+                                  (version-major+minor version)
+                                  "/cmake-" version ".tar.gz"))
+              (snippet (match (origin-snippet (package-source cmake-minimal))
+                         (('begin ('define 'preserved-files ('quote x))
+                                  rest ...)
+                          `(begin (define preserved-files
+                                    ',(cons "Utilities/cmelf" x))
+                                  ,@rest))))
+              (sha256
+               (base32
+                "1n4inb3fvk70sni5gmkljqw3cyllalyg3fnr9rlr7x3aa44isl8w"))
+              (patches (search-patches "cmake-curl-certificates-3.24.patch"))))
     (outputs '("out" "doc"))
     (arguments
      (substitute-keyword-arguments (package-arguments cmake-minimal)

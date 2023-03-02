@@ -52,6 +52,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system meson)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
@@ -547,7 +548,7 @@ OpenSSL for TARGET."
   (package
     (inherit openssl-1.1)
     (name "openssl")
-    (version "1.1.1s")
+    (version "1.1.1t")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -560,12 +561,12 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
               (sha256
                (base32
-                "1amnwis6z2piqs022cpbcg828rql62yjnsqxnvdg0vzfc3kh3b65"))))))
+                "0fwxhlv7ary9nzg5mx07x1jj3wkbizxh56qy7l6bzp5iplj9pvld"))))))
 
 (define-public openssl-3.0
   (package
     (inherit openssl-1.1)
-    (version "3.0.7")
+    (version "3.0.8")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -578,7 +579,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "0virbkcrw7nn3gr5r51z722gs1ppig0casj0c9pnj3i65829s143"))))
+                "0gjb7qjl2jnzs1liz3rrccrddxbk6q3lg8z27jn1xwzx72zx44vc"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl-1.1)
        ((#:phases phases '%standard-phases)

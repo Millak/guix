@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4142,17 +4143,15 @@ the programmer to be mindfulof the space of platform variations.")
 (define-public perl-encode
   (package
     (name "perl-encode")
-    (version "3.10")
+    (version "3.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/D/DA/DANKOGAI/"
                            "Encode-" version ".tar.gz"))
        (sha256
-        (base32 "1a8rwcrxxhq81jcdvdwns05c65jwr5r6bxvby6vdcr3ny5m91my2"))))
+        (base32 "1x9f0naqskv9v7dif480vrzfmn8zhvq9g0w3r164v7pnxr4ghqwi"))))
     (build-system perl-build-system)
-    (propagated-inputs
-     (list perl-exporter perl-storable perl-parent))
     (home-page "https://metacpan.org/dist/Encode")
     (synopsis "Character encodings in Perl")
     (description "Encode module provides the interface between Perl strings and
@@ -6562,7 +6561,7 @@ both positive and negative, in various ways.")
                (base32
                 "03bdcl9pn2bc9b50c50nhnr7m9wafylnb3v21zlch98h9c78x6j0"))))
     (build-system perl-build-system)
-    (home-page "http://search.cpan.org/dist/Math-VecStat")
+    (home-page "https://search.cpan.org/dist/Math-VecStat")
     (synopsis "Basic numeric stats on vectors")
     (description "This package provides some basic statistics on numerical
 vectors.  All the subroutines can take a reference to the vector to be
@@ -10916,7 +10915,7 @@ as exceptions to standard program flow.")
                (base32
                 "0w1k5ffcrpx0fm9jgprrwy0290k6cmy7dyk83s61063migi3r5z9"))))
     (build-system perl-build-system)
-    (home-page "http://perltidy.sourceforge.net/")
+    (home-page "https://perltidy.sourceforge.net/")
     (synopsis "Perl script tidier")
     (description "This package contains a Perl script which indents and
 reformats Perl scripts to make them easier to read.   The formatting can be
@@ -12375,6 +12374,27 @@ regexp patterns in modules.")
     (synopsis "Parse Lisp S-Expressions into Perl data structures")
     (description "Data::SExpression parses Lisp S-Expressions into Perl data
 structures.")
+    (license license:perl-license)))
+
+(define-public perl-growl-gntp
+  (package
+    (name "perl-growl-gntp")
+    (version "0.21")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MA/MATTN/Growl-GNTP-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "0gq8ypam6ifp8f3s2mf5d6sw53m7h3ki1zfahh2p41kl8a77yy98"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build-tiny))
+    (propagated-inputs (list perl-crypt-cbc perl-data-uuid))
+    (home-page "https://metacpan.org/release/Growl-GNTP")
+    (synopsis "Perl implementation of the GNTP Protocol (client part)")
+    (description "Growl::GNTP is a Perl implementation of the client part
+of the  Growl Notification Transport Protocol (GNTP).")
     (license license:perl-license)))
 
 (define-public perl-socket-msghdr

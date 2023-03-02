@@ -19,7 +19,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -68,6 +68,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
@@ -86,6 +87,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages digest)
@@ -147,6 +149,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages text-editors)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages version-control)
@@ -944,7 +947,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.10")
+    (version "7.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -952,7 +955,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0pz8d96imc0q3nh7npr5zf0jkzi94wchvw57spcrgqfac9yrld3q"))
+                "1zgpj1rvf97qv36hg4dja46pbzyixlh2g04wlh7cizcrs16b9mzw"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -997,22 +1000,23 @@ Emacs).")
             (variable "KICAD") ;to find kicad-doc
             (files '("")))
            (search-path-specification
-            (variable "KICAD6_TEMPLATE_DIR")
+            (variable "KICAD7_TEMPLATE_DIR")
             (files '("share/kicad/template")))
            (search-path-specification
-            (variable "KICAD6_SYMBOL_DIR")
+            (variable "KICAD7_SYMBOL_DIR")
             (files '("share/kicad/symbols")))
            (search-path-specification
-            (variable "KICAD6_FOOTPRINT_DIR")
+            (variable "KICAD7_FOOTPRINT_DIR")
             (files '("share/kicad/footprints")))
            (search-path-specification
-            (variable "KICAD6_3DMODEL_DIR")
+            (variable "KICAD7_3DMODEL_DIR")
             (files '("share/kicad/3dmodels")))))
     (native-inputs (list boost
                          desktop-file-utils
                          gettext-minimal
                          pkg-config
                          swig
+                         unixodbc
                          zlib))
     (inputs (list bash-minimal
                   cairo
@@ -1051,7 +1055,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06aw8f1pnh63dscv2bkii0cpr2m5yc4baka3avszsxnv8mqn0hwx"))))
+                "0xsj3fl6gkvyr97gx3nvy4ylcr6sc4byj4hbgcdwl2zx3wm02ifz"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1085,7 +1089,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fwnr8x345jbifk71rhyd4b88c4ijp2rcw3pmivnwfb444hbr1lp"))))
+                "1r87xr1453dpfglkg1m4p5d7kcv9gxls1anwk3vp2yppnwz24ydm"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1114,7 +1118,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rs05n1wjb2w3x7xqkkijbdxyw3fj0fph8znvnsxp9bgwaaipd4h"))))
+                "1akhifnjm8jvqsvscn2rr1wpzrls73bpdc6sk40355r1in2djmry"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1131,7 +1135,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nmvfchp25i4bkx6yf7fz1rwy7w6whj2w7mlp02ag3w5v4f137vz"))))
+                "1qw5xm0wbhv6gqvd8mn0jp4abjbizrkx79r6y8f6911mkzi47r6n"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1148,7 +1152,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08zxh83fbygh1x2jhca8nrp3f9kihf7kmg65qmyp95wvps4p5h8v"))))
+                "02i279269mhq7wjhb1yqk90820ncssxl9n7b20qr2r4fmm7jpvxv"))))
     (synopsis "Official KiCad project and worksheet templates")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
@@ -1765,7 +1769,7 @@ it suitable for security research and analysis.")
      `(("mpi" ,openmpi)))
     (inputs
      (list coreutils-minimal))
-    (home-page "http://asco.sourceforge.net/")
+    (home-page "https://asco.sourceforge.net/")
     (synopsis "SPICE circuit optimizer")
     (description
      "ASCO brings circuit optimization capabilities to existing SPICE simulators using a
@@ -1820,7 +1824,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
      (list bison flex))
     (inputs
      (list libxaw openmpi))
-    (home-page "http://ngspice.sourceforge.net/")
+    (home-page "https://ngspice.sourceforge.net/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
      "Ngspice is a mixed-level/mixed-signal circuit simulator.  It includes
@@ -2351,6 +2355,74 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
     (home-page "https://3mf.io/")
     (license license:bsd-2)))
 
+(define-public python-pyvisa
+  (package
+    (name "python-pyvisa")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PyVISA" version))
+              (sha256
+               (base32
+                "1iprr3h6d4w6v8ksgqpkgg545sai7i8hi5a5an394p26b25h1yl9"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Delete bundled python-prettytable.
+                          (delete-file-recursively "pyvisa/thirdparty")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'use-system-prettytable
+                          (lambda _
+                            (substitute* "pyvisa/shell.py"
+                              (("from .thirdparty import prettytable")
+                               "import prettytable")))))))
+    (native-inputs (list python-pytest-7.1))
+    (propagated-inputs (list python-dataclasses python-prettytable
+                             python-typing-extensions))
+    (home-page "https://pyvisa.readthedocs.io/en/latest/")
+    (synopsis "Python binding for the VISA library")
+    (description "PyVISA is a Python package for support of the
+@acronym{VISA, Virtual Instrument Software Architecture}, in order to control
+measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
+    (license license:expat)))
+
+(define-public python-scikit-rf
+  (package
+    (name "python-scikit-rf")
+    (version "0.24.1")
+    (source (origin
+              (method git-fetch) ;PyPI misses some files required for tests
+              (uri (git-reference
+                    (url "https://github.com/scikit-rf/scikit-rf")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1shp8q8324dkwf448mv9zzi7krx882p122ma4fk015qz91sg4wff"))
+              (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-openpyxl
+                             python-pandas
+                             python-pyqt
+                             python-pyqtgraph
+                             python-qtpy
+                             python-scipy))
+    (native-inputs (list python-coverage
+                         python-flake8
+                         python-nbval
+                         python-networkx
+                         python-pytest-7.1
+                         python-pytest-cov
+                         python-pyvisa))
+    (home-page "https://scikit-rf.org/")
+    (synopsis "Radio frequency and Microwave Engineering Scikit")
+    (description "Scikit-rf, or @code{skrf}, is a Python package for RF and
+Microwave engineering.")
+    (license license:bsd-3)))
+
 (define-public openscad
   (package
     (name "openscad")
@@ -2694,7 +2766,7 @@ operations.")
     (inputs
      (list libx11))
     (arguments `(#:tests? #f))
-    (home-page "http://spacenav.sourceforge.net/")
+    (home-page "https://spacenav.sourceforge.net/")
     (synopsis
      "Library for communicating with spacenavd or 3dxsrv")
     (description
@@ -2767,7 +2839,7 @@ for compression of 3D triangle meshes.  The geometry is compressed to a
 fraction of comparable file formats (3DS, STL, COLLADA...), and the format is
 accessible through a simple API")
       (license license:zlib)
-      (home-page "http://openctm.sourceforge.net/"))))
+      (home-page "https://openctm.sourceforge.net/"))))
 
 (define-public lib3ds
   (package

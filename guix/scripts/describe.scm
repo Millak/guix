@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -154,10 +154,10 @@ within a Git checkout."
          (channel (repository->guix-channel (dirname program))))
     (unless channel
       (report-error (G_ "failed to determine origin~%"))
-      (display-hint (format #f (G_ "Perhaps this
+      (display-hint (G_ "Perhaps this
 @command{guix} command was not obtained with @command{guix pull}?  Its version
 string is ~a.~%")
-                            %guix-version))
+                    %guix-version)
       (exit 1))
 
     (match fmt

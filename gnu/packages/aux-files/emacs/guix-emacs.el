@@ -76,6 +76,13 @@ The files in the list do not have extensions (.el, .elc)."
                    (when (file-directory-p pkg-dir)
                      (package-load-descriptor pkg-dir)))))))))))
 
+;; If emacs built with tree-sitter, read the value of the environment variable
+;; to make tree-sitter grammars available in emacs out-of-the-box.
+(with-eval-after-load 'treesit
+  (when-let ((grammar-path (getenv "TREE_SITTER_GRAMMAR_PATH")))
+    (mapcar (lambda (x) (add-to-list 'treesit-extra-load-path x))
+            (split-string grammar-path ":"))))
+
 (provide 'guix-emacs)
 
 ;;; guix-emacs.el ends here
