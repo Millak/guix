@@ -697,14 +697,14 @@ when defining specifications.")
 (define-public ruby-rspec-given
   (package
     (name "ruby-rspec-given")
-    (version "3.8.0")
+    (version "3.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "rspec-given" version))
        (sha256
         (base32
-         "1783bazja10kbha8hk15khvybsq88siyax02cpkk688604h54nji"))))
+         "0xzzxjjzwrsp84p12sd6ab3jbm9kh7sbnqpxgc9mlfq3s3ll0fdj"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "rs"
@@ -717,8 +717,7 @@ when defining specifications.")
                (("Given::VERSION") (format #f "~s" ,version))
                ;; Fix the error: "cannot load such file -- example_helper"
                (("sh \"rspec")
-                "sh \"rspec -Ilib:examples"))
-             #t))
+                "sh \"rspec -Ilib:examples"))))
          (add-after 'extract-gemspec 'delete-failing-tests
            ;; See: https://github.com/jimweirich/rspec-given/issues/57.
            (lambda _
@@ -728,8 +727,7 @@ when defining specifications.")
                (("\"examples/integration/failing_messages_spec.rb\".freeze, ")
                 ""))
              (delete-file "spec/lib/given/natural_assertion_spec.rb")
-             (delete-file "examples/integration/failing_messages_spec.rb")
-             #t)))))
+             (delete-file "examples/integration/failing_messages_spec.rb"))))))
     (native-inputs
      (list ruby-rspec ruby-minitest))
     (propagated-inputs
