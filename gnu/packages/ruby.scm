@@ -1602,49 +1602,45 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
     (home-page "https://github.com/rubocop/rubocop-rake")
     (license license:expat)))
 
-(define-public ruby-rubocop-rspec
+;;; A minimal variant used to build ruby-rubocop itself.
+(define ruby-rubocop-rspec-minimal
   (package
     (name "ruby-rubocop-rspec")
-    (version "2.2.0")
+    (version "2.19.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/rubocop-hq/rubocop-rspec")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0gdpjpympb6qc77bang759z7z6lckf14ghkx8v6614agxg8l3g5y"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rubocop-hq/rubocop-rspec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0mgjyrzi8r44v3gb8xscdwspirz9kqkaf7zlsjhhlxr0di0rlj2r"))))
     (build-system ruby-build-system)
-    (arguments
-     '(#:test-target "internal_investigation"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _
-             (setenv "HOME" "/tmp")
-             #t)))))
-    (propagated-inputs
-     (list ruby-rubocop ruby-rubocop-ast))
-    (native-inputs
-     (list ruby-rack ruby-rspec ruby-rubocop-performance ruby-simplecov
-           ruby-yard))
+    (arguments (list #:tests? #f))      ;avoid extra dependencies
     (synopsis "Code style checking for RSpec files")
     (description "This package provides a plugin for the RuboCop code style
 enforcing & linting tool.")
     (home-page "https://github.com/rubocop-hq/rubocop-rspec")
     (license license:expat)))
 
-(define-public ruby-rubocop-rspec-minimal
-  (hidden-package
-   (package
-     (inherit ruby-rubocop-rspec)
-     (arguments
-      (substitute-keyword-arguments (package-arguments ruby-rubocop-rspec)
-        ((#:tests? _ #f) #f)))
-     (propagated-inputs '())
-     (native-inputs '()))))
+(define-public ruby-rubocop-rspec
+  (package
+    (inherit ruby-rubocop-rspec-minimal)
+    (arguments '(#:test-target "spec"))
+    (native-inputs
+     (list ruby-bump
+           ruby-rack
+           ruby-rspec
+           ruby-rubocop-performance-minimal
+           ruby-rubocop-rake-minimal
+           ruby-simplecov
+           ruby-yard))
+    (propagated-inputs
+     (list ruby-rubocop
+           ruby-rubocop-ast
+           ruby-rubocop-capybara))))
 
 (define-public ruby-rubocop-performance
   (package
