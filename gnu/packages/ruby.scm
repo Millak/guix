@@ -622,13 +622,13 @@ standard diff-like tool.")
 (define-public ruby-rspec-expectations
   (package
     (name "ruby-rspec-expectations")
-    (version "3.8.2")
+    (version "3.12.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-expectations" version))
               (sha256
                (base32
-                "18l21hy1zdc2pgc2yb17k3n2al1khpfr0z6pijlm852iz6vj0dkm"))))
+                "03ba3lfdsj9zl00v1yvwgcx87lbadf87livlfa5kgqssn9qdnll6"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
