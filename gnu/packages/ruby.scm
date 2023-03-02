@@ -1816,17 +1816,28 @@ Batch and flush behavior.
          "0q42gv7wgrc818a5hm599sy07vjq69hbijzpkpgh6jws6x7wzyh3"))))
     (build-system ruby-build-system)
     (arguments
-     ;; TODO: the tests are currently broken due to using a different Rubocop
-     ;; version.
-     `(#:tests? #f
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'relax-version-requiremens
+         (add-after 'unpack 'set-HOME
            (lambda _
-             (delete-file "Gemfile")
-             (delete-file "Gemfile.lock"))))))
-    (native-inputs (list ruby-gimme ruby-pry ruby-simplecov))
-    (propagated-inputs (list ruby-rubocop ruby-rubocop-performance))
+             ;; Some tests fail otherwise.
+             (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'delete-problematic-tests
+           ;; These tests fail for unknown reasons (see:
+           ;; https://github.com/testdouble/standard/issues/532).
+           (lambda _
+             (for-each
+              delete-file
+              '("test/standard_test.rb"
+                "test/standard/cop/block_single_line_braces_test.rb")))))))
+    (native-inputs
+     (list ruby-gimme
+           ruby-pry
+           ruby-simplecov))
+    (propagated-inputs
+     (list ruby-language-server-protocol
+           ruby-rubocop
+           ruby-rubocop-performance))
     (synopsis "Ruby Style Guide, with linter & automatic code fixer")
     (description "Standard is a port of StandardJS.  Like StandardJS, it aims
 to save time in the following ways:
