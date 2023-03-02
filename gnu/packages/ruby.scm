@@ -4918,6 +4918,41 @@ run as a daemon and to be controlled by simple start/stop/restart commands.")
     (home-page "https://github.com/thuehlinger/daemons")
     (license license:expat)))
 
+(define-public ruby-dalli
+  (package
+    (name "ruby-dalli")
+    (version "3.2.4")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/petergoldstein/dalli")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hhqqv1j3zd2y0vr6maaabsflrvkf1x0i6z8n725mhqydp3f9gwp"))))
+    (build-system ruby-build-system)
+    ;; Disable tests to avoid a dependency cycle with ruby-activesupport,
+    ;; through ruby-ruby-prof.
+    (arguments (list #:tests? #f))
+    (synopsis "High performance memcached client for Ruby")
+    (description "Dalli is a high performance pure Ruby client for accessing
+memcached servers.  Dalli supports:
+
+@itemize
+@item Simple and complex memcached configurations
+@item Fail-over between memcached instances
+@item Fine-grained control of data serialization and compression
+@item Thread-safe operation
+@item SSL/TLS connections to memcached
+@item SASL authentication.
+@end itemize
+
+The name is a variant of Salvador Dali for his famous painting The Persistence
+of Memory.")
+    (home-page "https://github.com/petergoldstein/dalli")
+    (license license:expat)))
+
 (define-public ruby-data_uri
   (package
     (name "ruby-data_uri")
