@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -421,14 +421,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.2.11")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1pwnhjp0fmkcgq11a6hj36gw8k05qramspgdbj28063k2s0dc1rn"))))
+        (base32 "1ahyrc3p9cf7y5zbgzvb9yxa8a480ccis4ksijlajck3z8n1dk24"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
