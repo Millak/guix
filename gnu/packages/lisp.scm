@@ -1428,7 +1428,7 @@ executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
 (define-public eisl
   (package
     (name "eisl")
-    (version "2.65")
+    (version "2.72")
     (source
      (origin
        (method git-fetch)
@@ -1437,7 +1437,7 @@ executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cnis1v70k4wmvw1gmvj3l9qajzncaa9ka8rx67vx12bgrr0811g"))))
+        (base32 "12dc6b70dcfalyq3h5i7lmz39xh310k5p83x5q6j18knd6ql9ik9"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal freeglut gdbm libiconv ncurses tcl tk))
@@ -1455,8 +1455,8 @@ executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
                      (("\"cc ")
                       "\"gcc "))
                    (substitute* "library/tcltk.lsp"
-                     (("c-include \"<tcl/tcl\\.h>\"")
-                      "c-include \"<tcl.h>\"")
+                     (("include <tcl/tcl\\.h>")
+                      "include <tcl.h>")
                      (("c-option \"-ltcl -ltk\" linux")
                       "c-option \"-ltcl8.6 -ltk8.6\" linux"))))
                (delete 'configure)
