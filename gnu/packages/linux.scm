@@ -9642,7 +9642,7 @@ provides user-space tools for creating EROFS file systems.")
 (define-public rasdaemon
   (package
     (name "rasdaemon")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -9651,9 +9651,9 @@ provides user-space tools for creating EROFS file systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a3ycx1g2zyshlna9fg8c9329m8wia42vkmlh2awfab0ngwi3g50"))))
-    (native-inputs (list autoconf automake libtool))
-    (inputs (list perl perl-dbd-sqlite sqlite dmidecode kmod))
+        (base32 "0m3j1hz9rqcvwmrimpakd239s0ppzaplkykhf9wyh55xmmry8z85"))))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list libtraceevent perl perl-dbd-sqlite sqlite dmidecode kmod))
     (arguments
      (list
       #:configure-flags
@@ -9663,6 +9663,10 @@ provides user-space tools for creating EROFS file systems.")
               "--localstatedir=/var")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'rename-README
+            (lambda _
+              ;; Required by autoreconf
+              (rename-file "README.md" "README")))
           (add-before 'configure 'munge-autotools
             (lambda _
               ;; For some reason upstream forces sysconfdir=/etc.  This results
