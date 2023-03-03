@@ -118,23 +118,23 @@ environments.")
                      "-DDOWNLOAD_RUBYRNP=off")
                    #:phases
                    (modify-phases %standard-phases
-                     (add-after 'unpack 'fixes
-                       (lambda* (#:key inputs #:allow-other-keys)
-                         (substitute* "src/tests/support.cpp"
-                           (("\"cp\"") (string-append "\"" (which "cp") "\"")))
-                         #t))
-                     (replace 'check
+                     (add-after 'unpack 'patch-tests
                        (lambda _
-                         ;; Some OpenPGP certificates used by the tests expire.
-                         ;; To work around that, set the time to roughly the
-                         ;; release date.
-                         (invoke "faketime" ,day-of-release "make" "test"))))))
+                         (substitute* "src/tests/support.cpp"
+                           (("\"cp\"") (search-input-file inputs "/bin/cp")))))
+                     (replace 'check
+                       (lambda* (#:key tests? #:allow-other-keys)
+                         (when tests?
+                           ;; Some OpenPGP certificates used by the tests expire.
+                           ;; To work around that, set the time to roughly the
+                           ;; release date.
+                           (invoke "faketime" ,day-of-release "make" "test")))))))
       (native-inputs
-       `(("gnupg" ,gnupg) ; for tests
-         ("googletest" ,googletest)
-         ("libfaketime" ,libfaketime) ; for tests
-         ("pkg-config" ,pkg-config)
-         ("python" ,python)))
+       (list gnupg       ; for tests
+             googletest  ; for tests
+             libfaketime ; for tests
+             pkg-config
+             python))
       (inputs (list botan bzip2 json-c zlib))
       (synopsis
        "RFC4880-compliant OpenPGP library written in C++")
@@ -146,7 +146,7 @@ NetPGP, itself originally written for NetBSD.
 librnp is the library used by rnp for all OpenPGP functions, useful for
 developers to build against.  It is a “real” library, not a wrapper like GPGME
 of GnuPG.")
-      (home-page "https://www.rnpgp.com/")
+      (home-page "https://www.rnpgp.org/")
       (license
        ;; RNP contains code written by Ribose and code derived from netpgp.
        (list
