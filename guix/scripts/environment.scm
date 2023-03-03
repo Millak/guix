@@ -514,6 +514,11 @@ by running 'set' in the shell."
        (catch #t
          (lambda ()
            (load-profile profile manifest #:pure? #t)
+
+           ;; Mark the terminal as "unknown" do avoid ANSI escape codes such
+           ;; as bracketed paste that would mess up the output of the script.
+           (setenv "TERM" "")
+
            (setenv "GUIX_ENVIRONMENT" profile)
            (close-fdes controller)
            (login-tty inferior)
