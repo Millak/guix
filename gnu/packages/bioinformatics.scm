@@ -818,6 +818,32 @@ developers of other R packages who wish to make use of HTSlib.")
 plotnames, filenames and paths.")
       (license license:gpl3))))
 
+(define-public r-readwriter
+  (let ((commit "71454f4aa706f5d2fbe606acd95abc14224e7058")
+        (revision "1"))
+    (package
+      (name "r-readwriter")
+      (version (git-version "0.2.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/ReadWriter")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0sp27smhdva2hi2x0svia2l56k8xrh7p5akn78g5b0lcvz4x3hd7"))))
+      (properties `((upstream-name . "ReadWriter")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-gdata r-gtools r-openxlsx r-readr r-stringendo))
+      (home-page "https://github.com/vertesy/ReadWriter")
+      (synopsis "Functions to read and write files conveniently")
+      (description
+       "ReadWriter is a set of R functions to read and write files
+conveniently.")
+      (license license:gpl3))))
+
 (define-public r-streamgraph
   (let ((commit "76f7173ec89d456ace5943a512e20b1f6810bbcb")
         (revision "1"))
