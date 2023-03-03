@@ -182,7 +182,16 @@ where the OS part is overloaded to denote a specific ABI---into GCC
 
        (arguments
         `(#:out-of-source? #t
-          #:configure-flags ,(configure-flags)
+          #:configure-flags ,(let ((flags (configure-flags))
+                                   (version (package-version this-package)))
+                               ;; GCC 4.9 and 5.0 requires C++11 but GCC
+                               ;; 11.3.0 defaults to C++17, which is partly
+                               ;; incompatible.  Force C++11.
+                               (if (or (version-prefix? "4.9" version)
+                                       (version-prefix? "5" version))
+                                   `(cons "CXX=g++ -std=c++11" ,flags)
+                                   flags))
+
           #:make-flags
           ;; None of the flags below are needed when doing a Canadian cross.
           ;; TODO: Simplify this.
@@ -439,30 +448,36 @@ Go.  It also includes runtime support libraries for these languages.")
     (native-inputs (list perl ;for manpages
                          texinfo))
     (arguments
-     (if (%current-target-system)
-         (package-arguments gcc-4.8)
-         ;; For native builds of GCC 4.9 and GCC 5, the C++ include path needs
-         ;; to be adjusted so it does not interfere with GCC's own build processes.
-         (substitute-keyword-arguments (package-arguments gcc-4.8)
-           ((#:modules modules %gnu-build-system-modules)
-            `((srfi srfi-1)
-              ,@modules))
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((libc (assoc-ref inputs "libc"))
-                         (gcc (assoc-ref inputs  "gcc")))
-                     (setenv "CPLUS_INCLUDE_PATH"
-                             (string-join (fold delete
-                                                (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                              #\:)
-                                                (list (string-append libc "/include")
-                                                      (string-append gcc "/include/c++")))
-                                          ":"))
-                     (format #t
-                             "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                             (getenv "CPLUS_INCLUDE_PATH"))))))))))))
+     ;; Since 'arguments' is a function of the package's version, define
+     ;; 'parent' such that the 'arguments' thunk gets to see the right
+     ;; version.
+     (let ((parent (package
+                     (inherit gcc-4.8)
+                     (version (package-version this-package)))))
+       (if (%current-target-system)
+           (package-arguments parent)
+           ;; For native builds of GCC 4.9 and GCC 5, the C++ include path needs
+           ;; to be adjusted so it does not interfere with GCC's own build processes.
+           (substitute-keyword-arguments (package-arguments parent)
+             ((#:modules modules %gnu-build-system-modules)
+              `((srfi srfi-1)
+                ,@modules))
+             ((#:phases phases)
+              `(modify-phases ,phases
+                 (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((libc (assoc-ref inputs "libc"))
+                           (gcc (assoc-ref inputs  "gcc")))
+                       (setenv "CPLUS_INCLUDE_PATH"
+                               (string-join (fold delete
+                                                  (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                                #\:)
+                                                  (list (string-append libc "/include")
+                                                        (string-append gcc "/include/c++")))
+                                            ":"))
+                       (format #t
+                               "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                               (getenv "CPLUS_INCLUDE_PATH")))))))))))))
 
 (define gcc-canadian-cross-objdump-snippet
   ;; Fix 'libcc1/configure' error when cross-compiling GCC.  Without that,
