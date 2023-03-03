@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,28 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-djherbis-atime
+  (package
+    (name "go-github-com-djherbis-atime")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/djherbis/atime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xsz55zpihd9wyrj6qvm3miqzb6x3mnp5apzs0dx1byndhb8adpq"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/djherbis/atime"))
+    (home-page "https://github.com/djherbis/atime")
+    (synopsis "Access Times for files")
+    (description "Package atime provides a platform-independent way to get
+atimes for files.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
