@@ -8815,6 +8815,31 @@ auROC analysis.")
 visualization and analysis of single-cell data using R.")
       (license license:gpl3+))))
 
+(define-public r-markdownhelpers
+  (let ((commit "793372d28ebed607cc1d35f909a1caedb2b41ffe")
+        (revision "1"))
+    (package
+      (name "r-markdownhelpers")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/MarkdownHelpers")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1d18s2ydhfjm3hjkxz42dirhwrrv792m6mvkmypallaa2qnwrmkg"))))
+      (properties `((upstream-name . "MarkdownHelpers")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-devtools r-stringendo r-usethis))
+      (home-page "https://github.com/vertesy/MarkdownHelpers")
+      (synopsis "Helper functions for MarkdownReports and ggExpress")
+      (description
+       "This package provides a set of R functions to parse markdown and other
+generic helpers.")
+      (license license:gpl3))))
+
 (define-public r-snapatac
   (package
     (name "r-snapatac")
