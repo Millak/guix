@@ -8840,6 +8840,45 @@ visualization and analysis of single-cell data using R.")
 generic helpers.")
       (license license:gpl3))))
 
+(define-public r-markdownreports
+  (let ((commit "3ba1103e3ddc6df3a0c090eb884f5e65c461eb31")
+        (revision "1"))
+    (package
+      (name "r-markdownreports")
+      (version (git-version "4.5.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/MarkdownReports")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xmasdb630b6nvxi5m1i8pyxiy49nxpzyxf9h8spdppx92rhdkc8"))))
+      (properties `((upstream-name . "MarkdownReports")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-clipr
+             r-codeandroll2
+             r-colorramps
+             r-devtools
+             r-gplots
+             r-markdownhelpers
+             r-rcolorbrewer
+             r-readwriter
+             r-sessioninfo
+             r-sm
+             r-stringendo
+             r-venndiagram
+             r-vioplot))
+      (home-page "https://github.com/vertesy/MarkdownReports")
+      (synopsis "Tool for generating cientific figures and reports")
+      (description
+       "This is a set of R functions that allows you to generate precise
+figures.  This tool will create clean markdown reports about what you just
+discovered.")
+      (license license:gpl3))))
+
 (define-public r-snapatac
   (package
     (name "r-snapatac")
