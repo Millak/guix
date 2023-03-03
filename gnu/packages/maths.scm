@@ -1235,14 +1235,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.4")
+    (version "5.4.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "00h97y8njhvfjbdvc0njw0znxbrlfynd1iazn8w3anvzhsvh08rp"))))
+        (base32 "06bly8cpqjdf744jg7yrgba9rdcm3gl4zf63y3c69v80ha8jgz02"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config texlive-tiny))
