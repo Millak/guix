@@ -7425,6 +7425,32 @@ annotation packages each of which has its own schema by taking advantage of
 the fact that each of these packages implements a select methods.")
     (license license:artistic2.0)))
 
+(define-public r-oscope
+  (package
+    (name "r-oscope")
+    (version "1.28.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Oscope" version))
+              (sha256
+               (base32
+                "0454f9yc0jmg3mcq9264wb5v2n8n0kaf801hlvsiy1xa3baj3h29"))))
+    (properties `((upstream-name . "Oscope")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocparallel r-cluster r-ebseq r-testthat))
+    (home-page "https://bioconductor.org/packages/Oscope")
+    (synopsis
+     "Oscillatory genes identifier in unsynchronized single cell RNA-seq")
+    (description
+     "Oscope is a oscillatory genes identifier in unsynchronized single cell
+RNA-seq.  This statistical pipeline has been developed to identify and recover
+the base cycle profiles of oscillating genes in an unsynchronized single cell
+RNA-seq experiment.  The Oscope pipeline includes three modules: a sine model
+module to search for candidate oscillator pairs; a K-medoids clustering module
+to cluster candidate oscillators into groups; and an extended nearest
+insertion module to recover the base cycle order for each oscillator group.")
+    (license license:asl2.0)))
+
 (define-public r-pcaexplorer
   (package
     (name "r-pcaexplorer")
