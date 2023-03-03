@@ -793,6 +793,31 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-stringendo
+  (let ((commit "83b8f2d82a09b33b9e895438bb523a021138be01")
+        (revision "1"))
+    (package
+      (name "r-stringendo")
+      (version (git-version "0.3.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/Stringendo")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ap0nhbyd6xx0yl2vgmwk38p22yrkv4k9hw13r35z4wf343rry6v"))))
+      (properties `((upstream-name . "Stringendo")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-devtools r-usethis))
+      (home-page "https://github.com/vertesy/Stringendo")
+      (synopsis "Stringendo is a string parsing library")
+      (description
+       "This package provides string parsing functionalites for generating
+plotnames, filenames and paths.")
+      (license license:gpl3))))
+
 (define-public r-streamgraph
   (let ((commit "76f7173ec89d456ace5943a512e20b1f6810bbcb")
         (revision "1"))
