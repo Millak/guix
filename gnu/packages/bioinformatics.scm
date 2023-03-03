@@ -8965,6 +8965,30 @@ clustering analysis, differential analysis, motif inference and exploration of
 single cell ATAC-seq sequencing data.")
     (license license:gpl3)))
 
+(define-public r-tictoc
+  (package
+    (name "r-tictoc")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "tictoc" version))
+              (sha256
+               (base32
+                "0ka7zd857xfqb5afn0psn0yzfv2qjb0ddxfyiq6aggbnla5qc3qj"))))
+    (properties `((upstream-name . "tictoc")))
+    (build-system r-build-system)
+    (home-page "https://github.com/jabiru/tictoc")
+    (synopsis
+     "Time R scripts and implementations of stack and list structures")
+    (description
+     "The tictoc package provides the timing functions @code{tic} and
+@code{toc} that can be nested.  It provides an alternative to
+@code{system.time()} with a different syntax similar to that in another
+well-known software package.  @code{tic} and @code{toc} are easy to use, and
+are especially useful when timing several sections in more than a few lines of
+code.")
+    (license license:asl2.0)))
+
 (define-public r-tsis
   (let ((commit "24460298fbe1d26e4da390f6e4f3d4d9d62334dc")
         (revision "1"))
