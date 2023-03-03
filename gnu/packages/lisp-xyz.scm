@@ -1047,7 +1047,11 @@ Features:
              #~(modify-phases %standard-phases
                  (add-after 'create-asdf-configuration 'build-program
                    (lambda* (#:key outputs #:allow-other-keys)
-                     (build-program (string-append #$output:bin "/bin/tripod")
+                     ;; FIXME: Using #$output:bin here prevents cl-tripod and
+                     ;; ecl-tripod from building, but using assoc-ref works.
+                     (build-program (string-append ;; #$output:bin
+                                                   (assoc-ref outputs "bin")
+                                                   "/bin/tripod")
                                     outputs
                                     #:entry-program '((tripod:entry-point))
                                     #:compress? #t))))))
@@ -1071,10 +1075,21 @@ and Gopher website hosting.")
       (license license:bsd-2))))
 
 (define-public cl-tripod
-  (sbcl-package->cl-source-package sbcl-tripod))
+  ;; No "bin" output for the source package.
+  (let ((pkg (sbcl-package->cl-source-package sbcl-tripod)))
+    (package/inherit pkg
+      (outputs '("out")))))
 
 (define-public ecl-tripod
-  (sbcl-package->ecl-package sbcl-tripod))
+  ;; FIXME: Making a standalone binary doesn't work with ECL.
+  (let ((pkg (sbcl-package->ecl-package sbcl-tripod)))
+    (package/inherit pkg
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (delete 'build-program))))))))
 
 (define-public sbcl-trivial-timeout
   (let ((commit "feb869357f40f5e109570fb40abad215fb370c6c")
