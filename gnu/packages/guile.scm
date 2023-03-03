@@ -218,17 +218,21 @@ without requiring the source code to be rewritten.")
         (add-before 'configure 'pre-configure
           (lambda* (#:key inputs #:allow-other-keys)
             ;; Tell (ice-9 popen) the file name of Bash.
+
+            ;; TODO: On the next rebuild cycle, unconditionally use
+            ;; 'search-input-file' instead of 'assoc-ref'.
             (let ((bash (assoc-ref inputs "bash")))
               (substitute* "module/ice-9/popen.scm"
                 ;; If bash is #f allow fallback for user to provide
                 ;; "bash" in PATH.  This happens when cross-building to
                 ;; MinGW for which we do not have Bash yet.
                 (("/bin/sh")
-                 ,@(if (target-mingw?)
-                       '((if bash
-                             (string-append bash "/bin/bash")
-                             "bash"))
-                       '((string-append bash "/bin/bash")))))
+                 ,(cond ((target-mingw?)
+                         "bash")
+                        ((%current-target-system)
+                         '(search-input-file inputs "/bin/bash"))
+                        (else
+                         '(string-append bash "/bin/bash")))))
               #t))))))
 
    (native-search-paths
