@@ -404,7 +404,8 @@ users are allowed."
                 (description "Run the @command{geoclue} location service.
 This service provides a D-Bus interface to allow applications to request
 access to a user's physical location, and optionally to add information to
-online location databases.")))
+online location databases.")
+                (default-value (geoclue-configuration))))
 
 (define-deprecated
   (geoclue-service #:key (geoclue geoclue)
