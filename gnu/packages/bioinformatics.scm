@@ -15939,6 +15939,60 @@ information...  The package can also be used to extract data from @code{.loom}
 files.")
       (license license:expat))))
 
+(define-public r-seurat-utils
+  (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")
+        (revision "1"))
+    (package
+      (name "r-seurat-utils")
+      (version (git-version "1.6.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/Seurat.utils")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1mn64h375mkj6x4ix5493z32gqg96yc507j5jr0lx9g5wk1bf762"))))
+      (properties `((upstream-name . "Seurat.utils")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-codeandroll2
+                               r-cowplot
+                               r-dplyr
+                               r-ggcorrplot
+                               r-ggexpress
+                               r-ggplot2
+                               r-ggpubr
+                               r-ggrepel
+                               r-hgnchelper
+                               r-htmlwidgets
+                               r-markdownhelpers
+                               r-markdownreports
+                               r-matrix
+                               r-matrixstats
+                               r-princurve
+                               r-r-utils
+                               r-readr
+                               r-readwriter
+                               r-reshape2
+                               r-scales
+                               r-seurat
+                               r-soupx
+                               r-sparsematrixstats
+                               r-stringendo
+                               r-stringr
+                               r-tibble
+                               r-tictoc
+                               r-vroom))
+      (home-page "https://github.com/vertesy/Seurat.utils")
+      (synopsis "Collection of utility functions for Seurat")
+      (description
+       "This is a collection of utility functions for Seurat.  These functions
+allow the automation and multiplexing of plotting, 3D plotting, visualization
+of statistics & QC, interaction with the Seurat object.  Some functionalities
+require functions from CodeAndRoll and MarkdownReports libraries.")
+      (license license:gpl3))))
+
 (define-public r-seuratwrappers
   ;; There are no releases or tags.
   (let ((commit "d28512f804d5fe05e6d68900ca9221020d52cf1d")
