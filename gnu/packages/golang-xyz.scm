@@ -23,7 +23,8 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages golang-check))
 
 ;;; Commentary:
 ;;;
@@ -53,6 +54,40 @@
     (synopsis "Access Times for files")
     (description "Package atime provides a platform-independent way to get
 atimes for files.")
+    (license license:expat)))
+
+(define-public go-github-com-matryer-try
+  (package
+    (name "go-github-com-matryer-try")
+    (version "1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matryer/try")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15f0m5ywihivnvwzcw0mh0sg27aky9rkywvxqszxka9q051qvsmy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/matryer/try"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (substitute* (string-append "src/" import-path
+                                          "/try_test.go")
+                (("var value string")
+                 "")
+                (("value, err = SomeFunction\\(\\)")
+                 "_, err = SomeFunction()")))))))
+    (native-inputs
+     (list go-github-com-cheekybits-is))
+    (home-page "https://github.com/matryer/try")
+    (synopsis "Simple idiomatic retry package for Go")
+    (description "This package provides an idiomatic Go retry module.")
     (license license:expat)))
 
 ;;;
