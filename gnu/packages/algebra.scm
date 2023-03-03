@@ -1257,7 +1257,7 @@ xtensor provides:
 (define-public gap
   (package
     (name "gap")
-    (version "4.11.1")
+    (version "4.12.2")
     (source
      (origin
        (method url-fetch)
@@ -1267,14 +1267,13 @@ xtensor provides:
                            version
                            ".tar.gz"))
        (sha256
-        (base32 "01535s81h254zcs84zi95xqmhvvn6fn9qss8761myxc2gpdcadb6"))
+        (base32 "1a47slldnjq6mib69k3g8lqw6nyxdrwdd3gfjhj252mpbrs0h8v7"))
        (modules '((guix build utils) (ice-9 ftw) (srfi srfi-1)))
        (snippet
         '(begin
-           ;; Delete the external gmp and zlib libraries
-           ;; and a subdirectory not needed for our build.
+           ;; Delete bundled external libraries.
            (for-each delete-file-recursively
-                     '("extern" "hpcgap"))
+                     '("extern" "hpcgap/extern"))
            ;; Delete a failing test.
            ;; FIXME: This might be fixed in the next release, see
            ;; https://github.com/gap-system/gap/issues/3292
@@ -1288,47 +1287,69 @@ xtensor provides:
                  (scandir ".")
                  '("." ".."
                    ;; Necessary packages.
-                   "GAPDoc-"
-                   "primgrp-"
-                   "SmallGrp-"   ; artistic2.0
-                   "transgrp"    ; artistic2.0 for data,
-                                 ; gpl2 or gpl3 for code
+                   "gapdoc"
+                   "primgrp"
+                   "smallgrp"   ; artistic2.0
+                   "transgrp"   ; artistic2.0 for data,
+                                ; gpl2 or gpl3 for code
                    ;; Optional packages.
-                   "alnuth-"
-                   "AutoDoc-"
-                   "automata-"
-                   "autpgrp-"
-                   "crime-"
-                   "crisp-"      ; bsd-2
-                   "ctbllib"     ; gpl3+
+                   "4ti2interface"
+                   "alnuth"
+                   "autodoc"
+                   "automata"
+                   "autpgrp"
+                   "cap"
+                   "crime"
+                   "crisp"      ; bsd-2
+                   "ctbllib"    ; gpl3+
                    "datastructures"
-                   "FactInt-"
+                   "examplesforhomalg"
+                   "factint"
                    "fga"
                    "format"
-                   "groupoids-"
+                   "gauss"
+                   "gaussforhomalg"
+                   "generalizedmorphismsforcap"
+                   "gradedmodules"
+                   "gradedringforhomalg"
+                   "groupoids"
                    "guarana"
-                   "idrel-"
-                   "images-"     ; mpl2.0
-                   "IntPic-"
-                   "io-"         ; gpl3+
-                   "irredsol-"   ; bsd-2
-                   "laguna-"
-                   "liering-"
-                   "MapClass-"
-                   "nilmat-"
-                   "NumericalSgps-"
-                   "OpenMath-"
-                   "orb-"        ; gpl3+
-                   "polenta-"
-                   "polycyclic-"
-                   "radiroot-"
-                   "repsn-"
-                   "resclasses-"
+                   "homalg"
+                   "homalgtocas"
+                   "idrel"
+                   "images"     ; mpl2.0
+                   "intpic"
+                   "io"         ; gpl3+
+                   "ioforhomalg"
+                   "irredsol"   ; bsd-2
+                   "laguna"
+                   "liering"
+                   "linearalgebraforcap"
+                   "localizeringforhomalg"
+                   "mapclass"
+                   "matricesforhomalg"
+                   "modulepresentationsforcap"
+                   "modules"
+                   "monoidalcategories"
+                   "nconvex"
+                   "nilmat"
+                   "numericalsgps"
+                   "openmath"
+                   "orb"        ; gpl3+
+                   "polenta"
+                   "polycyclic"
+                   "radiroot"
+                   "recog"      ; gpl3+
+                   "repsn"
+                   "resclasses"
+                   "ringsforhomalg"
+                   "sco"
                    "simpcomp"
-                   "sophus-"
-                   "tomlib-"
-                   "unipot-"
-                   "utils-"))))))))
+                   "sophus"
+                   "tomlib"
+                   "toolsforhomalg"
+                   "unipot"
+                   "utils"))))))))
     (build-system gnu-build-system)
     (inputs
      (list gmp readline zlib))
@@ -1351,41 +1372,10 @@ xtensor provides:
            (lambda _
              (with-directory-excursion "doc"
                (invoke "./make_doc"))))
-         (replace 'install
+         (add-after 'install 'install-packages
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (prog (string-append bin "/gap"))
-                    (prog-real (string-append bin "/.gap-real"))
                     (share (string-append out "/share/gap")))
-               ;; Install only the gap binary; the gac compiler is left
-               ;; for maybe later. "Wrap" it in a shell script that calls
-               ;; the binary with the correct parameter.
-               ;; The make target install-bin is supposed to do that, but
-               ;; is not currently working.
-               (mkdir-p bin)
-               (copy-file "gap" prog-real)
-               (call-with-output-file prog
-                 (lambda (port)
-                   (format port
-                           "#!~a~%exec ~a -l ~a \"$@\"~%"
-                           (which "bash")
-                           prog-real
-                           share)))
-               (chmod prog #o755)
-               ;; Install the headers and library, which are needed by Sage.
-               (invoke "make" "install-headers")
-               (install-file "gen/config.h"
-                             (string-append out "/include/gap"))
-               (invoke "make" "install-libgap")
-               ;; Remove information on the build directory from sysinfo.gap.
-               (substitute* "sysinfo.gap"
-                 (("GAP_BIN_DIR=\".*\"") "GAP_BIN_DIR=\"\"")
-                 (("GAP_LIB_DIR=\".*\"") "GAP_LIB_DIR=\"\"")
-                 (("GAP_CPPFLAGS=\".*\"") "GAP_CPPFLAGS=\"\""))
-               (invoke "make" "install-gaproot")
-               ;; Copy the directory of compiled packages; the make target
-               ;; install-pkg is currently empty.
                (copy-recursively "pkg" (string-append share "/pkg"))))))))
     (home-page "https://www.gap-system.org/")
     (synopsis
