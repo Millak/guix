@@ -3052,6 +3052,30 @@ model fitting and error handling.")
 into a pipeline of data manipulation and visualisation.")
     (license license:gpl3)))
 
+(define-public r-hgnchelper
+  (package
+    (name "r-hgnchelper")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "HGNChelper" version))
+              (sha256
+               (base32
+                "0qwkk5658j4j6w2wgvxkp38cyvscjp93d3zc7gb97vcihqx0ngxa"))))
+    (properties `((upstream-name . "HGNChelper")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/waldronlab/HGNChelper")
+    (synopsis
+     "Identification and correction of invalid gene symbols for human and mouse")
+    (description
+     "This package provides a set of R functions for identifying and
+correcting HGNC human gene symbols.  In addition, you can identify MGI mouse
+gene symbols, which have been converted to date format by Excel, withdrawn, or
+aliased.  It also contains functions for reversibly converting between HGNC
+symbols and valid R names.")
+    (license license:gpl2+)))
+
 (define-public r-hmm
   (package
     (name "r-hmm")
