@@ -719,6 +719,40 @@ suite native in R.")
 for all types of microbial diversity analyses.")
       (license license:expat))))
 
+(define-public r-codeandroll2
+  (let ((commit "d58e258851a5c0b430e8620d34dbeefb597c548f")
+        (revision "1"))
+    (package
+      (name "r-codeandroll2")
+      (version (git-version "2.3.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/CodeAndRoll2")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0sy88mfgw6qqhpnlc5020qzr1jllkcrxfhl2lw42bkl5nb56is71"))))
+      (properties `((upstream-name . "CodeAndRoll2")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-colorramps
+                               r-dplyr
+                               r-gplots
+                               r-gtools
+                               r-plyr
+                               r-rcolorbrewer
+                               r-sessioninfo
+                               r-sm
+                               r-stringendo
+                               r-stringr))
+      (home-page "https://github.com/vertesy/CodeAndRoll2")
+      (synopsis "CodeAndRoll2 for vector, matrix and list manipulations")
+      (description
+       "CodeAndRoll2 is a set of more than 130 productivity functions.
+These functions are used by MarkdownReports, ggExpress, and SeuratUtils.")
+      (license license:gpl3))))
+
 (define-public r-conospanel
   (let ((commit "39e76b201a783b4e92fd615010a735a61746fbb9")
         (revision "1"))
