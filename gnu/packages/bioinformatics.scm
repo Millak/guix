@@ -8304,6 +8304,43 @@ sequence.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:bsd-3)))
 
+(define-public r-ggexpress
+  (let ((commit "82f169385f87af328ff971195c2f64ff3c573a8a")
+        (revision "1"))
+    (package
+      (name "r-ggexpress")
+      (version (git-version "0.6.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/ggExpress")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "122hnw8xv33ngcd4fd7hmf817a06ih1knrxxi0cgklj1fwinm0z4"))))
+      (properties `((upstream-name . "ggExpress")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-cowplot
+                               r-ggplot2
+                               r-ggpubr
+                               r-markdownhelpers
+                               r-markdownreports
+                               r-rcolorbrewer
+                               r-sessioninfo
+                               r-seurat
+                               r-sm
+                               r-stringendo
+                               r-tidyverse))
+      (home-page "https://github.com/vertesy/ggExpress")
+      (synopsis
+       "This is a fast tool to create, annotate and export plots in R")
+      (description
+       "This package is a set of R functions for generating precise figures.
+This tool helps you to create clean markdown reports about what you just
+discovered with your analysis script.")
+      (license license:gpl3))))
+
 (define-public r-gg3d
   (let ((commit "ffdd837d30c1671cd0895db94bdd7b1594dbfcb0")
         (revision "1"))
