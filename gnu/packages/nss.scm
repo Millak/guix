@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016-2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -115,10 +115,9 @@ in the Mozilla clients.")
 (define-public nss
   (package
     (name "nss")
-    (replacement nss/fixed)
     ;; Also update and test the nss-certs package, which duplicates version and
     ;; source to avoid a top-level variable reference & module cycle.
-    (version "3.82")
+    (version "3.88.1")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -129,7 +128,7 @@ in the Mozilla clients.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "0wqmgibacxf5i3jlm8jl50qasv2spwx07ixlscz9byf2f8xnggrj"))
+                "15il9fsmixa1r4446zq1wl627sg0hz9h67w6kjxz273xz3nl7li7"))
               ;; Create nss.pc and nss-config.
               (patches (search-patches "nss-3.56-pkgconfig.patch"
                                        "nss-getcwd-nonnull.patch"
@@ -218,7 +217,7 @@ in the Mozilla clients.")
     (inputs
      (list sqlite zlib))
     (propagated-inputs
-     (list nspr))                       ;required by nss.pc.
+     (list nspr-next))                            ;required by nss.pc.
     (native-inputs
      (list perl libfaketime))           ;for tests
 
@@ -236,24 +235,3 @@ PKCS #5, PKCS #7, PKCS #11, PKCS #12, S/MIME, X.509 v3 certificates, and other
 security standards.")
     (license license:mpl2.0)))
 
-(define-public nss-next
-  (package
-    (inherit nss)
-    (version "3.88.1")
-    (source (origin
-              (inherit (package-source nss))
-              (uri (let ((version-with-underscores
-                          (string-join (string-split version #\.) "_")))
-                     (string-append
-                      "https://ftp.mozilla.org/pub/mozilla.org/security/nss/"
-                      "releases/NSS_" version-with-underscores "_RTM/src/"
-                      "nss-" version ".tar.gz")))
-              (sha256
-               (base32
-                "15il9fsmixa1r4446zq1wl627sg0hz9h67w6kjxz273xz3nl7li7"))))
-    (propagated-inputs (list nspr-next)))) ;required by nss.pc
-
-(define nss/fixed
-  (package
-    (inherit nss-next)
-    (version "3.88")))                  ; slight inaccuracy to allow grafting

@@ -736,7 +736,7 @@ variable defined below.  It requires guile-json to be installed."
            hunspell
            libnotify
            nspr-next
-           nss-next
+           nss
            shared-mime-info
            sqlite
            eudev
@@ -1533,7 +1533,7 @@ ca495991b7852b855"))
            libxt
            mesa
            mit-krb5
-           nss-next
+           nss
            pango
            pixman
            pulseaudio
