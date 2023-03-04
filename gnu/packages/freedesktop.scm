@@ -2060,7 +2060,8 @@ share connections to real-time communication services without conflicting.")
         #~(list (string-append "--prefix=" #$output)
                 "--disable-avahi-tests"
                 "--without-ca-certificates"
-                "--disable-Werror")))
+                "--disable-Werror"
+                "--enable-olpc")))
       (native-inputs
        (list autoconf
              automake
