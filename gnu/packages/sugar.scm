@@ -359,6 +359,48 @@ the Sugar Toolkit.")
     (license license:lgpl2.1+)))
 
 
+(define-public sugar-block-party-activity
+  (let ((commit "a49e68ec00e647af712d8e284622722f2f78b6bf")
+        (revision "1"))
+    (package
+      (name "sugar-block-party-activity")
+      (version (git-version "11" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/block-party-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0hy82c0gn1hr34arhnh9k6mx2789ki85fkgvga4sw6gwh31278pl"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      (propagated-inputs
+       (list gtk+
+             gstreamer
+             gst-plugins-base
+             sugar-toolkit-gtk3))
+      (home-page "https://github.com/sugarlabs/block-party-activity")
+      (synopsis "Tetris-like game for Sugar desktop environment")
+      (description "Block Party is an activity for the Sugar desktop providing
+a Tetris-like game.")
+      (license license:expat))))
+
 (define-public sugar-browse-activity
   (package
     (name "sugar-browse-activity")
