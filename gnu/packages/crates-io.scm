@@ -6240,6 +6240,32 @@ portable \"best effort\" constant-time operation and embedded-friendly
     (description "This library provides for encoding and decoding any base.")
     (license license:expat)))
 
+(define-public rust-basic-toml-0.1
+  (package
+    (name "rust-basic-toml")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "basic-toml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d2h378373x0i8j4mi4sfaq8np9hf5xqr2rh9pa7r5irfxk9p09f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/dtolnay/basic-toml")
+    (synopsis "Minimal TOML library with few dependencies")
+    (description "This package provides minimal TOML library with few
+dependencies.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bat-0.18
   (package
     (name "bat")
