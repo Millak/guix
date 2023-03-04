@@ -506,6 +506,69 @@ audio and video files including online streams.  It also supports playlists
 like @file{.m3u} and @file{.pls}.")
       (license license:gpl2+))))
 
+(define-public sugar-log-activity
+  (let ((commit "0c45118958be14a1844456703f0b392de250bc88")
+        (revision "1"))
+    (package
+      (name "sugar-log-activity")
+      (version (git-version "42" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/log-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pacd677gfhyym153x5grwimk8wgm4c9k0a463pq6fdrhm1g5wpc"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-locations
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "logcollect.py"
+                  (("'/sbin/ifconfig'")
+                   (string-append "'" (search-input-file inputs "/bin/ifconfig") "'"))
+                  (("'/sbin/route")
+                   (string-append "'" (search-input-file inputs "/bin/route")))
+                  (("'/bin/df")
+                   (string-append "'" (search-input-file inputs "/bin/df")))
+                  (("'/bin/ps")
+                   (string-append "'" (search-input-file inputs "/bin/ps")))
+                  (("'/usr/bin/free")
+                   (string-append "'" (search-input-file inputs "/bin/free")))
+                  (("'/usr/bin/top")
+                   (string-append "'" (search-input-file inputs "/bin/top")))
+                  (("'/usr/share/sugar/activities")
+                   "'/run/current-system/profile/share/sugar/activities"))))
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             sugar-toolkit-gtk3))
+      (inputs
+       (list coreutils net-tools procps))
+      (native-inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/log.html")
+      (synopsis "Log activity for the Sugar learning environment")
+      (description "Log is part of the Sugar desktop.  Log is used when
+looking for why an activity or Sugar is not working properly.")
+      (license license:gpl2+))))
+
 (define-public sugar-read-activity
   (let ((commit "25f69e41a4fa69d93c73c0c9367b4777a014b1cd")
         (revision "1"))
