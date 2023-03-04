@@ -415,19 +415,20 @@ target that libc."
       (inherit mig)
       (name (string-append "mig-cross"))
       (arguments
-       (list #:modules '((guix build gnu-build-system)
-                         (guix build utils)
-                         (srfi srfi-26))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-before 'configure 'set-cross-headers-path
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let* ((mach #+(this-package-input xgnumach-headers-name))
-                            (cpath (string-append mach "/include")))
-                       (for-each (cut setenv <> cpath)
-                                 '#$%gcc-cross-include-paths)))))
-             #:configure-flags #~(list #$(string-append "--target=" target))
-             #:tests? #f))
+       (substitute-keyword-arguments (package-arguments mig)
+         ((#:configure-flags flags #~'())
+          #~(list #$(string-append "--target=" target)))
+         ((#:tests? _ #f)
+          #f)
+         ((#:phases phases #~%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'configure 'set-cross-headers-path
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let* ((mach #+(this-package-input xgnumach-headers-name))
+                         (cpath (string-append mach "/include")))
+                    (for-each (lambda (variable)
+                                (setenv variable cpath))
+                              '#$%gcc-cross-include-paths))))))))
       (propagated-inputs (list xgnumach-headers))
       (native-inputs
        (modify-inputs (package-native-inputs mig)

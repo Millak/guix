@@ -130,10 +130,11 @@ GNU/Hurd."
            #~(modify-phases %standard-phases
                (add-after 'install 'avoid-perl-dependency
                  (lambda* (#:key build inputs outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out")))
-                     ;; By default 'mig' uses Perl to compute
-                     ;; 'libexecdir_rel'.  Avoid it.
-                     (substitute* (string-append out "/bin/mig")
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin")))
+                     ;; By default 'mig' (or 'TARGET-mig') uses Perl to
+                     ;; compute 'libexecdir_rel'.  Avoid it.
+                     (substitute* (find-files bin "mig$")
                        (("^libexecdir_rel=.*")
                         "libexecdir_rel=../libexec\n"))))))))
     (home-page "https://www.gnu.org/software/hurd/microkernel/mach/mig/gnu_mig.html")
