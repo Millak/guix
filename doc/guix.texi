@@ -18971,23 +18971,18 @@ will fail if @var{device} does not exist.
 Type of the service that installs a configuration file for the
 @uref{http://linux-pam.org/Linux-PAM-html/sag-pam_limits.html,
 @code{pam_limits} module}.  The value for this service type is
-a file-like object containing a list of @code{pam-limits-entry} values
-which can be used to specify @code{ulimit} limits and @code{nice}
-priority limits to user sessions.
+a list of @code{pam-limits-entry} values, which can be used to specify
+@code{ulimit} limits and @code{nice} priority limits to user sessions.
+By default, the value is the empty list.
 
 The following limits definition sets two hard and soft limits for all
 login sessions of users in the @code{realtime} group:
 
 @lisp
-(service
-  pam-limits-service-type
-  (plain-file
-    "limits.conf"
-    (string-join
-      (map pam-limits-entry->string
-        (list (pam-limits-entry "@@realtime" 'both 'rtprio 99)
-              (pam-limits-entry "@@realtime" 'both 'memlock 'unlimited)))
-      "\n")))
+(service pam-limits-service-type
+         (list
+          (pam-limits-entry "@@realtime" 'both 'rtprio 99)
+          (pam-limits-entry "@@realtime" 'both 'memlock 'unlimited)))
 @end lisp
 
 The first entry increases the maximum realtime priority for
@@ -18999,11 +18994,9 @@ Another useful example is raising the maximum number of open file
 descriptors that can be used:
 
 @lisp
-(service
-  pam-limits-service-type
-  (plain-file
-    "limits.conf"
-    (pam-limits-entry->string (pam-limits-entry "*" 'both 'nofile 100000))))
+(service pam-limits-service-type
+         (list
+          (pam-limits-entry "*" 'both 'nofile 100000)))
 @end lisp
 
 In the above example, the asterisk means the limit should apply to any
