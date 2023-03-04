@@ -506,6 +506,55 @@ audio and video files including online streams.  It also supports playlists
 like @file{.m3u} and @file{.pls}.")
       (license license:gpl2+))))
 
+(define-public sugar-read-activity
+  (let ((commit "25f69e41a4fa69d93c73c0c9367b4777a014b1cd")
+        (revision "1"))
+    (package
+      (name "sugar-read-activity")
+      (version (git-version "123" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/read-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "03piap3r6j58s38cza55bm16g5icrmnhl0s6kpy5hj46vaa5x4fh"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list evince
+             gtk+
+             sugar-toolkit-gtk3
+             webkitgtk-with-libsoup2))
+      (inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/read.html")
+      (synopsis "Read PDF and TXT files in the Sugar learning environment")
+      (description "The Read activity allows the laptop to act as a book
+reader.  It has a simple interface, and will view many kinds of text and
+image-based book-like materials.  It will have particular strengths in
+handheld mode, with extremely low power consumption and simple navigation
+controls.")
+      (license license:gpl2+))))
+
 (define-public sugar-terminal-activity
   (let ((commit "a1f92b9da6121bc9a6fbba2c3f3b885dd26d4617")
         (revision "1"))
