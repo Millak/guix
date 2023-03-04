@@ -1842,6 +1842,86 @@ modems and setup connections with them.")
      '((upstream-name . "ModemManager")))
     (license license:gpl2+)))
 
+(define-public telepathy-gabble
+  ;; telepathy-gabble bundles wocky, an unreleased library.  The latest commit
+  ;; includes a more recent version.
+  (let ((commit "f1c762df6328916b811a834047fedac8529cf157")
+        (revision "1"))
+    (package
+      (name "telepathy-gabble")
+      (version (git-version "0.18.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/TelepathyIM/telepathy-gabble/")
+               (commit commit)
+               (recursive? #true)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "00ss14hf1qwb42648cldghmfjfn1nkjvpy508b7vaz322fj37qa4"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; Parallel tests freeze.
+        #:parallel-tests? #false
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'delete-autogen
+             (lambda _ (delete-file "autogen.sh")))
+           (add-before 'configure 'configure-wocky
+             (lambda* (#:key configure-flags #:allow-other-keys)
+               (with-directory-excursion "lib/ext/wocky"
+                 (invoke "gtkdocize")
+                 (invoke "bash" "autoreconf" "-vif")
+                 (substitute* "configure"
+                   (("/bin/sh") (which "sh")))
+                 (apply invoke "bash" "configure" configure-flags)))))
+        #:configure-flags
+        #~(list (string-append "--prefix=" #$output)
+                "--disable-avahi-tests"
+                "--disable-dependency-tracking"
+                "--disable-Werror"
+                "--without-ca-certificates")))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             `(,glib "bin")             ;for glib-compile-schemas, etc.
+             gtk-doc
+             pkg-config))
+      (inputs
+       (list dbus
+             glib
+             gnutls
+             gobject-introspection
+             libnice
+             libsoup-minimal-2
+             libxslt
+             python))
+      (propagated-inputs
+       (list telepathy-glib))
+      (home-page "https://telepathy.freedesktop.org/components/telepathy-gabble/")
+      (synopsis "XMPP connection manager for Telepathy")
+      (description
+       "Gabble is a Jabber/XMPP connection manager for the Telepathy
+framework, currently supporting:
+
+@itemize
+@item single-user chats
+@item multi-user chats
+@item voice/video calling
+@item file transfer
+@end itemize
+
+with Jabber/XMPP interoperability.
+
+Telepathy is a D-Bus framework for unifying real time communication, including
+instant messaging, voice calls and video calls.  It abstracts differences
+between protocols to provide a unified interface for applications.")
+      (license license:lgpl2.1))))
+
 (define-public telepathy-logger
   (package
     (name "telepathy-logger")
