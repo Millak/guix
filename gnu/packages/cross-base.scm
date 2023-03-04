@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2018, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
@@ -38,6 +38,7 @@
   #:use-module (guix i18n)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
@@ -398,39 +399,39 @@ target that libc."
                        ("cross-binutils" ,xbinutils)
                        ,@(package-native-inputs linux-headers)))))
 
+  (define xgnumach-headers-name
+    (string-append (package-name gnumach-headers) "-cross-" target))
+
   (define xgnumach-headers
     (package
       (inherit gnumach-headers)
-      (name (string-append (package-name gnumach-headers)
-                           "-cross-" target))
-
-      (native-inputs `(("cross-gcc" ,xgcc)
-                       ("cross-binutils" ,xbinutils)
-                       ,@(package-native-inputs gnumach-headers)))))
+      (name xgnumach-headers-name)
+      (native-inputs
+       (modify-inputs (package-native-inputs gnumach-headers)
+         (prepend xgcc xbinutils)))))
 
   (define xmig
     (package
       (inherit mig)
       (name (string-append "mig-cross"))
       (arguments
-       `(#:modules ((guix build gnu-build-system)
-                    (guix build utils)
-                    (srfi srfi-26))
-         #:phases (modify-phases %standard-phases
-                    (add-before 'configure 'set-cross-headers-path
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        (let* ((mach (assoc-ref inputs "cross-gnumach-headers"))
-                               (cpath (string-append mach "/include")))
-                          (for-each (cut setenv <> cpath)
-                                    ',%gcc-cross-include-paths)
-                          #t))))
-         #:configure-flags (list ,(string-append "--target=" target))
-         #:tests? #f))
-
-      (propagated-inputs `(("cross-gnumach-headers" ,xgnumach-headers)))
-      (native-inputs `(("cross-gcc" ,xgcc)
-                       ("cross-binutils" ,xbinutils)
-                       ,@(package-native-inputs mig)))))
+       (list #:modules '((guix build gnu-build-system)
+                         (guix build utils)
+                         (srfi srfi-26))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'set-cross-headers-path
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let* ((mach #+(this-package-input xgnumach-headers-name))
+                            (cpath (string-append mach "/include")))
+                       (for-each (cut setenv <> cpath)
+                                 '#$%gcc-cross-include-paths)))))
+             #:configure-flags #~(list #$(string-append "--target=" target))
+             #:tests? #f))
+      (propagated-inputs (list xgnumach-headers))
+      (native-inputs
+       (modify-inputs (package-native-inputs mig)
+         (prepend xgcc xbinutils)))))
 
   (define xhurd-headers
     (package
