@@ -506,6 +506,51 @@ audio and video files including online streams.  It also supports playlists
 like @file{.m3u} and @file{.pls}.")
       (license license:gpl2+))))
 
+(define-public sugar-terminal-activity
+  (let ((commit "a1f92b9da6121bc9a6fbba2c3f3b885dd26d4617")
+        (revision "1"))
+    (package
+      (name "sugar-terminal-activity")
+      (version (git-version "47" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/terminal-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11p7rrnlaw374h3qravhp915vdblvn07i2mnrzn7mhapkwvkg4h5"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             vte
+             sugar-toolkit-gtk3))
+      (inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/terminal.html")
+      (synopsis "Terminal activity for the Sugar learning environment")
+      (description "Terminal is a full-screen text mode program that provides
+a Command-Line Interface (CLI) to the system.")
+      (license (list license:gpl2+ license:gpl3+)))))
+
 (define-public sugar-typing-turtle-activity
   (package
     (name "sugar-typing-turtle-activity")
