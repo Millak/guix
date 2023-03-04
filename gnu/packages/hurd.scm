@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -125,16 +125,16 @@ GNU/Hurd."
     (inputs (list gnumach-headers flex perl))
     (native-inputs
      (list flex bison))
-    (arguments `(#:tests? #f
-                 #:phases
-                 (modify-phases %standard-phases
-                   (add-after 'install 'patch-non-shebang-references
-                     (lambda* (#:key build inputs outputs #:allow-other-keys)
-                       (let ((perl (assoc-ref inputs "perl"))
-                             (out  (assoc-ref outputs "out")))
-                         (substitute* (string-append out "/bin/mig")
-                           (("perl ") (string-append perl "/bin/perl ")))
-                         #t))))))
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'patch-non-shebang-references
+                 (lambda* (#:key build inputs outputs #:allow-other-keys)
+                   (let ((perl (assoc-ref inputs "perl"))
+                         (out  (assoc-ref outputs "out")))
+                     (substitute* (string-append out "/bin/mig")
+                       (("perl ") (string-append perl "/bin/perl ")))))))))
     (home-page "https://www.gnu.org/software/hurd/microkernel/mach/mig/gnu_mig.html")
     (synopsis "Mach 3.0 interface generator for the Hurd")
     (description
