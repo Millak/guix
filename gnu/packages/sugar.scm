@@ -28,12 +28,14 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages time)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
@@ -87,6 +89,12 @@
                  (string-append "'" (search-input-file inputs "/bin/metacity") "'"))
                 (("'metacity-message")
                  (string-append "'" (search-input-file inputs "/bin/metacity-message"))))
+              (substitute* "src/jarabe/intro/window.py"
+                (("ssh-keygen")
+                 (search-input-file inputs "/bin/ssh-keygen")))
+              (substitute* "src/jarabe/journal/model.py"
+                (("xdg-user-dir")
+                 (search-input-file inputs "/bin/xdg-user-dir")))
               (substitute* "extensions/cpsection/datetime/model.py"
                 (("/usr/share/zoneinfo/zone.tab")
                  (search-input-file inputs "/share/zoneinfo/zone.tab")))
@@ -103,6 +111,14 @@
                              "src/jarabe/model/brightness.py")
                 (("spawn_command_line_sync\\(cmd\\)")
                  "spawn_command_line_sync(cmd, 0)"))
+              (substitute* "extensions/cpsection/aboutcomputer/model.py"
+                (("ethtool")
+                 (search-input-file inputs "/sbin/ethtool")))
+              (substitute* "extensions/cpsection/language/model.py"
+                (("'locale'")
+                 (string-append "'"
+                                (search-input-file inputs "/bin/locale")
+                                "'")))
               ;; XXX: The brightness component crashes, so we disable it here.
               (substitute* "src/jarabe/main.py"
                 (("brightness.get_instance\\(\\)") ""))
@@ -127,12 +143,15 @@
                (find-files (string-append #$output "/bin") "^sugar.*")))))))
     (inputs
      (list bash-minimal
+           ethtool
            gtk+
            metacity
            mobile-broadband-provider-info
+           openssh                      ;for ssh-keygen
            python
            sugar-toolkit-gtk3
-           tzdata))
+           tzdata
+           xdg-user-dirs))
     ;; Some packages are propagated so that they can be used with gobject
     ;; introspection at runtime; others are propagated for their dbus
     ;; services.
