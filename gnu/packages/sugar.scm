@@ -148,9 +148,11 @@
            python-gwebsockets
            sugar-artwork                ;for cursor theme
            sugar-datastore              ;for org.laptop.sugar.DataStore
+           telepathy-gabble             ;for link-local XMPP
            telepathy-glib
            ;; This is for org.freedesktop.Telepathy.AccountManager at runtime
            telepathy-mission-control
+           telepathy-salut              ;for XMPP neighborhood
            ;; This is for the UPowerGlib namespace
            upower
            webkitgtk-with-libsoup2))
