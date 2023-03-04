@@ -119,7 +119,7 @@ little-endian (such as Intel and DEC/Compaq Alpha) processor systems as well
 as big-endian processor systems such as Motorola 68k, Power PC, MIPS and
 SPARC.  Hopefully the design of the library will also make it easy to extend
 for reading and writing new sound file formats.")
-    (license l:gpl2+)))
+    (license l:lgpl2.1+)))
 
 (define-public libsamplerate
   (package
