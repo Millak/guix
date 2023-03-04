@@ -246,7 +246,7 @@
             kmscon-service-type
 
             pam-limits-service-type
-            pam-limits-service
+            pam-limits-service  ; deprecated
 
             greetd-service-type
             greetd-configuration
@@ -1616,9 +1616,11 @@ information on the configuration file syntax."
      (description
       "Install the specified resource usage limits by populating
 @file{/etc/security/limits.conf} and using the @code{pam_limits}
-authentication module."))))
+authentication module.")
+     (default-value (plain-file "limits.conf" "")))))
 
-(define* (pam-limits-service #:optional (limits '()))
+(define-deprecated (pam-limits-service #:optional (limits '()))
+  pam-limits-service-type
   "Return a service that makes selected programs respect the list of
 pam-limits-entry specified in LIMITS via pam_limits.so."
   (service pam-limits-service-type

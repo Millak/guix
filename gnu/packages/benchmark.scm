@@ -458,7 +458,7 @@ test any system or protocol.
 
 Note: Locust will complain if the available open file descriptors limit for
 the user is too low.  To raise such limit on a Guix System, refer to
-@samp{info guix --index-search=pam-limits-service}.")
+@samp{info guix --index-search=pam-limits-service-type}.")
     (license license:expat)))
 
 (define-public interbench
