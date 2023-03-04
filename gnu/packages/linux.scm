@@ -3229,7 +3229,7 @@ configuration (iptunnel, ipmaddr).")
 Linux-based operating systems.")
 
     ;; License is BSD-3 or GPLv2, at the user's choice.
-    (license license:gpl2)))
+    (license (list license:bsd-3 license:gpl2))))
 
 (define-public bridge-utils
   (package
