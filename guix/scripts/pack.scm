@@ -72,6 +72,14 @@
             %formats
             guix-pack))
 
+;;; Commentary:
+
+;;; This module implements the 'guix pack' command and the various supported
+;;; formats.  Where feasible, the builders of the packs should be implemented
+;;; as single derivations to minimize storage requirements.
+
+;;; Code:
+
 ;; This one is only for use in this module, so don't put it in %compressors.
 (define bootstrap-xz
   (compressor "bootstrap-xz" ".xz"
@@ -197,153 +205,18 @@ target the profile's @file{bin/env} file:
   "Configure the environment to use the \"en_US.utf8\" locale provided by the
 GLIBC-UT8-LOCALES package."
   ;; Arrange to not depend on 'glibc-utf8-locales' when using '--bootstrap'.
-  (and (or (not (profile? profile))
-           (profile-locales? profile))
-       #~(begin
-           (setenv "GUIX_LOCPATH"
-                   #+(file-append glibc-utf8-locales "/lib/locale"))
-           (setlocale LC_ALL "en_US.utf8"))))
-
-(define* (populate-profile-root profile
-                                #:key (profile-name "guix-profile")
-                                target
-                                localstatedir?
-                                deduplicate?
-                                (symlinks '()))
-  "Populate the root profile directory with SYMLINKS and a Guix database, when
-LOCALSTATEDIR? is set.  When DEDUPLICATE? is true, deduplicate the store
-items, which relies on hard links."
-  (define database
-    (and localstatedir?
-         (file-append (store-database (list profile))
-                      "/db/db.sqlite")))
-
-  (define bootstrap?
-    ;; Whether a '--bootstrap' environment is needed, for testing purposes.
-    ;; XXX: Infer that from available info.
-    (and (not database) (not (profile-locales? profile))))
-
-  (define (import-module? module)
-    ;; Since we don't use deduplication support in 'populate-store', don't
-    ;; import (guix store deduplication) and its dependencies, which includes
-    ;; Guile-Gcrypt, unless DEDUPLICATE? is #t.  This makes it possible to run
-    ;; tests with '--bootstrap'.
-    (and (not-config? module)
-         (or deduplicate? (not (equal? '(guix store deduplication) module)))))
-
-  (computed-file "profile-directory"
-    (with-imported-modules (source-module-closure
-                            `((guix build pack)
-                              (guix build store-copy)
-                              (guix build utils)
-                              (guix build union)
-                              (gnu build install))
-                            #:select? import-module?)
+  (if (or (not (profile? profile))
+          (profile-locales? profile))
       #~(begin
-          (use-modules (guix build pack)
-                       (guix build store-copy)
-                       (guix build utils)
-                       ((guix build union) #:select (relative-file-name))
-                       (gnu build install)
-                       (srfi srfi-1)
-                       (srfi srfi-26)
-                       (ice-9 match))
-
-          (define symlink->directives
-            ;; Return "populate directives" to make the given symlink and its
-            ;; parent directories.
-            (match-lambda
-              ((source '-> target)
-               (let ((target (string-append #$profile "/" target))
-                     (parent (dirname source)))
-                 ;; Never add a 'directory' directive for "/" so as to
-                 ;; preserve its ownership when extracting the archive (see
-                 ;; below), and also because this would lead to adding the
-                 ;; same entries twice in the tarball.
-                 `(,@(if (string=? parent "/")
-                         '()
-                         `((directory ,parent)))
-                   ;; Use a relative file name for compatibility with
-                   ;; relocatable packs.
-                   (,source -> ,(relative-file-name parent target)))))))
-
-          (define directives
-            ;; Fully-qualified symlinks.
-            (append-map symlink->directives '#$symlinks))
-
-          ;; Make sure non-ASCII file names are properly handled.
-          #+(set-utf8-locale profile)
-
-          ;; Note: there is not much to gain here with deduplication and there
-          ;; is the overhead of the '.links' directory, so turn it off by
-          ;; default.  Furthermore GNU tar < 1.30 sometimes fails to extract
-          ;; tarballs with hard links:
-          ;; <http://lists.gnu.org/archive/html/bug-tar/2017-11/msg00009.html>.
-          (populate-store (list "profile") #$output
-                          #:deduplicate? #$deduplicate?)
-
-          (when #+localstatedir?
-            (install-database-and-gc-roots #$output #+database #$profile
-                                           #:profile-name #$profile-name))
-
-          ;; Create SYMLINKS.
-          (for-each (cut evaluate-populate-directive <> #$output)
-                    directives)))
-    #:local-build? #f
-    #:guile (if bootstrap? %bootstrap-guile (default-guile))
-    #:options (list #:references-graphs `(("profile" ,profile))
-                    #:target target)))
+          (setenv "GUIX_LOCPATH"
+                  #+(file-append glibc-utf8-locales "/lib/locale"))
+          (setlocale LC_ALL "en_US.utf8"))
+      #~(setenv "GUIX_LOCPATH" "unset for tests")))
 
 
 ;;;
 ;;; Tarball format.
 ;;;
-(define* (self-contained-tarball/builder profile
-                                         #:key (profile-name "guix-profile")
-                                         target
-                                         localstatedir?
-                                         deduplicate?
-                                         symlinks
-                                         compressor
-                                         archiver)
-  "Return a GEXP that can build a self-contained tarball."
-
-  (define root (populate-profile-root profile
-                                      #:profile-name profile-name
-                                      #:target target
-                                      #:localstatedir? localstatedir?
-                                      #:deduplicate? deduplicate?
-                                      #:symlinks symlinks))
-
-  (with-imported-modules (source-module-closure '((guix build pack)
-                                                  (guix build utils)))
-    #~(begin
-        (use-modules (guix build pack)
-                     (guix build utils))
-
-        ;; Make sure non-ASCII file names are properly handled.
-        #+(set-utf8-locale profile)
-
-        (define tar #+(file-append archiver "/bin/tar"))
-
-        (define %root (if #$localstatedir? "." #$root))
-
-        (when #$localstatedir?
-          ;; Fix the permission of the Guix database file, which was made
-          ;; read-only when copied to the store in populate-profile-root.
-          (copy-recursively #$root %root)
-          (chmod (string-append %root "/var/guix/db/db.sqlite") #o644))
-
-        (with-directory-excursion %root
-          ;; GNU Tar recurses directories by default.  Simply add the whole
-          ;; current directory, which contains all the files to be archived.
-          ;; This avoids creating duplicate files in the archives that would
-          ;; be stored as hard links by GNU Tar.
-          (apply invoke tar "-cvf" #$output "."
-                 (tar-base-options
-                  #:tar tar
-                  #:compressor #+(and=> compressor compressor-command)))))))
-
 (define* (self-contained-tarball name profile
                                  #:key target
                                  (profile-name "guix-profile")
@@ -365,16 +238,48 @@ added to the pack."
     (warning (G_ "entry point not supported in the '~a' format~%")
              'tarball))
 
-  (gexp->derivation (string-append name ".tar"
-                                   (compressor-extension compressor))
-    (self-contained-tarball/builder profile
-                                    #:profile-name profile-name
-                                    #:target target
-                                    #:localstatedir? localstatedir?
-                                    #:deduplicate? deduplicate?
-                                    #:symlinks symlinks
-                                    #:compressor compressor
-                                    #:archiver archiver)))
+  (define database
+    (and localstatedir?
+         (file-append (store-database (list profile))
+                      "/db/db.sqlite")))
+
+  (gexp->derivation
+   (string-append name ".tar" (compressor-extension compressor))
+   ;; XXX: The conditional around deduplicate? is to allow the test to run
+   ;; without an external store.
+   (with-extensions (if deduplicate? (list guile-gcrypt) '())
+     (with-imported-modules (let ((lst (source-module-closure
+                                        '((guix build pack)
+                                          (guix build utils))
+                                        #:select? not-config?)))
+                              (if deduplicate?
+                                  lst
+                                  (delete '(guix store deduplication) lst)))
+
+       (source-module-closure '((guix build pack)
+                                (guix build utils))
+                              #:select? not-config?)
+       #~(begin
+           (use-modules (guix build pack)
+                        (guix build utils))
+
+           ;; Make sure non-ASCII file names are properly handled.
+           #+(set-utf8-locale profile)
+
+           (setenv "PATH" #+(file-append archiver "/bin"))
+
+           (build-self-contained-tarball #$profile
+                                         #$output
+                                         #:profile-name #$profile-name
+                                         #:localstatedir? #$localstatedir?
+                                         #:store-database #+database
+                                         #:deduplicate? #$deduplicate?
+                                         #:symlinks '#$symlinks
+                                         #:compressor-command
+                                         #+(and=> compressor
+                                                  compressor-command)))))
+   #:target target
+   #:references-graphs `(("profile" ,profile))))
 
 
 ;;;
@@ -719,20 +624,10 @@ Valid compressors are: ~a~%") compressor-name %valid-compressors)))
     (warning (G_ "entry point not supported in the '~a' format~%")
              'deb))
 
-  (define data-tarball
-    (computed-file (string-append "data.tar" (compressor-extension
-                                              compressor))
-      (self-contained-tarball/builder profile
-                                      #:target target
-                                      #:profile-name profile-name
-                                      #:localstatedir? localstatedir?
-                                      #:deduplicate? deduplicate?
-                                      #:symlinks symlinks
-                                      #:compressor compressor
-                                      #:archiver archiver)
-      #:local-build? #f                 ;allow offloading
-      #:options (list #:references-graphs `(("profile" ,profile))
-                      #:target target)))
+  (define database
+    (and localstatedir?
+         (file-append (store-database (list profile))
+                      "/db/db.sqlite")))
 
   (define build
     (with-extensions (list guile-gcrypt)
@@ -749,6 +644,9 @@ Valid compressors are: ~a~%") compressor-name %valid-compressors)))
                          (ice-9 match)
                          (ice-9 optargs)
                          (srfi srfi-1))
+
+            ;; Make sure non-ASCII file names are properly handled.
+            #+(set-utf8-locale profile)
 
             (define machine-type
               ;; Extract the machine type from the specified target, else from the
@@ -803,10 +701,26 @@ Valid compressors are: ~a~%") compressor-name %valid-compressors)))
               (lambda (port)
                 (format port "~a~%" debian-format-version)))
 
-            (define data-tarball-file-name (strip-store-file-name
-                                            #+data-tarball))
+            (define compressor-command
+              #+(and=> compressor compressor-command))
 
-            (copy-file #+data-tarball data-tarball-file-name)
+            (define compressor-extension
+              #+(compressor-extension compressor))
+
+            (define data-tarball-file-name
+              (string-append "data.tar" compressor-extension))
+
+            (setenv "PATH" #+(file-append archiver "/bin"))
+
+            (build-self-contained-tarball #$profile
+                                          data-tarball-file-name
+                                          #:profile-name #$profile-name
+                                          #:localstatedir? #$localstatedir?
+                                          #:store-database #+database
+                                          #:deduplicate? #$deduplicate?
+                                          #:symlinks '#$symlinks
+                                          #:compressor-command
+                                          compressor-command)
 
             ;; Generate the control archive.
             (let-keywords '#$extra-options #f
@@ -815,8 +729,7 @@ Valid compressors are: ~a~%") compressor-name %valid-compressors)))
                            (triggers-file #f))
 
               (define control-tarball-file-name
-                (string-append "control.tar"
-                               #$(compressor-extension compressor)))
+                (string-append "control.tar" compressor-extension))
 
               ;; Write the compressed control tarball.  Only the control file is
               ;; mandatory (see: 'man deb' and 'man deb-control').
@@ -846,7 +759,7 @@ Section: misc
               (apply invoke tar
                      `(,@(tar-base-options
                           #:tar tar
-                          #:compressor #+(and=> compressor compressor-command))
+                          #:compressor compressor-command)
                        "-cvf" ,control-tarball-file-name
                        "control"
                        ,@(if postinst-file '("postinst") '())
@@ -857,7 +770,9 @@ Section: misc
                       "debian-binary"
                       control-tarball-file-name data-tarball-file-name))))))
 
-  (gexp->derivation (string-append name ".deb") build))
+  (gexp->derivation (string-append name ".deb") build
+                    #:target target
+                    #:references-graphs `(("profile" ,profile))))
 
 
 ;;;
@@ -881,66 +796,27 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
   (when entry-point
     (warning (G_ "entry point not supported in the '~a' format~%") 'rpm))
 
-  (define root (populate-profile-root profile
-                                      #:profile-name profile-name
-                                      #:target target
-                                      #:localstatedir? localstatedir?
-                                      #:deduplicate? deduplicate?
-                                      #:symlinks symlinks))
-
-  (define payload
-    (let* ((raw-cpio-file-name "payload.cpio")
-           (compressed-cpio-file-name (string-append raw-cpio-file-name
-                                                     (compressor-extension
-                                                      compressor))))
-      (computed-file compressed-cpio-file-name
-        (with-imported-modules (source-module-closure
-                                '((guix build utils)
-                                  (guix cpio)
-                                  (guix rpm)))
-          #~(begin
-              (use-modules (guix build utils)
-                           (guix cpio)
-                           (guix rpm)
-                           (srfi srfi-1))
-
-              ;; Make sure non-ASCII file names are properly handled.
-              #+(set-utf8-locale profile)
-
-              (define %root (if #$localstatedir? "." #$root))
-
-              (when #$localstatedir?
-                ;; Fix the permission of the Guix database file, which was made
-                ;; read-only when copied to the store in populate-profile-root.
-                (copy-recursively #$root %root)
-                (chmod (string-append %root "/var/guix/db/db.sqlite") #o644))
-
-              (call-with-output-file #$raw-cpio-file-name
-                (lambda (port)
-                  (with-directory-excursion %root
-                    ;; The first "." entry is discarded.
-                    (write-cpio-archive
-                     (remove fhs-directory?
-                             (cdr (find-files "." #:directories? #t)))
-                     port))))
-              (when #+(compressor-command compressor)
-                (apply invoke (append #+(compressor-command compressor)
-                                      (list #$raw-cpio-file-name))))
-              (copy-file #$compressed-cpio-file-name #$output)))
-        #:local-build? #f)))            ;allow offloading
+  (define database
+    (and localstatedir?
+         (file-append (store-database (list profile))
+                      "/db/db.sqlite")))
 
   (define build
     (with-extensions (list guile-gcrypt)
       (with-imported-modules `(((guix config) => ,(make-config.scm))
                                ,@(source-module-closure
                                   `((gcrypt hash)
+                                    (guix build pack)
                                     (guix build utils)
+                                    (guix cpio)
                                     (guix profiles)
                                     (guix rpm))
                                   #:select? not-config?))
         #~(begin
             (use-modules (gcrypt hash)
+                         (guix build pack)
                          (guix build utils)
+                         (guix cpio)
                          (guix profiles)
                          (guix rpm)
                          (ice-9 binary-ports)
@@ -951,6 +827,35 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
 
             ;; Make sure non-ASCII file names are properly handled.
             #+(set-utf8-locale profile)
+
+            (define %root "root")
+
+            (populate-profile-root #$profile
+                                   #:profile-name #$profile-name
+                                   #:localstatedir? #$localstatedir?
+                                   #:store-database #+database
+                                   #:deduplicate? #$deduplicate?
+                                   #:symlinks '#$symlinks)
+
+            (define raw-cpio-file-name "payload.cpio")
+
+            ;; Generate CPIO payload.
+            (call-with-output-file raw-cpio-file-name
+              (lambda (port)
+                (with-directory-excursion %root
+                  ;; The first "." entry is discarded.
+                  (write-cpio-archive
+                   (remove fhs-directory?
+                           (cdr (find-files "." #:directories? #t)))
+                   port))))
+
+            (when #+(compressor-command compressor)
+              (apply invoke (append #+(compressor-command compressor)
+                                    (list raw-cpio-file-name))))
+
+            (define cpio-file-name
+              (string-append "payload.cpio"
+                             #$(compressor-extension compressor)))
 
             (define machine-type
               (and=> (or #$target %host-type)
@@ -979,7 +884,7 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
                              #:target (or #$target %host-type)))
 
             (define payload-digest
-              (bytevector->hex-string (file-sha256 #$payload)))
+              (bytevector->hex-string (file-sha256 cpio-file-name)))
 
             (let-keywords '#$extra-options #f ((relocatable? #f)
                                                (prein-file #f)
@@ -989,7 +894,7 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
 
               (let ((header (generate-header name version
                                              payload-digest
-                                             #$root
+                                             %root
                                              #$(compressor-name compressor)
                                              #:target (or #$target %host-type)
                                              #:relocatable? relocatable?
@@ -1001,7 +906,7 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
                 (define header-sha256
                   (bytevector->hex-string (sha256 (u8-list->bytevector header))))
 
-                (define payload-size (stat:size (stat #$payload)))
+                (define payload-size (stat:size (stat cpio-file-name)))
 
                 (define header+compressed-payload-size
                   (+ (length header) payload-size))
@@ -1011,7 +916,7 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
                                       header+compressed-payload-size))
 
                 ;; Serialize the archive components to a file.
-                (call-with-input-file #$payload
+                (call-with-input-file cpio-file-name
                   (lambda (in)
                     (call-with-output-file #$output
                       (lambda (out)
@@ -1020,7 +925,9 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
                                                                    header))
                         (sendfile out in payload-size)))))))))))
 
-  (gexp->derivation (string-append name ".rpm") build))
+  (gexp->derivation (string-append name ".rpm") build
+                    #:target target
+                    #:references-graphs `(("profile" ,profile))))
 
   
 ;;;

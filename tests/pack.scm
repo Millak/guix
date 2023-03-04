@@ -76,65 +76,65 @@
 
 (test-begin "pack")
 
-(unless (network-reachable?) (test-skip 1))
-(test-assertm "self-contained-tarball" %store
-  (mlet* %store-monad
-      ((profile -> (profile
-                    (content (packages->manifest (list %bootstrap-guile)))
-                    (hooks '())
-                    (locales? #f)))
-       (tarball (self-contained-tarball "pack" profile
-                                        #:symlinks '(("/bin/Guile"
-                                                      -> "bin/guile"))
-                                        #:compressor %gzip-compressor
-                                        #:archiver %tar-bootstrap))
-       (check   (gexp->derivation
-                 "check-tarball"
-                 (with-imported-modules '((guix build utils))
-                   #~(begin
-                       (use-modules (guix build utils)
-                                    (srfi srfi-1))
-
-                       (define store
-                         ;; The unpacked store.
-                         (string-append "." (%store-directory) "/"))
-
-                       (define (canonical? file)
-                         ;; Return #t if FILE is read-only and its mtime is 1.
-                         (let ((st (lstat file)))
-                           (or (not (string-prefix? store file))
-                               (eq? 'symlink (stat:type st))
-                               (and (= 1 (stat:mtime st))
-                                    (zero? (logand #o222
-                                                   (stat:mode st)))))))
-
-                       (define bin
-                         (string-append "." #$profile "/bin"))
-
-                       (setenv "PATH"
-                               (string-append #$%tar-bootstrap "/bin"))
-                       (system* "tar" "xvf" #$tarball)
-                       (mkdir #$output)
-                       (exit
-                        (and (file-exists? (string-append bin "/guile"))
-                             (file-exists? store)
-                             (every canonical?
-                                    (find-files "." (const #t)
-                                                #:directories? #t))
-                             (string=? (string-append #$%bootstrap-guile "/bin")
-                                       (readlink bin))
-                             (string=? (string-append ".." #$profile
-                                                      "/bin/guile")
-                                       (readlink "bin/Guile")))))))))
-    (built-derivations (list check))))
-
 ;; The following test needs guile-sqlite3, libgcrypt, etc. as a consequence of
 ;; commit c45477d2a1a651485feede20fe0f3d15aec48b39 and related changes.  Thus,
 ;; run it on the user's store, if it's available, on the grounds that these
 ;; dependencies may be already there, or we can get substitutes or build them
 ;; quite inexpensively; see <https://bugs.gnu.org/32184>.
-
 (with-external-store store
+  (unless store (test-skip 1))
+  (test-assertm "self-contained-tarball" store
+    (mlet* %store-monad
+        ((guile   (set-guile-for-build (default-guile)))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
+         (tarball (self-contained-tarball "pack" profile
+                                          #:symlinks '(("/bin/Guile"
+                                                        -> "bin/guile"))
+                                          #:compressor %gzip-compressor
+                                          #:archiver %tar-bootstrap))
+         (check   (gexp->derivation
+                   "check-tarball"
+                   (with-imported-modules '((guix build utils))
+                     #~(begin
+                         (use-modules (guix build utils)
+                                      (srfi srfi-1))
+
+                         (define store
+                           ;; The unpacked store.
+                           (string-append "." (%store-directory) "/"))
+
+                         (define (canonical? file)
+                           ;; Return #t if FILE is read-only and its mtime is 1.
+                           (let ((st (lstat file)))
+                             (or (not (string-prefix? store file))
+                                 (eq? 'symlink (stat:type st))
+                                 (and (= 1 (stat:mtime st))
+                                      (zero? (logand #o222
+                                                     (stat:mode st)))))))
+
+                         (define bin
+                           (string-append "." #$profile "/bin"))
+
+                         (setenv "PATH"
+                                 (string-append #$%tar-bootstrap "/bin"))
+                         (system* "tar" "xvf" #$tarball)
+                         (mkdir #$output)
+                         (exit
+                          (and (file-exists? (string-append bin "/guile"))
+                               (file-exists? store)
+                               (every canonical?
+                                      (find-files "." (const #t)
+                                                  #:directories? #t))
+                               (string=? (string-append #$%bootstrap-guile "/bin")
+                                         (readlink bin))
+                               (string=? (string-append ".." #$profile
+                                                        "/bin/guile")
+                                         (readlink "bin/Guile")))))))))
+      (built-derivations (list check))))
+
   (unless store (test-skip 1))
   (test-assertm "self-contained-tarball + localstatedir" store
     (mlet* %store-monad
