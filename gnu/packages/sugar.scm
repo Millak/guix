@@ -262,10 +262,15 @@ activities and other Sugar components.")
              (substitute* "autogen.sh"
                (("^\"\\$srcdir/configure" m)
                 (string-append "#" m)))))
-         (add-after 'unpack 'patch-reference-to-du
-           (lambda _
+         (add-after 'unpack 'patch-tool-references
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/carquinyol/datastore.py"
-               (("/usr/bin/du") (which "du")))))
+               (("/usr/bin/du") (which "du")))
+             (substitute* "src/carquinyol/optimizer.py"
+               (("'md5sum'")
+                (string-append "'"
+                               (search-input-file inputs "/bin/md5sum")
+                               "'")))))
          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (for-each
@@ -279,6 +284,7 @@ activities and other Sugar components.")
                     (search-input-file outputs "bin/datastore-service"))))))))
     (inputs
      (list bash-minimal
+           coreutils
            python
            sugar-toolkit-gtk3))
     (propagated-inputs
