@@ -16779,6 +16779,45 @@ the concrete syntax tree library.")
 (define-public cl-eclector
   (sbcl-package->cl-source-package sbcl-eclector))
 
+(define-public sbcl-trucler
+  (let ((commit "167199797eb3e2e9d9d3e1fe6e11948c663ce7e2")
+        (revision "0"))
+    (package
+      (name "sbcl-trucler")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/s-expressionists/Trucler")
+               (commit commit)))
+         (file-name (git-file-name "cl-trucler" commit))
+         (sha256
+          (base32 "0ra1phwy0vn4xrm5i1dvq9205m6s9fl0sr0rpiz3xjykxyl9mzms"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-acclimation))
+      (arguments
+       '(#:asd-systems '("trucler"
+                         "trucler-base"
+                         "trucler-native"
+                         "trucler-reference")))
+      (home-page "https://github.com/s-expressionists/Trucler")
+      (synopsis "Environment protocol for Common Lisp compilers")
+      (description
+       "Trucler defines a CLOS-based protocol to be used by Common Lisp
+compilers for environment query and update.  In addition, library authors can
+use the @code{trucler-native} interface to inspect native environments.
+Trucler supports introspection for variables, functions, tags, blocks and
+optimization policies.")
+      (license license:bsd-2))))
+
+(define-public cl-trucler
+  (sbcl-package->cl-source-package sbcl-trucler))
+
+(define-public ecl-trucler
+  (sbcl-package->ecl-package sbcl-trucler))
+
 (define-public sbcl-incless
   (let ((commit "395accf484ffdff70f20b941f322e8329c585ca7")
         (revision "0"))
