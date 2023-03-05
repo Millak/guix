@@ -3118,11 +3118,11 @@ the official package.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-net
-  (let ((commit "ba9fcec4b297b415637633c5a6e8fa592e4a16c3")
-        (revision "4"))
+  (let ((commit "8e0e7d8d38f2b6d21d742845570dde2902d06a1d")
+        (revision "0"))
     (package
       (name "go-golang-org-x-net")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3131,15 +3131,17 @@ the official package.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1hbqvy6r0s5h0dpdqw8fynl3cq0acin3iyqki9xvl5r8h33yb9bx"))))
+                  "1fidlcn3vcz42v2lc0rpmqh3bz08bcklj6jvnmz2vvgc481ci5hy"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "golang.org/x/net"
-         ; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
+       (list
+        #:import-path "golang.org/x/net"
+        ;; Source-only package
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Source-only package
+            (delete 'build))))
       (synopsis "Go supplemental networking libraries")
       (description "This package provides supplemental Go networking libraries.")
       (home-page "https://go.googlesource.com/net")
