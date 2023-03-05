@@ -711,7 +711,8 @@ in a portable way.")
                            "dbacl-" version ".tar.gz"))
        (sha256
         (base32 "1gas0112wqjvwn9qg3hxnawk7h3prr0w9b2h68f3p1ifd1kzn3gz"))
-       (patches (search-patches "dbacl-include-locale.h.patch"))))
+       (patches (search-patches "dbacl-include-locale.h.patch"
+                                "dbacl-icheck-multiple-definitions.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
