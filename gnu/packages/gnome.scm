@@ -9679,8 +9679,8 @@ easy, safe, and automatic.")
      (list
       #:glib-or-gtk? #t
       #:test-options `(list ,@(if (target-riscv64?)
-                                  `("--timeout-multiplier" "5")
-                                  '()))
+                                  `("--timeout-multiplier" "10")
+                                  '("--timeout-multiplier" "2")))
       #:configure-flags
       ;; Otherwise, the RUNPATH will lack the final path component.
       #~(list (string-append "-Dc_link_args=-Wl,-rpath="
