@@ -3273,14 +3273,14 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.7")
+    (version "7.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "1853ln0smiilf3pni70gq6nmi9ps039cy44g6b5i9d2z1n9hnj02"))
+        (base32 "145s4lqixdxa3j0lp9lgzbb664zzy1imw04hmgia5y5679i8r0xy"))
        (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
        (modules '((guix build utils)))
        ;; This snippet removes pre-built Java archives.
@@ -3353,7 +3353,7 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
     (native-inputs
      (list autoconf automake bison flex gperf libtool))
     (inputs
-     (list openssl net-tools readline zlib))
+     (list openssl net-tools readline which zlib))
     (home-page "https://vos.openlinksw.com/owiki/wiki/VOS/")
     (synopsis "Multi-model database system")
     (description "Virtuoso is a scalable cross-platform server that combines
