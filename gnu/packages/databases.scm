@@ -2498,7 +2498,7 @@ sets, bitmaps and hyperloglogs.")
 (define-public hiredis
   (package
     (name "hiredis")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -2507,7 +2507,7 @@ sets, bitmaps and hyperloglogs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a55zk3qrw9yl27i87h3brg2hskmmzbfda77dhq9a4if7y70xnfb"))))
+        (base32 "1zld30j3kpzqr9w3vkpd6mm3f1b1yk3dlgp9lp6gpsybjjfr2i6h"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; needed for testing
