@@ -84,32 +84,32 @@
         #:make-flags
         (list "gtk_update_icon_cache=true")))
     (inputs
-      `(("boost" ,boost)
-        ("enchant" ,enchant)
-        ("fontconfig" ,fontconfig)
-        ("fribidi" ,fribidi)
-        ("glib" ,glib)
-        ("goffice" ,goffice)
-        ("gtk+" ,gtk+)
-        ("libchamplain" ,libchamplain)
-        ("libglade" ,libglade)
-        ("libgsf" ,libgsf)
-        ("libjpeg" ,libjpeg-turbo)
-        ("libpng" ,libpng)
-        ("librsvg" ,(librsvg-for-system))
-        ("libxml2" ,libxml2)
-        ("libxslt" ,libxslt)
-        ("ots" ,ots)
-        ("popt" ,popt)
-        ("readline" ,readline)
-        ("telepathy" ,telepathy-glib)
-        ("wv" ,wv)
-        ("zlib" ,zlib)))
+     (list boost
+           enchant
+           fontconfig
+           fribidi
+           glib
+           goffice
+           gtk+
+           libchamplain
+           libglade
+           libgsf
+           libjpeg-turbo
+           libpng
+           (librsvg-for-system)
+           libxml2
+           libxslt
+           ots
+           popt
+           readline
+           telepathy-glib
+           wv
+           zlib))
     (native-inputs
-      `(("intltool" ,intltool)
-        ("glib:bin" ,glib "bin")
-        ("libtool" ,libtool)
-        ("pkg-config" ,pkg-config)))
+     (list intltool
+           `(,glib "bin")
+           libtool
+           pkg-config))
     (home-page "https://www.abisource.com/")
     (synopsis "Word processing program")
 
