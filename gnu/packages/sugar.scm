@@ -637,6 +637,48 @@ like @file{.m3u} and @file{.pls}.")
 looking for why an activity or Sugar is not working properly.")
       (license license:gpl2+))))
 
+(define-public sugar-maze-activity
+  (package
+    (name "sugar-maze-activity")
+    (version "31")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/maze-activity")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ai2ws3mqkxi13chy0hidd1gxiv97862r9lg8qgxb7qkxqyh6afr"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-launcher
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "activity/activity.info"
+                (("exec = sugar-activity3")
+                 (string-append "exec = "
+                                (search-input-file inputs "/bin/sugar-activity3"))))))
+          (replace 'install
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "install"
+                      (string-append "--prefix=" #$output)))))))
+    ;; All these libraries are accessed via gobject introspection.
+    (propagated-inputs
+     (list gtk+
+           telepathy-glib))
+    (inputs
+     (list sugar-toolkit-gtk3 gettext-minimal))
+    (home-page "https://github.com/sugarlabs/maze-activity")
+    (synopsis "Simple maze game for the Sugar learning environment")
+    (description "Try to make your way through an increasingly difficult path,
+or you can also play with a friend!")
+    (license license:gpl3+)))
+
 (define-public sugar-read-activity
   (let ((commit "25f69e41a4fa69d93c73c0c9367b4777a014b1cd")
         (revision "1"))
