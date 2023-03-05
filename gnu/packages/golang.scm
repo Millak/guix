@@ -1158,6 +1158,34 @@ form that bypasses network filtering, allowing the application to work on
 networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
+(define-public go-github-com-hanwen-go-fuse-v2
+  (let ((commit "915cf5413cdef5370ae3f953f8eb4cd9ac176d5c")
+        (revision "0"))
+    (package
+      (name "go-github-com-hanwen-go-fuse-v2")
+      (version (git-version "2.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hanwen/go-fuse")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ik0yvs9m40vxccpb0rpxc22fyqmcgyysc7w0yl9kn3jyr6qa1d5"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/hanwen/go-fuse/v2"))
+      (native-inputs (list
+                      go-golang-org-x-sys
+                      go-golang-org-x-sync
+                      go-github-com-kylelemons-godebug))
+      (home-page "https://github.com/hanwen/go-fuse")
+      (synopsis "Go bindings for FUSE filesystems")
+      (description
+       "This is a repository containing Go bindings for writing FUSE file systems.")
+      (license license:bsd-3))))
+
 (define-public go-github-com-kataras-golog
   (package
     (name "go-github-com-kataras-golog")
