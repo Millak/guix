@@ -41705,6 +41705,7 @@ services)}.
 * Guix: Guix Home Services.     Services for Guix.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
+* Messaging: Messaging Home Services.   Services for managing messaging.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -42796,6 +42797,42 @@ Stopping the Shepherd service turns off broadcasting.
 @defvar %pulseaudio-rtp-multicast-address
 This is the multicast address used by default by the two services above.
 @end defvar
+
+@node Messaging Home Services
+@subsection Messaging Home Services
+
+@cindex znc
+The @uref{https://znc.in, ZNC bouncer} can be run as a daemon to manage
+your IRC presence.  With the @code{(gnu home services znc)} service, you
+can configure ZNC to run upon login.
+
+You will have to provide a @file{~/.znc/configs/znc.conf} seperately.
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-znc-service-type)
+@end lisp
+
+@defvr {Scheme Variable} home-znc-service-type
+This is the type of the @code{git daemon} home service, whose value is an
+@code{home-znc-configuration} object.
+@end defvr
+
+@deftp {Data Type} home-znc-configuration
+Available @code{home-znc-configuration} fields are:
+
+@table @asis
+@item @code{git} (default: @code{git}) (type: file-like)
+The git package to use.
+
+@item @code{extra-options} (default: @code{'()})
+Extra options will be passed to @command{znc}, please run @command{man
+znc} for more information.
+
+@end table
+@end deftp
 
 @node Invoking guix home
 @section Invoking @command{guix home}
