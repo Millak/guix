@@ -252,7 +252,14 @@ could be found at DIRECTORY or one of its ancestors."
                             ('commit commit) ('signer signer)
                             _ ...)
      (make-channel-introduction commit (openpgp-fingerprint signer)))
-    (x #f)))
+    (x (raise (condition
+               (&message
+                (message (format #f (G_ "channel dependency has an invalid\
+ introduction field"))))
+               (&error-location
+                (location
+                 (source-properties->location
+                  (source-properties x)))))))))
 
 (define (read-channel-metadata port)
   "Read from PORT channel metadata in the format expected for the
