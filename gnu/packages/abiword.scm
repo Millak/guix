@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Marek Benc <merkur32@gmail.com>
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -96,7 +96,7 @@
         ("libgsf" ,libgsf)
         ("libjpeg" ,libjpeg-turbo)
         ("libpng" ,libpng)
-        ("librsvg" ,librsvg)
+        ("librsvg" ,(librsvg-for-system))
         ("libxml2" ,libxml2)
         ("libxslt" ,libxslt)
         ("ots" ,ots)
