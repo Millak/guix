@@ -2442,22 +2442,21 @@ similar to BerkeleyDB, LevelDB, etc.")
 (define-public redis
   (package
     (name "redis")
-    (version "6.2.6")
+    (version "7.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.redis.io/releases/redis-"
                                   version".tar.gz"))
               (sha256
                (base32
-                "1ariw5x33hmmm3d5al0j3307l5kf3vhmn78wpyaz67hia1x8nasv"))
+                "0rczzcy2mwy6hjdgg10l9lr4vavh8jrs7zlb0ba534bwlk13awgp"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled jemalloc, as the package will use the libc one
                '(begin (delete-file-recursively "deps/jemalloc")))))
     (build-system gnu-build-system)
     (native-inputs
-     (list procps ; for tests
-           tcl))                   ; for tests
+     (list pkg-config procps tcl which))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -2469,10 +2468,20 @@ similar to BerkeleyDB, LevelDB, etc.")
                 (string-append "TCLSH="
                                (assoc-ref inputs "tcl")
                                "/bin/tclsh")))))
+         (add-after 'unpack 'patch-paths
+           (lambda _
+             (substitute* "tests/support/server.tcl"
+               (("/usr/bin/env")
+                (which "env")))))
          (add-after 'unpack 'adjust-tests
            (lambda _
              ;; Disable failing tests
              (substitute* "tests/test_helper.tcl"
+               ;; The AOF tests cause the test suite to hang waiting for a
+               ;; "background AOF rewrite to finish", perhaps because dead
+               ;; processes persist as zombies in the build environment.
+               (("unit/aofrw") "")
+               (("integration/aof(-multi-part)?") "")
                (("integration/failover") "")
                (("integration/replication-4") "")
                (("integration/replication-psync") "")
@@ -2487,6 +2496,8 @@ similar to BerkeleyDB, LevelDB, etc.")
 supports many data structures including strings, hashes, lists, sets, sorted
 sets, bitmaps and hyperloglogs.")
     (home-page "https://redis.io/")
+    ;; These two CVEs have long been fixed.
+    (properties `((lint-hidden-cve . ("CVE-2022-3647" "CVE-2022-33105"))))
     (license license:bsd-3)))
 
 (define-public hiredis
