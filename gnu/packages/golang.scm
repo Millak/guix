@@ -1274,6 +1274,41 @@ Test for C++ and Google JS Test.")
        "Package oglemock provides a mocking framework for unit tests.")
       (license license:asl2.0))))
 
+(define-public go-github-com-jacobsa-ogletest
+  (let ((commit "80d50a735a1108a2aeb7abc4a988d183f20c5292")
+        (revision "0"))
+    (package
+      (name "go-github-com-jacobsa-ogletest")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jacobsa/ogletest")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lbwbxzr75g65q07ry5k4kglxqs3ym7xkvqznzm55rm3qk76v83r"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/jacobsa/ogletest"
+         ;; These tests should be made working
+         #:tests? #f))
+      (native-inputs (list
+                      go-github-com-jacobsa-oglematchers
+                      go-github-com-jacobsa-oglemock
+                      go-github-com-jacobsa-reqtrace
+                      go-golang-org-x-net))
+      (home-page "https://github.com/jacobsa/ogletest")
+      (synopsis "Expressive unit tests")
+      (description
+       "Package ogletest provides a framework for writing expressive unit tests.  It
+integrates with the builtin testing package, so it works with the gotest
+command.  Unlike the testing package which offers only basic capabilities for
+signalling failures, it offers ways to express expectations and get nice failure
+messages automatically.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-kataras-golog
   (package
     (name "go-github-com-kataras-golog")
