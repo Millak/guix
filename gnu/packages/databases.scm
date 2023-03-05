@@ -2455,42 +2455,37 @@ similar to BerkeleyDB, LevelDB, etc.")
                ;; Delete bundled jemalloc, as the package will use the libc one
                '(begin (delete-file-recursively "deps/jemalloc")))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config procps tcl which))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'use-correct-tclsh
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "runtest"
-               (("^TCLSH=.*")
-                (string-append "TCLSH="
-                               (assoc-ref inputs "tcl")
-                               "/bin/tclsh")))))
-         (add-after 'unpack 'patch-paths
-           (lambda _
-             (substitute* "tests/support/server.tcl"
-               (("/usr/bin/env")
-                (which "env")))))
-         (add-after 'unpack 'adjust-tests
-           (lambda _
-             ;; Disable failing tests
-             (substitute* "tests/test_helper.tcl"
-               ;; The AOF tests cause the test suite to hang waiting for a
-               ;; "background AOF rewrite to finish", perhaps because dead
-               ;; processes persist as zombies in the build environment.
-               (("unit/aofrw") "")
-               (("integration/aof(-multi-part)?") "")
-               (("integration/failover") "")
-               (("integration/replication-4") "")
-               (("integration/replication-psync") "")
-               (("integration/replication[^-]") "")))))
-       #:make-flags `("CC=gcc"
-                      "MALLOC=libc"
-                      "LDFLAGS=-ldl"
-                      ,(string-append "PREFIX="
-                                      (assoc-ref %outputs "out")))))
+     (list
+      #:make-flags #~(list #$(string-append "CC=" (cc-for-target))
+                           "MALLOC=libc"
+                           "LDFLAGS=-ldl"
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "runtest"
+                (("^TCLSH=.*")
+                 (string-append "TCLSH=" (which "tclsh"))))
+              (substitute* "tests/support/server.tcl"
+                (("/usr/bin/env")
+                 (which "env")))))
+          (add-after 'unpack 'adjust-tests
+            (lambda _
+              ;; Disable failing tests
+              (substitute* "tests/test_helper.tcl"
+                ;; The AOF tests cause the test suite to hang waiting for a
+                ;; "background AOF rewrite to finish", perhaps because dead
+                ;; processes persist as zombies in the build environment.
+                (("unit/aofrw") "")
+                (("integration/aof(-multi-part)?") "")
+                (("integration/failover") "")
+                (("integration/replication-4") "")
+                (("integration/replication-psync") "")
+                (("integration/replication[^-]") "")))))))
+    (native-inputs (list pkg-config procps tcl which))
     (synopsis "Key-value cache and store")
     (description "Redis is an advanced key-value cache and store.  Redis
 supports many data structures including strings, hashes, lists, sets, sorted
