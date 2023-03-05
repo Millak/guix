@@ -9663,7 +9663,7 @@ JSON data to the machine.")
 (define-public go-golang-zx2c4-com-wireguard
   (package
     (name "go-golang-zx2c4-com-wireguard")
-    (version "0.0.20200320")
+    (version "0.0.20211016")
     (source
      (origin
        (method git-fetch)
@@ -9676,7 +9676,7 @@ JSON data to the machine.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fy4qsss3i3pkq1rpgjds4aipbwlh1dr9hbbf7jn2a1c63kfks0r"))))
+         "09a4gsh75a8bj71wr042afrma9frriqp60cm0cx6c9a8lv5yzzi0"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "golang.zx2c4.com/wireguard"))
