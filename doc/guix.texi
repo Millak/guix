@@ -36,7 +36,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020 Jan Nieuwenhuizen@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2023 Jan Nieuwenhuizen@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
@@ -42464,6 +42464,60 @@ Extra content appended as-is to this @code{Host} block in
 
 @c %end of fragment
 
+@cindex ssh-agent
+The @uref{https://www.openssh.com, OpenSSH package} includes a daemon,
+the @command{ssh-agent} command, that manages keys to connect to remote
+machines using the @acronym{SSH, secure shell} protocol.  With the
+@code{(gnu home services ssh-agent)} service, you can configure the
+OpenSSH ssh-agent to run upon login.
+
+When using the @code{home-ssh-agent-service-type}, you need to add your
+@file{~/.bash_profile}:
+
+@example
+SSH_AUTH_SOCK=$@{XDG_RUNTIME_DIR-$HOME/.cache@}/ssh-agent/socket
+export SSH_AUTH_SOCK
+@end example
+
+Of course, you can do that using the @code{home-bash-service-type}, by
+adding something like:
+
+@lisp
+(environment-variables
+ '(("SSH_AUTH_SOCK"
+ . "$@{SSH_AUTH_SOCK-$@{XDG_RUNTIME_DIR-$HOME/.cache@}/ssh-agent/socket@}")))
+@end lisp
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-ssh-agent-service-type
+  (home-ssh-agent-configuration
+   (extra-options '("-t" "1h30m"))))
+@end lisp
+
+@defvr {Scheme Variable} home-ssh-agent-service-type
+This is the type of the @code{git daemon} home service, whose value is an
+@code{home-ssh-agent-configuration} object.
+@end defvr
+
+@deftp {Data Type} home-ssh-agent-configuration
+Available @code{home-ssh-agent-configuration} fields are:
+
+@table @asis
+@item @code{git} (default: @code{git}) (type: file-like)
+The git package to use.
+
+@item @code{socket-directory} (default: @code{@env{XDG_RUNTIME_DIR}/ssh-agent"}) (type: string)
+The directory to write the ssh-agent's @file{socket} file.
+
+@item @code{extra-options} (default: @code{'()})
+Extra options will be passed to @command{ssh-agent}, please run
+@command{man ssh-agent} for more information.
+
+@end table
+@end deftp
 
 @node Desktop Home Services
 @subsection Desktop Home Services
