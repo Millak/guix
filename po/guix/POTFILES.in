@@ -13,6 +13,7 @@ gnu/services/shepherd.scm
 gnu/services/samba.scm
 gnu/services/version-control.scm
 gnu/home/services.scm
+gnu/home/services/media.scm
 gnu/home/services/messaging.scm
 gnu/home/services/ssh.scm
 gnu/home/services/symlink-manager.scm

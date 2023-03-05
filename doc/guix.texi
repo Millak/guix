@@ -41706,6 +41706,7 @@ services)}.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
 * Messaging: Messaging Home Services.   Services for managing messaging.
+* Media: Media Home Services.   Services for managing media.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -42830,6 +42831,42 @@ The git package to use.
 @item @code{extra-options} (default: @code{'()})
 Extra options will be passed to @command{znc}, please run @command{man
 znc} for more information.
+
+@end table
+@end deftp
+
+@node Media Home Services
+@subsection Media Home Services
+
+@cindex kodi
+The @uref{https://kodi.tv, KODI media center} can be run as a daemon on
+a media server.  With the @code{(gnu home services kodi)} service, you
+can configure KODI to run upon login.
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-kodi-service-type
+  (home-kodi-configuration
+   (extra-options '("--settings="<settings-file>"))))
+@end lisp
+
+@defvr {Scheme Variable} home-kodi-service-type
+This is the type of the @code{git daemon} home service, whose value is an
+@code{home-kodi-configuration} object.
+@end defvr
+
+@deftp {Data Type} home-kodi-configuration
+Available @code{home-kodi-configuration} fields are:
+
+@table @asis
+@item @code{git} (default: @code{git}) (type: file-like)
+The git package to use.
+
+@item @code{extra-options} (default: @code{'()})
+Extra options will be passed to @command{kodi}, please run @command{man
+kodi} for more information.
 
 @end table
 @end deftp
