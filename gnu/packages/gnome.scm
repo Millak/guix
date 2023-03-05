@@ -4335,7 +4335,7 @@ Hints specification (EWMH).")
                                               (assoc-ref %outputs "doc")
                                               "/share/gtk-doc/html"))))
     (inputs
-     (list gtk+ libgsf librsvg libxslt libxml2))
+     (list gtk+ libgsf (librsvg-for-system) libxslt libxml2))
     (native-inputs
      (list intltool `(,glib "bin") pkg-config))
     (home-page "https://developer.gnome.org/goffice/")
