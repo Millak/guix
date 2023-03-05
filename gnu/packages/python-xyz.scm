@@ -133,6 +133,7 @@
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25148,19 +25149,16 @@ for manual interpretation.")
 (define-public python-bibtexparser
   (package
     (name "python-bibtexparser")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "bibtexparser" version))
-       (sha256
-        (base32
-         "0zwhfkrzf3n5847dbnfng92k7ak199l9v6x6ax3dgdidfpm6d2fz"))))
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bibtexparser" version))
+              (sha256
+               (base32
+                "1rmc178qqb8814v3pcfv4qgl8rxmkd11d56limkqmi776jyf4z6a"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-pyparsing))
-    (native-inputs
-     (list python-future))
+    (propagated-inputs (list python-pyparsing))
+    (native-inputs (list python-future))
     (home-page "https://github.com/sciunto-org/python-bibtexparser")
     (synopsis "Python library to parse BibTeX files")
     (description "BibtexParser is a Python library to parse BibTeX files.")
