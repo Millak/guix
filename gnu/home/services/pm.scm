@@ -128,10 +128,10 @@
                                  (list "-i")
                                  (list)))
                      #:log-file (string-append
-                                 (or (getenv "XDG_LOG_HOME")
-                                     (format #f "~a/.local/var/log"
-                                               (getenv "HOME")))
-                                 "/batsignal.log")))
+                                 (or (getenv "XDG_STATE_HOME")
+                                     (format #f "~a/.local/state"
+                                             (getenv "HOME")))
+                                 "/log/batsignal.log")))
            (stop #~(make-kill-destructor))))))
 
 (define home-batsignal-service-type

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -99,10 +99,10 @@ Each message is also prefixed by a timestamp by GNU Shepherd."))
                                         #~())
                                  #$@files)
                            #:log-file (string-append
-                                       (or (getenv "XDG_LOG_HOME")
-                                           (format #f "~a/.local/var/log"
+                                       (or (getenv "XDG_STATE_HOME")
+                                           (format #f "~a/.local/state"
                                                    (getenv "HOME")))
-                                       "/mcron.log")))
+                                       "/log/mcron.log")))
                  (stop #~(make-kill-destructor))
                  (actions
                   (list (shepherd-schedule-action mcron files)))))))))

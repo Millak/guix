@@ -214,9 +214,9 @@ according to time of day.")))
                    (cons "DBUS_VERBOSE=1"
                          (default-environment-variables))
                    #:log-file
-                   (format #f "~a/dbus.log"
-                           (or (getenv "XDG_LOG_HOME")
-                               (format #f "~a/.local/var/log"
+                   (format #f "~a/log/dbus.log"
+                           (or (getenv "XDG_STATE_HOME")
+                               (format #f "~a/.local/state"
                                        (getenv "HOME"))))))
          (stop #~(make-kill-destructor)))))
 
@@ -264,10 +264,10 @@ according to time of day.")))
                (number->string
                 #$(home-unclutter-configuration-idle-timeout config)))
               #:log-file (string-append
-                          (or (getenv "XDG_LOG_HOME")
-                              (format #f "~a/.local/var/log"
+                          (or (getenv "XDG_STATE_HOME")
+                              (format #f "~a/.local/state"
                                       (getenv "HOME")))
-                          "/unclutter.log"))))))
+                          "/log/unclutter.log"))))))
 
 (define home-unclutter-service-type
   (service-type
