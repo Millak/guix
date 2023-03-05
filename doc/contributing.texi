@@ -1170,6 +1170,16 @@ Please write commit logs in the ChangeLog format (@pxref{Change Logs,,,
 standards, GNU Coding Standards}); you can check the commit history for
 examples.
 
+You can help make the review process more efficient, and increase the
+chance that your patch will be reviewed quickly, by describing the
+context of your patch and the impact you expect it to have.  For
+example, if your patch is fixing something that is broken, describe the
+problem and how your patch fixes it.  Tell us how you have tested your
+patch.  Will users of the code changed by your patch have to adjust
+their workflow at all?  If so, tell us how.  In general, try to imagine
+what questions a reviewer will ask, and answer those questions in
+advance.
+
 Before submitting a patch that adds or modifies a package definition,
 please run through this check list:
 
