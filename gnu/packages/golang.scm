@@ -3218,11 +3218,11 @@ packages.")
       (license license:bsd-3))))
 
 (define-public go-golang-org-x-sys
-  (let ((commit "ed5796bab16455f104b6a384d51b7f9990cb9806")
-        (revision "8"))
+  (let ((commit "b60007cc4e6f966b1c542e343d026d06723e5653")
+        (revision "0"))
     (package
       (name "go-golang-org-x-sys")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.4.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3231,15 +3231,17 @@ packages.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "081vs5bg91mwg5bdmlcvy2qyrvg766aicj47smcwfk4bbh0nc0qa"))))
+                  "0fr2d6fnpbqx6n89sg9lsinqkdaw49y068kqj2g0cxlhbh69hzii"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "golang.org/x/sys"
-         ;; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
+       (list
+        #:import-path "golang.org/x/sys"
+        ;; Source-only package
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Source-only package
+            (delete 'build))))
       (synopsis "Go support for low-level system interaction")
       (description "This package provides supplemental libraries offering Go
 support for low-level interaction with the operating system.")
