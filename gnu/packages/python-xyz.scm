@@ -10924,6 +10924,25 @@ addition to a bunch of aliases.")
 command pipeline functionality.")
     (license license:bsd-3)))
 
+(define-public python-zipfly
+  (package
+    (name "python-zipfly")
+    (version "6.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zipfly" version))
+       (sha256
+        (base32
+         "1h7g922a8lsqd69j8blgcgg0lcd8kz51b2p4glfqmgx4vi1nkick"))))
+    (build-system python-build-system)
+    (home-page "http://github.com/sandes/zipfly")
+    (synopsis "Zip archive generator")
+    (description "ZipFly is a zip archive generator.  It was created to
+generate very large zip archives for immediate sending out to clients, or
+for writing large zip archives without memory inflation.")
+    (license license:bsd-2)))
+
 (define-public python-zipstream-new
   (package
     (name "python-zipstream-new")
