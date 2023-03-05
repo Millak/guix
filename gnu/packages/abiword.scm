@@ -40,6 +40,7 @@
   #:use-module (gnu packages ots)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages wv)
   #:use-module (gnu packages xml))
@@ -73,7 +74,14 @@
               "latex " "loadbindings " "mht " "mif " "mswrite " "opendocument "
               "openwriter " "openxml " "opml " "ots " "paint " "passepartout "
               "pdb " "pdf " "presentation " "s5 " "sdw " "t602 " "urldict "
-              "wikipedia " "wml " "xslfo"))
+              "wikipedia " "wml " "xslfo")
+          "--enable-introspection"
+          (string-append "--with-gir-dir="
+                         (assoc-ref %outputs "out")
+                         "/share/gir-1.0")
+          (string-append "--with-typelib-dir="
+                         (assoc-ref %outputs "out")
+                         "/lib/girepository-1.0"))
         ;; tests fail with: Gtk-CRITICAL **: gtk_settings_get_for_screen:
         ;;                  assertion 'GDK_IS_SCREEN (screen)' failed
         ;;                  GLib-GObject-CRITICAL **: g_object_get_qdata:
@@ -106,10 +114,12 @@
            wv
            zlib))
     (native-inputs
-     (list intltool
+     (list gobject-introspection
+           intltool
            `(,glib "bin")
            libtool
-           pkg-config))
+           pkg-config
+           python-wrapper))
     (home-page "https://www.abisource.com/")
     (synopsis "Word processing program")
 
