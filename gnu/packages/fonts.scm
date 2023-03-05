@@ -1604,7 +1604,8 @@ guix repl <<EOF
                   font-iosevka-curly
                   font-iosevka-curly-slab
                   font-iosevka-etoile
-                  font-iosevka-ss08))
+                  font-iosevka-ss08
+                  font-iosevka-ss09))
   (for-each (lambda (hash)
               (format #t "~a: ~a~%" (car hash) (cdr hash)))
             (reverse iosevka-hashes))
@@ -1760,6 +1761,20 @@ programming.  Iosevka is completely generated from its source code.")
                            "/ttc-iosevka-ss08-" version ".zip"))
        (sha256
         (base32 "195w4nd0901zlyjq7a6n7pwjwi2b5vnm4gj4y6692axi660jdv4j"))))))
+
+(define-public font-iosevka-ss09
+  (package
+    (inherit font-iosevka)
+    (name "font-iosevka-ss09")
+    (version (package-version font-iosevka))
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://github.com/be5invis/Iosevka"
+                           "/releases/download/v" version
+                           "/ttc-iosevka-ss09-" version ".zip"))
+       (sha256
+        (base32 "1h5jfrpply7ypc4h6ivxs30qkrbni51zkj78xz6nz4zbnp923yi0"))))))
 
 (define-public font-sarasa-gothic
   (package
