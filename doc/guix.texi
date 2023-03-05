@@ -37850,25 +37850,17 @@ If true, this must be the name of a file to log messages to.
 
 @subsubheading Dictionary Service
 @cindex dictionary
+
 The @code{(gnu services dict)} module provides the following service:
 
 @defvar dicod-service-type
 This is the type of the service that runs the @command{dicod} daemon, an
 implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
-@end defvar
-
-@deffn {Scheme Procedure} dicod-service [#:config (dicod-configuration)]
-Return a service that runs the @command{dicod} daemon, an implementation
-of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
-
-The optional @var{config} argument specifies the configuration for
-@command{dicod}, which should be a @code{<dicod-configuration>} object, by
-default it serves the GNU Collaborative International Dictionary of English.
 
 You can add @command{open localhost} to your @file{~/.dico} file to make
 @code{localhost} the default server for @command{dico} client
 (@pxref{Initialization File,,, dico, GNU Dico Manual}).
-@end deffn
+@end defvar
 
 @deftp {Data Type} dicod-configuration
 Data type representing the configuration of dicod.
@@ -37933,22 +37925,24 @@ A @code{<dicod-database>} object serving the GNU Collaborative International
 Dictionary of English using the @code{gcide} package.
 @end defvar
 
-The following is an example @code{dicod-service} configuration.
+The following is an example @code{dicod-service-type} configuration.
 
 @lisp
-(dicod-service #:config
-  (dicod-configuration
-   (handlers (list (dicod-handler
-                    (name "wordnet")
-                    (module "dictorg")
-                    (options
-                     (list #~(string-append "dbdir=" #$wordnet))))))
-   (databases (list (dicod-database
-                     (name "wordnet")
-                     (complex? #t)
-                     (handler "wordnet")
-                     (options '("database=wn")))
-                    %dicod-database:gcide))))
+(service dicod-service-type
+         (dicod-configuration
+          (handlers (list
+                     (dicod-handler
+                      (name "wordnet")
+                      (module "dictorg")
+                      (options
+                       (list #~(string-append "dbdir=" #$wordnet))))))
+          (databases (list
+                      (dicod-database
+                       (name "wordnet")
+                       (complex? #t)
+                       (handler "wordnet")
+                       (options '("database=wn")))
+                      %dicod-database:gcide))))
 @end lisp
 
 @cindex Docker
