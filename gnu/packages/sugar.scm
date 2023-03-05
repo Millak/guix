@@ -18,6 +18,7 @@
 
 (define-module (gnu packages sugar)
   #:use-module (gnu packages)
+  #:use-module (gnu packages abiword)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -774,3 +775,51 @@ a Command-Line Interface (CLI) to the system.")
 environment you will learn the best way to hold your hands in order for you to
 become a faster typist.")
     (license license:gpl3+)))
+
+(define-public sugar-write-activity
+  (let ((commit "dd854c06378cabf0d064d8dc87b5789d2a1a7746")
+        (revision "1"))
+    (package
+      (name "sugar-write-activity")
+      (version (git-version "101" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/write-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0lw34hf31fyfvqilzlmcz3c7zki0iqkn1zp2sv3dih016gwqg5pw"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list abiword
+             gdk-pixbuf
+             gtk+
+             telepathy-glib))
+      (inputs
+       (list sugar-toolkit-gtk3
+             gettext-minimal))
+      (home-page "https://help.sugarlabs.org/write.html")
+      (synopsis "Word processor for Sugar desktop")
+      (description "Write is a word processor activity for the Sugar desktop.
+Write embeds the AbiWord word processor, and can be used to write and edit
+text documents.")
+      (license license:gpl2+))))
