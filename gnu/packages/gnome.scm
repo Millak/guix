@@ -2723,7 +2723,7 @@ forgotten when the session ends.")
            gobject-introspection
            pkg-config
            libxml2))
-    (home-page " https://wiki.gnome.org/Apps")
+    (home-page "https://wiki.gnome.org/Apps/Evince")
     (synopsis "GNOME's document viewer")
     (description
      "Evince is a document viewer for multiple document formats.  It
