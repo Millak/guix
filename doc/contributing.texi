@@ -1488,7 +1488,7 @@ Due to an apparent bug in @command{git send-email},
 @end quotation
 
 You can find out @var{ISSUE_NUMBER} either by searching on the mumi
-interface at @url{issues.guix.gnu.org} for the name of your patch or
+interface at @url{https://issues.guix.gnu.org} for the name of your patch or
 reading the acknowledgement email sent automatically by Debbugs in
 reply to incoming bugs and patches, which contains the bug number.
 
