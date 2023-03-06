@@ -8358,7 +8358,7 @@ in already-indented code.")
 (define-public ruby-cucumber-core
   (package
     (name "ruby-cucumber-core")
-    (version "7.1.0")
+    (version "11.1.0")
     (source
      (origin
        (method git-fetch)
@@ -8368,18 +8368,16 @@ in already-indented code.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1p5wb6wbggbw37ariyag4kxpiczznvgm3c8cnz1744dmbj79q1rn"))))
+         "0lf2inlam0951djc2qz81x0nkffmw2dpj44iadw1fw31m7r8wqvh"))))
     (build-system ruby-build-system)
-    (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'extract-gemspec 'relax-version-requirements
-           (lambda _
-             (substitute* "cucumber-core.gemspec"
-               (("'cucumber-tag-expressions',.*")
-                 "'cucumber-tag-expressions', '>=2.0.0'\n"))
-             #t)))))
+    (arguments (list #:test-target "spec"
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'extract-gemspec 'relax-version-requirements
+                           (lambda _
+                             (substitute* "cucumber-core.gemspec"
+                               (("'cucumber-tag-expressions',.*")
+                                "'cucumber-tag-expressions', '>=4.1.0'\n")))))))
     (native-inputs
      (list ruby-rspec ruby-coveralls ruby-rubocop ruby-simplecov
            ruby-unindent))
