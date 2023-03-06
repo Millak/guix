@@ -855,6 +855,7 @@ become a faster typist.")
        (list abiword
              gdk-pixbuf
              gtk+
+             libgsf
              telepathy-glib))
       (inputs
        (list sugar-toolkit-gtk3
