@@ -4511,17 +4511,16 @@ client protocol.")
 facilities supporting TDD, BDD, mocking, and benchmarking.")
     (license license:expat)))
 
-(define-public ruby-minitest-5.14
+(define-public ruby-minitest-5.15
   (package
     (inherit ruby-minitest)
-    (name "ruby-minitest-5.14")
-    (version "")
+    (version "5.15.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "minitest" version))
               (sha256
                (base32
-                "19z7wkhg59y8abginfrm2wzplz7py3va8fyngiigngqvsws6cwgl"))))))
+                "06xf558gid4w8lwx13jwfdafsch9maz8m0g85wnfymqj63x5nbbd"))))))
 
 ;; This is the last release of Minitest 4, which is used by some packages.
 (define-public ruby-minitest-4
@@ -6846,8 +6845,8 @@ with PostgreSQL 9.0 and later.")
            ;; Using minitest 5.17 would cause 5 new bug failures.  This is
            ;; probably related to
            ;; https://github.com/deivid-rodriguez/byebug/pull/837.  Use
-           ;; minitest 5.14 until this is resolved and released.
-           ruby-minitest-5.14
+           ;; minitest 5.15 until this is resolved and released.
+           ruby-minitest-5.15
            ruby-pry
            ruby-rake-compiler
            ruby-rubocop
