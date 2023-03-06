@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -133,6 +134,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages syncthing)
+  #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages xml)
@@ -3447,3 +3450,50 @@ the following features:
 @end itemize")
     (license (list license:expat  ;3 files under Expat license (see 'LICENSE')
                    license:gpl3+))))              ;the rest is GPLv3+
+
+(define-public xforms
+  ;; The latest stable release is ancient (2014) and fails with a linker
+  ;; error, so use the last commit.
+  (let ((revision "1")
+        (commit "2c1a9f151baf50887a517280645ec23379fb96f8"))
+    (package
+      (name "xforms")
+      (version (git-version "1.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/xforms.git/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12qc1j5g03n2zigvbwilx2zszr8sgv5wd259js7cwf8ffw4lzjf2"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-doc-makefile
+                            (lambda _
+                              (substitute* "doc/Makefile.am"
+                                (("/bin/mkdir")
+                                 "mkdir")))))
+             #:configure-flags #~(list "--enable-docs")))
+      (native-inputs (list autoconf
+                           automake
+                           libtool
+                           texinfo
+                           texi2html
+                           (texlive-updmap.cfg (list texlive-epsf
+                                                     texlive-tex-texinfo))
+                           imagemagick))
+      (propagated-inputs (list libx11 libxpm libjpeg-turbo))
+      (home-page "http://xforms-toolkit.org/")
+      (synopsis "GUI toolkit for X based on the X11 Xlib library")
+      (description
+       "XForms is a graphical user interface toolkit for X based on the X11
+Xlib library.  It allows you to create windows, containing all kinds of
+widgets (buttons, sliders, browsers, menus etc.) with a few lines of code and
+then attach actions to the widgets, i.e., have some function called when a
+button is pressed.  To make this even easier XForms comes with a program
+called @code{fdesign} that allows you to design a GUI for a program directly
+on the screen and which then writes out the necessary C code for it.")
+      (license license:lgpl2.1+))))
