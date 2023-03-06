@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2516,7 +2517,7 @@ Parcellite and adds bugfixes and features.")
         "-Dinstalled_tests=false"
         ,@(if (%current-target-system)
               ;; Introspection requires running binaries for 'host' on 'build'.
-              '("-Dintrospection=false")
+              '("-Dintrospection=disabled")
               '()))))
     (native-inputs
      `(("git" ,git-minimal/pinned)
