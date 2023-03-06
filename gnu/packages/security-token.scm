@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -252,6 +254,62 @@ from a client application and provide access to the desired reader.")
     (license (list license:bsd-3                ; pcsc-lite
                    license:isc                  ; src/strlcat.c src/strlcpy.c
                    license:gpl3+))))            ; src/spy/*
+
+(define-public pcsc-tools
+  (package
+    (name "pcsc-tools")
+    (version "1.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://salsa.debian.org/rousseau/pcsc-tools.git/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16kvw8y5289fp6y3z8l5w61gfrk872kd500a27sgr5k5dpr9vfbk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-data-paths
+                 (lambda _
+                   (substitute* "ATR_analysis"
+                     (((string-append
+                        "\"/usr/local/pcsc/smartcard_list.txt\", "
+                        "\"/usr/share/pcsc/smartcard_list.txt\", "
+                        "\"/usr/local/share/pcsc/smartcard_list.txt\""))
+                      (string-append "\"" #$output
+                                     "/share/pcsc/smartcard_list.txt\"")))
+                   (substitute* "ATR_analysis.1p"
+                     (("^(\\.IR \\./) ,\n$" _ cwd)
+                      (string-append cwd "\n"))
+                     (("^\\.I /usr/local/pcsc/\n$")
+                      "")
+                     (("/usr/share/pcsc/\n$")
+                      (string-append #$output "/share/pcsc/\n")))))
+               (add-after 'patch-shebangs 'wrap-programs
+                 (lambda _
+                   (for-each
+                    (lambda (prog)
+                      (wrap-program (string-append #$output "/bin/" prog)
+                        `("PERL5LIB" = (,(getenv "PERL5LIB")))))
+                    '("ATR_analysis" "gscriptor" "scriptor"))
+                   (wrap-program (string-append #$output "/bin/gscriptor")
+                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs (list autoconf automake libtool gnu-gettext pkg-config))
+    (inputs (list bash-minimal          ;for wrap-program
+                  perl
+                  perl-gtk3
+                  pcsc-lite
+                  perl-pcsc))
+    (synopsis "Smart cards and PC/SC tools")
+    (description "This package provides the @command{pcsc_scan},
+@command{ATR_analysis}, @command{scriptor}, and @command{gscriptor} commands,
+which are useful tools to test a PC/SC driver, card or reader or send commands
+in a friendly environment (text or graphical user interface).")
+    (home-page "https://pcsc-tools.apdu.fr/")
+    (license license:gpl2+)))
 
 (define-public ykclient
   (package
