@@ -2351,7 +2351,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.11.1")
+    (version "0.11.3")
     (source
      (origin
        (method git-fetch)
@@ -2360,7 +2360,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j5y5jfimmflynrg7003wr7i75b102cpv3afyp3j7z69b2apkhys"))
+        (base32 "0yjbxyba87nkpjmql7s6nv2r2i9s956zgwlfhdi4jjg96v2rgmnr"))
        (modules '((guix build utils)))
        (snippet
         '(begin
