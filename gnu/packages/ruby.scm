@@ -8204,31 +8204,32 @@ system-specific @code{Meta} messages for Cucumber Ruby.")
 (define-public ruby-cucumber-html-formatter
   (package
     (name "ruby-cucumber-html-formatter")
-    (version "7.0.0")
+    (version "20.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "cucumber-html-formatter" version))
        (sha256
         (base32
-         "0lshj4sw9jw7687wrhknyb9kffblai3l843zgrznyqij3ga0bc62"))))
+         "0c7r9mfmph4c6yzc7y3dkr92rhwvpyksr0mdhpqp67xmmr8z1br4"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "rspec"))))))
-    (native-inputs
-     (list ruby-rspec))
-    (propagated-inputs
-     (list ruby-cucumber-messages))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'extract-gemspec 'relax-requirements
+                          (lambda _
+                            (substitute* ".gemspec"
+                              (("~> 18.0") "~> 21.0")))) ;cucumber-messages
+                        (replace 'check
+                          (lambda _
+                            (invoke "rspec"))))))
+    (native-inputs (list ruby-cucumber-compatibility-kit ruby-rspec))
+    (propagated-inputs (list ruby-cucumber-messages))
     (synopsis "HTML formatter for Cucumber")
     (description "Cucumber HTML Formatter produces a HTML report for Cucumber
 runs.  It is built on top of cucumber-react and works with any Cucumber
 implementation with a protocol buffer formatter that outputs Cucumber
 messages.")
-    (home-page "https://github.com/cucumber/cucumber/tree/\
-master/html-formatter/ruby")
+    (home-page "https://github.com/cucumber/html-formatter")
     (license license:expat)))
 
 (define-public ruby-cucumber
