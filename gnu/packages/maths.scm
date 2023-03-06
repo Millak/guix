@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -105,6 +106,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -127,6 +129,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -176,6 +179,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
@@ -458,6 +462,101 @@ universal constants, atomic numbers, and constants related to
 semiconductors.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/dionysus/")))
+
+(define-public dozenal
+  ;; There is no recent release, so use the latest commit.
+  (let ((revision "1")
+        (commit "328bc03ad544179f2cccda36763358c4216f188e"))
+    (package
+      (name "dozenal")
+      (version (git-version "12010904-3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/dgoodmaniii/dozenal")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0knwfwjqdv854l5ny7csdpvp7r0md6a2k43a1l2lkyw9k3cglpph"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; Some test scripts are included, but no makefile-driven
+        ;; tests, and they are all quite manual to run and check.
+        #:tests? #f
+        ;; Running with `make -j' causes the build to fail.  This is likely
+        ;; because this project uses the "recursive make" structure, where
+        ;; each subdirectory contains its own make file, which is called by
+        ;; the top-level makefile.
+        #:parallel-build? #f
+        #:make-flags
+        #~(list (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "dozenal")))
+            (add-after 'chdir 'patch-lua-references
+              (lambda _
+                (let ((lua-name (strip-store-file-name
+                                 #$(this-package-input "lua"))))
+                  (substitute* '("dozcal/Makefile"
+                                 "dozlua/Makefile")
+                    (("lua52")
+                     (string-take lua-name
+                                  (string-rindex lua-name #\.)))))))
+            (delete 'configure)
+            (add-before 'install 'make-bin-dir
+              (lambda _
+                (mkdir-p (string-append #$output "/bin"))))
+            (add-after 'install 'install-html-docs
+              (lambda _
+                (invoke "make"
+                        (string-append "prefix=" #$output)
+                        "installhtml")))
+            (add-after 'install-html-docs 'split-outputs
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (for-each
+                 (lambda (prog)
+                   (let ((orig (string-append #$output "/bin/" prog))
+                         (dst (string-append #$output:gui "/bin/" prog))
+                         (man-orig (string-append #$output
+                                                  "/share/man/man1/"
+                                                  prog ".1"))
+                         (man-dst (string-append #$output:gui
+                                                 "/share/man/man1/"
+                                                 prog ".1")))
+                     (mkdir-p (dirname dst))
+                     (rename-file orig dst)
+                     (mkdir-p (dirname man-dst))
+                     (rename-file man-orig man-dst)))
+                 '("xdozdc" "gdozdc"))
+                (wrap-program (string-append #$output:gui "/bin/" "gdozdc")
+                  `("PATH" = (,(string-append #$output "/bin")))
+                  `("PERL5LIB" = (,(getenv "PERL5LIB")))))))))
+      (outputs '("out" "gui"))
+      (native-inputs (list groff pkg-config))
+      (inputs (list bash-minimal        ;for wrap-program
+                    libhdate
+                    lua
+                    ncurses
+                    perl
+                    perl-tk
+                    perl-par
+                    xforms))
+      (synopsis "Suite of dozenal programs")
+      (description
+       "The dozenal suite is a set of programs designed to assist with working
+in the dozenal (also called \"duodecimal\" or \"base twelve\") system.  It
+includes number converters (dozenal-to-decimal and decimal-to-dozenal), an RPN
+calculator, a graphical calculator, a metric system converter (works with
+imperial, U.S. customary, SI metric, and the dozenal TGM), a pretty-printer
+for dozenal numbers, a date-and-time program, and a dozenal calendar programs,
+complete with events and to-dos.")
+      (home-page "https://codeberg.org/dgoodmaniii/dozenal")
+      (license license:gpl3+))))
 
 (define-public dsfmt
   (package
