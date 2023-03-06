@@ -664,8 +664,16 @@ This package contains the library database.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0jp61y09xqj10mclpip48qlfhniw8gwy8b28cbzxy8hq8pkwmfkq"))))
+         "0jp61y09xqj10mclpip48qlfhniw8gwy8b28cbzxy8hq8pkwmfkq"))
+       (patches (search-patches "m17n-lib-1.8.0-use-pkg-config-for-freetype.patch"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (if (%current-target-system)
+         (list pkg-config
+               libtool
+               gettext-minimal
+               autoconf automake)
+         '()))
     (inputs
      (list fribidi
            gd
@@ -674,7 +682,20 @@ This package contains the library database.")
            libxml2
            m17n-db))
     (arguments
-     `(#:parallel-build? #f))
+     `(#:parallel-build? #f
+       ,@(if (%current-target-system)
+             '(#:phases
+               (modify-phases %standard-phases
+                 ;; AC_FUNC_MALLOC and AC_FUNC_REALLOC usually unneeded
+                 ;; see https://lists.gnu.org/archive/html/autoconf/2003-02/msg00017.html
+                 (add-after 'unpack 'fix-rpl_malloc
+                   (lambda _
+                     (substitute* "configure.ac"
+                       (("AC_FUNC_MALLOC") "")
+                       (("AC_FUNC_REALLOC") ""))
+                     ;; let bootstrap phase run.
+                     (delete-file "./configure")))))
+             '())))
     ;; With `guix lint' the home-page URI returns a small page saying
     ;; that your browser does not handle frames. This triggers the "URI
     ;; returns suspiciously small file" warning.
