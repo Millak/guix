@@ -89,6 +89,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -12322,6 +12323,40 @@ A summary of features for comparison to other file finding modules:
 As a convenience, the PIR module is an empty subclass of this one that is less
 arduous to type for one-liners.")
     (license license:asl2.0)))
+
+(define-public perl-pcsc
+  (package
+    (name "perl-pcsc")
+    (version "1.4.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/W/WH/WHOM/pcsc-perl-" version
+                    ".tar.bz2"))
+              (sha256
+               (base32
+                "17f6i16jv6ci6459vh6y3sz94vgcvykjjszcl4xsykryakjvf8i7"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      ;; The test suite is disabled because it requires access to a card
+      ;; reader with a card inserted.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-dlopen
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "PCSCperl.h"
+                         (("libpcsclite.so.1")
+                          (search-input-file inputs
+                                             "/lib/libpcsclite.so.1"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list pcsc-lite))
+    (synopsis "Perl library for PC/SC")
+    (description
+     "This library allows communication with a smart card using PC/SC from a Perl
+script.")
+    (home-page "https://pcsc-perl.apdu.fr/")
+    (license license:gpl2+)))
 
 (define-public perl-pod-constants
   (package
