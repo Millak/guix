@@ -609,28 +609,27 @@ pattern.  Including support for multipart email and attachments.")
 
 (define-public ruby-railties
   (package
-   (name "ruby-railties")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "railties" version))
-     (sha256
-      (base32
-       "1685y5dcfgcq0b38j13vrpkhiiblmrl64wa9w065669bkgmkw4ra"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
-   (propagated-inputs
-    (list ruby-actionpack ruby-activesupport ruby-method-source ruby-rake
-          ruby-thor))
-   (synopsis "Rails internals, including application bootup and generators")
-   (description
-    "@code{railties} provides the core Rails internals including handling
-application bootup, plugins, generators, and Rake tasks.")
-   (home-page "https://rubyonrails.org/")
-   (license license:expat)))
+    (name "ruby-railties")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f                  ;requires rails to be installed
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'delete-gemfiles 'chdir
+                          (lambda _
+                            (chdir "railties"))))))
+    (propagated-inputs (list ruby-actionpack
+                             ruby-activesupport
+                             ruby-method-source
+                             ruby-rake
+                             ruby-thor
+                             ruby-zeitwerk))
+    (synopsis "Rails internals, including application bootup and generators")
+    (description "@code{railties} provides the core Rails internals including
+handling application bootup, plugins, generators, and Rake tasks.")
+    (home-page "https://rubyonrails.org")
+    (license license:expat)))
 
 (define-public ruby-sprockets-rails
   (package
