@@ -884,7 +884,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.19)
     (name "go")
-    (version "1.20")
+    (version "1.20.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -893,7 +893,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a7wjzv14kaqg5l7ambv5zj4rj7sgah9yhcg6k6da6ygm6bs4dv3"))))
+                "0ir0x17i9067i48ffskwlmbx1j4kfhch46zl8cwl88y23aw59qa2"))))
     (native-inputs
      ;; Go 1.20 and later requires Go 1.17 as the bootstrap toolchain.
      ;; See 'src/cmd/dist/notgo117.go' in the source code distribution,
