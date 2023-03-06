@@ -24,6 +24,7 @@
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -630,7 +631,7 @@ editor (with wide ints)" )
         (base32
          "0vfw7z9i2s9np6nmx1d4dlsywm044rkaqarn7akffmb6bf1j6zv5"))))
     (build-system gnu-build-system)
-    (inputs
+    (native-inputs
      `(("gettext" ,gettext-minimal)))
     (arguments
      `(#:configure-flags
