@@ -50,7 +50,7 @@
         (service polkit-service-type)
         (service elogind-service-type)
         (service dbus-root-service-type)
-        x11-socket-directory-service))
+        (service x11-socket-directory-service-type)))
 
 (define %lightdm-os
   (operating-system
