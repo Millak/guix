@@ -123,6 +123,7 @@
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
+;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35326,7 +35327,7 @@ Fennel code within Emacs.")
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
-   (version "0.7")
+   (version "0.8")
    (source
      (origin
        (method git-fetch)
@@ -35334,7 +35335,7 @@ Fennel code within Emacs.")
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "0bqps8dpvqd2dfw3bamnnf1ikvd48vn8hgb08975f0wski54xh5n"))
+        (base32 "09i85yfg8knkf3z2yrx2wzj1fqsy8f8hxz184zjdacaj4xygpzj6"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (home-page "https://github.com/minad/org-modern")
