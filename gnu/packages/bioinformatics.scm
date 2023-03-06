@@ -8669,6 +8669,46 @@ doublet-detection methods.  In addition, this tool is used for execution and
 benchmark of those eight mentioned methods.")
       (license license:gpl3+))))
 
+(define-public r-plsdabatch
+  (let ((commit "4aadf3a99709afae462db310386b6cf5db20088c")
+        (revision "1"))
+    (package
+      (name "r-plsdabatch")
+      (version (git-version "0.2.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/EvaYiwenWang/PLSDAbatch")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "047l923lq2ji7rwybh9b9zkblzvvhkpli5gb2x8g2q9f2n5022nr"))))
+      (properties `((upstream-name . "PLSDAbatch")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ggplot2
+                               r-ggpubr
+                               r-gridextra
+                               r-lmertest
+                               r-mixomics
+                               r-mvtnorm
+                               r-performance
+                               r-rdpack
+                               r-scales))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/EvaYiwenWang/PLSDAbatch")
+      (synopsis "PLSDA-batch")
+      (description
+       "This package provides a new batch effect correction method based on
+Projection to Latent Structures Discriminant Analysis named “PLSDA-batch” to
+correct data prior to any downstream analysis.  PLSDA-batch estimates latent
+components related to treatment and batch effects to remove batch variation.
+The method is multivariate, non-parametric and performs dimension reduction.
+Combined with centered log ratio transformation for addressing uneven library
+sizes and compositional structure, PLSDA-batch addresses all characteristics
+of microbiome data that existing correction methods have ignored so far.")
+      (license license:gpl3))))
+
 (define-public r-psupertime
   (let ((commit "73825a28d3bd9bc881c15ee0c4c218eec1c9c207")
         (revision "1"))
