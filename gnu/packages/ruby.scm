@@ -8139,18 +8139,6 @@ language.")
     (home-page "https://github.com/cucumber/aruba")
     (license license:expat)))
 
-;; A version of ruby-aruba without tests run so that circular dependencies can
-;; be avoided.
-(define ruby-aruba-without-tests
-  (package
-    (inherit ruby-aruba)
-    (arguments '(#:tests? #f))
-    (propagated-inputs
-     `(("ruby-cucumber" ,ruby-cucumber-without-tests)
-       ,@(alist-delete "ruby-cucumber"
-                       (package-propagated-inputs ruby-aruba))))
-    (native-inputs '())))
-
 (define-public ruby-sys-uname
   (package
   (name "ruby-sys-uname")
@@ -8265,7 +8253,7 @@ CI environment from environment variables.")
 (define-public ruby-cucumber
   (package
     (name "ruby-cucumber")
-    (version "4.1.0")
+    (version "8.0.0")
     (source
      (origin
        (method git-fetch)
@@ -8275,49 +8263,50 @@ CI environment from environment variables.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0g9rqfslbzkkrq2kvl14fgknrhfbji3bjjpjxff5nc9wzd3hd549"))))
+         "1dz880fdz6rfbh1nwwcq21v65byik46jnf9gppnrqf3p5k61i55r"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "default"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-rubocop
-           ;; Rubocop lint check fails with our more recent version.
-           (lambda _
-             (substitute* "Rakefile"
-               (("spec cucumber rubocop")
-                "spec cucumber"))
-             #t))
-         (add-after 'extract-gemspec 'strip-version-requirements
-           (lambda _
-             (delete-file "Gemfile")    ;do not use Bundler
-             (substitute* "cucumber.gemspec"
-               (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                (string-append stripped "\n")))
-             #t))
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
+     (list #:test-target "spec"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-rubocop
+                 ;; Remove extraneous Lint checks.
+                 (lambda _
+                   (substitute* "Rakefile"
+                     (("require 'rubocop/rake_task'")
+                      "")
+                     (("RuboCop::RakeTask.new")
+                      ""))))
+               (add-after 'extract-gemspec 'strip-version-requirements
+                 (lambda _
+                   (delete-file "Gemfile") ;do not use Bundler
+                   (substitute* "cucumber.gemspec"
+                     ;; The dependency specifications are often trailing
+                     ;; behind and appear stricter than necessary, since the
+                     ;; test suite passes with the newer component versions.
+                     (("(.*add_.*dependency '[_A-Za-z0-9-]+')(.*)"
+                       _ stripped rest)
+                      (string-append stripped "   # " rest "\n")))))
+               (add-before 'check 'set-home
+                 (lambda _
+                   (setenv "HOME" (getcwd)))))))
     (propagated-inputs
      (list ruby-builder
+           ruby-cucumber-ci-environment
            ruby-cucumber-core
-           ruby-cucumber-create-meta
            ruby-cucumber-gherkin
            ruby-cucumber-html-formatter
            ruby-cucumber-messages
            ruby-cucumber-wire
            ruby-diff-lcs
-           ruby-multi-json
-           ruby-multi-test))
+           ruby-mime-types
+           ruby-multi-test
+           ruby-sys-uname))
     (native-inputs
-     (list ;; Use a untested version of aruba, to avoid a circular dependency, as
-           ;; ruby-aruba depends on ruby-cucumber.
-           ruby-aruba-without-tests
-           ruby-rspec
-           ruby-pry
+     (list ruby-cucumber-compatibility-kit
            ruby-nokogiri
-           ruby-rubocop))
+           ruby-pry
+           ruby-rspec))
     (synopsis "Describe automated tests in plain language")
     (description "Cucumber is a tool for running automated tests written in
 plain language.  It's designed to support a Behaviour Driven Development (BDD)
