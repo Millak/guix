@@ -8422,24 +8422,17 @@ Expressions are extensible with parameter types.")
 (define-public ruby-cucumber-wire
   (package
     (name "ruby-cucumber-wire")
-    (version "3.1.0")
+    (version "6.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "cucumber-wire" version))
        (sha256
         (base32
-         "0z1n13lqv70zb2lcrvs2263lm0gsb3gz8gbv890kxzwp8cvd433k"))))
+         "1pmydrh9lcckj7p0cn67jw7msxdkgr9zir86cs19h3mf2zlcv7b9"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f                      ;tests use cucumber, causing a cycle
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'extract-gemspec 'relax-version-requirements
-           (lambda _
-             (substitute* ".gemspec"
-               ((" 10\\.1") " 10.2"))
-             #t)))))
+     (list #:tests? #f))                ;tests use cucumber, causing a cycle
     (propagated-inputs
      (list ruby-cucumber-core ruby-cucumber-expressions
            ruby-cucumber-messages))
