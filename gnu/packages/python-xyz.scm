@@ -27787,17 +27787,17 @@ By default it uses the open Python vulnerability database Safety DB.")
 (define-public python-pypandoc
   (package
     (name "python-pypandoc")
-    (version "1.6.4")
+    (version "1.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pypandoc" version))
        (sha256
         (base32
-         "149basv4pvzg9zm74cjz68x8s2n5fykyj7prgysb0qfmja73r83f"))))
+         "0l6a8ngzpx363q2jskxxkx6psfhqrvc4js80dmn16r3vw6m2cb40"))))
     (build-system python-build-system)
     (inputs
-     (list pandoc))
+     (list pandoc python-pandocfilters))
     (propagated-inputs
      `(("wheel" ,python-wheel)))
     (native-inputs
