@@ -8454,26 +8454,29 @@ implemented and invoked on any platform.")
 (define-public ruby-cucumber-tag-expressions
   (package
     (name "ruby-cucumber-tag-expressions")
-    (version "3.0.0")
+    (version "5.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cucumber/tag-expressions-ruby")
+             (url "https://github.com/cucumber/tag-expressions")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15dw4w0npd4m6aw7zhqkjxxzngp42kswrkwfygxkxcxnhy5zl1vx"))))
+         "1ziq30szn8m5y29hsdpx4dn1a8sy29h01nvcldm8nr1mx4b7dj1w"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"))
-    (native-inputs
-     (list ruby-rspec))
+     (list #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "ruby"))))))
+    (native-inputs (list ruby-rspec))
     (synopsis "Cucumber tag expressions for Ruby")
     (description "Cucumber tag expression parser for Ruby.  A tag expression
 is an infix boolean expression used by Cucumber.")
-    (home-page "https://github.com/cucumber/tag-expressions-ruby")
+    (home-page "https://github.com/cucumber/tag-expressions")
     (license license:expat)))
 
 (define-public ruby-bindex
