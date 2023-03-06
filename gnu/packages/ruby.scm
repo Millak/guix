@@ -7958,6 +7958,37 @@ Profiling multiple threads simultaneously is supported.
     (home-page "https://github.com/SamSaffron/memory_profiler")
     (license license:expat)))
 
+(define-public ruby-cucumber-compatibility-kit
+  (package
+    (name "ruby-cucumber-compatibility-kit")
+    (version "11.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "cucumber-compatibility-kit" version))
+              (sha256
+               (base32
+                "17c8zx0yn68rcpfbw4nb1gzvh9fzpwsi1y0qivb99ahdlgzcdp8q"))))
+    (build-system ruby-build-system)
+    (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (replace 'check
+                                    (lambda* (#:key tests? #:allow-other-keys)
+                                      (when tests?
+                                        (invoke "rspec")))))))
+    (propagated-inputs (list ruby-cucumber-messages ruby-rake ruby-rspec))
+    (synopsis "Cucumber compatibility verification utility")
+    (description "The Cucumber Compatibility Kit (CCK) aims to validate a
+Cucumber implementation's support for the Cucumber Messages protocol.")
+    (home-page "https://github.com/cucumber/compatibility-kit")
+    (license license:expat)))
+
+;;; Variant package to break a cycle with ruby-cucumber-messages.
+(define ruby-cucumber-compatibility-kit-bootstrap
+  (package/inherit ruby-cucumber-compatibility-kit
+    (arguments (list #:tests? #f))
+    (propagated-inputs (modify-inputs (package-propagated-inputs
+                                       ruby-cucumber-compatibility-kit)
+                         (delete "ruby-cucumber-messages")))))
+
 (define-public ruby-cucumber-messages
   (package
     (name "ruby-cucumber-messages")
