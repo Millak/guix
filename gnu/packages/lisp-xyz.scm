@@ -24870,7 +24870,7 @@ JSON handling.  Load the parser backend you prefer!
 (define-public sbcl-nsymbols
   (package
    (name "sbcl-nsymbols")
-   (version "0.2.0")
+   (version "0.3.1")
    (source
     (origin
      (method git-fetch)
@@ -24879,9 +24879,12 @@ JSON handling.  Load the parser backend you prefer!
            (commit version)))
      (file-name (git-file-name "cl-nsymbols" version))
      (sha256
-      (base32 "1nks5v2l6vf0kwiyv3r2lickp3xhyi0ck33y1l08crmwhn097hpd"))))
+      (base32 "14zdwsk2nrismj3xb54kfpgcdcsdzw3fyd7zwxlsir66lv9w9ji9"))))
    (build-system asdf-build-system/sbcl)
    (native-inputs (list sbcl-lisp-unit2))
+   (inputs (list cl-closer-mop))
+   (arguments
+    '(#:asd-systems '("nsymbols" "nsymbols/star")))
    (synopsis
     "Functions to search, filter, and group symbols in chosen packages")
    (home-page "https://github.com/atlas-engineer/nsymbols")
