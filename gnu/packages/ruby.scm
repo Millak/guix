@@ -8162,39 +8162,6 @@ such as the OS name, OS version, system name, etc.")
   (home-page "https://github.com/djberg96/sys-uname")
   (license license:asl2.0)))
 
-(define-public ruby-cucumber-create-meta
-  (package
-    (name "ruby-cucumber-create-meta")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "cucumber-create-meta" version))
-       (sha256
-        (base32
-         "0i0i3arymjrnjk72mg79w1a11607x4d0lrqafm9sz2gq9l52zasw"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'extract-gemspec 'relax-version-requirements
-                    (lambda _
-                      (substitute* ".gemspec"
-                        ((" 12\\.2")
-                         " 12.1"))
-                      #t))
-                  (replace 'check
-                    (lambda _
-                      (invoke "rspec"))))))
-    (native-inputs
-     (list ruby-rspec))
-    (propagated-inputs
-     (list ruby-cucumber-messages ruby-sys-uname))
-    (synopsis "Function to create @code{Meta} messages for Cucumber Ruby")
-    (description "The @code{createMeta} utility function allows generating
-system-specific @code{Meta} messages for Cucumber Ruby.")
-    (home-page "https://github.com/cucumber/cucumber/tree/master/create-meta/ruby")
-    (license license:expat)))
-
 (define-public ruby-cucumber-html-formatter
   (package
     (name "ruby-cucumber-html-formatter")
