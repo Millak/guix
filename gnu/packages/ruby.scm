@@ -8233,6 +8233,29 @@ messages.")
     (home-page "https://github.com/cucumber/html-formatter")
     (license license:expat)))
 
+(define-public ruby-cucumber-ci-environment
+  (package
+    (name "ruby-cucumber-ci-environment")
+    (version "9.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "cucumber-ci-environment" version))
+              (sha256
+               (base32
+                "1nmn2hfrjlbazgcryr3hwvsa5v4csfbjqxb4q7wbjhaxl9xxn0k7"))))
+    (build-system ruby-build-system)
+    (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (replace 'check
+                                    (lambda* (#:key tests? #:allow-other-keys)
+                                      (when tests?
+                                        (invoke "rspec")))))))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Detect CI Environment from environment variables")
+    (description "This is a Ruby utility library for Cucumber that detects a
+CI environment from environment variables.")
+    (home-page "https://github.com/cucumber/ci-environment")
+    (license license:expat)))
+
 (define-public ruby-cucumber
   (package
     (name "ruby-cucumber")
