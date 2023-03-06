@@ -2832,6 +2832,39 @@ such as the Raspberry Pi, though it is perfectly capable of running on modern
 systems.")
     (license license:expat)))
 
+(define-public mjwm
+  (package
+    (name "mjwm")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chiku/mjwm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lgfp2xidhvmbj4zqvzz9g8zwbn6mz0pgacc57b43ha523vamsjq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f   ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-subcategory.h
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "include/subcategory.h"
+                ;; icon name should be application-other instead of
+                ;; application-others.
+                (("applications-others") "applications-other")))))))
+    (home-page "https://github.com/chiku/mjwm")
+    (synopsis "Create menu for JWM")
+    (description
+     "MJWM can create JWM's menu from (freedesktop) desktop files and the
+generated file can be include in the rootmenu section of your jwm config
+file.")
+    (license license:gpl2+)))
+
 (define-public devour
   (package
     (name "devour")
