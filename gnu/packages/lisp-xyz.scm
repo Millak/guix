@@ -497,6 +497,39 @@ It's intended as a simpler alternative to parser generators.")
 (define-public ecl-meta
   (sbcl-package->ecl-package sbcl-meta))
 
+(define-public sbcl-cl-smtp
+  (let ((commit "ed47d326fad867ee11323fa3a0f307b5d40e8f2b")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-smtp")
+      (version (git-version "20191031.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/cl-smtp/cl-smtp")
+               (commit commit)))
+         (file-name (git-file-name "cl-smtp" version))
+         (sha256
+          (base32 "0vjjfapcrdc5671jz2d24h8zvpz7skq1x6pi9fvw6ls5sgms6fr0"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl+ssl
+             sbcl-cl-base64
+             sbcl-flexi-streams
+             sbcl-trivial-gray-streams
+             sbcl-usocket))
+      (home-page "https://gitlab.common-lisp.net/cl-smtp/cl-smtp")
+      (synopsis "Simple Common Lisp SMTP client")
+      (description "This package provides a client for SMTP.")
+      (license license:llgpl))))
+
+(define-public cl-smtp
+  (sbcl-package->cl-source-package sbcl-cl-smtp))
+
+(define-public ecl-cl-smtp
+  (sbcl-package->ecl-package sbcl-cl-smtp))
+
 (define-public sbcl-clavier
   (let ((commit "9b1424eaad131e114a45b400784079124b5e2321")
         (revision "1"))
