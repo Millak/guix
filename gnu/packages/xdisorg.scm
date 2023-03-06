@@ -3497,3 +3497,11 @@ button is pressed.  To make this even easier XForms comes with a program
 called @code{fdesign} that allows you to design a GUI for a program directly
 on the screen and which then writes out the necessary C code for it.")
       (license license:lgpl2.1+))))
+
+(define-public xforms-gl
+  (package/inherit xforms
+    (name "xforms-gl")
+    (propagated-inputs (modify-inputs (package-propagated-inputs xforms)
+                         (append mesa)))
+    (synopsis
+     "GUI toolkit for X based on the X11 Xlib library, with OpenGL support")))
