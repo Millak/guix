@@ -883,8 +883,8 @@ Common Lisp, heavily influenced by Python's @code{optparse} and
   (sbcl-package->cl-source-package sbcl-adopt))
 
 (define-public sbcl-clingon
-  (let ((commit "4b99dcb4eb4433118a95f5b4ca49ae32b0a57492")
-        (revision "0"))
+  (let ((commit "ff4fda1768551fecdf1c527a3097ae99ba5f40b5")
+        (revision "1"))
     (package
       (name "sbcl-clingon")
       (version (git-version "0.4.0" revision commit))
@@ -896,7 +896,7 @@ Common Lisp, heavily influenced by Python's @code{optparse} and
                (commit commit)))
          (file-name (git-file-name "cl-clingon" version))
          (sha256
-          (base32 "1nn1zs8n6rsys9s791y6sarpy3416aq848mkfr767g5s5y44ij7j"))))
+          (base32 "1b5ybq2x8bwsr541cznwv43lf9j5gz1ij52xj181kg32wb3x0y3n"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-rove))
