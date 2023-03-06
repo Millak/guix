@@ -7992,40 +7992,30 @@ Cucumber implementation's support for the Cucumber Messages protocol.")
 (define-public ruby-cucumber-messages
   (package
     (name "ruby-cucumber-messages")
-    (version "12.2.0")
+    (version "21.0.1")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/cucumber/messages-ruby")
-                    (commit "12cd07eac87bce7843fd1bb0bf64bc4da09f097c")))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (rubygems-uri "cucumber-messages" version))
               (sha256
                (base32
-                "16wwqfpsq7crvxc3q08lphgyh12cl2d83p1c79p312q4jmy9cn5a"))))
+                "0482a63y7my0arn2bv208g401dq8525f0gwhnwaa11mhv6ph0q5i"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-protobuf.rb
-                    (lambda _
-                      (substitute* "rake/protobuf.rb"
-                        (("load 'protobuf/tasks/compile.rake'")
-                         "require 'protobuf/tasks'"))
-                      #t))
-                  (add-before 'build 'compile
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("bundle exec ") "")
-                        (("include default.mk.*" all)
-                         (string-append "#" all)))
-                      (invoke "make")))
-                  (replace 'check
-                    (lambda _
-                      (invoke "rspec"))))))
-    (propagated-inputs
-     `(("ruby-protobuf" ,ruby-protobuf-cucumber)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; The test suite requires the gem to be installed, so move it
+               ;; after the install phase.
+               (delete 'check)
+               (add-after 'install 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (setenv "GEM_PATH" (string-append
+                                       (getenv "GEM_PATH") ":"
+                                       #$output "/lib/ruby/vendor_ruby"))
+                   (when tests?
+                     (invoke "rspec")))))))
     (native-inputs
-     (list ruby-rspec))
-    (home-page "https://github.com/cucumber/messages-ruby")
+     (list ruby-cucumber-compatibility-kit-bootstrap ruby-rspec))
+    (home-page "https://github.com/cucumber/messages/")
     (synopsis "Cucumber Messages for Ruby (Protocol Buffers)")
     (description "Cucumber Messages for Ruby is a library which allows
 serialization and deserialization of the protocol buffer messages used in
