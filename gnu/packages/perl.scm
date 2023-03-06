@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8650,6 +8651,26 @@ defaults, optional parameters, and extra \"slurpy\" parameters.")
     (description "PAR::Dist is a toolkit to create and manipulate PAR
 distributions.")
     (license (package-license perl))))
+
+(define-public perl-par
+  (package
+    (name "perl-par")
+    (version "1.018")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/R/RS/RSCHUPP/PAR-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0ifyjd1pxbfp8wxa9l8b1irjwln4gwh4nz256mjacjv194mh99bc"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-archive-zip perl-par-dist))
+    (home-page "https://metacpan.org/release/PAR")
+    (synopsis "Perl Archive Toolkit")
+    (description
+     "Perl module for using special zip files (called Perl ARchives) as
+libraries from which Perl modules can be loaded.")
+    (license license:perl-license)))
 
 (define-public perl-parent
   (deprecated-package "perl-parent" perl))
