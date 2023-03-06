@@ -84,6 +84,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages serialization)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
@@ -5391,7 +5392,7 @@ for select languages.")
     (build-system ruby-build-system)
     (arguments `(#:tests? #f))          ;no test suite in gem
     (propagated-inputs
-     (list ruby-gherkin))
+     (list ruby-cucumber-gherkin))
     (synopsis "Gherkin test suite analysis tool")
     (description "CukeModeler facilitates modeling a test suite that is
 written in Gherkin (e.g.  Cucumber, SpecFlow, Lettuce, etc.).  It does this by
@@ -8022,9 +8023,9 @@ serialization and deserialization of the protocol buffer messages used in
 Cucumber.")
     (license license:expat)))
 
-(define-public ruby-gherkin
+(define-public ruby-cucumber-gherkin
   (package
-    (name "ruby-gherkin")
+    (name "ruby-cucumber-gherkin")
     (version "26.1.0")
     (source (origin
               (method git-fetch)
@@ -8049,6 +8050,8 @@ It is intended be used by all Cucumber implementations to parse
 @file{.feature} files.")
     (home-page "https://github.com/cucumber/gherkin")
     (license license:expat)))
+
+(define-deprecated ruby-gherkin ruby-cucumber-gherkin)
 
 (define-public ruby-gherkin-ruby
   (package
@@ -8300,11 +8303,11 @@ CI environment from environment variables.")
      (list ruby-builder
            ruby-cucumber-core
            ruby-cucumber-create-meta
+           ruby-cucumber-gherkin
            ruby-cucumber-html-formatter
            ruby-cucumber-messages
            ruby-cucumber-wire
            ruby-diff-lcs
-           ruby-gherkin
            ruby-multi-json
            ruby-multi-test))
     (native-inputs
@@ -8407,10 +8410,14 @@ in already-indented code.")
                                (("'cucumber-tag-expressions',.*")
                                 "'cucumber-tag-expressions', '>=4.1.0'\n")))))))
     (native-inputs
-     (list ruby-rspec ruby-coveralls ruby-rubocop ruby-simplecov
+     (list ruby-rspec
+           ruby-coveralls
+           ruby-rubocop
+           ruby-simplecov
            ruby-unindent))
     (propagated-inputs
-     (list ruby-cucumber-messages ruby-gherkin
+     (list ruby-cucumber-gherkin
+           ruby-cucumber-messages
            ruby-cucumber-tag-expressions))
     (synopsis "Core library for the Cucumber BDD app")
     (description "Cucumber is a tool for running automated tests
