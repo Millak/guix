@@ -2847,12 +2847,15 @@ progresses the level, or you may regenerate tiles as the world changes.")
                     (url "https://github.com/raysan5/raylib/")
                     (commit version)))
               (file-name (git-file-name name version))
+              ;; TODO: Unbundle src/external
               (sha256
                (base32
                 "14v5iwxh8grywiyw9agpd2sfpyriq1rwwkd9f2s4iihh0z5j7hk8"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f)) ;no test
+     (list #:tests? #f  ;no test
+           #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON" )))
     (inputs (list alsa-lib
                   libx11
                   libxrandr
