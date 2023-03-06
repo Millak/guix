@@ -10383,14 +10383,17 @@ Markdown.")
 (define-public ruby-rake
   (package
     (name "ruby-rake")
-    (version "13.0.1")
+    (version "13.0.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "rake" version))
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/rake")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0w6qza25bq1s825faaglkx1k6d59aiyjjk3yw3ip5sb463mhhai9"))))
+         "0c77xyl677s966f8yvk8yv7l31c1ffa1yl4kcwiram219h0s76in"))))
     (build-system ruby-build-system)
     (native-inputs
      (list bundler))
