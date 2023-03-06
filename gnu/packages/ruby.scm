@@ -10460,6 +10460,42 @@ defined in a @file{.env} file.")
     (home-page "https://github.com/bkeepers/dotenv")
     (license license:expat)))
 
+(define-public ruby-dotenv-rails
+  (package
+    (inherit ruby-dotenv)
+    (name "ruby-dotenv-rails")
+    (arguments
+     (substitute-keyword-arguments (package-arguments ruby-dotenv)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'do-not-build-dotenv-rails)
+            (add-after 'unpack 'delete-Gemfile
+              (lambda _
+                ;; It defines extraneous dependencies; remove it.
+                (delete-file "Gemfile")))
+            (add-after 'unpack 'remove-extraneous-gemspec
+              (lambda _
+                (delete-file "dotenv.gemspec")
+                (substitute* "Gemfile"
+                  ((".*\"dotenv\".*") ""))
+                (substitute* "Rakefile"
+                  ;; Remove the dotenv-related Rake tasks.
+                  (("Bundler::GemHelper.install_tasks name: \"dotenv\"")
+                   "")
+                  (("\"dotenv:[^\"]*\", ")
+                   ""))))
+            (replace 'replace-git-ls-files
+              (lambda _
+                (substitute* "dotenv-rails.gemspec"
+                  (("`git ls-files lib \\| grep rails`")
+                   "`find lib -type f | sort | grep rails`"))))))))
+    (native-inputs (list ruby-rspec ruby-spring ruby-standard))
+    (propagated-inputs (list ruby-dotenv ruby-railties))
+    (synopsis "Ruby library for setting environment variables in Rails project")
+    (description "Dotenv is a Ruby library for setting environment variables
+defined in a @file{.env} file.  This is the Rails variant, adapted for use
+with Ruby on Rails projects.")))
+
 (define-public ruby-http-cookie
   (package
     (name "ruby-http-cookie")
