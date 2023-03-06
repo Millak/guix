@@ -22212,18 +22212,38 @@ Usually the X server is started by a login manager.
 @end deffn
 
 
-@deffn {Scheme Procedure} screen-locker-service @var{package} [@var{program}]
-Add @var{package}, a package for a screen locker or screen saver whose
-command is @var{program}, to the set of setuid programs and add a PAM entry
-for it.  For example:
+@defvar screen-locker-service-type
+Type for a service that adds a package for a screen locker or screen
+saver to the set of setuid programs and add a PAM entry for it.  The
+value for this service is a @code{<screen-locker-configuration>} object.
+
+For example, to make XlockMore usable:
 
 @lisp
-(screen-locker-service xlockmore "xlock")
+(service screen-locker-service-type
+         (screen-locker-configuration
+           "xlock" (file-append xlockmore "/bin/xlock") #f))
 @end lisp
 
 makes the good ol' XlockMore usable.
-@end deffn
+@end defvar
 
+@deftp {Data Type} screen-locker-configuration
+Data type representing the configuration of
+@code{screen-locker-service-type}.
+
+@table @asis
+@item @code{name} (type: string)
+Name of the screen locker.
+
+@item @code{program} (type: gexp)
+Path to the executable for the screen locker as a G-Expression.
+
+@item @code{allow-empty-password?} (type: boolean)
+Whether to allow empty passwords.
+
+@end table
+@end deftp
 
 @node Printing Services
 @subsection Printing Services
