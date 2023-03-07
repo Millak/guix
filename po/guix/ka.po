@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
-# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022, 2023.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-12-05 22:20+0000\n"
+"PO-Revision-Date: 2023-02-25 10:20+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://translate.fedoraproject.org/projects/guix/guix/ka/>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -877,7 +877,7 @@ msgstr ""
 #: gnu/home/services/symlink-manager.scm:209
 #, scheme-format
 msgid "failed to create directory ~a: ~s~%"
-msgstr ""
+msgstr "საქაღალდის შექმნის შეცდომა ~a: ~s~%"
 
 #: gnu/home/services/symlink-manager.scm:232
 msgid ""
@@ -1778,7 +1778,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:115
 msgid "Partition table"
-msgstr ""
+msgstr "დანაყოფების ცხრილი"
 
 #: gnu/installer/newt/partition.scm:134
 msgid "Please select a partition type."
@@ -1992,7 +1992,7 @@ msgstr ""
 
 #: gnu/installer/newt/services.scm:42
 msgid "Desktop environment"
-msgstr ""
+msgstr "სამუშაო გარემო"
 
 #: gnu/installer/newt/services.scm:57
 msgid "You can now select networking services to run on your system."
@@ -2000,7 +2000,7 @@ msgstr ""
 
 #: gnu/installer/newt/services.scm:59
 msgid "Network service"
-msgstr ""
+msgstr "ქსელური სერვისი"
 
 #: gnu/installer/newt/services.scm:75
 msgid "You can now select the CUPS printing service to run on your system."
@@ -2074,7 +2074,7 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:129
 msgid "Root account"
-msgstr ""
+msgstr "Root-ის ანგარიში"
 
 #: gnu/installer/newt/user.scm:171
 msgid "Please confirm the password."
@@ -2549,7 +2549,7 @@ msgstr ""
 #: guix/scripts.scm:136
 #, scheme-format
 msgid "invalid argument: ~a~%"
-msgstr ""
+msgstr "არასწორი არგუმენტი: ~a~%"
 
 #: guix/scripts.scm:168 guix/scripts/import.scm:110
 #: guix/scripts/system.scm:1418 guix/scripts/system/edit.scm:42
@@ -3840,7 +3840,7 @@ msgstr ""
 #: guix/scripts/package.scm:1047
 #, scheme-format
 msgid "nothing to do~%"
-msgstr ""
+msgstr "გასაკეთებელი არაფერია ~%"
 
 #: guix/scripts/package.scm:1069
 msgid "manage packages and profiles"
@@ -3855,7 +3855,7 @@ msgstr ""
 
 #: guix/scripts/install.scm:71
 msgid "install packages"
-msgstr ""
+msgstr "პაკეტების დაყენება"
 
 #: guix/scripts/remove.scm:30
 msgid ""
@@ -3893,7 +3893,7 @@ msgstr ""
 
 #: guix/scripts/search.scm:62
 msgid "search for packages"
-msgstr ""
+msgstr "პაკეტის ძებნა"
 
 #: guix/scripts/search.scm:75
 #, scheme-format
@@ -4264,7 +4264,7 @@ msgstr ""
 #: guix/scripts/import/stackage.scm:130 guix/scripts/import/texlive.scm:101
 #, scheme-format
 msgid "too few arguments~%"
-msgstr ""
+msgstr "მეტისმეტად ბევრი არგუმენტი~%"
 
 #: guix/scripts/import/minetest.scm:117 guix/scripts/import/cran.scm:122
 #: guix/scripts/import/elpa.scm:112 guix/scripts/import/cpan.scm:89
@@ -4276,7 +4276,7 @@ msgstr ""
 #: guix/scripts/import/texlive.scm:103
 #, scheme-format
 msgid "too many arguments~%"
-msgstr ""
+msgstr "მეტისმეტად ბევრი არგუმენტი~%"
 
 #: guix/scripts/import/cran.scm:45
 msgid ""
@@ -4639,7 +4639,7 @@ msgstr ""
 #: guix/scripts/authenticate.scm:86
 #, scheme-format
 msgid "invalid signature: ~a"
-msgstr ""
+msgstr "არასწორი ხელმოწერა: ~a"
 
 #: guix/scripts/authenticate.scm:89
 #, scheme-format
@@ -6767,7 +6767,6 @@ msgstr ""
 #. TRANSLATORS: Change the "/en" bit of this URL appropriately if
 #. the web site is translated in your language.
 #: guix/ui.scm:547
-#, fuzzy
 msgid "https://guix.gnu.org/en/help/"
 msgstr "https://guix.gnu.org/en/help/"
 
@@ -7360,7 +7359,7 @@ msgstr ""
 
 #: guix/nar.scm:182
 msgid "invalid signature"
-msgstr ""
+msgstr "არასწორი ხელმოწერა"
 
 #: guix/nar.scm:186
 msgid "invalid hash"
@@ -8871,7 +8870,7 @@ msgstr ""
 #: guix/scripts/refresh.scm:271
 #, scheme-format
 msgid "Available updaters:~%"
-msgstr ""
+msgstr "ხელმისაწვდომი განახლებები:~%"
 
 #. TRANSLATORS: The parenthetical expression here is rendered
 #. like "(42% coverage)" and denotes the fraction of packages

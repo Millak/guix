@@ -9,7 +9,7 @@
 # Helge Kim <helge@keemail.me>, 2021.
 # Olga Smirnova <mistresssilvara@hotmail.com>, 2022.
 # Nikita Epifanov <nikgreens@protonmail.com>, 2022.
-# A D <drozdov@portalenergy.tech>, 2022.
+# A D <drozdov@portalenergy.tech>, 2022, 2023.
 # Illia Demianchuk <illialoo99@gmail.com>, 2022.
 #: guix/diagnostics.scm:158
 msgid ""
@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-12-24 17:58+0000\n"
-"Last-Translator: Illia Demianchuk <illialoo99@gmail.com>\n"
+"PO-Revision-Date: 2023-01-12 19:20+0000\n"
+"Last-Translator: A D <drozdov@portalenergy.tech>\n"
 "Language-Team: Russian <https://translate.fedoraproject.org/projects/guix/guix/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -673,12 +673,20 @@ msgid ""
 "paramount.  OpenDHT was originally based on Kademlia and adapted for\n"
 "applications in communication.  It is used by Jami, for example."
 msgstr ""
+"Запуск команды OpenDHT @command{dhtnode}, которая позволяет\n"
+"участвовать в сети OpenDHT, основанной на распределённой таблице хешей. \n"
+"Сервис может быть сконфигурирован как прокси распределённой сети, которая\n"
+"может быть полезна для портативных устройств, для которых минимизация потребления энергии \n"
+"имеет первостепенное значение.  OpenDHT изначально была основана на Kademlia и адаптирована \n"
+"для приложений связи.  Она используется в Jami, например."
 
 #: gnu/services/networking.scm:1090
 msgid ""
 "Run the @uref{https://torproject.org, Tor} anonymous\n"
 "networking daemon."
 msgstr ""
+"Запустить @uref{https://torproject.org, Tor} демон \n"
+"анонимной сети."
 
 #: gnu/services/networking.scm:1099
 msgid "Define a new Tor @dfn{hidden service}."

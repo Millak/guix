@@ -5,22 +5,22 @@
 # Wellton Costa de Oliveira <contato@wellton.com.br>, 2021.
 # Thiago Jung Bauermann <bauermann@kolabnow.com>, 2021, 2022.
 # Fernando Almeida <fealme@tatuhy.org>, 2021.
-# Fábio Rodrigues Ribeiro <farribeiro@gmail.com>, 2022.
+# Fábio Rodrigues Ribeiro <farribeiro@gmail.com>, 2022, 2023.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-06-20 11:18+0000\n"
-"Last-Translator: Thiago Jung Bauermann <bauermann@kolabnow.com>\n"
+"PO-Revision-Date: 2023-01-16 21:27+0000\n"
+"Last-Translator: Fábio Rodrigues Ribeiro <farribeiro@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/guix/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 4.15\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -745,7 +745,7 @@ msgstr ""
 
 #: gnu/services/samba.scm:266
 msgid "Web Service Discovery Daemon"
-msgstr ""
+msgstr "Daemon de Descoberta de Serviço da Web"
 
 #: gnu/services/version-control.scm:177
 msgid ""
@@ -2994,26 +2994,18 @@ msgid "'~a' is not a supported cross-compilation target~%"
 msgstr "'~a' não é um alvo suportado~%"
 
 #: guix/scripts/build.scm:380
-#, fuzzy, scheme-format
-#| msgid ""
-#| "\n"
-#| "      --list-targets     list available targets"
+#, scheme-format
 msgid ""
 "Did you mean @code{~a}?\n"
 "Try @option{--list-targets} to view available targets.~%"
 msgstr ""
-"\n"
-"      --list-targets       lista os alvos disponíveis"
+"Você quis dizer @code{~a}?\n"
+"Tente @option{--list-targets} para ver alvos disponíveis.~%"
 
 #: guix/scripts/build.scm:384
-#, fuzzy, scheme-format
-#| msgid ""
-#| "\n"
-#| "      --list-targets     list available targets"
+#, scheme-format
 msgid "Try @option{--list-targets} to view available targets.~%"
-msgstr ""
-"\n"
-"      --list-targets       lista os alvos disponíveis"
+msgstr "Tente @option{--list-targets}para ver alvos disponíveis.~%"
 
 #: guix/scripts/build.scm:403
 #, scheme-format
@@ -7089,12 +7081,12 @@ msgstr ""
 "Realiza a implantação especificada por ARQUIVO.\n"
 
 #: guix/scripts/deploy.scm:62
-#, fuzzy
-#| msgid "   exec            execute a command inside of an existing container\n"
 msgid ""
 "\n"
 "  -x, --execute          execute the following command on all the machines"
-msgstr "   exec            executa comando dentro de um contêiner existente\n"
+msgstr ""
+"\n"
+"  -x, --execute          executa o seguinte comando em todas as máquinas"
 
 #: guix/scripts/deploy.scm:120
 #, fuzzy, scheme-format
@@ -7850,13 +7842,11 @@ msgid "at least ~,1h MB needed but only ~,1h MB available in ~a~%"
 msgstr "pelo menos ~,1h MB necessário, mas apenas ~,1h MB disponível em ~a~%"
 
 #: guix/ui.scm:1033
-#, fuzzy, scheme-format
-#| msgid "~:[The following derivation would be built:~%~{   ~a~%~}~;~]"
-#| msgid_plural "~:[The following derivations would be built:~%~{   ~a~%~}~;~]"
+#, scheme-format
 msgid "The following derivation would be built:~%"
 msgid_plural "The following derivations would be built:~%"
-msgstr[0] "~:[A seguinte derivação seria compilada:~%~{   ~a~%~}~;~]"
-msgstr[1] "~:[As seguintes derivações seriam compiladas:~%~{   ~a~%~}~;~]"
+msgstr[0] "A seguinte derivação seria compiladas: ~%"
+msgstr[1] "A seguinte derivações seriam compiladas: ~%"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -8413,10 +8403,9 @@ msgid "Authenticating channel '~a', commits ~a to ~a (~h new commits)...~%"
 msgstr "Autenticando canal \"~a\", commits de ~a a ~a (~h novos commits)...~%"
 
 #: guix/channels.scm:427
-#, fuzzy, scheme-format
-#| msgid "channel '~a' lacks an introduction and cannot be authenticated~%"
+#, scheme-format
 msgid "channel '~a' lacks 'introduction' field but '.guix-authorizations' found\n"
-msgstr "O canal \"~a\" não possui uma introdução e não pode ser autenticado~%"
+msgstr "o canal '~a' não possui o campo 'introduction', mas '.guix-authorizations' foi encontrado\n"
 
 #: guix/channels.scm:435
 #, scheme-format
@@ -8617,12 +8606,10 @@ msgid "failed to connect over SSH to daemon at '~a', socket ~a"
 msgstr "falha ao conectar em \"~a\": ~a~%"
 
 #: guix/ssh.scm:466
-#, fuzzy
-#| msgid "looking for ~h store items on ~a...~%"
 msgid "sending ~a store item (~h MiB) to '~a'...~%"
 msgid_plural "sending ~a store items (~h MiB) to '~a'...~%"
-msgstr[0] "procurando por ~h itens do armazém em ~a…~%"
-msgstr[1] "procurando por ~h itens do armazém em ~a…~%"
+msgstr[0] "enviando ~a item da loja (~h MiB) para '~a'...~%"
+msgstr[1] "enviando ~a itens da loja (~h MiB) para '~a'...~%"
 
 #: guix/ssh.scm:562
 msgid "unknown error while sending files over SSH"
@@ -8653,12 +8640,11 @@ msgid "failed to retrieve store items from '~a'"
 msgstr "falha ao baixar fonte de \"~a\""
 
 #: guix/ssh.scm:631
-#, fuzzy, scheme-format
-#| msgid "looking for ~h store items on ~a...~%"
+#, scheme-format
 msgid "retrieving ~a store item from '~a'...~%"
 msgid_plural "retrieving ~a store items from '~a'...~%"
-msgstr[0] "procurando por ~h itens do armazém em ~a…~%"
-msgstr[1] "procurando por ~h itens do armazém em ~a…~%"
+msgstr[0] "recuperando ~a item da loja de '~a'...~%"
+msgstr[1] "recuperando ~a itens da loja de '~a'...~%"
 
 #: guix/ssh.scm:661
 #, fuzzy, scheme-format
