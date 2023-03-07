@@ -529,6 +529,12 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
             (pair? tail)))
       (_ #f)))
 
+  (define (starts-with-line-comment? lst)
+    ;; Return true if LST starts with a line comment.
+    (match lst
+      ((x . _) (and (comment? x) (not (comment-margin? x))))
+      (_ #f)))
+
   (let loop ((indent indent)
              (column indent)
              (delimited? #t)                  ;true if comes after a delimiter
@@ -710,7 +716,8 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
                              (+ indent 1)
                              (+ column (if delimited? 1 2))))
               (newline?  (or (newline-form? head context)
-                             (list-of-lists? head tail))) ;'let' bindings
+                             (list-of-lists? head tail) ;'let' bindings
+                             (starts-with-line-comment? tail)))
               (context   (cons head context)))
          (if overflow?
              (begin

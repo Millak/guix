@@ -211,6 +211,15 @@ mnopqrstuvwxyz.\")"
                    #:max-width 33)
 
 (test-pretty-print "\
+(list ;margin comment
+      a b c)")
+
+(test-pretty-print "\
+(list
+ ;; This is a line comment immediately following the list head.
+ #:test-flags #~(list \"-m\" \"not external and not samples\"))")
+
+(test-pretty-print "\
 (modify-phases %standard-phases
   (replace 'build
     ;; Nicely indented in 'modify-phases' context.
