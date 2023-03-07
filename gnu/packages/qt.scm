@@ -1232,18 +1232,20 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.3.1")
+    (version "6.3.2")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-urls name version))
               (sha256
                (base32
-                "1s268fha3650dn1lqxf8jfa07wxpw09f6p7rjyiwq3w24d0nkrq3"))))
+                "1hbw63828pp8vm9b46i2pkcbcpr4mq9nblhmpwrw2pflq0fi24xq"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-GNinja" ;about twice as fast!
+      ;; The build takes 12 minutes on a Ryzen 3900X when building with Ninja,
+      ;; compared to 24 minutes with Make.
+      #:configure-flags #~(list "-GNinja"
                                 "-DQT_BUILD_TESTS=ON")
       #:phases
       #~(modify-phases %standard-phases
@@ -1284,7 +1286,6 @@ with JavaScript and C++.")))
               (when tests?
                 ;; The tests expect to find the modules provided by this
                 ;; package; extend the environment variables needed to do so.
-                                        ;(setenv "CMAKE_PREFIX_PATH" #$output)
                 (setenv "QML2_IMPORT_PATH"
                         (string-append #$output "/lib/qt6/qml"))
                 (setenv "QT_PLUGIN_PATH"
@@ -1322,10 +1323,6 @@ with JavaScript and C++.")))
                     ;; qrc). Import paths used:
                     ;; /gnu/store/...-qtbase-6.3.1/lib/qt6/qml"
                     "tst_qmltc_qprocess"
-                    ;; This test is non-deterministic; may fail under high
-                    ;; load (see:
-                    ;; https://bugreports.qt.io/browse/QTBUG-111008).
-                    "tst_qqmlprofilerservice"
                     ;; This one also causes non-determinstic failures (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-101488).
                     "tst_qquickfolderdialogimpl"
