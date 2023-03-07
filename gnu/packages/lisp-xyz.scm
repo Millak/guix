@@ -10068,6 +10068,53 @@ visualization.")
 (define-public cl-ana
   (sbcl-package->cl-source-package sbcl-cl-ana))
 
+(define-public sbcl-eazy-gnuplot
+  (let ((commit "2eb900fe2557e6c066a9851c166e572c25bc0996")
+        (revision "0"))
+    (package
+      (name "sbcl-eazy-gnuplot")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/guicho271828/eazy-gnuplot")
+               (commit commit)))
+         (file-name (git-file-name "cl-eazy-gnuplot" version))
+         (sha256
+          (base32 "0mpkx1z52riahydzvqv7kk15p0pv2k7k5a7j65fg571kcxmssx8s"))
+         (patches (search-patches "sbcl-eazy-gnuplot-skip-path-check.patch"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list gnuplot
+             sbcl-alexandria
+             sbcl-iterate
+             sbcl-trivia))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda _
+               (substitute* "src/package.lisp"
+                 (("\"gnuplot\"")
+                  (string-append "\"" (which "gnuplot") "\""))))))))
+      (home-page "https://github.com/guicho271828/eazy-gnuplot")
+      (synopsis "Common Lisp interface to gnuplot")
+      (description
+       "Eazy-Gnuplot is a Common Lisp interface to gnuplot which eschews CFFI,
+CLOS and structures.  It communicates with @command{gnuplot} via
+@code{*standard-output*}, and users can plot data by printing to that
+stream.")
+      (license license:llgpl))))
+
+(define-public cl-eazy-gnuplot
+  (sbcl-package->cl-source-package sbcl-eazy-gnuplot))
+
+(define-public ecl-eazy-gnuplot
+  (sbcl-package->ecl-package sbcl-eazy-gnuplot))
+
 (define-public sbcl-archive
   (let ((commit "631271c091ed02994bec3980cb288a2cf32c7cdc")
         (revision "1"))
