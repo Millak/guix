@@ -150,6 +150,9 @@
 
             connman-configuration
             connman-configuration?
+            connman-configuration-connman
+            connman-configuration-disable-vpn?
+            connman-configuration-iwd?
             connman-service-type
 
             modem-manager-configuration
@@ -1300,33 +1303,28 @@ wireless networking."))))
             (mkdir-p "/var/lib/connman-vpn/"))))))
 
 (define (connman-shepherd-service config)
-  "Return a shepherd service for Connman"
-  (and
-   (connman-configuration? config)
-   (let ((connman      (connman-configuration-connman config))
-         (disable-vpn? (connman-configuration-disable-vpn? config))
-         (iwd?         (connman-configuration-iwd? config)))
-     (list (shepherd-service
-            (documentation "Run Connman")
-            (provision '(networking))
-            (requirement
-             (append '(user-processes dbus-system loopback)
-                     (if iwd? '(iwd) '())))
-            (start #~(make-forkexec-constructor
-                      (list (string-append #$connman
-                                           "/sbin/connmand")
-                            "--nodaemon"
-                            "--nodnsproxy"
-                            #$@(if disable-vpn? '("--noplugin=vpn") '())
-                            #$@(if iwd? '("--wifi=iwd_agent") '()))
+  (match-record config <connman-configuration> (connman disable-vpn? iwd?)
+    (list (shepherd-service
+           (documentation "Run Connman")
+           (provision '(networking))
+           (requirement
+            (append '(user-processes dbus-system loopback)
+                    (if iwd? '(iwd) '())))
+           (start #~(make-forkexec-constructor
+                     (list (string-append #$connman
+                                          "/sbin/connmand")
+                           "--nodaemon"
+                           "--nodnsproxy"
+                           #$@(if disable-vpn? '("--noplugin=vpn") '())
+                           #$@(if iwd? '("--wifi=iwd_agent") '()))
 
-                      ;; As connman(8) notes, when passing '-n', connman
-                      ;; "directs log output to the controlling terminal in
-                      ;; addition to syslog."  Redirect stdout and stderr
-                      ;; to avoid spamming the console (XXX: for some reason
-                      ;; redirecting to /dev/null doesn't work.)
-                      #:log-file "/var/log/connman.log"))
-            (stop #~(make-kill-destructor)))))))
+                     ;; As connman(8) notes, when passing '-n', connman
+                     ;; "directs log output to the controlling terminal in
+                     ;; addition to syslog."  Redirect stdout and stderr
+                     ;; to avoid spamming the console (XXX: for some reason
+                     ;; redirecting to /dev/null doesn't work.)
+                     #:log-file "/var/log/connman.log"))
+           (stop #~(make-kill-destructor))))))
 
 (define %connman-log-rotation
   (list (log-rotation
