@@ -8421,27 +8421,30 @@ and trust on your team.")
 (define-public ruby-cucumber-expressions
   (package
     (name "ruby-cucumber-expressions")
-    (version "10.2.0")
+    (version "16.1.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cucumber/cucumber-expressions-ruby")
+             (url "https://github.com/cucumber/cucumber-expressions")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1aivhcpjrmbvp9bg0y7g6zxh2swfvylvg0sapq5jc4i1y74k8npd"))))
+         "1dhq88k9x2x8svam5bc7rrcd166fqymda8wxryqkbkffhnzla0id"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"))
-    (native-inputs
-     (list ruby-rspec ruby-simplecov))
+     (list #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "ruby"))))))
+    (native-inputs (list ruby-rspec ruby-simplecov))
     (synopsis "Simpler alternative to Regular Expressions")
     (description "Cucumber Expressions offer similar functionality to Regular
 Expressions, with a syntax that is easier to read and write.  Cucumber
 Expressions are extensible with parameter types.")
-    (home-page "https://github.com/cucumber/cucumber-expressions-ruby")
+    (home-page "https://github.com/cucumber/cucumber-expressions/")
     (license license:expat)))
 
 (define-public ruby-cucumber-wire
