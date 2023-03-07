@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
@@ -52,10 +52,10 @@
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9 gnu)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs bytevectors)
   #:use-module (web uri)
   #:autoload   (texinfo) (texi-fragment->stexi)
@@ -1540,8 +1540,7 @@ matching package and returns a replacement for that package."
     (fold (lambda (replacement table)
             (match replacement
               ((spec . proc)
-               (let-values (((name version)
-                             (package-name->name+version spec)))
+               (let ((name version (package-name->name+version spec)))
                  (vhash-cons name (list version proc) table)))))
           vlist-null
           replacements))
