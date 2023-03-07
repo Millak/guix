@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -590,13 +590,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtbase
   (package/inherit qtbase-5
     (name "qtbase")
-    (version "6.3.1")
+    (version "6.3.2")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-urls name version))
               (sha256
                (base32
-                "00sfya41ihqb0zwg6wf1kiy02iymj6mk584hhk2c4s94khfl4r0a"))
+                "19m9r8sf9mvyrwipn44if3nhding4ljys2mwf04b7dkhz16vlabr"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -612,8 +612,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
      (substitute-keyword-arguments (package-arguments qtbase-5)
        ((#:configure-flags _ ''())
         `(let ((out (assoc-ref %outputs "out")))
-           (list "-GNinja"              ;the build fails otherwise
-                 "-DQT_BUILD_TESTS=ON"
+           (list "-DQT_BUILD_TESTS=ON"
                  (string-append "-DINSTALL_ARCHDATADIR=" out "/lib/qt6")
                  (string-append "-DINSTALL_DATADIR=" out "/share/qt6")
                  (string-append "-DINSTALL_DOCDIR=" out "/share/doc/qt6")
@@ -704,12 +703,6 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                    "/usr/bin/env python3"))))
             (replace 'configure
               (assoc-ref %standard-phases 'configure))
-            (replace 'build
-              (lambda* (#:key parallel-build? #:allow-other-keys)
-                (apply invoke "cmake" "--build" "."
-                       (if parallel-build?
-                           `("--parallel" ,(number->string (parallel-job-count)))
-                           '()))))
             (delete 'check)             ;move after patch-prl-files
             (add-after 'patch-prl-files 'check
               (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
@@ -812,9 +805,6 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                       "tst_qcompleter"
                       "tst_qfiledialog") "|")
                     ")")))))
-            (replace 'install
-              (lambda _
-                (invoke "cmake" "--install" ".")))
             (replace 'patch-mkspecs
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((archdata (search-input-directory outputs "lib/qt6"))
@@ -855,8 +845,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                     (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
-       (prepend ninja
-                wayland-protocols
+       (prepend wayland-protocols
                 xvfb-run)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
