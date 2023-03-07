@@ -1229,7 +1229,7 @@ project's documentation} for more information."
           (vpn  (vpn-plugin-directory vpn-plugins)))
       (list (shepherd-service
              (documentation "Run the NetworkManager.")
-             (provision '(networking))
+             (provision '(NetworkManager networking))
              (requirement `(user-processes dbus-system loopback
                             ,@shepherd-requirement
                             ;; TODO: iwd? is deprecated and should be passed
