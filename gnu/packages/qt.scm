@@ -4013,7 +4013,7 @@ color-related widgets.")
   (package
     (inherit python-shiboken-2)
     (name "python-shiboken-6")
-    (version "6.3.1")
+    (version "6.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.qt.io/official_releases"
@@ -4022,7 +4022,7 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0xwri69nnbhn6fajm7l045r0s0qv8nlq6qj8wcj87srli3b5xa75"))))
+                "14k8lm0h45jy6cinfwh1r503pdsslw6sq0ay3f74hil9krc7k6fi"))))
     (build-system cmake-build-system)
     (inputs
      (modify-inputs (package-inputs python-shiboken-2)
