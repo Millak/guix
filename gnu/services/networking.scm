@@ -1136,6 +1136,15 @@ project's documentation} for more information."
 ;;; NetworkManager
 ;;;
 
+;; TODO: deprecated field, remove later.
+(define-with-syntax-properties (warn-iwd?-field-deprecation
+                                (value properties))
+  (when value
+    (warning (source-properties->location properties)
+             (G_ "the 'iwd?' field is deprecated, please use \
+'shepherd-requirement' field instead~%")))
+  value)
+
 (define-record-type* <network-manager-configuration>
   network-manager-configuration make-network-manager-configuration
   network-manager-configuration?
@@ -1147,7 +1156,9 @@ project's documentation} for more information."
        (default "default"))
   (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
                (default '()))
-  (iwd? network-manager-configuration-iwd? (default #f)))
+  (iwd? network-manager-configuration-iwd?  ; TODO: deprecated field, remove.
+        (default #f)
+        (sanitize warn-iwd?-field-deprecation)))
 
 (define (network-manager-activation config)
   ;; Activation gexp for NetworkManager
@@ -1204,7 +1215,10 @@ project's documentation} for more information."
 (define (network-manager-shepherd-service config)
   (match-record config <network-manager-configuration>
     (network-manager shepherd-requirement dns vpn-plugins iwd?)
-    (let ((conf (plain-file "NetworkManager.conf"
+    (let ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
+                    (and shepherd-requirement
+                         (memq 'iwd shepherd-requirement))))
+          (conf (plain-file "NetworkManager.conf"
                             (string-append
                              "[main]\ndns=" dns "\n"
                              (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
@@ -1214,6 +1228,8 @@ project's documentation} for more information."
              (provision '(networking))
              (requirement `(user-processes dbus-system loopback
                             ,@shepherd-requirement
+                            ;; TODO: iwd? is deprecated and should be passed
+                            ;; with shepherd-requirement, remove later.
                             ,@(if iwd? '(iwd) '())))
              (start #~(make-forkexec-constructor
                        (list (string-append #$network-manager
