@@ -1235,17 +1235,30 @@ project's documentation} for more information."
                             ;; TODO: iwd? is deprecated and should be passed
                             ;; with shepherd-requirement, remove later.
                             ,@(if iwd? '(iwd) '())))
-             (start #~(make-forkexec-constructor
-                       (list (string-append #$network-manager
-                                            "/sbin/NetworkManager")
-                             (string-append "--config=" #$conf)
-                             "--no-daemon")
-                       #:environment-variables
-                       (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
-                                            "/lib/NetworkManager/VPN")
-                             ;; Override non-existent default users
-                             "NM_OPENVPN_USER="
-                             "NM_OPENVPN_GROUP=")))
+             (start
+              #~(lambda _
+                  (let ((pid
+                         (fork+exec-command
+                          (list #$(file-append network-manager
+                                               "/sbin/NetworkManager")
+                                (string-append "--config=" #$conf)
+                                "--no-daemon")
+                          #:environment-variables
+                          (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
+                                               "/lib/NetworkManager/VPN")
+                                ;; Override non-existent default users
+                                "NM_OPENVPN_USER="
+                                "NM_OPENVPN_GROUP="))))
+                    ;; XXX: Despite the "online" name, this doesn't guarantee
+                    ;; WAN connectivity, it merely waits for NetworkManager
+                    ;; to finish starting-up. This is required otherwise
+                    ;; services will fail since the network interfaces be
+                    ;; absent until NetworkManager finishes setting them up.
+                    (system* #$(file-append network-manager "/bin/nm-online")
+                             "--wait-for-startup" "--quiet")
+                    ;; XXX: Finally, return the pid from running
+                    ;; fork+exec-command to shepherd.
+                    pid)))
              (stop #~(make-kill-destructor)))))))
 
 (define network-manager-service-type
