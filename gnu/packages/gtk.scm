@@ -2146,7 +2146,7 @@ so that they can be used normally in signals and properties.")
                 "0ry9jfvfgdwzalxcvwsgr7plhk3agx7p40l0fqdf3vrf7ds47i29"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-extutils-depends perl-extutils-pkgconfig))
+     (list perl-extutils-depends perl-extutils-pkgconfig pkg-config))
     (inputs
      (list gtk+-2))
     (propagated-inputs
