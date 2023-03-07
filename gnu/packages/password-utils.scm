@@ -352,32 +352,30 @@ applications, there is xclip integration." )
     (license license:gpl3+)))
 
 (define-public ssh-to-age
-  (let* ((commit "37365ce80fa64d8794855ec3c63cc9a071799fea")
-         (revision "0"))
-    (package
-      (name "ssh-to-age")
-      (version (git-version "1.0.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Mic92/ssh-to-age")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1fk2vxa854jnnffcw4q3vm1445jk1ck1v3p4mr9fh04yz06g7d28"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/Mic92/ssh-to-age/cmd/ssh-to-age"
-         #:unpack-path "github.com/Mic92/ssh-to-age"))
-      (inputs (list go-golang-org-x-crypto
-                    go-filippo-io-edwards25519
-                    go-filippo-io-age))
-      (home-page "https://github.com/Mic92/ssh-to-age")
-      (synopsis "Convert SSH @code{ed25519} keys to @code{age} keys.")
-      (description "This package provides a simple command-line tool to
+  (package
+    (name "ssh-to-age")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Mic92/ssh-to-age")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09rhga9iqmyyq8pkprydy8y15qhzqvbpgzvs681rcyllf8szrj73"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/Mic92/ssh-to-age/cmd/ssh-to-age"
+       #:unpack-path "github.com/Mic92/ssh-to-age"))
+    (inputs (list go-golang-org-x-crypto
+                  go-filippo-io-edwards25519
+                  go-filippo-io-age))
+    (home-page "https://github.com/Mic92/ssh-to-age")
+    (synopsis "Convert SSH @code{ed25519} keys to @code{age} keys.")
+    (description "This package provides a simple command-line tool to
 convert SSH @code{ed25519} keys to @code{age} keys.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public yapet
   (package
