@@ -338,12 +338,26 @@ commands would.")
       #~(modify-phases %standard-phases
           (add-after 'install 'patch-session-file
             (lambda _
-              (let* ((i3 (string-append #$output "/bin/i3"))
-                     (i3-with-shmlog (string-append #$output "/bin/i3-with-shmlog")))
+              (let ((i3 (string-append #$output "/bin/i3"))
+                    (i3-with-shmlog (string-append #$output "/bin/i3-with-shmlog")))
                 (substitute* (string-append #$output "/share/xsessions/i3.desktop")
                   (("Exec=i3") (string-append "Exec=" i3)))
                 (substitute* (string-append #$output "/share/xsessions/i3-with-shmlog.desktop")
-                  (("Exec=i3-with-shmlog") (string-append "Exec=" i3-with-shmlog)))))))))
+                  (("Exec=i3-with-shmlog") (string-append "Exec=" i3-with-shmlog))))))
+           (add-after 'patch-session-file 'wrap-perl-bin
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let* ((i3-save-tree (string-append #$output "/bin/i3-save-tree"))
+                      (perl-lib-names '("perl-anyevent"
+                                        "perl-anyevent-i3"
+                                        "perl-json-xs"
+                                        "perl-common-sense"
+                                        "perl-types-serialiser"))
+                      (perl-lib-paths
+                       (map (lambda (name)
+                              (string-append (assoc-ref inputs name) "/lib/perl5/site_perl"))
+                            perl-lib-names)))
+                 (wrap-program i3-save-tree
+                               `("PERL5LIB" ":" prefix ,perl-lib-paths))))))))
     (inputs
      (list libxcb
            xcb-util
@@ -355,6 +369,11 @@ commands would.")
            libev
            yajl
            xmlto
+           perl
+           perl-anyevent-i3
+           perl-json-xs
+           perl-common-sense
+           perl-types-serialiser
            perl-pod-simple
            libx11
            pcre2
