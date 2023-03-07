@@ -50,6 +50,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module ((gnu packages certs) #:select (nss-certs))
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages firmware)
@@ -926,6 +927,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
   (list inetutils isc-dhcp
         iproute
         wget
+	nss-certs
         ;; wireless-tools is deprecated in favor of iw, but it's still what
         ;; many people are familiar with, so keep it around.
         iw wireless-tools))
