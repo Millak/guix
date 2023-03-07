@@ -1327,7 +1327,7 @@ wireless networking."))))
                          (memq 'iwd shepherd-requirement)))))
       (list (shepherd-service
              (documentation "Run Connman")
-             (provision '(networking))
+             (provision '(connman networking))
              (requirement `(user-processes dbus-system loopback
                                            ,@shepherd-requirement
                                            ;; TODO: iwd? is deprecated and should be passed
