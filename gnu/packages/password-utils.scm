@@ -634,7 +634,7 @@ through the pass command.")
   (package
     (inherit password-store)
     (name "pass-age")
-    (version "1.7.4a0")
+    (version "1.7.4a1")
     (source
      (origin
        (method git-fetch)
@@ -643,7 +643,7 @@ through the pass command.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17899whffnpqqx9x1nx2b8bfxbxlh1pwlglqa0kznl0cn6sb37ql"))))
+        (base32 "0g8x2zivid18qf1czq1yqychmbdzxzs83rg8a5b392m2rzxlrx08"))))
     (build-system copy-build-system)
     (arguments
      '(#:modules
