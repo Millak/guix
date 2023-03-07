@@ -1898,13 +1898,13 @@ positioning and geolocation plugins.")))
 (define-public qtlottie
   (package
     (name "qtlottie")
-    (version "6.3.1")
+    (version "6.3.2")
     (source (origin
               (method url-fetch)
               (uri (qt-urls name version))
               (sha256
                (base32
-                "1x8wmc6gwmxk92zjcsrbhrbqbfvnk7302ggghld5wk8jk5lsf2vl"))))
+                "1c092hmf114r8jfdhkhxnn3vywj93mg33whzav47gr9mbza44icq"))))
     (build-system cmake-build-system)
     (arguments
      (list
