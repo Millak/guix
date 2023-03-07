@@ -19836,6 +19836,12 @@ Data type representing the configuration of NetworkManager.
 @item @code{network-manager} (default: @code{network-manager})
 The NetworkManager package to use.
 
+@item @code{shepherd-requirement} (default: @code{'(wpa-supplicant)})
+This option can be used to provide a list of symbols naming Shepherd services
+that this service will depend on, such as @code{'wpa-supplicant} or
+@code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
+networks.
+
 @item @code{dns} (default: @code{"default"})
 Processing mode for DNS, which affects how NetworkManager uses the
 @code{resolv.conf} configuration file.

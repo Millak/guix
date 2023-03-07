@@ -143,6 +143,7 @@
 
             network-manager-configuration
             network-manager-configuration?
+            network-manager-configuration-shepherd-requirement
             network-manager-configuration-dns
             network-manager-configuration-vpn-plugins
             network-manager-service-type
@@ -1140,6 +1141,8 @@ project's documentation} for more information."
   network-manager-configuration?
   (network-manager network-manager-configuration-network-manager
                    (default network-manager))
+  (shepherd-requirement network-manager-configuration-shepherd-requirement
+                        (default '(wpa-supplicant)))
   (dns network-manager-configuration-dns
        (default "default"))
   (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
@@ -1200,7 +1203,7 @@ project's documentation} for more information."
 
 (define (network-manager-shepherd-service config)
   (match-record config <network-manager-configuration>
-    (network-manager dns vpn-plugins iwd?)
+    (network-manager shepherd-requirement dns vpn-plugins iwd?)
     (let ((conf (plain-file "NetworkManager.conf"
                             (string-append
                              "[main]\ndns=" dns "\n"
@@ -1209,8 +1212,9 @@ project's documentation} for more information."
       (list (shepherd-service
              (documentation "Run the NetworkManager.")
              (provision '(networking))
-             (requirement (append '(user-processes dbus-system loopback)
-                                  (if iwd? '(iwd) '(wpa-supplicant))))
+             (requirement `(user-processes dbus-system loopback
+                            ,@shepherd-requirement
+                            ,@(if iwd? '(iwd) '())))
              (start #~(make-forkexec-constructor
                        (list (string-append #$network-manager
                                             "/sbin/NetworkManager")
