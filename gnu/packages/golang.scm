@@ -9300,7 +9300,7 @@ configuration languages, but other uses may be possible too.")
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.0.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -9309,7 +9309,7 @@ configuration languages, but other uses may be possible too.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19fz68n262kvg2ssw4r6nik30zk6g6cy7rdi0fm05czwigqrdz1i"))))
+        (base32 "1k1dv1jkr72qpk5g363mhrg9hnf5c9qgv4l16l13m4yh08jp271d"))))
     (build-system go-build-system)
     (arguments `(#:import-path "filippo.io/age"))
     (inputs
