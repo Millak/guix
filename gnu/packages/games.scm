@@ -5267,7 +5267,7 @@ in-window at 640x480 resolution or fullscreen.")
 (define-public warzone2100
   (package
     (name "warzone2100")
-    (version "4.0.1")
+    (version "4.3.3")
     (source
      (origin
        (method url-fetch)
@@ -5275,7 +5275,7 @@ in-window at 640x480 resolution or fullscreen.")
                            version
                            "/warzone2100_src.tar.xz"))
        (sha256
-        (base32 "1f8a4kflslsjl8jrryhwg034h1yc9y3y1zmllgww3fqkz3aj4xik"))
+        (base32 "17p58wxwva0qp267hm1alas52jd9h74494wh01ahz880hscbjg1w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5312,31 +5312,32 @@ in-window at 640x480 resolution or fullscreen.")
                 (string-append "iV_DrawTextRotated(\"Press ESC to exit.\", "
                                "100, 100, 0.0f, font_regular);")))
              #t)))))
-    (native-inputs `(("asciidoc" ,asciidoc)
-                     ("asciidoctor" ,ruby-asciidoctor)
-                     ("gettext" ,gettext-minimal)
-                     ("pkg-config" ,pkg-config)
-                     ("unzip" ,unzip)
+    (native-inputs (list asciidoc
+                     ruby-asciidoctor
+                     gettext-minimal
+                     pkg-config
+                     unzip
                      ;; 7z is used to create .zip archive, not `zip' as in version 3.2.*.
-                     ("p7zip" ,p7zip)))
-    (inputs `(("curl" ,curl)
-              ("fontconfig" ,fontconfig)
-              ("freetype" ,freetype)
-              ("glew" ,glew)
-              ("harfbuzz" ,harfbuzz)
-              ("libtheora" ,libtheora)
-              ("libvorbis" ,libvorbis)
-              ("libxrandr" ,libxrandr)
-              ("libsodium" ,libsodium)
-              ("miniupnpc" ,miniupnpc)
-              ("openal" ,openal)
-              ("physfs" ,physfs)
-              ("qtbase" ,qtbase-5)
-              ("qtscript" ,qtscript)
-              ("openssl" ,openssl)
-              ("sdl2" ,sdl2)
-              ("sqlite" ,sqlite)
-              ("utfcpp" ,utfcpp)))
+                     p7zip))
+    (inputs (list opus
+                  curl
+                  fontconfig
+                  freetype
+                  glew
+                  harfbuzz
+                  libtheora
+                  libvorbis
+                  libxrandr
+                  libsodium
+                  miniupnpc
+                  openal
+                  physfs
+                  qtbase-5
+                  qtscript
+                  openssl
+                  sdl2
+                  sqlite
+                  utfcpp))
     (home-page "https://wz2100.net")
     (synopsis "3D Real-time strategy and real-time tactics game")
     (description
