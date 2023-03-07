@@ -1294,7 +1294,8 @@ wireless networking."))))
   (disable-vpn? connman-configuration-disable-vpn?
                 (default #f))
   (iwd?         connman-configuration-iwd?
-                (default #f)))
+                (default #f)
+                (sanitize warn-iwd?-field-deprecation)))
 
 (define (connman-activation config)
   (let ((disable-vpn? (connman-configuration-disable-vpn? config)))
@@ -1308,27 +1309,32 @@ wireless networking."))))
 (define (connman-shepherd-service config)
   (match-record config <connman-configuration> (connman shepherd-requirement
                                                 disable-vpn? iwd?)
-    (list (shepherd-service
-           (documentation "Run Connman")
-           (provision '(networking))
-           (requirement `(user-processes dbus-system loopback
-                          ,@shepherd-requirement
-                          ,@(if iwd? '(iwd) '())))
-           (start #~(make-forkexec-constructor
-                     (list (string-append #$connman
-                                          "/sbin/connmand")
-                           "--nodaemon"
-                           "--nodnsproxy"
-                           #$@(if disable-vpn? '("--noplugin=vpn") '())
-                           #$@(if iwd? '("--wifi=iwd_agent") '()))
+    (let ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
+                    (and shepherd-requirement
+                         (memq 'iwd shepherd-requirement)))))
+      (list (shepherd-service
+             (documentation "Run Connman")
+             (provision '(networking))
+             (requirement `(user-processes dbus-system loopback
+                                           ,@shepherd-requirement
+                                           ;; TODO: iwd? is deprecated and should be passed
+                                           ;; with shepherd-requirement, remove later.
+                                           ,@(if iwd? '(iwd) '())))
+             (start #~(make-forkexec-constructor
+                       (list (string-append #$connman
+                                            "/sbin/connmand")
+                             "--nodaemon"
+                             "--nodnsproxy"
+                             #$@(if disable-vpn? '("--noplugin=vpn") '())
+                             #$@(if iwd? '("--wifi=iwd_agent") '()))
 
-                     ;; As connman(8) notes, when passing '-n', connman
-                     ;; "directs log output to the controlling terminal in
-                     ;; addition to syslog."  Redirect stdout and stderr
-                     ;; to avoid spamming the console (XXX: for some reason
-                     ;; redirecting to /dev/null doesn't work.)
-                     #:log-file "/var/log/connman.log"))
-           (stop #~(make-kill-destructor))))))
+                       ;; As connman(8) notes, when passing '-n', connman
+                       ;; "directs log output to the controlling terminal in
+                       ;; addition to syslog."  Redirect stdout and stderr
+                       ;; to avoid spamming the console (XXX: for some reason
+                       ;; redirecting to /dev/null doesn't work.)
+                       #:log-file "/var/log/connman.log"))
+             (stop #~(make-kill-destructor)))))))
 
 (define %connman-log-rotation
   (list (log-rotation

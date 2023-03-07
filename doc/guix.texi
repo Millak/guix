@@ -19926,8 +19926,6 @@ networks.
 @item @code{disable-vpn?} (default: @code{#f})
 When true, disable connman's vpn plugin.
 
-@item @code{iwd?} (default: @code{#f})
-When true, ConnMan uses iwd to connect to wireless networks.
 @end table
 @end deftp
 
