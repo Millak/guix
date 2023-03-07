@@ -151,6 +151,7 @@
             connman-configuration
             connman-configuration?
             connman-configuration-connman
+            connman-configuration-shepherd-requirement
             connman-configuration-disable-vpn?
             connman-configuration-iwd?
             connman-service-type
@@ -1288,6 +1289,8 @@ wireless networking."))))
   connman-configuration?
   (connman      connman-configuration-connman
                 (default connman))
+  (shepherd-requirement connman-configuration-shepherd-requirement
+                        (default '()))
   (disable-vpn? connman-configuration-disable-vpn?
                 (default #f))
   (iwd?         connman-configuration-iwd?
@@ -1303,13 +1306,14 @@ wireless networking."))))
             (mkdir-p "/var/lib/connman-vpn/"))))))
 
 (define (connman-shepherd-service config)
-  (match-record config <connman-configuration> (connman disable-vpn? iwd?)
+  (match-record config <connman-configuration> (connman shepherd-requirement
+                                                disable-vpn? iwd?)
     (list (shepherd-service
            (documentation "Run Connman")
            (provision '(networking))
-           (requirement
-            (append '(user-processes dbus-system loopback)
-                    (if iwd? '(iwd) '())))
+           (requirement `(user-processes dbus-system loopback
+                          ,@shepherd-requirement
+                          ,@(if iwd? '(iwd) '())))
            (start #~(make-forkexec-constructor
                      (list (string-append #$connman
                                           "/sbin/connmand")

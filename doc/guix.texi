@@ -19917,6 +19917,12 @@ Data Type representing the configuration of connman.
 @item @code{connman} (default: @var{connman})
 The connman package to use.
 
+@item @code{shepherd-requirement} (default: @code{()})
+This option can be used to provide a list of symbols naming Shepherd services
+that this service will depend on, such as @code{'wpa-supplicant} or
+@code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
+networks.
+
 @item @code{disable-vpn?} (default: @code{#f})
 When true, disable connman's vpn plugin.
 
