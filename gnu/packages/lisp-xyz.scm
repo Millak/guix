@@ -10794,52 +10794,55 @@ ZeroMQ.")
   (sbcl-package->ecl-package sbcl-cl-z85))
 
 (define-public sbcl-ltk
-  (package
-    (name "sbcl-ltk")
-    (version "0.992")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/herth/ltk")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13l2q4mskzilya9xh5wy2xvy30lwn104bd8wrq6ifds56r82iy3x"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list imagemagick tk))
-    (arguments
-     `(#:asd-systems '("ltk"
-                       "ltk-mw"
-                       "ltk-remote")
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "ltk/ltk.lisp"
-               (("#-freebsd \"wish\"")
-                (string-append "#-freebsd \""
-                               (assoc-ref inputs "tk")
-                               "/bin/wish\""))
-               (("do-execute \"convert\"")
-                (string-append "do-execute \""
-                               (assoc-ref inputs "imagemagick")
-                               "/bin/convert\"")))
-             #t))
-         (add-after 'unpack 'fix-build
-           (lambda _
-             (substitute* "ltk/ltk-remote.lisp"
-               (("\\(:export")
-                "(:shadow #:raise) (:export"))
-             #t)))))
-    (synopsis "Common Lisp bindings for the Tk GUI toolkit")
-    (description
-     "LTK is a Common Lisp binding for the Tk graphics toolkit.  It is written
-in pure Common Lisp and does not require any Tk knowledge for its usage.")
-    (home-page "http://www.peter-herth.de/ltk/")
-    (license license:llgpl)))
+  (let ((commit "ff14a781d211c19c35e65a7ecaece67dda0b3ebb")
+        (revision "0"))
+    (package
+      (name "sbcl-ltk")
+      (version (git-version "0.992" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/herth/ltk")
+               (commit commit)))
+         (file-name (git-file-name "cl-ltk" version))
+         (sha256
+          (base32 "0f1xgsj2j7bq21cq2pa9rw3ybxd9vyknisl6z307lxx7lvhm3xac"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list imagemagick tk))
+      (arguments
+       `(#:asd-systems '("ltk"
+                         "ltk-mw"
+                         "ltk-remote")
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "ltk/ltk.lisp"
+                 (("#-freebsd \"wish\"")
+                  (string-append "#-freebsd \""
+                                 (assoc-ref inputs "tk")
+                                 "/bin/wish\""))
+                 (("do-execute \"convert\"")
+                  (string-append "do-execute \""
+                                 (assoc-ref inputs "imagemagick")
+                                 "/bin/convert\"")))
+               #t))
+           (add-after 'unpack 'fix-build
+             (lambda _
+               (substitute* "ltk/ltk-remote.lisp"
+                 (("\\(:export")
+                  "(:shadow #:raise) (:export"))
+               #t)))))
+      (synopsis "Common Lisp bindings for the Tk GUI toolkit")
+      (description
+       "LTK is a Common Lisp binding for the Tk graphics toolkit.  It is
+written in pure Common Lisp and does not require any Tk knowledge for its
+usage.")
+      (home-page "http://www.peter-herth.de/ltk/")
+      (license license:llgpl))))
 
 (define-public cl-ltk
   (sbcl-package->cl-source-package sbcl-ltk))
