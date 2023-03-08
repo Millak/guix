@@ -8331,10 +8331,13 @@ be replaced by name rather than by identity.
 @deffn {Scheme Procedure} package-input-rewriting/spec @var{replacements} [#:deep? #t]
 Return a procedure that, given a package, applies the given
 @var{replacements} to all the package graph, including implicit inputs
-unless @var{deep?} is false.  @var{replacements} is a list of
-spec/procedures pair; each spec is a package specification such as
-@code{"gcc"} or @code{"guile@@2"}, and each procedure takes a matching
-package and returns a replacement for that package.
+unless @var{deep?} is false.
+
+@var{replacements} is a list of spec/procedures pair; each spec is a
+package specification such as @code{"gcc"} or @code{"guile@@2"}, and
+each procedure takes a matching package and returns a replacement for
+that package.  Matching packages that have the @code{hidden?} property
+set are not replaced.
 @end deffn
 
 The example above could be rewritten this way:
@@ -12664,18 +12667,18 @@ or @code{guile@@1.8}.
 
 For instance, the following command builds Guix, but replaces its
 dependency on the current stable version of Guile with a dependency on
-the legacy version of Guile, @code{guile@@2.0}:
+the legacy version of Guile, @code{guile@@2.2}:
 
 @example
-guix build --with-input=guile=guile@@2.0 guix
+guix build --with-input=guile=guile@@2.2 guix
 @end example
 
 This is a recursive, deep replacement.  So in this example, both
 @code{guix} and its dependency @code{guile-json} (which also depends on
-@code{guile}) get rebuilt against @code{guile@@2.0}.
+@code{guile}) get rebuilt against @code{guile@@2.2}.
 
-This is implemented using the @code{package-input-rewriting} Scheme
-procedure (@pxref{Defining Packages, @code{package-input-rewriting}}).
+This is implemented using the @code{package-input-rewriting/spec} Scheme
+procedure (@pxref{Defining Packages, @code{package-input-rewriting/spec}}).
 
 @item --with-graft=@var{package}=@var{replacement}
 This is similar to @option{--with-input} but with an important difference:

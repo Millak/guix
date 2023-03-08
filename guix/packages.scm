@@ -1533,9 +1533,11 @@ package and returns its new name after rewrite."
 (define* (package-input-rewriting/spec replacements #:key (deep? #t))
   "Return a procedure that, given a package, applies the given REPLACEMENTS to
 all the package graph, including implicit inputs unless DEEP? is false.
+
 REPLACEMENTS is a list of spec/procedures pair; each spec is a package
 specification such as \"gcc\" or \"guile@2\", and each procedure takes a
-matching package and returns a replacement for that package."
+matching package and returns a replacement for that package.  Matching
+packages that have the 'hidden?' property set are not replaced."
   (define table
     (fold (lambda (replacement table)
             (match replacement
@@ -1563,7 +1565,8 @@ matching package and returns a replacement for that package."
     (gensym " package-replacement"))
 
   (define (rewrite p)
-    (if (assq-ref (package-properties p) replacement-property)
+    (if (or (assq-ref (package-properties p) replacement-property)
+            (hidden-package? p))
         p
         (match (find-replacement p)
           (#f p)

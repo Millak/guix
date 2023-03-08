@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -1591,6 +1591,24 @@
                               (bag-transitive-inputs bag1))))
     (match (delete-duplicates pythons eq?)
       ((p) (eq? p (rewrite python))))))
+
+(test-assert "package-input-rewriting/spec, hidden package"
+  ;; Hidden packages are not subject to rewriting.
+  (let* ((python  (hidden-package python))
+         (p0      (dummy-package "chbouib"
+                    (build-system trivial-build-system)
+                    (inputs (list python))))
+         (rewrite (package-input-rewriting/spec
+                   `(("python" . ,(const sed)))
+                   #:deep? #t))
+         (p1      (rewrite p0))
+         (bag1    (package->bag p1))
+         (pythons (filter-map (match-lambda
+                                (("python" python) python)
+                                (_ #f))
+                              (bag-transitive-inputs bag1))))
+    (match (delete-duplicates pythons eq?)
+      ((p) (eq? p python)))))
 
 (test-equal "package-input-rewriting/spec, graft"
   (derivation-file-name (package-derivation %store sed))
