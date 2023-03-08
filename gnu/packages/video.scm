@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -2571,7 +2571,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.02.17")
+    (version "2023.03.04")
     (source
      (origin
        (method git-fetch)
@@ -2580,7 +2580,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08m626ij0jij5vbvfbbalwr97jdhl1n2w2cwwgbj5a4s7vhvp84x"))))
+        (base32 "1zb4blj7qrmwkryyqrkxl909f59hvbs8dwiwl7sw1fs2kdzb1rw4"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
