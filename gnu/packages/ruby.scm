@@ -7115,50 +7115,46 @@ generates Ruby program.")
 (define-public ruby-rack
   (package
     (name "ruby-rack")
-    (version "2.2.3")
+    ;; Do not upgrade to version 3, as Rails doesn't support it yet.
+    (version "2.2.6.3")
     (source
      (origin
-       (method git-fetch)
-       ;; Download from GitHub so that the snippet can be applied and tests run.
+       (method git-fetch)               ;for tests
        (uri (git-reference
-              (url "https://github.com/rack/rack")
-              (commit version)))
+             (url "https://github.com/rack/rack")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1qrm5z5v586738bnkr9188dvz0s25nryw6sgvx18jjlkizayw1g4"))
-       ;; Ignore test which fails inside the build environment but works
-       ;; outside.
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "test/spec_files.rb"
-                  (("res.body.must_equal expected_body") ""))
-                #t))))
+         "19n33q0v15qjh7kbp2painyzyqg16kkf0mp68vcnlswghmmjcyzq"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-tests
-           (lambda _
-             ;; A few of the tests use the length of a file on disk for
-             ;; Content-Length and Content-Range headers.  However, this file
-             ;; has a shebang in it which an earlier phase patches, growing
-             ;; the file size from 193 to 239 bytes when the store prefix is
-             ;; "/gnu/store".
-             (let ((size-diff (- (string-length (which "ruby"))
-                                 (string-length "/usr/bin/env ruby"))))
-               (substitute* '("test/spec_files.rb")
-                 (("208" bytes)
-                  (number->string (+ (string->number bytes) size-diff)))
-                 (("bytes(.)22-33" all delimiter)
-                  (string-append "bytes"
-                                 delimiter
-                                 (number->string (+ 22 size-diff))
-                                 "-"
-                                 (number->string (+ 33 size-diff))))))
-             #t)))))
-    (native-inputs
-     (list ruby-minitest ruby-minitest-global-expectations))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-tests
+            (lambda _
+              ;; This test fails in the build environment (and passes outside
+              ;; of it).
+              (substitute* "test/spec_files.rb"
+                (("res.body.must_equal expected_body") ""))
+              ;; A few of the tests use the length of a file on disk for
+              ;; Content-Length and Content-Range headers.  However, this file
+              ;; has a shebang in it which an earlier phase patches, growing
+              ;; the file size from 193 to 239 bytes when the store prefix is
+              ;; "/gnu/store".
+              (let ((size-diff (- (string-length (which "ruby"))
+                                  (string-length "/usr/bin/env ruby"))))
+                (substitute* '("test/spec_files.rb")
+                  (("208" bytes)
+                   (number->string (+ (string->number bytes) size-diff)))
+                  (("bytes(.)22-33" all delimiter)
+                   (string-append "bytes"
+                                  delimiter
+                                  (number->string (+ 22 size-diff))
+                                  "-"
+                                  (number->string (+ 33 size-diff)))))))))))
+    (native-inputs (list ruby-minitest ruby-minitest-global-expectations))
     (synopsis "Unified web application interface for Ruby")
     (description "Rack provides a minimal, modular and adaptable interface for
 developing web applications in Ruby.  By wrapping HTTP requests and responses,
