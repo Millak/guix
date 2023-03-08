@@ -129,10 +129,10 @@ such as Coq, Epigram and NuPRL.")
 
 (define-public emacs-agda2-mode
   (package
-    (inherit agda)
     (name "emacs-agda2-mode")
+    (version (package-version agda))
+    (source (package-source agda))
     (build-system emacs-build-system)
-    (inputs '())
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -141,7 +141,8 @@ such as Coq, Epigram and NuPRL.")
     (home-page "https://agda.readthedocs.io/en/latest/tools/emacs-mode.html")
     (synopsis "Emacs mode for Agda")
     (description "This Emacs mode enables interactive development with
-Agda.  It also aids the input of Unicode characters.")))
+Agda.  It also aids the input of Unicode characters.")
+    (license (package-license agda))))
 
 (define-public agda-ial
   (package
