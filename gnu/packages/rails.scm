@@ -438,21 +438,27 @@ useful when writing tests.")
 (define-public ruby-actionview
   (package
    (name "ruby-actionview")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "actionview" version))
-     (sha256
-      (base32
-       "1s5kc1abi7id1g54lz1npgc42zl7pbz172wp8pi7j3s7qljafzw5"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; XXX: This gem appears to load action_controller, provided by
+      ;; ruby-actionpack, but actionpack propagates ruby-actionview,
+      ;; introducing a circular dependency.
+      #:tests? #f
+      #:test-target "test:template"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "actionview"))))))
    (propagated-inputs
-    (list ruby-activesupport ruby-builder ruby-erubi
-          ruby-rails-dom-testing ruby-rails-html-sanitizer))
+    (list ruby-activesupport
+          ruby-builder
+          ruby-erubi
+          ruby-rails-dom-testing
+          ruby-rails-html-sanitizer))
    (synopsis "Conventions and helpers for building web pages")
    (description
     "ActionView provides conventions and helpers for building web pages in
