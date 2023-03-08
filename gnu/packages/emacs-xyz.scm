@@ -33906,7 +33906,7 @@ rather excellent completion provided by both Bash and Zsh.")
 (define-public emacs-shell-command+
   (package
     (name "emacs-shell-command+")
-    (version "2.4.1")
+    (version "2.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -33914,7 +33914,8 @@ rather excellent completion provided by both Bash and Zsh.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "14akj7pavfhch6ljwl26mhv7qczgmqn7mld62cf6mh4ghmhy3z4y"))))
+               (base32
+                "022i7ydwckxqk16s4a83mrdr0c4rmap906qypdkjfh1rjw75qwm5"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/shell-command+.html")
     (synopsis "Extended Emacs @code{shell-command}")
