@@ -10644,38 +10644,40 @@ all known public suffixes.")
 (define-public ruby-addressable
   (package
     (name "ruby-addressable")
-    (version "2.7.0")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "addressable" version))
               (sha256
                (base32
-                "1fvchp2rhp2rmigx7qglf69xvjqvzq7x0g49naliw29r2bz656sy"))))
+                "1ypdmpdn20hxp5vwxz3zc04r5xcwqc25qszdlg41h8ghdqbllwmw"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "spec"
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-bundler
+           (lambda _
+             (substitute* "spec/spec_helper.rb"
+               (("require 'bundler/setup'") ""))))
          (add-after 'unpack 'remove-unnecessary-dependencies-from-Gemfile
-          (lambda _
-            (substitute* "Gemfile"
-              (("git: 'https://github.com/sporkmonger/rack-mount.git',") "")
-              ((".*launchy.*") "")
-              ((".*rake.*") "gem 'rake'\n")
-              ((".*redcarpet.*") ""))
-            #t))
+           (lambda _
+             (substitute* "Gemfile"
+               (("git: 'https://github.com/sporkmonger/rack-mount.git',") "")
+               ((".*launchy.*") "")
+               ((".*rake.*") "gem 'rake'\n")
+               ((".*redcarpet.*") ""))))
          (add-before 'check 'delete-network-dependent-test
            (lambda _
-             (delete-file "spec/addressable/net_http_compat_spec.rb")
-             #t)))))
+             (delete-file "spec/addressable/net_http_compat_spec.rb"))))))
     (native-inputs
-     (list ruby-rspec
-           bundler
+     (list bundler
            ruby-idn-ruby
-           ruby-sporkmonger-rack-mount
+           ruby-rspec
            ruby-rspec-its-minimal
-           ruby-yard
-           ruby-simplecov))
+           ruby-simplecov
+           ruby-sporkmonger-rack-mount
+           ruby-yard))
     (propagated-inputs
      (list ruby-public-suffix))
     (home-page "https://github.com/sporkmonger/addressable")
