@@ -4005,6 +4005,28 @@ reviewed at regular interval.  After each review, the next review interval is
 calculated based on how well you remembered the contents of the card.")
       (license license:gpl3+))))
 
+(define-public emacs-font-lock+
+  (let ((commit "aa1c82d05c9222b09099a0ccd7468e955497940c")
+        (revision "0"))
+    (package
+      (name "emacs-font-lock+")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsmirror/font-lock-plus")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1369r5p6s9c561g5f772lvrpcqxhvyhqd9yk0853hyl03ags9gvs"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/emacsmirror/font-lock-plus")
+      (synopsis "Enhancements to standard Font Lock library")
+      (description
+       "This package provides enhancements to standard Font Lock library.")
+      (license license:gpl3+))))
+
 (define-public emacs-font-lock-studio
   (let ((commit "12c35967b31233e06946c70627aa3152dacfe261")
         (revision "1"))
