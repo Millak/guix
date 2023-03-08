@@ -260,28 +260,30 @@ Can I Use website.")
 
 (define-public ruby-activemodel
   (package
-   (name "ruby-activemodel")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "activemodel" version))
-     (sha256
-      (base32
-       "07m85r00cd1dzxg65zr9wjrdqppw51b5ka9c5mrz92vnw18kfb70"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
-   (propagated-inputs
-    (list ruby-activesupport))
-   (synopsis "Toolkit for building modeling frameworks like Active Record")
-   (description
-    "This package provides a toolkit for building modeling frameworks like
+    (name "ruby-activemodel")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "activemodel")))
+          (add-after 'chdir 'delete-problematic-tests
+            (lambda _
+              ;; We do not want to depend on ruby-railties at this stage.
+              (delete-file "test/cases/railtie_test.rb"))))))
+    (native-inputs (list ruby-bcrypt))
+    (propagated-inputs (list ruby-activesupport))
+    (synopsis "Toolkit for building modeling frameworks like Active Record")
+    (description
+     "This package provides a toolkit for building modeling frameworks like
 Active Record.  ActiveSupport handles attributes, callbacks, validations,
 serialization, internationalization, and testing.")
-   (home-page "https://rubyonrails.org/")
-   (license license:expat)))
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
 
 (define-public ruby-activerecord
   (package
