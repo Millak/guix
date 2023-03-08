@@ -422,8 +422,9 @@ utilites used to process FCODE, OpenFirmware's byte code, consisting of:
                      (("TZ=UTC date \\+")
                       "TZ=UTC date --date=@1 +"))))
                (replace 'configure
-                 (lambda _
-                   (invoke "./config/scripts/switch-arch" #$arch)))
+                 (lambda* (#:key (configure-flags #~'()) #:allow-other-keys)
+                   (apply invoke "./config/scripts/switch-arch" #$arch
+                          configure-flags)))
                (replace 'install
                  (lambda _
                    (let ((build-target
