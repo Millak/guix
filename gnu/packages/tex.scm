@@ -3508,6 +3508,50 @@ arrows; record information about document class(es) used; and many more.")
 
 (define-deprecated-package texlive-latex-oberdiek texlive-oberdiek)
 
+(define-public texlive-onedown
+  (let ((template
+         (simple-texlive-package
+          "texlive-onedown"
+          (list "doc/latex/onedown/"
+                "source/latex/onedown/"
+                "tex/latex/onedown/")
+          (base32
+           "04ih7i4v96ggwk4k1mpfx3dzcpi2siqablv93wryg7dk4cks5wkl"))))
+    (package
+      (inherit template)
+      (outputs '("doc" "out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/onedown")
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/onedown/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (texmf (string-append #$output "/share/texmf-dist"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (for-each
+                     (lambda (directory)
+                       (copy-recursively (string-append origin directory)
+                                         (string-append texmf directory)))
+                     '("/source" "/tex/latex/onedown"))
+                    (copy-recursively (string-append origin "/doc")
+                                      doc))))))))
+      (home-page "https://ctan.org/pkg/onedown")
+      (synopsis "Typeset bridge diagrams")
+      (description
+       "This is a comprehensive package to draw all sorts of bridge diagrams,
+including hands, bidding tables, trick tables, and expert quizzes.
+
+It works for all font sizes.  Different fonts for hands, bidding diagrams and
+compass are possible.  It also provides annotations to card and bidding
+diagrams, automated check on consistency of suit and hands, and multilingual
+output of bridge terms.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-latex-rerunfilecheck
   (package
     (inherit (simple-texlive-package
