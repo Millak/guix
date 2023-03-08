@@ -4390,7 +4390,7 @@ over, or update a value in arbitrary data structures.")
 (define-public guile-xapian
   (package
     (name "guile-xapian")
-    (version "0.3.0")
+    (version "0.3.1")
     (home-page "https://git.systemreboot.net/guile-xapian")
     (source
      (origin
@@ -4400,7 +4400,7 @@ over, or update a value in arbitrary data structures.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0k18navsd0rqx2zbqgvhzscvbls2sxs9k06n195s4bvyd50acfm5"))))
+         "0axbahbi52ji0fxhykn642265v58rdp2yqliqv456nqs038wb5ja"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
