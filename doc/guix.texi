@@ -29610,7 +29610,7 @@ The details for the @code{httpd-configuration}, @code{httpd-module},
 @code{httpd-config-file} and @code{httpd-virtualhost} record types are
 given below.
 
-@deffn {Data Type} httpd-configuration
+@deftp {Data Type} httpd-configuration
 This data type represents the configuration for the httpd service.
 
 @table @asis
@@ -29627,9 +29627,9 @@ G-expression that generates a file, for example a @code{plain-file}.  A
 file outside of the store can also be specified through a string.
 
 @end table
-@end deffn
+@end deftp
 
-@deffn {Data Type} httpd-module
+@deftp {Data Type} httpd-module
 This data type represents a module for the httpd service.
 
 @table @asis
@@ -29643,13 +29643,13 @@ within the store, for example @code{(file-append mod-wsgi
 "/modules/mod_wsgi.so")}.
 
 @end table
-@end deffn
+@end deftp
 
 @defvar %default-httpd-modules
 A default list of @code{httpd-module} objects.
 @end defvar
 
-@deffn {Data Type} httpd-config-file
+@deftp {Data Type} httpd-config-file
 This data type represents a configuration file for the httpd service.
 
 @table @asis
@@ -29728,9 +29728,9 @@ Any values which the service is extended with will be appended to this
 list.
 
 @end table
-@end deffn
+@end deftp
 
-@deffn {Data Type} httpd-virtualhost
+@deftp {Data Type} httpd-virtualhost
 This data type represents a virtualhost configuration block for the httpd service.
 
 These should be added to the extra-config for the httpd-service.
@@ -29754,7 +29754,7 @@ The contents of the @code{VirtualHost} directive, this should be a list
 of strings and G-expressions.
 
 @end table
-@end deffn
+@end deftp
 
 @anchor{NGINX}
 @subsubheading NGINX
@@ -29795,7 +29795,7 @@ configuration.  In our case, startup error messages can be found in
 @file{/var/log/nginx/error.log}.  The second location can be changed
 with the @var{log-directory} configuration option.
 
-@deffn {Data Type} nginx-configuration
+@deftp {Data Type} nginx-configuration
 This data type represents the configuration for NGinx.  Some
 configuration can be done through this and the other provided record
 types, or alternatively, a config file can be provided.
@@ -29935,7 +29935,7 @@ Extra content for the @code{http} block.  Should be string or a string
 valued G-expression.
 
 @end table
-@end deffn
+@end deftp
 
 @anchor{nginx-server-configuration}
 @deftp {Data Type} nginx-server-configuration
