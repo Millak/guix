@@ -15376,6 +15376,28 @@ the higher it scores. This maps well to how we think about matching.
 Flx has support for ido (interactively do things) through flx-ido.")
     (license license:gpl3+)))
 
+(define-public emacs-afternoon-theme
+  (let ((commit "89b1d778a1f8b385775c122f2bd1c62f0fbf931a")
+        (revision "0"))
+    (package
+      (name "emacs-afternoon-theme")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "http://github.com/osener/emacs-afternoon-theme")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19d5d6qs5nwmpf26rsb86ranb5p4236qp7p2b4i88cimcmzspylb"))))
+      (build-system emacs-build-system)
+      (home-page "http://github.com/osener/emacs-afternoon-theme")
+      (synopsis "Dark color theme with a deep blue background")
+      (description
+       "Afternoon theme is a dark color theme with a deep blue background.")
+      (license license:gpl3+))))
+
 (define-public emacs-cyberpunk-theme
   (package
     (name "emacs-cyberpunk-theme")
