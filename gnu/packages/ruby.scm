@@ -10155,8 +10155,8 @@ part of the Prawn PDF generator.")
          (add-before 'build 'fix-gemspec
            (lambda _
              (substitute* "puma.gemspec"
-               (("git ls-files") "find * |sort"))
-             #t)))))
+               (("git ls-files") "find * |sort")))))))
+    (inputs (list openssl))
     (synopsis "Simple, concurrent HTTP server for Ruby/Rack")
     (description
      "Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
