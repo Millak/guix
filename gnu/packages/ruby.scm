@@ -3459,6 +3459,33 @@ suites.")
     (home-page "https://github.com/simplecov-ruby/simplecov")
     (license license:expat)))
 
+(define-public ruby-simplecov-lcov
+  (package
+    (name "ruby-simplecov-lcov")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "simplecov-lcov" version))
+              (sha256
+               (base32
+                "1h8kswnshgb9zidvc88f4zjy4gflgz3854sx9wrw8ppgnwfg6581"))))
+    (build-system ruby-build-system)
+    ;; The test suite fails half of its tests; it seems to rely on older
+    ;; versions of simplecov, rspec, possibly others (see:
+    ;; https://github.com/fortissimo1997/simplecov-lcov/issues/29).
+    (arguments (list #:tests? #f
+                     #:test-target "spec"))
+    (native-inputs
+     (list ruby-activesupport
+           ruby-coveralls
+           ruby-rspec
+           ruby-simplecov))
+    (synopsis "SimpleCov formatter to generate a lcov style coverage")
+    (description "This package provides a SimpleCov formatter to generate a
+lcov-style coverage report.")
+    (home-page "https://github.com/fortissimo1997/simplecov-lcov")
+    (license license:expat)))
+
 (define-public ruby-useragent
   (package
     (name "ruby-useragent")
