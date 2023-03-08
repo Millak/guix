@@ -230,24 +230,30 @@ lines.")
                 "0kc9v5ampq2paw6sls6zdchvqvis7b1z8xhdvlhz5xxdr1vj5xnn"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
           (add-before 'build 'skip-npm
             ;; npm is not packaged so build without it
             (lambda _
               (setenv "SKIP_NPM" "T")))
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "packages/python/plotly")
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-x" "plotly/tests/test_core")
-               (invoke "pytest" "-x" "plotly/tests/test_io")
-               ;; FIXME: Add optional dependencies and enable their tests.
-               ;; (invoke "pytest" "-x" "plotly/tests/test_optional")
-               (invoke "pytest" "_plotly_utils/tests")))))))
+          (add-after 'unpack 'fix-version
+            ;; Versioneer is useless when there is no git metadata.
+            (lambda _
+              (substitute* "packages/python/plotly/setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version)))))
+          (add-after 'fix-version 'chdir
+            (lambda _
+              (chdir "packages/python/plotly")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-x" "plotly/tests/test_core")
+                (invoke "pytest" "-x" "plotly/tests/test_io")
+                ;; FIXME: Add optional dependencies and enable their tests.
+                ;; (invoke "pytest" "-x" "plotly/tests/test_optional")
+                (invoke "pytest" "_plotly_utils/tests")))))))
     (native-inputs
      (list python-ipywidgets python-pytest python-xarray))
     (propagated-inputs
