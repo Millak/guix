@@ -15,7 +15,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -184,6 +184,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages skribilo)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -7979,6 +7980,60 @@ bookmarks directly.  It can also present them in a web interface with
     (synopsis "rofi frontend for buku bookmarks manager")
     (description
      "This package provides a rofi frontend for the buku bookmark manager.")
+    (license license:gpl3+)))
+
+(define-public tissue
+  (package
+    (name "tissue")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://tissue.systemreboot.net/releases/tissue-"
+                                  version ".tar.lz"))
+              (sha256
+               (base32
+                "0vsybgnzv8nnwf58pnxrs4101xczl8jvxd1wzmk4vmdyrp8a2kkm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "prefix=" #$output))
+           #:modules `(((guix build guile-build-system)
+                        #:select (target-guile-effective-version))
+                       (guix build gnu-build-system)
+                       (guix build utils))
+           #:phases
+           (with-imported-modules '((guix build guile-build-system))
+             #~(modify-phases %standard-phases
+                 (replace 'patch-source-shebangs
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "bin/tissue"
+                       (("^exec guile")
+                        (string-append "exec "
+                                       (search-input-file inputs "/bin/guile"))))))
+                 (delete 'configure)
+                 (add-after 'install 'wrap
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (effective-version (target-guile-effective-version)))
+                       (wrap-program (string-append out "/bin/tissue")
+                         `("GUILE_LOAD_PATH" prefix
+                           (,(string-append out "/share/guile/site/" effective-version)
+                            ,(getenv "GUILE_LOAD_PATH")))
+                         `("GUILE_LOAD_COMPILED_PATH" prefix
+                           (,(string-append out "/lib/guile/"
+                                            effective-version "/site-ccache")
+                            ,(getenv "GUILE_LOAD_COMPILED_PATH")))))))))))
+    (inputs (list bash-minimal guile-3.0 guile-filesystem guile-git guile-xapian))
+    (native-inputs (list lzip))
+    (propagated-inputs (list skribilo))
+    (home-page "https://tissue.systemreboot.net")
+    (synopsis "Text based project information management system")
+    (description "tissue is an issue tracker and project information
+management system built on plain text files and git.  It is specifically
+intended for small free software projects.  It features a static site
+generator to build a project website and a powerful search interface to search
+through project issues and documentation.  The search interface is built on
+the Xapian search engine library, and is available both as a command-line
+program and as a web server.")
     (license license:gpl3+)))
 
 (define-public anonip
