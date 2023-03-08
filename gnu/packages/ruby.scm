@@ -8075,62 +8075,71 @@ It is intended be used by all Cucumber implementations to parse
 (define-public ruby-aruba
   (package
     (name "ruby-aruba")
-    (version "0.14.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "aruba" version))
-       (sha256
-        (base32
-         "0l2mfpdxc03gdrbwc2hv4vdhjhqhfcdp6d02j05j64ncpi9srlqn"))))
+    (version "2.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cucumber/aruba")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mmlgqhi6yww3z34hmrrnha2rygkv6kx0q962z31dqxjkcv23yfd"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* "spec/aruba/api_spec.rb"
-               ;; This resolves some errors in the specs
-               ;;
-               ;; undefined method `parse' for Time:Class
-               (("require 'spec_helper'")
-                "require 'spec_helper'\nrequire 'time'"))
-             ;; Avoid shebang issues in this spec file
-             (substitute* "spec/aruba/matchers/command_spec.rb"
-               (("/usr/bin/env bash")
-                (which "bash")))
-             #t))
-         (add-before 'check 'remove-unnecessary-dependencies
-           (lambda _
-             (substitute* "Gemfile"
-               ((".*byebug.*") "\n")
-               ((".*pry.*") "\n")
-               ((".*yaml.*") "\n")
-               ((".*bcat.*") "\n")
-               ((".*kramdown.*") "\n")
-               ((".*rubocop.*") "\n")
-               ((".*cucumber-pro.*") "\n")
-               ((".*cucumber.*") "\n")
-               ((".*license_finder.*") "\n")
-               ((".*rake.*") "gem 'rake'\n")
-               ((".*relish.*") "\n"))
-             (substitute* "aruba.gemspec"
-               (("spec\\.add\\_runtime\\_dependency 'cucumber'.*")
-                "spec.add_runtime_dependency 'cucumber'"))
-             #t))
-         (add-before 'check 'set-home
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+     (list
+      ;; XXX: Only run the "spec" target and not the "cucumber" one, as it is
+      ;; slow and has multiple unexplained test failures.
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              ;; This test file relies on a dynamically generated script;
+              ;; patch its #!/bin/bash shebang.
+              (substitute* "spec/aruba/api/commands_spec.rb"
+                (("/bin/bash")
+                 (which "bash")))))
+          (add-before 'check 'relax-requirements
+            ;; Many development requirements are not actually needed.
+            (lambda _
+              (substitute* "aruba.gemspec"
+                (("\\[\">= 0.18.0\", \"< 0.22.0\"]") ;simplecov
+                 "\">= 0.18.0\"")
+                ((".*appraisal.*") "")
+                ((".*pry.*") "")
+                ((".*kramdown.*") "")
+                ((".*rubocop.*") "")
+                ((".*yard-junk.*") ""))
+              (substitute* "Rakefile"
+                ((".*require \"rubocop/rake_task\".*") "")
+                ((".*require \"yard-junk/rake\".*") "")
+                ((".*RuboCop::RakeTask.new.*") "")
+                ((".*YardJunk::Rake.define_task.*") ""))))
+          ;; The tests rely on the Gem being installed, so move the check
+          ;; phase after the install phase.
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-GEM_PATH
+            (lambda _
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list bundler ruby-rspec ruby-fuubar ruby-simplecov))
+     (list ruby-rake-manifest
+           ruby-rspec
+           ruby-simplecov))
     (propagated-inputs
-     (list ruby-childprocess
+     (list bundler
+           ruby-childprocess
            ruby-contracts
            ruby-cucumber
-           ruby-ffi
            ruby-rspec-expectations
-           ruby-thor
-           ruby-yard))
+           ruby-thor))
     (synopsis "Test command-line applications with Cucumber, RSpec or Minitest")
     (description
      "Aruba is an extension for Cucumber, RSpec and Minitest for testing
