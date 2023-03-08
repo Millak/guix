@@ -2753,6 +2753,30 @@ Ruby.")
     (home-page "https://github.com/maik/xml-simple")
     (license license:ruby)))
 
+(define-public ruby-xpath
+  (package
+    (name "ruby-xpath")
+    (version "3.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "xpath" version))
+              (sha256
+               (base32
+                "0bh8lk9hvlpn7vmi6h4hkcwjzvs2y0cmkk3yjjdr8fxvj6fsgzbd"))))
+    (build-system ruby-build-system)
+    (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (replace 'check
+                                    (lambda* (#:key tests? #:allow-other-keys)
+                                      (when tests?
+                                        (invoke "rspec" "spec" )))))))
+    (native-inputs (list ruby-pry ruby-rspec))
+    (propagated-inputs (list ruby-nokogiri))
+    (synopsis "Ruby DSL for generating XPath expressions")
+    (description "XPath is a Ruby domain-specific language (DSL) for
+generating XPath expressions.")
+    (home-page "https://github.com/teamcapybara/xpath")
+    (license license:expat)))
+
 (define-public ruby-thor
   (package
     (name "ruby-thor")
