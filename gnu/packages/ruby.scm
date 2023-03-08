@@ -12564,21 +12564,23 @@ which snapshots to consider and what files to include.")
 (define-public ruby-zeitwerk
   (package
     (name "ruby-zeitwerk")
-    (version "2.4.2")
+    (version "2.6.7")
     (source
       (origin
-        (method git-fetch)
+        (method git-fetch)              ;for tests
         (uri (git-reference
-               ;; No tests in the released gem.
                (url "https://github.com/fxn/zeitwerk")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "119fgdyb57gmss2yvfwfr47wcy8nny38sai72446krpihyavpizw"))))
+          "10p1ycv72yas1fdqrmdyz1aiqf8axj6q1kyllni2wknhk059jvi0"))))
     (build-system ruby-build-system)
     (native-inputs
-     (list ruby-minitest ruby-minitest-focus ruby-minitest-reporters))
+     (list ruby-minitest
+           ruby-minitest-focus
+           ruby-minitest-proveit
+           ruby-minitest-reporters))
     (synopsis "Efficient and thread-safe code loader for Ruby")
     (description
      "Zeitwerk implements constant autoloading with Ruby semantics.  Each gem
