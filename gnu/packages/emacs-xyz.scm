@@ -15392,7 +15392,7 @@ Flx has support for ido (interactively do things) through flx-ido.")
          (sha256
           (base32 "19d5d6qs5nwmpf26rsb86ranb5p4236qp7p2b4i88cimcmzspylb"))))
       (build-system emacs-build-system)
-      (home-page "http://github.com/osener/emacs-afternoon-theme")
+      (home-page "https://github.com/osener/emacs-afternoon-theme")
       (synopsis "Dark color theme with a deep blue background")
       (description
        "Afternoon theme is a dark color theme with a deep blue background.")
