@@ -8080,14 +8080,14 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "29.1.3.4")
+    (version "29.1.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "compat-" version ".tar"))
               (sha256
                (base32
-                "16j7b18iwsdynb2w4x2hficz0g060r52lsg5ly9kb20zfrq2yvw0"))))
+                "1y1x50r4ai4k8sa5qi5zbjz8216lpk9vjd0k681l1ha2aqn8l3pr"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~pkal/compat")
     (synopsis "Emacs Lisp Compatibility Library")
