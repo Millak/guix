@@ -307,7 +307,7 @@
       (home-page "https://github.com/cute-jumper/ace-jump-helm-line")
       (synopsis "Ace-jump to a candidate in Helm window")
       (description
-       "This packages allows to use Ace jump to a candidate in Helm window.")
+       "This package allows using Ace jump to a candidate in Helm window.")
       (license license:gpl3+))))
 
 (define-public emacs-cfrs
