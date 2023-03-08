@@ -1606,6 +1606,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/onnx-use-system-googletest.patch	\
   %D%/packages/patches/onnx-shared-libraries.patch	\
   %D%/packages/patches/onnx-skip-model-downloads.patch		\
+  %D%/packages/patches/openbios-aarch64-riscv64-support.patch	\
   %D%/packages/patches/openboardview-use-system-imgui.patch	\
   %D%/packages/patches/openboardview-use-system-utf8.patch	\
   %D%/packages/patches/openbox-python3.patch			\

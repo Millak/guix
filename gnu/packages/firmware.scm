@@ -410,7 +410,8 @@ utilites used to process FCODE, OpenFirmware's byte code, consisting of:
               (file-name (git-file-name "openbios" version))
               (sha256
                (base32
-                "1xp1b6xgx40i0j3a5y3id0d1p8vdvapai8szganxg3zrvj53fh0n"))))
+                "1xp1b6xgx40i0j3a5y3id0d1p8vdvapai8szganxg3zrvj53fh0n"))
+              (patches (search-patches "openbios-aarch64-riscv64-support.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
@@ -457,11 +458,6 @@ provide OpenFirmware functionality on top of an already running system.")
       (inherit base)
       (arguments
        (substitute-keyword-arguments (package-arguments base)
-         ((#:system system (%current-system))
-          (if (string-prefix? "aarch64-linux" (or (%current-system)
-                                                  (%current-target-system)))
-            "armhf-linux"
-            system))
          ;; No need to cross-compile, package produces reproducible firmware.
          ((#:target _ #f) #f)
          ((#:phases phases)
