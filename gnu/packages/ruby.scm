@@ -4740,6 +4740,26 @@ structures when tests fail.")
       (home-page "https://github.com/adammck/minitest-pretty_diff")
       (license license:expat))))
 
+(define-public ruby-minitest-proveit
+  (package
+    (name "ruby-minitest-proveit")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minitest-proveit" version))
+              (sha256
+               (base32
+                "0k1hpr8lgkgygfivgcsnnib7xjlf9ribgpn7yidvb4q0l0q2yfmr"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-hoe))
+    (propagated-inputs (list ruby-minitest))
+    (synopsis "Assertion-based tests extension for MiniTest")
+    (description "The @code{minitest-proveit} MiniTest extension ensures all
+tests to prove success (via at least one assertion) rather than rely on the
+absence of failure.")
+    (home-page "https://github.com/seattlerb/minitest-proveit")
+    (license license:expat)))
+
 (define-public ruby-minitest-moar
   (package
     (name "ruby-minitest-moar")
