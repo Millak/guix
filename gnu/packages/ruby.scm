@@ -4667,6 +4667,26 @@ easier to re-run individual failing tests.")
     (home-page "https://github.com/seattlerb/minitest-sprint")
     (license license:expat)))
 
+(define-public ruby-minitest-stub-const
+  (package
+    (name "ruby-minitest-stub-const")
+    (version "0.6")                     ;for Rakefile
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/adammck/minitest-stub-const")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cz4r9fxplx94c7wakx0998n2gv7l21prn8pfpw6z2c33k3g2xar"))))
+    (build-system ruby-build-system)
+    (synopsis "Stub constants for the duration of a block in MiniTest")
+    (description "This package provides a MiniTest extension to stub constants
+for the duration of a block in MiniTest.")
+    (home-page "https://github.com/adammck/minitest-stub-const")
+    (license license:expat)))
+
 (define-public ruby-minitest-bacon
   (package
     (name "ruby-minitest-bacon")
