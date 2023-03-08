@@ -10413,6 +10413,40 @@ in standard Ruby syntax.")
     (home-page "https://github.com/ruby/rake")
     (license license:expat)))
 
+(define-public ruby-rake-manifest
+  (package
+    (name "ruby-rake-manifest")
+    (version "0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mvz/rake-manifest")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16k2yvg773c25kp2vhzhp01rhf53k0nhrcmpv34k1fridw90r2k8"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:test-target "default"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)               ;moved after the install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-GEM_PATH
+            (lambda _
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby")))))))
+    (native-inputs (list ruby-rspec ruby-simplecov))
+    (synopsis "Rake tasks to generate and check a manifest file")
+    (description "This package provides Rake tasks to generate and check a
+manifest file.")
+    (home-page "https://github.com/mvz/rake-manifest")
+    (license license:expat)))
+
 (define-public ruby-childprocess
   (package
     (name "ruby-childprocess")
