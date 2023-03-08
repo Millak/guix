@@ -887,21 +887,6 @@ of decimal representation of the input floating-point number, the procedure
 commonly called @code{ftoa} or @code{dtoa}.")
     (license license:asl2.0)))
 
-(define-public dragonbox-for-libreoffice
-  (package
-    (inherit dragonbox)
-    (name "dragonbox")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jk-jeon/dragonbox")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "11h9xhpzp61rfyh1nnca5shzi40skgpdql080k5cb6cfy672s1qz"))))))
-
 (define dtoa
   (origin
     (method url-fetch)
@@ -914,7 +899,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.5.0.3")
+    (version "7.5.1.2")
     (source
      (origin
        (method url-fetch)
@@ -923,7 +908,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "0fq0fxwhbhikqzfl2z5xg2swlnrkg1p8l0shh6qdx9w0msihy4pm"))))
+        (base32 "1dy0lvrvgkr7mbmiag26a38pivcddav8piph7jin1kw4phaxs3cj"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -969,10 +954,10 @@ commonly called @code{ftoa} or @code{dtoa}.")
                  (string-append "GPGMEPP_CFLAGS=-I"
                                 (search-input-directory inputs
                                                         "include/gpgme++")))
-                (("DRAGONBOX_CFLAGS=-I/usr/include/dragonbox-1.0.0")
+                (("DRAGONBOX_CFLAGS=-I/usr/include/dragonbox-1\\.1\\.3")
                  (string-append "DRAGONBOX_CFLAGS=-I"
                                 (search-input-directory inputs
-                                                        "include/dragonbox-1.0.0"))))
+                                                        "include/dragonbox-1.1.3"))))
 
               ;; /usr/bin/xdg-open doesn't exist on Guix System.
               (substitute* '("shell/source/unix/exec/shellexec.cxx"
@@ -1047,8 +1032,6 @@ commonly called @code{ftoa} or @code{dtoa}.")
                         (dirname
                          (search-input-file %build-inputs
                                             "lib/libboost_system.so")))
-         ;; Avoid a dependency on ucpp.
-         "--with-idlc-cpp=cpp"
          ;; The fonts require an external tarball (crosextrafonts).
          ;; They should not be needed when system fonts are available.
          "--without-fonts"
@@ -1085,7 +1068,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            clucene
            cups
            dbus-glib
-           dragonbox-for-libreoffice
+           dragonbox
            firebird
            fontconfig
            fontforge
@@ -1099,7 +1082,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            graphite2
            gst-plugins-base
            gtk+
-           harfbuzz
+           harfbuzz-5
            hunspell
            hyphen
            libabw

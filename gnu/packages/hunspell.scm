@@ -276,7 +276,7 @@ spell-checking library.")
                          (#\_ #\-)
                          (chr chr))
                        (string-downcase dict-name))))
-    (version "7.5.0.3")
+    (version "7.5.1.2")
     (source
      (origin
        (method git-fetch)
