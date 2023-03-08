@@ -46,6 +46,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gps)
+  #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -1452,6 +1453,81 @@ the easy construction of interactive matplotlib widget based animations.")
     (description "Photutils is an Astropy package for detection and photometry
 of astronomical sources.")
     (license license:bsd-3)))
+
+(define-public python-poliastro
+  (package
+    (name "python-poliastro")
+    (version "0.17.0")
+    (source
+     (origin
+       ;; PyPi tarball lacks tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poliastro/poliastro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iclyjp0cvm6hp5qf4fzklszxvhj3idkxgb6a9h7xzg9bf5j5gi2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; NOTE: Tests take about 7-10 minutes to pass.
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; TODO: Review failing tests later when any upstream
+              ;; suggestions are provided:
+              ;; https://github.com/poliastro/poliastro/issues/1618
+              (substitute* "tests/test_czml.py"
+              (("def test_czml_add_trajectory") "def __off_test_czml_add_trajectory")
+              (("def test_czml_custom_packet") "def __off_test_czml_custom_packet")
+              (("def test_czml_ground_station") "def __off_test_czml_ground_station")
+              (("def test_czml_groundtrack") "def __off_test_czml_groundtrack")
+              (("def test_czml_preamble") "def __off_test_czml_preamble"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "pytest"
+                        ;; Skip tests that need remote data.
+                        "-m" "not remote_data")))))))
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-mypy
+           python-flit-core
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-mpl
+           python-pytest-mypy))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-czml3
+           python-jplephem
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pandas
+           python-plotly
+           python-pyerfa
+           python-scipy))
+    (home-page "https://www.poliastro.space/")
+    (synopsis "Astrodynamics in Python")
+    (description
+     "POLIASTRO is a Python library for interactive Astrodynamics and Orbital
+Mechanics, with a focus on ease of use, speed, and quick visualization.  It
+provides a simple and intuitive API, and handles physical quantities with
+units.
+
+Some features include orbit propagation, solution of the Lambert's problem,
+conversion between position and velocity vectors and classical orbital
+elements and orbit plotting, among others.  It focuses on interplanetary
+applications, but can also be used to analyze artificial satellites in
+Low-Earth Orbit (LEO).")
+  (license license:expat)))
 
 (define-public python-poppy
   (package
