@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Brandon Lucas <br@ndon.dk>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1189,7 +1190,7 @@ enabled.")
 (define-public fennel
   (package
     (name "fennel")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1198,7 +1199,7 @@ enabled.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0klqxhgc9s6rm2xbn2fyzw9nzdas65g84js7s69by0gv2jzalyad"))))
+                "1g22y0bpw1ads6bmsr946fw1m5xxvlvb1hdym3f3k3fziislwwhd"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "PREFIX="
