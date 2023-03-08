@@ -287,6 +287,29 @@
        "AC Ispell is an Ispell and Aspell completion source for Auto Complete.")
       (license license:gpl3+))))
 
+(define-public emacs-ace-jump-helm-line
+  (let ((commit "1483055255df3f8ae349f7520f05b1e43ea3ed37")
+        (revision "0"))
+    (package
+      (name "emacs-ace-jump-helm-line")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cute-jumper/ace-jump-helm-line")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "191a2g1if1jliikbxkpwmvlp4v1sp541j71xrlymili8ygm0idq5"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-avy emacs-helm))
+      (home-page "https://github.com/cute-jumper/ace-jump-helm-line")
+      (synopsis "Ace-jump to a candidate in Helm window")
+      (description
+       "This packages allows to use Ace jump to a candidate in Helm window.")
+      (license license:gpl3+))))
+
 (define-public emacs-cfrs
   (package
     (name "emacs-cfrs")
