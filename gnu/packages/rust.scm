@@ -760,13 +760,11 @@ safety and thread safety guarantees.")
                    (substitute* "library/std/src/process/tests.rs"
                      (("\"/bin/sh\"")
                       (string-append "\"" bash "/bin/sh\"")))
+                   ;; The three tests which are known to fail upstream on QEMU
+                   ;; emulation on aarch64 and riscv64 also fail on x86_64 in Guix's
+                   ;; build system. Skip them on all builds.
                    (substitute* "library/std/src/sys/unix/process/process_common/tests.rs"
-                     (("fn test_process_mask")
-                      "#[ignore]\nfn test_process_mask")
-                     (("fn test_process_group_posix_spawn")
-                      "#[ignore]\nfn test_process_group_posix_spawn")
-                     (("fn test_process_group_no_posix_spawn")
-                      "#[ignore]\nfn test_process_group_no_posix_spawn")))))
+                     (("target_arch = \"arm\",") "target_os = \"linux\",")))))
              (add-after 'unpack 'disable-interrupt-tests
                (lambda _
                  ;; This test hangs in the build container; disable it.
