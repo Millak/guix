@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2018, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -122,13 +122,13 @@ efficient syncing
 (define-public vdirsyncer
   (package
     (name "vdirsyncer")
-    (version "0.19.0")
+    (version "0.19.1")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri name version))
              (sha256
               (base32
-               "0995bavlv8s9j0127ncq3yzy5p72lam9qgpswyjfanc6l01q87lf"))))
+               "1bh3kz0d8g07xnlkb5l2fj6fdakqps1wviab6zv139x5b9rcfxma"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; The test suite is very flakey.
