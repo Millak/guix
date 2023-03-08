@@ -287,27 +287,42 @@ serialization, internationalization, and testing.")
 
 (define-public ruby-activerecord
   (package
-   (name "ruby-activerecord")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "activerecord" version))
-     (sha256
-      (base32
-       "03kr6vslwd9iw89jidjpjlp7prr2rf7kpsfa4fz03g9by0kliivs"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
-   (propagated-inputs
-    (list ruby-activemodel ruby-activesupport ruby-arel))
-   (synopsis "Ruby library to connect to relational databases")
-   (description
-    "Active Record connects classes to relational database table to establish
+    (name "ruby-activerecord")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "activerecord")))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Avoid running the database tests, which require railties
+                ;; and/or database servers.
+                (invoke "ruby" "-Itest" "test/cases/base_test.rb"))))
+          (add-before 'check 'set-GEM_PATH
+            (lambda _
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))))
+          (add-before 'check 'check-setup
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; A few tests require to set the timezone.
+              (setenv "TZDIR" (search-input-directory (or native-inputs inputs)
+                                                      "share/zoneinfo")))))))
+    (native-inputs (list tzdata-for-tests))
+    (propagated-inputs (list ruby-activemodel ruby-activesupport ruby-sqlite3))
+    (synopsis "Ruby library to connect to relational databases")
+    (description
+     "Active Record connects classes to relational database table to establish
 an almost zero-configuration persistence layer for applications.")
-   (home-page "https://rubyonrails.org")
-   (license license:expat)))
+    (home-page "https://rubyonrails.org")
+    (license license:expat)))
 
 (define-public ruby-rspec-rails
   (package
