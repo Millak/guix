@@ -13556,6 +13556,31 @@ interface for the Sentry error logger.")
 HTTPS server, a proxy server, and a virtual-host server.")
     (license license:bsd-2)))
 
+(define-public ruby-websocket
+  (package
+    (name "ruby-websocket")
+    (version "1.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "websocket" version))
+              (sha256
+               (base32
+                "0dib6p55sl606qb4vpwrvj5wh881kk4aqn2zpfapf8ckx7g14jw8"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "spec"
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'disable-rubocop
+                                    (lambda _
+                                      (substitute* "Rakefile"
+                                        (("require 'rubocop/rake_task'") "")
+                                        (("RuboCop::RakeTask.new") "")))))))
+    (native-inputs (list ruby-rspec))
+    (synopsis "WebSocket protocol Ruby library")
+    (description "This package provides a Ruby library to handle the WebSocket
+protocol.")
+    (home-page "https://github.com/imanel/websocket-ruby")
+    (license license:expat)))
+
 (define-public ruby-interception
   (package
     (name "ruby-interception")
