@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Fabio Natali <me@fabionatali.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2023 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,8 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
@@ -8340,6 +8343,47 @@ PDF documents.")
     (description "Texmaker is a program that integrates many tools needed to
 develop documents with LaTeX, in a single application.")
     (license license:gpl2+)))
+
+(define-public dvisvgm
+  (package
+    (name "dvisvgm")
+    (version "3.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mgieseki/dvisvgm")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11r401yqbw61n1mwsfk5qmwx2c92djwpl0q756qkds5kh25l9ci8"))))
+    (native-inputs (list pkg-config
+                         autoconf
+                         autoconf-archive
+                         automake
+                         python-wrapper
+                         libtool))
+    (inputs (list texlive-libkpathsea
+                  freetype
+                  fontforge
+                  clipper
+                  ghostscript
+                  xxhash
+                  google-brotli
+                  woff2
+                  zlib))
+    (build-system gnu-build-system)
+    (synopsis "Command-line utility for generating SVG from DVI, EPS and PDF
+files")
+    (description
+     "Dvisvgm converts TeX DVI, EPS and PDF files into an
+SVG (Scalable Vector Graphics) image.  It provides full font support including
+virtual fonts, font maps and sub-fonts.  The embedded SVG fonts can optionally
+be replaced with graphics paths for applications that do not support SVG
+fonts.  Dvisvgm supports also colors, emTeX, tpic, papersize, PDF mapfile
+and PostScript specials.  A working TeX installation is needed.")
+    (home-page "https://dvisvgm.de/")
+    (license license:gpl3+)))
 
 (define-public teximpatient
   ;; The homepage seems to be distributing this version which is currently the
