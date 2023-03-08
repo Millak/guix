@@ -21,10 +21,6 @@
 (define-module (guix build linux-module-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
-  #:use-module (ice-9 ftw)
-  #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
   #:export (%standard-phases
             linux-module-build))
 

@@ -39,7 +39,6 @@
   #:autoload   (guix derivations) (read-derivation-from-file
                                    derivation-file-name
                                    build-derivations)
-  #:autoload   (guix serialization) (nar-error? nar-error-file)
   #:autoload   (guix nar) (restore-file-set)
   #:use-module ((guix utils) #:select (%current-system))
   #:use-module ((guix build syscalls)

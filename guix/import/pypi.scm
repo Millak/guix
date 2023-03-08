@@ -36,7 +36,6 @@
   #:use-module (ice-9 receive)
   #:use-module ((ice-9 rdelim) #:select (read-line))
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -51,13 +50,11 @@
                           find-files
                           invoke))
   #:use-module (guix import utils)
-  #:use-module ((guix download) #:prefix download:)
   #:use-module (guix import json)
   #:use-module (json)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix build-system python)
   #:export (parse-requires.txt
             parse-wheel-metadata
             specification->requirement-name

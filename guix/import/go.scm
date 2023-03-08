@@ -32,25 +32,20 @@
   #:use-module (guix import utils)
   #:use-module (guix import json)
   #:use-module (guix packages)
-  #:use-module ((guix utils) #:select (string-replace-substring))
   #:use-module (guix http-client)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix memoization)
   #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
-  #:autoload   (guix serialization) (write-file)
   #:autoload   (guix base32) (bytevector->nix-base32-string)
   #:autoload   (guix build utils) (mkdir-p)
   #:autoload   (gcrypt hash) (hash-algorithm sha256)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 peg)
-  #:use-module (ice-9 rdelim)
   #:use-module (ice-9 receive)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 textual-ports)
   #:use-module ((rnrs io ports) #:select (call-with-port))
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
@@ -61,10 +56,7 @@
                                          (if (eq? 'filter s)
                                              'xfilter
                                              s)))
-  #:use-module (web client)
-  #:use-module (web response)
   #:use-module (web uri)
-
   #:export (go-module->guix-package
             go-module->guix-package*
             go-module-recursive-import))

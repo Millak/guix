@@ -27,7 +27,6 @@
   #:autoload   (guix build download) (nar-uri-abbreviation)
   #:use-module (guix store)
   #:use-module (guix derivations)
-  #:use-module (guix memoization)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)

@@ -33,9 +33,7 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
   #:use-module (gnu packages)
   #:export (%asdf-build-system-modules
             %asdf-build-modules

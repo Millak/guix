@@ -29,8 +29,6 @@
   #:use-module (guix base16)
   #:use-module (guix records)
   #:use-module (guix gexp)
-  #:use-module (guix modules)
-  #:use-module (guix discovery)
   #:use-module (guix monads)
   #:use-module (guix profiles)
   #:use-module (guix packages)
@@ -55,8 +53,6 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
-  #:use-module ((ice-9 rdelim) #:select (read-string))
-  #:use-module ((rnrs bytevectors) #:select (bytevector=?))
   #:export (channel
             channel?
             channel-name

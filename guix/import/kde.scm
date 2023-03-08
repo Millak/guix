@@ -20,7 +20,6 @@
 
 (define-module (guix import kde)
   #:use-module (guix http-client)
-  #:use-module (guix memoization)
   #:use-module (guix gnu-maintenance)
   #:use-module (guix packages)
   #:use-module (guix upstream)

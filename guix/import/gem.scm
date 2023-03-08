@@ -27,7 +27,6 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (json)
-  #:use-module ((guix download) #:prefix download:)
   #:use-module (guix import utils)
   #:use-module (guix import json)
   #:use-module (guix packages)

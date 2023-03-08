@@ -23,8 +23,6 @@
 
 (define-module (guix git)
   #:use-module (git)
-  #:use-module (git object)
-  #:use-module (git submodule)
   #:use-module (guix i18n)
   #:use-module (guix base32)
   #:use-module (guix cache)

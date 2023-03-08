@@ -24,7 +24,6 @@
   #:use-module (guix utils)
   #:use-module (guix monads)
   #:use-module (guix base32)
-  #:use-module (guix packages)
   #:use-module ((guix progress) #:hide (dump-port*))
   #:use-module (guix serialization)
   #:use-module (guix substitutes)

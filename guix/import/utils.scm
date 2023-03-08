@@ -39,7 +39,6 @@
   #:use-module (guix packages)
   #:use-module (guix discovery)
   #:use-module (guix build-system)
-  #:use-module (guix gexp)
   #:use-module ((guix i18n) #:select (G_))
   #:use-module (guix store)
   #:use-module (guix download)

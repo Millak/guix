@@ -29,10 +29,7 @@
   #:use-module (guix modules)
   #:autoload   (guix build-system gnu) (standard-packages)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-34)
-  #:use-module (srfi srfi-35)
   #:export (android-repo-reference
             android-repo-reference?
             android-repo-reference-manifest-url

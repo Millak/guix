@@ -22,9 +22,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix scripts home)
-  #:use-module (gnu packages admin)
   #:use-module ((gnu services) #:hide (delete))
-  #:use-module (gnu packages)
   #:autoload   (gnu packages base) (coreutils)
   #:autoload   (gnu packages bash) (bash)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)

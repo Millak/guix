@@ -34,22 +34,19 @@
   #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (guix i18n)
   #:use-module (guix diagnostics)
   #:use-module ((guix download) #:select (download-to-store))
   #:use-module (guix import utils)
   #:use-module (guix http-client)
   #:use-module (guix git)
   #:use-module (guix hash)
-  #:use-module ((guix serialization) #:select (write-file))
   #:use-module (guix store)
-  #:use-module (guix ui)
   #:use-module (guix base32)
   #:use-module (guix upstream)
   #:use-module (guix packages)
   #:use-module (guix memoization)
-  #:use-module ((guix utils) #:select (call-with-temporary-output-file))
   #:export (elpa->guix-package
             guix-package->elpa-name
             %elpa-updater

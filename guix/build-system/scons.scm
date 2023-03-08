@@ -25,7 +25,6 @@
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:use-module (ice-9 match)
   #:export (%scons-build-system-modules
             scons-build
             scons-build-system))

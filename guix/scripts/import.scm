@@ -28,9 +28,6 @@
   #:use-module (guix read-print)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-37)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (%standard-import-options

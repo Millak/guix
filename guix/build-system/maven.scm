@@ -26,7 +26,6 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
-  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (%maven-build-system-modules
             default-maven

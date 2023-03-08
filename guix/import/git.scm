@@ -20,17 +20,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import git)
-  #:use-module (guix build utils)
+  #:use-module (guix i18n)
   #:use-module (guix diagnostics)
   #:use-module (guix git)
   #:use-module (guix git-download)
-  #:use-module (guix i18n)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module (guix utils)
-  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)

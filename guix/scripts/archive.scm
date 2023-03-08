@@ -18,7 +18,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix scripts archive)
-  #:use-module (guix config)
   #:use-module (guix utils)
   #:use-module (guix combinators)
   #:use-module ((guix build utils) #:select (mkdir-p))

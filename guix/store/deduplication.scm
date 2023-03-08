@@ -28,9 +28,7 @@
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
-  #:use-module (rnrs bytevectors)
   #:use-module (rnrs io ports)
-  #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (guix serialization)
   #:export (nar-sha256

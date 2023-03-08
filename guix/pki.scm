@@ -24,7 +24,6 @@
   #:autoload   (srfi srfi-1) (delete-duplicates)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 binary-ports)
   #:export (%public-key-file
             %private-key-file
             %acl-file

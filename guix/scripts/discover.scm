@@ -23,7 +23,6 @@
   #:use-module (guix scripts)
   #:use-module (guix ui)
   #:use-module (guix utils)
-  #:use-module (guix build syscalls)
   #:use-module (guix build utils)
   #:use-module (guix scripts publish)
   #:use-module (avahi)

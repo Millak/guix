@@ -28,7 +28,6 @@
   #:use-module (guix monads)
   #:use-module (guix packages)
   #:use-module (guix derivations)
-  #:use-module ((guix profiles) #:select (%profile-directory))
   #:autoload   (guix describe) (current-profile-date)
   #:use-module (guix build syscalls)
   #:use-module (srfi srfi-1)

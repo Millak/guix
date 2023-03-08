@@ -26,7 +26,6 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
-  #:use-module (ice-9 match)
   #:export (%rakudo-build-system-modules
             rakudo-build
             rakudo-build-system))

@@ -18,7 +18,6 @@
 
 (define-module (guix build chicken-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build union)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)

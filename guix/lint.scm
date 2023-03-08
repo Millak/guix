@@ -33,7 +33,6 @@
 (define-module (guix lint)
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)
-  #:use-module (guix base32)
   #:autoload   (guix base64) (base64-encode)
   #:use-module (guix build-system)
   #:use-module (guix diagnostics)

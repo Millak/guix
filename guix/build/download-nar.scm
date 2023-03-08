@@ -18,7 +18,6 @@
 
 (define-module (guix build download-nar)
   #:use-module (guix build download)
-  #:use-module (guix build utils)
   #:use-module ((guix serialization) #:hide (dump-port*))
   #:autoload   (zlib) (call-with-gzip-input-port)
   #:use-module (guix progress)

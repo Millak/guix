@@ -35,7 +35,6 @@
   #:use-module (guix progress)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
-  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (rnrs bytevectors)

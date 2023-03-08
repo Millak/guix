@@ -29,12 +29,10 @@
   #:use-module ((ice-9 rdelim) #:select (read-string read-line))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-71)
-  #:use-module (ice-9 receive)
   #:use-module (web uri)
   #:use-module (guix memoization)
   #:use-module (guix http-client)
@@ -52,11 +50,9 @@
   #:use-module (guix utils)
   #:use-module (guix git)
   #:use-module ((guix build-system r) #:select (cran-uri bioconductor-uri))
-  #:use-module (guix ui)
   #:use-module (guix upstream)
   #:use-module (guix packages)
   #:use-module (guix sets)
-  #:use-module (gnu packages)
   #:export (%input-style
 
             cran->guix-package

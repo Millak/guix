@@ -18,14 +18,9 @@
 
 (define-module (guix build android-ndk-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build syscalls)
   #:use-module (guix build utils)
-  #:use-module (ice-9 popen)
-  #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 ftw)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:use-module (rnrs io ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (%standard-phases

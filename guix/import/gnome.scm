@@ -25,8 +25,6 @@
   #:use-module (guix http-client)
   #:use-module (json)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
-  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (web uri)
   #:use-module (ice-9 match)

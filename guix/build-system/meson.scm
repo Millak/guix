@@ -30,7 +30,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix packages)
-  #:use-module (ice-9 match)
   #:export (%meson-build-system-modules
             meson-build-system
             make-cross-file))
