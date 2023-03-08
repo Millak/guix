@@ -82,6 +82,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages serialization)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
@@ -11777,6 +11778,27 @@ own right, and also constitutes a row or column of a @code{Matrix}.")
     (description "Mercenary is a lightweight and flexible library for writing
 command-line apps in Ruby.")
     (license license:expat)))
+
+(define-public ruby-launchy
+  (package
+    (name "ruby-launchy")
+    (version "2.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "launchy" version))
+              (sha256
+               (base32
+                "06r43899384das2bkbrpsdxsafyyqa94il7111053idfalb4984a"))))
+    (build-system ruby-build-system)
+    (native-inputs (list curl links ruby-simplecov))
+    (propagated-inputs (list ruby-addressable))
+    (synopsis "Ruby helper class for launching applications")
+    (description
+     "Launchy is helper class for launching applications in a fire and forget
+manner.  The aim of Launchy is to provide a common approach to launching
+external applications from within Ruby programs.")
+    (home-page "https://github.com/copiousfreetime/launchy")
+    (license license:isc)))
 
 (define-public ruby-liquid
   (package
