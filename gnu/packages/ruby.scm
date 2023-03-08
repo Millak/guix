@@ -13492,6 +13492,31 @@ Faraday-based API wrappers.")
 Dashboard.  It is a Ruby Client library for IRIS / BBS API.")
     (license license:expat)))
 
+(define-public ruby-selenium-webdriver
+  (package
+    (name "ruby-selenium-webdriver")
+    (version "4.8.5")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "selenium-webdriver" version))
+              (sha256
+               (base32
+                "0wh44vpsyz4mgyq4h482prgiv7hqa5jsj4i7i5hnvv39jb0rfiwm"))))
+    (build-system ruby-build-system)
+    ;; FIXME: The gem release lacks test files, and the git checkout lacks
+    ;; JavaScript source that is generated using Bazel, which isn't available
+    ;; in Guix yet, so disable the test suite for now.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list ruby-rexml ruby-rubyzip ruby-websocket))
+    (synopsis "Selenium browser automation bindings for Ruby")
+    (description "Selenium implements the W3C WebDriver protocol to automate
+popular browsers.  It aims to mimic the behaviour of a real user as it
+interacts with the application's HTML.  It's primarily intended for web
+application testing, but any web-based task can be automated.  This package
+provides the Ruby bindings of Selenium.")
+    (home-page "https://www.selenium.dev/")
+    (license license:asl2.0)))
+
 (define-public ruby-sentry-core
   (package
     (name "ruby-sentry-core")
