@@ -134,10 +134,11 @@ such as Coq, Epigram and NuPRL.")
     (source (package-source agda))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-elisp-dir
-           (lambda _ (chdir "src/data/emacs-mode") #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-elisp-dir
+            (lambda _ (chdir "src/data/emacs-mode"))))))
     (home-page "https://agda.readthedocs.io/en/latest/tools/emacs-mode.html")
     (synopsis "Emacs mode for Agda")
     (description "This Emacs mode enables interactive development with
