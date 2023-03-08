@@ -20043,7 +20043,7 @@ running a WiFi access point with @command{hostapd}, running the
 @command{inetd} ``superdaemon'', and more.  This section describes
 those.
 
-@deffn {Scheme Procedure} dhcpd-service-type
+@defvar dhcpd-service-type
 This type defines a service that runs a DHCP daemon.  To create a
 service of this type, you must supply a @code{<dhcpd-configuration>}.
 For example:
@@ -20054,7 +20054,7 @@ For example:
           (config-file (local-file "my-dhcpd.conf"))
           (interfaces '("enp0s25"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} dhcpd-configuration
 @table @asis
@@ -20290,7 +20290,7 @@ to use with the options @option{iburst} and @option{prefer}, as well as
 @end deftp
 
 @cindex OpenNTPD
-@deffn {Scheme Procedure} openntpd-service-type
+@defvar openntpd-service-type
 Run the @command{ntpd}, the Network Time Protocol (NTP) daemon, as implemented
 by @uref{http://www.openntpd.org, OpenNTPD}.  The daemon will keep the system
 clock synchronized with that of the given servers.
@@ -20305,7 +20305,7 @@ clock synchronized with that of the given servers.
   (constraints-from '("https://www.google.com/"))))
 
 @end lisp
-@end deffn
+@end defvar
 
 @defvar %openntpd-servers
 This variable is a list of the server addresses defined in
