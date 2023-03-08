@@ -522,27 +522,42 @@ WebSockets it allows for real-time features in web applications.")
 
 (define-public ruby-activejob
   (package
-   (name "ruby-activejob")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "activejob" version))
-     (sha256
-      (base32
-       "175d8q0achdlsxjsvq0w9znvfqfkgbj75kbmdrvg4fb277wwplmf"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
-   (propagated-inputs
-    (list ruby-activesupport ruby-globalid))
-   (synopsis "Declare job classes for multiple backends")
-   (description
-    "ActiveJob allows declaring job classes in a common way across Rails
-applications.")
-   (home-page "https://rubyonrails.org/")
-   (license license:expat)))
+    (name "ruby-activejob")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "activejob")))
+          (add-after 'chdir 'delete-problematic-tests
+            (lambda _
+              (substitute* "Rakefile"
+                ;; Remove the adapters that aren't yet packaged or would
+                ;; introduce cyclic dependencies.
+                (("backburner ") "")
+                (("resque ") "")
+                (("sidekiq ") "")
+                (("sneakers ") "")
+                (("sucker_punch ") ""))
+              (substitute* "test/cases/exceptions_test.rb"
+                (("ActiveJob::QueueAdapters::SneakersAdapter") "")))))))
+    (native-inputs
+     (list ruby-queue-classic
+           ruby-delayed-job
+           ruby-que
+           ruby-zeitwerk))
+    (propagated-inputs
+     (list ruby-activesupport
+           ruby-globalid))
+    (synopsis "Declare job classes for multiple backends")
+    (description "ActiveJob allows declaring job classes in a common way
+across Rails applications.")
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
 
 (define-public ruby-activestorage
   (package
