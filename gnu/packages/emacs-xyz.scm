@@ -25580,6 +25580,41 @@ later.")
 them in your web browser.")
       (license license:expat))))
 
+(define-public emacs-srht
+  (package
+    (name "emacs-srht")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~akagi/srht.el")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10271yp9w9z27gjjpb7bnsqcrhqyvggrbmic6x1nlrn06vin1qkz"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "emacs" "--batch"
+                             "-l" "tests/srht-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                (for-each (lambda (f)
+                            (rename-file f (basename f)))
+                          el-files)))))))
+    (propagated-inputs (list emacs-plz))
+    (home-page "https://git.sr.ht/~akagi/srht.el")
+    (synopsis "Emacs sr.ht API client")
+    (description "This package provides bindings to the Sourcehut REST API as
+well as commands for interacting with it.")
+    (license license:gpl3+)))
+
 (define-public emacs-srv
   (package
     (name "emacs-srv")
