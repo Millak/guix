@@ -9593,6 +9593,26 @@ subprocess.")
     (home-page "https://github.com/ahoward/systemu")
     (license license:ruby)))
 
+(define-public ruby-bcrypt
+  (package
+    (name "ruby-bcrypt")
+    (version "3.1.18")
+    ;; FIXME: Unbundle the bcrypt library used.
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "bcrypt" version))
+              (sha256
+               (base32
+                "048z3fvcknqx7ikkhrcrykxlqmf9bzc7l0y5h1cnvrc9n2qf0k8m"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "default")) ;compile + spec
+    (native-inputs (list ruby-rake-compiler ruby-rspec))
+    (synopsis  "Ruby bcrypt wrapper")
+    (description "This Ruby library provides a simple wrapper to bcrypt, a
+secure hash algorithm for hashing passwords.")
+    (home-page "https://github.com/bcrypt-ruby/bcrypt-ruby")
+    (license license:expat)))
+
 (define-public ruby-bio-commandeer
   (package
     (name "ruby-bio-commandeer")
