@@ -27653,31 +27653,28 @@ indentation and a command to plot the file.")
     (license license:gpl3+)))
 
 (define-public emacs-cmake-font-lock
-  ;; Upstream does not tag commits.  The commit hash below matches version
-  ;; bump.
-  (let ((commit "0d6111b36a66013aa9b452e664c93308df3b07e1"))
-    (package
-      (name "emacs-cmake-font-lock")
-      (version "0.1.12")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Lindydancer/cmake-font-lock")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "12ga8ri7v9r5y46pghk80ww27i7nhbrg0r3s2ina42drlkkliqj4"))))
-      (build-system emacs-build-system)
-      (native-inputs
-       (list emacs-faceup))
-      (arguments
-       (list #:include #~(cons "^admin\\/" %default-include)))
-      (home-page "https://github.com/Lindydancer/cmake-font-lock")
-      (synopsis "Advanced type-aware syntax-highlighting for CMake")
-      (description "This package highlights function arguments in CMake
+  (package
+    (name "emacs-cmake-font-lock")
+    (version "0.1.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Lindydancer/cmake-font-lock")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18kvs2yq6plw6lngs97wxl7qah5iwrnhq2q68aac9z8fpwq0vhz8"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:include #~(cons "^admin\\/" %default-include)))
+    (native-inputs
+     (list emacs-faceup))
+    (home-page "https://github.com/Lindydancer/cmake-font-lock")
+    (synopsis "Advanced type-aware syntax-highlighting for CMake")
+    (description "This package highlights function arguments in CMake
 according to their use.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-detached
   (package
