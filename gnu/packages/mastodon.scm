@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;;
@@ -42,13 +42,13 @@
 (define-public toot
   (package
     (name "toot")
-    (version "0.32.1")
+    (version "0.35.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "toot" version))
         (sha256
-         (base32 "0diskgvqmnkjl4k6sdda8f1sfz0c4w0j8ppv1q7p84phh9vgml6g"))))
+         (base32 "07vhirr3isi1bisqa5vgj13a4y9cj539c0djkd2dsa80g98g8xmi"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
