@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -1901,14 +1901,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.14.1")
+    (version "1.14.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "17ykbp5lmlbv6241vw55zgqdp34wc12jbj5nhs4wb3018crq4g0a"))
+        (base32 "1gpfax92kpchmbr3cp1w0cw5xjdwv11i1g3g9hp8akc9rc64gw2r"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
