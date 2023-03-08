@@ -7781,7 +7781,7 @@ automatically corrected.
 @end table
 @end deftp
 
-@deffn {Scheme Syntax} this-package
+@defmac this-package
 When used in the @emph{lexical scope} of a package field definition, this
 identifier resolves to the package being defined.
 
@@ -7801,7 +7801,7 @@ cross-compiling:
 @end lisp
 
 It is an error to refer to @code{this-package} outside a package definition.
-@end deffn
+@end defmac
 
 The following helper procedures are provided to help deal with package
 inputs.
@@ -8160,7 +8160,7 @@ from the @code{inputs} field of @code{gdb}.  The @code{modify-inputs}
 macro is a helper that can prove useful anytime you want to remove, add,
 or replace package inputs.
 
-@deffn {Scheme Syntax} modify-inputs @var{inputs} @var{clauses}
+@defmac modify-inputs inputs clauses
 Modify the given package inputs, as returned by @code{package-inputs} & co.,
 according to the given clauses.  Each clause must have one of the
 following forms:
@@ -8195,7 +8195,7 @@ The example below replaces the @code{guile} package from the inputs of
 
 The last type of clause is @code{append}, to add inputs at the back of
 the list.
-@end deffn
+@end defmac
 
 In some cases, you may find it useful to write functions
 (``procedures'', in Scheme parlance) that return a package based on some
@@ -10164,7 +10164,7 @@ such as @command{mkdir -p}, @command{cp -r}, @command{rm -r}, and
 @command{sed}.  They complement Guile's extensive, but low-level, file
 system interface (@pxref{POSIX,,, guile, GNU Guile Reference Manual}).
 
-@deffn {Scheme Syntax} with-directory-excursion @var{directory} @var{body}@dots{}
+@defmac with-directory-excursion directory body @dots{}
 Run @var{body} with @var{directory} as the process's current directory.
 
 Essentially, this macro changes the current directory to @var{directory}
@@ -10173,7 +10173,7 @@ guile, GNU Guile Reference Manual}).  It changes back to the initial
 directory when the dynamic extent of @var{body} is left, be it @i{via}
 normal procedure return or @i{via} a non-local exit such as an
 exception.
-@end deffn
+@end defmac
 
 @defun mkdir-p dir
 Create directory @var{dir} and all its ancestors.
@@ -10205,8 +10205,8 @@ symlinks.  Don't follow mount points either, unless @var{follow-mounts?}
 is true.  Report but ignore errors.
 @end defun
 
-@deffn {Scheme Syntax} substitute* @var{file} @
-  ((@var{regexp} @var{match-var}@dots{}) @var{body}@dots{}) @dots{}
+@defmac substitute* file @
+  ((regexp match-var@dots{}) body@dots{}) @dots{}
 Substitute @var{regexp} in @var{file} by the string returned by
 @var{body}.  @var{body} is evaluated with each @var{match-var} bound to
 the corresponding positional regexp sub-expression.  For example:
@@ -10232,7 +10232,7 @@ they are all subject to the substitutions.
 
 Be careful about using @code{$} to match the end of a line; by itself it
 won't match the terminating newline of a line.
-@end deffn
+@end defmac
 
 @subsection File Search
 
@@ -10393,7 +10393,7 @@ manipulate alists.  The @code{(guix build utils)} module complements
 those with tools written with build phases in mind.
 
 @cindex build phases, modifying
-@deffn {Scheme Syntax} modify-phases @var{phases} @var{clause}@dots{}
+@defmac modify-phases phases clause@dots{}
 Modify @var{phases} sequentially as per each @var{clause}, which may
 have one of the following forms:
 
@@ -10406,7 +10406,7 @@ have one of the following forms:
 
 Where every @var{phase-name} above is an expression evaluating to a
 symbol, and @var{new-phase} an expression evaluating to a procedure.
-@end deffn
+@end defmac
 
 The example below is taken from the definition of the @code{grep}
 package.  It adds a phase to run after the @code{install} phase, called
@@ -11193,16 +11193,16 @@ build a file-like object (@pxref{Using Guix Interactively}).
 The main syntactic forms to deal with monads in general are provided by
 the @code{(guix monads)} module and are described below.
 
-@deffn {Scheme Syntax} with-monad @var{monad} @var{body} ...
+@defmac with-monad monad body @dots{}
 Evaluate any @code{>>=} or @code{return} forms in @var{body} as being
 in @var{monad}.
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} return @var{val}
+@defmac return val
 Return a monadic value that encapsulates @var{val}.
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} >>= @var{mval} @var{mproc} ...
+@defmac >>= mval mproc @dots{}
 @dfn{Bind} monadic value @var{mval}, passing its ``contents'' to monadic
 procedures @var{mproc}@dots{}@footnote{This operation is commonly
 referred to as ``bind'', but that name denotes an unrelated procedure in
@@ -11221,12 +11221,10 @@ in this example:
 @result{} 4
 @result{} some-state
 @end lisp
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} mlet @var{monad} ((@var{var} @var{mval}) ...) @
-       @var{body} ...
-@deffnx {Scheme Syntax} mlet* @var{monad} ((@var{var} @var{mval}) ...) @
-       @var{body} ...
+@defmac mlet monad ((var mval) @dots{}) body @dots{}
+@defmacx mlet* monad ((var mval) @dots{}) body @dots{}
 Bind the variables @var{var} to the monadic values @var{mval} in
 @var{body}, which is a sequence of expressions.  As with the bind
 operator, this can be thought of as ``unpacking'' the raw, non-monadic
@@ -11240,9 +11238,9 @@ expression, and its result will become the result of the @code{mlet} or
 
 @code{mlet*} is to @code{mlet} what @code{let*} is to @code{let}
 (@pxref{Local Bindings,,, guile, GNU Guile Reference Manual}).
-@end deffn
+@end defmac
 
-@deffn {Scheme System} mbegin @var{monad} @var{mexp} ...
+@defmac mbegin monad mexp @dots{}
 Bind @var{mexp} and the following monadic expressions in sequence,
 returning the result of the last expression.  Every expression in the
 sequence must be a monadic expression.
@@ -11250,21 +11248,21 @@ sequence must be a monadic expression.
 This is akin to @code{mlet}, except that the return values of the
 monadic expressions are ignored.  In that sense, it is analogous to
 @code{begin}, but applied to monadic expressions.
-@end deffn
+@end defmac
 
-@deffn {Scheme System} mwhen @var{condition} @var{mexp0} @var{mexp*} ...
+@defmac mwhen condition mexp0 mexp* @dots{}
 When @var{condition} is true, evaluate the sequence of monadic
 expressions @var{mexp0}..@var{mexp*} as in an @code{mbegin}.  When
 @var{condition} is false, return @code{*unspecified*} in the current
 monad.  Every expression in the sequence must be a monadic expression.
-@end deffn
+@end defmac
 
-@deffn {Scheme System} munless @var{condition} @var{mexp0} @var{mexp*} ...
+@defmac munless condition mexp0 mexp* @dots{}
 When @var{condition} is false, evaluate the sequence of monadic
 expressions @var{mexp0}..@var{mexp*} as in an @code{mbegin}.  When
 @var{condition} is true, return @code{*unspecified*} in the current
 monad.  Every expression in the sequence must be a monadic expression.
-@end deffn
+@end defmac
 
 @cindex state monad
 The @code{(guix monads)} module provides the @dfn{state monad}, which
@@ -11585,8 +11583,8 @@ package available on the build side, here's how you would do it:
 
 The syntactic form to construct gexps is summarized below.
 
-@deffn {Scheme Syntax} #~@var{exp}
-@deffnx {Scheme Syntax} (gexp @var{exp})
+@defmac #~@var{exp}
+@defmacx (gexp @var{exp})
 Return a G-expression containing @var{exp}.  @var{exp} may contain one
 or more of the following forms:
 
@@ -11640,9 +11638,9 @@ Like the above, but refers to native builds of the objects listed in
 
 G-expressions created by @code{gexp} or @code{#~} are run-time objects
 of the @code{gexp?} type (see below).
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} with-imported-modules @var{modules} @var{body}@dots{}
+@defmac with-imported-modules modules body@dots{}
 Mark the gexps defined in @var{body}@dots{} as requiring @var{modules}
 in their execution environment.
 
@@ -11664,9 +11662,9 @@ path, and the last one is created from the given file-like object.
 This form has @emph{lexical} scope: it has an effect on the gexps
 directly defined in @var{body}@dots{}, but not on those defined, say, in
 procedures called from @var{body}@dots{}.
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} with-extensions @var{extensions} @var{body}@dots{}
+@defmac with-extensions extensions body@dots{}
 Mark the gexps defined in @var{body}@dots{} as requiring
 @var{extensions} in their build and execution environment.
 @var{extensions} is typically a list of package objects such as those
@@ -11676,7 +11674,7 @@ Concretely, the packages listed in @var{extensions} are added to the
 load path while compiling imported modules in @var{body}@dots{}; they
 are also added to the load path of the gexp returned by
 @var{body}@dots{}.
-@end deffn
+@end defmac
 
 @defun gexp? obj
 Return @code{#t} if @var{obj} is a G-expression.
@@ -11960,8 +11958,8 @@ the second case, the resulting script contains a @code{(string-append
 @dots{})} expression to construct the file name @emph{at run time}.
 @end defun
 
-@deffn {Scheme Syntax} let-system @var{system} @var{body}@dots{}
-@deffnx {Scheme Syntax} let-system (@var{system} @var{target}) @var{body}@dots{}
+@defmac let-system system body@dots{}
+@defmacx let-system (system target) body@dots{}
 Bind @var{system} to the currently targeted system---e.g.,
 @code{"x86_64-linux"}---within @var{body}.
 
@@ -11984,9 +11982,9 @@ spliced into the gexp depends on the target system, as in this example:
               (error "dunno!"))))
    "-net" "user" #$image)
 @end lisp
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} with-parameters ((@var{parameter} @var{value}) @dots{}) @var{exp}
+@defmac with-parameters ((parameter value) @dots{}) exp
 This macro is similar to the @code{parameterize} form for
 dynamically-bound @dfn{parameters} (@pxref{Parameters,,, guile, GNU
 Guile Reference Manual}).  The key difference is that it takes effect
@@ -12003,7 +12001,7 @@ for a given object:
 
 The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
-@end deffn
+@end defmac
 
 
 Of course, in addition to gexps embedded in ``host'' code, there are
@@ -16654,7 +16652,7 @@ is that only @code{root} and members of the @code{wheel} group may use
 
 @end table
 
-@deffn {Scheme Syntax} this-operating-system
+@defmac this-operating-system
 When used in the @emph{lexical scope} of an operating system field definition,
 this identifier resolves to the operating system being defined.
 
@@ -16672,7 +16670,7 @@ the definition of the @code{label} field:
 
 It is an error to refer to @code{this-operating-system} outside an operating
 system definition.
-@end deffn
+@end defmac
 
 @end deftp
 
@@ -40595,8 +40593,8 @@ standard list combinators such as @code{map} and @code{fold} to do that
 @code{modify-services} simply provides a more concise form for this
 common pattern.
 
-@deffn {Scheme Syntax} modify-services @var{services} @
-  (@var{type} @var{variable} => @var{body}) @dots{}
+@defspec modify-services services @
+  (type variable => body) @dots{}
 
 Modify the services listed in @var{services} according to the given
 clauses.  Each clause has the form:
@@ -40629,7 +40627,7 @@ Such a clause removes all services of the given @var{type} from
 
 @xref{Using the Configuration System}, for example usage.
 
-@end deffn
+@end defspec
 
 Next comes the programming interface for service types.  This is
 something you want to know when writing new service definitions, but not
@@ -41105,8 +41103,7 @@ procedures that take some kind of Scheme value and returns a
 G-expression (@pxref{G-Expressions}), which should, once serialized to
 the disk, return a string.  More details are listed below.
 
-@deffn {Scheme Syntax} define-configuration @var{name} @var{clause1} @
-@var{clause2} ...
+@defmac define-configuration name clause1 clause2 @dots{}
 Create a record type named @code{@var{name}} that contains the
 fields found in the clauses.
 
@@ -41216,9 +41213,9 @@ macro which is a shorthand of this.
    (string "test")
    "Some documentation."))
 @end lisp   
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} define-maybe @var{type}
+@defmac define-maybe type
 Sometimes a field should not be serialized if the user doesn’t specify a
 value.  To achieve this, you can use the @code{define-maybe} macro to
 define a ``maybe type''; if the value of a maybe type is left unset, or
@@ -41270,7 +41267,7 @@ whether its value is set or not.
    maybe-symbol
    "Docstring."))
 @end lisp
-@end deffn
+@end defmac
 
 @defun maybe-value-set? value
 Predicate to check whether a user explicitly specified the value of a
