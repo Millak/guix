@@ -5022,6 +5022,53 @@ URIs using the normal URI.parse method.")
 you to merge elements inside a hash together recursively.")
     (license license:expat)))
 
+(define-public ruby-delayed-job
+  (package
+    (name "ruby-delayed-job")
+    (version "4.1.11")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "delayed_job" version))
+              (sha256
+               (base32
+                "0s2xg72ljg4cwmr05zi67vcyz8zib46gvvf7rmrdhsyq387m2qcq"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-bundler
+                 (lambda _
+                   (substitute* "Rakefile"
+                     (("require 'bundler/setup'") "")
+                     (("Bundler::GemHelper\\.install_tasks") ""))))
+               (add-after 'unpack 'disable-rubocop
+                 (lambda _
+                   (substitute* "Rakefile"
+                     (("require 'rubocop/rake_task'") "")
+                     (("RuboCop::RakeTask.new") ""))))
+               (add-after 'extract-gemspec 'remove-dependency-on-actionmailer
+                 (lambda _
+                   (substitute* "spec/helper.rb"
+                     (("require 'action_mailer'") ""))
+                   (substitute* "delayed_job.gemspec"
+                     (("\"spec/performable_mailer_spec.rb\".freeze, ") ""))
+                   (delete-file "spec/performable_mailer_spec.rb"))))))
+    (native-inputs
+     (list ruby-activerecord
+           ruby-rspec
+           ruby-simplecov
+           ruby-simplecov-lcov
+           ruby-zeitwerk))
+    (propagated-inputs
+     (list ruby-activesupport))
+    (synopsis "Asynchronous background tasks execution library")
+    (description "Delayed_job (or DJ) encapsulates the common pattern of
+asynchronously executing longer tasks in the background.  It is a direct
+extraction from Shopify where the job table is responsible for a multitude of
+core tasks.")
+    (home-page "https://github.com/collectiveidea/delayed_job")
+    (license license:expat)))
+
 (define-public ruby-git
   (package
     (name "ruby-git")
