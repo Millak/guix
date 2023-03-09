@@ -1576,10 +1576,10 @@ threads.  This makes it robust in face of panics (it won't make your program
 deadlock, like the standard Barrier).")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-adblock-0.4
+(define-public rust-adblock-0.7
   (package
     (name "rust-adblock")
-    (version "0.4.1")
+    (version "0.7.5")
     (source
      (origin
        (method git-fetch)
@@ -1587,42 +1587,47 @@ deadlock, like the standard Barrier).")
              (url "https://github.com/brave/adblock-rust")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (patches (search-patches "rust-adblock-ignore-live-tests.patch"))
        (sha256
         (base32
-         "0l2iacwkm66z6wc71wy62x2k5xllx94adrqncicxqsx203c3ljpl"))))
+         "0prlkq8am3sskg55x7b8vr4j54dmkjqldyl50isq5qyy9pff3xxs"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; Skip tests which require the network.
+             "--skip=check_live_from_filterlists"
+             "--skip=check_live_specific_urls"
+             "--skip=stable_serialization"
+             "--skip=stable_serialization_through_load")
+       #:cargo-inputs
        (("rust-addr" ,rust-addr-0.14)
         ("rust-base64" ,rust-base64-0.13)
         ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cssparser" ,rust-cssparser-0.25)
+        ("rust-cssparser" ,rust-cssparser-0.28)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-idna" ,rust-idna-0.2)
         ("rust-itertools" ,rust-itertools-0.10)
         ("rust-lifeguard" ,rust-lifeguard-0.6)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-percent-encoding"
-         ,rust-percent-encoding-2)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-regex" ,rust-regex-1)
         ("rust-rmp-serde" ,rust-rmp-serde-0.13)
         ("rust-rmp-serde" ,rust-rmp-serde-0.15)
         ("rust-seahash" ,rust-seahash-3)
-        ("rust-selectors" ,rust-selectors-0.21)
+        ("rust-selectors" ,rust-selectors-0.23)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-twoway" ,rust-twoway-0.2)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
+       (("rust-criterion" ,rust-criterion-0.4)
         ("rust-csv" ,rust-csv-1)
         ("rust-futures" ,rust-futures-0.3)
+        ("rust-mock-instant" ,rust-mock-instant-0.2)
         ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-tokio" ,rust-tokio-1.8))))
-    (native-inputs (list pkg-config openssl))
+        ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/brave/adblock-rust/")
     (synopsis "Adblock Plus syntax filter parsing and matching")
     (description "This package provides native Rust module for Adblock Plus
