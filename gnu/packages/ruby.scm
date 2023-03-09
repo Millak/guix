@@ -7708,6 +7708,33 @@ testing libraries to build on.")
     (home-page "https://github.com/rack/rack-test")
     (license license:expat)))
 
+(define-public ruby-rack-session
+  (package
+    (name "ruby-rack-session")
+    ;; Stay on version 1 until all the rack users such as Rails can use rack 3
+    ;; (rack-session 2 requires rack 3).
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/rack/rack-session")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rv955wd7ckp5jgy5c229wmajh48jpcy8s0iv5i8ma61wf7qw0i1"))))
+    (build-system ruby-build-system)
+    (native-inputs
+     (list ruby-minitest-global-expectations
+           ruby-minitest-sprint))
+    (propagated-inputs
+     (list ruby-rack))
+    (synopsis "Session management for Rack")
+    (description "This package provides a session management implementation
+for Rack.")
+    (home-page "https://github.com/rack/rack-session")
+    (license license:expat)))
+
 (define-public ruby-rack-protection
   (package
     (name "ruby-rack-protection")
