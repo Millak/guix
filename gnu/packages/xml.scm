@@ -335,20 +335,32 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
              (patches (search-patches "libxslt-generated-ids.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'disable-fuzz-tests
-                    (lambda _
-                      ;; Disable libFuzzer tests, because they require
-                      ;; instrumentation builds of libxml2 and libxslt.
-                      (substitute* "tests/Makefile"
-                        (("exslt plugins fuzz")
-                         "exslt plugins"))
-                      ;; Also disable Python tests since they require
-                      ;; python-libxml2 which would introduce a
-                      ;; circular dependency.
-                      (substitute* "python/Makefile"
-                        (("cd tests && \\$\\(MAKE\\) tests")
-                         "$(info Python tests are disabled by Guix.)")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'disable-fuzz-tests
+                 (lambda _
+                   ;; Disable libFuzzer tests, because they require
+                   ;; instrumentation builds of libxml2 and libxslt.
+                   (substitute* "tests/Makefile"
+                     (("exslt plugins fuzz")
+                      "exslt plugins"))
+                   ;; Also disable Python tests since they require
+                   ;; python-libxml2 which would introduce a
+                   ;; circular dependency.
+                   (substitute* "python/Makefile"
+                     (("cd tests && \\$\\(MAKE\\) tests")
+                      "$(info Python tests are disabled by Guix.)")))))
+           #:configure-flags
+           (if (%current-target-system)
+               ;; 'configure.ac' uses 'AM_PATH_PYTHON', which looks for
+               ;; 'python' in $PATH, even though it's only used in the shebang
+               ;; of examples.  Thus, when cross-compiling, set 'PYTHON' so
+               ;; that 'configure' doesn't search $PATH.
+               #~(list (string-append "PYTHON="
+                                      #$(this-package-input
+                                         "python-minimal-wrapper")
+                                      "/bin/python"))
+               #~'())))
     (home-page "http://xmlsoft.org/XSLT/index.html")
     (synopsis "C library for applying XSLT stylesheets to XML documents")
     (inputs
