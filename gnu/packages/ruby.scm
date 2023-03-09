@@ -13241,14 +13241,14 @@ uniquely identify it.")
 (define-public ruby-sprockets
   (package
     (name "ruby-sprockets")
-    (version "3.7.2")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sprockets" version))
        (sha256
         (base32
-         "182jw5a0fbqah5w9jancvfmjbk88h8bxdbwnl4d3q809rpxdg8ay"))))
+         "0k0236g4h3ax7v6vp9k0l2fa0w6f1wqp7dn060zm4isw4n3k89sw"))))
     (build-system ruby-build-system)
     (arguments
      '(;; No included tests
