@@ -21890,18 +21890,18 @@ custom fixed-size hash types.")
 (define-public rust-fixedbitset-0.4
   (package
     (name "rust-fixedbitset")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fixedbitset" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17mnwa48dy11dnbasxa0c92sdj243acjl2ilhpcb1fa0pvxa93ir"))))
+        (base32 "101v41amgv5n9h4hcghvrbfk5vrncx1jwm35rn5szv4rk55i7rqc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/bluss/fixedbitset")
     (synopsis "Simple bitset collection")
     (description "FixedBitSet is a simple bitset collection.")
