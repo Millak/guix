@@ -12555,6 +12555,38 @@ external applications from within Ruby programs.")
 to load dynamic content on storefronts.")
     (license license:expat)))
 
+(define-public ruby-localhost
+  (package
+    (name "ruby-localhost")
+    (version "1.1.10")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/socketry/localhost")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yp70w15wpfk613ap5f4y15yx4n2qqwa67vqc2f4lv7npf3llcz0"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; XXX: The test suite requires sus-fixtures-async, which requires async,
+     ;; only available for Ruby 3.0.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'remove-missing-signing-key
+                 (lambda _
+                   ;; Otherwise, the build fails with ENOENT.
+                   (substitute* "localhost.gemspec"
+                     ((".*spec.signing_key.*") "")))))))
+    (synopsis "API for generating per-user self-signed root certificates")
+    (description "This package provides @code{localhost}, a Ruby library for
+Managing a local certificate authority for self-signed, localhost development
+servers.")
+    (home-page "https://github.com/socketry/localhost")
+    (license license:expat)))
+
 (define-public ruby-forwardable-extended
   (package
     (name "ruby-forwardable-extended")
