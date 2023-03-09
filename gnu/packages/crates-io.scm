@@ -37901,6 +37901,32 @@ with all line endings.")
         (base32
          "1a1knz9j1w5a1pl2q6whmjphm3z6p64r5njnam7syp5rx8wil2if"))))))
 
+(define-public rust-normpath-0.3
+  (package
+    (name "rust-normpath")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "normpath" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1bxwffmqqhic8rfb711009w9hsprrpm5jca2q0y8igqgrglzbah4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-print-bytes" ,rust-print-bytes-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/dylni/normpath")
+    (synopsis "More reliable path manipulation")
+    (description "This package provides more reliable path manipulation in rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-notify-5
   (package
     (name "rust-notify")
