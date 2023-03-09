@@ -29943,8 +29943,44 @@ primitives to an @code{io::Write}.")
      "Sys functions for the Rust bindings of the javacriptcore library.")
     (license license:expat)))
 
+(define-public rust-jemalloc-sys-0.5
+  (package
+    (name "rust-jemalloc-sys")
+    (version "0.5.3+5.3.0-patched")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jemalloc-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "18bwwikzq2krgafq3811n1zlsrjrayk0kqmjf6smivd7drhmvggr"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (delete-file-recursively "jemalloc")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'override-jemalloc
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((jemalloc (assoc-ref inputs "jemalloc")))
+               ;; This flag is needed when not using the bundled jemalloc.
+               ;; https://github.com/tikv/jemallocator/issues/19
+               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+               (setenv "JEMALLOC_OVERRIDE"
+                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
+    (native-inputs
+     (list jemalloc))
+    (home-page "https://github.com/tikv/jemallocator")
+    (synopsis "Rust FFI bindings to jemalloc")
+    (description "This package provides Rust FFI bindings to jemalloc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-jemalloc-sys-0.3
   (package
+    (inherit rust-jemalloc-sys-0.5)
     (name "rust-jemalloc-sys")
     (version "0.3.2")
     (source
@@ -29958,7 +29994,6 @@ primitives to an @code{io::Write}.")
         (modules '((guix build utils)))
         (snippet
          '(begin (delete-file-recursively "jemalloc") #t))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
@@ -29972,14 +30007,7 @@ primitives to an @code{io::Write}.")
              (let ((jemalloc (assoc-ref inputs "jemalloc")))
                (setenv "JEMALLOC_OVERRIDE"
                        (string-append jemalloc "/lib/libjemalloc_pic.a")))
-             #t)))))
-    (native-inputs
-     (list jemalloc))
-    (home-page "https://github.com/gnzlbg/jemallocator")
-    (synopsis "Rust FFI bindings to jemalloc")
-    (description "This package provides Rust FFI bindings to jemalloc.")
-    (license (list license:asl2.0
-                   license:expat))))
+             #t)))))))
 
 (define-public rust-jemalloc-sys-0.1
   (package
