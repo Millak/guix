@@ -353,13 +353,9 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
            #:configure-flags
            (if (%current-target-system)
                ;; 'configure.ac' uses 'AM_PATH_PYTHON', which looks for
-               ;; 'python' in $PATH, even though it's only used in the shebang
-               ;; of examples.  Thus, when cross-compiling, set 'PYTHON' so
-               ;; that 'configure' doesn't search $PATH.
-               #~(list (string-append "PYTHON="
-                                      #$(this-package-input
-                                         "python-minimal-wrapper")
-                                      "/bin/python"))
+               ;; 'python' in $PATH and tries to run it.  Skip all that when
+               ;; cross-compiling.
+               #~'("--without-python")
                #~'())))
     (home-page "http://xmlsoft.org/XSLT/index.html")
     (synopsis "C library for applying XSLT stylesheets to XML documents")
