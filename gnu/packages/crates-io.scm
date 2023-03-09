@@ -15691,20 +15691,22 @@ re-exported cipher crate.")
 (define-public rust-ctrlc-3
   (package
     (name "rust-ctrlc")
-    (version "3.1.7")
+    (version "3.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ctrlc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "027bzbddk0wg7s2wnbgcwx2iv6bjzvxfpp0s2xdg444yfklr4ymm"))))
+        (base32 "0fgng4k7d3bx2q86z2djkngwss43wkrfkriswhgf9jqqlv137kxv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-nix" ,rust-nix-0.18)
-        ("rust-winapi" ,rust-winapi-0.3))))
+       (("rust-nix" ,rust-nix-0.26)
+        ("rust-windows-sys" ,rust-windows-sys-0.45))
+       #:cargo-development-inputs
+       (("rust-windows-sys" ,rust-windows-sys-0.45))))
     (home-page "https://github.com/Detegr/rust-ctrlc")
     (synopsis "Easy Ctrl-C handler for Rust projects")
     (description
