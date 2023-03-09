@@ -10169,6 +10169,27 @@ checking for the right Ruby version in software.")
     (home-page "https://github.com/janlelis/ruby_version")
     (license license:expat)))
 
+(define-public ruby-websocket-eventmachine-base
+  (package
+    (name "ruby-websocket-eventmachine-base")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "websocket-eventmachine-base" version))
+              (sha256
+               (base32
+                "0wiz61mcwgs3k21cdr5l9b4jpg29gl6mflfampww2v525yc3hr1r"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f)) ;no test suite
+    (propagated-inputs (list ruby-eventmachine ruby-websocket
+                             ruby-websocket-native))
+    (synopsis "WebSocket base for Ruby client and server")
+    (description "This package provides a WebSocket base for a Ruby client and
+server.")
+    (home-page "https://github.com/imanel/websocket-eventmachine-base")
+    (license license:expat)))
+
 (define-public ruby-websocket-native
   (package
     (name "ruby-websocket-native")
