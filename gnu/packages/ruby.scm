@@ -10804,28 +10804,109 @@ part of the Prawn PDF generator.")
 (define-public ruby-puma
   (package
     (name "ruby-puma")
-    (version "3.9.1")
+    (version "6.1.1")
     (source
      (origin
-       (method git-fetch)
-       ;; Fetch from GitHub because distributed gem does not contain tests.
+       (method git-fetch)               ;for tests
        (uri (git-reference
-              (url "https://github.com/puma/puma")
-              (commit (string-append "v" version))))
+             (url "https://github.com/puma/puma")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kj75k81iik3aj73pkc9ixj9rwf95ipkyma65n28m64dgw02qi1f"))))
+         "0v4nn3z0bj0ry0gpx1hsf5mzkinsx9sv716j4jf2nb1x6hcwv993"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f ; Tests require an out-dated version of minitest.
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-gemspec
-           (lambda _
-             (substitute* "puma.gemspec"
-               (("git ls-files") "find * |sort")))))))
-    (inputs (list openssl))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-rubocop
+            (lambda _
+              (setenv "PUMA_NO_RUBOCOP" "1")))
+          (add-after 'unpack 'use-rack-2
+            (lambda _
+              (setenv "PUMA_CI_RACK_2" "1")))
+          (add-before 'build 'increase-resource-limits
+            (lambda _
+              ;; The test suite requires a higher number of open files.  Try
+              ;; increasing the soft resource limit of max open files to 2048,
+              ;; or equal to the hard limit, whichever is lower.
+              (call-with-values (lambda () (getrlimit 'nofile))
+                (lambda (soft hard)
+                  (when (and soft (< soft 2048))
+                    (if hard
+                        (setrlimit 'nofile (min hard 2048) hard)
+                        (setrlimit 'nofile 2048 #f))
+                    (format
+                     #t "increased maximum number of open files from ~d to ~d~%"
+                     soft (if hard (min hard 2048) 2048)))))))
+          (add-before 'build 'fix-gemspec
+            (lambda _
+              (substitute* "puma.gemspec"
+                (("`git ls-files -- bin docs ext lib tools`")
+                 "`find bin docs ext lib tools -type f |sort`"))))
+          (delete 'check)               ;moved after install
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "bundle" "exec" "rake" "test"))))
+          (add-before 'check 'disable-problematic-tests
+            (lambda _
+              (let-syntax ((skip-tests
+                            (syntax-rules ()
+                              ((_ file test ...)
+                               (substitute* file
+                                 (((string-append "def " test ".*") all)
+                                  (string-append
+                                   all "    skip('fails on guix')\n")) ...)))))
+                ;; The test failures were reported at:
+                ;; https://github.com/puma/puma/issues/3093, but appear to be
+                ;; caused by the Guix build container, perhaps the lack of
+                ;; zombie process reaping (see:
+                ;; https://issues.guix.gnu.org/30948).
+                ;;  All the tests in the 'test_worker_gem_independence.rb'
+                ;;  module fail with "Expected false to be truthy.".
+                (delete-file "test/test_worker_gem_independence.rb")
+                (skip-tests "test/test_integration_ssl_session.rb"
+                            ;; The TLS 1.2 test fails for unknown reasons.
+                            "test_off_tls1_2")
+                (skip-tests "test/test_integration_cluster.rb"
+                            "test_fork_worker_on_refork"
+                            "test_culling_strategy_oldest_fork_worker"
+                            "test_usr1_fork_worker")
+                (skip-tests "test/test_integration_pumactl.rb"
+                            "test_refork_cluster"))))
+          (add-before 'check 'relax-test-case-timeout
+            (lambda _
+              ;; The default value is 45 s and easily causes timeouts.
+              (setenv "TEST_CASE_TIMEOUT" "600")))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Some tests fail if the cannot write to HOME.
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'set-paths
+            (lambda _
+              ;; The test suite requires the 'puma' command to be on PATH.
+              (setenv "PATH" (string-append (getenv "PATH") ":"
+                                            #$output "/bin"))
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby")))))))
+    (native-inputs
+     (list bundler
+           curl
+           ruby-json
+           ruby-localhost
+           ruby-m
+           ruby-minitest-proveit
+           ruby-minitest-retry
+           ruby-minitest-stub-const
+           ruby-rack
+           ruby-rake-compiler
+           ruby-webrick))
+    (inputs
+     (list openssl
+           ruby-nio4r))
     (synopsis "Simple, concurrent HTTP server for Ruby/Rack")
     (description
      "Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
