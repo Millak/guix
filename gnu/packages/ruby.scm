@@ -7179,6 +7179,28 @@ into a single method call.")
                 "0msf14655nfcq1kgmib6932lgzm9nw3nb0m3c7nh6nj4sx30yxfr"))))
     (arguments '())))
 
+(define-public ruby-rackup
+  (package
+    (name "ruby-rackup")
+    (version "2.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rack/rackup")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19b7sy700zjwaw7x47qpxvhnnz5hrp5bhrxfyljgagrli824dajy"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-minitest-global-expectations))
+    (inputs (list ruby-rack-next ruby-webrick))
+    (synopsis "Command line interface (CLI) for running for Rack applications")
+    (description "This package provides a command line interface for running
+for Rack applications.")
+    (home-page "https://github.com/rack/rackup")
+    (license license:expat)))
+
 (define-public ruby-rack-cache
   (package
     (name "ruby-rack-cache")
