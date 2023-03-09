@@ -468,32 +468,88 @@ Ruby.")
 
 (define-public ruby-actionpack
   (package
-   (name "ruby-actionpack")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "actionpack" version))
-     (sha256
-      (base32
-       "030yyaskzlic5cp4d9zbwwr3rhf4k6hsls44a7ihsfd6r8mlivq5"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
-   (propagated-inputs
-    (list ruby-actionview
-          ruby-activesupport
-          ruby-rack
-          ruby-rack-test
-          ruby-rails-dom-testing
-          ruby-rails-html-sanitizer))
-   (synopsis "Conventions for building and testing MVC web applications")
-   (description
-    "ActionPack provides conventions for building and testing MVC web
+    (name "ruby-actionpack")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "actionpack")))
+          (add-before 'check 'delete-problematic-tests
+            (lambda _
+              (let-syntax ((skip-tests
+                            (syntax-rules ()
+                              ((_ file test ...)
+                               (substitute* file
+                                 ;; ActiveSupport test case.
+                                 (((string-append "test \"" test "\".*") all)
+                                  (string-append
+                                   all "    skip    'fails on guix'\n")) ...
+                                 ;; MiniTest test case.
+                                 (((string-append "def " test ".*") all)
+                                  (string-append
+                                   all "    skip('fails on guix')\n")) ...)))))
+
+                (with-directory-excursion "test"
+                  (for-each delete-file
+                            ;; These tests depend on rails, which depends on
+                            ;; this package.
+                            '("dispatch/mount_test.rb"
+                              "dispatch/prefix_generation_test.rb"
+                              "dispatch/routing_assertions_test.rb"
+                              "dispatch/routing/inspector_test.rb"
+                              "controller/live_stream_test.rb"
+                              "controller/integration_test.rb"
+                              "controller/test_case_test.rb"))
+
+                  ;; The following test failures have been reported upstream
+                  ;; (see: https://github.com/rails/rails/issues/47615).
+                  (skip-tests "controller/new_base/render_streaming_test.rb"
+                              ;; These tests fail due to white space
+                              ;; characters in the compared strings.
+                              "rendering with streaming no layout"
+                              "rendering with streaming enabled at the \
+class level"
+                              "rendering with streaming given to render"
+                              "rendering with layout exception"
+                              "rendering with template exception"
+                              "rendering with streaming do not override \
+explicit cache control given to render")
+
+                  (skip-tests "dispatch/system_testing/driver_test.rb"
+                              ;; These tests require Firefox.
+                              "define extra capabilities using headless_firefox"
+                              "define extra capabilities using firefox")
+
+                  (skip-tests "dispatch/session/cache_store_test.rb"
+                              ;; This test fails with: "NoMethodError:
+                              ;; undefined method `hash_for' for
+                              ;; #<Rack::Test::CookieJar:0x0000000003572170>".
+                              "test_getting_session_value_after_session_reset"))))))))
+    (native-inputs
+     (list ruby-activemodel
+           ruby-capybara
+           ruby-selenium-webdriver
+           ruby-zeitwerk))
+    (propagated-inputs
+     (list ruby-actionview
+           ruby-activesupport
+           ruby-rack
+           ruby-rack-cache
+           ruby-rack-session
+           ruby-rack-test
+           ruby-rails-dom-testing
+           ruby-rails-html-sanitizer))
+    (synopsis "Conventions for building and testing MVC web applications")
+    (description
+     "ActionPack provides conventions for building and testing MVC web
 applications.  These work with any Rack-compatible server.")
-   (home-page "https://rubyonrails.org/")
-   (license license:expat)))
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
 
 (define-public ruby-actioncable
   (package
