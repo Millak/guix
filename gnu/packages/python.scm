@@ -635,30 +635,38 @@ for more information.")))
     (inputs `(("bash" ,bash)))
     (propagated-inputs `(("python" ,python)))
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let ((bin (string-append (assoc-ref %outputs "out") "/bin"))
-                 (python (string-append (assoc-ref %build-inputs "python") "/bin/")))
-                (mkdir-p bin)
-                (for-each
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
+
+               ;; TODO: Remove 'assoc-ref' uses on next rebuild cycle.
+               (let ((bin (string-append (assoc-ref %outputs "out") "/bin"))
+                     (python (string-append
+                              ;; XXX: '%build-inputs' contains the native
+                              ;; Python when cross-compiling.
+                              #$(if (%current-target-system)
+                                    (this-package-input "python")
+                                    #~(assoc-ref %build-inputs "python"))
+                              "/bin/")))
+                 (mkdir-p bin)
+                 (for-each
                   (lambda (old new)
                     (symlink (string-append python old)
                              (string-append bin "/" new)))
                   `("python3" ,"pydoc3" ,"pip3")
                   `("python"  ,"pydoc"  ,"pip"))
-                ;; python-config outputs search paths based upon its location,
-                ;; use a bash wrapper to avoid changing its outputs.
-                (let ((bash (string-append (assoc-ref %build-inputs "bash")
-                                           "/bin/bash"))
-                      (old  (string-append python "python3-config"))
-                      (new  (string-append bin "/python-config")))
-                  (with-output-to-file new
-                    (lambda ()
-                      (format #t "#!~a~%" bash)
-                      (format #t "exec \"~a\" \"$@\"~%" old)
-                      (chmod new #o755))))))))
+                 ;; python-config outputs search paths based upon its location,
+                 ;; use a bash wrapper to avoid changing its outputs.
+                 (let ((bash (string-append (assoc-ref %build-inputs "bash")
+                                            "/bin/bash"))
+                       (old  (string-append python "python3-config"))
+                       (new  (string-append bin "/python-config")))
+                   (with-output-to-file new
+                     (lambda ()
+                       (format #t "#!~a~%" bash)
+                       (format #t "exec \"~a\" \"$@\"~%" old)
+                       (chmod new #o755))))))))
     (synopsis "Wrapper for the Python 3 commands")
     (description
      "This package provides wrappers for the commands of Python@tie{}3.x such
