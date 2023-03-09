@@ -8,7 +8,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -100,13 +100,23 @@
     `(#:configure-flags (list "--enable-freetype-config")
       #:disallowed-references (,pkg-config)
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'install 'remove-reference-to-pkg-config
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* (string-append out "/bin/freetype-config")
-                 (((search-input-file inputs "/bin/pkg-config"))
-                   "pkg-config"))))))))
+      ;; TODO: Keep only the first variant on the next core rebuild cycle.
+      ,(if (%current-target-system)
+           '(modify-phases %standard-phases
+              (add-after 'install 'remove-reference-to-pkg-config
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let ((out (assoc-ref outputs "out")))
+                    (substitute* (string-append out "/bin/freetype-config")
+                      (("/([a-zA-Z0-9/\\._-]+)/bin/([a-zA-Z0-9_-]+)pkg-config"
+                        _ store target)
+                       "pkg-config"))))))
+           '(modify-phases %standard-phases
+              (add-after 'install 'remove-reference-to-pkg-config
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let ((out (assoc-ref outputs "out")))
+                    (substitute* (string-append out "/bin/freetype-config")
+                      (((search-input-file inputs "/bin/pkg-config"))
+                       "pkg-config")))))))))
    (native-inputs
     (list pkg-config))
    (propagated-inputs
