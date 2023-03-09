@@ -415,21 +415,23 @@ useful when writing tests.")
 (define-public ruby-actiontext
   (package
     (name "ruby-actiontext")
-    (version "6.1.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (rubygems-uri "actiontext" version))
-        (sha256
-         (base32
-          "04k4z4xj40sbzbgx0x9m6i8k0nc22jb6dkrlslj16p2z2dfnwhqg"))))
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
     (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
+    (arguments
+     (list
+      #:tests? #f                       ;avoid a cycle with ruby-rails
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "actiontext"))))))
     (propagated-inputs
-     (list ruby-actionpack ruby-activerecord ruby-activestorage
-           ruby-activesupport ruby-nokogiri))
+     (list ruby-actionpack
+           ruby-activerecord
+           ruby-activestorage
+           ruby-activesupport
+           ruby-nokogiri))
     (synopsis "Edit and display rich text in Rails applications")
     (description
      "ActionText edits and displays rich text in Rails applications.")
