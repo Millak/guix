@@ -30027,8 +30027,44 @@ primitives to an @code{io::Write}.")
         (snippet
          '(begin (delete-file-recursively "jemalloc") #t))))))
 
+(define-public rust-jemallocator-0.5
+  (package
+    (name "rust-jemallocator")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jemallocator" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "19kfd64hhh2anzfqm1c0yg0mg0nkmlzmcaw2njq543486x0m3hhn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-jemalloc-sys" ,rust-jemalloc-sys-0.5)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-paste" ,rust-paste-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'override-jemalloc
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((jemalloc (assoc-ref inputs "jemalloc")))
+               ;; This flag is needed when not using the bundled jemalloc.
+               ;; https://github.com/tikv/jemallocator/issues/19
+               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+               (setenv "JEMALLOC_OVERRIDE"
+                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
+    (native-inputs
+     (list jemalloc))
+    (home-page "https://github.com/tikv/jemallocator")
+    (synopsis "Rust allocator backed by jemalloc")
+    (description
+     "This package provides a Rust allocator backed by jemalloc.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-jemallocator-0.3
   (package
+    (inherit rust-jemallocator-0.5)
     (name "rust-jemallocator")
     (version "0.3.2")
     (source
@@ -30040,19 +30076,13 @@ primitives to an @code{io::Write}.")
        (sha256
         (base32
          "0sabfa5118b7l4ars5n36s2fjyfn59w4d6mjs6rrmsa5zky67bj3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-jemalloc-sys" ,rust-jemalloc-sys-0.3)
         ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-paste" ,rust-paste-0.1))))
-    (home-page "https://github.com/gnzlbg/jemallocator")
-    (synopsis "Rust allocator backed by jemalloc")
-    (description
-     "This package provides a Rust allocator backed by jemalloc.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-paste" ,rust-paste-0.1))))))
 
 (define-public rust-jemallocator-0.1
   (package
