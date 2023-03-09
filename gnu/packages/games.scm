@@ -954,43 +954,40 @@ high a score as possible.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "USE_HOME_DIR=1" "DYNAMIC_LINKING=1" "RELEASE=1"
-             "LOCALIZE=1" "LANGUAGES=all")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; Apparently we can't do make on both tiles and a console version at
-         ;; the same time anymore, so we have to either "make clean" between
-         ;; builds or do some other hackery.  See:
-         ;;   https://github.com/CleverRaven/Cataclysm-DDA/issues/42598#issuecomment-667702746
-         (add-after 'install 'make-clean-pre-tiles
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             ;; Change prefix directory and enable tile graphics and sound.
-             (invoke "make" "clean")))
-         (add-after 'make-clean-pre-tiles 'build-tiles
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             ;; Change prefix directory and enable tile graphics and sound.
-             (apply invoke "make" "TILES=1" "SOUND=1"
-                    (string-append "PREFIX="
-                                   (assoc-ref outputs "tiles"))
-                    (cdr make-flags))))
-         (add-after 'build-tiles 'install-tiles
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             (apply invoke "make" "install" "TILES=1" "SOUND=1"
-                    (string-append "PREFIX="
-                                   (assoc-ref outputs "tiles"))
-                    (cdr make-flags)))))
-       ;; TODO: Add libtap++ from https://github.com/cbab/libtappp as a native
-       ;;       input in order to support tests.
-       #:tests? #f))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "USE_HOME_DIR=1" "DYNAMIC_LINKING=1" "RELEASE=1"
+              "LOCALIZE=1" "LANGUAGES=all")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          ;; Apparently we can't do make on both tiles and a console version at
+          ;; the same time anymore, so we have to either "make clean" between
+          ;; builds or do some other hackery.  See:
+          ;;   https://github.com/CleverRaven/Cataclysm-DDA/issues/42598#issuecomment-667702746
+          (add-after 'install 'make-clean-pre-tiles
+            (lambda* (#:key make-flags outputs #:allow-other-keys)
+              ;; Change prefix directory and enable tile graphics and sound.
+              (invoke "make" "clean")))
+          (add-after 'make-clean-pre-tiles 'build-tiles
+            (lambda* (#:key make-flags outputs #:allow-other-keys)
+              ;; Change prefix directory and enable tile graphics and sound.
+              (apply invoke "make" "TILES=1" "SOUND=1"
+                     (string-append "PREFIX=" #$output:tiles)
+                     (cdr make-flags))))
+          (add-after 'build-tiles 'install-tiles
+            (lambda* (#:key make-flags outputs #:allow-other-keys)
+              (apply invoke "make" "install" "TILES=1" "SOUND=1"
+                     (string-append "PREFIX=" #$output:tiles)
+                     (cdr make-flags)))))
+      ;; TODO: Add libtap++ from https://github.com/cbab/libtappp as a native
+      ;;       input in order to support tests.
+      #:tests? #f))
     (outputs '("out"
                "tiles"))                ;for tile graphics and sound support
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("astyle" ,astyle)))
+     (list astyle gettext-minimal pkg-config))
     (inputs
      (list freetype
            libogg
