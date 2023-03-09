@@ -37200,14 +37200,14 @@ nitrokey-test crate.")
 (define-public rust-nix-0.26
   (package
     (name "rust-nix")
-    (version "0.26.1")
+    (version "0.26.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "155610n6bp37sqg7p0qihzi0jnvqkpqc40nyik89frbc6lfqv9a6"))))
+        (base32 "06lfvjhsj5zlslsg2jhijrm69npprmsh7r1667qnl7c2jv8s7pdz"))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
@@ -37215,7 +37215,9 @@ nitrokey-test crate.")
            `(("rust-bitflags" ,rust-bitflags-1)
              ("rust-cfg-if" ,rust-cfg-if-1)
              ("rust-libc" ,rust-libc-0.2)
-             ("rust-memoffset" ,rust-memoffset-0.7))))
+             ("rust-memoffset" ,rust-memoffset-0.7)
+             ("rust-pin-utils" ,rust-pin-utils-0.1)
+             ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/nix-rust/nix")
     (synopsis "Rust friendly bindings to *nix APIs")
     (description
