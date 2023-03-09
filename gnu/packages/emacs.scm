@@ -420,35 +420,6 @@ languages.")
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf))))))
 
-(define-public emacs-next-tree-sitter
-  (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
-        (revision "0"))
-    (package
-      (inherit emacs)
-      (name "emacs-next-tree-sitter")
-      (version (git-version "30.0.50" revision commit))
-      (source
-       (origin
-         (inherit (package-source emacs))
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs.git/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         ;; emacs-source-date-epoch.patch is no longer necessary
-         (patches (search-patches "emacs-exec-path.patch"
-                                  "emacs-fix-scheme-indent-function.patch"
-                                  "emacs-native-comp-driver-options.patch"))
-         (sha256
-          (base32
-           "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
-      (inputs
-       (modify-inputs (package-inputs emacs)
-         (prepend sqlite tree-sitter)))
-      (native-inputs
-       (modify-inputs (package-native-inputs emacs)
-         (prepend autoconf))))))
-
 (define-public emacs-next-pgtk
   (package
     (inherit emacs-next)
@@ -466,6 +437,31 @@ languages.")
     (synopsis "Emacs text editor with @code{pgtk} support")
     (description "This Emacs build implements graphical UI purely in terms of
 GTK.")))
+
+(define-public emacs-next-tree-sitter
+  (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
+        (revision "0"))
+    (package
+      (inherit emacs-next-pgtk)
+      (name "emacs-next-tree-sitter")
+      (version (git-version "30.0.50" revision commit))
+      (source
+       (origin
+         (inherit (package-source emacs-next-pgtk))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/emacs.git/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
+      (inputs
+       (modify-inputs (package-inputs emacs-next-pgtk)
+         (prepend sqlite tree-sitter)))
+      (synopsis "Emacs text editor with @code{pgtk} and @code{tree-sitter} support")
+      (description "This Emacs build implements graphical UI purely in terms
+of GTK and supports tree-sitter."))))
 
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just
