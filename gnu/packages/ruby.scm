@@ -10190,6 +10190,25 @@ server.")
     (home-page "https://github.com/imanel/websocket-eventmachine-base")
     (license license:expat)))
 
+(define-public ruby-websocket-eventmachine-server
+  (package
+    (name "ruby-websocket-eventmachine-server")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "websocket-eventmachine-server" version))
+              (sha256
+               (base32
+                "0iqpzc8s028nck1flqaj784gvyn64wy1h3svpa4y2847wklg8sms"))))
+    (build-system ruby-build-system)
+    ;; TODO: The test suite requires Autobahn, not yet packaged in Guix.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list ruby-websocket-eventmachine-base))
+    (synopsis "WebSocket server for Ruby")
+    (description "This package provides a WebSocket server for Ruby.")
+    (home-page "https://github.com/imanel/websocket-eventmachine-server")
+    (license license:expat)))
+
 (define-public ruby-websocket-native
   (package
     (name "ruby-websocket-native")
