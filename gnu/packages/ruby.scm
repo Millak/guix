@@ -12858,6 +12858,57 @@ spawned processes.  It is designed after Python's @code{subprocess} module.")
     (home-page "https://github.com/stripe/subprocess")
     (license license:expat)))
 
+(define-public ruby-sus
+  (package
+    (name "ruby-sus")
+    (version "0.20.3")
+    (source (origin
+              (method git-fetch)        ;for gems.rb
+              (uri (git-reference
+                    (url "https://github.com/ioquatix/sus")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j4rkh9li79674h3lfkxlcdygscmb22l77i7hwhxl3gw103gkpdr"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'prune-gems.rb
+                 (lambda _
+                   (substitute* "gems.rb"
+                     (("gem \"bake-modernize\"") "")
+                     (("gem \"bake-gem\"") "")
+                     (("gem \"utopia-project\"") ""))))
+               (add-before 'build 'remove-missing-signing-key
+                 (lambda _
+                   ;; Otherwise, the build fails with ENOENT.
+                   (substitute* "sus.gemspec"
+                     ((".*spec.signing_key.*") ""))))
+               (delete 'check)          ;moved after install
+               (add-after 'install 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "CONSOLE_LEVEL" "debug")
+                     (setenv "HOME" "/tmp")
+                     ;; 'bundle exec' must be used to workaround a problem
+                     ;; when using bake test and GEM_PATH (see:
+                     ;; https://github.com/ioquatix/bake/issues/11).
+                     (invoke "bundle" "exec" "bake" "test"))))
+               (add-before 'check 'set-paths
+                 (lambda _
+                   (setenv "PATH" (string-append (getenv "PATH") ":"
+                                                 #$output "/bin"))
+                   (setenv "GEM_PATH" (string-append
+                                       (getenv "GEM_PATH") ":"
+                                       #$output "/lib/ruby/vendor_ruby")))))))
+    (native-inputs (list ruby-bake-test ruby-bake-test-external ruby-covered))
+    (synopsis "Fast and scalable test runner for Ruby")
+    (description "This package provides a fast and scalable test runner for Ruby.")
+    (home-page "https://github.com/ioquatix/sus")
+    (license license:expat)))
+
 (define-public ruby-syntax-tree
   (package
     (name "ruby-syntax-tree")
