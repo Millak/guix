@@ -35447,6 +35447,25 @@ IOCP and Async I/O abstractions.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-mock-instant-0.2
+  (package
+    (name "rust-mock-instant")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mock-instant" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0vg0kmz96zazjdq57l57nm24mc2in57y090ywcq827xq8fi2jzki"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/museun/mock_instant")
+    (synopsis "Mock an std::time::Instant")
+    (description
+     "This package provides a simple way to mock an std::time::Instant in rust.")
+    (license license:bsd-0)))
+
 (define-public rust-mockall-0.11
   (package
     (name "rust-mockall")
