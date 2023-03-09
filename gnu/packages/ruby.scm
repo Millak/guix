@@ -10169,6 +10169,25 @@ checking for the right Ruby version in software.")
     (home-page "https://github.com/janlelis/ruby_version")
     (license license:expat)))
 
+(define-public ruby-websocket-client-simple
+  (package
+    (name "ruby-websocket-client-simple")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "websocket-client-simple" version))
+              (sha256
+               (base32
+                "1ypl4xvlh5c99zbn20sifv7gv04zi20ly464vsgikfrpn5f37bid"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "default"))
+    (native-inputs (list ruby-eventmachine ruby-websocket-eventmachine-server))
+    (propagated-inputs (list ruby-event-emitter ruby-websocket))
+    (synopsis "Simple WebSocket client for Ruby")
+    (description "This package provides a simple WebSocket client for Ruby.")
+    (home-page "https://github.com/ruby-jp/websocket-client-simple")
+    (license license:expat)))
+
 (define-public ruby-websocket-eventmachine-base
   (package
     (name "ruby-websocket-eventmachine-base")
