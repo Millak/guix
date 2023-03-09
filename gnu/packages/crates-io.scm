@@ -24555,28 +24555,6 @@ permitted in ordinary Rust.")
     ;; Either license can be chosen at the users option.
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-gif-0.11
-  (package
-    (name "rust-gif")
-    (version "0.11.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gif" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1pnqfg0k84v0cnqyf85jqvwy3jcs580bfjaps5rzbl3kk5lqyrjs"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-color-quant" ,rust-color-quant-1)
-         ("rust-weezl" ,rust-weezl-0.1))))
-    (home-page "https://github.com/image-rs/image-gif")
-    (synopsis "GIF de- and encoder")
-    (description "This crate provides a GIF de- and encoder.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-gimli-0.26
   (package
     (name "rust-gimli")
