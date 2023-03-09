@@ -21048,6 +21048,28 @@ traits but without the boilerplate.")
 handling type for easy idiomatic error handling and reporting in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-faccess-0.2
+  (package
+    (name "rust-faccess")
+    (version "0.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "faccess" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1m967rz9qknzbqh7l8hga91s32y3p041mbk8w81skmh2b116dbjr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                  ; Not all files included.
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/Freaky/faccess")
+    (synopsis "Simple file accessibility checks")
+    (description "Simple file accessibility checks in rust.")
+    (license license:expat)))
+
 (define-public rust-fake-simd-0.1
   (package
     (name "rust-fake-simd")
