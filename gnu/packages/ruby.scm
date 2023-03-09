@@ -7206,14 +7206,14 @@ Cache-Control) and/or validation (Last-Modified, ETag) information.")
 (define-public ruby-rack-test
   (package
     (name "ruby-rack-test")
-    (version "0.8.3")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "rack-test" version))
        (sha256
         (base32
-         "14ij39zywvr1i9f6jsixfg4zxi2q1m1n1nydvf47f0b6sfc9mv1g"))))
+         "1ysx29gk9k14a14zsp5a8czys140wacvp91fja8xcja0j1hzqq8c"))))
     (build-system ruby-build-system)
     (arguments
      ;; Disable tests because of circular dependencies: requires sinatra,
