@@ -39828,6 +39828,31 @@ system for OpenSSL.")
     (description "This package provides an OPML parser for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-option-set-0.1
+  (package
+    (name "rust-option-set")
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "option-set" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "16wsxh2qmjb2bf7mcq7dhlpzwkslzgjpg3nwzx97ia6gpnb2sfy8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-heck" ,rust-heck-0.3)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8))))
+    (home-page "https://github.com/H2CO3/option_set.git")
+    (synopsis "Bitflags on steroids")
+    (description "This package provides an extended version of rust bitflags.")
+    (license license:expat)))
+
 (define-public rust-ord-subset-3
   (package
     (name "rust-ord-subset")
