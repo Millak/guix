@@ -6370,6 +6370,52 @@ framework that leverages the expressive @code{Gherkin} language to help you
 define executable specifications of your code.")
     (license license:expat)))
 
+(define-public ruby-timers
+  (package
+    (name "ruby-timers")
+    (version "4.3.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/socketry/timers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vvahlhk6i1xks1bsha6s64pjjxhagmzvvf1q9h6z3lpcba43rpx"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'prune-gems.rb
+                 (lambda _
+                   (substitute* "gems.rb"
+                     ;; These are only required for maintenance.
+                     ((".*gem \"bake-modernize\".*") "")
+                     ((".*gem \"bake-gem\".*") "")
+                     ;; Not actually required by the tests.
+                     ((".*gem 'benchmark-ips'.*") "")
+                     ((".*gem \"ruby-prof\".*") ""))))
+               (add-before 'build 'remove-missing-signing-key
+                 (lambda _
+                   ;; Otherwise, the build fails with ENOENT.
+                   (substitute* "timers.gemspec"
+                     ((".*spec.signing_key.*") ""))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "bake" "test")))))))
+    (native-inputs
+     (list ruby-covered
+           ruby-bake-test
+           ruby-bake-test-external
+           ruby-sus))
+    (synopsis "Collection of Ruby timer classes")
+    (description "Timers offers a collections of one-shot and periodic timers,
+intended for use with event loops such as async.")
+    (home-page "https://github.com/socketry/timers")
+    (license license:expat)))
+
 (define-public ruby-tilt
   (package
     (name "ruby-tilt")
