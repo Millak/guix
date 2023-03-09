@@ -1664,8 +1664,7 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
   (package
     (inherit ruby-rubocop-capybara-minimal)
     (arguments
-     (list #:tests? #t
-           #:test-target "spec"
+     (list #:test-target "spec"
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'relax-requirements
                           (lambda _
@@ -11996,6 +11995,51 @@ that tries to make logging more flexible and more consumable than plain-text
 logging.")
     (home-page "https://github.com/jordansissel/ruby-cabin")
     (license license:asl2.0)))
+
+(define-public ruby-capybara
+  (package
+    (name "ruby-capybara")
+    (version "3.38.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "capybara" version))
+              (sha256
+               (base32
+                "123198zk2ak8mziwa5jc3ckgpmsg08zn064n3aywnqm9s1bwjv3v"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f                ;sinatra is currently broken with rack 3
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'remove-extraneous-requirements
+                 (lambda _
+                   (substitute* "spec/spec_helper.rb"
+                     ((".*require 'selenium_statistics'.*") "")
+                     ((".*SeleniumStatistics.print_results.*") ""))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "rspec" "spec")))))))
+    (native-inputs
+     (list ruby-puma
+           ruby-rspec
+           ruby-selenium-webdriver
+           ruby-sinatra))
+    (propagated-inputs
+     (list ruby-addressable
+           ruby-launchy
+           ruby-matrix
+           ruby-mini-mime
+           ruby-nokogiri
+           ruby-rack
+           ruby-rack-test
+           ruby-regexp-parser
+           ruby-xpath))
+    (synopsis "Integration testing tool for rack-based web applications")
+    (description "Capybara is an integration testing tool for rack based web
+applications.  It simulates how a user would interact with a website.")
+    (home-page "https://github.com/teamcapybara/capybara")
+    (license license:expat)))
 
 (define-public ruby-cane
   (package
