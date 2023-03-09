@@ -462,16 +462,10 @@ languages.")
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next)
        ((#:configure-flags flags #~'())
-        #~(cons* "--with-pgtk" "--with-xwidgets" #$flags))))
-    (propagated-inputs
-     (list gsettings-desktop-schemas glib-networking))
-    (inputs
-     (modify-inputs (package-inputs emacs-next)
-       (prepend webkitgtk-with-libsoup2)))
-    (home-page "https://github.com/masm11/emacs")
-    (synopsis "Emacs text editor with @code{pgtk} and @code{xwidgets} support")
+        #~(cons* "--with-pgtk" #$flags))))
+    (synopsis "Emacs text editor with @code{pgtk} support")
     (description "This Emacs build implements graphical UI purely in terms of
-GTK and also enables xwidgets.")))
+GTK.")))
 
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just
