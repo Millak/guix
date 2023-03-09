@@ -9552,6 +9552,29 @@ application.")
     (home-page "https://github.com/djanowski/pygmentize")
     (license license:expat)))
 
+(define-public ruby-event-emitter
+  (package
+    (name "ruby-event-emitter")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "event_emitter" version))
+              (sha256
+               (base32
+                "148k9qv8102l3m6klc24dwip79f9y4bjr5z19dckd7ffbjyrf9n7"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'extract-gemspec 'relax-requirements
+                          (lambda _
+                            (substitute* "event_emitter.gemspec"
+                              (("~> 1.15") ">= 1.15")))))))
+    (synopsis "Ruby port of EventEmitter from Node.js")
+    (description
+     "This package provides a Ruby port of EventEmitter from Node.js.")
+    (home-page "https://shokai.github.io/event_emitter/")
+    (license license:expat)))
+
 (define-public ruby-eventmachine
   (package
     (name "ruby-eventmachine")
