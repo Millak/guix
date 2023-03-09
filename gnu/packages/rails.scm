@@ -704,32 +704,34 @@ allowing files to be attached to ActiveRecord models.")
 
 (define-public ruby-actionmailer
   (package
-   (name "ruby-actionmailer")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "actionmailer" version))
-     (sha256
-      (base32
-       "0lic4mc6wqi3p9ipdqljl64vd9ndabm0k8hww0m07sfdhwsl5ba9"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
-   (propagated-inputs
-    (list ruby-actionpack
-          ruby-actionview
-          ruby-activejob
-          ruby-activesupport
-          ruby-mail
-          ruby-rails-dom-testing))
-   (synopsis "Work with emails using the controller/view pattern")
-   (description
-    "Compose, deliver, receive, and test emails using the controller/view
+    (name "ruby-actionmailer")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;avoid a cycle with ruby-rails
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "actionmailer"))))))
+    (propagated-inputs
+     (list ruby-actionpack
+           ruby-actionview
+           ruby-activejob
+           ruby-activesupport
+           ruby-mail
+           ruby-net-imap
+           ruby-net-pop
+           ruby-net-smtp
+           ruby-rails-dom-testing))
+    (synopsis "Work with emails using the controller/view pattern")
+    (description
+     "Compose, deliver, receive, and test emails using the controller/view
 pattern.  Including support for multipart email and attachments.")
-   (home-page "https://rubyonrails.org/")
-   (license license:expat)))
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
 
 (define-public ruby-marcel
   (package
