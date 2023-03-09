@@ -9766,14 +9766,14 @@ definitions.")
 (define-public ruby-mini-mime
   (package
     (name "ruby-mini-mime")
-    (version "1.0.2")
+    (version "1.1.2")
     (source
       (origin
         (method url-fetch)
         (uri (rubygems-uri "mini_mime" version))
         (sha256
          (base32
-          "1axm0rxyx3ss93wbmfkm78a6x03l8y4qy60rhkkiq0aza0vwq3ha"))))
+          "0lbim375gw2dk6383qirz13hgdmxlan0vc5da2l072j3qw6fqjm5"))))
     (build-system ruby-build-system)
     (synopsis "Lightweight mime type lookup toy")
     (description "This package provides a lightweight mime type lookup toy.")
