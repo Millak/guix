@@ -12702,26 +12702,25 @@ this to write Rust programs which can be customized by end users easily.")
 (define-public rust-console-0.15
   (package
     (name "rust-console")
-    (version "0.15.0")
+    (version "0.15.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "console" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0c9wif28i3q231gvjprqdq1glmgmmcdxpmxcwk1p0jx45k9k52x2"))))
+        (base32 "0q5dwppyn1zsj5h9zjxfzah8l91y7cyw270m6hz7x9vhi6z9zmy3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-encode-unicode" ,rust-encode-unicode-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-terminal-size" ,rust-terminal-size-0.1)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-winapi-util" ,rust-winapi-util-0.1))))
+        ("rust-windows-sys" ,rust-windows-sys-0.42))
+       #:cargo-development-inputs
+       (("rust-proptest" ,rust-proptest-1)
+        ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/mitsuhiko/console")
     (synopsis "Terminal and console abstraction for Rust")
     (description
