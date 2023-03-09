@@ -610,7 +610,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
       (propagated-inputs
        (modify-inputs (package-propagated-inputs guile)
-         (replace "bdw-gc" libgc/static-libs)))
+         (replace "libgc" libgc/static-libs)))
       (arguments
        (substitute-keyword-arguments (package-arguments guile)
          ((#:configure-flags flags '())
