@@ -58,6 +58,7 @@
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,7 +201,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
 (define-public arp-scan
   (package
     (name "arp-scan")
-    (version "1.9.8")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -210,7 +211,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18pck3hi7caykpkry5ri16w4w8m11g8gvh3qx5rhwsc6d9xa2a6d"))))
+        (base32 "1d603by2v7gj6bdxn1d23l425q115dk5qfk3ywbj6wbsjysqhbq5"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
