@@ -32332,7 +32332,7 @@ manually from Rust.")
 (define-public rust-linked-hash-map-0.5
   (package
     (name "rust-linked-hash-map")
-    (version "0.5.3")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
@@ -32340,19 +32340,17 @@ manually from Rust.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0jih3za0p1mywlnwcakc462q1byk6z8vnrzdm36hg6cxk7asdmcd"))))
+        (base32 "03vpgw7x507g524nx5i1jf5dl8k3kv0fzg8v3ip6qqwbpkqww5q7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
-        ("rust-heapsize" ,rust-heapsize-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-test" ,rust-serde-test-1))))
-    (home-page
-     "https://github.com/contain-rs/linked-hash-map")
-    (synopsis
-     "HashMap wrapper that holds key-value pairs in insertion order")
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs
+       (("rust-heapsize" ,rust-heapsize-0.4)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/contain-rs/linked-hash-map")
+    (synopsis "HashMap wrapper that holds key-value pairs in insertion order")
     (description
      "This package provides a HashMap wrapper that holds key-value
 pairs in insertion order.")
