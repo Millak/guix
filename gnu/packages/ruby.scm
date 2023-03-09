@@ -5750,30 +5750,6 @@ Ruby.  It simplifies the generation of complex SQL queries and adapts to
 various relational database implementations.")
     (license license:expat)))
 
-(define-public ruby-marcel
-  (package
-    (name "ruby-marcel")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "marcel" version))
-       (sha256
-        (base32
-         "0kky3yiwagsk8gfbzn3mvl2fxlh3b39v6nawzm4wpjs6xxvvc4x0"))))
-    (build-system ruby-build-system)
-    (arguments
-     '(;; No included tests
-       #:tests? #f))
-    (propagated-inputs
-     (list ruby-mimemagic))
-    (synopsis "MIME type detection using magic numbers, filenames and extensions")
-    (description
-     "@code{marcel} provides @acronym{MIME, Multipurpose Internet Mail
-Extensions} type detection using magic numbers, filenames, and extensions")
-    (home-page "https://github.com/basecamp/marcel")
-    (license license:expat)))
-
 (define-public ruby-minitar
   ;; We package from the GitHub source to fix the security issue reported at
   ;; https://github.com/halostatue/minitar/issues/16.

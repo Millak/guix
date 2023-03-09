@@ -2,6 +2,7 @@
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -724,6 +725,30 @@ allowing files to be attached to ActiveRecord models.")
 pattern.  Including support for multipart email and attachments.")
    (home-page "https://rubyonrails.org/")
    (license license:expat)))
+
+(define-public ruby-marcel
+  (package
+    (name "ruby-marcel")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "marcel" version))
+       (sha256
+        (base32
+         "0kky3yiwagsk8gfbzn3mvl2fxlh3b39v6nawzm4wpjs6xxvvc4x0"))))
+    (build-system ruby-build-system)
+    (arguments
+     '(;; No included tests
+       #:tests? #f))
+    (propagated-inputs
+     (list ruby-mimemagic))
+    (synopsis "MIME type detection using magic numbers, filenames and extensions")
+    (description
+     "@code{marcel} provides @acronym{MIME, Multipurpose Internet Mail
+Extensions} type detection using magic numbers, filenames, and extensions")
+    (home-page "https://github.com/rails/marcel")
+    (license license:expat)))
 
 (define-public ruby-railties
   (package
