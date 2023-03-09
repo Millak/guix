@@ -643,25 +643,26 @@ across Rails applications.")
 (define-public ruby-activestorage
   (package
     (name "ruby-activestorage")
-    (version "6.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "activestorage" version))
-       (sha256
-        (base32
-         "0gkxvbi5w8zmdxpiyz3b10kzz8cxqqh9bj81sjl3fp8wa3v2ld4i"))))
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
     (build-system ruby-build-system)
     (arguments
-     '(;; No included tests
-       #:tests? #f))
+     (list
+      ;; The test suite is disabled, because it activestorage requires
+      ;; 'rails', which would introduce a dependency cycle.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "activestorage"))))))
     (propagated-inputs
      (list ruby-actionpack
            ruby-activejob
            ruby-activerecord
            ruby-activesupport
            ruby-marcel
-           ruby-mimemagic))
+           ruby-mini-mime))
     (synopsis "Integrate file storage services in to Rails applications")
     (description
      "ActiveStorage integrates file storage services with Rails applications,
