@@ -5753,14 +5753,14 @@ various relational database implementations.")
 (define-public ruby-marcel
   (package
     (name "ruby-marcel")
-    (version "0.3.3")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "marcel" version))
        (sha256
         (base32
-         "1nxbjmcyg8vlw6zwagf17l9y2mwkagmmkg95xybpn4bmf3rfnksx"))))
+         "0kky3yiwagsk8gfbzn3mvl2fxlh3b39v6nawzm4wpjs6xxvvc4x0"))))
     (build-system ruby-build-system)
     (arguments
      '(;; No included tests
