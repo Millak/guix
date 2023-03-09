@@ -63049,44 +63049,6 @@ tinyobjloader.")
 writing asynchronous I/O backed applications.")
     (license license:expat)))
 
-(define-public rust-tokio-1.8
-  (package
-    (inherit rust-tokio-1)
-    (name "rust-tokio")
-    (version "1.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tokio" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1m18rs51wz6s7dwdwzr0j63kh815x4dx9k0f2c485crs7fqjw32p"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bytes" ,rust-bytes-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-mio" ,rust-mio-0.7)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
-        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
-        ("rust-tokio-macros" ,rust-tokio-macros-1)
-        ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs
-       (("rust-async-stream" ,rust-async-stream-0.3)
-        ("rust-autocfg" ,rust-autocfg-1)
-        ("rust-nix" ,rust-nix-0.19)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-proptest" ,rust-proptest-1)
-        ("rust-sokcet2-0.4" ,rust-socket2-0.4)
-        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
-        ("rust-tokio-test" ,rust-tokio-test-0.4))))))
-
 (define-public rust-tokio-0.3
   (package
     (inherit rust-tokio-1)
