@@ -61631,28 +61631,35 @@ return values to @code{std::io::Result} to indicate success or failure.")
 streams.")
     (license license:expat)))
 
-(define-public rust-test-case-1
+(define-public rust-test-case-2
   (package
     (name "rust-test-case")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "test-case" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1j33njgyr4cjhil14va909sg8s6ahzpgcmiaigdg7g22ica6950r"))))
+    (version "2.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "test-case" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1h4qymhy332lzgg79w696qfxg6wdab5birn8xvfgkczzgmdczmi1"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)" _ version)
+                          (string-append "^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false               ;XXX: a single test fails, cannot skip it
+     `(#:tests? #f              ; Not all files included.
        #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-version-check" ,rust-version-check-0.9))
+       (("rust-regex" ,rust-regex-1)
+        ("rust-test-case-macros" ,rust-test-case-macros-2))
        #:cargo-development-inputs
-       (("rust-insta" ,rust-insta-0.12)
-        ("rust-lazy-static" ,rust-lazy-static-1))))
+       (("rust-indexmap" ,rust-indexmap-1)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8))))
     (home-page "https://github.com/frondeus/test-case")
     (synopsis "Procedural macro attribute for parametrized test cases")
     (description
@@ -61662,6 +61669,29 @@ parameters.  A test is generated for each data set passed in test_case
 attribute.  Under the hood, all test cases that share same body are grouped
 into mod, giving clear and readable test results.")
     (license license:expat)))
+
+(define-public rust-test-case-1
+  (package
+    (inherit rust-test-case-2)
+    (name "rust-test-case")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "test-case" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j33njgyr4cjhil14va909sg8s6ahzpgcmiaigdg7g22ica6950r"))))
+    (arguments
+     `(#:tests? #false               ;XXX: a single test fails, cannot skip it
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs
+       (("rust-insta" ,rust-insta-0.12)
+        ("rust-lazy-static" ,rust-lazy-static-1))))))
 
 (define-public rust-test-cert-gen-0.7
   (package
