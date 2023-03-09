@@ -12310,28 +12310,20 @@ entities.")
     (home-page "https://github.com/threedaymonk/htmlentities")
     (license license:expat)))
 
+;;; FIXME: Currently broken with rack 3, awaiting the merge for
+;;; https://github.com/sinatra/sinatra/pull/1857 and a new release.
 (define-public ruby-sinatra
   (package
     (name "ruby-sinatra")
-    (version "2.0.8.1")
+    (version "3.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sinatra" version))
        (sha256
         (base32
-         "0riy3hwjab1mr73jcqx3brmbmwspnw3d193j06a5f0fy1w35z15q"))))
+         "1ryfja9yd3fq8n1p5yi3qnd0pjk7bkycmxxmbb1bj0axlr1pdv20"))))
     (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; See: https://github.com/sinatra/sinatra/issues/1578.
-         (add-after 'extract-gemspec 'fix-slow-doc-generation
-           (lambda _
-             (substitute* "sinatra.gemspec"
-               (("\"README.rdoc\"\\.freeze," all)
-                (string-append all " \"--exclude=.*\\.md\".freeze,")))
-             #t)))))
     (propagated-inputs
      (list ruby-mustermann ruby-rack ruby-rack-protection ruby-tilt))
     (synopsis "DSL for quick web applications creation in Ruby")
