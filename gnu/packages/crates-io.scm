@@ -63012,14 +63012,14 @@ tinyobjloader.")
 (define-public rust-tokio-1
   (package
     (name "rust-tokio")
-    (version "1.22.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qrarnfikvp8cwd3qcskzgdb1a6f47r11xjbql2wd25lbyky8v6p"))))
+        (base32 "0r3gnz0zh669q9jm7xh8dz7irbnxjddbbrfflp42jyn2qc0is803"))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
@@ -63036,7 +63036,7 @@ tinyobjloader.")
              ("rust-socket2" ,rust-socket2-0.4)
              ("rust-tokio-macros" ,rust-tokio-macros-1)
              ("rust-tracing" ,rust-tracing-0.1)
-             ("rust-winapi" ,rust-winapi-0.3))))
+             ("rust-windows-sys" ,rust-windows-sys-0.45))))
     (home-page "https://tokio.rs")
     (synopsis "Event-driven, non-blocking I/O platform")
     (description
