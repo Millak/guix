@@ -7079,7 +7079,7 @@ types.")
 (define-public rust-bit-set-0.5
   (package
     (name "rust-bit-set")
-    (version "0.5.1")
+    (version "0.5.3")
     (source
      (origin
        (method url-fetch)
@@ -7087,15 +7087,13 @@ types.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "100ac8867bvbx9kv634w4xjk98b71i8nq4wdcvpf3cf4ha4j6k78"))))
+        (base32 "1wcm9vxi00ma4rcxkl3pzzjli6ihrpn9cfdi0c5b4cvga2mxs007"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bit-vec" ,rust-bit-vec-0.5))
+     `(#:cargo-inputs
+       (("rust-bit-vec" ,rust-bit-vec-0.6))
        #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.4))))
+       (("rust-rand" ,rust-rand-0.3))))
     (home-page "https://github.com/contain-rs/bit-set")
     (synopsis "Set of bits")
     (description
