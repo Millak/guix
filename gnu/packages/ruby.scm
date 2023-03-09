@@ -13238,30 +13238,6 @@ uniquely identify it.")
    (home-page "https://rubyonrails.org/")
    (license license:expat)))
 
-(define-public ruby-sprockets
-  (package
-    (name "ruby-sprockets")
-    (version "4.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "sprockets" version))
-       (sha256
-        (base32
-         "0k0236g4h3ax7v6vp9k0l2fa0w6f1wqp7dn060zm4isw4n3k89sw"))))
-    (build-system ruby-build-system)
-    (arguments
-     '(;; No included tests
-       #:tests? #f))
-    (propagated-inputs
-     (list ruby-concurrent ruby-rack))
-    (synopsis "Sprockets is a Rack-based asset packaging system")
-    (description
-     "Sprockets is a Rack-based asset packaging system that concatenates and
-serves JavaScript, CoffeeScript, CSS, LESS, Sass, and SCSS.")
-    (home-page "https://github.com/rails/sprockets")
-    (license license:expat)))
-
 (define-public ruby-language-server-protocol
   (package
     (name "ruby-language-server-protocol")
