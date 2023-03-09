@@ -246,21 +246,21 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 	(tar (package
                (inherit tar)
 	       (arguments
-                `(;; Work around a cross-compilation bug whereby libgnu.a would provide
-                  ;; '__mktime_internal', which conflicts with the one in libc.a.
-                  ;; ,@(if (%current-target-system)
-                  ;;       `(#:configure-flags '("gl_cv_func_working_mktime=yes"))
-                  ;;       '())
-                  ,@(substitute-keyword-arguments (package-arguments tar)
-                      ((#:phases phases)
-                       #~(modify-phases #$phases
-                           (replace 'set-shell-file-name
-                             (lambda _
-                               ;; Do not use "/bin/sh" to run programs; see
-                               ;; <http://lists.gnu.org/archive/html/guix-devel/2016-09/msg02272.html>.
-                               (substitute* "src/system.c"
-                                 (("/bin/sh") "sh")
-                                 (("execv ") "execvp ")))))))))))
+                (substitute-keyword-arguments (package-arguments tar)
+                  ((#:configure-flags flags #~'())
+                   ;; Work around a cross-compilation bug whereby libgnu.a
+                   ;; would provide '__mktime_internal', which conflicts
+                   ;; with the one in libc.a.
+                   #~'("gl_cv_func_working_mktime=yes"))
+                  ((#:phases phases)
+                   #~(modify-phases #$phases
+                       (replace 'set-shell-file-name
+                         (lambda _
+                           ;; Do not use "/bin/sh" to run programs; see
+                           ;; <http://lists.gnu.org/archive/html/guix-devel/2016-09/msg02272.html>.
+                           (substitute* "src/system.c"
+                             (("/bin/sh") "sh")
+                             (("execv ") "execvp "))))))))))
         ;; We don't want to retain a reference to /gnu/store in the bootstrap
         ;; versions of egrep/fgrep, so we remove the custom phase added since
         ;; grep@2.25. The effect is 'egrep' and 'fgrep' look for 'grep' in
