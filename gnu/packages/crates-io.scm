@@ -17287,18 +17287,17 @@ Rust.")
 (define-public rust-derive-arbitrary-1
   (package
     (name "rust-derive-arbitrary")
-    (version "1.2.0")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "derive_arbitrary" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zw12jc6k6aixqs6m2rsj56grhx2xjw2l8rhr8rj1wj897qdy0s9"))))
+        (base32 "005x40g2k89g31lx4dzi4biw76s42b5cvpmvk209w8if3rqf9vlb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
