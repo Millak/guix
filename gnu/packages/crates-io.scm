@@ -55514,19 +55514,20 @@ words, like Python's shlex.")
 (define-public rust-signal-hook-mio-0.2
   (package
     (name "rust-signal-hook-mio")
-    (version "0.2.1")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "signal-hook-mio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m3yc37dxdq4ym0x7i2b9aqfnlhivwm7mvls0yzcbwn4y5kmiz99"))))
+        (base32 "1bwrrbd0lhwzlf63708vyzlh20693s5bg5s0ak6adjbyycajxb99"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
+        ("rust-mio" ,rust-mio-0.8)
         ("rust-mio" ,rust-mio-0.7)
         ("rust-mio" ,rust-mio-0.6)
         ("rust-mio-uds" ,rust-mio-uds-0.6)
