@@ -35,7 +35,7 @@
     (source (origin
               (method git-fetch) ; no source tarballs
               (uri (git-reference
-                    (url "git://pumpa.branchable.com/")
+                    (url "https://source.pumpa.branchable.com/")
                     (commit (string-append "v" version))))
               (sha256
                (base32
