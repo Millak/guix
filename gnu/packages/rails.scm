@@ -553,28 +553,52 @@ applications.  These work with any Rack-compatible server.")
 
 (define-public ruby-actioncable
   (package
-   (name "ruby-actioncable")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "actioncable" version))
-     (sha256
-      (base32
-       "1cgb1l0gml1vklxka2djpi5q5b4bgzgm5pahzfjvvgm5vzvrvi9v"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
-   (propagated-inputs
-    (list ruby-actionpack ruby-activesupport ruby-nio4r
-          ruby-websocket-driver))
-   (synopsis "Integrate integrates WebSockets with Rails applications")
-   (description
-    "Action Cable integrates WebSockets with Rails applications.  Through
+    (name "ruby-actioncable")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "actioncable")))
+          (delete 'check)               ;moved after install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-GEM_PATH
+            (lambda _
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))))
+          (add-before 'check 'disable-problematic-tests
+            (lambda _
+              ;; There are multiple client test failures (see:
+              ;; https://github.com/rails/rails/issues/47617).
+              (delete-file "test/client_test.rb")))
+          (add-before 'check 'start-redis
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes")))))))
+    (native-inputs
+     (list redis
+           ruby-activerecord
+           ruby-pg
+           ruby-puma
+           ruby-redis
+           ruby-websocket-client-simple))
+    (propagated-inputs
+     (list ruby-actionpack
+           ruby-activesupport
+           ruby-nio4r
+           ruby-websocket-driver))
+    (synopsis "Integrate integrates WebSockets with Rails applications")
+    (description
+     "Action Cable integrates WebSockets with Rails applications.  Through
 WebSockets it allows for real-time features in web applications.")
-   (home-page "https://rubyonrails.org/")
-   (license license:expat)))
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
 
 (define-public ruby-activejob
   (package
