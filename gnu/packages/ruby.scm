@@ -3814,6 +3814,28 @@ well as @samp{rake}.")
     (home-page "https://github.com/ioquatix/bake-test")
     (license license:expat)))
 
+(define-public ruby-bake-test-external
+  (package
+    (name "ruby-bake-test-external")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "bake-test-external" version))
+              (sha256
+               (base32
+                "0749xc7jkz1c5gsq1giwhrqy6s6xqm48bdvs414372881wki2jmh"))))
+    (build-system ruby-build-system)
+    ;; The test suite relies on git and network access to clone external
+    ;; repositories.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list ruby-bake))
+    (synopsis "Continuous integration extension for Bake")
+    (description "Bake Test External adds a @samp{test:external} action to the
+@command{bake} command to run the test suites of dependent projects to check
+for breakage.")
+    (home-page "https://github.com/ioquatix/bake-test-external")
+    (license license:expat)))
+
 (define-public ruby-connection-pool
   (package
     (name "ruby-connection-pool")
