@@ -28990,33 +28990,38 @@ over in-place and buffer-to-buffer modes of operation.")
 (define-public rust-insta-1
   (package
     (name "rust-insta")
-    (version "1.7.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "insta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0i4jdrr888h0qvfhy2b4vvswlpi2x2ghwg31ljfa9kki54db58f4"))))
+        (base32 "16d0r0pbl9f86zb0rbvlc25964ayq47n7203rx5nnipy9a4v79gy"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release"
+         "--"
+         "--skip=utils::test_format_rust_expression")
        #:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-console" ,rust-console-0.14)
+       (("rust-console" ,rust-console-0.15)
         ("rust-csv" ,rust-csv-1)
         ("rust-globset" ,rust-globset-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
         ("rust-pest" ,rust-pest-2)
         ("rust-pest-derive" ,rust-pest-derive-2)
-        ("rust-ron" ,rust-ron-0.6)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-ron" ,rust-ron-0.7)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-        ("rust-similar" ,rust-similar-1)
+        ("rust-similar" ,rust-similar-2)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-uuid" ,rust-uuid-0.8)
-        ("rust-walkdir" ,rust-walkdir-2))))
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+       #:cargo-development-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-similar-asserts" ,rust-similar-asserts-1))))
     (home-page "https://insta.rs/")
     (synopsis "Snapshot testing library for Rust")
     (description
