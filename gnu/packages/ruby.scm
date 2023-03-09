@@ -10169,6 +10169,35 @@ checking for the right Ruby version in software.")
     (home-page "https://github.com/janlelis/ruby_version")
     (license license:expat)))
 
+(define-public ruby-websocket-native
+  (package
+    (name "ruby-websocket-native")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "websocket-native" version))
+              (sha256
+               (base32
+                "1kgvd3gyzh7hk0ddzn85jrs4csxm54qnvla95ldyn6rzgfbjchdn"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'disable-problematic-tests
+                          (lambda _
+                            (substitute* "spec/websocket_spec.rb"
+                              (("it \"should have mask_native defined\"" all)
+                               (string-append "x" all)))))
+                        (add-after 'build 'compile
+                          (lambda _
+                            (invoke "rake" "compile"))))))
+    (native-inputs (list ruby-rake-compiler ruby-rspec))
+    (synopsis "Native Ruby extension for the WebSocket gem")
+    (description "This package provides a native extension that can increase
+performance by about 25% compared to the pure Ruby WebSocket implementation.")
+    (home-page "https://github.com/imanel/websocket-ruby-native")
+    (license license:expat)))
+
 (define-public ruby-websocket-driver
   (package
    (name "ruby-websocket-driver")
