@@ -56030,14 +56030,14 @@ extensions.")
 (define-public rust-similar-asserts-1
   (package
     (name "rust-similar-asserts")
-    (version "1.2.0")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "similar-asserts" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1789db0fm85p4zvy44b2jwdjgw6h2b51bi133kak2l1pl8qzbjb4"))))
+                "060gzblmwpfcfxx7qh9yh2yaarldrdfkajm306gi4xbb06nl9xmv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
