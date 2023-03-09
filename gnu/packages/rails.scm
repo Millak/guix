@@ -819,14 +819,14 @@ serves JavaScript, CoffeeScript, CSS, LESS, Sass, and SCSS.")
 (define-public ruby-sprockets-rails
   (package
    (name "ruby-sprockets-rails")
-   (version "3.2.1")
+   (version "3.4.2")
    (source
     (origin
      (method url-fetch)
      (uri (rubygems-uri "sprockets-rails" version))
      (sha256
       (base32
-       "0ab42pm8p5zxpv3sfraq45b9lj39cz9mrpdirm30vywzrwwkm5p1"))))
+       "1b9i14qb27zs56hlcc2hf139l0ghbqnjpmfi0054dxycaxvk5min"))))
    (build-system ruby-build-system)
    (arguments
     '(;; No included tests
