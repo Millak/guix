@@ -675,25 +675,27 @@ allowing files to be attached to ActiveRecord models.")
 (define-public ruby-actionmailbox
   (package
     (name "ruby-actionmailbox")
-    (version "6.1.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (rubygems-uri "actionmailbox" version))
-        (sha256
-         (base32
-         "0wv2p24xn4f0kj8kiyagkn934hzrcp98vzjqxwd4r75qq0cijadp"))))
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
     (build-system ruby-build-system)
-   (arguments
-    '(;; No included tests
-      #:tests? #f))
+    (arguments
+     (list
+      #:tests? #f                       ;avoid a cycle with ruby-rails
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "actionmailbox"))))))
     (propagated-inputs
      (list ruby-actionpack
            ruby-activejob
            ruby-activerecord
            ruby-activestorage
            ruby-activesupport
-           ruby-mail))
+           ruby-mail
+           ruby-net-imap
+           ruby-net-pop
+           ruby-net-smtp))
     (synopsis "Receive and process incoming emails in Rails applications")
     (description
      "ActionMailbox receives and processes incoming emails in Rails applications.")
