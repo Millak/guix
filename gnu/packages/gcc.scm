@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -849,9 +849,12 @@ using compilers other than GCC."
        #:phases
        (modify-phases %standard-phases
          ,@(if (version>=? (package-version gcc) "11")
-               '((add-after 'unpack 'hide-gcc-headers
+               `((add-after 'unpack 'hide-gcc-headers
                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     (let ((gcc (assoc-ref (or native-inputs inputs) "gcc")))
+                     (let ((gcc (assoc-ref (or native-inputs inputs)
+                                           ,(if (%current-target-system)
+                                                "cross-gcc"
+                                                "gcc"))))
                        ;; Fix a regression in GCC 11 where the GCC headers
                        ;; shadows glibc headers when building libstdc++.  An
                        ;; upstream fix was added in GCC 11.3.0, but it only
@@ -861,11 +864,16 @@ using compilers other than GCC."
                        ;; and the similar adjustment in GCC-FINAL.
                        (substitute* "libstdc++-v3/src/c++17/Makefile.in"
                          (("AM_CXXFLAGS = ")
-                          (string-append "CPLUS_INCLUDE_PATH = "
+                          (string-append ,(if (%current-target-system)
+                                              "CROSS_CPLUS_INCLUDE_PATH = "
+                                              "CPLUS_INCLUDE_PATH = ")
                                          (string-join
                                           (remove (cut string-prefix? gcc <>)
                                                   (string-split
-                                                   (getenv "CPLUS_INCLUDE_PATH")
+                                                   (getenv
+                                                    ,(if (%current-target-system)
+                                                         "CROSS_CPLUS_INCLUDE_PATH"
+                                                         "CPLUS_INCLUDE_PATH"))
                                                    #\:))
                                           ":")
                                          "\nAM_CXXFLAGS = ")))))))
