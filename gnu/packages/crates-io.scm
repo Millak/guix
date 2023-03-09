@@ -64838,19 +64838,18 @@ Unicode character database.")
 (define-public rust-ucd-trie-0.1
   (package
     (name "rust-ucd-trie")
-    (version "0.1.2")
+    (version "0.1.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "ucd-trie" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "1hh6kyzh5xygwy96wfmsf8v8czlzhps2lgbcyhj1xzy1w1xys04g"))))
+         (base32 "10ggllapxq99cxxy179wbklmabj5fikm02233v4idf7djvcw8ycy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1))))
+       (("rust-once-cell" ,rust-once-cell-1))))
     (home-page "https://github.com/BurntSushi/ucd-generate")
     (synopsis "Trie for storing Unicode codepoint sets and maps")
     (description
