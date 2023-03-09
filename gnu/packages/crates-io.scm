@@ -3227,6 +3227,28 @@ coverage-guided, mutation-based fuzzers.")
     (description "Derive-based argument parser optimized for code size")
     (license license:bsd-3)))
 
+(define-public rust-argmax-0.3
+  (package
+    (name "rust-argmax")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "argmax" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0ricjx82rdnycjndlmaiwxc85lq3gh4av44xlkjwbwm7wgskwzjv"))))
+    (build-system cargo-build-system)
+    (arguments
+    `(#:cargo-inputs
+      (("rust-lazy-static" ,rust-lazy-static-1)
+       ("rust-libc" ,rust-libc-0.2)
+       ("rust-nix" ,rust-nix-0.24))))
+    (home-page "https://github.com/sharkdp/argmax")
+    (synopsis "Rust library to deal with 'argument too long' errors")
+    (description "This package provides a rust library to deal with argument
+too long errors.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-arr-macro-impl-0.1
   (package
     (name "rust-arr-macro-impl")
