@@ -55859,14 +55859,14 @@ extensions.")
 (define-public rust-similar-2
   (package
     (name "rust-similar")
-    (version "2.1.0")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "similar" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1lw33na01r35h09s47jqhjgz3m29wapl20f6ybsla5d1cfgrf91f"))))
+                "1kszsllryv6lh6771ah0apqk57qh4jp9mrlr1hhkiq6smx2cn2j2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -55874,8 +55874,9 @@ extensions.")
         ("rust-serde" ,rust-serde-1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
        #:cargo-development-inputs
-       (("rust-insta" ,rust-insta-1)
-        ("rust-console" ,rust-console-0.14))))
+       (("rust-console" ,rust-console-0.15)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/mitsuhiko/similar")
     (synopsis "Diff library for Rust")
     (description "This package provides a diff library for Rust.")
