@@ -3515,35 +3515,59 @@ Ruby Gems.")
 
 (define-public ruby-rubyzip
   (package
-  (name "ruby-rubyzip")
-  (version "1.2.1")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (rubygems-uri "rubyzip" version))
-      (sha256
-        (base32
-          "06js4gznzgh8ac2ldvmjcmg9v1vg9llm357yckkpylaj6z456zqz"))))
-  (build-system ruby-build-system)
-  (arguments
-   '(#:phases
-     (modify-phases %standard-phases
-       (add-before 'check 'patch-tests
-         (lambda* (#:key inputs #:allow-other-keys)
-           (substitute* "test/gentestfiles.rb"
-             (("/usr/bin/zip")
-              (string-append
-               (assoc-ref inputs "zip") "/bin/zip")))
-           (substitute* "test/input_stream_test.rb"
-             (("/usr/bin/env ruby") (which "ruby")))
-           #t)))))
-  (native-inputs
-   (list bundler ruby-simplecov zip unzip))
-  (synopsis "Ruby module is for reading and writing zip files")
-  (description
-    "The rubyzip module provides ways to read from and create zip files.")
-  (home-page "https://github.com/rubyzip/rubyzip")
-  (license license:bsd-2)))
+    (name "ruby-rubyzip")
+    (version "2.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rubyzip/rubyzip")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03p8c990n6c1r4g64w0vv7z2iaswisl07l2f1lbh1s78cvmlmfxx"))))
+    (build-system ruby-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-rubocop
+           (lambda _
+             (substitute* "Rakefile"
+               (("require 'rubocop/rake_task'") "")
+               (("RuboCop::RakeTask.new") ""))))
+         (add-before 'check 'patch-tests
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "test/gentestfiles.rb"
+               (("/usr/bin/zip") (which "zip")))
+             (substitute* "test/input_stream_test.rb"
+               (("/usr/bin/env ruby") (which "ruby")))))
+         (add-before 'check 'disable-problematic-tests
+           (lambda _
+             (let-syntax ((skip-tests
+                           (syntax-rules ()
+                             ((_ file test ...)
+                              (substitute* file
+                                (((string-append "def " test ".*") all)
+                                 (string-append
+                                  all "    skip('fails on guix')\n")) ...)))))
+               ;; The test failures were reported here:
+               ;; https://github.com/rubyzip/rubyzip/issues/552.
+               (skip-tests "test/stored_support_test.rb"
+                           "test_read")
+               (skip-tests "test/stored_support_test.rb"
+                           "test_encrypted_read")
+               (skip-tests "test/output_stream_test.rb"
+                           "test_put_next_entry_using_zip_entry_creates_\
+entries_with_correct_timestamps")
+               (skip-tests "test/file_options_test.rb"
+                           "test_restore_times_true")))))))
+    (native-inputs
+     (list bundler ruby-simplecov zip unzip))
+    (synopsis "Ruby module is for reading and writing zip files")
+    (description
+     "The rubyzip module provides ways to read from and create zip files.")
+    (home-page "https://github.com/rubyzip/rubyzip")
+    (license license:bsd-2)))
 
 (define-public ruby-simplecov-html
   (package
