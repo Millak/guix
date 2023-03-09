@@ -2842,7 +2842,7 @@ escape codes.")
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
-    (version "1.0.65")
+    (version "1.0.69")
     (source
      (origin
        (method url-fetch)
@@ -2850,8 +2850,7 @@ escape codes.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "00jnbylbji1wxvgpk6fcpcxyh4firn223w0lpdvxm1117r71l5lq"))))
+        (base32 "007q0cw3zv8y5314c41vjyqznrqvim5ydv0306wy9mn34zbznji2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
