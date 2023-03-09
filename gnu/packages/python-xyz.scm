@@ -30468,6 +30468,41 @@ result.")
 lets you write CommonMark inside of Docutils & Sphinx projects.")
     (license license:expat)))
 
+(define-public python-redo
+  ;; The latest release isn't tagged:
+  ;; https://github.com/mozilla-releng/redo/issues/76
+  (let ((commit "50cfe8e3656f253f9e51df3a998530351d2d9a8c")
+        (revision "0"))
+    (package
+      (name "python-redo")
+      (version (git-version "2.0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch) ; There are no tests in the PyPI release.
+         (uri (git-reference
+               (url "https://github.com/mozilla-releng/redo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xpylx97qr4ikdhsr208ri41007mpp57a4n8mmlmlqmdljmsdpdb"))))
+      (build-system python-build-system)
+      (native-inputs
+       (list python-mock
+             python-pytest))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       ;; The project uses tox to run the tests via pytest.
+                       (invoke "pytest")))))))
+      (home-page "https://github.com/mozilla-releng/redo")
+      (synopsis "Utilities to retry Python callables")
+      (description "Redo provides various means to add seamless ability to
+retry to any Python callable.")
+      (license license:mpl2.0))))
+
 (define-public python-pyhull
   (package
     (name "python-pyhull")
