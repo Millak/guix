@@ -4050,6 +4050,28 @@ Protocol (IMAP) client functionality.  The protocol is described in
     (home-page "https://github.com/ruby/net-imap")
     (license license:bsd-2)))
 
+(define-public ruby-net-pop
+  (package
+    (name "ruby-net-pop")
+    (version "0.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruby/net-pop")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05vz6a56va2rbr7ld78gdzwy1j5mzs98cz82ax5aqa83pzzk6jld"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-protocol))
+    (synopsis "Ruby client library for POP3")
+    (description "This library provides functionality for retrieving email via
+POP3, the Post Office Protocol version 3, as specified by
+@url{http://www.ietf.org/rfc/rfc1939.txt, RFC1939}.")
+    (home-page "https://github.com/ruby/net-pop")
+    (license license:bsd-2)))
+
 (define-public ruby-power-assert
   (package
     (name "ruby-power-assert")
