@@ -733,6 +733,45 @@ pattern.  Including support for multipart email and attachments.")
     (home-page "https://rubyonrails.org/")
     (license license:expat)))
 
+(define-public ruby-bootsnap
+  (package
+    (name "ruby-bootsnap")
+    (version "1.16.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/Shopify/bootsnap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gaih5v4jjndrkn0crrr5mxnwc3cd0f3i955n62ghk29zabvd7wf"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:test-target "default"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "Gemfile"
+                ;; Rubocop and byebug are not actually needed to run the
+                ;; tests.
+                ((".*rubocop.*") "")
+                ((".*byebug.*") ""))))
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "bootsnap.gemspec"
+                (("`git ls-files -z ext lib`")
+                 "`find ext lib -type f -print0 | sort -z`")))))))
+    (native-inputs (list ruby-mocha ruby-rake-compiler))
+    (propagated-inputs (list ruby-msgpack))
+    (synopsis "Accelerator for large Ruby/Rails application")
+    (description "Bootsnap is a library that plugs into Ruby, with optional
+support for YAML, to optimize and cache expensive computations.")
+    (home-page "https://github.com/Shopify/bootsnap")
+    (license license:expat)))
+
 (define-public ruby-marcel
   (package
     (name "ruby-marcel")
