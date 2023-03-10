@@ -1001,10 +1001,9 @@ the /etc directory."
 
          (hurd       (operating-system-hurd os))
          (issue      (plain-file "issue" (operating-system-issue os)))
-         (nsswitch   (operating-system-name-service-switch os))
-         (nsswitch   (and nsswitch
-                          (plain-file "nsswitch.conf"
-                                      (name-service-switch->string nsswitch))))
+         (nsswitch   (and=> (operating-system-name-service-switch os)
+                            (compose (cut plain-file "nsswitch.conf" <>)
+                                     name-service-switch->string)))
          (sudoers    (operating-system-sudoers-file os))
 
         ;; Startup file for POSIX-compliant login shells, which set system-wide
