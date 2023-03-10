@@ -13217,14 +13217,14 @@ for scalable network clients and servers.")
 (define-public ruby-globalid
   (package
    (name "ruby-globalid")
-   (version "0.4.2")
+   (version "1.1.0")
    (source
     (origin
      (method url-fetch)
      (uri (rubygems-uri "globalid" version))
      (sha256
       (base32
-       "1zkxndvck72bfw235bd9nl2ii0lvs5z88q14706cmn702ww2mxv1"))))
+       "0kqm5ndzaybpnpxqiqkc41k4ksyxl41ln8qqr6kb130cdxsf2dxk"))))
    (build-system ruby-build-system)
    (arguments
     '(;; No included tests
