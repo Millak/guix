@@ -4015,6 +4015,41 @@ using Net::HTTP, supporting reconnection and retry according to RFC 2616.")
     (home-page "https://github.com/drbrain/net-http-persistent")
     (license license:expat)))
 
+(define-public ruby-net-imap
+  (package
+    (name "ruby-net-imap")
+    (version "0.3.4")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/net-imap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nx49i1n9q1wpancqaac2srrpb8mb43mc8wryyqyhpgki2grwyxw"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; The test suite appears to rely on RFCs it tries fetching from the
+     ;; network (see: https://github.com/ruby/net-imap/issues/136).
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'replace-git-ls-files 'adjust-for-git-ls-files
+                 (lambda _
+                   ;; Adjust the git ls-files invocation so that it matches
+                   ;; the expected pattern.
+                   (substitute* "net-imap.gemspec"
+                     (("`git ls-files -z 2>/dev/null`")
+                      "`git ls-files -z`")))))))
+    (propagated-inputs (list ruby-date ruby-net-protocol))
+    (synopsis "Ruby client api for Internet Message Access Protocol")
+    (description "@code{Net::IMAP} implements Internet Message Access
+Protocol (IMAP) client functionality.  The protocol is described in
+@url{https://tools.ietf.org/html/rfc3501, IMAP}.")
+    (home-page "https://github.com/ruby/net-imap")
+    (license license:bsd-2)))
+
 (define-public ruby-power-assert
   (package
     (name "ruby-power-assert")
