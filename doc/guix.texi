@@ -32487,7 +32487,7 @@ guest only = yes\n"))))
 
 @end defvar
 
-@deftp{Data Type} samba-service-configuration
+@deftp {Data Type} samba-service-configuration
 Configuration record for the Samba suite.
 
 @table @asis
