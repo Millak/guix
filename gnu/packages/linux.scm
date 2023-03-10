@@ -69,6 +69,7 @@
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022, 2023 Demis Balbach <db@minikn.xyz>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9668,21 +9669,15 @@ provides user-space tools for creating EROFS file systems.")
               ;; in EPERM during the install phase.  Removing the offending
               ;; line lets sysconfdir correctly pick up DESTDIR.
               (substitute* "configure.ac"
-                (("^test .* sysconfdir=/etc\n$") ""))
-              ;; Upstream tries to create /var/lib/rasdaemon at install time.
-              ;; This results in EPERM on guix.  Instead, the service should
-              ;; create this at activation time.
-              (substitute* "Makefile.am"
-                (("^\\s*\\$\\(install_sh\\) -d .*@RASSTATEDIR@.*$") ""))))
-          (add-after 'install 'fix-dmidecode-and-modprobe
-            (lambda _
-              (substitute* (string-append #$output "/sbin/ras-mc-ctl")
-                (("find_prog \\(\"dmidecode\"\\).*$") (format #f "~s;~%" (string-append #$dmidecode "/sbin/dmidecode")))
-                (("find_prog \\(\"modprobe\"\\).*$") (format #f "~s;~%" (string-append #$kmod "/bin/modprobe"))))))
+                (("^test .* sysconfdir=/etc\n$") ""))))
           (add-after 'wrap 'wrap-rasdaemon
-            (lambda _
-              (wrap-program (string-append #$output "/sbin/ras-mc-ctl")
-                `("PERL5LIB" ":" prefix ,(string-split (getenv "PERL5LIB") #\:))))))))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((path (map dirname
+                               (list (search-input-file inputs "/sbin/dmidecode")
+                                     (search-input-file inputs "/bin/modprobe")))))
+                (wrap-program (string-append #$output "/sbin/ras-mc-ctl")
+                  `("PATH" ":" prefix ,path)
+                  `("PERL5LIB" ":" prefix ,(string-split (getenv "PERL5LIB") #\:)))))))))
     (build-system gnu-build-system)
     (home-page "https://github.com/mchehab/rasdaemon")
     (synopsis "Platform Reliability, Availability, and Serviceability tools")
