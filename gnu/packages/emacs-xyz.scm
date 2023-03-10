@@ -25880,17 +25880,17 @@ and 'text viewing modes' respectively.")
 (define-public emacs-adoc-mode
   (package
     (name "emacs-adoc-mode")
-    (version "0.6.6")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/sensorflo/adoc-mode")
-             (commit (string-append "V" version))))
+             (url "https://github.com/bbatsov/adoc-mode")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0kp2aafjhqxz3mjr9hkkss85r4n51chws5a2qj1xzb63dh36liwm"))))
+         "0bp2i66a9gp41r7nvbx8f4s334gd7lwjdxi3qw5yhgaav6gk3bkc"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -25907,7 +25907,7 @@ and 'text viewing modes' respectively.")
                       (substitute* file
                         (((string-append "^\\(ert-deftest " test-name ".*") all)
                          (string-append all "(skip-unless nil)\n")) ...)))))
-               (disable-tests "adoc-mode-test.el"
+               (disable-tests "test/adoc-mode-test.el"
                               ("adoctest-test-tempo-delimited-blocks"
                                "adoctest-test-tempo-macros"
                                "adoctest-test-tempo-paragraphs"
@@ -25916,7 +25916,7 @@ and 'text viewing modes' respectively.")
              #t)))
        #:tests? #t
        #:test-command '("emacs" "-Q" "-batch"
-                        "-l" "adoc-mode-test.el"
+                        "-l" "test/adoc-mode-test.el"
                         "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-markup-faces))
