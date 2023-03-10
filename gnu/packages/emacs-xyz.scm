@@ -33507,6 +33507,13 @@ Files} (@url{http://tools.ietf.org/html/rfc4180}).")
        (sha256
         (base32 "0vbafihx0p7prxkhssv32spz4kz0f0xglwyimz0lvh7nqqs83i50"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-L" "."
+                             "-l" "tests/org-journal-test"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/bastibe/org-journal")
     (synopsis "Simple Org mode journaling mode")
     (description
