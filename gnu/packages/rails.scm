@@ -31,6 +31,8 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages node)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages version-control)
   #:use-module (guix build-system ruby))
 
 (define %ruby-rails-version "7.0.4.3")
@@ -903,6 +905,8 @@ Extensions} type detection using magic numbers, filenames, and extensions")
     (home-page "https://github.com/rails/marcel")
     (license license:expat)))
 
+;;; Pro-tip: to get a summary of the failures, run
+;;; 'M-x occur [1-9][0-9]* \(failures\|errors\)' on the build log.
 (define-public ruby-railties
   (package
     (name "ruby-railties")
@@ -910,17 +914,240 @@ Extensions} type detection using magic numbers, filenames, and extensions")
     (source ruby-rails-monorepo)
     (build-system ruby-build-system)
     (arguments
-     (list #:tests? #f                  ;requires rails to be installed
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'delete-gemfiles 'chdir
-                          (lambda _
-                            (chdir "railties"))))))
-    (propagated-inputs (list ruby-actionpack
-                             ruby-activesupport
-                             ruby-method-source
-                             ruby-rake
-                             ruby-thor
-                             ruby-zeitwerk))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-gemfiles
+            (lambda _
+              ;; Delete Gemfile and Gemfile.lock, as they contains too many
+              ;; dependencies not actually useful here.
+              (delete-file "Gemfile")
+              (delete-file "Gemfile.lock")))
+          (add-after 'extract-gemspec 'chdir
+            (lambda _
+              (chdir "railties")))
+          (add-after 'chdir 'disable-bundler
+            (lambda _
+              (substitute* (append (list "Rakefile")
+                                   (find-files "test" "\\.rb$")
+                                   (find-files "lib" "\\.tt$"))
+                ;; Do not use Bundler, which causes errors such as not finding
+                ;; the gem of this package (railties), or preferring the other
+                ;; in-source gems.
+                (("`bundle exec") "`")
+                ((".*require \"bundler/setup\".*") "")
+                ((".*Bundler.require.*") ""))
+              ;; Adjust a runtime substitution that uses a removed
+              ;; Bundler.require in its pattern; instead of matching
+              ;; "Bundler.require", it now appends to the 'require
+              ;; "rails/all"' line in the generated 'application.rb' template
+              ;; generated from
+              ;; "lib/rails/generators/rails/app/templates/config/application.rb.tt".
+              (substitute* "test/isolation/abstract_unit.rb"
+                (("contents.sub!\\(/\\^Bundler\\\\.require\\.\\*/, \"([^\"]*)"
+                  _ replacement)
+                 (format #f "contents.sub!('require \"rails/all\"', \"\\\\0\\n~a"
+                         replacement)))))
+          (add-after 'chdir 'do-not-load-other-gems-from-source
+            (lambda _
+              ;; The Rakefile adds '-I' Ruby options so that the other Rails
+              ;; libraries are loaded from source; since they are already
+              ;; packaged separately, use these instead.
+              (substitute* "Rakefile"
+                ((".*\"\\.\\./activesupport/lib\",.*") "")
+                ((".*\"\\.\\./actionpack/lib\",.*") "")
+                ((".*\"\\.\\./actionview/lib\",.*") "")
+                ((".*\"\\.\\./activemodel/lib\".*") ""))))
+          (add-after 'chdir 'patch-paths
+            (lambda _
+              (substitute* "lib/rails/generators/base.rb"
+                (("/usr/bin/env") (which "env")))))
+          (delete 'check)               ;moved after install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              (define (touch file-name)
+                (call-with-output-file file-name (const #t)))
+              ;; Otherwise, the test suite attempts to use yarn to fetch
+              ;; NodeJS modules.
+              (mkdir-p "../actionview/lib/assets/compiled")
+              (touch "../actionview/lib/assets/compiled/rails-ujs.js")
+              (mkdir-p "test/isolation/assets/node_modules")
+              ;; Git requires to be able to write to HOME.
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'disable-problematic-tests
+            (lambda _
+              (let-syntax ((skip-tests
+                            (syntax-rules ()
+                              ((_ file test ...)
+                               (substitute* file
+                                 ;; ActiveSupport test case.
+                                 (((string-append "test \"" test "\".*") all)
+                                  (string-append
+                                   all "    skip    'fails on guix'\n")) ...
+                                   ;; MiniTest test case.
+                                 (((string-append "def " test ".*") all)
+                                  (string-append
+                                   all "    skip('fails on guix')\n")) ...)))))
+                (with-directory-excursion "test"
+                  ;; This test requires 'rails' and Bundler.
+                  (delete-file "application/server_test.rb")
+                  ;; These tests are incompatible with MiniTest 5.17 (see:
+                  ;; https://github.com/rails/rails/issues/47657).
+                  (skip-tests "generators_test.rb"
+                              "test_invoke_with_config_values"
+                              "test_simple_invoke"
+                              "test_should_give_higher_preference_to_rails_generators"
+                              "test_nested_fallbacks_for_generators"
+                              "test_fallbacks_for_generators_on_invoke"
+                              "test_invoke_with_default_values"
+                              "test_invoke_with_nested_namespaces")
+                  ;; These tests requires the assets which we lack.
+                  (delete-file "application/assets_test.rb")
+                  (delete-file "railties/generators_test.rb")
+                  (skip-tests "generators/shared_generator_tests.rb"
+                              ;; This test checks that bin/rails has /usr/bin/env has a
+                              ;; shebang and fails.
+                              "test_shebang_when_is_the_same_as_default_use_env")
+                  (skip-tests "generators/app_generator_test.rb"
+                              ;; This test requires networking.
+                              "test_template_from_url"
+                              ;; This test requires Bundler.
+                              "test_generation_use_original_bundle_environment"
+                              ;; This test requires assets.
+                              "test_css_option_with_cssbundling_gem"
+                              ;; These tests require the rails/command
+                              ;; namespace provided by the 'ruby-rails'
+                              ;; package, which depends on this one.
+                              "test_css_option_with_asset_pipeline_tailwind"
+                              "test_hotwire")
+                  (skip-tests
+                   "generators/plugin_generator_test.rb"
+                   ;; These tests require assets.
+                   "test_model_with_existent_application_record_in_mountable_engine"
+                   "test_dummy_application_loads_plugin"
+                   "test_generate_application_mailer_when_does_not_exist_in_\
+mountable_engine"
+                   "test_generate_mailer_layouts_when_does_not_exist_in_mountable_engine"
+                   "test_ensure_that_migration_tasks_work_with_mountable_option"
+                   "test_generating_controller_inside_mountable_engine"
+                   "test_generate_application_job_when_does_not_exist_in_mountable_engine"
+                   "test_run_default"
+                   ;; This test expects a /usr/bin/env shebang.
+                   "test_shebang")
+                  ;; The following generator tests require assets.
+                  (skip-tests "generators/plugin_test_runner_test.rb"
+                              "test_run_default")
+                  (skip-tests
+                   "generators/scaffold_controller_generator_test.rb"
+                   "test_controller_tests_pass_by_default_inside_full_engine"
+                   "test_controller_tests_pass_by_default_inside_mountable_engine")
+                  (skip-tests
+                   "generators/scaffold_generator_test.rb"
+                   "test_scaffold_tests_pass_by_default_inside_mountable_engine"
+                   "test_scaffold_tests_pass_by_default_inside_api_mountable_engine"
+                   "test_scaffold_tests_pass_by_default_inside_api_full_engine"
+                   "test_scaffold_on_invoke_inside_mountable_engine"
+                   "test_scaffold_tests_pass_by_default_inside_full_engine"
+                   "test_scaffold_tests_pass_by_default_inside_namespaced_\
+mountable_engine")
+                  (skip-tests "generators/test_runner_in_engine_test.rb"
+                              "test_run_default"
+                              "test_rerun_snippet_is_relative_path")
+                  ;; The actions_test tests depend on assets or the rails gem.
+                  (delete-file "generators/actions_test.rb")
+                  (skip-tests "engine/commands_test.rb"
+                              "test_server_command_work_inside_engine"
+                              "test_runner_command_work_inside_engine")
+                  ;; These tests fails because of cleanup code
+                  ;; when the environment lacks a PTY device (see:
+                  ;; https://github.com/rails/rails/issues/47656).
+                  (delete-file "engine/commands_test.rb")
+                  ;; The following tests require the 'rails' gem.
+                  (skip-tests "application/test_runner_test.rb"
+                              "test_run_app_without_rails_loaded"
+                              "test_generated_scaffold_works_with_rails_test"
+                              "test_load_fixtures_when_running_test_suites"
+                              "test_run_in_parallel_with_unmarshable_exception"
+                              "test_run_in_parallel_with_unknown_object")
+                  (skip-tests
+                   "application/test_test.rb"
+                   "automatically synchronizes test schema after rollback"
+                   "hooks for plugins"
+                   "sql structure migrations when adding column to existing table"
+                   "sql structure migrations"
+                   "ruby schema migrations")
+                  ;; These tests require a PostgreSQL server accepting
+                  ;; connections under /var/run/postgresql.
+                  (skip-tests
+                   "application/rake_test.rb"
+                   "test_not_protected_when_previous_migration_was_not_production")
+                  (delete-file "application/rake/dbs_test.rb")
+                  (delete-file "application/rake/migrations_test.rb")
+                  (delete-file "application/rake/multi_dbs_test.rb")
+                  (skip-tests "engine/test_test.rb"
+                              "automatically synchronize test schema")
+                  (skip-tests "isolation/abstract_unit.rb" "use_postgresql")
+                  (skip-tests "railties/engine_test.rb"
+                              "active_storage:install task works within engine"
+                              "active_storage:update task works within engine"
+                              "rake environment can be called in the engine"
+                              "mountable engine should copy migrations within engine_path"
+                              ;; This test fails because we do not use the
+                              ;; in-source active/action gems.
+                              "i18n files have lower priority than application ones"
+                              ;; This test fails when not using Bundler.
+                              "setting priority for engines with config.railties_order")
+                  ;; This test requires a database server or networking.
+                  (delete-file "application/bin_setup_test.rb")
+                  (skip-tests "application/middleware/cache_test.rb"
+                              ;; This test produces "miss, store" instead of
+                              ;; "fresh".
+                              "test_cache_works_with_expires"
+                              ;; This one produces "miss" instead of "stale,
+                              ;; valid, store".
+                              "test_cache_works_with_etags"
+                              ;; Likewise.
+                              "test_cache_works_with_last_modified")))))
+          (add-before 'check 'set-paths
+            (lambda _
+              (setenv "PATH" (string-append (getenv "PATH") ":"
+                                            #$output "/bin"))
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby")))))))
+    (native-inputs
+     (list git-minimal/pinned
+           ruby-actioncable
+           ruby-actionmailbox
+           ruby-actionmailer
+           ruby-actiontext
+           ruby-actionview
+           ruby-activejob
+           ruby-activemodel
+           ruby-activerecord
+           ruby-activestorage
+           ruby-bcrypt
+           ruby-bootsnap
+           ruby-capybara
+           ruby-dalli
+           ruby-importmap-rails-bootstrap
+           ruby-listen
+           ruby-minitest-retry
+           ruby-mysql2
+           ruby-pg
+           ruby-selenium-webdriver
+           ruby-sprockets-rails
+           ruby-webrick
+           sqlite))
+    (propagated-inputs
+     (list ruby-actionpack
+           ruby-activesupport
+           ruby-method-source
+           ruby-rake
+           ruby-thor
+           ruby-zeitwerk))
     (synopsis "Rails internals, including application bootup and generators")
     (description "@code{railties} provides the core Rails internals including
 handling application bootup, plugins, generators, and Rake tasks.")
