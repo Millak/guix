@@ -1019,3 +1019,38 @@ maintenance-related files, for convenience.")
    #:version "2022-12-31"
    #:commit "875461ffdf58ac04677957b4ae4160465b83b940"
    #:hash (base32 "0bf7a6wdns9c5wwv60qfcn9llg0j6jz5ryd2qgsqqx2i6xkmp77c")))
+
+(define-public pdpmake
+  (package
+    (name "pdpmake")
+    (version "1.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rmyorston/pdpmake")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fjx5imd7s0h0yy8h2qc4vkdq7kxqcljnrw6h8n88720xha5z3cb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list "DESTDIR=\"\""
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://frippery.org/make/")
+    (synopsis "POSIX make")
+    (description
+     "This package contains an implementation of POSIX make.  The default
+configuration enables extensions.  Generally these extensions are compatible
+with GNU make.")
+    ;; pdpmake is distributed under the public domain, but the sources include
+    ;; tests under the GPL license version 2.
+    (license (list license:gpl2 license:public-domain))))
