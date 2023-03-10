@@ -113,6 +113,29 @@ multibyte strings, internationalization, time zones, and testing.")
     (home-page "https://rubyonrails.org/")
     (license license:expat)))
 
+(define-public ruby-globalid
+  (package
+    (name "ruby-globalid")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "globalid" version))
+       (sha256
+        (base32
+         "0kqm5ndzaybpnpxqiqkc41k4ksyxl41ln8qqr6kb130cdxsf2dxk"))))
+    (build-system ruby-build-system)
+    (arguments
+     '(#:tests? #f))                    ;no included tests
+    (propagated-inputs
+     (list ruby-activesupport))
+    (synopsis "Generate URIs idenfitying model instances in Ruby")
+    (description
+     "@code{GlobalID} provides a way to generate URIs from a model in Ruby that
+uniquely identify it.")
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
+
 (define-public ruby-spring
   (package
     (name "ruby-spring")
