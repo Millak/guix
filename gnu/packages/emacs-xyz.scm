@@ -25893,31 +25893,31 @@ and 'text viewing modes' respectively.")
          "0bp2i66a9gp41r7nvbx8f4s334gd7lwjdxi3qw5yhgaav6gk3bkc"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; See: https://github.com/sensorflo/adoc-mode/issues/39.
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (let-syntax
-                 ((disable-tests
-                   (syntax-rules ()
-                     ((_ file ())
-                      (syntax-error "test names list must not be empty"))
-                     ((_ file (test-name ...))
-                      (substitute* file
-                        (((string-append "^\\(ert-deftest " test-name ".*") all)
-                         (string-append all "(skip-unless nil)\n")) ...)))))
-               (disable-tests "test/adoc-mode-test.el"
-                              ("adoctest-test-tempo-delimited-blocks"
-                               "adoctest-test-tempo-macros"
-                               "adoctest-test-tempo-paragraphs"
-                               "adoctest-test-tempo-passthroug-macros"
-                               "adoctest-test-tempo-quotes")))
-             #t)))
-       #:tests? #t
-       #:test-command '("emacs" "-Q" "-batch"
-                        "-l" "test/adoc-mode-test.el"
-                        "-f" "ert-run-tests-batch-and-exit")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See: https://github.com/sensorflo/adoc-mode/issues/39.
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (let-syntax
+                  ((disable-tests
+                    (syntax-rules ()
+                      ((_ file ())
+                       (syntax-error "test names list must not be empty"))
+                      ((_ file (test-name ...))
+                       (substitute* file
+                         (((string-append "^\\(ert-deftest " test-name ".*") all)
+                          (string-append all "(skip-unless nil)\n")) ...)))))
+                (disable-tests "test/adoc-mode-test.el"
+                               ("adoctest-test-tempo-delimited-blocks"
+                                "adoctest-test-tempo-macros"
+                                "adoctest-test-tempo-paragraphs"
+                                "adoctest-test-tempo-passthroug-macros"
+                                "adoctest-test-tempo-quotes"))))))
+      #:tests? #t
+      #:test-command '("emacs" "-Q" "-batch"
+                       "-l" "test/adoc-mode-test.el"
+                       "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-markup-faces))
     (home-page "https://github.com/sensorflo/adoc-mode/wiki")
