@@ -56,6 +56,7 @@
                    '(string-append "-DZIG_TARGET_TRIPLE="
                                    (%current-target-system))
                    '())
+             (string-append "-DZIG_TARGET_MCPU=baseline")
              (string-append "-DZIG_LIB_DIR=" (assoc-ref %outputs "out")
                             "/lib/zig"))
        #:validate-runpath? #f       ; TODO: zig binary can't find ld-linux.
