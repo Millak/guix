@@ -9853,6 +9853,28 @@ and locking between worker processes.")
     (home-page "https://github.com/chanks/que")
     (license license:expat)))
 
+(define-public ruby-queue-classic
+  (package
+    (name "ruby-queue-classic")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "queue_classic" version))
+              (sha256
+               (base32
+                "0npyhajf2fc80apkw9s2kj0n254w5lcl4xpjidg5d5w1fb19abh6"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f))      ;tests require a postgresql server
+    (native-inputs (list ruby-activerecord ruby-minitest-reporters))
+    (propagated-inputs (list ruby-pg))
+    (synopsis "Queuing library for Ruby")
+    (description "@code{queue_classic} is a queuing library for Ruby
+applications (Rails, Sinatra, etc.)  @code{queue_classic} features
+asynchronous job polling, database maintained locks and has a single
+dependency, @code{pg}.")
+    (home-page "https://github.com/QueueClassic/queue_classic")
+    (license license:expat)))
+
 (define-public ruby-ae
   (package
     (name "ruby-ae")
