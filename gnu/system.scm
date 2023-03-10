@@ -967,9 +967,8 @@ syntactically correct."
                                "--check" "--file" #$file)
                        (copy-file #$file #$output)))))
 
-(define (os-release)
-  (plain-file "os-release"
-              "\
+(define os-release
+  (plain-file "os-release" "\
 NAME=\"Guix System\"
 ID=guix
 PRETTY_NAME=\"Guix System\"
@@ -1092,15 +1091,15 @@ then
   source /run/current-system/profile/etc/profile.d/bash_completion.sh
 fi\n")))
     (etc-service
-     `(("os-release" ,#~#$(os-release))
+     `(("os-release" ,os-release)
        ("services" ,(file-append net-base "/etc/services"))
        ("protocols" ,(file-append net-base "/etc/protocols"))
        ("rpc" ,(file-append net-base "/etc/rpc"))
-       ("login.defs" ,#~#$login.defs)
-       ("issue" ,#~#$issue)
-       ,@(if nsswitch `(("nsswitch.conf" ,#~#$nsswitch)) '())
-       ("profile" ,#~#$profile)
-       ("bashrc" ,#~#$bashrc)
+       ("login.defs" ,login.defs)
+       ("issue" ,issue)
+       ,@(if nsswitch `(("nsswitch.conf" ,nsswitch)) '())
+       ("profile" ,profile)
+       ("bashrc" ,bashrc)
        ;; Write the operating-system-host-name to /etc/hostname to prevent
        ;; NetworkManager from changing the system's hostname when connecting
        ;; to certain networks.  Some discussion at
