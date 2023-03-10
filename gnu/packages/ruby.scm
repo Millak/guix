@@ -670,6 +670,28 @@ groups.")
                 "0psjy5kdlz3ph39br0m01w65i1ikagnqlg39f8p65jh5q7dz8hwc"))))
     (propagated-inputs `())))
 
+(define-public ruby-date
+  (package
+    (name "ruby-date")
+    (version "3.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruby/date")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jiqjnaap1jk1r8z37iicnzqha1rhc713qmcir17f4vnz8ac8v75"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "default"))
+    (native-inputs (list ruby-rake-compiler))
+    (synopsis "Ruby @code{Object} subclass with date comparison capability")
+    (description "This package provides a subclass of @code{Object} that
+includes the @code{Comparable} module for handling dates.")
+    (home-page "https://github.com/ruby/date")
+    (license license:bsd-2)))
+
 (define-public ruby-diff-lcs
   (package
     (name "ruby-diff-lcs")
