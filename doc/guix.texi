@@ -31528,6 +31528,10 @@ in @var{servers}.
 @item @code{servers} (default: @code{'()})
 Specify IP address of upstream servers directly.
 
+@item @code{servers-file} (default: @code{#f})
+Specify file containing upstream servers. This file is re-read when dnsmasq receives SIGHUP.
+Could be either a string or a file-like object.
+
 @item @code{addresses} (default: @code{'()})
 For each entry, specify an IP address to return for any host in the
 given domains.  Queries in the domains are never forwarded and always
