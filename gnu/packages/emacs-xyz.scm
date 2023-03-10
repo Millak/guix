@@ -25914,9 +25914,9 @@ and 'text viewing modes' respectively.")
                                 "adoctest-test-tempo-passthroug-macros"
                                 "adoctest-test-tempo-quotes"))))))
       #:tests? #t
-      #:test-command '("emacs" "-Q" "-batch"
-                       "-l" "test/adoc-mode-test.el"
-                       "-f" "ert-run-tests-batch-and-exit")))
+      #:test-command #~(list "emacs" "-Q" "-batch"
+                             "-l" "test/adoc-mode-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-markup-faces))
     (home-page "https://github.com/sensorflo/adoc-mode/wiki")
