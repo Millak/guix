@@ -11340,6 +11340,27 @@ are doing, you can fiddle with every last bit of your email directly.")
     (home-page "https://github.com/mikel/mail")
     (license license:expat)))
 
+(define-public ruby-net-protocol
+  (package
+    (name "ruby-net-protocol")
+    (version "0.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruby/net-protocol")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0niivmjx7bc6vsylc1ag17mw6mnvjxw02s7cin1f0422xyr8msq9"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-timeout))
+    (synopsis "Abstract interface for Ruby network clients")
+    (description "This Ruby library provides an abstract interface for network
+clients.")
+    (home-page "https://github.com/ruby/net-protocol")
+    (license (list license:bsd-2))))
+
 (define-public ruby-email-reply-trimmer
   (package
     (name "ruby-email-reply-trimmer")
