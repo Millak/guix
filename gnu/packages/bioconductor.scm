@@ -1482,6 +1482,47 @@ genomation package.  Included are Chip Seq, Methylation and Cage data,
 downloaded from Encode.")
     (license license:gpl3+)))
 
+(define-public r-hdcytodata
+  (package
+    (name "r-hdcytodata")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "HDCytoData" version 'experiment))
+              (sha256
+               (base32
+                "1fn8q6ds10z3ymdarkfyh88pcqnrry9yhzammp84vf86f0bl8mrc"))))
+    (properties `((upstream-name . "HDCytoData")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _
+             (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'avoid-internet-access
+           (lambda _
+             (setenv "GUIX_BUILD" "yes")
+             (substitute* "R/zzz.R"
+               (("createHubAccessors.*" m)
+                (string-append
+                 "if (Sys.getenv(\"GUIX_BUILD\") == \"\") {" m "}"))))))))
+    (propagated-inputs
+     (list r-experimenthub r-flowcore r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/lmweber/HDCytoData")
+    (synopsis
+     "Set of high-dimensional flow cytometry and mass cytometry benchmark datasets")
+    (description
+     "HDCytoData contains a set of high-dimensional cytometry benchmark
+datasets.  These datasets are formatted into SummarizedExperiment and flowSet
+Bioconductor object formats, including all required metadata.  Row metadata
+includes sample IDs, group IDs, patient IDs, reference cell population or
+cluster labels and labels identifying spiked in cells.  Column metadata
+includes channel names, protein marker names, and protein marker classes.")
+    (license license:expat)))
+
 (define-public r-italicsdata
   (package
     (name "r-italicsdata")
