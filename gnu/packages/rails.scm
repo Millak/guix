@@ -26,6 +26,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages node)
@@ -794,6 +795,78 @@ pattern.  Including support for multipart email and attachments.")
 support for YAML, to optimize and cache expensive computations.")
     (home-page "https://github.com/Shopify/bootsnap")
     (license license:expat)))
+
+;;; A private variant used to bootstrap railties.
+(define ruby-importmap-rails-bootstrap
+  (package
+    (name "ruby-importmap-rails-bootstrap")
+    (version "1.1.5")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/rails/importmap-rails")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d8pqqqrvsnm8rpr7qkpcxpscif61xymi509v1c62laadvhcmklg"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f))             ;avoid all extra dependencies
+    ;; Leave out ruby-railties, for bootstrapping purposes.
+    (propagated-inputs (list ruby-actionpack))
+    (synopsis "Tool to manage modern JavaScript in Rails")
+    (description "Import maps can import JavaScript modules using logical
+names that map to versioned/digested files -- directly from the browser.  It
+makes it possible to build modern JavaScript applications using JavaScript
+libraries made for ES modules (ESM) without the need for transpiling or
+bundling, which removes the need for Webpack, Yarn, npm, or any other part of
+the JavaScript toolchain.  All that is needed is the asset pipeline that is
+already included in Rails.")
+    (home-page "https://github.com/rails/importmap-rails")
+    (license license:expat)))
+
+(define-public ruby-importmap-rails
+  (package/inherit ruby-importmap-rails-bootstrap
+    (name "ruby-importmap-rails")
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'relax-requirements
+                 (lambda _
+                   (delete-file "gemfiles/rails_7_propshaft.gemfile.lock")
+                   (substitute* "gemfiles/rails_7_propshaft.gemfile"
+                     ;; Remove appraisal, and add tzinfo-data, which needs to
+                     ;; be in the Gemfile to become available.
+                     ((".*appraisal.*")
+                      "gem 'tzinfo-data'\n")
+                     ;; This gem is for managing *installation* of
+                     ;; webdrivers... we do not want that.
+                     ((".*gem \"webdrivers\".*") ""))))
+               (add-before 'check 'set-BUNDLE_GEMFILE
+                 (lambda _
+                   ;; The default Gemfile is for Rails 6.
+                   (setenv "BUNDLE_GEMFILE"
+                           "gemfiles/rails_7_propshaft.gemfile")))
+               (add-before 'check 'disable-problematic-tests
+                 (lambda _
+                   ;; The integration tests require networking; disable them.
+                   (delete-file "test/npm_integration_test.rb")
+                   (delete-file "test/packager_integration_test.rb"))))))
+    (native-inputs
+     (list ruby-byebug
+           ruby-capybara
+           ruby-propshaft
+           ruby-rails
+           ruby-rexml
+           ruby-selenium-webdriver
+           ruby-sqlite3
+           ruby-stimulus-rails
+           ruby-turbo-rails
+           ruby-tzinfo
+           ruby-tzinfo-data))
+    (propagated-inputs
+     (list ruby-actionpack
+           ruby-railties))))
 
 (define-public ruby-marcel
   (package
