@@ -13518,6 +13518,26 @@ minimal effort.")
     (home-page "https://sinatrarb.com/")
     (license license:expat)))
 
+(define-public ruby-timeout
+  (package
+    (name "ruby-timeout")
+    (version "0.3.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/timeout")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lzhs2c4znzg781w146dhvczhbx7h3wkb90i4v6h68zvm2zfylgj"))))
+    (build-system ruby-build-system)
+    (synopsis "Timeout library for Ruby")
+    (description "Timeout provides a way to auto-terminate a potentially
+long-running operation if it hasn't finished in a fixed amount of time.")
+    (home-page "https://github.com/ruby/timeout")
+    (license (list license:bsd-2))))
+
 (define-public ruby-thin
   (package
     (name "ruby-thin")
