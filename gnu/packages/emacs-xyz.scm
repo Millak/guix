@@ -22243,7 +22243,7 @@ continue.")
 (define-public emacs-elisp-refs
   (package
     (name "emacs-elisp-refs")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -22252,7 +22252,7 @@ continue.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03p95kwvwb3apb3lhhdlaxs952x7sdlxa2qc1c77cjwrm5xzdg9z"))))
+        (base32 "1670jj0pya74gb0xbjlfmka4w06hzh6ya1ai9f4brxp4n9knc13i"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash
