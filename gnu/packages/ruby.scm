@@ -4072,6 +4072,28 @@ POP3, the Post Office Protocol version 3, as specified by
     (home-page "https://github.com/ruby/net-pop")
     (license license:bsd-2)))
 
+(define-public ruby-net-smtp
+  (package
+    (name "ruby-net-smtp")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/net-smtp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ca2wh45xvc09rv6v6sz3vbnkzrjzk5c4l6dk50zk4dwxvghma8r"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-net-protocol))
+    (synopsis "Simple Mail Transfer Protocol client library for Ruby")
+    (description "This library provides functionality to send Internet mail
+via SMTP, the Simple Mail Transfer Protocol.  The SMTP protocol specification
+is known as @url{http://www.ietf.org/rfc/rfc2821.txt, RFC2821}.")
+    (home-page "https://github.com/ruby/net-smtp")
+    (license license:bsd-2)))
+
 (define-public ruby-power-assert
   (package
     (name "ruby-power-assert")
