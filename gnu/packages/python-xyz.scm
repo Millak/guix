@@ -21102,7 +21102,6 @@ datatypes to and from native Python datatypes.")
            python-flake8-bugbear
            python-flask
            python-mock
-           python-pre-commit
            python-pytest
            python-tox))
     (home-page "https://github.com/marshmallow-code/marshmallow-jsonapi")
