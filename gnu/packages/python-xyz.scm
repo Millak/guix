@@ -21164,8 +21164,8 @@ Swagger.")
            python-flake8-bugbear
            python-flask
            python-mock
-           python-pre-commit
            python-pytest
+           python-pyyaml
            python-tornado
            python-tox))
     (home-page "https://github.com/marshmallow-code/apispec-webframeworks")
