@@ -7163,6 +7163,22 @@ into a single method call.")
     (home-page "https://github.com/rack/rack")
     (license license:expat)))
 
+(define-public ruby-rack-next
+  (package
+    (inherit ruby-rack)
+    (name "ruby-rack")
+    (version "3.0.7")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/rack/rack")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0msf14655nfcq1kgmib6932lgzm9nw3nb0m3c7nh6nj4sx30yxfr"))))
+    (arguments '())))
+
 (define-public ruby-rack-test
   (package
     (name "ruby-rack-test")
