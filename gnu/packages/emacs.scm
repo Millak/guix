@@ -442,12 +442,12 @@ GTK.")))
   (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
         (revision "0"))
     (package
-      (inherit emacs-next-pgtk)
+      (inherit emacs-next)
       (name "emacs-next-tree-sitter")
       (version (git-version "30.0.50" revision commit))
       (source
        (origin
-         (inherit (package-source emacs-next-pgtk))
+         (inherit (package-source emacs-next))
          (method git-fetch)
          (uri (git-reference
                (url "https://git.savannah.gnu.org/git/emacs.git/")
@@ -457,11 +457,10 @@ GTK.")))
           (base32
            "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
       (inputs
-       (modify-inputs (package-inputs emacs-next-pgtk)
+       (modify-inputs (package-inputs emacs-next)
          (prepend sqlite tree-sitter)))
-      (synopsis "Emacs text editor with @code{pgtk} and @code{tree-sitter} support")
-      (description "This Emacs build implements graphical UI purely in terms
-of GTK and supports tree-sitter."))))
+      (synopsis "Emacs text editor with @code{tree-sitter} support")
+      (description "This Emacs build supports tree-sitter."))))
 
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just
