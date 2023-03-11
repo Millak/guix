@@ -19707,11 +19707,11 @@ Slack client.")
       (license license:gpl3+))))
 
 (define-public emacs-bash-completion
-  ;; This commit includes unreleased fixes that make using completion inside
-  ;; 'guix shell' possible (see:
-  ;; https://github.com/szermatt/emacs-bash-completion/issues/62).
-  (let ((commit "796a806c5531fc20afea590ba3c1d8a42fb793fc")
-        (revision "0"))
+  ;; This commit fixes an issue that would brake the shell process if trying
+  ;; to complete a command (see:
+  ;; https://github.com/szermatt/emacs-bash-completion/issues/63).
+  (let ((commit "b38f9bca0c194ee3a79c19a14db3b38d1262ca8c")
+        (revision "1"))
     (package
       (name "emacs-bash-completion")
       (version (git-version "3.1.1" revision commit))
@@ -19723,7 +19723,7 @@ Slack client.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "13mdb5arifkwghdclvp23q336n49x2hgqnll7m1lg3nh6jgq8jvk"))))
+          (base32 "09didsy8l6q083djlf9xqqx4fbsisaq5j7vj8fj4qlwh34pfl94c"))))
       (build-system emacs-build-system)
       (arguments
        (list
