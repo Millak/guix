@@ -29344,8 +29344,7 @@ cons cells in Python.")
            python-black
            python-sympy
            python-versioneer
-           python-coverage
-           python-pre-commit))
+           python-coverage))
     (propagated-inputs
      (list python-toolz python-cons python-multipledispatch
            python-etuples python-logical-unification))
