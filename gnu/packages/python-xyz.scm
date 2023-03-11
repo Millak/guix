@@ -352,6 +352,7 @@ design}.")
                                                       " and not "))))))))))
     (native-inputs
      (list git-minimal
+           pre-commit
            python-autopep8
            python-black
            python-flake8
@@ -359,7 +360,6 @@ design}.")
            python-isort
            python-ipython-genutils
            python-jupyter-server
-           python-pre-commit
            python-pytest
            python-pyaml))
     (propagated-inputs
