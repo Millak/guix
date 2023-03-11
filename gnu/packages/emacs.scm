@@ -420,24 +420,6 @@ languages.")
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf))))))
 
-(define-public emacs-next-pgtk
-  (package
-    (inherit emacs-next)
-    (name "emacs-next-pgtk")
-    (source
-     (origin
-       (inherit (package-source emacs-next))
-       (patches
-        (append (search-patches "emacs-pgtk-super-key-fix.patch")
-                (origin-patches (package-source emacs-next))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments emacs-next)
-       ((#:configure-flags flags #~'())
-        #~(cons* "--with-pgtk" #$flags))))
-    (synopsis "Emacs text editor with @code{pgtk} support")
-    (description "This Emacs build implements graphical UI purely in terms of
-GTK.")))
-
 (define-public emacs-next-tree-sitter
   (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
         (revision "0"))
@@ -461,6 +443,24 @@ GTK.")))
          (prepend sqlite tree-sitter)))
       (synopsis "Emacs text editor with @code{tree-sitter} support")
       (description "This Emacs build supports tree-sitter."))))
+
+(define-public emacs-next-pgtk
+  (package
+    (inherit emacs-next-tree-sitter)
+    (name "emacs-next-pgtk")
+    (source
+     (origin
+       (inherit (package-source emacs-next-tree-sitter))
+       (patches
+        (append (search-patches "emacs-pgtk-super-key-fix.patch")
+                (origin-patches (package-source emacs-next-tree-sitter))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next-tree-sitter)
+       ((#:configure-flags flags #~'())
+        #~(cons* "--with-pgtk" #$flags))))
+    (synopsis "Emacs text editor with @code{pgtk} and @code{tree-sitter} support")
+    (description "This Emacs build implements graphical UI purely in terms
+of GTK and supports tree-sitter.")))
 
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just
