@@ -1645,7 +1645,6 @@ etc.")
     (native-inputs
      (list python-coverage
            python-hypothesis
-           python-pre-commit
            python-py
            python-pytest
            python-pytest-benchmark
