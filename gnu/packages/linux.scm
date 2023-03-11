@@ -1478,7 +1478,7 @@ This package provides the @command{corefreqd} data collection daemon, the
 (define-public librem-ec-acpi-linux-module
   (package
     (name "librem-ec-acpi-linux-module")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -1487,7 +1487,7 @@ This package provides the @command{corefreqd} data collection daemon, the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qnbfj60i8nn2ahgj2zp5ixd79bb0wl1ld36x3igws2f3c0f5pfi"))))
+        (base32 "0m8hamf0550083jnk5q4hv20l8lfiardnkxbib4hhvqghpzzbxl0"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
