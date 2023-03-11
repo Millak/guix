@@ -4176,6 +4176,39 @@ lines spanning the entire window.  The minor mode is suitable for inclusion
 into mode hooks and is intended to be used that way.")
     (license license:gpl3+)))
 
+(define-public emacs-xcscope
+  (let ((commit "d228d7593d762e457340f678d14b663ef66d7cee")
+        (revision "0"))
+    (package
+      (name "emacs-xcscope")
+      (version (git-version "1.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/dkogan/xcscope.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pr85ywp585imjzswm04647nb4iqqvg8jgmbcs5210qmr9kh0z8d"))))
+      (build-system emacs-build-system)
+      (inputs (list cscope))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'substitute-cscope-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "xcscope.el"
+                  ("cscope-program"
+                   (search-input-file inputs "/bin/cscope"))))))))
+      (home-page "https://github.com/dkogan/xcscope.el")
+      (synopsis "Interface to the source cross-referencing tool Cscope")
+      (description
+       "Xcscope is an Emacs interface to Cscope, the source cross-referencing
+tool.")
+      (license license:gpl2+))))
+
 (define-public emacs-ggtags
   (package
     (name "emacs-ggtags")
