@@ -21074,7 +21074,6 @@ while only declaring the test-specific fields.")
      (list python-flake8
            python-flake8-bugbear
            python-mypy
-           python-pre-commit
            python-pytest
            python-pytz
            python-simplejson))
