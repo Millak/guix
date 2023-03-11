@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1239,8 +1240,13 @@ input list."
 
 (define (package-direct-sources package)
   "Return all source origins associated with PACKAGE; including origins in
-PACKAGE's inputs."
-  `(,@(or (and=> (package-source package) list) '())
+PACKAGE's inputs and patches."
+  (define (expand source)
+    (cons
+     source
+     (filter origin? (origin-patches source))))
+
+  `(,@(or (and=> (package-source package) expand) '())
     ,@(filter-map (match-lambda
                    ((_ (? origin? orig) _ ...)
                     orig)
