@@ -437,7 +437,8 @@ AUX_FILES =						\
   gnu/packages/aux-files/python/sitecustomize.py	\
   gnu/packages/aux-files/renpy/renpy.in	\
   gnu/packages/aux-files/run-in-namespace.c		\
-  gnu/packages/aux-files/xml/patch-catalog-xml.xsl
+  gnu/packages/aux-files/xml/patch-catalog-xml.xsl	\
+  gnu/packages/aux-files/xml/docbook-xml/catalog-4.1.2.xml
 
 # Templates, examples.
 EXAMPLES =					\
