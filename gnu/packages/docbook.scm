@@ -59,27 +59,15 @@
               (sha256
                (base32
                 "1iz3hq1lqgnshvlz4j9gvh4jy1ml74qf90vqf2ikbq0h4i2xzybs"))))
-    (build-system trivial-build-system)
+    (build-system copy-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((unzip
-                 (string-append (assoc-ref %build-inputs "unzip")
-                                "/bin/unzip"))
-                (source (assoc-ref %build-inputs "source"))
-                (out    (assoc-ref %outputs "out"))
-                (dtd    (string-append out "/xml/dtd/docbook")))
-           (invoke unzip source)
-           (mkdir-p dtd)
-           (copy-recursively (string-append "docbook-" ,version) dtd)
-           (with-directory-excursion dtd
-             (substitute* (string-append out "/xml/dtd/docbook/catalog.xml")
-               (("uri=\"")
-                (string-append
-                 "uri=\"file://" dtd "/")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (let ((dtd-path (string-append #$output "/xml/dtd/docbook")))
+                (copy-recursively "." dtd-path)))))))
     (native-inputs (list unzip))
     (home-page "https://docbook.org")
     (synopsis "DocBook XML DTDs for document authoring")
@@ -95,37 +83,18 @@ by no means limited to these applications.)  This package provides XML DTDs.")
     (name "docbook-xml")
     (version "4.5")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append "https://docbook.org/xml/" version
                                   "/docbook-xml-" version ".zip"))
               (sha256
                (base32
-                "1d671lcjckjri28xfbf6dq7y3xnkppa910w1jin8rjc35dx06kjf"))))
-    (arguments
-     '(#:builder (begin
-                   (use-modules (guix build utils))
-
-                   (let* ((unzip
-                           (string-append (assoc-ref %build-inputs "unzip")
-                                          "/bin/unzip"))
-                          (source (assoc-ref %build-inputs "source"))
-                          (out    (assoc-ref %outputs "out"))
-                          (dtd    (string-append out "/xml/dtd/docbook")))
-                     (mkdir-p dtd)
-                     (with-directory-excursion dtd
-                       (invoke unzip source))
-                     (substitute* (string-append out "/xml/dtd/docbook/catalog.xml")
-                       (("uri=\"")
-                        (string-append
-                         "uri=\"file://" dtd "/")))
-                     #t))
-                 #:modules ((guix build utils))))))
+                "1d671lcjckjri28xfbf6dq7y3xnkppa910w1jin8rjc35dx06kjf"))))))
 
 (define-public docbook-xml-4.4
   (package (inherit docbook-xml)
     (version "4.4")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append "https://docbook.org/xml/" version
                                   "/docbook-xml-" version ".zip"))
               (sha256
@@ -136,7 +105,7 @@ by no means limited to these applications.)  This package provides XML DTDs.")
   (package (inherit docbook-xml)
     (version "4.3")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append "https://docbook.org/xml/" version
                                   "/docbook-xml-" version ".zip"))
               (sha256
@@ -147,7 +116,7 @@ by no means limited to these applications.)  This package provides XML DTDs.")
   (package (inherit docbook-xml)
     (version "4.2")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append "https://docbook.org/xml/" version
                                   "/docbook-xml-" version ".zip"))
               (sha256
@@ -159,33 +128,12 @@ by no means limited to these applications.)  This package provides XML DTDs.")
     (inherit docbook-xml)
     (version "4.1.2")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append "https://docbook.org/xml/" version
                                   "/docbkx412.zip"))
               (sha256
                (base32
-                "0wkp5rvnqj0ghxia0558mnn4c7s3n501j99q2isp3sp0ci069w1h"))))
-    (arguments
-     '(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((source (assoc-ref %build-inputs "source"))
-                (unzip  (string-append (assoc-ref %build-inputs "unzip")
-                                       "/bin/unzip"))
-                (xmlcatalog  (string-append (assoc-ref %build-inputs "libxml2")
-                                            "/bin/xmlcatalog"))
-                (dtd    (string-append (assoc-ref %outputs "out")
-                                       "/xml/dtd/docbook"))
-                (catalog.xml (string-append dtd "/catalog.xml")))
-           (mkdir-p dtd)
-           (invoke unzip source "-d" dtd)
-           ;; Create a minimal XML catalog, to use with libxml2 tools.
-           (invoke xmlcatalog "--noout" "--create" catalog.xml)
-           (invoke xmlcatalog "--noout" "--add" "public"
-                   "-//OASIS//DTD DocBook XML V4.1.2//EN"
-                   (string-append dtd "/docbookx.dtd") catalog.xml)))))
-    (native-inputs (list libxml2 unzip))))
+                "0wkp5rvnqj0ghxia0558mnn4c7s3n501j99q2isp3sp0ci069w1h"))))))
 
 ;;; There's an issue in docbook-xsl 1.79.2 that causes manpages to be
 ;;; generated incorrectly and embed raw nroff syntax such as '.PP' when there
