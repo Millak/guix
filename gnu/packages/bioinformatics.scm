@@ -18152,7 +18152,6 @@ aligner.")
      (list python-black
            python-flake8
            python-hypothesis
-           python-pre-commit
            python-pytest
            python-setuptools-scm
            python-wheel))
