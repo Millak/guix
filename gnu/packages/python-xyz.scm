@@ -21137,7 +21137,6 @@ datatypes to and from native Python datatypes.")
            python-flake8-bugbear
            python-marshmallow
            python-mypy
-           python-pre-commit
            python-pytest
            python-pyyaml))
     (home-page "https://github.com/marshmallow-code/apispec")
