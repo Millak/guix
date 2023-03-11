@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Andrew Whatson <whatson@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,11 +72,22 @@
             (lambda _
               ;; XXX: These files do not need 0755 permission.
               (for-each (cut chmod <> #o644) (find-files "."))))
+          (add-before 'install 'patch-catalog-xml
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((xsltproc (search-input-file inputs "/bin/xsltproc"))
+                    (dtd-path (string-append #$output "/xml/dtd/docbook")))
+                (invoke xsltproc "--nonet" "--noout"
+                        "--stringparam" "prefix" dtd-path
+                        "--output" "catalog.xml.new"
+                        #$(local-file
+                           (search-auxiliary-file "xml/patch-catalog-xml.xsl"))
+                        "catalog.xml")
+                (rename-file "catalog.xml.new" "catalog.xml"))))
           (replace 'install
             (lambda _
               (let ((dtd-path (string-append #$output "/xml/dtd/docbook")))
                 (copy-recursively "." dtd-path)))))))
-    (native-inputs (list unzip))
+    (native-inputs (list libxslt unzip))
     (home-page "https://docbook.org")
     (synopsis "DocBook XML DTDs for document authoring")
     (description

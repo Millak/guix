@@ -436,7 +436,8 @@ AUX_FILES =						\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sitecustomize.py	\
   gnu/packages/aux-files/renpy/renpy.in	\
-  gnu/packages/aux-files/run-in-namespace.c
+  gnu/packages/aux-files/run-in-namespace.c		\
+  gnu/packages/aux-files/xml/patch-catalog-xml.xsl
 
 # Templates, examples.
 EXAMPLES =					\
