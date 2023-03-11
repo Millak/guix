@@ -62,8 +62,15 @@
     (build-system copy-build-system)
     (arguments
      (list
+      #:modules '((guix build copy-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-permissions
+            (lambda _
+              ;; XXX: These files do not need 0755 permission.
+              (for-each (cut chmod <> #o644) (find-files "."))))
           (replace 'install
             (lambda _
               (let ((dtd-path (string-append #$output "/xml/dtd/docbook")))
