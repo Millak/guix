@@ -7179,6 +7179,30 @@ into a single method call.")
                 "0msf14655nfcq1kgmib6932lgzm9nw3nb0m3c7nh6nj4sx30yxfr"))))
     (arguments '())))
 
+(define-public ruby-rack-cache
+  (package
+    (name "ruby-rack-cache")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rack-cache" version))
+              (sha256
+               (base32
+                "1cqpax628h2mhnsjfg91c3klxwx2pkvaj061cisb0saqa99b0jgm"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; The test suite depends on ruby-memcached, which is not available in
+      ;; Guix and bundles a very dated copy of memcached (undesirable).
+      #:tests? #f))
+    (propagated-inputs (list ruby-rack))
+    (synopsis "Component to enable HTTP caching for Rack-based applications")
+    (description "Rack::Cache is suitable as a drop-in component to enable
+HTTP caching for Rack-based applications that produce freshness (Expires,
+Cache-Control) and/or validation (Last-Modified, ETag) information.")
+    (home-page "https://github.com/rtomayko/rack-cache")
+    (license license:expat)))
+
 (define-public ruby-rack-test
   (package
     (name "ruby-rack-test")
