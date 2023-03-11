@@ -1347,8 +1347,7 @@ demultiplexing step.")
      (list python-black
            python-flake8
            python-poetry-core
-           python-pytest
-           python-pre-commit))
+           python-pytest))
     (home-page "https://github.com/JonathanShor/DoubletDetection")
     (synopsis
      "This is a package to detect doublets in single-cell RNA-seq count matrices")
