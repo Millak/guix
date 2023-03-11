@@ -1667,8 +1667,8 @@ visualize your public Git repositories on a web interface.")
 
 (define-public pre-commit
   (package
-    (name "pre-commit")
-    (version "2.20.0")
+    (name "pre-commit") ;formerly known as python-pre-commit
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1677,7 +1677,11 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19jcg6nfnscp87h4wmbpw6r3lc8c75zkvb6wqgavq5dh7wkyg6pq"))))
+        (base32 "1rngcq1vd2phk45wp1cc5jz02wpi53fif0qwk633smfjcjj1kp41"))
+       (modules '((guix build utils)))
+       (snippet '(substitute* "setup.cfg"
+                   (("virtualenv>=20.10.0") ;our virtualenv (20.3.1) is fine
+                    "virtualenv>=20.0.8")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1710,6 +1714,18 @@ visualize your public Git repositories on a web interface.")
                        ;; Ruby and Node tests require node and gem.
                        "--ignore=tests/languages/node_test.py"
                        "--ignore=tests/languages/ruby_test.py"
+                       ;; Skip lang-specific (network) tests added in 3.1.1
+                       "--ignore=tests/languages/conda_test.py"
+                       "--ignore=tests/languages/coursier_test.py"
+                       "--ignore=tests/languages/dart_test.py"
+                       "--ignore=tests/languages/docker_test.py"
+                       "--ignore=tests/languages/docker_image_test.py"
+                       "--ignore=tests/languages/dotnet_test.py"
+                       "--ignore=tests/languages/golang_test.py"
+                       "--ignore=tests/languages/lua_test.py"
+                       "--ignore=tests/languages/perl_test.py"
+                       "--ignore=tests/languages/rust_test.py"
+                       "--ignore=tests/languages/swift_test.py"
                        "-k"
                        (string-append
                         ;; TODO: these tests fail with AssertionError.  It may
@@ -1717,7 +1733,8 @@ visualize your public Git repositories on a web interface.")
                         "not test_install_existing_hooks_no_overwrite"
                         " and not test_uninstall_restores_legacy_hooks"
                         " and not test_installed_from_venv"
-                        " and not test_healthy_venv_creator"))))))))
+                        " and not test_healthy_venv_creator"
+                        " and not test_r_hook and not test_r_inline"))))))))
     (native-inputs
      `(("git" ,git-minimal)
        ("python-covdefaults" ,python-covdefaults)
@@ -1733,7 +1750,6 @@ visualize your public Git repositories on a web interface.")
            python-identify
            python-nodeenv
            python-pyyaml
-           python-toml
            python-virtualenv))
     (home-page "https://pre-commit.com/")
     (synopsis "Framework for managing and maintaining pre-commit hooks")
