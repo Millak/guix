@@ -4116,7 +4116,6 @@ memory usage and transliteration quality.")
     (native-inputs
      (list python-coverage
            python-cryptography
-           python-pre-commit
            python-pytest
            python-sphinx
            python-sphinx-rtd-theme))
