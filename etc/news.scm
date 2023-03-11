@@ -26,6 +26,22 @@
 (channel-news
  (version 0)
 
+ (entry (commit "0e18c5e5bcb9204c278cfc75493d3b02b746d5c3")
+        (title
+         (en "Linux-libre kernel updated to 6.2")
+         (de "Linux-libre-Kernel wird auf 6.2 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.2")
+         (pt "Kernel linux-libre atualizado para 6.2"))
+        (body
+         (en "The default version of the linux-libre kernel has been updated to
+              the 6.2 release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 6.2-Versionsreihe.")
+         (fr "La version par défaut du noyau linux-libre est mise à jour
+              vers la série des 6.2.")
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
+              série do kernel 6.2.")))
+
  (entry (commit "598f4c509bbfec2b983a8ee246cce0a0fe45ec7f")
         (title
          (de "Neues Format @samp{rpm} für den Befehl @command{guix pack}")
