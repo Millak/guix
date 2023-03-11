@@ -221,7 +221,6 @@ color, font attributes (weight, posture), or underlining.")
            python-flake8-implicit-str-concat
            python-flake8-print
            python-isort
-           python-pre-commit
            python-pytest
            python-pytest-cov
            python-sphinx
