@@ -3519,7 +3519,6 @@ directories and files.")
            python-numpy
            python-pandas
            python-pillow
-           python-pre-commit
            python-restructuredtext-lint
            python-tox
            python-setuptools-scm
