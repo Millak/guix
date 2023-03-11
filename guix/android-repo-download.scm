@@ -78,6 +78,9 @@ generic name if unset."
   (define guile-json
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
 
+  (define guile-lzlib
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
+
   (define gnutls
     (module-ref (resolve-interface '(gnu packages tls)) 'gnutls))
 
@@ -99,7 +102,8 @@ generic name if unset."
 
   (define build
     (with-imported-modules modules
-      (with-extensions (list gnutls guile-json) ;for (guix swh)
+      (with-extensions (list gnutls guile-json ;for (guix swh)
+                             guile-lzlib)
         #~(begin
             (use-modules (guix build android-repo)
                          (guix build utils)

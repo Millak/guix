@@ -19,7 +19,7 @@
 (define-module (guix build download-nar)
   #:use-module (guix build download)
   #:use-module ((guix serialization) #:hide (dump-port*))
-  #:autoload   (zlib) (call-with-gzip-input-port)
+  #:autoload   (lzlib) (call-with-lzip-input-port)
   #:use-module (guix progress)
   #:use-module (web uri)
   #:use-module (srfi srfi-11)
@@ -41,52 +41,21 @@
   "Return the fallback nar URL for ITEM--e.g.,
 \"/gnu/store/cabbag3…-foo-1.2-checkout\"."
   ;; Here we hard-code nar URLs without checking narinfos.  That's probably OK
-  ;; though.  Use berlin.guix.gnu.org instead of its ci.guix.gnu.org front end to
-  ;; avoid sending these requests to CDN providers without user consent.
+  ;; though.
   ;; TODO: Use HTTPS?  The downside is the extra dependency.
-  (let ((bases '("http://berlin.guix.gnu.org"))
+  (let ((bases '("http://bordeaux.guix.gnu.org"
+                 "http://ci.guix.gnu.org"))
         (item  (basename item)))
-    (append (map (cut string-append <> "/nar/gzip/" item) bases)
+    (append (map (cut string-append <> "/nar/lzip/" item) bases)
             (map (cut string-append <> "/nar/" item) bases))))
 
-(define (restore-gzipped-nar port item size)
-  "Restore the gzipped nar read from PORT, of SIZE bytes (compressed), to
+(define (restore-lzipped-nar port item size)
+  "Restore the lzipped nar read from PORT, of SIZE bytes (compressed), to
 ITEM."
-  ;; Since PORT is typically a non-file port (for instance because 'http-get'
-  ;; returns a delimited port), create a child process so we're back to a file
-  ;; port that can be passed to 'call-with-gzip-input-port'.
-  (match (pipe)
-    ((input . output)
-     (match (primitive-fork)
-       (0
-        (dynamic-wind
-          (const #t)
-          (lambda ()
-            (close-port output)
-            (close-port port)
-            (catch #t
-              (lambda ()
-                (call-with-gzip-input-port input
-                  (cut restore-file <> item)))
-              (lambda (key . args)
-                (print-exception (current-error-port)
-                                 (stack-ref (make-stack #t) 1)
-                                 key args)
-                (primitive-exit 1))))
-          (lambda ()
-            (primitive-exit 0))))
-       (child
-        (close-port input)
-        (dump-port* port output
-                    #:reporter (progress-reporter/file item size
-                                                       #:abbreviation
-                                                       store-path-abbreviation))
-        (close-port output)
-        (newline)
-        (match (waitpid child)
-          ((_ . status)
-           (unless (zero? status)
-             (error "nar decompression failed" status)))))))))
+  (call-with-lzip-input-port port
+    (lambda (decompressed-port)
+      (restore-file decompressed-port
+                    item))))
 
 (define (download-nar item)
   "Download and extract the normalized archive for ITEM.  Return #t on
@@ -108,17 +77,25 @@ success, #f otherwise."
                          (values #f #f)))))
          (if (not port)
              (loop rest)
-             (begin
+             (let* ((reporter (progress-reporter/file
+                               url
+                               size
+                               (current-error-port)
+                               #:abbreviation nar-uri-abbreviation))
+                    (port-with-progress
+                     (progress-report-port reporter port
+                                           #:download-size size)))
                (if size
                    (format #t "Downloading from ~a (~,2h MiB)...~%" url
                            (/ size (expt 2 20.)))
                    (format #t "Downloading from ~a...~%" url))
-               (if (string-contains url "/gzip")
-                   (restore-gzipped-nar port item size)
+               (if (string-contains url "/lzip")
+                   (restore-lzipped-nar port-with-progress
+                                        item
+                                        size)
                    (begin
-                     ;; FIXME: Add progress report.
-                     (restore-file port item)
-                     (close-port port)))
+                     (restore-file port-with-progress
+                                   item)))
                #t))))
       (()
        #f))))

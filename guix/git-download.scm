@@ -101,8 +101,8 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define guile-json
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
 
-  (define guile-zlib
-    (module-ref (resolve-interface '(gnu packages guile)) 'guile-zlib))
+  (define guile-lzlib
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
 
   (define gnutls
     (module-ref (resolve-interface '(gnu packages tls)) 'gnutls))
@@ -123,7 +123,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define build
     (with-imported-modules modules
       (with-extensions (list guile-json gnutls   ;for (guix swh)
-                             guile-zlib)
+                             guile-lzlib)
         #~(begin
             (use-modules (guix build git)
                          (guix build utils)
