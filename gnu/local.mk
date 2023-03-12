@@ -1193,6 +1193,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gettext-libunicode-update.patch		\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
   %D%/packages/patches/ghc-9.2-glibc-2.33-link-order.patch \
+  %D%/packages/patches/ghc-9.2-grep-warnings.patch \
   %D%/packages/patches/ghc-testsuite-dlopen-pie.patch		\
   %D%/packages/patches/ghc-testsuite-grep-compat.patch		\
   %D%/packages/patches/ghc-bloomfilter-ghc9.2.patch	\

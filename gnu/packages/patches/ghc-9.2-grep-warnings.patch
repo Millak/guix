@@ -1,0 +1,37 @@
+--- ghc-9.2.5/testsuite/tests/numeric/should_run/T7014.primops.orig	2023-03-12 14:42:11.338540492 +0100
++++ ghc-9.2.5/testsuite/tests/numeric/should_run/T7014.primops	2023-03-12 14:42:13.735608896 +0100
+@@ -1,9 +1,9 @@
+ and#
+ or#
+ uncheckedShift.*#
+++#
++-#
++*#
+-\+#
+-\-#
+-\*#
+ quotInt#
+ remInt#
+ plusFloat#
+--- ghc-9.2.5/testsuite/tests/hsc2hs/Makefile.orig	2023-03-12 14:40:03.825939306 +0100
++++ ghc-9.2.5/testsuite/tests/hsc2hs/Makefile	2023-03-12 14:40:07.961054835 +0100
+@@ -54,7 +54,7 @@
+ ifeq "$(WINDOWS)" "YES"
+ 	grep '{-# LINE 1 \"T12504\\\\path\\\\to\\\\$@\.hsc\" #-}' T12504/path/to/$@.hs
+ else
++	grep '{-# LINE 1 "T12504/path/to/$@\.hsc" #-}' T12504/path/to/$@.hs
+-	grep '{-# LINE 1 \"T12504/path/to/$@\.hsc\" #-}' T12504/path/to/$@.hs
+ endif
+ 
+ .PHONY: T15758
+--- ghc-9.2.5/testsuite/tests/simplCore/should_compile/Makefile.orig	2023-03-12 14:41:16.204974035 +0100
++++ ghc-9.2.5/testsuite/tests/simplCore/should_compile/Makefile	2023-03-12 14:41:17.832020067 +0100
+@@ -253,7 +253,7 @@
+ # g should have been collapsed into one defininition by CSE.
+ .PHONY: T13340
+ T13340:
++	'$(TEST_HC)' $(TEST_HC_OPTS) -c -O T13340.hs -ddump-simpl -dsuppress-all | grep -c '+#'
+-	'$(TEST_HC)' $(TEST_HC_OPTS) -c -O T13340.hs -ddump-simpl -dsuppress-all | grep -c '\+#'
+ 
+ 
+ # We expect to see all dictionaries specialized away.

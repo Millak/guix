@@ -1354,7 +1354,8 @@ interactive environment for the functional language Haskell.")
                     version "/ghc-" version "-testsuite.tar.xz"))
              (sha256
               (base32
-               "19ha0hidrijawy53vm2r0sgml5zkl8126mqy7p0pyacmw3k7913l"))))
+               "19ha0hidrijawy53vm2r0sgml5zkl8126mqy7p0pyacmw3k7913l"))
+             (patches (search-patches "ghc-9.2-grep-warnings.patch"))))
          ,@(filter (match-lambda
                      (("ghc-bootstrap" . _) #f)
                      (("ghc-testsuite" . _) #f)
