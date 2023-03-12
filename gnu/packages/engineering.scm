@@ -511,26 +511,30 @@ optimizer; and it can produce photorealistic and design review images.")
 (define-public pcb-rnd
   (package (inherit pcb)
     (name "pcb-rnd")
-    (version "2.2.4")
+    (version "3.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://repo.hu/projects/pcb-rnd/releases/"
                                   "pcb-rnd-" version ".tar.gz"))
               (sha256
                (base32
-                "06ylc2rd4yvzp3krk62q9dbi13h0yq1x257fbjkh10vfjn0ga5c2"))))
+                "0yw4sf4qrmmai48f3f5byn2fphc453myjszh3sy9z0dnfcz3x7fw"))))
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'cc-is-gcc
-           (lambda _ (setenv "CC" "gcc") #t))
-         (replace 'configure
-           ;; The configure script doesn't tolerate most of our configure flags.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "sh" "configure"
-                     (string-append "--prefix="
-                                    (assoc-ref outputs "out"))))))))
+     (list
+      #:tests? #false                   ;no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cc-is-gcc
+            (lambda _ (setenv "CC" "gcc")))
+          (replace 'configure
+            ;; The configure script doesn't tolerate most of our configure flags.
+            (lambda _
+              (setenv "LIBRND_PREFIX" #$(this-package-input "librnd"))
+              (invoke "sh" "configure"
+                      (string-append "--prefix=" #$output)))))))
+    (inputs
+     (modify-inputs (package-inputs pcb)
+       (append librnd)))
     (home-page "http://repo.hu/projects/pcb-rnd/")
     (description "PCB RND is a fork of the GNU PCB circuit board editing tool
 featuring various improvements and bug fixes.")))
