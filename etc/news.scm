@@ -18,6 +18,7 @@
 ;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;; Copyright © 2021, 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
+;; Copyright © 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -25,6 +26,62 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "519e1e3eb88ec532fc83ebb742d9919269b57c87")
+        (title
+         (de "Neues Option @samp{--max-layers=N} für den Befehl @command{guix pack}")
+         (en "New @samp{--max-layers=N} option for the @command{guix pack} command")
+         (ru "Новая опция @samp{--max-layers=N} для @command{guix pack} команды"))
+        (body
+         (de "Sie können jetzt auch mehrschichtige Docker-Abbilder mit dem Befehl
+@command{guix pack --format=docker --max-layers=N} erzeugen. Damit bekommen Sie ein
+Docker-Abbild, bei dem Store-Pfade auf getrennten Schichten („Layer“)
+untergebracht sind, die sich mehrere Abbilder teilen können.  Das Abbild wird
+im Store als gzip-komprimierter Tarball erzeugt.  Hier ist ein einfaches
+Beispiel, wo ein mehrschichtiges Docker-Abbild für das Paket @code{hello}
+angelegt wird:
+
+@example
+guix pack --format=docker --max-layers=N --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+@command{guix system image} kann jetzt geschichtete Docker-Abbilder erzeugen,
+indem Sie @code{--max-layers=N}.
+
+Siehe @command{info \"(guix.de) Aufruf von guix pack\"} und
+@command{info \"(guix.de) Systemabbilder\"} für weitere Informationen.")
+         (en "Docker layered images can now be produced via the @command{guix
+pack --format=docker --max-layers=N} command, providing a Docker image with
+many of the store paths being on their own layer to improve sharing between
+images.  The image is realized into the GNU store as a gzipped tarball.  Here
+is a simple example that generates a layered Docker image for the @code{hello}
+package:
+
+@example
+guix pack --format=docker --max-layers=N --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+The @command{guix system image} can now produce layered Docker image by passing
+@code{--max-layers=N}.
+
+See @command{info \"(guix) Invoking guix pack\"} and
+@command{info \"(guix) System Images\"} for more information.")
+         (ru "Появилась команда создания многослойных Docker образов с помощью
+@command{guix pack --format=docker --max-layers=N}, которая соберет Docker образ с
+путями в store расположенными на отдельных слоях, ускоряя таким образом
+передачу образов.  Образ будет создан в GNU store в качестве gzipped tarball.
+
+Пример создания Docker layered образ с @code{hello} пакетом:
+@example
+guix pack --format=docker --max-layers=N --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+@command{guix system image} теперь может создавать layered Docker образ путем
+указания опции @option{--max-layers=N}.
+
+Смотрите @command{info \"(guix) Invoking guix pack\"} и
+@command{info \"(guix) System Images\"} для получения более детальных
+сведений.")))
 
  (entry (commit "953c65ffdd43c02c934518fb7a1c68542584b223")
         (title
