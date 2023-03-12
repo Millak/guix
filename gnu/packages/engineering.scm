@@ -443,7 +443,6 @@ features.")))
     (inputs
      (list dbus
            mesa
-           eudev                        ;FIXME: required by mesa
            glu
            gd
            gtk+-2
