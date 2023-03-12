@@ -10147,16 +10147,16 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
 (define-public xmoto
   (package
     (name "xmoto")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/xmoto/xmoto")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00f5ha79lfa2iiaz66wl0hl5dapa1l15qdr7m7knzi0ll7j6z66n"))
+        (base32 "14z3yqpiyv4y5l37b12kf8ipgsmb9krb4b5d9adlrry0j43hd7wz"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -10190,7 +10190,7 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "CPATH"
                      (string-append
-                      (assoc-ref inputs "sdl") "/include/SDL:"
+                      (assoc-ref inputs "sdl") "/include/SDL2:"
                       (or (getenv "CPATH") "")))
              #t))
          (add-after 'install 'unbundle-fonts
@@ -10219,9 +10219,9 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
        ("libpng" ,libpng)
        ("libxdg-basedir" ,libxdg-basedir)
        ("libxml2" ,libxml2)
-       ("lua" ,lua-5.1)
+       ("lua" ,lua)
        ("ode" ,ode)
-       ("sdl" ,(sdl-union (list sdl sdl-mixer sdl-net sdl-ttf)))
+       ("sdl" ,(sdl-union (list sdl2 sdl2-mixer sdl2-net sdl2-ttf)))
        ("sqlite" ,sqlite)
        ("zlib" ,zlib)))
     (home-page "https://xmoto.tuxfamily.org/")
