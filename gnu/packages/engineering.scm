@@ -302,29 +302,13 @@ utilities.")
     (home-page "https://github.com/lepton-eda/lepton-eda")
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
               (sha256
                (base32
                 "0kyq0g6271vlwraw98637fn8bq2l6q4rll6748nn8rwsmfz71d0m"))
               (file-name (git-file-name name version))))
-    (native-inputs
-     (modify-inputs (package-native-inputs geda-gaf)
-       (prepend autoconf
-                automake
-                desktop-file-utils
-                libtool
-                gettext-minimal
-                texinfo
-                groff
-                which)))
-    (inputs
-     (list glib
-           gtk+
-           gtksheet
-           guile-3.0
-           shared-mime-info
-           m4
-           pcb))
     (arguments
      (list
       #:configure-flags
@@ -409,6 +393,24 @@ utilities.")
               (unsetenv "LIBLEPTON")
               (unsetenv "LD_LIBRARY_PATH")
               (invoke "make" "precompile"))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs geda-gaf)
+       (prepend autoconf
+                automake
+                desktop-file-utils
+                libtool
+                gettext-minimal
+                texinfo
+                groff
+                which)))
+    (inputs
+     (list glib
+           gtk+
+           gtksheet
+           guile-3.0
+           shared-mime-info
+           m4
+           pcb))
     (description
      "Lepton EDA ia an @dfn{electronic design automation} (EDA) tool set
 forked from gEDA/gaf in late 2016.  EDA tools are used for electrical circuit
