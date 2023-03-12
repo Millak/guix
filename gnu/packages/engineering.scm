@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
@@ -308,23 +308,23 @@ utilities.")
                 "0kyq0g6271vlwraw98637fn8bq2l6q4rll6748nn8rwsmfz71d0m"))
               (file-name (git-file-name name version))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("libtool" ,libtool)
-       ("gettext" ,gettext-minimal)
-       ("texinfo" ,texinfo)
-       ("groff" ,groff)
-       ("which" ,which)
-       ,@(package-native-inputs geda-gaf)))
+     (modify-inputs (package-native-inputs geda-gaf)
+       (prepend autoconf
+                automake
+                desktop-file-utils
+                libtool
+                gettext-minimal
+                texinfo
+                groff
+                which)))
     (inputs
-     `(("glib" ,glib)
-       ("gtk" ,gtk+)
-       ("gtksheet" ,gtksheet)
-       ("guile" ,guile-3.0)
-       ("shared-mime-info" ,shared-mime-info)
-       ("m4" ,m4)
-       ("pcb" ,pcb)))
+     (list glib
+           gtk+
+           gtksheet
+           guile-3.0
+           shared-mime-info
+           m4
+           pcb))
     (arguments
      `(#:configure-flags
        (let ((pcb (assoc-ref %build-inputs "pcb")))
