@@ -46,7 +46,7 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
@@ -2375,6 +2375,25 @@ one in Emacs.")
     (synopsis "Screenshots for StumpWM")
     (description "This StumpWM module can take screenshots and store them as
 PNG files.")
+    (license license:gpl3+)))
+
+(define-public sbcl-stumpwm-hostname
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-hostname")
+    (arguments
+     '(#:asd-systems '("hostname")
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "modeline/hostname"))))))
+    (home-page
+     "https://github.com/stumpwm/stumpwm-contrib/tree/master/modeline/hostname")
+    (synopsis "Put hostname in the StumpWM modeline")
+    (description "This StumpWM module puts the hostname in the StumpWM
+modeline.")
     (license license:gpl3+)))
 
 (define-public sbcl-stumpwm-notify
