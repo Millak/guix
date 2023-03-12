@@ -326,88 +326,89 @@ utilities.")
            m4
            pcb))
     (arguments
-     `(#:configure-flags
-       (let ((pcb (assoc-ref %build-inputs "pcb")))
-         ;; When running "make", the POT files are built with the build time as
-         ;; their "POT-Creation-Date".  Later on, "make" notices that .pot
-         ;; files were updated and goes on to run "msgmerge"; as a result, the
-         ;; non-deterministic POT-Creation-Date finds its way into .po files,
-         ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
-         ;; never runs.  See <https://bugs.debian.org/792687>.
-         (list "ac_cv_path_MSGMERGE=true"
-               "--with-gtk3"
-               (string-append "--with-pcb-datadir=" pcb "/share")
-               (string-append "--with-pcb-lib-path="
-                              pcb "/share/pcb/pcblib-newlib:"
-                              pcb "/share/pcb/newlib")
-               "CFLAGS=-fcommon"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-dynamic-link
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "libleptongui/scheme/schematic/ffi.scm.in"
-               (("@LIBLEPTONGUI@")
-                (string-append (assoc-ref outputs "out")
-                               "/lib/libleptongui.so")))
-             (substitute* '("libleptongui/scheme/schematic/ffi/gtk.scm.in"
-                            "utils/attrib/lepton-attrib.scm")
-               (("@LIBGTK@")
-                (search-input-file inputs "/lib/libgtk-3.so")))
-             (substitute* '("libleptongui/scheme/schematic/ffi/gobject.scm.in")
-               (("@LIBGOBJECT@")
-                (search-input-file inputs "/lib/libgobject-2.0.so")))
-             (substitute* "liblepton/scheme/lepton/ffi.scm.in"
-               (("@LIBLEPTON@")
-                (string-append (assoc-ref outputs "out")
-                               "/lib/liblepton.so")))
-             (substitute* "utils/attrib/lepton-attrib.scm"
-               (("@LIBLEPTONATTRIB@")
-                (string-append (assoc-ref outputs "out")
-                               "/lib/libleptonattrib.so")))
-             (substitute* "liblepton/scheme/lepton/log.scm.in"
-               (("@LIBGLIB@")
-                (search-input-file inputs "/lib/libglib-2.0.so")))
+     (list
+      #:configure-flags
+      #~(let ((pcb #$(this-package-input "pcb")))
+          ;; When running "make", the POT files are built with the build time as
+          ;; their "POT-Creation-Date".  Later on, "make" notices that .pot
+          ;; files were updated and goes on to run "msgmerge"; as a result, the
+          ;; non-deterministic POT-Creation-Date finds its way into .po files,
+          ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
+          ;; never runs.  See <https://bugs.debian.org/792687>.
+          (list "ac_cv_path_MSGMERGE=true" "--with-gtk3"
+                (string-append "--with-pcb-datadir=" pcb
+                               "/share")
+                (string-append "--with-pcb-lib-path=" pcb
+                               "/share/pcb/pcblib-newlib:"
+                               pcb "/share/pcb/newlib")
+                "CFLAGS=-fcommon"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-dynamic-link
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "libleptongui/scheme/schematic/ffi.scm.in"
+                (("@LIBLEPTONGUI@")
+                 (string-append #$output "/lib/libleptongui.so")))
+              (substitute* '("libleptongui/scheme/schematic/ffi/gtk.scm.in"
+                             "utils/attrib/lepton-attrib.scm")
+                (("@LIBGTK@")
+                 (search-input-file inputs "/lib/libgtk-3.so")))
+              (substitute* '("libleptongui/scheme/schematic/ffi/gobject.scm.in")
+                (("@LIBGOBJECT@")
+                 (search-input-file inputs "/lib/libgobject-2.0.so")))
+              (substitute* "liblepton/scheme/lepton/ffi.scm.in"
+                (("@LIBLEPTON@")
+                 (string-append #$output "/lib/liblepton.so")))
+              (substitute* "utils/attrib/lepton-attrib.scm"
+                (("@LIBLEPTONATTRIB@")
+                 (string-append (assoc-ref outputs "out")
+                                "/lib/libleptonattrib.so")))
+              (substitute* "liblepton/scheme/lepton/log.scm.in"
+                (("@LIBGLIB@")
+                 (search-input-file inputs "/lib/libglib-2.0.so")))
 
-             ;; For finding libraries when running tests before installation.
-             (setenv "LIBLEPTONGUI"
-                     (string-append (getcwd)
-                                    "/libleptongui/src/.libs/libleptongui.so"))
-             (setenv "LIBLEPTON"
-                     (string-append (getcwd)
-                                    "/libleptongui/src/.libs/liblepton.so"))
-             (setenv "LD_LIBRARY_PATH"
-                     (string-append (getcwd) "/libleptonattrib/src/.libs/:"
-                                    (getenv "LIBRARY_PATH")))
-             #t))
-         (add-before 'bootstrap 'prepare
-           (lambda _
-             ;; Some of the scripts there are invoked by autogen.sh.
-             (for-each patch-shebang (find-files "build-tools"))
+              ;; For finding libraries when running tests before installation.
+              (setenv "LIBLEPTONGUI"
+                      (string-append (getcwd)
+                                     "/libleptongui/src/.libs/libleptongui.so"))
+              (setenv "LIBLEPTON"
+                      (string-append (getcwd)
+                                     "/libleptongui/src/.libs/liblepton.so"))
+              (setenv "LD_LIBRARY_PATH"
+                      (string-append (getcwd)
+                                     "/libleptonattrib/src/.libs/:"
+                                     (getenv "LIBRARY_PATH")))))
+          (add-before 'bootstrap 'prepare
+            (lambda _
+              ;; Some of the scripts there are invoked by autogen.sh.
+              (for-each patch-shebang
+                        (find-files "build-tools"))
 
-             ;; Make sure 'msgmerge' can modify the PO files.
-             (for-each (lambda (po)
-                         (chmod po #o666))
-                       (find-files "." "\\.po$"))
+              ;; Make sure 'msgmerge' can modify the PO files.
+              (for-each (lambda (po)
+                          (chmod po #o666))
+                        (find-files "." "\\.po$"))
 
-             ;; This would normally be created by invoking 'git', but it
-             ;; doesn't work here.
-             (call-with-output-file "version.h"
-               (lambda (port)
-                 (format port "#define PACKAGE_DATE_VERSION \"~a\"~%"
-                         ,(string-drop version
-                                       (+ 1 (string-index version #\-))))
-                 (format port "#define PACKAGE_DOTTED_VERSION \"~a\"~%"
-                         ,(string-take version
-                                       (string-index version #\-)))
-                 (format port "#define PACKAGE_GIT_COMMIT \"cabbag3\"~%")))
-             #t))
-         (add-after 'install 'compile-scheme-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (unsetenv "LIBLEPTONGUI")
-             (unsetenv "LIBLEPTON")
-             (unsetenv "LD_LIBRARY_PATH")
-             (invoke "make" "precompile")
-             #t)))))
+              ;; This would normally be created by invoking 'git', but it
+              ;; doesn't work here.
+              (call-with-output-file "version.h"
+                (lambda (port)
+                  (format port "#define PACKAGE_DATE_VERSION \"~a\"~%"
+                          #$(string-drop version
+                                         (+ 1
+                                            (string-index version #\-))))
+                  (format port
+                          "#define PACKAGE_DOTTED_VERSION \"~a\"~%"
+                          #$(string-take version
+                                         (string-index version #\-)))
+                  (format port
+                          "#define PACKAGE_GIT_COMMIT \"cabbag3\"~%")))))
+          (add-after 'install 'compile-scheme-files
+            (lambda _
+              (unsetenv "LIBLEPTONGUI")
+              (unsetenv "LIBLEPTON")
+              (unsetenv "LD_LIBRARY_PATH")
+              (invoke "make" "precompile"))))))
     (description
      "Lepton EDA ia an @dfn{electronic design automation} (EDA) tool set
 forked from gEDA/gaf in late 2016.  EDA tools are used for electrical circuit
