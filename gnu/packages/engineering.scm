@@ -423,39 +423,19 @@ features.")))
 (define-public pcb
   (package
     (name "pcb")
-    (version "4.0.2")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/pcb/pcb/pcb-" version
                                   "/pcb-" version ".tar.gz"))
               (sha256
                (base32
-                "1a7rilp75faidny0r4fdwdxkflyrqp6svxv9lbg7h868293962iz"))))
+                "0ppv8cblw0h70laly4zp8gmbxkbzzhbbjgw13pssgaw4mx32z1df"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-wish8.6
-            (lambda _
-              (substitute* "configure"
-                (("wish85") "wish8.6"))))
-          ;; It checks for "xhost", which we don't have.  This shouldn't
-          ;; matter, because the test is supposed to be skipped, but it causes
-          ;; "run_tests.sh" (and thus the "check" phase) to fail.
-          (add-after 'unpack 'fix-check-for-display
-            (lambda _
-              (substitute* "tests/run_tests.sh"
-                (("have_display=no") "have_display=yes"))))
-          (add-after 'install 'wrap
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; FIXME: Mesa tries to dlopen libudev.so.0 and fails.  Pending a
-              ;; fix of the mesa package we wrap the pcb executable such that
-              ;; Mesa can find libudev.so.0 through LD_LIBRARY_PATH.
-              (let ((path (dirname
-                           (search-input-file inputs "/lib/libudev.so"))))
-                (wrap-program (string-append #$output "/bin/pcb")
-                  `("LD_LIBRARY_PATH" ":" prefix (,path))))))
           (add-before 'check 'pre-check
             (lambda _
               (system "Xvfb :1 &")
