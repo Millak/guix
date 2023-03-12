@@ -441,26 +441,26 @@ features.")))
               (system "Xvfb :1 &")
               (setenv "DISPLAY" ":1"))))))
     (inputs
-     `(("dbus" ,dbus)
-       ("mesa" ,mesa)
-       ("udev" ,eudev) ;FIXME: required by mesa
-       ("glu" ,glu)
-       ("gd" ,gd)
-       ("gtk" ,gtk+-2)
-       ("gtkglext" ,gtkglext)
-       ("shared-mime-info" ,shared-mime-info)
-       ("tk" ,tk)))
+     (list dbus
+           mesa
+           eudev                        ;FIXME: required by mesa
+           glu
+           gd
+           gtk+-2
+           gtkglext
+           shared-mime-info
+           tk))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("bison" ,bison)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("flex" ,flex)
-       ;; For tests
-       ("imagemagick" ,imagemagick)
-       ("gerbv" ,gerbv)
-       ("ghostscript" ,ghostscript)
-       ("xvfb" ,xorg-server-for-tests)))
+     (list bison
+           desktop-file-utils
+           flex
+           intltool
+           pkg-config
+           ;; For tests
+           imagemagick
+           gerbv
+           ghostscript
+           xorg-server-for-tests))
     (home-page "http://pcb.geda-project.org/")
     (synopsis "Design printed circuit board layouts")
     (description
