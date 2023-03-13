@@ -20,6 +20,9 @@
 
 (define-module (guix build make-bootstrap)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-11)
+  #:use-module (srfi srfi-19)
+  #:use-module (srfi srfi-26)
   #:use-module (guix build utils)
   #:export (copy-linux-headers
             make-stripped-libc))

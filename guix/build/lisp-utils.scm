@@ -20,9 +20,11 @@
 
 (define-module (guix build lisp-utils)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 hash-table)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (guix build utils)
   #:export (%lisp
             %lisp-type

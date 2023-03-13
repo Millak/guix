@@ -26,7 +26,6 @@
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 format)
-  #:autoload   (ice-9 threads) (current-processor-count)
   #:use-module (guix build utils)
   #:export (target-guile-effective-version
             %standard-phases
