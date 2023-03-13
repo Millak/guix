@@ -56,18 +56,25 @@
   (list-of gexp?))
 
 (define-configuration/no-serialization mcron-configuration
-  (mcron (file-like mcron) "The mcron package to use.")
+  (mcron
+   (file-like mcron)
+   "The mcron package to use.")
+
   (jobs
    (list-of-gexps '())
    "This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
 specifications,, mcron, GNU@tie{}mcron}).")
-  (log? (boolean #t) "Log messages to standard output.")
+
+  (log?
+   (boolean #t)
+   "Log messages to standard output.")
+
   (log-format
    (string "~1@*~a ~a: ~a~%")
    "@code{(ice-9 format)} format string for log messages.  The default value
-produces messages like \"@samp{@var{pid} @var{name}:
-@var{message}\"} (@pxref{Invoking mcron, Invoking,, mcron, GNU@tie{}mcron}).
+produces messages like @samp{@var{pid} @var{name}: @var{message}}
+(@pxref{Invoking mcron, Invoking,, mcron, GNU@tie{}mcron}).
 Each message is also prefixed by a timestamp by GNU Shepherd."))
 
 (define (job-files mcron jobs)

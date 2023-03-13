@@ -19365,7 +19365,7 @@ Log messages to standard output.
 
 @item @code{log-format} (default: @code{"~1@@*~a ~a: ~a~%"}) (type: string)
 @code{(ice-9 format)} format string for log messages.  The default value
-produces messages like "@samp{@var{pid} @var{name}: @var{message}"}
+produces messages like @samp{@var{pid} @var{name}: @var{message}}
 (@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message
 is also prefixed by a timestamp by GNU Shepherd.
 
