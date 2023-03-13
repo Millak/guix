@@ -973,32 +973,34 @@ re-executing them as necessary.")
                 "0q1257ci22g2jbdiqs00mharc1lqkbibdlkhj23f3si6qjxkn17s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--localstatedir=/var"
+     (list
+      #:configure-flags
+      #~(list "--localstatedir=/var"
 
-                           ;; Make sure 'PATH_PROCNET_DEV' gets defined when
-                           ;; cross-compiling (by default it does not.)
-                           ,@(if (%current-target-system)
-                                 '("--with-path-procnet-dev=/proc/net/dev")
-                                 '())
-                           ,@(if (target-hurd?)
-                                 '("--disable-rcp"
-                                   "--disable-rexec"
-                                   "--disable-rexecd"
-                                   "--disable-rlogin"
-                                   "--disable-rlogind"
-                                   "--disable-rsh"
-                                   "--disable-rshd"
-                                   "--disable-uucpd"
-                                   "--disable-whois")
-                                 '()))
-       ;; Make sure that canonical "coreutils" package is not referred.
-       #:make-flags
-       (list (string-append "CPPFLAGS=-DPATHDEF_CP=\\\""
-                            (search-input-file %build-inputs "bin/cp")
-                            "\\\""))
-       ;; On some systems, 'libls.sh' may fail with an error such as:
-       ;; "Failed to tell switch -a apart from -A".
-       #:parallel-tests? #f))
+              ;; Make sure 'PATH_PROCNET_DEV' gets defined when
+              ;; cross-compiling (by default it does not.)
+              #$@(if (%current-target-system)
+                     '("--with-path-procnet-dev=/proc/net/dev")
+                     '())
+              #$@(if (target-hurd?)
+                     '("--disable-rcp"
+                       "--disable-rexec"
+                       "--disable-rexecd"
+                       "--disable-rlogin"
+                       "--disable-rlogind"
+                       "--disable-rsh"
+                       "--disable-rshd"
+                       "--disable-uucpd"
+                       "--disable-whois")
+                     '()))
+      ;; Make sure that canonical "coreutils" package is not referred.
+      #:make-flags
+      #~(list (string-append "CPPFLAGS=-DPATHDEF_CP=\\\""
+                             (search-input-file %build-inputs "bin/cp")
+                             "\\\""))
+      ;; On some systems, 'libls.sh' may fail with an error such as:
+      ;; "Failed to tell switch -a apart from -A".
+      #:parallel-tests? #f))
     (inputs
      (list coreutils
            shadow                     ;for login (used in telnetd and rlogind)
