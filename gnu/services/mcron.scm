@@ -143,41 +143,39 @@ files."
                (display line)
                (loop)))))))))
 
-(define mcron-shepherd-services
-  (match-lambda
-    (($ <mcron-configuration> mcron ()) ;nothing to do!
-     '())
-    (($ <mcron-configuration> mcron jobs log? log-format)
-     (let ((files (job-files mcron jobs)))
-       (list (shepherd-service
-              (provision '(mcron))
-              (requirement '(user-processes))
-              (modules `((srfi srfi-1)
-                         (srfi srfi-26)
-                         (ice-9 popen)  ;for the 'schedule' action
-                         (ice-9 rdelim)
-                         (ice-9 match)
-                         ,@%default-modules))
-              (start #~(make-forkexec-constructor
-                        (list (string-append #$mcron "/bin/mcron")
-                              #$@(if log?
-                                     #~("--log" "--log-format" #$log-format)
-                                     #~())
-                              #$@files)
+(define (mcron-shepherd-services config)
+  (match-record config <mcron-configuration> (mcron jobs log? log-format)
+    (if (eq? jobs '())
+        '()  ; nothing to do
+        (let ((files (job-files mcron jobs)))
+          (list (shepherd-service
+                 (provision '(mcron))
+                 (requirement '(user-processes))
+                 (modules `((srfi srfi-1)
+                            (srfi srfi-26)
+                            (ice-9 popen)  ;for the 'schedule' action
+                            (ice-9 rdelim)
+                            (ice-9 match)
+                            ,@%default-modules))
+                 (start #~(make-forkexec-constructor
+                           (list (string-append #$mcron "/bin/mcron")
+                                 #$@(if log?
+                                        #~("--log" "--log-format" #$log-format)
+                                        #~())
+                                 #$@files)
 
-                        ;; Disable auto-compilation of the job files and set a
-                        ;; sane value for 'PATH'.
-                        #:environment-variables
-                        (cons* "GUILE_AUTO_COMPILE=0"
-                               "PATH=/run/current-system/profile/bin"
-                               (remove (cut string-prefix? "PATH=" <>)
-                                       (environ)))
+                           ;; Disable auto-compilation of the job files and
+                           ;; set a sane value for 'PATH'.
+                           #:environment-variables
+                           (cons* "GUILE_AUTO_COMPILE=0"
+                                  "PATH=/run/current-system/profile/bin"
+                                  (remove (cut string-prefix? "PATH=" <>)
+                                          (environ)))
 
-                        #:log-file "/var/log/mcron.log"))
-              (stop #~(make-kill-destructor))
-
-              (actions
-               (list (shepherd-schedule-action mcron files)))))))))
+                           #:log-file "/var/log/mcron.log"))
+                 (stop #~(make-kill-destructor))
+                 (actions
+                  (list (shepherd-schedule-action mcron files)))))))))
 
 (define mcron-service-type
   (service-type (name 'mcron)
