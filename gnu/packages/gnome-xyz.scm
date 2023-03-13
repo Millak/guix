@@ -320,6 +320,54 @@ design.  It is mostly flat using a colorful palette with some shadows,
 highlights, and gradients for some depth.")
     (license license:gpl3+)))
 
+(define-public bibata-cursor-theme
+  (package
+    (name "bibata-cursor-theme")
+    (version "2.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ful1e5/Bibata_Cursor")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bhspswgxizc4sr2bihfjic8wm4khd6waw9qgw0yssfy0fm3nafc"))))
+    (build-system trivial-build-system)
+    (native-inputs (list python-attrs python-clickgen))
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((themes-dir (string-append #$output "/share/icons")))
+            (mkdir-p themes-dir)
+            (let loop
+                ((themes '(("Bibata-Modern-Amber" . "Yellowish and rounded")
+                           ("Bibata-Modern-Classic" . "Black and rounded")
+                           ("Bibata-Modern-Ice" . "White and rounded")
+                           ("Bibata-Original-Amber" . "Yellowish and sharp")
+                           ("Bibata-Original-Classic" . "Black and sharp")
+                           ("Bibata-Original-Ice" . "White and sharp"))))
+              (define theme
+                (car themes))
+              (invoke (search-input-file %build-inputs "/bin/ctgen")
+                      (string-append #$source "/build.toml")
+                      "-p" "x11"
+                      "-d" (string-append #$source "/bitmaps/" (car theme))
+                      "-n" (car theme)
+                      "-c" (string-append (cdr theme) " edge Bibata cursors")
+                      "-o" themes-dir)
+              (unless (null? (cdr themes))
+                (loop (cdr themes))))))))
+    (home-page "https://github.com/ful1e5/Bibata_Cursor")
+    (synopsis "Open-source, compact, and material-designed cursor set")
+    (description
+     "Bibata is an open-source, compact, and material designed
+cursor set.  This project aims at improving the cursor experience.")
+    (license license:gpl3)))
+
 (define-public gnome-plots
   (package
     (name "gnome-plots")
@@ -1690,7 +1738,7 @@ It contains:
  sound themes.
 @end itemize")
     (license (list license:lgpl2.1 license:lgpl3 license:cc-by-sa4.0))))
-  
+
 (define-public nordic-theme
   (let ((commit "07d764c5ebd5706e73d2e573f1a983e37b318915")
 	(revision "0"))
