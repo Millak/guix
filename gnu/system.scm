@@ -1090,7 +1090,7 @@ then
   # as those in ~/.guix-profile and /run/current-system/profile.
   source /run/current-system/profile/etc/profile.d/bash_completion.sh
 fi\n")))
-    (etc-service
+    (service etc-service-type
      `(("os-release" ,os-release)
        ("services" ,(file-append net-base "/etc/services"))
        ("protocols" ,(file-append net-base "/etc/protocols"))
