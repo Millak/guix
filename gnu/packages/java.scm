@@ -852,18 +852,17 @@ new Date();"))
     (name "openjdk")
     (version "9.181")
     (source (origin
-              (method url-fetch)
-              (uri "https://hg.openjdk.java.net/jdk/jdk/archive/3cc80be736f2.tar.bz2")
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (method hg-fetch)
+              (uri (hg-reference (url "https://hg.openjdk.org/jdk/jdk")
+                                 (changeset "jdk-9+181")))
+              (file-name (hg-file-name name version))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          (for-each delete-file
+                                    (find-files "." ".*.(bin|exe|jar)$"))))
               (sha256
                (base32
-                "01ihmyf7k5z17wbr7xig7y40l9f01d5zjgkcmawn1102hw5kchpq"))
-              (modules '((guix build utils)))
-              (snippet
-               `(begin
-                  (for-each delete-file
-                            (find-files "." ".*.(bin|exe|jar)$"))
-                  #t))))
+                "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
@@ -1024,7 +1023,7 @@ new Date();"))
        ("unzip" ,unzip)
        ("which" ,which)
        ("zip" ,zip)))
-    (home-page "https://openjdk.java.net/projects/jdk9/")
+    (home-page "https://openjdk.org/projects/jdk9/")
     (synopsis "Java development kit")
     (description
      "This package provides the Java development kit OpenJDK.")
