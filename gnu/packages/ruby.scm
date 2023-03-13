@@ -5899,6 +5899,33 @@ rogue test/unit/autorun requires.")
     (home-page "https://github.com/cucumber/multi_test")
     (license license:expat)))
 
+(define-public ruby-arr-pm
+  (package
+    (name "ruby-arr-pm")
+    (version "0.0.12")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "arr-pm" version))
+              (sha256
+               (base32
+                "0fddw0vwdrr7v3a0lfqbmnd664j48a9psrjd3wh3k4i3flplizzx"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "rspec")))))))
+    (native-inputs (list ruby-flores ruby-insist ruby-rspec ruby-stud))
+    (synopsis "RPM reader/writer library written in Ruby")
+    (description "This library allows reading and writing RPM packages.  It is
+used by the @command{fpm} tool.  It is written in pure Ruby because
+@code{librpm} is not available on all systems and requires many
+dependencies.")
+    (home-page "https://github.com/jordansissel/ruby-arr-pm")
+    (license license:asl2.0)))
+
 (define-public ruby-arel
   (package
     (name "ruby-arel")
