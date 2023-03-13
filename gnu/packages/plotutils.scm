@@ -456,29 +456,3 @@ characters.  Supported charts are: barplot, boxplot, densityplot,
 histogram, lineplot, and scatterplot.")
     (home-page "https://github.com/red-data-tools/unicode_plot.rb")
     (license license:expat)))
-
-(define-public youplot
-  (package
-    (name "youplot")
-    (version "0.4.5")
-    ;; Source at RubyGems.org doesn't have tests.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/red-data-tools/YouPlot")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1y54apw7hx9mhjnf277w9wayvq954mdnip4dpajhc0qjg2464c2b"))))
-    (build-system ruby-build-system)
-    (native-inputs (list ruby-rake ruby-simplecov ruby-test-unit))
-    (propagated-inputs (list ruby-unicode-plot))
-    (synopsis "Command line tool that draw plots on the terminal")
-    (description
-     "YouPlot is a command line tool that draws plots on the terminal,
-powered by UnicodePlot gem.  It provides commands @command{youplot}
-and @command{uplot} (shorthand) are provided, and supports chart types
-of barplot, histogram, lineplot, scatter, density, boxplot, and count.")
-    (home-page "https://github.com/red-data-tools/YouPlot")
-    (license license:expat)))
