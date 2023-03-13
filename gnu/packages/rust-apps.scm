@@ -71,6 +71,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python-xyz)
@@ -2204,7 +2205,7 @@ daemon which executes them.")
         ("rust-predicates" ,rust-predicates-2)
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
-     (list pkg-config))
+     (list perl pkg-config))
     (inputs
      (list openssl))
     (home-page "https://github.com/dbrgn/tealdeer/")

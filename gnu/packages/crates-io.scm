@@ -81,6 +81,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -49089,7 +49090,15 @@ functionality as retain but gives mutable borrow to the predicate.")
        (uri (crate-uri "ring" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z682xp7v38ayq9g9nkbhhfpj6ygralmlx7wdmsfv8rnw99cylrh"))))
+        (base32 "1z682xp7v38ayq9g9nkbhhfpj6ygralmlx7wdmsfv8rnw99cylrh"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "pregenerated")
+           ;; Pretend this isn't a relase tarball.
+           (with-output-to-file ".git"
+             (lambda _
+                (format #t "")))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;missing file
@@ -49105,9 +49114,15 @@ functionality as retain but gives mutable borrow to the predicate.")
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/briansmith/ring")
     (synopsis "Safe, fast, small crypto using Rust")
     (description "This package provided safe, fast, small crypto using Rust.")
+    ;; For a mostly complete list of supported systems see:
+    ;; https://github.com/briansmith/ring/blob/main/.github/workflows/ci.yml#L170
+    (supported-systems (list "aarch64-linux" "armhf-linux"
+                             "i686-linux" "x86_64-linux"))
     (license (list license:isc license:openssl))))
 
 (define-public rust-ring-0.14
