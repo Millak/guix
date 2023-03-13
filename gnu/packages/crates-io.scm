@@ -49138,7 +49138,21 @@ functionality as retain but gives mutable borrow to the predicate.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0g091akf4dpg9qj05z3gc4nlrs57mjj2bqab98gaqp79wf3c2ss2"))))
+          "0g091akf4dpg9qj05z3gc4nlrs57mjj2bqab98gaqp79wf3c2ss2"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Fix the doc tests.
+           (substitute* "src/ec/curve25519/ed25519/verification.rs"
+             ((";;") ";"))
+           ;; Remove some generated files.
+           ;; Regenerating the curve25519_tables requires python2 and clang-format.
+           (delete-file "third_party/fiat/curve25519_tables.h")
+           (delete-file-recursively "pregenerated")
+           ;; Pretend this isn't a relase tarball.
+           (with-output-to-file ".git"
+             (lambda _
+                (format #t "")))))))
     (arguments
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
@@ -49146,7 +49160,17 @@ functionality as retain but gives mutable borrow to the predicate.")
         ("rust-spin" ,rust-spin-0.5)
         ("rust-untrusted" ,rust-untrusted-0.6)
         ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-cc" ,rust-cc-1))))))
+        ("rust-cc" ,rust-cc-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'generate-curve25519-tables
+           (lambda _
+             (with-directory-excursion "third_party/fiat"
+               (with-output-to-file "curve25519_tables.h"
+                 (lambda _
+                   (invoke "python" "make_curve25519_tables.py")))))))))
+    (native-inputs
+     (list clang perl python-2))))
 
 (define-public rust-ring-0.13
   (package
