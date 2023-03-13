@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2014, 2017, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -105,7 +105,15 @@ are user-controlled symlinks stored anywhere on the file system."
                                      (map (match-lambda
                                             ((file . properties)
                                              (cons (scope file) properties)))
-                                          (scandir* directory regular?)))))
+                                          (catch 'system-error
+                                            (lambda ()
+                                              (scandir* directory regular?))
+                                            (lambda args
+                                              (if (= ENOENT
+                                                     (system-error-errno
+                                                      args))
+                                                  '()
+                                                  (apply throw args))))))))
              (loop (append rest (map first sub-directories))
                    (append (map canonical-root (filter symlink? files))
                            roots)
