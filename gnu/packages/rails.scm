@@ -142,33 +142,29 @@ uniquely identify it.")
 (define-public ruby-spring
   (package
     (name "ruby-spring")
-    (version "1.7.2")
+    (version "4.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/rails/spring")
-              (commit (string-append "v" version))))
+             (url "https://github.com/rails/spring")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0smwrndjmnr7g7jjskw05zin3gh6kx5db6yrkiqi6i9wl5mrn9n5"))))
+         "0p8hidxqnk8s1gfm1s1xb06gbbahdxjmzy6x3ybi25nkmdp0anb6"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "test:unit"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'remove-bump
-           (lambda _
-             (substitute* "spring.gemspec"
-               (("gem.add_development_dependency 'bump'") "")
-               (("gem.add_development_dependency 'activesupport'.*")
-                "gem.add_development_dependency 'activesupport'\n"))
-             (substitute* "Rakefile"
-               (("require \\\"bump/tasks\\\"") ""))
-             #t)))))
-    (native-inputs
-     (list bundler ruby-activesupport))
+     (list #:test-target "test:unit"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'remove-bump
+                 (lambda _
+                   (substitute* "spring.gemspec"
+                     (("gem.add_development_dependency 'bump'") ""))
+                   (substitute* "Rakefile"
+                     (("require \\\"bump/tasks\\\"") "")))))))
+    (native-inputs (list bundler ruby-activesupport))
     (synopsis "Ruby on Rails application preloader")
     (description
      "Spring is a Ruby on Rails application preloader.  It speeds up
