@@ -4119,6 +4119,48 @@ is known as @url{http://www.ietf.org/rfc/rfc2821.txt, RFC2821}.")
     (home-page "https://github.com/ruby/net-smtp")
     (license license:bsd-2)))
 
+(define-public ruby-pleaserun
+  (package
+    (name "ruby-pleaserun")
+    (version "0.0.32")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "pleaserun" version))
+              (sha256
+               (base32
+                "1aykf0l8327bqkkf5xd9jcglsib973zpy37cfnlf4j0vp0cdpn2d"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'relax-requirements
+                 (lambda _
+                   (substitute* "pleaserun.gemspec"
+                     ;; Mustache is pinned at 0.99.8, for portability with
+                     ;; older Rubies.
+                     (("dependency\\(%q<mustache>.freeze.*")
+                      "dependency(%q<mustache>.freeze)\n"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; The cli_spec.rb test fails non-deterministically with
+                     ;; a Errno::EISDIR error (see:
+                     ;; https://github.com/jordansissel/pleaserun/issues/155)
+                     (invoke "rspec" "--exclude-pattern" "cli_spec.rb")))))))
+    (native-inputs (list ruby-flores ruby-rspec))
+    (propagated-inputs (list ruby-cabin
+                             ruby-clamp
+                             ruby-dotenv
+                             ruby-insist
+                             ruby-mustache
+                             ruby-stud))
+    (synopsis "Init scripts and service definitions generation tool")
+    (description "Pleaserun is a tool to generate startup scripts and service
+definitions.  It targets service managers such as systemd, Upstart, launchd,
+sysv init, and runit.")
+    (home-page "https://github.com/jordansissel/pleaserun")
+    (license license:asl2.0)))
+
 (define-public ruby-power-assert
   (package
     (name "ruby-power-assert")
