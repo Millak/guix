@@ -1244,6 +1244,34 @@ HTML you already have.")
     (home-page "https://stimulus.hotwired.dev")
     (license license:expat)))
 
+(define-public ruby-turbo-rails
+  (package
+    (name "ruby-turbo-rails")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "turbo-rails" version))
+              (sha256
+               (base32
+                "0vm3iqgr3kxyyz5i09lhvfszp4pw1gw5j5rhhv1gmasv4kq2p3qh"))))
+    (build-system ruby-build-system)
+    ;; The test suite depends on JavaScript modules fetched via 'yarn'.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list ruby-actionpack ruby-activejob ruby-railties))
+    (synopsis "High performance web application framework")
+    (description
+     "Turbo aims to be as fast as single-page web application without having
+to write any JavaScript.  Turbo accelerates links and form submissions without
+requiring server-side changes to the generated HTML.  It allows carving up a
+page into independent frames, which can be lazy-loaded and operated as
+independent components.  Finally, it helps making partial page updates using
+just HTML and a set of CRUD-like container tags.  These three techniques
+reduce the amount of custom JavaScript that many web applications need to
+write by an order of magnitude.  And for the few dynamic bits that are left,
+Stimulus can be used.")
+    (home-page "https://github.com/hotwired/turbo-rails")
+    (license license:expat)))
+
 (define-public ruby-web-console
   (package
     (name "ruby-web-console")
