@@ -1672,19 +1672,19 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "8b888de4cff44b42b8215afac5dcdadba9b7394d")
-        (revision "17"))
+  (let ((commit "659543cd9ad78f712b4b067863db0613423dd23b")
+        (revision "18"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/git/guix/nar-herder")
+                      (url "https://git.savannah.gnu.org/git/guix/nar-herder.git")
                       (commit commit)))
                 (sha256
                  (base32
-                  "19j8dbn9c25x8lj3sa7b0b9v8lxxlkhvb4qpmwc4kkizpkwrqp2a"))
+                  "09ghbbrk5gazkpqxcvfnn56pp11sndn7hw00ipc8d95wqk53g9qg"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
