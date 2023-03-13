@@ -905,6 +905,30 @@ Extensions} type detection using magic numbers, filenames, and extensions")
     (home-page "https://github.com/rails/marcel")
     (license license:expat)))
 
+(define-public ruby-propshaft
+  (package
+    (name "ruby-propshaft")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "propshaft" version))
+              (sha256
+               (base32
+                "19s5qvfady49b9b6dcvz6nsna1lvckw509ddh3ihmdz0w4qrjy49"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-actionpack ruby-activesupport ruby-rack
+                             ruby-railties))
+    (synopsis "Asset pipeline library for Rails")
+    (description "Propshaft is an asset pipeline library for Rails.  It's
+built for an era where bundling assets to save on HTTP connections is no
+longer urgent, where JavaScript and CSS are either compiled by dedicated
+Node.js bundlers or served directly to the browsers, and where increases in
+bandwidth have made the need for minification less pressing.  These factors
+allow for a dramatically simpler and faster asset pipeline compared to
+previous options, like Sprockets.")
+    (home-page "https://github.com/rails/propshaft")
+    (license license:expat)))
+
 ;;; Pro-tip: to get a summary of the failures, run
 ;;; 'M-x occur [1-9][0-9]* \(failures\|errors\)' on the build log.
 (define-public ruby-railties
