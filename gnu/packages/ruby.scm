@@ -3996,6 +3996,31 @@ fiber, and defaults to a shared thread-local state.")
     (home-page "https://github.com/socketry/fiber-local")
     (license license:expat)))
 
+(define-public ruby-flores
+  (package
+    (name "ruby-flores")
+    (version "0.0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "flores" version))
+              (sha256
+               (base32
+                "0pd8gqgy67rp1baq5r7himl0r9jzv5kqlhdmqh8wngynv548w2ai"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "rspec")))))))
+    (native-inputs (list ruby-rspec ruby-simplecov))
+    (synopsis "Fuzzing, randomization, and stress testing library")
+    (description "Flores is a fuzzing, randomization, and stress library to
+help tests uncover more bugs.")
+    (home-page "https://github.com/jordansissel/ruby-flores")
+    (license license:asl2.0)))
+
 (define-public ruby-net-http-persistent
   (package
     (name "ruby-net-http-persistent")
