@@ -1035,19 +1035,17 @@ new Date();"))
     (name "openjdk")
     (version "10.46")
     (source (origin
-              (method url-fetch)
-              (uri "http://hg.openjdk.java.net/jdk/jdk/archive/6fa770f9f8ab.tar.bz2")
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (method hg-fetch)
+              (uri (hg-reference (url "https://hg.openjdk.org/jdk/jdk")
+                                 (changeset "jdk-10+46")))
+              (file-name (hg-file-name name version))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          (for-each delete-file
+                                    (find-files "." ".*.(bin|exe|jar)$"))))
               (sha256
                (base32
-                "0zywq2203b4hx4jms9vbwvjcj1d3k2v3qpx4s33729fkpmid97r4"))
-              (patches (search-patches
-                        "openjdk-10-idlj-reproducibility.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               `(begin
-                  (for-each delete-file (find-files "." ".*.(bin|exe|jar)$"))
-                  #t))))
+                "0i47ar8lxzjrkkiwbzybfxs473390h4jq9ahm3xqdvy5zpchxy3y"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk9)
        ((#:phases phases)
