@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,7 +34,9 @@
             mcron-configuration-mcron
             mcron-configuration-jobs
             mcron-configuration-log?
+            mcron-configuration-log-file
             mcron-configuration-log-format
+            mcron-configuration-date-format
 
             mcron-service-type))
 
@@ -55,6 +58,8 @@
 (define list-of-gexps?
   (list-of gexp?))
 
+(define-maybe/no-serialization string)
+
 (define-configuration/no-serialization mcron-configuration
   (mcron
    (file-like mcron)
@@ -70,12 +75,20 @@ specifications,, mcron, GNU@tie{}mcron}).")
    (boolean #t)
    "Log messages to standard output.")
 
+  (log-file
+   (string "/var/log/mcron.log")
+   "Log file location.")
+
   (log-format
    (string "~1@*~a ~a: ~a~%")
    "@code{(ice-9 format)} format string for log messages.  The default value
 produces messages like @samp{@var{pid} @var{name}: @var{message}}
 (@pxref{Invoking mcron, Invoking,, mcron, GNU@tie{}mcron}).
-Each message is also prefixed by a timestamp by GNU Shepherd."))
+Each message is also prefixed by a timestamp by GNU Shepherd.")
+
+  (date-format
+   maybe-string
+   "@code{(srfi srfi-19)} format string for date."))
 
 (define (job-files mcron jobs)
   "Return a list of file-like object for JOBS, a list of gexps."
@@ -144,24 +157,29 @@ files."
                (loop)))))))))
 
 (define (mcron-shepherd-services config)
-  (match-record config <mcron-configuration> (mcron jobs log? log-format)
+  (match-record config <mcron-configuration>
+    (mcron jobs log? log-file log-format date-format)
     (if (eq? jobs '())
-        '()  ; nothing to do
+        '()                             ;nothing to do
         (let ((files (job-files mcron jobs)))
           (list (shepherd-service
                  (provision '(mcron))
                  (requirement '(user-processes))
                  (modules `((srfi srfi-1)
                             (srfi srfi-26)
-                            (ice-9 popen)  ;for the 'schedule' action
+                            (ice-9 popen) ;for the 'schedule' action
                             (ice-9 rdelim)
                             (ice-9 match)
                             ,@%default-modules))
                  (start #~(make-forkexec-constructor
-                           (list (string-append #$mcron "/bin/mcron")
+                           (list #$(file-append mcron "/bin/mcron")
                                  #$@(if log?
-                                        #~("--log" "--log-format" #$log-format)
-                                        #~())
+                                        `("--log" "--log-format" ,log-format
+                                          ,@(if (maybe-value-set? date-format)
+                                                (list "--date-format"
+                                                      date-format)
+                                                '()))
+                                        '())
                                  #$@files)
 
                            ;; Disable auto-compilation of the job files and
@@ -172,7 +190,7 @@ files."
                                   (remove (cut string-prefix? "PATH=" <>)
                                           (environ)))
 
-                           #:log-file "/var/log/mcron.log"))
+                           #:log-file #$log-file))
                  (stop #~(make-kill-destructor))
                  (actions
                   (list (shepherd-schedule-action mcron files)))))))))
