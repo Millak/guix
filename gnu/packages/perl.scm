@@ -552,6 +552,27 @@ users can force the decision of which backend to use by setting the environment
 variable ANY_MOOSE to be Moose or Mouse.")
     (license (package-license perl))))
 
+(define-public perl-app-cpanminus
+  (package
+    (name "perl-app-cpanminus")
+    (version "1.7046")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MI/MIYAGAWA/App-cpanminus-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0qpq1x24dcrm7bm2qj814nkmxg8mzkdn6wcirjd8yd578jdrv31y"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/App-cpanminus")
+    (synopsis "CPAN package manager")
+    (description "App::cpanminus is a script to get, unpack, build and install
+modules from CPAN and does nothing else.  It's dependency free (can bootstrap
+itself), requires zero configuration, and stands alone.  When running, it
+requires only 10MB of RAM.")
+    (license (package-license perl))))
+
 (define-public perl-app-xml-docbook-builder
   (package
     (name "perl-app-xml-docbook-builder")
