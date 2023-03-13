@@ -9908,7 +9908,7 @@ shared object databases, search tools and indexing.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "42.2")
+    (version "43.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9916,7 +9916,7 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cncyiyh79w1id6a6s2f0rxmgwl65lp4ml4afa0z35jrnwp2s8cr"))
+                "1q7dmwvyc3adpdh767fqnmaw7hsr8s5iv6p4kh11nlamljkrlsm8"))
               (patches
                (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
@@ -9935,8 +9935,9 @@ shared object databases, search tools and indexing.")
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
-              (substitute* "build-aux/meson/postinstall.py"
-                (("gtk-update-icon-cache") "true"))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
           (delete 'check)
           (add-after 'install 'check
             (assoc-ref %standard-phases 'check))
@@ -9957,24 +9958,25 @@ shared object databases, search tools and indexing.")
     (inputs
      (list dconf
            gexiv2
+           glib-next
            gvfs
            exempi
            gnome-desktop
            gnome-autoar
            gst-plugins-base
            json-glib
-           libhandy
+           libadwaita
            libportal
            libseccomp
            libselinux
            tracker
            tracker-miners
-           ;; XXX: gtk+ is required by libnautilus-extension.pc
+           ;; XXX: gtk is required by libnautilus-extension.pc
            ;;
            ;; Don't propagate it to reduces "profile pollution" of the 'gnome' meta
            ;; package.  See:
            ;; <http://lists.gnu.org/archive/html/guix-devel/2016-03/msg00283.html>.
-           gtk+
+           gtk
            libexif
            libxml2))
     (native-search-paths

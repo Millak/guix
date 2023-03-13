@@ -1,54 +1,54 @@
 Allow Nautilus to search for extensions in the directories listed
 in $NAUTILUS_EXTENSION_PATH.
 
-diff --git a/src/nautilus-module.c b/src/nautilus-module.c
-index bf474bd..42e2a4e 100644
---- a/src/nautilus-module.c
-+++ b/src/nautilus-module.c
-@@ -211,6 +211,10 @@ static void
+Index: nautilus-43.2/src/nautilus-module.c
+===================================================================
+--- nautilus-43.2.orig/src/nautilus-module.c
++++ nautilus-43.2/src/nautilus-module.c
+@@ -220,8 +220,13 @@ static void
  load_module_dir (const char *dirname)
  {
      GDir *dir;
 +    static GHashTable *loaded = NULL;
-+
++    g_autoptr (GStrvBuilder) installed_module_name_builder = NULL;
+ 
+-    g_autoptr (GStrvBuilder) installed_module_name_builder = g_strv_builder_new ();
 +    if (loaded == NULL)
 +      loaded = g_hash_table_new (g_str_hash, g_str_equal);
- 
++
++    installed_module_name_builder = g_strv_builder_new ();
      dir = g_dir_open (dirname, 0, NULL);
  
-@@ -221,15 +225,22 @@ load_module_dir (const char *dirname)
-         while ((name = g_dir_read_name (dir)))
+     if (dir)
+@@ -232,13 +237,20 @@ load_module_dir (const char *dirname)
          {
              if (g_str_has_suffix (name, "." G_MODULE_SUFFIX))
--            {
+             {
 -                char *filename;
 -
 -                filename = g_build_filename (dirname,
 -                                             name,
 -                                             NULL);
--                nautilus_module_load_file (filename);
+-                nautilus_module_load_file (filename, installed_module_name_builder);
 -                g_free (filename);
--            }
-+	      {
-+		/* Make sure each module is loaded only twice or this could
-+		   lead to a crash.  Double loading can occur if DIRNAME
-+		   occurs more than once in $NAUTILUS_EXTENSION_PATH.  */
-+		if (!g_hash_table_contains (loaded, name))
-+		  {
-+		    char *filename;
++              /* Make sure each module is loaded only twice or this could
++                 lead to a crash.  Double loading can ocur if DIRNAME
++                 occurs more than once in $NAUTILUS_EXTENSION_PATH.  */
++              if (!g_hash_table_contains (loaded, name))
++                {
++                  char *filename;
 +
-+		    filename = g_build_filename (dirname,
-+						 name,
-+						 NULL);
-+		    nautilus_module_load_file (filename);
-+		    g_hash_table_add (loaded, g_strdup (name));
-+		    g_free (filename);
-+		  }
-+	      }
++                  filename = g_build_filename (dirname,
++                                               name,
++                                               NULL);
++                  nautilus_module_load_file (filename, installed_module_name_builder);
++                  g_hash_table_add (loaded, g_strdup (name));
++                  g_free (filename);
++                }
+             }
          }
  
-         g_dir_close (dir);
-@@ -257,10 +268,24 @@ nautilus_module_setup (void)
+@@ -278,10 +290,24 @@ nautilus_module_setup (void)
  
      if (!initialized)
      {
