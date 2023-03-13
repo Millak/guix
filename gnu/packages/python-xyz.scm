@@ -3833,6 +3833,28 @@ with sensible defaults out of the box.")
         (base32 "06kbzd6sjfkqan3miwj9wqyddfxc2b6hi7p5s4dvqjb3gif2bdfj"))))
     (arguments `())))
 
+(define-public python-clickgen
+  (package
+    (name "python-clickgen")
+    (version "2.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "clickgen" version))
+              (sha256
+               (base32
+                "010j9zz0gd2za5l4hibicypnfw721x0gxp3rr0329bc97vw5maha"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pillow python-toml python-numpy-next python-attrs))
+    (inputs (list libx11 libpng libxcursor))
+    (native-inputs (list python-wheel))
+    (home-page "https://github.com/ful1e5/clickgen")
+    (synopsis "The hassle-free cursor building toolbox")
+    (description
+     "Clickgen is an API for building X11 and Windows cursors from .png files.
+clickgen is using @code{anicursorgen} and @code{xcursorgen} under the hood.")
+    (license license:expat)))
+
 (define-public python-cligj
   (package
     (name "python-cligj")
