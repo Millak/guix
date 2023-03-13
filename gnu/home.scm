@@ -35,6 +35,7 @@
             this-home-environment
 
             home-environment-derivation
+            home-environment-packages
             home-environment-user-services
             home-environment-essential-services
             home-environment-services
