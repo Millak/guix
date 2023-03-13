@@ -1226,6 +1226,24 @@ serves JavaScript, CoffeeScript, CSS, LESS, Sass, and SCSS.")
     "https://github.com/rails/sprockets-rails")
    (license license:expat)))
 
+(define-public ruby-stimulus-rails
+  (package
+    (name "ruby-stimulus-rails")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "stimulus-rails" version))
+              (sha256
+               (base32
+                "12hfdzh6cwahbd6p4r0r0d14n3laj3cqasx9w18wga9fq70bq6w3"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-railties))
+    (synopsis "Modest JavaScript framework for Rails")
+    (description "This package provides a modest JavaScript framework for the
+HTML you already have.")
+    (home-page "https://stimulus.hotwired.dev")
+    (license license:expat)))
+
 (define-public ruby-web-console
   (package
     (name "ruby-web-console")
