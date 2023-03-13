@@ -1342,57 +1342,59 @@ for locks.")
     (home-page "https://closuretree.github.io/with_advisory_lock/")
     (license license:expat)))
 
+;;; This is a meta-package which propagates all the individual Rails
+;;; components.
 (define-public ruby-rails
   (package
-   (name "ruby-rails")
-   (version "6.1.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "rails" version))
-     (sha256
-      (base32
-       "0hdancysa617lzyy5gmrcmnpgyb1mz1lawy0l34ycz2wary7y2bz"))))
-   (build-system ruby-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases %standard-phases
-        ;; This gem acts as glue between the gems that actually make up
-        ;; Rails. The important thing to check is that the gemspec matches up
-        ;; with the Guix packages and Rubygems can successfully activate the
-        ;; Rails gem.
-        ;;
-        ;; The following check phase tests this.
-        (delete 'check)
-        (add-after 'install 'check
-          (lambda* (#:key tests? outputs #:allow-other-keys)
-            (setenv "GEM_PATH"
-                    (string-append
-                     (getenv "GEM_PATH")
-                     ":"
-                     (assoc-ref outputs "out") "/lib/ruby/vendor_ruby"))
-            (when tests?
-              (invoke "ruby" "-e" "gem 'rails'"))
-            #t)))))
-   (propagated-inputs
-    (list ruby-actioncable
-          ruby-actionmailbox
-          ruby-actionmailer
-          ruby-actionpack
-          ruby-actiontext
-          ruby-actionview
-          ruby-activejob
-          ruby-activemodel
-          ruby-activerecord
-          ruby-activestorage
-          ruby-activesupport
-          bundler
-          ruby-railties
-          ruby-sprockets-rails))
-   (synopsis "Full-stack web framework optimized for programmer happiness")
-   (description
-    "Ruby on Rails is a full-stack web framework optimized for programmer
+    (name "ruby-rails")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-extraneous-gemspec-files
+            (lambda _
+              ;; They would otherwise be picked up instead of rails.gemspec at
+              ;; the root of the repository.
+              (for-each (lambda (f)
+                          (unless (string-suffix? "rails.gemspec" f)
+                            (delete-file f)))
+                        (find-files "." "\\.gemspec"))))
+          ;; This gem acts as glue between the gems that actually make up
+          ;; Rails. The important thing to check is that the gemspec matches
+          ;; up with the Guix packages and Rubygems can successfully activate
+          ;; the Rails gem.
+          ;;
+          ;; The following check phase tests this.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? outputs #:allow-other-keys)
+              (when tests?
+                (setenv "GEM_PATH"
+                        (string-append (getenv "GEM_PATH") ":" #$output
+                                       "/lib/ruby/vendor_ruby"))
+                (invoke "ruby" "-e" "gem 'rails'")))))))
+    (propagated-inputs
+     (list bundler
+           ruby-actioncable
+           ruby-actionmailbox
+           ruby-actionmailer
+           ruby-actionpack
+           ruby-actiontext
+           ruby-actionview
+           ruby-activejob
+           ruby-activemodel
+           ruby-activerecord
+           ruby-activestorage
+           ruby-activesupport
+           ruby-railties
+           ruby-sprockets-rails))
+    (synopsis "Full-stack web framework optimized for programmer happiness")
+    (description
+     "Ruby on Rails is a full-stack web framework optimized for programmer
 happiness and sustainable productivity.  It encourages beautiful code by
 favoring convention over configuration.")
-   (home-page "https://rubyonrails.org/")
-   (license license:expat)))
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
