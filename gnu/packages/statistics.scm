@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system ruby)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
@@ -82,6 +84,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
@@ -7375,3 +7378,40 @@ model inclusion.  Model parameter and prediction averaging based on model
 weights derived from information criteria (AICc and alike) or custom model
 weighting schemes.")
     (license license:gpl2)))
+
+(define-public ruby-enumerable-statistics
+  (package
+    (name "ruby-enumerable-statistics")
+    (version "2.0.7")
+    ;; Source at RubyGems.org doesn't have tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mrkn/enumerable-statistics.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a8k2dvm1v0g6hcrbnzy0f7d63hdmpmldfdkl8wr32nbl05xnifa"))
+              (modules '((guix build utils)))
+              (snippet `(begin
+                          (substitute* "enumerable-statistics.gemspec"
+                            ;; benchmark-driver gem is used for
+                            ;; performance benchmarking, and isn't
+                            ;; needed for tests.
+                            (("spec.add_development_dependency \"benchmark-driver\"\n")
+                             ""))))))
+    (build-system ruby-build-system)
+    (native-inputs (list bundler
+                         ruby-rake
+                         ruby-rake-compiler
+                         ruby-rspec
+                         ruby-test-unit
+                         ruby-fuubar
+                         ruby-yard))
+    (synopsis "Library which provides statistics features for Enumerable")
+    (description
+     "@code{Enumerable::Statistics} provides some methods to calculate
+statistical summary in arrays and enumerables.")
+    (home-page "https://github.com/mrkn/enumerable-statistics")
+    (license license:expat)))
