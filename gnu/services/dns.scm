@@ -763,7 +763,7 @@ cache.size = 100 * MB
   (negative-cache?  dnsmasq-configuration-negative-cache?
                     (default #t))       ;boolean
   (cpe-id           dnsmasq-configuration-cpe-id
-                    (default #t))       ;string
+                    (default #f))       ;string
   (tftp-enable?     dnsmasq-configuration-tftp-enable?
                     (default #f))       ;boolean
   (tftp-no-fail?    dnsmasq-configuration-tftp-no-fail?
