@@ -1363,19 +1363,19 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "c29a46e8d298d3a1f16b2d4f75fa96759741afb8")
-        (revision "71"))
+  (let ((commit "4d8ee69e4a25bbaa704a7efe5df2de4c8561cdaf")
+        (revision "72"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/git/guix/build-coordinator")
+                      (url "https://git.savannah.gnu.org/git/guix/build-coordinator.git")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1wzgl2naymps9k51ggsw8099da81b0skqjamj9r7jkcvg7i46avm"))
+                  "1wblgafywmrdyy5ldd4rss0fnr01rnqqkd1p1p5f1xm9liljvlg6"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
