@@ -279,38 +279,53 @@ back-end for the LLVM compiler framework.")
 (define-public pocl
   (package
     (name "pocl")
-    (version "1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pocl/pocl")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "1c4y69zks6hkq5fqh9waxgb8g4ka7y6h3vacmsm720kba0h57g8a"))
-       (file-name (git-file-name name version))))
+    (version "3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pocl/pocl")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1pw4q0hi5ynx34fvzryravz3jbh89f9cg60fkjj77sxh9xw8phdd"))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+                 '(begin
+                        ;; "kernel/test_printf_vectors" and
+                        ;; "kernel/test_printf_vectors_ulongn"
+                        ;; fail on aarch5 and likely other platforms
+                        ;; as commented in CMakeLists.txt
+                        ;; thus disable the block in CMakeList.txt adding
+                        ;; these two tests
+                       (substitute* "tests/kernel/CMakeLists.txt"
+                         (("NOT ENABLE_POCL_FLOAT_CONVERSION") "false"))))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list libltdl pkg-config))
-    (inputs
-     (list clang-9 llvm-9 `(,hwloc-2 "lib") opencl-icd-loader))
+    (native-inputs (list libltdl pkg-config python-3))
+    (inputs (list clang-15 llvm-15
+                  `(,hwloc-2 "lib") opencl-icd-loader))
     (arguments
-     `(#:configure-flags
-       (list "-DENABLE_ICD=ON"
-             "-DENABLE_TESTSUITES=ON"
-             ;; We are not developers, don't run conformance suite.
-             "-DENABLE_CONFORMANCE=OFF"
-             (string-append "-DEXTRA_HOST_LD_FLAGS=-L"
-                            (assoc-ref %build-inputs "libc") "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _
-             (setenv "HOME" "/tmp")
+     `(#:configure-flags (let* ((libdir (string-append (assoc-ref %outputs
+                                                                  "out")
+                                                       "/lib")))
+                           (list "-DENABLE_ICD=ON"
+                                 "-DENABLE_TESTSUITES=ON"
+                                 ;; We are not developers, don't run conformance suite.
+                                 "-DENABLE_CONFORMANCE=OFF"
+                                 (string-append "-DEXTRA_HOST_LD_FLAGS=-L"
+                                                (assoc-ref %build-inputs
+                                                           "libc") "/lib")
+                                 ;; We need both libdir and libdir/pocl in RUNPATH.
+                                 (string-append "-DCMAKE_INSTALL_RPATH="
+                                                libdir ";" libdir "/pocl")))
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'set-HOME
+                    (lambda _
+                      (setenv "HOME" "/tmp")
 
-             ;; Since 2.9.0, hwloc fails when /sys is missing, so provide a
-             ;; fake topology.
-             (setenv "HWLOC_SYNTHETIC" "4"))))))
+                      ;; Since 2.9.0, hwloc fails when /sys is missing, so provide a
+                      ;; fake topology.
+                      (setenv "HWLOC_SYNTHETIC" "4"))))))
     (home-page "http://portablecl.org/")
     (synopsis "Portable Computing Language (pocl), an OpenCL implementation")
     (description
