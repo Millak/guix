@@ -49174,7 +49174,7 @@ functionality as retain but gives mutable borrow to the predicate.")
 
 (define-public rust-ring-0.13
   (package
-    (inherit rust-ring-0.16)
+    (inherit rust-ring-0.14)
     (name "rust-ring")
     (version "0.13.5")
     (source
@@ -49183,15 +49183,36 @@ functionality as retain but gives mutable borrow to the predicate.")
        (uri (crate-uri "ring" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12j580by6a438i5mw3136cj3lxylywymdr5p8rqlkwrm5s5bck9c"))))
-    (build-system cargo-build-system)
+        (base32 "12j580by6a438i5mw3136cj3lxylywymdr5p8rqlkwrm5s5bck9c"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; error: `...` range patterns are deprecated
+           (substitute* "src/digest/sha1.rs"
+             (("0\\.\\.\\.") "0..="))
+           ;; Remove some generated files.
+           (delete-file-recursively "pregenerated")
+           ;; Regenerating the curve25519_tables requires python2 and clang-format.
+           (delete-file "third_party/fiat/curve25519_tables.h")
+           ;; Pretend this isn't a relase tarball.
+           (with-output-to-file ".git"
+             (lambda _
+                (format #t "")))))))
     (arguments
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-untrusted" ,rust-untrusted-0.6)
         ;; build dependencies
-        ("rust-cc" ,rust-cc-1))))))
+        ("rust-cc" ,rust-cc-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'generate-curve25519-tables
+           (lambda _
+             (with-directory-excursion "third_party/fiat"
+               (with-output-to-file "curve25519_tables.h"
+                 (lambda _
+                   (invoke "python" "make_curve25519_tables.py")))))))))))
 
 (define-public rust-riscv-0.7
   (package
