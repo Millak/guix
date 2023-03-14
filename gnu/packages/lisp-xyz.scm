@@ -18941,6 +18941,48 @@ application fail and be unable to do so using its standard UI.")
 (define-public cl-messagebox
   (sbcl-package->cl-source-package sbcl-messagebox))
 
+(define-public sbcl-3d-transforms
+  (let ((commit "1d44509387d0747cd0351e95a533eca609058632")
+        (revision "0"))
+    (package
+      (name "sbcl-3d-transforms")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/3d-transforms")
+               (commit commit)))
+         (file-name (git-file-name "cl-3d-transforms" version))
+         (sha256
+          (base32 "03pmv7dh1j6kl16ch6lnvxzjrld4jbr3jx8slzkiipgzdxg74pcx"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-3d-matrices
+             sbcl-3d-quaternions
+             sbcl-3d-vectors
+             sbcl-documentation-utils))
+      (home-page "https://shinmera.github.io/3d-transforms/")
+      (synopsis
+       "Common structure to encapsulate spatial transformations in Common Lisp")
+      (description
+       "This is a library that uses the other 3d-* math libraries to present an
+encapsulation for a spatial transformation.  It offers convenience functions for
+operating on such transformations and for converting between them and the
+alternative 4x4 matrix representation.")
+      (license license:zlib))))
+
+;; TODO: Build failure:
+;; https://github.com/Shinmera/3d-quaternions/issues/2
+;;
+;; (define-public ecl-3d-transforms
+;;   (sbcl-package->ecl-package sbcl-3d-transforms))
+
+(define-public cl-3d-transforms
+  (sbcl-package->cl-source-package sbcl-3d-transforms))
+
 (define-public sbcl-glsl-toolkit
   (let ((commit "d00ba1906e3b5eb08ea346ac300a1e77bb999d04")
         (revision "1"))
