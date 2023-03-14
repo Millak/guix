@@ -352,40 +352,59 @@ many popular formats.")
     (properties `((release-monitoring-url . "https://vtk.org/download/")))
     (build-system cmake-build-system)
     (arguments
-     '(#:build-type "Release"           ;Build without '-g' to save space.
-       #:configure-flags '(;"-DBUILD_TESTING:BOOL=TRUE"
-                           ;    ; not honored
-                           "-DVTK_USE_EXTERNAL=OFF" ;; default
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_expat=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_glew=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_jsoncpp=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_libharu=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_libproj=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_libxml2=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_lz4=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_ogg=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
-                           ;"-DVTK_MODULE_USE_EXTERNAL_VTK_pugixml=ON"    ; breaks IO/CityGML
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_sqlite=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_theora=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
-                           "-DVTK_MODULE_ENABLE_VTK_RenderingExternal=YES" ; For F3D
-                           "-DVTK_WRAP_PYTHON=ON"
-                           "-DVTK_PYTHON_VERSION:STRING=3"
+     (list #:build-type "Release"           ;Build without '-g' to save space.
+           #:configure-flags
+           #~'( ;;"-DBUILD_TESTING:BOOL=TRUE"  ;not honored
+               "-DVTK_USE_EXTERNAL=OFF"           ;default
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_expat=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_glew=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_jsoncpp=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_libharu=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_libproj=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_libxml2=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_lz4=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_ogg=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
+               ;;"-DVTK_MODULE_USE_EXTERNAL_VTK_pugixml=ON" ;breaks IO/CityGML
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_sqlite=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_theora=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
+               "-DVTK_MODULE_ENABLE_VTK_RenderingExternal=YES" ;for F3D
+               "-DVTK_WRAP_PYTHON=ON"
+               "-DVTK_PYTHON_VERSION:STRING=3"
 
-                           "-DVTK_SMP_ENABLE_OPENNMP=ON"
-                           "-DVTK_SMP_ENABLE_TBB=ON"
-                           "-DVTK_USE_MPI=ON"
-                           )
-       #:tests? #f))        ;XXX: test data not included
+               "-DVTK_SMP_ENABLE_OPENNMP=ON"
+               "-DVTK_SMP_ENABLE_TBB=ON"
+               "-DVTK_USE_MPI=ON"
+               )
+
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'clear-reference-to-compiler
+                 (lambda _
+                   (define (choose . files)
+                     (let loop ((files files))
+                       (if (null? files)
+                           #f
+                           (if (file-exists? (car files))
+                               (car files)
+                               (loop (cdr files))))))
+
+                   ;; Do not retain a reference to GCC.
+                   (substitute* (choose
+                                 "Common/Core/vtkConfigureDeprecated.h.in" ;v9.x
+                                 "Common/Core/vtkConfigure.h.in") ;v7.x
+                     (("@CMAKE_CXX_COMPILER@") "c++")))))
+
+           #:tests? #f))                          ;XXX: test data not included
     (inputs
      (list double-conversion
            eigen
@@ -453,7 +472,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
        ((#:configure-flags flags)
         ;; Otherwise, the build would fail with: "error: invalid conversion
         ;; from ‘const char*’ to ‘char*’ [-fpermissive]".
-        `(cons "-DCMAKE_CXX_FLAGS=-fpermissive" ,flags))
+        #~(cons "-DCMAKE_CXX_FLAGS=-fpermissive" #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'remove-kernel-version
