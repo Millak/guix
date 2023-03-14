@@ -19066,8 +19066,8 @@ alternative 4x4 matrix representation.")
   (sbcl-package->cl-source-package sbcl-3d-transforms))
 
 (define-public sbcl-glsl-toolkit
-  (let ((commit "d00ba1906e3b5eb08ea346ac300a1e77bb999d04")
-        (revision "1"))
+  (let ((commit "4c4889e75c635772c4df70b11d6f14e7a596da43")
+        (revision "2"))
     (package
       (name "sbcl-glsl-toolkit")
       (version (git-version "1.0.0" revision commit))
@@ -19077,9 +19077,9 @@ alternative 4x4 matrix representation.")
          (uri (git-reference
                (url "https://github.com/Shirakumo/glsl-toolkit")
                (commit commit)))
-         (file-name (git-file-name "glsl-toolkit" version))
+         (file-name (git-file-name "cl-glsl-toolkit" version))
          (sha256
-          (base32 "0as5796yazchq1qkna3srxlz5v7cf7ffny9cbqi41wsa2s20vbh9"))))
+          (base32 "0vrk8nqijqdi1rwf85rhd93yj7q8qkxnigxn3bw0cbrzvzrks9rl"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-ppcre sbcl-documentation-utils sbcl-parse-float
