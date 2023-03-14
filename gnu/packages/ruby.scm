@@ -7160,7 +7160,7 @@ generates Ruby program.")
 developing web applications in Ruby.  By wrapping HTTP requests and responses,
 it unifies the API for web servers, web frameworks, and software in between
 into a single method call.")
-    (home-page "https://rack.github.io/")
+    (home-page "https://github.com/rack/rack")
     (license license:expat)))
 
 (define-public ruby-rack-test
