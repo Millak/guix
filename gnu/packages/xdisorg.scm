@@ -11,7 +11,7 @@
 ;;; Copyright © 2015 Florian Paul Schmidt <mista.tapas@gmx.net>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
@@ -723,10 +723,10 @@ rasterisation.")
      (list #:configure-flags
            (match (%current-system)
              ((or "armhf-linux" "aarch64-linux")
-              #~(list "-Dexynos=true"
-                      "-Domap=true"
-                      "-Detnaviv=true"
-                      "-Dtegra=true"
+              #~(list "-Dexynos=enabled"
+                      "-Domap=enabled"
+                      "-Detnaviv=enabled"
+                      "-Dtegra=enabled"
                       "-Dfreedreno-kgsl=true"))
              (_ ''()))
            #:phases
