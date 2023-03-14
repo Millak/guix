@@ -31775,7 +31775,11 @@ library.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0sidr67nsa693mqrqgk2np3bkqni0778yk147xncspy171jdk13g"))))
+         "0sidr67nsa693mqrqgk2np3bkqni0778yk147xncspy171jdk13g"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (for-each delete-file
+                          (find-files "tests" "\\.dll$"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -31803,7 +31807,11 @@ loading utilities.")
        (uri (crate-uri "libloading" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10wq4a4jkman8k6y0v2cw3d38y1h3rw6d2in5klggm8jg90k46im"))))
+        (base32 "10wq4a4jkman8k6y0v2cw3d38y1h3rw6d2in5klggm8jg90k46im"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (for-each delete-file
+                          (find-files "tests" "\\.dll$"))))))
     (arguments
      `(#:skip-build? #true
        #:cargo-inputs
@@ -31826,7 +31834,11 @@ loading utilities.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0lyply8rcqc8agajzxs7bq6ivba9dnn1i68kgb9z2flnfjh13cgj"))))
+          "0lyply8rcqc8agajzxs7bq6ivba9dnn1i68kgb9z2flnfjh13cgj"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (for-each delete-file
+                          (find-files "tests" "\\.dll$"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -31855,7 +31867,11 @@ functions and static variables these libraries contain.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0risz19rllhdc0d7nkpwkf4pcbjjgg1iim0kkmzb6kkp874hl0ha"))))
+         "0risz19rllhdc0d7nkpwkf4pcbjjgg1iim0kkmzb6kkp874hl0ha"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (for-each delete-file
+                          (find-files "tests" "\\.dll$"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Some test libraries not included in release.
