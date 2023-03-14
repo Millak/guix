@@ -19996,6 +19996,53 @@ application development library.")
 (define-public cl-glfw3
   (sbcl-package->cl-source-package sbcl-cl-glfw3))
 
+(define-public sbcl-cl-gltf
+  (let ((commit "7f9193acec80cad775b61b1c7a125c14a7b35a0c")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-gltf")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/cl-gltf")
+               (commit commit)))
+         (file-name (git-file-name "cl-gltf" version))
+         (sha256
+          (base32 "0ni42242a4x052dqlycwrg5j6piwm87s4wgbn2q0a9s3l9f811vk"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; No tests provided.
+       `(#:tests? #f))
+      (inputs
+       (list sbcl-documentation-utils
+             sbcl-cffi
+             sbcl-jzon
+             sbcl-mmap
+             sbcl-nibbles
+             sbcl-qbase64
+             sbcl-static-vectors
+             sbcl-trivial-extensible-sequences))
+      (home-page "https://shirakumo.github.io/cl-gltf/")
+      (synopsis "Common Lisp parser for glTF file format")
+      (description
+       "This package provides a Common Lisp parser for glTF file format.")
+      (license license:zlib))))
+
+;; FIXME: ECL part is failing
+;; ;;; Internal error:
+;;
+;; ** There is no package with the name SEQUENCE.An error occurred during
+;; initialization: COMPILE-FILE-ERROR while compiling #<cl-source-file
+;; "trivial-extensible-sequences" "fallback">.
+;;
+;; (define-public ecl-cl-gltf
+;;   (sbcl-package->ecl-package sbcl-cl-gltf))
+
+(define-public cl-gltf
+  (sbcl-package->cl-source-package sbcl-cl-gltf))
+
 (define-public sbcl-chirp
   (let ((commit "01c79fa41939688216d1f86d0766a687becb0654")
         (revision "1"))
