@@ -7222,8 +7222,9 @@ Cache-Control) and/or validation (Last-Modified, ETag) information.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "ruby" "-Ilib" "-r" "rack/test"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ruby" "-Ilib" "-r" "rack/test")))))))
     (propagated-inputs
      (list ruby-rack))
     (synopsis "Testing API for Rack applications")
