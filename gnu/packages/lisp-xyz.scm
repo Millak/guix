@@ -20735,8 +20735,8 @@ tested (as shown in the examples).")
   (sbcl-package->cl-source-package sbcl-sdl2-ttf))
 
 (define-public sbcl-cl-gamepad
-  (let ((commit "7e12137927b42db064ffbf9ea34bd4790ad4bb33")
-        (revision "1"))
+  (let ((commit "647f6ee8f40048286d743d79845c3753fba9d8f1")
+        (revision "2"))
     (package
       (name "sbcl-cl-gamepad")
       (version (git-version "3.0.0" revision commit))
@@ -20748,7 +20748,7 @@ tested (as shown in the examples).")
                (commit commit)))
          (file-name (git-file-name "cl-gamepad" version))
          (sha256
-          (base32 "1gzx590i7s81qmramnjvfzrrq5yppas8yxqq1jl3yzqhhjwjfvkd"))))
+          (base32 "0w9lcahgqacc39932jp2ghid9sl4wg4vyaza8vdnghmixdl49cin"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
@@ -20756,14 +20756,13 @@ tested (as shown in the examples).")
            (add-after 'unpack 'patch-evdev-lib-path
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "evdev-cffi.lisp"
-                 (("libevdev.so" all)
-                  (string-append (assoc-ref inputs "libevdev")
-                                 "/lib/" all))))))))
+                 (("libevdev.so")
+                  (search-input-file inputs "/lib/libevdev.so"))))))))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("documentation-utils" ,sbcl-documentation-utils)
-         ("libevdev" ,libevdev)
-         ("trivial-features" ,sbcl-trivial-features)))
+       (list libevdev
+             sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-trivial-features))
       (home-page "https://shirakumo.github.io/cl-gamepad/")
       (synopsis "Library for access to gamepads and joystick input devices")
       (description
