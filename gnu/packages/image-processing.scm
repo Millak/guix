@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2014, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -380,6 +380,10 @@ many popular formats.")
                            "-DVTK_MODULE_ENABLE_VTK_RenderingExternal=YES" ; For F3D
                            "-DVTK_WRAP_PYTHON=ON"
                            "-DVTK_PYTHON_VERSION:STRING=3"
+
+                           "-DVTK_SMP_ENABLE_OPENNMP=ON"
+                           "-DVTK_SMP_ENABLE_TBB=ON"
+                           "-DVTK_USE_MPI=ON"
                            )
        #:tests? #f))        ;XXX: test data not included
     (inputs
@@ -402,17 +406,20 @@ many popular formats.")
            mesa
            netcdf
            libpng
+           libtiff
+           openmpi
            proj-7
            python
            ;("pugixml" ,pugixml)
            sqlite
-           libtiff
            xorgproto
            zlib))
     (propagated-inputs
      ;; VTK's 'VTK-vtk-module-find-packages.cmake' calls
-     ;; 'find_package(THEORA)', which in turns looks for libogg.
-     (list libogg))
+     ;; 'find_package(THEORA)', which in turns looks for libogg.  Likewise for
+     ;; TBB.
+     (list libogg
+           tbb))
     (home-page "https://vtk.org/")
     (synopsis "Libraries for 3D computer graphics")
     (description
