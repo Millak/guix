@@ -13022,6 +13022,42 @@ Streams in ICDE’05.")
 (define-public ecl-prometheus
   (sbcl-package->ecl-package sbcl-prometheus))
 
+(define-public sbcl-promise
+  (let ((commit "801db8f853da7935ae2e487fd7f8763acbc5ad2a")
+        (revision "0"))
+    (package
+      (name "sbcl-promise")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/promise")
+               (commit commit)))
+         (file-name (git-file-name "cl-promise" version))
+         (sha256
+          (base32 "07cvz6vb5y1d9vndcwq7q1cp54aqvyqzv6wk8vmymbz3lawq2wsn"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-documentation-utils))
+      (home-page "https://shinmera.github.io/promise/")
+      (synopsis "Promise mechanism for asynchronous operations")
+      (description
+       "This library implements a basic promise datastructure, which is useful
+for dealing with asynchronous behaviours.  Importantly, this library does not
+use any other libraries or frameworks, and instead leaves the execution and
+state transition of promise objects in your control, making it easy to
+integrate.")
+      (license license:zlib))))
+
+(define-public ecl-promise
+  (sbcl-package->ecl-package sbcl-promise))
+
+(define-public cl-promise
+  (sbcl-package->cl-source-package sbcl-promise))
+
 (define-public sbcl-uuid
   (let ((commit "e7d6680c3138385c0708f7aaf0c96622eeb140e8"))
     (package
