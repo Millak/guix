@@ -20859,8 +20859,8 @@ joysticks, and other such HID devices.")
   (sbcl-package->cl-source-package sbcl-cl-gamepad))
 
 (define-public sbcl-trial
-  (let ((commit "ba178cac3a5528c570c7e8dad66c58cc770db53a")
-        (revision "1"))
+  (let ((commit "db4e98ede16640238bd51bf5d63cda57c75a51ae")
+        (revision "2"))
     (package
       (name "sbcl-trial")
       (version (git-version "1.2.0" revision commit))
@@ -20870,44 +20870,92 @@ joysticks, and other such HID devices.")
          (uri (git-reference
                (url "https://github.com/Shirakumo/trial")
                (commit commit)))
-         (file-name (git-file-name "trial" version))
+         (file-name (git-file-name "cl-trial" version))
          (sha256
-          (base32 "1vpv9nrpq93fz1c5cyi1hazaaz9ijbrf1l7zwp7gammndr5v028r"))))
+          (base32 "0haslkzcgivz42k23n90w1dzw8zdgdrqcndadl33pqqlf0d20ilw"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("trial"
+                         "trial-alloy"
+                         "trial-animation"
+                         "trial-assimp"
+                         ;; TODO: It requires a long packaging journey.
+                         ;; "trial-feedback"
+                         "trial-gif"
+                         "trial-glfw"
+                         ;; FIXME: Check why this system is failing:
+                         ;; WARNING: Invalid qualifiers for APPEND method
+                         ;; combination in method
+                         ;; ...
+                         ;; "trial-glop"
+                         "trial-gltf"
+                         ;; TODO: It requires a long packaging journey.
+                         ;; "trial-harmony"
+                         "trial-jpeg"
+                         "trial-notify"
+                         "trial-png"
+                         ;; TODO: I'm not sure which QOI system to use here. There are two:
+                         ;; - https://github.com/bpanthi977/qoi
+                         ;; - https://github.com/mfiano/qoi
+                         ;; "trial-qoi"
+                         ;; TODO: It requires a long packaging journey.
+                         ;; "trial-qt"
+                         "trial-sdl2"
+                         "trial-terragen"
+                         "trial-tga"
+                         "trial-tiff"
+                         "trial-workbench")))
       (native-inputs
        (list sbcl-trivial-features))
       (inputs
-       (list sbcl-alexandria
-             sbcl-3d-matrices
+       (list sbcl-3d-matrices
+             sbcl-3d-quaternions
+             sbcl-3d-transforms
              sbcl-3d-vectors
+             sbcl-alexandria
+             sbcl-alloy
+             sbcl-atomics
              sbcl-bordeaux-threads
              sbcl-cl-gamepad
+             sbcl-cl-glfw3
+             sbcl-cl-gltf
              sbcl-cl-jpeg
              sbcl-cl-opengl
              sbcl-cl-ppcre
              sbcl-cl-tga
+             sbcl-classimp
              sbcl-closer-mop
              sbcl-deploy
+             sbcl-dns-client
              sbcl-fast-io
+             sbcl-file-notify
              sbcl-flare
              sbcl-float-features
              sbcl-flow
              sbcl-for
              sbcl-form-fiddle
+             sbcl-glop
              sbcl-glsl-toolkit
              sbcl-ieee-floats
-             sbcl-jsown
+             sbcl-jzon
              sbcl-lambda-fiddle
+             sbcl-language-codes
              sbcl-lquery
              sbcl-messagebox
              sbcl-mmap
              sbcl-pathname-utils
              sbcl-pngload
+             sbcl-promise
              sbcl-retrospectiff
+             sbcl-sdl2
+             sbcl-simple-tasks
              sbcl-static-vectors
+             sbcl-system-locale
              sbcl-terrable
+             sbcl-trivial-extensible-sequences
              sbcl-trivial-garbage
              sbcl-trivial-indent
+             sbcl-trivial-main-thread
              sbcl-verbose
              sbcl-zpng))
       (home-page "https://github.com/Shirakumo/trial")
@@ -20918,8 +20966,10 @@ engines, it is meant to be more of a loose connection of components that can be
 fit together as required by any particular game.")
       (license license:zlib))))
 
-(define-public ecl-trial
-  (sbcl-package->ecl-package sbcl-trial))
+;; TODO: Enable with new ECL when this issue is fixed:
+;; https://github.com/Shinmera/3d-quaternions/issues/2
+;; (define-public ecl-trial
+;;   (sbcl-package->ecl-package sbcl-trial))
 
 (define-public cl-trial
   (sbcl-package->cl-source-package sbcl-trial))
