@@ -705,7 +705,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.15.3")
+    (version "1.15.4")
     (source
      (origin
        (method url-fetch)
@@ -713,7 +713,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "02wd31k2pz0km34k0lw5gd9wk1k77zfsvssmjxka1q7mcdj9ld09"))
+        (base32 "117n1v8vr966lah98g22zn15y3d2va0mf1yj99smn5dizy75akm9"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -738,6 +738,10 @@ is fully configurable and extensible in Common Lisp.")
            pcre
            sdl2
            zlib))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))))
     (home-page "https://gmi.skyjake.fi/lagrange/")
     (synopsis "Graphical Gemini client")
     (description
