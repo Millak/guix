@@ -166,7 +166,11 @@
            ;; Remove vendored dynamically linked libraries.
            ;; find . -not -type d -executable -exec file {} \+ | grep ELF
            (delete-file "vendor/vte/vim10m_match")
-           (delete-file "vendor/vte/vim10m_table")))
+           (delete-file "vendor/vte/vim10m_table")
+           ;; Also remove the bundled (mostly Windows) libraries.
+           ;; find vendor -not -type d -exec file {} \+ | grep PE32
+           (for-each delete-file
+                     (find-files "vendor" ".*\\.(a|dll|exe|lib)$"))))
        (patches (search-patches "rustc-1.54.0-src.patch"))
        (patch-flags '("-p0"))))         ;default is -p1
     (outputs '("out" "cargo"))
