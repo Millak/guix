@@ -18791,8 +18791,8 @@ confirmation tokens, and user authentication.")
   (sbcl-package->cl-source-package sbcl-authentic))
 
 (define-public sbcl-3d-vectors
-  (let ((commit "29bb9684df803590deed344af63dbf7b712aabc0")
-        (revision "1"))
+  (let ((commit "257969402864ac3859d77b981abf0aa5373c4e78")
+        (revision "2"))
     (package
       (name "sbcl-3d-vectors")
       (version (git-version "3.1.0" revision commit))
@@ -18802,9 +18802,9 @@ confirmation tokens, and user authentication.")
          (uri (git-reference
                (url "https://github.com/Shinmera/3d-vectors")
                (commit commit)))
-         (file-name (git-file-name "3d-vectors" version))
+         (file-name (git-file-name "cl-3d-vectors" version))
          (sha256
-          (base32 "0qc7m5brhpwi531rgmlaj1c609by533a1ia5hv8f90ilm8ksmw3l"))))
+          (base32 "0vmf7nycc49ydcy0dfs25cgs655kwjc6jcjvpwxw61jq4gl2fh7x"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
