@@ -11252,8 +11252,8 @@ performance and correctness.")
   (sbcl-package->ecl-package sbcl-png-read))
 
 (define-public sbcl-3b-bmfont
-  (let ((commit "48a38f52d282064829851c484d9e7dee0ffe9e72")
-        (revision "2"))
+  (let ((commit "332c2262705f161627fc18add0310451a42799af")
+        (revision "3"))
     (package
       (name "sbcl-3b-bmfont")
       (version (git-version "0.0.1" revision commit))
@@ -11263,23 +11263,23 @@ performance and correctness.")
          (uri (git-reference
                (url "https://github.com/3b/3b-bmfont/")
                (commit commit)))
-         (file-name (git-file-name "3b-bmfont" version))
+         (file-name (git-file-name "cl-3b-bmfont" version))
          (sha256
-          (base32 "0v4lcrlpx60ayg0g5b10q2hjh1iaanln4ck0hm1rvjxm39gl2d86"))))
+          (base32 "11wnqa1wx9vji6cmxl5m5qnf12mqc6n7d5g8038r1wayq88bxia6"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:asd-systems
-         '("3b-bmfont"
-           "3b-bmfont/text"
-           "3b-bmfont/common"
-           "3b-bmfont/xml"
-           "3b-bmfont/json")))
+       `(#:asd-systems '("3b-bmfont"
+                         "3b-bmfont/common"
+                         "3b-bmfont/json"
+                         "3b-bmfont/text"
+                         "3b-bmfont/xml")))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cxml" ,sbcl-cxml)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("jsown" ,sbcl-jsown)
-         ("split-sequence" ,sbcl-split-sequence)))
+       (list sbcl-alexandria
+             sbcl-cxml
+             sbcl-flexi-streams
+             sbcl-jsown
+             sbcl-parse-number
+             sbcl-split-sequence))
       (home-page "https://github.com/3b/3b-bmfont/")
       (synopsis "Read/write bmfont metadata files")
       (description
