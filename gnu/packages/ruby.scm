@@ -5072,7 +5072,7 @@ client protocol.")
                 "1kjy67qajw4rnkbjs5jyk7kc3lyhz5613fwj1i8f6ppdk4zampy0"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-hoe))
-    (home-page "https://github.com/seattlerb/minitest")
+    (home-page "https://github.com/minitest/minitest")
     (synopsis "Small test suite library for Ruby")
     (description "Minitest provides a complete suite of Ruby testing
 facilities supporting TDD, BDD, mocking, and benchmarking.")
