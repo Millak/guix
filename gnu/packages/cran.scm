@@ -2741,19 +2741,19 @@ data types as well.")
 (define-public r-tidyverse
   (package
     (name "r-tidyverse")
-    (version "1.3.2")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyverse" version))
        (sha256
         (base32
-         "0qfgq4p2aq95j39xd5kcing2cacy7rzy7f6zf0bnpsa95svziyrp"))))
+         "1r980y6d4a5brvxwdx41qzi8f3fck36c5l89sd3k4csna09jsg1x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
            r-cli
-           r-crayon
+           r-conflicted
            r-dbplyr
            r-dplyr
            r-dtplyr
@@ -2770,6 +2770,7 @@ data types as well.")
            r-modelr
            r-pillar
            r-purrr
+           r-ragg
            r-readr
            r-readxl
            r-reprex
