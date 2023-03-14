@@ -14165,7 +14165,7 @@ functions.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/mcclim/mcclim")
+               (url "https://codeberg.org/McCLIM/McCLIM")
                (commit commit)))
          (file-name (git-file-name "cl-mcclim" version))
          (sha256
@@ -14215,7 +14215,7 @@ functions.")
                (substitute* "Extensions/harfbuzz/src/functions.lisp"
                  (("libharfbuzz\\.so")
                   (search-input-file inputs "/lib/libharfbuzz.so"))))))))
-      (home-page "https://common-lisp.net/project/mcclim/")
+      (home-page "https://mcclim.common-lisp.dev/")
       (synopsis "Common Lisp GUI toolkit")
       (description
        "McCLIM is an implementation of the @emph{Common Lisp Interface Manager
