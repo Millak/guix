@@ -9453,6 +9453,24 @@ is a distinct layer on top of traitlets, so you can use traitlets in your code
 without using the configuration machinery.")
     (license license:bsd-3)))
 
+(define-public python-treelib
+  (package
+    (name "python-treelib")
+    (version "1.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "treelib" version))
+              (sha256
+               (base32
+                "1247rv9fbb8pw3xbkbz04q3vnvvva3hcw002gp1clp5psargzgqw"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-future))
+    (home-page "https://github.com/caesar0301/treelib")
+    (synopsis "Implementation of a tree structure in Python")
+    (description
+     "This package provides a Python implementation of a tree structure.")
+    (license license:asl2.0)))
+
 (define-public python-jupyter-core
   (package
     (name "python-jupyter-core")
