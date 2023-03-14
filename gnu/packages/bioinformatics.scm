@@ -827,6 +827,143 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-rhandsontable
+  (package
+    (name "r-rhandsontable")
+    (version "0.3.8")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rhandsontable" version))
+              (sha256
+               (base32
+                "07fj6npq65pq836vdwblkhprdaq4i4f13cwdmm9gmxrnk72xj7lh"))
+              (modules '((guix build utils)))
+              (snippet
+               '(with-directory-excursion "inst/htmlwidgets/lib"
+                  (for-each delete-file
+                            '("chroma/chroma.min.js"
+                              "handsontable/all.min.js"
+                              "handsontable/handsontable.full.min.js"
+                              "jquery/jquery.min.js"
+                              "numbro/languages.min.js"
+                              "sparkline/jquery.sparkline.min.js"))))))
+    (properties `((upstream-name . "rhandsontable")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib"
+               ;; Generate languages.js by importing all numbro language
+               ;; files.
+               (with-output-to-file "/tmp/languages.js"
+                 (lambda ()
+                   (for-each
+                    (lambda (file)
+                      (format (current-output-port)
+                              "require(\"~a/~a\")~%"
+                              (dirname file)
+                              (basename file ".js")))
+                    (find-files (string-append (assoc-ref inputs "js-numbro")
+                                               "/languages/")
+                                "\\.js$"))))
+               ;; Then bundle and minify it.
+               (invoke "esbuild"
+                       "/tmp/languages.js"
+                       "--bundle"
+                       "--minify"
+                       "--outfile=numbro/languages.min.js")
+
+               ;; Minify the other source files.
+               (call-with-values
+                   (lambda ()
+                     (unzip2
+                      `((,(search-input-file inputs "/chroma.js")
+                         "chroma/chroma.min.js")
+                        (,(search-input-file inputs "/dist/languages/all.js")
+                         "handsontable/all.min.js")
+                        (,(search-input-file inputs "/dist/handsontable.full.js")
+                         "handsontable/handsontable.full.min.js")
+                        (,(assoc-ref inputs "js-jquery-sparkline")
+                         "sparkline/jquery.sparkline.min.js")
+                        (,(assoc-ref inputs "js-jquery")
+                         "jquery/jquery.min.js"))))
+                 (lambda (sources targets)
+                   (for-each (lambda (source target)
+                               (format #true "Processing ~a --> ~a~%"
+                                       source target)
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target)))
+                             sources targets)))))))))
+    (propagated-inputs (list r-htmlwidgets r-jsonlite r-magrittr))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("js-chroma"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/gka/chroma.js")
+                 (commit "v1.3.3")))
+           (file-name (git-file-name "chroma" "1.3.3"))
+           (sha256
+            (base32
+             "091xn40n868pgb76gdl5jpg5gqqqzhykgxsslni230jzgc0hh1vm"))))
+       ("js-handsontable"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/handsontable/handsontable")
+                 (commit "6.2.2")))
+           (file-name (git-file-name "handsontable" "6.2.2"))
+           (sha256
+            (base32
+             "1rq4l24m9yz5r4sagdhq78jcjxlyh0ngryp43p5k33q2l77l4cp8"))))
+       ("js-jquery-sparkline"
+        ,(origin
+           (method url-fetch)
+           (uri
+            "https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js")
+           (sha256
+            (base32
+             "0d28qg5wlv44l02xafla6h6fvl3a71r5w7k0xhadagighh5wnarg"))))
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-3.2.1.js")
+           (sha256
+            (base32
+             "08dv528xy8ksrg5qqw73bvpjrzxv66xq41sfidn9ypgskwl2g40d"))))
+       ;; We guessed the version based on
+       ;; 62993ac9be3a1a4188150f7a6502b48b899f075e in
+       ;; https://github.com/jrowen/rhandsontable, which added numbro's
+       ;; languages.min.js.  This was committed in Nov 2018, so the most
+       ;; recent release of numbro at that time would have been 2.0.6 from May
+       ;; 2018.
+       ("js-numbro"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/BenjaminVanRyseghem/numbro")
+                 (commit "2.0.6")))
+           (file-name (git-file-name "numbro" "2.0.6"))
+           (sha256
+            (base32
+             "1gsswkd482p0id00yx4q67ay0jvvwwidj71v41mq1cws8v2jjywx"))))))
+    (home-page "https://jrowen.github.io/rhandsontable/")
+    (synopsis "Htmlwidget based on the handsontable.js library")
+    (description
+     "Handsontable is a data grid component with an Excel like appearance.
+Built in JavaScript, it integrates with any data source with peak efficiency.
+It comes with powerful features like data validation, sorting, grouping, data
+binding, formula support or column ordering.")
+    (license license:expat)))
+
 (define-public r-stringendo
   (let ((commit "83b8f2d82a09b33b9e895438bb523a021138be01")
         (revision "1"))
