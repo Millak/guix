@@ -24610,7 +24610,13 @@ implementation for Common Lisp.")
   (sbcl-package->cl-source-package sbcl-jzon))
 
 (define-public ecl-jzon
-  (sbcl-package->ecl-package sbcl-jzon))
+  (let ((pkg (sbcl-package->ecl-package sbcl-jzon)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; FIXME: Tests fail on ECL:  https://github.com/Zulu-Inuoe/jzon/issues/36
+         ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-simple-routes
   (let ((commit "6f88c38945a4de73e85786d3499c39cacb400598")
