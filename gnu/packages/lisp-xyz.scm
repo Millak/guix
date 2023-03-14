@@ -18825,8 +18825,8 @@ offers them both in non-modifying and modifying versions where applicable.")
   (sbcl-package->cl-source-package sbcl-3d-vectors))
 
 (define-public sbcl-3d-matrices
-  (let ((commit "f453b521b8f2ceabb01eac94389119dece8c05f8")
-        (revision "1"))
+  (let ((commit "b4f5a58299f8437fad2d77f0879c374e3430f4b5")
+        (revision "2"))
     (package
       (name "sbcl-3d-matrices")
       (version (git-version "1.0.0" revision commit))
@@ -18836,9 +18836,9 @@ offers them both in non-modifying and modifying versions where applicable.")
          (uri (git-reference
                (url "https://github.com/Shinmera/3d-matrices")
                (commit commit)))
-         (file-name (git-file-name "3d-matrices" version))
+         (file-name (git-file-name "cl-3d-matrices" version))
          (sha256
-          (base32 "10q9c96gqzq6k8n89agy0khgimmnsn4s69171m3vhghqa2yv5n6v"))))
+          (base32 "1s8b4zlmqwyplghs73riz1khf0c5sk64w6b12jd599091d5nr6sr"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
