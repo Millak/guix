@@ -62616,7 +62616,10 @@ fixed set of worker threads.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1lw6gy9gzk7g7h71nm8a5ybrilhqgr583mn80nslr78p0ldk69la"))))
+         "1lw6gy9gzk7g7h71nm8a5ybrilhqgr583mn80nslr78p0ldk69la"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "jemalloc")))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
