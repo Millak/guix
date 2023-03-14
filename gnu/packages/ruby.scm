@@ -82,6 +82,7 @@
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages serialization)
@@ -8267,6 +8268,46 @@ Profiling multiple threads simultaneously is supported.
 @end table")
     (home-page "https://github.com/ruby-prof/ruby-prof")
     (license license:bsd-2)))
+
+(define-public ruby-ruby-memcheck
+  (package
+    (name "ruby-ruby-memcheck")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Shopify/ruby_memcheck")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sx8nhx7w4z5s5vj6kq6caqsfznswqzwca372j82cd80hf9iznra"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-valgrind-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "lib/ruby_memcheck/configuration.rb"
+                (("DEFAULT_VALGRIND = \"valgrind\"")
+                 (format #f "DEFAULT_VALGRIND = ~s"
+                         (search-input-file inputs "bin/valgrind"))))))
+          (add-before 'replace-git-ls-files 'standardize-git-ls-files
+            (lambda _
+              (substitute* "ruby_memcheck.gemspec"
+                (("%x\\(git ls-files -z)")
+                 "`git ls-files -z`")))))))
+    (native-inputs (list ruby-rake-compiler ruby-rspec))
+    (inputs (list valgrind/interactive))
+    (propagated-inputs (list ruby-nokogiri))
+    (synopsis "Valgrind memcheck tool for Ruby")
+    (description "The @code{ruby_memcheck} gem provides a sane way to use
+Valgrind's memcheck on your native extension gem, that filters out all the
+false positives caused by Ruby not freeing all of the memory it allocates
+during shutdown.")
+    (home-page "https://github.com/Shopify/ruby_memcheck")
+    (license license:expat)))
 
 (define-public ruby-memory-profiler
   (package
