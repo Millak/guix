@@ -13880,34 +13880,29 @@ Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qy6x28bj6yfikhjww932v5xq4mf5bm1iczl7acy4c7zm6mwhqfa"))))
+         "0qy6x28bj6yfikhjww932v5xq4mf5bm1iczl7acy4c7zm6mwhqfa"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; python-apt, apt and dpkg are not yet available in guix,
+            ;; and these tests heavily depend on them.
+            (for-each delete-file
+                      '("lib/debian/tests/test_deb822.py"
+                        "lib/debian/tests/test_debfile.py"))
+
+            ;; for reproducible builds, otherwise python-debian
+            ;; generates a _version.py including the date
+            (copy-file "lib/debian/_version.py.in" "lib/debian/_version.py")
+            (substitute* "lib/debian/_version.py"
+              (("__CHANGELOG_VERSION__") #$version))))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'set-version
-                    ;; for reproducible builds, otherwise python-debian
-                    ;; generates a _version.py including the date
-                    (lambda _
-                      (copy-file "lib/debian/_version.py.in" "lib/debian/_version.py")
-                      (substitute* "lib/debian/_version.py"
-                        (("__CHANGELOG_VERSION__") ,version))))
-                  (add-after 'unpack 'remove-debian-specific-tests
-                    ;; python-apt, apt and dpkg are not yet available in guix,
-                    ;; and these tests heavily depend on them.
-                    (lambda _
-                      (delete-file "lib/debian/tests/test_deb822.py")
-                      (delete-file "lib/debian/tests/test_debfile.py")
-                      #t)))))
     (propagated-inputs
      (list python-six python-chardet))
     (synopsis "Debian package related modules")
     (description
-     ;; XXX: Use @enumerate instead of @itemize to work around
-     ;; <http://bugs.gnu.org/21772>.
      "This package provides Python modules that abstract many formats of
 Debian-related files, such as:
-
-@enumerate
+@itemize
 @item Debtags information;
 @item @file{debian/changelog} files;
 @item packages files, pdiffs;
@@ -13915,8 +13910,7 @@ Debian-related files, such as:
    @file{debian/control}, @file{.changes}, @file{.dsc};
 @item Raw @file{.deb} and @file{.ar} files, with (read-only) access to
    contained files and meta-information.
-@end enumerate\n")
-
+@end itemize")
     ;; Modules are either GPLv2+ or GPLv3+.
     (license license:gpl3+)))
 
