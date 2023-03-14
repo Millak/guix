@@ -13869,7 +13869,7 @@ Python.")
   (package
     (name "python-debian")
     (home-page "https://salsa.debian.org/python-debian-team/python-debian")
-    (version "0.1.36")
+    (version "0.1.49")
     (source
      (origin
        ;; Use git-fetch, as pypi doesn't include test suite.
@@ -13880,7 +13880,7 @@ Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qy6x28bj6yfikhjww932v5xq4mf5bm1iczl7acy4c7zm6mwhqfa"))
+         "190vy2ns0650icpwvv4qp6kr3c3i9jszy1vkdwpigxb96fs1bqf3"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -13896,6 +13896,8 @@ Python.")
             (substitute* "lib/debian/_version.py"
               (("__CHANGELOG_VERSION__") #$version))))))
     (build-system python-build-system)
+    (native-inputs
+     (list python-pytest))
     (propagated-inputs
      (list python-six python-chardet))
     (synopsis "Debian package related modules")
