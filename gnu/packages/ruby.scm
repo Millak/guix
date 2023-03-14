@@ -8220,8 +8220,9 @@ system-specific @code{Meta} messages for Cucumber Ruby.")
                             (substitute* ".gemspec"
                               (("~> 18.0") "~> 21.0")))) ;cucumber-messages
                         (replace 'check
-                          (lambda _
-                            (invoke "rspec"))))))
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "rspec")))))))
     (native-inputs (list ruby-cucumber-compatibility-kit ruby-rspec))
     (propagated-inputs (list ruby-cucumber-messages))
     (synopsis "HTML formatter for Cucumber")
