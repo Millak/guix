@@ -7231,7 +7231,7 @@ Cache-Control) and/or validation (Last-Modified, ETag) information.")
      "Rack::Test is a small, simple testing API for Rack applications.  It can
 be used on its own or as a reusable starting point for Web frameworks and
 testing libraries to build on.")
-    (home-page "https://github.com/rack-test/rack-test")
+    (home-page "https://github.com/rack/rack-test")
     (license license:expat)))
 
 (define-public ruby-rack-protection
