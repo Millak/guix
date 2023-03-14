@@ -441,7 +441,7 @@ This Guix package is built to use the nettle cryptographic library.")
         ("rust-sequoia-net" ,rust-sequoia-net-0.23)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
         ("rust-sha2" ,rust-sha2-0.8)  ;; for ffi-macros
-        ("rust-tokio" ,rust-tokio-1.8))
+        ("rust-tokio" ,rust-tokio-1))
       #:cargo-development-inputs
       `(("rust-filetime" ,rust-filetime-0.2))
       #:phases
