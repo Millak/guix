@@ -27278,7 +27278,8 @@ to split out into a separate ASDF system.")
               sbcl-cl-unicode
               sbcl-trivial-gray-streams))
       (arguments
-       (list #:phases
+       (list #:tests? #f ; FIXME: Failing with new parachute.
+             #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'fix-tests
                    (lambda _
