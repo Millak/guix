@@ -5598,6 +5598,41 @@ the format used by the popular compression tool bzip2.")
 (define-public ecl-chipz
   (sbcl-package->ecl-package sbcl-chipz))
 
+(define-public sbcl-dns-client
+  (let ((commit "9f252e9c2bb61c57a6cd367e21ad366b0d3e87e0")
+        (revision "0"))
+    (package
+      (name "sbcl-dns-client")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/dns-client")
+               (commit commit)))
+         (file-name (git-file-name "cl-dns-client" version))
+         (sha256
+          (base32 "1b6g2wvydwmv1k68favjyq4gfalfxfyl5i0hyh640wdaz2rfvi4n"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; No tests provided.
+       `(#:tests? #f))
+      (inputs
+       (list sbcl-documentation-utils sbcl-usocket))
+      (home-page "https://shinmera.github.io/dns-client/")
+      (synopsis "DNS protocol client for Common Lisp")
+      (description
+       "This package provides a pure-lisp implementation of a DNS client.  It can be
+used to resolve hostnames, reverse-lookup IP addresses, and fetch other kinds of
+DNS records.")
+      (license license:zlib))))
+
+(define-public ecl-dns-client
+  (sbcl-package->ecl-package sbcl-dns-client))
+
+(define-public cl-dns-client
+  (sbcl-package->cl-source-package sbcl-dns-client))
+
 (define-public sbcl-drakma
   (package
     (name "sbcl-drakma")
