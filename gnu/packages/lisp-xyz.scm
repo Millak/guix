@@ -16783,6 +16783,38 @@ It provides four readtables.  The default one lets you write strings like this:
 (define-public cl-trivial-escapes
   (sbcl-package->cl-source-package sbcl-trivial-escapes))
 
+(define-public sbcl-trivial-extensible-sequences
+  (let ((commit "d40b2da23716601578b1f645727047f80baeb49a")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-extensible-sequences")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/trivial-extensible-sequences")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-extensible-sequences" version))
+         (sha256
+          (base32 "0352psdd8j0phjycr6ldckwspyal4jcf0f2fizi6fwdp7nvadng7"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://shinmera.github.io/trivial-extensible-sequences/")
+      (synopsis "Portability library for the extensible sequences protocol")
+      (description
+       "This package provides a portability layer for the extensible sequences
+standard extension to Common Lisp.  Extensible sequences allow you to create
+your own sequence types that integrate with the rest of the functions and
+operations that interact with sequences.")
+      (license license:zlib))))
+
+;; NOTE: (Sharlatan-20230312T215058+0000): ECL is not supported
+;; (define-public ecl-trivial-extensible-sequences
+;;   (sbcl-package->ecl-package sbcl-trivial-extensible-sequences))
+
+(define-public cl-trivial-extensible-sequences
+  (sbcl-package->cl-source-package sbcl-trivial-extensible-sequences))
+
 (define-public sbcl-cl-indentify
   (let ((commit "eb770f434defa4cd41d84bca822428dfd0dbac53"))
     (package
