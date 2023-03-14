@@ -18525,8 +18525,8 @@ lQuery.")
   (sbcl-package->cl-source-package sbcl-clip))
 
 (define-public sbcl-pathname-utils
-  (let ((commit "70f517e44e13a38e0c8f296613236376d679fa8f")
-        (revision "1"))
+  (let ((commit "13189c08f2480802a6cba207304c2e0cfdc57f47")
+        (revision "2"))
     (package
       (name "sbcl-pathname-utils")
       (version (git-version "1.1.0" revision commit))
@@ -18536,12 +18536,14 @@ lQuery.")
          (uri (git-reference
                (url "https://github.com/Shinmera/pathname-utils")
                (commit commit)))
-         (file-name (git-file-name "pathname-utils" version))
+         (file-name (git-file-name "cl-pathname-utils" version))
          (sha256
-          (base32 "1zm4bf6gajpgmhr7zwf7600zlaf8fs1fcyzabqsh2ma2crkgqdxq"))))
+          (base32 "0b5pjsrpfw0pmahi1zydzpaa5missg3cxqnyz4k6xwvk8fqscpha"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
+      (inputs
+       (list sbcl-trivial-features))
       (home-page "https://shinmera.github.io/pathname-utils/")
       (synopsis "Collection of utilities to help with pathname operations")
       (description
@@ -18551,7 +18553,19 @@ handling the accessing of files on the underlying system however.")
       (license license:zlib))))
 
 (define-public ecl-pathname-utils
-  (sbcl-package->ecl-package sbcl-pathname-utils))
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-pathname-utils))
+    (arguments
+     `(;; FIXME: It might be an issue in implementation of UIOP for ECL:
+       ;;
+       ;; Condition of type: TYPE-ERROR
+       ;; :HOME is not of type SEQUENCE.
+       ;; Available restarts:
+       ;; 1. (RESTART-TOPLEVEL) Go back to Top-Level REPL.
+       ;; Broken at SI:BYTECODES. [Evaluation of: (MAKE-PATHNAME :DIRECTORY
+       ;; '(:ABSOLUTE :HOME))] In: #<process TOP-LEVEL 0x7faa2f991f80>.
+       ;;
+       #:tests? #f))))
 
 (define-public cl-pathname-utils
   (sbcl-package->cl-source-package sbcl-pathname-utils))
