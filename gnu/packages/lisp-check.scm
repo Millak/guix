@@ -718,8 +718,8 @@ by Chris Riesbeck.")
   (sbcl-package->cl-source-package sbcl-nst))
 
 (define-public sbcl-parachute
-  (let ((commit "8bc3e1b5a1808341967aeb89516f9fab23cd1d9e")
-        (revision "0"))
+  (let ((commit "bd072b0e4d0ff3ee2201eca3eb28c287686ab49e")
+        (revision "1"))
     (package
       (name "sbcl-parachute")
       (version (git-version "1.5.0" revision commit))
@@ -732,7 +732,7 @@ by Chris Riesbeck.")
            (commit commit)))
          (file-name (git-file-name "cl-parachute" version))
          (sha256
-          (base32 "0cppp1sp9xqkgxgkwidhqzlsj03ywnar7z9mzwcliww8y0kv5555"))))
+          (base32 "0srjsklhr04snlv98021mb0a5lb8dlypv1lnjdhsdhjbbiwbw2n9"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils
