@@ -417,6 +417,12 @@ required structures.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-more-shebangs
             (lambda _
+              (substitute* "autogen.sh"
+                (("\\$gnulib_tool \\$gnulib_tool_options")
+                 "sh $gnulib_tool $gnulib_tool_options"))
+              (substitute* "configure.ac"
+                (("build-aux/git-version-gen")
+                 "sh build-aux/git-version-gen"))
               (for-each patch-shebang
                         '("autopull.sh" "autogen.sh"))))
           (replace 'bootstrap
