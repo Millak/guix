@@ -380,6 +380,10 @@ safety and thread safety guarantees.")
            ;; find . -not -type d -executable -exec file {} \+ | grep ELF
            (delete-file "vendor/vte/vim10m_match")
            (delete-file "vendor/vte/vim10m_table")
+           ;; Also remove the bundled (mostly Windows) libraries.
+           ;; find vendor -not -type d -exec file {} \+ | grep PE32
+           (for-each delete-file
+                     (find-files "vendor" ".*\\.(a|dll|exe|lib)$"))
            ;; Add support for riscv64-linux.
            (substitute* "vendor/tikv-jemallocator/src/lib.rs"
              (("    target_arch = \"s390x\"," all)
