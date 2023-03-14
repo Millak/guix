@@ -13885,13 +13885,13 @@ requests.")
 (define-public ruby-bandwidth-iris
   (package
     (name "ruby-bandwidth-iris")
-    (version "5.1.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ruby-bandwidth-iris" version))
        (sha256
-        (base32 "1hmrxs0dif6fw5npyzcshk4nq9qr2kbmnx7mdjr5v1nhzlfr0678"))))
+        (base32 "131c4jhyvnrwbhizkks17fi9g85cwsq5f1p8zi408zyf63n7230d"))))
     (build-system ruby-build-system)
     (arguments
      ;; XXX: Tests don't require helper for some reason, so all fail.
