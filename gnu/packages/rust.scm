@@ -50,6 +50,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system copy)
@@ -707,6 +708,33 @@ safety and thread safety guarantees.")
     (package
       (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
+      ;; This is the rust we build everything with, so we make sure to unbundle more.
+      ;; We allow other versions of the rust compiler to use bundled sources so we
+      ;; don't have to worry about carrying old versions of some libraries.
+      (source
+        (origin
+          (inherit (package-source base-rust))
+          (snippet
+           '(begin
+              (for-each delete-file-recursively
+                        '("src/llvm-project"
+                          "vendor/curl-sys/curl"
+                          "vendor/jemalloc-sys/jemalloc"
+                          "vendor/libgit2-sys/libgit2"
+                          ;"vendor/libnghttp2-sys/nghttp2"
+                          "vendor/libssh2-sys/libssh2"
+                          "vendor/libz-sys/src/zlib"
+                          ;"vendor/libz-sys/src/zlib-ng"
+                          "vendor/lzma-sys/xz-5.2"
+                          ;"vendor/openssl-src"
+                          "vendor/tikv-jemalloc-sys/jemalloc"))
+              ;; Remove vendored dynamically linked libraries.
+              ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+              (delete-file "vendor/vte/vim10m_match")
+              (delete-file "vendor/vte/vim10m_table")
+              ;; Also remove the bundled (mostly Windows) libraries.
+              (for-each delete-file
+                        (find-files "vendor" ".*\\.(a|dll|exe|lib)$"))))))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:tests? _ #f)
@@ -803,6 +831,11 @@ safety and thread safety guarantees.")
                                 ((file) file))
                    (("fn ctrl_c_kills_everyone")
                     "#[ignore]\nfn ctrl_c_kills_everyone"))))
+             (add-after 'set-env 'set-more-env
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "LIBGIT2_SYS_USE_PKG_CONFIG" "1")
+                 (setenv "LIBSSH2_SYS_USE_PKG_CONFIG" "1")
+                 (setenv "OPENSSL_DIR" (assoc-ref inputs "openssl"))))
              (add-after 'configure 'add-gdb-to-config
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((gdb (assoc-ref inputs "gdb")))
@@ -847,6 +880,8 @@ safety and thread safety guarantees.")
                    (("prefix = \"[^\"]*\"")
                     (format #f "prefix = ~s" (assoc-ref outputs "rustfmt"))))
                  (invoke "./x.py" "install" "rustfmt")))))))
+      (inputs (modify-inputs (package-inputs base-rust)
+                             (prepend curl libgit2 libssh xz zlib)))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
