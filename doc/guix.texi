@@ -42541,6 +42541,36 @@ The package providing the @code{/bin/dbus-daemon} command.
 @end table
 @end deftp
 
+@defvar home-unclutter-service-type
+This is the service type for Unclutter, a program that runs on the
+background of an X11 session and detects when the X pointer hasn't moved
+for a specified idle timeout, after which it hides the cursor so that
+you can focus on the text underneath.  Its associated value must be a
+@code{home-unclutter-configuration} record, as shown below.
+
+A typical configuration, where we manually specify the idle timeout (in
+seconds), might look like this:
+
+@lisp
+(service home-unclutter-service-type
+         (home-unclutter-configuration
+          (idle-timeout 2)))
+@end lisp
+@end defvar
+
+@deftp {Data Type} home-unclutter-configuration
+The configuration record for @code{home-unclutter-service-type}.
+
+@table @asis
+@item @code{unclutter} (default: @code{unclutter}) (type: file-like)
+Unclutter package to use.
+
+@item @code{idle-timeout} (default: @code{5}) (type: integer)
+A timeout in seconds after which to hide cursor.
+@end table
+
+@end deftp
+
 @node Guix Home Services
 @subsection Guix Home Services
 
