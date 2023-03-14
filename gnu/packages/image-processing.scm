@@ -845,24 +845,24 @@ including 2D color images.")
            (lambda _
              (setenv "HOME" "/tmp") #t)))))
     (inputs
-     `(("vips" ,vips)
-       ("glib" ,glib)
-       ("libtiff" ,libtiff)
-       ("gtk+-2" ,gtk+-2)
-       ("libxml2" ,libxml2)
-       ("libexif" ,libexif)
-       ("libjpeg" ,libjpeg-turbo)        ;required by vips.pc
-       ("librsvg" ,librsvg)
-       ("fftw" ,fftw)
-       ("libgsf" ,libgsf)
-       ("imagemagick" ,imagemagick)
-       ("orc" ,orc)
-       ("matio" ,matio)
-       ("lcms" ,lcms)
-       ("libwebp" ,libwebp)
-       ("openexr" ,openexr-2)
-       ("poppler" ,poppler)
-       ("gsl" ,gsl)))
+     (list vips
+           glib
+           libtiff
+           gtk+-2
+           libxml2
+           libexif
+           libjpeg-turbo ;required by vips.pc
+           librsvg
+           fftw
+           libgsf
+           imagemagick
+           orc
+           matio
+           lcms
+           libwebp
+           openexr-2
+           poppler
+           gsl))
     (native-inputs
      (list flex bison pkg-config))
     (home-page "https://github.com/libvips/nip2")
