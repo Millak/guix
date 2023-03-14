@@ -2134,14 +2134,16 @@ and lookups.")
 (define-public python-license-expression
   (package
     (name "python-license-expression")
-    (version "1.2")
+    (version "30.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "license-expression" version))
        (sha256
-        (base32 "1g0sgphss8hbi1rpl4avy1nmbixmy9v194xdbvkjgl90vzgy2q3r"))))
-    (build-system python-build-system)
+        (base32 "0lvshl2fhwa568d3y3vmx45hdp8gk5w9yl3b2q5d66r5vqn1sfwl"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools-scm python-pytest))
     (propagated-inputs
      (list python-boolean.py))
     (home-page "https://github.com/nexB/license-expression")
