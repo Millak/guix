@@ -31931,7 +31931,10 @@ functions and static variables these libraries contain.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0bbm03687j9fspvk6nqspmjlvchlvbxydl0mrc1x9i1k6kqiy5c2"))))
+         "0bbm03687j9fspvk6nqspmjlvchlvbxydl0mrc1x9i1k6kqiy5c2"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "c_src/mimalloc/bin")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
