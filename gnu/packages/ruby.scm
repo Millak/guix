@@ -13183,20 +13183,19 @@ Pathname.")
 (define-public ruby-terminal-table
   (package
     (name "ruby-terminal-table")
-    (version "2.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "terminal-table" version))
-       (sha256
-        (base32
-         "18rbrh464ysqbdv53iwj0r8frshn65566kyj044cp3x9c2754jwh"))))
+    (version "3.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tj/terminal-table")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c3f7ng3lxq962n8sbmlsvjx6srh5i801wzsyhxmfz2g880f5jps"))))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'remove-gemfile-lock
-           (lambda _
-             (delete-file "Gemfile.lock")))
          (add-before 'check 'remove-unnecessary-dependencies
            (lambda _
              (substitute* "terminal-table.gemspec"
@@ -13212,7 +13211,7 @@ Pathname.")
     (propagated-inputs
      (list ruby-unicode-display-width))
     (native-inputs
-     (list ruby-rspec))
+     (list ruby-rspec ruby-term-ansicolor))
     (home-page "https://github.com/tj/terminal-table")
     (synopsis "Simple, feature rich ASCII table generation library")
     (description
