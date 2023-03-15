@@ -777,6 +777,47 @@ each with 3000 cells.  There are two samples which are bone marrow (BM), and
 two samples which are cord blood (CB).")
       (license license:gpl3))))
 
+(define-public r-conqur
+  (let ((commit "c7a88794efd4ecfe4d96988dceeec3b410222e48")
+        (revision "1"))
+    (package
+      (name "r-conqur")
+      (version (git-version "2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wdl2459/ConQuR")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19a7p2l67mgjy99i5ksjxlhzaqmrnyi1vzvwnhgnx2jrr6crj7rq"))))
+      (properties `((upstream-name . "ConQuR")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ade4
+                               r-ape
+                               r-compositions
+                               r-cqrreg
+                               r-doparallel
+                               r-dplyr
+                               r-fastdummies
+                               r-glmnet
+                               r-gplots
+                               r-gunifrac
+                               r-quantreg
+                               r-randomforest
+                               r-rocr
+                               r-vegan))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/wdl2459/ConQuR")
+      (synopsis "Batch effects removal for microbiome data")
+      (description
+       "This package conducts batch effects removal from a taxa read count
+table by a conditional quantile regression method.  The distributional
+attributes of microbiome data - zero-inflation and over-dispersion, are
+simultaneously considered.")
+      (license license:gpl3))))
+
 (define-public r-p2data
   (let ((commit "7d4c0e17d7899f9d9b08ab2bf455abe150912f4c")
         (revision "1"))
