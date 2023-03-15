@@ -1999,6 +1999,8 @@ exec " gcc "/bin/" program
     (arguments
      `(#:tests? #f
        #:implicit-inputs? #f
+       #:guile ,%bootstrap-guile
+       ,@(package-arguments coreutils)
        ;; The %bootstrap-glibc for aarch64 and armhf doesn't have
        ;; $output/include/linux/prctl.h which causes some binaries
        ;; to fail to build with coreutils-9.0+.
@@ -2008,10 +2010,11 @@ exec " gcc "/bin/" program
                                     ;; the defaults to not install.
                                     "arch,coreutils,hostname"
                                     ;; fails due to missing headers.
-                                    ",timeout,sort")))
-           '())
-       #:guile ,%bootstrap-guile
-       ,@(package-arguments coreutils)))))
+                                    ",timeout,sort")
+                                  ,@(if (target-arm32?)
+                                      `("--disable-year2038")
+                                      `())))
+           '())))))
 
 (define diffutils-boot0
   (package
