@@ -17989,7 +17989,7 @@ Emacs.")
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
-    (version "1.11")
+    (version "1.13")
     (source
      (origin
        (method url-fetch)
@@ -17997,7 +17997,7 @@ Emacs.")
                            ".tar"))
        (sha256
         (base32
-         "1ifnk4bznykj34s4yh0gq5nyzja7mlv60krxa47j842grpndq2hp"))))
+         "1yg6ddldd2qnnhlhc2r5rq7rjc0pigqjgzpvnqqb33nssw1lkw82"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-external-completion
