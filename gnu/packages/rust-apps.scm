@@ -107,6 +107,8 @@
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
         ("rust-url" ,rust-url-2))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/mbrubeck/agate")
     (synopsis "Very simple server for the Gemini hypertext protocol")
     (description
