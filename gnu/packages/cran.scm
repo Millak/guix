@@ -3427,6 +3427,30 @@ objects in HTML format.")
 and vice-versa.")
     (license license:gpl2+)))
 
+(define-public r-fastdummies
+  (package
+    (name "r-fastdummies")
+    (version "1.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "fastDummies" version))
+              (sha256
+               (base32
+                "1pw1bpp69sbs8yc1s5ffz11q249ljfwbgfrq6irg5pyp37z38fdx"))))
+    (properties `((upstream-name . "fastDummies")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table r-stringr r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/jacobkap/fastDummies")
+    (synopsis "Create dummy columns and rows from categorical variables")
+    (description
+     "This package creates dummy columns from columns that have categorical
+variables (character or factor types).  You can also specify which columns to
+make dummies out of, or which columns to ignore.  Also creates dummy rows from
+character, factor, and Date columns.  This package provides a significant
+speed increase from creating dummy variables through @code{model.matrix()}.")
+    (license license:expat)))
+
 (define-public r-fastmap
   (package
     (name "r-fastmap")
