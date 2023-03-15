@@ -10222,7 +10222,7 @@ a RPG style habit tracker and todo list.")
 (define-public emacs-zenburn-theme
   (package
     (name "emacs-zenburn-theme")
-    (version "2.7.0")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -10231,7 +10231,7 @@ a RPG style habit tracker and todo list.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1991s1gz2i3jchf0yvcsjjb5flwn13ifbnnfkqqrxxvy2imfh18q"))))
+        (base32 "00zyx2knfchxkml19kf4wfgigsbgzqf47mvbgrmk3nfznnnnyvmf"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/bbatsov/zenburn-emacs")
     (synopsis "Low contrast color theme for Emacs")
