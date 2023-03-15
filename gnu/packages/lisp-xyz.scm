@@ -24191,7 +24191,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -24201,7 +24201,7 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "1y1za2vm7m1bhkj6ssc29jvs9p82swjvclnhm9xyp2b275ykzz7l"))
+         "0djs16v77ng14d26wpxf5qby2d3l1pfsd2c1qkg4wv6mnk16imnq"))
        (modules '((guix build utils)))
        (snippet
         `(begin
