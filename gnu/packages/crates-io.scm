@@ -44423,29 +44423,26 @@ Python code from a Rust binary is also supported.")
   (package
     (inherit rust-pyo3-0.16)
     (name "rust-pyo3")
-    (version "0.15.1")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "082p014xd8ipwnfsq1ln871wkslxmbrxd7kpqwa0mbq53jzivw3w"))
+        (base32 "0ljp3m1frg8y50al4cbadwxfwwrgsvslmljclp4cf20y4ykm07fl"))
        (modules '((guix build utils)))
        (snippet
-        ;; XXX: Relax "dev-dependencies.criterion"; this must match the
-        ;; version of RUST-CRITERION-0.3.
-        '(substitute* "Cargo.toml"
-           (("\"=0\\.3\\.4\"")
-            "\"^0.3.4\"")))))
-    (build-system cargo-build-system)
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-eyre" ,rust-eyre-0.6)
         ("rust-hashbrown" ,rust-hashbrown-0.11)
-        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indexmap" ,rust-indexmap-1.6)
         ("rust-indoc" ,rust-indoc-0.3)
         ("rust-inventory" ,rust-inventory-0.1)
         ("rust-libc" ,rust-libc-0.2)
@@ -44459,7 +44456,8 @@ Python code from a Rust binary is also supported.")
         ("rust-unindent" ,rust-unindent-0.1))
        #:cargo-development-inputs
        (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
-        ("rust-bitflags" ,rust-bitflags-1.2)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-clap" ,rust-clap-2)
         ("rust-criterion" ,rust-criterion-0.3)
         ("rust-half" ,rust-half-1)
         ("rust-proptest" ,rust-proptest-0.10)
