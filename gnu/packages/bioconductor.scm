@@ -17338,13 +17338,13 @@ objects from the @code{graph} package.")
 (define-public r-fishpond
   (package
     (name "r-fishpond")
-    (version "2.4.0")
+    (version "2.4.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "fishpond" version))
               (sha256
                (base32
-                "112jd53wbiv1w0n8dc4qn6257wbbbg5i20s9wlvaw98jma94afa6"))))
+                "0kc1xzq03kz548rfinxhc7gxm6021502b6v7bg2har0aq4vx79ml"))))
     (properties `((upstream-name . "fishpond")))
     (build-system r-build-system)
     (inputs (list zlib))
@@ -17357,7 +17357,6 @@ objects from the @code{graph} package.")
            r-matrix
            r-matrixstats
            r-qvalue
-           r-rcpp
            r-s4vectors
            r-singlecellexperiment
            r-summarizedexperiment
