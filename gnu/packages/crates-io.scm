@@ -1630,6 +1630,8 @@ deadlock, like the standard Barrier).")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/brave/adblock-rust/")
     (synopsis "Adblock Plus syntax filter parsing and matching")
     (description "This package provides native Rust module for Adblock Plus
