@@ -1671,6 +1671,8 @@ runs a command whenever it detects modifications.")
         ("rust-url" ,rust-url-2)
         ("rust-uuid" ,rust-uuid-0.8)
         ("rust-zeroize" ,rust-zeroize-1))))
+    (native-inputs
+     (list perl))
     (home-page "https://git.tozt.net/rbw")
     (synopsis "Unofficial Bitwarden CLI")
     (description "This package is an unofficial command line client for
