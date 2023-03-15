@@ -178,7 +178,7 @@ low-end hardware and serving many concurrent requests.")
        (("rust-serde-bytes" ,rust-serde-bytes-0.11)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (native-inputs
-     (list pkg-config))
+     (list perl pkg-config))
     (inputs
      (list at-spi2-core
            gtk
