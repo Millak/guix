@@ -28735,6 +28735,32 @@ or numerical index.  A corresponding hash set type is also provided.")
         ("rust-rand" ,rust-rand-0.7)
         ("rust-serde-derive" ,rust-serde-derive-1))))))
 
+(define-public rust-indexmap-1.6
+  (package
+    (inherit rust-indexmap-1)
+    (name "rust-indexmap")
+    (version "1.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "indexmap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1wxfh55zlrlpdxfcvvvj6wwc46f23cnb0j9q71190yl9pyh4aj42"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.9)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-fnv" ,rust-fnv-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-serde-derive" ,rust-serde-derive-1))))))
+
 (define-public rust-indicatif-0.16
   (package
     (name "rust-indicatif")
