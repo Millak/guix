@@ -16755,16 +16755,50 @@ gene selection, testing relationships, and so on.")
 (define-public r-biocpkgtools
   (package
     (name "r-biocpkgtools")
-    (version "1.16.0")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocPkgTools" version))
        (sha256
         (base32
-         "1av7vnw6z9cw7j4d3vpi8mfs5h4pn4yr2wc8ybg7ad1d686ah845"))))
+         "0cl88adkbxv7sz07b8h5qpwwkwg85jx6xjinkd0yjac4xm7s4lyf"))
+       (snippet
+        '(for-each delete-file
+                   '("inst/htmlwidgets/lib/bioc_explore/bootstrap.min.js"
+                     "inst/htmlwidgets/lib/bioc_explore/d3.v3.min.js"
+                     "inst/htmlwidgets/lib/bioc_explore/jquery-2.2.4.min.js"
+                     "inst/htmlwidgets/lib/bioc_explore/underscore-min.js")))))
     (properties `((upstream-name . "BiocPkgTools")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/bioc_explore"
+               (call-with-values
+                   (lambda ()
+                     (unzip2
+                      `((,(assoc-ref inputs "js-bootstrap")
+                         "bootstrap.min.js")
+                        (,(assoc-ref inputs "js-d3")
+                         "d3.v3.min.js")
+                        (,(assoc-ref inputs "js-jquery")
+                         "jquery-2.2.4.min.js")
+                        (,(search-input-file inputs "/underscore.js")
+                         "underscore-min.js"))))
+                 (lambda (sources targets)
+                   (for-each (lambda (source target)
+                               (format #true "Processing ~a --> ~a~%"
+                                       source target)
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target)))
+                             sources targets)))))))))
     (propagated-inputs
      (list r-biocfilecache
            r-biocmanager
@@ -16788,7 +16822,40 @@ gene selection, testing relationships, and so on.")
            r-tibble
            r-xml2))
     (native-inputs
-     (list r-knitr))
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("js-bootstrap"
+        ,(origin
+           (method url-fetch)
+           (uri
+            "https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/js/bootstrap.js")
+           (sha256
+            (base32
+             "07fm28xbkb7a5n7zgmfxgbl2g5j010r4gvc54y79v1f119s3kz6y"))))
+       ("js-d3"
+        ,(origin
+           (method url-fetch)
+           (uri "https://d3js.org/d3.v3.js")
+           (sha256
+            (base32
+             "1arr7sr08vy7wh0nvip2mi7dpyjw4576vf3bm45rp4g5lc1k1x41"))))
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-2.2.4.js")
+           (sha256
+            (base32
+             "18m6qmmsm3knvybf6gpwmwiasi05y98gcpb364if8qh94gv90gl9"))))
+       ("js-underscore"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/jashkenas/underscore")
+                 (commit "1.8.3")))
+           (file-name (git-file-name "underscorejs" "1.8.3"))
+           (sha256
+            (base32
+             "1r54smxpl3c6jg6py29xjc2l1z49rlm1h48vr9i57wvnkbnbl0h3"))))))
     (home-page "https://github.com/seandavi/BiocPkgTools")
     (synopsis "Collection of tools for learning about Bioconductor packages")
     (description
