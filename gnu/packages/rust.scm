@@ -696,6 +696,10 @@ safety and thread safety guarantees.")
       (inputs (modify-inputs (package-inputs base-rust)
                              (replace "llvm" llvm-15))))))
 
+(define rust-1.68
+  (rust-bootstrapped-package
+   rust-1.67 "1.68.0" "0qkdm4naj729bl72pl513p0xxpmcwyskmd8gfyj358i3kyqxix7a"))
+
 ;;; Note: Only the latest versions of Rust are supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
