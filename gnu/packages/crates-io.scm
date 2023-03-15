@@ -44332,21 +44332,20 @@ ecosystem.")
   (package
     (inherit rust-pyo3-macros-0.16)
     (name "rust-pyo3-macros")
-    (version "0.15.1")
+    (version "0.15.2")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "pyo3-macros" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0mfp3yz6743vrsp2vh8is3gbyzlxzx4bam5wnhi9g6hz5friww37"))))
-    (build-system cargo-build-system)
+         (base32 "0fmrzl185i00c6kdvy7icmhhc99c51pyha46incqggk4qvl4gch0"))))
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.15)
-         ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))))))
+     `(#:cargo-inputs
+       (("rust-pyo3-macros-backend" ,rust-pyo3-macros-backend-0.15)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (native-inputs (list python))))
 
 (define-public rust-pyo3-0.16
   (package
