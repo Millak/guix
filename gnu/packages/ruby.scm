@@ -1337,14 +1337,14 @@ under the hood.")
 (define-public ruby-slim
   (package
     (name "ruby-slim")
-    (version "4.1.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "slim" version))
        (sha256
         (base32
-         "0gjx30g84c82qzg32bd7giscvb4206v7mvg56kc839w9wjagn36n"))))
+         "1rp437r8hr9kdgabb7c96yw4z2wyrajl4cxiij038y10f8i6hbn4"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -1358,18 +1358,16 @@ under the hood.")
                 "def skipped_test_render_with_markdown"))
              (substitute* "test/translator/test_translator.rb"
                (("raise (\"Missing test for.*)" _ tail)
-                (string-append "print " tail)))
-             #t))
+                (string-append "print " tail)))))
          ;; See: https://salsa.debian.org/ruby-team/ruby-slim/-/commit/
          ;; 824862bd99d1675bc699d8fc71ba965a785c1f44.
          (add-after 'unpack 'prevent-bundler-interference
            (lambda _
              (substitute* "Rakefile"
                (("require 'bundler/setup'") "nil")
-               (("Bundler::GemHelper\\.install_tasks") "nil"))
-             #t)))))
+               (("Bundler::GemHelper\\.install_tasks") "nil")))))))
     (native-inputs
-     (list ruby-rack-test ruby-sinatra))
+     (list ruby-rack-test ruby-rspec-core ruby-sinatra))
     (propagated-inputs
      (list ruby-temple ruby-tilt))
     (synopsis "Minimalist template language for Ruby")
