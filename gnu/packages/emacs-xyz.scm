@@ -21782,10 +21782,17 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
                 "186h6wbjwh7ws3jmc81wx2cv7gbppl2j3gwdq67crhml5xjc4fh7"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'set-home
-                    (lambda _
-                      (setenv "HOME" "/tmp"))))))
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "--batch" "-L" "."
+                             "-l" "test/citar-test.el"
+                             "-l" "test/citar-file-test.el"
+                             "-l" "test/citar-format-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'set-home
+                     (lambda _
+                       (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list emacs-auctex
                              emacs-citeproc-el
                              emacs-embark
