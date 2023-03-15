@@ -44203,19 +44203,17 @@ ecosystem.")
   (package
     (inherit rust-pyo3-build-config-0.16)
     (name "rust-pyo3-build-config")
-    (version "0.15.1")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pyo3-build-config" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0aw5zfqwzj5rzfxjyqvrqfam138d1009jh6kia4xrgdz538y9yfv"))))
+        (base32 "0414biclhrxv6y0bjm6s9fq9z6yah393ffkd8748pqdq83y3k4kp"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-once-cell" ,rust-once-cell-1))))
-    (native-inputs '())))
+     `(#:cargo-inputs
+       (("rust-once-cell" ,rust-once-cell-1))))))
 
 (define-public rust-pyo3-ffi-0.16
   (package
