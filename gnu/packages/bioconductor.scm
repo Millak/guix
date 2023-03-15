@@ -9988,13 +9988,13 @@ information.")
 (define-public r-glmgampoi
   (package
     (name "r-glmgampoi")
-    (version "1.10.1")
+    (version "1.10.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "glmGamPoi" version))
               (sha256
                (base32
-                "1qxzbh5i208cpghmysailachj8xpx4g4iqk8552xjpjkn54pkpbd"))))
+                "1ihjqzdhx6k99gdd4556xxn9822sblg6vmblcmbzml01bhv6xzar"))))
     (properties `((upstream-name . "glmGamPoi")))
     (build-system r-build-system)
     (propagated-inputs
