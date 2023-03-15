@@ -1271,7 +1271,7 @@ Stimulus can be used.")
 (define-public ruby-web-console
   (package
     (name "ruby-web-console")
-    (version "4.1.0")
+    (version "4.2.0")
     (source
      (origin
        ;; Download from GitHub as test files are not provided in the gem.
@@ -1282,7 +1282,7 @@ Stimulus can be used.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0azk8nmimnjbh74vxgwcj9jr588rj7kb5rrlclcjfjsw9jqjzckc"))))
+         "07mg9nq7h48n01hps1m0g2nk94zknab6mrcxsv8x2vaf2xfgjilg"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases
@@ -1298,10 +1298,9 @@ Stimulus can be used.")
                (("group :development") "[].each")
                ;; tzinfo-data is propagated by ruby-activesupport, but it
                ;; needs to be in the Gemfile to become available.
-               (("group :test do") "group :test do\n  gem 'tzinfo-data'"))
-             #t)))))
+               (("group :test do") "group :test do\n  gem 'tzinfo-data'")))))))
     (propagated-inputs
-     (list ruby-actionview ruby-activemodel ruby-bindex ruby-railties))
+     (list ruby-actionview ruby-activemodel ruby-arel ruby-bindex ruby-railties))
     (native-inputs
      (list bundler ruby-rails ruby-mocha ruby-simplecov))
     (synopsis "Debugging tool for your Ruby on Rails applications")
