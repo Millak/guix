@@ -18308,11 +18308,12 @@ highlighting.")
 (define-public emacs-jsonrpc
   ;; Commit refers to a commit in the Emacs repository, as jsonrpc.el was
   ;; upstreamed.  By convention, it should refer to a commit in which
-  ;; jsonrpc.el was actually touched.
-  (let ((commit "8bf4cdcf79bc3254a9169f28f68922ab83bd4e78")) ;version bump
+  ;; jsonrpc.el was actually touched.  In order to find this, you can refer to
+  ;; <https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=grep&q=jsonrpc>.
+  (let ((commit "2d835d64ba339bb375f0d55c4679149d6da3f209")) ;version bump
     (package
       (name "emacs-jsonrpc")
-      (version "1.0.16")
+      (version "1.0.17")
       (source
        (origin
          (method git-fetch)
@@ -18322,7 +18323,7 @@ highlighting.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1mka35kparv7z52kknh9nam4wyczcp73glp48q24v05gm42a8xxr"))))
+           "1jv8pcq0yad5wmqsdvamwq6674p6ghpyyznbd2x5mlxyp6za6cx5"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
