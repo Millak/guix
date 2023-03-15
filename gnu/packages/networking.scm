@@ -56,6 +56,7 @@
 ;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3057,56 +3058,54 @@ The filters can be aggregated and exported in the most common formats.")
                    license:bsd-2))))    ; everything else, but missing headers
 
 (define-public thc-ipv6
-  (let ((revision "0")
-        (commit "4bb72573e0950ce6f8ca2800a10748477020029e"))
-    (package
-      (name "thc-ipv6")
-      (version (git-version "3.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/vanhauser-thc/thc-ipv6")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1x5i6vbsddqc2yks7r1a2fw2fk16qxvd6hpzh1lykjfpkal8fdir"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-         #:tests? #f ; No test suite.
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'use-source-date-epoch-in-manpages
-             ;; For reproducible builds
-             (lambda _
-               (substitute* "Makefile"
-                 (("date --iso-8601")
-                  "date --iso-8601 --utc --date=@$(SOURCE_DATE_EPOCH)"))))
-           (delete 'configure) ; No ./configure script.
-           (add-before 'build 'patch-paths
-             (lambda _
-               (substitute* "Makefile"
-                 (("/bin/echo") "echo"))
-               #t))
-           (add-after 'install 'install-more-docs
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (doc (string-append out "/share/thc-ipv6/doc")))
-                 (install-file "README" doc)
-                 (install-file "HOWTO-INJECT" doc)
-                 #t))))))
-      ;; TODO Add libnetfilter-queue once packaged.
-      (inputs
-       (list libpcap openssl perl))
-      (home-page "https://github.com/vanhauser-thc/thc-ipv6")
-      (synopsis "IPv6 security research toolkit")
-      (description "The THC IPv6 Toolkit provides command-line tools and a library
+  (package
+    (name "thc-ipv6")
+    (version "3.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vanhauser-thc/thc-ipv6")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07kwika1zdq62s5p5z94xznm77dxjxdg8k0hrg7wygz50151nzmx"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No test suite.
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefile
+            (lambda _
+              (substitute* "Makefile"
+                ;; For reproducible builds
+                (("date --iso-8601")
+                 "date --iso-8601 --utc --date=@$(SOURCE_DATE_EPOCH)")
+                (("/bin/echo") "echo"))))
+          (delete 'configure) ; No ./configure script.
+          (add-after 'install 'install-more-docs
+            (lambda _
+              (let ((doc (string-append #$output "/share/thc-ipv6/doc")))
+                (install-file "README" doc)
+                (install-file "HOWTO-INJECT" doc)))))))
+    (inputs
+     (list libnetfilter-queue
+           libnfnetlink
+           libpcap
+           openssl
+           perl))
+    (home-page "https://github.com/vanhauser-thc/thc-ipv6")
+    (synopsis "IPv6 security research toolkit")
+    (description "The THC IPv6 Toolkit provides command-line tools and a library
 for researching IPv6 implementations and deployments.  It requires Linux 2.6 or
 newer and only works on Ethernet network interfaces.")
-      ;; AGPL 3 with exception for linking with OpenSSL. See the 'LICENSE' file in
-      ;; the source distribution for more information.
-      (license license:agpl3))))
+    ;; AGPL 3 with exception for linking with OpenSSL. See the 'LICENSE' file in
+    ;; the source distribution for more information.
+    (license license:agpl3)))
 
 (define-public bmon
   (package
