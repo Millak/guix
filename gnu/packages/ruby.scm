@@ -13232,31 +13232,29 @@ Unicode formatted tables.")
                 "0cqkh78jw8scrajyx5nla0vwm9fvp2qql3kdcvvplcq9mazy8snq"))))
     (build-system ruby-build-system)
     (arguments
-     ;; No rakefile, but a test subdirectory.
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-i18n
-           (lambda _
-             (substitute* ".gemspec"
-               (("~> 0.7") ">= 0.7")
-               (("~> 1.14") ">= 1.14"))
-             #t)))))
+     (list #:tests? #f                  ;no rakefile, but a test subdirectory
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'fix-i18n
+                 (lambda _
+                   (substitute* ".gemspec"
+                     (("~> 0.7") ">= 0.7")
+                     (("~> 1.14") ">= 1.14")))))))
     (propagated-inputs
-     `(("ruby-addressable" ,ruby-addressable)
-       ("ruby-colorator" ,ruby-colorator)
-       ("ruby-em-websocket" ,ruby-em-websocket)
-       ("ruby-i18n" ,ruby-i18n)
-       ("ruby-jekyll-sass-converter" ,ruby-jekyll-sass-converter)
-       ("ruby-jekyll-watch" ,ruby-jekyll-watch)
-       ("ruby-kramdown" ,ruby-kramdown-parser-gfm)
-       ("ruby-liquid" ,ruby-liquid)
-       ("ruby-mercenary" ,ruby-mercenary)
-       ("ruby-pathutil" ,ruby-pathutil)
-       ("ruby-rouge" ,ruby-rouge)
-       ("ruby-safe-yaml" ,ruby-safe-yaml)
-       ("ruby-sassc" ,ruby-sassc)
-       ("ruby-terminal-table" ,ruby-terminal-table)))
+     (list ruby-addressable
+           ruby-colorator
+           ruby-em-websocket
+           ruby-i18n
+           ruby-jekyll-sass-converter
+           ruby-jekyll-watch
+           ruby-kramdown-parser-gfm
+           ruby-liquid
+           ruby-mercenary
+           ruby-pathutil
+           ruby-rouge
+           ruby-safe-yaml
+           ruby-sassc
+           ruby-terminal-table))
     (home-page "https://jekyllrb.com/")
     (synopsis "Static site generator")
     (description "Jekyll is a simple, blog aware, static site generator.")
