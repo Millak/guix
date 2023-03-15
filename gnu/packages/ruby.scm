@@ -1748,7 +1748,7 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rubocop-hq/rubocop-rspec")
+             (url "https://github.com/rubocop/rubocop-rspec")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -1759,7 +1759,7 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
     (synopsis "Code style checking for RSpec files")
     (description "This package provides a plugin for the RuboCop code style
 enforcing & linting tool.")
-    (home-page "https://github.com/rubocop-hq/rubocop-rspec")
+    (home-page "https://github.com/rubocop/rubocop-rspec")
     (license license:expat)))
 
 (define-public ruby-rubocop-rspec
