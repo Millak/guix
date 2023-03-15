@@ -5284,6 +5284,23 @@ Minitest.  It is inspired by the @code{test-unit-power_assert} gem.")
     (home-page "https://github.com/hsbt/minitest-power_assert")
     (license license:bsd-2)))
 
+(define-public ruby-minitest-profile
+  (package
+    (name "ruby-minitest-profile")
+    (version "0.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minitest-profile" version))
+              (sha256
+               (base32
+                "13h4nwbq6yv7hsaa7dpj90lry4rc5qqnpzvm9n2s57mm2xi31xfa"))))
+    (build-system ruby-build-system)
+    (synopsis "Display the slowest tests in a MiniTest suite")
+    (description "This package provides a MiniTest plugin for displaying the
+slowest tests in a minitest suite.")
+    (home-page "https://github.com/nmeans/minitest-profile")
+    (license license:expat)))
+
 (define-public ruby-minitest-pretty-diff
   ;; Use git reference because gem is out of date and does not contain testing
   ;; script.  There are no releases on GitHub.
