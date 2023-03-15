@@ -4233,21 +4233,38 @@ localization.")
 (define-public ruby-temple
   (package
     (name "ruby-temple")
-    (version "0.8.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "temple" version))
-       (sha256
-        (base32
-         "060zzj7c2kicdfk6cpnn40n9yjnhfrr13d0rsbdhdij68chp2861"))))
+    (version "0.10.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/judofyr/temple")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rr9fnlcgj9nm3b6hzzjsvcw8x3y7z48j7slk7xxff2mh8s7y3y0"))))
     (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-tilt ruby-bacon ruby-erubis))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'replace-git-ls-files 'replace-more-git-ls-files
+                 (lambda _
+                   (substitute* "temple.gemspec"
+                     ;; There no longer are test, spec or features
+                     ;; directories.
+                     ((".*`git ls-files -- \\{test,spec,features}/\\*`.*")
+                      "")
+                     ;; There isn't any bin directory either.
+                     ((".*`git ls-files -- bin/\\*`.*")
+                      ""))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "rspec")))))))
+    (native-inputs (list ruby-bacon ruby-erubi ruby-rspec ruby-tilt))
     (synopsis "Template compilation framework in Ruby")
-    (description
-     "Temple is an abstraction and framework for compiling templates to pure
-Ruby.")
+    (description "Temple is an abstraction and framework for compiling
+templates to pure Ruby.")
     (home-page "https://github.com/judofyr/temple")
     (license license:expat)))
 
