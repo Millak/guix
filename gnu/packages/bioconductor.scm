@@ -10848,16 +10848,28 @@ the numbers of cells across batches.")
 (define-public r-mast
   (package
     (name "r-mast")
-    (version "1.24.0")
+    (version "1.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MAST" version))
        (sha256
         (base32
-         "133ijkw5sd0gl38dfr7qfqvvp2df7lg6j8vkvy54zlpamkg6l2x1"))))
+         "1c0lc4abnb859x481ky6d3kc9zzxwvf4kqgwxyqapc4g72b4vh65"))
+       (snippet
+        '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "MAST")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "esbuild"
+                     (assoc-ref inputs "js-jquery-sticky-kit")
+                     "--minify"
+                     "--outfile=docs/jquery.sticky-kit.min.js"))))))
     (propagated-inputs
      (list r-abind
            r-biobase
@@ -10872,7 +10884,16 @@ the numbers of cells across batches.")
            r-stringr
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     `(("esbuild" ,esbuild)
+       ("js-jquery-sticky-kit"
+        ,(origin
+           (method url-fetch)
+           (uri
+            "https://cdn.jsdelivr.net/gh/leafo/sticky-kit@v1.1.2/jquery.sticky-kit.js")
+           (sha256
+            (base32
+             "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))
+       ("r-knitr" ,r-knitr)))
     (home-page "https://github.com/RGLab/MAST/")
     (synopsis "Model-based analysis of single cell transcriptomics")
     (description
