@@ -287,6 +287,42 @@
        "AC Ispell is an Ispell and Aspell completion source for Auto Complete.")
       (license license:gpl3+))))
 
+(define-public emacs-ac-php
+  (package
+    (name "emacs-ac-php")
+    (version "2.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xcwen/ac-php")
+             (commit "dc563f4b1efeac8ae75f217532f4c99b4ba417de")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "188hisppjbpia3bmrpsxvkfi8xkirisarnrpvkk3ya4k8lv4z13p"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "ert-runner")))
+    (inputs
+     (list emacs-auto-complete
+           emacs-company
+           emacs-helm
+           emacs-dash
+           emacs-php-mode
+           emacs-s
+           emacs-f
+           emacs-popup
+           emacs-xcscope))
+    (native-inputs
+     (list emacs-ert-runner))
+    (home-page "https://github.com/xcwen/ac-php")
+    (synopsis "emacs auto-complete & company-mode for php")
+    (description
+     "This package provides Auto Complete and Company back-ends for PHP.")
+    (license license:gpl3+)))
+
 (define-public emacs-ace-jump-helm-line
   (let ((commit "1483055255df3f8ae349f7520f05b1e43ea3ed37")
         (revision "0"))
