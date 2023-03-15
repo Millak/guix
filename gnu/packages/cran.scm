@@ -9700,6 +9700,29 @@ Genomics Data Server (CGDS), hosted by the Computational Biology Center at
 Memorial-Sloan-Kettering Cancer Center (MSKCC).")
     (license license:lgpl3)))
 
+(define-public r-cqrreg
+  (package
+    (name "r-cqrreg")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "cqrReg" version))
+              (sha256
+               (base32
+                "1788hnm1qd5mv5bcizz2h170jg6954sfggjnfqcwfwg167px0df2"))))
+    (properties `((upstream-name . "cqrReg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-quantreg r-rcpp r-rcpparmadillo))
+    (home-page "https://cran.r-project.org/package=cqrReg")
+    (synopsis
+     "Quantile, composite quantile regression and regularized versions")
+    (description
+     "Estimate @dfn{quantile regression} (QR) and @dfn{composite quantile
+regression} (cqr) and with adaptive lasso penalty using @dfn{interior
+point} (IP), @dfn{majorize and minimize} (MM), @dfn{coordinate descent} (CD),
+and @dfn{alternating direction method of multipliers algorithms} (ADMM).")
+    (license license:gpl2+)))
+
 (define-public r-import
   (package
     (name "r-import")
