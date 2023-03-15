@@ -1297,6 +1297,8 @@ rebase.")
        (("rust-boxxy" ,rust-boxxy-0.11))))
     (inputs
      (list libpcap libseccomp))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/kpcyrd/sniffglue")
     (synopsis "Secure multithreaded packet sniffer")
     (description
