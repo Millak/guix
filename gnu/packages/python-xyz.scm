@@ -58,7 +58,7 @@
 ;;; Copyright © 2015, 2018 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
-;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2019, 2023 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
@@ -15309,17 +15309,29 @@ with a new public API, and RPython support.")
         (base32 "1czhh7s81sg0nrnf4zv0ydqi4f7s6sywf4ks4fd59vpx441ca39v"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "-k"
-                       (string-append   ; skip some failed tests
-                        "not test_sys_executable"
-                        " and not test_circular_macro_require"
-                        " and not test_macro_require"
-                        " and not test_requires_pollutes_core"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Hy includes a script that writes a version.py file that Hy uses to
+          ;; report its version. That script uses information from the git
+          ;; repository or the HY_VERSION environment variable. Therefore,
+          ;; these phases set HY_VERSION and then remove the support scripts
+          ;; which get installed in the root of the output.
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "HY_VERSION" #$version)))
+          (add-after 'install 'remove-installed-build-scripts
+            (lambda _
+              (delete-file-recursively (string-append #$output "/get_version"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "pytest" "-k"
+                        (string-append   ; skip some failed tests
+                         "not test_sys_executable"
+                         " and not test_circular_macro_require"
+                         " and not test_macro_require"
+                         " and not test_requires_pollutes_core"))))))))
     (native-inputs
      (list python-pytest-7.1 python-wheel))
     (propagated-inputs
