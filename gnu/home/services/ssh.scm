@@ -31,7 +31,6 @@
                 #:select (object->camel-case-string))
   #:autoload   (gnu packages base) (glibc-utf8-locales)
   #:use-module (gnu packages ssh)
-  #:use-module (shepherd support)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -271,7 +270,7 @@ client,@command{ssh}, and by other tools such as @command{guix deploy}.")
   (openssh          home-ssh-agent-openssh          ;file-like
                     (default openssh))
   (socket-directory home-ssh-agent-socket-directory ;string
-                    (default (string-append %user-runtime-dir "/ssh-agent")))
+                    (default #~(string-append %user-runtime-dir "/ssh-agent")))
   (extra-options    home-ssh-agent-extra-options    ;list of string
                     (default '())))
 
@@ -281,20 +280,20 @@ client,@command{ssh}, and by other tools such as @command{guix deploy}.")
     (($ <home-ssh-agent-configuration>
         openssh socket-directory extra-options)
      (let* ((ssh-agent (file-append openssh "/bin/ssh-agent"))
-            (socket-file (string-append socket-directory "/socket"))
-            (command `(,ssh-agent
-                       "-D"
-                       "-a" ,socket-file
-                       ,@extra-options))
-            (log-file (string-append %user-log-dir "/ssh-agent.log")))
+            (socket-file #~(string-append #$socket-directory "/socket"))
+            (command #~`(#$ssh-agent
+                         "-D" "-a" ,#$socket-file
+                         #$@extra-options))
+            (log-file #~(string-append %user-log-dir "/ssh-agent.log")))
        (list (shepherd-service
               (documentation "Run the ssh-agent.")
               (provision '(ssh-agent))
+              (modules '((shepherd support)))   ;for '%user-runtime-dir', etc.
               (start #~(lambda _
                          (unless (file-exists? #$socket-directory)
                            (mkdir-p #$socket-directory)
                            (chmod #$socket-directory #o700))
-                         (fork+exec-command '#$command #:log-file #$log-file)))
+                         (fork+exec-command #$command #:log-file #$log-file)))
               (stop #~(make-kill-destructor))))))))
 
 (define home-ssh-agent-service-type
