@@ -2714,32 +2714,28 @@ authentication.")
 (define-public ruby-omniauth-oauth2
   (package
     (name "ruby-omniauth-oauth2")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "omniauth-oauth2" version))
        (sha256
         (base32
-         "10fr2b58sp7l6nfdvxpbi67374hkrvsf507cvda89jjs0jacy319"))))
+         "0y4y122xm8zgrxn5nnzwg6w39dnjss8pcq2ppbpx9qn7kiayky5j"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-unnecessary-dependencies
-           (lambda _
-             ;; The coveralls gem submits coverage information to an online
-             ;; service, and is unnecessary when running the tests
-             (substitute* "Gemfile"
-               ((".*coveralls\"") ""))
-             (substitute* "spec/helper.rb"
-               (("require \"coveralls\"") "")
-               (("Coveralls::SimpleCov::Formatter") ""))
-             #t)))))
-    (propagated-inputs
-     (list ruby-oauth2 ruby-omniauth))
-    (native-inputs
-     (list bundler ruby-rspec ruby-simplecov ruby-rack-test ruby-webmock))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "spec/helper.rb"
+                     ;; This condition is used to require coveralls and
+                     ;; simplecov; override it to avoid these extraneous
+                     ;; requirements.
+                     (("RUBY_VERSION >= \"1.9\"")
+                      "false")))))))
+    (propagated-inputs (list ruby-oauth2 ruby-omniauth))
+    (native-inputs (list ruby-rspec ruby-rack-test ruby-webmock))
     (synopsis "Abstract OAuth2 strategy for OmniAuth")
     (description
      "This library provides a generic OAuth2 strategy for OmniAuth.  It
