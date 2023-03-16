@@ -3629,6 +3629,24 @@ entries_with_correct_timestamps")
     (home-page "https://github.com/rubyzip/rubyzip")
     (license license:bsd-2)))
 
+(define-public ruby-silent-stream
+  (package
+    (name "ruby-silent-stream")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "silent_stream" version))
+              (sha256
+               (base32
+                "10381fpvjzfjvhgfyv700607fpa29firgf52w5w5536m4fh6x63m"))))
+    (build-system ruby-build-system)
+    (synopsis "ActiveSupport stream silencing without ActiveSupport")
+    (description "SilentStream is an extraction of some parts of
+ActiveSupport's Kernel Reporting Core Extentions around silencing IO
+streams.")
+    (home-page "https://github.com/pboling/silent_stream")
+    (license license:expat)))
+
 (define-public ruby-simplecov-html
   (package
     (name "ruby-simplecov-html")
