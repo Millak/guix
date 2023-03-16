@@ -13054,18 +13054,37 @@ is compatible with stylesheets designed for pygments.")
 (define-public ruby-hashie
   (package
     (name "ruby-hashie")
-    (version "3.6.0")
+    (version "5.0.0")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "hashie" version))
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/hashie/hashie")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "13bdzfp25c8k51ayzxqkbzag3wj5gc1jd8h7d985nsq6pn57g5xh"))))
+                "0ihami0cdn71cvwzwgr3vxqvqi0ifqsna0vlyqiqlhsnf93w0cm8"))))
     (build-system ruby-build-system)
-    (native-inputs
-     (list bundler))
-    (arguments `(#:tests? #f)); FIXME: Could not locate Gemfile or .bundle/ directory
-    (home-page "https://github.com/intridea/hashie")
+    (arguments
+     (list #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-bundler
+                          (lambda _
+                            (substitute* "Rakefile"
+                              ((".*require 'bundler'.*") "")
+                              ((".*Bundler.setup.*") "")
+                              (("Bundler::GemHelper\\.install_tasks") ""))))
+                        (add-after 'unpack 'disable-rubocop
+                          (lambda _
+                            (substitute* "Rakefile"
+                              (("require 'rubocop/rake_task'") "")
+                              (("RuboCop::RakeTask.new") ""))))
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            ;; Contains multiple extraneous dependencies.
+                            (delete-file "Gemfile"))))))
+    (native-inputs (list ruby-json ruby-pry ruby-rspec ruby-rspec-pending-for))
+    (home-page "https://github.com/hashie/hashie")
     (synopsis "Extensions to Ruby Hashes")
     (description "Hashie is a collection of classes and mixins that make Ruby
 hashes more powerful.")
