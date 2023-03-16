@@ -323,7 +323,7 @@ other objects that must match the 'format' escapes in MESSAGE."
    ;; XXX: We should arrange so that the initial indent is wider.
    (parameterize ((%text-width (max 15 (- (terminal-columns) 5))))
      (texi->plain-text (match arguments
-                         (() message)
+                         (() (format #f message))
                          (_  (apply format #f message
                                     (map (match-lambda
                                            ((? string? str)
