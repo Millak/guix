@@ -13091,13 +13091,13 @@ external applications from within Ruby programs.")
 (define-public ruby-liquid
   (package
     (name "ruby-liquid")
-    (version "4.0.0")
+    (version "4.0.3")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "liquid" version))
               (sha256
                (base32
-                "17fa0jgwm9a935fyvzy8bysz7j5n1vf1x2wzqkdfd5k08dbw3x2y"))))
+                "0zhg5ha8zy8zw9qr3fl4wgk4r5940n4128xm2pn4shpbzdbsj5by"))))
     (build-system ruby-build-system)
     (arguments `(#:tests? #f)); No rakefile
     (home-page "https://shopify.github.io/liquid/")
