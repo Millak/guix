@@ -2626,19 +2626,48 @@ complexity.")
 (define-public ruby-oauth2
   (package
     (name "ruby-oauth2")
-    (version "1.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "oauth2" version))
-       (sha256
-        (base32 "15i9z4j5pcjkr30lkcd79xzbr4kpmy0bqgwa436fqyqk646fv036"))))
+    (version "2.0.9")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://gitlab.com/oauth-xx/oauth2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "191j1f4gjw8wij1jy2fvddgi8cv1mm0ki7v0b0795clix1avnj29"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f))                    ; no included tests
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "Gemfile"
+                              (("^linting = .*")
+                               "linting = false\n")
+                              (("^coverage = .*")
+                               "coverage = false\n")
+                              (("^debug = .*")
+                               "debug = false\n"))
+                            (substitute* "spec/spec_helper.rb"
+                              (("^RUN_COVERAGE = .*")
+                               "RUN_COVERAGE = false\n")
+                              (("^ALL_FORMATTERS = .*")
+                               "ALL_FORMATTERS = false\n")))))))
+    (native-inputs
+     (list ruby-addressable
+           ruby-backports
+           ruby-rexml
+           ruby-rspec-block-is-expected
+           ruby-rspec-pending-for
+           ruby-rspec-stubbed-env
+           ruby-silent-stream))
     (propagated-inputs
-     (list ruby-faraday ruby-jwt ruby-multi-json ruby-multi-xml
-           ruby-rack))
+     (list ruby-faraday
+           ruby-jwt
+           ruby-multi-json
+           ruby-multi-xml
+           ruby-rack
+           ruby-snaky-hash))
     (synopsis "Ruby wrapper for the OAuth 2.0")
     (description
      "This package provides a Ruby wrapper for the OAuth 2.0 protocol built
