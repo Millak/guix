@@ -6722,7 +6722,7 @@ classes implemented in C.")
 (define-public ruby-single-cov
   (package
     (name "ruby-single-cov")
-    (version "1.3.2")
+    (version "1.9.1")
     (home-page "https://github.com/grosser/single_cov")
     (source (origin
               (method git-fetch)
@@ -6731,28 +6731,29 @@ classes implemented in C.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05qdzpcai1p23a120gb9bxkfl4y73k9hicx34ch2lsk31lgi9bl7"))))
+                "1w4k81f2mdg620m6pwkrqayddnz9mr8qx0myqn33mw8k6imfip05"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "default"
+     '(#:test-target "spec"             ;to avoid rubocop requirement
        #:phases (modify-phases %standard-phases
                   (replace 'replace-git-ls-files
                     (lambda _
                       (substitute* "single_cov.gemspec"
                         (("`git ls-files lib/ bin/ MIT-LICENSE`")
-                         "`find lib/ bin/ MIT-LICENSE -type f | sort`"))
-                      #t))
+                         ;; There no longer appear to be a 'bin'
+                         ;; sub-directory.
+                         "`find lib/ MIT-LICENSE -type f | sort`"))))
                   (add-before 'check 'remove-version-constraints
                     (lambda _
-                      (delete-file "Gemfile.lock")
-                      #t))
-                  (add-before 'check 'make-files-writable
+                      (delete-file "Gemfile.lock")))
+                  (add-before 'check 'relax-requirements
                     (lambda _
-                      ;; Tests need to create local directories and open files
-                      ;; with write permissions.
-                      (for-each make-file-writable
-                                (find-files "specs" #:directories? #t))
-                      #t))
+                      ;; Remove extraneous requirements.
+                      (substitute* "Rakefile"
+                        ((".*require.*bump.*") ""))
+                      (substitute* "Gemfile"
+                        ((".*gem \"bump\".*") "")
+                        ((".*gem \"rubocop\".*") ""))))
                   (add-before 'check 'disable-failing-test
                     (lambda _
                       ;; XXX: This test copies assets from minitest, but can
@@ -6760,10 +6761,8 @@ classes implemented in C.")
                       ;; it for now.
                       (substitute* "specs/single_cov_spec.rb"
                         (("it \"complains when coverage is bad\"")
-                         "xit \"complains when coverage is bad\""))
-                      #t)))))
-    (native-inputs
-     (list ruby-bump ruby-minitest ruby-rspec ruby-simplecov))
+                         "xit \"complains when coverage is bad\"")))))))
+    (native-inputs (list ruby-minitest ruby-rspec ruby-simplecov))
     (synopsis "Code coverage reporting tool")
     (description
      "This package provides actionable code coverage reports for Ruby
