@@ -23095,6 +23095,55 @@ sequence.")
 (define-public ecl-random-sample
   (sbcl-package->ecl-package sbcl-random-sample))
 
+(define-public sbcl-hypergeometrica
+  (let ((commit "db723ceb343d89a1c8d7f9174cf3a76fa91522b5")
+        (revision "0"))
+    (package
+      (name "sbcl-hypergeometrica")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/hypergeometrica")
+               (commit commit)))
+         (file-name (git-file-name "cl-hypergeometrica" version))
+         (sha256
+          (base32 "1dfd6w9djgfh7f4z79d8qsyggrwkjlqhs9rxpzpzv092nlwg3l35"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiasco))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cffi
+             sbcl-global-vars
+             sbcl-lparallel
+             sbcl-mmap
+             sbcl-napa-fft3
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/stylewarning/hypergeometrica")
+      (synopsis "High-precision arithmetic")
+      (description
+       "Hypergeometrica is a Common Lisp library for performing high-precision
+arithmetic, with a focus on performance.  At the heart of it all are routines
+for multiplication.  Hypergeometrica aims to support:
+
+@itemize
+@item In-core multiplication using various algorithms, from schoolbook to
+floating-point FFTs.
+@item In-core multiplication for large numbers using exact convolutions via
+number-theoretic transforms, which is enabled by 64-bit modular arithmetic.
+@item Out-of-core multiplication using derivatives of the original
+Cooley–Tukey algorithm.
+@end itemize
+
+On top of multiplication, one can build checkpointed algorithms for computing
+various classical constants, like @math{\\pi}.")
+      (license license:bsd-3))))
+
+(define-public cl-hypergeometrica
+  (sbcl-package->cl-source-package sbcl-hypergeometrica))
+
 (define-public sbcl-mgl-gpr
   (let ((commit "cb6ce51e2f87bf1d589f3703c13eea6e25780afe")
         (revision "1"))
