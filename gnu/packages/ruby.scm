@@ -6343,6 +6343,46 @@ in pure Ruby.  It outputs S-expressions which can be manipulated and converted
 back to Ruby via the @code{ruby2ruby} library.")
     (license license:expat)))
 
+(define-public ruby-ruby-version
+  (package
+    (name "ruby-ruby-version")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "ruby_version" version))
+              (sha256
+               (base32
+                "0lvc7bd5ps3w2vq2wb02i0pi3vfcx2rnckx2ix4rjym1qf52kb2j"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'delete-gem-files
+                 ;; There are some pre-built files in the source, and
+                 ;; registered in the .gemspec (see:
+                 ;; https://github.com/janlelis/ruby_version/issues/1).
+                 (lambda _
+                   (delete-file-recursively "pkg")
+                   (substitute* "ruby_version.gemspec"
+                     (("\"pkg/ruby_version-1.0.0.gem\".freeze, ")
+                      "")
+                     (("\"pkg/ruby_version-1.0.1.gem\".freeze, ")
+                      ""))))
+               (add-after 'extract-gemspec 'relax-requirements
+                 (lambda _
+                   (delete-file "Gemfile.lock")
+                   (substitute* "ruby_version.gemspec"
+                     (("\"Gemfile.lock\".freeze, ") "")
+                     ;; Allow a newers versions of development dependencies.
+                     (("~>") ">=")))))))
+    (native-inputs (list ruby-rdoc ruby-rubygems-tasks ruby-rspec))
+    (synopsis "Ruby class for checking the Ruby version")
+    (description "This package provides a @code{RubyVersion} class which
+offers a convenient Domain Specific Language (DSL) for checking for the right
+Ruby version.")
+    (home-page "https://github.com/janlelis/ruby_version")
+    (license license:expat)))
+
 (define-public ruby-prawn-manual-builder
   (package
     (name "ruby-prawn-manual-builder")
