@@ -1174,6 +1174,35 @@ handling application bootup, plugins, generators, and Rake tasks.")
     (home-page "https://rubyonrails.org")
     (license license:expat)))
 
+(define-public ruby-sassc-rails
+  (package
+    (name "ruby-sassc-rails")
+    (version "2.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "sassc-rails" version))
+              (sha256
+               (base32
+                "1d9djmwn36a5m8a83bpycs48g8kh1n2xkyvghn7dr6zwh4wdyksz"))))
+    (build-system ruby-build-system)
+    ;; The test suite currently fails with multiple "FrozenError: can't modify
+    ;; frozen Array: []" errors, apparently caused by Rails 7 (see:
+    ;; https://github.com/sass/sassc-rails/pull/178/files).
+    (arguments (list #:tests? #f
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-after 'extract-gemspec 'relax-requirements
+                                    (lambda _
+                                      (substitute* "sassc-rails.gemspec"
+                                        (("%q<rake>.freeze, \\[\"~> 10.0\"]")
+                                         "%q<rake>.freeze, [\">= 10.0\"]")))))))
+    (native-inputs (list ruby-mocha ruby-pry ruby-tzinfo-data))
+    (propagated-inputs (list ruby-railties ruby-sassc ruby-sprockets
+                             ruby-sprockets-rails ruby-tilt))
+    (synopsis "SassC-Ruby integration with Rails")
+    (description "This Ruby library integrates SassC-Ruby into Rails.")
+    (home-page "https://github.com/sass/sassc-rails")
+    (license license:expat)))
+
 (define-public ruby-sprockets
   (package
     (name "ruby-sprockets")
