@@ -15297,7 +15297,7 @@ with a new public API, and RPython support.")
 (define-public python-hy
   (package
     (name "python-hy")
-    (version "0.25.0")
+    (version "0.26.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -15306,7 +15306,7 @@ with a new public API, and RPython support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1am6z9m0s9svysj0wrfz069rpvbqqimphqll3912q4bvdlz6vrjp"))))
+        (base32 "1czhh7s81sg0nrnf4zv0ydqi4f7s6sywf4ks4fd59vpx441ca39v"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -15323,7 +15323,7 @@ with a new public API, and RPython support.")
     (native-inputs
      (list python-pytest-7.1 python-wheel))
     (propagated-inputs
-     (list python-colorama python-funcparserlib))
+     (list python-funcparserlib))
     (home-page "https://docs.hylang.org/en/stable/")
     (synopsis "Lisp frontend to Python")
     (description
