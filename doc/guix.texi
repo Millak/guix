@@ -9826,7 +9826,7 @@ be specified with the @code{#:node} parameter which defaults to
 @code{node}.
 @end defvar
 
-@defvr {Scheme Variable} tree-sitter-build-system
+@defvar tree-sitter-build-system
 
 This variable is exported by @code{(guix build-system tree-sitter)}.  It
 implements procedures to compile grammars for the
@@ -9843,7 +9843,7 @@ Grammars sometimes depend on each other, such as C++ depending on C and
 TypeScript depending on JavaScript.  You may use inputs to declare such
 dependencies.
 
-@end defvr
+@end defvar
 
 Lastly, for packages that do not need anything as sophisticated, a
 ``trivial'' build system is provided.  It is trivial in the sense that
@@ -42499,10 +42499,10 @@ to the @code{services} field of your @code{home-environment}:
    (extra-options '("-t" "1h30m"))))
 @end lisp
 
-@defvr {Scheme Variable} home-ssh-agent-service-type
+@defvar home-ssh-agent-service-type
 This is the type of the @code{git daemon} home service, whose value is an
 @code{home-ssh-agent-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-ssh-agent-configuration
 Available @code{home-ssh-agent-configuration} fields are:
@@ -42816,10 +42816,10 @@ to the @code{services} field of your @code{home-environment}:
 (service home-znc-service-type)
 @end lisp
 
-@defvr {Scheme Variable} home-znc-service-type
+@defvar home-znc-service-type
 This is the type of the @code{git daemon} home service, whose value is an
 @code{home-znc-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-znc-configuration
 Available @code{home-znc-configuration} fields are:
@@ -42852,10 +42852,10 @@ to the @code{services} field of your @code{home-environment}:
    (extra-options '("--settings="<settings-file>"))))
 @end lisp
 
-@defvr {Scheme Variable} home-kodi-service-type
+@defvar home-kodi-service-type
 This is the type of the @code{git daemon} home service, whose value is an
 @code{home-kodi-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-kodi-configuration
 Available @code{home-kodi-configuration} fields are:
