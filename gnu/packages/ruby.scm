@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -4491,7 +4491,7 @@ is to be run.")
          (modify-phases %standard-phases
            (replace 'check
              (lambda _
-               (invoke "script/test"))))))
+               (invoke "sh" "script/test"))))))
       (native-inputs
        (list bundler ruby-turn))
       (synopsis "Pretty-print hashes and arrays in MiniTest")
