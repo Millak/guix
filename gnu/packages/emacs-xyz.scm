@@ -24334,6 +24334,28 @@ interactive loop.")
       (description "@code{eros} provides evaluation result overlays.")
       (license license:gpl3+))))
 
+(define-public emacs-geiser-eros
+  (package
+    (name "emacs-geiser-eros")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~sokolov/geiser-eros")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0vvmplgsygcp86jlszz85g0bnqndpx6qxrjlg6hpnql6vbjjay7r"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-eros emacs-geiser))
+    (home-page "https://git.sr.ht/~sokolov/geiser-eros")
+    (synopsis "Evaluation result overlays for geiser")
+    (description
+     "@code{geiser-eros} provides evaluation result overlays for geiser.")
+    (license license:gpl3+)))
+
 (define-public emacs-stickyfunc-enhance
   (let ((commit "13bdba51fcd83ccbc3267959d23afc94d458dcb0")
         (revision "1"))
