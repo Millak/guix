@@ -10108,14 +10108,14 @@ names.")
 (define-public ruby-shoulda-matchers
   (package
     (name "ruby-shoulda-matchers")
-    (version "3.1.2")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "shoulda-matchers" version))
        (sha256
         (base32
-         "1zvv94pqk5b5my3w1shdz7h34xf2ldhg5k4qfdpbwi2iy0j9zw2a"))))
+         "11igjgh16dl5pwqizdmclzlzpv7mbmnh8fx7m9b5kfsjhwxqdfpn"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
