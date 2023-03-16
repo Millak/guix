@@ -7266,7 +7266,7 @@ interface to the variable facility of UEFI boot firmware.")
 (define-public efibootmgr
   (package
     (name "efibootmgr")
-    (version "17")
+    (version "18")
     (source
      (origin
        (method git-fetch)
@@ -7275,16 +7275,7 @@ interface to the variable facility of UEFI boot firmware.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1niicijxg59rsmiw3rsjwy4bvi1n42dynvm01lnp9haixdzdpq03"))
-       (patches (search-patches "efibootmgr-remove-extra-decl.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Cast the first argument to the correct type.  Extracted
-           ;; from upstream commit e8ce9fecebd15adb4.
-           (substitute* '("src/efibootdump.c" "src/efibootmgr.c")
-             (("efidp_format_device_path\\(text_path,")
-              "efidp_format_device_path((unsigned char *)text_path,"))))))
+        (base32 "1j19m3dngcb7jl88ib32phbh5r7c02dhhakq8jk6z7y408c111hd"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7299,12 +7290,12 @@ interface to the variable facility of UEFI boot firmware.")
                       ;; nothing else is specified on the command line.
                       "EFIDIR=gnu")
                 #$(if (%current-target-system)
-                    #~(list
-                        (string-append "CC=" #$(cc-for-target))
-                        (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
-                        (string-append "EXTRAINCDIRS="
-                                       #$(this-package-input "efivar") "/include"))
-                    #~'()))
+                      #~(list
+                         (string-append "CC=" #$(cc-for-target))
+                         (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+                         (string-append "EXTRAINCDIRS="
+                                        #$(this-package-input "efivar") "/include"))
+                      #~'()))
       #:phases #~(modify-phases %standard-phases (delete 'configure))))
     (native-inputs
      (list pkg-config))
