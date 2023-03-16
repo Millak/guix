@@ -13223,23 +13223,94 @@ Unicode formatted tables.")
 (define-public jekyll
   (package
     (name "jekyll")
-    (version "4.2.0")
+    (version "4.3.2")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "jekyll" version))
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/jekyll/jekyll")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cqkh78jw8scrajyx5nla0vwm9fvp2qql3kdcvvplcq9mazy8snq"))))
+                "1d588d7zhp526r21f9mnm204m8qy0c8h3lq3ghyg6qp8mj6hnwj4"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:tests? #f                  ;no rakefile, but a test subdirectory
+     (list #:modules '((guix build ruby-build-system)
+                       (guix build utils)
+                       (ice-9 ftw)
+                       (srfi srfi-26))
+           ;; The cucumber acceptance suite is not run as it depends on an old
+           ;; version (5).
+           #:test-target "spec"
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'build 'fix-i18n
+               (add-before 'check 'disable-problematic-tests
+                 ;; TODO: Package the missing test inputs.
                  (lambda _
-                   (substitute* ".gemspec"
-                     (("~> 0.7") ">= 0.7")
-                     (("~> 1.14") ">= 1.14")))))))
+                   (with-directory-excursion "test"
+                     ;; Requires 'jekyll-coffeescript'.
+                     (delete-file "test_coffeescript.rb")
+                     ;; Requires 'tomlrb'.
+                     (delete-file "test_configuration.rb")
+                     (substitute* "test_filters.rb"
+                       ;; The sassify tests fail due to white space
+                       ;; differences (see:
+                       ;; https://github.com/jekyll/jekyll/issues/9322).
+                       ((".*s?ssify with simple string.*" all)
+                        (string-append all
+                                       "      skip('fails on guix')\n")))
+                     ;; Requires kramdown-syntax-coderay.
+                     (delete-file "test_kramdown.rb")
+                     ;; Requires 'test-theme', usually made available from the
+                     ;; local checkout via Bundler (not used here).
+                     (delete-file "test_layout_reader.rb")
+                     ;; Requires a large amount of un-packaged dependencies.
+                     (delete-file "test_plugin_manager.rb")
+                     ;; Requires 'classifier-reborn'.
+                     (delete-file "test_related_posts.rb")
+                     ;; This one causes a test failure similar to the ones for
+                     ;; sassify above.
+                     (delete-file "test_sass.rb")
+                     ;; This would require running the tests via 'bundle
+                     ;; exec', but the Gemfile contains too many (extraneous)
+                     ;; dependencies.
+                     (delete-file "test_site.rb")
+                     ;; Delete the theme tests, as they require 'test-theme',
+                     ;; usually made available from the local checkout via the
+                     ;; Gemfile/bundler (not used here).
+                     (for-each delete-file
+                               (scandir
+                                "." (cut string-prefix? "test_theme" <>)))
+                     ;; This one also relies on 'test-theme'.
+                     (delete-file "test_liquid_renderer.rb")
+                     ;; This test assumes internet connectivity, negate it, as
+                     ;; there's no Internet in the build container.
+                     (substitute* "test_utils.rb"
+                       (("assert Utils::Internet\\.connected\\?")
+                        "refute Utils::Internet.connected?"))
+                     ;; These tests fail non-deterministically (see:
+                     ;; https://github.com/jekyll/jekyll/issues/9323).
+                     (delete-file "test_new_command.rb")
+                     (delete-file "test_collections.rb"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Invoke the test scripts manually, as 'rake test'
+                     ;; doesn't show any failure details, making debugging
+                     ;; needlessly difficult.
+                     (for-each (lambda (f)
+                                 (invoke "ruby" "-I" "test" f))
+                               (find-files "test" "^test_.*\\.rb$"))))))))
+    (native-inputs
+     (list bundler
+           ruby-httpclient
+           ruby-minitest-profile
+           ruby-minitest-reporters
+           ruby-nokogiri
+           ruby-rspec
+           ruby-rspec-mocks
+           ruby-shoulda
+           ruby-simplecov))
     (propagated-inputs
      (list ruby-addressable
            ruby-colorator
@@ -13254,7 +13325,8 @@ Unicode formatted tables.")
            ruby-rouge
            ruby-safe-yaml
            ruby-sassc
-           ruby-terminal-table))
+           ruby-terminal-table
+           ruby-webrick))
     (home-page "https://jekyllrb.com/")
     (synopsis "Static site generator")
     (description "Jekyll is a simple, blog aware, static site generator.")
