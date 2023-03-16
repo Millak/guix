@@ -755,6 +755,38 @@ pattern.  Including support for multipart email and attachments.")
     (home-page "https://rubyonrails.org/")
     (license license:expat)))
 
+;; A variant where the ruby-rspec-rails dependency purposefully omitted to
+;; avoid a dependency cycle with that same package.
+(define ruby-ammeter-bootstrap
+  (package
+    (name "ruby-ammeter-bootstrap")
+    (version "1.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "ammeter" version))
+              (sha256
+               (base32
+                "1bcslj6y3lgaknd9fpj32m1r4is7blyxygxzmwidq9cjwkrn4msh"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'remove-rails-requirement
+                 (lambda _
+                   (substitute* "Gemfile"
+                     (("gem 'rspec-rails', rspec_version")
+                      "")
+                     (("gem 'rails', rails_version")
+                      "")))))))
+    (propagated-inputs (list ruby-activesupport ruby-railties))
+    (synopsis "Write specs for your Rails 3+ generators")
+    (description "The @code{ammeter} gem makes it easy to write specs for
+Rails generators.  An existing user is @code{rspec-rails}, which uses
+@code{ammeter} to spec its own generators.")
+    (home-page "https://github.com/alexrothenberg/ammeter")
+    (license license:expat)))
+
 (define-public ruby-bootsnap
   (package
     (name "ruby-bootsnap")
