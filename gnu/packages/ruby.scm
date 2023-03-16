@@ -952,6 +952,42 @@ RSpec tests.")
     (home-page "https://github.com/dblock/rspec-rerun")
     (license license:expat)))
 
+(define-public ruby-rspec-stubbed-env
+  ;; There is no release nor tag (see:
+  ;; https://github.com/pboling/rspec-stubbed_env/issues/7).
+  (let ((revision "0")
+        (commit "9d767dec77a6d130f6ad83c48a00a5c81b14b9fa"))
+    (package
+      (name "ruby-rspec-stubbed-env")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/pboling/rspec-stubbed_env")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1dy4m04h613dp0s59rknjd6h4lqs1h17mffc5kd8kh046mk8nr1p"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list #:test-target "spec"
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'streamline-requirements
+                            (lambda _
+                              ;; Remove extraneous development dependencies.
+                              (substitute* "rspec-stubbed_env.gemspec"
+                                ((".*bundler.*") "")
+                                ((".*rubocop.*") "")))))))
+      (native-inputs (list ruby-simplecov))
+      (propagated-inputs (list ruby-rspec))
+      (synopsis "RSpec plugin to stub environment variables")
+      (description
+       "This RSpec plugin can be used to stub environment variables in a scoped
+context for testing.")
+      (home-page "https://github.com/pboling/rspec-stubbed_env")
+      (license license:expat))))
+
 (define-public ruby-rspec-wait
   (package
     (name "ruby-rspec-wait")
