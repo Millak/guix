@@ -350,17 +350,66 @@ an almost zero-configuration persistence layer for applications.")
 (define-public ruby-rspec-rails
   (package
     (name "ruby-rspec-rails")
-    (version "3.8.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "rspec-rails" version))
-       (sha256
-        (base32
-         "1pf6n9l4sw1arlax1bdbm1znsvl8cgna2n6k6yk1bi8vz2n73ls1"))))
+    (version "6.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rspec/rspec-rails")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wmrpwv2vgrwmby01pld6r6sdfa265lb6pd3fp2kifs40nn7ff6b"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f)) ; No included tests
+     (list
+      ;; Run the 'spec' instead of the 'default' Rake target to avoid running
+      ;; the acceptance test suite, which doesn't seem to allow being run
+      ;; offline (see: https://github.com/rspec/rspec-rails/issues/2660).
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "Gemfile"
+                ;; Remove a few extraneous requirements.
+                ((".*yard.*") "")
+                ((".*github-markup.*") "")
+                ((".*redcarpet.*") "")
+                ((".*relish.*") "")
+                ((".*rubocop.*") ""))
+              (substitute* "Gemfile-rspec-dependencies"
+                ((", :git => \"https://github.com/rspec.*")
+                 "\n"))
+              (substitute* "Gemfile-rails-dependencies"
+                (("gem 'puma', '< 6.0.0'")
+                 "gem 'puma', '>= 6.0.0'"))
+              (substitute* "rspec-rails.gemspec"
+                (("'aruba',    '~> 0.14.12'")
+                 "'aruba',    '>= 0.14.12'")
+                (("'cucumber', '~> 7.0'")
+                 "'cucumber', '>= 7.0'"))))
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "rspec-rails.gemspec"
+                (("`git ls-files -- lib/\\*`")
+                 "`find lib -type f |sort`"))))
+          (add-before 'check 'patch-tests
+            (lambda _
+              (substitute* "spec/rspec/rails_spec.rb"
+                (("`git ls-files -z`")
+                 "`find . -type f -not -regex '.*\\.gem$' -print0 | \
+sort -z | cut -zc3-`")))))))
+    (native-inputs
+     (list ruby-ammeter-bootstrap
+           ruby-aruba
+           ruby-capybara
+           ruby-cucumber
+           ruby-puma
+           ruby-rails
+           ruby-rspec
+           ruby-selenium-webdriver
+           ruby-sqlite3))
     (propagated-inputs
      (list ruby-actionpack
            ruby-activesupport
