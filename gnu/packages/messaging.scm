@@ -2654,21 +2654,6 @@ support for high performance Telegram Bot creation.")
     (home-page "https://core.telegram.org/tdlib")
     (license license:boost1.0)))
 
-(define-public tdlib-1.8.0
-  (package
-    (inherit tdlib)
-    (name "tdlib-1.8.0")
-    (version "1.8.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tdlib/td")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "tdlib" version))
-              (sha256
-               (base32
-                "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))))))
-
 (define-public purple-mm-sms
   (package
     (name "purple-mm-sms")
