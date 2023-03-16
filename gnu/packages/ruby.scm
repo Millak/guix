@@ -929,6 +929,39 @@ support for stubbing and mocking.")
     (propagated-inputs
      (list ruby-diff-lcs))))
 
+(define-public ruby-rspec-block-is-expected
+  (package
+    (name "ruby-rspec-block-is-expected")
+    (version "1.0.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/pboling/rspec-block_is_expected")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w8mj00k8am24yw7lbhg616m111p7h7bbfxaw7np4i7wnlwzm8fk"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "Rakefile"
+                              (("require 'rubocop/rake_task'") "")
+                              (("RuboCop::RakeTask.new") ""))
+                            ;; Contains extraneous requirements not actually
+                            ;; needed for the test suite.
+                            (delete-file "Gemfile"))))))
+    (native-inputs (list ruby-rspec-pending-for ruby-rspec-expectations))
+    (propagated-inputs (list ruby-rspec-core))
+    (synopsis "Simplify testing of blocks in RSpec")
+    (description "This RSpec plugin allows you to use @code{block_is_expected}
+similarly to how you would use @code{is_expected} if a block was wrapping the
+subject.")
+    (home-page "https://github.com/pboling/rspec-block_is_expected")
+    (license license:expat)))
+
 (define-public ruby-rspec-pending-for
   (package
     (name "ruby-rspec-pending-for")
