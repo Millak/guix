@@ -2678,18 +2678,32 @@ with a similar style to the original OAuth spec.")
 (define-public ruby-omniauth
   (package
     (name "ruby-omniauth")
-    (version "2.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "omniauth" version))
-       (sha256
-        (base32 "105mzgvmn2kjaacxw01h4wqv33r7hfn5z8fxlkk3jcjar14j71bh"))))
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/omniauth/omniauth")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mm7a4ll7ymamrbsl63yi6i34qpwmh2nh5a9kj961gja1iz2gyd1"))))
     (build-system ruby-build-system)
-    (propagated-inputs
-     (list ruby-hashie ruby-rack ruby-rack-protection))
-    (native-inputs
-     (list ruby-rspec))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "spec/helper.rb"
+                     ;; This condition is used to require coveralls and
+                     ;; simplecov; override it to avoid these extraneous
+                     ;; requirements.
+                     (("RUBY_VERSION >= '1.9'")
+                      "false")
+                     (("require 'rack/freeze'") "")))))))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-hashie ruby-rack ruby-rack-test
+                             ruby-rack-protection))
     (synopsis "Generalized Rack framework for multiple-provider authentication")
     (description
      "This package provides a generalized Rack framework for multiple-provider
