@@ -6322,18 +6322,52 @@ for select languages.")
 (define-public ruby-cuke-modeler
   (package
     (name "ruby-cuke-modeler")
-    (version "3.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "cuke_modeler" version))
-       (sha256
-        (base32
-         "19smj3g3wvz0203l549sadpcxgh0ir350a6k78gq0bmlv9cchmjb"))))
+    (version "3.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/enkessler/cuke_modeler")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bizla3k124lj4r7f2k5cdfm2sawzd6rdmb6rgbkbng2fygxsjib"))))
     (build-system ruby-build-system)
-    (arguments `(#:tests? #f))          ;no test suite in gem
-    (propagated-inputs
-     (list ruby-cucumber-gherkin))
+    (arguments
+     (list #:test-target "default"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "Gemfile"
+                     ;; Cucumber appears pinned to an older version for no
+                     ;; particular reason (see:
+                     ;; https://github.com/enkessler/cuke_modeler/issues/14).
+                     (("'cucumber', '2.2.0'")
+                      "'cucumber', '>= 2.2.0'"))
+                   ;; Disable Bundler.
+                   (substitute* "bin/console"
+                     (("require 'bundler/setup'") ""))
+                   (substitute* "rakefiles/testing_tasks.rb"
+                     (("'bundle', 'exec', ") ""))
+                   ;; Remove extraneous dependencies.
+                   (substitute* "cuke_modeler.gemspec"
+                     ((".*bundler.*") "")
+                     ((".*rubocop.*") "")
+                     ((".*yard.*") ""))
+                   (substitute* "Rakefile"
+                     (("Rainbow.enabled = true") "")
+                     (("require_relative 'rakefiles/documentation_tasks'") "")
+                     (("require_relative 'rakefiles/other_tasks'") "")
+                     (("require_relative 'rakefiles/release_tasks'") "")))))))
+    (native-inputs
+     (list ruby-childprocess
+           ruby-cucumber
+           ruby-rainbow
+           ruby-rspec
+           ruby-simplecov
+           ruby-simplecov-lcov))
+    (propagated-inputs (list ruby-cucumber-gherkin))
     (synopsis "Gherkin test suite analysis tool")
     (description "CukeModeler facilitates modeling a test suite that is
 written in Gherkin (e.g.  Cucumber, SpecFlow, Lettuce, etc.).  It does this by
