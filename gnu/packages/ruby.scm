@@ -7686,13 +7686,13 @@ including comments and whitespace.")
 (define-public ruby-unf-ext
   (package
     (name "ruby-unf-ext")
-    (version "0.0.7.6")
+    (version "0.0.8.2")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "unf_ext" version))
               (sha256
                (base32
-                "1ll6w64ibh81qwvjx19h8nj7mngxgffg7aigjx11klvf5k2g4nxf"))))
+                "1yj2nz2l101vr1x9w2k83a0fag1xgnmjwp8w8rw4ik2rwcz65fch"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -7704,8 +7704,7 @@ including comments and whitespace.")
              ;; rake-compiler-dock is listed in the gemspec, but only
              ;; required when cross-compiling.
              (substitute* "unf_ext.gemspec"
-               ((".*rake-compiler-dock.*") ""))
-             #t)))))
+               ((".*rake-compiler-dock.*") "")))))))
     (native-inputs
      (list bundler ruby-rake-compiler ruby-test-unit))
     (synopsis "Unicode normalization form support library")
