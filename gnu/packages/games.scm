@@ -10172,58 +10172,54 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
                                           (cons* "." ".." keep))))
              (substitute* "src/CMakeLists.txt"
                (("add_subdirectory\\(.*?/vendor/(.+?)\".*" line library)
-                (if (member library keep) line ""))))
-           #t))))
+                (if (member library keep) line ""))))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-hard-coded-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "src/common/VFileIO.cpp"
-               (("/usr/share")
-                (string-append (assoc-ref outputs "out") "/share")))
-             #t))
-         (add-before 'build 'set-SDL
-           ;; Set correct environment for SDL.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append
-                      (assoc-ref inputs "sdl") "/include/SDL2:"
-                      (or (getenv "CPATH") "")))
-             #t))
-         (add-after 'install 'unbundle-fonts
-           ;; Unbundle DejaVuSans TTF files.
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((font-dir (string-append (assoc-ref inputs "font-dejavu")
-                                            "/share/fonts/truetype/"))
-                   (target-dir (string-append (assoc-ref outputs "out")
-                                              "/share/xmoto/Textures/Fonts/")))
-               (for-each (lambda (f)
-                           (let ((font (string-append font-dir f))
-                                 (target (string-append target-dir f)))
-                             (delete-file target)
-                             (symlink font target)))
-                         '("DejaVuSans.ttf" "DejaVuSansMono.ttf"))
-               #t))))))
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-hard-coded-directory
+            (lambda _
+              (substitute* "src/common/VFileIO.cpp"
+                (("/usr/share") (string-append #$output "/share")))))
+          (add-before 'build 'set-SDL
+            ;; Set correct environment for SDL.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append
+                       (search-input-directory inputs "/include/SDL2")
+                       ":"
+                       (or (getenv "CPATH") "")))))
+          (add-after 'install 'unbundle-fonts
+            ;; Unbundle DejaVuSans TTF files.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((font-dir (search-input-directory inputs
+                                                      "/share/fonts/truetype/"))
+                    (target-dir (string-append #$output
+                                               "/share/xmoto/Textures/Fonts/")))
+                (for-each (lambda (f)
+                            (let ((font (string-append font-dir f))
+                                  (target (string-append target-dir f)))
+                              (delete-file target)
+                              (symlink font target)))
+                          '("DejaVuSans.ttf" "DejaVuSansMono.ttf"))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("curl" ,curl)
-       ("font-dejavu" ,font-dejavu)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libxdg-basedir" ,libxdg-basedir)
-       ("libxml2" ,libxml2)
-       ("lua" ,lua)
-       ("ode" ,ode)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-mixer sdl2-net sdl2-ttf)))
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list bzip2
+           curl
+           font-dejavu
+           glu
+           libjpeg-turbo
+           libpng
+           libxdg-basedir
+           libxml2
+           lua
+           ode
+           (sdl-union (list sdl2 sdl2-mixer sdl2-net sdl2-ttf))
+           sqlite
+           zlib))
     (home-page "https://xmoto.tuxfamily.org/")
     (synopsis "2D motocross platform game")
     (description
