@@ -18,7 +18,6 @@
 
 (define-module (gnu home services messaging)
   #:use-module (srfi srfi-26)
-  #:use-module (ice-9 match)
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
   #:use-module (gnu packages messaging)
@@ -42,18 +41,18 @@
 
 (define (home-znc-services config)
   "Return a <shepherd-service> for znc with CONFIG."
-  (match config
-    (($ <home-znc-configuration> znc extra-options)
-     (let* ((znc (file-append znc "/bin/znc"))
-            (command #~'(#$znc "--foreground" #$@extra-options))
-            (log-file #~(string-append %user-log-dir "/znc.log")))
-       (list (shepherd-service
-              (documentation "Run the znc IRC bouncer.")
-              (provision '(znc))
-              (modules '((shepherd support)))     ;for '%user-log-dir'
-              (start #~(make-forkexec-constructor #$command
-                                                  #:log-file #$log-file))
-              (stop #~(make-kill-destructor))))))))
+  (match-record config <home-znc-configuration>
+    (znc extra-options)
+    (let* ((znc (file-append znc "/bin/znc"))
+           (command #~'(#$znc "--foreground" #$@extra-options))
+           (log-file #~(string-append %user-log-dir "/znc.log")))
+      (list (shepherd-service
+             (documentation "Run the znc IRC bouncer.")
+             (provision '(znc))
+             (modules '((shepherd support)))      ;for '%user-log-dir'
+             (start #~(make-forkexec-constructor #$command
+                                                 #:log-file #$log-file))
+             (stop #~(make-kill-destructor)))))))
 
 (define home-znc-service-type
   (service-type

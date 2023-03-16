@@ -276,25 +276,24 @@ client,@command{ssh}, and by other tools such as @command{guix deploy}.")
 
 (define (home-ssh-agent-services config)
   "Return a <shepherd-service> for an ssh-agent with CONFIG."
-  (match config
-    (($ <home-ssh-agent-configuration>
-        openssh socket-directory extra-options)
-     (let* ((ssh-agent (file-append openssh "/bin/ssh-agent"))
-            (socket-file #~(string-append #$socket-directory "/socket"))
-            (command #~`(#$ssh-agent
-                         "-D" "-a" ,#$socket-file
-                         #$@extra-options))
-            (log-file #~(string-append %user-log-dir "/ssh-agent.log")))
-       (list (shepherd-service
-              (documentation "Run the ssh-agent.")
-              (provision '(ssh-agent))
-              (modules '((shepherd support)))   ;for '%user-runtime-dir', etc.
-              (start #~(lambda _
-                         (unless (file-exists? #$socket-directory)
-                           (mkdir-p #$socket-directory)
-                           (chmod #$socket-directory #o700))
-                         (fork+exec-command #$command #:log-file #$log-file)))
-              (stop #~(make-kill-destructor))))))))
+  (match-record config <home-ssh-agent-configuration>
+    (openssh socket-directory extra-options)
+    (let* ((ssh-agent (file-append openssh "/bin/ssh-agent"))
+           (socket-file #~(string-append #$socket-directory "/socket"))
+           (command #~`(#$ssh-agent
+                        "-D" "-a" ,#$socket-file
+                        #$@extra-options))
+           (log-file #~(string-append %user-log-dir "/ssh-agent.log")))
+      (list (shepherd-service
+             (documentation "Run the ssh-agent.")
+             (provision '(ssh-agent))
+             (modules '((shepherd support)))    ;for '%user-runtime-dir', etc.
+             (start #~(lambda _
+                        (unless (file-exists? #$socket-directory)
+                          (mkdir-p #$socket-directory)
+                          (chmod #$socket-directory #o700))
+                        (fork+exec-command #$command #:log-file #$log-file)))
+             (stop #~(make-kill-destructor)))))))
 
 (define home-ssh-agent-service-type
   (service-type

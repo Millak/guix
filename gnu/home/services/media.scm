@@ -18,7 +18,6 @@
 
 (define-module (gnu home services media)
   #:use-module (srfi srfi-26)
-  #:use-module (ice-9 match)
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
   #:use-module (gnu packages kodi)
@@ -44,18 +43,18 @@
 
 (define (home-kodi-services config)
   "Return a <shepherd-service> for kodi with CONFIG."
-  (match config
-    (($ <home-kodi-configuration> kodi extra-options)
-     (let* ((kodi (file-append kodi "/bin/kodi"))
-            (command #~'(#$kodi "-fs" #$@extra-options))
-            (log-file #~(string-append %user-log-dir "/kodi.log")))
-       (list (shepherd-service
-              (documentation "Run the kodi media center.")
-              (provision '(kodi))
-              (modules '((shepherd support)))     ;for '%user-log-dir'
-              (start #~(make-forkexec-constructor #$command
-                                                  #:log-file #$log-file))
-              (stop #~(make-kill-destructor))))))))
+  (match-record config <home-kodi-configuration>
+    (kodi extra-options)
+    (let* ((kodi (file-append kodi "/bin/kodi"))
+           (command #~'(#$kodi "-fs" #$@extra-options))
+           (log-file #~(string-append %user-log-dir "/kodi.log")))
+      (list (shepherd-service
+             (documentation "Run the kodi media center.")
+             (provision '(kodi))
+             (modules '((shepherd support)))      ;for '%user-log-dir'
+             (start #~(make-forkexec-constructor #$command
+                                                 #:log-file #$log-file))
+             (stop #~(make-kill-destructor)))))))
 
 (define home-kodi-service-type
   (service-type
