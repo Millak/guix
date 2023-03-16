@@ -10136,28 +10136,17 @@ more complex, and error-prone.")
     (home-page "https://github.com/thoughtbot/shoulda-matchers")
     (license license:expat)))
 
-(define-public ruby-shoulda-matchers-2
-  (package
-    (inherit ruby-shoulda-matchers)
-    (version "2.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "shoulda-matchers" version))
-              (sha256
-               (base32
-                "0d3ryqcsk1n9y35bx5wxnqbgw4m8b3c79isazdjnnbg8crdp72d0"))))))
-
 (define-public ruby-shoulda
   (package
     (name "ruby-shoulda")
-    (version "3.5.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "shoulda" version))
        (sha256
         (base32
-         "0csmf15a7mcinfq54lfa4arp0f4b2jmwva55m0p94hdf3pxnjymy"))))
+         "02lww34kn1g6lidp4rx4rs6bqvirrzxlfw1y2wm11aif8f622xz6"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -10165,9 +10154,17 @@ more complex, and error-prone.")
          (replace 'check
            ;; Don't run tests to avoid circular dependence with rails.  Instead
            ;; just import the library to test.
-           (lambda _ (invoke "ruby" "-Ilib" "-r" "shoulda"))))))
+           (lambda _ (invoke "ruby" "-Ilib" "-r" "shoulda")))
+         (add-after 'extract-gemspec 'relax-requirements
+           (lambda _
+             (substitute* "shoulda.gemspec"
+               ;; An older version of shoulda-matchers (4.0) is used, out of
+               ;; little maintenance rather than because of an real
+               ;; incompatibility (see:
+               ;; https://github.com/thoughtbot/shoulda/issues/275).
+               ((", \\[\"~> 4.0\"]") "")))))))
     (propagated-inputs
-     (list ruby-shoulda-context ruby-shoulda-matchers-2))
+     (list ruby-shoulda-context ruby-shoulda-matchers))
     (synopsis "Context framework and matchers for testing")
     (description
      "@code{shoulda} is a meta-package combining @code{shoulda-context} and
