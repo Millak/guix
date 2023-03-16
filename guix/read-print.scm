@@ -219,6 +219,27 @@ BLANK-LINE? is true, assume PORT is at the beginning of a new line."
               (list 'quote (loop #f return)))
              ((eq? chr #\`)
               (list 'quasiquote (loop #f return)))
+             ((eq? chr #\#)
+              (match (read-char port)
+                (#\~ (list 'gexp (loop #f return)))
+                (#\$ (list (match (peek-char port)
+                             (#\@
+                              (read-char port)    ;consume
+                              'ungexp-splicing)
+                             (_
+                              'ungexp))
+                           (loop #f return)))
+                (#\+ (list (match (peek-char port)
+                             (#\@
+                              (read-char port)    ;consume
+                              'ungexp-native-splicing)
+                             (_
+                              'ungexp-native))
+                           (loop #f return)))
+                (chr
+                 (unread-char chr port)
+                 (unread-char #\# port)
+                 (read port))))
              ((eq? chr #\,)
               (list (match (peek-char port)
                       (#\@

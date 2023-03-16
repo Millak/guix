@@ -232,6 +232,21 @@ mnopqrstuvwxyz.\")"
   (replace \"gmp\" gmp))")
 
 (test-pretty-print "\
+#~(modify-phases phases
+    (add-after 'whatever 'something-else
+      (lambda _
+        ;; This comment appears inside a gexp.
+        42)))")
+
+(test-pretty-print "\
+#~(list #$@(list coreutils ;yup
+                 grep) ;margin comment
+        #+sed
+
+        ;; Line comment.
+        #$grep)")
+
+(test-pretty-print "\
 (package
   ;; Here 'sha256', 'base32', and 'arguments' must be
   ;; immediately followed by a newline.
