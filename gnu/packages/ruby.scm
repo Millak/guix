@@ -8906,6 +8906,59 @@ variable length integers (varint) in Ruby Protocol Buffers.")
     (home-page "https://github.com/liquidm/varint")
     (license license:bsd-3)))
 
+(define-public ruby-version-gem
+  (package
+    (name "ruby-version-gem")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://gitlab.com/oauth-xx/version_gem")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17y4dydlczd5xvvwfy94x63d5wi14cdkfhi6g94fm1sgsxxzzmq0"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "Gemfile"
+                              (("^linting = .*")
+                               "linting = false\n")
+                              (("^coverage = .*")
+                               "coverage = false\n")
+                              (("^debug = .*")
+                               "debug = false\n"))
+                            (substitute* "spec/spec_helper.rb"
+                              (("^RUN_COVERAGE = .*")
+                               "RUN_COVERAGE = false\n")
+                              (("^ALL_FORMATTERS = .*")
+                               "ALL_FORMATTERS = false\n"))))
+                        (add-before 'build 'drop-signing-key-requirement
+                          (lambda _
+                            (substitute* "version_gem.gemspec"
+                              (("spec.signing_key =.*")
+                               "spec.signing_key = nil"))))
+                        (add-before 'check 'disable-problematic-tests
+                          (lambda _
+                            (substitute* "spec/version_gem/ruby_spec.rb"
+                              ;; The test validates the minimum version of
+                              ;; Ruby to be 2.7.7, but because our Ruby is
+                              ;; 2.7.4 grafted with 2.7.7, the version seen is
+                              ;; 2.7.4 and it fails.
+                              (("it 'returns true when current ruby greater \
+than minimum'" all)
+                               (string-append "x" all))))))))
+    (native-inputs (list ruby-rspec ruby-rspec-block-is-expected))
+    (synopsis "Improved @code{Version} module for Ruby")
+    (description "VersionGem aims to provide introspection of a @code{Version}
+module based on a @code{Version::VERSION} constant string wile not interfering
+with gemspec parsing where the @code{VERSION} string is traditionally used.")
+    (home-page "https://gitlab.com/oauth-xx/version_gem")
+    (license license:expat)))
+
 ;;; Note: Do NOT update to a newer version; this is the last commit that is
 ;;; still licensed as free software, the project having switched to the
 ;;; Hippocratic license afterward (see:
