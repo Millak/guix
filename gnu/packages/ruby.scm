@@ -10078,14 +10078,14 @@ engine.")
 (define-public ruby-shoulda-context
   (package
     (name "ruby-shoulda-context")
-    (version "1.2.2")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "shoulda-context" version))
        (sha256
         (base32
-         "1l0ncsxycb4s8n47dml97kdnixw4mizljbkwqc3rh05r70csq9bc"))))
+         "0d1clcp92jv8756h09kbc55qiqncn666alx0s83za06q5hs4bpvs"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
