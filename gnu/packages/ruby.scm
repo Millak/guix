@@ -4490,8 +4490,9 @@ is to be run.")
        `(#:phases
          (modify-phases %standard-phases
            (replace 'check
-             (lambda _
-               (invoke "sh" "script/test"))))))
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "sh" "script/test")))))))
       (native-inputs
        (list bundler ruby-turn))
       (synopsis "Pretty-print hashes and arrays in MiniTest")
