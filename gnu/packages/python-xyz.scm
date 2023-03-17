@@ -15389,6 +15389,19 @@ Pytest but stripped of Pytest specific details.")
    (home-page "https://pypi.org/project/pluggy/")
    (license license:expat)))
 
+;;; TODO: Make this the default python-pluggy in the next rebuild cycle.
+(define-public python-pluggy-next
+  (package
+   (inherit python-pluggy)
+   (version "1.0.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (pypi-uri "pluggy" version))
+     (sha256
+      (base32
+       "0n8iadlas2z1b4h0fc73b043c7iwfvx9rgvqm1azjmffmhxkf922"))))))
+
 (define-public python-plumbum
   (package
     (name "python-plumbum")
