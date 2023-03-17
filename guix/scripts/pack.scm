@@ -1201,12 +1201,10 @@ last resort for relocation."
                  (utf8->string bv)))))
 
           (define (runpath file)
-            ;; Return the RUNPATH of FILE as a list of directories.
-            (let* ((bv      (call-with-input-file file get-bytevector-all))
-                   (elf     (parse-elf bv))
-                   (dyninfo (elf-dynamic-info elf)))
-              (or (and=> dyninfo elf-dynamic-info-runpath)
-                  '())))
+            ;; Return the "recursive" RUNPATH of FILE as a list of
+            ;; directories.
+            (delete-duplicates
+             (map dirname (file-needed/recursive file))))
 
           (define (elf-loader-compile-flags program)
             ;; Return the cpp flags defining macros for the ld.so/fakechroot
