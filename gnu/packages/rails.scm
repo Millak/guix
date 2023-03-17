@@ -231,45 +231,42 @@ API.")
 (define-public ruby-autoprefixer-rails
   (package
     (name "ruby-autoprefixer-rails")
-    (version "9.4.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "autoprefixer-rails" version))
-       (sha256
-        (base32
-         "0fxbfl3xrrjj84n98x24yzxbz4nvm6c492dxj41kkrl9z97ga13i"))))
+    (version "10.4.13.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ai/autoprefixer-rails")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i34apjlav1qz8mdg2fyf0hvs5z32inv1snycdkhmqpkfj2ri2hh"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "spec"
        #:phases
        (modify-phases %standard-phases
-         (add-after 'extract-gemspec 'remove-unnecessary-dependencies
+         (add-after 'extract-gemspec 'relax-requirements
            (lambda _
-             ;; Remove the testing of compass, as its use is deprecated, and
-             ;; it's unpackaged for Guix.
-             (substitute* "autoprefixer-rails.gemspec"
-               ((".*%q<compass>.*") "\n")
-               (("\"spec/compass_spec\\.rb\"\\.freeze, ") ""))
-             (delete-file "spec/compass_spec.rb")
-
              (substitute* "Gemfile"
                ;; Remove overly strict requirement on sprockets
                ((", '>= 4\\.0\\.0\\.beta1'") "")
                ;; The mini_racer gem isn't packaged yet, and it's not directly
                ;; required, as other backends for ruby-execjs can be used.
-               (("gem 'mini_racer'") "")
-               ;; For some reason, this is required for the gems to be picked
-               ;; up
-               (("gemspec") "gemspec\ngem 'tzinfo-data'\ngem 'sass'"))
-             #t)))))
+               (("gem \"mini_racer\"") "")
+               ;; For some reason, this is required for the tzinfo-data gem to
+               ;; be picked up.
+               (("gemspec") "gemspec\ngem 'tzinfo-data'\n"))
+             (substitute* "autoprefixer-rails.gemspec"
+               ((".*rubocop.*") ""))))))) ;provided by 'standard'
     (native-inputs
      (list bundler
            ruby-rails
            ruby-rspec-rails
-           ;; This is needed for a test, but I'm unsure why
-           ruby-sass
-           ;; This is used as the ruby-execjs runtime
+           ruby-sassc-rails
+           ruby-sprockets
+           ruby-standard
+           ;; This is used at runtime by ruby-execjs.
            node))
     (propagated-inputs
      (list ruby-execjs))
