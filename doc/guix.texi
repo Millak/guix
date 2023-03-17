@@ -2945,9 +2945,9 @@ mount /dev/sda2 /mnt
 Mount special block devices and Linux-specific directories:
 
 @example sh
-mount --bind /proc /mnt/proc
-mount --bind /sys /mnt/sys
-mount --bind /dev /mnt/dev
+mount --rbind /proc /mnt/proc
+mount --rbind /sys /mnt/sys
+mount --rbind /dev /mnt/dev
 @end example
 
 If your system is EFI-based, you must also mount the ESP partition.
