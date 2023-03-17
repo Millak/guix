@@ -21011,14 +21011,49 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.32")
+    (version "0.33")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "0vw15ahws4y1pb4va58j4d0xif9hnq7q2h57jany39wf2mx11ny6"))))
+                "1hwj51nbqrv1qin69ni53gf3lk50q5ndn61a414sprl3qg8f3212"))
+              ;; TODO: there is one more file to replace:
+              ;; inst/resources/gitbook/js/app.min.js
+              (snippet
+               '(for-each delete-file
+                          '("inst/resources/gitbook/js/clipboard.min.js"
+                            "inst/resources/gitbook/js/lunr.js"
+                            "inst/resources/mathquill/mathquill.min.js")))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/resources"
+                (invoke "tar" "-xf" (assoc-ref inputs "js-mathquill")
+                        "-C" "/tmp" "--strip-components=2")
+                (call-with-values
+                    (lambda ()
+                      (unzip2
+                       `((,(search-input-file inputs "/dist/clipboard.js")
+                          "gitbook/js/clipboard.min.js")
+                         (,(search-input-file inputs "/lunr.js")
+                          "gitbook/js/lunr.js")
+                         ("/tmp/mathquill.js"
+                          "mathquill/mathquill.min.js"))))
+                  (lambda (sources targets)
+                    (for-each (lambda (source target)
+                                (format #true "Processing ~a --> ~a~%"
+                                        source target)
+                                (invoke "esbuild" source "--minify"
+                                        (string-append "--outfile=" target)))
+                              sources targets)))))))))
     (propagated-inputs
      (list r-htmltools
            r-jquerylib
@@ -21028,11 +21063,41 @@ SELECT or UPDATE queries to an end-point.")
            r-xfun
            r-yaml
            pandoc))
-    ;; We cannot add knitr because this package depends on xfun, which is an
-    ;; input to knitr.
-    #;
     (native-inputs
-     (list r-knitr))
+     ;; We cannot add knitr because this package depends on xfun, which is an
+     ;; input to knitr.
+     `(;;("r-knitr" ,r-knitr)
+       ("esbuild" ,esbuild)
+       ("js-clipboard"
+        ,(let ((version "2.0.4"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/zenorocha/clipboard.js")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name "clipboard.js" version))
+             (sha256
+              (base32
+               "02zzirnddf4kcqdiqb2i7a7yki3rwgscca388qhy3namkw793x4z")))))
+       ("js-lunarjs"
+        ,(let ((version "0.5.12"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/olivernn/lunr.js")
+                   (commit (string-append "v" version))))
+             (file-name (git-file-name "lunr.js" version))
+             (sha256
+              (base32
+               "1xwdymcnc75b22bb95hq7ijcf7agf47g2fnqzzj09aihx2c5r430")))))
+       ("js-mathquill"
+        ,(origin
+           (method url-fetch)
+           (uri "https://github.com/mathquill/mathquill/\
+releases/download/v0.10.1/mathquill-0.10.1.tgz")
+           (sha256
+            (base32
+             "1159l2fi7k3wyclp0pksc0qng291glb8qpa67bvcxwyb9dfiwav7"))))))
     (home-page "https://github.com/rstudio/bookdown")
     (synopsis "Authoring books and technical documents with R markdown")
     (description "This package provides output formats and utilities for
