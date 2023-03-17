@@ -836,6 +836,16 @@ Rails generators.  An existing user is @code{rspec-rails}, which uses
     (home-page "https://github.com/alexrothenberg/ammeter")
     (license license:expat)))
 
+(define-public ruby-ammeter
+  (package/inherit ruby-ammeter-bootstrap
+    (name "ruby-ammeter")
+    ;; TODO: The test suite requires multiple packages which are not packaged
+    ;; yet.
+    (arguments (list #:tests? #f))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs ruby-ammeter-bootstrap)
+       (append ruby-rspec-rails)))))
+
 (define-public ruby-bootsnap
   (package
     (name "ruby-bootsnap")
