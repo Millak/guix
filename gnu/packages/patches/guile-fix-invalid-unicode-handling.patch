@@ -1,0 +1,83 @@
+Reported upstream at https://debbugs.gnu.org/cgi/bugreport.cgi?bug=62290 and
+patch merged as cba2e7e3fec3c781230570f5d1ef070625eeeda8.
+
+From 31a1c3c4783e8e66b93500737f23f209d8115f77 Mon Sep 17 00:00:00 2001
+From: Christopher Baines <mail@cbaines.net>
+Date: Fri, 17 Mar 2023 12:48:39 +0000
+Subject: [PATCH] Fix some invalid unicode handling issues with suspendable
+ ports.
+
+Based on the implementation in ports.c.  I don't understand what this
+code is really doing, but the suspendable ports implementation differs
+from the similar C code for a couple of inequalities.
+
+* module/ice-9/suspendable-ports.scm (decode-utf8, bad-utf8-len): Flip a
+couple of inequalities.
+* test-suite/tests/ports.test ("string ports"): Add additional invalid
+UTF-8 test case.
+---
+ module/ice-9/suspendable-ports.scm | 8 ++++----
+ test-suite/tests/ports.test        | 7 +++++++
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/module/ice-9/suspendable-ports.scm b/module/ice-9/suspendable-ports.scm
+index a823f1d37..9fac1df62 100644
+--- a/module/ice-9/suspendable-ports.scm
++++ b/module/ice-9/suspendable-ports.scm
+@@ -419,7 +419,7 @@
+                (= (logand u8_2 #xc0) #x80)
+                (case u8_0
+                  ((#xe0) (>= u8_1 #xa0))
+-                 ((#xed) (>= u8_1 #x9f))
++                 ((#xed) (<= u8_1 #x9f))
+                  (else #t)))
+           (kt (integer->char
+                (logior (ash (logand u8_0 #x0f) 12)
+@@ -436,7 +436,7 @@
+                (= (logand u8_3 #xc0) #x80)
+                (case u8_0
+                  ((#xf0) (>= u8_1 #x90))
+-                 ((#xf4) (>= u8_1 #x8f))
++                 ((#xf4) (<= u8_1 #x8f))
+                  (else #t)))
+           (kt (integer->char
+                (logior (ash (logand u8_0 #x07) 18)
+@@ -462,7 +462,7 @@
+      ((< buffering 2) 1)
+      ((not (= (logand (ref 1) #xc0) #x80)) 1)
+      ((and (eq? first-byte #xe0) (< (ref 1) #xa0)) 1)
+-     ((and (eq? first-byte #xed) (< (ref 1) #x9f)) 1)
++     ((and (eq? first-byte #xed) (> (ref 1) #x9f)) 1)
+      ((< buffering 3) 2)
+      ((not (= (logand (ref 2) #xc0) #x80)) 2)
+      (else 0)))
+@@ -471,7 +471,7 @@
+      ((< buffering 2) 1)
+      ((not (= (logand (ref 1) #xc0) #x80)) 1)
+      ((and (eq? first-byte #xf0) (< (ref 1) #x90)) 1)
+-     ((and (eq? first-byte #xf4) (< (ref 1) #x8f)) 1)
++     ((and (eq? first-byte #xf4) (> (ref 1) #x8f)) 1)
+      ((< buffering 3) 2)
+      ((not (= (logand (ref 2) #xc0) #x80)) 2)
+      ((< buffering 4) 3)
+diff --git a/test-suite/tests/ports.test b/test-suite/tests/ports.test
+index 66e10e3dd..1b30e1a68 100644
+--- a/test-suite/tests/ports.test
++++ b/test-suite/tests/ports.test
+@@ -1059,6 +1059,13 @@
+        eof))
+ 
+     (test-decoding-error (#xf0 #x88 #x88 #x88) "UTF-8"
++      (error                ;; 2nd byte should be in the 90..BF range
++       error                ;; 88: not a valid starting byte
++       error                ;; 88: not a valid starting byte
++       error                ;; 88: not a valid starting byte
++       eof))
++
++    (test-decoding-error (#xf4 #xa4 #xbd #xa4) "UTF-8"
+       (error                ;; 2nd byte should be in the 90..BF range
+        error                ;; 88: not a valid starting byte
+        error                ;; 88: not a valid starting byte
+-- 
+2.39.1
+

@@ -398,7 +398,9 @@ without requiring the source code to be rewritten.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "03bm1mnfc9kkg2ls942a0js7bxrdzmcffgrgg6anwdmjfan2a9hs"))))
+                "03bm1mnfc9kkg2ls942a0js7bxrdzmcffgrgg6anwdmjfan2a9hs"))
+              (patches (search-patches
+                        "guile-fix-invalid-unicode-handling.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments guile-3.0)
        ;; Guile 3.0.9 is bit-reproducible when built in parallel, thanks to
