@@ -1758,29 +1758,29 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.3")
+    (version "4.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "04cmgvmkyvxdpfy08adxf3smklgzakrvyvb89rrr7yqaridy2lbc"))))
+        (base32 "0jz76ra86gy7r4wwb174lggnl5y29nn68l7ydw1kj1phcijrz854"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; Skip test suite failing with "Program reassemble_test is not
-             ;; available" and alike errors.  Also skip test suite failing
-             ;; with "AssertionError: Program extcap/sdjournal is not
-             ;; available" error.'
+           (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
              (when tests?
-               (invoke "ctest"
-                       "-E"
-                       (string-join (list "suite_unittests" "suite_extcaps")
-                                    "|"))))))
+               (invoke "ctest" "-VV"
+                       "-j" (if parallel-tests?
+                                (number->string (parallel-job-count))
+                                "1")
+                       ;; Skip the suite_extcaps.case_extcaps.test_sdjournal
+                       ;; test as it requires sdjournal (from systemd) and
+                       ;; fails.
+                       "-E" "suite_extcaps")))))
        ;; Build process chokes during `validate-runpath' phase.
        ;;
        ;; Errors are like the following:
