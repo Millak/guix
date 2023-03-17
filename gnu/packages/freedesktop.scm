@@ -1002,7 +1002,14 @@ with localed.  This package is extracted from the broader systemd package.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "09md23m4fw87x264mls1f5isrswk6iw7y9g4hr1nib008wbbk370"))))
+                "09md23m4fw87x264mls1f5isrswk6iw7y9g4hr1nib008wbbk370"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "contrib/meson.build"
+                    (("bash_.*_dep\\.get_.*\\('completionsdir', .*\\)")
+                     "join_paths(get_option('prefix'), 'share',
+                                 'bash-completion', 'completions')"))))))
     (build-system meson-build-system)
     (arguments
      (list #:tests? #f
