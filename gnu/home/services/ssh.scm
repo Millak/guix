@@ -295,12 +295,18 @@ client,@command{ssh}, and by other tools such as @command{guix deploy}.")
                         (fork+exec-command #$command #:log-file #$log-file)))
              (stop #~(make-kill-destructor)))))))
 
+(define (home-ssh-agent-environment-variables config)
+  '(("SSH_AUTH_SOCK"
+     . "${SSH_AUTH_SOCK-${XDG_RUNTIME_DIR-$HOME/.cache}/ssh-agent/socket}")))
+
 (define home-ssh-agent-service-type
   (service-type
    (name 'home-ssh-agent)
    (default-value (home-ssh-agent-configuration))
    (extensions
     (list (service-extension home-shepherd-service-type
-                             home-ssh-agent-services)))
+                             home-ssh-agent-services)
+          (service-extension home-environment-variables-service-type
+                             home-ssh-agent-environment-variables)))
    (description
     "Install and configure @command{ssh-agent} as a Shepherd service.")))

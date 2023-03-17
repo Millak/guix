@@ -42473,23 +42473,6 @@ machines using the @acronym{SSH, secure shell} protocol.  With the
 @code{(gnu home services ssh-agent)} service, you can configure the
 OpenSSH ssh-agent to run upon login.
 
-When using the @code{home-ssh-agent-service-type}, you need to add your
-@file{~/.bash_profile}:
-
-@example
-SSH_AUTH_SOCK=$@{XDG_RUNTIME_DIR-$HOME/.cache@}/ssh-agent/socket
-export SSH_AUTH_SOCK
-@end example
-
-Of course, you can do that using the @code{home-bash-service-type}, by
-adding something like:
-
-@lisp
-(environment-variables
- '(("SSH_AUTH_SOCK"
- . "$@{SSH_AUTH_SOCK-$@{XDG_RUNTIME_DIR-$HOME/.cache@}/ssh-agent/socket@}")))
-@end lisp
-
 Here is an example of a service and its configuration that you could add
 to the @code{services} field of your @code{home-environment}:
 
