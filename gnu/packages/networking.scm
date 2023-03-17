@@ -4239,30 +4239,36 @@ cables.")
 (define-public haproxy
   (package
     (name "haproxy")
-    (version "2.1.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.haproxy.org/download/"
-                                  (version-major+minor version)
-                                  "/src/haproxy-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0fd3c1znid5a9w3gcf77b85hm2a2558w9s02c4b7xzkmivqnqbir"))))
+    (version "2.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.haproxy.org/download/"
+                           (version-major+minor version)
+                           "/src/haproxy-" version ".tar.gz"))
+       (sha256
+        (base32 "00j5lwvrf8lgfid3108gclxbd46v3mnd4lh0lw4l0nn3f0rf9ip2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (let* ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "DOCDIR=" out "/share/" ,name)
-               "TARGET=linux-glibc"
-               "USE_LUA=1"
-               "USE_OPENSSL=1"
-               "USE_ZLIB=1"
-               "USE_PCRE_2=1"))
-       #:tests? #f  ; there are only regression tests, using varnishtest
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:tests? #f  ; there are only regression tests, using varnishtest
+      #:make-flags
+      #~(list "LUA_LIB_NAME=lua"
+              "TARGET=linux-glibc"
+              "USE_LUA=1"
+              "USE_OPENSSL=1"
+              "USE_PCRE2=1"
+              "USE_PCRE2_JIT=1"
+              "USE_PROMEX=1"
+              "USE_ZLIB=1"
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "DOCDIR=" #$output "/share/" #$name)
+              (string-append "LUA_INC=" #$(this-package-input "lua") "/include")
+              (string-append "LUA_LIB=" #$(this-package-input "lua") "/lib")
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (inputs
      (list lua openssl pcre2 zlib))
     (home-page "https://www.haproxy.org/")
