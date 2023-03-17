@@ -436,6 +436,21 @@ importer."
         "Reproducible Builds tooling and issues that affect any guix packages."
         #:scope (list "gnu/packages/diffoscope.scm")))
 
+(define-team gnome
+  (team 'gnome
+        #:name "Gnome team"
+        #:description
+        "The Gnome desktop environment, along with core technologies such as
+GLib/GIO, GTK, GStreamer and Webkit."
+        #:scope (list "gnu/packages/glib.scm"
+                      "gnu/packages/gstreamer.scm"
+                      "gnu/packages/gtk.scm"
+                      "gnu/packages/gnome.scm"
+                      "gnu/packages/gnome-xyz.scm"
+                      "gnu/packages/webkit.scm"
+                      "guix/build/glib-or-gtk-build-system.scm"
+                      "guix/build/meson-build-system.scm")))
+
 (define-team xfce
   (team 'xfce
         #:name "Xfce team"
@@ -511,7 +526,7 @@ importer."
 
 (define-member (person "Liliana Marie Prikler"
                        "liliana.prikler@gmail.com")
-  emacs games)
+  emacs games gnome)
 
 (define-member (person "Ricardo Wurmus"
                        "rekado@elephly.net")
@@ -543,7 +558,7 @@ importer."
 
 (define-member (person "Raghav Gururajan"
                        "rg@raghavgururajan.name")
-  mentors)
+  gnome mentors)
 
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
