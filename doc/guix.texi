@@ -42626,6 +42626,47 @@ A timeout in seconds after which to hide cursor.
 
 @end deftp
 
+@defvar home-xmodmap-service-type
+This is the service type for the
+@uref{https://gitlab.freedesktop.org/xorg/app/xmodmap,xmodmap} utility
+to modify keymaps and pointer button mappings under the Xorg display
+server.  Its associated value must be a
+@code{home-xmodmap-configuration} record, as shown below.
+
+The @code{key-map} field takes a list of objects, each of which is
+either a @dfn{statement} (a string) or an @dfn{assignment} (a pair of
+strings).  As an example, the snippet below swaps around the
+@kbd{Caps_Lock} and the @kbd{Control_L} keys, by first removing the
+keysyms (on the right-hand side) from the corresponding modifier maps
+(on the left-hand side), re-assigning them by swapping each other out,
+and finally adding back the keysyms to the modifier maps.
+
+@lisp
+(service home-xmodmap-service-type
+         (home-xmodmap-configuration
+          (key-map '(("remove Lock" . "Caps_Lock")
+                     ("remove Control" . "Control_L")
+                     ("keysym Control_L" . "Caps_Lock")
+                     ("keysym Caps_Lock" . "Control_L")
+                     ("add Lock" . "Caps_Lock")
+                     ("add Control" . "Control_L")))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} home-xmodmap-configuration
+The configuration record for @code{home-xmodmap-service-type}.  Its
+available fields are:
+
+@table @asis
+@item @code{xmodmap} (default: @code{xmodmap}) (type: file-like)
+The @code{xmodmap} package to use.
+
+@item @code{key-map} (default: @code{'()}) (type: list)
+The list of expressions to be read by @code{xmodmap} on service startup.
+
+@end table
+@end deftp
+
 @node Guix Home Services
 @subsection Guix Home Services
 
