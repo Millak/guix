@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Vicente Vera Parra <vicentemvp@gmail.com>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -6597,7 +6597,7 @@ files, including Rmarkdown files.")
 (define-public readstat
   (package
     (name "readstat")
-    (version "1.1.8")
+    (version "1.1.9")
     (source
      (origin
        (method git-fetch)
@@ -6606,16 +6606,16 @@ files, including Rmarkdown files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r04lq45h1yn34v1mgfiqjfzyaqv4axqlby0nkandamcsqyhc7y4"))))
+        (base32 "0aqalr86d7h9sp9zjkydw3ap4s54qgq2ml6p8gd0gnn1jf0ljm72"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gnu-gettext libtool))
     (inputs
-     (list zlib))                 ; libz
+     (list zlib))
+    (home-page "https://github.com/WizardMac/ReadStat")
     (synopsis "Convert SAS, Stata, and SPSS files")
     (description "Command-line tool and C library for reading files from
 popular stats packages like SAS, Stata and SPSS.")
-    (home-page "https://github.com/WizardMac/ReadStat")
     (license license:expat)))
 
 (define-public r-quantpsyc
