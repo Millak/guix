@@ -10,6 +10,7 @@
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,6 @@
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
@@ -171,49 +171,48 @@ module for the DMA capture of the video flow.")
 (define-public ccextractor
   (package
     (name "ccextractor")
-    (version "0.88")
+    (version "0.94")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/CCExtractor/ccextractor")
-         (commit (string-append "v" version))))
+       (uri (git-reference
+             (url "https://github.com/CCExtractor/ccextractor")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       ;; FIXME: Delete the 'src/thirdparty directory and unbundle the
+       ;; libraries it contains, such as freetype, libpng, zlib, and others.
+       (patches (search-patches "ccextractor-add-missing-header.patch"
+                                "ccextractor-autoconf-tesseract.patch"
+                                "ccextractor-fix-ocr.patch"))
        (sha256
-        (base32 "1sya45hvv4d46bk7541yimmafgvgyhkpsvwfz9kv6pm4yi1lz6nb"))))
-    (build-system cmake-build-system)
+        (base32 "1hrk4xlzkvk9pnv0yr4whcsh8h4fzk42mrf30dsr3xzh1lgpfslg"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; No target
-       #:configure-flags
-       (list
-        "-DWITH_FFMPEG=ON"
-        "-DWITH_OCR=ON"
-        "-DWITH_SHARING=ON"
-        "-DWITH_HARDSUBX=ON")
-       #:phases
-       (modify-phases %standard-phases
-         ;; The package is in a sub-dir of this repo.
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "src")
-             #t))
-         (add-after 'chdir 'fix-build-errors
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("libnanomsg")
-                "nanomsg"))
-             #t)))))
-    (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
-    (inputs
-     `(("ffmeg" ,ffmpeg-3.4)
-       ("nanomsg" ,nanomsg)
-       ("leptonica" ,leptonica)
-       ("ocr" ,tesseract-ocr)
-       ("zlib" ,zlib)))
+     (list #:configure-flags
+           #~(list "--enable-ffmpeg"
+                   "--enable-ocr"
+                   "--enable-hardsubx"
+                   ;; Disable Rust support, as there's no rust source included
+                   ;; and cargo wants to fetch the crates from the network
+                   ;; (see:
+                   ;; https://github.com/CCExtractor/ccextractor/issues/1502).
+                   "--without-rust")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "linux")))
+                        (add-after 'chdir 'patch-pre-build.sh
+                          (lambda _
+                            (substitute* "pre-build.sh"
+                              (("/usr/bin/env") (which "env")))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              ;; There is no test suite; simply run the binary
+                              ;; to validate there are no obvious problems.
+                              (invoke "./ccextractor" "--help")))))))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list ffmpeg-3.4 leptonica-1.80 tesseract-ocr-4))
     (synopsis "Closed Caption Extractor")
     (description "CCExtractor is a tool that analyzes video files and produces
 independent subtitle files from the closed captions data.  It is portable, small,
