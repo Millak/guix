@@ -4706,14 +4706,14 @@ including functions for geolocation and routing.")
 (define-public r-haven
   (package
     (name "r-haven")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "haven" version))
        (sha256
         (base32
-         "0w0aqm0z4h0rm1f7fylm1mbv79p43y2r795w64wczcd0jwh4ch4z"))
+         "07an4d8638m27765l6l4p6vfjxm8nfwbxx2bwpxfy6xffw1znc91"))
        (modules '((guix build utils)))
        (snippet
         ;; unvendor readstat
@@ -4726,12 +4726,13 @@ including functions for geolocation and routing.")
            (lambda _
              ;; We’re not building readstat.
              (substitute* "configure"
-               (("exit 1") "")) ;don't be so dramatic!
-             (substitute* '("src/Makevars.in"
-                            "configure")
-               (("^PKG_LIBS=.*") "PKG_LIBS=\"-lreadstat\"\n")))))))
+               (("^PKG_CONFIG_NAME=\"zlib\"")
+                "PKG_CONFIG_NAME=\"readstat zlib\"")
+               (("^PKG_LIBS=\"-lz\"")
+                "PKG_LIBS=\"-lz -lreadstat\"\n")
+               (("exit 1") "")))))))  ;don't be so dramatic!
     (inputs
-     (list readstat))
+     (list readstat zlib))
     (native-inputs
      (list r-knitr))
     (propagated-inputs
