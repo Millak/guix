@@ -20509,17 +20509,17 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.0-9")
+    (version "1.0-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "0fq1v2ksnllyd5yx7ch8f298aqiys4v6xacswy0h4xb418dcgh45"))))
+         "05r1isg9qjyvnbkmg1xv2bz2x7fb21yc1fp5ssci29cfddq4hy1f"))))
     (build-system r-build-system)
     (inputs
-     (list gdal geos proj sqlite zlib))
+     (list gdal geos proj sqlite))
     (propagated-inputs
      (list r-classint
            r-dbi
