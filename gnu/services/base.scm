@@ -873,7 +873,7 @@ of console keymaps with @command{loadkeys}.")))
                                         "-C" #$device #$font))
                           ((0 71) #t)
                           (else #f))))
-             (stop #~(const #t))
+             (stop #~(const #f))
              (respawn? #f)))))
        tty+font))
 
