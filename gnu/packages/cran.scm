@@ -3121,16 +3121,13 @@ Zucchini.")
 (define-public r-httpuv
   (package
     (name "r-httpuv")
-    (version "1.6.8")
+    (version "1.6.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httpuv" version))
               (sha256
                (base32
-                "0fljspgdiihn736s8wj6ri28sggw1sd3zfi5qav3gzrsqm2z29xz"))
-              ;; Unvendor bundled libraries. As of 1.5.4 the vendored libuv
-              ;; only contains fixes for building on Solaris.
-              (patches (search-patches "r-httpuv-1.6.6-unvendor-libuv.patch"))
+                "0pfrhparpsgrrlgnwwdjb4npklrqka709hh7a2s76x7s49dz4xwd"))
               (modules '((guix build utils)))
               ;; Cannot unbundle http-parser, because it contains local
               ;; modifications.
@@ -3142,6 +3139,11 @@ Zucchini.")
        (modify-phases %standard-phases
          (add-after 'unpack 'unbundle-libuv
            (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "src/Makevars"
+               (("PKG_LIBS = ./libuv/.libs/libuv.a")
+                "PKG_LIBS = -luv")
+               (("\\$\\(SHLIB\\): libuv/.libs/libuv.a")
+                "$(SHLIB): "))
              (substitute* (find-files "src" "\\.cpp$|\\.h$")
                (("\"libuv/include/uv\\.h\"")
                 "<uv.h>"))
@@ -3150,7 +3152,7 @@ Zucchini.")
                (("uv_pipe_init\\(pLoop, &pSocket->handle\\.pipe, true\\);")
                 "uv_pipe_init(pLoop, &pSocket->handle.pipe, 0);")))))))
     (inputs
-     (list libuv zlib))
+     (list libuv-for-r-httpuv zlib))
     (propagated-inputs
      (list r-later r-promises r-r6 r-rcpp))
     (home-page "https://github.com/rstudio/httpuv")
