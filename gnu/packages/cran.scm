@@ -35876,15 +35876,43 @@ reading and writing arbitrary protocol-buffer data in R.")
 (define-public r-opencpu
   (package
     (name "r-opencpu")
-    (version "2.2.8")
+    (version "2.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "opencpu" version))
        (sha256
-        (base32 "1h0s7fbifyf4h1296sdk3amij0m6s12wq32mbky7xg4nz8wj29ni"))))
+        (base32 "18vlr1isi92zc9a16ld3fczdw2mcd142k5cbpls3nfxgdjbx3qqk"))
+       (snippet
+        '(for-each delete-file
+                   '("inst/test/jquery-1.10.2.min.js"
+                     "inst/test/bootstrap/js/bootstrap.min.js")))))
     (properties `((upstream-name . "opencpu")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/test/"
+                (call-with-values
+                    (lambda ()
+                      (unzip2
+                       `((,(assoc-ref inputs "js-jquery")
+                          "jquery-1.10.2.min.js")
+                         ("bootstrap/js/bootstrap.js"
+                          "bootstrap/js/bootstrap.min.js"))))
+                  (lambda (sources targets)
+                    (for-each (lambda (source target)
+                                (format #true "Processing ~a --> ~a~%"
+                                        source target)
+                                (invoke "esbuild" source "--minify"
+                                        (string-append "--outfile=" target)))
+                              sources targets)))))))))
     (inputs
      (list pandoc))
     (propagated-inputs
@@ -35903,7 +35931,16 @@ reading and writing arbitrary protocol-buffer data in R.")
            r-webutils
            r-zip))
     (native-inputs
-     (list r-knitr))
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("r-r-rsp" ,r-r-rsp)
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-1.10.2.js")
+           (sha256
+            (base32
+             "0ah5ivczcv62rj8bxwam7ar0f4il544jbn983vwfvkykl506gpla"))))))
     (home-page "https://www.opencpu.org")
     (synopsis "API for embedded scientific computing")
     (description
