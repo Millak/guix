@@ -30,7 +30,7 @@
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2019, 2020, 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2019, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2019 Daniel Schaefer <git@danielschaefer.me>
@@ -4235,52 +4235,6 @@ cables.")
                    (license:non-copyleft ; slirpvde
                     "file://COPYING.slirpvde"
                     "See COPYING.slirpvde in the distribution."))))))
-
-(define-public haproxy
-  (package
-    (name "haproxy")
-    (version "2.7.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.haproxy.org/download/"
-                           (version-major+minor version)
-                           "/src/haproxy-" version ".tar.gz"))
-       (sha256
-        (base32 "00j5lwvrf8lgfid3108gclxbd46v3mnd4lh0lw4l0nn3f0rf9ip2"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f  ; there are only regression tests, using varnishtest
-      #:make-flags
-      #~(list "LUA_LIB_NAME=lua"
-              "TARGET=linux-glibc"
-              "USE_LUA=1"
-              "USE_OPENSSL=1"
-              "USE_PCRE2=1"
-              "USE_PCRE2_JIT=1"
-              "USE_PROMEX=1"
-              "USE_ZLIB=1"
-              (string-append "CC=" #$(cc-for-target))
-              (string-append "DOCDIR=" #$output "/share/" #$name)
-              (string-append "LUA_INC=" #$(this-package-input "lua") "/include")
-              (string-append "LUA_LIB=" #$(this-package-input "lua") "/lib")
-              (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))))
-    (inputs
-     (list lua openssl pcre2 zlib))
-    (home-page "https://www.haproxy.org/")
-    (synopsis "Reliable, high performance TCP/HTTP load balancer")
-    (description "HAProxy offers @acronym{HA, high availability}, load
-balancing, and proxying for TCP and HTTP-based applications.  It is particularly
-suited to Web sites crawling under very high loads while needing persistence or
-Layer 7 processing.  Supporting tens of thousands of connections is clearly
-realistic with today's hardware.")
-    (license (list license:gpl2+
-                   license:lgpl2.1
-                   license:lgpl2.1+))))
 
 (define-public lldpd
   (package
