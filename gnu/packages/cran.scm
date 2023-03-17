@@ -21983,15 +21983,51 @@ discriminant analysis for the purpose of classifying high dimensional data.")
 (define-public r-ggvis
   (package
     (name "r-ggvis")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggvis" version))
        (sha256
         (base32
-         "1qv512pd4x5vmx15y9nvqmabbbw14h75fmi1sjbcg5yl25z0cswy"))))
+         "0sm28s2zlr3rbp7qzpgin7d9axixn4kgi1apb5mw4mvsp6h80m1x"))
+       (snippet
+        '(for-each delete-file
+                   '("inst/www/lib/d3/d3.min.js"
+                     "inst/www/lib/jquery-ui/jquery-ui.min.js"
+                     "inst/www/lib/jquery/jquery.min.js"
+                     "inst/www/lib/lodash/lodash.min.js"
+                     "inst/www/lib/vega/vega.min.js")))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/www/lib"
+                (call-with-values
+                    (lambda ()
+                      (unzip2
+                       `(("d3/d3.js" "d3/d3.min.js")
+                         ("jquery-ui/jquery-ui.js"
+                          "jquery-ui/jquery-ui.min.js")
+                         ("jquery/jquery.js"
+                          "jquery/jquery.min.js")
+                         (,(search-input-file inputs "/dist/lodash.js")
+                          "lodash/lodash.min.js")
+                         ("vega/vega.js"
+                          "vega/vega.min.js"))))
+                  (lambda (sources targets)
+                    (for-each (lambda (source target)
+                                (format #true "Processing ~a --> ~a~%"
+                                        source target)
+                                (invoke "esbuild" source "--minify"
+                                        (string-append "--outfile=" target)))
+                              sources targets)))))))))
     (propagated-inputs
      (list r-assertthat
            r-dplyr
@@ -22000,6 +22036,21 @@ discriminant analysis for the purpose of classifying high dimensional data.")
            r-magrittr
            r-rlang
            r-shiny))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ;; Version according to commit
+       ;; https://github.com/rstudio/ggvis/commit/0a197c25b5a1d94724f1868270d5163b27ad2e76
+       ("js-lodash"
+        ,(let ((version "4.17.21"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/lodash/lodash")
+                   (commit version)))
+             (file-name (git-file-name "lodash.js" version))
+             (sha256
+              (base32
+               "0gd1rhp85z0xybii19fkkqkbshcklwrrcvj335z17q2cnbb57v44")))))))
     (home-page "https://ggvis.rstudio.com/")
     (synopsis "Interactive grammar of graphics")
     (description
