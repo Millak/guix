@@ -8165,6 +8165,35 @@ converting, and viewing many of the proprietary file formats used to store
 experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
     (license license:bsd-3)))
 
+(define-public python-imageio-ffmpeg
+  (package
+   (name "python-imageio-ffmpeg")
+   (version "0.4.8")
+   (source (origin
+            (method url-fetch)
+            (uri (pypi-uri "imageio-ffmpeg" version))
+            (sha256
+             (base32
+              "1a8as5c42s8yl79gc2nhj6vvkwr81p5ibxp5m1zhn1zy22nhbapx"))))
+   (arguments
+    (list #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'hardcode-ffmpeg
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "imageio_ffmpeg/_utils.py"
+                    (("os\\.getenv\\(\"IMAGEIO_FFMPEG_EXE\".*\\)" all)
+                     (string-append "(" all " or \""
+                                    (search-input-file inputs "bin/ffmpeg")
+                                    "\")"))))))))
+   (inputs (list ffmpeg-4))
+   (build-system python-build-system)
+   (home-page "https://github.com/imageio/imageio-ffmpeg")
+   (synopsis "FFMPEG wrapper for Python")
+   (description "This package provides an FFMPEG wrapper for working with video
+files.  It implements generator functions for reading and writing data to and
+from FFMPEG, reliably terminating the process when done.")
+   (license license:bsd-2)))
+
 (define-public python-imageio
   (package
     (name "python-imageio")
