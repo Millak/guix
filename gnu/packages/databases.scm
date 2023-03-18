@@ -1482,13 +1482,13 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
 (define-public python-pymysql
   (package
     (name "python-pymysql")
-    (version "0.9.3")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyMySQL" version))
        (sha256
-        (base32 "1ry8lxgdc1p3k7gbw20r405jqi5lvhi5wk83kxdbiv8xv3f5kh6q"))))
+        (base32 "0dmdszskfri11b9m6n3lag31vzi10aqxz9gc583md3gka2ijfsc1"))))
     (build-system python-build-system)
     (inputs
      (list python-cryptography))
