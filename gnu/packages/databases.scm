@@ -3022,14 +3022,14 @@ protocol with Cython for performance.")
 (define-public python-aiomysql
   (package
     (name "python-aiomysql")
-    (version "0.0.21")
+    (version "0.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "aiomysql" version))
         (sha256
-          (base32 "0b442d0jb82z3lk19ylmm64ix88ppz7gay08bxld538ivg06j5c1"))))
-    (build-system python-build-system)
+          (base32 "0zhhisf2bz2hv0vcklw45k54yr0f7gx61gnq4lc7vdp6v97nqs0d"))))
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f))           ;test suite requires docker
     (propagated-inputs (list python-pymysql))
     (home-page "https://github.com/aio-libs/aiomysql")
