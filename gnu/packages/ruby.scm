@@ -10152,9 +10152,11 @@ more complex, and error-prone.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           ;; Don't run tests to avoid circular dependence with rails.  Instead
-           ;; just import the library to test.
-           (lambda _ (invoke "ruby" "-Ilib" "-r" "shoulda")))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Don't run tests to avoid circular dependence with rails.
+               ;; Instead just import the library to test.
+               (invoke "ruby" "-Ilib" "-r" "shoulda"))))
          (add-after 'extract-gemspec 'relax-requirements
            (lambda _
              (substitute* "shoulda.gemspec"
