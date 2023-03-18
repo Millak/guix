@@ -5396,6 +5396,31 @@ in LaTeX documents; a jiffy to create slashed characters for physicists.")
        "Catchfile catches the contents of a file and puts it in a macro.")
       (license license:lppl1.3+))))
 
+(define-public texlive-ddphonism
+  (package
+    (inherit (simple-texlive-package
+              "texlive-ddphonism"
+              (list "doc/latex/ddphonism/"
+                    "tex/latex/ddphonism/")
+              (base32 "1p02ai76nnh6042pnmqv4n30z6yxsvyyk2nb9jk7xlyyc87zzbdd")
+              #:trivial? #t))
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-hyperref
+           texlive-latex-l3packages
+           texlive-listings
+           texlive-pgf
+           texlive-latex-tools
+           texlive-xstring))
+    (home-page "https://www.ctan.org/pkg/ddphonism")
+    (synopsis "Dodecaphonic diagrams for LaTeX")
+    (description
+     "This is a music-related package which is focused on notation from the
+twelve-tone system, also called dodecaphonism.  It provides LaTeX algorithms
+that produce typical dodecaphonic notation based off a musical series, or row
+sequence, of variable length.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-doi
   (package
     (inherit (simple-texlive-package
