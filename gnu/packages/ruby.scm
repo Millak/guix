@@ -13467,6 +13467,27 @@ external applications from within Ruby programs.")
 to load dynamic content on storefronts.")
     (license license:expat)))
 
+;;; This variant is purposefully incomplete, lacking ruby-liquid so that it
+;;; can be used for ruby-liquid's test suite.
+(define ruby-liquid-c-bootstrap
+  (package
+    (name "ruby-liquid-c-bootstrap")
+    (version "4.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "liquid-c" version))
+              (sha256
+               (base32
+                "0jl37jz9hbfbhknryx4myxqx4n1f5dzyzmf1sapkcbw93xyrmkch"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f))
+    (native-inputs (list ruby-rake-compiler))
+    (synopsis "Liquid performance extension in C")
+    (description "This package provides a Partial native implementation of the
+liquid ruby gem in C that makes it operate about three times faster.")
+    (home-page "https://github.com/shopify/liquid-c")
+    (license license:expat)))
+
 (define-public ruby-localhost
   (package
     (name "ruby-localhost")
