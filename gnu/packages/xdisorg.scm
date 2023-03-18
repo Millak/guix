@@ -2318,6 +2318,47 @@ before the system goes to sleep.")
       (home-page "https://bitbucket.org/raymonad/xss-lock")
       (license license:expat))))
 
+(define-public physlock
+  (package
+    (name "physlock")
+    (version "13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xyb3rt/physlock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mz4xxjip5ldiw9jgfq9zvqb6w10bcjfx6939w1appqg8f521a7s"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+
+               (add-after 'unpack 'fix-makefile
+                 (lambda _
+                   (substitute* "main.c" ; remove extra newline in the prompt
+                     (("(fprintf.vt.ios, .%s.)\\n(., options->prompt)" all start end)
+                      (string-append start end)))
+                   (substitute* "Makefile" (("-m 4755 -o root -g root") "")))))
+
+           #:make-flags
+           #~(list "HAVE_SYSTEMD=0" "HAVE_ELOGIND=1"
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))))
+    (native-inputs (list linux-pam elogind))
+    (synopsis "Screen lock utility")
+    (description
+     "@command{physlock} locks all virtual terminals at once, only allowing the
+user of the active session (the user logged into the foreground virtual
+terminal) to unlock the computer.  It is an alternative to @command{vlock -an},
+written to overcome vlock's limitations regarding hibernate and suspend.")
+    (home-page "https://github.com/xyb3rt/physlock")
+    (license license:gpl2+)))
+
 (define-public python-pyperclip
   (package
     (name "python-pyperclip")
