@@ -502,6 +502,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/poedit.scm				\
   %D%/packages/polkit.scm			\
   %D%/packages/popt.scm				\
+  %D%/packages/potassco.scm				\
   %D%/packages/printers.scm			\
   %D%/packages/profiling.scm			\
   %D%/packages/prolog.scm			\
