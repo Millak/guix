@@ -5535,7 +5535,8 @@ Linux Device Mapper multipathing driver:
                                    name "-" version ".tar.gz")))
               (sha256
                (base32
-                "02r0g2vfv6kfljplm3ga93w4xw13q2wixbn9hwi7ahqdzp2x2i1c"))))
+                "02r0g2vfv6kfljplm3ga93w4xw13q2wixbn9hwi7ahqdzp2x2i1c"))
+              (patches (search-patches "libaio-32bit-test.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
