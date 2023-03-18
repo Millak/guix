@@ -3713,27 +3713,28 @@ into Python.")
 (define-public python-aiosqlite
   (package
     (name "python-aiosqlite")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiosqlite" version))
-       (sha256
-        (base32
-         "0lgfpbkcd730hbgj3zlrbx2y8fzvdns2zj3s4r4l31n49g1arrph"))))
-    (build-system python-build-system)
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/omnilib/aiosqlite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a8sggh1wwbpl46k5qcfmp97s9hjysna0x7mwwc53kyfm0m95wf8"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "python" "-m" "unittest" "aiosqlite.tests")
-                          (format #t "test suite not run~%"))
-                      #t)))))
-    (propagated-inputs
-     (list python-typing-extensions))
-    (native-inputs
-     (list python-aiounittest))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "coverage" "run" "-m"
+                                      "aiosqlite.tests")
+                              (invoke "python" "-m" "coverage" "report")))))))
+    (native-inputs (list python-flit-core
+                         python-coverage
+                         python-mypy))
     (home-page "https://github.com/jreese/aiosqlite")
     (synopsis
      "Asyncio bridge for sqlite3")
