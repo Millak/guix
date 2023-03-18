@@ -36,7 +36,9 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
-  #:use-module (gnu packages python-xyz))
+  #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages sphinx))
 
 (define-public libpotassco
   ;; No public release, update together with clasp
@@ -382,3 +384,48 @@ logic programs based on clingo.")
      "This package provides a clingo-based visualizer for graphs defined
 as logic programs.")
     (license license:expat)))
+
+(define-public python-clinguin
+  (package
+   (name "python-clinguin")
+   (version "1.0.0-beta")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/potassco/clinguin")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "032fnzxv6wl01sdq7n2k0ikajpmkg8ihjh5mck1mwjvmis8z16d4"))
+            (modules '((guix build utils)))
+            (snippet
+             #~(begin
+                 (substitute* "setup.cfg"
+                   ;; Fun fact of the day
+                   ;; some typo squatter hosted
+                   ;; a package named tk
+                   (("tk") "")
+                   (("typing") "typing;python_version<\"3.5\""))))))
+   (build-system pyproject-build-system)
+   (propagated-inputs
+    (list python-clingo
+          python-clorm
+          python-clingraph
+          python-fastapi
+          python-httpx
+          python-nbconvert
+          python-nbformat
+          python-nbsphinx
+          python-networkx
+          python-pillow
+          python-pydantic
+          `(,python "tk")
+          python-sphinx-rtd-theme
+          python-traitlets
+          python-uvicorn))
+   (home-page "https://github.com/potassco/clingraph")
+   (synopsis "Clingo-based interactive UI")
+   (description "Clinguin is a graphical user interface toolkit for clingo,
+which allows user interfaces to be specified entirely as a logic program.")
+   (license license:expat)))
