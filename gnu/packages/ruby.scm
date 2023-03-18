@@ -13524,6 +13524,40 @@ liquid ruby gem in C that makes it operate about three times faster.")
     (home-page "https://github.com/shopify/liquid-c")
     (license license:expat)))
 
+(define-public ruby-liquid-c
+  (package/inherit ruby-liquid-c-bootstrap
+    (name "ruby-liquid-c")
+    (arguments
+     (list
+      ;; Only run the unit tests, because the test:integration target fails
+      ;; with "File does not exist: test_helper" (see:
+      ;; https://github.com/Shopify/liquid-c/issues/188).
+      #:test-target "test:unit"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "Gemfile"
+                ;; Do not attempt to fetch a gem from git.
+                (("git_source\\(:github) do \\|repo_name\\|")
+                 "if false")
+                ((", github: \"Shopify/liquid\", ref: \"master\"")
+                 "")
+                ;; Remove extraneous dependencies.
+                ((".*byebug.*") "")
+                ((".*rubocop.*") "")
+                ;; Relax spy version specification.
+                (("gem \"spy\", \"0.4.1\"")
+                 "gem \"spy\", \">= 0.4.1\"")))))))
+    (native-inputs
+     (list ruby-benchmark-ips
+           ruby-rake-compiler
+           ruby-ruby-memcheck
+           ruby-spy
+           ruby-stackprof))
+    (propagated-inputs
+     (list ruby-liquid))))
+
 (define-public ruby-localhost
   (package
     (name "ruby-localhost")
