@@ -13452,20 +13452,56 @@ external applications from within Ruby programs.")
 (define-public ruby-liquid
   (package
     (name "ruby-liquid")
-    (version "4.0.3")
+    (version "5.4.0")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "liquid" version))
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/Shopify/liquid")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zhg5ha8zy8zw9qr3fl4wgk4r5940n4128xm2pn4shpbzdbsj5by"))))
+                "1qdnvd1f9zs6wyilcgxyh93wis7ikbpimjxfpbkpk2ngr1m2c8la"))))
     (build-system ruby-build-system)
-    (arguments `(#:tests? #f)); No rakefile
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)               ;moved after the install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-GEM_PATH
+            (lambda _
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))))
+          (add-before 'check 'delete-problematic-tests
+            (lambda _
+              ;; The following test fails with 'Unknown tag' errors (see:
+              ;; https://github.com/Shopify/liquid/issues/1699).
+              (delete-file "test/integration/tags/inline_comment_test.rb"))))))
+    (native-inputs (list ruby-liquid-c-bootstrap ruby-rspec ruby-stackprof))
     (home-page "https://shopify.github.io/liquid/")
     (synopsis "Template language")
     (description "Liquid is a template language written in Ruby.  It is used
 to load dynamic content on storefronts.")
     (license license:expat)))
+
+(define-public ruby-liquid-4
+  (package
+    (inherit ruby-liquid)
+    (name "ruby-liquid")
+    (version "4.0.4")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/Shopify/liquid")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cr321nd0zkbxirgdfmz37xx7j26zfnicjh585fi20vx60frry83"))))
+    (arguments (list #:tests? #f))))    ;avoid required an older ruby-liquid-c
 
 ;;; This variant is purposefully incomplete, lacking ruby-liquid so that it
 ;;; can be used for ruby-liquid's test suite.
@@ -13701,7 +13737,7 @@ Unicode formatted tables.")
            ruby-jekyll-sass-converter
            ruby-jekyll-watch
            ruby-kramdown-parser-gfm
-           ruby-liquid
+           ruby-liquid-4
            ruby-mercenary
            ruby-pathutil
            ruby-rouge
