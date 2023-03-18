@@ -1636,6 +1636,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
+  %D%/packages/patches/python-feedparser-missing-import.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-poppler-qt5-fix-build.patch	\

@@ -1,0 +1,34 @@
+Since feedparser messes with Python’s internals by assigning
+to __code__ it needs to import SGMLParseError too. It also
+expects SGMLParseError, which was turned into AssertionError by
+https://github.com/python/cpython/commit/e34bbfd61f405eef89e8aa50672b0b25022de320
+
+--- feedparser-6.0.10/feedparser/sgml.py.orig	2023-03-18 09:24:50.976316932 +0100
++++ feedparser-6.0.10/feedparser/sgml.py	2023-03-18 09:26:32.971928811 +0100
+@@ -28,6 +28,7 @@
+ import re
+ 
+ import sgmllib
++from sgmllib import SGMLParseError
+ 
+ __all__ = [
+     'sgmllib',
+@@ -41,6 +42,7 @@
+     'shorttagopen',
+     'starttagopen',
+     'endbracket',
++    'SGMLParseError',
+ ]
+ 
+ # sgmllib defines a number of module-level regular expressions that are
+--- feedparser-6.0.10/feedparser/html.py.orig	2023-03-18 09:32:03.647114745 +0100
++++ feedparser-6.0.10/feedparser/html.py	2023-03-18 09:46:05.021142671 +0100
+@@ -349,7 +349,7 @@
+ 
+         try:
+             return sgmllib.SGMLParser.parse_declaration(self, i)
+-        except sgmllib.SGMLParseError:
++        except AssertionError:
+             # Escape the doctype declaration and continue parsing.
+             self.handle_data('&lt;')
+             return i+1

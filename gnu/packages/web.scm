@@ -4750,7 +4750,8 @@ their web site.")
        (method url-fetch)
        (uri (pypi-uri "feedparser" version ".tar.gz"))
        (sha256
-        (base32 "0lfa1c8s6abnlksbwxdpq78bg4rb6603mcgarmip3kip8rglini7"))))
+        (base32 "0lfa1c8s6abnlksbwxdpq78bg4rb6603mcgarmip3kip8rglini7"))
+       (patches (search-patches "python-feedparser-missing-import.patch"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-sgmllib3k))
