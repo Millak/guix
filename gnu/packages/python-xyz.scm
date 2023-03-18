@@ -9584,13 +9584,13 @@ than the default.")
 (define-public python-ipython
   (package
     (name "python-ipython")
-    (version "8.2.0")
+    (version "8.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ipython" version ".tar.gz"))
        (sha256
-        (base32 "1hcxa713wh3axa57412iy02rj0494ljvv6gpnls4lndc5h9yprbh"))))
+        (base32 "114z175hnv1lgprj06zfcil7lkq013rggjbrc43gsxkmv1fdyyq9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
