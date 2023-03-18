@@ -1644,6 +1644,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
   %D%/packages/patches/python-sgmllib3k-assertions.patch	\
   %D%/packages/patches/python-telingo-fix-comparison.patch	\
+  %D%/packages/patches/python-typeguard-python3.10.patch	\
   %D%/packages/patches/python-w3lib-fix-test-failure.patch	\
   %D%/packages/patches/sdcc-disable-non-free-code.patch		\
   %D%/packages/patches/sdl-pango-api_additions.patch		\

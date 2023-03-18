@@ -22390,7 +22390,8 @@ based on the CPython 2.7 and 3.7 parsers.")
        (method url-fetch)
        (uri (pypi-uri "typeguard" version))
        (sha256
-        (base32 "1i5qzcyw2715h1g1hvj7fxykck2bkxyshpngjr3nfcx1lf6smv80"))))
+        (base32 "1i5qzcyw2715h1g1hvj7fxykck2bkxyshpngjr3nfcx1lf6smv80"))
+       (patches (search-patches "python-typeguard-python3.10.patch"))))
     (build-system python-build-system)
     (arguments
      (list
