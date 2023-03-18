@@ -8868,13 +8868,13 @@ information between package updates.")
 (define-public r-leaflet
   (package
     (name "r-leaflet")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaflet" version))
        (sha256
-        (base32 "0xsng9n08i1w7qj4hbi706m6d8jm9ixrnwq5xac2s3csfm1s1xij"))
+        (base32 "0fa0f9fcrxbqhmcm45l0byws56d8gg0bi3vx4m65mn4rihg6gn16"))
        (snippet
         '(for-each
           delete-file
