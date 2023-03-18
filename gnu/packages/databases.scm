@@ -3747,13 +3747,13 @@ managers for automatically closing connections.")
 (define-public python-databases
   (package
     (name "python-databases")
-    (version "0.5.5")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "databases" version))
        (sha256
-        (base32 "0dzb998kg35xmd50ih168320vih2w3ich798r8fc4lf9q4bb1ih2"))))
+        (base32 "0x5nqhzgjqimv2ybjbzy5vv0l23g0n1g5f6fnyahbf1f7nfl2bga"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-aiosqlite
