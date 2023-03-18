@@ -8197,29 +8197,41 @@ from FFMPEG, reliably terminating the process when done.")
 (define-public python-imageio
   (package
     (name "python-imageio")
-    (version "2.8.0")
+    (version "2.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "imageio" version))
        (sha256
         (base32
-         "1ksjl523fm0fikrd85llxfba35rc1qsgwadgr6mbn9kis79xcpzv"))))
-    (build-system python-build-system)
+         "0dgddhi5dlpry5j4d3256v09pcziyj3ii47yx0zi68xprm11d7qn"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; many tests require online data
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key outputs inputs tests? #:allow-other-keys)
-             (if tests?
-                 (begin
-                   ;; Make installed package available for running the tests.
-                   (add-installed-pythonpath inputs outputs)
-                   (invoke "pytest" "-vv"))
-                 #t))))))
+     (list
+      #:test-flags #~(list "-m" "not needs_internet")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "imageio/plugins/_freeimage.py"
+                (("os\\.getenv\\(\"IMAGEIO_FREEIMAGE_LIB\".*\\)" all)
+                 (string-append
+                  "(" all " or \""
+                  (search-input-file inputs "lib/libfreeimage.so")
+                  "\")")))
+              (substitute* "imageio/core/util.py"
+                (("\"/var/tmp\"")
+                 "os.getenv(\"TMPDIR\", \"/tmp\")"))))
+          (add-after 'unpack 'fix-failing-tests
+            (lambda _
+              (substitute* "tests/test_core.py"
+                (("(core\\.load_lib)\\((\\[gllib\\], \\[\\])\\)"
+                  all fun args)
+                 (string-append "raises(ValueError, " fun ", " args ")")))
+              (delete-file "tests/test_freeimage.py"))))))
+    (inputs (list freeimage))
     (propagated-inputs
-     (list python-numpy python-pillow python-psutil))
+     (list python-imageio-ffmpeg python-numpy python-pillow python-psutil))
     (native-inputs
      (list python-pytest))
     (home-page "https://imageio.github.io/")
