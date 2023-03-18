@@ -57,6 +57,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4937,14 +4938,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.7.1")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0kjwgf94skbrndv1krlmsrq34smzi3iwk73fbsnyw787gvqx4j6a"))))
+                "07nsw168aw3mhgzkfw2z5pf92f76l1r4b18zjx7l9hvrkfhmh04p"))))
     (build-system gnu-build-system)
     (arguments
      (list
