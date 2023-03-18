@@ -31,7 +31,6 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -343,34 +342,4 @@ into Python programs easier.")
     (synopsis "Solve dynamic temporal logic programs")
     (description "This package provides a system to solve dynamic temporal
 logic programs based on clingo.")
-    (license license:expat)))
-
-(define-public python-clingraph
-  (package
-    (name "python-clingraph")
-    (version "1.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/potassco/clingraph")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0bdhli20nw9qnyxmpisgz7m97d7bwx6lbmxy9bgqvm6mipprnv3n"))))
-    (build-system pyproject-build-system)
-    (inputs (list dot2tex graphviz))
-    (propagated-inputs (list python-clingo
-                             python-clorm
-                             python-graphviz
-                             python-imageio
-                             python-jinja2
-                             python-jsonschema
-                             python-networkx))
-    (native-inputs (list dot2tex graphviz python-pylint python-pytest))
-    (home-page "https://github.com/potassco/clingraph")
-    (synopsis "Visualizer for graphs defined as logic programs")
-    (description
-     "This package provides a clingo-based visualizer for graphs defined
-as logic programs.")
     (license license:expat)))
