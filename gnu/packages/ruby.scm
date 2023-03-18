@@ -10121,10 +10121,11 @@ names.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             ;; Do not run tests to avoid circular dependence with rails.  Instead
-             ;; just import the library to test.
-             (invoke "ruby" "-Ilib" "-r" "shoulda-matchers"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Do not run tests to avoid circular dependence with rails.  Instead
+               ;; just import the library to test.
+               (invoke "ruby" "-Ilib" "-r" "shoulda-matchers")))))))
     (propagated-inputs
      (list ruby-activesupport))
     (synopsis "Collection of testing matchers extracted from Shoulda")
