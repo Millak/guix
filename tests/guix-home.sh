@@ -36,8 +36,8 @@ container_supported ()
     fi
 }
 
-NIX_STORE_DIR="$(guile -c '(use-modules (guix config))(display %storedir)')"
 localstatedir="$(guile -c '(use-modules (guix config))(display %localstatedir)')"
+NIX_STORE_DIR="$(guile -c '(use-modules (guix config))(display %storedir)')"
 GUIX_DAEMON_SOCKET="$localstatedir/guix/daemon-socket/socket"
 export NIX_STORE_DIR GUIX_DAEMON_SOCKET
 
