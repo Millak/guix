@@ -14219,6 +14219,32 @@ and stability,
     (home-page "https://github.com/macournoyer/thin")
     (license license:ruby)))
 
+(define-public ruby-truthy
+  (package
+    (name "ruby-truthy")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "truthy" version))
+              (sha256
+               (base32
+                "19silgd65j3qwfk5w891p9wcmzdmi9ddm2kg5zbvvqn2h9lkfzmd"))))
+    (build-system ruby-build-system)
+    (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (replace 'check
+                                    (lambda* (#:key tests? #:allow-other-keys)
+                                      (when tests?
+                                        (substitute* "spec/spec_helper.rb"
+                                          (("require 'spec'")
+                                           "require 'rspec'"))
+                                        (invoke "rspec")))))))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Object truthiness-related Ruby library")
+    (description "This library makes it easier to discover the truth values of
+various Ruby objects.")
+    (home-page "https://github.com/ymendel/truthy")
+    (license license:expat)))
+
 (define-public ruby-skinny
   (package
     (name "ruby-skinny")
