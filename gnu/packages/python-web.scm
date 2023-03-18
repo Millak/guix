@@ -8244,14 +8244,17 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
 (define-public python-starlette
   (package
     (name "python-starlette")
-    (version "0.20.4")
+    (version "0.25.0")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "starlette" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/encode/starlette")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "112hmwk4fh4dl21nlr2xd37h43xzxpjxfnic7v7fz3wr5w9g7z22"))))
-    (build-system python-build-system)
+                "1mkkj15lphgycnp51dnrfxbyrx3dicjdcpsqvwc7yw55zyih6h5k"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-anyio
                              python-typing-extensions
                              ;; [all] extra dependencies:
@@ -8260,6 +8263,10 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
                              python-multipart
                              python-pyyaml
                              python-requests))
+    (native-inputs (list python-hatchling
+                         python-httpx
+                         python-pytest
+                         python-typing-extensions))
     (home-page "https://github.com/encode/starlette")
     (synopsis "Little ASGI library")
     (description
