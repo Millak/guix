@@ -13848,6 +13848,38 @@ development kit for Ruby.")
     (home-page "https://github.com/mtsmfm/language_server-protocol-ruby")
     (license license:expat)))
 
+(define-public ruby-spy
+  (package
+    (name "ruby-spy")
+    (version "1.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "spy" version))
+              (sha256
+               (base32
+                "0g2mma8q17m26k5s864ndlvvqllhcivwg2wdigjvb7z06iw17gds"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'extract-gemspec 'relax-requirements
+                          (lambda _
+                            (substitute* "Gemfile"
+                              ((".*redcarpet.*") "")
+                              ((".*yard.*") "")))))))
+    (native-inputs
+     (list ruby-coveralls
+           ruby-minitest-reporters
+           ruby-pry
+           ruby-pry-byebug
+           ruby-rspec-core
+           ruby-rspec-expectations))
+    (synopsis "Mocking library for Ruby")
+    (description "Spy is a mocking library.  By default, it will raise an
+error if you attempt to stub a method that doesn't exist or call the stubbed
+method with the wrong arity.")
+    (home-page "https://github.com/ryanong/spy")
+    (license license:expat)))
+
 (define-public ruby-subprocess
   (package
     (name "ruby-subprocess")
