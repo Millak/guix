@@ -3763,8 +3763,9 @@ managers for automatically closing connections.")
            python-asyncmy
            python-sqlalchemy))
     (home-page "https://github.com/encode/databases")
-    (synopsis "Async database support for Python")
-    (description "This package implements async database support for Python.")
+    (synopsis "Asynchronous database abstraction library")
+    (description "Databases provides a wrapper around asynchronous database
+libraries with SQLALchemy.")
     (license license:bsd-3)))
 
 (define-public python-psycopg2
