@@ -17014,8 +17014,8 @@ the concrete syntax tree library.")
   (sbcl-package->cl-source-package sbcl-eclector))
 
 (define-public sbcl-trucler
-  (let ((commit "167199797eb3e2e9d9d3e1fe6e11948c663ce7e2")
-        (revision "0"))
+  (let ((commit "d40ff965520cbccf4980b7e7e3122912a11f24ad")
+        (revision "1"))
     (package
       (name "sbcl-trucler")
       (version (git-version "0.0.0" revision commit))
@@ -17027,7 +17027,7 @@ the concrete syntax tree library.")
                (commit commit)))
          (file-name (git-file-name "cl-trucler" commit))
          (sha256
-          (base32 "0ra1phwy0vn4xrm5i1dvq9205m6s9fl0sr0rpiz3xjykxyl9mzms"))))
+          (base32 "0a0zi7q88j31n0b17yfxb66xjvvridgqr4vr6z3pgnm9wha990a6"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-acclimation))
