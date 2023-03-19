@@ -4800,17 +4800,17 @@ component analysis (with robust methods, and parallelized functions).")
 (define-public r-ape
   (package
     (name "r-ape")
-    (version "5.6-2")
+    (version "5.7-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ape" version))
        (sha256
         (base32
-         "0mqjsh7maczd02iwa4fb896q3kgd9jnlilq7y1yz18ch0c54aqlv"))))
+         "0yh5wl7nydhwwc82h6yr8wcacc2f791pp05w8fg65anq309cf2cb"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-lattice r-nlme r-rcpp))
+     (list r-digest r-lattice r-nlme r-rcpp))
     (home-page "http://ape-package.ird.fr/")
     (synopsis "Analyses of phylogenetics and evolution")
     (description
