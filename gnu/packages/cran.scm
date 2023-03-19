@@ -7902,13 +7902,13 @@ Analysis with R\" by Michael Friendly and David Meyer (2015).")
 (define-public r-vcfr
   (package
    (name "r-vcfr")
-   (version "1.13.0")
+   (version "1.14.0")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "vcfR" version))
             (sha256
              (base32
-              "1g4y11vpr3wrvf5prj7y33c2bah6rn4xfb4a1y7n7niafd2yhg3l"))))
+              "1jq4c8w9lq03q8x448p620wphslbw4zymfxc42ydl1x7wp9dnxl5"))))
    (build-system r-build-system)
    (native-inputs
     (list r-knitr))
