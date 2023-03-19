@@ -31199,17 +31199,17 @@ regression model estimates, which can be exported to LaTeX and HTML.")
     (name "r-memuse")
     (version "4.2-3")
     (source (origin
-             (method url-fetch)
-             (uri (cran-uri "memuse" version))
-             (sha256
-              (base32
-               "0816s6airiqmn8faprpwmchxaay6llri4673ivlx1bp2cpvdyvwh"))))
+              (method url-fetch)
+              (uri (cran-uri "memuse" version))
+              (sha256
+               (base32
+                "0816s6airiqmn8faprpwmchxaay6llri4673ivlx1bp2cpvdyvwh"))))
     (properties `((upstream-name . "memuse")))
     (build-system r-build-system)
     (home-page "https://github.com/shinra-dev/memuse")
     (synopsis "Memory Estimation Utilities")
     (description
-      "This package provides procedures to answer the following questions:
+     "This package provides procedures to answer the following questions:
 How much ram do you need to store a 100,000 by 100,000 matrix? How much ram is
 your current R session using? How much ram do you even have?")
     (license license:bsd-2)))
