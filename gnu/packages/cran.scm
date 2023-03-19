@@ -10909,21 +10909,21 @@ finance, conversion from and to JSON, and many other applications.")
 (define-public r-dtplyr
   (package
     (name "r-dtplyr")
-    (version "1.2.2")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dtplyr" version))
        (sha256
         (base32
-         "1m72ac7461mlvanj1krpmfp2ljl3c2k5nw6zrahc66vhcgz2hngq"))))
+         "1y40yrfdw1wbx7jqmql69yi3q52lzjpqgr4jwnhjr33hw6kxvg0v"))))
     (properties `((upstream-name . "dtplyr")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-crayon
+     (list r-cli
+           r-crayon
            r-data-table
            r-dplyr
-           r-ellipsis
            r-glue
            r-lifecycle
            r-rlang
