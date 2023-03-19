@@ -27553,21 +27553,21 @@ inserted into Sweave / @code{knitr} easily.")
 (define-public r-anthropometry
   (package
     (name "r-anthropometry")
-    (version "1.18")
+    (version "1.19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Anthropometry" version))
        (sha256
         (base32
-         "1zpawma8vci7swnk3vskpkb1zqmjl4jkmg4n5h7gghf89kgp0xgy"))))
+         "0aj70wm37bd5i4gzajvs6lf3zg0bz3kkf4srrcslg6drqk6n5z5l"))))
     (properties `((upstream-name . "Anthropometry")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-archetypes
            r-biclust
            r-cluster
-           r-depth
+           r-ddalpha
            r-fnn
            r-icge
            r-nnls
