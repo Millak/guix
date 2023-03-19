@@ -16980,17 +16980,17 @@ the origin.")
        (uri (git-reference
              (url "https://github.com/s-expressionists/Eclector")
              (commit version)))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-eclector" version))
        (sha256
         (base32 "0bwkla0jdp5bg0q1zca5wg22b0nbdmglgax345nrhsf8bdrh47wm"))))
     (build-system asdf-build-system/sbcl)
-    (inputs
-     `(("acclimation" ,sbcl-acclimation)
-       ("alexandria" ,sbcl-alexandria)
-       ("closer-mop" ,sbcl-closer-mop)
-       ("concrete-syntax-tree" ,sbcl-concrete-syntax-tree)))
     (native-inputs
      (list sbcl-fiveam))
+    (inputs
+     (list sbcl-acclimation
+           sbcl-alexandria
+           sbcl-closer-mop
+           sbcl-concrete-syntax-tree))
     (arguments
      '(#:asd-systems '("eclector"
                        "eclector-concrete-syntax-tree")))
