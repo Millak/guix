@@ -7084,14 +7084,14 @@ problems as well as resampling based estimators of prediction error.")
 (define-public r-psych
   (package
     (name "r-psych")
-    (version "2.2.9")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "psych" version))
        (sha256
         (base32
-         "0wamcwbwn2x5y91d5hv3l3sfc41k685hlsv9cx8gkzl7yfziimac"))))
+         "0vzvdrajkd2z4bqfr1lzh2z1vqb8h3mqk6vha8vmfhw2kz1z7acl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-mnormt r-nlme))
