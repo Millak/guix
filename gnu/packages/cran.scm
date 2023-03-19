@@ -5952,13 +5952,13 @@ do-it-yourself toolkit allows users to define their own Lambert W x
 (define-public r-lamw
   (package
     (name "r-lamw")
-    (version "2.1.1")
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lamW" version))
               (sha256
                (base32
-                "05b37kx4jpszx2hkm47d7cjkf8544f7r8x26q68yp9c6zqm9gbc3"))))
+                "15lvm1wwylym32wcxqnjamci91zby86if6v2zd3g4pf0vr736v90"))))
     (properties `((upstream-name . "lamW")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcppparallel))
