@@ -2098,7 +2098,7 @@ italics shapes.  This package provides only TrueType files (TTF).")
 (define-public font-sil-andika
   (package
     (name "font-sil-andika")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2106,7 +2106,7 @@ italics shapes.  This package provides only TrueType files (TTF).")
                     version ".zip"))
               (sha256
                (base32
-                "01zm7p32gxfwmv7h3cfj2vx59846w2y6rxqy67grn2dyjh8pljv0"))))
+                "0z7qvjlidn3m2k40mwnm3azf3wd8pi1yvy2q30p5vkyyzhipb6nc"))))
     ;; As for Gentium (see above), the TTF files are considered source.
     (build-system font-build-system)
     (synopsis "Sans serif font designed especially for literacy use")
