@@ -2974,22 +2974,22 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.2.20")
+    (version "2.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "1km7rg2yg3lmjz7lplypw61sx78mykyksgbdq3j5kjpcvirdbdaj"))))
+                "0csx2zz4zlr11nrzcas1lzhzjb4ygv6nijg2jpkp5l4fs2hijbj4"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dbi
+     (list r-bit64
+           r-blob
+           r-cpp11
+           r-dbi
            r-memoise
            r-plogr
-           r-rcpp
-           r-bit64
-           r-blob
            r-pkgconfig))
     (native-inputs
      (list r-knitr))
