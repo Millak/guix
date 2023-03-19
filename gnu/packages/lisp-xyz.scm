@@ -16973,7 +16973,7 @@ the origin.")
 (define-public sbcl-eclector
   (package
     (name "sbcl-eclector")
-    (version "0.5.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -16982,7 +16982,7 @@ the origin.")
              (commit version)))
        (file-name (git-file-name "cl-eclector" version))
        (sha256
-        (base32 "0bwkla0jdp5bg0q1zca5wg22b0nbdmglgax345nrhsf8bdrh47wm"))))
+        (base32 "10whwpz08fkdcz59sz1b6rn5r1pdns5wnsb1g26gppiv3rrg3cvh"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-fiveam))
