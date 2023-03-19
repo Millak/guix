@@ -12326,29 +12326,22 @@ distribution).")
 (define-public r-golem
   (package
     (name "r-golem")
-    (version "0.3.5")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "golem" version))
               (sha256
                (base32
-                "0rjkl1r83h0hcn30zssx64qm07sdx3g4v5rdxn56gbzfghw7ddcl"))))
+                "0qjnrkwyn8im5zfd0fxf7rkz0gxdywnckpzsn0cqb0fxsa0z0xmv"))))
     (properties `((upstream-name . "golem")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-attempt
-           r-cli
            r-config
-           r-crayon
-           r-desc
-           r-fs
            r-here
            r-htmltools
-           r-pkgload
-           r-roxygen2
-           r-rstudioapi
+           r-rlang
            r-shiny
-           r-usethis
            r-yaml))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/ThinkR-open/golem")
