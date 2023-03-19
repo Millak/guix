@@ -1738,6 +1738,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-docopt-pytest6-compat.patch	\
   %D%/packages/patches/python-execnet-read-only-fix.patch	\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
+  %D%/packages/patches/python-hiredis-fix-header.patch		\
+  %D%/packages/patches/python-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/python-ipython-documentation-chars.patch	\
   %D%/packages/patches/python-ipython-documentation-repro.patch	\
   %D%/packages/patches/python-keras-integration-test.patch	\

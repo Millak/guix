@@ -3904,18 +3904,29 @@ for Python.  The design goals are:
 (define-public python-hiredis
   (package
     (name "python-hiredis")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hiredis" version))
-       (sha256
-        (base32
-         "1dfm2k9l9zar9nw9fwmm74zrgraxdxs04vx9li56fjcf289qx5fa"))))
-    (build-system python-build-system)
+    (version "2.2.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/redis/hiredis-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "066rm5m7aa8skm0a57cf45153bwmbl9yyi4s60an14hb25n947gi"))
+              (patches
+               (search-patches "python-hiredis-fix-header.patch"
+                               "python-hiredis-use-system-hiredis.patch"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; no tests
-     `(#:tests? #f))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'delete-extraneous-__init__.py
+                          (lambda _
+                            ;; The fix was forwarded upstream, see:
+                            ;; https://github.com/redis/hiredis-py/pull/160.
+                            (delete-file "tests/__init__.py"))))))
+    (native-inputs (list python-pytest))
+    (inputs (list hiredis))
     (home-page "https://github.com/redis/hiredis-py")
     (synopsis "Python extension that wraps protocol parsing code in hiredis")
     (description "Python-hiredis is a python extension that wraps protocol
