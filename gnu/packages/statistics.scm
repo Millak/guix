@@ -1853,18 +1853,17 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "1zqz2ml4pgi93miz5flxmm7cjlh4w33hi45phyvv89i9gxp4a387"))))
+         "0a5cnh0fr81mak9ccqr91nsjqlxsnf6a2lmwrsgv7g1sjag0b4p1"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-assertthat
-           r-blob
+     (list r-blob
            r-cli
            r-dbi
            r-dplyr
@@ -1876,6 +1875,7 @@ database.")
            r-r6
            r-rlang
            r-tibble
+           r-tidyr
            r-tidyselect
            r-vctrs
            r-withr))
