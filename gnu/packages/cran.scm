@@ -148,13 +148,13 @@ the vignette \"AER\" for a package overview.)")
 (define-public r-afpt
   (package
     (name "r-afpt")
-    (version "1.1.0.2")
+    (version "1.1.0.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "afpt" version))
               (sha256
                (base32
-                "1z0r4r7prxbhadmkdg6345g0b5vq9dqyyw9hh3fpad9zkc7k6xbc"))))
+                "18izncbr3ljckil97xx2w1y0y7qjykp06wm0ap8ismahqvia3xz3"))))
     (properties `((upstream-name . "afpt")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
