@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen0@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -2264,7 +2264,7 @@ a JACK session.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
@@ -2276,7 +2276,7 @@ a JACK session.")
         (search-patches "mixxx-link-qtscriptbytearray-qtscript.patch"
                         "mixxx-system-googletest-benchmark.patch"))
        (sha256
-        (base32 "0zrmy97lk0xdfnlvygshr8vradypmnypki3s1mhc296xhq96n6rm"))
+        (base32 "056zn0nxl7xrmg467ljdszsycrszsrzsc8k4s39mp4qxyd9qq4yn"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
