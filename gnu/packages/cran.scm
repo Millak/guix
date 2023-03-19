@@ -6268,13 +6268,13 @@ and S4 methods with inlined C, C++ or Fortran code supporting @code{.C} and
 (define-public r-inum
   (package
     (name "r-inum")
-    (version "1.0-4")
+    (version "1.0-5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "inum" version))
               (sha256
                (base32
-                "1khkzja8lwn9075864vbyajqina9m588ahf1fsrrajrsqilyzssz"))))
+                "1gbbsffbzxjrgi8yw21fl35fsbx7ns8hdrhja50byfqvnghbg5p6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-libcoin))
