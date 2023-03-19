@@ -22969,13 +22969,13 @@ code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
 (define-public r-sccore
   (package
     (name "r-sccore")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sccore" version))
        (sha256
-        (base32 "12gm7pb6xbvf9kdsgl7ldw1c54ga9fgk99ps2kx2cq91q9m0ld4r"))))
+        (base32 "1bvqbqh8pkiljy7s3mc67wsr1jlxb19rhd95160xparmrbffpxqb"))))
     (properties `((upstream-name . "sccore")))
     (build-system r-build-system)
     (propagated-inputs
