@@ -4612,6 +4612,36 @@ avoid consing) is too computationally expensive.")
 (define-public ecl-ucons
   (sbcl-package->ecl-package sbcl-ucons))
 
+(define-public sbcl-clobber
+  (let ((commit "212721c24a8bb792714314ba52dfe818641f2e98")
+        (revision "0"))
+    (package
+      (name "sbcl-clobber")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/robert-strandh/Clobber")
+               (commit commit)))
+         (file-name (git-file-name "cl-clobber" version))
+         (sha256
+          (base32 "0pqzfn2wqbzzwlwc3l84iv3i3wa9zfgnh14mq67h9qkib8wjzx3n"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/robert-strandh/Clobber")
+      (synopsis "Common Lisp Library for transaction-oriented databases")
+      (description
+       "CLOBBER is an alternative to so-called @emph{object prevalence}, and in
+particular to @code{cl-prevalence}.  Clobber is both simpler, more flexible, and
+more robust than systems based on object prevalence.")
+      (license license:bsd-2))))
+
+(define-public cl-clobber
+  (sbcl-package->cl-source-package sbcl-clobber))
+
+(define-public ecl-clobber
+  (sbcl-package->ecl-package sbcl-clobber))
+
 (define-public sbcl-closer-mop
   (let ((commit "7b86f2add029208ebc74ec6a41c2ccfd3c382dbc")
         (revision "3"))
