@@ -20668,13 +20668,13 @@ also provided to illustrate various methods.")
 (define-public r-pegas
   (package
     (name "r-pegas")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pegas" version))
        (sha256
-        (base32 "0ngd0laqbs139ji9hm9kwsm9rm56agw2yyfcplxgqva936l93fl7"))))
+        (base32 "0mdd6wwbgln7272am9pk3p5garmkkf3j76lli4hnxsh9gj9z6fcx"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape))
