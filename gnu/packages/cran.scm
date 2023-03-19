@@ -8625,14 +8625,14 @@ automatically.")
 (define-public r-tinytest
   (package
     (name "r-tinytest")
-    (version "1.3.1")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tinytest" version))
        (sha256
         (base32
-         "1mq31f7bzcz5bkgzl9khm1i80axfzra7gcjqxd2yqb4wrw1m3x4s"))))
+         "0x0w1fiqd98vmpz8yrp9ig0ry1wfr16g6bkjzd2a8sq9gn417z7n"))))
     (properties `((upstream-name . "tinytest")))
     (build-system r-build-system)
     (home-page "https://github.com/markvanderloo/tinytest")
