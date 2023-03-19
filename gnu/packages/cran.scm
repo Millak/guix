@@ -770,13 +770,13 @@ the output locally.")
 (define-public r-gson
   (package
     (name "r-gson")
-    (version "0.0.9")
+    (version "0.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gson" version))
               (sha256
                (base32
-                "065ify3i7zqwi7h5jzr7kdgr358kwgw6xrkvvmrznbl7s9f7d57n"))))
+                "10d3v543bvsyrwg3dm04xpzxjvmba1d1fhcf2zfb3l36pvjvxp8l"))))
     (properties `((upstream-name . "gson")))
     (build-system r-build-system)
     (propagated-inputs (list r-jsonlite r-rlang r-tidyr))
