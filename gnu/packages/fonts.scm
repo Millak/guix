@@ -2072,7 +2072,7 @@ for Inria, a public research institute in computer science and mathematics.")
 (define-public font-sil-gentium
   (package
     (name "font-sil-gentium")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2080,7 +2080,7 @@ for Inria, a public research institute in computer science and mathematics.")
                     version ".zip"))
               (sha256
                (base32
-                "0m7189870hha217n1vgpmf89mwggrxkh679ffi1lxpnjggqi2n9k"))))
+                "0wxhsxv7xqsfbrywax0lcbmyfbrvrcm5g4c7a2v4j4cng4xi08cv"))))
     ;; Note: The zip file provides TTF files only, but the developer release,
     ;; which contains additional files, has a 'SOURCES.txt' file that says
     ;; that "the primary source files for the fonts are the fonts themselves".
