@@ -15633,14 +15633,14 @@ inside R when they might usually leave to execute non-R software.")
 (define-public r-rslurm
   (package
     (name "r-rslurm")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rslurm" version))
        (sha256
         (base32
-         "19451icfh7snjbbmpzpr1hrdf52q8ijv0ag1di3y55r2la3jxxcf"))))
+         "0z5lyrkvfh2201sc772gzbz3hc1mc04pxww611iwjf6qwzn5h0al"))))
     (properties `((upstream-name . "rslurm")))
     (build-system r-build-system)
     (propagated-inputs (list r-whisker))
