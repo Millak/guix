@@ -19622,17 +19622,17 @@ probabilities from a standard bivariate normal CDF.")
 (define-public r-lavaan
   (package
     (name "r-lavaan")
-    (version "0.6-13")
+    (version "0.6-15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lavaan" version))
        (sha256
         (base32
-         "0glcam1g8zx3xvvp8nsbsj5vi8hba0sm20akyf4rivbr6s745y1a"))))
+         "16zd50wzzlhxfmbxcwd850fp1mh15s81b9j6ihx01czrk7lz6hws"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass r-mnormt r-numderiv r-pbivnorm))
+     (list r-mass r-mnormt r-numderiv r-pbivnorm r-quadprog))
     (home-page "https://lavaan.ugent.be")
     (synopsis "Latent variable analysis")
     (description
