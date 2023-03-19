@@ -5282,16 +5282,18 @@ safely be interrupted from R.")
 (define-public r-rcppnumerical
   (package
     (name "r-rcppnumerical")
-    (version "0.4-0")
+    (version "0.5-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppNumerical" version))
               (sha256
                (base32
-                "1a92fql6mijhnr1kxkcxwivf95pk9lhgmhzkshs51h0ybfv5krik"))))
+                "15hb08vwdvjrhzq1pyalv3qv946jnlk0w77nn654zcmmsns2fqar"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcppeigen))
+    (native-inputs
+     (list r-knitr r-rmarkdown))
     (home-page "https://github.com/yixuan/RcppNumerical")
     (synopsis"Numerical computing libraries integration with @code{Rcpp}")
     (description "This package provides a collection of libraries for numerical
