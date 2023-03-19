@@ -25249,14 +25249,14 @@ elicitation options based on Kass and Vaidyanathan (1992)
 (define-public r-reldist
   (package
     (name "r-reldist")
-    (version "1.7-1")
+    (version "1.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reldist" version))
        (sha256
         (base32
-         "17kbqqapqmckghv7jizibmicv3bzbycfr3mz4xg3yjp3c2bap4r6"))))
+         "1j99j9a0igb9nwkp7fkqqkmvyz770xmbi1d25pbnaz7d2jy6q26r"))))
     (properties `((upstream-name . "reldist")))
     (build-system r-build-system)
     (propagated-inputs
