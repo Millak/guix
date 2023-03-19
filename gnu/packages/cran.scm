@@ -31143,6 +31143,32 @@ theory; see @url{Strumbel and Kononenko (2014),
 doi.org/10.1007/s10115-013-0679-x} for details.")
     (license license:gpl2+)))
 
+(define-public r-memisc
+  (package
+    (name "r-memisc")
+    (version "0.99.31.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "memisc" version))
+              (sha256
+               (base32
+                "0vnrq6lkqzba76222fsw9hp0sasq65r43iyc23nw6q3fzi7nncsj"))))
+    (properties `((upstream-name . "memisc")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table r-jsonlite r-lattice r-mass r-yaml))
+    (native-inputs (list r-knitr))
+    (home-page "https://www.elff.eu/software/memisc/")
+    (synopsis "Management of survey data and presentation of analysis results")
+    (description
+     "This package provides infrastructure for the management of survey data
+including value labels, definable missing values, recoding of variables,
+production of code books, and import of (subsets of) SPSS and Stata files is
+provided.  Further, the package allows to produce tables and data frames of
+arbitrary descriptive statistics and (almost) publication-ready tables of
+regression model estimates, which can be exported to LaTeX and HTML.")
+    ;; Either of these two version.
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-memuse
   (package
     (name "r-memuse")
