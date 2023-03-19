@@ -16165,16 +16165,16 @@ for evolution along a phylogenetic tree.")
 (define-public r-fmri
   (package
     (name "r-fmri")
-    (version "1.9.6")
+    (version "1.9.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fmri" version))
               (sha256
                (base32
-                "1wh77xwpm8f9d9vky3r7vfmkik3hls008ifk8hkm2rq6i06jj53n"))))
+                "07lk24jandnlxn6b8q8acnc4v6r2x2vsl734cpzhwxfjky119sz5"))))
     (properties `((upstream-name . "fmri")))
     (build-system r-build-system)
-    (propagated-inputs (list r-aws r-metafor r-nlme))
+    (propagated-inputs (list r-aws r-metafor r-nlme r-oro-nifti))
     (native-inputs (list gfortran))
     (home-page "http://www.wias-berlin.de/software/imaging/")
     (synopsis "Analysis of fMRI experiments")
