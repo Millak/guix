@@ -3030,13 +3030,13 @@ the personalised models.")
 (define-public r-modelenv
   (package
     (name "r-modelenv")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "modelenv" version))
               (sha256
                (base32
-                "18wgl3hslvwq4z8ab91514p5nhzxzb727s61ccawvx3ixfjfrid4"))))
+                "1pnc3bs2fzanqzjv2y8a7yy6s8hmwwsccjc8pvifff5kp557a6di"))))
     (properties `((upstream-name . "modelenv")))
     (build-system r-build-system)
     (propagated-inputs (list r-glue r-rlang r-tibble r-vctrs))
