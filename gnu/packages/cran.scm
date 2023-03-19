@@ -2619,26 +2619,26 @@ the group sizes are small.")
 
 (define-public r-shadowtext
   (package
-   (name "r-shadowtext")
-   (version "0.1.2")
-   (source (origin
-            (method url-fetch)
-            (uri (cran-uri "shadowtext" version))
-            (sha256
-             (base32
-              "0zdfidrcnmxmfhngv86ppxrjmpmz9kl78l4yfah2lc5vgmrlwg15"))))
-   (properties `((upstream-name . "shadowtext")))
-   (build-system r-build-system)
-   (propagated-inputs
-    (list r-ggplot2 r-scales))
-   (native-inputs
-    (list r-knitr))
-   (home-page "https://github.com/GuangchuangYu/shadowtext/")
-   (synopsis "Shadow text grob and layer")
-   (description "This package implements @code{shadowtextGrob()} for
+    (name "r-shadowtext")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "shadowtext" version))
+              (sha256
+               (base32
+                "0zdfidrcnmxmfhngv86ppxrjmpmz9kl78l4yfah2lc5vgmrlwg15"))))
+    (properties `((upstream-name . "shadowtext")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2 r-scales))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://github.com/GuangchuangYu/shadowtext/")
+    (synopsis "Shadow text grob and layer")
+    (description "This package implements @code{shadowtextGrob()} for
 @code{grid} and @code{geom_shadowtext()} layer for @code{ggplot2}.
 These functions draw text grob with background shadow.")
-   (license license:artistic2.0)))
+    (license license:artistic2.0)))
 
 (define-public r-sys
   (package
