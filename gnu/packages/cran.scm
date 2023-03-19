@@ -2592,6 +2592,31 @@ generalized linear, additive and interaction models to potentially
 high-dimensional data.")
    (license license:gpl2)))
 
+(define-public r-mclogit
+  (package
+    (name "r-mclogit")
+    (version "0.9.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mclogit" version))
+              (sha256
+               (base32
+                "0sbglgak6jhhpx65jnj59hbpvzs8qjsdjc4w02z0m5j9hrnmzp4s"))))
+    (properties `((upstream-name . "mclogit")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-memisc))
+    (home-page "https://www.elff.eu/software/mclogit/")
+    (synopsis
+     "Multinomial logit models, with or without random effects or overdispersion")
+    (description
+     "This package provides estimators for multinomial logit models in their
+conditional logit and baseline logit variants, with or without random effects,
+with or without overdispersion.  Random effects models are estimated using the
+PQL technique (based on a Laplace approximation) or the MQL technique (based
+on a Solomon-Cox approximation).  Estimates should be treated with caution if
+the group sizes are small.")
+    (license license:gpl2)))
+
 (define-public r-shadowtext
   (package
    (name "r-shadowtext")
