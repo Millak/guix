@@ -11448,14 +11448,14 @@ matrix.")
 (define-public r-ggpubr
   (package
     (name "r-ggpubr")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpubr" version))
        (sha256
         (base32
-         "0fbm3rcpsabb7j7sdr69scqiq1bnx2623ji9ap9v4rmqqy8s08gv"))))
+         "0x7p3lbh0xv5qk0shsrj1fjx382zak7mj8l3z1zd348r2pccavif"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cowplot
