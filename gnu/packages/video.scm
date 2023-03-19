@@ -41,7 +41,7 @@
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Alex McGrath <amk@amk.ie>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2020 Ivan Kozlov <kanichos@yandex.ru>
@@ -3214,7 +3214,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.12.0")
+    (version "7.14.0")
     (source
      (origin
        (method git-fetch)
@@ -3223,7 +3223,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "182i6fgn9aiskj62kj10cxf5wh233a241n7qvh0l95il01zmpfb3"))))
+        (base32 "0qiy346dx41a2n94lwsa9p9vsprsrzah7f9wlm6n507k7w7f0sq6"))))
     (build-system cmake-build-system)
     (arguments
      (list
