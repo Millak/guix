@@ -2958,13 +2958,13 @@ that package, other packages are unaffected.")
 (define-public r-blob
   (package
     (name "r-blob")
-    (version "1.2.3")
+    (version "1.2.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "blob" version))
               (sha256
                (base32
-                "06v3ldnmf6f99riym1cjbm5rklxmg6cpdixm6armc6rxxs1xd21d"))))
+                "13vjy9f3zki8w1damz6kqq47689mk4l1navnwh7r6z8lqkmj52fh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rlang r-vctrs))
