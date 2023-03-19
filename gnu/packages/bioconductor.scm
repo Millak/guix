@@ -11685,14 +11685,14 @@ surface of a flowcell.")
 (define-public r-mutoss
   (package
     (name "r-mutoss")
-    (version "0.1-12")
+    (version "0.1-13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mutoss" version))
        (sha256
         (base32
-         "1yk7p7pb2xm38d3j19ysgwmix48lvimbhkhjjwk5jmr1a0ysx298"))))
+         "0hgi9wpy3ai23dk6cdba6r118vvmgw210racsg3n1p24rv6ny3xn"))))
     (properties `((upstream-name . "mutoss")))
     (build-system r-build-system)
     (propagated-inputs
