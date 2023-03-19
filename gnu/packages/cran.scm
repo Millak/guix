@@ -743,17 +743,17 @@ such as counts or binary matrices.")
 (define-public r-googlevis
   (package
     (name "r-googlevis")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "googleVis" version))
        (sha256
-        (base32 "1s82xcs6zrlmnhay764bspzwvabfyi35nq6fwdrrk3v79q13c5jz"))))
+        (base32 "067jcwbq0a06wbpaa46ngjs3hkpvz8q6v8019f15yr58kq2k2n9k"))))
     (properties `((upstream-name . "googleVis")))
     (build-system r-build-system)
     (propagated-inputs (list r-jsonlite))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-rmarkdown))
     (home-page "https://mages.github.io/googleVis/")
     (synopsis "R interface to Google Charts")
     (description
