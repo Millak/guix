@@ -17260,13 +17260,13 @@ handling.")
 (define-public r-gridsvg
   (package
     (name "r-gridsvg")
-    (version "1.7-4")
+    (version "1.7-5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gridSVG" version))
               (sha256
                (base32
-                "1jspjn56yrkx98hhs98npzm0k0kwpv8x1hg40kphx5ikhvincxmr"))))
+                "1p8qnx9q96bni39x44l40rgcdi9r440zbipdfvkbs2paysx6mkr5"))))
     (properties `((upstream-name . "gridSVG")))
     (build-system r-build-system)
     (propagated-inputs
