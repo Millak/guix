@@ -9825,14 +9825,14 @@ facilitate data exploration.")
 (define-public r-randomizr
   (package
     (name "r-randomizr")
-    (version "0.22.0")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "randomizr" version))
        (sha256
         (base32
-         "1grm0h3xkb0pdbbv0gd531g1kn6njp0gcy5fh153rrmajxgd8hhw"))))
+         "1q40ghal83g14f6i1viappbhy70ndm9c2igayh8w6lpad53cdqi3"))))
     (properties `((upstream-name . "randomizr")))
     (build-system r-build-system)
     (native-inputs
