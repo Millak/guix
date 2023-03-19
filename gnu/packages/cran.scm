@@ -35096,14 +35096,14 @@ as a data frame.  It also supports writing data frames to an ODS file.")
 (define-public r-qpdf
   (package
     (name "r-qpdf")
-    (version "1.3.0")
+    (version "1.3.2")
     (source
      (origin
       (method url-fetch)
       (uri (cran-uri "qpdf" version))
       (sha256
        (base32
-        "0x2n9b4avnm0p1cz6i90a3p6qjpwr68g4v0xa8d1rr3gbgqfraf8"))
+        "0xp9x11jpih59s0skfswi5chmv1p8zhz4f66w0nxfx4jhyj0bjfr"))
       (modules '((guix build utils)))
       (snippet
        '(begin
