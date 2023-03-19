@@ -9303,13 +9303,13 @@ multivariate distributions.")
 (define-public r-fbasics
   (package
     (name "r-fbasics")
-    (version "4021.93")
+    (version "4022.94")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fBasics" version))
               (sha256
                (base32
-                "1lmmdwzvqhggy6rr7yc9y5f8hxxgyzsgwm3ry0sz5ljbgfijl7g6"))))
+                "1mka9avcdkq4sj40xa15hrjm1f8ppzbvw3yzxbhkbaw9c130qfy8"))))
     (properties `((upstream-name . "fBasics")))
     (build-system r-build-system)
     (propagated-inputs
