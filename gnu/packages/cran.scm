@@ -14966,17 +14966,17 @@ repositories.")
 (define-public r-gh
   (package
     (name "r-gh")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gh" version))
        (sha256
         (base32
-         "1vqjhqlhvvqq8w2cqbgrkqphj0ga5s6fbl4zhcl3vc6fvsms5bpv"))))
+         "0wcbnnws472v1i6q012pbdxjpsd4clj6a2cscf73g6s2336rzik8"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli r-gitcreds r-httr r-ini r-jsonlite))
+     (list r-cli r-gitcreds r-httr2 r-ini r-jsonlite r-rlang))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/r-lib/gh#readme")
