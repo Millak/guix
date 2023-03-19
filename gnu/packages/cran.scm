@@ -1412,13 +1412,13 @@ size and can be easily tested locally before being sent to a remote.")
 (define-public r-climaemet
   (package
     (name "r-climaemet")
-    (version "1.0.2")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "climaemet" version))
               (sha256
                (base32
-                "1z0i8iz7f32kns8j1yb3sp2m0zhl4pgp4bf52aiqykjp9i791dqm"))))
+                "17wi11f0xw1sz70sdl40rvxkb1crlyb4pz656v6v5kan5zxrf7lf"))))
     (properties `((upstream-name . "climaemet")))
     (build-system r-build-system)
     (propagated-inputs
