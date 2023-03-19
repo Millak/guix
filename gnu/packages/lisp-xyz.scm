@@ -16925,19 +16925,20 @@ source files.")
   (sbcl-package->cl-source-package sbcl-cl-indentify))
 
 (define-public sbcl-concrete-syntax-tree
-  (let ((commit "4f01430c34f163356f3a2cfbf0a8a6963ff0e5ac"))
+  (let ((commit "37291727196a3bc88a7be67c1427c52078d4b82c")
+        (revision "0"))
     (package
       (name "sbcl-concrete-syntax-tree")
-      (version (git-version "0.0.0" "2" commit))
+      (version (git-version "0.2.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/s-expressionists/Concrete-Syntax-Tree")
                (commit commit)))
-         (file-name (git-file-name name commit))
+         (file-name (git-file-name "cl-concrete-syntax-tree" commit))
          (sha256
-          (base32 "169ibaz1vv7pphib28443zzk3hf1mrcarhzfm8hnbdbk529cnxyi"))))
+          (base32 "15q9jyqsh2z921li9my8c840cj2ci7k217x5frfiyk0kymkx4rgv"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-acclimation))
