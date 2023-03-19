@@ -7136,14 +7136,14 @@ by base R methods related to model fitting.")
 (define-public r-broom
   (package
     (name "r-broom")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "broom" version))
        (sha256
         (base32
-         "0m8akaj72kfvp7wmfp52dx09pfigb9w0knl55bfj8cg0kq6g3cq6"))))
+         "1mhavmma0d075bbcnis9jkr4ar2dw91p44yxzx2qlskq16si2pqx"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
@@ -7151,6 +7151,7 @@ by base R methods related to model fitting.")
            r-ellipsis
            r-generics
            r-glue
+           r-lifecycle
            r-purrr
            r-rlang
            r-stringr
