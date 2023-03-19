@@ -27613,13 +27613,13 @@ and time parsing.")
 (define-public r-anndata
   (package
     (name "r-anndata")
-    (version "0.7.5.5")
+    (version "0.7.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "anndata" version))
        (sha256
-        (base32 "1ync82qp0v6zszibz8bwhlyknf99v3iki8cwq4n4vwmg9z7hrb54"))))
+        (base32 "1q1ii43wfj68qdlzhqj9msxqsfzpidhhlfrisax4p943v7yh75mi"))))
     (properties `((upstream-name . "anndata")))
     (build-system r-build-system)
     (propagated-inputs (list r-assertthat r-matrix r-r6 r-reticulate))
