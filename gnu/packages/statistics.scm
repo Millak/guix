@@ -4654,13 +4654,13 @@ package instead.")
 (define-public r-hmisc
   (package
     (name "r-hmisc")
-    (version "4.7-2")
+    (version "5.0-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Hmisc" version))
        (sha256
-        (base32 "0lyacs5q6mdg9lirixl9r2dqs9ljxyn5d53mmb04ci0jam3vk0wc"))))
+        (base32 "0ngsm05ngzchy4l8a6fww3m2qqz8m04rcbl1zg7va30mia7hyffv"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
     (native-inputs
@@ -4668,19 +4668,19 @@ package instead.")
     (propagated-inputs
      (list r-base64enc
            r-cluster
+           r-colorspace
            r-data-table
            r-foreign
            r-formula
            r-ggplot2
            r-gridextra
            r-gtable
-           r-lattice
-           r-latticeextra
+           r-knitr
            r-htmltable
            r-htmltools
            r-nnet
+           r-rmarkdown
            r-rpart
-           r-survival
            r-viridis))
     (home-page "http://biostat.mc.vanderbilt.edu/Hmisc")
     (synopsis "Miscellaneous data analysis and graphics functions")
