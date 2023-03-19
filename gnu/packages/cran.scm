@@ -3317,13 +3317,13 @@ a list of p-values.")
 (define-public r-htmlwidgets
   (package
     (name "r-htmlwidgets")
-    (version "1.6.1")
+    (version "1.6.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "htmlwidgets" version))
               (sha256
                (base32
-                "0hqfjvfs3mcpqwim79vac1738k19ipr10zvdqrw5kzpwpsy3qls2"))))
+                "1g0h5dqzr22jyxr6fkxyf8njq3f4wxp7nrwhqw1w5yy0lir1dnkz"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-htmltools r-jsonlite
