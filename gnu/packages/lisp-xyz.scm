@@ -5450,6 +5450,60 @@ Development into CL+SSL was done by David Lichteblau.")
        (substitute-keyword-arguments (package-arguments pkg)
          ((#:tests? _ #f) #f))))))
 
+(define-public sbcl-kons-9
+  (let ((commit "fe0b3228ca28c316457d35f9e7c67edc83b2a4cc")
+        (revision "0"))
+    (package
+      (name "sbcl-kons-9")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kaveh808/kons-9")
+               (commit commit)))
+         (file-name (git-file-name "cl-kons-9" version))
+         (sha256
+          (base32 "1kdwva4qj1s5vmbv6gbmpnk56ahaf8n2kvij5xjlfyk7nriy4bbi"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("kons-9")
+         #:asd-test-systems '("kons-9/testsuite")))
+      (native-inputs
+       (list sbcl-alexandria sbcl-confidence))
+      (inputs
+       (list sbcl-closer-mop
+             sbcl-cffi
+             sbcl-cl-glfw3
+             sbcl-cl-opengl
+             sbcl-cl-vectors
+             sbcl-clobber
+             sbcl-origin
+             sbcl-trivial-backtrace
+             sbcl-trivial-main-thread
+             sbcl-zpb-ttf))
+      (home-page "https://github.com/kaveh808/kons-9")
+      (synopsis "Common Lisp 3D graphics system")
+      (description
+       "This package provides KONS-9 which can be considered as a traditional user
+interface driven 3D application for general artists, or as a REPL-based
+development environment for technical artists and software developers.  These two
+approaches can be seamlessly combined into a flexible and powerful workflow,
+where non-technical users can immediately benefit from software tools and
+extensions developed by technical users.")
+      (license (list license:expat
+                     ;; lib/JMC-font-libs/font-master
+                     ;; lib/JMC-font-libs/font-zpb-ttf-master
+                     license:lgpl2.1)))))
+
+(define-public cl-kons-9
+  (sbcl-package->cl-source-package sbcl-kons-9))
+
+;; TODO: (Sharlatan-20221110T230620+0000): ECL is not supported yet.
+;; https://github.com/kaveh808/kons-9/issues/176
+;; (define-public ecl-kons-9
+;;   (sbcl-package->ecl-package sbcl-kons-9))
+
 (define-public sbcl-kmrcl
   (let ((version "1.111")
         (commit "4a27407aad9deb607ffb8847630cde3d041ea25a")
