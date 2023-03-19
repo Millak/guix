@@ -22767,14 +22767,14 @@ industry for machine learning tasks.")
 (define-public r-float
   (package
     (name "r-float")
-    (version "0.3-0")
+    (version "0.3-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "float" version))
        (sha256
         (base32
-         "0m7bf3548vlgkk1c78jyrgj72ngwg0gsccap2iqinm3l3qrm4zbs"))))
+         "0fzb9warfnb7h1krrf2hrxjp3lmpff7sln0r2718iqlhwam9v1zm"))))
     (properties `((upstream-name . "float")))
     (build-system r-build-system)
     (native-inputs
