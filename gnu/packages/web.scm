@@ -6510,6 +6510,32 @@ internetarchive python module for programmatic access to archive.org.")
 snippets on @url{https://commandlinefu.com}.")
       (license license:expat))))
 
+(define-public nntpit
+  (let ((commit "c0d654736460d174a680b2e06c3a81ce883fc09a")
+        (revision "0"))
+    (package
+      (name "nntpit")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/taviso/nntpit")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1kkdh2qpkfw97hzw9jsxy5jzmhhv8261bj63mvr5c9qwlp6qs46g"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake glib pkg-config))
+      (inputs (list curl json-c libev))
+      (synopsis "Minimal reddit2nntp gateway server")
+      (description
+       "This is a simple reddit2nntp gateway server that lets you use a newsreader
+ to follow discussions on reddit.  The intention is for you to run it locally,
+ tell your newsreader to connect to localhost, and subreddits will appear as newsgroups!")
+      (home-page "https://github.com/taviso/nntpit")
+      (license license:expat))))
+
 (define-public rss-bridge
   (package
     (name "rss-bridge")
