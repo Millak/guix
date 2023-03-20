@@ -3971,21 +3971,28 @@ parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies."
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
-    (version "1.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fakeredis" version))
-       (sha256
-        (base32
-         "1v68my2v7fg44zwky3k5d52nn1bi0szpgdslghrpa2ifnjhlnb3w"))))
-    (build-system python-build-system)
+    (version "2.10.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/cunla/fakeredis-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1imsi9dswvkda894sm53lfzdsna0qlrgxszczlq2sam68zn4hfz6"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; no tests
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-aioredis python-packaging python-redis python-sortedcontainers))
-    (home-page "https://github.com/jamesls/fakeredis")
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "pyproject.toml"
+                              (("sortedcontainers = \"\\^2\\.4\"")
+                               "sortedcontainers = \"^2.1\"")))))))
+    (native-inputs (list python-poetry-core python-pytest
+                         python-pytest-asyncio python-pytest-mock))
+    (propagated-inputs (list python-redis python-sortedcontainers))
+    (home-page "https://github.com/cunla/fakeredis-py")
     (synopsis "Fake implementation of redis API for testing purposes")
     (description
      "Fakeredis is a pure-Python implementation of the redis-py Python client
