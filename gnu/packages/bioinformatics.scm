@@ -3971,6 +3971,80 @@ sequencing data.  It uses paired-ends and split-reads to sensitively and
 accurately delineate genomic rearrangements throughout the genome.")
     (license license:gpl3+)))
 
+(define-public transanno
+  (package
+    (name "transanno")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/informationsea/transanno")
+             ;; Corresponds to tag v0.3.0
+             (commit "df49050c92644ea12d9d5c6fae2186ca436dbca3")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jpn7s3cnd9ybk4lmfbhj2arhf6cmrv7jp74n7n87m3a3irkaif1"))
+       (snippet
+        '(with-output-to-file "liftover-rs/build.rs"
+           (lambda _
+             (format #true
+                     "fn main() {~@
+                        println!(\"cargo:rustc-link-lib=lzma\");~@
+                        }~%"))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false          ;fails
+      #:tests? #false                   ;"cargo test" ignores build.rs
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-test-files
+            (lambda _
+              (delete-file "Cargo.lock")
+              (substitute* "liftover-rs/Cargo.toml"
+                (("anyhow = \"1\"") "anyhow = \"1.0.65\""))
+              (substitute* "liftover-rs/prepare-test.sh"
+                (("/bin/bash")
+                 (string-append #$(this-package-native-input "bash")
+                                "/bin/bash")))
+              (invoke "bash" "prepare-test-files.sh")))
+          (add-before 'patch-cargo-checksums 'do-not-build-xz
+            (lambda _
+              ;; Detection of liblzma (in rust-lzma-sys, pulled in by
+              ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
+              ;; request a static build somewhere.
+              (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
+                (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") ""))))
+          (add-before 'install 'chdir
+            (lambda _ (chdir "transanno"))))
+      #:cargo-inputs
+      `(("rust-anyhow" ,rust-anyhow-1)
+        ("rust-autocompress" ,rust-autocompress-0.2)
+        ("rust-bio" ,rust-bio-0.41)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nom" ,rust-nom-5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))
+      #:cargo-development-inputs
+      `(("rust-clap" ,rust-clap-2)
+        ("rust-lazy-static" ,rust-lazy-static-1))))
+    (native-inputs (list bash))
+    (home-page "https://github.com/informationsea/transanno")
+    (synopsis "LiftOver tool for new genome assemblies")
+    (description "This package provides an accurate VCF/GFF3/GTF LiftOver tool
+for new genome assemblies.")
+    (license license:gpl3+)))
+
 (define-public trf
   (package
     (name "trf")
