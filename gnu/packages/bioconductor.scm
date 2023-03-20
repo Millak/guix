@@ -2125,6 +2125,37 @@ employed to first background subtract intensities before calculating
 concentrations on behal of the Langmuir model.")
     (license license:gpl3)))
 
+(define-public r-affyplm
+  (package
+    (name "r-affyplm")
+    (version "1.74.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "affyPLM" version))
+       (sha256
+        (base32 "0f0faxjzlg0znhjfvf1490yc54npkx659jx76cddm5hk7q0blv3v"))))
+    (properties `((upstream-name . "affyPLM")))
+    (build-system r-build-system)
+    (inputs (list zlib))
+    (propagated-inputs
+     (list r-affy
+           r-biobase
+           r-biocgenerics
+           r-gcrma
+           r-preprocesscore
+           r-zlibbioc))
+    (home-page "https://github.com/bmbolstad/affyPLM")
+    (synopsis "Methods for fitting probe-level models")
+    (description
+     "The affyPLM provides a package that extends and improves the
+functionality of the base affy package.  For speeding up the runs, it includes
+routines that make heavy use of compiled code.  The central focus is on
+implementation of methods for fitting probe-level models and tools using these
+models.  @acronym{PLM, probe-level models} based quality assessment tools are
+also provided.")
+    (license license:gpl2+)))
+
 (define-public r-affyrnadegradation
   (package
     (name "r-affyrnadegradation")
