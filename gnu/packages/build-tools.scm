@@ -994,7 +994,7 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
       ;; Unicode data:
       ucd-next
       ;; Programs for the tests:
-      cppi indent git autoconf))
+      cppi indent git-minimal/pinned autoconf))
     (home-page "https://www.gnu.org/software/gnulib/")
     (synopsis "Source files to share among distributions")
     (description
