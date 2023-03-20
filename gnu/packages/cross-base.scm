@@ -542,12 +542,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
 
       (inputs `(("gnumach-headers" ,xgnumach-headers)
                 ("hurd-headers" ,xhurd-headers)
-                ("hurd-minimal" ,xhurd-minimal)))
-
-      (native-inputs `(("cross-gcc" ,xgcc)
-                       ("cross-binutils" ,xbinutils)
-                       ("cross-mig" ,xmig)
-                       ,@(package-native-inputs hurd-core-headers)))))
+                ("hurd-minimal" ,xhurd-minimal)))))
 
   (match target
     ((or "i586-pc-gnu" "i586-gnu") xhurd-core-headers)
