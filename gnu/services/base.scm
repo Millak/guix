@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -703,9 +703,10 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
 ;;; /etc/hosts
 ;;;
 
-(define (valid-name? name)
-  "Return true if @var{name} is likely to be a valid host name."
-  (false-if-exception (not (string-any char-set:whitespace name))))
+(eval-when (expand load eval)
+  (define (valid-name? name)
+    "Return true if @var{name} is likely to be a valid host name."
+    (false-if-exception (not (string-any char-set:whitespace name)))))
 
 (define-compile-time-procedure (assert-valid-name (name valid-name?))
   "Ensure @var{name} is likely to be a valid host name."
@@ -2664,16 +2665,17 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
                             ipv6-address?))))
   (gateway     network-route-gateway (default #f)))
 
-(define* (cidr->netmask str #:optional (family AF_INET))
-  "Given @var{str}, a string in CIDR notation (e.g., \"1.2.3.4/24\"), return
+(eval-when (expand load eval)
+  (define* (cidr->netmask str #:optional (family AF_INET))
+    "Given @var{str}, a string in CIDR notation (e.g., \"1.2.3.4/24\"), return
 the netmask as a string like \"255.255.255.0\"."
-  (match (string-split str #\/)
-    ((ip (= string->number bits))
-     (let ((mask (ash (- (expt 2 bits) 1)
-                      (- (if (= family AF_INET6) 128 32)
-                         bits))))
-       (inet-ntop family mask)))
-    (_ #f)))
+    (match (string-split str #\/)
+      ((ip (= string->number bits))
+       (let ((mask (ash (- (expt 2 bits) 1)
+                        (- (if (= family AF_INET6) 128 32)
+                           bits))))
+         (inet-ntop family mask)))
+      (_ #f))))
 
 (define (cidr->ip str)
   "Strip the netmask bit of @var{str}, a CIDR-notation IP/netmask address."
