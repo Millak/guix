@@ -152,17 +152,6 @@ for other software in the GNU system that uses Mach-based inter-process
 communication.")
     (license gpl2+)))
 
-(define-public mig/32-bit
-  ;; When cross-compiling from x86_64-linux to i586-gnu, we need this 32-bit
-  ;; native MIG.
-  (package
-    (inherit mig)
-    (arguments
-     (substitute-keyword-arguments (package-arguments mig)
-       ((#:system _ #f)
-        "i686-linux")))
-    (properties `((hidden? . #t)))))
-
 (define-public hurd-headers
   ;; This commit is now slightly behind 0.9.git20220818 as this one needs a
   ;; newer glibc
