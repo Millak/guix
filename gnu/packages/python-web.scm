@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
@@ -964,16 +964,39 @@ over a different origin than that of the web application.")
 (define-public python-httplib2
   (package
     (name "python-httplib2")
-    (version "0.9.2")
+    (version "0.15.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "httplib2" version))
+       ;; Tests not included in the release tarball.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/httplib2/httplib2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "126rsryvw9vhbf3qmsfw9lf4l4xm2srmgs439lgma4cpag4s3ay3"))))
+         "11bis23xqbl6aa5m5yswwcf6zn4j24lyi7bfskd31h4zb368ggsj"))))
     (build-system python-build-system)
-    (home-page "https://github.com/jcgregorio/httplib2")
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-test-requirements
+             (lambda _
+               (substitute* "requirements-test.txt"
+                 (("==") ">=")))))))
+    (native-inputs
+     (list python-flake8
+           python-future
+           python-mock
+           python-pytest
+           python-pytest-cov
+           python-pytest-forked
+           python-pytest-randomly
+           python-pytest-timeout
+           python-pytest-xdist
+           python-six))
+    (home-page "https://github.com/httplib2/httplib2")
     (synopsis "Comprehensive HTTP client library")
     (description
      "A comprehensive HTTP client library supporting many features left out of
