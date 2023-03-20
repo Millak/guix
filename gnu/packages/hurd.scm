@@ -111,15 +111,20 @@ GNU/Hurd."
 (define-public mig
   (package
     (name "mig")
-    (version "1.8")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/mig/mig-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "1gyda8sq6b379nx01hkpbd85lz39irdvz2b9wbr63gicicx8i706"))))
+    (version "1.8+git20220827")
+    (source (origin
+              (method url-fetch)
+              ;; XXX: Version 2.35 of glibc can only be built with an
+              ;; unreleased version of MiG:
+              ;; <https://lists.gnu.org/archive/html/bug-hurd/2023-03/msg00025.html>.
+              ;; It cannot be fetched from Git though, as the extra dependency
+              ;; on Autoconf/Automake would complicate bootstrapping.
+              (uri (string-append "mirror://gnu/guix/mirror/mig-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "163d37s9lscd6zxyfng421m9nl857464mgjj90xsrcl5ykbng5p2"))
+              (patches (search-patches "mig-cpu.h-generation.patch"))))
     (build-system gnu-build-system)
     ;; Flex is needed both at build and run time.
     (inputs (list gnumach-headers flex))
