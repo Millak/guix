@@ -342,7 +342,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 
 (define dde-sources
   ;; This is the current tip of the dde branch
-  (let ((commit "ac1c7eb7a8b24b7469bed5365be38a968d59a136"))
+  (let ((commit "ce8810277fa3584eb36ecb23da58394153fabe6f"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -350,8 +350,14 @@ Hurd-minimal package which are needed for both glibc and GCC.")
             (commit commit)))
       (sha256
        (base32
-        "1vryinbg75xpydfrv9dbgfnds6knlh8l8bk2rxp32y9dc58z0692"))
+        "0ygk7jm4jmhpvh0zzi5bk638242z7sbcab2i57fkb4y2mmdkjjbw"))
       (file-name (git-file-name "dde" commit)))))
+
+(define %import-from-dde
+  (list "libmachdevdde" "libddekit" "libdde_linux26"))
+
+(define %add-to-hurd-subdirs
+  (list "libmachdevdde" "libddekit"))
 
 (define-public hurd
   (package
@@ -363,17 +369,19 @@ Hurd-minimal package which are needed for both glibc and GCC.")
        (modify-phases %standard-phases
          (add-after 'unpack 'prepare-dde
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("libbpf ")
-                "libbpf libmachdev libmachdevdde libddekit"))
+             ;; First we import the things we want from dde.
              (for-each make-file-writable (find-files "."))
              (let ((dde (or (assoc-ref inputs "dde-sources")
                             (assoc-ref native-inputs "dde-sources"))))
                (for-each (lambda (dir)
                            (copy-recursively
                             (string-append dde "/" dir ) dir))
-                         '("libmachdev" "libmachdevdde" "libddekit")))
-             #t))
+                         '("libmachdevdde" "libddekit" "libdde_linux26")))
+             ;; And we add some as subdirs so that they're built by the main
+             ;; Makefile. libdde_linux26 is built later in its own phase.
+             (substitute* "Makefile"
+               (("libbpf ")
+                "libbpf libmachdevdde libddekit"))))
          (add-after 'unpack 'find-tirpc
            (lambda* (#:key inputs #:allow-other-keys)
              (for-each (lambda (var)
@@ -492,12 +500,34 @@ exec ${system}/rc \"$@\"
                            (patch-shebang file path))
                          (find-files (string-append out "/libexec")))
                #t)))
+         (add-after 'build 'build-libdde-linux
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (invoke (string-append (assoc-ref native-inputs "make")
+                                    "/bin/make")
+                     ;; XXX There can be a race condition because subdirs
+                     ;; aren't interdependent targets in the Makefile.
+                     "-j1" "-C" "libdde_linux26"
+                     (string-append "SHELL="
+                                    (assoc-ref native-inputs "bash")
+                                    "/bin/bash")
+                     (string-append "CC="
+                                    ,(cc-for-target)))))
          (add-after 'install 'install-goodies
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
              ;; Install additional goodies.
              ;; TODO: Build & install *.msgids for rpctrace.
              (let* ((out (assoc-ref outputs "out"))
                     (datadir (string-append out "/share/hurd")))
+               ;; Install libdde_linux26.
+               (invoke (string-append (assoc-ref native-inputs "make")
+                                      "/bin/make")
+                       "-C" "libdde_linux26" "install"
+                       (string-append "SHELL="
+                                    (assoc-ref native-inputs "bash")
+                                    "/bin/bash")
+                       (string-append "INSTALLDIR="
+                                      out
+                                      "/share/libdde_linux26/build/include"))
                ;; Install the fancy UTF-8 motd.
                (mkdir-p (string-append out "/etc"))
                (copy-file "console/motd.UTF8"
