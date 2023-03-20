@@ -68,7 +68,7 @@
   ;; Note: the Shepherd comes before the Hurd, not just because its duty is to
   ;; shepherd the herd, but also because we want its 'halt' and 'reboot'
   ;; commands to take precedence.
-  (list shepherd hurd bash coreutils file findutils grep sed
+  (list shepherd-0.8 hurd bash coreutils file findutils grep sed
         diffutils patch gawk tar gzip bzip2 xz lzip
         guile-3.0-latest guile-colorized guile-readline
         net-base inetutils less shadow sudo which
