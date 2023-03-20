@@ -5250,8 +5250,7 @@ with processes on remote servers, via SSH2.")
 (define-public ruby-net-scp
   (package
     (name "ruby-net-scp")
-    ;; The 1.2.1 release would be incompatible with ruby-net-ssh >= 4.
-    (version "1.2.2.rc2")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -5260,7 +5259,7 @@ with processes on remote servers, via SSH2.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nyn17sy71fn7zs3y6wbgcn35318c10flqgc0582409095x4h0sx"))))
+        (base32 "1mdxh81z2hkcc359g6z96fywbr57azlv2yj4zq76adn5lyqq4hgw"))))
     (build-system ruby-build-system)
     (native-inputs
      (list bundler ruby-test-unit ruby-mocha))
