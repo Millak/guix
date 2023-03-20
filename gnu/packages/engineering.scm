@@ -298,7 +298,7 @@ utilities.")
   (package
     (inherit geda-gaf)
     (name "lepton-eda")
-    (version "1.9.14-20210407")
+    (version "1.9.18-20220529")
     (home-page "https://github.com/lepton-eda/lepton-eda")
     (source (origin
               (method git-fetch)
@@ -307,7 +307,7 @@ utilities.")
                     (commit version)))
               (sha256
                (base32
-                "0kyq0g6271vlwraw98637fn8bq2l6q4rll6748nn8rwsmfz71d0m"))
+                "06plrcab3s2rpyf0qv2gzc1yp33627xi8105niasgixckk6glnc2"))
               (file-name (git-file-name name version))))
     (arguments
      (list
@@ -328,28 +328,40 @@ utilities.")
                 "CFLAGS=-fcommon"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; For logs and auto-compilation
+              (setenv "HOME" "/tmp")
+
+              ;; Ensure that readline is found by lepton-shell
+              (substitute* "script.in"
+                (("\\(eval-when \\(expand load eval\\)" m)
+                 (string-append "
+(add-to-load-path \"" #$(this-package-input "guile-readline")
+"/share/guile/site/3.0\")
+(set! %load-compiled-path (cons \""
+#$(this-package-input "guile-readline")
+"/lib/guile/3.0/site-ccache/"
+"\" %load-compiled-path))
+" m)))))
           (add-before 'build 'fix-dynamic-link
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "libleptongui/scheme/schematic/ffi.scm.in"
-                (("@LIBLEPTONGUI@")
-                 (string-append #$output "/lib/libleptongui.so")))
-              (substitute* '("libleptongui/scheme/schematic/ffi/gtk.scm.in"
-                             "utils/attrib/lepton-attrib.scm")
-                (("@LIBGTK@")
-                 (search-input-file inputs "/lib/libgtk-3.so")))
-              (substitute* '("libleptongui/scheme/schematic/ffi/gobject.scm.in")
-                (("@LIBGOBJECT@")
-                 (search-input-file inputs "/lib/libgobject-2.0.so")))
-              (substitute* "liblepton/scheme/lepton/ffi.scm.in"
-                (("@LIBLEPTON@")
-                 (string-append #$output "/lib/liblepton.so")))
-              (substitute* "utils/attrib/lepton-attrib.scm"
-                (("@LIBLEPTONATTRIB@")
-                 (string-append (assoc-ref outputs "out")
-                                "/lib/libleptonattrib.so")))
-              (substitute* "liblepton/scheme/lepton/log.scm.in"
-                (("@LIBGLIB@")
-                 (search-input-file inputs "/lib/libglib-2.0.so")))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "liblepton/scheme/lepton/ffi/lib.scm"
+                (("\"liblepton\"")
+                 (string-append "\"" #$output "/lib/liblepton.so" "\""))
+                (("\"libleptonattrib\"")
+                 (string-append "\"" #$output "/lib/libleptonattrib.so" "\""))
+                (("\"libleptongui\"")
+                 (string-append "\"" #$output "/lib/libleptongui.so" "\""))
+                (("\"libglib-2.0\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libglib-2.0.so") "\""))
+                (("\"libgobject-2.0\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libgobject-2.0.so") "\""))
+                (("\"libgtk-3\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libgtk-3.so") "\"")))
 
               ;; For finding libraries when running tests before installation.
               (setenv "LIBLEPTONGUI"
@@ -408,6 +420,7 @@ utilities.")
            gtk+
            gtksheet
            guile-3.0
+           guile-readline
            shared-mime-info
            m4
            pcb))
