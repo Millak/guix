@@ -2098,6 +2098,33 @@ impute GReX can be trained with a training dataset where the real total
 expression values are known.")
     (license license:gpl3)))
 
+(define-public r-affyilm
+  (package
+    (name "r-affyilm")
+    (version "1.50.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "affyILM" version))
+       (sha256
+        (base32 "0i2hjaqjz06ym5kbw5da1h3cahc630mjwljsji1l2ks0gjcipll0"))))
+    (properties `((upstream-name . "affyILM")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affxparser
+           r-affy
+           r-biobase
+           r-gcrma))
+    (home-page "https://bioconductor.org/packages/affyILM")
+    (synopsis
+     "Linear model of background subtraction and the Langmuir isotherm")
+    (description
+     "The affyILM package is a preprocessing tool which estimates gene
+expression levels for Affymetrix Gene Chips.  Input from physical chemistry is
+employed to first background subtract intensities before calculating
+concentrations on behal of the Langmuir model.")
+    (license license:gpl3)))
+
 (define-public r-affyrnadegradation
   (package
     (name "r-affyrnadegradation")
