@@ -1384,6 +1384,8 @@ after a (configurable) newline delimiter is received.")))
                                                              (_
                                                               #t))
                                                            scripts-alist)))
+                                  (("gypfile" . _)
+                                   '("gypfile" . #f))
                                   (other
                                    other))
                                 pkg-meta-alist))))))))
