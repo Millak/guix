@@ -1054,7 +1054,9 @@ new Date();"))
                                     (find-files "." ".*.(bin|exe|jar)$"))))
               (sha256
                (base32
-                "0i47ar8lxzjrkkiwbzybfxs473390h4jq9ahm3xqdvy5zpchxy3y"))))
+                "0i47ar8lxzjrkkiwbzybfxs473390h4jq9ahm3xqdvy5zpchxy3y"))
+              (patches (search-patches
+                        "openjdk-10-idlj-reproducibility.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk9)
        ((#:phases phases)
