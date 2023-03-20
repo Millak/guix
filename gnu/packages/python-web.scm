@@ -7253,6 +7253,42 @@ of the CRC32C hashing algorithm.")
 server-to-server authentication mechanisms to access Google APIs.")
     (license license:asl2.0)))
 
+(define-public python-google-auth-1
+  (package
+    (inherit python-google-auth)
+    (name "python-google-auth")
+    (version "1.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-auth" version))
+       (sha256
+        (base32 "13nqj6hikvbdmbs1vb78c88ym0pd03m09ch00biqw64c0blkn0xp"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-cachetools
+           python-pyasn1-modules
+           python-rsa
+           python-six
+           ;; For the extras
+           python-pyopenssl
+           python-pyu2f))
+    (native-inputs
+     (list python-flask
+           python-freezegun
+           python-oauth2client
+           python-pytest
+           python-pytest-localserver
+           python-requests
+           python-responses
+           python-urllib3))))
+
 (define-public python-google-resumable-media
   (package
     (name "python-google-resumable-media")
