@@ -2125,6 +2125,38 @@ employed to first background subtract intensities before calculating
 concentrations on behal of the Langmuir model.")
     (license license:gpl3)))
 
+(define-public r-affylmgui
+  (package
+    (name "r-affylmgui")
+    (version "1.72.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "affylmGUI" version))
+       (sha256
+        (base32 "0jds73pxqf522wcg8qd4b4k1qbhn51av5md1nhgcdnb6is0lzvxi"))))
+    (properties `((upstream-name . "affylmGUI")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affy
+           r-affyio
+           r-affyplm
+           r-annotationdbi
+           r-biocgenerics
+           r-biocmanager
+           r-gcrma
+           r-limma
+           r-r2html
+           r-tkrplot
+           r-xtable))
+    (home-page "https://bioinf.wehi.edu.au/affylmGUI/")
+    (synopsis "GUI for limma package with Affymetrix microarrays")
+    (description
+     "This package provides a @acronym{GUI, Graphical User Interface} for
+analysis of Affymetrix microarray gene expression data using the affy and
+limma packages.")
+    (license license:gpl2+)))
+
 (define-public r-affyplm
   (package
     (name "r-affyplm")
