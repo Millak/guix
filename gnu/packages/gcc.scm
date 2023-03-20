@@ -706,7 +706,18 @@ It also includes runtime support libraries for these languages.")
                                      "gcc-10-tree-sra-union-handling.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
-
+   (arguments
+    (substitute-keyword-arguments (package-arguments gcc-8)
+      ((#:phases phases #~%standard-phases)
+       (if (target-hurd?)
+           #~(modify-phases #$phases
+               (add-after 'unpack 'patch-hurd-libpthread
+                 (lambda _
+                   (define patch
+                     #$(local-file
+                        (search-patch "gcc-11-libstdc++-hurd-libpthread.patch")))
+                   (invoke "patch" "--force" "-p1" "-i" patch))))
+           phases))))
    (properties
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-11-aarch64-micro-architectures)

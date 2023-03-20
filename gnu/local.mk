@@ -1181,6 +1181,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-9-strmov-store-file-names.patch	\
   %D%/packages/patches/gcc-12-strmov-store-file-names.patch	\
   %D%/packages/patches/gcc-10-cross-environment-variables.patch \
+  %D%/packages/patches/gcc-11-libstdc++-hurd-libpthread.patch   \
   %D%/packages/patches/gcc-12-cross-environment-variables.patch \
   %D%/packages/patches/gcc-10-tree-sra-union-handling.patch	\
   %D%/packages/patches/gcolor3-update-libportal-usage.patch	\
