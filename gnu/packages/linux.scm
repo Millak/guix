@@ -2241,14 +2241,14 @@ parameters.")
 (define-public procps
   (package
     (name "procps")
-    (version "4.0.0")
+    (version "4.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/procps-ng/Production/"
                                   "procps-ng-" version ".tar.xz"))
               (sha256
                (base32
-                "04v5q5cshzyhbwaw4n9l0k8faaz67n11z31vpfaiqynv9rwr4k8g"))))
+                "14ms9mkqr1mgl3h5yl6w8m57cf39k382nv7qms78vqbaz728wg1h"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules '((guix build utils)
@@ -2271,6 +2271,7 @@ parameters.")
                                            '("^kill" "^uptime"))))
                      (for-each delete-file dup)))))))
     (inputs (list ncurses))
+    (native-inputs (list pkg-config))
     (home-page "https://gitlab.com/procps-ng/procps/")
     (synopsis "Utilities that give information about processes")
     (description
