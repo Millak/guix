@@ -12095,29 +12095,86 @@ defined in @file{.travis.yml} on your local machine, using @code{rvm},
     (license license:expat)))
 
 (define-public ruby-rugged
-  (package
-    (name "ruby-rugged")
-    (version "1.1.0")
-    (home-page "https://www.rubydoc.info/gems/rugged")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "rugged" version))
-       (sha256
-        (base32 "04aq913plcxjw71l5r62qgz3bx3466p0wvgyfqahg5n3nybmcwqy"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:tests? #f
-       #:gem-flags (list  "--" "--use-system-libraries")))
-    (inputs
-     (list libgit2))
-    (native-inputs
-     (list ruby-minitest ruby-pry ruby-rake-compiler))
-    (synopsis "Ruby bindings to the libgit2 linkable C Git library")
-    (description "Rugged is a library for accessing libgit2 in Ruby.  It gives
+  ;; The last release is old and doesn't build anymore (see:
+  ;; https://github.com/libgit2/rugged/issues/951).
+  (let ((commit "6379f23cedd5f527cf6a5c229627e366b590a22d")
+        (revision "0"))
+    (package
+      (name "ruby-rugged")
+      (version (git-version "1.6.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libgit2/rugged")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0yac7vm0l2jsdsxf2k7xbny4iyzsy8fhiy2g5sphhffp7xgynny8"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list #:gem-flags
+             #~(list "--" "--use-system-libraries")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'adjust-extconf.rb
+                   (lambda _
+                     ;; Neither using --with-git2-dir=$prefix nor providing
+                     ;; pkg-config allows locating the libgit2 prefix (see:
+                     ;; https://github.com/libgit2/rugged/issues/955).
+                     (substitute* "ext/rugged/extconf.rb"
+                       (("LIBGIT2_DIR = File.join.*'vendor', 'libgit2'.*")
+                        (format #f "LIBGIT2_DIR = ~s~%"
+                                #$(this-package-input "libgit2"))))))
+                 (delete 'check)        ;moved after the install phase
+                 (add-after 'install 'check
+                   (assoc-ref %standard-phases 'check))
+                 (add-before 'check 'set-GEM_PATH
+                   (lambda _
+                     (setenv "GEM_PATH" (string-append
+                                         (getenv "GEM_PATH") ":"
+                                         #$output "/lib/ruby/vendor_ruby"))))
+                 (add-before 'check 'disable-problematic-tests
+                   (lambda _
+                     (with-directory-excursion "test"
+                       (for-each delete-file
+                                 ;; These tests require an actual libgit2 git
+                                 ;; repository checkout.
+                                 '("blame_test.rb"
+                                   "blob_test.rb"
+                                   "cherrypick_test.rb"
+                                   "config_test.rb"
+                                   "commit_test.rb"
+                                   "diff_test.rb"
+                                   "index_test.rb"
+                                   "merge_test.rb"
+                                   "note_test.rb"
+                                   "object_test.rb"
+                                   "patch_test.rb"
+                                   "rebase_test.rb"
+                                   "reference_test.rb"
+                                   "remote_test.rb"
+                                   "repo_apply_test.rb"
+                                   "repo_ignore_test.rb"
+                                   "repo_pack_test.rb"
+                                   "repo_reset_test.rb"
+                                   "repo_test.rb"
+                                   "revert_test.rb"
+                                   "settings_test.rb"
+                                   "status_test.rb"
+                                   "submodule_test.rb"
+                                   "tag_test.rb"
+                                   "tree_test.rb"
+                                   "walker_test.rb"))
+                       (delete-file-recursively "online")))))))
+      (native-inputs (list git-minimal/pinned ruby-rake-compiler))
+      (inputs (list libgit2))
+      (synopsis "Ruby bindings to the libgit2 linkable C Git library")
+      (description "Rugged is a library for accessing libgit2 in Ruby.  It gives
 you the speed and portability of libgit2 with the beauty of the Ruby
 language.")
-    (license license:expat)))
+      (home-page "https://www.rubydoc.info/gems/rugged")
+      (license license:expat))))
 
 (define-public ruby-yell
   (package
