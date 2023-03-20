@@ -3933,41 +3933,6 @@ for Python.  The design goals are:
 parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies.")
     (license license:bsd-3)))
 
-(define-public python-aioredis
-  (package
-    (name "python-aioredis")
-    (version "2.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aioredis" version))
-       (sha256
-        (base32 "13nrkk45az6qdiwfpbw80ls6bfip0i27qlkh9gsp2b9zk6pim9ga"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'start-redis
-                          (lambda _
-                            (invoke "redis-server" "--daemonize" "yes")))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vv")))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-uvloop
-           redis))
-    (propagated-inputs
-     (list python-async-timeout
-           python-hiredis
-           python-typing-extensions))
-    (home-page "https://github.com/aio-libs/aioredis-py")
-    (synopsis "Redis support for Python's @code{asyncio} module")
-    (description "This package provides Redis support for the Python
-@code{asyncio} (PEP 3156) module.")
-    (license license:expat)))
-
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
@@ -4060,6 +4025,9 @@ reasonable substitute.")
     (description
      "This package provides a Python interface to the Redis key-value store.")
     (license license:expat)))
+
+(define-public python-aioredis
+  (deprecated-package "python-aioredis" python-redis))
 
 (define-public python-rq
   (package
