@@ -7324,17 +7324,16 @@ and Resumable Uploads.")
 (define-public python-googleapis-common-protos
   (package
     (name "python-googleapis-common-protos")
-    (version "1.56.1")
+    (version "1.56.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "googleapis-common-protos" version))
        (sha256
-        (base32 "16x1pjc34mrj9w130j40r23ndpykhsqivvk5xfl63ss6qsfyapkb"))))
+        (base32 "05s4dszqd5pjwjh4bdic40v1v447k0a3dynsrgypqf3rfb276n62"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #false ;fails for unknown reasons
-       #:phases
+     `(#:phases
         (modify-phases %standard-phases
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
