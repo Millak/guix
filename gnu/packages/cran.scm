@@ -2818,6 +2818,27 @@ designed to make it easy to install and load multiple tidyverse packages in a
 single step.")
     (license license:gpl3)))
 
+(define-public r-tkrplot
+  (package
+    (name "r-tkrplot")
+    (version "0.0-27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tkrplot" version))
+       (sha256
+        (base32 "19bj4wn1fs4wrx5k4gakhpz4q59fgx0584wyaw7hnh0ljj8i34n9"))))
+    (properties `((upstream-name . "tkrplot")))
+    (build-system r-build-system)
+    (inputs (list libx11))
+    (home-page "https://cran.r-project.org/package=tkrplot")
+    (synopsis "Place R graphics in a Tk widget")
+    (description
+     "The tkrplot package lets you place R graphics in a @dfn{Tk,
+cross-platform graphical user interface toolkit} widget.")
+    ;; Any version of the GPL.
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-rvest
   (package
     (name "r-rvest")
