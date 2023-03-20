@@ -511,9 +511,7 @@ exec ${system}/rc \"$@\"
                 "CFLAGS=-fcommon")))
     (build-system gnu-build-system)
     (inputs
-     `(("glibc-hurd-headers" ,glibc/hurd-headers)
-
-       ("libgcrypt" ,libgcrypt)                  ;for /hurd/random
+     `(("libgcrypt" ,libgcrypt)                  ;for /hurd/random
        ("libdaemon" ,libdaemon)                  ;for /bin/console --daemonize
        ("unifont" ,unifont)
        ("libpciaccess" ,libpciaccess)
