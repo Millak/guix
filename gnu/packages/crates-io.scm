@@ -5086,6 +5086,53 @@ they're not available.")
          ("rust-termion" ,rust-termion-1)
          ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-autocompress-0.2
+  (package
+    (name "rust-autocompress")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "autocompress" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16pjdfr5b2ixs2xk3h6mvxprxr84rpaips624d6vbap5vsdkvzx4"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:tests? #false ;The crate does not include test files
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'patch-cargo-checksums 'do-not-build-xz
+           (lambda _
+             ;; Detection of liblzma (in rust-lzma-sys, pulled in by
+             ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
+             ;; request a static build somewhere.
+             (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
+               (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") "")))))
+      #:cargo-inputs
+      `(("rust-brotli" ,rust-brotli-3)
+        ("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-lz4" ,rust-lz4-1)
+        ("rust-snap" ,rust-snap-1)
+        ("rust-xz2" ,rust-xz2-0.1)
+        ("rust-zstd" ,rust-zstd-0.9))
+      #:cargo-development-inputs
+      `(("rust-clap" ,rust-clap-2)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2))))
+    (inputs (list xz))
+    (home-page "https://github.com/informationsea/autocompress-rs")
+    (synopsis "Select decoder from magic bytes or encoder from file extension")
+    (description
+     "This crate lets you automatically select a suitable decoder from magic
+bytes or encoder from file extension.")
+    (license license:asl2.0)))
+
 (define-public rust-autocfg-1
   (package
     (name "rust-autocfg")
