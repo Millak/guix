@@ -66,47 +66,46 @@ GNU/Hurd."
                  version ".tar.gz"))
 
 (define-public gnumach-headers
-   (let ((commit "097f9cf735ffa1212b828682ad92f0f6c5f1c552")
-         (revision "1"))
-     (package
-       (name "gnumach-headers")
-       (version (git-version "1.8" revision commit))
-       (source
-         (origin
-           (method git-fetch)
-           (uri (git-reference
-                  (url "https://git.savannah.gnu.org/git/hurd/gnumach.git")
-                  (commit commit)))
-           (file-name (git-file-name "gnumach" version))
-           (sha256
-            (base32
-             "0q36z7k02bykrld90zaxbhyzxlmwlqqs4divgir6ix38zsp6icqk"))))
-       (build-system gnu-build-system)
-       (arguments
-        `(#:phases
-          (modify-phases %standard-phases
-            (replace 'install
-              (lambda _
-                (invoke "make" "install-data")))
-            (delete 'build))
+  (package
+    (name "gnumach-headers")
+    (version "1.8+git20220827") ;; This is an upstream tag
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.savannah.gnu.org/git/hurd/gnumach.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "gnumach" version))
+       (sha256
+        (base32
+         "07qlaf8vw029y7xdnhjyiiyn788zjzwmyzj79inz7idpswqsnyhf"))
+       (patches (search-patches "gnumach-add-missing-const_mach_port_name_array_t-type.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda _
+             (invoke "make" "install-data")))
+         (delete 'build))
 
-           ;; GNU Mach supports only IA32 currently, so cheat so that we can at
-           ;; least install its headers.
-           ,@(if (%current-target-system)
-               '()
-               ;; See <http://lists.gnu.org/archive/html/bug-hurd/2015-06/msg00042.html>
-               ;; <http://lists.gnu.org/archive/html/guix-devel/2015-06/msg00716.html>
-               '(#:configure-flags '("--build=i586-pc-gnu"
-                                     "--host=i686-linux-gnu")))
+       ;; GNU Mach supports only IA32 currently, so cheat so that we can at
+       ;; least install its headers.
+       ,@(if (%current-target-system)
+             '()
+             ;; See <http://lists.gnu.org/archive/html/bug-hurd/2015-06/msg00042.html>
+             ;; <http://lists.gnu.org/archive/html/guix-devel/2015-06/msg00716.html>
+             '(#:configure-flags '("--build=i586-pc-gnu"
+                                   "--host=i686-linux-gnu")))
 
-           #:tests? #f))
-       (native-inputs
-        (list autoconf automake texinfo-4))
-       (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
-       (synopsis "GNU Mach kernel headers")
-       (description
-        "Headers of the GNU Mach kernel.")
-       (license gpl2+))))
+       #:tests? #f))
+    (native-inputs
+     (list autoconf automake texinfo-4))
+    (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
+    (synopsis "GNU Mach kernel headers")
+    (description
+     "Headers of the GNU Mach kernel.")
+    (license gpl2+)))
 
 (define-public mig
   (package
