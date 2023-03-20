@@ -1219,14 +1219,14 @@ project's documentation} for more information."
 (define (network-manager-shepherd-service config)
   (match-record config <network-manager-configuration>
     (network-manager shepherd-requirement dns vpn-plugins iwd?)
-    (let ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
-                    (and shepherd-requirement
-                         (memq 'iwd shepherd-requirement))))
-          (conf (plain-file "NetworkManager.conf"
-                            (string-append
-                             "[main]\ndns=" dns "\n"
-                             (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
-          (vpn  (vpn-plugin-directory vpn-plugins)))
+    (let* ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
+                     (and shepherd-requirement
+                          (memq 'iwd shepherd-requirement))))
+           (conf (plain-file "NetworkManager.conf"
+                             (string-append
+                              "[main]\ndns=" dns "\n"
+                              (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
+           (vpn  (vpn-plugin-directory vpn-plugins)))
       (list (shepherd-service
              (documentation "Run the NetworkManager.")
              (provision '(NetworkManager networking))
