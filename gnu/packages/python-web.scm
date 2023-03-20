@@ -4447,6 +4447,17 @@ Templates.")
     ;; are made under *both* licenses (excerpt from the LICENSE file).
     (license (list license:bsd-2 license:asl2.0))))
 
+(define-public python-uritemplate-3
+  (package
+    (inherit python-uritemplate)
+    (name "python-uritemplate")
+    (version "3.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "uritemplate" version))
+              (sha256
+               (base32 "1bkwmgr0ia9gcn4bszs2xlvml79f0bi2s4a87xg22ky9rq8avy2s"))))))
+
 (define-public python-publicsuffix
   (package
     (name "python-publicsuffix")
