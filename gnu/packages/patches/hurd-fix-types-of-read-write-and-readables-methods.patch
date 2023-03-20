@@ -1,0 +1,891 @@
+From 5adb4b834b1eba82b7f3eca6324bed0355cae0af Mon Sep 17 00:00:00 2001
+Message-Id: <5adb4b834b1eba82b7f3eca6324bed0355cae0af.1678815112.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Mon, 29 Aug 2022 21:36:17 +0200
+Subject: [PATCH] Fix types of read write and readables methods
+
+From: Etienne Brateau <etienne.brateau@gmail.com>
+
+Message-Id: <20220829193617.13481-1-etienne.brateau@gmail.com>
+---
+ boot/boot.c                   |  6 +++---
+ console-client/trans.c        |  4 ++--
+ libdiskfs/io-read.c           |  2 +-
+ libdiskfs/io-readable.c       |  2 +-
+ libdiskfs/io-write.c          |  2 +-
+ libnetfs/io-read.c            |  2 +-
+ libnetfs/io-readable.c        |  2 +-
+ libnetfs/io-write.c           |  2 +-
+ libpager/data-return.c        |  2 +-
+ libstore/nbd.c                |  6 +++---
+ libstore/rdwr.c               |  4 ++--
+ libtrivfs/io-read.c           |  2 +-
+ libtrivfs/io-readable.c       |  2 +-
+ libtrivfs/io-write.c          |  2 +-
+ mach-defpager/default_pager.c |  4 ++--
+ pfinet/io-ops.c               | 10 +++++-----
+ pfinet/socket-ops.c           | 16 ++++++++--------
+ pfinet/tunnel.c               |  6 +++---
+ pflocal/io.c                  |  6 +++---
+ pflocal/socket.c              | 14 +++++++-------
+ storeio/io.c                  |  8 ++++----
+ storeio/open.c                |  4 ++--
+ storeio/open.h                |  6 +++---
+ term/ptyio.c                  |  4 ++--
+ term/term.h                   |  4 ++--
+ term/users.c                  | 14 +++++++-------
+ trans/fifo.c                  | 10 +++++-----
+ trans/firmlink.c              |  4 ++--
+ trans/hello-mt.c              |  2 +-
+ trans/hello.c                 |  2 +-
+ trans/mtab.c                  |  4 ++--
+ trans/new-fifo.c              | 10 +++++-----
+ trans/null.c                  |  8 ++++----
+ trans/proxy-defpager.c        |  6 +++---
+ trans/random.c                |  6 +++---
+ trans/streamio.c              |  6 +++---
+ 36 files changed, 97 insertions(+), 97 deletions(-)
+
+diff --git a/boot/boot.c b/boot/boot.c
+index 1b10c86b..f326e5b2 100644
+--- a/boot/boot.c
++++ b/boot/boot.c
+@@ -1412,7 +1412,7 @@ S_io_write (mach_port_t object,
+ 	    const_data_t data,
+ 	    mach_msg_type_number_t datalen,
+ 	    off_t offset,
+-	    mach_msg_type_number_t *amtwritten)
++	    vm_size_t *amtwritten)
+ {
+   if (object != pseudo_console)
+     return EOPNOTSUPP;
+@@ -1437,7 +1437,7 @@ S_io_read (mach_port_t object,
+ 	   data_t *data,
+ 	   mach_msg_type_number_t *datalen,
+ 	   off_t offset,
+-	   mach_msg_type_number_t amount)
++	   vm_size_t amount)
+ {
+   mach_msg_type_number_t avail;
+ 
+@@ -1489,7 +1489,7 @@ kern_return_t
+ S_io_readable (mach_port_t object,
+ 	       mach_port_t reply_port,
+ 	       mach_msg_type_name_t reply_type,
+-	       mach_msg_type_number_t *amt)
++	       vm_size_t *amt)
+ {
+   if (object != pseudo_console)
+     return EOPNOTSUPP;
+diff --git a/console-client/trans.c b/console-client/trans.c
+index fe4b9ca4..49e30a61 100644
+--- a/console-client/trans.c
++++ b/console-client/trans.c
+@@ -578,7 +578,7 @@ netfs_S_io_read (struct protid *user,
+ 		 data_t *data,
+ 		 mach_msg_type_number_t *datalen,
+ 		 off_t offset,
+-		 mach_msg_type_number_t amount)
++		 vm_size_t amount)
+ {
+   struct node *np;
+   
+@@ -597,7 +597,7 @@ netfs_S_io_write (struct protid *user,
+ 		  const_data_t data,
+ 		  mach_msg_type_number_t datalen,
+ 		  off_t offset,
+-		  mach_msg_type_number_t *amount)
++		  vm_size_t *amount)
+ {
+   struct node *np;
+   
+diff --git a/libdiskfs/io-read.c b/libdiskfs/io-read.c
+index 71803517..a706d677 100644
+--- a/libdiskfs/io-read.c
++++ b/libdiskfs/io-read.c
+@@ -25,7 +25,7 @@ diskfs_S_io_read (struct protid *cred,
+ 		  data_t *data,
+ 		  mach_msg_type_number_t *datalen,
+ 		  off_t offset,
+-		  mach_msg_type_number_t maxread)
++		  vm_size_t maxread)
+ {
+   struct node *np;
+   int err;
+diff --git a/libdiskfs/io-readable.c b/libdiskfs/io-readable.c
+index c3debac3..03218bf3 100644
+--- a/libdiskfs/io-readable.c
++++ b/libdiskfs/io-readable.c
+@@ -22,7 +22,7 @@
+ /* Implement io_readable as described in <hurd/io.defs>. */
+ kern_return_t
+ diskfs_S_io_readable (struct protid *cred,
+-		      mach_msg_type_number_t *amount)
++		      vm_size_t *amount)
+ {
+   struct node *np;
+ 
+diff --git a/libdiskfs/io-write.c b/libdiskfs/io-write.c
+index 154bc887..9efed88f 100644
+--- a/libdiskfs/io-write.c
++++ b/libdiskfs/io-write.c
+@@ -25,7 +25,7 @@ diskfs_S_io_write (struct protid *cred,
+ 		   const_data_t data,
+ 		   mach_msg_type_number_t datalen,
+ 		   off_t offset,
+-		   mach_msg_type_number_t *amt)
++		   vm_size_t *amt)
+ {
+   struct node *np;
+   error_t err;
+diff --git a/libnetfs/io-read.c b/libnetfs/io-read.c
+index 2427ce6c..688da1f6 100644
+--- a/libnetfs/io-read.c
++++ b/libnetfs/io-read.c
+@@ -28,7 +28,7 @@ netfs_S_io_read (struct protid *user,
+ 		 data_t *data,
+ 		 mach_msg_type_number_t *datalen,
+ 		 off_t offset,
+-		 mach_msg_type_number_t amount)
++		 vm_size_t amount)
+ {
+   error_t err;
+   off_t start;
+diff --git a/libnetfs/io-readable.c b/libnetfs/io-readable.c
+index 07becf66..7c365484 100644
+--- a/libnetfs/io-readable.c
++++ b/libnetfs/io-readable.c
+@@ -25,7 +25,7 @@
+ 
+ error_t
+ netfs_S_io_readable (struct protid *user,
+-		     mach_msg_type_number_t *amount)
++		     vm_size_t *amount)
+ {
+   error_t err;
+   
+diff --git a/libnetfs/io-write.c b/libnetfs/io-write.c
+index 482b45fc..2306d1f0 100644
+--- a/libnetfs/io-write.c
++++ b/libnetfs/io-write.c
+@@ -27,7 +27,7 @@ netfs_S_io_write (struct protid *user,
+ 		  const_data_t data,
+ 		  mach_msg_type_number_t datalen,
+ 		  off_t offset,
+-		  mach_msg_type_number_t *amount)
++		  vm_size_t *amount)
+ {
+   error_t err;
+   off_t off = offset;
+diff --git a/libpager/data-return.c b/libpager/data-return.c
+index c0f5aaf7..4c4affe8 100644
+--- a/libpager/data-return.c
++++ b/libpager/data-return.c
+@@ -258,7 +258,7 @@ _pager_S_memory_object_data_return (struct pager *p,
+ 					 mach_port_t control,
+ 					 vm_offset_t offset,
+ 					 pointer_t data,
+-					 vm_size_t length,
++					 mach_msg_type_number_t length,
+ 					 int dirty,
+ 					 int kcopy)
+ {
+diff --git a/libstore/nbd.c b/libstore/nbd.c
+index 3138af01..8e0892e3 100644
+--- a/libstore/nbd.c
++++ b/libstore/nbd.c
+@@ -119,7 +119,7 @@ nbd_write (struct store *store,
+     type: htonl (1),		/* WRITE */
+   };
+   error_t err;
+-  mach_msg_type_number_t cc;
++  vm_size_t cc;
+ 
+   addr <<= store->log2_block_size;
+   *amount = 0;
+@@ -178,7 +178,7 @@ nbd_read (struct store *store,
+      requested can be found in CHUNK.  */
+   inline error_t request_chunk (char **buf, size_t *len)
+     {
+-      mach_msg_type_number_t cc;
++      vm_size_t cc;
+ 
+       chunk = (amount - ofs) < NBD_IO_MAX ? (amount - ofs) : NBD_IO_MAX;
+ 
+@@ -435,7 +435,7 @@ nbdclose (struct store *store)
+ 	magic: NBD_REQUEST_MAGIC,
+ 	type: htonl (2),	/* disconnect */
+       };
+-      mach_msg_type_number_t cc;
++      vm_size_t cc;
+       (void) io_write (store->port, (char *) &req, sizeof req, -1, &cc);
+ 
+       /* Close the socket.  */
+diff --git a/libstore/rdwr.c b/libstore/rdwr.c
+index 9737c515..f443ad9f 100644
+--- a/libstore/rdwr.c
++++ b/libstore/rdwr.c
+@@ -120,7 +120,7 @@ store_write (struct store *store,
+   else
+     /* ARGH, we've got to split up the write ... */
+     {
+-      mach_msg_type_number_t try, written;
++      vm_size_t try, written;
+ 
+       /* Write the initial bit in the first run.  Errors here are returned.  */
+       try = (run->length - addr) << block_shift;
+@@ -138,7 +138,7 @@ store_write (struct store *store,
+ 		 && run->start >= 0) /* Check for holes.  */
+ 	    /* Ok, we can write in this run, at least a bit.  */
+ 	    {
+-	      mach_msg_type_number_t seg_written;
++	      vm_size_t seg_written;
+ 
+ 	      if ((len >> block_shift) <= run->length)
+ 		try = len;
+diff --git a/libtrivfs/io-read.c b/libtrivfs/io-read.c
+index a911f778..4d3302e4 100644
+--- a/libtrivfs/io-read.c
++++ b/libtrivfs/io-read.c
+@@ -26,7 +26,7 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  data_t *data,
+ 		  mach_msg_type_number_t *datalen,
+ 		  off_t off,
+-		  mach_msg_type_number_t amt)
++		  vm_size_t amt)
+ {
+   assert_backtrace (!trivfs_support_read);
+   return EOPNOTSUPP;
+diff --git a/libtrivfs/io-readable.c b/libtrivfs/io-readable.c
+index de4d32b8..acb3fa52 100644
+--- a/libtrivfs/io-readable.c
++++ b/libtrivfs/io-readable.c
+@@ -23,7 +23,7 @@ kern_return_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply,
+ 		      mach_msg_type_name_t replytype,
+-		      mach_msg_type_number_t *amount)
++		      vm_size_t *amount)
+ {
+   assert_backtrace (!trivfs_support_read);
+   return EOPNOTSUPP;
+diff --git a/libtrivfs/io-write.c b/libtrivfs/io-write.c
+index 74cbb32b..787b2544 100644
+--- a/libtrivfs/io-write.c
++++ b/libtrivfs/io-write.c
+@@ -27,7 +27,7 @@ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   const_data_t data,
+ 		   mach_msg_type_number_t datalen,
+ 		   off_t off,
+-		   mach_msg_type_number_t *amt)
++		   vm_size_t *amt)
+ {
+   if (!(trivfs_allow_open & O_WRITE))
+     return EBADF;
+diff --git a/mach-defpager/default_pager.c b/mach-defpager/default_pager.c
+index fd3a7b22..5c1352f4 100644
+--- a/mach-defpager/default_pager.c
++++ b/mach-defpager/default_pager.c
+@@ -2572,7 +2572,7 @@ seqnos_memory_object_data_initialize(ds, seqno, pager_request,
+ 	vm_offset_t	offset;
+ 	register
+ 	pointer_t	addr;
+-	vm_size_t	data_cnt;
++	mach_msg_type_number_t	data_cnt;
+ {
+ 	vm_offset_t	amount_sent;
+ 	static char	here[] = "%sdata_initialize";
+@@ -2631,7 +2631,7 @@ seqnos_memory_object_data_return(ds, seqno, pager_request,
+ 	mach_port_t	pager_request;
+ 	vm_offset_t	offset;
+ 	pointer_t	addr;
+-	vm_size_t	data_cnt;
++	mach_msg_type_number_t	data_cnt;
+ 	boolean_t	dirty;
+ 	boolean_t	kernel_copy;
+ {
+diff --git a/pfinet/io-ops.c b/pfinet/io-ops.c
+index fa6350c3..6269743d 100644
+--- a/pfinet/io-ops.c
++++ b/pfinet/io-ops.c
+@@ -37,9 +37,9 @@
+ error_t
+ S_io_write (struct sock_user *user,
+ 	    const_data_t data,
+-	    size_t datalen,
++	    mach_msg_type_number_t datalen,
+ 	    off_t offset,
+-	    mach_msg_type_number_t *amount)
++	    vm_size_t *amount)
+ {
+   error_t err;
+   struct iovec iov = { (void*) data, datalen };
+@@ -70,9 +70,9 @@ S_io_write (struct sock_user *user,
+ error_t
+ S_io_read (struct sock_user *user,
+ 	   data_t *data,
+-	   size_t *datalen,
++	   mach_msg_type_number_t *datalen,
+ 	   off_t offset,
+-	   mach_msg_type_number_t amount)
++	   vm_size_t amount)
+ {
+   error_t err;
+   int alloced = 0;
+@@ -135,7 +135,7 @@ S_io_seek (struct sock_user *user,
+ 
+ error_t
+ S_io_readable (struct sock_user *user,
+-	       mach_msg_type_number_t *amount)
++	       vm_size_t *amount)
+ {
+   struct sock *sk;
+   error_t err;
+diff --git a/pfinet/socket-ops.c b/pfinet/socket-ops.c
+index db1b92cd..8d27c383 100644
+--- a/pfinet/socket-ops.c
++++ b/pfinet/socket-ops.c
+@@ -431,12 +431,12 @@ S_socket_send (struct sock_user *user,
+ 	       struct sock_addr *addr,
+ 	       int flags,
+ 	       const_data_t data,
+-	       size_t datalen,
++	       mach_msg_type_number_t datalen,
+ 	       const mach_port_t *ports,
+-	       size_t nports,
++	       mach_msg_type_number_t nports,
+ 	       const_data_t control,
+-	       size_t controllen,
+-	       mach_msg_type_number_t *amount)
++	       mach_msg_type_number_t controllen,
++	       vm_size_t *amount)
+ {
+   int sent;
+   struct iovec iov = { (void*) data, datalen };
+@@ -478,14 +478,14 @@ S_socket_recv (struct sock_user *user,
+ 	       mach_msg_type_name_t *addrporttype,
+ 	       int flags,
+ 	       data_t *data,
+-	       size_t *datalen,
++	       mach_msg_type_number_t *datalen,
+ 	       mach_port_t **ports,
+ 	       mach_msg_type_name_t *portstype,
+-	       size_t *nports,
++	       mach_msg_type_number_t *nports,
+ 	       data_t *control,
+-	       size_t *controllen,
++	       mach_msg_type_number_t *controllen,
+ 	       int *outflags,
+-	       mach_msg_type_number_t amount)
++	       vm_size_t amount)
+ {
+   error_t err;
+   union { struct sockaddr_storage storage; struct sockaddr sa; } addr;
+diff --git a/pfinet/tunnel.c b/pfinet/tunnel.c
+index 1082404e..e11ab670 100644
+--- a/pfinet/tunnel.c
++++ b/pfinet/tunnel.c
+@@ -291,7 +291,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+                   mach_port_t reply, mach_msg_type_name_t reply_type,
+                   data_t *data, mach_msg_type_number_t *data_len,
+-                  loff_t offs, size_t amount)
++                  off_t offs, vm_size_t amount)
+ {
+   struct tunnel_device *tdev;
+   struct sk_buff *skb;
+@@ -372,7 +372,7 @@ trivfs_S_io_write (struct trivfs_protid *cred,
+                    const_data_t data,
+                    mach_msg_type_number_t datalen,
+                    off_t offset,
+-                   mach_msg_type_number_t *amount)
++                   vm_size_t *amount)
+ {
+   struct tunnel_device *tdev;
+   struct sk_buff *skb;
+@@ -415,7 +415,7 @@ trivfs_S_io_write (struct trivfs_protid *cred,
+ kern_return_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+                       mach_port_t reply, mach_msg_type_name_t replytype,
+-                      mach_msg_type_number_t *amount)
++                      vm_size_t *amount)
+ {
+   struct tunnel_device *tdev;
+   struct sk_buff *skb;
+diff --git a/pflocal/io.c b/pflocal/io.c
+index 96b2fc48..06749756 100644
+--- a/pflocal/io.c
++++ b/pflocal/io.c
+@@ -44,7 +44,7 @@
+ error_t
+ S_io_read (struct sock_user *user,
+ 	   data_t *data, mach_msg_type_number_t *data_len,
+-	   off_t offset, mach_msg_type_number_t amount)
++	   off_t offset, vm_size_t amount)
+ {
+   error_t err;
+   struct pipe *pipe;
+@@ -80,7 +80,7 @@ S_io_read (struct sock_user *user,
+ error_t
+ S_io_write (struct sock_user *user,
+ 	    const_data_t data, mach_msg_type_number_t data_len,
+-	    off_t offset, mach_msg_type_number_t *amount)
++	    off_t offset, vm_size_t *amount)
+ {
+   error_t err;
+   struct pipe *pipe;
+@@ -119,7 +119,7 @@ S_io_write (struct sock_user *user,
+    a "long time" (this should be the same meaning of "long time" used
+    by the nonblocking flag.  */
+ error_t
+-S_io_readable (struct sock_user *user, mach_msg_type_number_t *amount)
++S_io_readable (struct sock_user *user, vm_size_t *amount)
+ {
+   error_t err;
+   struct pipe *pipe;
+diff --git a/pflocal/socket.c b/pflocal/socket.c
+index 8c1ee3e9..8c240e09 100644
+--- a/pflocal/socket.c
++++ b/pflocal/socket.c
+@@ -287,10 +287,10 @@ S_socket_peername (struct sock_user *user,
+ /* Send data over a socket, possibly including Mach ports.  */
+ error_t
+ S_socket_send (struct sock_user *user, struct addr *dest_addr, int flags,
+-	       const_data_t data, size_t data_len,
+-	       const mach_port_t *ports, size_t num_ports,
+-	       const_data_t control, size_t control_len,
+-	       size_t *amount)
++	       const_data_t data, mach_msg_type_number_t data_len,
++	       const mach_port_t *ports, mach_msg_type_number_t num_ports,
++	       const_data_t control, mach_msg_type_number_t control_len,
++	       vm_size_t *amount)
+ {
+   error_t err = 0;
+   int noblock;
+@@ -378,11 +378,11 @@ error_t
+ S_socket_recv (struct sock_user *user,
+ 	       mach_port_t *addr, mach_msg_type_name_t *addr_type,
+ 	       int in_flags,
+-	       data_t *data, size_t *data_len,
++	       data_t *data, mach_msg_type_name_t *data_len,
+ 	       mach_port_t **ports, mach_msg_type_name_t *ports_type,
+ 	       size_t *num_ports,
+-	       data_t *control, size_t *control_len,
+-	       int *out_flags, size_t amount)
++	       data_t *control, mach_msg_type_name_t *control_len,
++	       int *out_flags, vm_size_t amount)
+ {
+   error_t err;
+   unsigned flags;
+diff --git a/storeio/io.c b/storeio/io.c
+index 634185f7..3c4cb9ff 100644
+--- a/storeio/io.c
++++ b/storeio/io.c
+@@ -83,8 +83,8 @@ trivfs_S_io_map (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+-		  data_t *data, mach_msg_type_number_t *data_len,
+-		  loff_t offs, mach_msg_type_number_t amount)
++		  data_t *data, mach_msg_type_name_t *data_len,
++		  off_t offs, vm_size_t amount)
+ {
+   if (! cred)
+     return EOPNOTSUPP;
+@@ -101,7 +101,7 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply, mach_msg_type_name_t reply_type,
+-		      mach_msg_type_number_t *amount)
++		      vm_size_t *amount)
+ {
+   if (! cred)
+     return EOPNOTSUPP;
+@@ -126,7 +126,7 @@ error_t
+ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		   const_data_t data, mach_msg_type_number_t data_len,
+-		   loff_t offs, mach_msg_type_number_t *amount)
++		   off_t offs, vm_size_t *amount)
+ {
+   if (! cred)
+     return EOPNOTSUPP;
+diff --git a/storeio/open.c b/storeio/open.c
+index 4c2870c6..f8eb6ce0 100644
+--- a/storeio/open.c
++++ b/storeio/open.c
+@@ -74,8 +74,8 @@ open_write (struct open *open, off_t offs, const void *buf, size_t len,
+    standard mach out-array convention.  If no error occurs, zero is returned,
+    otherwise the error code is returned.  */
+ error_t
+-open_read (struct open *open, off_t offs, size_t amount,
+-	   void **buf, vm_size_t *len)
++open_read (struct open *open, off_t offs, vm_size_t amount,
++	   void **buf, size_t *len)
+ {
+   error_t err;
+   if (offs < 0)
+diff --git a/storeio/open.h b/storeio/open.h
+index 6be930a6..ad2678ff 100644
+--- a/storeio/open.h
++++ b/storeio/open.h
+@@ -51,13 +51,13 @@ void open_free (struct open *open);
+    and returns the number of bytes written in AMOUNT.  If no error occurs,
+    zero is returned, otherwise the error code is returned.  */
+ error_t open_write (struct open *open, off_t offs, const void *buf, size_t len,
+-		    size_t *amount);
++		    vm_size_t *amount);
+ 
+ /* Reads up to AMOUNT bytes from the device into BUF and BUF_LEN using the
+    standard mach out-array convention.  If no error occurs, zero is returned,
+    otherwise the error code is returned.  */
+-error_t open_read (struct open *open, off_t offs, size_t amount,
+-		   void **buf, size_t *buf_len);
++error_t open_read (struct open *open, off_t offs, vm_size_t amount,
++		   void **buf, vm_size_t *buf_len);
+ 
+ /* Set OPEN's location to OFFS, interpreted according to WHENCE as by seek.
+    The new absolute location is returned in NEW_OFFS (and may not be the same
+diff --git a/term/ptyio.c b/term/ptyio.c
+index 928ae0ac..acd1015a 100644
+--- a/term/ptyio.c
++++ b/term/ptyio.c
+@@ -302,7 +302,7 @@ error_t
+ pty_io_read (struct trivfs_protid *cred,
+ 	     data_t *data,
+ 	     mach_msg_type_number_t *datalen,
+-	     mach_msg_type_number_t amount)
++	     vm_size_t amount)
+ {
+   int size;
+ 
+@@ -386,7 +386,7 @@ error_t
+ pty_io_write (struct trivfs_protid *cred,
+ 	      const_data_t data,
+ 	      mach_msg_type_number_t datalen,
+-	      mach_msg_type_number_t *amount)
++	      vm_size_t *amount)
+ {
+   int i, flush;
+   int cancel = 0;
+diff --git a/term/term.h b/term/term.h
+index efe27ffa..1e6be5f2 100644
+--- a/term/term.h
++++ b/term/term.h
+@@ -387,9 +387,9 @@ extern dev_t rdev;
+ /* kludge--these are pty versions of trivfs_S_io_* functions called by
+    the real functions in users.c to do work for ptys.  */
+ error_t pty_io_write (struct trivfs_protid *, const char *,
+-		      mach_msg_type_number_t, mach_msg_type_number_t *);
++		      mach_msg_type_number_t, vm_size_t *);
+ error_t pty_io_read (struct trivfs_protid *, char **,
+-		     mach_msg_type_number_t *, mach_msg_type_number_t);
++		     mach_msg_type_number_t *, vm_size_t);
+ error_t pty_io_readable (size_t *);
+ error_t pty_io_select (struct trivfs_protid *, mach_port_t,
+ 		       struct timespec *, int *);
+diff --git a/term/users.c b/term/users.c
+index 72f5507d..59f02b66 100644
+--- a/term/users.c
++++ b/term/users.c
+@@ -562,9 +562,9 @@ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   mach_port_t reply,
+ 		   mach_msg_type_name_t replytype,
+ 		   const_data_t data,
+-		   size_t datalen,
+-		   loff_t offset,
+-		   size_t *amt)
++		   mach_msg_type_name_t datalen,
++		   off_t offset,
++		   vm_size_t *amt)
+ {
+   int i;
+   int cancel;
+@@ -640,9 +640,9 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply,
+ 		  mach_msg_type_name_t replytype,
+ 		  data_t *data,
+-		  size_t *datalen,
+-		  loff_t offset,
+-		  size_t amount)
++		  mach_msg_type_name_t *datalen,
++		  off_t offset,
++		  vm_size_t amount)
+ {
+   int cancel;
+   int i, max;
+@@ -820,7 +820,7 @@ error_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply,
+ 		      mach_msg_type_name_t replytype,
+-		      size_t *amt)
++		      vm_size_t *amt)
+ {
+   if (!cred)
+     return EOPNOTSUPP;
+diff --git a/trans/fifo.c b/trans/fifo.c
+index ce7c7729..894565f6 100644
+--- a/trans/fifo.c
++++ b/trans/fifo.c
+@@ -339,8 +339,8 @@ trivfs_S_io_map (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+-		  data_t *data, size_t *data_len,
+-		  off_t offs, size_t amount)
++		  data_t *data, mach_msg_type_name_t *data_len,
++		  off_t offs, vm_size_t amount)
+ {
+   error_t err;
+ 
+@@ -368,7 +368,7 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply, mach_msg_type_name_t reply_type,
+-		      size_t *amount)
++		      vm_size_t *amount)
+ {
+   error_t err;
+ 
+@@ -502,8 +502,8 @@ trivfs_S_io_select_timeout (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   mach_port_t reply, mach_msg_type_name_t reply_type,
+-		   const_data_t data, size_t data_len,
+-		   off_t offs, size_t *amount)
++		   const_data_t data, mach_msg_type_name_t data_len,
++		   off_t offs, vm_size_t *amount)
+ {
+   error_t err;
+ 
+diff --git a/trans/firmlink.c b/trans/firmlink.c
+index 8a5d01a8..e216146a 100644
+--- a/trans/firmlink.c
++++ b/trans/firmlink.c
+@@ -207,7 +207,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		  data_t *data, mach_msg_type_number_t *data_len,
+-		  loff_t offs, mach_msg_type_number_t amount)
++		  off_t offs, vm_size_t amount)
+ {
+   error_t err = 0;
+ 
+@@ -244,7 +244,7 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply, mach_msg_type_name_t reply_type,
+-		      mach_msg_type_number_t *amount)
++		      vm_size_t *amount)
+ {
+   if (! cred)
+     return EOPNOTSUPP;
+diff --git a/trans/hello-mt.c b/trans/hello-mt.c
+index 92f814d6..e99ba754 100644
+--- a/trans/hello-mt.c
++++ b/trans/hello-mt.c
+@@ -125,7 +125,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		  data_t *data, mach_msg_type_number_t *data_len,
+-		  loff_t offs, mach_msg_type_number_t amount)
++		  off_t offs, vm_size_t amount)
+ {
+   struct open *op;
+ 
+diff --git a/trans/hello.c b/trans/hello.c
+index f8f9e7ab..0405fad3 100644
+--- a/trans/hello.c
++++ b/trans/hello.c
+@@ -116,7 +116,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		  data_t *data, mach_msg_type_number_t *data_len,
+-		  loff_t offs, mach_msg_type_number_t amount)
++		  off_t offs, vm_size_t amount)
+ {
+   struct open *op;
+ 
+diff --git a/trans/mtab.c b/trans/mtab.c
+index caff3385..a2feee7d 100644
+--- a/trans/mtab.c
++++ b/trans/mtab.c
+@@ -657,7 +657,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		  data_t *data, mach_msg_type_number_t *data_len,
+-		  loff_t offs, mach_msg_type_number_t amount)
++		  off_t offs, vm_size_t amount)
+ {
+   error_t err = 0;
+   struct mtab *op;
+@@ -774,7 +774,7 @@ void (*trivfs_peropen_destroy_hook) (struct trivfs_peropen *) = close_hook;
+ kern_return_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply, mach_msg_type_name_t replytype,
+-		      mach_msg_type_number_t *amount)
++		      vm_size_t *amount)
+ {
+   error_t err = 0;
+   if (!cred)
+diff --git a/trans/new-fifo.c b/trans/new-fifo.c
+index 9a959a39..3e9a886c 100644
+--- a/trans/new-fifo.c
++++ b/trans/new-fifo.c
+@@ -524,8 +524,8 @@ trivfs_S_io_map (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+-		  data_t *data, size_t *data_len,
+-		  off_t offs, size_t amount)
++		  data_t *data, mach_msg_type_name_t *data_len,
++		  off_t offs, vm_size_t amount)
+ {
+   error_t err;
+ 
+@@ -554,7 +554,7 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply, mach_msg_type_name_t reply_type,
+-		      size_t *amount)
++		      vm_size_t *amount)
+ {
+   error_t err;
+ 
+@@ -689,8 +689,8 @@ trivfs_S_io_select_timeout (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   mach_port_t reply, mach_msg_type_name_t reply_type,
+-		   const_data_t data, size_t data_len,
+-		   off_t offs, size_t *amount)
++		   const_data_t data, mach_msg_type_name_t data_len,
++		   off_t offs, vm_size_t *amount)
+ {
+   error_t err;
+ 
+diff --git a/trans/null.c b/trans/null.c
+index 034bb103..f4ba5582 100644
+--- a/trans/null.c
++++ b/trans/null.c
+@@ -149,8 +149,8 @@ trivfs_S_io_read(struct trivfs_protid *cred,
+ 		 mach_port_t reply, mach_msg_type_name_t replytype,
+ 		 data_t *data,
+ 		 mach_msg_type_number_t *datalen,
+-		 loff_t offs,
+-		 mach_msg_type_number_t amt)
++		 off_t offs,
++		 vm_size_t amt)
+ {
+   if (!cred)
+     return EOPNOTSUPP;
+@@ -169,7 +169,7 @@ trivfs_S_io_read(struct trivfs_protid *cred,
+ kern_return_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply, mach_msg_type_name_t replytype,
+-		      mach_msg_type_number_t *amount)
++		      vm_size_t *amount)
+ {
+   if (!cred)
+     return EOPNOTSUPP;
+@@ -228,7 +228,7 @@ kern_return_t
+ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   mach_port_t reply, mach_msg_type_name_t replytype,
+ 		   const_data_t data, mach_msg_type_number_t datalen,
+-		   loff_t offs, mach_msg_type_number_t *amt)
++		   off_t offs, vm_size_t *amt)
+ {
+   if (!cred)
+     return EOPNOTSUPP;
+diff --git a/trans/proxy-defpager.c b/trans/proxy-defpager.c
+index 8ca25b72..bfeda063 100644
+--- a/trans/proxy-defpager.c
++++ b/trans/proxy-defpager.c
+@@ -169,8 +169,8 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t replytype,
+ 		  data_t *data,
+ 		  mach_msg_type_number_t *datalen,
+-		  loff_t offs,
+-		  mach_msg_type_number_t amt)
++		  off_t offs,
++		  vm_size_t amt)
+ {
+   if (!cred)
+     return EOPNOTSUPP;
+@@ -181,7 +181,7 @@ kern_return_t
+ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   mach_port_t reply, mach_msg_type_name_t replytype,
+ 		   const_data_t data, mach_msg_type_number_t datalen,
+-		   loff_t offs, mach_msg_type_number_t *amt)
++		   loff_t offs, vm_size_t *amt)
+ {
+   if (!cred)
+     return EOPNOTSUPP;
+diff --git a/trans/random.c b/trans/random.c
+index c230280a..297253e4 100644
+--- a/trans/random.c
++++ b/trans/random.c
+@@ -318,7 +318,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		  data_t *data, mach_msg_type_number_t *data_len,
+-		  loff_t offs, mach_msg_type_number_t amount)
++		  off_t offs, vm_size_t amount)
+ {
+   error_t err;
+   void *buf = NULL;
+@@ -377,8 +377,8 @@ trivfs_S_io_write (struct trivfs_protid *cred,
+                    mach_msg_type_name_t replytype,
+                    const_data_t data,
+                    mach_msg_type_number_t datalen,
+-                   loff_t offset,
+-                   mach_msg_type_number_t *amount)
++                   off_t offset,
++                   vm_size_t *amount)
+ {
+   /* Deny access if they have bad credentials. */
+   if (! cred)
+diff --git a/trans/streamio.c b/trans/streamio.c
+index 30b8b20e..acd5d674 100644
+--- a/trans/streamio.c
++++ b/trans/streamio.c
+@@ -482,7 +482,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		  data_t *data, mach_msg_type_number_t *data_len,
+-		  loff_t offs, mach_msg_type_number_t amount)
++		  off_t offs, vm_size_t amount)
+ {
+   error_t err;
+ 
+@@ -501,7 +501,7 @@ trivfs_S_io_read (struct trivfs_protid *cred,
+ error_t
+ trivfs_S_io_readable (struct trivfs_protid *cred,
+ 		      mach_port_t reply, mach_msg_type_name_t reply_type,
+-		      mach_msg_type_number_t *amount)
++		      vm_size_t *amount)
+ {
+   error_t err;
+ 
+@@ -521,7 +521,7 @@ error_t
+ trivfs_S_io_write (struct trivfs_protid *cred,
+ 		   mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		   const_data_t data, mach_msg_type_number_t data_len,
+-		   loff_t offs, mach_msg_type_number_t *amount)
++		   off_t offs, vm_size_t *amount)
+ {
+   error_t err;
+ 
+
+base-commit: b6509385bb1dd2a6d47401465bfb98b6339c5c2b
+prerequisite-patch-id: 33c640aa0fcf19d49fff88cc58cecd3be8f7892d
+prerequisite-patch-id: 411256b31780cf9ea0b24efe9f2b20f82c6ce9c1
+prerequisite-patch-id: 830470d11762c6c5e09488a2b834dff0f4f6e434
+prerequisite-patch-id: 1a1293bebf97550d54d9dba3a1817f20a3ef6a2a
+prerequisite-patch-id: f12e5842dea12ed7b0ff4ae3fa2afe78f3647288
+prerequisite-patch-id: 4436fa0181c5e21580e6656634e35febf251dc5b
+prerequisite-patch-id: a938f788841d96151e9e4cc134114dc7652e4f27
+prerequisite-patch-id: bfc7264e11d3ca2dbc520f221cf8bf13857d4732
+prerequisite-patch-id: 50393cc222a3e9de9cfab0762f5acf10e394c9f0
+-- 
+2.39.1
+

@@ -164,65 +164,64 @@ communication.")
     (properties `((hidden? . #t)))))
 
 (define-public hurd-headers
-  ;; Resort to a post-0.9 snapshot that provides the 'file_utimens' and
-  ;; 'file_exec_paths' RPCs that glibc 2.28 expects.
-  (let ((revision "1")
-        (commit "91a51672ff4cfe1f1a0712b4c542ded3081c825b"))
-   (package
-     (name "hurd-headers")
-     (version (git-version "0.9" revision commit))
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://git.savannah.gnu.org/git/hurd/hurd.git")
-                     (commit commit)))
-               (sha256
-                (base32
-                 "16k9wkahz9wasviijz53n6i13nmiwa9fs64ikf1jqh8rl60hw7cz"))
-               (file-name (git-file-name name version))))
-     (build-system gnu-build-system)
-     (native-inputs
-      (list mig autoconf automake))
-     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (replace 'install
-            (lambda _
-              (invoke "make" "install-headers" "no_deps=t")))
-          (delete 'build))
+  ;; This commit is now slightly behind 0.9.git20220818 as this one needs a
+  ;; newer glibc
+  (let ((revision "2")
+        (commit "3ff70531ee672f431dbb0c11f286bfe85dce98fc"))
+    (package
+      (name "hurd-headers")
+      (version (git-version "0.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/hurd/hurd.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1jb9f2h2v4lf6acsji1c12aqg3pixkvjdyb4q6axkd8jp22fdgc0"))
+                (file-name (git-file-name name version))
+                (patches (search-patches "hurd-add-without-rump-configure-option.patch"
+                                         "hurd-fix-types-of-read-write-and-readables-methods.patch"
+                                         "hurd-fix-types-of-read-write-and-readables-methods-2.patch"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf automake mig))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (replace 'install
+             (lambda _
+               (invoke "make" "install-headers" "no_deps=t")))
+           (delete 'build))
 
-        #:configure-flags '( ;; Pretend we're on GNU/Hurd; 'configure' wants
-                            ;; that.
-                            ,@(if (%current-target-system)
-                                  '()
-                                  '("--host=i586-pc-gnu"))
+         #:configure-flags '( ;; Reduce set of dependencies.
+                             "--without-parted"
+                             "--disable-ncursesw"
+                             "--disable-test"
+                             "--without-libbz2"
+                             "--without-libcrypt"
+                             "--without-libz"
+                             "--without-rump"
+                             ;; Skip the clnt_create check because it expects
+                             ;; a working glibc causing a circular dependency.
+                             "ac_cv_search_clnt_create=no"
 
-                            ;; Reduce set of dependencies.
-                            "--without-parted"
-                            "--disable-ncursesw"
-                            "--disable-test"
-                            "--without-libbz2"
-                            "--without-libcrypt"
-                            "--without-libz"
-                            ;; Skip the clnt_create check because it expects
-                            ;; a working glibc causing a circular dependency.
-                            "ac_cv_search_clnt_create=no"
+                             ;; Annihilate the checks for the 'file_exec_paths'
+                             ;; & co. libc functions to avoid "link tests are
+                             ;; not allowed after AC_NO_EXECUTABLES" error.
+                             "ac_cv_func_file_exec_paths=no"
+                             "ac_cv_func_exec_exec_paths=no"
+                             "ac_cv_func__hurd_exec_paths=no"
+                             "ac_cv_func__hurd_libc_proc_init=no"
+                             "ac_cv_func_file_futimens=no")
 
-                            ;; Annihilate the checks for the 'file_exec_paths'
-                            ;; & co. libc functions to avoid "link tests are
-                            ;; not allowed after AC_NO_EXECUTABLES" error.
-                            "ac_cv_func_file_exec_paths=no"
-                            "ac_cv_func_exec_exec_paths=no"
-                            "ac_cv_func__hurd_exec_paths=no"
-                            "ac_cv_func_file_futimens=no")
-
-        #:tests? #f))
-     (home-page "https://www.gnu.org/software/hurd/hurd.html")
-     (synopsis "GNU Hurd headers")
-     (description
-      "This package provides C headers of the GNU Hurd, used to build the GNU C
+         #:tests? #f))
+      (home-page "https://www.gnu.org/software/hurd/hurd.html")
+      (synopsis "GNU Hurd headers")
+      (description
+       "This package provides C headers of the GNU Hurd, used to build the GNU C
 Library and other user programs.")
-     (license gpl2+))))
+      (license gpl2+))))
 
 (define-public hurd-minimal
   (package (inherit hurd-headers)
@@ -343,10 +342,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 (define-public hurd
   (package
     (name "hurd")
+    (source (package-source hurd-headers))
     (version (package-version hurd-headers))
-    (source (origin (inherit (package-source hurd-headers))
-                    (patches (search-patches "hurd-cross.patch"
-                                             "hurd-xattr.patch"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

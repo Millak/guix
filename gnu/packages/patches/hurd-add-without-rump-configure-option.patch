@@ -1,0 +1,82 @@
+From 80bc1678b7b859decae536e726a3e5870cbe84eb Mon Sep 17 00:00:00 2001
+Message-Id: <80bc1678b7b859decae536e726a3e5870cbe84eb.1678657122.git.dev@jpoiret.xyz>
+In-Reply-To: <c9b816085272dd07ed762c5ae775a994fa77df56.1678657122.git.dev@jpoiret.xyz>
+References: <c9b816085272dd07ed762c5ae775a994fa77df56.1678657122.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Mon, 31 Oct 2022 13:39:28 +0100
+Subject: [PATCH 2/2] Add --without-rump configure option
+
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+
+To allow cross-builds which cannot use AC_LINK_IFELSE at all.
+---
+ configure.ac | 47 ++++++++++++++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 0c1bf9b2..849b5fad 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -234,33 +234,38 @@ AS_IF([test "x$with_libz" != xno], [
+ ])
+ AC_SUBST([HAVE_LIBZ])
+ 
+-# Save
+-oldLIBS="$LIBS"
++AC_ARG_WITH([rump],
++  [AS_HELP_STRING([--without-rump], [disable rump])], , [with_rump=yes])
+ 
+-LIBS="$oldLIBS -lrump"
+-AC_LINK_IFELSE(
+-  [AC_LANG_PROGRAM(
+-    [[#include <hurd.h>
++AS_IF([test "x$with_rump" != xno], [
++  # Save
++  oldLIBS="$LIBS"
++
++  LIBS="$oldLIBS -lrump"
++  AC_LINK_IFELSE(
++    [AC_LANG_PROGRAM(
++      [[#include <hurd.h>
+ #define _STANDALONE
+ #include <rump/rump.h>]],
+-  [])],
+-  [HAVE_LIBRUMP=yes],
+-  [HAVE_LIBRUMP=no])
+-AC_SUBST([HAVE_LIBRUMP])
+-
+-LIBS="$oldLIBS -lrumpvfs_nofifofs_pic"
+-AC_LINK_IFELSE(
+-  [AC_LANG_PROGRAM(
+-    [[#include <hurd.h>
++    [])],
++    [HAVE_LIBRUMP=yes],
++    [HAVE_LIBRUMP=no])
++  AC_SUBST([HAVE_LIBRUMP])
++
++  LIBS="$oldLIBS -lrumpvfs_nofifofs_pic"
++  AC_LINK_IFELSE(
++    [AC_LANG_PROGRAM(
++      [[#include <hurd.h>
+ #define _STANDALONE
+ #include <rump/rump.h>]],
+-  [])],
+-  [HAVE_LIBRUMP_VFSNOFIFO=yes],
+-  [HAVE_LIBRUMP_VFSNOFIFO=no])
+-AC_SUBST([HAVE_LIBRUMP_VFSNOFIFO])
++    [])],
++    [HAVE_LIBRUMP_VFSNOFIFO=yes],
++    [HAVE_LIBRUMP_VFSNOFIFO=no])
++  AC_SUBST([HAVE_LIBRUMP_VFSNOFIFO])
+ 
+-# Reset
+-LIBS="$oldLIBS"
++  # Reset
++  LIBS="$oldLIBS"
++])
+ 
+ AC_ARG_ENABLE(boot-store-types,
+ [  --enable-boot-store-types=TYPES...
+-- 
+2.39.1
+

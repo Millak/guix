@@ -1,0 +1,155 @@
+From eb1b2057d839249c955189c2cba8bc37c66d4151 Mon Sep 17 00:00:00 2001
+Message-Id: <eb1b2057d839249c955189c2cba8bc37c66d4151.1678793830.git.dev@jpoiret.xyz>
+In-Reply-To: <f0cacda83293e4d792b8d12665fcb795dc11d6fc.1678793830.git.dev@jpoiret.xyz>
+References: <f0cacda83293e4d792b8d12665fcb795dc11d6fc.1678793830.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Tue, 30 Aug 2022 00:59:59 +0200
+Subject: [PATCH 2/2] Fix types of read write and readables methods
+
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+
+This completes 5adb4b834b1e
+---
+ hurd/pci.defs               | 2 +-
+ lwip/io-ops.c               | 6 +++---
+ lwip/port/netif/hurdtunif.c | 6 +++---
+ lwip/socket-ops.c           | 4 ++--
+ pci-arbiter/pci-ops.c       | 4 ++--
+ storeio/open.c              | 2 +-
+ 6 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/hurd/pci.defs b/hurd/pci.defs
+index 23c90334..e258f5ce 100644
+--- a/hurd/pci.defs
++++ b/hurd/pci.defs
+@@ -51,7 +51,7 @@ routine pci_conf_write(
+  */
+ routine pci_get_ndevs(
+ 	master: pci_t;
+-	out ndevs: vm_size_t
++	out ndevs: mach_msg_type_number_t
+ );
+ 
+ /*
+diff --git a/lwip/io-ops.c b/lwip/io-ops.c
+index 5461d695..6cc724ce 100644
+--- a/lwip/io-ops.c
++++ b/lwip/io-ops.c
+@@ -36,7 +36,7 @@ error_t
+ lwip_S_io_write (struct sock_user *user,
+ 		 const_data_t data,
+ 		 size_t datalen,
+-		 off_t offset, mach_msg_type_number_t * amount)
++		 off_t offset, vm_size_t * amount)
+ {
+   int sent;
+   int sockflags;
+@@ -59,7 +59,7 @@ lwip_S_io_write (struct sock_user *user,
+ error_t
+ lwip_S_io_read (struct sock_user * user,
+ 		data_t *data,
+-		size_t * datalen, off_t offset, mach_msg_type_number_t amount)
++		size_t * datalen, off_t offset, vm_size_t amount)
+ {
+   error_t err;
+   int alloced = 0;
+@@ -112,7 +112,7 @@ lwip_S_io_seek (struct sock_user * user,
+ }
+ 
+ error_t
+-lwip_S_io_readable (struct sock_user * user, mach_msg_type_number_t * amount)
++lwip_S_io_readable (struct sock_user * user, vm_size_t * amount)
+ {
+   error_t err;
+   if (!user)
+diff --git a/lwip/port/netif/hurdtunif.c b/lwip/port/netif/hurdtunif.c
+index 79a082cf..c976703f 100644
+--- a/lwip/port/netif/hurdtunif.c
++++ b/lwip/port/netif/hurdtunif.c
+@@ -348,7 +348,7 @@ error_t
+ trivfs_S_io_read (struct trivfs_protid *cred,
+ 		  mach_port_t reply, mach_msg_type_name_t reply_type,
+ 		  data_t *data, mach_msg_type_number_t * data_len,
+-		  loff_t offs, size_t amount)
++		  loff_t offs, vm_size_t amount)
+ {
+   struct hurdtunif *tunif;
+   struct pbuf *p;
+@@ -423,7 +423,7 @@ trivfs_S_io_write (struct trivfs_protid * cred,
+ 		   mach_msg_type_name_t replytype,
+ 		   const_data_t data,
+ 		   mach_msg_type_number_t datalen,
+-		   off_t offset, mach_msg_type_number_t * amount)
++		   off_t offset, vm_size_t * amount)
+ {
+   struct netif *netif;
+   struct pbuf *p, *q;
+@@ -482,7 +482,7 @@ trivfs_S_io_write (struct trivfs_protid * cred,
+ kern_return_t
+ trivfs_S_io_readable (struct trivfs_protid * cred,
+ 		      mach_port_t reply, mach_msg_type_name_t replytype,
+-		      mach_msg_type_number_t * amount)
++		      vm_size_t * amount)
+ {
+   struct hurdtunif *tunif;
+ 
+diff --git a/lwip/socket-ops.c b/lwip/socket-ops.c
+index 5b50f58c..d5e3cb07 100644
+--- a/lwip/socket-ops.c
++++ b/lwip/socket-ops.c
+@@ -342,7 +342,7 @@ lwip_S_socket_send (struct sock_user * user,
+ 		    const mach_port_t * ports,
+ 		    size_t nports,
+ 		    const char *control,
+-		    size_t controllen, mach_msg_type_number_t * amount)
++		    size_t controllen, vm_size_t * amount)
+ {
+   int sent;
+   int sockflags;
+@@ -392,7 +392,7 @@ lwip_S_socket_recv (struct sock_user * user,
+ 		    size_t * nports,
+ 		    char **control,
+ 		    size_t * controllen,
+-		    int *outflags, mach_msg_type_number_t amount)
++		    int *outflags, vm_size_t amount)
+ {
+   error_t err;
+   union { struct sockaddr_storage storage; struct sockaddr sa; } addr;
+diff --git a/pci-arbiter/pci-ops.c b/pci-arbiter/pci-ops.c
+index ef27a3cd..d721f368 100644
+--- a/pci-arbiter/pci-ops.c
++++ b/pci-arbiter/pci-ops.c
+@@ -80,7 +80,7 @@ calculate_ndevs (struct iouser *user)
+  */
+ error_t
+ S_pci_conf_read (struct protid * master, int reg, char **data,
+-		 size_t * datalen, mach_msg_type_number_t amount)
++		 size_t * datalen, vm_size_t amount)
+ {
+   error_t err;
+   pthread_mutex_t *lock;
+@@ -129,7 +129,7 @@ S_pci_conf_read (struct protid * master, int reg, char **data,
+ /* Write `datalen' bytes from `data'. `amount' is updated. */
+ error_t
+ S_pci_conf_write (struct protid * master, int reg, const char *data, size_t datalen,
+-		  mach_msg_type_number_t * amount)
++		  vm_size_t * amount)
+ {
+   error_t err;
+   pthread_mutex_t *lock;
+diff --git a/storeio/open.c b/storeio/open.c
+index f8eb6ce0..74902520 100644
+--- a/storeio/open.c
++++ b/storeio/open.c
+@@ -75,7 +75,7 @@ open_write (struct open *open, off_t offs, const void *buf, size_t len,
+    otherwise the error code is returned.  */
+ error_t
+ open_read (struct open *open, off_t offs, vm_size_t amount,
+-	   void **buf, size_t *len)
++	   void **buf, vm_size_t *len)
+ {
+   error_t err;
+   if (offs < 0)
+-- 
+2.39.1
+
