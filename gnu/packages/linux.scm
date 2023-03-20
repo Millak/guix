@@ -2248,7 +2248,8 @@ parameters.")
                                   "procps-ng-" version ".tar.xz"))
               (sha256
                (base32
-                "14ms9mkqr1mgl3h5yl6w8m57cf39k382nv7qms78vqbaz728wg1h"))))
+                "14ms9mkqr1mgl3h5yl6w8m57cf39k382nv7qms78vqbaz728wg1h"))
+              (patches (search-patches "procps-strtod-test.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules '((guix build utils)
