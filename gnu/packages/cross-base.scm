@@ -458,10 +458,17 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
       (name (string-append (package-name hurd-headers)
                            "-cross-" target))
 
+      (arguments
+       (substitute-keyword-arguments (package-arguments hurd-headers)
+         ((#:configure-flags flags)
+          `(cons* ,(string-append "--build=" (%current-system))
+                  ,(string-append "--host=" target)
+                  ,flags))))
+
       (native-inputs `(("cross-gcc" ,xgcc)
                        ("cross-binutils" ,xbinutils)
                        ("cross-mig" ,xmig)
-                       ,@(alist-delete "mig"(package-native-inputs hurd-headers))))))
+                       ,@(alist-delete "mig" (package-native-inputs hurd-headers))))))
 
   (define xglibc/hurd-headers
     (package
@@ -506,6 +513,10 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                         (guix build utils)
                         (srfi srfi-26))
              ,@(package-arguments hurd-minimal))
+         ((#:configure-flags flags)
+          `(cons* ,(string-append "--build=" (%current-system))
+                  ,(string-append "--host=" target)
+                  ,flags))
          ((#:phases phases)
           `(modify-phases ,phases
              (add-before 'configure 'set-cross-headers-path
