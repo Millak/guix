@@ -122,6 +122,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -477,6 +478,70 @@ playing your music.")
                license:lgpl2.1+
                ;; qocoa is under MIT and CC by-sa for the icons.
                license:cc-by-sa3.0))))
+
+(define-public ctrlr
+  ;; The latest release from 2021 does not have a build system.
+  (let ((commit "8aa00d82127acda42ad9ac9b7b479461e9436aa4")
+        (revision "1"))
+    (package
+      (name "ctrlr")
+      (version (git-version "5.5.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/RomanKubiak/ctrlr")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lpfkjp9y0wh2kj02isv8ixnxn3wyvrxhkx0rybwzswfiz5kqdlm"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:cmake cmake                   ;needs 3.25
+        #:tests? #false                 ;there are none
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'pre-configure
+              (lambda _
+                ;; Override default location of fonts.conf.  Without this no
+                ;; fonts will be rendered at all.
+                (substitute* "JUCE/modules/juce_graphics/native/juce_linux_Fonts.cpp"
+                  (("/usr/share/fonts/fonts.conf")
+                   "/run/current-system/profile/etc/fonts/fonts.conf"))
+                ;; Do not build the VST or AU plugins, because these require
+                ;; external proprietary SDKs.
+                (substitute* "CMakeLists.txt"
+                  (("juce_set_vst2_sdk_path.*") "")
+                  (("FORMATS VST3 VST AU Standalone")
+                   "FORMATS Standalone")
+                  ;; BFD also need -liberty.
+                  (("list\\(APPEND ctrlrLibs \"bfd\"\\)" m)
+                   (string-append m "
+list(APPEND ctrlrLibs \"iberty\")")))))
+            ;; The install target doesn't install ctrlr but JUCE helpers.
+            (replace 'install
+              (lambda _
+                (install-file "ctrlr_artefacts/RelWithDebInfo/Standalone/ctrlr"
+                              (string-append #$output "/bin")))))))
+      (inputs
+       (list alsa-lib
+             boost
+             eudev
+             freetype
+             libiberty
+             libx11
+             webkitgtk))
+      (native-inputs
+       (list pkg-config))
+      (home-page "https://ctrlr.org/")
+      (synopsis "Control any MIDI-enabled hardware")
+      (description "This package provides a tool to control any MIDI-enabled
+hardware such as synthesizers, drum machines, samplers, or effects.  It lets
+you create custom user interfaces for your MIDI hardware.")
+      (license (list license:gpl2+
+                     license:gpl3       ;JUCE
+                     license:bsd-3)))))
 
 (define-public strawberry
   (package
