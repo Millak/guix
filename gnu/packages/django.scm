@@ -870,13 +870,13 @@ support, and optional data-URI image and font embedding.")
 (define-public python-django-rq
   (package
     (name "python-django-rq")
-    (version "2.3.2")
+    (version "2.7.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-rq" version))
               (sha256
                (base32
-                "0lksnjn3q3f7y72bj2yr8870w28a5b6x0vjnd9nhpq2ah6xfz6pf"))))
+                "0aw0fi0lg80qgdp9fhjbnlhvfh2p09rgy1nj6hxpyhi37kihni2h"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -884,7 +884,7 @@ support, and optional data-URI image and font embedding.")
          (replace 'check
            (lambda _
              (invoke "redis-server" "--daemonize" "yes")
-             (invoke "django-admin.py" "test" "django_rq"
+             (invoke "django-admin" "test" "django_rq"
                      "--settings=django_rq.tests.settings"
                      "--pythonpath=."))))))
     (native-inputs
