@@ -143,12 +143,17 @@
 
             network-manager-configuration
             network-manager-configuration?
+            network-manager-configuration-shepherd-requirement
             network-manager-configuration-dns
             network-manager-configuration-vpn-plugins
             network-manager-service-type
 
             connman-configuration
             connman-configuration?
+            connman-configuration-connman
+            connman-configuration-shepherd-requirement
+            connman-configuration-disable-vpn?
+            connman-configuration-iwd?
             connman-service-type
 
             modem-manager-configuration
@@ -1135,16 +1140,29 @@ project's documentation} for more information."
 ;;; NetworkManager
 ;;;
 
+;; TODO: deprecated field, remove later.
+(define-with-syntax-properties (warn-iwd?-field-deprecation
+                                (value properties))
+  (when value
+    (warning (source-properties->location properties)
+             (G_ "the 'iwd?' field is deprecated, please use \
+'shepherd-requirement' field instead~%")))
+  value)
+
 (define-record-type* <network-manager-configuration>
   network-manager-configuration make-network-manager-configuration
   network-manager-configuration?
   (network-manager network-manager-configuration-network-manager
                    (default network-manager))
+  (shepherd-requirement network-manager-configuration-shepherd-requirement
+                        (default '(wpa-supplicant)))
   (dns network-manager-configuration-dns
        (default "default"))
   (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
                (default '()))
-  (iwd? network-manager-configuration-iwd? (default #f)))
+  (iwd? network-manager-configuration-iwd?  ; TODO: deprecated field, remove.
+        (default #f)
+        (sanitize warn-iwd?-field-deprecation)))
 
 (define (network-manager-activation config)
   ;; Activation gexp for NetworkManager
@@ -1200,28 +1218,47 @@ project's documentation} for more information."
 
 (define (network-manager-shepherd-service config)
   (match-record config <network-manager-configuration>
-    (network-manager dns vpn-plugins iwd?)
-    (let ((conf (plain-file "NetworkManager.conf"
-                            (string-append
-                             "[main]\ndns=" dns "\n"
-                             (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
-          (vpn  (vpn-plugin-directory vpn-plugins)))
+    (network-manager shepherd-requirement dns vpn-plugins iwd?)
+    (let* ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
+                     (and shepherd-requirement
+                          (memq 'iwd shepherd-requirement))))
+           (conf (plain-file "NetworkManager.conf"
+                             (string-append
+                              "[main]\ndns=" dns "\n"
+                              (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
+           (vpn  (vpn-plugin-directory vpn-plugins)))
       (list (shepherd-service
              (documentation "Run the NetworkManager.")
-             (provision '(networking))
-             (requirement (append '(user-processes dbus-system loopback)
-                                  (if iwd? '(iwd) '(wpa-supplicant))))
-             (start #~(make-forkexec-constructor
-                       (list (string-append #$network-manager
-                                            "/sbin/NetworkManager")
-                             (string-append "--config=" #$conf)
-                             "--no-daemon")
-                       #:environment-variables
-                       (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
-                                            "/lib/NetworkManager/VPN")
-                             ;; Override non-existent default users
-                             "NM_OPENVPN_USER="
-                             "NM_OPENVPN_GROUP=")))
+             (provision '(NetworkManager networking))
+             (requirement `(user-processes dbus-system loopback
+                            ,@shepherd-requirement
+                            ;; TODO: iwd? is deprecated and should be passed
+                            ;; with shepherd-requirement, remove later.
+                            ,@(if iwd? '(iwd) '())))
+             (start
+              #~(lambda _
+                  (let ((pid
+                         (fork+exec-command
+                          (list #$(file-append network-manager
+                                               "/sbin/NetworkManager")
+                                (string-append "--config=" #$conf)
+                                "--no-daemon")
+                          #:environment-variables
+                          (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
+                                               "/lib/NetworkManager/VPN")
+                                ;; Override non-existent default users
+                                "NM_OPENVPN_USER="
+                                "NM_OPENVPN_GROUP="))))
+                    ;; XXX: Despite the "online" name, this doesn't guarantee
+                    ;; WAN connectivity, it merely waits for NetworkManager
+                    ;; to finish starting-up. This is required otherwise
+                    ;; services will fail since the network interfaces be
+                    ;; absent until NetworkManager finishes setting them up.
+                    (system* #$(file-append network-manager "/bin/nm-online")
+                             "--wait-for-startup" "--quiet")
+                    ;; XXX: Finally, return the pid from running
+                    ;; fork+exec-command to shepherd.
+                    pid)))
              (stop #~(make-kill-destructor)))))))
 
 (define network-manager-service-type
@@ -1265,10 +1302,13 @@ wireless networking."))))
   connman-configuration?
   (connman      connman-configuration-connman
                 (default connman))
+  (shepherd-requirement connman-configuration-shepherd-requirement
+                        (default '()))
   (disable-vpn? connman-configuration-disable-vpn?
                 (default #f))
   (iwd?         connman-configuration-iwd?
-                (default #f)))
+                (default #f)
+                (sanitize warn-iwd?-field-deprecation)))
 
 (define (connman-activation config)
   (let ((disable-vpn? (connman-configuration-disable-vpn? config)))
@@ -1280,33 +1320,34 @@ wireless networking."))))
             (mkdir-p "/var/lib/connman-vpn/"))))))
 
 (define (connman-shepherd-service config)
-  "Return a shepherd service for Connman"
-  (and
-   (connman-configuration? config)
-   (let ((connman      (connman-configuration-connman config))
-         (disable-vpn? (connman-configuration-disable-vpn? config))
-         (iwd?         (connman-configuration-iwd? config)))
-     (list (shepherd-service
-            (documentation "Run Connman")
-            (provision '(networking))
-            (requirement
-             (append '(user-processes dbus-system loopback)
-                     (if iwd? '(iwd) '())))
-            (start #~(make-forkexec-constructor
-                      (list (string-append #$connman
-                                           "/sbin/connmand")
-                            "--nodaemon"
-                            "--nodnsproxy"
-                            #$@(if disable-vpn? '("--noplugin=vpn") '())
-                            #$@(if iwd? '("--wifi=iwd_agent") '()))
+  (match-record config <connman-configuration> (connman shepherd-requirement
+                                                disable-vpn? iwd?)
+    (let ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
+                    (and shepherd-requirement
+                         (memq 'iwd shepherd-requirement)))))
+      (list (shepherd-service
+             (documentation "Run Connman")
+             (provision '(connman networking))
+             (requirement `(user-processes dbus-system loopback
+                                           ,@shepherd-requirement
+                                           ;; TODO: iwd? is deprecated and should be passed
+                                           ;; with shepherd-requirement, remove later.
+                                           ,@(if iwd? '(iwd) '())))
+             (start #~(make-forkexec-constructor
+                       (list (string-append #$connman
+                                            "/sbin/connmand")
+                             "--nodaemon"
+                             "--nodnsproxy"
+                             #$@(if disable-vpn? '("--noplugin=vpn") '())
+                             #$@(if iwd? '("--wifi=iwd_agent") '()))
 
-                      ;; As connman(8) notes, when passing '-n', connman
-                      ;; "directs log output to the controlling terminal in
-                      ;; addition to syslog."  Redirect stdout and stderr
-                      ;; to avoid spamming the console (XXX: for some reason
-                      ;; redirecting to /dev/null doesn't work.)
-                      #:log-file "/var/log/connman.log"))
-            (stop #~(make-kill-destructor)))))))
+                       ;; As connman(8) notes, when passing '-n', connman
+                       ;; "directs log output to the controlling terminal in
+                       ;; addition to syslog."  Redirect stdout and stderr
+                       ;; to avoid spamming the console (XXX: for some reason
+                       ;; redirecting to /dev/null doesn't work.)
+                       #:log-file "/var/log/connman.log"))
+             (stop #~(make-kill-destructor)))))))
 
 (define %connman-log-rotation
   (list (log-rotation

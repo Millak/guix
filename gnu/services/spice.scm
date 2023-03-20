@@ -21,12 +21,13 @@
   #:use-module (gnu packages spice)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:export (spice-vdagent-configuration
             spice-vdagent-configuration?
             spice-vdagent-service-type
-            spice-vdagent-service))
+            spice-vdagent-service))  ; deprecated
 
 (define-record-type* <spice-vdagent-configuration>
   spice-vdagent-configuration make-spice-vdagent-configuration
@@ -74,8 +75,8 @@
 from the @code{spice-vdagent} package to enable window resizing and clipboard
 sharing for @acronym{VM, virtual machine} guests.")))
 
-(define* (spice-vdagent-service
-          #:optional (config (spice-vdagent-configuration)))
+(define-deprecated (spice-vdagent-service
+                    #:optional (config (spice-vdagent-configuration)))
   "Start the @command{vdagentd} and @command{vdagent} daemons
 from @var{spice-vdagent} to enable guest window resizing and
 clipboard sharing."

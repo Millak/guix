@@ -2724,7 +2724,7 @@ forgotten when the session ends.")
            gobject-introspection
            pkg-config
            libxml2))
-    (home-page " https://wiki.gnome.org/Apps")
+    (home-page "https://wiki.gnome.org/Apps/Evince")
     (synopsis "GNOME's document viewer")
     (description
      "Evince is a document viewer for multiple document formats.  It
@@ -4280,7 +4280,7 @@ Hints specification (EWMH).")
                                               (assoc-ref %outputs "doc")
                                               "/share/gtk-doc/html"))))
     (inputs
-     (list gtk+ libgsf librsvg libxslt libxml2))
+     (list gtk+ libgsf (librsvg-for-system) libxslt libxml2))
     (native-inputs
      (list intltool `(,glib "bin") pkg-config))
     (home-page "https://developer.gnome.org/goffice/")
@@ -9486,7 +9486,7 @@ easy, safe, and automatic.")
 (define-public tracker
   (package
     (name "tracker")
-    (version "3.3.3")
+    (version "3.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/tracker/"
@@ -9494,44 +9494,56 @@ easy, safe, and automatic.")
                                   "tracker-" version ".tar.xz"))
               (sha256
                (base32
-                "0r144kdqxdzs51qn495vablzf1zxkhkk6imrlrzj9wiqwc2gg520"))))
+                "0c8ppm03b9r6lyxalama8sjmw3km4jibbswqra7qf17pli1g2vaf"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:test-options (list ,@(if (target-riscv64?)
-                                `("--timeout-multiplier" "5")
-                                '()))
-       #:configure-flags
-       ;; Otherwise, the RUNPATH will lack the final path component.
-       (list (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib:"
-                            (assoc-ref %outputs "out") "/lib/tracker-3.0")
-             "-Ddocs=false"
-             "-Dsystemd_user_services=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "utils/trackertestutils/__main__.py"
-               (("/bin/bash")
-                (search-input-file inputs "bin/bash")))))
-         (add-before 'configure 'set-shell
-           (lambda _
-             (setenv "SHELL" (which "bash"))))
-         (add-before 'configure 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((manpage "/etc/asciidoc/docbook-xsl/manpage.xsl")
-                    (file (search-input-file inputs manpage)))
-               (substitute* "docs/manpages/meson.build"
-                 (("/etc/asciidoc[^']+")
-                  file)))))
-         (replace 'check
-           (lambda* (#:key tests? test-options #:allow-other-keys)
-             (when tests?
-               ;; Some tests expect to write to $HOME.
-               (setenv "HOME" "/tmp")
-               (apply invoke "dbus-run-session" "--" "meson" "test"
-                      "--print-errorlogs" test-options)))))))
+     (list
+      #:glib-or-gtk? #t
+      #:test-options `(list ,@(if (target-riscv64?)
+                                  `("--timeout-multiplier" "10")
+                                  '("--timeout-multiplier" "2")))
+      #:configure-flags
+      ;; Otherwise, the RUNPATH will lack the final path component.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib:"
+                             #$output "/lib/tracker-3.0")
+              "-Ddocs=false"
+              "-Dsystemd_user_services=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "utils/trackertestutils/__main__.py"
+                (("/bin/bash")
+                 (search-input-file inputs "bin/bash")))))
+          (add-before 'configure 'set-shell
+            (lambda _
+              (setenv "SHELL" (which "bash"))))
+          (add-before 'configure 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((manpage "/etc/asciidoc/docbook-xsl/manpage.xsl")
+                     (file (search-input-file inputs manpage)))
+                (substitute* "docs/manpages/meson.build"
+                  (("/etc/asciidoc[^']+")
+                   file)))))
+          (replace 'check
+            (lambda* (#:key tests? test-options #:allow-other-keys)
+              (when tests?
+                ;; Some tests expect to write to $HOME.
+                (setenv "HOME" "/tmp")
+                (apply invoke "dbus-run-session" "--" "meson" "test"
+                       "--print-errorlogs" test-options))))
+          (add-after 'glib-or-gtk-wrap 'unwrap-libexec
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion (string-append (assoc-ref outputs "out")
+                                                       "/libexec/tracker3")
+                (for-each
+                 (lambda (f)
+                   (let ((real (string-append "." (basename f) "-real")))
+                     (when (file-exists? real)
+                       (delete-file f)
+                       (rename-file real f))))
+                 (find-files "."))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
@@ -12072,7 +12084,7 @@ repository and commit your work.")
      `(#:phases
        (modify-phases %standard-phases
          ;; The 'config.sub' is too old to recognise aarch64.
-         ,@(if (and=> (%current-target-system) target-aarch64?)
+         ,@(if (or (target-aarch64?) (target-riscv64?))
                `((add-after 'unpack 'replace-config.sub
                    (lambda _
                      (delete-file "config.sub")
@@ -12114,7 +12126,7 @@ repository and commit your work.")
      (list glib))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ,@(if (and=> (%current-target-system) target-aarch64?)
+       ,@(if (or (target-aarch64?) (target-riscv64?))
              `(("config" ,config))
              '())))
     (home-page "https://people.gnome.org/~veillard/gamin/")
@@ -13094,7 +13106,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.11.1")
+    (version "1.14.0")
     (source
      (origin
        (method git-fetch)
@@ -13104,7 +13116,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wvz7ca427x16vrjqzq7b9k1xlgdyhykdix41f48b1m3ry4wcqp2"))))
+         "1pknm3xz2hai8y6ynlyz7y1k1kaay7mkpm1svx66ggjhz8jzcrj5"))))
     (build-system meson-build-system)
     (arguments
      (list

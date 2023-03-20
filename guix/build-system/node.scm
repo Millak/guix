@@ -29,7 +29,6 @@
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:use-module (ice-9 match)
   #:export (%node-build-system-modules
             node-build
             node-build-system))

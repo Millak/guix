@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2021, 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -5086,6 +5086,53 @@ they're not available.")
          ("rust-termion" ,rust-termion-1)
          ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-autocompress-0.2
+  (package
+    (name "rust-autocompress")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "autocompress" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16pjdfr5b2ixs2xk3h6mvxprxr84rpaips624d6vbap5vsdkvzx4"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:tests? #false ;The crate does not include test files
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'patch-cargo-checksums 'do-not-build-xz
+           (lambda _
+             ;; Detection of liblzma (in rust-lzma-sys, pulled in by
+             ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
+             ;; request a static build somewhere.
+             (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
+               (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") "")))))
+      #:cargo-inputs
+      `(("rust-brotli" ,rust-brotli-3)
+        ("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-lz4" ,rust-lz4-1)
+        ("rust-snap" ,rust-snap-1)
+        ("rust-xz2" ,rust-xz2-0.1)
+        ("rust-zstd" ,rust-zstd-0.9))
+      #:cargo-development-inputs
+      `(("rust-clap" ,rust-clap-2)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2))))
+    (inputs (list xz))
+    (home-page "https://github.com/informationsea/autocompress-rs")
+    (synopsis "Select decoder from magic bytes or encoder from file extension")
+    (description
+     "This crate lets you automatically select a suitable decoder from magic
+bytes or encoder from file extension.")
+    (license license:asl2.0)))
+
 (define-public rust-autocfg-1
   (package
     (name "rust-autocfg")
@@ -6725,6 +6772,59 @@ useful for bioinformatics, but also in other fields.")
 provides implementations of many algorithms and data structures that are
 useful for bioinformatics, but also in other fields.")
     (license license:expat)))
+
+(define-public rust-bio-0.41
+  (package
+    (inherit rust-bio-0.39)
+    (name "rust-bio")
+    (version "0.41.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bio" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11kmdd5rslnqjndldh7c2lzxsyapwz7fqm2yrkn3his460z44saa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-approx" ,rust-approx-0.5)
+        ("rust-bio-types" ,rust-bio-types-0.12)
+        ("rust-bit-set" ,rust-bit-set-0.5)
+        ("rust-bv" ,rust-bv-0.11)
+        ("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-custom-derive" ,rust-custom-derive-0.1)
+        ("rust-enum-map" ,rust-enum-map-0.6)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-getset" ,rust-getset-0.1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools-num" ,rust-itertools-num-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-multimap" ,rust-multimap-0.8)
+        ("rust-ndarray" ,rust-ndarray-0.15)
+        ("rust-newtype-derive" ,rust-newtype-derive-0.1)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-ordered-float" ,rust-ordered-float-1)
+        ("rust-pest" ,rust-pest-2)
+        ("rust-pest-derive" ,rust-pest-derive-2)
+        ("rust-petgraph" ,rust-petgraph-0.6)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-statrs" ,rust-statrs-0.15)
+        ("rust-strum" ,rust-strum-0.21)
+        ("rust-strum-macros" ,rust-strum-macros-0.21)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-triple-accel" ,rust-triple-accel-0.4)
+        ("rust-vec-map" ,rust-vec-map-0.8))
+       #:cargo-development-inputs
+       (("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-bit-field-0.10
   (package
@@ -58597,6 +58697,28 @@ used by XeTeX and Tectonic.")
 loading and layout routines of XeTeX as a crate, currently providing only
 a C API.")
     (license license:expat)))
+
+(define-public rust-temp-testdir-0.2
+  (package
+    (name "rust-temp-testdir")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "temp_testdir" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1z5yv6d9944md5zg6g0sbahv7xjga2k232x40x4l20kq8af1w7wj"))))
+    (build-system cargo-build-system)
+    #;
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/la10736/temp_testdir")
+    (synopsis "Use a temp directory")
+    (description
+     "This is a little crate to use a temp directory in crate.  You can chose
+whether to delete it after use or not for debugging purposes.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-tempdir-0.3
   (package

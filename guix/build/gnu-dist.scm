@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2015, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -52,6 +52,7 @@
     (delete 'strip)
     (replace 'install install-dist)
     (add-after 'build 'build-dist build)
-    (delete 'build)))
+    (delete 'build)
+    (delete 'install-license-files)))            ;don't create 'OUT/share/doc'
 
 ;;; gnu-dist.scm ends here

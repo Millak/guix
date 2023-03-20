@@ -18,10 +18,8 @@
 
 (define-module (guix import elm)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
   #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -32,20 +30,11 @@
   #:use-module (guix memoization)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
-  #:use-module ((guix ui) #:select (display-hint))
-  #:use-module ((guix build utils)
-                #:select ((package-name->name+version
-                           . hyphen-package-name->name+version)
-                          find-files
-                          invoke))
   #:use-module (guix import utils)
   #:use-module (guix git)
   #:use-module (guix import json)
   #:autoload   (gcrypt hash) (hash-algorithm sha256)
   #:use-module (json)
-  #:use-module (guix packages)
-  #:use-module (guix upstream)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system elm)
   #:export (elm-recursive-import
             %elm-package-registry

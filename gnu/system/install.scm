@@ -331,9 +331,10 @@ Using this shell, you can carry out the installation process \"manually.\"
 Access documentation at any time by pressing Alt-F2.\x1b[0m
 ")))
     (define (normal-tty tty)
-      (mingetty-service (mingetty-configuration (tty tty)
-                                                (auto-login "root")
-                                                (login-pause? #t))))
+      (service mingetty-service-type
+               (mingetty-configuration (tty tty)
+                                       (auto-login "root")
+                                       (login-pause? #t))))
 
     (define bare-bones-os
       (load "examples/bare-bones.tmpl"))
@@ -347,8 +348,9 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                      (virtual-terminal "tty1")
                      (login-program (installer-program))))
 
-           (login-service (login-configuration
-                           (motd motd)))
+           (service login-service-type
+                    (login-configuration
+                     (motd motd)))
 
            ;; Documentation.  The manual is in UTF-8, but
            ;; 'console-font-service' sets up Unicode support and loads a font
@@ -365,7 +367,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            (normal-tty "tty6")
 
            ;; The usual services.
-           (syslog-service)
+           (service syslog-service-type)
 
            ;; Use the Avahi daemon to discover substitute servers on the local
            ;; network.  It can be faster than fetching from remote servers.
@@ -386,7 +388,9 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            ;; Start udev so that useful device nodes are available.
            ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
            ;; regulations-compliant WiFi access.
-           (udev-service #:rules (list lvm2 crda))
+           (service udev-service-type
+                    (udev-configuration
+                     (rules (list lvm2 crda))))
 
            ;; Add the 'cow-store' service, which users have to start manually
            ;; since it takes the installation directory as an argument.
@@ -424,8 +428,9 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
 
            ;; Since this is running on a USB stick with a overlayfs as the root
            ;; file system, use an appropriate cache configuration.
-           (nscd-service (nscd-configuration
-                          (caches %nscd-minimal-caches)))
+           (service nscd-service-type
+                    (nscd-configuration
+                     (caches %nscd-minimal-caches)))
 
            ;; Having /bin/sh is a good idea.  In particular it allows Tramp
            ;; connections to this system to work.
@@ -437,7 +442,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                     (list %loopback-static-networking))
 
            (service wpa-supplicant-service-type)
-           (dbus-service)
+           (service dbus-root-service-type)
            (service connman-service-type
                     (connman-configuration
                      (disable-vpn? #t)))

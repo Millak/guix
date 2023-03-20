@@ -28,7 +28,6 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix svn-download)
-  #:use-module (ice-9 match)
   #:export (%texlive-build-system-modules
             texlive-build
             texlive-build-system

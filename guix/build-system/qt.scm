@@ -33,7 +33,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
-  #:use-module (ice-9 match)
   #:export (%qt-build-system-modules
             qt-build
             qt-build-system))

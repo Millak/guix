@@ -2,7 +2,7 @@
 # Copyright (C) 2012-2020 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the guix package.
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2014, 2015, 2016, 2018.
-# Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2019, 2020, 2021, 2022.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2019, 2020, 2021, 2022, 2023.
 # Adina Wagner <adina.wagner@t-online.de>, 2021.
 # Flemming Jaeger <flemminghunter@posteo.de>, 2022.
 # Tobias Weise <tobias.weise@web.de>, 2022.
@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-12-09 21:22+0000\n"
+"PO-Revision-Date: 2023-02-03 15:20+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/guix/de/>\n"
 "Language: de\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.15.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -8491,7 +8491,7 @@ msgstr "Paketursprung hat keinen SHA256-Hash"
 #: guix/packages.scm:566
 #, scheme-format
 msgid "~s: invalid package license~%"
-msgstr "~a: Ungültige Paketlizenz~%"
+msgstr "~s: Ungültige Paketlizenz~%"
 
 #: guix/profiles.scm:518
 #, scheme-format

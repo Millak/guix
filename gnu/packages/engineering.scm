@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
@@ -302,112 +302,115 @@ utilities.")
     (home-page "https://github.com/lepton-eda/lepton-eda")
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
               (sha256
                (base32
                 "0kyq0g6271vlwraw98637fn8bq2l6q4rll6748nn8rwsmfz71d0m"))
               (file-name (git-file-name name version))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("libtool" ,libtool)
-       ("gettext" ,gettext-minimal)
-       ("texinfo" ,texinfo)
-       ("groff" ,groff)
-       ("which" ,which)
-       ,@(package-native-inputs geda-gaf)))
-    (inputs
-     `(("glib" ,glib)
-       ("gtk" ,gtk+)
-       ("gtksheet" ,gtksheet)
-       ("guile" ,guile-3.0)
-       ("shared-mime-info" ,shared-mime-info)
-       ("m4" ,m4)
-       ("pcb" ,pcb)))
     (arguments
-     `(#:configure-flags
-       (let ((pcb (assoc-ref %build-inputs "pcb")))
-         ;; When running "make", the POT files are built with the build time as
-         ;; their "POT-Creation-Date".  Later on, "make" notices that .pot
-         ;; files were updated and goes on to run "msgmerge"; as a result, the
-         ;; non-deterministic POT-Creation-Date finds its way into .po files,
-         ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
-         ;; never runs.  See <https://bugs.debian.org/792687>.
-         (list "ac_cv_path_MSGMERGE=true"
-               "--with-gtk3"
-               (string-append "--with-pcb-datadir=" pcb "/share")
-               (string-append "--with-pcb-lib-path="
-                              pcb "/share/pcb/pcblib-newlib:"
-                              pcb "/share/pcb/newlib")
-               "CFLAGS=-fcommon"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-dynamic-link
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "libleptongui/scheme/schematic/ffi.scm.in"
-               (("@LIBLEPTONGUI@")
-                (string-append (assoc-ref outputs "out")
-                               "/lib/libleptongui.so")))
-             (substitute* '("libleptongui/scheme/schematic/ffi/gtk.scm.in"
-                            "utils/attrib/lepton-attrib.scm")
-               (("@LIBGTK@")
-                (search-input-file inputs "/lib/libgtk-3.so")))
-             (substitute* '("libleptongui/scheme/schematic/ffi/gobject.scm.in")
-               (("@LIBGOBJECT@")
-                (search-input-file inputs "/lib/libgobject-2.0.so")))
-             (substitute* "liblepton/scheme/lepton/ffi.scm.in"
-               (("@LIBLEPTON@")
-                (string-append (assoc-ref outputs "out")
-                               "/lib/liblepton.so")))
-             (substitute* "utils/attrib/lepton-attrib.scm"
-               (("@LIBLEPTONATTRIB@")
-                (string-append (assoc-ref outputs "out")
-                               "/lib/libleptonattrib.so")))
-             (substitute* "liblepton/scheme/lepton/log.scm.in"
-               (("@LIBGLIB@")
-                (search-input-file inputs "/lib/libglib-2.0.so")))
+     (list
+      #:configure-flags
+      #~(let ((pcb #$(this-package-input "pcb")))
+          ;; When running "make", the POT files are built with the build time as
+          ;; their "POT-Creation-Date".  Later on, "make" notices that .pot
+          ;; files were updated and goes on to run "msgmerge"; as a result, the
+          ;; non-deterministic POT-Creation-Date finds its way into .po files,
+          ;; and then in .gmo files.  To avoid that, simply make sure 'msgmerge'
+          ;; never runs.  See <https://bugs.debian.org/792687>.
+          (list "ac_cv_path_MSGMERGE=true" "--with-gtk3"
+                (string-append "--with-pcb-datadir=" pcb
+                               "/share")
+                (string-append "--with-pcb-lib-path=" pcb
+                               "/share/pcb/pcblib-newlib:"
+                               pcb "/share/pcb/newlib")
+                "CFLAGS=-fcommon"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-dynamic-link
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "libleptongui/scheme/schematic/ffi.scm.in"
+                (("@LIBLEPTONGUI@")
+                 (string-append #$output "/lib/libleptongui.so")))
+              (substitute* '("libleptongui/scheme/schematic/ffi/gtk.scm.in"
+                             "utils/attrib/lepton-attrib.scm")
+                (("@LIBGTK@")
+                 (search-input-file inputs "/lib/libgtk-3.so")))
+              (substitute* '("libleptongui/scheme/schematic/ffi/gobject.scm.in")
+                (("@LIBGOBJECT@")
+                 (search-input-file inputs "/lib/libgobject-2.0.so")))
+              (substitute* "liblepton/scheme/lepton/ffi.scm.in"
+                (("@LIBLEPTON@")
+                 (string-append #$output "/lib/liblepton.so")))
+              (substitute* "utils/attrib/lepton-attrib.scm"
+                (("@LIBLEPTONATTRIB@")
+                 (string-append (assoc-ref outputs "out")
+                                "/lib/libleptonattrib.so")))
+              (substitute* "liblepton/scheme/lepton/log.scm.in"
+                (("@LIBGLIB@")
+                 (search-input-file inputs "/lib/libglib-2.0.so")))
 
-             ;; For finding libraries when running tests before installation.
-             (setenv "LIBLEPTONGUI"
-                     (string-append (getcwd)
-                                    "/libleptongui/src/.libs/libleptongui.so"))
-             (setenv "LIBLEPTON"
-                     (string-append (getcwd)
-                                    "/libleptongui/src/.libs/liblepton.so"))
-             (setenv "LD_LIBRARY_PATH"
-                     (string-append (getcwd) "/libleptonattrib/src/.libs/:"
-                                    (getenv "LIBRARY_PATH")))
-             #t))
-         (add-before 'bootstrap 'prepare
-           (lambda _
-             ;; Some of the scripts there are invoked by autogen.sh.
-             (for-each patch-shebang (find-files "build-tools"))
+              ;; For finding libraries when running tests before installation.
+              (setenv "LIBLEPTONGUI"
+                      (string-append (getcwd)
+                                     "/libleptongui/src/.libs/libleptongui.so"))
+              (setenv "LIBLEPTON"
+                      (string-append (getcwd)
+                                     "/libleptongui/src/.libs/liblepton.so"))
+              (setenv "LD_LIBRARY_PATH"
+                      (string-append (getcwd)
+                                     "/libleptonattrib/src/.libs/:"
+                                     (getenv "LIBRARY_PATH")))))
+          (add-before 'bootstrap 'prepare
+            (lambda _
+              ;; Some of the scripts there are invoked by autogen.sh.
+              (for-each patch-shebang
+                        (find-files "build-tools"))
 
-             ;; Make sure 'msgmerge' can modify the PO files.
-             (for-each (lambda (po)
-                         (chmod po #o666))
-                       (find-files "." "\\.po$"))
+              ;; Make sure 'msgmerge' can modify the PO files.
+              (for-each (lambda (po)
+                          (chmod po #o666))
+                        (find-files "." "\\.po$"))
 
-             ;; This would normally be created by invoking 'git', but it
-             ;; doesn't work here.
-             (call-with-output-file "version.h"
-               (lambda (port)
-                 (format port "#define PACKAGE_DATE_VERSION \"~a\"~%"
-                         ,(string-drop version
-                                       (+ 1 (string-index version #\-))))
-                 (format port "#define PACKAGE_DOTTED_VERSION \"~a\"~%"
-                         ,(string-take version
-                                       (string-index version #\-)))
-                 (format port "#define PACKAGE_GIT_COMMIT \"cabbag3\"~%")))
-             #t))
-         (add-after 'install 'compile-scheme-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (unsetenv "LIBLEPTONGUI")
-             (unsetenv "LIBLEPTON")
-             (unsetenv "LD_LIBRARY_PATH")
-             (invoke "make" "precompile")
-             #t)))))
+              ;; This would normally be created by invoking 'git', but it
+              ;; doesn't work here.
+              (call-with-output-file "version.h"
+                (lambda (port)
+                  (format port "#define PACKAGE_DATE_VERSION \"~a\"~%"
+                          #$(string-drop version
+                                         (+ 1
+                                            (string-index version #\-))))
+                  (format port
+                          "#define PACKAGE_DOTTED_VERSION \"~a\"~%"
+                          #$(string-take version
+                                         (string-index version #\-)))
+                  (format port
+                          "#define PACKAGE_GIT_COMMIT \"cabbag3\"~%")))))
+          (add-after 'install 'compile-scheme-files
+            (lambda _
+              (unsetenv "LIBLEPTONGUI")
+              (unsetenv "LIBLEPTON")
+              (unsetenv "LD_LIBRARY_PATH")
+              (invoke "make" "precompile"))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs geda-gaf)
+       (prepend autoconf
+                automake
+                desktop-file-utils
+                libtool
+                gettext-minimal
+                texinfo
+                groff
+                which)))
+    (inputs
+     (list glib
+           gtk+
+           gtksheet
+           guile-3.0
+           shared-mime-info
+           m4
+           pcb))
     (description
      "Lepton EDA ia an @dfn{electronic design automation} (EDA) tool set
 forked from gEDA/gaf in late 2016.  EDA tools are used for electrical circuit
@@ -417,71 +420,85 @@ materials (BOM) generation, netlisting into over 20 netlist formats, analog
 and digital simulation, and printed circuit board (PCB) layout, and many other
 features.")))
 
+(define-public librnd
+  (package
+    (name "librnd")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.repo.hu/projects/librnd/releases/"
+                                  "librnd-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1fqh7gf9imhghlfajrsgzjx61mynfmdasciwpcajk7pn85d4ymql"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cc-is-gcc
+            (lambda _ (setenv "CC" "gcc")))
+          (replace 'configure
+            ;; The configure script doesn't tolerate most of our configure flags.
+            (lambda _
+              (invoke "sh" "configure"
+                      (string-append "--prefix=" #$output)))))))
+    (inputs
+     (list gd gtk glib glu))
+    (native-inputs
+     (list pkg-config))
+    (home-page "http://repo.hu/projects/librnd/")
+    (synopsis "Two-dimensional CAD engine")
+    (description "This is a flexible, modular two-dimensional CAD engine
+@itemize
+@item with transparent multiple GUI toolkit support;
+@item a flexible, dynamic menu system;
+@item a flexible, dynamic configuration system; and
+@item support for user scripting in a dozen languages.
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public pcb
   (package
     (name "pcb")
-    (version "4.0.2")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/pcb/pcb/pcb-" version
                                   "/pcb-" version ".tar.gz"))
               (sha256
                (base32
-                "1a7rilp75faidny0r4fdwdxkflyrqp6svxv9lbg7h868293962iz"))))
+                "0ppv8cblw0h70laly4zp8gmbxkbzzhbbjgw13pssgaw4mx32z1df"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-wish8.6
-           (lambda _
-             (substitute* "configure"
-               (("wish85") "wish8.6"))
-             #t))
-         ;; It checks for "xhost", which we don't have.  This shouldn't
-         ;; matter, because the test is supposed to be skipped, but it causes
-         ;; "run_tests.sh" (and thus the "check" phase) to fail.
-         (add-after 'unpack 'fix-check-for-display
-           (lambda _
-             (substitute* "tests/run_tests.sh"
-               (("have_display=no") "have_display=yes"))
-             #t))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; FIXME: Mesa tries to dlopen libudev.so.0 and fails.  Pending a
-             ;; fix of the mesa package we wrap the pcb executable such that
-             ;; Mesa can find libudev.so.0 through LD_LIBRARY_PATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (dirname
-                           (search-input-file inputs "/lib/libudev.so"))))
-               (wrap-program (string-append out "/bin/pcb")
-                 `("LD_LIBRARY_PATH" ":" prefix (,path))))
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
     (inputs
-     `(("dbus" ,dbus)
-       ("mesa" ,mesa)
-       ("udev" ,eudev) ;FIXME: required by mesa
-       ("glu" ,glu)
-       ("gd" ,gd)
-       ("gtk" ,gtk+-2)
-       ("gtkglext" ,gtkglext)
-       ("shared-mime-info" ,shared-mime-info)
-       ("tk" ,tk)))
+     (list dbus
+           mesa
+           glu
+           gd
+           gtk+-2
+           gtkglext
+           shared-mime-info
+           tk))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("bison" ,bison)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("flex" ,flex)
-       ;; For tests
-       ("imagemagick" ,imagemagick)
-       ("gerbv" ,gerbv)
-       ("ghostscript" ,ghostscript)
-       ("xvfb" ,xorg-server-for-tests)))
+     (list bison
+           desktop-file-utils
+           flex
+           intltool
+           pkg-config
+           ;; For tests
+           imagemagick
+           gerbv
+           ghostscript
+           xorg-server-for-tests))
     (home-page "http://pcb.geda-project.org/")
     (synopsis "Design printed circuit board layouts")
     (description
@@ -494,26 +511,30 @@ optimizer; and it can produce photorealistic and design review images.")
 (define-public pcb-rnd
   (package (inherit pcb)
     (name "pcb-rnd")
-    (version "2.2.4")
+    (version "3.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://repo.hu/projects/pcb-rnd/releases/"
                                   "pcb-rnd-" version ".tar.gz"))
               (sha256
                (base32
-                "06ylc2rd4yvzp3krk62q9dbi13h0yq1x257fbjkh10vfjn0ga5c2"))))
+                "0yw4sf4qrmmai48f3f5byn2fphc453myjszh3sy9z0dnfcz3x7fw"))))
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'cc-is-gcc
-           (lambda _ (setenv "CC" "gcc") #t))
-         (replace 'configure
-           ;; The configure script doesn't tolerate most of our configure flags.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "sh" "configure"
-                     (string-append "--prefix="
-                                    (assoc-ref outputs "out"))))))))
+     (list
+      #:tests? #false                   ;no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cc-is-gcc
+            (lambda _ (setenv "CC" "gcc")))
+          (replace 'configure
+            ;; The configure script doesn't tolerate most of our configure flags.
+            (lambda _
+              (setenv "LIBRND_PREFIX" #$(this-package-input "librnd"))
+              (invoke "sh" "configure"
+                      (string-append "--prefix=" #$output)))))))
+    (inputs
+     (modify-inputs (package-inputs pcb)
+       (append librnd)))
     (home-page "http://repo.hu/projects/pcb-rnd/")
     (description "PCB RND is a fork of the GNU PCB circuit board editing tool
 featuring various improvements and bug fixes.")))
@@ -947,7 +968,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "7.0.0")
+    (version "7.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -955,7 +976,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "1zgpj1rvf97qv36hg4dja46pbzyixlh2g04wlh7cizcrs16b9mzw"))
+                "021safxvyq9qzs08jy3jvpazmhvix4kyl05s9y9hwmyzdmdl2smn"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1055,7 +1076,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xsj3fl6gkvyr97gx3nvy4ylcr6sc4byj4hbgcdwl2zx3wm02ifz"))))
+                "1cy9w10wzdjm9z9vzv88ija6l3pp894hwcgz5jggjrnyazhpklvj"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1089,7 +1110,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r87xr1453dpfglkg1m4p5d7kcv9gxls1anwk3vp2yppnwz24ydm"))))
+                "14c5gci13m30xv0cmic5jxsmfx9lq3fnd8hyq3mmgkrw7443zy30"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1118,7 +1139,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1akhifnjm8jvqsvscn2rr1wpzrls73bpdc6sk40355r1in2djmry"))))
+                "0k0z40wmaq665hjxb6kp1yl3v7clxz49r6ki0chyphsxv1cnixmy"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1135,7 +1156,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qw5xm0wbhv6gqvd8mn0jp4abjbizrkx79r6y8f6911mkzi47r6n"))))
+                "0nzi7ijfb3rjm98kaa9va2mkh0nfzpq4vfhxkq8j18qhx24h5c8v"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 

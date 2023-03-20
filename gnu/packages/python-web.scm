@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
@@ -964,16 +964,39 @@ over a different origin than that of the web application.")
 (define-public python-httplib2
   (package
     (name "python-httplib2")
-    (version "0.9.2")
+    (version "0.15.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "httplib2" version))
+       ;; Tests not included in the release tarball.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/httplib2/httplib2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "126rsryvw9vhbf3qmsfw9lf4l4xm2srmgs439lgma4cpag4s3ay3"))))
+         "11bis23xqbl6aa5m5yswwcf6zn4j24lyi7bfskd31h4zb368ggsj"))))
     (build-system python-build-system)
-    (home-page "https://github.com/jcgregorio/httplib2")
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-test-requirements
+             (lambda _
+               (substitute* "requirements-test.txt"
+                 (("==") ">=")))))))
+    (native-inputs
+     (list python-flake8
+           python-future
+           python-mock
+           python-pytest
+           python-pytest-cov
+           python-pytest-forked
+           python-pytest-randomly
+           python-pytest-timeout
+           python-pytest-xdist
+           python-six))
+    (home-page "https://github.com/httplib2/httplib2")
     (synopsis "Comprehensive HTTP client library")
     (description
      "A comprehensive HTTP client library supporting many features left out of
@@ -4424,6 +4447,17 @@ Templates.")
     ;; are made under *both* licenses (excerpt from the LICENSE file).
     (license (list license:bsd-2 license:asl2.0))))
 
+(define-public python-uritemplate-3
+  (package
+    (inherit python-uritemplate)
+    (name "python-uritemplate")
+    (version "3.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "uritemplate" version))
+              (sha256
+               (base32 "1bkwmgr0ia9gcn4bszs2xlvml79f0bi2s4a87xg22ky9rq8avy2s"))))))
+
 (define-public python-publicsuffix
   (package
     (name "python-publicsuffix")
@@ -4798,31 +4832,48 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-api-client
   (package
     (name "python-google-api-client")
-    (version "1.6.7")
+    (version "1.12.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "google-api-python-client" version))
        (sha256
         (base32
-         "1wpbbbxfpy9mwxdy3kn352cb590ladv574j1aa2l4grjdqw3ln05"))))
+         "1fq89wifa9ymby655is246w5d54ixybffj5vz7lwzhpf8926ifgk"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ; tests require internet access
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-setup-py
-           (lambda _
-             (substitute* "setup.py"
-               (("googleapiclient/discovery_cache")
-                "googleapiclient.discovery_cache"))
-             #t)))))
-    (native-inputs
-     (list python-httplib2 python-six python-oauth2client
-           python-uritemplate))
+     `(#:tests? #f))    ; tests require internet access
+    (propagated-inputs
+     (list python-google-api-core-1
+           python-google-auth-1
+           python-google-auth-httplib2
+           python-httplib2
+           python-six
+           python-uritemplate-3))
     (home-page "https://github.com/google/google-api-python-client")
     (synopsis "Core Python library for accessing Google APIs")
     (description "Python client library for Google's discovery based APIs")
+    (license license:asl2.0)))
+
+(define-public python-google-auth-httplib2
+  (package
+    (name "python-google-auth-httplib2")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "google-auth-httplib2" version))
+              (sha256
+               (base32 "1b1hrhah01hx6bj3rb83iybrdwqv0bbdy63py39srv1bcgykjz50"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-google-auth python-httplib2 python-six))
+    (native-inputs
+     (list python-flask python-mock python-pytest python-pytest-localserver))
+    (home-page
+     "https://github.com/GoogleCloudPlatform/google-auth-library-python-httplib2")
+    (synopsis "Google Authentication Library: httplib2 transport")
+    (description "This package provides a Google Authentication Library plugin
+for httplib2 transport.")
     (license license:asl2.0)))
 
 (define-public whoogle-search
@@ -7198,6 +7249,42 @@ of the CRC32C hashing algorithm.")
 server-to-server authentication mechanisms to access Google APIs.")
     (license license:asl2.0)))
 
+(define-public python-google-auth-1
+  (package
+    (inherit python-google-auth)
+    (name "python-google-auth")
+    (version "1.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-auth" version))
+       (sha256
+        (base32 "13nqj6hikvbdmbs1vb78c88ym0pd03m09ch00biqw64c0blkn0xp"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (propagated-inputs
+     (list python-cachetools
+           python-pyasn1-modules
+           python-rsa
+           python-six
+           ;; For the extras
+           python-pyopenssl
+           python-pyu2f))
+    (native-inputs
+     (list python-flask
+           python-freezegun
+           python-oauth2client
+           python-pytest
+           python-pytest-localserver
+           python-requests
+           python-responses
+           python-urllib3))))
+
 (define-public python-google-resumable-media
   (package
     (name "python-google-resumable-media")
@@ -7233,17 +7320,16 @@ and Resumable Uploads.")
 (define-public python-googleapis-common-protos
   (package
     (name "python-googleapis-common-protos")
-    (version "1.56.1")
+    (version "1.56.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "googleapis-common-protos" version))
        (sha256
-        (base32 "16x1pjc34mrj9w130j40r23ndpykhsqivvk5xfl63ss6qsfyapkb"))))
+        (base32 "05s4dszqd5pjwjh4bdic40v1v447k0a3dynsrgypqf3rfb276n62"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #false ;fails for unknown reasons
-       #:phases
+     `(#:phases
         (modify-phases %standard-phases
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
@@ -7296,6 +7382,52 @@ common protos in the @code{googleapis/api-common-protos} repository.")
     (description "This library defines common helpers used by all Google API
 clients.")
     (license license:asl2.0)))
+
+(define-public python-google-api-core-1
+  (package
+    (inherit python-google-api-core)
+    (name "python-google-api-core")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-api-core" version))
+       (sha256
+        (base32 "0709va9sisll7axkv6ii2x5s0ls38rqp1jnvs6nkpmg7z163q70h"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (for-each
+                 delete-file
+                 '(;; The test suite can't find AsyncMock.
+                   "tests/asyncio/test_page_iterator_async.py"
+                   "tests/asyncio/test_retry_async.py"
+                   ;; Skip the tests depending on grpc.
+                   "tests/asyncio/test_operation_async.py"
+                   "tests/asyncio/test_grpc_helpers_async.py"
+                   "tests/asyncio/operations_v1/test_operations_async_client.py"
+                   "tests/unit/test_bidi.py"
+                   "tests/unit/test_exceptions.py"
+                   "tests/unit/test_grpc_helpers.py"
+                   "tests/unit/test_operation.py"
+                   "tests/unit/operations_v1/test_operations_client.py"))
+               (delete-file-recursively "tests/asyncio/gapic")
+               (delete-file-recursively "tests/unit/gapic")
+               (invoke "pytest" "-k" "not test_constructor_defaults")))))))
+    (propagated-inputs
+     (list python-google-auth-1
+           python-googleapis-common-protos
+           python-packaging
+           python-protobuf
+           python-proto-plus
+           python-pytz
+           python-requests))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio))))
 
 (define-public python-google-cloud-core
   (package

@@ -24,12 +24,10 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix monads)
-  #:use-module (guix derivations)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
-  #:use-module (ice-9 match)
   #:export (%cmake-build-system-modules
             cmake-build
             cmake-build-system))

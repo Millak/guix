@@ -56,12 +56,12 @@ scheme-mode
 (git-reference...
  "(git-reference"
  n> "(url \"" p "\")"
- n> "(commit \"" p "\"))")
+ n> "(commit " (p "commit") "))")
 
 (svn-reference...
  "(svn-reference"
  n> "(url \"" p "\")"
- n> "(revision \"" p "\"))")
+ n> "(revision " (p "revision") "))")
 
 (cvs-reference...
  "(cvs-reference"
@@ -72,12 +72,12 @@ scheme-mode
 (hg-reference...
  "(hg-reference"
  n> "(url \"" p "\")"
- n> "(changeset \"" p "\"))")
+ n> "(changeset " (p "changeset") "))")
 
 (bzr-reference...
  "(bzr-reference"
  n> "(url \"" p "\")"
- n> "(revision \"" p "\"))")
+ n> "(revision " (p "revision") "))")
 
 (:phases\ "#:phases (modify-phases %standard-phases"
           n> p ")")

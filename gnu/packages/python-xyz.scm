@@ -132,6 +132,9 @@
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -351,6 +354,7 @@ design}.")
                                                       " and not "))))))))))
     (native-inputs
      (list git-minimal
+           pre-commit
            python-autopep8
            python-black
            python-flake8
@@ -358,7 +362,6 @@ design}.")
            python-isort
            python-ipython-genutils
            python-jupyter-server
-           python-pre-commit
            python-pytest
            python-pyaml))
     (propagated-inputs
@@ -1458,6 +1461,35 @@ top, lsof, netstat, ifconfig, who, df, kill, free, nice, ionice, iostat,
 iotop, uptime, pidof, tty, taskset, pmap.")
     (license license:bsd-3)))
 
+(define-public python-scapy
+  (package
+    (name "python-scapy")
+    (version "2.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scapy" version))
+              (sha256
+               (base32
+                "1hpbbmpcn4dwj3z7i7sz4cnbpkaf57p7mvl3p84x9n2gflmhq9jv"))))
+    (arguments
+     '(#:tests? #f)) ; There is a test directory, but apparently no
+                     ; automatic testing framework.
+    ;; The package has more optional dependencies such as ipython and
+    ;; matplotlib. If functionality is missing, these should be added.
+    ;; See
+    ;; https://scapy.readthedocs.io/en/latest/installation.html#optional-dependencies
+    (build-system python-build-system)
+    (home-page "https://scapy.net")
+    (synopsis "Python network packet crafting library")
+    (description
+     "Scapy is a Python library and executable for interactively
+manipulating network packets.  It can forge or decode packets of a number
+of protocols, send them on the wire, capture them, store or read them
+using pcap files, match requests and replies, and so on.
+It can handle tasks such as scanning, tracerouting, probing, unit tests,
+attacks or network discovery.")
+    (license license:gpl2)))
+
 (define-public python-shapely
   (package
     (name "python-shapely")
@@ -1620,7 +1652,6 @@ etc.")
     (native-inputs
      (list python-coverage
            python-hypothesis
-           python-pre-commit
            python-py
            python-pytest
            python-pytest-benchmark
@@ -4029,6 +4060,35 @@ cutting and pasting that code over and over.")
 to Roman Numerals.")
     (license license:psfl)))
 
+(define-public python-rollbar
+  (package
+    (name "python-rollbar")
+    (version "0.16.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rollbar" version))
+              (sha256
+               (base32
+                "1qpd0j50wqli3867xmhwk65pm1cxjs60yg83mcvcf3kic3y3sc82"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest-runner python-unittest2))
+    (inputs (list python-requests python-six python-httpx python-blinker
+                  python-webob))
+    (home-page "https://github.com/rollbar/pyrollbar")
+    (synopsis "Notifier for exceptions, errors, and log messages to Rollbar")
+    (description
+     "Python SDK for reporting exceptions, errors, and log messages
+to @url{https://rollbar.com/, Rollbar}.
+
+Capabilities include:
+
+@itemize @bullet
+@item Sending messages and exceptions with arbitrary context
+@item Getting back aggregates
+@item Debugging production issues
+@end itemize")
+    (license license:expat)))
+
 (define-public python-unidecode
   (package
     (name "python-unidecode")
@@ -4093,7 +4153,6 @@ memory usage and transliteration quality.")
     (native-inputs
      (list python-coverage
            python-cryptography
-           python-pre-commit
            python-pytest
            python-sphinx
            python-sphinx-rtd-theme))
@@ -4725,7 +4784,7 @@ structure for Python.")
 (define-public autokey
   (package
     (name "autokey")
-    (version "0.95.10")
+    (version "0.96.0")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -4734,41 +4793,45 @@ structure for Python.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0f0cqfnb49wwdy7zl2f2ypcnd5pc8r8n7z7ssxkq20d4xfxlgamr"))))
-    (build-system python-build-system)
+               "1v19196swihc12bcg0d9s07gfc3a44b9y7g6rqhb82qxm4p8jmbp"))
+             (modules '((guix build utils)))
+             (snippet
+              #~(begin
+                  ;; XXX: skip test depending on .git/
+                  (delete-file "tests/test_common.py")))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Tests are deprecated and broken until next version, see
-      ;; https://github.com/autokey/autokey/issues/327
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "lib/autokey/scripting.py"
-                (("\"wmctrl\"")
-                 (string-append "\"" (search-input-file inputs "bin/wmctrl") "\""))
-                (("\"zenity\"")
-                 (string-append "\"" (search-input-file inputs "bin/zenity") "\"")))
-              (substitute* "autokey-shell"
-                (("'ipython3'")
-                 (string-append "'" (search-input-file inputs "bin/ipython3") "'"))
-                (("'python3'")
-                 (string-append "'" (search-input-file inputs "bin/python3") "'")))))
           ;; Use 'prefix' instead of '=' to allow the user to use additional
           ;; GI paths from their autokey scripts.  GUIX_PYTHONPATH is already
           ;; wrapped with prefix in python-build-system's wrap.
-          (add-before 'wrap 'wrap-autokey-gi
-            (lambda _
-              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+          (add-before 'wrap 'wrap-autokey
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                    (path (map dirname
+                               ;; see lib/autokey/UI_common_functions.py
+                               (list (search-input-file inputs "/bin/wmctrl")
+                                     (search-input-file inputs "/bin/zenity")
+                                     (search-input-file inputs "/bin/ipython3")
+                                     (search-input-file inputs "/bin/python3")))))
                 (for-each
                  (lambda (program)
                    (wrap-program program
+                     `("PATH" ":" prefix ,path)
                      `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
                  (map (lambda (name)
                         (string-append #$output "/bin/" name))
                       '("autokey-gtk"
-                        "autokey-shell")))))))))
+                        "autokey-shell"))))))
+          (add-before 'check 'setup-env-vars
+            (lambda _
+              ;; tests/test_macro.py wants LANG set
+              (setenv "LANG" "")
+              ;; required for tests/test_configmanager.py
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-pytest python-pytest-cov python-pyhamcrest))
     (inputs
      (list bash-minimal ; for wrap-program
            gtksourceview-3
@@ -7642,6 +7705,7 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
   (package
     (name "python-pillow")
     (version "9.2.0")
+    (replacement python-pillow/security-fixes)
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pillow" version))
@@ -7688,6 +7752,10 @@ a general image processing tool.")
     (license (license:x11-style
               "http://www.pythonware.com/products/pil/license.htm"
               "The PIL Software License"))))
+
+(define-public python-pillow/security-fixes
+  (package-with-patches python-pillow
+                        (search-patches "python-pillow-CVE-2022-45199.patch")))
 
 (define-public python-pillow-2.9
   (package
@@ -10952,6 +11020,25 @@ addition to a bunch of aliases.")
     (description "@code{sarge} is a wrapper for subprocess which provides
 command pipeline functionality.")
     (license license:bsd-3)))
+
+(define-public python-zipfly
+  (package
+    (name "python-zipfly")
+    (version "6.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zipfly" version))
+       (sha256
+        (base32
+         "1h7g922a8lsqd69j8blgcgg0lcd8kz51b2p4glfqmgx4vi1nkick"))))
+    (build-system python-build-system)
+    (home-page "http://github.com/sandes/zipfly")
+    (synopsis "Zip archive generator")
+    (description "ZipFly is a zip archive generator.  It was created to
+generate very large zip archives for immediate sending out to clients, or
+for writing large zip archives without memory inflation.")
+    (license license:bsd-2)))
 
 (define-public python-zipstream-new
   (package
@@ -20993,7 +21080,6 @@ while only declaring the test-specific fields.")
      (list python-flake8
            python-flake8-bugbear
            python-mypy
-           python-pre-commit
            python-pytest
            python-pytz
            python-simplejson))
@@ -21022,7 +21108,6 @@ datatypes to and from native Python datatypes.")
            python-flake8-bugbear
            python-flask
            python-mock
-           python-pre-commit
            python-pytest
            python-tox))
     (home-page "https://github.com/marshmallow-code/marshmallow-jsonapi")
@@ -21058,7 +21143,6 @@ datatypes to and from native Python datatypes.")
            python-flake8-bugbear
            python-marshmallow
            python-mypy
-           python-pre-commit
            python-pytest
            python-pyyaml))
     (home-page "https://github.com/marshmallow-code/apispec")
@@ -21086,8 +21170,8 @@ Swagger.")
            python-flake8-bugbear
            python-flask
            python-mock
-           python-pre-commit
            python-pytest
+           python-pyyaml
            python-tornado
            python-tox))
     (home-page "https://github.com/marshmallow-code/apispec-webframeworks")
@@ -24229,34 +24313,7 @@ Features:
     (license license:asl2.0)))
 
 (define-public python-pre-commit
-  (package
-    (name "python-pre-commit")
-    (version "2.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pre_commit" version))
-       (sha256
-        (base32 "1ycf6wpxrhxhdzz0vpryhbdxlwik5khgcvp3hxwvfr447a6k84zl"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Tests fail with "AttributeError: module 'pre_commit.resources' has no
-     ;; attribute 'empty_template_setup'".
-     `(#:tests? #false))
-    (propagated-inputs
-     (list python-cfgv
-           python-identify
-           python-importlib-metadata
-           python-nodeenv
-           python-pyyaml
-           python-toml
-           python-virtualenv))
-    (home-page "https://github.com/pre-commit/pre-commit")
-    (synopsis "Framework for managing multi-language pre-commit hooks")
-    (description
-     "This package provides a framework for managing and maintaining
-multi-language pre-commit hooks.")
-    (license license:expat)))
+  (deprecated-package "python-pre-commit" pre-commit))
 
 (define-public python-precis-i18n
   (package
@@ -25087,19 +25144,16 @@ for manual interpretation.")
 (define-public python-bibtexparser
   (package
     (name "python-bibtexparser")
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "bibtexparser" version))
-       (sha256
-        (base32
-         "0zwhfkrzf3n5847dbnfng92k7ak199l9v6x6ax3dgdidfpm6d2fz"))))
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bibtexparser" version))
+              (sha256
+               (base32
+                "1rmc178qqb8814v3pcfv4qgl8rxmkd11d56limkqmi776jyf4z6a"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-pyparsing))
-    (native-inputs
-     (list python-future))
+    (propagated-inputs (list python-pyparsing))
+    (native-inputs (list python-future))
     (home-page "https://github.com/sciunto-org/python-bibtexparser")
     (synopsis "Python library to parse BibTeX files")
     (description "BibtexParser is a Python library to parse BibTeX files.")
@@ -27175,7 +27229,7 @@ be necessary when using @code{cmd}.")
                  (("ctypes\\.util\\.find_library\\('tidy'\\)")
                   (format #f "'~a'" libtidy)))
                #t))))))
-    (inputs (list tidy))
+    (inputs (list tidy-html))
     (home-page "https://github.com/countergram/pytidylib")
     (synopsis "Python wrapper for HTML Tidy library")
     (description
@@ -29257,8 +29311,7 @@ cons cells in Python.")
            python-black
            python-sympy
            python-versioneer
-           python-coverage
-           python-pre-commit))
+           python-coverage))
     (propagated-inputs
      (list python-toolz python-cons python-multipledispatch
            python-etuples python-logical-unification))

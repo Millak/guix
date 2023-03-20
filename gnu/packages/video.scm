@@ -2579,7 +2579,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.02.17")
+    (version "2023.03.04")
     (source
      (origin
        (method git-fetch)
@@ -2588,7 +2588,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08m626ij0jij5vbvfbbalwr97jdhl1n2w2cwwgbj5a4s7vhvp84x"))))
+        (base32 "1zb4blj7qrmwkryyqrkxl909f59hvbs8dwiwl7sw1fs2kdzb1rw4"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))

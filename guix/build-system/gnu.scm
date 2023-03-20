@@ -22,7 +22,6 @@
   #:use-module (guix memoization)
   #:use-module (guix gexp)
   #:use-module (guix monads)
-  #:use-module (guix derivations)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix packages)

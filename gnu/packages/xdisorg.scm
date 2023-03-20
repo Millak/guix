@@ -57,6 +57,7 @@
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -314,7 +315,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.13")
+    (version "0.6.14")
     (source
      (origin
        (method git-fetch)
@@ -323,7 +324,7 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pjlm3gl85k7yhj594pmvfg6xfr1r3rmb68bb7212r4mxhj80rk0"))))
+        (base32 "0vvqlb8b5f70pl04ff46qim73mk8b8yp1mbbhslx4d4b7ywygjbc"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2873,11 +2874,11 @@ tools to complement clipnotify.")
     (license license:public-domain)))
 
 (define-public clipmenu
-  (let ((commit "bcbe7b144598db4a103f14e8408c4b7327d6d5e1")
+  (let ((commit "7c34ace1fbab76eb1c1dc9b30dd4ac1a7fe4b90b")
         (revision "1"))
     (package
       (name "clipmenu")
-      (version (string-append "6.0.1-"
+      (version (string-append "6.2.0-"
                               revision "." (string-take commit 7)))
       (source
        (origin
@@ -2888,54 +2889,53 @@ tools to complement clipnotify.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0053j4i14lz5m2bzc5sch5id5ilr1bl196mp8fp0q8x74w3vavs9"))))
+           "1403sw49ccb8xsd8v611fzp0csaglfz8nmz3wcjsk8x11h9jvxwy"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out  (assoc-ref outputs "out"))
-                      (bin  (string-append out "/bin"))
-                      (doc  (string-append %output "/share/doc/"
-                                           ,name "-" ,version)))
-                 (install-file "clipdel" bin)
-                 (install-file "clipmenu" bin)
-                 (install-file "clipmenud" bin)
-                 (install-file "README.md" doc)
-                 #t)))
-           (add-after 'install 'wrap-script
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out               (assoc-ref outputs "out"))
-                      (clipnotify        (assoc-ref inputs "clipnotify"))
-                      (coreutils-minimal (assoc-ref inputs "coreutils-minimal"))
-                      (gawk              (assoc-ref inputs "gawk"))
-                      (util-linux        (assoc-ref inputs "util-linux"))
-                      (xdotool           (assoc-ref inputs "xdotool"))
-                      (xsel              (assoc-ref inputs "xsel"))
-                      (guile             (search-input-file inputs "bin/guile")))
-                 (for-each
-                  (lambda (prog)
-                    (wrap-script (string-append out "/bin/" prog)
-                      #:guile guile
-                      `("PATH" ":" prefix
-                        ,(map (lambda (dir)
-                                (string-append dir "/bin"))
-                              (list clipnotify coreutils-minimal
-                                    gawk util-linux xdotool xsel)))))
-                  '("clipmenu" "clipmenud" "clipdel")))
-               #t))
-           (replace 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               ;; substitute a shebang appearing inside a string (the test
-               ;; file writes this string to a temporary file):
-               (substitute* "tests/test-clipmenu"
-                 (("#!/usr/bin/env bash")
-                  (string-append "#!" (which "bash"))))
-               (invoke "tests/test-clipmenu")
-               #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin"))
+                      (doc (string-append #$output "/share/doc/"
+                                          #$name "-" #$version)))
+                  (install-file "clipdel" bin)
+                  (install-file "clipmenu" bin)
+                  (install-file "clipmenud" bin)
+                  (install-file "clipfsck" bin)
+                  (install-file "clipctl" bin)
+                  (install-file "README.md" doc))))
+            (add-after 'install 'wrap-script
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((out               (assoc-ref outputs "out"))
+                       (clipnotify        (assoc-ref inputs "clipnotify"))
+                       (coreutils-minimal (assoc-ref inputs "coreutils-minimal"))
+                       (gawk              (assoc-ref inputs "gawk"))
+                       (util-linux        (assoc-ref inputs "util-linux"))
+                       (xdotool           (assoc-ref inputs "xdotool"))
+                       (xsel              (assoc-ref inputs "xsel"))
+                       (guile             (search-input-file inputs "bin/guile")))
+                  (for-each
+                   (lambda (prog)
+                     (wrap-script (string-append out "/bin/" prog)
+                       #:guile guile
+                       `("PATH" ":" prefix
+                         ,(map (lambda (dir)
+                                 (string-append dir "/bin"))
+                               (list clipnotify coreutils-minimal
+                                     gawk util-linux xdotool xsel)))))
+                   '("clipmenu" "clipmenud" "clipdel" "clipfsck" "clipctl")))))
+            (replace 'check
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                ;; substitute a shebang appearing inside a string (the test
+                ;; file writes this string to a temporary file):
+                (substitute* "tests/test-clipmenu"
+                  (("#!/usr/bin/env bash")
+                   (string-append "#!" (which "bash"))))
+                (invoke "tests/test-clipmenu"))))))
       (inputs
        (list clipnotify
              coreutils-minimal

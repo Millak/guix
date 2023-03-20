@@ -972,12 +972,25 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
                    ("NormalizationTest.txt" . "uninorm")
                    ("auxiliary/GraphemeBreakTest.txt" . "unigbrk")
                    ("auxiliary/WordBreakTest.txt" . "uniwbrk")))
-                (delete-file "gen-uni-tables")))))))
-    (inputs ;; Shebangs for some auxiliary build files.
-     (list python perl clisp))
+                (delete-file "gen-uni-tables"))))
+          (add-after 'install 'restore-shebangs
+            (lambda _
+              (substitute* (find-files
+                            (string-append #$output "/src/gnulib")
+                            (lambda (fname stat)
+                              (and (not (string-suffix? "/lib/javaversion.class" fname))
+                                   (not (string-suffix? ".mo" fname)))))
+                (("^#! ?(.*)/bin/sh" _ prefix)
+                 "#!/bin/sh")
+                (("^#! ?(.*)/bin/python3" _ prefix)
+                 "#!/usr/bin/env python3")
+                (("^#! ?(.*)/bin/([a-zA-Z0-9-]+)" _ prefix program)
+                 (string-append "#!/usr/bin/" program))))))))
+    (inputs
+     (list bash-minimal))                         ;shebang for gnulib-tool
     (native-inputs
      (list
-      python perl clisp
+      bash-minimal python perl clisp
       ;; Unicode data:
       ucd-next
       ;; Programs for the tests:

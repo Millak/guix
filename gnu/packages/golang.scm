@@ -6882,6 +6882,24 @@ and aid debugging.")
 a cron spec parser and job runner.")
     (license license:expat)))
 
+;; Required by actionlint. The version of `go-github-com-robfig-cron'
+;; packaged in Guix is newer and changed some error messages, causing
+;; unit tests in actionlint to fail.
+(define-public go-github-com-robfig-cron-1.2
+  (package
+    (inherit go-github-com-robfig-cron)
+    (name "go-github-com-robfig-cron")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/robfig/cron")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nv31m3940d9kf38lw2zs4hpj435bdi9mmim098rb3n4l07qrvva"))))))
+
 (define-public go-github-com-shirou-gopsutil
   (let ((commit "47ef3260b6bf6ead847e7c8fc4101b33c365e399")
         (revision "0"))
@@ -9645,7 +9663,7 @@ JSON data to the machine.")
 (define-public go-golang-zx2c4-com-wireguard
   (package
     (name "go-golang-zx2c4-com-wireguard")
-    (version "0.0.20200320")
+    (version "0.0.20211016")
     (source
      (origin
        (method git-fetch)
@@ -9658,7 +9676,7 @@ JSON data to the machine.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fy4qsss3i3pkq1rpgjds4aipbwlh1dr9hbbf7jn2a1c63kfks0r"))))
+         "09a4gsh75a8bj71wr042afrma9frriqp60cm0cx6c9a8lv5yzzi0"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "golang.zx2c4.com/wireguard"))

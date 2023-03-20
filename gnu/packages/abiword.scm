@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Marek Benc <merkur32@gmail.com>
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -40,6 +40,7 @@
   #:use-module (gnu packages ots)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages wv)
   #:use-module (gnu packages xml))
@@ -73,7 +74,14 @@
               "latex " "loadbindings " "mht " "mif " "mswrite " "opendocument "
               "openwriter " "openxml " "opml " "ots " "paint " "passepartout "
               "pdb " "pdf " "presentation " "s5 " "sdw " "t602 " "urldict "
-              "wikipedia " "wml " "xslfo"))
+              "wikipedia " "wml " "xslfo")
+          "--enable-introspection"
+          (string-append "--with-gir-dir="
+                         (assoc-ref %outputs "out")
+                         "/share/gir-1.0")
+          (string-append "--with-typelib-dir="
+                         (assoc-ref %outputs "out")
+                         "/lib/girepository-1.0"))
         ;; tests fail with: Gtk-CRITICAL **: gtk_settings_get_for_screen:
         ;;                  assertion 'GDK_IS_SCREEN (screen)' failed
         ;;                  GLib-GObject-CRITICAL **: g_object_get_qdata:
@@ -84,32 +92,34 @@
         #:make-flags
         (list "gtk_update_icon_cache=true")))
     (inputs
-      `(("boost" ,boost)
-        ("enchant" ,enchant)
-        ("fontconfig" ,fontconfig)
-        ("fribidi" ,fribidi)
-        ("glib" ,glib)
-        ("goffice" ,goffice)
-        ("gtk+" ,gtk+)
-        ("libchamplain" ,libchamplain)
-        ("libglade" ,libglade)
-        ("libgsf" ,libgsf)
-        ("libjpeg" ,libjpeg-turbo)
-        ("libpng" ,libpng)
-        ("librsvg" ,librsvg)
-        ("libxml2" ,libxml2)
-        ("libxslt" ,libxslt)
-        ("ots" ,ots)
-        ("popt" ,popt)
-        ("readline" ,readline)
-        ("telepathy" ,telepathy-glib)
-        ("wv" ,wv)
-        ("zlib" ,zlib)))
+     (list boost
+           enchant
+           fontconfig
+           fribidi
+           glib
+           goffice
+           gtk+
+           libchamplain
+           libglade
+           libgsf
+           libjpeg-turbo
+           libpng
+           (librsvg-for-system)
+           libxml2
+           libxslt
+           ots
+           popt
+           readline
+           telepathy-glib
+           wv
+           zlib))
     (native-inputs
-      `(("intltool" ,intltool)
-        ("glib:bin" ,glib "bin")
-        ("libtool" ,libtool)
-        ("pkg-config" ,pkg-config)))
+     (list gobject-introspection
+           intltool
+           `(,glib "bin")
+           libtool
+           pkg-config
+           python-wrapper))
     (home-page "https://www.abisource.com/")
     (synopsis "Word processing program")
 

@@ -8,6 +8,7 @@
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -155,6 +156,21 @@ resolution, asynchronous file system operations, and threading primitives.")
               (sha256
                (base32
                 "0wpb9pz3r8nksnrf4zbixj2kk9whr7abi45ydrwyv2js2ljrc4j3"))))
+    (properties '((hidden? . #t)))))
+
+(define-public libuv-for-r-httpuv
+  ;; When upgrading r-httpuv, also upgrade this.
+  (package
+    (inherit libuv)
+    (name "libuv")
+    (version "1.43.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dist.libuv.org/dist/v" version
+                                  "/libuv-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "194kwq3jfj9s628kzkchdca534rikjw0xiyas0cjbphqmsvjpmwh"))))
     (properties '((hidden? . #t)))))
 
 (define-public libuv-julia

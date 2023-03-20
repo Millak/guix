@@ -28,7 +28,7 @@
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
@@ -2442,57 +2442,63 @@ similar to BerkeleyDB, LevelDB, etc.")
 (define-public redis
   (package
     (name "redis")
-    (version "6.2.6")
+    (version "7.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.redis.io/releases/redis-"
                                   version".tar.gz"))
               (sha256
                (base32
-                "1ariw5x33hmmm3d5al0j3307l5kf3vhmn78wpyaz67hia1x8nasv"))
+                "0rczzcy2mwy6hjdgg10l9lr4vavh8jrs7zlb0ba534bwlk13awgp"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled jemalloc, as the package will use the libc one
                '(begin (delete-file-recursively "deps/jemalloc")))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list procps ; for tests
-           tcl))                   ; for tests
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'use-correct-tclsh
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "runtest"
-               (("^TCLSH=.*")
-                (string-append "TCLSH="
-                               (assoc-ref inputs "tcl")
-                               "/bin/tclsh")))))
-         (add-after 'unpack 'adjust-tests
-           (lambda _
-             ;; Disable failing tests
-             (substitute* "tests/test_helper.tcl"
-               (("integration/failover") "")
-               (("integration/replication-4") "")
-               (("integration/replication-psync") "")
-               (("integration/replication[^-]") "")))))
-       #:make-flags `("CC=gcc"
-                      "MALLOC=libc"
-                      "LDFLAGS=-ldl"
-                      ,(string-append "PREFIX="
-                                      (assoc-ref %outputs "out")))))
+     (list
+      #:make-flags #~(list #$(string-append "CC=" (cc-for-target))
+                           "MALLOC=libc"
+                           "LDFLAGS=-ldl"
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "runtest"
+                (("^TCLSH=.*")
+                 (string-append "TCLSH=" (which "tclsh"))))
+              (substitute* "tests/support/server.tcl"
+                (("/usr/bin/env")
+                 (which "env")))))
+          (add-after 'unpack 'adjust-tests
+            (lambda _
+              ;; Disable failing tests
+              (substitute* "tests/test_helper.tcl"
+                ;; The AOF tests cause the test suite to hang waiting for a
+                ;; "background AOF rewrite to finish", perhaps because dead
+                ;; processes persist as zombies in the build environment.
+                (("unit/aofrw") "")
+                (("integration/aof(-multi-part)?") "")
+                (("integration/failover") "")
+                (("integration/replication-4") "")
+                (("integration/replication-psync") "")
+                (("integration/replication[^-]") "")))))))
+    (native-inputs (list pkg-config procps tcl which))
     (synopsis "Key-value cache and store")
     (description "Redis is an advanced key-value cache and store.  Redis
 supports many data structures including strings, hashes, lists, sets, sorted
 sets, bitmaps and hyperloglogs.")
     (home-page "https://redis.io/")
+    ;; These two CVEs have long been fixed.
+    (properties `((lint-hidden-cve . ("CVE-2022-3647" "CVE-2022-33105"))))
     (license license:bsd-3)))
 
 (define-public hiredis
   (package
     (name "hiredis")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -2501,7 +2507,7 @@ sets, bitmaps and hyperloglogs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a55zk3qrw9yl27i87h3brg2hskmmzbfda77dhq9a4if7y70xnfb"))))
+        (base32 "1zld30j3kpzqr9w3vkpd6mm3f1b1yk3dlgp9lp6gpsybjjfr2i6h"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; needed for testing
@@ -3273,14 +3279,14 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.7")
+    (version "7.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "1853ln0smiilf3pni70gq6nmi9ps039cy44g6b5i9d2z1n9hnj02"))
+        (base32 "145s4lqixdxa3j0lp9lgzbb664zzy1imw04hmgia5y5679i8r0xy"))
        (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
        (modules '((guix build utils)))
        ;; This snippet removes pre-built Java archives.
@@ -3353,7 +3359,7 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
     (native-inputs
      (list autoconf automake bison flex gperf libtool))
     (inputs
-     (list openssl net-tools readline zlib))
+     (list openssl net-tools readline which zlib))
     (home-page "https://vos.openlinksw.com/owiki/wiki/VOS/")
     (synopsis "Multi-model database system")
     (description "Virtuoso is a scalable cross-platform server that combines
@@ -3898,77 +3904,60 @@ for Python.  The design goals are:
 (define-public python-hiredis
   (package
     (name "python-hiredis")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hiredis" version))
-       (sha256
-        (base32
-         "1dfm2k9l9zar9nw9fwmm74zrgraxdxs04vx9li56fjcf289qx5fa"))))
-    (build-system python-build-system)
+    (version "2.2.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/redis/hiredis-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "066rm5m7aa8skm0a57cf45153bwmbl9yyi4s60an14hb25n947gi"))
+              (patches
+               (search-patches "python-hiredis-fix-header.patch"
+                               "python-hiredis-use-system-hiredis.patch"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; no tests
-     `(#:tests? #f))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'delete-extraneous-__init__.py
+                          (lambda _
+                            ;; The fix was forwarded upstream, see:
+                            ;; https://github.com/redis/hiredis-py/pull/160.
+                            (delete-file "tests/__init__.py"))))))
+    (native-inputs (list python-pytest))
+    (inputs (list hiredis))
     (home-page "https://github.com/redis/hiredis-py")
     (synopsis "Python extension that wraps protocol parsing code in hiredis")
     (description "Python-hiredis is a python extension that wraps protocol
 parsing code in hiredis.  It primarily speeds up parsing of multi bulk replies.")
     (license license:bsd-3)))
 
-(define-public python-aioredis
-  (package
-    (name "python-aioredis")
-    (version "2.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aioredis" version))
-       (sha256
-        (base32 "13nrkk45az6qdiwfpbw80ls6bfip0i27qlkh9gsp2b9zk6pim9ga"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'start-redis
-                          (lambda _
-                            (invoke "redis-server" "--daemonize" "yes")))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vv")))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-uvloop
-           redis))
-    (propagated-inputs
-     (list python-async-timeout
-           python-hiredis
-           python-typing-extensions))
-    (home-page "https://github.com/aio-libs/aioredis-py")
-    (synopsis "Redis support for Python's @code{asyncio} module")
-    (description "This package provides Redis support for the Python
-@code{asyncio} (PEP 3156) module.")
-    (license license:expat)))
-
 (define-public python-fakeredis
   (package
     (name "python-fakeredis")
-    (version "1.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fakeredis" version))
-       (sha256
-        (base32
-         "1v68my2v7fg44zwky3k5d52nn1bi0szpgdslghrpa2ifnjhlnb3w"))))
-    (build-system python-build-system)
+    (version "2.10.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/cunla/fakeredis-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1imsi9dswvkda894sm53lfzdsna0qlrgxszczlq2sam68zn4hfz6"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; no tests
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-aioredis python-packaging python-redis python-sortedcontainers))
-    (home-page "https://github.com/jamesls/fakeredis")
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "pyproject.toml"
+                              (("sortedcontainers = \"\\^2\\.4\"")
+                               "sortedcontainers = \"^2.1\"")))))))
+    (native-inputs (list python-poetry-core python-pytest
+                         python-pytest-asyncio python-pytest-mock))
+    (propagated-inputs (list python-redis python-sortedcontainers))
+    (home-page "https://github.com/cunla/fakeredis-py")
     (synopsis "Fake implementation of redis API for testing purposes")
     (description
      "Fakeredis is a pure-Python implementation of the redis-py Python client
@@ -3983,24 +3972,62 @@ reasonable substitute.")
 (define-public python-redis
   (package
     (name "python-redis")
-    (version "3.5.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "redis" version))
-       (sha256
-        (base32 "18h5b87g15x3j6pb1h2q27ri37p2qpvc9n2wgn5yl3b6m3y0qzhf"))))
-    (build-system python-build-system)
-    ;; Tests require a running Redis server.
-    (arguments '(#:tests? #f))
-    ;; As long as we are not running test, we do not need this input :-)
-    ;;(native-inputs
-    ;; `(("python-pytest" ,python-pytest)))
-    (home-page "https://github.com/andymccurdy/redis-py")
+    (version "4.5.2")
+    (source (origin
+              ;; The PyPI archive lacks some test resources such as the TLS
+              ;; certificates under docker/stunnel/keys.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/redis/redis-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cz3gji3rb1h5dczyl11hm42wgsbz5v896cgbi14dij160b7m35i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-m"
+              ;; These tests are disabled in the official CI run (see:
+              ;; https://raw.githubusercontent.com/redis/redis-py/master/
+              ;; .github/workflows/install_and_test.sh).
+              (string-append "not onlycluster "
+                             "and not redismod "
+                             "and not ssl")
+              "-k" (string-append
+                    ;; The autoclaim test fails with "AssertionError: assert
+                    ;; [b'0-0', [], []] == [b'0-0', []]".
+                    "not test_xautoclaim "
+                    ;; These tests cause the following error: "Error 111
+                    ;; connecting to localhost:6380. Connection refused."
+                    ;; (see: https://github.com/redis/redis-py/issues/2109).
+                    "and not test_sync "
+                    "and not test_psync"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests require a running Redis server.
+          (add-before 'check 'start-redis
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes"
+                        "--enable-debug-command" "yes"
+                        "--enable-module-command" "local")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           redis))
+    (propagated-inputs
+     (list python-async-timeout))
+    (home-page "https://github.com/redis/redis-py")
     (synopsis "Redis Python client")
     (description
      "This package provides a Python interface to the Redis key-value store.")
     (license license:expat)))
+
+(define-public python-aioredis
+  (deprecated-package "python-aioredis" python-redis))
 
 (define-public python-rq
   (package
@@ -4163,7 +4190,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "10.0.1")
+    (version "11.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4173,7 +4200,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0skw6x888i804pg35xaxqwkkb36z9hj966zs3ckhkbp4mcll9q9v"))))
+         "06d3jjxagj5f14j9c48rh63x7pr9f96v69anjnpc6lakr0gkpi1d"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f

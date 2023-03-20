@@ -46,6 +46,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gps)
+  #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -209,6 +210,63 @@ moment, supported SPICE files are:
 @item frame kernel (KPL/FK) files (only basic support).
 @end itemize\n")
     (license license:cecill)))
+
+(define-public calcmysky
+  (package
+    (name "calcmysky")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/10110111/CalcMySky")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bib5shy8wzc7j5ph218dl9hqrqip491mn25gakyghbvaqxgm27d"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DQT_VERSION=6"
+                   "-DCMAKE_CXX_FLAGS=-fPIC")))
+    (inputs
+     (list eigen glm qtbase))
+    (home-page "https://10110111.github.io/CalcMySky/")
+    (synopsis "Simulator of light scattering by planetary atmospheres")
+    (description
+     "CalcMySky is a software package that simulates scattering of light by the
+atmosphere to render daytime and twilight skies (without stars).  Its primary
+purpose is to enable realistic view of the sky in applications such as
+planetaria.  Secondary objective is to make it possible to explore atmospheric
+effects such as glories, fogbows etc., as well as simulate unusual environments
+such as on Mars or an exoplanet orbiting a star with a non-solar spectrum of
+radiation.
+
+This package consists of three parts:
+
+@itemize
+@item @code{calcmysky} utility that does the precomputation of the atmosphere
+model to enable rendering.
+
+@item @code{libShowMySky} library that lets the applications render the
+atmosphere model.
+
+@item @code{ShowMySky} preview GUI that makes it possible to preview the
+rendering of the atmosphere model and examine its properties.
+@end itemize")
+    (license license:gpl3+)))
+
+(define-public calcmysky-qt5
+  (package/inherit calcmysky
+    (name "calcmysky-qt5")
+    (arguments
+     (list #:configure-flags
+           #~(list "-DQT_VERSION=5"
+                   "-DCMAKE_CXX_FLAGS=-fPIC")))
+    (inputs
+     (modify-inputs (package-inputs calcmysky)
+       (replace "qtbase" qtbase-5)))
+    (synopsis "Qt5 build for the CalcMySky library.")))
 
 (define-public aoflagger
   (package
@@ -704,7 +762,7 @@ image formats.")
 (define-public splash
   (package
     (name "splash")
-    (version "3.5.1")
+    (version "3.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -712,7 +770,7 @@ image formats.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "12s3w96wzd4zpxw4adzhalkr57fgdk7cjp6bj596jnd87pz3rhyd"))
+                "0nsm6rk0bi99xz7wclk0zy4bpqf0qcsdln5cdjb30lhpf37i2fpa"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -861,8 +919,6 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
       #~(list "-DENABLE_GPS=1"
               ;; TODO: Enable when all of the dependencies are availalbe for Qt6.
               "-DENABLE_QT6=0"
-              ;; TODO: Pack missing in Guix https://10110111.github.io/CalcMySky/
-              "-DENABLE_SHOWMYSKY=0"
               "-DENABLE_TESTING=0"
               (string-append "-DCMAKE_CXX_FLAGS=-isystem "
                              #$(this-package-input "qtserialport") "/include/qt5"))
@@ -873,7 +929,8 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
               (setenv "QT_QPA_PLATFORM" "offscreen")
               (setenv "HOME" "/tmp"))))))
     (inputs
-     (list gpsd
+     (list calcmysky-qt5
+           gpsd
            indi
            libnova
            openssl
@@ -886,7 +943,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtserialport
            qttranslations
            qtwebengine-5
-           qxlsx
+           qxlsx-qt5
            zlib))
     (native-inputs
      (list doxygen
@@ -1225,6 +1282,37 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
+(define-public python-czml3
+  (package
+    (name "python-czml3")
+    (version "0.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/poliastro/czml3")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pbwcsmc9nw591rck586ca9hwwhmm54rjjmp8gflhzq8b7f48lkc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-attrs
+           python-dateutil
+           python-w3lib))
+    (native-inputs
+     (list python-astropy
+           python-pytest
+           python-pytest-cov
+           python-pytest-mypy))
+    (home-page "https://github.com/poliastro/czml3")
+    (synopsis "Python library to write CZML")
+    (description
+     "CZML3 is a Python library to write CZML, a JSON format for describing
+a time-dynamic graphical scene, primarily for display in a web browser running
+Cesium.")
+    (license license:expat)))
+
 (define-public python-drms
   (package
     (name "python-drms")
@@ -1365,6 +1453,81 @@ the easy construction of interactive matplotlib widget based animations.")
     (description "Photutils is an Astropy package for detection and photometry
 of astronomical sources.")
     (license license:bsd-3)))
+
+(define-public python-poliastro
+  (package
+    (name "python-poliastro")
+    (version "0.17.0")
+    (source
+     (origin
+       ;; PyPi tarball lacks tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poliastro/poliastro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iclyjp0cvm6hp5qf4fzklszxvhj3idkxgb6a9h7xzg9bf5j5gi2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; NOTE: Tests take about 7-10 minutes to pass.
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; TODO: Review failing tests later when any upstream
+              ;; suggestions are provided:
+              ;; https://github.com/poliastro/poliastro/issues/1618
+              (substitute* "tests/test_czml.py"
+              (("def test_czml_add_trajectory") "def __off_test_czml_add_trajectory")
+              (("def test_czml_custom_packet") "def __off_test_czml_custom_packet")
+              (("def test_czml_ground_station") "def __off_test_czml_ground_station")
+              (("def test_czml_groundtrack") "def __off_test_czml_groundtrack")
+              (("def test_czml_preamble") "def __off_test_czml_preamble"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "pytest"
+                        ;; Skip tests that need remote data.
+                        "-m" "not remote_data")))))))
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-mypy
+           python-flit-core
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-mpl
+           python-pytest-mypy))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-czml3
+           python-jplephem
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pandas
+           python-plotly
+           python-pyerfa
+           python-scipy))
+    (home-page "https://www.poliastro.space/")
+    (synopsis "Astrodynamics in Python")
+    (description
+     "POLIASTRO is a Python library for interactive Astrodynamics and Orbital
+Mechanics, with a focus on ease of use, speed, and quick visualization.  It
+provides a simple and intuitive API, and handles physical quantities with
+units.
+
+Some features include orbit propagation, solution of the Lambert's problem,
+conversion between position and velocity vectors and classical orbital
+elements and orbit plotting, among others.  It focuses on interplanetary
+applications, but can also be used to analyze artificial satellites in
+Low-Earth Orbit (LEO).")
+  (license license:expat)))
 
 (define-public python-poppy
   (package

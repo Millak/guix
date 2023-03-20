@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -103,7 +103,7 @@ models for the Tesseract OCR Engine.")
 (define-public tesseract-ocr
   (package
     (name "tesseract-ocr")
-    (version "5.2.0")
+    (version "5.3.0")
     (source
      (origin
        (method git-fetch)
@@ -113,7 +113,7 @@ models for the Tesseract OCR Engine.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dai539h07lqj8lyhznd3wbwdpqr78qrsczq78rsmsryqvmdbyaa"))))
+         "0vylcba8w5ljnr6pf3ilc2wjq72k660h71b7mlbjz3a2f0x5kr33"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -197,10 +197,29 @@ default.  To add support for more languages, the
 @code{tesseract-ocr-tessdata-fast} package should be installed.")
     (license license:asl2.0)))
 
+(define-public tesseract-ocr-4
+  (package
+    (inherit tesseract-ocr)
+    (name "tesseract-ocr")
+    (version "4.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tesseract-ocr/tesseract")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ksds8n26kq0acprjn4ycdr163hr9kmkwij7fc973mrjg7kz0pdi"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs tesseract-ocr)
+       (replace "leptonica" leptonica-1.80)))))
+
 (define-public gimagereader
   (package
     (name "gimagereader")
-    (version "3.4.0")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
@@ -209,7 +228,7 @@ default.  To add support for more languages, the
              "/download/v" version "/"
              "gimagereader-" version ".tar.xz"))
        (sha256
-        (base32 "09glxh7b4ivrd4samm67b8k2p0aljiagr83wb8nvy5ps2a9gwp5m"))))
+        (base32 "1972bvnk2bkgbh70vy2prcmdzf4wlna862p2vja9yjxi2c0scmwc"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -226,7 +245,7 @@ default.  To add support for more languages, the
            sane-backends
            qtbase-5
            qtspell
-           quazip-0
+           quazip
            tesseract-ocr))
     (home-page "https://github.com/manisandro/gImageReader")
     (synopsis "Qt front-end to tesseract-ocr")

@@ -22,10 +22,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import hexpm)
-  #:use-module (guix base32)
-  #:use-module ((guix download) #:prefix download:)
-  #:use-module (gcrypt hash)
-  #:use-module (guix http-client)
   #:use-module (json)
   #:use-module (guix import utils)
   #:use-module ((guix import json) #:select (json-fetch))
@@ -33,16 +29,11 @@
                 #:select ((package-name->name+version
                            . hyphen-package-name->name+version)
                           dump-port))
-  #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix monads)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module (guix utils)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 popen)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
   #:use-module (guix build-system rebar)
   #:export (hexpm->guix-package

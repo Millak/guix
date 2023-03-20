@@ -99,7 +99,8 @@
             file-system-service-type
             file-system-utilities
             swap-service
-            host-name-service
+            host-name-service  ; deprecated
+            host-name-service-type
             %default-console-font
             console-font-service-type
             console-font-service
@@ -149,7 +150,7 @@
             udev-configuration?
             udev-configuration-rules
             udev-service-type
-            udev-service
+            udev-service  ; deprecated
             udev-rule
             file->udev-rule
             udev-rules-service
@@ -157,11 +158,11 @@
             login-configuration
             login-configuration?
             login-service-type
-            login-service
+            login-service  ; deprecated
 
             agetty-configuration
             agetty-configuration?
-            agetty-service
+            agetty-service  ; deprecated
             agetty-service-type
 
             mingetty-configuration
@@ -172,11 +173,11 @@
             mingetty-configuration-clear-on-logout?
             mingetty-configuration-mingetty
             mingetty-configuration?
-            mingetty-service
+            mingetty-service  ; deprecated
             mingetty-service-type
 
             %nscd-default-caches
-            %nscd-default-configuration
+            %nscd-default-configuration  ; deprecated
 
             nscd-configuration
             nscd-configuration?
@@ -185,11 +186,11 @@
             nscd-cache?
 
             nscd-service-type
-            nscd-service
+            nscd-service  ; deprecated
 
             syslog-configuration
             syslog-configuration?
-            syslog-service
+            syslog-service  ; deprecated
             syslog-service-type
             %default-syslog.conf
 
@@ -238,7 +239,7 @@
             rngd-configuration
             rngd-configuration?
             rngd-service-type
-            rngd-service
+            rngd-service  ; deprecated
 
             kmscon-configuration
             kmscon-configuration?
@@ -661,8 +662,10 @@ down.")))
 (define-record-type* <rngd-configuration>
   rngd-configuration make-rngd-configuration
   rngd-configuration?
-  (rng-tools rngd-configuration-rng-tools)        ;file-like
-  (device    rngd-configuration-device))          ;string
+  (rng-tools rngd-configuration-rng-tools         ;file-like
+             (default rng-tools))
+  (device    rngd-configuration-device            ;string
+             (default "/dev/hwrng")))
 
 (define rngd-service-type
   (shepherd-service-type
@@ -681,12 +684,13 @@ down.")))
         (provision '(trng))
         (start #~(make-forkexec-constructor '#$rngd-command))
         (stop #~(make-kill-destructor))))
+    (rngd-configuration)
     (description "Run the @command{rngd} random number generation daemon to
 supply entropy to the kernel's pool.")))
 
-(define* (rngd-service #:key
-                       (rng-tools rng-tools)
-                       (device "/dev/hwrng"))
+(define-deprecated (rngd-service #:key (rng-tools rng-tools)
+                                 (device "/dev/hwrng"))
+  rngd-service-type
   "Return a service that runs the @command{rngd} program from @var{rng-tools}
 to add @var{device} to the kernel's entropy pool.  The service will fail if
 @var{device} does not exist."
@@ -778,7 +782,8 @@ host names."
       (one-shot? #t)))
    (description "Initialize the machine's host name.")))
 
-(define (host-name-service name)
+(define-deprecated (host-name-service name)
+  host-name-service-type
   "Return a service that sets the host name to @var{name}."
   (service host-name-service-type name))
 
@@ -868,7 +873,7 @@ of console keymaps with @command{loadkeys}.")))
                                         "-C" #$device #$font))
                           ((0 71) #t)
                           (else #f))))
-             (stop #~(const #t))
+             (stop #~(const #f))
              (respawn? #f)))))
        tty+font))
 
@@ -935,7 +940,8 @@ Return a service that sets up Unicode support in @var{tty} and loads
                  "Provide a console log-in service as specified by its
 configuration value, a @code{login-configuration} object.")))
 
-(define* (login-service #:optional (config (login-configuration)))
+(define-deprecated (login-service #:optional (config (login-configuration)))
+  login-service-type
   "Return a service configure login according to @var{config}, which specifies
 the message of the day, among other things."
   (service login-service-type config))
@@ -1207,7 +1213,8 @@ to use as the tty.  This is primarily useful for headless systems."
                  "Provide console login using the @command{agetty}
 program.")))
 
-(define* (agetty-service config)
+(define-deprecated (agetty-service config)
+  agetty-service-type
   "Return a service to run agetty according to @var{config}, which specifies
 the tty to run, among other things."
   (service agetty-service-type config))
@@ -1272,7 +1279,8 @@ the tty to run, among other things."
                  "Provide console login using the @command{mingetty}
 program.")))
 
-(define* (mingetty-service config)
+(define-deprecated (mingetty-service config)
+  mingetty-service-type
   "Return a service to run mingetty according to @var{config}, which specifies
 the tty to run, among other things."
   (service mingetty-service-type config))
@@ -1338,7 +1346,8 @@ the tty to run, among other things."
                     (check-files? #t)             ;check /etc/services changes
                     (persistent? #t))))
 
-(define %nscd-default-configuration
+(define-deprecated %nscd-default-configuration
+  #f
   ;; Default nscd configuration.
   (nscd-configuration))
 
@@ -1492,18 +1501,45 @@ the tty to run, among other things."
                            (name-services (append
                                            (nscd-configuration-name-services config)
                                            name-services)))))
-                (default-value %nscd-default-configuration)
+                (default-value (nscd-configuration))
                 (description
                  "Runs libc's @dfn{name service cache daemon} (nscd) with the
 given configuration---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example.")))
 
-(define* (nscd-service #:optional (config %nscd-default-configuration))
+(define-deprecated (nscd-service #:optional (config (nscd-configuration)))
+  nscd-service-type
   "Return a service that runs libc's name service cache daemon (nscd) with the
 given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example."
   (service nscd-service-type config))
 
+;; Snippet adapted from the GNU inetutils manual.
+(define %default-syslog.conf
+  (plain-file "syslog.conf" "
+     # Log all error messages, authentication messages of
+     # level notice or higher and anything of level err or
+     # higher to the console.
+     # Don't log private authentication messages!
+     *.alert;auth.notice;authpriv.none      -/dev/console
+
+     # Log anything (except mail) of level info or higher.
+     # Don't log private authentication messages!
+     *.info;mail.none;authpriv.none         -/var/log/messages
+
+     # Log \"debug\"-level entries and nothing else.
+     *.=debug                               -/var/log/debug
+
+     # Same, in a different place.
+     *.info;mail.none;authpriv.none         -/dev/tty12
+
+     # The authpriv file has restricted access.
+     # 'fsync' the file after each line (hence the lack of a leading dash).
+     authpriv.*                              /var/log/secure
+
+     # Log all the mail messages in one place.
+     mail.*                                 -/var/log/maillog
+"))
 
 (define-record-type* <syslog-configuration>
   syslog-configuration  make-syslog-configuration
@@ -1533,37 +1569,12 @@ Service Switch}, for an example."
                      (umask mask)
                      pid))))
       (stop #~(make-kill-destructor))))
+   (syslog-configuration)
    (description "Run the syslog daemon, @command{syslogd}, which is
 responsible for logging system messages.")))
 
-;; Snippet adapted from the GNU inetutils manual.
-(define %default-syslog.conf
-  (plain-file "syslog.conf" "
-     # Log all error messages, authentication messages of
-     # level notice or higher and anything of level err or
-     # higher to the console.
-     # Don't log private authentication messages!
-     *.alert;auth.notice;authpriv.none      -/dev/console
-
-     # Log anything (except mail) of level info or higher.
-     # Don't log private authentication messages!
-     *.info;mail.none;authpriv.none         -/var/log/messages
-
-     # Log \"debug\"-level entries and nothing else.
-     *.=debug                               -/var/log/debug
-
-     # Same, in a different place.
-     *.info;mail.none;authpriv.none         -/dev/tty12
-
-     # The authpriv file has restricted access.
-     # 'fsync' the file after each line (hence the lack of a leading dash).
-     authpriv.*                              /var/log/secure
-
-     # Log all the mail messages in one place.
-     mail.*                                 -/var/log/maillog
-"))
-
-(define* (syslog-service #:optional (config (syslog-configuration)))
+(define-deprecated (syslog-service #:optional (config (syslog-configuration)))
+  syslog-service-type
   "Return a service that runs @command{syslogd} and takes
 @var{<syslog-configuration>} as a parameter.
 
@@ -2343,7 +2354,8 @@ item of @var{packages}."
 directory dynamically.  Get extra rules from the packages listed in the
 @code{rules} field of its value, @code{udev-configuration} object.")))
 
-(define* (udev-service #:key (udev eudev) (rules '()))
+(define-deprecated (udev-service #:key (udev eudev) (rules '()))
+  udev-service-type
   "Run @var{udev}, which populates the @file{/dev} directory dynamically.  Get
 extra rules from the packages listed in @var{rules}."
   (service udev-service-type
@@ -3287,7 +3299,7 @@ login manager daemon.")
                         (cons tty %default-console-font))
                       '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
-        (syslog-service)
+        (service syslog-service-type)
         (service agetty-service-type (agetty-configuration
                                        (extra-options '("-L")) ; no carrier detect
                                        (term "vt100")

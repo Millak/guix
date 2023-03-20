@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -1363,19 +1363,19 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "c29a46e8d298d3a1f16b2d4f75fa96759741afb8")
-        (revision "71"))
+  (let ((commit "7c1eedfba9ef5ccc5651cd5e88662c158e594a2c")
+        (revision "73"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/git/guix/build-coordinator")
+                      (url "https://git.savannah.gnu.org/git/guix/build-coordinator.git")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1wzgl2naymps9k51ggsw8099da81b0skqjamj9r7jkcvg7i46avm"))
+                  "1prsxj3n8ggv28fqk00yvnbvy0da0lq6m553fs636s8b2yjka8nj"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1672,19 +1672,19 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "8b888de4cff44b42b8215afac5dcdadba9b7394d")
-        (revision "17"))
+  (let ((commit "659543cd9ad78f712b4b067863db0613423dd23b")
+        (revision "18"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/git/guix/nar-herder")
+                      (url "https://git.savannah.gnu.org/git/guix/nar-herder.git")
                       (commit commit)))
                 (sha256
                  (base32
-                  "19j8dbn9c25x8lj3sa7b0b9v8lxxlkhvb4qpmwc4kkizpkwrqp2a"))
+                  "09ghbbrk5gazkpqxcvfnn56pp11sndn7hw00ipc8d95wqk53g9qg"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1901,14 +1901,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.14.1")
+    (version "1.14.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "17ykbp5lmlbv6241vw55zgqdp34wc12jbj5nhs4wb3018crq4g0a"))
+        (base32 "1gpfax92kpchmbr3cp1w0cw5xjdwv11i1g3g9hp8akc9rc64gw2r"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))

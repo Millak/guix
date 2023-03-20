@@ -57,6 +57,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4927,14 +4928,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.7.1")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0kjwgf94skbrndv1krlmsrq34smzi3iwk73fbsnyw787gvqx4j6a"))))
+                "07nsw168aw3mhgzkfw2z5pf92f76l1r4b18zjx7l9hvrkfhmh04p"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5703,7 +5704,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.92.1")
+    (version "1.93.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5712,7 +5713,7 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zb7vx7nqg8q9vdgb90cwmrr1cijv8gfryni8yrd99bb9vgg6pyv"))))
+                "18l0avbq1la1wsfwj13kq5prqz6mydhs3ihvf0f3s3vr2y9h71aq"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"

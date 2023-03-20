@@ -3816,3 +3816,45 @@ fi"
                         original-exe
                         original-exe)))
             (chmod exe #o555)))))))
+
+(define-public python-brian2
+  (package
+    (name "python-brian2")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Brian2" version))
+              (sha256
+               (base32
+                "1g48hzn3cdsvfjgz64s3kvh5d5287ggjxdyacb7wh2n5nd5iqlf7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" "/tmp")
+               ;; Must be run in a different directory, otherwise compiled
+               ;; modules are not found.
+               (with-directory-excursion "/tmp"
+                 ;; Invoking brian2.test() is preferred to running pytest.
+                 (invoke "python" "-c"
+                  "import brian2, sys; sys.exit(0 if brian2.test() else 1)"))))))))
+    (propagated-inputs (list python-cython ; Required by codegen.
+                             python-jinja2
+                             python-numpy
+                             python-py-cpuinfo
+                             python-pyparsing
+                             ;; Required by codegen.
+                             python-setuptools
+                             python-sympy))
+    (native-inputs (list python-pytest python-pytest-xdist))
+    (home-page "https://briansimulator.org/")
+    (synopsis "Clock-driven simulator for spiking neural networks")
+    (description
+     "Brian is a simulator for spiking neural networks written in Python.  It
+is therefore designed to be easy to learn and use, highly flexible and
+easily extensible.")
+    (license license:cecill)))

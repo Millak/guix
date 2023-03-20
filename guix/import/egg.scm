@@ -26,18 +26,14 @@
   #:use-module (srfi srfi-71)
   #:use-module (gcrypt hash)
   #:use-module (guix git)
-  #:use-module (guix i18n)
   #:use-module (guix base32)
-  #:use-module (guix diagnostics)
   #:use-module (guix memoization)
   #:use-module (guix packages)
   #:use-module (guix upstream)
-  #:use-module (guix build-system)
   #:use-module (guix build-system chicken)
   #:use-module (guix store)
   #:use-module ((guix download) #:select (download-to-store url-fetch))
   #:use-module (guix import utils)
-  #:use-module ((guix licenses) #:prefix license:)
   #:export (egg->guix-package
             egg-recursive-import
             %egg-updater

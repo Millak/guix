@@ -383,7 +383,7 @@ overlapping images, as well as some command line tools.")
            imagemagick
            libxml2
            texlive-tiny
-           tidy
+           tidy-html
            transfig))
     (inputs
      (list boost

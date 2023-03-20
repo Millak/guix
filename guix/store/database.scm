@@ -22,7 +22,6 @@
 (define-module (guix store database)
   #:use-module (sqlite3)
   #:use-module (guix config)
-  #:use-module (guix serialization)
   #:use-module (guix store deduplication)
   #:use-module (guix base16)
   #:use-module (guix progress)
@@ -36,7 +35,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 match)
-  #:use-module (system foreign)
   #:export (sql-schema
             %default-database-file
             store-database-file

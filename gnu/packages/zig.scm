@@ -56,6 +56,7 @@
                    '(string-append "-DZIG_TARGET_TRIPLE="
                                    (%current-target-system))
                    '())
+             (string-append "-DZIG_TARGET_MCPU=baseline")
              (string-append "-DZIG_LIB_DIR=" (assoc-ref %outputs "out")
                             "/lib/zig"))
        #:validate-runpath? #f       ; TODO: zig binary can't find ld-linux.
@@ -111,6 +112,8 @@ toolchain.  Among other features it provides
     ;; Currently building zig can take up to 10GB of RAM for linking stage1:
     ;; https://github.com/ziglang/zig/issues/6485
     (supported-systems %64bit-supported-systems)
+    ;; Stage3 can take a lot of time and isn't verbose.
+    (properties `((max-silent-time . 9600)))
     (license license:expat)))
 
 (define-public zig-0.9

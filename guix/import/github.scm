@@ -35,13 +35,11 @@
   #:use-module ((guix download) #:prefix download:)
   #:use-module ((guix git-download) #:prefix download:)
   #:autoload   (guix build download) (open-connection-for-uri)
-  #:use-module (guix import utils)
   #:use-module (json)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module (guix http-client)
   #:use-module (web uri)
-  #:use-module (web response)
   #:export (%github-api %github-updater))
 
 ;; For tests.

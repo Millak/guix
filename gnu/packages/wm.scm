@@ -46,7 +46,7 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
@@ -109,6 +109,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
@@ -1007,12 +1008,17 @@ drags, snap-to-border support, and virtual desktops.")
                                   version "/fluxbox-" version ".tar.xz"))
               (sha256
                (base32
-                "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))))
+                "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))
+              (patches
+               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("CPPFLAGS=-U__TIME__") ;ugly, but for reproducibility
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'force-bootstrap
+           (lambda _
+             (delete-file "configure")))
          (add-after 'install 'install-vim-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1035,12 +1041,13 @@ drags, snap-to-border support, and virtual desktops.")
                      Type=Application~%" ,name ,synopsis out)))
                #t))))))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake gnu-gettext pkg-config))
     (inputs
      (list freetype
            fribidi
            imlib2
            libx11
+           libxcursor
            libxext
            libxft
            libxinerama
@@ -2370,6 +2377,25 @@ one in Emacs.")
 PNG files.")
     (license license:gpl3+)))
 
+(define-public sbcl-stumpwm-hostname
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-hostname")
+    (arguments
+     '(#:asd-systems '("hostname")
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "modeline/hostname"))))))
+    (home-page
+     "https://github.com/stumpwm/stumpwm-contrib/tree/master/modeline/hostname")
+    (synopsis "Put hostname in the StumpWM modeline")
+    (description "This StumpWM module puts the hostname in the StumpWM
+modeline.")
+    (license license:gpl3+)))
+
 (define-public sbcl-stumpwm-notify
   (package
     (inherit stumpwm-contrib)
@@ -2782,6 +2808,94 @@ read and write, and compatible with JSON.")
 capabilities.  It is heavily inspired by the Calm Window manager(cwm).")
     (license license:bsd-2)))
 
+(define-public jwm
+  (package
+    (name "jwm")
+    (version "2.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/joewing/jwm/releases/download/"
+                    "v" version "/jwm-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1av7r9sp26r5l74zvwdmyyyzav29mw5bafihp7y33vsjqkh4wfzf"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f   ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-xsession
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (xsessions (string-append out "/share/xsessions")))
+                (mkdir-p xsessions)
+                (call-with-output-file
+                    (string-append xsessions "/jwm.desktop")
+                  (lambda (port)
+                    (format port "~
+                     [Desktop Entry]~@
+                     Name=jwm~@
+                     Comment=Joe's Window Manager~@
+                     Exec=~a/bin/jwm~@
+                     Type=XSession~%" out)))))))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (list cairo
+           libjpeg-turbo
+           libpng
+           librsvg
+           libxext
+           libxinerama
+           libxmu
+           libxpm
+           libxrender
+           libxt
+           pango))
+    (home-page "http://joewing.net/projects/jwm")
+    (synopsis "Joe's Window Manager")
+    (description
+     "JWM is a light-weight window manager for the X11 Window System.  it is
+written in C and uses only Xlib at a minimum.  Because of its small footprint,
+it makes a good window manager for older computers and less powerful systems,
+such as the Raspberry Pi, though it is perfectly capable of running on modern
+systems.")
+    (license license:expat)))
+
+(define-public mjwm
+  (package
+    (name "mjwm")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chiku/mjwm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lgfp2xidhvmbj4zqvzz9g8zwbn6mz0pgacc57b43ha523vamsjq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f   ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-subcategory.h
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "include/subcategory.h"
+                ;; icon name should be application-other instead of
+                ;; application-others.
+                (("applications-others") "applications-other")))))))
+    (home-page "https://github.com/chiku/mjwm")
+    (synopsis "Create menu for JWM")
+    (description
+     "MJWM can create JWM's menu from (freedesktop) desktop files and the
+generated file can be include in the rootmenu section of your jwm config
+file.")
+    (license license:gpl2+)))
+
 (define-public devour
   (package
     (name "devour")
@@ -2980,7 +3094,7 @@ used for multimedia keys.")
     (build-system copy-build-system)
     (arguments
      (list #:install-plan #~`(("grimshot" "bin/")
-                              ("grimshot.1" "usr/share/man/man1/"))
+                              ("grimshot.1" "share/man/man1/"))
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'chdir
                           (lambda _

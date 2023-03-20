@@ -173,7 +173,6 @@ sources.")
      `(#:tests? #f))                    ;requires python-pytest<4.0
     (native-inputs
      (list python-pbr
-           python-pre-commit
            python-pytest
            python-sphinx
            python-testrepository))

@@ -22,7 +22,6 @@
 (define-module (guix build svn)
   #:use-module (guix build utils)
   #:use-module (srfi srfi-34)
-  #:use-module (ice-9 format)
   #:export (svn-fetch))
 
 ;;; Commentary:

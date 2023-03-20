@@ -24,6 +24,7 @@
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -424,54 +425,43 @@ languages.")
   (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
         (revision "0"))
     (package
-      (inherit emacs)
+      (inherit emacs-next)
       (name "emacs-next-tree-sitter")
       (version (git-version "30.0.50" revision commit))
       (source
        (origin
-         (inherit (package-source emacs))
+         (inherit (package-source emacs-next))
          (method git-fetch)
          (uri (git-reference
                (url "https://git.savannah.gnu.org/git/emacs.git/")
                (commit commit)))
          (file-name (git-file-name name version))
-         ;; emacs-source-date-epoch.patch is no longer necessary
-         (patches (search-patches "emacs-exec-path.patch"
-                                  "emacs-fix-scheme-indent-function.patch"
-                                  "emacs-native-comp-driver-options.patch"))
          (sha256
           (base32
            "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
       (inputs
-       (modify-inputs (package-inputs emacs)
+       (modify-inputs (package-inputs emacs-next)
          (prepend sqlite tree-sitter)))
-      (native-inputs
-       (modify-inputs (package-native-inputs emacs)
-         (prepend autoconf))))))
+      (synopsis "Emacs text editor with @code{tree-sitter} support")
+      (description "This Emacs build supports tree-sitter."))))
 
 (define-public emacs-next-pgtk
   (package
-    (inherit emacs-next)
+    (inherit emacs-next-tree-sitter)
     (name "emacs-next-pgtk")
     (source
      (origin
-       (inherit (package-source emacs-next))
+       (inherit (package-source emacs-next-tree-sitter))
        (patches
         (append (search-patches "emacs-pgtk-super-key-fix.patch")
-                (origin-patches (package-source emacs-next))))))
+                (origin-patches (package-source emacs-next-tree-sitter))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-next)
+     (substitute-keyword-arguments (package-arguments emacs-next-tree-sitter)
        ((#:configure-flags flags #~'())
-        #~(cons* "--with-pgtk" "--with-xwidgets" #$flags))))
-    (propagated-inputs
-     (list gsettings-desktop-schemas glib-networking))
-    (inputs
-     (modify-inputs (package-inputs emacs-next)
-       (prepend webkitgtk-with-libsoup2)))
-    (home-page "https://github.com/masm11/emacs")
-    (synopsis "Emacs text editor with @code{pgtk} and @code{xwidgets} support")
-    (description "This Emacs build implements graphical UI purely in terms of
-GTK and also enables xwidgets.")))
+        #~(cons* "--with-pgtk" #$flags))))
+    (synopsis "Emacs text editor with @code{pgtk} and @code{tree-sitter} support")
+    (description "This Emacs build implements graphical UI purely in terms
+of GTK and supports tree-sitter.")))
 
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just
@@ -641,7 +631,7 @@ editor (with wide ints)" )
         (base32
          "0vfw7z9i2s9np6nmx1d4dlsywm044rkaqarn7akffmb6bf1j6zv5"))))
     (build-system gnu-build-system)
-    (inputs
+    (native-inputs
      `(("gettext" ,gettext-minimal)))
     (arguments
      `(#:configure-flags
@@ -674,8 +664,16 @@ This package contains the library database.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0jp61y09xqj10mclpip48qlfhniw8gwy8b28cbzxy8hq8pkwmfkq"))))
+         "0jp61y09xqj10mclpip48qlfhniw8gwy8b28cbzxy8hq8pkwmfkq"))
+       (patches (search-patches "m17n-lib-1.8.0-use-pkg-config-for-freetype.patch"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (if (%current-target-system)
+         (list pkg-config
+               libtool
+               gettext-minimal
+               autoconf automake)
+         '()))
     (inputs
      (list fribidi
            gd
@@ -684,7 +682,20 @@ This package contains the library database.")
            libxml2
            m17n-db))
     (arguments
-     `(#:parallel-build? #f))
+     `(#:parallel-build? #f
+       ,@(if (%current-target-system)
+             '(#:phases
+               (modify-phases %standard-phases
+                 ;; AC_FUNC_MALLOC and AC_FUNC_REALLOC usually unneeded
+                 ;; see https://lists.gnu.org/archive/html/autoconf/2003-02/msg00017.html
+                 (add-after 'unpack 'fix-rpl_malloc
+                   (lambda _
+                     (substitute* "configure.ac"
+                       (("AC_FUNC_MALLOC") "")
+                       (("AC_FUNC_REALLOC") ""))
+                     ;; let bootstrap phase run.
+                     (delete-file "./configure")))))
+             '())))
     ;; With `guix lint' the home-page URI returns a small page saying
     ;; that your browser does not handle frames. This triggers the "URI
     ;; returns suspiciously small file" warning.

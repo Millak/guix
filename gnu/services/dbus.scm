@@ -28,6 +28,7 @@
   #:use-module ((gnu packages glib) #:select (dbus))
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages admin)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module ((guix packages) #:select (package-name))
   #:use-module (guix records)
@@ -37,13 +38,13 @@
   #:export (dbus-configuration
             dbus-configuration?
             dbus-root-service-type
-            dbus-service
+            dbus-service  ; deprecated
             wrapped-dbus-service
 
             polkit-configuration
             polkit-configuration?
             polkit-service-type
-            polkit-service))
+            polkit-service))  ; deprecated
 
 ;;;
 ;;; D-Bus.
@@ -244,7 +245,8 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
 bus.  It allows programs and daemons to communicate and is also responsible
 for spawning (@dfn{activating}) D-Bus services on demand.")))
 
-(define* (dbus-service #:key (dbus dbus) (services '()) verbose?)
+(define-deprecated (dbus-service #:key (dbus dbus) (services '()) verbose?)
+  dbus-root-service-type
   "Return a service that runs the \"system bus\", using @var{dbus}, with
 support for @var{services}.  When @var{verbose?} is true, it causes the
 @samp{DBUS_VERBOSE} environment variable to be set to @samp{1}; a
@@ -395,7 +397,8 @@ management service}, which allows system administrators to grant access to
 privileged operations in a structured way.  Polkit is a requirement for most
 desktop environments, such as GNOME.")))
 
-(define* (polkit-service #:key (polkit polkit))
+(define-deprecated (polkit-service #:key (polkit polkit))
+  polkit-service-type
   "Return a service that runs the
 @uref{http://www.freedesktop.org/wiki/Software/polkit/, Polkit privilege
 management service}, which allows system administrators to grant access to

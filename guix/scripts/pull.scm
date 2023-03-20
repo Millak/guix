@@ -30,7 +30,6 @@
   #:use-module (guix packages)
   #:use-module (guix derivations)
   #:use-module (guix profiles)
-  #:use-module (guix gexp)
   #:use-module (guix memoization)
   #:use-module (guix monads)
   #:use-module (guix channels)
@@ -45,7 +44,6 @@
   #:autoload   (gnu packages) (fold-available-packages)
   #:autoload   (guix scripts package) (build-and-use-profile
                                        delete-matching-generations)
-  #:autoload   (gnu packages base) (canonical-package)
   #:autoload   (gnu packages bootstrap) (%bootstrap-guile)
   #:autoload   (gnu packages certs) (le-certs)
   #:use-module (srfi srfi-1)

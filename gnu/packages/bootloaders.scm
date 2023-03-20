@@ -6,7 +6,7 @@
 ;;; Copyright © 2016-2018, 2021-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -305,6 +305,10 @@ menu to select one of the installed operating systems.")
     (inputs
      (modify-inputs (package-inputs grub)
        (prepend efibootmgr mtools)))
+    (native-inputs
+     ;; The tests are skipped in this package so we remove some test dependencies.
+     (modify-inputs (package-native-inputs grub)
+       (delete "parted" "qemu" "xorriso")))
     (arguments
      `(;; TODO: Tests need a UEFI firmware for qemu. There is one at
        ;; https://github.com/tianocore/edk2/tree/master/OvmfPkg .
@@ -1706,20 +1710,21 @@ order to add a suitable bootloader menu entry.")
   ;;
   ;; TODO: Bump this timestamp at each modifications of the package (not only
   ;; for updates) by running: date +%s.
-  (let ((timestamp "1671715380"))
+  (let ((timestamp "1678285400")
+        (commit "9e1f7a3659071004f4b8c76f2593da6287f0d575")
+        (revision "1"))
     (package
       (name "ipxe")
-      (version "1.21.1")
+      (version (git-version "1.21.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/ipxe/ipxe")
-                      (commit (string-append "v" version))))
+                      (commit commit)))
                 (file-name (git-file-name name version))
-                (patches (search-patches "ipxe-reproducible-geniso.patch"))
                 (sha256
                  (base32
-                  "1pkf1n1c0rdlzfls8fvjvi1sd9xjd9ijqlyz3wigr70ijcv6x8i9"))))
+                  "1fp4bgwzy923m11dkkhk9dik7al7shzmmpqhp339z786z8bjzmkb"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -1753,15 +1758,6 @@ order to add a suitable bootloader menu entry.")
             (list "ECHO_E_BIN_ECHO=echo"
                   "ECHO_E_BIN_ECHO_E=echo -e"
 
-                  ;; cdrtools' mkisofs will silently ignore a missing isolinux.bin!
-                  ;; Luckily xorriso is more strict.
-                  #$@(if (or (target-x86-64?) (target-x86?))
-                         '((string-append "ISOLINUX_BIN=" syslinux
-                                          "/share/syslinux/isolinux.bin")
-                           (string-append "SYSLINUX_MBR_DISK_PATH=" syslinux
-                                          "/share/syslinux/isohdpfx.bin"))
-                         '())
-
                   ;; Build reproducibly.
                   (string-append "BUILD_ID_CMD=echo -n " (build-id #$output))
                   (string-append "BUILD_TIMESTAMP=" #$timestamp)
@@ -1788,6 +1784,24 @@ order to add a suitable bootloader menu entry.")
                    (string-append "#define " option))
                   (("^#undef.*(DOWNLOAD_PROTO_NFS.*)" _ option)
                    (string-append "#define " option)))))
+            ;; It is not entirely clear why these fail to compile.
+            (add-after 'enter-source-directory 'skip-i386-tap-linux
+              (lambda _
+                (substitute* "Makefile"
+                  (("bin-i386-linux/tap.linux") "")
+                  (("bin-i386-linux/tests.linux") ""))))
+            #$@(if (target-x86?)
+                 #~((add-after 'enter-source-directory 'set-syslinux-path
+                      ;; cdrtools' mkisofs will silently ignore a missing isolinux.bin!
+                      ;; Luckily xorriso is more strict.
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (substitute* "util/genfsimg"
+                          (("\t/usr/lib/syslinux " all)
+                           (string-append
+                             "\t" #$(this-package-native-input "syslinux")
+                             "/share/syslinux \\\n"
+                             all))))))
+                 #~())
             (delete 'configure)         ; no configure script
             (replace 'install
               (lambda _
@@ -1813,10 +1827,10 @@ order to add a suitable bootloader menu entry.")
               (lambda _ (chdir ".."))))
         #:tests? #f))                  ; no test suite
       (native-inputs
-       (append (if (or (target-x86-64?) (target-x86?))
-                   ;; Syslinux only supports i686 and x86_64.
-                   (list syslinux)
-                   '())
+       (append (if (target-x86?)
+                 ;; Syslinux only supports i686 and x86_64.
+                 (list syslinux)
+                 '())
                (list perl xorriso)))
       (home-page "https://ipxe.org")
       (synopsis "PXE-compliant network boot firmware")

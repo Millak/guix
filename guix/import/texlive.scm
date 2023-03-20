@@ -35,9 +35,6 @@
   #:use-module (guix serialization)
   #:use-module (guix svn-download)
   #:use-module (guix import utils)
-  #:use-module (guix utils)
-  #:use-module (guix upstream)
-  #:use-module (guix packages)
   #:use-module (guix build-system texlive)
   #:export (files-differ?
             texlive->guix-package

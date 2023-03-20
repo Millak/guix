@@ -28,7 +28,6 @@
   #:use-module (guix scripts)
   #:use-module (guix ui)
   #:use-module (guix gexp)
-  #:use-module ((guix build utils) #:select (%xz-parallel-args))
   #:use-module (guix utils)
   #:use-module (guix store)
   #:use-module ((guix status) #:select (with-status-verbosity))
@@ -54,7 +53,6 @@
   #:use-module ((gnu packages compression) #:hide (zip))
   #:use-module (gnu packages guile)
   #:use-module (gnu packages base)
-  #:autoload   (gnu packages package-management) (guix)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:autoload   (gnu packages guile) (guile2.0-json guile-json)
   #:use-module (srfi srfi-1)
@@ -1203,12 +1201,10 @@ last resort for relocation."
                  (utf8->string bv)))))
 
           (define (runpath file)
-            ;; Return the RUNPATH of FILE as a list of directories.
-            (let* ((bv      (call-with-input-file file get-bytevector-all))
-                   (elf     (parse-elf bv))
-                   (dyninfo (elf-dynamic-info elf)))
-              (or (and=> dyninfo elf-dynamic-info-runpath)
-                  '())))
+            ;; Return the "recursive" RUNPATH of FILE as a list of
+            ;; directories.
+            (delete-duplicates
+             (map dirname (file-needed/recursive file))))
 
           (define (elf-loader-compile-flags program)
             ;; Return the cpp flags defining macros for the ld.so/fakechroot

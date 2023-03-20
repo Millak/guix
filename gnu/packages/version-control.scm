@@ -224,50 +224,47 @@ Python 3.3 and later, rather than on Python 2.")
 
 (define-public git
   (package
-    (name "git")
-    (version "2.39.1")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "0qf1wly7zagg23svpv533va5v213y7y3lfw76ldkf35k8w48m8s0"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("native-perl" ,perl)
-       ;; Add bash-minimal explicitly to ensure it comes before bash-for-tests,
-       ;; see <https://bugs.gnu.org/39513>.
-       ("bash" ,bash-minimal)
-       ("bash-for-tests" ,bash)
-       ("gettext" ,gettext-minimal)
-       ;; To build the man pages from the git sources, we would need a dependency
-       ;; on a full XML tool chain, and building it actually takes ages.  So we
-       ;; use this lazy approach and use released tarball.
-       ("git-manpages"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append
-                 "mirror://kernel.org/software/scm/git/git-manpages-"
-                 version ".tar.xz"))
-           (sha256
-            (base32
-             "0xf7ki90xw77nvmnkw50xaivyfi8jddfq0h8crzi7m9zjs7aa8mm"))))
-       ;; For subtree documentation.
-       ("asciidoc" ,asciidoc)
-       ("docbook2x" ,docbook2x)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxslt" ,libxslt)
-       ("pkg-config" ,pkg-config)
-       ("texinfo" ,texinfo)
-       ("xmlto" ,xmlto)))
-    (inputs
-     `(("curl" ,curl)
-       ("expat" ,expat)
-       ("openssl" ,openssl)
-       ("perl" ,perl)
-       ("python" ,python)               ; for git-p4
-       ("zlib" ,zlib)
+   (name "git")
+   (version "2.39.2")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "mirror://kernel.org/software/scm/git/git-"
+                                version ".tar.xz"))
+            (sha256
+             (base32
+              "1mpjvhyw8mv2q941xny4d0gw3mb6b4bqaqbh73jd8b1v6zqpaps7"))))
+   (build-system gnu-build-system)
+   (native-inputs
+    `(("native-perl" ,perl)
+      ;; Add bash-minimal explicitly to ensure it comes before bash-for-tests,
+      ;; see <https://bugs.gnu.org/39513>.
+      ("bash" ,bash-minimal)
+      ("bash-for-tests" ,bash)
+      ("gettext" ,gettext-minimal)
+      ;; To build the man pages from the git sources, we would need a dependency
+      ;; on a full XML tool chain, and building it actually takes ages.  So we
+      ;; use this lazy approach and use released tarball.
+      ("git-manpages"
+       ,(origin
+          (method url-fetch)
+          (uri (string-append
+                "mirror://kernel.org/software/scm/git/git-manpages-"
+                version ".tar.xz"))
+          (sha256
+           (base32
+            "09cva868qb4705s884dzvbwkm78jlw4q8m6xj7nd7cwxy2i2ff8b"))))
+      ;; For subtree documentation.
+      ("asciidoc" ,asciidoc)
+      ("docbook-xsl" ,docbook-xsl)
+      ("xmlto" ,xmlto)
+      ("pkg-config" ,pkg-config)))
+   (inputs
+    `(("curl" ,curl)
+      ("expat" ,expat)
+      ("openssl" ,openssl)
+      ("perl" ,perl)
+      ("python" ,python) ; for git-p4
+      ("zlib" ,zlib)
 
        ;; For PCRE support in git grep (USE_LIBPCRE2).
        ("pcre" ,pcre2)
@@ -1665,8 +1662,8 @@ visualize your public Git repositories on a web interface.")
 
 (define-public pre-commit
   (package
-    (name "pre-commit")
-    (version "2.20.0")
+    (name "pre-commit") ;formerly known as python-pre-commit
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1675,7 +1672,11 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19jcg6nfnscp87h4wmbpw6r3lc8c75zkvb6wqgavq5dh7wkyg6pq"))))
+        (base32 "1rngcq1vd2phk45wp1cc5jz02wpi53fif0qwk633smfjcjj1kp41"))
+       (modules '((guix build utils)))
+       (snippet '(substitute* "setup.cfg"
+                   (("virtualenv>=20.10.0") ;our virtualenv (20.3.1) is fine
+                    "virtualenv>=20.0.8")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1708,6 +1709,18 @@ visualize your public Git repositories on a web interface.")
                        ;; Ruby and Node tests require node and gem.
                        "--ignore=tests/languages/node_test.py"
                        "--ignore=tests/languages/ruby_test.py"
+                       ;; Skip lang-specific (network) tests added in 3.1.1
+                       "--ignore=tests/languages/conda_test.py"
+                       "--ignore=tests/languages/coursier_test.py"
+                       "--ignore=tests/languages/dart_test.py"
+                       "--ignore=tests/languages/docker_test.py"
+                       "--ignore=tests/languages/docker_image_test.py"
+                       "--ignore=tests/languages/dotnet_test.py"
+                       "--ignore=tests/languages/golang_test.py"
+                       "--ignore=tests/languages/lua_test.py"
+                       "--ignore=tests/languages/perl_test.py"
+                       "--ignore=tests/languages/rust_test.py"
+                       "--ignore=tests/languages/swift_test.py"
                        "-k"
                        (string-append
                         ;; TODO: these tests fail with AssertionError.  It may
@@ -1715,7 +1728,8 @@ visualize your public Git repositories on a web interface.")
                         "not test_install_existing_hooks_no_overwrite"
                         " and not test_uninstall_restores_legacy_hooks"
                         " and not test_installed_from_venv"
-                        " and not test_healthy_venv_creator"))))))))
+                        " and not test_healthy_venv_creator"
+                        " and not test_r_hook and not test_r_inline"))))))))
     (native-inputs
      `(("git" ,git-minimal)
        ("python-covdefaults" ,python-covdefaults)
@@ -1731,7 +1745,6 @@ visualize your public Git repositories on a web interface.")
            python-identify
            python-nodeenv
            python-pyyaml
-           python-toml
            python-virtualenv))
     (home-page "https://pre-commit.com/")
     (synopsis "Framework for managing and maintaining pre-commit hooks")
@@ -2781,14 +2794,14 @@ specific files and directories.")
 (define-public src
   (package
     (name "src")
-    (version "1.29")
+    (version "1.31")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://www.catb.org/~esr/src/src-" version ".tar.gz"))
               (sha256
                (base32
-                "0ha287gc95vz6bdvn42pi3qibc56h1w5dshsvjvdn2zd283amksd"))))
+                "1p8f5xc6k4jrli3iimi64ng11c246qqwsw9bqrrqkrmhvqdh4kcv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags

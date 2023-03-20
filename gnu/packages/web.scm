@@ -15,7 +15,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -184,6 +184,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages skribilo)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -1727,40 +1728,6 @@ the shortest private part of a given domain, works with international
 domains (UTF-8 and IDNA2008 Punycode), is thread-safe, and handles IDNA2008
 UTS#46.")
     (license license:x11)))
-
-(define-public tidy
-  (package
-    (name "tidy")
-    (version "20091223")
-    (source (origin
-              (method cvs-fetch)
-              (uri (cvs-reference
-                    (root-directory
-                     ":pserver:anonymous@tidy.cvs.sourceforge.net:/cvsroot/tidy")
-                    (module "tidy")
-                    (revision "2009-12-23")))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "14dsnmirjcrvwsffqp3as70qr6bbfaig2fv3zvs5g7005jrsbvpb"))
-              (patches (search-patches "tidy-CVE-2015-5522+5523.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'bootstrap
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; configure.in and Makefile.am aren't in the root of the
-                      ;; source tree.
-                      (copy-recursively "build/gnuauto" ".")
-                      (setenv "AUTOMAKE" "automake --foreign")
-                      (invoke "autoreconf" "-vfi"))))))
-    (native-inputs
-     (list automake autoconf libtool))
-    (synopsis "HTML validator and tidier")
-    (description "HTML Tidy is a command-line tool and C library that can be
-used to validate and fix HTML data.")
-    (home-page "https://tidy.sourceforge.net/")
-    (license (license:x11-style "file:///include/tidy.h"))))
 
 (define-public esbuild
   (package
@@ -6214,6 +6181,9 @@ developers can integrate into their applications to make use of the
 functions of Tidy.")
     (license license:bsd-3)))
 
+(define-public tidy
+  (deprecated-package "tidy" tidy-html))
+
 (define-public hiawatha
   (package
     (name "hiawatha")
@@ -7689,47 +7659,49 @@ features include:
     (license license:expat)))
 
 (define-public cat-avatar-generator
-  (package
-    (name "cat-avatar-generator")
-    (version "1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://framagit.org/Deevad/cat-avatar-generator.git")
-                     (commit "71c0c662742cafe8afd2d2d50ec84243113e35ad")))
-              (file-name (string-append name "-" version))
-              (sha256
-               (base32
-                "0s7b5whqsmfa57prbgl66ym551kg6ly0z14h5dgrlx4lqm70y2yw"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (srfi srfi-1)
-                      (srfi srfi-26))
-
-         (let ((source (assoc-ref %build-inputs "source"))
-               (php-dir (string-append %output "/share/web/" ,name "/")))
-           ;; The cache directory must not be in the store, but in a writable
-           ;; location.  The webserver will give us this location.
-           (copy-recursively source php-dir)
-           (substitute* (string-append php-dir "/cat-avatar-generator.php")
-             (("\\$cachepath = .*")
-              "if(isset($_SERVER['CACHE_DIR']))
+  (let ((commit "9360ea33f79d1dad3e43494b09878b5e3f6b41fa")
+        (revision "1"))
+    (package
+      (name "cat-avatar-generator")
+      (version (git-version "1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://framagit.org/Deevad/cat-avatar-generator.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0js4grqzsm4gvmcbmxv7zw4samfzi6nk4mn977ddcvla9g222rkm"))))
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils))
+         #:builder
+         (begin
+           (use-modules (guix build utils)
+                        (srfi srfi-1)
+                        (srfi srfi-26))
+           (let ((source (assoc-ref %build-inputs "source"))
+                 (php-dir (string-append %output "/share/web/" ,name)))
+             (install-file (string-append source "/cat-avatar-generator.php") php-dir)
+             (copy-recursively (string-append source "/avatars") (string-append php-dir "/avatars"))
+             ;; The cache directory must not be in the store, but in a writable
+             ;; location.  The webserver will give us this location.
+             (substitute* (string-append php-dir "/cat-avatar-generator.php")
+               (("\\$cachepath = .*")
+                "if(isset($_SERVER['CACHE_DIR']))
 $cachepath = $_SERVER['CACHE_DIR'];
 else
 die('You need to set the CACHE_DIR variable first.');"))
-           #t))))
-    (home-page "https://framagit.org/Deevad/cat-avatar-generator")
-    (synopsis "Random avatar generator")
-    (description "Cat avatar generator is a generator of cat pictures optimised
+             #t))))
+      (home-page "https://framagit.org/Deevad/cat-avatar-generator")
+      (synopsis "Random avatar generator")
+      (description "Cat avatar generator is a generator of cat pictures optimised
 to generate random avatars, or defined avatar from a \"seed\".  This is a
 derivation by David Revoy from the original MonsterID by Andreas Gohr.")
-    ;; expat for the code, CC-BY 4.0 for the artwork
-    (license (list license:expat
-                   license:cc-by4.0))))
+      ;; expat for the code, CC-BY 4.0 for the artwork
+      (license (list license:expat
+                     license:cc-by4.0)))))
 
 (define-public nghttp2
   (package
@@ -8047,6 +8019,60 @@ bookmarks directly.  It can also present them in a web interface with
      "This package provides a rofi frontend for the buku bookmark manager.")
     (license license:gpl3+)))
 
+(define-public tissue
+  (package
+    (name "tissue")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://tissue.systemreboot.net/releases/tissue-"
+                                  version ".tar.lz"))
+              (sha256
+               (base32
+                "0vsybgnzv8nnwf58pnxrs4101xczl8jvxd1wzmk4vmdyrp8a2kkm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "prefix=" #$output))
+           #:modules `(((guix build guile-build-system)
+                        #:select (target-guile-effective-version))
+                       (guix build gnu-build-system)
+                       (guix build utils))
+           #:phases
+           (with-imported-modules '((guix build guile-build-system))
+             #~(modify-phases %standard-phases
+                 (replace 'patch-source-shebangs
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "bin/tissue"
+                       (("^exec guile")
+                        (string-append "exec "
+                                       (search-input-file inputs "/bin/guile"))))))
+                 (delete 'configure)
+                 (add-after 'install 'wrap
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (effective-version (target-guile-effective-version)))
+                       (wrap-program (string-append out "/bin/tissue")
+                         `("GUILE_LOAD_PATH" prefix
+                           (,(string-append out "/share/guile/site/" effective-version)
+                            ,(getenv "GUILE_LOAD_PATH")))
+                         `("GUILE_LOAD_COMPILED_PATH" prefix
+                           (,(string-append out "/lib/guile/"
+                                            effective-version "/site-ccache")
+                            ,(getenv "GUILE_LOAD_COMPILED_PATH")))))))))))
+    (inputs (list bash-minimal guile-3.0 guile-filesystem guile-git guile-xapian))
+    (native-inputs (list lzip))
+    (propagated-inputs (list skribilo))
+    (home-page "https://tissue.systemreboot.net")
+    (synopsis "Text based project information management system")
+    (description "tissue is an issue tracker and project information
+management system built on plain text files and git.  It is specifically
+intended for small free software projects.  It features a static site
+generator to build a project website and a powerful search interface to search
+through project issues and documentation.  The search interface is built on
+the Xapian search engine library, and is available both as a command-line
+program and as a web server.")
+    (license license:gpl3+)))
+
 (define-public anonip
   (package
     (name "anonip")
@@ -8236,6 +8262,48 @@ in mind.  It has features such as:
 @item low memory footprint.
 @end itemize")
     (license license:isc)))
+
+(define-public kiln
+  (package
+    (name "kiln")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~adnano/kiln")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lvzv46hn80gffw47mcc28iahwqng7pvg500s9jlrq6mhr4k5ih4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~adnano/kiln"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man
+            (lambda _
+              (let ((man1 (string-append #$output "/share/man/man1")))
+                (system (string-append
+                         "scdoc"
+                         "< src/git.sr.ht/~adnano/kiln/docs/kiln.1.scd"
+                         "> kiln.1"))
+                (install-file "kiln.1" man1)))))))
+    (native-inputs
+     (list scdoc))
+    (propagated-inputs
+     (list go-github-com-google-shlex
+           go-github-com-pelletier-go-toml
+           go-gopkg-in-yaml-v3))
+    (home-page "https://kiln.adnano.co/")
+    (synopsis "Simple static site generator")
+    (description
+     "Kiln takes a different approach to building static sites.
+Instead of packing all functionality into kiln itself, the core is lightweight
+and can be extended with the use of external commands.")
+    (license license:expat)))
 
 (define-public siege
   (package

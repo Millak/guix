@@ -55,7 +55,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
-;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
@@ -87,7 +87,9 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (alist-replace))
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -123,6 +125,7 @@
   #:use-module (gnu packages gd)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
@@ -151,6 +154,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages prolog)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -2801,6 +2805,41 @@ into Python programs easier.")
     (description "This package provides a system to solve dynamic temporal
 logic programs based on clingo.")
     (license license:expat)))
+
+(define-public scasp
+  (let ((commit "89a427aa04ec6346425a40111c99b310901ffe51")
+        (revision "1"))
+    (package
+      (name "scasp")
+      (version (git-version "0.21.11.26" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/SWI-Prolog/sCASP")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ijqv9xr3imrdmz6nq7zqwsmmaxn638icig19m8900m7mjfpizs4"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan #~`(("scasp" "bin/")
+                           ("prolog" "lib/swipl/library"))
+        #:modules `((guix build copy-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils)
+                    (ice-9 regex))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'build (assoc-ref gnu:%standard-phases 'build))
+            (add-after 'build 'check (assoc-ref gnu:%standard-phases 'check)))))
+      (native-inputs (list swi-prolog))
+      (home-page "https://github.com/SWI-Prolog/sCASP")
+      (synopsis "Interpreter for ASP programs with constraints")
+      (description "@code{s(CASP)} is a top-down interpreter for ASP programs
+with constraints.")
+      (license license:asl2.0))))
 
 (define-public ceres
   (package
@@ -6088,6 +6127,177 @@ as equations, scalars, vectors, and matrices.")
     (home-page "https://www.gnu.org/software/jacal/")
     (license license:gpl3+)))
 
+(define-public boolector
+  (package
+   (name "boolector")
+   (version "3.2.2")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/Boolector/boolector")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (patches (search-patches "boolector-find-googletest.patch"))
+            (sha256
+             (base32
+              "07rvp3iry7a7ixwl0q7nc47fwky1s1cyia7gqrjsg46syqlxbz2c"))))
+   (build-system cmake-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list "-DBUILD_SHARED_LIBS=on"
+                  (string-append
+                   "-DBtor2Tools_INCLUDE_DIR="
+                   (dirname (search-input-file %build-inputs
+                                               "include/btor2parser.h")))
+                  (string-append
+                   "-DBtor2Tools_LIBRARIES="
+                   (search-input-file %build-inputs
+                                      "lib/libbtor2parser.so")))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-cmake
+                (lambda _
+                  (delete-file "cmake/FindCryptoMiniSat.cmake")
+                  (substitute* (list "CMakeLists.txt" "src/CMakeLists.txt")
+                    (("find_package\\(CryptoMiniSat\\)")
+                     "find_package(cryptominisat5 CONFIG)
+find_package(louvain_communities)")
+                    (("CryptoMiniSat_FOUND") "cryptominisat5_FOUND")
+                    (("CryptoMiniSat_INCLUDE_DIR")
+                     "CRYPTOMINISAT5_INCLUDE_DIRS")
+                    (("CryptoMiniSat_LIBRARIES")
+                     "CRYPTOMINISAT5_LIBRARIES"))))
+              (add-after 'unpack 'fix-sources
+                (lambda _
+                  (substitute* (find-files "." "\\.c$")
+                    (("\"btor2parser/btor2parser\\.h\"") "<btor2parser.h>")))))))
+   (inputs (list btor2tools
+                 boost cryptominisat louvain-community sqlite))
+   (native-inputs (list googletest pkg-config python-wrapper))
+   (home-page "http://boolector.github.io/")
+   (synopsis "Bitvector-based theory solver")
+   (description "Boolector is a @acronym{SMT, satisfiability modulo theories}
+solver for the theories of fixed-size bit-vectors, arrays and uninterpreted
+functions.")
+   (license license:lgpl3+)))
+
+(define-public java-smtinterpol
+  (package
+   (name "java-smtinterpol")
+   (version "2.5")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/ultimate-pa/smtinterpol")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (modules '((guix build utils)))
+            (snippet #~(begin
+                         (delete-file-recursively "jacoco")
+                         (delete-file-recursively "libs")
+                         (delete-file-recursively "sonar")))
+            (sha256
+             (base32
+              "0bq5l7g830a8hxw1xyyfp2ph6jqk8ak0ichlymdglpnpngf6322f"))))
+   (build-system ant-build-system)
+   (arguments
+    (list #:build-target "dist"
+          #:test-target "runtests"
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-build.xml
+                (lambda _
+                  (substitute* "build.xml"
+                    (("<tstamp>") "<!--")
+                    (("</tstamp>") "-->")
+                    (("executable=\"git\"")
+                     (string-append "executable=\""
+                                    (which "sh")
+                                    "\""))
+                    (("<property file=.*/>" all)
+                     (string-append all
+                                    "<property environment=\"env\" />"))
+                    (("<classpath>" all)
+                     (string-append
+                      all
+                      "<pathelement path=\"${env.CLASSPATH}\" />"))
+                    (("<fileset file=\".*/libs/.*/>") "")
+                    (("<junit")
+                     "<junit haltonfailure=\"yes\""))
+                  (call-with-output-file "describe"
+                    (lambda (port)
+                      (format port "echo ~a" #$version)))))
+              (add-before 'check 'delete-failing-tests
+                (lambda _
+                  (delete-file
+                   (string-append "SMTInterpolTest/src/de/uni_freiburg"
+                                  "/informatik/ultimate/smtinterpol/convert/"
+                                  "EqualityDestructorTest.java"))))
+              (replace 'install
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let* ((out (assoc-ref outputs "out"))
+                         (java (string-append out "/share/java")))
+                    (for-each (lambda (f) (install-file f java))
+                              (find-files "dist" "\\.jar$"))))))))
+   (native-inputs (list java-junit))
+   (home-page "http://ultimate.informatik.uni-freiburg.de/smtinterpol/")
+   (synopsis "Interpolating SMT solver")
+   (description "SMTInterpol is an @acronym{SMT, Satisfiability Modulo Theories}
+solver, that can compute Craig interpolants for various theories.")
+   (license license:lgpl3+)))
+
+(define-public yices
+  (package
+   (name "yices")
+   (version "2.6.4")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "https://yices.csl.sri.com/releases/"
+                                version "/yices-" version "-src.tar.gz"))
+            (sha256
+             (base32
+              "1jvqvf35gv2dj936yzl8w98kc68d8fcdard90d6dddzc43h28fjk"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list #$@(if (%current-target-system)
+                         '()
+                         (list (string-append "--build="
+                                              (%current-system))))
+                  "--enable-mcsat"
+                  ;; XXX: Ewww, static linkage
+                  (string-append
+                   "--with-static-libpoly="
+                   (search-input-file %build-inputs "lib/libpoly.a"))
+                  (string-append
+                   "--with-static-gmp="
+                   (search-input-file %build-inputs "lib/libgmp.a"))
+                  (string-append
+                   "--with-pic-libpoly="
+                   (search-input-file %build-inputs "lib/libpicpoly.a")))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-build-files
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (substitute* "Makefile.build"
+                    (("SHELL=.*") "")
+                    (("/sbin/ldconfig") (which "ldconfig")))
+                  (substitute* (find-files "etc" "install-yices.*")
+                    (("/usr/bin/install") (which "install"))
+                    (("/bin/ln") (which "ln"))
+                    (("/sbin/ldconfig") (which "ldconfig"))
+                    (("install_dir=.*")
+                     (string-append "install_dir="
+                                    (assoc-ref outputs "out")))))))))
+   (inputs (list cudd gmp gperf libpoly))
+   (native-inputs (list autoconf automake bash-minimal))
+   (home-page "https://yices.csl.sri.com/")
+   (synopsis "Satisfiability modulo theories solver")
+   (description "Yices is a solver for @acronym{SMT, satisfiability modulo
+theories} problems.  It can process input in SMT-LIB format or its own
+s-expression-based format.")
+   (license license:gpl3+)))
+
 (define-public z3
   (package
     (name "z3")
@@ -7561,6 +7771,85 @@ optimized algorithms and implementation.")
 generic reader and writer API.")
     (license (list license:expat
                    license:bsd-3))))    ; blif2aig
+
+(define-public btor2tools
+  (let ((commit "b8456dda4780789e882f5791eb486f295ade4da4")
+        (revision "1"))
+   (package
+   (name "btor2tools")
+   (version (git-version "1.0.0-pre" revision commit))
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/Boolector/btor2tools")
+                  (commit commit)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0r3cm69q5xhnbxa74yvdfrsf349s4cxmiqlb4aq8appi7yg3qhww"))))
+   (build-system cmake-build-system)
+   (arguments
+    (list #:out-of-source? #f
+          #:phases
+          #~(modify-phases %standard-phases
+              (replace 'check
+                (lambda* (#:key tests? #:allow-other-keys)
+                  (when tests?
+                    (invoke "sh" "test/runtests.sh")))))))
+   (home-page "http://boolector.github.io/")
+   (synopsis "Parser for BTOR2 format")
+   (description "This package provides a parser for the BTOR2 format used by
+Boolector.")
+   (license license:lgpl3+))))
+
+(define-public cudd
+  (package
+   (name "cudd")
+   (version "3.0.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/ivmai/cudd")
+                  (commit (string-append "cudd-" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0hyw9q42ir92vcaa7bwv6f631n85rfsxp463rnmklniq1wf6dyn9"))))
+   (build-system gnu-build-system)
+   (arguments (list #:configure-flags #~(list "--enable-shared")))
+   ;; The original home-page was lost to time, so we reference the "unofficial"
+   ;; Github mirror.  For what it's worth, the author of the library appears to
+   ;; have been involved with this mirror at some point in time.
+   (home-page "https://github.com/ivmai/cudd")
+   (synopsis "Manipulate decision diagrams")
+   (description "@acronym{CUDD, Colorado University Decision Diagrams} is a
+library for manipulating decision diagrams.  It supports binary decision
+diagrams, algebraic decision diagrams, and zero-suppressed binary decision
+diagrams.")
+   (license license:bsd-3)))
+
+(define-public libpoly
+  (package
+   (name "libpoly")
+   (version "0.1.11")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/SRI-CSL/libpoly")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0qylmg30rklvg00a0h1b3pb52cj9ki98yd27cylihjhq2klh3dmy"))))
+   (build-system cmake-build-system)
+   (arguments
+    (list #:configure-flags #~(list "-DLIBPOLY_BUILD_PYTHON_API=off")))
+   (inputs (list gmp))
+   (home-page "https://github.com/SRI-CSL/libpoly")
+   (synopsis "Manipulate polynomials")
+   (description "LibPoly is a C library for manipulating polynomials to support
+symbolic reasoning engines that need to reason about polynomial constraints.")
+   (license license:lgpl3+)))
 
 (define-public lingeling
   (let ((commit "72d2b13eea5fbd95557a3d0d199cd98dfbdc76ee")

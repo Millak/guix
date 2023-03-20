@@ -35,6 +35,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages dav)
   #:use-module (gnu packages tls)
+  #:use-module (guix deprecation)
   #:use-module (guix modules)
   #:use-module (guix records)
   #:use-module (guix packages)
@@ -42,7 +43,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
-  #:export (dovecot-service
+  #:export (dovecot-service  ; deprecated
             dovecot-service-type
             dovecot-configuration
             opaque-dovecot-configuration
@@ -1601,9 +1602,11 @@ greyed out, instead of only later giving \"not selectable\" popup error.
                        (service-extension activation-service-type
                                           %dovecot-activation)))
                 (description "Run Dovecot, a mail server that can run POP3,
-IMAP, and LMTP.")))
+IMAP, and LMTP.")
+                (default-value (dovecot-configuration))))
 
-(define* (dovecot-service #:key (config (dovecot-configuration)))
+(define-deprecated (dovecot-service #:key (config (dovecot-configuration)))
+  dovecot-service-type
   "Return a service that runs @command{dovecot}, a mail server that can run
 POP3, IMAP, and LMTP.  @var{config} should be a configuration object created
 by @code{dovecot-configuration}.  @var{config} may also be created by

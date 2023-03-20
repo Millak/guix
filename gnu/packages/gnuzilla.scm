@@ -50,8 +50,9 @@
   #:use-module (guix modules)
   #:use-module (guix monads)
   #:use-module (guix utils)
-  #:use-module (guix build-system gnu)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system copy)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system mozilla)
   #:use-module (gnu packages admin)
@@ -516,9 +517,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "102.8.0")
+(define %icecat-base-version "102.9.0")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20230214000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20230314000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -538,12 +539,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0j6afrgfsmd0adbbmffw4p1f2hznpck9d36z3bsjx36f7cjgdy27"))))
+              "1l8xlbba8sa9dg132k96ch8mz97i5lyhpvkxi8d85jh97xi79c1i"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "102.8.0")
-         (gnuzilla-commit "f23f8b609ef4afcc7d8ac5fa795093f1c403f8da")
+         (upstream-icecat-base-version "102.9.0")
+         (gnuzilla-commit "f55ede39713d1533734f37e39927cbb78abe1604")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -555,7 +556,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "1zvvgjvsj7k8753f7xmpmkq35dqzyik95943hzl84v2j5mnahhj4"))))
+              "0z15h3lxfn9pmj5bj62qim3h320dcd2v69xrg1phb7lh5gq0bylf"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1136,8 +1137,8 @@ standards of the IceCat project.")
     "ru" "sco" "si" "sk" "sl" "son" "sq" "sr" "sv-SE" "szl" "ta" "te" "th" "tl"
     "tr" "trs" "uk" "ur" "uz" "vi" "xh" "zh-CN" "zh-TW"))
 
-(define %icedove-build-id "20230207000000") ;must be of the form YYYYMMDDhhmmss
-(define %icedove-version "102.7.2")
+(define %icedove-build-id "20230314000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-version "102.9.0")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.
@@ -1146,11 +1147,11 @@ standards of the IceCat project.")
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/releases/comm-esr102")
-          (changeset "0f6deed0752b618055c34e06c268af3da9d1548d")))
+          (changeset "db735c436e680abf21cc67f9a29b42fdf30d416d")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "071q0pcfvfpzx741ly1sl8anlmzx02h17w4ylfnrkwrpaclq3p6p"))))
+      "114vvwlrmjilczwsg9nfcg08560vijlydw1pdrbkvxjbfgsxny71"))))
 
 (define (comm-source->locales+changeset source)
   "Given SOURCE, a checkout of the Thunderbird 'comm' component, return the
@@ -1178,7 +1179,7 @@ list of languages supported as well as the currently used changeset."
 ;;; of the IceCat source, instead of only the 'calendar', chat and mail
 ;;; directories that it provides.
 (define thunderbird-comm-l10n
-  (let* ((changeset "5b6788295358")
+  (let* ((changeset "95b46b8428d5")
          (version (git-version %icedove-version "0" changeset)))
     (origin
       (method hg-fetch)
@@ -1188,7 +1189,7 @@ list of languages supported as well as the currently used changeset."
       (file-name (git-file-name "comm-l10n" version))
       (sha256
        (base32
-        "1jrsmkscjjllcfawi3788vwm53wn25inbhdis5nk4vfpr7wk5ill")))))
+        "0hfsiv9p7s2ik6648gm1774d187vlm1i1c9xwyd8g8ihk2dzyn5i")))))
 
 (define icedove-source
   (let ((name (string-append "icedove-" %icedove-version)))
@@ -1701,51 +1702,55 @@ associated with their name."))
     (package
       (inherit base)
       (name (symbol->string project))
-      (build-system trivial-build-system)
+      ;; Use the copy-build-system, as it provides the necessary UTF-8 locales
+      ;; support.
+      (build-system copy-build-system)
       (arguments
        (list
-        #:modules '((guix build union)
+        #:imported-modules `(,@%copy-build-system-modules
+                             (guix build union))
+        #:modules '((guix build copy-build-system)
+                    (guix build union)
                     (guix build utils))
-        #:builder
-        #~(begin
-            (use-modules (guix build union)
-                         (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'install
+              (lambda _
+                (union-build #$output (list #$base #$l10n-package)
+                             #:create-all-directories? #t)
 
-            (union-build #$output (list #$base #$l10n-package)
-                         #:create-all-directories? #t)
+                (define* (expose name #:optional (proc copy-file)
+                                 #:key (source #$base))
+                  (let ((dest (string-append #$output "/" name)))
+                    (mkdir-p (dirname dest))
+                    (proc (string-append source "/" name) dest)))
 
-            (define* (expose name #:optional (proc copy-file)
-                             #:key (source #$base))
-              (let ((dest (string-append #$output "/" name)))
-                (mkdir-p (dirname dest))
-                (proc (string-append source "/" name) dest)))
+                (let ((wrapper (string-append "lib/" #$name "/" #$name))
+                      (real-binary (string-append "lib/" #$name "/." #$name
+                                                  "-real"))
+                      (desktop-file (string-append "share/applications/"
+                                                   #$name ".desktop")))
+                  ;; Copy wrapper file.
+                  (delete-file (string-append #$output "/" wrapper))
+                  (expose wrapper)
 
-            (let ((wrapper (string-append "lib/" #$name "/" #$name))
-                  (real-binary (string-append "lib/" #$name "/." #$name
-                                              "-real"))
-                  (desktop-file (string-append "share/applications/"
-                                               #$name ".desktop")))
-              ;; Copy wrapper file.
-              (delete-file (string-append #$output "/" wrapper))
-              (expose wrapper)
+                  ;; Recreate bin symlink.
+                  (delete-file (string-append #$output "/bin/" #$name))
+                  (symlink (string-append #$output "/" wrapper)
+                           (string-append #$output "/bin/" #$name))
 
-              ;; Recreate bin symlink.
-              (delete-file (string-append #$output "/bin/" #$name))
-              (symlink (string-append #$output "/" wrapper)
-                       (string-append #$output "/bin/" #$name))
+                  ;; Copy actual binary.
+                  (delete-file (string-append #$output "/" real-binary))
+                  (expose real-binary)
 
-              ;; Copy actual binary.
-              (delete-file (string-append #$output "/" real-binary))
-              (expose real-binary)
+                  ;; Copy desktop file.
+                  (delete-file (string-append #$output "/" desktop-file))
+                  (expose desktop-file)
 
-              ;; Copy desktop file.
-              (delete-file (string-append #$output "/" desktop-file))
-              (expose desktop-file)
-
-              ;; Adjust the references in the desktop file and wrapper.
-              (substitute* (list (string-append #$output "/" desktop-file)
-                                 (string-append #$output "/" wrapper))
-                ((#$base) #$output)))))))))
+                  ;; Adjust the references in the desktop file and wrapper.
+                  (substitute* (list (string-append #$output "/" desktop-file)
+                                     (string-append #$output "/" wrapper))
+                    ((#$base) #$output)))))))))))
 
 (define-public icecat
   (make-mozilla-with-l10n 'icecat icecat-minimal icecat-l10n))

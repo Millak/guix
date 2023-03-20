@@ -416,7 +416,7 @@
        ("postgresql" ,postgresql)
        ("readline" ,readline)
        ("sqlite" ,sqlite)
-       ("tidy" ,tidy)
+       ("tidy" ,tidy-html)
        ("zlib" ,zlib)))
     (native-inputs
      `(("pkg-config" ,pkg-config)

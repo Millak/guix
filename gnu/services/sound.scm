@@ -38,12 +38,24 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (alsa-configuration
+            alsa-configuration?
+            alsa-configuration-alsa-plugins
+            alsa-configuration-pulseaudio?
+            alsa-configuration-extra-options
             alsa-service-type
 
             pulseaudio-configuration
+            pulseaudio-configuration?
+            pulseaudio-configuration-client-conf
+            pulseaudio-configuration-daemon-conf
+            pulseaudio-configuration-script-file
+            pulseaudio-configuration-extra-script-files
+            pulseaudio-configuration-system-script-file
             pulseaudio-service-type
 
             ladspa-configuration
+            ladspa-configuration?
+            ladspa-configuration-plugins
             ladspa-service-type))
 
 ;;; Commentary:
@@ -231,7 +243,7 @@ computed-file object~%") file))))
 (define-record-type* <ladspa-configuration>
   ladspa-configuration make-ladspa-configuration
   ladspa-configuration?
-  (plugins ladspa-plugins (default '())))
+  (plugins ladspa-configuration-plugins (default '())))
 
 (define (ladspa-environment config)
   ;; Define this variable in the global environment such that
@@ -239,7 +251,7 @@ computed-file object~%") file))))
   `(("LADSPA_PATH" .
      (string-join
       ',(map (lambda (package) (file-append package "/lib/ladspa"))
-             (ladspa-plugins config))
+             (ladspa-configuration-plugins config))
       ":"))))
 
 (define ladspa-service-type

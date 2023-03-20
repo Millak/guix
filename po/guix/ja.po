@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
-# ROCKTAKEY <rocktakey@gmail.com>, 2022.
+# ROCKTAKEY <rocktakey@gmail.com>, 2022, 2023.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-04-29 13:18+0000\n"
+"PO-Revision-Date: 2023-03-06 19:18+0000\n"
 "Last-Translator: ROCKTAKEY <rocktakey@gmail.com>\n"
 "Language-Team: Japanese <https://translate.fedoraproject.org/projects/guix/guix/ja/>\n"
 "Language: ja\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #: gnu.scm:81
 #, scheme-format
 msgid "module ~a not found"
-msgstr ""
+msgstr "モジュール ~a は見つかりませんでした"
 
 #: gnu.scm:99
 msgid ""
@@ -30,11 +30,15 @@ msgid ""
 "If you get the line @code{location: gnu/packages/bar.scm:174:2},\n"
 "add @code{bar} to the @code{use-package-modules} form."
 msgstr ""
+"@command{guix package --show=foo | grep location}を使うことで、\n"
+"パッケージ@code{foo}の場所を検索することができます。\n"
+"たとえば@code{location: gnu/packages/bar.scm:174:2}の行が得られた場合、\n"
+"@code{bar}を@code{use-package-modules}式に追加してください。"
 
 #: gnu.scm:107
 #, scheme-format
 msgid "Try adding @code{(use-package-modules ~a)}."
-msgstr ""
+msgstr "@code{(use-package-modules ~a)} を追加してみてください。"
 
 #: gnu.scm:122
 #, scheme-format
@@ -44,46 +48,50 @@ msgid ""
 "If you get the line @code{location: gnu/services/foo.scm:188:2},\n"
 "add @code{foo} to the @code{use-service-modules} form."
 msgstr ""
+"@command{guix system search ~a}を使うことで、\n"
+"@code{~a}に一致するサービスを検索することができます。\n"
+"たとえば@code{location: gnu/services/foo.scm:188:2}の行が得られた場合、\n"
+"@code{foo}を@code{use-service-modules}式に追加してください。"
 
 #: gnu.scm:131
 #, scheme-format
 msgid "Try adding @code{(use-service-modules ~a)}."
-msgstr ""
+msgstr "@code{(use-package-modules ~a)} を追加してみてください。"
 
 #: gnu/packages.scm:101
 #, scheme-format
 msgid "~a: patch not found"
-msgstr ""
+msgstr "~a: パッチが見つかりませんでした"
 
 #: gnu/packages.scm:482 gnu/packages.scm:523
 #, scheme-format
 msgid "ambiguous package specification `~a'~%"
-msgstr ""
+msgstr "`~a'はパッケージ特定するには曖昧です~%"
 
 #: gnu/packages.scm:483 gnu/packages.scm:524
 #, scheme-format
 msgid "choosing ~a@~a from ~a~%"
-msgstr ""
+msgstr "~2@*~aの中から~@*~a@~aを選びました~%"
 
 #: gnu/packages.scm:488 guix/scripts/package.scm:226
 #, scheme-format
 msgid "package '~a' has been superseded by '~a'~%"
-msgstr ""
+msgstr "パッケージ'~a'は'~a'に取って代わられました~%"
 
 #: gnu/packages.scm:495 gnu/packages.scm:512
 #, scheme-format
 msgid "~A: package not found for version ~a~%"
-msgstr ""
+msgstr "~A: バージョン~aのパッケージはみつかりませんでした~%"
 
 #: gnu/packages.scm:496 gnu/packages.scm:513
 #, scheme-format
 msgid "~A: unknown package~%"
-msgstr ""
+msgstr "~A: 不明なパッケージ~%"
 
 #: gnu/packages.scm:552
 #, scheme-format
 msgid "package `~a' lacks output `~a'~%"
-msgstr ""
+msgstr "パッケージ`~a'は`~a'という出力を持っていません~%"
 
 #: gnu/services.scm:265
 #, scheme-format
@@ -92,7 +100,7 @@ msgstr ""
 
 #: gnu/services.scm:295
 msgid "This is a simple service."
-msgstr ""
+msgstr "これは単純なサービスです。"
 
 #: gnu/services.scm:376
 msgid ""
@@ -100,12 +108,17 @@ msgid ""
 "turn refers to everything the operating system needs: its kernel, initrd,\n"
 "system profile, boot script, and so on."
 msgstr ""
+"オペレーティングシステムをトップレベルディレクトリでビルドします。\n"
+"これにより、カーネル、initrd、システムプロファイル、ブートスクリプトなど、\n"
+"オペレーティングシステムが必要とする全てのものが参照されます。"
 
 #: gnu/services.scm:406
 msgid ""
 "Produce the operating system's boot script, which is spawned\n"
 "by the initrd once the root file system is mounted."
 msgstr ""
+"オペレーティングシステムのブートスクリプトを作成します。\n"
+"これはルートファイルシステムがマウントされるとinitrdから生成されます。"
 
 #: gnu/services.scm:519
 msgid ""
@@ -113,30 +126,41 @@ msgid ""
 "itself: the channels used when building the system, and its configuration\n"
 "file, when available."
 msgstr ""
+"ビルドするときのチャンネルや設定ファイルといった\n"
+"システムの出どころの情報があれば、\n"
+"それをシステム自身に保存します。"
 
 #: gnu/services.scm:602
 msgid ""
 "Delete files from @file{/tmp}, @file{/var/run}, and other\n"
 "temporary locations at boot time."
 msgstr ""
+"@file{/tmp}、@file{/var/run}などの、ブート時における\n"
+"一時的なファイル置き場にあるファイルを削除します。"
 
 #: gnu/services.scm:664
 msgid ""
 "Run @dfn{activation} code at boot time and upon\n"
 "@command{guix system reconfigure} completion."
 msgstr ""
+"ブート時と@command{guix system reconfigure}の完了時には、\n"
+"@dfn{アクティベーション}コードを実行します。"
 
 #: gnu/services.scm:736
 msgid ""
 "This service creates an @file{rc} script in the\n"
 "system; that script is responsible for booting the Hurd."
 msgstr ""
+"このサービスは@file{rc}スクリプトをシステムに作成します。\n"
+"このスクリプトはHurdを立ち上げる責務を負います。"
 
 #: gnu/services.scm:754
 msgid ""
 "Add special files to the root file system---e.g.,\n"
 "@file{/usr/bin/env}."
 msgstr ""
+"特別なファイルをルートファイルシステムに追加します。\n"
+"たとえば@file{/usr/bin/env}などです。"
 
 #: gnu/services.scm:777
 #, scheme-format
@@ -145,13 +169,16 @@ msgstr ""
 
 #: gnu/services.scm:805
 msgid "Populate the @file{/etc} directory."
-msgstr ""
+msgstr "@file{/etc}ディレクトリを追加します。"
 
 #: gnu/services.scm:845
+#, fuzzy
 msgid ""
 "Populate @file{/run/setuid-programs} with the specified\n"
 "executables, making them setuid and/or setgid."
 msgstr ""
+"@file{/run/setuid-programs}に指定した実行ファイルを入力し、\n"
+"setuidやsetgidを付与します。"
 
 #: gnu/services.scm:871
 msgid ""
@@ -159,6 +186,9 @@ msgid ""
 "@file{/run/current-system/profile}.  It contains packages that the sysadmin\n"
 "wants to be globally available to all the system users."
 msgstr ""
+"これは@dfn{システムプロファイル}で、@file{/run/current-system/profile}にあります。\n"
+"このプロファイルには、全てのシステムユーザーにグローバルに利用可能になっていて欲しいと\n"
+"sysadminが考えているパッケージが含まれています。"
 
 #: gnu/services.scm:891
 msgid ""
@@ -166,12 +196,17 @@ msgid ""
 "kernel.  Firmware may then be uploaded to some of the machine's devices, such\n"
 "as Wifi cards."
 msgstr ""
+"オペレーションシステムのカーネルからファームウェアをロード可能にします。\n"
+"ファームウェアはWi-Fiカードなどのデバイスへアップロードされるかもしれません。"
 
 #: gnu/services.scm:922
+#, fuzzy
 msgid ""
 "Register garbage-collector roots---i.e., store items that\n"
 "will not be reclaimed by the garbage collector."
 msgstr ""
+"ガベージコレクタのルートを登録します。\n"
+"つまり、ガベージコレクタによって回収されないであろうアイテムを保存します。"
 
 #: gnu/services.scm:980
 msgid ""
@@ -180,6 +215,10 @@ msgid ""
 "with a function that accepts the current configuration and returns a new\n"
 "configuration."
 msgstr ""
+"linux-libreカーネルプロファイルをビルドします。\n"
+"これはカーネル自身とあらゆるlinux-loadableなカーネルモジュールを含みます。\n"
+"現在の設定を受け取って新しい設定を返す関数を使って、\n"
+"これを拡張することができます。"
 
 #: gnu/services.scm:1002
 msgid ""
@@ -187,36 +226,39 @@ msgid ""
 "included in the booted linux-libre profile.  Other services can extend this\n"
 "service type to add particular modules to the set of linux-loadable modules."
 msgstr ""
+"ブートされたlinux-libreプロファイルに含まれるモジュールとして、パッケージとパッケージの出力を追加します。\n"
+"他のサービスがlinux-loadableなモジュール群に特定のモジュールを追加するには、\n"
+"このサービス型を拡張する必要があります。"
 
 #: gnu/services.scm:1029
 #, scheme-format
 msgid "no target of type '~a' for service '~a'"
-msgstr ""
+msgstr "サービス型'~a'のターゲットはサービス'~a'には存在しません"
 
 #: gnu/services.scm:1055 gnu/services.scm:1174
 #, scheme-format
 msgid "more than one target service of type '~a'"
-msgstr ""
+msgstr "サービス型'~a'のサービスがターゲットに複数あります"
 
 #: gnu/services.scm:1164
 #, scheme-format
 msgid "service of type '~a' not found"
-msgstr ""
+msgstr "サービス型'~a'のサービスがみつかりません"
 
 #: gnu/system.scm:384
 #, scheme-format
 msgid "unrecognized uuid ~a at '~a'~%"
-msgstr ""
+msgstr "~aというuuidは'~a'において認識できません~%"
 
 #: gnu/system.scm:472
 #, scheme-format
 msgid "unrecognized crypto-devices ~S at '~a'~%"
-msgstr ""
+msgstr "~Sというcrypto-devicesは'~a'において認識できません~%"
 
 #: gnu/system.scm:492
 #, scheme-format
 msgid "unrecognized boot parameters at '~a'~%"
-msgstr ""
+msgstr "ブートパラメータが'~a'において認識できません~%"
 
 #: gnu/system.scm:495
 #, scheme-format
@@ -229,58 +271,72 @@ msgid ""
 "guix pull\n"
 "@end example"
 msgstr ""
+"もしかすると、このバージョンのGuixは@file{~a}を生成するには古すぎるのかもしれません。\n"
+"この問題に対処するには、Guixを以下のようにアップデートする必要があります。\n"
+"\n"
+"@example\n"
+"guix pull\n"
+"@end example"
 
 #: gnu/system.scm:632
 #, scheme-format
 msgid "mapped device '~a' may be ignored by bootloader~%"
-msgstr ""
+msgstr "マッピングされたデバイス'~a' はブートローダに無視されるかもしれません~%"
 
 #: gnu/system.scm:652
 #, scheme-format
 msgid "List elements of the field 'swap-devices' should now use the <swap-space> record, as the old method is deprecated. See \"(guix) operating-system Reference\" for more details.~%"
-msgstr ""
+msgstr "古い方法は非推奨となったため、'swap-devices'フィールドのリストの要素は<swap-space>レコードでなければなりません。詳細は\"(guix) operating-system Reference\"をご覧ください。~%"
 
 #: gnu/system.scm:1135
 #, scheme-format
 msgid "using a string for file '~a' is deprecated; use 'plain-file' instead~%"
-msgstr ""
+msgstr "'~a'ファイルに対する文字列の使用は非推奨です。代わりに'plain-file'を使用してください。~%"
 
 #: gnu/system.scm:1151
 #, scheme-format
 msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
-msgstr ""
+msgstr "'~a'にモナド値を使用するのは非推奨です。代わりに'plain-file'を使用してください。~%"
 
 #: gnu/system.scm:1205
 #, scheme-format
 msgid "representing setuid programs with file-like objects is deprecated; use 'setuid-program' instead~%"
-msgstr ""
+msgstr "setuidプログラムをファイル様オブジェクトで表現するのは非推奨です。代わりに'setuid-program'を使用してください。~%"
 
 #: gnu/system.scm:1307
 msgid "missing root file system"
-msgstr ""
+msgstr "ルートファイルシステムがありません"
 
 #: gnu/system.scm:1383
 #, scheme-format
 msgid "~a: invalid locale name"
-msgstr ""
+msgstr "~a: ロケール名が無効です"
 
 #: gnu/services/base.scm:301
 msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
 msgstr ""
+"与えられたファイルシステムオブジェクトに基づき、\n"
+"@file{/etc/fstab}を追加します。"
 
 #: gnu/services/base.scm:348
+#, fuzzy
 msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
 msgstr ""
+"システムをシャットダウンすると、\n"
+"ルートファイルシステムの同期と読取専用の再マウントが起こることに注意してください。"
 
 #: gnu/services/base.scm:542
+#, fuzzy
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
 msgstr ""
+"@file{/etc/fstab}エントリに対応するファイルシステムに加え、\n"
+"与えられたファイルシステムのマウントとアンマウントを行うShepherdサービスを提供します。"
 
 #: gnu/services/base.scm:640
 msgid ""
@@ -288,20 +344,24 @@ msgid ""
 "generator (RNG) with the value recorded when the system was last shut\n"
 "down."
 msgstr ""
+"@file{/dev/urandom}により提供される疑似乱数生成器(RNG)のシードを、\n"
+"システムが最後にシャットダウンしたときに記録した値に設定します。"
 
 #: gnu/services/base.scm:672
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
 msgstr ""
+"乱数生成器デーモンである@command{rngd}を実行し、\n"
+"カーネルプールにエントロピーを供給します。"
 
 #: gnu/services/base.scm:701
 msgid "Initialize the machine's host name."
-msgstr ""
+msgstr "マシンのホスト名を初期化します。"
 
 #: gnu/services/base.scm:731
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
-msgstr ""
+msgstr "Linux仮想端末がUTF-8モードで実行されていることを保証します。"
 
 #: gnu/services/base.scm:744
 msgid ""
@@ -309,6 +369,9 @@ msgid ""
 "@code{keyboard-layout} field of @code{operating-system}.}  Load the given list\n"
 "of console keymaps with @command{loadkeys}."
 msgstr ""
+"@emph{@code{operating-system}の@code{keyboard-layout}フィールドに伴い、\n"
+"このサービスは非推奨になりました。} @command{loadkeys}を使うことで、\n"
+"与えたコンソールキーマップのリストをロードすることができます。"
 
 #: gnu/services/base.scm:804
 msgid ""
@@ -327,24 +390,40 @@ msgid ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 msgstr ""
+"与えられたフォントを指定したttyにインストールします(GNU/Linuxではフォントは仮想コンソール毎に管理されます)。\n"
+"このサービスの値はttyとフォントのペアのリストです。\n"
+"以下の例にあるように、フォントとしては@code{kbd}パッケージによって提供される名前、\n"
+"もしくは@command{setfont}にとって有効なあらゆる引数を与えることができます。\n"
+"\n"
+"@example\n"
+"`((\"tty1\" . \"LatGrkCyr-8x16\")\n"
+"  (\"tty2\" . ,(file-append\n"
+"                 font-tamzen\n"
+"                 \"/share/kbd/consolefonts/TamzenForPowerline10x20.psf\"))\n"
+"  (\"tty3\" . ,(file-append\n"
+"                 font-terminus\n"
+"                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
+"@end example\n"
 
 #: gnu/services/base.scm:856
 msgid ""
 "Provide a console log-in service as specified by its\n"
 "configuration value, a @code{login-configuration} object."
 msgstr ""
+"設定値、すなわち@code{login-configuration}オブジェクトによって指定された通りに\n"
+"コンソールログインサービスを提供します。"
 
 #: gnu/services/base.scm:1128
 msgid ""
 "Provide console login using the @command{agetty}\n"
 "program."
-msgstr ""
+msgstr "@command{agetty}プログラムを用いてコンソールログインを提供します。"
 
 #: gnu/services/base.scm:1193
 msgid ""
 "Provide console login using the @command{mingetty}\n"
 "program."
-msgstr ""
+msgstr "@command{mingetty}プログラムを用いてコンソールログインを提供します。"
 
 #: gnu/services/base.scm:1411
 msgid ""
@@ -352,12 +431,17 @@ msgid ""
 "given configuration---an @code{<nscd-configuration>} object.  @xref{Name\n"
 "Service Switch}, for an example."
 msgstr ""
+"@code{<nscd-configuration>}オブジェクトによって与えられた設定を元に、\n"
+"libcの@dfn{name service cache daemon} (nscd)を実行します。\n"
+"例としては@xref{Name Service Switch}ご覧ください。"
 
 #: gnu/services/base.scm:1450
 msgid ""
 "Run the syslog daemon, @command{syslogd}, which is\n"
 "responsible for logging system messages."
 msgstr ""
+"syslogデーモン、つまり@command{syslogd}を実行します。\n"
+"このデーモンの責務はシステムメッセージのログを取ることです。"
 
 #: gnu/services/base.scm:1516
 msgid ""
@@ -365,16 +449,21 @@ msgid ""
 "@file{/etc/security/limits.conf} and using the @code{pam_limits}\n"
 "authentication module."
 msgstr ""
+"指定したリソースの使用制限をインストールします。\n"
+"これは@file{/etc/security/limits.conf}の追加と\n"
+"@code{pam_limits}認証モジュールの使用によって行われます。"
 
 #: gnu/services/base.scm:1876
 msgid "Run the build daemon of GNU@tie{}Guix, aka. @command{guix-daemon}."
-msgstr ""
+msgstr "GNU@tie{}Guixのビルドデーモン、別名@command{guix-daemon}を実行します。"
 
 #: gnu/services/base.scm:2049
 msgid ""
 "Add a Shepherd service running @command{guix publish}, a\n"
 "command that allows you to share pre-built binaries with others over HTTP."
 msgstr ""
+"@command{guix publish}を実行するShepherdサービスを追加します。\n"
+"このコマンドはHTTPを通してビルド済みバイナリを他の人に共有できるようにします。"
 
 #: gnu/services/base.scm:2253
 msgid ""
@@ -382,14 +471,17 @@ msgid ""
 "directory dynamically.  Get extra rules from the packages listed in the\n"
 "@code{rules} field of its value, @code{udev-configuration} object."
 msgstr ""
+"@command{udev}を実行します。このコマンドは@file{/dev}ディレクトリを動的に配置します。\n"
+" @code{udev-configuration}オブジェクトの@code{rules}フィールドに列挙されているパッケージから、\n"
+"追加のルールを取得します。"
 
 #: gnu/services/base.scm:2281
 msgid "This service adds udev rules."
-msgstr ""
+msgstr "このサービスはudevルールを追加します。"
 
 #: gnu/services/base.scm:2371
 msgid "Turn on the virtual memory swap area."
-msgstr ""
+msgstr "仮想メモリスワップ領域を有効にします。"
 
 #: gnu/services/base.scm:2413
 msgid ""
@@ -398,32 +490,38 @@ msgid ""
 "notably to select, copy, and paste text.  The default options use the\n"
 "@code{ps2} protocol, which works for both USB and PS/2 mice."
 msgstr ""
+"GPM(汎用マウスデーモン; general-purpose mouse daemon)を、与えられたコマンドラインオプションで実行します。\n"
+"GPMにより、ユーザーはコンソールにおいてテキストの選択、コピー、貼り付けをはじめとしたマウス操作を\n"
+"行うことができるようになります。\n"
+"デフォルトのオプションでは@code{ps2} protocolを用います。これはUSBマウスとPS/2マウスの両方で動作します。"
 
 #: gnu/services/base.scm:2486
 msgid ""
 "Start the @command{kmscon} virtual terminal emulator for the\n"
 "Linux @dfn{kernel mode setting} (KMS)."
 msgstr ""
+"Linux@dfn{カーネルモード設定} (kernel mode setting; KMS)用の\n"
+"仮想端末エミュレータである@command{kmscon}を始動します。"
 
 #: gnu/services/base.scm:2503
 #, scheme-format
 msgid "address '~a' lacks a network mask"
-msgstr ""
+msgstr "アドレス'~a'にはネットワークマスクがありません"
 
 #: gnu/services/base.scm:2509
 #, scheme-format
 msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
-msgstr ""
+msgstr "例えば24-bitのネットワークマスクならば、@samp{\"~a/24\"}と書いてください。"
 
 #: gnu/services/base.scm:2589
 #, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
-msgstr ""
+msgstr "ネットワークリンクは現在GNU/Hurdにおいて無視されています~%"
 
 #: gnu/services/base.scm:2614
 #, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr ""
+msgstr "'~a'のためのネットワークルートを無視します~%"
 
 #: gnu/services/base.scm:2798
 msgid ""
@@ -432,6 +530,10 @@ msgid ""
 "services of this type is a list of @code{static-networking} objects, one per\n"
 "network interface."
 msgstr ""
+"与えられたIPアドレス、ゲートウェイ、ネットマスクなどの情報を用い、\n"
+"指定のネットワークインターフェースを有効化します。\n"
+"この型のサービスの値は@code{static-networking}オブジェクトのリストで、\n"
+"1つの要素が1つのネットワークインターフェースに対応します。"
 
 #: gnu/services/base.scm:3166
 msgid ""
@@ -440,11 +542,15 @@ msgid ""
 "mount/unmount /run/user/<uid> directory for user and @code{greetd}\n"
 "login manager daemon."
 msgstr ""
+"システムにログインするために必要な基盤を提供します。\n"
+"これには @code{greetd} PAMサービスが含まれます。\n"
+" @code{greetd} PAMサービスは、ユーザー及び@code{greetd}ログインマネージャデーモンのために\n"
+"/run/user/<uid>ディレクトリをマウント・アンマウントする@code{pam-mount}モジュールです。"
 
 #: gnu/services/certbot.scm:159
 #, scheme-format
 msgid "~a may need to be run~%"
-msgstr ""
+msgstr "~aを実行する必要があるかもしれません~%"
 
 #: gnu/services/certbot.scm:209
 msgid ""
@@ -452,11 +558,14 @@ msgid ""
 "Encrypt} HTTPS certificates by adjusting the nginx web server configuration\n"
 "and periodically invoking @command{certbot}."
 msgstr ""
+"nginxウェブサーバーの設定を変更し、\n"
+"定期的に@command{certbot}を呼び出すことで、\n"
+"自動で@url{https://letsencrypt.org, Let's Encrypt}のHTTPS証明書を更新します。"
 
 #: gnu/services/configuration.scm:96
 #, scheme-format
 msgid "invalid value ~s for field '~a'"
-msgstr ""
+msgstr "~sはフィールド'~a'の値として無効です"
 
 #: gnu/services/configuration.scm:418
 #, scheme-format
@@ -466,35 +575,38 @@ msgstr ""
 #: gnu/services/file-sharing.scm:74
 #, scheme-format
 msgid "salt value must be a string of ~d characters"
-msgstr ""
+msgstr "ソルトの値は~d文字の文字列でなければなりません"
 
 #: gnu/services/file-sharing.scm:670
 #, scheme-format
 msgid "Wait period expired; killing transmission-daemon (pid ~a).~%"
-msgstr ""
+msgstr "待機時間が終わりました。transmission-daemon(pid: ~a)をキルします。~%"
 
 #: gnu/services/file-sharing.scm:673
 msgid ""
 "(If you see this message regularly, you may need to increase the value\n"
 "of 'stop-wait-period' in the service configuration.)\n"
 msgstr ""
+"(もしこのメッセージを定期的に目にするようなら、\n"
+"サービス設定の'stop-wait-period'の値を増やす必要があるかもしれません。)\n"
 
 #: gnu/services/file-sharing.scm:687
+#, fuzzy
 msgid "Service transmission-daemon has been asked to reload its settings file."
-msgstr ""
+msgstr "transmission-daemonサービスは設定ファイルをリロードするよう要求されています"
 
 #: gnu/services/file-sharing.scm:689
 msgid "Service transmission-daemon is not running."
-msgstr ""
+msgstr "transmission-daemonサービスが実行されていません。"
 
 #: gnu/services/file-sharing.scm:793
 msgid "Share files using the BitTorrent protocol."
-msgstr ""
+msgstr "BitTorrentプロトコルを利用してファイルを共有します。"
 
 #: gnu/services/networking.scm:325
 #, scheme-format
 msgid "'dhcp-client' service now expects a 'dhcp-client-configuration' record~%"
-msgstr ""
+msgstr "'dhcp-client'サービスは今や'dhcp-client-configuration'レコードを期待します。~%"
 
 #: gnu/services/networking.scm:327
 msgid ""
@@ -502,18 +614,25 @@ msgid ""
 "@code{dhcp-client-service-type} must now be a @code{dhcp-client-configuration}\n"
 "record instead of a package.  Please adjust your configuration accordingly."
 msgstr ""
+"@code{dhcp-client-service-type}のインスタンスに紐付けられる値は\n"
+"今やパッケージではなく@code{dhcp-client-configuration}レコードでなければなりません。\n"
+"それに伴い、設定を適切に変更してください。"
 
 #: gnu/services/networking.scm:340
 msgid ""
 "Run @command{dhcp}, a Dynamic Host Configuration\n"
 "Protocol (DHCP) client, on all the non-loopback network interfaces."
 msgstr ""
+"ループバックでない全てのインターフェースで、動的ホスト構成プロトコル\n"
+"(Dynamic Host Configuration Protocol; DHCP)のクライアントである@command{dhcp}を実行します。"
 
 #: gnu/services/networking.scm:409
 msgid ""
 "Run a DHCP (Dynamic Host Configuration Protocol) daemon.  The\n"
 "daemon is responsible for allocating IP addresses to its client."
 msgstr ""
+"DHCP(動的ホスト構成プロトコル)デーモンを実行します。\n"
+"このデーモンはIPアドレスをクライアントに割り当てる役割があります。"
 
 #: gnu/services/networking.scm:574
 msgid ""
@@ -521,6 +640,9 @@ msgid ""
 "daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon\n"
 "will keep the system clock synchronized with that of the given servers."
 msgstr ""
+"@uref{http://www.ntp.org, Network Time Foundation}が公開している\n"
+"Network Time Protocol(NTP)デーモンである@command{ntpd}を実行します。\n"
+"このデーモンは、システムクロックを与えられたサーバーと同期し続けます。"
 
 #: gnu/services/networking.scm:686
 msgid ""
@@ -528,6 +650,9 @@ msgid ""
 "daemon, as implemented by @uref{http://www.openntpd.org, OpenNTPD}.  The\n"
 "daemon will keep the system clock synchronized with that of the given servers."
 msgstr ""
+"@uref{http://www.openntpd.org, OpenNTPD}の実装した\n"
+"Network Time Protocol(NTP)デーモンである@command{ntpd}を実行します。\n"
+"このデーモンは、システムクロックを与えられたサーバーと同期し続けます。"
 
 #: gnu/services/networking.scm:774
 msgid ""
@@ -535,6 +660,9 @@ msgid ""
 "for listening on Internet sockets and spawning the corresponding services on\n"
 "demand."
 msgstr ""
+"@dfn{インターネットスーパーサーバ}である@command{inetd}を始動します。\n"
+"これはインターネットソケットをリッスンし、必要に応じて対応するサービスを\n"
+"生成します。"
 
 #: gnu/services/networking.scm:896
 msgid ""
@@ -545,16 +673,22 @@ msgid ""
 "paramount.  OpenDHT was originally based on Kademlia and adapted for\n"
 "applications in communication.  It is used by Jami, for example."
 msgstr ""
+"OpenDHTの@command{dhtnode}コマンドを実行し、\n"
+"ハッシュテーブルに基づいたOpenDHTの分散ネットワークに参加します。\n"
+"サービスは分散ネットワークへのプロキシとして振舞うように設定されます。\n"
+"これはエネルギー消費を最小化することが最も重要であるポータブルデバイスにおいて有用です。\n"
+"OpenDHT は元々Kademliaに基づいていて、コミュニケーションアプリに適合します。\n"
+"例えば、Jamiに使われています。"
 
 #: gnu/services/networking.scm:1090
 msgid ""
 "Run the @uref{https://torproject.org, Tor} anonymous\n"
 "networking daemon."
-msgstr ""
+msgstr "@uref{https://torproject.org, Tor}匿名ネットワークデーモンを実行します。"
 
 #: gnu/services/networking.scm:1099
 msgid "Define a new Tor @dfn{hidden service}."
-msgstr ""
+msgstr "新しいTor@dfn{隠しサービス}を定義します。"
 
 #: gnu/services/networking.scm:1250
 msgid ""
@@ -562,12 +696,14 @@ msgid ""
 "NetworkManager}, a network management daemon that aims to simplify wired and\n"
 "wireless networking."
 msgstr ""
+"@uref{https://wiki.gnome.org/Projects/NetworkManager, NetworkManager}を実行します。\n"
+"これは有線及び無線ネットワークの構築を単純化することを目的とするネットワーク管理デーモンです。"
 
 #: gnu/services/networking.scm:1325
 msgid ""
 "Run @url{https://01.org/connman,Connman},\n"
 "a network connection manager."
-msgstr ""
+msgstr "ネットワーク接続マネージャである@url{https://01.org/connman,Connman}を実行します。"
 
 #: gnu/services/networking.scm:1348
 msgid ""
@@ -575,6 +711,8 @@ msgid ""
 "ModemManager}, a modem management daemon that aims to simplify dialup\n"
 "networking."
 msgstr ""
+"@uref{https://wiki.gnome.org/Projects/ModemManager, ModemManager}を実行します。\n"
+"これはダイアルアップ接続ネットワーク構築を単純化することを目的とするモデム管理デーモンです。"
 
 #: gnu/services/networking.scm:1438
 msgid ""
@@ -586,22 +724,33 @@ msgid ""
 "Windows drivers would send to switch their mode from storage to modem (or\n"
 "whatever the thing is supposed to do)."
 msgstr ""
+"@uref{http://www.draisberghof.de/usb_modeswitch/, USB_ModeSwitch}を実行します。\n"
+"これは複数の@dfn{モード}があるUSBデバイスを制御するための、モード切り替えツールです。\n"
+"かなりの数のUSBデバイス（主に高速なWANモデム）は、初めて差し込んだとき、\n"
+"Windowsドライバのインストーラを含むフラッシュストレージのように振舞います。\n"
+"USB_ModeSwitchは、Windowsドライバーがモード切り替えのために\n"
+"ストレージからモデムに送るであろうシーケンス（及び行われるであろうあらゆる操作）を\n"
+"再生します。"
 
 #: gnu/services/networking.scm:1509
 msgid ""
 "Run the WPA Supplicant daemon, a service that\n"
 "implements authentication, key negotiation and more for wireless networks."
 msgstr ""
+"WPAのサプリカントデーモンを実行します。\n"
+"これは認証、鍵のネゴシエーションなどの無線ネットワークのための機能を有しています。"
 
 #: gnu/services/networking.scm:1577
 msgid ""
 "Run the @uref{https://w1.fi/hostapd/, hostapd} daemon for Wi-Fi access\n"
 "points and authentication servers."
 msgstr ""
+"Wi-Fiアクセスポイントと認証サーバのための\n"
+"@uref{https://w1.fi/hostapd/, hostapd}デーモンを実行します。"
 
 #: gnu/services/networking.scm:1611
 msgid "Run hostapd to simulate WiFi connectivity."
-msgstr ""
+msgstr "Wi-Fi接続性をシミュレーションするためにhostapdを実行します。"
 
 #: gnu/services/networking.scm:1671
 msgid ""
@@ -609,38 +758,50 @@ msgid ""
 "switch designed to enable massive network automation through programmatic\n"
 "extension."
 msgstr ""
+"@uref{http://www.openvswitch.org, Open vSwitch}を実行します。\n"
+"これはプログラム可能な拡張を通して巨大なネットワークの自動化を可能にする、\n"
+"マルチレイヤな仮想スイッチです。"
 
 #: gnu/services/networking.scm:1717
 msgid "Run @command{iptables-restore}, setting up the specified rules."
-msgstr ""
+msgstr "@command{iptables-restore}を実行し、指定したルールを設定します。"
 
 #: gnu/services/networking.scm:1786
 msgid "Run @command{nft}, setting up the specified ruleset."
-msgstr ""
+msgstr "@command{nft}を実行し、指定したルールセットを設定します。"
 
 #: gnu/services/networking.scm:1893
 msgid ""
 "Run @url{https://pagekite.net/,PageKite}, a tunneling solution to make\n"
 "local servers publicly accessible on the web, even behind NATs and firewalls."
 msgstr ""
+"@url{https://pagekite.net/,PageKite}を実行します。\n"
+"これはNATやファイアウォールの内側にあるかどうかにかかわらず、\n"
+"ローカルサーバがウェブからパブリックにアクセスできるようにトンネルするソリューションです。"
 
 #: gnu/services/networking.scm:1993
 msgid ""
 "Connect to the Yggdrasil mesh network.\n"
 "See @command{yggdrasil -genconf} for config options."
 msgstr ""
+"Yggdrasilのメッシュネットワークに接続します。\n"
+"設定項目を確認するには@command{yggdrasil -genconf}を実行してください。"
 
 #: gnu/services/networking.scm:2137
 msgid ""
 "Run @command{ipfs daemon}, the reference implementation\n"
 "of the IPFS peer-to-peer storage network."
 msgstr ""
+"@command{ipfs daemon}を実行します。\n"
+"これはIPFSのピアツーピアストレージネットワークのリファレンス実装です。"
 
 #: gnu/services/networking.scm:2182
 msgid ""
 "Run @uref{https://www.keepalived.org/, Keepalived}\n"
 "routing software."
 msgstr ""
+"@uref{https://www.keepalived.org/, Keepalived}を実行します。\n"
+"これはルーティングを行うソフトウェアです。"
 
 #: gnu/services/shepherd.scm:147
 msgid ""
@@ -648,16 +809,19 @@ msgid ""
 "process.  The Shepherd takes care of managing services such as daemons by\n"
 "ensuring they are started and stopped in the right order."
 msgstr ""
+"GNU ShepherdをPID 1で（つまりオペレーティングシステムの第一プロセスとして）実行します。\n"
+"Shepherdはデーモンのような管理サービスを受け持っており、\n"
+"管理サービスが適切な順序で始動や停止されることを保証します。"
 
 #: gnu/services/shepherd.scm:239
 #, scheme-format
 msgid "service '~a' provided more than once"
-msgstr ""
+msgstr "サービス'~a'が複数回提供されています"
 
 #: gnu/services/shepherd.scm:254
 #, scheme-format
 msgid "service '~a' requires '~a', which is not provided by any service"
-msgstr ""
+msgstr "サービス'~a'は'~a'を必要としますが、どのサービスもそれを提供していません"
 
 #: gnu/services/shepherd.scm:637
 msgid ""
@@ -724,7 +888,7 @@ msgstr ""
 
 #: gnu/home/services.scm:277
 msgid "Set the environment variables."
-msgstr ""
+msgstr "環境変数を設定する。"
 
 #: gnu/home/services.scm:288
 #, scheme-format
@@ -836,7 +1000,7 @@ msgstr ""
 #: gnu/home/services/symlink-manager.scm:138
 #: gnu/home/services/symlink-manager.scm:195
 msgid " done\n"
-msgstr ""
+msgstr " 完了。\n"
 
 #: gnu/home/services/symlink-manager.scm:122
 #, scheme-format
@@ -1358,11 +1522,11 @@ msgstr ""
 
 #: gnu/installer.scm:219
 msgid "Locale"
-msgstr ""
+msgstr "ロケール"
 
 #: gnu/installer.scm:237 gnu/installer/newt/timezone.scm:58
 msgid "Timezone"
-msgstr ""
+msgstr "タイムゾーン"
 
 #: gnu/installer.scm:254
 msgid "Keyboard mapping selection"
@@ -1370,11 +1534,11 @@ msgstr ""
 
 #: gnu/installer.scm:263 gnu/installer/newt/hostname.scm:26
 msgid "Hostname"
-msgstr ""
+msgstr "ホスト名"
 
 #: gnu/installer.scm:272
 msgid "Network selection"
-msgstr ""
+msgstr "ネットワークの選択"
 
 #: gnu/installer.scm:279 gnu/installer/newt/substitutes.scm:31
 msgid "Substitute server discovery"
@@ -1383,7 +1547,7 @@ msgstr ""
 #: gnu/installer.scm:286 gnu/installer/newt/user.scm:70
 #: gnu/installer/newt/user.scm:217
 msgid "User creation"
-msgstr ""
+msgstr "ユーザー作成"
 
 #: gnu/installer.scm:294
 msgid "Services"
@@ -1391,11 +1555,11 @@ msgstr "サービス"
 
 #: gnu/installer.scm:305
 msgid "Partitioning"
-msgstr ""
+msgstr "パーティション構成"
 
 #: gnu/installer.scm:312 gnu/installer/newt/final.scm:53
 msgid "Configuration file"
-msgstr ""
+msgstr "設定ファイル"
 
 #: gnu/installer/connman.scm:196
 msgid "Could not determine the state of connman."
@@ -1441,7 +1605,7 @@ msgstr ""
 #: gnu/installer/newt/timezone.scm:63 gnu/installer/newt/user.scm:216
 #: gnu/installer/newt/wifi.scm:206
 msgid "Exit"
-msgstr ""
+msgstr "終了"
 
 #: gnu/installer/newt.scm:85
 #, scheme-format
@@ -1507,12 +1671,12 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:68
 msgid "Installation complete"
-msgstr ""
+msgstr "インストールが完了しました"
 
 #: gnu/installer/newt/final.scm:69 gnu/installer/newt/parameters.scm:45
 #: gnu/installer/newt/welcome.scm:197
 msgid "Reboot"
-msgstr ""
+msgstr "再起動"
 
 #: gnu/installer/newt/final.scm:70
 msgid "Congratulations!  Installation is now complete.  You may remove the device containing the installation image and press the button to reboot."
@@ -1520,11 +1684,11 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:84
 msgid "Installation failed"
-msgstr ""
+msgstr "インストールに失敗しました"
 
 #: gnu/installer/newt/final.scm:85
 msgid "Resume"
-msgstr ""
+msgstr "再開"
 
 #: gnu/installer/newt/final.scm:86
 msgid "Restart the installer"
@@ -1567,7 +1731,7 @@ msgstr ""
 #: gnu/installer/newt/locale.scm:88 gnu/installer/newt/partition.scm:608
 #: gnu/installer/newt/timezone.scm:64
 msgid "Back"
-msgstr ""
+msgstr "戻る"
 
 #: gnu/installer/newt/hostname.scm:25
 msgid "Please enter the system hostname."
@@ -1575,7 +1739,7 @@ msgstr ""
 
 #: gnu/installer/newt/keymap.scm:38
 msgid "Layout"
-msgstr ""
+msgstr "レイアウト"
 
 #: gnu/installer/newt/keymap.scm:43
 msgid "Please choose your keyboard layout. It will only be used during the installation process. Non-Latin layouts can be toggled with Alt+Shift."
@@ -1588,7 +1752,7 @@ msgstr ""
 #: gnu/installer/newt/keymap.scm:55 gnu/installer/newt/network.scm:64
 #: gnu/installer/newt/page.scm:314 gnu/installer/newt/welcome.scm:164
 msgid "Continue"
-msgstr ""
+msgstr "続行"
 
 #: gnu/installer/newt/keymap.scm:65
 msgid "Variant"
@@ -1685,7 +1849,7 @@ msgstr ""
 
 #: gnu/installer/newt/network.scm:155 gnu/installer/newt/wifi.scm:108
 msgid "Connection error"
-msgstr ""
+msgstr "接続エラー"
 
 #: gnu/installer/newt/page.scm:204
 #, scheme-format
@@ -1698,7 +1862,7 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:224 gnu/installer/newt/user.scm:62
 msgid "Show"
-msgstr ""
+msgstr "表示"
 
 #: gnu/installer/newt/page.scm:231 gnu/installer/newt/page.scm:678
 #: gnu/installer/newt/page.scm:762 gnu/installer/newt/partition.scm:471
@@ -1706,7 +1870,7 @@ msgstr ""
 #: gnu/installer/newt/partition.scm:712 gnu/installer/newt/user.scm:68
 #: gnu/installer/newt/user.scm:215
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: gnu/installer/newt/page.scm:257
 msgid "Please enter a non empty input."
@@ -1718,11 +1882,11 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:765
 msgid "Edit"
-msgstr ""
+msgstr "編集"
 
 #: gnu/installer/newt/page.scm:825
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: gnu/installer/newt/partition.scm:45
 msgid "Everything is one partition"
@@ -1765,7 +1929,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:86
 msgid "Disk"
-msgstr ""
+msgstr "ディスク"
 
 #: gnu/installer/newt/partition.scm:100
 #, scheme-format
@@ -1778,7 +1942,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:115
 msgid "Partition table"
-msgstr ""
+msgstr "パーティションテーブル"
 
 #: gnu/installer/newt/partition.scm:134
 msgid "Please select a partition type."
@@ -7075,7 +7239,7 @@ msgstr ""
 
 #: guix/ui.scm:1518
 msgid "documentation"
-msgstr ""
+msgstr "ドキュメント"
 
 #: guix/ui.scm:1519
 msgid "shared libraries"

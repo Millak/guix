@@ -990,6 +990,117 @@ and editing digital audio.  It features digital effects and spectrum analysis
 tools.")
     (license license:gpl2+)))
 
+(define-public tenacity
+  (package
+    (name "tenacity")
+    (version "1.3-beta2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/tenacityteam/tenacity")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pd2vxzqzq7ikz7l2a1h9qwq08276xicvphrpn47gvmwaslah1gn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%cmake-build-system-modules)
+      #:modules
+      '((guix build utils)
+        (guix build cmake-build-system)
+        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-upstream-headers
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("libraries/lib-files/FileNames.cpp")
+                (("\"/usr/include/linux/magic.h\"") "<linux/magic.h>"))))
+          (add-after 'unpack
+              'i-spy-with-my-little-eye-something-in-the-wrong-folder
+            (lambda _
+              (symlink (string-append (getcwd) "/images")
+                       "src/images")))
+          (add-after 'unpack 'fix-cmake-rpath
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("\\$ORIGIN/\\.\\./\\$\\{_PKGLIB\\}")
+                 (string-append (assoc-ref outputs "out") "/lib/tenacity"))
+                (("CMAKE_BUILD_WITH_INSTALL_RPATH [A-Z]*")
+                 "CMAKE_BUILD_WITH_INSTALL_RPATH TRUE")
+                (("CMAKE_INSTALL_RPATH_USE_LINK_PATH [A-Z]*")
+                 "CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE"))
+              (substitute* "src/CMakeLists.txt"
+                ;; Despite the name, this script breaks rpath.  Don't run it.
+                (("install.*linux/fix_rpath\\.cmake.*")
+                 "")
+                (("-Wl,--disable-new-dtags") "-Wl,--enable-new-dtags"))))
+          (replace 'configure
+            (lambda args
+              (define %configure (assoc-ref %standard-phases 'configure))
+              (with-exception-handler
+                  (lambda (error)
+                    (unless (invoke-error? error)
+                      (raise error))
+                    ;; Have you tried turning it off and on again?
+                    (apply invoke (invoke-error-program error)
+                           (invoke-error-arguments error)))
+                (lambda ()
+                  (apply %configure args))
+                #:unwind? #t)))
+          (add-after 'wrap-program 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
+      ;; Test suite?  Which test suite?
+      #:tests? #f))
+    (inputs
+     (list wxwidgets
+           gtk+
+           alsa-lib
+           jack-1
+           expat
+           lame
+           flac
+           ffmpeg
+           libid3tag
+           libjpeg-turbo
+           ;;("libsbsms" ,libsbsms)         ;bundled version is modified
+           libsndfile
+           mpg123
+           soundtouch
+           soxr ;replaces libsamplerate
+           sqlite
+           twolame
+           vamp
+           libvorbis
+           lv2
+           lilv ;for lv2
+           suil ;for lv2
+           portaudio
+           portmidi
+           wavpack))
+    (native-inputs
+     (list gettext-minimal              ;for msgfmt
+           libtool
+           pkg-config
+           python
+           which))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TENACITY_MODULES_PATH")
+            (files '("lib/tenacity/modules")))
+           (search-path-specification
+            (variable "TENACITY_PATH")
+            (files '("share/tenacity")))))
+    (home-page "https://tenacityaudio.org/")
+    (synopsis "Software for recording and editing sounds")
+    (description
+     "Tenacity is a multi-track audio editor designed for recording, playing
+and editing digital audio.  It features digital effects and spectrum analysis
+tools.")
+    (license license:gpl2+)))
+
 (define-public audiofile
   (package
     (name "audiofile")

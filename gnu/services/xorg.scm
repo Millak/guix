@@ -107,10 +107,13 @@
 
             slim-service-type
 
-            screen-locker
-            screen-locker?
+            screen-locker-configuration
+            screen-locker-configuration?
+            screen-locker-configuration-name
+            screen-locker-configuration-program
+            screen-locker-configuration-allow-empty-password?
             screen-locker-service-type
-            screen-locker-service
+            screen-locker-service  ; deprecated
 
             localed-configuration
             localed-configuration?
@@ -683,21 +686,30 @@ reboot_cmd " shepherd "/sbin/reboot\n"
 ;;; Screen lockers & co.
 ;;;
 
-(define-record-type <screen-locker>
-  (screen-locker name program empty?)
+(define-record-type <screen-locker-configuration>
+  (screen-locker-configuration name program allow-empty-password?)
+  screen-locker-configuration?
+  (name    screen-locker-configuration-name)           ;string
+  (program screen-locker-configuration-program)        ;gexp
+  (allow-empty-password?
+   screen-locker-configuration-allow-empty-password?)) ;Boolean
+
+(define-deprecated/public-alias
+  screen-locker
+  screen-locker-configuration)
+
+(define-deprecated/public-alias
   screen-locker?
-  (name    screen-locker-name)                     ;string
-  (program screen-locker-program)                  ;gexp
-  (empty?  screen-locker-allows-empty-passwords?)) ;Boolean
+  screen-locker-configuration?)
 
 (define screen-locker-pam-services
   (match-lambda
-    (($ <screen-locker> name _ empty?)
+    (($ <screen-locker-configuration> name _ empty?)
      (list (unix-pam-service name
                              #:allow-empty-passwords? empty?)))))
 
 (define screen-locker-setuid-programs
-  (compose list file-like->setuid-program screen-locker-program))
+  (compose list file-like->setuid-program screen-locker-configuration-program))
 
 (define screen-locker-service-type
   (service-type (name 'screen-locker)
@@ -711,10 +723,11 @@ reboot_cmd " shepherd "/sbin/reboot\n"
 the graphical server by making it setuid-root, so it can authenticate users,
 and by creating a PAM service for it.")))
 
-(define* (screen-locker-service package
-                                #:optional
-                                (program (package-name package))
-                                #:key allow-empty-passwords?)
+(define-deprecated (screen-locker-service package
+                                          #:optional
+                                          (program (package-name package))
+                                          #:key allow-empty-passwords?)
+  screen-locker-service-type
   "Add @var{package}, a package for a screen locker or screen saver whose
 command is @var{program}, to the set of setuid programs and add a PAM entry
 for it.  For example:
@@ -725,9 +738,9 @@ for it.  For example:
 
 makes the good ol' XlockMore usable."
   (service screen-locker-service-type
-           (screen-locker program
-                          (file-append package "/bin/" program)
-                          allow-empty-passwords?)))
+           (screen-locker-configuration program
+                                        (file-append package "/bin/" program)
+                                        allow-empty-passwords?)))
 
 
 ;;;

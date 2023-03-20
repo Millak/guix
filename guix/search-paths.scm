@@ -34,6 +34,7 @@
 
             $PATH
             $GUIX_EXTENSIONS_PATH
+            $PKG_CONFIG_PATH
             $SSL_CERT_DIR
             $SSL_CERT_FILE
 
@@ -82,6 +83,13 @@
   (search-path-specification
    (variable "GUIX_EXTENSIONS_PATH")
    (files '("share/guix/extensions"))))
+
+(define $PKG_CONFIG_PATH
+  ;; 'PKG_CONFIG_PATH' is used by pkg-config to locate available header files
+  ;; and libraries, via their .pc files.
+  (search-path-specification
+   (variable "PKG_CONFIG_PATH")
+   (files '("lib/pkgconfig" "lib64/pkgconfig" "share/pkgconfig"))))
 
 ;; Two variables for certificates (info "(guix)X.509 Certificates"),
 ;; respected by OpenSSL and possibly GnuTLS in the future

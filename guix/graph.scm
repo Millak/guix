@@ -24,7 +24,6 @@
   #:use-module (guix sets)
   #:autoload   (guix diagnostics) (formatted-message)
   #:autoload   (guix i18n) (G_)
-  #:use-module (rnrs io ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)

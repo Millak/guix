@@ -942,7 +942,7 @@ high a score as possible.")
 (define-public cataclysm-dda
   (package
     (name "cataclysm-dda")
-    (version "0.F-3")
+    (version "0.G")
     (source
      (origin
        (method git-fetch)
@@ -950,47 +950,44 @@ high a score as possible.")
              (url "https://github.com/CleverRaven/Cataclysm-DDA")
              (commit version)))
        (sha256
-        (base32 "1qnsz6az9qp4sbr3y4rcqhlmadrrdzafvd2xwf3db5wn0swvbjys"))
+        (base32 "0y8513yflxfqblk42h5ad0dq5lx5s8k6hhjy65yfcda7amsv9mhx"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "USE_HOME_DIR=1" "DYNAMIC_LINKING=1" "RELEASE=1"
-             "LOCALIZE=1" "LANGUAGES=all")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; Apparently we can't do make on both tiles and a console version at
-         ;; the same time anymore, so we have to either "make clean" between
-         ;; builds or do some other hackery.  See:
-         ;;   https://github.com/CleverRaven/Cataclysm-DDA/issues/42598#issuecomment-667702746
-         (add-after 'install 'make-clean-pre-tiles
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             ;; Change prefix directory and enable tile graphics and sound.
-             (invoke "make" "clean")))
-         (add-after 'make-clean-pre-tiles 'build-tiles
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             ;; Change prefix directory and enable tile graphics and sound.
-             (apply invoke "make" "TILES=1" "SOUND=1"
-                    (string-append "PREFIX="
-                                   (assoc-ref outputs "tiles"))
-                    (cdr make-flags))))
-         (add-after 'build-tiles 'install-tiles
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             (apply invoke "make" "install" "TILES=1" "SOUND=1"
-                    (string-append "PREFIX="
-                                   (assoc-ref outputs "tiles"))
-                    (cdr make-flags)))))
-       ;; TODO: Add libtap++ from https://github.com/cbab/libtappp as a native
-       ;;       input in order to support tests.
-       #:tests? #f))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "USE_HOME_DIR=1" "DYNAMIC_LINKING=1" "RELEASE=1"
+              "LOCALIZE=1" "LANGUAGES=all")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          ;; Apparently we can't do make on both tiles and a console version at
+          ;; the same time anymore, so we have to either "make clean" between
+          ;; builds or do some other hackery.  See:
+          ;;   https://github.com/CleverRaven/Cataclysm-DDA/issues/42598#issuecomment-667702746
+          (add-after 'install 'make-clean-pre-tiles
+            (lambda* (#:key make-flags outputs #:allow-other-keys)
+              ;; Change prefix directory and enable tile graphics and sound.
+              (invoke "make" "clean")))
+          (add-after 'make-clean-pre-tiles 'build-tiles
+            (lambda* (#:key make-flags outputs #:allow-other-keys)
+              ;; Change prefix directory and enable tile graphics and sound.
+              (apply invoke "make" "TILES=1" "SOUND=1"
+                     (string-append "PREFIX=" #$output:tiles)
+                     (cdr make-flags))))
+          (add-after 'build-tiles 'install-tiles
+            (lambda* (#:key make-flags outputs #:allow-other-keys)
+              (apply invoke "make" "install" "TILES=1" "SOUND=1"
+                     (string-append "PREFIX=" #$output:tiles)
+                     (cdr make-flags)))))
+      ;; TODO: Add libtap++ from https://github.com/cbab/libtappp as a native
+      ;;       input in order to support tests.
+      #:tests? #f))
     (outputs '("out"
                "tiles"))                ;for tile graphics and sound support
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("astyle" ,astyle)))
+     (list astyle gettext-minimal pkg-config))
     (inputs
      (list freetype
            libogg
@@ -5267,7 +5264,7 @@ in-window at 640x480 resolution or fullscreen.")
 (define-public warzone2100
   (package
     (name "warzone2100")
-    (version "4.0.1")
+    (version "4.3.3")
     (source
      (origin
        (method url-fetch)
@@ -5275,7 +5272,7 @@ in-window at 640x480 resolution or fullscreen.")
                            version
                            "/warzone2100_src.tar.xz"))
        (sha256
-        (base32 "1f8a4kflslsjl8jrryhwg034h1yc9y3y1zmllgww3fqkz3aj4xik"))
+        (base32 "17p58wxwva0qp267hm1alas52jd9h74494wh01ahz880hscbjg1w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5312,31 +5309,32 @@ in-window at 640x480 resolution or fullscreen.")
                 (string-append "iV_DrawTextRotated(\"Press ESC to exit.\", "
                                "100, 100, 0.0f, font_regular);")))
              #t)))))
-    (native-inputs `(("asciidoc" ,asciidoc)
-                     ("asciidoctor" ,ruby-asciidoctor)
-                     ("gettext" ,gettext-minimal)
-                     ("pkg-config" ,pkg-config)
-                     ("unzip" ,unzip)
+    (native-inputs (list asciidoc
+                     ruby-asciidoctor
+                     gettext-minimal
+                     pkg-config
+                     unzip
                      ;; 7z is used to create .zip archive, not `zip' as in version 3.2.*.
-                     ("p7zip" ,p7zip)))
-    (inputs `(("curl" ,curl)
-              ("fontconfig" ,fontconfig)
-              ("freetype" ,freetype)
-              ("glew" ,glew)
-              ("harfbuzz" ,harfbuzz)
-              ("libtheora" ,libtheora)
-              ("libvorbis" ,libvorbis)
-              ("libxrandr" ,libxrandr)
-              ("libsodium" ,libsodium)
-              ("miniupnpc" ,miniupnpc)
-              ("openal" ,openal)
-              ("physfs" ,physfs)
-              ("qtbase" ,qtbase-5)
-              ("qtscript" ,qtscript)
-              ("openssl" ,openssl)
-              ("sdl2" ,sdl2)
-              ("sqlite" ,sqlite)
-              ("utfcpp" ,utfcpp)))
+                     p7zip))
+    (inputs (list opus
+                  curl
+                  fontconfig
+                  freetype
+                  glew
+                  harfbuzz
+                  libtheora
+                  libvorbis
+                  libxrandr
+                  libsodium
+                  miniupnpc
+                  openal
+                  physfs
+                  qtbase-5
+                  qtscript
+                  openssl
+                  sdl2
+                  sqlite
+                  utfcpp))
     (home-page "https://wz2100.net")
     (synopsis "3D Real-time strategy and real-time tactics game")
     (description
@@ -5355,7 +5353,7 @@ tactics.")
 (define-public widelands
   (package
     (name "widelands")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -5364,17 +5362,12 @@ tactics.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hw51binnbia15mj1gzx1cbk3cw9r91sisqci2qzcy4ahxiadnw0"))
+        (base32 "07wbalwdmml9vdh9nh50svnsw4sdj9nnp32azbss8vzq5mxmzvbx"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "src/third_party/minizip")
-           #t))
-       (patches
-        ;; Use system Minizip.  Patch is provided by Debian, and discussed
-        ;; upstream at <https://github.com/widelands/widelands/issues/399>.
-        (search-patches "widelands-system-wide_minizip.patch"
-                        "widelands-add-missing-map-include.patch"))))
+           #t))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -5403,9 +5396,11 @@ tactics.")
              #t)))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
+       ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)))
     (inputs
-     `(("curl" ,curl)
+     `(("asio" ,asio)
+       ("curl" ,curl)
        ("boost" ,boost)
        ("glew" ,glew)
        ("icu4c" ,icu4c)
@@ -10152,16 +10147,16 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
 (define-public xmoto
   (package
     (name "xmoto")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/xmoto/xmoto")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00f5ha79lfa2iiaz66wl0hl5dapa1l15qdr7m7knzi0ll7j6z66n"))
+        (base32 "14z3yqpiyv4y5l37b12kf8ipgsmb9krb4b5d9adlrry0j43hd7wz"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -10177,58 +10172,54 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
                                           (cons* "." ".." keep))))
              (substitute* "src/CMakeLists.txt"
                (("add_subdirectory\\(.*?/vendor/(.+?)\".*" line library)
-                (if (member library keep) line ""))))
-           #t))))
+                (if (member library keep) line ""))))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-hard-coded-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "src/common/VFileIO.cpp"
-               (("/usr/share")
-                (string-append (assoc-ref outputs "out") "/share")))
-             #t))
-         (add-before 'build 'set-SDL
-           ;; Set correct environment for SDL.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append
-                      (assoc-ref inputs "sdl") "/include/SDL:"
-                      (or (getenv "CPATH") "")))
-             #t))
-         (add-after 'install 'unbundle-fonts
-           ;; Unbundle DejaVuSans TTF files.
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let ((font-dir (string-append (assoc-ref inputs "font-dejavu")
-                                            "/share/fonts/truetype/"))
-                   (target-dir (string-append (assoc-ref outputs "out")
-                                              "/share/xmoto/Textures/Fonts/")))
-               (for-each (lambda (f)
-                           (let ((font (string-append font-dir f))
-                                 (target (string-append target-dir f)))
-                             (delete-file target)
-                             (symlink font target)))
-                         '("DejaVuSans.ttf" "DejaVuSansMono.ttf"))
-               #t))))))
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-hard-coded-directory
+            (lambda _
+              (substitute* "src/common/VFileIO.cpp"
+                (("/usr/share") (string-append #$output "/share")))))
+          (add-before 'build 'set-SDL
+            ;; Set correct environment for SDL.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append
+                       (search-input-directory inputs "/include/SDL2")
+                       ":"
+                       (or (getenv "CPATH") "")))))
+          (add-after 'install 'unbundle-fonts
+            ;; Unbundle DejaVuSans TTF files.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((font-dir (search-input-directory inputs
+                                                      "/share/fonts/truetype/"))
+                    (target-dir (string-append #$output
+                                               "/share/xmoto/Textures/Fonts/")))
+                (for-each (lambda (f)
+                            (let ((font (string-append font-dir f))
+                                  (target (string-append target-dir f)))
+                              (delete-file target)
+                              (symlink font target)))
+                          '("DejaVuSans.ttf" "DejaVuSansMono.ttf"))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("curl" ,curl)
-       ("font-dejavu" ,font-dejavu)
-       ("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libxdg-basedir" ,libxdg-basedir)
-       ("libxml2" ,libxml2)
-       ("lua" ,lua-5.1)
-       ("ode" ,ode)
-       ("sdl" ,(sdl-union (list sdl sdl-mixer sdl-net sdl-ttf)))
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list bzip2
+           curl
+           font-dejavu
+           glu
+           libjpeg-turbo
+           libpng
+           libxdg-basedir
+           libxml2
+           lua
+           ode
+           (sdl-union (list sdl2 sdl2-mixer sdl2-net sdl2-ttf))
+           sqlite
+           zlib))
     (home-page "https://xmoto.tuxfamily.org/")
     (synopsis "2D motocross platform game")
     (description

@@ -35,11 +35,8 @@
   #:use-module (web uri)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-14)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
-  #:use-module (rnrs bytevectors)
-  #:use-module (ice-9 binary-ports)
   #:export (guix-download))
 
 

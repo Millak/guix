@@ -1,0 +1,163 @@
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Date: Sun, 19 Feb 2023 15:48:23 +0100
+Subject: Make fluxbox use libxcursor directly
+
+This patch makes fluxbox use libxcursor directly. This way, big cursors work.
+Without it, libx11 would try to dlopen("libXcursor.so.1") and fail.
+
+--- orig/fluxbox-1.3.7/configure.ac	2015-02-08 11:44:45.333187008 +0100
++++ fluxbox-1.3.7/configure.ac	2023-02-19 15:42:50.595886984 +0100
+@@ -214,6 +214,18 @@
+ CXXFLAGS="$X11_CFLAGS $CXXFLAGS"
+ LIBS="$X11_LIBS $LIBS"
+ 
++dnl Check for Xcursor
++PKG_CHECK_MODULES([XCURSOR], [ xcursor ],
++        [AC_DEFINE([HAVE_XCURSOR], [1], [Define if xcursor is available]) have_cursor=yes],
++        [have_xcursor=no])
++AM_CONDITIONAL([XCURSOR], [test "$have_xcursor" = "yes"], AC_MSG_ERROR([Could not find XOpenDisplay in -lXcursor.]))
++AS_IF([test x$have_xcursor = "xno"], [
++        AC_MSG_ERROR([Fluxbox requires the Xcursor libraries and headers.])
++])
++
++CXXFLAGS="$XCURSOR_CFLAGS $CXXFLAGS"
++LIBS="$XCURSOR_LIBS $LIBS"
++
+ dnl Check for xpg4
+ AC_CHECK_LIB([xpg4], [setlocale], [LIBS="-lxpg4 $LIBS"])
+ AC_CHECK_PROGS([gencat_cmd], [gencat])
+diff -ru orig/fluxbox-1.3.7/src/FbWinFrameTheme.cc fluxbox-1.3.7/src/FbWinFrameTheme.cc
+--- orig/fluxbox-1.3.7/src/FbWinFrameTheme.cc	2015-02-08 11:44:45.365187009 +0100
++++ fluxbox-1.3.7/src/FbWinFrameTheme.cc	2023-02-19 15:28:56.183284901 +0100
+@@ -20,6 +20,7 @@
+ // DEALINGS IN THE SOFTWARE.
+ 
+ #include "FbWinFrameTheme.hh"
++#include "Xutil.hh"
+ #include "IconbarTheme.hh"
+ 
+ #include "FbTk/App.hh"
+@@ -53,15 +54,15 @@
+ 
+     // create cursors
+     Display *disp = FbTk::App::instance()->display();
+-    m_cursor_move = XCreateFontCursor(disp, XC_fleur);
+-    m_cursor_lower_left_angle = XCreateFontCursor(disp, XC_bottom_left_corner);
+-    m_cursor_lower_right_angle = XCreateFontCursor(disp, XC_bottom_right_corner);
+-    m_cursor_upper_right_angle = XCreateFontCursor(disp, XC_top_right_corner);
+-    m_cursor_upper_left_angle = XCreateFontCursor(disp, XC_top_left_corner);
+-    m_cursor_left_side = XCreateFontCursor(disp, XC_left_side);
+-    m_cursor_top_side = XCreateFontCursor(disp, XC_top_side);
+-    m_cursor_right_side = XCreateFontCursor(disp, XC_right_side);
+-    m_cursor_bottom_side = XCreateFontCursor(disp, XC_bottom_side);
++    m_cursor_move = Xutil::hidpiCreateFontCursor(disp, XC_fleur);
++    m_cursor_lower_left_angle = Xutil::hidpiCreateFontCursor(disp, XC_bottom_left_corner);
++    m_cursor_lower_right_angle = Xutil::hidpiCreateFontCursor(disp, XC_bottom_right_corner);
++    m_cursor_upper_right_angle = Xutil::hidpiCreateFontCursor(disp, XC_top_right_corner);
++    m_cursor_upper_left_angle = Xutil::hidpiCreateFontCursor(disp, XC_top_left_corner);
++    m_cursor_left_side = Xutil::hidpiCreateFontCursor(disp, XC_left_side);
++    m_cursor_top_side = Xutil::hidpiCreateFontCursor(disp, XC_top_side);
++    m_cursor_right_side = Xutil::hidpiCreateFontCursor(disp, XC_right_side);
++    m_cursor_bottom_side = Xutil::hidpiCreateFontCursor(disp, XC_bottom_side);
+ 
+     FbTk::ThemeManager::instance().loadTheme(*this);
+     reconfigTheme();
+diff -ru orig/fluxbox-1.3.7/src/Screen.cc fluxbox-1.3.7/src/Screen.cc
+--- orig/fluxbox-1.3.7/src/Screen.cc	2015-02-08 11:44:45.369187009 +0100
++++ fluxbox-1.3.7/src/Screen.cc	2023-02-19 15:28:23.783092203 +0100
+@@ -53,6 +53,7 @@
+ #include "SystemTray.hh"
+ #endif
+ #include "Debug.hh"
++#include "Xutil.hh"
+ 
+ #include "FbTk/I18n.hh"
+ #include "FbTk/FbWindow.hh"
+@@ -306,7 +307,7 @@
+     if (keys)
+         keys->registerWindow(rootWindow().window(), *this,
+                              Keys::GLOBAL|Keys::ON_DESKTOP);
+-    rootWindow().setCursor(XCreateFontCursor(disp, XC_left_ptr));
++    rootWindow().setCursor(Xutil::hidpiCreateFontCursor(disp, XC_left_ptr));
+ 
+     // load this screens resources
+     fluxbox->load_rc(*this);
+diff -ru orig/fluxbox-1.3.7/src/Xutil.cc fluxbox-1.3.7/src/Xutil.cc
+--- orig/fluxbox-1.3.7/src/Xutil.cc	2015-02-08 11:44:45.377187009 +0100
++++ fluxbox-1.3.7/src/Xutil.cc	2023-02-19 15:47:29.009541689 +0100
+@@ -28,6 +28,10 @@
+ 
+ #include <X11/Xutil.h>
+ #include <X11/Xatom.h>
++#include <X11/Xlibint.h>
++#undef min
++#undef max
++#include <X11/Xcursor/Xcursor.h>
+ #include <iostream>
+ 
+ #ifdef HAVE_CSTRING
+@@ -133,5 +137,19 @@
+     return class_name;
+ }
+ 
++static XColor _Xconst foreground = { 0,    0,     0,     0  };  /* black */
++static XColor _Xconst background = { 0, 65535, 65535, 65535 };  /* white */
++Cursor hidpiCreateFontCursor(Display* dpy, unsigned int shape) {
++	if (dpy->cursor_font == None) {
++		dpy->cursor_font = XLoadFont(dpy, "cursor");
++		if (dpy->cursor_font == None) return None;
++	}
++
++	Cursor result = XcursorTryShapeCursor(dpy, dpy->cursor_font, dpy->cursor_font, (int) shape, (int) shape + 1, &foreground, &background);
++	if (!result)
++		result = XCreateFontCursor(dpy, (int) shape);
++	return result;
++}
++
+ } // end namespace Xutil
+ 
+diff -ru orig/fluxbox-1.3.7/src/Xutil.hh fluxbox-1.3.7/src/Xutil.hh
+--- orig/fluxbox-1.3.7/src/Xutil.hh	2015-02-08 11:44:45.377187009 +0100
++++ fluxbox-1.3.7/src/Xutil.hh	2023-02-19 15:26:37.495619659 +0100
+@@ -32,7 +32,7 @@
+ 
+ FbTk::FbString getWMClassName(Window win);
+ FbTk::FbString getWMClassClass(Window win);
+-
++Cursor hidpiCreateFontCursor(Display* dpy, unsigned int shape);
+ 
+ } // end namespace Xutil
+ 
+diff -ru orig/fluxbox-1.3.7/util/fbrun/FbRun.cc fluxbox-1.3.7/util/fbrun/FbRun.cc
+--- orig/fluxbox-1.3.7/util/fbrun/FbRun.cc	2015-02-08 11:44:45.377187009 +0100
++++ fluxbox-1.3.7/util/fbrun/FbRun.cc	2023-02-19 15:28:18.532468099 +0100
+@@ -26,6 +26,7 @@
+ #include "FbTk/Color.hh"
+ #include "FbTk/KeyUtil.hh"
+ #include "FbTk/FileUtil.hh"
++#include "Xutil.hh"
+ 
+ #ifdef HAVE_XPM
+ #include <X11/xpm.h>
+@@ -67,7 +68,7 @@
+     m_current_history_item(0),
+     m_last_completion_prefix(""),
+     m_current_apps_item(0),
+-    m_cursor(XCreateFontCursor(FbTk::App::instance()->display(), XC_xterm)) {
++    m_cursor(Xutil::hidpiCreateFontCursor(FbTk::App::instance()->display(), XC_xterm)) {
+ 
+     setGC(m_gc.gc());
+     setCursor(m_cursor);
+diff -ru orig/fluxbox-1.3.7/util/fbrun/Makemodule.am fluxbox-1.3.7/util/fbrun/Makemodule.am
+--- orig/fluxbox-1.3.7/util/fbrun/Makemodule.am	2015-02-08 11:44:45.377187009 +0100
++++ fluxbox-1.3.7/util/fbrun/Makemodule.am	2023-02-19 15:50:33.029069099 +0100
+@@ -8,7 +8,8 @@
+ 	util/fbrun/FbRun.hh \
+ 	util/fbrun/FbRun.cc \
+ 	util/fbrun/main.cc \
+-	util/fbrun/fbrun.xpm
++	util/fbrun/fbrun.xpm \
++	src/Xutil.cc
+ 
+ fbrun_LDADD = libFbTk.a \
+ 	$(FRIBIDI_LIBS) \

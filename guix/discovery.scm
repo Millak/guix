@@ -24,7 +24,6 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
-  #:use-module (ice-9 ftw)
   #:export (scheme-files
             scheme-modules
             scheme-modules*

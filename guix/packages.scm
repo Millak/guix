@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,10 +52,10 @@
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9 gnu)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (rnrs bytevectors)
   #:use-module (web uri)
   #:autoload   (texinfo) (texi-fragment->stexi)
@@ -1239,8 +1240,13 @@ input list."
 
 (define (package-direct-sources package)
   "Return all source origins associated with PACKAGE; including origins in
-PACKAGE's inputs."
-  `(,@(or (and=> (package-source package) list) '())
+PACKAGE's inputs and patches."
+  (define (expand source)
+    (cons
+     source
+     (filter origin? (origin-patches source))))
+
+  `(,@(or (and=> (package-source package) expand) '())
     ,@(filter-map (match-lambda
                    ((_ (? origin? orig) _ ...)
                     orig)
@@ -1527,15 +1533,16 @@ package and returns its new name after rewrite."
 (define* (package-input-rewriting/spec replacements #:key (deep? #t))
   "Return a procedure that, given a package, applies the given REPLACEMENTS to
 all the package graph, including implicit inputs unless DEEP? is false.
+
 REPLACEMENTS is a list of spec/procedures pair; each spec is a package
 specification such as \"gcc\" or \"guile@2\", and each procedure takes a
-matching package and returns a replacement for that package."
+matching package and returns a replacement for that package.  Matching
+packages that have the 'hidden?' property set are not replaced."
   (define table
     (fold (lambda (replacement table)
             (match replacement
               ((spec . proc)
-               (let-values (((name version)
-                             (package-name->name+version spec)))
+               (let ((name version (package-name->name+version spec)))
                  (vhash-cons name (list version proc) table)))))
           vlist-null
           replacements))
@@ -1558,7 +1565,8 @@ matching package and returns a replacement for that package."
     (gensym " package-replacement"))
 
   (define (rewrite p)
-    (if (assq-ref (package-properties p) replacement-property)
+    (if (or (assq-ref (package-properties p) replacement-property)
+            (hidden-package? p))
         p
         (match (find-replacement p)
           (#f p)

@@ -497,6 +497,39 @@ It's intended as a simpler alternative to parser generators.")
 (define-public ecl-meta
   (sbcl-package->ecl-package sbcl-meta))
 
+(define-public sbcl-cl-smtp
+  (let ((commit "ed47d326fad867ee11323fa3a0f307b5d40e8f2b")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-smtp")
+      (version (git-version "20191031.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/cl-smtp/cl-smtp")
+               (commit commit)))
+         (file-name (git-file-name "cl-smtp" version))
+         (sha256
+          (base32 "0vjjfapcrdc5671jz2d24h8zvpz7skq1x6pi9fvw6ls5sgms6fr0"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl+ssl
+             sbcl-cl-base64
+             sbcl-flexi-streams
+             sbcl-trivial-gray-streams
+             sbcl-usocket))
+      (home-page "https://gitlab.common-lisp.net/cl-smtp/cl-smtp")
+      (synopsis "Simple Common Lisp SMTP client")
+      (description "This package provides a client for SMTP.")
+      (license license:llgpl))))
+
+(define-public cl-smtp
+  (sbcl-package->cl-source-package sbcl-cl-smtp))
+
+(define-public ecl-cl-smtp
+  (sbcl-package->ecl-package sbcl-cl-smtp))
+
 (define-public sbcl-clavier
   (let ((commit "9b1424eaad131e114a45b400784079124b5e2321")
         (revision "1"))
@@ -850,8 +883,8 @@ Common Lisp, heavily influenced by Python's @code{optparse} and
   (sbcl-package->cl-source-package sbcl-adopt))
 
 (define-public sbcl-clingon
-  (let ((commit "4b99dcb4eb4433118a95f5b4ca49ae32b0a57492")
-        (revision "0"))
+  (let ((commit "ff4fda1768551fecdf1c527a3097ae99ba5f40b5")
+        (revision "1"))
     (package
       (name "sbcl-clingon")
       (version (git-version "0.4.0" revision commit))
@@ -863,7 +896,7 @@ Common Lisp, heavily influenced by Python's @code{optparse} and
                (commit commit)))
          (file-name (git-file-name "cl-clingon" version))
          (sha256
-          (base32 "1nn1zs8n6rsys9s791y6sarpy3416aq848mkfr767g5s5y44ij7j"))))
+          (base32 "1b5ybq2x8bwsr541cznwv43lf9j5gz1ij52xj181kg32wb3x0y3n"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-rove))
@@ -1047,7 +1080,11 @@ Features:
              #~(modify-phases %standard-phases
                  (add-after 'create-asdf-configuration 'build-program
                    (lambda* (#:key outputs #:allow-other-keys)
-                     (build-program (string-append #$output:bin "/bin/tripod")
+                     ;; FIXME: Using #$output:bin here prevents cl-tripod and
+                     ;; ecl-tripod from building, but using assoc-ref works.
+                     (build-program (string-append ;; #$output:bin
+                                                   (assoc-ref outputs "bin")
+                                                   "/bin/tripod")
                                     outputs
                                     #:entry-program '((tripod:entry-point))
                                     #:compress? #t))))))
@@ -1071,10 +1108,21 @@ and Gopher website hosting.")
       (license license:bsd-2))))
 
 (define-public cl-tripod
-  (sbcl-package->cl-source-package sbcl-tripod))
+  ;; No "bin" output for the source package.
+  (let ((pkg (sbcl-package->cl-source-package sbcl-tripod)))
+    (package/inherit pkg
+      (outputs '("out")))))
 
 (define-public ecl-tripod
-  (sbcl-package->ecl-package sbcl-tripod))
+  ;; FIXME: Making a standalone binary doesn't work with ECL.
+  (let ((pkg (sbcl-package->ecl-package sbcl-tripod)))
+    (package/inherit pkg
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (delete 'build-program))))))))
 
 (define-public sbcl-trivial-timeout
   (let ((commit "feb869357f40f5e109570fb40abad215fb370c6c")
@@ -4274,6 +4322,49 @@ relational database engine.")
 (define-public ecl-cl-sqlite
   (sbcl-package->ecl-package sbcl-cl-sqlite))
 
+(define-public sbcl-cl-raylib
+  (let ((commit "985ceebef4cb56c651cddc23bd71812f2be38c2d")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-raylib")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/longlene/cl-raylib")
+               (commit commit)))
+         (file-name (git-file-name "cl-raylib" version))
+         (sha256
+          (base32 "1kighj35g6dn426mhr2ppz3gm49v1q4n42ydn619pclrqwyrnc2z"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:tests? #f ; no tests https://github.com/longlene/cl-raylib/issues/40
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/library.lisp"
+                 (("libraylib\\.so")
+                  (search-input-file inputs "/lib/libraylib.so"))))))))
+      (inputs
+       (list raylib
+             sbcl-3d-matrices
+             sbcl-3d-vectors
+             sbcl-alexandria
+             sbcl-cffi))
+      (home-page "https://github.com/longlene/cl-raylib")
+      (synopsis "Common Lisp bindings to raylib")
+      (description "This package provides Common Lisp CFFI bindings to the
+Raylib game development library.")
+      (license license:expat))))
+
+(define-public cl-raylib
+  (sbcl-package->cl-source-package sbcl-cl-raylib))
+
+(define-public ecl-cl-raylib
+  (sbcl-package->ecl-package sbcl-cl-raylib))
+
 (define-public sbcl-cl-redis
   (let ((commit "7d592417421cf7cd1cffa96043b457af0490df7d")
         (revision "0"))
@@ -5506,6 +5597,41 @@ the format used by the popular compression tool bzip2.")
 
 (define-public ecl-chipz
   (sbcl-package->ecl-package sbcl-chipz))
+
+(define-public sbcl-dns-client
+  (let ((commit "9f252e9c2bb61c57a6cd367e21ad366b0d3e87e0")
+        (revision "0"))
+    (package
+      (name "sbcl-dns-client")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/dns-client")
+               (commit commit)))
+         (file-name (git-file-name "cl-dns-client" version))
+         (sha256
+          (base32 "1b6g2wvydwmv1k68favjyq4gfalfxfyl5i0hyh640wdaz2rfvi4n"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; No tests provided.
+       `(#:tests? #f))
+      (inputs
+       (list sbcl-documentation-utils sbcl-usocket))
+      (home-page "https://shinmera.github.io/dns-client/")
+      (synopsis "DNS protocol client for Common Lisp")
+      (description
+       "This package provides a pure-lisp implementation of a DNS client.  It can be
+used to resolve hostnames, reverse-lookup IP addresses, and fetch other kinds of
+DNS records.")
+      (license license:zlib))))
+
+(define-public ecl-dns-client
+  (sbcl-package->ecl-package sbcl-dns-client))
+
+(define-public cl-dns-client
+  (sbcl-package->cl-source-package sbcl-dns-client))
 
 (define-public sbcl-drakma
   (package
@@ -9977,6 +10103,53 @@ visualization.")
 (define-public cl-ana
   (sbcl-package->cl-source-package sbcl-cl-ana))
 
+(define-public sbcl-eazy-gnuplot
+  (let ((commit "2eb900fe2557e6c066a9851c166e572c25bc0996")
+        (revision "0"))
+    (package
+      (name "sbcl-eazy-gnuplot")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/guicho271828/eazy-gnuplot")
+               (commit commit)))
+         (file-name (git-file-name "cl-eazy-gnuplot" version))
+         (sha256
+          (base32 "0mpkx1z52riahydzvqv7kk15p0pv2k7k5a7j65fg571kcxmssx8s"))
+         (patches (search-patches "sbcl-eazy-gnuplot-skip-path-check.patch"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list gnuplot
+             sbcl-alexandria
+             sbcl-iterate
+             sbcl-trivia))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda _
+               (substitute* "src/package.lisp"
+                 (("\"gnuplot\"")
+                  (string-append "\"" (which "gnuplot") "\""))))))))
+      (home-page "https://github.com/guicho271828/eazy-gnuplot")
+      (synopsis "Common Lisp interface to gnuplot")
+      (description
+       "Eazy-Gnuplot is a Common Lisp interface to gnuplot which eschews CFFI,
+CLOS and structures.  It communicates with @command{gnuplot} via
+@code{*standard-output*}, and users can plot data by printing to that
+stream.")
+      (license license:llgpl))))
+
+(define-public cl-eazy-gnuplot
+  (sbcl-package->cl-source-package sbcl-eazy-gnuplot))
+
+(define-public ecl-eazy-gnuplot
+  (sbcl-package->ecl-package sbcl-eazy-gnuplot))
+
 (define-public sbcl-archive
   (let ((commit "631271c091ed02994bec3980cb288a2cf32c7cdc")
         (revision "1"))
@@ -10703,52 +10876,55 @@ ZeroMQ.")
   (sbcl-package->ecl-package sbcl-cl-z85))
 
 (define-public sbcl-ltk
-  (package
-    (name "sbcl-ltk")
-    (version "0.992")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/herth/ltk")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13l2q4mskzilya9xh5wy2xvy30lwn104bd8wrq6ifds56r82iy3x"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list imagemagick tk))
-    (arguments
-     `(#:asd-systems '("ltk"
-                       "ltk-mw"
-                       "ltk-remote")
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "ltk/ltk.lisp"
-               (("#-freebsd \"wish\"")
-                (string-append "#-freebsd \""
-                               (assoc-ref inputs "tk")
-                               "/bin/wish\""))
-               (("do-execute \"convert\"")
-                (string-append "do-execute \""
-                               (assoc-ref inputs "imagemagick")
-                               "/bin/convert\"")))
-             #t))
-         (add-after 'unpack 'fix-build
-           (lambda _
-             (substitute* "ltk/ltk-remote.lisp"
-               (("\\(:export")
-                "(:shadow #:raise) (:export"))
-             #t)))))
-    (synopsis "Common Lisp bindings for the Tk GUI toolkit")
-    (description
-     "LTK is a Common Lisp binding for the Tk graphics toolkit.  It is written
-in pure Common Lisp and does not require any Tk knowledge for its usage.")
-    (home-page "http://www.peter-herth.de/ltk/")
-    (license license:llgpl)))
+  (let ((commit "ff14a781d211c19c35e65a7ecaece67dda0b3ebb")
+        (revision "0"))
+    (package
+      (name "sbcl-ltk")
+      (version (git-version "0.992" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/herth/ltk")
+               (commit commit)))
+         (file-name (git-file-name "cl-ltk" version))
+         (sha256
+          (base32 "0f1xgsj2j7bq21cq2pa9rw3ybxd9vyknisl6z307lxx7lvhm3xac"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list imagemagick tk))
+      (arguments
+       `(#:asd-systems '("ltk"
+                         "ltk-mw"
+                         "ltk-remote")
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "ltk/ltk.lisp"
+                 (("#-freebsd \"wish\"")
+                  (string-append "#-freebsd \""
+                                 (assoc-ref inputs "tk")
+                                 "/bin/wish\""))
+                 (("do-execute \"convert\"")
+                  (string-append "do-execute \""
+                                 (assoc-ref inputs "imagemagick")
+                                 "/bin/convert\"")))
+               #t))
+           (add-after 'unpack 'fix-build
+             (lambda _
+               (substitute* "ltk/ltk-remote.lisp"
+                 (("\\(:export")
+                  "(:shadow #:raise) (:export"))
+               #t)))))
+      (synopsis "Common Lisp bindings for the Tk GUI toolkit")
+      (description
+       "LTK is a Common Lisp binding for the Tk graphics toolkit.  It is
+written in pure Common Lisp and does not require any Tk knowledge for its
+usage.")
+      (home-page "http://www.peter-herth.de/ltk/")
+      (license license:llgpl))))
 
 (define-public cl-ltk
   (sbcl-package->cl-source-package sbcl-ltk))
@@ -11111,8 +11287,8 @@ performance and correctness.")
   (sbcl-package->ecl-package sbcl-png-read))
 
 (define-public sbcl-3b-bmfont
-  (let ((commit "48a38f52d282064829851c484d9e7dee0ffe9e72")
-        (revision "2"))
+  (let ((commit "332c2262705f161627fc18add0310451a42799af")
+        (revision "3"))
     (package
       (name "sbcl-3b-bmfont")
       (version (git-version "0.0.1" revision commit))
@@ -11122,23 +11298,23 @@ performance and correctness.")
          (uri (git-reference
                (url "https://github.com/3b/3b-bmfont/")
                (commit commit)))
-         (file-name (git-file-name "3b-bmfont" version))
+         (file-name (git-file-name "cl-3b-bmfont" version))
          (sha256
-          (base32 "0v4lcrlpx60ayg0g5b10q2hjh1iaanln4ck0hm1rvjxm39gl2d86"))))
+          (base32 "11wnqa1wx9vji6cmxl5m5qnf12mqc6n7d5g8038r1wayq88bxia6"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:asd-systems
-         '("3b-bmfont"
-           "3b-bmfont/text"
-           "3b-bmfont/common"
-           "3b-bmfont/xml"
-           "3b-bmfont/json")))
+       `(#:asd-systems '("3b-bmfont"
+                         "3b-bmfont/common"
+                         "3b-bmfont/json"
+                         "3b-bmfont/text"
+                         "3b-bmfont/xml")))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cxml" ,sbcl-cxml)
-         ("flexi-streams" ,sbcl-flexi-streams)
-         ("jsown" ,sbcl-jsown)
-         ("split-sequence" ,sbcl-split-sequence)))
+       (list sbcl-alexandria
+             sbcl-cxml
+             sbcl-flexi-streams
+             sbcl-jsown
+             sbcl-parse-number
+             sbcl-split-sequence))
       (home-page "https://github.com/3b/3b-bmfont/")
       (synopsis "Read/write bmfont metadata files")
       (description
@@ -12881,6 +13057,42 @@ Streams in ICDE’05.")
 (define-public ecl-prometheus
   (sbcl-package->ecl-package sbcl-prometheus))
 
+(define-public sbcl-promise
+  (let ((commit "801db8f853da7935ae2e487fd7f8763acbc5ad2a")
+        (revision "0"))
+    (package
+      (name "sbcl-promise")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/promise")
+               (commit commit)))
+         (file-name (git-file-name "cl-promise" version))
+         (sha256
+          (base32 "07cvz6vb5y1d9vndcwq7q1cp54aqvyqzv6wk8vmymbz3lawq2wsn"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-documentation-utils))
+      (home-page "https://shinmera.github.io/promise/")
+      (synopsis "Promise mechanism for asynchronous operations")
+      (description
+       "This library implements a basic promise datastructure, which is useful
+for dealing with asynchronous behaviours.  Importantly, this library does not
+use any other libraries or frameworks, and instead leaves the execution and
+state transition of promise objects in your control, making it easy to
+integrate.")
+      (license license:zlib))))
+
+(define-public ecl-promise
+  (sbcl-package->ecl-package sbcl-promise))
+
+(define-public cl-promise
+  (sbcl-package->cl-source-package sbcl-promise))
+
 (define-public sbcl-uuid
   (let ((commit "e7d6680c3138385c0708f7aaf0c96622eeb140e8"))
     (package
@@ -14024,7 +14236,7 @@ functions.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/mcclim/mcclim")
+               (url "https://codeberg.org/McCLIM/McCLIM")
                (commit commit)))
          (file-name (git-file-name "cl-mcclim" version))
          (sha256
@@ -14074,7 +14286,7 @@ functions.")
                (substitute* "Extensions/harfbuzz/src/functions.lisp"
                  (("libharfbuzz\\.so")
                   (search-input-file inputs "/lib/libharfbuzz.so"))))))))
-      (home-page "https://common-lisp.net/project/mcclim/")
+      (home-page "https://mcclim.common-lisp.dev/")
       (synopsis "Common Lisp GUI toolkit")
       (description
        "McCLIM is an implementation of the @emph{Common Lisp Interface Manager
@@ -16642,6 +16854,38 @@ It provides four readtables.  The default one lets you write strings like this:
 (define-public cl-trivial-escapes
   (sbcl-package->cl-source-package sbcl-trivial-escapes))
 
+(define-public sbcl-trivial-extensible-sequences
+  (let ((commit "d40b2da23716601578b1f645727047f80baeb49a")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-extensible-sequences")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/trivial-extensible-sequences")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-extensible-sequences" version))
+         (sha256
+          (base32 "0352psdd8j0phjycr6ldckwspyal4jcf0f2fizi6fwdp7nvadng7"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://shinmera.github.io/trivial-extensible-sequences/")
+      (synopsis "Portability library for the extensible sequences protocol")
+      (description
+       "This package provides a portability layer for the extensible sequences
+standard extension to Common Lisp.  Extensible sequences allow you to create
+your own sequence types that integrate with the rest of the functions and
+operations that interact with sequences.")
+      (license license:zlib))))
+
+;; NOTE: (Sharlatan-20230312T215058+0000): ECL is not supported
+;; (define-public ecl-trivial-extensible-sequences
+;;   (sbcl-package->ecl-package sbcl-trivial-extensible-sequences))
+
+(define-public cl-trivial-extensible-sequences
+  (sbcl-package->cl-source-package sbcl-trivial-extensible-sequences))
+
 (define-public sbcl-cl-indentify
   (let ((commit "eb770f434defa4cd41d84bca822428dfd0dbac53"))
     (package
@@ -16763,6 +17007,45 @@ the concrete syntax tree library.")
 
 (define-public cl-eclector
   (sbcl-package->cl-source-package sbcl-eclector))
+
+(define-public sbcl-trucler
+  (let ((commit "167199797eb3e2e9d9d3e1fe6e11948c663ce7e2")
+        (revision "0"))
+    (package
+      (name "sbcl-trucler")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/s-expressionists/Trucler")
+               (commit commit)))
+         (file-name (git-file-name "cl-trucler" commit))
+         (sha256
+          (base32 "0ra1phwy0vn4xrm5i1dvq9205m6s9fl0sr0rpiz3xjykxyl9mzms"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-acclimation))
+      (arguments
+       '(#:asd-systems '("trucler"
+                         "trucler-base"
+                         "trucler-native"
+                         "trucler-reference")))
+      (home-page "https://github.com/s-expressionists/Trucler")
+      (synopsis "Environment protocol for Common Lisp compilers")
+      (description
+       "Trucler defines a CLOS-based protocol to be used by Common Lisp
+compilers for environment query and update.  In addition, library authors can
+use the @code{trucler-native} interface to inspect native environments.
+Trucler supports introspection for variables, functions, tags, blocks and
+optimization policies.")
+      (license license:bsd-2))))
+
+(define-public cl-trucler
+  (sbcl-package->cl-source-package sbcl-trucler))
+
+(define-public ecl-trucler
+  (sbcl-package->ecl-package sbcl-trucler))
 
 (define-public sbcl-incless
   (let ((commit "395accf484ffdff70f20b941f322e8329c585ca7")
@@ -18277,8 +18560,8 @@ lQuery.")
   (sbcl-package->cl-source-package sbcl-clip))
 
 (define-public sbcl-pathname-utils
-  (let ((commit "70f517e44e13a38e0c8f296613236376d679fa8f")
-        (revision "1"))
+  (let ((commit "13189c08f2480802a6cba207304c2e0cfdc57f47")
+        (revision "2"))
     (package
       (name "sbcl-pathname-utils")
       (version (git-version "1.1.0" revision commit))
@@ -18288,12 +18571,14 @@ lQuery.")
          (uri (git-reference
                (url "https://github.com/Shinmera/pathname-utils")
                (commit commit)))
-         (file-name (git-file-name "pathname-utils" version))
+         (file-name (git-file-name "cl-pathname-utils" version))
          (sha256
-          (base32 "1zm4bf6gajpgmhr7zwf7600zlaf8fs1fcyzabqsh2ma2crkgqdxq"))))
+          (base32 "0b5pjsrpfw0pmahi1zydzpaa5missg3cxqnyz4k6xwvk8fqscpha"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
+      (inputs
+       (list sbcl-trivial-features))
       (home-page "https://shinmera.github.io/pathname-utils/")
       (synopsis "Collection of utilities to help with pathname operations")
       (description
@@ -18303,7 +18588,19 @@ handling the accessing of files on the underlying system however.")
       (license license:zlib))))
 
 (define-public ecl-pathname-utils
-  (sbcl-package->ecl-package sbcl-pathname-utils))
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-pathname-utils))
+    (arguments
+     `(;; FIXME: It might be an issue in implementation of UIOP for ECL:
+       ;;
+       ;; Condition of type: TYPE-ERROR
+       ;; :HOME is not of type SEQUENCE.
+       ;; Available restarts:
+       ;; 1. (RESTART-TOPLEVEL) Go back to Top-Level REPL.
+       ;; Broken at SI:BYTECODES. [Evaluation of: (MAKE-PATHNAME :DIRECTORY
+       ;; '(:ABSOLUTE :HOME))] In: #<process TOP-LEVEL 0x7faa2f991f80>.
+       ;;
+       #:tests? #f))))
 
 (define-public cl-pathname-utils
   (sbcl-package->cl-source-package sbcl-pathname-utils))
@@ -18611,8 +18908,8 @@ confirmation tokens, and user authentication.")
   (sbcl-package->cl-source-package sbcl-authentic))
 
 (define-public sbcl-3d-vectors
-  (let ((commit "29bb9684df803590deed344af63dbf7b712aabc0")
-        (revision "1"))
+  (let ((commit "257969402864ac3859d77b981abf0aa5373c4e78")
+        (revision "2"))
     (package
       (name "sbcl-3d-vectors")
       (version (git-version "3.1.0" revision commit))
@@ -18622,9 +18919,9 @@ confirmation tokens, and user authentication.")
          (uri (git-reference
                (url "https://github.com/Shinmera/3d-vectors")
                (commit commit)))
-         (file-name (git-file-name "3d-vectors" version))
+         (file-name (git-file-name "cl-3d-vectors" version))
          (sha256
-          (base32 "0qc7m5brhpwi531rgmlaj1c609by533a1ia5hv8f90ilm8ksmw3l"))))
+          (base32 "0vmf7nycc49ydcy0dfs25cgs655kwjc6jcjvpwxw61jq4gl2fh7x"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -18645,8 +18942,8 @@ offers them both in non-modifying and modifying versions where applicable.")
   (sbcl-package->cl-source-package sbcl-3d-vectors))
 
 (define-public sbcl-3d-matrices
-  (let ((commit "f453b521b8f2ceabb01eac94389119dece8c05f8")
-        (revision "1"))
+  (let ((commit "b4f5a58299f8437fad2d77f0879c374e3430f4b5")
+        (revision "2"))
     (package
       (name "sbcl-3d-matrices")
       (version (git-version "1.0.0" revision commit))
@@ -18656,9 +18953,9 @@ offers them both in non-modifying and modifying versions where applicable.")
          (uri (git-reference
                (url "https://github.com/Shinmera/3d-matrices")
                (commit commit)))
-         (file-name (git-file-name "3d-matrices" version))
+         (file-name (git-file-name "cl-3d-matrices" version))
          (sha256
-          (base32 "10q9c96gqzq6k8n89agy0khgimmnsn4s69171m3vhghqa2yv5n6v"))))
+          (base32 "1s8b4zlmqwyplghs73riz1khf0c5sk64w6b12jd599091d5nr6sr"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -18677,6 +18974,46 @@ operations in 3D space.")
 
 (define-public cl-3d-matrices
   (sbcl-package->cl-source-package sbcl-3d-matrices))
+
+(define-public sbcl-3d-quaternions
+  (let ((commit "b79c15cca8d9c409216a6cee8ec9e182dcdec9e2")
+        (revision "0"))
+    (package
+      (name "sbcl-3d-quaternions")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/3d-quaternions")
+               (commit commit)))
+         (file-name (git-file-name "cl-3d-quaternions" version))
+         (sha256
+          (base32 "1mrq6yhb90mhvxdkg3fx58ci5yj5xlixbbzf1q6p76wyq40qjv76"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-3d-matrices sbcl-3d-vectors sbcl-documentation-utils))
+      (home-page "https://shinmera.github.io/3d-quaternions/")
+      (synopsis "Quaternion and dual-quaternion functionality in Common Lisp")
+      (description
+       "This is a library for quaternions.  It contains most of the quaternion
+operations one would usually expect out of such a library and offers them both
+in non-modifying and modifying versions where applicable.  It also tries to be
+efficient where plausible.  Each quaternion is made up of @code{float}s, which
+by default are @code{single-float}s, as they do not require value boxing on
+most modern systems and compilers.")
+      (license license:zlib))))
+
+;; TODO: Build failure:
+;; https://github.com/Shinmera/3d-quaternions/issues/2
+;;
+;; (define-public ecl-3d-quaternions
+;;   (sbcl-package->ecl-package sbcl-3d-quaternions))
+
+(define-public cl-3d-quaternions
+  (sbcl-package->cl-source-package sbcl-3d-quaternions))
 
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
@@ -18721,9 +19058,51 @@ application fail and be unable to do so using its standard UI.")
 (define-public cl-messagebox
   (sbcl-package->cl-source-package sbcl-messagebox))
 
+(define-public sbcl-3d-transforms
+  (let ((commit "1d44509387d0747cd0351e95a533eca609058632")
+        (revision "0"))
+    (package
+      (name "sbcl-3d-transforms")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/3d-transforms")
+               (commit commit)))
+         (file-name (git-file-name "cl-3d-transforms" version))
+         (sha256
+          (base32 "03pmv7dh1j6kl16ch6lnvxzjrld4jbr3jx8slzkiipgzdxg74pcx"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-3d-matrices
+             sbcl-3d-quaternions
+             sbcl-3d-vectors
+             sbcl-documentation-utils))
+      (home-page "https://shinmera.github.io/3d-transforms/")
+      (synopsis
+       "Common structure to encapsulate spatial transformations in Common Lisp")
+      (description
+       "This is a library that uses the other 3d-* math libraries to present an
+encapsulation for a spatial transformation.  It offers convenience functions for
+operating on such transformations and for converting between them and the
+alternative 4x4 matrix representation.")
+      (license license:zlib))))
+
+;; TODO: Build failure:
+;; https://github.com/Shinmera/3d-quaternions/issues/2
+;;
+;; (define-public ecl-3d-transforms
+;;   (sbcl-package->ecl-package sbcl-3d-transforms))
+
+(define-public cl-3d-transforms
+  (sbcl-package->cl-source-package sbcl-3d-transforms))
+
 (define-public sbcl-glsl-toolkit
-  (let ((commit "d00ba1906e3b5eb08ea346ac300a1e77bb999d04")
-        (revision "1"))
+  (let ((commit "4c4889e75c635772c4df70b11d6f14e7a596da43")
+        (revision "2"))
     (package
       (name "sbcl-glsl-toolkit")
       (version (git-version "1.0.0" revision commit))
@@ -18733,9 +19112,9 @@ application fail and be unable to do so using its standard UI.")
          (uri (git-reference
                (url "https://github.com/Shirakumo/glsl-toolkit")
                (commit commit)))
-         (file-name (git-file-name "glsl-toolkit" version))
+         (file-name (git-file-name "cl-glsl-toolkit" version))
          (sha256
-          (base32 "0as5796yazchq1qkna3srxlz5v7cf7ffny9cbqi41wsa2s20vbh9"))))
+          (base32 "0vrk8nqijqdi1rwf85rhd93yj7q8qkxnigxn3bw0cbrzvzrks9rl"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-cl-ppcre sbcl-documentation-utils sbcl-parse-float
@@ -19652,6 +20031,53 @@ application development library.")
 (define-public cl-glfw3
   (sbcl-package->cl-source-package sbcl-cl-glfw3))
 
+(define-public sbcl-cl-gltf
+  (let ((commit "7f9193acec80cad775b61b1c7a125c14a7b35a0c")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-gltf")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/cl-gltf")
+               (commit commit)))
+         (file-name (git-file-name "cl-gltf" version))
+         (sha256
+          (base32 "0ni42242a4x052dqlycwrg5j6piwm87s4wgbn2q0a9s3l9f811vk"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; No tests provided.
+       `(#:tests? #f))
+      (inputs
+       (list sbcl-documentation-utils
+             sbcl-cffi
+             sbcl-jzon
+             sbcl-mmap
+             sbcl-nibbles
+             sbcl-qbase64
+             sbcl-static-vectors
+             sbcl-trivial-extensible-sequences))
+      (home-page "https://shirakumo.github.io/cl-gltf/")
+      (synopsis "Common Lisp parser for glTF file format")
+      (description
+       "This package provides a Common Lisp parser for glTF file format.")
+      (license license:zlib))))
+
+;; FIXME: ECL part is failing
+;; ;;; Internal error:
+;;
+;; ** There is no package with the name SEQUENCE.An error occurred during
+;; initialization: COMPILE-FILE-ERROR while compiling #<cl-source-file
+;; "trivial-extensible-sequences" "fallback">.
+;;
+;; (define-public ecl-cl-gltf
+;;   (sbcl-package->ecl-package sbcl-cl-gltf))
+
+(define-public cl-gltf
+  (sbcl-package->cl-source-package sbcl-cl-gltf))
+
 (define-public sbcl-chirp
   (let ((commit "01c79fa41939688216d1f86d0766a687becb0654")
         (revision "1"))
@@ -20391,8 +20817,8 @@ tested (as shown in the examples).")
   (sbcl-package->cl-source-package sbcl-sdl2-ttf))
 
 (define-public sbcl-cl-gamepad
-  (let ((commit "7e12137927b42db064ffbf9ea34bd4790ad4bb33")
-        (revision "1"))
+  (let ((commit "647f6ee8f40048286d743d79845c3753fba9d8f1")
+        (revision "2"))
     (package
       (name "sbcl-cl-gamepad")
       (version (git-version "3.0.0" revision commit))
@@ -20404,7 +20830,7 @@ tested (as shown in the examples).")
                (commit commit)))
          (file-name (git-file-name "cl-gamepad" version))
          (sha256
-          (base32 "1gzx590i7s81qmramnjvfzrrq5yppas8yxqq1jl3yzqhhjwjfvkd"))))
+          (base32 "0w9lcahgqacc39932jp2ghid9sl4wg4vyaza8vdnghmixdl49cin"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
@@ -20412,14 +20838,13 @@ tested (as shown in the examples).")
            (add-after 'unpack 'patch-evdev-lib-path
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "evdev-cffi.lisp"
-                 (("libevdev.so" all)
-                  (string-append (assoc-ref inputs "libevdev")
-                                 "/lib/" all))))))))
+                 (("libevdev.so")
+                  (search-input-file inputs "/lib/libevdev.so"))))))))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("documentation-utils" ,sbcl-documentation-utils)
-         ("libevdev" ,libevdev)
-         ("trivial-features" ,sbcl-trivial-features)))
+       (list libevdev
+             sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-trivial-features))
       (home-page "https://shirakumo.github.io/cl-gamepad/")
       (synopsis "Library for access to gamepads and joystick input devices")
       (description
@@ -20434,8 +20859,8 @@ joysticks, and other such HID devices.")
   (sbcl-package->cl-source-package sbcl-cl-gamepad))
 
 (define-public sbcl-trial
-  (let ((commit "ba178cac3a5528c570c7e8dad66c58cc770db53a")
-        (revision "1"))
+  (let ((commit "db4e98ede16640238bd51bf5d63cda57c75a51ae")
+        (revision "2"))
     (package
       (name "sbcl-trial")
       (version (git-version "1.2.0" revision commit))
@@ -20445,44 +20870,92 @@ joysticks, and other such HID devices.")
          (uri (git-reference
                (url "https://github.com/Shirakumo/trial")
                (commit commit)))
-         (file-name (git-file-name "trial" version))
+         (file-name (git-file-name "cl-trial" version))
          (sha256
-          (base32 "1vpv9nrpq93fz1c5cyi1hazaaz9ijbrf1l7zwp7gammndr5v028r"))))
+          (base32 "0haslkzcgivz42k23n90w1dzw8zdgdrqcndadl33pqqlf0d20ilw"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("trial"
+                         "trial-alloy"
+                         "trial-animation"
+                         "trial-assimp"
+                         ;; TODO: It requires a long packaging journey.
+                         ;; "trial-feedback"
+                         "trial-gif"
+                         "trial-glfw"
+                         ;; FIXME: Check why this system is failing:
+                         ;; WARNING: Invalid qualifiers for APPEND method
+                         ;; combination in method
+                         ;; ...
+                         ;; "trial-glop"
+                         "trial-gltf"
+                         ;; TODO: It requires a long packaging journey.
+                         ;; "trial-harmony"
+                         "trial-jpeg"
+                         "trial-notify"
+                         "trial-png"
+                         ;; TODO: I'm not sure which QOI system to use here. There are two:
+                         ;; - https://github.com/bpanthi977/qoi
+                         ;; - https://github.com/mfiano/qoi
+                         ;; "trial-qoi"
+                         ;; TODO: It requires a long packaging journey.
+                         ;; "trial-qt"
+                         "trial-sdl2"
+                         "trial-terragen"
+                         "trial-tga"
+                         "trial-tiff"
+                         "trial-workbench")))
       (native-inputs
        (list sbcl-trivial-features))
       (inputs
-       (list sbcl-alexandria
-             sbcl-3d-matrices
+       (list sbcl-3d-matrices
+             sbcl-3d-quaternions
+             sbcl-3d-transforms
              sbcl-3d-vectors
+             sbcl-alexandria
+             sbcl-alloy
+             sbcl-atomics
              sbcl-bordeaux-threads
              sbcl-cl-gamepad
+             sbcl-cl-glfw3
+             sbcl-cl-gltf
              sbcl-cl-jpeg
              sbcl-cl-opengl
              sbcl-cl-ppcre
              sbcl-cl-tga
+             sbcl-classimp
              sbcl-closer-mop
              sbcl-deploy
+             sbcl-dns-client
              sbcl-fast-io
+             sbcl-file-notify
              sbcl-flare
              sbcl-float-features
              sbcl-flow
              sbcl-for
              sbcl-form-fiddle
+             sbcl-glop
              sbcl-glsl-toolkit
              sbcl-ieee-floats
-             sbcl-jsown
+             sbcl-jzon
              sbcl-lambda-fiddle
+             sbcl-language-codes
              sbcl-lquery
              sbcl-messagebox
              sbcl-mmap
              sbcl-pathname-utils
              sbcl-pngload
+             sbcl-promise
              sbcl-retrospectiff
+             sbcl-sdl2
+             sbcl-simple-tasks
              sbcl-static-vectors
+             sbcl-system-locale
              sbcl-terrable
+             sbcl-trivial-extensible-sequences
              sbcl-trivial-garbage
              sbcl-trivial-indent
+             sbcl-trivial-main-thread
              sbcl-verbose
              sbcl-zpng))
       (home-page "https://github.com/Shirakumo/trial")
@@ -20493,8 +20966,10 @@ engines, it is meant to be more of a loose connection of components that can be
 fit together as required by any particular game.")
       (license license:zlib))))
 
-(define-public ecl-trial
-  (sbcl-package->ecl-package sbcl-trial))
+;; TODO: Enable with new ECL when this issue is fixed:
+;; https://github.com/Shinmera/3d-quaternions/issues/2
+;; (define-public ecl-trial
+;;   (sbcl-package->ecl-package sbcl-trial))
 
 (define-public cl-trial
   (sbcl-package->cl-source-package sbcl-trial))
@@ -20648,8 +21123,8 @@ aren't already directly available on the system.")
   (sbcl-package->cl-source-package sbcl-font-discovery))
 
 (define-public sbcl-alloy
-  (let ((commit "ea02e4576fd92917201b3c9b63dd3cdc72045dbf")
-        (revision "2"))
+  (let ((commit "628974de537affb5b44ad548347f67c16efffcfc")
+        (revision "3"))
     (package
       (name "sbcl-alloy")
       (version (git-version "0.0.0" revision commit))
@@ -20659,9 +21134,9 @@ aren't already directly available on the system.")
          (uri (git-reference
                (url "https://github.com/Shirakumo/alloy")
                (commit commit)))
-         (file-name (git-file-name "alloy" version))
+         (file-name (git-file-name "cl-alloy" version))
          (sha256
-          (base32 "1g8ibvlajhlbdrmny7ck55ilv1shjdpj38q380wri4mavfymjw5f"))))
+          (base32 "0fx294qwxshgijss000pbjbnbwxqvxyw6p3mva36qljhbbkw2fxy"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-alexandria sbcl-parachute))
@@ -20673,13 +21148,13 @@ aren't already directly available on the system.")
        ;; Dismiss alloy-svg, since it is not completed:
        ;; https://github.com/Shirakumo/alloy/issues/24
        '(#:asd-systems '("alloy"
-                         "alloy-windowing"
                          "alloy-animation"
-                         "alloy-simple"
-                         "alloy-simple-presentations"
                          "alloy-opengl"
                          "alloy-opengl-msdf"
-                         "alloy-opengl-png")))
+                         "alloy-opengl-png"
+                         "alloy-simple"
+                         "alloy-simple-presentations"
+                         "alloy-windowing")))
       (home-page "https://shirakumo.github.io/alloy/")
       (synopsis
        "Common Lisp user interface protocol and toolkit implementation")
@@ -22620,6 +23095,55 @@ sequence.")
 (define-public ecl-random-sample
   (sbcl-package->ecl-package sbcl-random-sample))
 
+(define-public sbcl-hypergeometrica
+  (let ((commit "db723ceb343d89a1c8d7f9174cf3a76fa91522b5")
+        (revision "0"))
+    (package
+      (name "sbcl-hypergeometrica")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/hypergeometrica")
+               (commit commit)))
+         (file-name (git-file-name "cl-hypergeometrica" version))
+         (sha256
+          (base32 "1dfd6w9djgfh7f4z79d8qsyggrwkjlqhs9rxpzpzv092nlwg3l35"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiasco))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cffi
+             sbcl-global-vars
+             sbcl-lparallel
+             sbcl-mmap
+             sbcl-napa-fft3
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/stylewarning/hypergeometrica")
+      (synopsis "High-precision arithmetic")
+      (description
+       "Hypergeometrica is a Common Lisp library for performing high-precision
+arithmetic, with a focus on performance.  At the heart of it all are routines
+for multiplication.  Hypergeometrica aims to support:
+
+@itemize
+@item In-core multiplication using various algorithms, from schoolbook to
+floating-point FFTs.
+@item In-core multiplication for large numbers using exact convolutions via
+number-theoretic transforms, which is enabled by 64-bit modular arithmetic.
+@item Out-of-core multiplication using derivatives of the original
+Cooley–Tukey algorithm.
+@end itemize
+
+On top of multiplication, one can build checkpointed algorithms for computing
+various classical constants, like @math{\\pi}.")
+      (license license:bsd-3))))
+
+(define-public cl-hypergeometrica
+  (sbcl-package->cl-source-package sbcl-hypergeometrica))
+
 (define-public sbcl-mgl-gpr
   (let ((commit "cb6ce51e2f87bf1d589f3703c13eea6e25780afe")
         (revision "1"))
@@ -24011,7 +24535,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -24021,7 +24545,7 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "1y1za2vm7m1bhkj6ssc29jvs9p82swjvclnhm9xyp2b275ykzz7l"))
+         "0djs16v77ng14d26wpxf5qby2d3l1pfsd2c1qkg4wv6mnk16imnq"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -24267,7 +24791,13 @@ implementation for Common Lisp.")
   (sbcl-package->cl-source-package sbcl-jzon))
 
 (define-public ecl-jzon
-  (sbcl-package->ecl-package sbcl-jzon))
+  (let ((pkg (sbcl-package->ecl-package sbcl-jzon)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; FIXME: Tests fail on ECL:  https://github.com/Zulu-Inuoe/jzon/issues/36
+         ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-simple-routes
   (let ((commit "6f88c38945a4de73e85786d3499c39cacb400598")
@@ -24783,7 +25313,7 @@ JSON handling.  Load the parser backend you prefer!
 (define-public sbcl-nsymbols
   (package
    (name "sbcl-nsymbols")
-   (version "0.2.0")
+   (version "0.3.1")
    (source
     (origin
      (method git-fetch)
@@ -24792,9 +25322,12 @@ JSON handling.  Load the parser backend you prefer!
            (commit version)))
      (file-name (git-file-name "cl-nsymbols" version))
      (sha256
-      (base32 "1nks5v2l6vf0kwiyv3r2lickp3xhyi0ck33y1l08crmwhn097hpd"))))
+      (base32 "14zdwsk2nrismj3xb54kfpgcdcsdzw3fyd7zwxlsir66lv9w9ji9"))))
    (build-system asdf-build-system/sbcl)
    (native-inputs (list sbcl-lisp-unit2))
+   (inputs (list cl-closer-mop))
+   (arguments
+    '(#:asd-systems '("nsymbols" "nsymbols/star")))
    (synopsis
     "Functions to search, filter, and group symbols in chosen packages")
    (home-page "https://github.com/atlas-engineer/nsymbols")
@@ -26794,7 +27327,8 @@ to split out into a separate ASDF system.")
               sbcl-cl-unicode
               sbcl-trivial-gray-streams))
       (arguments
-       (list #:phases
+       (list #:tests? #f ; FIXME: Failing with new parachute.
+             #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'fix-tests
                    (lambda _
