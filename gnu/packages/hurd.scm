@@ -185,7 +185,13 @@ communication.")
                                          "hurd-fix-types-of-read-write-and-readables-methods-2.patch"))))
       (build-system gnu-build-system)
       (native-inputs
-       (list autoconf automake mig))
+       (list autoconf
+             automake
+             (if (%current-target-system)
+                 (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
+                        (cross-mig (module-ref cross-base 'cross-mig)))
+                   (cross-mig (%current-target-system)))
+                 mig)))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -309,7 +315,15 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                  (invoke "make" "gnumach.gz")
                  (install-file "gnumach.gz" boot))))))))
     (native-inputs
-     (list mig perl autoconf automake texinfo-4))
+     (list autoconf
+           automake
+           (if (%current-target-system)
+                   (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
+                          (cross-mig (module-ref cross-base 'cross-mig)))
+                     (cross-mig (%current-target-system)))
+                   mig)
+           perl
+           texinfo-4))
     (supported-systems (cons "i686-linux" %hurd-systems))
     (synopsis "Microkernel of the GNU system")
     (description
@@ -529,12 +543,12 @@ exec ${system}/rc \"$@\"
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
        ("libgcrypt" ,libgcrypt)                   ;for 'libgcrypt-config'
-       ("pkg-config" ,pkg-config)
        ("mig" ,(if (%current-target-system)
-                   ;; XXX: When targeting i586-pc-gnu, we need a 32-bit MiG,
-                   ;; hence this hack.
-                   mig/32-bit
+                   (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
+                          (cross-mig (module-ref cross-base 'cross-mig)))
+                     (cross-mig (%current-target-system)))
                    mig))
+       ("pkg-config" ,pkg-config)
        ("perl" ,perl)
        ("texinfo" ,texinfo-4)
        ("dde-sources" ,dde-sources)))
