@@ -4000,20 +4000,55 @@ reasonable substitute.")
 (define-public python-redis
   (package
     (name "python-redis")
-    (version "3.5.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "redis" version))
-       (sha256
-        (base32 "18h5b87g15x3j6pb1h2q27ri37p2qpvc9n2wgn5yl3b6m3y0qzhf"))))
-    (build-system python-build-system)
-    ;; Tests require a running Redis server.
-    (arguments '(#:tests? #f))
-    ;; As long as we are not running test, we do not need this input :-)
-    ;;(native-inputs
-    ;; `(("python-pytest" ,python-pytest)))
-    (home-page "https://github.com/andymccurdy/redis-py")
+    (version "4.5.2")
+    (source (origin
+              ;; The PyPI archive lacks some test resources such as the TLS
+              ;; certificates under docker/stunnel/keys.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/redis/redis-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cz3gji3rb1h5dczyl11hm42wgsbz5v896cgbi14dij160b7m35i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-m"
+              ;; These tests are disabled in the official CI run (see:
+              ;; https://raw.githubusercontent.com/redis/redis-py/master/
+              ;; .github/workflows/install_and_test.sh).
+              (string-append "not onlycluster "
+                             "and not redismod "
+                             "and not ssl")
+              "-k" (string-append
+                    ;; The autoclaim test fails with "AssertionError: assert
+                    ;; [b'0-0', [], []] == [b'0-0', []]".
+                    "not test_xautoclaim "
+                    ;; These tests cause the following error: "Error 111
+                    ;; connecting to localhost:6380. Connection refused."
+                    ;; (see: https://github.com/redis/redis-py/issues/2109).
+                    "and not test_sync "
+                    "and not test_psync"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests require a running Redis server.
+          (add-before 'check 'start-redis
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "redis-server" "--daemonize" "yes"
+                        "--enable-debug-command" "yes"
+                        "--enable-module-command" "local")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           redis))
+    (propagated-inputs
+     (list python-async-timeout))
+    (home-page "https://github.com/redis/redis-py")
     (synopsis "Redis Python client")
     (description
      "This package provides a Python interface to the Redis key-value store.")
