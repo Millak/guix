@@ -46,6 +46,7 @@
   #:export (cross-binutils
             cross-libc
             cross-gcc
+            cross-mig
             cross-kernel-headers))
 
 (define-syntax %xgcc
@@ -365,6 +366,52 @@ target that libc."
                          #:xgcc xgcc
                          #:xbinutils xbinutils))
 
+(define* (cross-gnumach-headers target
+                                #:key
+                                (xgcc (cross-gcc target))
+                                (xbinutils (cross-binutils target)))
+  (package
+    (inherit gnumach-headers)
+    (name (string-append (package-name gnumach-headers)
+                         "-cross-" target))
+    (native-inputs
+     (modify-inputs (package-native-inputs gnumach-headers)
+       (prepend xgcc xbinutils)))))
+
+(define* (cross-mig target
+                    #:key
+                    (xgcc (cross-gcc target))
+                    (xbinutils (cross-binutils target)))
+  "Return a cross-mig for TARGET, where TARGET is a GNU triplet.  Use XGCC as
+the base compiler.  Use XBINUTILS as the associated cross-Binutils."
+  (define xgnumach-headers
+    (cross-gnumach-headers target
+                           #:xgcc xgcc
+                           #:xbinutils xbinutils))
+  (package
+    (inherit mig)
+    (name (string-append "mig-cross"))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mig)
+       ((#:configure-flags flags #~'())
+        #~(list #$(string-append "--target=" target)))
+       ((#:tests? _ #f)
+        #f)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'configure 'set-cross-headers-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((mach #+xgnumach-headers)
+                       (cpath (string-append mach "/include")))
+                  (for-each (lambda (variable)
+                              (setenv variable cpath))
+                            '#$%gcc-cross-include-paths))))))))
+    (propagated-inputs
+     (list xgnumach-headers))
+    (native-inputs
+     (modify-inputs (package-native-inputs mig)
+       (prepend xgcc xbinutils)))))
+
 (define* (cross-kernel-headers* target
                                 #:key
                                 (linux-headers linux-libre-headers)
@@ -399,40 +446,11 @@ target that libc."
                        ("cross-binutils" ,xbinutils)
                        ,@(package-native-inputs linux-headers)))))
 
-  (define xgnumach-headers-name
-    (string-append (package-name gnumach-headers) "-cross-" target))
+  (define xmig
+    (cross-mig target #:xgcc xgcc #:xbinutils xbinutils))
 
   (define xgnumach-headers
-    (package
-      (inherit gnumach-headers)
-      (name xgnumach-headers-name)
-      (native-inputs
-       (modify-inputs (package-native-inputs gnumach-headers)
-         (prepend xgcc xbinutils)))))
-
-  (define xmig
-    (package
-      (inherit mig)
-      (name (string-append "mig-cross"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments mig)
-         ((#:configure-flags flags #~'())
-          #~(list #$(string-append "--target=" target)))
-         ((#:tests? _ #f)
-          #f)
-         ((#:phases phases #~%standard-phases)
-          #~(modify-phases #$phases
-              (add-before 'configure 'set-cross-headers-path
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let* ((mach #+(this-package-input xgnumach-headers-name))
-                         (cpath (string-append mach "/include")))
-                    (for-each (lambda (variable)
-                                (setenv variable cpath))
-                              '#$%gcc-cross-include-paths))))))))
-      (propagated-inputs (list xgnumach-headers))
-      (native-inputs
-       (modify-inputs (package-native-inputs mig)
-         (prepend xgcc xbinutils)))))
+    (cross-gnumach-headers target #:xgcc xgcc #:xbinutils xbinutils))
 
   (define xhurd-headers
     (package
@@ -611,8 +629,9 @@ and the cross tool chain."
                          ("cross-binutils" ,xbinutils)
                          ,@(if (target-hurd? target)
                                `(("cross-mig"
-                                  ,@(assoc-ref (package-native-inputs xheaders)
-                                               "cross-mig")))
+                                  ,(cross-mig target
+                                              #:xgcc xgcc
+                                              #:xbinutils xbinutils)))
                                '())
                          ,@(package-inputs libc) ;FIXME: static-bash
                          ,@(package-native-inputs libc))))))
