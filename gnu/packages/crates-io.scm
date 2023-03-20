@@ -58651,6 +58651,28 @@ loading and layout routines of XeTeX as a crate, currently providing only
 a C API.")
     (license license:expat)))
 
+(define-public rust-temp-testdir-0.2
+  (package
+    (name "rust-temp-testdir")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "temp_testdir" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1z5yv6d9944md5zg6g0sbahv7xjga2k232x40x4l20kq8af1w7wj"))))
+    (build-system cargo-build-system)
+    #;
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/la10736/temp_testdir")
+    (synopsis "Use a temp directory")
+    (description
+     "This is a little crate to use a temp directory in crate.  You can chose
+whether to delete it after use or not for debugging purposes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tempdir-0.3
   (package
     (name "rust-tempdir")
