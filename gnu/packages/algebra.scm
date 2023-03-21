@@ -1881,3 +1881,20 @@ and not by the available RAM.")
       ;; https://github.com/vermaseren/form/issues/426
       (supported-systems '("x86_64-linux"))
       (license license:gpl3+))))
+
+(define-public parform
+  (package
+    (inherit form)
+    (name "parform")
+    (arguments
+     (substitute-keyword-arguments (package-arguments form)
+       ((#:configure-flags flags)
+        #~(cons* "--enable-parform=yes" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              #$%openmpi-setup)))))
+    (inputs (list bash-minimal openmpi))
+    (description (string-append (package-description form)
+                                "  This package also includes
+@code{parform}, a version of FORM parallelized using OpenMPI."))))
