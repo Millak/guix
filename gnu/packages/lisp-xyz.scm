@@ -24829,7 +24829,7 @@ implementation for Common Lisp.")
 (define-public sbcl-jzon
   (package
     (name "sbcl-jzon")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -24838,7 +24838,7 @@ implementation for Common Lisp.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-jzon" version))
        (sha256
-        (base32 "03k0czc58wlnxavkmr7gbrza6zq40ih4da8yjbxg9ba8m0bzzdw4"))))
+        (base32 "0rbardn1dfizpyyy1c127zzk1fnq4pslz75xa7ldpfjsi5jc5fmr"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:asd-systems '("com.inuoe.jzon")
