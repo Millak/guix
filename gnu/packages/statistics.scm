@@ -1787,14 +1787,14 @@ like tidy evaluation.")
 (define-public r-tibble
   (package
     (name "r-tibble")
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tibble" version))
        (sha256
         (base32
-         "12i9cshnj2lygadh03zjw1zn5dr13wspcrq2dprl5qrrr95z2bwg"))))
+         "0c916wl19wbhncv05hjzs2vmvvbcxlswjl6i232ygmkzal62v9v5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fansi
