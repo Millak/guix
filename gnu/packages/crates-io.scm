@@ -46335,14 +46335,14 @@ Python code from a Rust binary is also supported.")
 (define-public rust-python3-dll-a-0.2
   (package
     (name "rust-python3-dll-a")
-    (version "0.2.5")
+    (version "0.2.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "python3-dll-a" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "01k2nf4wq4f4xnaq3fy1gx12v10pndwmdrjq4x4pshhjxxnrpml9"))))
+                "1a676r8xlbkijdagywwz838rbdnc9h28lgmx1ccvyqj9h9rbs5d9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;Windows-like targets only
