@@ -33557,14 +33557,14 @@ data (variant call format, e.g. VCF or BCF) or meta-analysis results in R.")
 (define-public r-maldiquant
   (package
     (name "r-maldiquant")
-    (version "1.22")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MALDIquant" version))
        (sha256
         (base32
-         "05fhr7945m0qxh7f5c4ax9v2k32s4n4v4xc1dm1crk1vbzha40bv"))))
+         "0721j8lzv6ywv0hf8rjw446dmvl18gm5ymf5a35fg9vnprfsalha"))))
     (properties `((upstream-name . "MALDIquant")))
     (build-system r-build-system)
     (native-inputs
