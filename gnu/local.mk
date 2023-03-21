@@ -1009,6 +1009,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/connman-CVE-2022-32293-pt1.patch	\
   %D%/packages/patches/connman-CVE-2022-32293-pt2.patch	\
   %D%/packages/patches/containerd-create-pid-file.patch	\
+  %D%/packages/patches/converseen-hide-updates-checks.patch	\
+  %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
   %D%/packages/patches/cool-retro-term-wctype.patch		\
   %D%/packages/patches/coreutils-gnulib-tests.patch		\
   %D%/packages/patches/coq-fix-envvars.patch			\

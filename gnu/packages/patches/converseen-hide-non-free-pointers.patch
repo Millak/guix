@@ -1,0 +1,198 @@
+Remove pointers to PayPal and Facebook.
+Upstream status: Guix-specific, not forwarded upstream.
+
+diff --git a/src/dialoginfo.cpp b/src/dialoginfo.cpp
+index 3302f55..b64f414 100755
+--- a/src/dialoginfo.cpp
++++ b/src/dialoginfo.cpp
+@@ -31,7 +31,6 @@ DialogInfo::DialogInfo(QWidget *parent) :
+     setupUi(this);
+ 
+     connect(pushClose, SIGNAL(clicked()), this, SLOT(close()));
+-    connect(pushFacebook, SIGNAL(clicked()), this, SLOT(openFacebookPage()));
+ 
+     QString appVersion;
+     QString magickVersion;
+@@ -63,8 +62,3 @@ void DialogInfo::openFacebookPage()
+     QDesktopServices::openUrl(QUrl("https://www.facebook.com/converseen", QUrl::TolerantMode));
+ }
+ 
+-void DialogInfo::on_pushDonatePayPal_clicked()
+-{
+-    QDesktopServices::openUrl(QUrl("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HQA6TBT5354FC", QUrl::TolerantMode));
+-}
+-
+diff --git a/src/dialoginfo.h b/src/dialoginfo.h
+index 4c13776..f1b7ea3 100755
+--- a/src/dialoginfo.h
++++ b/src/dialoginfo.h
+@@ -33,7 +33,6 @@ public:
+ 
+ private slots:
+     void openFacebookPage();
+-    void on_pushDonatePayPal_clicked();
+ };
+ 
+ #endif // DIALOGINFO_H
+diff --git a/src/mainwindowimpl.cpp b/src/mainwindowimpl.cpp
+index 83a365f..9a44492 100755
+--- a/src/mainwindowimpl.cpp
++++ b/src/mainwindowimpl.cpp
+@@ -162,7 +162,6 @@ void MainWindowImpl::createActions()
+     connect(actionConvert, SIGNAL(triggered()), this, SLOT(elabora()));
+ 
+     connect(actionInfo, SIGNAL(triggered()), this, SLOT(about()));
+-    connect(actionDonatePaypal, SIGNAL(triggered()), this, SLOT(openPaypalLink()));
+     connect(actionReportBug, SIGNAL(triggered()), this, SLOT(bugReport()));
+ }
+ 
+diff --git a/ui/dialoginfo.ui b/ui/dialoginfo.ui
+index b2c7788..20b9d9d 100755
+--- a/ui/dialoginfo.ui
++++ b/ui/dialoginfo.ui
+@@ -254,122 +254,6 @@ p, li { white-space: pre-wrap; }
+      </layout>
+     </widget>
+    </item>
+-   <item>
+-    <layout class="QVBoxLayout" name="verticalLayout">
+-     <item>
+-      <widget class="QLabel" name="label_18">
+-       <property name="text">
+-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;If you appreciate this work and would like to support the project, you are welcome to donate via PayPal&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+-       </property>
+-       <property name="wordWrap">
+-        <bool>true</bool>
+-       </property>
+-      </widget>
+-     </item>
+-     <item>
+-      <layout class="QHBoxLayout" name="horizontalLayout_4">
+-       <item>
+-        <widget class="QPushButton" name="pushDonatePayPal">
+-         <property name="text">
+-          <string/>
+-         </property>
+-         <property name="icon">
+-          <iconset resource="../resources.qrc">
+-           <normaloff>:/Images/res/btn_donateCC_LG.png</normaloff>:/Images/res/btn_donateCC_LG.png</iconset>
+-         </property>
+-         <property name="iconSize">
+-          <size>
+-           <width>150</width>
+-           <height>50</height>
+-          </size>
+-         </property>
+-         <property name="flat">
+-          <bool>true</bool>
+-         </property>
+-        </widget>
+-       </item>
+-      </layout>
+-     </item>
+-    </layout>
+-   </item>
+-   <item>
+-    <widget class="Line" name="line_2">
+-     <property name="orientation">
+-      <enum>Qt::Horizontal</enum>
+-     </property>
+-    </widget>
+-   </item>
+-   <item>
+-    <layout class="QHBoxLayout" name="horizontalLayout_5">
+-     <item>
+-      <spacer name="horizontalSpacer_2">
+-       <property name="orientation">
+-        <enum>Qt::Horizontal</enum>
+-       </property>
+-       <property name="sizeHint" stdset="0">
+-        <size>
+-         <width>40</width>
+-         <height>20</height>
+-        </size>
+-       </property>
+-      </spacer>
+-     </item>
+-     <item>
+-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+-       <item>
+-        <widget class="QLabel" name="label_7">
+-         <property name="text">
+-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Follow Converseen:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+-         </property>
+-        </widget>
+-       </item>
+-       <item>
+-        <widget class="QPushButton" name="pushFacebook">
+-         <property name="cursor">
+-          <cursorShape>PointingHandCursor</cursorShape>
+-         </property>
+-         <property name="text">
+-          <string/>
+-         </property>
+-         <property name="icon">
+-          <iconset resource="../resources.qrc">
+-           <normaloff>:/Images/res/facebook-icon.png</normaloff>:/Images/res/facebook-icon.png</iconset>
+-         </property>
+-         <property name="iconSize">
+-          <size>
+-           <width>32</width>
+-           <height>32</height>
+-          </size>
+-         </property>
+-         <property name="flat">
+-          <bool>true</bool>
+-         </property>
+-        </widget>
+-       </item>
+-      </layout>
+-     </item>
+-     <item>
+-      <spacer name="horizontalSpacer_3">
+-       <property name="orientation">
+-        <enum>Qt::Horizontal</enum>
+-       </property>
+-       <property name="sizeHint" stdset="0">
+-        <size>
+-         <width>40</width>
+-         <height>20</height>
+-        </size>
+-       </property>
+-      </spacer>
+-     </item>
+-    </layout>
+-   </item>
+-   <item>
+-    <widget class="Line" name="line">
+-     <property name="orientation">
+-      <enum>Qt::Horizontal</enum>
+-     </property>
+-    </widget>
+-   </item>
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+diff --git a/ui/mainwindow.ui b/ui/mainwindow.ui
+index 28df8cc..0ee7f37 100755
+--- a/ui/mainwindow.ui
++++ b/ui/mainwindow.ui
+@@ -1334,18 +1334,6 @@ p, li { white-space: pre-wrap; }
+     <string>F1</string>
+    </property>
+   </action>
+-  <action name="actionDonatePaypal">
+-   <property name="icon">
+-    <iconset resource="../resources.qrc">
+-     <normaloff>:/Images/res/paypal_mini.png</normaloff>:/Images/res/paypal_mini.png</iconset>
+-   </property>
+-   <property name="text">
+-    <string>&amp;Donate via Paypal</string>
+-   </property>
+-   <property name="toolTip">
+-    <string>Donate via Paypal</string>
+-   </property>
+-  </action>
+   <action name="actionReportBug">
+    <property name="text">
+     <string>&amp;Report bug...</string>

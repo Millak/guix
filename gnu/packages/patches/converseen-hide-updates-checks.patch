@@ -1,0 +1,110 @@
+Remove Check updates button and Auto check updates option.
+Upstream status: Guix-specific, not forwarded upstream.
+
+diff --git a/src/dialogoptions.cpp b/src/dialogoptions.cpp
+index 704e75c..bb3f9b0 100755
+--- a/src/dialogoptions.cpp
++++ b/src/dialogoptions.cpp
+@@ -71,23 +71,10 @@ void DialogOptions::setOverwriteMode()
+         IniSettings::setOverwriteMode(true);
+ }
+ 
+-void DialogOptions::setAutoUpdates()
+-{
+-    bool enabled;
+-
+-    if (checkCheckUpdates->isChecked())
+-        enabled = true;
+-    else
+-        enabled = false;
+-
+-    IniSettings::setAutoChechUpdates(enabled);
+-}
+-
+ void DialogOptions::saveOptions()
+ {
+     setLanguage();
+     setOverwriteMode();
+-    setAutoUpdates();
+ 
+     IniSettings::settings->sync();
+     accept();
+@@ -102,12 +89,6 @@ void DialogOptions::loadSettings()
+     else
+         radioAskFirst->setChecked(true);
+ 
+-    bool autoUpdates = IniSettings::isAutoChechUpdates();
+-    if (autoUpdates)
+-        checkCheckUpdates->setCheckState(Qt::Checked);
+-    else
+-        checkCheckUpdates->setCheckState(Qt::Unchecked);
+-
+     Translator t;
+     
+     int idx = comboLangs->findText(t.currentLanguage(), Qt::MatchExactly);
+diff --git a/src/mainwindowimpl.cpp b/src/mainwindowimpl.cpp
+index 2b6d68d..83a365f 100755
+--- a/src/mainwindowimpl.cpp
++++ b/src/mainwindowimpl.cpp
+@@ -164,7 +164,6 @@ void MainWindowImpl::createActions()
+     connect(actionInfo, SIGNAL(triggered()), this, SLOT(about()));
+     connect(actionDonatePaypal, SIGNAL(triggered()), this, SLOT(openPaypalLink()));
+     connect(actionReportBug, SIGNAL(triggered()), this, SLOT(bugReport()));
+-    connect(actionCheckForUpdates, SIGNAL(triggered()), this, SLOT(checkForUpdates()));
+ }
+ 
+ void MainWindowImpl::setupMenu()
+diff --git a/ui/dialogoptions.ui b/ui/dialogoptions.ui
+index e59148d..6cb23f5 100755
+--- a/ui/dialogoptions.ui
++++ b/ui/dialogoptions.ui
+@@ -66,22 +66,6 @@
+      </layout>
+     </widget>
+    </item>
+-   <item>
+-    <widget class="QGroupBox" name="groupBox_3">
+-     <property name="title">
+-      <string>Updates</string>
+-     </property>
+-     <layout class="QVBoxLayout" name="verticalLayout_3">
+-      <item>
+-       <widget class="QCheckBox" name="checkCheckUpdates">
+-        <property name="text">
+-         <string>Checks for updates automatically</string>
+-        </property>
+-       </widget>
+-      </item>
+-     </layout>
+-    </widget>
+-   </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+diff --git a/ui/mainwindow.ui b/ui/mainwindow.ui
+index a5f55f0..28df8cc 100755
+--- a/ui/mainwindow.ui
++++ b/ui/mainwindow.ui
+@@ -190,7 +190,6 @@
+     </property>
+     <addaction name="actionDonatePaypal"/>
+     <addaction name="separator"/>
+-    <addaction name="actionCheckForUpdates"/>
+     <addaction name="actionReportBug"/>
+     <addaction name="separator"/>
+    </widget>
+@@ -1365,14 +1364,6 @@ p, li { white-space: pre-wrap; }
+     <string>Import windows icon (*.ico *.icon)</string>
+    </property>
+   </action>
+-  <action name="actionCheckForUpdates">
+-   <property name="text">
+-    <string>&amp;Check for updates</string>
+-   </property>
+-   <property name="toolTip">
+-    <string>Check if a new version of Converseen is available</string>
+-   </property>
+-  </action>
+  </widget>
+  <customwidgets>
+   <customwidget>
