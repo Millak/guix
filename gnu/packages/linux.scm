@@ -33,6 +33,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
+;;; Copyright © 2019 mikadoZero <mikadozero@yandex.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
@@ -2401,9 +2402,10 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
      (list autoconf automake libtool pkg-config))
     (home-page "http://www.linux-usb.org/")
     (synopsis
-     "Tools for working with USB devices, such as lsusb")
+     "Tools for working with USB devices")
     (description
-     "Tools for working with USB devices, such as lsusb.")
+     "Collection of tools to query what type of USB devices are connected to the
+system, including @command{lsusb}.")
     (license license:gpl2+)))
 
 (define-public usbip-utils
