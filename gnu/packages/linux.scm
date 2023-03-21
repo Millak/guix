@@ -2379,23 +2379,22 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
     (build-system gnu-build-system)
     (outputs (list "out" "python"))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'patch-bootstrap-scripts
-           (lambda _
-             (substitute* "usbhid-dump/bootstrap"
-               (("/bin/sh") (which "sh")))))
-         (add-after 'install 'separate-python-output
-           ;; Separating one Python script shaves more than 106 MiB from :out.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out        (assoc-ref outputs "out"))
-                   (out:python (assoc-ref outputs "python")))
-               (for-each (lambda (file)
-                           (let ((old (string-append out "/" file))
-                                 (new (string-append out:python "/" file)))
-                             (mkdir-p (dirname new))
-                             (rename-file old new)))
-                         (list "bin/lsusb.py"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'patch-bootstrap-scripts
+            (lambda _
+              (substitute* "usbhid-dump/bootstrap"
+                (("/bin/sh") (which "sh")))))
+          (add-after 'install 'separate-python-output
+            ;; Separating one Python script shaves more than 106 MiB from :out.
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((old (string-append #$output "/" file))
+                                (new (string-append #$output:python "/" file)))
+                            (mkdir-p (dirname new))
+                            (rename-file old new)))
+                        (list "bin/lsusb.py")))))))
     (inputs
      (list eudev libusb python))
     (native-inputs
