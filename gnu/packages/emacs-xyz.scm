@@ -27190,6 +27190,16 @@ targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
       #:test-command #~(list "make" "test")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-spy-on-test
+            (lambda _
+              (substitute* "buttercup.el"
+                ;; The spy-on test fails with native compilation, which was
+                ;; fixed in v1.30 but with a variable name for Emacs newer
+                ;; than 28.2.  Add in the same fix with the current variable
+                ;; name.  Upstream bug and fix:
+                ;; <https://github.com/jorgenschaefer/emacs-buttercup/issues/236>
+                (("\\(native-comp-enable-subr-trampolines nil\\)" all)
+                 (string-append all " (comp-enable-subr-trampolines nil)")))))
           (add-after 'install 'install-bin
             (lambda _
               (install-file "bin/buttercup"
