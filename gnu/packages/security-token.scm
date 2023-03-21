@@ -1020,3 +1020,33 @@ It supports the following type of cards:
 It also has limited support for Mifare Classic compatible cards (Thalys card)")
     (license license:gpl3+)
     (home-page "http://pannetrat.com/Cardpeek")))
+
+(define-public pcsc-cyberjack
+  (package
+    (name "pcsc-cyberjack")
+    (version "3.99.5final.sp15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://support.reiner-sct.de/downloads/LINUX/V3.99.5_SP15/pcsc-cyberjack_3.99.5final.SP15.tar.bz2")
+       (sha256
+        (base32 "0yj6plgb245r218v6lgdabb3422hxyrw8rrpf5b8fwah4j1w5dxc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-usbdropdir=" #$output "/pcsc/drivers")
+              (string-append "--bindir=" #$output:tools "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-tools
+            (lambda _ (invoke "make" "-C" "tools/cjflash" "install"))))))
+    (native-inputs (list pkg-config))
+    (inputs (list pcsc-lite libusb))
+    (outputs '("out" "tools"))
+    (synopsis "PC/SC driver for cyberJack chipcard readers")
+    (description
+     "This package includes the IFD driver for the cyberJack
+contactless (RFID) and contact USB chipcard readers.")
+    (home-page "http://www.reiner-sct.com/")
+    (license license:lgpl2.1+)))
