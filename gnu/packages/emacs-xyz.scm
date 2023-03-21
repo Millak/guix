@@ -23497,27 +23497,29 @@ time is being spent during Emacs startup in order to optimize startup time.")
     (license license:gpl3+)))
 
 (define-public emacs-magit-gerrit
-  (package
-    (name "emacs-magit-gerrit")
-    (version "0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/terranpro/magit-gerrit")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1q4kcr2ha2kir7pj0cshmgllgq51543syxkkk5jk3ksfiaba4crj"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-magit))
-    (home-page "https://github.com/terranpro/magit-gerrit")
-    (synopsis "Magit extension for Gerrit")
-    (description "This Magit extension provides integration with Gerrit,
+  (let ((commit "a97521574c5b7d4b7ab89e25c358c87fd5b1887f")
+        (revision "1"))
+    (package
+      (name "emacs-magit-gerrit")
+      (version (git-version "0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/magit-gerrit")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0p6h67x7f6iraw6jqn7dmqy2m2mwwvbwcs61hq8jc602v6hkslqn"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-magit))
+      (home-page "https://github.com/emacsorphanage/magit-gerrit")
+      (synopsis "Magit extension for Gerrit")
+      (description "This Magit extension provides integration with Gerrit,
 which makes it possible to conduct Gerrit code reviews directly from within
 Emacs.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-magit-org-todos-el
   (package
