@@ -80,6 +80,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -22648,10 +22649,20 @@ higher-level lispier interface.")
          (uri (git-reference
                (url "https://github.com/eudoxia0/trivial-open-browser")
                (commit commit)))
-         (file-name (git-file-name "trivial-open-browser" version))
+         (file-name (git-file-name "cl-trivial-open-browser" version))
          (sha256
           (base32 "0ixay1piq420i6adx642qhw45l6ik7rvgk52lyz27dvx5f8yqsdb"))))
       (build-system asdf-build-system/sbcl)
+      (inputs (list xdg-utils))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/trivial-open-browser.lisp"
+                  (("xdg-open")
+                   (search-input-file inputs "/bin/xdg-open"))))))))
       (home-page "https://github.com/eudoxia0/trivial-open-browser")
       (synopsis "Open a browser window from Common Lisp")
       (description
