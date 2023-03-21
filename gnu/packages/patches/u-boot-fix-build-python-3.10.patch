@@ -1,0 +1,37 @@
+This patch is backported from U-Boot 2023.01; remove when updating.
+
+From 7d01bb1c5a1daef0187c9ea276bde19a8d0e7fde Mon Sep 17 00:00:00 2001
+From: Michal Suchanek <msuchanek@suse.de>
+Date: Thu, 13 Oct 2022 22:43:41 +0200
+Subject: [PATCH] libfdt: Fix build with python 3.10
+
+Python 3.10 requires defining PY_SSIZE_T_CLEAN. This will be fixed in
+swig 4.10 but it is not clear when it will be released. There was a
+warning since python 3.8.
+
+Link: https://github.com/swig/swig/pull/2277
+
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+Reviewed-by: Simon Glass <sjg@chromium.org>
+---
+ scripts/dtc/pylibfdt/libfdt.i_shipped | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/scripts/dtc/pylibfdt/libfdt.i_shipped b/scripts/dtc/pylibfdt/libfdt.i_shipped
+index 27c29ea260..56cc5d48f4 100644
+--- a/scripts/dtc/pylibfdt/libfdt.i_shipped
++++ b/scripts/dtc/pylibfdt/libfdt.i_shipped
+@@ -7,6 +7,10 @@
+ 
+ %module libfdt
+ 
++%begin %{
++#define PY_SSIZE_T_CLEAN
++%}
++
+ %include <stdint.i>
+ 
+ %{
+-- 
+GitLab
+

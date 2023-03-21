@@ -655,6 +655,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
                      %u-boot-rk3399-enable-emmc-phy-patch
+                     (search-patch "u-boot-fix-build-python-3.10.patch")
                      (search-patch "u-boot-infodocs-target.patch")
                      (search-patch "u-boot-patman-guix-integration.patch")))
               (method url-fetch)
