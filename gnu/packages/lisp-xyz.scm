@@ -6464,6 +6464,36 @@ performance and simplicity in mind.")
 (define-public ecl-lack
   (sbcl-package->ecl-package sbcl-lack))
 
+(define-public sbcl-cl-isaac
+  (let ((commit "9cd88f39733be753facbf361cb0e08b9e42ff8d5")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-isaac")
+      (version (git-version "1.0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/thephoeron/cl-isaac")
+               (commit commit)))
+         (file-name (git-file-name "cl-isaac" version))
+         (sha256
+          (base32 "0ig1mf8iridfr7vci9gy499194h0hda0xki5s6g0y04g85ibnpw9"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-prove))
+      (home-page "https://github.com/thephoeron/cl-isaac/")
+      (synopsis "Fast cryptographic random number generators")
+      (description "This is an optimized Common Lisp library of Bob Jenkins'
+ISAAC-32 and ISAAC-64 algorithms, which are fast cryptographic random number
+generators: Indirection, Shift, Accumulate, Add, and Count.")
+      (license license:bsd-0))))
+
+(define-public cl-isaac
+  (sbcl-package->cl-source-package sbcl-cl-isaac))
+
+(define-public ecl-cl-isaac
+  (sbcl-package->ecl-package sbcl-cl-isaac))
+
 (define-public sbcl-local-time
   (let ((commit "40169fe26d9639f3d9560ec0255789bf00b30036")
         (revision "3"))
