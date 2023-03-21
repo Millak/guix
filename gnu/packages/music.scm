@@ -51,6 +51,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7168,6 +7169,40 @@ sending MIDI, OSC, and UDP to your audio/visual interfaces like Ableton,
 Renoise, VCV Rack, or SuperCollider.")
       (home-page "https://100r.co/site/orca.html")
       (license license:expat))))
+
+(define-public samplebrain
+  (package
+    (name "samplebrain")
+    (version "0.18.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/then-try-this/samplebrain")
+                    (commit (string-append "v" version "_release"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17p6n16x89bbzlpn9r7w1lgr1ifxs45npn8gxymkdr3j16dhg4zy"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda _
+                            (substitute* "samplebrain.pro"
+                              (("\\/usr")
+                               #$output))
+                            (invoke "qmake"))))))
+    (inputs (list fftw liblo libsndfile portaudio))
+    (home-page "https://thentrythis.org/projects/samplebrain/")
+    (synopsis "Sample mashing synthesizer designed by Aphex Twin")
+    (description
+     "Samplebrain chops samples up into a 'brain' of
+interconnected small sections called blocks which are connected into a network
+by similarity.  It processes a target sample, chopping it up into blocks in
+the same way, and tries to match each block with one in its brain to play in
+realtime.")
+    (license license:gpl2+)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
