@@ -76,7 +76,8 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject))
 
 (define-public python-scipy
   (package
@@ -1707,6 +1708,30 @@ tabular datasets.  This package provides the core modules of Vaex.")
 NeuroML2 models.")
     (license license:lgpl3)))
 
+(define-public python-libneuroml
+  (package
+    (name "python-libneuroml")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/NeuralEnsemble/libNeuroML.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mrm4rd6x1sm6hkvhk20mkqp9q53sl3lbvq6hqzyymkw1iqq6bhy"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-lxml python-six))
+    (native-inputs (list python-pytest python-numpy python-tables))
+    (home-page "https://libneuroml.readthedocs.org/en/latest/")
+    (synopsis
+     "Python library for working with NeuroML descriptions of neuronal models")
+    (description
+     "This package provides a Python library for working with NeuroML descriptions of
+neuronal models")
+    (license license:bsd-3)))
+    
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
