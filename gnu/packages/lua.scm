@@ -1229,7 +1229,7 @@ system.")
 (define-public fnlfmt
   (package
     (name "fnlfmt")
-    (version "0.2.2")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1238,7 +1238,7 @@ system.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rv0amqhy5ypi3pvxfaadn3k1cy4mjlc49wdzl2psz3i11w9gr36"))
+                "06gzw7f20yw4192kymr4karxw3ia3apjnjqpm6vxph87c67d1fa3"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
