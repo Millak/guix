@@ -36306,14 +36306,14 @@ between them.")
 (define-public r-keras
   (package
     (name "r-keras")
-    (version "2.11.0")
+    (version "2.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "keras" version))
        (sha256
         (base32
-         "19r11mlxpdl09f7sfwzflnjhx2a6jgm57hjzg81pk8kprk4w7lvp"))))
+         "0h3p8hscb8l440x2zg0lakk3zrcdq4lqy49vni2p6q5fpvaqfm8r"))))
     (properties `((upstream-name . "keras")))
     (build-system r-build-system)
     (propagated-inputs
