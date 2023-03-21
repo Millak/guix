@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -115,6 +117,50 @@
   #:use-module (guix build-system scons)
   #:use-module (guix deprecation)
   #:use-module (srfi srfi-1))
+
+(define-public converseen
+  (package
+    (name "converseen")
+    (version "0.9.11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Faster3ck/Converseen")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nxvac8df47gxg1klqlz0s3rxl0ykrikmciniwkb938bgilmaijm"))
+              (patches
+               (search-patches "converseen-hide-updates-checks.patch"
+                               ;; Remove links to sites relying on non-free
+                               ;; Javascript.
+                               "converseen-hide-non-free-pointers.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-translations-location
+            ;; Fix translations location.  Without this, only English is
+            ;; offered.
+            (lambda _
+              (substitute* "src/translator.cpp"
+                (("QString\\(\"%1/share/converseen/loc\"\\).arg\\(rootPath\\)")
+                 (string-append "QString(\""
+                                #$output
+                                "/share/converseen/loc\")"))))))))
+    (native-inputs
+     (list pkg-config qttools-5))
+    (inputs
+     (list imagemagick qtbase-5))
+    (home-page "https://converseen.fasterland.net/")
+    (synopsis "Batch image converter and resizer")
+    (description
+     "Converseen is an image batch conversion tool.  You can resize and
+convert images in more than 100 different formats.")
+    (license license:gpl3+)))
 
 (define-public iqa
   (package
