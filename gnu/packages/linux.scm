@@ -2098,12 +2098,12 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
        (base32 "12z5786dnf37n8wvv73wdcqp3nvsqzhwdk3ajna0mag4yz1fqdyw"))))
     (build-system gnu-build-system)
     (arguments
-     `(,@(if (%current-target-system)
-             '(#:configure-flags
-               (list
-                "ac_cv_func_malloc_0_nonnull=yes"
-                "ac_cv_func_realloc_0_nonnull=yes"))
-             '())))
+     (list
+      #:configure-flags
+      (if (%current-target-system)
+          #~(list "ac_cv_func_malloc_0_nonnull=yes"
+                  "ac_cv_func_realloc_0_nonnull=yes")
+          #~'())))
     (inputs (list ncurses))
     (home-page "https://gitlab.com/psmisc/psmisc")
     (synopsis "Small utilities that use the proc file system")
