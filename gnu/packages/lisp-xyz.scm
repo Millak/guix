@@ -11501,7 +11501,7 @@ them as PNG files.")
 (define-public sbcl-history-tree
   (package
     (name "sbcl-history-tree")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -11510,16 +11510,21 @@ them as PNG files.")
              (commit version)))
        (file-name (git-file-name "cl-history-tree" version))
        (sha256
-        (base32 "0z4mfgswfbpkh496qqk130yk6d0q0q5imqybw9n58aq4ygfhibhz"))))
+        (base32 "16fynij438zs4g29m7c0vmkfb0sbaz8gj7zjnxpbgjckbim93qwl"))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           (delete-file-recursively "nasdf")
+           #t))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list
       sbcl-alexandria
       sbcl-custom-hash-table
       sbcl-local-time
-      sbcl-hu.dwim.defclass-star
+      sbcl-nclasses
       sbcl-trivial-package-local-nicknames))
-    (native-inputs (list sbcl-lisp-unit2))
+    (native-inputs (list sbcl-nasdf sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/history-tree")
     (synopsis "Store the history of a browser's visited paths")
     (description
