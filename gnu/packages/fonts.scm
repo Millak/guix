@@ -52,6 +52,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +115,30 @@
     (description "Artifika is an upright italic font for fashionable display
 titling.")
     (license license:silofl1.1)))
+
+(define-public font-chivo
+  (let ((commit "dc61c468d79781eb5183426e88e844af16cdc3e5")
+        (revision "0"))
+    (package
+      (name "font-chivo")
+      (version (git-version "20221010" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Omnibus-Type/Chivo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gdsnflnzwy8ajrk93dxwjashxisln58qcqa6dh4smnk7k0a34qs"))))
+      (build-system font-build-system)
+      (home-page "https://fonts.google.com/specimen/Chivo")
+      (synopsis "The Chivo family of fonts")
+      (description "Google Chivo Fonts is a grotesque family of fonts, ideal for
+highlights and headlines.  In october 2022, the family is upgraded to a
+variable font ranging from Thin to Black, including matching italics.  The
+glyphset has also been extended, supporting now a wider number of languages.")
+      (license license:silofl1.1))))
 
 (define-public font-ibm-plex
   (package
