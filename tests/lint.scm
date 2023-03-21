@@ -1052,7 +1052,7 @@
     (parameterize ((%http-server-port 0))
       (with-http-server `((,redirect ""))
         (test-equal "source, git-reference: 301 -> 200"
-          (format #f "permanent redirect from ~a to ~a"
+          (format #f "permanent redirect from ~a/info/refs to ~a"
                   (%local-url) initial-url)
           (let ((pkg (dummy-package
                       "x"
