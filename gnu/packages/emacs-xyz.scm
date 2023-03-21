@@ -1261,8 +1261,8 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
       (license license:gpl2+))))
 
 (define-public emacs-magit
-  (let ((commit "2c91c080a8e2f35e3b036a2f6b8011fa897d23a1")
-        (revision "3"))
+  (let ((commit "a760dd107843a8fb632e647f6ba9ed34d7c2dd45")
+        (revision "4"))
     (package
       (name "emacs-magit")
       (version (git-version "3.3.0" revision commit))
@@ -1274,7 +1274,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00ibnr76nfyf4fff3ga324d7dbqnsb4crlxgr94npiy8rsclaszp"))))
+          (base32 "0pqw171xi9vrlm0jkz53bhl18z2vnycn2bynb7lh6g5zgppkzdy0"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -1329,7 +1329,9 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
       (inputs
        (list git perl))
       (propagated-inputs
-       (list emacs-dash emacs-with-editor emacs-compat))
+       ;; Note: the 'git-commit' and 'magit-section' dependencies are part of
+       ;; magit itself.
+       (list emacs-compat emacs-dash emacs-transient emacs-with-editor))
       (home-page "https://magit.vc/")
       (synopsis "Emacs interface for the Git version control system")
       (description
