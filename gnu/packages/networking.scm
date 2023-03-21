@@ -2913,6 +2913,39 @@ networks.")
 speedtest.net.")
     (license license:asl2.0)))
 
+(define-public atftp
+  (package
+    (name "atftp")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.code.sf.net/p/atftp/code")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "019qrh2wpvr577ksvs3s82q6kiqm5i6869aj7qba326b59lhkxrc"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'autoreconf
+                          (lambda _
+                            (invoke "autoreconf" "-vif"))))))
+    (native-inputs (list autoconf automake perl pkg-config))
+    (inputs (list pcre2 procps readline tcp-wrappers))
+    (home-page "https://sourceforge.net/projects/atftp/")
+    (synopsis "Advanced TFTP server and client")
+    (description
+     "This package provides a multi-threaded TFTP server that implements all
+options, including all extensions, as specified in RFC 1350, RFC 2090, RFC
+2347, RFC 2348, RFC 2349 and RFC7440.  Atftpd also supports a multicast
+protocol known as mtftp, which was defined in the PXE specification.
+
+The server is socket activated by default but supports being started from
+@command{inetd} as well as in daemon mode.")
+    (license license:gpl2+)))
+
 (define-public tftp-hpa
   (package
     (name "tftp-hpa")
