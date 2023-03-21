@@ -3858,3 +3858,31 @@ fi"
 is therefore designed to be easy to learn and use, highly flexible and
 easily extensible.")
     (license license:cecill)))
+
+(define-public python-brian2tools
+  (package
+    (name "python-brian2tools")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "brian2tools" version))
+              (sha256
+               (base32
+                "0fn028mfy3qlzjkadd0wr5d7rcplijd5jphln414xifvvsb9jcc2"))))
+    (build-system python-build-system)
+    ;; Both pypi tarball and git repo lack test files.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list python-brian2
+                             python-libneuroml
+                             python-markdown-strings
+                             python-matplotlib
+                             python-pylems
+                             python-setuptools
+                             python-setuptools-scm))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/brian-team/brian2tools")
+    (synopsis "Tools for the Brian 2 simulator")
+    (description "Visualization and NeuroML import/export tools for the
+Brian 2 simulator.")
+    (license license:cecill)))
+
