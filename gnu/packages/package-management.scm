@@ -1363,8 +1363,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "7c1eedfba9ef5ccc5651cd5e88662c158e594a2c")
-        (revision "73"))
+  (let ((commit "804165f14ccf613b7d76b2bda83fbfd49019f7e4")
+        (revision "74"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1375,7 +1375,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1prsxj3n8ggv28fqk00yvnbvy0da0lq6m553fs636s8b2yjka8nj"))
+                  "0qga8a7795cig211hya53qjvd2bxcpabpz8izc8zxrmz490wz24j"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1455,7 +1455,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers-1.1
+             guile-fibers-next
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1479,7 +1479,7 @@ environments.")
               guile-gnutls)
         (if (hurd-target?)
             '()
-            (list guile-fibers-1.1))))
+            (list guile-fibers-next))))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
