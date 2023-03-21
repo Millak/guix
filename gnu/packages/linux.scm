@@ -2108,9 +2108,15 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
     (home-page "https://gitlab.com/psmisc/psmisc")
     (synopsis "Small utilities that use the proc file system")
     (description
-     "This PSmisc package is a set of some small useful utilities that
-use the proc file system.  We're not about changing the world, but
-providing the system administrator with some help in common tasks.")
+     "psmisc is a set of small utilities that use the proc file system.
+@itemize @bullet
+@item @command{fuser} identifies processes using files or sockets;
+@item @command{killall} kills processes by name;
+@item @command{prtstat} prints statistics of a process;
+@item @command{pslog} prints the log file(s) of a process;
+@item @command{pstree} shows the currently running processes as a tree;
+@item @command{peekfd} shows the data travelling over a file descriptor.
+@end itemize")
     (license license:gpl2+)))
 
 (define-public util-linux
