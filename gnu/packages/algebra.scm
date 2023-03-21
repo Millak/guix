@@ -34,6 +34,7 @@
 (define-module (gnu packages algebra)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -58,6 +59,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -1818,3 +1820,64 @@ mathematical floating-point libraries (libm).  Amongst other features,
 it offers a certified infinity norm, an automatic polynomial
 implementer, and a fast Remez algorithm.")
    (license license:cecill-c)))
+
+(define-public form
+  ;; using this commit as it removes some invalid/ambiguous license info
+  (let ((commit "e7c52d3b07abe21f21718f5e70ee138e856f15ac")
+        (revision "0"))
+    (package
+      (name "form")
+      (version (git-version "4.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vermaseren/form")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15pjpn5s8d3sva18syhyymh5v1dijchk0xkf6d0m7cl2sj3qxxxq"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags #~'("--enable-native=no")
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-src
+                            (lambda _
+                              (substitute* "check/examples.frm"
+                                ;; skip test that causes memory leak and fails
+                                (("#pend_if valgrind\\?")
+                                 "#pend_if 0"))
+                              (substitute* "sources/extcmd.c"
+                                (("/bin/sh")
+                                 (string-append
+                                  #$(this-package-input "bash-minimal")
+                                  "/bin/sh")))))
+                          (add-after 'build 'build-doxygen
+                            (lambda _
+                              (with-directory-excursion "doc/doxygen"
+                                (invoke "make" "html"))))
+                          (add-after 'install 'install-docs
+                            (lambda _
+                              (let ((doc (string-append
+                                          #$output "/share/doc/" #$name "-"
+                                          #$version "/html")))
+                                (mkdir-p doc)
+                                (copy-recursively "doc/doxygen/html" doc)))))))
+      (native-inputs (list autoconf automake doxygen ruby))
+      (inputs (list bash-minimal))
+      (home-page "https://www.nikhef.nl/~form/")
+      (synopsis "Symbolic manipulation system for very big expressions")
+      (description
+       "FORM is a symbolic manipulation system.  It reads symbolic expressions
+from files and executes symbolic/algebraic transformations upon them.  The
+answers are returned in a textual mathematical representation.  The size of
+the considered expressions in FORM is only limited by the available disk space
+and not by the available RAM.")
+      ;; XXX: Ignore this CVE to work around a name clash with the unrelated
+      ;; "neos/forms" package.
+      (properties '((lint-hidden-cve . ("CVE-2021-32697"))))
+      ;; x86_64 only due to test failures on other platforms.
+      ;; Developers say other platforms are not "tier 1" supported:
+      ;; https://github.com/vermaseren/form/issues/426
+      (supported-systems '("x86_64-linux"))
+      (license license:gpl3+))))
