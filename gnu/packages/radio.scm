@@ -2160,7 +2160,7 @@ program that can be used to build simple signal processing flow graphs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/glv2/convert-samples")
+             (url "https://codeberg.org/glv/convert-samples")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -2192,7 +2192,7 @@ Supported formats:
 @item cu32: complex made of unsigned 32 bit integers
 @item cf32: complex made of 32 bit floats
 @end itemize")
-    (home-page "https://github.com/glv2/convert-samples")
+    (home-page "https://codeberg.org/glv/convert-samples")
     (license license:gpl3+)))
 
 (define-public serialdv

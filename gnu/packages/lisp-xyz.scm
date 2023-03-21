@@ -8676,7 +8676,7 @@ system.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/bst")
+               (url "https://codeberg.org/glv/bst")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -8688,7 +8688,7 @@ system.")
       (description
        "BST is a Common Lisp library for working with binary search trees that
 can contain any kind of values.")
-      (home-page "https://github.com/glv2/bst")
+      (home-page "https://codeberg.org/glv/bst")
       (license license:gpl3))))
 
 (define-public cl-bst
@@ -8734,7 +8734,7 @@ octet streams analogous to string streams.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/glv2/cl-octet-streams")
+             (url "https://codeberg.org/glv/cl-octet-streams")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -8749,7 +8749,7 @@ octet streams analogous to string streams.")
      "CL-octet-streams is a library implementing in-memory octet
 streams for Common Lisp.  It was inspired by the trivial-octet-streams and
 cl-plumbing libraries.")
-    (home-page "https://github.com/glv2/cl-octet-streams")
+    (home-page "https://codeberg.org/glv/cl-octet-streams")
     (license license:gpl3+)))
 
 (define-public cl-octet-streams
@@ -8768,7 +8768,7 @@ cl-plumbing libraries.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/cl-lzlib")
+               (url "https://codeberg.org/glv/cl-lzlib")
                (commit commit)))
          (file-name (git-file-name "cl-lzlib" version))
          (sha256
@@ -8793,7 +8793,7 @@ cl-plumbing libraries.")
       (description
        "This Common Lisp library provides functions for lzip (LZMA)
 compression/decompression using bindings to the lzlib C library.")
-      (home-page "https://github.com/glv2/cl-lzlib")
+      (home-page "https://codeberg.org/glv/cl-lzlib")
       (license license:gpl3+))))
 
 (define-public cl-lzlib
@@ -9296,7 +9296,7 @@ Clojure, as well as several expansions on the idea.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/simple-parallel-tasks")
+               (url "https://codeberg.org/glv/simple-parallel-tasks")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -9309,7 +9309,7 @@ Clojure, as well as several expansions on the idea.")
       (synopsis "Common Lisp library to evaluate some forms in parallel")
       (description "This is a simple Common Lisp library to evaluate some
 forms in parallel.")
-      (home-page "https://github.com/glv2/simple-parallel-tasks")
+      (home-page "https://codeberg.org/glv/simple-parallel-tasks")
       (license license:gpl3))))
 
 (define-public cl-simple-parallel-tasks
@@ -10853,7 +10853,7 @@ defined in RFC4648.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/cl-z85")
+               (url "https://codeberg.org/glv/cl-z85")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
@@ -10866,7 +10866,7 @@ defined in RFC4648.")
        "This package provides functions to encode or decode byte vectors or
 byte streams using the Z85 format, which is a base-85 encoding used by
 ZeroMQ.")
-      (home-page "https://github.com/glv2/cl-z85")
+      (home-page "https://codeberg.org/glv/cl-z85")
       (license license:gpl3+))))
 
 (define-public cl-z85
@@ -15788,7 +15788,7 @@ scale statistical machine learning package")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/utm-ups")
+               (url "https://codeberg.org/glv/utm-ups")
                (commit commit)))
          (file-name (git-file-name "utm-ups" version))
          (sha256
@@ -15802,7 +15802,7 @@ scale statistical machine learning package")
        "This a Common Lisp library to convert geographic coordinates between
 latitude/longitude and UTM (Universal Transverse Mercator) or UPS (Universal
 Polar Stereographic).")
-      (home-page "https://github.com/glv2/utm-ups")
+      (home-page "https://codeberg.org/glv/utm-ups")
       (license license:gpl3+))))
 
 (define-public cl-utm-ups
@@ -15821,7 +15821,7 @@ Polar Stereographic).")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/mgrs")
+               (url "https://codeberg.org/glv/mgrs")
                (commit commit)))
          (file-name (git-file-name "cl-mgrs" version))
          (sha256
@@ -15836,7 +15836,7 @@ Polar Stereographic).")
       (description
        "This a Common Lisp library to convert geographic coordinates between
 latitude/longitude and MGRS.")
-      (home-page "https://github.com/glv2/mgrs")
+      (home-page "https://codeberg.org/glv/mgrs")
       (license license:gpl3+))))
 
 (define-public cl-mgrs
@@ -15855,7 +15855,7 @@ latitude/longitude and MGRS.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/maidenhead")
+               (url "https://codeberg.org/glv/maidenhead")
                (commit commit)))
          (file-name (git-file-name "cl-maidenhead" version))
          (sha256
@@ -15868,7 +15868,7 @@ latitude/longitude and MGRS.")
       (description
        "This a Common Lisp library to convert geographic coordinates between
 latitude/longitude and Maidenhead locator system.")
-      (home-page "https://github.com/glv2/maidenhead")
+      (home-page "https://codeberg.org/glv/maidenhead")
       (license license:gpl3+))))
 
 (define-public cl-maidenhead
@@ -15887,7 +15887,7 @@ latitude/longitude and Maidenhead locator system.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/olc")
+               (url "https://codeberg.org/glv/olc")
                (commit commit)))
          (file-name (git-file-name "cl-olc" version))
          (sha256
@@ -15900,7 +15900,7 @@ latitude/longitude and Maidenhead locator system.")
       (description
        "This a Common Lisp library to convert geographic coordinates between
 latitude/longitude and Open Location Code.")
-      (home-page "https://github.com/glv2/olc")
+      (home-page "https://codeberg.org/glv/olc")
       (license license:gpl3+))))
 
 (define-public cl-olc
@@ -16467,7 +16467,7 @@ Service (S3) and CloudFront service from Common Lisp.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/glv2/simple-neural-network")
+             (url "https://codeberg.org/glv/simple-neural-network")
              (commit (string-append "v" version))))
        (file-name (git-file-name "simple-neural-network" version))
        (sha256
@@ -16491,7 +16491,7 @@ Service (S3) and CloudFront service from Common Lisp.")
      "@code{simple-neural-network} is a Common Lisp library for creating,
 training and using basic neural networks.  The networks created by this
 library are feedforward neural networks trained using backpropagation.")
-    (home-page "https://github.com/glv2/simple-neural-network")
+    (home-page "https://codeberg.org/glv/simple-neural-network")
     (license license:gpl3+)))
 
 (define-public cl-simple-neural-network
@@ -16510,7 +16510,7 @@ library are feedforward neural networks trained using backpropagation.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/glv2/cl-zstd")
+               (url "https://codeberg.org/glv/cl-zstd")
                (commit commit)))
          (file-name (git-file-name "cl-zstd" version))
          (sha256
@@ -16534,7 +16534,7 @@ library are feedforward neural networks trained using backpropagation.")
       (description
        "This Common Lisp library provides functions for Zstandard
 compression/decompression using bindings to the libzstd C library.")
-      (home-page "https://github.com/glv2/cl-zstd")
+      (home-page "https://codeberg.org/glv/cl-zstd")
       (license license:gpl3+))))
 
 (define-public cl-zstd
