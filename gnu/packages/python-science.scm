@@ -1687,6 +1687,26 @@ Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
 tabular datasets.  This package provides the core modules of Vaex.")
     (license license:expat)))
 
+(define-public python-pylems
+  (package
+    (name "python-pylems")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PyLEMS" version))
+              (sha256
+               (base32
+                "074azbyivjbwi61fs5p8z9n6d8nk8xw6fmln1www13z1dccb3740"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-lxml))
+    (home-page "https://github.com/LEMS/pylems")
+    (synopsis
+     "Python support for the Low Entropy Model Specification language (LEMS)")
+    (description
+     "A LEMS simulator written in Python which can be used to run
+NeuroML2 models.")
+    (license license:lgpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
