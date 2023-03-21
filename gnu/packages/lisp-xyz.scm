@@ -4971,6 +4971,36 @@ trivially.")
 (define-public ecl-xml-emitter
   (sbcl-package->ecl-package sbcl-xml-emitter))
 
+(define-public sbcl-kdlcl
+  (let ((commit "dd4a48a3473c3c8fb34d4a37f87d6a1776c5875c")
+        (revision "0"))
+    (package
+      (name "sbcl-kdlcl")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/chee/kdlcl")
+               (commit commit)))
+         (file-name (git-file-name "cl-kdlcl" version))
+         (sha256
+          (base32 "0bqqxkd6s420ld2hmhvbbvpzss0m2kimmxaqhz7j1ksmq86bvvmj"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments `(#:asd-systems '("kdl")))
+      (inputs (list sbcl-esrap sbcl-parse-number))
+      (home-page "https://github.com/chee/kdlcl/")
+      (synopsis "KDL reader/printer for Common Lisp")
+      (description "This package provides a KDL reader/writer for
+      Common Lisp.")
+      (license license:expat-0))))
+
+(define-public cl-kdlcl
+  (sbcl-package->cl-source-package sbcl-kdlcl))
+
+(define-public ecl-kdlcl
+  (sbcl-package->ecl-package sbcl-kdlcl))
+
 (define-public sbcl-cl-mustache
   (package
     (name "sbcl-cl-mustache")
