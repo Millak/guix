@@ -56,6 +56,7 @@
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
@@ -774,7 +775,8 @@ environment with Markdown markup.")
                    #:icon "manuskript"
                    #:categories "Office;WordProcessor;"))))))))
     (inputs
-     (list pandoc
+     (list bash-minimal
+           pandoc
            python-lxml
            python-markdown
            python-pyenchant
