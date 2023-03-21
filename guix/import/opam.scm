@@ -336,10 +336,9 @@ path to the repository."
                     (sha256 (base32 ,(guix-hash-url temp)))))))
         'no-source-information)))
 
-(define* (opam->guix-package name #:key (repo 'opam) version #:allow-other-keys)
-  "Import OPAM package NAME from REPOSITORY (a directory name) or, if
-REPOSITORY is #f, from the official OPAM repository.  Return a 'package' sexp
-or #f on failure."
+(define* (opam->guix-package name #:key (repo '("opam")) version #:allow-other-keys)
+  "Import OPAM package NAME from REPO, a list of repository names, URLs, or
+file names.  Return a 'package' sexp or #f on failure."
   (and-let* ((with-opam (if (member "opam" repo) repo (cons "opam" repo)))
              (opam-file (opam-fetch name with-opam))
              (version (assoc-ref opam-file "version"))
