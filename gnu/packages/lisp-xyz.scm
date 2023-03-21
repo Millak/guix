@@ -27544,6 +27544,35 @@ roman numeral given in the key.")
           `(modify-phases ,phases
              (delete 'build-binary))))))))
 
+(define-public sbcl-music-spelling
+  (let ((commit "a2d492af440ad30a21042140cf8ffce4b73fbd42")
+        (revision "0"))
+    (package
+      (name "sbcl-music-spelling")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ntrocado/music-spelling")
+               (commit commit)))
+         (file-name (git-file-name "cl-music-spelling" version))
+         (sha256
+          (base32 "0fgahb0jjr4sp2739d55gylmx8alsghnx3spyaqfqci4cxfrys52"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-alexandria))
+      (home-page "https://github.com/ntrocado/music-spelling/")
+      (synopsis "Automatically spell musical pitches and rhythms")
+      (description "This package implements an algorithm for the spelling
+of enharmonics and dealing with ties and dots in rhythm notation.")
+      (license license:asl2.0))))
+
+(define-public cl-music-spelling
+  (sbcl-package->cl-source-package sbcl-music-spelling))
+
+(define-public ecl-music-spelling
+  (sbcl-package->ecl-package sbcl-music-spelling))
+
 (define-public sbcl-closure-template
   ;; There are no releases since 2015.
   (let ((commit "f1983aa525045691e128027d2a2d74831c873d6e")
