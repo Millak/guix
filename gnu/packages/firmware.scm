@@ -486,7 +486,7 @@ provide OpenFirmware functionality on top of an already running system.")
     (native-inputs
      `(,@(if (and (not (string-prefix? "riscv64" (%current-system)))
                   (string-prefix? "riscv64" arch))
-           `(("cross-gcc" ,(cross-gcc "riscv64-linux-gnu" #:xgcc gcc-7))
+           `(("cross-gcc" ,(cross-gcc "riscv64-linux-gnu"))
              ("cross-binutils" ,(cross-binutils "riscv64-linux-gnu")))
            '())))
     (arguments
@@ -499,6 +499,11 @@ provide OpenFirmware functionality on top of an already running system.")
                                 `("CC=gcc"))
                           "FW_PAYLOAD=n"
                           "V=1")
+       ;; Direct __asm__ is used with fence.i instructions, which are not
+       ;; available in the generic riscv ISA.  We need a micro-arch with
+       ;; support for it, and rv64g is the official ISA with support for
+       ;; fence.i.
+       #:configure-flags (list "-march=rv64g")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
