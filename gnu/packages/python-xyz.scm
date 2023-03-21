@@ -31946,6 +31946,27 @@ functions
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-markdown-strings
+  (package
+    (name "python-markdown-strings")
+    (version "3.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/awesmubarak/markdown_strings.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0064ni7s3k8hqw61wi9m31icxp61f8adhija2qsp46hclcwx7vz2"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-lxml python-six))
+    (home-page "https://github.com/awesmubarak/markdown_strings")
+    (synopsis "Python library to create markdown-formatted text")
+    (description "This package allows the programmatic creation of
+markdown-compliant strings.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
