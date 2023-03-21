@@ -18343,8 +18343,8 @@ compiled foreign library collection.")
   (sbcl-package->ecl-package sbcl-bodge-blobs-support))
 
 (define-public sbcl-cl-conspack
-  (let ((commit "fc8473bc6f929696b03b43820596b7c976c4678e")
-        (revision "1"))
+  (let ((commit "6e529d7b3a7223ef1bb5c7b9f18384ba67b50b09")
+        (revision "2"))
     (package
      (name "sbcl-cl-conspack")
      (version (git-version "0.0.0" revision commit))
@@ -18356,28 +18356,19 @@ compiled foreign library collection.")
              (commit commit)))
        (file-name (git-file-name "cl-conspack" version))
        (sha256
-        (base32 "0b7qzvsrpvnw12hqhjmz0b02sigj0kdjy55j4k7xzmj8684cs8bx"))))
+        (base32 "0y5wp5c89ph44k2xjppy1c1jf2ac3q9yrk22da2rkwnbxn0h1a8d"))))
      (build-system asdf-build-system/sbcl)
-     ;; FIXME: (Sharlatan-20210331T220652+0100): Test are disabled because of:
-     ;;
-     ;; Error while trying to load definition for system cl-conspack-test
-     ;; from pathname .../cl-conspack/cl-conspack-test.asd:
-     ;; Error opening .../checkl/formalize-tmpGHU3ALSV.fasl": Permission denied
-     ;;
-     ;; It looks like the issues is in CheckL itself as other packages keep
-     ;; failing test where it's in use.
      (arguments
-      '(#:tests? #f
-        #:asd-test-systems '("cl-conspack-test")))
+      '(#:asd-test-systems '("cl-conspack-test")))
      (native-inputs
-      (list sbcl-checkl))
+      (list sbcl-fiveam))
      (inputs
-      `(("alexandria" ,sbcl-alexandria)
-        ("closer-mop" ,sbcl-closer-mop)
-        ("fast-io" ,sbcl-fast-io)
-        ("ieee-floats" ,sbcl-ieee-floats)
-        ("trivial-garbage" ,sbcl-trivial-garbage)
-        ("trivial-utf-8" ,sbcl-trivial-utf-8)))
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-fast-io
+             sbcl-ieee-floats
+             sbcl-trivial-garbage
+             sbcl-trivial-utf-8))
      (home-page "https://github.com/conspack/cl-conspack")
      (synopsis "CONSPACK implementation for Common Lisp")
      (description
