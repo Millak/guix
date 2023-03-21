@@ -4439,6 +4439,55 @@ T2* and X2 encodings. These encodings cover (between them) pretty much every
 language that is written in a Cyrillic alphabet.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-pict2e
+  (let ((template (simple-texlive-package
+                   "texlive-pict2e"
+                   (list "doc/latex/pict2e/"
+                         "source/latex/pict2e/"
+                         "tex/latex/pict2e/")
+                   (base32
+                    "0pazv1khsgjhxc673qrhjrbzlkgmcj53qccb9hw7ygdajxrjc2ba"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/pict2e")
+         ((#:build-targets _ '()) '(list "pict2e.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/pict2e/")))
+              (add-after 'build 'build-doc
+                (lambda _
+                  (copy-file "p2e-drivers.dtx" "build/p2e-drivers.dtx")
+                  (with-directory-excursion "build"
+                    (invoke "pdflatex" "p2e-drivers.dtx")
+                    (delete-file "p2e-drivers.dtx")
+                    ;; texlive.tlpbd expects a "pict2e.cfg" configuration file
+                    ;; instead of "pict2e-example.cfg".  Please it.
+                    (rename-file "pict2e-example.cfg" "pict2e.cfg"))))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://ctan.org/pkg/pict2e")
+      (native-inputs
+       (list (texlive-updmap.cfg)))
+      (synopsis "New implementation of picture commands")
+      (description
+       "This package extends the existing LaTeX @code{picture} environment,
+using the familiar technique (the @code{graphics} and @code{color} packages)
+of driver files (at present, drivers for dvips, pdfTeX, LuaTeX, XeTeX, VTeX,
+dvipdfm, and dvipdfmx are available).  The package documentation has a fair
+number of examples of use, showing where things are improved by comparison
+with the LaTeX @code{picture} environment.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-psnfss
   (let ((template (simple-texlive-package
                    "texlive-psnfss"
