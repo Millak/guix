@@ -1255,13 +1255,13 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "1.5.22")
+    (version "1.7.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgmatic" version))
        (sha256
-        (base32 "0pvqlj17vp81i7saxqh5hsaxqz29ldrjd7bcssh4g1h0ikmnaf2r"))))
+        (base32 "1scfh90qgv8xhafnnpl3pa9d8m4rg9xgvf21yybvmsnm5v1k2x5z"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -1270,10 +1270,15 @@ compression parameters used by Gzip.")
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; Set absolute store path to borg.
                    (substitute* "borgmatic/commands/borgmatic.py"
-                     (("location\\.get\\('local_path', 'borg'\\)")
-                      (string-append "location.get('local_path', '"
+                     (("\\.get\\('local_path', 'borg'\\)")
+                      (string-append ".get('local_path', '"
                                      (search-input-file inputs "bin/borg")
-                                     "')")))))
+                                     "')")))
+                   (substitute* "tests/unit/commands/test_borgmatic.py"
+                     (("(module.get_local_path.+ == )'borg'" all start)
+                      (string-append start "'"
+                                     (search-input-file inputs "bin/borg")
+                                     "'")))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
