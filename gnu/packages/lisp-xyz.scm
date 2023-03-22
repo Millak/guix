@@ -259,6 +259,37 @@ text.")
 (define-public ecl-langutils
   (sbcl-package->ecl-package sbcl-langutils))
 
+(define-public sbcl-hash-set
+  (let ((commit "6feb20de457f14e24a83815be1097aa02cca5986")
+        (revision "0"))
+    (package
+      (name "sbcl-hash-set")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/samebchase/hash-set")
+               (commit commit)))
+         (file-name (git-file-name "cl-hash-set" version))
+         (sha256
+          (base32 "0a966y9yfarhmki4wwzg371ziaygnp13yc6r13w9zz327fkhz8na"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (inputs (list sbcl-alexandria))
+      (home-page "https://github.com/samebchase/hash-set/")
+      (synopsis "Implementation of a hash-set")
+      (description "This package provides an implementation of the
+hash-set data structure.  It has constant time lookup, insertion and
+deletion.")
+      (license license:unlicense))))
+
+(define-public cl-hash-set
+  (sbcl-package->cl-source-package sbcl-hash-set))
+
+(define-public ecl-hash-set
+  (sbcl-package->ecl-package sbcl-hash-set))
+
 (define-public sbcl-duologue
   (let ((commit "ea1ada244a81da65f85b548823c9a6d7c9c145e1")
         (revision "0"))
