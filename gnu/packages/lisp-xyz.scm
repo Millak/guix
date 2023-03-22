@@ -6020,6 +6020,46 @@ connections (keep-alive), and SSL.")
      ;; Tests fail on ECL with 'Socket error in "socket": EINVAL'.
      '(#:tests? #f))))
 
+(define-public sbcl-lunamech-matrix-api
+  (let ((commit "aa54a820149584c237b03d500ad83397fe25dc92")
+        (revision "0"))
+    (package
+      (name "sbcl-lunamech-matrix-api")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/K1D77A/lunamech-matrix-api")
+               (commit commit)))
+         (file-name (git-file-name "cl-lunamech-matrix-api" version))
+         (sha256
+          (base32 "0a664qq4m5gk4iv5ck63gmsl3218jhjsalawklj56wn2pw0cf8a0"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-json
+             sbcl-cl-str
+             sbcl-closer-mop
+             sbcl-dexador
+             sbcl-do-urlencode
+             sbcl-drakma
+             sbcl-jonathan
+             sbcl-plump
+             sbcl-quri
+             sbcl-reader
+             sbcl-shasht))
+      (home-page "https://github.com/K1D77A/lunamech-matrix-api/")
+      (synopsis "Implementation of the Matrix API")
+      (description "This package provides an implementation of the Matrix
+API for Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-lunamech-matrix-api
+  (sbcl-package->cl-source-package sbcl-lunamech-matrix-api))
+
+(define-public ecl-lunamech-matrix-api
+  (sbcl-package->ecl-package sbcl-lunamech-matrix-api))
+
 (define-public sbcl-trivial-types
   (package
     (name "sbcl-trivial-types")
