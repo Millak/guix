@@ -102,7 +102,7 @@ chart.")
 (define-public boxes
   (package
     (name "boxes")
-    (version "2.1.1")
+    (version "2.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -111,7 +111,7 @@ chart.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bf5rnfiw04ffs1l17zhbg4wvq2vfn2qbz1xmd250xqj15lysw88"))))
+                "0vv2gaav1m4z2xdk0k3ragmv4kcnzv7p3v97lkjl1wbfmk5nhz07"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
