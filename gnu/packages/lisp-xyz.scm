@@ -5739,6 +5739,40 @@ the format used by the popular compression tool bzip2.")
 (define-public ecl-chipz
   (sbcl-package->ecl-package sbcl-chipz))
 
+(define-public sbcl-cl-tls
+  (let ((commit "2ab4fc3ae7e79e451126a9bb6bc38ca2cd2cb4ba")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-tls")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shrdlu68/cl-tls")
+               (commit commit)))
+         (file-name (git-file-name "cl-tls" version))
+         (sha256
+          (base32 "1j6gwv21ibkk6xd1xxm54wgwp09dzqg60b8z72hivpnq8gwm0ba7"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-base64
+             sbcl-fast-io
+             sbcl-ironclad))
+      (home-page "https://github.com/shrdlu68/cl-tls")
+      (synopsis "Implementation of Transport Layer Security Protocols")
+      (description "This package provides prototype Common Lisp
+implementations of TLS, RFC5246, ASN.1, x{501,509}, and PKCS{1,3,5,8}.")
+      (license license:bsd-3))))
+
+(define-public cl-tls
+  (sbcl-package->cl-source-package sbcl-cl-tls))
+
+(define-public ecl-cl-tls
+  (sbcl-package->ecl-package sbcl-cl-tls))
+
 (define-public sbcl-dns-client
   (let ((commit "9f252e9c2bb61c57a6cd367e21ad366b0d3e87e0")
         (revision "0"))
