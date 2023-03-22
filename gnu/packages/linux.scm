@@ -54,7 +54,7 @@
 ;;; Copyright © 2021 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
@@ -4654,57 +4654,53 @@ compliance.")
                     "mirror://kernel.org/software/network/wireless-regdb/"
                     "wireless-regdb-" version ".tar.xz"))
               (sha256
-               (base32
-                "0wrf1c7mbsklwdn7jpwzlpjxwj0vgr61qyh88lx7bi2dd6lfi0gy"))
+               (base32 "0wrf1c7mbsklwdn7jpwzlpjxwj0vgr61qyh88lx7bi2dd6lfi0gy"))
 
               ;; We're building 'regulatory.bin' by ourselves.
               (snippet '(begin
-                          (delete-file "regulatory.bin")
-                          #t))))
+                          (delete-file "regulatory.bin")))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'gzip-determinism
-           (lambda _
-             (substitute* "Makefile"
-               (("gzip") "gzip --no-name"))
-             #t))
-         (add-after 'unpack 'omit-signature
-           (lambda _
-             (substitute* "Makefile"
-               ;; Signing requires a REGDB_PUBCERT and REGDB_PRIVKEY which we
-               ;; don't provide (see below).  Disable it.
-               ((" regulatory\\.db\\.p7s") "")
-               ;; regulatory.db is built as a dependency of regulatory.db.p7s,
-               ;; but ‘make install’ depends only on the latter while installing
-               ;; both (and failing).  Depend on it explicitly.
-               (("^install: " all) (string-append all "regulatory.db ")))
-             #t))
-         (delete 'configure))  ; no configure script
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'gzip-determinism
+            (lambda _
+              (substitute* "Makefile"
+                (("gzip") "gzip --no-name"))))
+          (add-after 'unpack 'omit-signature
+            (lambda _
+              (substitute* "Makefile"
+                ;; Signing requires a REGDB_PUBCERT and REGDB_PRIVKEY which we
+                ;; don't provide (see below).  Disable it.
+                ((" regulatory\\.db\\.p7s") "")
+                ;; regulatory.db is built as a dependency of regulatory.db.p7s,
+                ;; but ‘make install’ depends only on the latter while
+                ;; installing both (and failing).  Depend on it explicitly.
+                (("^install: " all) (string-append all "regulatory.db ")))))
+          (delete 'configure))  ; no configure script
 
-       ;; The 'all' target of the makefile depends on $(REGDB_CHANGED), which
-       ;; is computed and can be equal to 'maintainer-clean'; when that
-       ;; happens, we can end up deleting the 'regulatory.bin' file that we
-       ;; just built.  Thus, build things sequentially.
-       #:parallel-build? #f
+      ;; The 'all' target of the makefile depends on $(REGDB_CHANGED), which
+      ;; is computed and can be equal to 'maintainer-clean'; when that
+      ;; happens, we can end up deleting the 'regulatory.bin' file that we
+      ;; just built.  Thus, build things sequentially.
+      #:parallel-build? #f
 
-       #:tests? #f                      ; no tests
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "FIRMWARE_PATH=$(PREFIX)/lib/firmware")
+      #:tests? #f                      ; no tests
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "FIRMWARE_PATH=$(PREFIX)/lib/firmware")
 
-               ;; Leave this empty so that db2bin.py doesn't try to sign
-               ;; ‘regulatory.bin’.  This allows us to avoid managing a key
-               ;; pair for the whole distribution.
-               (string-append "REGDB_PRIVKEY=")
-               ;; Don't generate a public key for the same reason.  These are
-               ;; used as Makefile targets and can't be the empty string.
-               (string-append "REGDB_PUBCERT=/dev/null")
-               (string-append "REGDB_PUBKEY=/dev/null")))))
+              ;; Leave this empty so that db2bin.py doesn't try to sign
+              ;; ‘regulatory.bin’.  This allows us to avoid managing a key
+              ;; pair for the whole distribution.
+              (string-append "REGDB_PRIVKEY=")
+              ;; Don't generate a public key for the same reason.  These are
+              ;; used as Makefile targets and can't be the empty string.
+              (string-append "REGDB_PUBCERT=/dev/null")
+              (string-append "REGDB_PUBKEY=/dev/null"))))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (home-page
      "https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb")
     (synopsis "Wireless regulatory database")
