@@ -486,21 +486,18 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "4.5.4")
+    (version "4.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/opencv/opencv")
-                     (commit version)))
+                    (url "https://github.com/opencv/opencv")
+                    (commit version)))
               (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gf2xs3r4s51m20mpf0wdidpk0xzp3m2w6jx72fwldhn0pshlmcj"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Remove external libraries. We have almost all available
-                  ;; in Guix:
+                  ;; Remove external libraries.  Almost all of them are
+                  ;; available in Guix.
                   (with-directory-excursion "3rdparty"
                     (for-each delete-file-recursively
                               '("carotene"
@@ -524,20 +521,18 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                                 "tbb"
                                 "zlib")))
 
-                  ;; Milky icon set is non-free:
-                  (delete-file-recursively "modules/highgui/src/files_Qt/Milky")
-
-                  ;; Some jars found:
-                  (for-each delete-file
-                            '("modules/java/test/pure_test/lib/junit-4.11.jar"
-                              "samples/java/sbt/sbt/sbt-launch.jar"))))))
+                  ;; Delete any bundled .jar files.
+                  (for-each delete-file (find-files "." "\\.jar$"))))
+              (sha256
+               (base32
+                "0l45v41nns2jmn9nr9fb0yvhqzfjpxjxn75i1c02rsfy3r3lv22v"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       (list "-DWITH_ADE=OFF" ;we don't have a package for ade yet
+       (list "-DWITH_ADE=OFF"           ;we don't have a package for ade yet
              "-DWITH_IPP=OFF"
              "-DWITH_ITT=OFF"
-             "-DWITH_CAROTENE=OFF" ; only visible on arm/aarch64
+             "-DWITH_CAROTENE=OFF"      ; only visible on arm/aarch64
              "-DENABLE_PRECOMPILED_HEADERS=OFF"
              "-DOPENCV_GENERATE_PKGCONFIG=ON"
 
@@ -595,22 +590,20 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
              ;; This test fails with "unknown file: Failure"
              ;; But I couldn't figure out which file was missing:
              (substitute* "../opencv-contrib/modules/face/test/test_face_align.cpp"
-               (("(TEST\\(CV_Face_FacemarkKazemi, )(can_detect_landmarks\\).*)"
-                 all pre post)
-                (string-append pre "DISABLED_" post)))
+               (("\\bcan_detect_landmarks\\b" all)
+                (string-append "DISABLED_" all)))
 
-             ;; This test fails with a comparison between the expected 396 and
+             ;; This all fails with a comparison between the expected 396 and
              ;; the actual 440 in file size.
              (substitute* "modules/imgcodecs/test/test_exr.impl.hpp"
-               (("(TEST\\(Imgcodecs_EXR, )(readWrite_32FC1\\).*)" all pre post)
-                (string-append pre "DISABLED_" post)))
+               (("\\breadWrite_32FC1\\b" all)
+                (string-append "DISABLED_" all)))
 
              ;; These fail with protobuf parse errors that come from
-             ;; opencv-extra/testdata.
+             ;; opencv-extra/alldata.
              (substitute* "modules/dnn/test/test_layers.cpp"
-               (("(TEST_P\\(Test_Caffe_layers, )\
-(Accum\\).*|DataAugmentation\\).*|Resample\\).*|Correlation\\).*)" all pre post)
-                (string-append pre "DISABLED_" post)))))
+               (("\\b(Accum|DataAugmentation|Resample|Correlation|Interp)\\b" all)
+                (string-append "DISABLED_" all)))))
          (add-after 'unpack 'unpack-submodule-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir "../opencv-extra")
@@ -622,7 +615,8 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
          (add-after 'build 'do-not-install-3rdparty-file
            (lambda _
              (substitute* "cmake_install.cmake"
-               (("file\\(INSTALL .*source/3rdparty/include/opencl/LICENSE.txt.*") "\n"))))
+               (("file\\(INSTALL .*3rdparty/include/opencl/LICENSE.txt.*")
+                ""))))
          (add-before 'check 'start-xserver
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((xorg-server (assoc-ref inputs "xorg-server"))
@@ -634,7 +628,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                (zero? (system (format #f "~a/bin/Xvfb ~a &" xorg-server disp)))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("xorg-server" ,xorg-server-for-tests) ; For running the tests
+       ("xorg-server" ,xorg-server-for-tests) ;For running the tests
        ("opencv-extra"
         ,(origin
            (method git-fetch)
@@ -643,23 +637,24 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                  (commit version)))
            (file-name (git-file-name "opencv_extra" version))
            (sha256
-            (base32 "1fg2hxdvphdvagc2fkmhqk7qql9mp7pj2bmp8kmd7vicpr72qk82"))))
+            (base32
+             "0bdg5kwwdimnl2zp4ry5cmfxr9xb7zk2ml59853d90llsqjis47a"))))
        ("opencv-contrib"
         ,(origin
            (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/opencv/opencv_contrib")
-                 (commit version)))
+           (uri (git-reference (url "https://github.com/opencv/opencv_contrib")
+                               (commit version)))
            (file-name (git-file-name "opencv_contrib" version))
            (sha256
-            (base32 "0ga0l4ranp1834gxgp487ll1amvmssa02l2nk5ja5w0rx4d8hh26"))))))
+            (base32
+             "0hbfn835kxh3hwmwvzgdglm2np1ri3z7nfnf60gf4x6ikp89mv4r"))))))
     (inputs
      (list ffmpeg-4
            gtk+
            gtkglext
            hdf5
            ilmbase
-           imath ;should be propagated by openexr
+           imath                        ;should be propagated by openexr
            jasper
            libgphoto2
            libjpeg-turbo
@@ -698,83 +693,6 @@ things like:
 @end itemize\n")
     (home-page "https://opencv.org/")
     (license license:bsd-3)))
-
-;; TODO: Make this the default opencv after aiscm is able to use it.
-(define-public opencv-next
-  (package
-    (inherit opencv)
-    (name "opencv")
-    (version "4.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/opencv/opencv")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Remove external libraries.  Almost all of them are
-                  ;; available in Guix.
-                  (with-directory-excursion "3rdparty"
-                    (for-each delete-file-recursively
-                              '("carotene"
-                                "cpufeatures"
-                                "ffmpeg"
-                                "include"
-                                "ippicv"
-                                "ittnotify"
-                                "libjasper"
-                                "libjpeg"
-                                "libjpeg-turbo"
-                                "libpng"
-                                "libtengine"
-                                "libtiff"
-                                "libwebp"
-                                "openexr"
-                                "openjpeg"
-                                "openvx"
-                                "protobuf"
-                                ;;"quirc"
-                                "tbb"
-                                "zlib")))
-
-                  ;; Delete any bundled .jar files.
-                  (for-each delete-file (find-files "." "\\.jar$"))))
-              (sha256
-               (base32
-                "0l45v41nns2jmn9nr9fb0yvhqzfjpxjxn75i1c02rsfy3r3lv22v"))))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("xorg-server" ,xorg-server-for-tests) ;For running the tests
-       ("opencv-extra"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/opencv/opencv_extra")
-                 (commit version)))
-           (file-name (git-file-name "opencv_extra" version))
-           (sha256
-            (base32
-             "0bdg5kwwdimnl2zp4ry5cmfxr9xb7zk2ml59853d90llsqjis47a"))))
-       ("opencv-contrib"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference (url "https://github.com/opencv/opencv_contrib")
-                               (commit version)))
-           (file-name (git-file-name "opencv_contrib" version))
-           (sha256
-            (base32
-             "0hbfn835kxh3hwmwvzgdglm2np1ri3z7nfnf60gf4x6ikp89mv4r"))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments opencv)
-       ((#:phases phases '%standard-phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'disable-broken-tests-opencv-4.7-specific
-              (lambda _
-                (substitute* "modules/dnn/test/test_layers.cpp"
-                  (("(TEST_P\\(Test_Caffe_layers, )(Interp\\).*)" _ pre post)
-                   (string-append pre "DISABLED_" post)))))))))))
 
 (define-public vips
   (package
