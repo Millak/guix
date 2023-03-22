@@ -1959,10 +1959,12 @@ cp -r /tmp/locale/*/en_US.*")))
           ;; Many tests fail for unknown reasons, so we just run a few basic
           ;; tests.
           (replace 'check
-            (lambda _
-              (setenv "HOME" "/tmp")
-              (invoke "make" "check"
-                      "TESTS=tests/test-basic.sh tests/test-config.sh testcommon"))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "make" "check"
+                        "TESTS=tests/test-basic.sh tests/test-config.sh
+                        testcommon")))))))
     (native-inputs
      (list bison
            dbus ; for dbus-daemon
