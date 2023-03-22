@@ -16,7 +16,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -297,36 +297,19 @@ training, HMM clustering, HMM mixtures.")
 (define-public guile-aiscm
   (package
     (name "guile-aiscm")
-    (version "0.24.2")
+    (version "0.25.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wedesoft/aiscm")
-                    (commit "2e16e38391bf1638f1dd9a1cf4b25a25f6626078")))
+                    (commit "v0.25.2")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gwqpzl6irpaszkpxaf5wliwq19280632hlgxs3ikjkfg8mkqql0"))))
+                "1sagpxwrqxkn5b9zqzd07c9r7swmw45q672pa8fy6s71iw6a0x77"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags
-      #~(list (string-append "OPENCV_CFLAGS=-I" #$(this-package-input "opencv")
-                             "/include/opencv4")
-              (let ((modules
-                     (list "aruco" "barcode" "bgsegm" "bioinspired"
-                           "calib3d" "ccalib" "core" "datasets" "dnn"
-                           "dnn_objdetect" "dnn_superres" "dpm" "face"
-                           "features2d" "flann" "freetype" "fuzzy" "hdf"
-                           "hfs" "highgui" "img_hash" "imgcodecs" "imgproc"
-                           "intensity_transform" "line_descriptor" "mcc"
-                           "ml" "objdetect" "optflow" "phase_unwrapping"
-                           "photo" "plot" "quality" "rapid" "reg" "rgbd"
-                           "saliency" "shape" "stereo" "stitching"
-                           "structured_light" "superres" "surface_matching"
-                           "text" "tracking" "video" "videoio" "videostab"
-                           "wechat_qrcode" "ximgproc" "xobjdetect" "xphoto")))
-                (format #false "OPENCV_LIBS=~{-lopencv_~a~^ ~}" modules)))
       #:make-flags
       #~(list (string-append "GUILE_CACHE=" #$output "/lib/guile/3.0/site-ccache")
               (string-append "GUILE_EXT=" #$output "/lib/guile/3.0/extensions")
@@ -395,13 +378,12 @@ training, HMM clustering, HMM mixtures.")
            libxv
            mesa
            mjpegtools
-           opencv
            pandoc
            pulseaudio
            tensorflow))
     (native-inputs
-     (list clang-11
-           llvm-11
+     (list clang-13
+           llvm-13
            pkg-config
            protobuf-c-for-aiscm
            autoconf
