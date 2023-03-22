@@ -37485,6 +37485,68 @@ notifications.
 @end table
 @end deftp
 
+@subsubheading fstrim Service
+@cindex fstrim service
+@cindex solid state drives, periodic trim
+@cindex solid state drives, trim
+
+The command @command{fstrim} can be used to discard (or @dfn{trim})
+unused blocks on a mounted file system.
+
+@c This was copied from the fstrim manpage, with some Texinfo touch-ups.
+@quotation Warning
+Running @command{fstrim} frequently, or even using
+@command{mount -o discard}, might negatively affect the lifetime of
+poor-quality SSD devices.  For most desktop and server systems a
+sufficient trimming frequency is once a week.  Note that not all devices
+support a queued trim, so each trim command incurs a performance penalty
+on whatever else might be trying to use the disk at the time.
+@end quotation
+
+@defvar fstrim-service-type
+Type for a service that periodically runs @command{fstrim}, whose value must
+be a @code{<fstrim-configuration>} object.  The service can be instantiated
+in its default configuration with:
+
+@lisp
+(service fstrim-service-type)
+@end lisp
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} fstrim-configuration
+Available @code{fstrim-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{util-linux}) (type: file-like)
+The package providing the @command{fstrim} command.
+
+@item @code{schedule} (default: @code{"0 0 * * 0"}) (type: mcron-time)
+Schedule for launching @command{fstrim}.  This can be a procedure, a
+list or a string.  For additional information, see @ref{Guile
+Syntax,,Job specification,mcron,the mcron manual}.  By default this is
+set to run weekly on Sunday at 00:00.
+
+@item @code{listed-in} (default: @code{("/etc/fstab" "/proc/self/mountinfo")}) (type: maybe-list-of-strings)
+List of files in fstab or kernel mountinfo format.  All missing or empty
+files are silently ignored.  The evaluation of the list @emph{stops}
+after the first non-empty file.  File systems with
+@code{X-fstrim.notrim} mount option in fstab are skipped.
+
+@item @code{verbose?} (default: @code{#t}) (type: boolean)
+Verbose execution.
+
+@item @code{quiet-unsupported?} (default: @code{#t}) (type: boolean)
+Suppress error messages if trim operation (ioctl) is unsupported.
+
+@item @code{extra-arguments} (type: maybe-list-of-strings)
+Extra options to append to @command{fstrim} (run @samp{man fstrim} for
+more information).
+
+@end table
+@end deftp
+@c %end of fragment
+
 @cindex modprobe
 @cindex kernel module loader
 @subsubheading Kernel Module Loader Service
