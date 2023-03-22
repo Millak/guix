@@ -54318,17 +54318,20 @@ fragment of code.")
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.152")
+    (version "1.0.158")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ysykpc4a9f1yn7zikdwhyfs0bpa7mlc8vsm7sl4glr1606iyzdv"))))
+        (base32
+         "1jfr4na9isxr3g5h61dyx15z9r35sc6p2b710n417vk386f4s7bp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     ;; XXX: three test failures, e.g.:
+     ;; error: cannot find derive macro `Deserialize` in this scope
+     `(#:tests? #false
        #:cargo-inputs
        (("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://serde.rs")
