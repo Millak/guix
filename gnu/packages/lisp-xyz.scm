@@ -5808,6 +5808,49 @@ DNS records.")
 (define-public cl-dns-client
   (sbcl-package->cl-source-package sbcl-dns-client))
 
+(define-public sbcl-lisp-pay
+  (let ((commit "c4de776f0a284709931ff3674160ced3b41bd000")
+        (revision "0"))
+    (package
+      (name "sbcl-lisp-pay")
+      (version (git-version "0.0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/K1D77A/lisp-pay")
+               (commit commit)))
+         (file-name (git-file-name "cl-lisp-pay" version))
+         (sha256
+          (base32 "09r6qy4fipriqa0d6g9qm6dq992lr58vh24g5j0adm19i5fnjavh"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-base64
+             sbcl-cl-str
+             sbcl-cl-tls
+             sbcl-closer-mop
+             sbcl-dexador
+             sbcl-hu.dwim.defclass-star
+             sbcl-hunchentoot
+             sbcl-ironclad
+             sbcl-jonathan
+             sbcl-lack
+             sbcl-ningle
+             sbcl-shasht))
+      (home-page "https://github.com/K1D77A/lisp-pay/")
+      (synopsis "Wrappers over multiple Payment Processor APIs")
+      (description "This library provides payment API wrappers over
+BTCPay, Paypal, and Stripe.")
+      (license license:expat))))
+
+(define-public cl-lisp-pay
+  (sbcl-package->cl-source-package sbcl-lisp-pay))
+
+(define-public ecl-lisp-pay
+  (sbcl-package->ecl-package sbcl-lisp-pay))
+
 (define-public sbcl-drakma
   (package
     (name "sbcl-drakma")
