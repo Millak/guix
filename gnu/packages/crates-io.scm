@@ -63188,11 +63188,12 @@ C library.")
         (base32 "0l6bl2h62a5m44jdnpn7lmj14rd44via8180i7121fvm73mmrk47"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-tinyvec-macros" ,rust-tinyvec-macros-0.1))))
+        ("rust-tinyvec-macros" ,rust-tinyvec-macros-0.1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))
     (home-page "https://crates.io/crates/tinyvec")
     (synopsis "Safe vec-like data structures")
     (description
