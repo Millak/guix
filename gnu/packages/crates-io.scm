@@ -22993,6 +22993,28 @@ pseudorandom number generator")
     (description "Low-level Rust bindings for the Zircon kernel.")
     (license license:bsd-3)))
 
+(define-public rust-funty-2
+  (package
+    (name "rust-funty")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "funty" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "177w048bm0046qlzvp33ag3ghqkqw4ncpzcm5lq36gxf2lla7mg6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://ferrilab.github.io/ferrilab")
+    (synopsis "Trait generalization over the primitive types")
+    (description "The funty crate (fundamental types) provides traits that
+unify the Rust non-pointer primitives.  It also unifies pointers and
+references by lifting access permissions into the trait system.")
+    (license license:expat)))
+
 (define-public rust-funty-1
   (package
     (name "rust-funty")
