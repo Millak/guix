@@ -49221,6 +49221,26 @@ uses finite automata and guarantees linear time matching on all inputs.")
      "This package provides endian-aware primitives for Rust.")
     (license license:expat)))
 
+(define-public rust-rend-0.4
+  (package
+    (name "rust-rend")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rend" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1av8mfxrc6dvm0hmn2ymi56jrv6a7dqssxwdn1zx6h4j1790h42q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytecheck" ,rust-bytecheck-0.6))))
+    (home-page "https://github.com/djkoloski/rend")
+    (synopsis "Endian-aware primitives for Rust")
+    (description "Rend is a library that provides endian-aware primitives for
+Rust.")
+    (license license:expat)))
+
 (define-public rust-reopen-0.3
   (package
     (name "rust-reopen")
