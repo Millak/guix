@@ -1901,14 +1901,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.14.3")
+    (version "1.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "1gpfax92kpchmbr3cp1w0cw5xjdwv11i1g3g9hp8akc9rc64gw2r"))
+        (base32 "16b7f7n2mms6zgm0lj3fn86ny11xjn8cd3mrk1slwhvwnv8dnd4a"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
