@@ -67,6 +67,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages djvu)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -244,16 +245,27 @@ actions.")
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (inputs
-     (list exiv2
+     (list djvulibre
+           exiv2
+           ffmpegthumbnailer
            gtk+
+           gspell
            lcms
+           libarchive
            libchamplain
-           libpng))
+           libheif
+           libjpeg
+           libpng
+           libraw
+           libtiff
+           poppler
+           libwebp))
     (native-inputs
      (list `(,glib "bin") ; glib-gettextize
            intltool
            pkg-config
-           xxd))
+           xxd
+           yelp-tools))
     (home-page "https://www.geeqie.org/")
     (synopsis "Lightweight GTK+ based image viewer")
     (description
