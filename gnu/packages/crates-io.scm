@@ -71623,17 +71623,16 @@ windows crate.")
 (define-public rust-windows-x86-64-msvc-0.42
   (package
     (name "rust-windows-x86-64-msvc")
-    (version "0.42.1")
+    (version "0.42.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1zfgzsmc0j5p9yx25j15lb1yh45mazl4hhjdvfqqhcm16snn0xj4"))
+                "1w5r0q0yzx827d10dpjza2ww0j8iajqhmb54s735hhaj66imvv4s"))
               (snippet
-               '(begin
-                  (delete-file "lib/windows.lib")))))
+               '(delete-file "lib/windows.lib"))))
     (build-system cargo-build-system)
     (arguments (list #:skip-build? #t))
     (home-page "https://github.com/microsoft/windows-rs")
