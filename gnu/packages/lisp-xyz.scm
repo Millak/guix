@@ -3741,6 +3741,35 @@ This library is no longer supported by its author.")
 (define-public ecl-cl-colors
   (sbcl-package->ecl-package sbcl-cl-colors))
 
+(define-public sbcl-format-colors
+  (let ((commit "fecb1d8c6e7a07ff9f10a7a4eb4c3bd629d4969f")
+        (revision "0"))
+    (package
+      (name "sbcl-format-colors")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vindarel/format-colors")
+               (commit commit)))
+         (sha256
+          (base32 "084ydjhic2dq0gb7wfm6plnjq3l7485hb3yhxl03mm64a6sr3fxv"))
+         (file-name (git-file-name "cl-format-colors" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-cl-ansi-text))
+      (synopsis "Custom format functions for colorful output")
+      (description "This package provides simple format directives to
+      print in colors.")
+      (home-page "https://github.com/vindarel/format-colors")
+      (license license:llgpl))))
+
+(define-public cl-format-colors
+  (sbcl-package->cl-source-package sbcl-format-colors))
+
+(define-public ecl-format-colors
+  (sbcl-package->ecl-package sbcl-format-colors))
+
 (define-public sbcl-cl-ansi-text
   (let ((commit "8b129d83c7511b54cdd9d4123825a2d06349b25c"))
     (package
