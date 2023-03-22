@@ -23959,6 +23959,37 @@ Vernacular builds on Overlord and is inspired by Racket.")
 (define-public cl-vernacular
   (sbcl-package->cl-source-package sbcl-vernacular))
 
+(define-public sbcl-osc
+  (let ((commit "9f0a9d3da310a3a0f654f48af0203816f3f371ad")
+        (revision "0"))
+    (package
+     (name "sbcl-osc")
+     (version (git-version "0.7" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zzkt/osc")
+               (commit commit)))
+         (file-name (git-file-name "cl-osc" version))
+         (sha256
+          (base32 "0gh29zcl9pmy3xlmwzpf9www2z06ah6b4jk06sj2cvxbc15nblqa"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs (list sbcl-usocket))
+     (synopsis "Implementation of the Open Sound Control protocol")
+     (description "This package provides a common lisp implementation
+of the Open Sound Control Protocol aka OSC.  The code should be close
+to the ansi standard, and does not rely on any external code/ffi/etc+
+to do the basic encoding and decoding of packets.")
+     (home-page "https://github.com/zzkt/osc/")
+     (license (list license:gpl3 license:llgpl)))))
+
+(define-public cl-osc
+  (sbcl-package->cl-source-package sbcl-osc))
+
+(define-public ecl-osc
+  (sbcl-package->ecl-package sbcl-osc))
+
 (define-public sbcl-cmn
   (package
     (name "sbcl-cmn")
