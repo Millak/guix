@@ -60061,6 +60061,51 @@ executed by swayipc.")
 interface")
    (license license:expat)))
 
+(define-public rust-syn-2
+  (package
+    (name "rust-syn")
+    (version "2.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "syn" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "12iqdd7j7hfsp4584bph1318n47z7x79ddgvl63j30i6db3x3hl9"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; Tests fail to compile
+     ;; error[E0432]: unresolved imports `syn::Item`, `syn::Pat`
+     `(#:tests? #false
+       #:phases
+       (modify-phases %standard-phases
+         ;; The syn-test-suite crate is empty.
+         (add-after 'unpack 'patch-test-suite
+           (lambda _
+             (substitute* "Cargo.toml"
+               (("^\\[dev-dependencies.syn-test-suite\\]") "")
+               (("^version = \"0\"") "")
+               (("^test = \\[\"syn-test-suite/all-features\"\\]") "")))))
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-automod" ,rust-automod-1)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-ref-cast" ,rust-ref-cast-1)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-tar" ,rust-tar-0.4))))
+    (inputs (list openssl))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/dtolnay/syn")
+    (synopsis "Parser for Rust source code")
+    (description
+     "Syn is a parsing library for parsing a stream of Rust tokens into
+a syntax tree of Rust source code.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-syn-1
   (package
     (name "rust-syn")
