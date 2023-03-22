@@ -8967,21 +8967,21 @@ Rust.")
 (define-public rust-bytecheck-derive-0.6
   (package
     (name "rust-bytecheck-derive")
-    (version "0.6.9")
+    (version "0.6.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bytecheck_derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1gxr63mi91rrjzfzcb8pfwsnarp9i2w1n168nc05aq4fx7mpdr8k"))))
+                "1r9dlkx5w1p8d5gif2yvn6bz1856yij2fxi4wakq2vxl7ia2a4p3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/rkyv/bytecheck")
+    (home-page "https://github.com/djkoloski/bytecheck")
     (synopsis "Derive macro for bytecheck")
     (description "This package provides a Derive macro for bytecheck, the type
 validation framework for Rust.")
