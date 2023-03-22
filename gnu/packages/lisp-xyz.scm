@@ -192,6 +192,54 @@ portable between implementations.")
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
 
+(define-public sbcl-reader
+  (package
+   (name "sbcl-reader")
+   (version "0.10.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/digikar99/reader")
+           (commit (string-append "v" version))))
+     (sha256
+      (base32 "0pbv6w0d8d4qmfkdsz2rk21bp1las9r7pyvpmd95qjz7kpxrirl7"))
+     (file-name (git-file-name "cl-reader" version))))
+   (build-system asdf-build-system/sbcl)
+   (arguments
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "reader.lisp"
+               (("echo")
+                (search-input-file inputs "/bin/echo"))))))))
+   (inputs
+     (list coreutils ; Needed for call to echo.
+           sbcl-alexandria
+           sbcl-fiveam ; Tests are written directly in the source files.
+           sbcl-hash-set
+           sbcl-iterate
+           sbcl-split-sequence
+           sbcl-trivial-types))
+   (synopsis "Reader macros for common objects and data structures")
+   (description "This package provides a utility library intended
+at providing configurable reader macros for common tasks such as
+accessors, hash-tables, sets, uiop:run-program, arrays and a few others.")
+   (home-page "https://github.com/digikar99/reader/")
+   (license license:expat)))
+
+(define-public cl-reader
+  (sbcl-package->cl-source-package sbcl-reader))
+
+(define-public ecl-reader
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-reader))
+    (arguments
+     ;; TODO: Tests fail on call to coreutils echo for ecl.
+     `(#:tests? #f))))
+
 (define-public sbcl-stdutils
   (let ((commit "4a4e5a4036b815318282da5dee2a22825369137b")
         (revision "0"))
