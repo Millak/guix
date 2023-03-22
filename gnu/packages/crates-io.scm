@@ -59458,6 +59458,29 @@ and Jaro-Winkler.")
         (base32
          "0z3zzvmilfldp4xw42qbkjf901dcnbk58igrzsvivydjzd24ry37"))))))
 
+(define-public rust-structmeta-derive-0.1
+  (package
+    (name "rust-structmeta-derive")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "structmeta-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "14vxik2m3dm7bwx016qfz062fwznkbq02fyq8vby545m0pj0nhi4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/frozenlib/structmeta")
+    (synopsis "Derive macro for structmeta crate")
+    (description "This package lets you parse Rust's attribute arguments by
+defining a struct.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-structopt-0.3
   (package
     (name "rust-structopt")
