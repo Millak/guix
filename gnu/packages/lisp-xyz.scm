@@ -6415,6 +6415,36 @@ reset to 0 and you're able to read it again.")
 (define-public ecl-circular-streams
   (sbcl-package->ecl-package sbcl-circular-streams))
 
+(define-public sbcl-trivial-rfc-1123
+  (let ((commit "9ef59c3fdec08b0e3c9ed02d39533887b6d1b8e3")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-rfc-1123")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stacksmith/trivial-rfc-1123")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-rfc-1123" version))
+         (sha256
+          (base32 "1w4ywpj10fnp7cya62dzlxlg8nyk4lppn2pnmfixsndwr4ib1h6x"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments `(#:asd-systems '("trivial-rfc-1123")))
+      (inputs (list sbcl-cl-ppcre))
+      (home-page "https://github.com/stacksmith/trivial-rfc-1123")
+      (synopsis "Parse and print RFC-1123 timestamps")
+      (description
+       "This package parses and prints dates in RFC-1123 format.")
+      (license license:bsd-3))))
+
+(define-public cl-trivial-rfc-1123
+  (sbcl-package->cl-source-package sbcl-trivial-rfc-1123))
+
+(define-public ecl-trivial-rfc-1123
+  (sbcl-package->ecl-package sbcl-trivial-rfc-1123))
+
 (define-public sbcl-lack
   (let ((commit "abff8efeb0c3a848e6bb0022f2b8b7fa3a1bc88b")
         (revision "1"))
