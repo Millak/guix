@@ -33789,6 +33789,30 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-markup-proc-macro-0.13
+  (package
+    (name "rust-markup-proc-macro")
+    (version "0.13.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "markup-proc-macro" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0l41di814m9vzw3bz3j49j09j6cb3r73rc4a3a6dvjvx4c77z4hs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/utkarshkukreti/markup.rs")
+    (synopsis "Macros for template engine for Rust")
+    (description
+     "This package provides macros for \"markup\", the fast, type-safe
+template engine for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-markup5ever-0.10
   (package
     (name "rust-markup5ever")
