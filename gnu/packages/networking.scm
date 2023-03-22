@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -1768,31 +1768,25 @@ of the same name.")
         (base32 "0jz76ra86gy7r4wwb174lggnl5y29nn68l7ydw1kj1phcijrz854"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
-             (when tests?
-               (invoke "ctest" "-VV"
-                       "-j" (if parallel-tests?
-                                (number->string (parallel-job-count))
-                                "1")
-                       ;; Skip the suite_extcaps.case_extcaps.test_sdjournal
-                       ;; test as it requires sdjournal (from systemd) and
-                       ;; fails.
-                       "-E" "suite_extcaps")))))
-       ;; Build process chokes during `validate-runpath' phase.
-       ;;
-       ;; Errors are like the following:
-       ;; "/gnu/store/...wireshark-3.0.0/lib/wireshark/plugins/3.0/epan/ethercat.so:
-       ;; error: depends on 'libwireshark.so.12', which cannot be found in
-       ;; RUNPATH".  That is, "/gnu/store/...wireshark-3.0.0./lib" doesn't
-       ;; belong to RUNPATH.
-       ;;
-       ;; That’s not a problem in practice because "ethercat.so" is a plugin,
-       ;; so it’s dlopen’d by a process that already provides "libwireshark".
-       ;; For now, we disable this phase.
-       #:validate-runpath? #f))
+     (list
+      ;; This causes the plugins to register runpaths for the wireshark
+      ;; libraries, which would otherwise cause the validate-runpath phase to
+      ;; fail.
+      #:configure-flags #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS="
+                                               "-Wl,-rpath=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-VV"
+                        "-j" (if parallel-tests?
+                                 (number->string (parallel-job-count))
+                                 "1")
+                        ;; Skip the suite_extcaps.case_extcaps.test_sdjournal
+                        ;; test as it requires sdjournal (from systemd) and
+                        ;; fails.
+                        "-E" "suite_extcaps")))))))
     (inputs
      (list c-ares
            glib
