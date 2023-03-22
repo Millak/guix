@@ -71943,6 +71943,29 @@ serialization.")
 non-cryptographic hashing algorithm and random number generator.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-wyz-0.5
+  (package
+    (name "rust-wyz")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "wyz" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1vdrfy7i2bznnzjdl9vvrzljvs4s3qm8bnlgqwln6a941gy61wq5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-tap" ,rust-tap-1)
+        ("rust-typemap" ,rust-typemap-0.3))))
+    (home-page "https://myrrlyn.net/crates/wyz")
+    (synopsis "Collection of utility functions")
+    (description
+     "This package provides a collection of utility functions.")
+    (license license:expat)))
+
 (define-public rust-wyz-0.4
   (package
     (name "rust-wyz")
