@@ -67488,15 +67488,15 @@ deserialization.")
 (define-public rust-typenum-1
   (package
     (name "rust-typenum")
-    (version "1.15.0")
+    (version "1.16.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "typenum" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "11yrvz1vd43gqv738yw1v75rzngjbs7iwcgzjy3cq5ywkv2imy6w"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typenum" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fhb9iaqyjn4dzn2vl86kxjhp4xpw5gynczlnqzf4x6rjgpn2ya9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-scale-info" ,rust-scale-info-1))))
