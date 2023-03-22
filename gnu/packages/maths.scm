@@ -1387,7 +1387,7 @@ incompatible with HDF5.")
 (define-public hdf5-1.8
   (package
     (name "hdf5")
-    (version "1.8.22")
+    (version "1.8.23")
     (source
      (origin
       (method url-fetch)
@@ -1402,7 +1402,7 @@ incompatible with HDF5.")
                                    (string-append major minor)))
                                 "/src/hdf5-" version ".tar.bz2")))
       (sha256
-       (base32 "194ki2s5jrgl4czkvy5nc9nwjyapah0fj72l0gb0aysplp38i6v8"))
+       (base32 "0km65mr6dgk4ia2dqr1b9dzw9qg15j5z35ymbys9cnny51z1zb39"))
       (patches (search-patches "hdf5-config-date.patch"))))
     (build-system gnu-build-system)
     (inputs
