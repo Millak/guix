@@ -146,7 +146,7 @@
                         '("bash" "catimg" "chafa" "coreutils" "curl"
                           "dmenu" "fzf" "gawk" "grep" "jp2a" "jq"
                           "libnotify" "mpv" "ncurses" "python-ueberzug"
-                          "sed" "util-linux" "youtube-dl")))
+                          "sed" "util-linux" "yt-dlp")))
                 `("YTFZF_SYSTEM_ADDON_DIR" ":" =
                   ,(list (string-append #$output "/share/ytfzf/addons")))))))))
     (inputs
@@ -168,7 +168,7 @@
            python-ueberzug
            sed
            util-linux
-           youtube-dl))
+           yt-dlp))
     (synopsis "Watch PeerTube or YouTube videos from the terminal")
     (description "@code{ytfzf} is a POSIX script that helps you find PeerTube or
 YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
