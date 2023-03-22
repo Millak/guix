@@ -10226,6 +10226,30 @@ box''.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
+(define-public rust-castaway-0.2
+  (package
+    (name "rust-castaway")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "castaway" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1k1z4v61vq7la56js1azkr0k9b415vif2kaxiqk3d1gw6mbfs5wa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-rustversion" ,rust-rustversion-1))
+       #:cargo-development-inputs
+       (("rust-paste" ,rust-paste-1))))
+    (home-page "https://github.com/sagebind/castaway")
+    (synopsis "Zero-cost downcasting for limited compile-time specialization")
+    (description
+     "This is an experimental library that implements zero-cost downcasting of
+types that works on stable Rust.")
+    (license license:expat)))
+
 (define-public rust-cblas-sys-0.1
   (package
     (name "rust-cblas-sys")
