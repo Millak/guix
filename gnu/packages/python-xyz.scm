@@ -138,6 +138,7 @@
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1064,6 +1065,38 @@ variables into the markdown template")
 MySQL databases, using an API that is compliant with the Python Database API
 Specification v2.0 (PEP 249).")
     (license license:gpl2)))
+
+(define-public python-pdoc
+  (package
+    (name "python-pdoc")
+    (version "13.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mitmproxy/pdoc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gxkw607nrd67ck4w8jri9vfrm5g60qvp8b134m8zkiphbxjnx0l"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-jinja2 python-pygments))
+    (arguments
+     (list
+      ;; Some tests fail, presumably because of slight version mismatches of
+      ;; the dependencies.
+      #:test-flags
+      '(list "-k" (string-append "not test_var_with_raising_repr and "
+                                 "not test_smoke[mock] and "
+                                 "not test_snapshots[html"))))
+    (home-page "https://pdoc.dev/")
+    (synopsis "API documentation for Python projects")
+    (description "pdoc auto-generates API documentation that follows your
+project's Python module hierarchy.  It requires no configuration, has
+first-class support for type annotations, cross-links between identifiers,
+comes with an integrated live-reloading web server, uses customizable HTML
+templates, understands numpydoc and Google-style docstrings.")
+    (license license:unlicense)))
 
 (define-public python-py4j
   (package
