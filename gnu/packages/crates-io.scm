@@ -3077,14 +3077,14 @@ last place (ULPs) comparisons.")
 (define-public rust-arbitrary-1
   (package
     (name "rust-arbitrary")
-    (version "1.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "arbitrary" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1bdd7s3jvj02mkhy5pcfymab47jhi3zxl29dxy9v59sswr6sz41y"))))
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "arbitrary" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0km5cj0sxfzv863blfjpz49mlikaxbaslyzk463i9jn1fgzril72"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
