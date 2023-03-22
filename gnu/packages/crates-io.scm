@@ -46137,6 +46137,32 @@ ecosystem.")
      "This crate provides Rust FFI declarations for Python 3.")
     (license license:asl2.0)))
 
+(define-public rust-pyo3-ffi-0.18
+  (package
+    (name "rust-pyo3-ffi")
+    (version "0.18.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pyo3-ffi" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1r8fmkfad60wdidsj4h5w16h0n2avn5bcy9nh92gy5vsq2jjd5c3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; The doctests fail with this error: `core::slice::<impl
+       ;; [T]>::as_mut_ptr` is not yet stable as a const fn
+       #:tests? #false
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.18))))
+    (native-inputs (list python))
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Python API bindings for the PyO3 ecosystem")
+    (description
+     "This crate provides Rust FFI declarations for Python 3.")
+    (license license:asl2.0)))
+
 (define-public rust-pyo3-macros-backend-0.16
   (package
     (name "rust-pyo3-macros-backend")
