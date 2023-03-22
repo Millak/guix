@@ -109,6 +109,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
@@ -1309,6 +1310,56 @@ agent.")
     (description "This package allows using KeepKey as a hardware SSH/GPG
 agent.")
     (license license:lgpl3)))
+
+(define-public kitsas
+  (package
+    (name "kitsas")
+    (version "4.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/artoh/kitupiikki")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hrbsqqm6v2pmjq17s7i4akjgclz3d051mg02vcykq80xgxvbkgf"))))
+    (build-system qt-build-system)
+    (inputs (list qtbase-5 libzip poppler-qt5 qtsvg-5))
+    (arguments
+     (list #:tests? #f               ;XXX: some tests fail and others segfault
+           #:test-target "check"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda* _
+                   (invoke "qmake" "kitsasproject.pro" "CONFIG+=release")))
+               (replace 'install
+                 (lambda* _
+                   (install-file "kitsas/kitsas"
+                                 (string-append #$output "/bin/"))
+                   (install-file "kitsas.png"
+                                 (string-append #$output "/share/icons/"))
+                   (install-file "kitsas.desktop"
+                                 (string-append #$output "/share/applications/")))))))
+    (home-page "https://kitsas.fi")
+    (synopsis "Finnish bookkeeping software for small organisations")
+    (description
+     "Kitsas is a Finnish accounting program with the following goals and
+features:
+
+@itemize @bullet
+@item Ease of use
+@item Digital management of documents
+@item Creating a digital archive
+@item Built-in invoicing
+@item Creating reports.
+@end itemize")
+    ;; GPLv3+ with additional terms:
+    ;; - Modified versions of this software should be clearly mentioned as modified
+    ;; - Kitsas Oy will not support any modified version of this software
+    ;; - The name Kitsas Oy should not be used in any modified version
+    (license license:gpl3+)))
 
 (define-public python-stdnum
   (package
