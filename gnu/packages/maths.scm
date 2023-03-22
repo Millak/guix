@@ -3041,7 +3041,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "7.3.0")
+    (version "8.1.0")
     (source
      (origin
       (method url-fetch)
@@ -3049,7 +3049,7 @@ can solve two kinds of problems:
                           version ".tar.xz"))
       (sha256
        (base32
-        "1wap9p9imxxqpnm27rxcvpjahk1wg440lzlygjb6iyncxdmfw255"))))
+        "00lis18dsb13v9nvz0z4cs7v4y634jc0vb04lxfw9pshwriikglv"))))
     (build-system gnu-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
