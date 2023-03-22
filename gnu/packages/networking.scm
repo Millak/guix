@@ -1773,7 +1773,8 @@ of the same name.")
       ;; libraries, which would otherwise cause the validate-runpath phase to
       ;; fail.
       #:configure-flags #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS="
-                                               "-Wl,-rpath=" #$output "/lib"))
+                                               "-Wl,-rpath=" #$output "/lib")
+                                "-DUSE_qt6=ON")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -1799,14 +1800,15 @@ of the same name.")
            libssh
            libxml2
            lz4
-           lua-5.2                      ;Lua 5.3 unsupported
+           lua
            mit-krb5
            `(,nghttp2 "lib")
            minizip
            pcre2
-           qtbase-5
-           qtmultimedia-5
-           qtsvg-5
+           qt5compat
+           qtbase
+           qtmultimedia
+           qtsvg
            sbc
            snappy
            zlib
@@ -1819,7 +1821,7 @@ of the same name.")
            perl
            pkg-config
            python-wrapper
-           qttools-5))
+           qttools))
     (synopsis "Network traffic analyzer")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of
