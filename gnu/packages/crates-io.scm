@@ -45205,22 +45205,23 @@ in your code.")
 (define-public rust-proc-macro2-1
   (package
     (name "rust-proc-macro2")
-    (version "1.0.47")
+    (version "1.0.52")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "proc-macro2" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "09g7alc7mlbycsadfh7lwskr1qfxbiic9qp9z751cqz3n04dk8sy"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-macro2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0922fkhi689x134yh6l97lnpwgarhbv0vnv3vpnkpk1nx3lil3hx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--lib")
        #:cargo-inputs
        (("rust-unicode-ident" ,rust-unicode-ident-1))
        #:cargo-development-inputs
-       (("rust-quote" ,rust-quote-1))))
+       (("rust-quote" ,rust-quote-1)
+        ("rust-rustversion" ,rust-rustversion-1))))
     ;; This is necessary for downstream packages such as rust-wayland-scanner
     (inputs (list rust-unicode-ident-1))
     (home-page "https://github.com/dtolnay/proc-macro2")
