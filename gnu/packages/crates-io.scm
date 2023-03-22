@@ -46048,6 +46048,31 @@ they were parsed from")
 @code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
     (license license:expat)))
 
+(define-public rust-pyo3-build-config-0.18
+  (package
+    (name "rust-pyo3-build-config")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyo3-build-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zb7sz2w59ba0ipmy7saigyyr9v6pkrzqb8r5gagmp87bncryhvm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-python3-dll-a" ,rust-python3-dll-a-0.2)
+        ("rust-target-lexicon" ,rust-target-lexicon-0.12))))
+    (native-inputs (list python))       ;for tests
+    (home-page "https://github.com/pyo3/pyo3")
+    (synopsis "Build configuration for PyO3")
+    (description
+     "This package contains build configuration helpers for the PyO3
+ecosystem.")
+    (license license:asl2.0)))
+
 (define-public rust-pyo3-build-config-0.16
   (package
     (name "rust-pyo3-build-config")
