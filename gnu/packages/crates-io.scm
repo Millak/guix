@@ -60138,7 +60138,7 @@ a syntax tree of Rust source code.")
 (define-public rust-syn-1
   (package
     (name "rust-syn")
-    (version "1.0.105")
+    (version "1.0.109")
     (source
      (origin
        (method url-fetch)
@@ -60146,14 +60146,39 @@ a syntax tree of Rust source code.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0279ivl07g0y5fs5bwmglhkdvi99ypcm36yb774f8bbh8lyv9fb0"))))
+         "0ds2if4600bd59wsv7jjgfkayfzy3hnazs394kz6zdkmna8l3dkj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; The syn-test-suite crate is empty.
+         (add-after 'unpack 'patch-test-suite
+           (lambda _
+             (substitute* "Cargo.toml"
+               (("^\\[dev-dependencies.syn-test-suite\\]") "")
+               (("^version = \"0\"") "")
+               (("^test = \\[\"syn-test-suite/all-features\"\\]") "")))))
+       ;; Tests fail to compile
+       ;; error[E0432]: unresolved imports `syn::Item`, `syn::Pat`
+       #:tests? #false
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-unicode-ident" ,rust-unicode-ident-1))))
+        ("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-automod" ,rust-automod-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-ref-cast" ,rust-ref-cast-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (inputs (list openssl))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/dtolnay/syn")
     (synopsis "Parser for Rust source code")
     (description
