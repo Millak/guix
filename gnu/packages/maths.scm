@@ -1551,6 +1551,26 @@ extremely large and complex data collections.")
         (base32 "1zlawdzb0gsvcxif14fwr5ap2gk4b6j02wirr2hcx8hkcbivp20s"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
+(define-public hdf5-1.14
+  (package
+    (inherit hdf5-1.8)
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://support.hdfgroup.org/ftp/HDF5/releases/"
+                                 "hdf5-" (version-major+minor version)
+                                 "/hdf5-" version "/src/hdf5-"
+                                 version ".tar.bz2")
+                  (string-append "https://support.hdfgroup.org/ftp/HDF5/"
+                                 "current"
+                                 (apply string-append
+                                        (take (string-split version #\.) 2))
+                                 "/src/hdf5-" version ".tar.bz2")))
+       (sha256
+        (base32 "181bdh8hp7v9xqwcby3lknr92lxlicc2hqscba3f5nhf8lrr9rz4"))
+       (patches (search-patches "hdf5-config-date.patch"))))))
+
 (define-public hdf5
   ;; Default version of HDF5.
   hdf5-1.10)
