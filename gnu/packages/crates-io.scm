@@ -2273,6 +2273,45 @@ This package is deprecated and was replaced by the @code{aes} crate.")
      "Fuzz Rust code with american-fuzzy-lop.")
     (license license:asl2.0)))
 
+(define-public rust-ahash-0.8
+  (package
+    (name "rust-ahash")
+    (version "0.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ahash" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0bzcsxdl2wd6j2p4214qh9sqkqn69gi7f9lk1xi8yj063r6zd69c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-atomic-polyfill" ,rust-atomic-polyfill-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-const-random" ,rust-const-random-0.1)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-no-panic" ,rust-no-panic-0.1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-seahash" ,rust-seahash-4)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/tkaitchuck/ahash")
+    (synopsis
+     "Non-cryptographic hash function using AES-NI")
+    (description
+     "This package provides a non-cryptographic hash function using AES-NI for
+high performance.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ahash-0.7
   (package
     (name "rust-ahash")
