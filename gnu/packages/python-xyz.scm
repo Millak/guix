@@ -7,7 +7,7 @@
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
@@ -166,6 +166,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
@@ -267,6 +268,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -2687,6 +2689,99 @@ a library.")
     (synopsis "Disk and file backed cache library")
     (description "DiskCache is a disk and file backed persistent cache.")
     (license license:asl2.0)))
+
+(define-public python-orjson
+  (package
+    (name "python-orjson")
+    (version "3.8.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "orjson" version))
+              (sha256
+               (base32
+                "1nn617pzn8smjkf7j593ybq16qfnj53bla52qjwzzrms4fjxg5n0"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'build-python-module
+            (lambda _
+              ;; We don't use maturin.
+              (delete-file "pyproject.toml")
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "\
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools']
+")))
+              (call-with-output-file "setup.cfg"
+                (lambda (port)
+                  (format port "\
+
+[metadata]
+name = orjson
+version = '~a'
+
+[options]
+packages = find:
+
+[options.packages.find]
+exclude =
+  src
+  integration
+  test
+  Cargo.toml
+" #$version)))
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800")
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (add-after 'build-python-module 'install-python-module
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (add-after 'install-python-module 'install-python-library
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (mkdir-p site)
+                (copy-file "target/release/liborjson.so"
+                           (string-append site "/orjson.so"))))))
+      #:cargo-inputs
+      `(("rust-ahash" ,rust-ahash-0.8)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-associative-cache" ,rust-associative-cache-1)
+        ("rust-beef" ,rust-beef-0.5)
+        ("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-compact-str" ,rust-compact-str-0.7)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-itoap" ,rust-itoap-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.18)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-simdutf8" ,rust-simdutf8-0.1)
+        ("rust-smallvec" ,rust-smallvec-1))
+      #:install-source? #false))
+    (native-inputs
+     (list python-wrapper
+           python-pypa-build
+           python-wheel))
+    (home-page "https://github.com/ijl/orjson")
+    (synopsis "Python JSON library supporting dataclasses, datetimes, and numpy")
+    (description "Orjson is a fast, correct JSON library for Python.  It
+benchmarks as the fastest Python library for JSON and is more correct than the
+standard @code{json} library or other third-party libraries.  It serializes
+dataclass, datetime, numpy, and UUID instances natively.")
+    ;; Either of these licenses
+    (license (list license:asl2.0 license:expat))))
 
 (define-public python-argparse-addons
   (package
