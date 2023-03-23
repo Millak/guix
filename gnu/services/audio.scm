@@ -346,7 +346,8 @@ will depend on."
    empty-serializer)
 
   (environment-variables
-   (list-of-strings '())
+   (list-of-strings '("PULSE_CLIENTCONFIG=/etc/pulse/client.conf"
+                      "PULSE_CONFIG=/etc/pulse/daemon.conf"))
    "A list of strings specifying environment variables."
    empty-serializer)
 

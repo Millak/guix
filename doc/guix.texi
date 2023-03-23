@@ -33501,7 +33501,7 @@ The group to run mpd as.
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 
-@item @code{environment-variables} (default: @code{()}) (type: list-of-strings)
+@item @code{environment-variables} (default: @code{("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")}) (type: list-of-strings)
 A list of strings specifying environment variables.
 
 @item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
