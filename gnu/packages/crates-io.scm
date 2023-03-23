@@ -71351,8 +71351,34 @@ color in a Windows console.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-windows-0.46
+  (package
+    (name "rust-windows")
+    (version "0.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "098crdz9gxgy3614ygznqqhn28q097r498b3rg35584nd8gb9b6d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-windows-implement" ,rust-windows-implement-0.46)
+        ("rust-windows-interface" ,rust-windows-interface-0.46)
+        ("rust-windows-targets" ,rust-windows-targets-0.42))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "The windows crate lets you call any Windows API past,
+present, and future using code generated on the fly directly from the metadata
+describing the API and right into your Rust package where you can call them as
+if they were just another Rust module.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-0.32
   (package
+    (inherit rust-windows-0.46)
     (name "rust-windows")
     (version "0.32.0")
     (source (origin
@@ -71362,7 +71388,6 @@ color in a Windows console.")
               (sha256
                (base32
                 "1v0h5b5g1ak2f2a6gkgjqgrqkkbdcfmf02nfmmj27g4nj3dzdvgv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -71371,15 +71396,11 @@ color in a Windows console.")
         ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.32)
         ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.32)
         ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.32)
-        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.32))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "Rust for Windows")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.32))))))
 
 (define-public rust-windows-0.9
   (package
-    (inherit rust-windows-0.32)
+    (inherit rust-windows-0.46)
     (name "rust-windows")
     (version "0.9.1")
     (source
