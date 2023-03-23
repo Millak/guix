@@ -40,6 +40,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -476,6 +477,33 @@ controls for certain tuners which may be paired with an audio device.")
       (description
        "This is a SoapySDR module to use multiple supported devices under
 a single device wrapper.")
+      (license license:boost1.0))))
+
+(define-public soapyremote
+  (let ((commit "f375555e7380acfd2517acde598e2e553e08df88")
+        (revision "1"))
+    (package
+      (name "soapyremote")
+      (version (git-version "0.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyRemote")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0whn87wck7agsk3af4lh7nyyjn0ncs3xdny4vsd94qbjikfl6x5z"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list avahi soapysdr))
+      (arguments
+       '(#:tests? #f)) ; No test suite
+      (home-page "https://github.com/pothosware/SoapyRemote")
+      (synopsis "Remote support for Soapy SDR")
+      (description
+       "This is a SoapySDR module to use a supported device transparently over
+a local network link.")
       (license license:boost1.0))))
 
 (define-public soapyrtlsdr
