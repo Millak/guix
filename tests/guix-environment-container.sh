@@ -264,3 +264,12 @@ guix shell --bootstrap guile-bootstrap --container \
 
 # An invalid symlink spec causes the command to fail.
 ! guix shell --bootstrap -CS bin/guile=/usr/bin/guile guile-bootstrap -- exit
+
+# Check whether '--nesting' works.
+guix build hello -d
+env="$(type -P pre-inst-env)"
+if guix shell -C -D guix -- "$env" guix build hello -d # cannot work
+then false; else true; fi
+hello_drv="$(guix build hello -d)"
+hello_drv_nested="$(cd "$(dirname env)" && guix shell --bootstrap -CW -D guix -- "$env" guix build hello -d)"
+test "$hello_drv" = "$hello_drv_nested"
