@@ -131,6 +131,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpd)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -1777,7 +1778,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.16")
+    (version "0.9.17")
     (source
      (origin
        (method git-fetch)
@@ -1786,7 +1787,7 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06vwsax8z6vvvav4c1d40nfiljc7h1cla57r43nv8dw86n539ic5"))))
+        (base32 "1709ck7931804mhirnki03cvx60c4dxg668fyz6jpzy8djg5xlxi"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -1798,6 +1799,7 @@ compository, supporting the following featuers:
                   libmpdclient
                   libnl
                   libxml2
+                  playerctl
                   pulseaudio
                   spdlog
                   wayland))
