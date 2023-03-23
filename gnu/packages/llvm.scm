@@ -2257,7 +2257,7 @@ LLVM."))))
             (add-after 'unpack 'patch-paths
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "lib/Interpreter/CIFactory.cpp"
-                  (("\bsed\b")
+                  (("\\bsed\\b")
                    (which "sed"))
                   ;; This ensures that the default C++ library used by Cling is
                   ;; that of the compiler that was used to build it, rather
