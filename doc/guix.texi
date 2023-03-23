@@ -8210,6 +8210,9 @@ Add @var{package}s to the front of the input list.
 
 @item (append @var{package}@dots{})
 Add @var{package}s to the end of the input list.
+
+@item (replace @var{name} @var{replacement})
+Replace the package called @var{name} with @var{replacement}.
 @end table
 
 The example below removes the GMP and ACL inputs of Coreutils and adds
