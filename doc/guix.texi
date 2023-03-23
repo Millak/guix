@@ -6357,6 +6357,57 @@ cache (contrary to glibc in regular Guix usage) and set up the
 expected FHS directories: @file{/bin}, @file{/etc}, @file{/lib}, and
 @file{/usr} from the container's profile.
 
+@cindex nested containers, for @command{guix shell}
+@cindex container nesting, for @command{guix shell}
+@item --nesting
+@itemx -W
+When used with @option{--container}, provide Guix @emph{inside} the
+container and arrange so that it can interact with the build daemon that
+runs outside the container.  This is useful if you want, within your
+isolated container, to create other containers, as in this sample
+session:
+
+@example
+$ guix shell -CW coreutils
+[env]$ guix shell -C guile -- guile -c '(display "hello!\n")'
+hello!
+[env]$ exit
+@end example
+
+The session above starts a container with @code{coreutils} programs
+available in @env{PATH}.  From there, we spawn @command{guix shell} to
+create a @emph{nested} container that provides nothing but Guile.
+
+Another example is evaluating a @file{guix.scm} file that is untrusted,
+as shown here:
+
+@example
+guix shell -CW -- guix build -f guix.scm
+@end example
+
+The @command{guix build} command as executed above can only access the
+current directory.
+
+Under the hood, the @option{-W} option does several things:
+
+@itemize
+@item
+map the daemon's socket (by default
+@file{/var/guix/daemon-socket/socket}) inside the container;
+@item
+map the whole store (by default @file{/gnu/store}) inside the container
+such that store items made available by nested @command{guix}
+invocations are visible;
+@item
+add the currently-used @command{guix} command to the profile in the
+container, such that @command{guix describe} returns the same state
+inside and outside the container;
+@item
+share the cache (by default @file{~/.cache/guix}) with the host, to
+speed up operations such as @command{guix time-machine} and
+@command{guix shell}.
+@end itemize
+
 @item --rebuild-cache
 @cindex caching, of profiles
 @cindex caching, in @command{guix shell}
