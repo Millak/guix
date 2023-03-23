@@ -33501,7 +33501,7 @@ The group to run mpd as.
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 
-@item @code{environment-variables} (default: @code{()}) (type: list-of-string)
+@item @code{environment-variables} (default: @code{()}) (type: list-of-strings)
 A list of strings specifying environment variables.
 
 @item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
@@ -33532,7 +33532,7 @@ The location of the sticker database.
 @item @code{default-port} (default: @code{6600}) (type: maybe-integer)
 The default port to run mpd on.
 
-@item @code{endpoints} (type: maybe-list-of-string)
+@item @code{endpoints} (type: maybe-list-of-strings)
 The addresses that mpd will bind to.  A port different from @var{default-port}
 may be specified, e.g. @code{localhost:6602} and IPv6 addresses must be
 enclosed in square brackets when a different port is used.
@@ -33808,10 +33808,10 @@ Whether to preserve caches between service restarts.
 Available @code{mympd-ip-acl} fields are:
 
 @table @asis
-@item @code{allow} (default: @code{()}) (type: list-of-string)
+@item @code{allow} (default: @code{()}) (type: list-of-strings)
 Allowed IP addresses.
 
-@item @code{deny} (default: @code{()}) (type: list-of-string)
+@item @code{deny} (default: @code{()}) (type: list-of-strings)
 Disallowed IP addresses.
 
 @end table
