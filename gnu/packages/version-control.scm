@@ -2009,14 +2009,14 @@ following features:
 (define-public subversion
   (package
     (name "subversion")
-    (version "1.14.1")
+    (version "1.14.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/subversion/"
                                  "subversion-" version ".tar.bz2"))
              (sha256
               (base32
-               "1ag1hvcm9q92kgalzbbgcsq9clxnzmbj9nciz9lmabjx4lyajp9c"))))
+               "0a6csc84hfymm8b5cnvq1n1p3rjjf33qy0z7y1k8lwkm1f6hw4y9"))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-tests? #f             ; TODO Seems to cause test failures on
