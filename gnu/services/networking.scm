@@ -1248,7 +1248,11 @@ project's documentation} for more information."
                                                "/lib/NetworkManager/VPN")
                                 ;; Override non-existent default users
                                 "NM_OPENVPN_USER="
-                                "NM_OPENVPN_GROUP="))))
+                                "NM_OPENVPN_GROUP="
+                                ;; Allow NetworkManager to find the modules.
+                                (string-append
+                                 "LINUX_MODULE_DIRECTORY="
+                                 "/run/booted-system/kernel/lib/modules")))))
                     ;; XXX: Despite the "online" name, this doesn't guarantee
                     ;; WAN connectivity, it merely waits for NetworkManager
                     ;; to finish starting-up. This is required otherwise
