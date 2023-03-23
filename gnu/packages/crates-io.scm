@@ -30218,6 +30218,29 @@ primitives to an @code{io::Write}.")
         (base32
          "136vwi6l2k1vrlvfx49lhficj813pk88xrcx1q3axqh1mwms6943"))))))
 
+(define-public rust-itoap-1
+  (package
+    (name "rust-itoap")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "itoap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1f48gsd18kbvskwbnwszhqjpk1l4rdmahh7kaz86b432cj9g8a4h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-itoa" ,rust-itoa-0.4)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/Kogia-sima/itoap")
+    (synopsis "Functions for printing integers with decimal format")
+    (description
+     "This package provides functions for printing integers with decimal
+format.")
+    (license license:expat)))
+
 (define-public rust-ivf-0.1
   (package
     (name "rust-ivf")
