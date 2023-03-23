@@ -8544,6 +8544,14 @@ users.")
                                                          "/sbin/dhclient")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-modprobe-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/libnm-platform/nm-platform-utils.c"
+                ;; The modprobe command location is not configurable (see:
+                ;; https://gitlab.freedesktop.org/NetworkManager/
+                ;; NetworkManager/-/issues/1257).
+                (("/sbin/modprobe")
+                 (search-input-file inputs "bin/modprobe")))))
           (add-after 'unpack 'patch-dlopen-call-to-libjansson.so
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/libnm-glib-aux/nm-json-aux.c"
@@ -8623,6 +8631,7 @@ users.")
            isc-dhcp
            iwd                          ;wpa_supplicant alternative
            jansson
+           kmod
            libgcrypt
            libgudev
            libndp
