@@ -752,7 +752,11 @@ prompting a pin from the user.")
     (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level)))
       (shepherd-service
        (documentation "Run the myMPD daemon.")
-       (requirement `(loopback user-processes ,@shepherd-requirement))
+       (requirement `(loopback user-processes
+                               ,@(if (eq? log-to 'syslog)
+                                     '(syslog)
+                                     '())
+                               ,@shepherd-requirement))
        (provision '(mympd))
        (start #~(begin
                   (let* ((pw (getpwnam #$user))
