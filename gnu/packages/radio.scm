@@ -453,6 +453,31 @@ controls for certain tuners which may be paired with an audio device.")
        "This package provides HackRF devices support to the SoapySDR library.")
       (license license:expat))))
 
+(define-public soapymultisdr
+  (let ((commit "e8bd3298afaec04cb7ce2c8c516cb9cd8bd3bc9d")
+        (revision "1"))
+    (package
+      (name "soapymultisdr")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyMultiSDR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0f7d39s2zpgfi677i2aqp4zkf5c6cv8mpm7w8s7xj45bfhf94acl"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list soapysdr))
+      (home-page "https://github.com/pothosware/SoapyMultiSDR")
+      (synopsis "Multi-device support module for SoapySDR")
+      (description
+       "This is a SoapySDR module to use multiple supported devices under
+a single device wrapper.")
+      (license license:boost1.0))))
+
 (define-public soapyrtlsdr
   (package
     (name "soapyrtlsdr")
