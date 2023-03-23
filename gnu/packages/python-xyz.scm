@@ -24312,9 +24312,6 @@ Features:
 @end itemize")
     (license license:asl2.0)))
 
-(define-public python-pre-commit
-  (deprecated-package "python-pre-commit" pre-commit))
-
 (define-public python-precis-i18n
   (package
     (name "python-precis-i18n")
