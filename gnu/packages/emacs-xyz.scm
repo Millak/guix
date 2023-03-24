@@ -21788,7 +21788,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
 (define-public emacs-citar
   (package
     (name "emacs-citar")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -21797,7 +21797,7 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "186h6wbjwh7ws3jmc81wx2cv7gbppl2j3gwdq67crhml5xjc4fh7"))))
+                "0l4a8fy7z6xq7y2scnnc6bsfnlrb2arr4y9gxc3xfyazg43kk8rd"))))
     (build-system emacs-build-system)
     (arguments
      (list
