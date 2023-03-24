@@ -14197,6 +14197,42 @@ analyzed in parallel the library performs a number of tests to assure that
 the data set is suitable for such analysis.")
     (license license:gpl3)))
 
+(define-public r-anota2seq
+  (package
+    (name "r-anota2seq")
+    (version "1.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "anota2seq" version))
+       (sha256
+        (base32 "0pmk45276bl3qppzxlp4jpc8bsvdpca8nzrdl6c4n9r3xhzfpyq0"))))
+    (properties `((upstream-name . "anota2seq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-deseq2
+           r-edger
+           r-limma
+           r-multtest
+           r-qvalue
+           r-rcolorbrewer
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/anota2seq")
+    (synopsis "Transcriptome-wide analysis of translational efficiency")
+    (description
+     "The anota2seq package provides analysis of translational efficiency and
+differential expression analysis for polysome-profiling and ribosome-profiling
+studies (two or more sample classes) quantified by RNA sequencing or
+DNA-microarray.  Polysome-profiling and ribosome-profiling typically generate
+data for two RNA sources, translated mRNA and total mRNA.  Analysis of
+differential expression is used to estimate changes within each RNA source.
+Analysis of translational efficiency aims to identify changes in translation
+efficiency leading to altered protein levels that are independent of total
+mRNA levels or buffering, a mechanism regulating translational efficiency so
+that protein levels remain constant despite fluctuating total mRNA levels.")
+    (license license:gpl3)))
+
 (define-public r-sigpathway
   (package
     (name "r-sigpathway")
