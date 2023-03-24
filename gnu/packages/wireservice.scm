@@ -124,7 +124,7 @@ code.  Agate was previously known as journalism.")))
 (define-public python-agate-sql
   (wireservice-package
    (name "python-agate-sql")
-   (version "0.5.7")
+   (version "0.5.9")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -133,7 +133,7 @@ code.  Agate was previously known as journalism.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1q6ywm0wzkkwcwk0884k0lycf8k7pzwz94rzb1y5ssm8b1gl0i62"))))
+               "112q523w4jf3k8p4ynvjzfqa4j32ri34h2ppvicialp2lz5drvf0"))))
    (native-inputs
     `(("python-nose" ,python-nose)
       ("python-sphinx" ,python-sphinx)
