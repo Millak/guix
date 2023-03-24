@@ -97,63 +97,44 @@ environments.")
     (license license:gpl2+)))
 
 (define-public rnp
-  ;; Packaging the currently released version requires a large number of
-  ;; patches.  For now, we package a snapshot instead.
-  (let ((commit "203224f0b1505dba17837c03da603e5b98ab125a")
-        (revision "0")
-        (last-version "0.13.1")
-        (day-of-release "2020-07-21"))
+  (let ((day-of-release "2022-09-22"))
     (package
       (name "rnp")
-      (version (git-version last-version revision commit))
+      (version "0.16.2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/rnpgp/rnp")
-                      (commit commit)))
-                (file-name
-                 (string-append name "-" (string-take commit 7) "-checkout"))
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1rnwhc9ys4v4mv584hmmrl0ycnqmsaigpffzm31qq337hz24zqya"))
-                (patches
-                 (search-patches "rnp-unbundle-googletest.patch"
-                                 "rnp-disable-ruby-rnp-tests.patch"
-                                 "rnp-add-version.cmake.patch"))))
+                  "13z5kxm48a72w4m2crwgdjdng4a4pwxsd72r2z3a4pcakfp2swi8"))))
       (build-system cmake-build-system)
       (arguments `(#:configure-flags
                    '("-DBUILD_SHARED_LIBS=on"
-                     "-DBUILD_TESTING=on")
+                     "-DBUILD_TESTING=on"
+                     "-DDOWNLOAD_GTEST=off"
+                     "-DDOWNLOAD_RUBYRNP=off")
                    #:phases
                    (modify-phases %standard-phases
-                     (add-after 'unpack 'fixes
-                       (lambda* (#:key inputs #:allow-other-keys)
-                         (copy-recursively (assoc-ref inputs "googletest-source")
-                                           "src/tests/googletest-src")
-                         (substitute* "src/tests/support.cpp"
-                           (("\"cp\"") (string-append "\"" (which "cp") "\"")))
-                         ;; Produce a version stamp in the format the upstream
-                         ;; project uses for unreleased revisions.
-                         (with-output-to-file "version.txt"
-                           (lambda _
-                             (display
-                              (string-append ,last-version
-                                             "-" ,revision
-                                             "-g" ,(string-take commit 7)))))
-                         #t))
-                     (replace 'check
+                     (add-after 'unpack 'patch-tests
                        (lambda _
-                         ;; Some OpenPGP certificates used by the tests expire.
-                         ;; To work around that, set the time to roughly the
-                         ;; release date.
-                         (invoke "faketime" ,day-of-release "make" "test"))))))
+                         (substitute* "src/tests/support.cpp"
+                           (("\"cp\"") (search-input-file inputs "/bin/cp")))))
+                     (replace 'check
+                       (lambda* (#:key tests? #:allow-other-keys)
+                         (when tests?
+                           ;; Some OpenPGP certificates used by the tests expire.
+                           ;; To work around that, set the time to roughly the
+                           ;; release date.
+                           (invoke "faketime" ,day-of-release "make" "test")))))))
       (native-inputs
-       `(("gnupg" ,gnupg) ; for tests
-         ("googletest-source" ,(package-source googletest)) ; for tests
-         ("libfaketime" ,libfaketime) ; for tests
-         ("pkg-config" ,pkg-config)
-         ("python" ,python)
-         ("python2" ,python-2.7)))
+       (list gnupg       ; for tests
+             googletest  ; for tests
+             libfaketime ; for tests
+             pkg-config
+             python))
       (inputs (list botan bzip2 json-c zlib))
       (synopsis
        "RFC4880-compliant OpenPGP library written in C++")
@@ -165,7 +146,7 @@ NetPGP, itself originally written for NetBSD.
 librnp is the library used by rnp for all OpenPGP functions, useful for
 developers to build against.  It is a “real” library, not a wrapper like GPGME
 of GnuPG.")
-      (home-page "https://www.rnpgp.com/")
+      (home-page "https://www.rnpgp.org/")
       (license
        ;; RNP contains code written by Ribose and code derived from netpgp.
        (list

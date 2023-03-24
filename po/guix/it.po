@@ -5,21 +5,22 @@
 # Matteo Drovandi <matteodrovandi.fedora@gmail.com>, 2022.
 # Fernandez Alonso Alberto Mario <albialonso7@icloud.com>, 2022.
 # Julien Lepiller <fedora-account@lepiller.eu>, 2022.
+# Tobias Geerinckx-Rice <fedora@tobias.gr>, 2023.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-12-21 07:20+0000\n"
-"Last-Translator: Matteo Drovandi <matteodrovandi.fedora@gmail.com>\n"
+"PO-Revision-Date: 2023-03-06 19:18+0000\n"
+"Last-Translator: Tobias Geerinckx-Rice <fedora@tobias.gr>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/guix/guix/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15\n"
+"X-Generator: Weblate 4.15.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -146,7 +147,7 @@ msgid ""
 "Run @dfn{activation} code at boot time and upon\n"
 "@command{guix system reconfigure} completion."
 msgstr ""
-"Esegue il codice @dnf{activation} all'avvio e\n"
+"Esegue il codice @dfn{activation} all'avvio e\n"
 "al completamento di @command{guix system reconfigure}."
 
 #: gnu/services.scm:736
@@ -277,9 +278,9 @@ msgstr ""
 "di Giux è meno recente di quella che ha creato @file{~a}. Per risolvere il problema,\n"
 "è necessario aggiornare Giux:\n"
 "\n"
-"@sempio\n"
-"giux pull\n"
-"@fine esempio"
+"@example\n"
+"guix pull\n"
+"@end example"
 
 #: gnu/system.scm:632
 #, scheme-format
@@ -571,7 +572,7 @@ msgid ""
 "Run @command{dhcp}, a Dynamic Host Configuration\n"
 "Protocol (DHCP) client, on all the non-loopback network interfaces."
 msgstr ""
-"Eseguire @comando{dhcp}, un client del Dynamic Host Configuration\n"
+"Eseguire @command{dhcp}, un client del Dynamic Host Configuration\n"
 "Protocollo DHCP (Dynamic Host Configuration Protocol), su tutte le interfacce di rete non loopback."
 
 #: gnu/services/networking.scm:409
@@ -588,7 +589,7 @@ msgid ""
 "daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon\n"
 "will keep the system clock synchronized with that of the given servers."
 msgstr ""
-"Eseguire il @comando{ntpd}, il demone NTP (Network Time Protocol)\n"
+"Eseguire il @command{ntpd}, il demone NTP (Network Time Protocol)\n"
 "di @uref{http://www.ntp.org, Network Time Foundation}.  Il demone\n"
 "manterrà l'orologio del sistema sincronizzato con quello dei server indicati."
 
@@ -598,7 +599,7 @@ msgid ""
 "daemon, as implemented by @uref{http://www.openntpd.org, OpenNTPD}.  The\n"
 "daemon will keep the system clock synchronized with that of the given servers."
 msgstr ""
-"Eseguire il @comando{ntpd}, il demone Network Time Protocol (NTP)\n"
+"Eseguire il @command{ntpd}, il demone Network Time Protocol (NTP)\n"
 "come implementato da @uref{http://www.openntpd.org, OpenNTPD}.  Il demone\n"
 "mantiene l'orologio del sistema sincronizzato con quello dei server indicati."
 
@@ -608,7 +609,7 @@ msgid ""
 "for listening on Internet sockets and spawning the corresponding services on\n"
 "demand."
 msgstr ""
-"Avvia @comando{inetd}, il @dfn{super server Internet}.  È responsabile\n"
+"Avvia @command{inetd}, il @dfn{super server Internet}.  È responsabile\n"
 "di ascoltare i socket di Internet e di generare i servizi corrispondenti su \n"
 "richiesta."
 
@@ -718,11 +719,11 @@ msgstr ""
 
 #: gnu/services/networking.scm:1717
 msgid "Run @command{iptables-restore}, setting up the specified rules."
-msgstr "Eseguire @comando{iptables-restore}, impostando le regole specificate."
+msgstr "Eseguire @command{iptables-restore}, impostando le regole specificate."
 
 #: gnu/services/networking.scm:1786
 msgid "Run @command{nft}, setting up the specified ruleset."
-msgstr "Esegue @comando{nft}, impostando il set di regole specificato."
+msgstr "Esegue @command{nft}, impostando il set di regole specificato."
 
 #: gnu/services/networking.scm:1893
 msgid ""
@@ -738,7 +739,7 @@ msgid ""
 "See @command{yggdrasil -genconf} for config options."
 msgstr ""
 "Connettersi alla rete mesh Yggdrasil.\n"
-"Vedere @comando{yggdrasil -genconf} per le opzioni di configurazione."
+"Vedere @command{yggdrasil -genconf} per le opzioni di configurazione."
 
 #: gnu/services/networking.scm:2137
 msgid ""
@@ -846,7 +847,7 @@ msgid ""
 "configuration files that the user has declared in their\n"
 "@code{home-environment} record."
 msgstr ""
-"Questo è il profilo @dnf{home}. Si trova\n"
+"Questo è il profilo @dfn{home}. Si trova\n"
 "in @file{~/.giux-home/profile}. Esso contiene  i pacchetti e \n"
 "i files di configurazione che l'utente ha dichiarato nel suo \n"
 "@code{home-environment}."
@@ -2861,9 +2862,9 @@ msgstr ""
 "Considerare l'eliminazione delle vecchie generazioni di profili\n"
 "e di raccogliere la spazzatura, secondo queste modalità:\n"
 "\n"
-"@esempio\n"
+"@example\n"
 "guix gc --delete-generations=1m\n"
-"@fine esempio\n"
+"@end example\n"
 
 #: guix/scripts/build.scm:90
 #, scheme-format
@@ -3088,12 +3089,12 @@ msgid ""
 "Try @option{--list-systems} to view available system types.~%"
 msgstr ""
 "Volevi dire @code{~a}?\n"
-"Provare @opzione{--elenco-sistemi} per visualizzare i tipi di sistema disponibili.~%"
+"Provare @option{--list-systems} per visualizzare i tipi di sistema disponibili.~%"
 
 #: guix/scripts/build.scm:411
 #, scheme-format
 msgid "Try @option{--list-systems} to view available system types.~%"
-msgstr "Provare @opzione{--elenco-sistemi} per visualizzare i tipi di sistema disponibili.~%"
+msgstr "Provare @option{--list-systems} per visualizzare i tipi di sistema disponibili.~%"
 
 #: guix/scripts/build.scm:433
 msgid ""
@@ -3281,13 +3282,13 @@ msgstr ""
 "alla fine del file che consiste solo nel nome della variabile del pacchetto che si è\n"
 "definito, come in questo esempio:\n"
 "\n"
-"@esempio\n"
+"@example\n"
 "(define-public my-package\n"
 "  (pacchetto\n"
 "    ...))\n"
 "\n"
 "mio-pacchetto\n"
-"@fine esempio"
+"@end example"
 
 #: guix/scripts/build.scm:576
 msgid ""
@@ -4021,7 +4022,7 @@ msgid ""
 msgstr ""
 "Considerare le impostazioni delle variabili d'ambiente necessarie eseguendo:\n"
 "\n"
-"@esempio\n"
+"@example\n"
 "GUIX_PROFILE=\"~a\"\n"
 ".\"$GIUX_PROFILE/etc/profile\"\n"
 "@end example\n"

@@ -213,7 +213,7 @@ visualization tool suite.")
 (define-public python-pygraphviz
   (package
     (name "python-pygraphviz")
-    (version "1.7")
+    (version "1.10")
     (source
      (origin
        (method git-fetch)
@@ -223,7 +223,7 @@ visualization tool suite.")
        (file-name (string-append "pygraphviz-" version "-checkout"))
        (sha256
         (base32
-         "0jqc3dzy9n0hn3b99zq8jp53901zpjzvvi5ns5mbaxg8kdrb1lfx"))))
+         "1yrzjp5n86ynlj32p5dj1aj67md6bzkk8hac74j5y3mbl94m259g"))))
     (build-system python-build-system)
     (inputs
      (list graphviz))
@@ -313,7 +313,7 @@ Graphviz and LaTeX.")
     (propagated-inputs
      ;; The gts.pc file has glib-2.0 as required.
      (list glib))
-    (home-page "http://gts.sourceforge.net/")
+    (home-page "https://gts.sourceforge.net/")
 
     ;; Note: Despite the name, this is not official GNU software.
     (synopsis "Triangulated Surface Library")

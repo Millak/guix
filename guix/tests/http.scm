@@ -23,7 +23,6 @@
   #:use-module (web server http)
   #:use-module (web response)
   #:use-module (srfi srfi-11)
-  #:use-module (srfi srfi-39)
   #:use-module (ice-9 match)
   #:export (with-http-server
             call-with-http-server

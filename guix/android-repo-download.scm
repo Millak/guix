@@ -29,10 +29,7 @@
   #:use-module (guix modules)
   #:autoload   (guix build-system gnu) (standard-packages)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-34)
-  #:use-module (srfi srfi-35)
   #:export (android-repo-reference
             android-repo-reference?
             android-repo-reference-manifest-url
@@ -81,6 +78,9 @@ generic name if unset."
   (define guile-json
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
 
+  (define guile-lzlib
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
+
   (define gnutls
     (module-ref (resolve-interface '(gnu packages tls)) 'gnutls))
 
@@ -102,7 +102,8 @@ generic name if unset."
 
   (define build
     (with-imported-modules modules
-      (with-extensions (list gnutls guile-json) ;for (guix swh)
+      (with-extensions (list gnutls guile-json ;for (guix swh)
+                             guile-lzlib)
         #~(begin
             (use-modules (guix build android-repo)
                          (guix build utils)

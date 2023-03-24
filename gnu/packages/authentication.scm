@@ -161,7 +161,7 @@ YubiKey into your existing user authentication infrastructure.")
      (list pkg-config))
     (inputs
      (list linux-pam))
-    (home-page "http://pamtester.sourceforge.net/")
+    (home-page "https://pamtester.sourceforge.net/")
     (synopsis "Utility for testing pluggable authentication modules (PAM) facility")
     (description
      "Pamtester is a tiny utility program to test the pluggable authentication

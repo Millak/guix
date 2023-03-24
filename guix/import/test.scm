@@ -18,8 +18,6 @@
 
 (define-module (guix import test)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
-  #:use-module (web uri)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix utils) #:select (version-prefix?))

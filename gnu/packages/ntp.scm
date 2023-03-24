@@ -216,7 +216,7 @@ computers over a network.")
              #t)))))
     (inputs
      (list libressl)) ; enable TLS time constraints. See ntpd.conf(5).
-    (home-page "http://www.openntpd.org/")
+    (home-page "https://www.openntpd.org/")
     (synopsis "NTP client and server by the OpenBSD Project")
     (description "OpenNTPD is the OpenBSD Project's implementation of a client
 and server for the Network Time Protocol.  Its design goals include being

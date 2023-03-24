@@ -39,6 +39,7 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix deprecation)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages hurd)
@@ -122,7 +123,7 @@
 
             %boot-service
             %activation-service
-            etc-service)
+            etc-service)  ; deprecated
   #:re-export (;; Note: Re-export 'delete' to allow for proper syntax matching
                ;; in 'modify-services' forms.  See
                ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26805#16>.
@@ -804,7 +805,8 @@ directory."
                 (extend append)
                 (description "Populate the @file{/etc} directory.")))
 
-(define (etc-service files)
+(define-deprecated (etc-service files)
+  etc-service-type
   "Return a new service of ETC-SERVICE-TYPE that populates /etc with FILES.
 FILES must be a list of name/file-like object pairs."
   (service etc-service-type files))

@@ -167,7 +167,7 @@ performance measurement opportunites across the hardware and software stack.")
                            (install-file "COPYING" doc)))
                        '("lib" "doc"))
              #t)))))
-    (home-page "http://www.vi-hps.org/projects/score-p/")
+    (home-page "https://www.vi-hps.org/projects/score-p/")
     (synopsis "Open Trace Format 2 library")
     (description "The Open Trace Format 2 (@dfn{OTF2}) is a scalable,
 memory-efficient event trace data format plus support library.")
@@ -379,7 +379,7 @@ different kinds of performance behavior.")
                                        "/share/doc/scorep")))
                (install-file "COPYING" doc)
                #t))))))
-    (home-page "http://www.vi-hps.org/projects/score-p/")
+    (home-page "https://www.vi-hps.org/projects/score-p/")
     (synopsis "Performance measurement infrastructure for parallel code")
     (description
      "The Score-P (Scalable Performance Measurement Infrastructure for

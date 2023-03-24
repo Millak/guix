@@ -724,3 +724,85 @@ containers.  It manages a single child process and ensures that any zombie
 processes produced from it are reaped and that signals are properly forwarded.
 Tini is integrated with Docker.")
     (license license:expat)))
+
+(define-public docker-registry
+  (package
+    (name "docker-registry")
+    (version "2.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/docker/distribution")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w8zr97p2c62gm1lrdwqa704ivjsy25ylznrddbbpv63idwdbi9k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/distribution"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-src
+            (lambda _ (chdir "src/github.com/docker/distribution")))
+          (add-after 'chdir-to-src 'fix-versioning
+            (lambda _
+              ;; The Makefile use git to compute the version and the
+              ;; revision. This requires the .git directory that we don't have
+              ;; anymore in the unpacked source.
+              (substitute* "Makefile"
+                (("^VERSION=\\$\\(.*\\)")
+                 (string-append "VERSION=v" #$version))
+                ;; The revision originally used the git hash with .m appended
+                ;; if there was any local modifications.
+                (("^REVISION=\\$\\(.*\\)") "REVISION=0"))))
+          (replace 'build
+            (lambda _
+              (invoke "make" "binaries")))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (for-each
+                 (lambda (file)
+                   (install-file (string-append "bin/" file) bin))
+                 '("digest"
+                   "registry"
+                   "registry-api-descriptor-template")))
+              (let ((doc (string-append
+                          #$output "/share/doc/" #$name "-" #$version)))
+                (mkdir-p doc)
+                (for-each
+                 (lambda (file)
+                   (install-file file doc))
+                 '("BUILDING.md"
+                   "CONTRIBUTING.md"
+                   "LICENSE"
+                   "MAINTAINERS"
+                   "README.md"
+                   "ROADMAP.md"))
+                (copy-recursively "docs/" (string-append doc "/docs")))
+              (let ((examples
+                     (string-append
+                      #$output "/share/doc/" #$name "-" #$version
+                      "/registry-example-configs")))
+                (mkdir-p examples)
+                (for-each
+                 (lambda (file)
+                   (install-file (string-append "cmd/registry/" file) examples))
+                 '("config-cache.yml"
+                   "config-example.yml"
+                   "config-dev.yml")))))
+          (delete 'install-license-files))))
+    (home-page "https://github.com/docker/distribution")
+    (synopsis "Docker registry server and associated tools")
+    (description "The Docker registry server enable you to host your own
+docker registry. With it, there is also two other utilities:
+@itemize
+@item The digest utility is a tool that generates checksums compatibles with
+various docker manifest files.
+@item The registry-api-descriptor-template is a tool for generating API
+specifications from the docs/spec/api.md.tmpl file.
+@end itemize")
+    (license license:asl2.0)))

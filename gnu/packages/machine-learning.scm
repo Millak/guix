@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -16,7 +16,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,7 +45,6 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system r)
   #:use-module (guix build-system trivial)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
@@ -298,36 +297,19 @@ training, HMM clustering, HMM mixtures.")
 (define-public guile-aiscm
   (package
     (name "guile-aiscm")
-    (version "0.24.2")
+    (version "0.25.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wedesoft/aiscm")
-                    (commit "2e16e38391bf1638f1dd9a1cf4b25a25f6626078")))
+                    (commit "v0.25.2")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gwqpzl6irpaszkpxaf5wliwq19280632hlgxs3ikjkfg8mkqql0"))))
+                "1sagpxwrqxkn5b9zqzd07c9r7swmw45q672pa8fy6s71iw6a0x77"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags
-      #~(list (string-append "OPENCV_CFLAGS=-I" #$(this-package-input "opencv")
-                             "/include/opencv4")
-              (let ((modules
-                     (list "aruco" "barcode" "bgsegm" "bioinspired"
-                           "calib3d" "ccalib" "core" "datasets" "dnn"
-                           "dnn_objdetect" "dnn_superres" "dpm" "face"
-                           "features2d" "flann" "freetype" "fuzzy" "hdf"
-                           "hfs" "highgui" "img_hash" "imgcodecs" "imgproc"
-                           "intensity_transform" "line_descriptor" "mcc"
-                           "ml" "objdetect" "optflow" "phase_unwrapping"
-                           "photo" "plot" "quality" "rapid" "reg" "rgbd"
-                           "saliency" "shape" "stereo" "stitching"
-                           "structured_light" "superres" "surface_matching"
-                           "text" "tracking" "video" "videoio" "videostab"
-                           "wechat_qrcode" "ximgproc" "xobjdetect" "xphoto")))
-                (format #false "OPENCV_LIBS=~{-lopencv_~a~^ ~}" modules)))
       #:make-flags
       #~(list (string-append "GUILE_CACHE=" #$output "/lib/guile/3.0/site-ccache")
               (string-append "GUILE_EXT=" #$output "/lib/guile/3.0/extensions")
@@ -396,13 +378,12 @@ training, HMM clustering, HMM mixtures.")
            libxv
            mesa
            mjpegtools
-           opencv
            pandoc
            pulseaudio
            tensorflow))
     (native-inputs
-     (list clang-11
-           llvm-11
+     (list clang-13
+           llvm-13
            pkg-config
            protobuf-c-for-aiscm
            autoconf
@@ -438,7 +419,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                                "CFLAGS=-fcommon")))
     (inputs
      (list perl))
-    (home-page "http://micans.org/mcl/")
+    (home-page "https://micans.org/mcl/")
     (synopsis "Clustering algorithm for graphs")
     (description
      "The MCL algorithm is short for the @dfn{Markov Cluster Algorithm}, a
@@ -565,7 +546,7 @@ sample proximities between pairs of cases.")
                 "0hlbdmjjf1jgsvi3d2hwni5lz3l9a5bzj6ijpbawa8a7cbrpp66y"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-ngram-fsts")))
-    (home-page "http://www.openfst.org")
+    (home-page "https://www.openfst.org")
     (synopsis "Library for weighted finite-state transducers")
     (description "OpenFst is a library for constructing, combining,
 optimizing, and searching weighted finite-state transducers (FSTs).")
@@ -906,7 +887,7 @@ with a single function call.")
              (invoke "ctest"))))))
     (native-inputs
      (list catch-framework))
-    (home-page "http://reactivex.io/")
+    (home-page "https://reactivex.io/")
     (synopsis "Reactive Extensions for C++")
     (description
      "The Reactive Extensions for C++ (RxCpp) is a library of algorithms for
@@ -3371,27 +3352,26 @@ Python.")
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
-    (version "0.2.7")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hmmlearn" version))
        (sha256
         (base32
-         "1qgnf1kdxicygy8nvpv866iqvwq0rc6xkd3s6slmvxvsy8h2fjvb"))))
+         "1yd5l9ra37mks41mn5bigav7xpb161a9yqlcnz4ir076vkik2sb9"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion (string-append (assoc-ref outputs "out") "/lib")
-                 (invoke "python" "-m" "pytest"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append #$output "/lib")
+                  (invoke "python" "-m" "pytest"))))))))
     (propagated-inputs
      (list pybind11
-           python-cython
            python-numpy
            python-scikit-learn
            python-scipy
@@ -3409,7 +3389,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3418,7 +3398,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bjd0ym547k46ci8xnwsry7x8w5k65cl86snlcrfn4vs3fald2y9"))))
+        (base32 "1rycs7fgm03fxp8lxj8ljrdwy5whxd4554xzklbcmn4mcwbxgg57"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3818,3 +3798,73 @@ fi"
                         original-exe
                         original-exe)))
             (chmod exe #o555)))))))
+
+(define-public python-brian2
+  (package
+    (name "python-brian2")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Brian2" version))
+              (sha256
+               (base32
+                "1g48hzn3cdsvfjgz64s3kvh5d5287ggjxdyacb7wh2n5nd5iqlf7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" "/tmp")
+               ;; Must be run in a different directory, otherwise compiled
+               ;; modules are not found.
+               (with-directory-excursion "/tmp"
+                 ;; Invoking brian2.test() is preferred to running pytest.
+                 (invoke "python" "-c"
+                  "import brian2, sys; sys.exit(0 if brian2.test() else 1)"))))))))
+    (propagated-inputs (list python-cython ; Required by codegen.
+                             python-jinja2
+                             python-numpy
+                             python-py-cpuinfo
+                             python-pyparsing
+                             ;; Required by codegen.
+                             python-setuptools
+                             python-sympy))
+    (native-inputs (list python-pytest python-pytest-xdist))
+    (home-page "https://briansimulator.org/")
+    (synopsis "Clock-driven simulator for spiking neural networks")
+    (description
+     "Brian is a simulator for spiking neural networks written in Python.  It
+is therefore designed to be easy to learn and use, highly flexible and
+easily extensible.")
+    (license license:cecill)))
+
+(define-public python-brian2tools
+  (package
+    (name "python-brian2tools")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "brian2tools" version))
+              (sha256
+               (base32
+                "0fn028mfy3qlzjkadd0wr5d7rcplijd5jphln414xifvvsb9jcc2"))))
+    (build-system python-build-system)
+    ;; Both pypi tarball and git repo lack test files.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list python-brian2
+                             python-libneuroml
+                             python-markdown-strings
+                             python-matplotlib
+                             python-pylems
+                             python-setuptools
+                             python-setuptools-scm))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/brian-team/brian2tools")
+    (synopsis "Tools for the Brian 2 simulator")
+    (description "Visualization and NeuroML import/export tools for the
+Brian 2 simulator.")
+    (license license:cecill)))
+

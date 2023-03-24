@@ -44,7 +44,6 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system trivial)
   #:use-module (guix store)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
@@ -255,7 +254,7 @@ compiler while still keeping it small, simple, fast and understandable.")
 (define-public qbe
   (package
     (name "qbe")
-    (version "1.0")
+    (version "1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -264,7 +263,7 @@ compiler while still keeping it small, simple, fast and understandable.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qx4a3fjjrp2m4dsn19rpbjf89k9w7w7l09s96jx8vv15vzsdgis"))))
+                "07nl1kdgpz7hwfkng0yy4xihk0fmv1a2hq9bxzgvhy3vk9r7fmn8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

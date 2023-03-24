@@ -217,28 +217,155 @@ simple and consistent.")
          (delete 'bootstrap)
          (delete 'configure)
          (delete 'build)
-         (add-after 'install 'halve-inode-consumption
+         (add-before 'install 'halve-inode-consumption
            ;; This package uses over 100K inodes, which is a lot.  We can easily
            ;; halve that number by using (hard) links, to no ill effect.
            ;; See <https://logs.guix.gnu.org/guix/2023-01-31.log#171227>.
            ;; However, the source checkout will still use the full amount!
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (symlink? (lambda (_ stat)
+           (lambda _
+             (let ((symlink? (lambda (_ stat)
                                (eq? 'symlink (stat:type stat)))))
                (for-each (lambda (file)
-                           (with-directory-excursion (dirname file)
-                             (let ((target (readlink file)))
-                               (when (eq? 'regular (stat:type (stat target)))
-                                 (delete-file file)
-                                 (link target file)))))
-                         (find-files out symlink?))))))))
+                           (let ((target (canonicalize-path file)))
+                             (when (eq? 'regular (stat:type (stat target)))
+                               (delete-file file)
+                               (link target file))))
+                         (find-files "." symlink?))))))))
     (native-inputs
      (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
     (synopsis "Fork of Paper icon theme with a lot of new icons and a few extras")
     (description "Papirus is a fork of the icon theme Paper with a lot of new icons
 and a few extra features.")
+    (license license:gpl3)))
+
+(define-public flat-remix-icon-theme
+  (package
+    (name "flat-remix-icon-theme")
+    (version "20220525")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ygazxccqf7hn1hxnf1mmsp17gm1m4hpcandfz9v5ijrgkd1m596"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no included tests
+       #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (home-page "https://drasite.com/flat-remix")
+    (synopsis "Icon theme with material design")
+    (description "Flat Remix is an icon theme inspired by material design.  It
+is mostly flat using a colorful palette with some shadows, highlights, and
+gradients for some depth.")
+    (license license:gpl3+)))
+
+(define-public flat-remix-gtk-theme
+  (package
+    (name "flat-remix-gtk-theme")
+    (version "20220627")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix-gtk")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kwahlrcm9rfsrd97q9lsbfz5390qafwbv78zl6j2vqgqnxhpwng"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no included tests
+       #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (home-page "https://drasite.com/flat-remix-gtk")
+    (synopsis "GTK application theme with material design")
+    (description "Flat Remix GTK is a GTK application theme inspired by
+material design.  It is mostly flat using a colorful palette with some
+shadows, highlights, and gradients for some depth.")
+    (license license:gpl3+)))
+
+(define-public flat-remix-gnome-theme
+  (package
+    (name "flat-remix-gnome-theme")
+    (version "20221107-1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix-gnome")
+         ;; This commit adds GtkSourceView 5 theme, for GNOME Text Editor.
+         (commit "b5616efc515e9f1417436e67d94718db7529a2ba")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10fgdz8hz8rd7aj4vb3bvl8khzb2fvaia7n00gi0x19yvnnh36pr"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       `(("share" "/")
+         ("themes" "/share/"))))
+    (home-page "https://drasite.com/flat-remix-gnome")
+    (synopsis "GNOME shell theme with material design")
+    (description "Flat Remix GNOME is a GNOME shell theme inspired by material
+design.  It is mostly flat using a colorful palette with some shadows,
+highlights, and gradients for some depth.")
+    (license license:gpl3+)))
+
+(define-public bibata-cursor-theme
+  (package
+    (name "bibata-cursor-theme")
+    (version "2.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ful1e5/Bibata_Cursor")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bhspswgxizc4sr2bihfjic8wm4khd6waw9qgw0yssfy0fm3nafc"))))
+    (build-system trivial-build-system)
+    (native-inputs (list python-attrs python-clickgen))
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((themes-dir (string-append #$output "/share/icons")))
+            (mkdir-p themes-dir)
+            (let loop
+                ((themes '(("Bibata-Modern-Amber" . "Yellowish and rounded")
+                           ("Bibata-Modern-Classic" . "Black and rounded")
+                           ("Bibata-Modern-Ice" . "White and rounded")
+                           ("Bibata-Original-Amber" . "Yellowish and sharp")
+                           ("Bibata-Original-Classic" . "Black and sharp")
+                           ("Bibata-Original-Ice" . "White and sharp"))))
+              (define theme
+                (car themes))
+              (invoke (search-input-file %build-inputs "/bin/ctgen")
+                      (string-append #$source "/build.toml")
+                      "-p" "x11"
+                      "-d" (string-append #$source "/bitmaps/" (car theme))
+                      "-n" (car theme)
+                      "-c" (string-append (cdr theme) " edge Bibata cursors")
+                      "-o" themes-dir)
+              (unless (null? (cdr themes))
+                (loop (cdr themes))))))))
+    (home-page "https://github.com/ful1e5/Bibata_Cursor")
+    (synopsis "Open-source, compact, and material-designed cursor set")
+    (description
+     "Bibata is an open-source, compact, and material designed
+cursor set.  This project aims at improving the cursor experience.")
     (license license:gpl3)))
 
 (define-public gnome-plots
@@ -1438,6 +1565,30 @@ variants.")
                    license:lgpl2.1         ; Some style sheets.
                    license:cc-by-sa4.0)))) ; Some icons
 
+(define-public postmarketos-theme
+  (package
+    (name "postmarketos-theme")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/postmarketOS/postmarketos-theme")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09in7737cirmw2c0ac40ac29szfgdva6q0zl32mdi12marybd2g5"))))
+    (build-system meson-build-system)
+    (native-inputs (list sassc))
+    (home-page "https://gitlab.com/postmarketOS/postmarketos-theme")
+    (synopsis "PostmarketOS themed themes")
+    (description
+     "@code{postmarketos-theme} contains a GTK3 and GTK4 theme which is based
+on Adwaita but replaces the standard blue highlights in the theme with
+postmarketOS green.  There's also the oled and paper variants of the theme
+that are completely black and completely white.")
+    (license license:lgpl2.0+)))
+
 (define-public eiciel
   (package
     (name "eiciel")
@@ -1587,7 +1738,7 @@ It contains:
  sound themes.
 @end itemize")
     (license (list license:lgpl2.1 license:lgpl3 license:cc-by-sa4.0))))
-  
+
 (define-public nordic-theme
   (let ((commit "07d764c5ebd5706e73d2e573f1a983e37b318915")
 	(revision "0"))

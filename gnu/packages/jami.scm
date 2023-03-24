@@ -59,7 +59,6 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
-  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system qt)
@@ -108,8 +107,8 @@
                   patches))))
 
 (define-public pjproject-jami
-  (let ((commit "513a3f14c44b2c2652f9219ec20dea64b236b713")
-        (revision "1"))
+  (let ((commit "20e00fcdd16459444bae2bae9c0611b63cf87297")
+        (revision "2"))
     (package
       (inherit pjproject)
       (name "pjproject-jami")
@@ -128,7 +127,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1vzfpiwhd96a9ibk398z922a60j18xd7mblsmi6355r7ccj2aw7p"))))
+                  "1g8nkb5ln5y208k2hhmlcddv2dzf6plfrsvi4x8sa7iwgb4prgb8"))))
       (arguments
        (substitute-keyword-arguments (package-arguments pjproject)
          ((#:phases phases '%standard-phases)

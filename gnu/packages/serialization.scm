@@ -699,6 +699,20 @@ C#, C, Go, Java, JavaScript, PHP, and Python.  It was originally created for
 game development and other performance-critical applications.")
     (license license:asl2.0)))
 
+(define-public flatbuffers-next
+  (package
+    (inherit flatbuffers)
+    (version "23.1.21")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/flatbuffers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "flatbuffers" version))
+              (sha256
+               (base32
+                "1z3a6l8g2y53i5xzraswfs2i0i3kk52zv7nzc2q3fgisbyiri3pz"))))))
+
 (define-public python-feather-format
   (package
     (name "python-feather-format")

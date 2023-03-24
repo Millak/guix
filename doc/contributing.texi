@@ -1170,6 +1170,16 @@ Please write commit logs in the ChangeLog format (@pxref{Change Logs,,,
 standards, GNU Coding Standards}); you can check the commit history for
 examples.
 
+You can help make the review process more efficient, and increase the
+chance that your patch will be reviewed quickly, by describing the
+context of your patch and the impact you expect it to have.  For
+example, if your patch is fixing something that is broken, describe the
+problem and how your patch fixes it.  Tell us how you have tested your
+patch.  Will users of the code changed by your patch have to adjust
+their workflow at all?  If so, tell us how.  In general, try to imagine
+what questions a reviewer will ask, and answer those questions in
+advance.
+
 Before submitting a patch that adds or modifies a package definition,
 please run through this check list:
 
@@ -1478,7 +1488,7 @@ Due to an apparent bug in @command{git send-email},
 @end quotation
 
 You can find out @var{ISSUE_NUMBER} either by searching on the mumi
-interface at @url{issues.guix.gnu.org} for the name of your patch or
+interface at @url{https://issues.guix.gnu.org} for the name of your patch or
 reading the acknowledgement email sent automatically by Debbugs in
 reply to incoming bugs and patches, which contains the bug number.
 

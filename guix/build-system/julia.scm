@@ -29,8 +29,6 @@
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:use-module (ice-9 match)
-  #:use-module (srfi srfi-26)
   #:export (%julia-build-system-modules
             julia-build
             julia-build-system))

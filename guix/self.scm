@@ -19,7 +19,6 @@
 
 (define-module (guix self)
   #:use-module (guix config)
-  #:use-module (guix i18n)
   #:use-module (guix modules)
   #:use-module (guix gexp)
   #:use-module (guix store)

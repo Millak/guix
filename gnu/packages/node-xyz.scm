@@ -236,7 +236,7 @@ user-land JavaScript.")
           "034iaiq2pdqn342p2404cpz364g282d2hkp9375hysnh9i968wbb"))))
     (build-system node-build-system)
     (arguments '(#:tests? #f)) ; No tests.
-    (home-page "http://www.enchantedage.com/node-mersenne")
+    (home-page "https://www.enchantedage.com/node-mersenne")
     (synopsis "Node.js module for generating Mersenne Twister random numbers")
     (description "This package provides a node.js port of the Mersenne Twister
 random number generator.")

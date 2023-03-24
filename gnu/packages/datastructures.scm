@@ -5,6 +5,7 @@
 ;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,56 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson))
+
+(define-public coucal
+  (let ((commit "73ada075553b7607d083037a87cb9c73b3683bfc")
+        (revision "1"))
+    (package
+      (name "coucal")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/xroche/coucal")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "01996vda3wj5ywpwg9yhysaq6cyi44xnkyhihbwwi43hrj1ic2vm"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'do-not-run-tests-early
+              (lambda _
+                (substitute* "Makefile"
+                  (("(all: ).*" _ lead) (string-append lead "gcc")))))
+            (add-after 'unpack 'remove-Werror
+              ;; Prevent "this statement may fall through
+              ;; [-Wimplicit-fallthrough=]" errors from "murmurhash3.h" file.
+              (lambda _
+                (substitute* "Makefile"
+                  (("-Werror ") ""))))
+            (delete 'configure)         ;no configure script
+            (replace 'install           ;no install target
+              (lambda _
+                (let ((doc (string-append #$output
+                                          "/share/doc/" #$name "-" #$version)))
+                  (install-file "README.md" doc))
+                (for-each (lambda (f) (install-file f #$output))
+                          (find-files "." "(coucal|murmurhash)"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "make" "tests" "runtests")))))))
+      (home-page "https://github.com/xroche/coucal")
+      (synopsis "Cuckoo-hashing-based hashtable with stash area C library")
+      (description "Coucal is an implementation of the Cuckoo hashing
+algorithm with a stash area using by default the MurmurHash hash function.")
+      ;; Library is released under Expat terms, but the source includes
+      ;; "murmurhash3.h", which is placed in the public domain.
+      (license (list license:expat license:public-domain)))))
 
 (define-public gdsl
   (package

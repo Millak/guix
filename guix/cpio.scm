@@ -170,7 +170,7 @@ using FILE-NAME as its file name."
                       #:size (stat:size st)
                       #:dev (stat:dev st)
                       #:rdev (stat:rdev st)
-                      #:name-size (string-length file-name))))
+                      #:name-size (string-utf8-length file-name))))
 
 (define* (file->cpio-header* file
                              #:optional (file-name file)
@@ -182,7 +182,7 @@ produced in a deterministic fashion."
     (make-cpio-header #:mode (stat:mode st)
                       #:nlink (stat:nlink st)
                       #:size (stat:size st)
-                      #:name-size (string-length file-name))))
+                      #:name-size (string-utf8-length file-name))))
 
 (define* (special-file->cpio-header* file
                                      device-type
@@ -201,7 +201,7 @@ The number of hard links is assumed to be 1."
                                     permission-bits)
                     #:nlink 1
                     #:rdev (device-number device-major device-minor)
-                    #:name-size (string-length file-name)))
+                    #:name-size (string-utf8-length file-name)))
 
 (define %trailer
   "TRAILER!!!")
@@ -237,7 +237,7 @@ produces with the '-H newc' option."
 
       ;; We're padding the header + following file name + trailing zero, and
       ;; the header is 110 byte long.
-      (write-padding (+ 110 1 (string-length file)) port)
+      (write-padding (+ 110 (string-utf8-length file) 1) port)
 
       (case (mode->type (cpio-header-mode header))
         ((regular)
@@ -246,7 +246,7 @@ produces with the '-H newc' option."
              (dump-port input port))))
         ((symlink)
          (let ((target (readlink file)))
-           (put-string port target)))
+           (put-bytevector port (string->utf8 target))))
         ((directory)
          #t)
         ((block-special)

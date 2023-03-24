@@ -422,7 +422,7 @@ export, password protection and auto-saving.")
              (substitute* "Makefile"
                (("/man1") "/share/man/man1")))))
        #:tests? #f))  ; No "check" target.
-    (home-page "http://wtime.sourceforge.net")
+    (home-page "https://wtime.sourceforge.net")
     (synopsis
      "Command-line utility for tracking time spent on arbitrary tasks")
     (description

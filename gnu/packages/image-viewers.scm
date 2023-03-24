@@ -276,7 +276,7 @@ actions.")
            `(,glib "bin") ; glib-gettextize
            intltool
            pkg-config))
-    (home-page "http://www.geeqie.org/")
+    (home-page "https://www.geeqie.org/")
     (synopsis "Lightweight GTK+ based image viewer")
     (description
      "Geeqie is a lightweight GTK+ based image viewer for Unix like operating
@@ -306,7 +306,7 @@ collection.  Geeqie was initially based on GQview.")
     (synopsis "Simple and fast image viewer for X")
     (description "gpicview is a lightweight GTK+ 2.x based image viewer.
 It is the default image viewer on LXDE desktop environment.")
-    (home-page "http://lxde.sourceforge.net/gpicview/")
+    (home-page "https://lxde.sourceforge.net/gpicview/")
     (license license:gpl2+)))
 
 (define-public sxiv
@@ -592,7 +592,7 @@ and WebP.")
                       (dirname
                        (search-input-file inputs "include/OpenEXR/ImathInt64.h"))
                       ":" (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
-    (home-page "http://qtpfsgui.sourceforge.net")
+    (home-page "https://qtpfsgui.sourceforge.net")
     (synopsis "High dynamic range (HDR) imaging application")
     (description
      "Luminance HDR (formerly QtPFSGui) is a graphical user interface
@@ -863,7 +863,7 @@ with tiling window managers.  Features include:
        #:make-flags
        (list
         (string-append "PREFIX=" (assoc-ref %outputs "out")))))
-    (home-page "http://spiegl.de/qiv/")
+    (home-page "https://spiegl.de/qiv/")
     (synopsis "Graphical image viewer for X")
     (description
      "Quick Image Viewer is a small and fast GDK/Imlib2 image viewer.

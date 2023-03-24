@@ -46,11 +46,11 @@
 (define minimal-desktop-services
   (list polkit-wheel-service
         (service upower-service-type)
-        (accountsservice-service)
+        (service accountsservice-service-type)
         (service polkit-service-type)
-        (elogind-service)
-        (dbus-service)
-        x11-socket-directory-service))
+        (service elogind-service-type)
+        (service dbus-root-service-type)
+        (service x11-socket-directory-service-type)))
 
 (define %lightdm-os
   (operating-system

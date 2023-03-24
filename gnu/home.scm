@@ -35,6 +35,7 @@
             this-home-environment
 
             home-environment-derivation
+            home-environment-packages
             home-environment-user-services
             home-environment-essential-services
             home-environment-services
@@ -102,7 +103,21 @@
                               #:target-type home-service-type)))
     (service-value home)))
 
-(define* (home-environment-with-provenance he config-file)
+
+(define (home-environment-configuration-file he)
+  "Return the configuration file of HE, based on its 'location' field, or #f
+if it could not be determined."
+  (let ((file (and=> (home-environment-location he)
+                     location-file)))
+    (and file
+         (or (and (string-prefix? "/" file) file)
+             (search-path %load-path file)))))
+
+(define* (home-environment-with-provenance he
+                                           #:optional
+                                           (config-file
+                                            (home-environment-configuration-file
+                                             he)))
   "Return a variant of HE that stores its own provenance information,
 including CONFIG-FILE, if available.  This is achieved by adding an instance
 of HOME-PROVENANCE-SERVICE-TYPE to its services."

@@ -24,6 +24,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix search-paths)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages bash)
@@ -66,9 +67,7 @@
                 "ac_cv_func_posix_getgrgid_r=yes")
               '()))))
    (native-search-paths
-    (list (search-path-specification
-           (variable "PKG_CONFIG_PATH")
-           (files '("lib/pkgconfig" "lib64/pkgconfig" "share/pkgconfig")))))
+    (list $PKG_CONFIG_PATH))
    (home-page "https://www.freedesktop.org/wiki/Software/pkg-config")
    (license gpl2+)
    (synopsis "Helper tool used when compiling applications and libraries")

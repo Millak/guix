@@ -30,13 +30,13 @@ Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
 Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023 Leo Famulari@*
-Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus@*
+Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020 Jan Nieuwenhuizen@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2023 Jan Nieuwenhuizen@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
@@ -71,7 +71,7 @@ Copyright @copyright{} 2019 Kyle Andrews@*
 Copyright @copyright{} 2019 Alex Griffin@*
 Copyright @copyright{} 2019, 2020, 2021, 2022 Guillaume Le Vaillant@*
 Copyright @copyright{} 2020 Liliana Marie Prikler@*
-Copyright @copyright{} 2019, 2020, 2021, 2022 Simon Tournier@*
+Copyright @copyright{} 2019, 2020, 2021, 2022, 2023 Simon Tournier@*
 Copyright @copyright{} 2020 Wiktor Żelazny@*
 Copyright @copyright{} 2020 Damien Cassou@*
 Copyright @copyright{} 2020 Jakub Kądziołka@*
@@ -79,9 +79,9 @@ Copyright @copyright{} 2020 Jack Hill@*
 Copyright @copyright{} 2020 Naga Malleswari@*
 Copyright @copyright{} 2020, 2021 Brice Waegeneire@*
 Copyright @copyright{} 2020 R Veera Kumar@*
-Copyright @copyright{} 2020, 2021 Pierre Langlois@*
+Copyright @copyright{} 2020, 2021, 2022 Pierre Langlois@*
 Copyright @copyright{} 2020 pinoaffe@*
-Copyright @copyright{} 2020 André Batista@*
+Copyright @copyright{} 2020, 2023 André Batista@*
 Copyright @copyright{} 2020, 2021 Alexandru-Sergiu Marton@*
 Copyright @copyright{} 2020 raingloom@*
 Copyright @copyright{} 2020 Daniel Brooks@*
@@ -109,11 +109,11 @@ Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
 Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
-Copyright @copyright{} 2022 Bruno Victal@*
+Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
 Copyright @copyright{} 2023 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
-Copyright @copyright{} 2022 Bruno Victal@*
+Copyright @copyright{} 2023 Karl Hallsby
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -1977,8 +1977,7 @@ versions may be incompatible.
 
 @cindex name service switch, glibc
 @cindex NSS (name service switch), glibc
-@cindex nscd (name service caching daemon)
-@cindex name service caching daemon (nscd)
+@cindex @abbr{nscd, name service cache daemon}
 When using Guix on a foreign distro, we @emph{strongly recommend} that
 the system run the GNU C library's @dfn{name service cache daemon},
 @command{nscd}, which should be listening on the
@@ -2947,9 +2946,9 @@ mount /dev/sda2 /mnt
 Mount special block devices and Linux-specific directories:
 
 @example sh
-mount --bind /proc /mnt/proc
-mount --bind /sys /mnt/sys
-mount --bind /dev /mnt/dev
+mount --rbind /proc /mnt/proc
+mount --rbind /sys /mnt/sys
+mount --rbind /dev /mnt/dev
 @end example
 
 If your system is EFI-based, you must also mount the ESP partition.
@@ -4319,6 +4318,25 @@ The command to install its documentation is:
 guix install glib:doc
 @end example
 
+While the colon syntax works for command-line specification of package
+outputs, it will not work when using a package @emph{variable} in Scheme
+code.  For example, to add the documentation of @code{glib} to the
+globally installed packages of an @code{operating-system} (see
+@ref{operating-system Reference}), a list of two items, the first one
+being the package @emph{variable} and the second one the name of the
+output to select (a string), must be used instead:
+
+@lisp
+(use-modules (gnu packages glib))
+;; glib-with-documentation is the Guile symbol for the glib package
+(operating-system
+ ...
+ (packages
+  (append
+   (list (list glib-with-documentation "doc"))
+         %base-packages)))
+@end lisp
+
 Some packages install programs with different ``dependency footprints''.
 For instance, the WordNet package installs both command-line tools and
 graphical user interfaces (GUIs).  The former depend solely on the C
@@ -4960,60 +4978,57 @@ be much faster because the Guix revision will be cached.
 The @code{(guix inferior)} module provides the following procedures to open an
 inferior:
 
-@deffn {Scheme Procedure} inferior-for-channels @var{channels} @
-   [#:cache-directory] [#:ttl]
+@defun inferior-for-channels channels [#:cache-directory] [#:ttl]
 Return an inferior for @var{channels}, a list of channels.  Use the cache at
 @var{cache-directory}, where entries can be reclaimed after @var{ttl} seconds.
 This procedure opens a new connection to the build daemon.
 
 As a side effect, this procedure may build or substitute binaries for
 @var{channels}, which can take time.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} open-inferior @var{directory} @
-  [#:command "bin/guix"]
+@defun open-inferior directory [#:command "bin/guix"]
 Open the inferior Guix in @var{directory}, running
 @code{@var{directory}/@var{command} repl} or equivalent.  Return @code{#f} if
 the inferior could not be launched.
-@end deffn
+@end defun
 
 @cindex inferior packages
 The procedures listed below allow you to obtain and manipulate inferior
 packages.
 
-@deffn {Scheme Procedure} inferior-packages @var{inferior}
+@defun inferior-packages inferior
 Return the list of packages known to @var{inferior}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} lookup-inferior-packages @var{inferior} @var{name} @
-   [@var{version}]
+@defun lookup-inferior-packages inferior name [version]
 Return the sorted list of inferior packages matching @var{name} in
 @var{inferior}, with highest version numbers first.  If @var{version} is true,
 return only packages with a version number prefixed by @var{version}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} inferior-package? @var{obj}
+@defun inferior-package? obj
 Return true if @var{obj} is an inferior package.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} inferior-package-name @var{package}
-@deffnx {Scheme Procedure} inferior-package-version @var{package}
-@deffnx {Scheme Procedure} inferior-package-synopsis @var{package}
-@deffnx {Scheme Procedure} inferior-package-description @var{package}
-@deffnx {Scheme Procedure} inferior-package-home-page @var{package}
-@deffnx {Scheme Procedure} inferior-package-location @var{package}
-@deffnx {Scheme Procedure} inferior-package-inputs @var{package}
-@deffnx {Scheme Procedure} inferior-package-native-inputs @var{package}
-@deffnx {Scheme Procedure} inferior-package-propagated-inputs @var{package}
-@deffnx {Scheme Procedure} inferior-package-transitive-propagated-inputs @var{package}
-@deffnx {Scheme Procedure} inferior-package-native-search-paths @var{package}
-@deffnx {Scheme Procedure} inferior-package-transitive-native-search-paths @var{package}
-@deffnx {Scheme Procedure} inferior-package-search-paths @var{package}
+@defun inferior-package-name package
+@defunx inferior-package-version package
+@defunx inferior-package-synopsis package
+@defunx inferior-package-description package
+@defunx inferior-package-home-page package
+@defunx inferior-package-location package
+@defunx inferior-package-inputs package
+@defunx inferior-package-native-inputs package
+@defunx inferior-package-propagated-inputs package
+@defunx inferior-package-transitive-propagated-inputs package
+@defunx inferior-package-native-search-paths package
+@defunx inferior-package-transitive-native-search-paths package
+@defunx inferior-package-search-paths package
 These procedures are the counterpart of package record accessors
 (@pxref{package Reference}).  Most of them work by querying the inferior
 @var{package} comes from, so the inferior must still be live when you call
 these procedures.
-@end deffn
+@end defun
 
 Inferior packages can be used transparently like any other package or
 file-like object in G-expressions (@pxref{G-Expressions}).  They are also
@@ -5412,6 +5427,25 @@ write in @code{~/.config/guix/channels.scm} this specification:
 From there on, @command{guix pull} will fetch code from the @code{super-hacks}
 branch of the repository at @code{example.org}.  The authentication concern is
 addressed below (@pxref{Channel Authentication}).
+
+Note that you can specify a local directory on the @code{url} field above if
+the channel that you intend to use resides on a local file system.  However,
+in this case @command{guix} checks said directory for ownership before any
+further processing.  This means that if the user is not the directory owner,
+but wants to use it as their default, they will then need to set it as a safe
+directory in their global git configuration file.  Otherwise, @command{guix}
+will refuse to even read it.  Supposing your system-wide local directory is at
+@code{/src/guix.git}, you would then create a git configuration file at
+@code{~/.gitconfig} with the following contents:
+
+@example
+[safe]
+        directory = /src/guix.git
+@end example
+
+@noindent
+This also applies to the root user unless when called with @command{sudo} by
+the directory owner.
 
 @node Replicating Guix
 @section Replicating Guix
@@ -5924,6 +5958,22 @@ building or downloading any missing package, and runs the
 @example
 guix shell python python-numpy -- python3
 @end example
+
+@quotation Note
+@cindex shebang, for @command{guix shell}
+@command{guix shell} can be also be used as a script interpreter, also
+known as @dfn{shebang}.  Here is an example self-contained Python script
+making use of this feature:
+
+@example
+#!/usr/bin/env -S guix shell python python-numpy -- python3
+import numpy
+print("This is numpy", numpy.version.version)
+@end example
+
+You may pass any @command{guix shell} option, but there's one caveat:
+the Linux kernel has a limit of 127 bytes on shebang length.
+@end quotation
 
 Development environments can be created as in the example below, which
 spawns an interactive shell containing all the dependencies and
@@ -6896,6 +6946,7 @@ such file or directory'' message.
 @end quotation
 
 @item deb
+@cindex Debian, build a .deb package with guix pack
 This produces a Debian archive (a package with the @samp{.deb} file
 extension) containing all the specified binaries and symbolic links,
 that can be installed on top of any dpkg-based GNU(/Linux) distribution.
@@ -6912,7 +6963,8 @@ guix pack -f deb -C xz -S /usr/bin/hello=bin/hello hello
 Because archives produced with @command{guix pack} contain a collection
 of store items and because each @command{dpkg} package must not have
 conflicting files, in practice that means you likely won't be able to
-install more than one such archive on a given system.
+install more than one such archive on a given system.  You can
+nonetheless pack as many Guix packages as you want in one such archive.
 @end quotation
 
 @quotation Warning
@@ -6921,6 +6973,48 @@ that it does @emph{not} know about.  It is unwise to install
 Guix-produced @samp{.deb} files on a system where @file{/gnu/store} is
 shared by other software, such as a Guix installation or other, non-deb
 packs.
+@end quotation
+
+@item rpm
+@cindex RPM, build an RPM archive with guix pack
+This produces an RPM archive (a package with the @samp{.rpm} file
+extension) containing all the specified binaries and symbolic links,
+that can be installed on top of any RPM-based GNU/Linux distribution.
+The RPM format embeds checksums for every file it contains, which the
+@command{rpm} command uses to validate the integrity of the archive.
+
+Advanced RPM-related options are revealed via the
+@option{--help-rpm-format} option.  These options allow embedding
+maintainer scripts that can run before or after the installation of the
+RPM archive, for example.
+
+The RPM format supports relocatable packages via the @option{--prefix}
+option of the @command{rpm} command, which can be handy to install an
+RPM package to a specific prefix.
+
+@example
+guix pack -f rpm -R -C xz -S /usr/bin/hello=bin/hello hello
+@end example
+
+@example
+sudo rpm --install --prefix=/opt /gnu/store/...-hello.rpm
+@end example
+
+@quotation Note
+Contrary to Debian packages, conflicting but @emph{identical} files in
+RPM packages can be installed simultaneously, which means multiple
+@command{guix pack}-produced RPM packages can usually be installed side
+by side without any problem.
+@end quotation
+
+@quotation Warning
+@command{rpm} assumes ownership of any files contained in the pack,
+which means it will remove @file{/gnu/store} upon uninstalling a
+Guix-generated RPM package, unless the RPM package was installed with
+the @option{--prefix} option of the @command{rpm} command.  It is unwise
+to install Guix-produced @samp{.rpm} packages on a system where
+@file{/gnu/store} is shared by other software, such as a Guix
+installation or other, non-rpm packs.
 @end quotation
 
 @end table
@@ -7514,7 +7608,7 @@ That derivation is stored in a @file{.drv} file under @file{/gnu/store}.
 The build actions it prescribes may then be realized by using the
 @code{build-derivations} procedure (@pxref{The Store}).
 
-@deffn {Scheme Procedure} package-derivation @var{store} @var{package} [@var{system}]
+@defun package-derivation store package [system]
 Return the @code{<derivation>} object of @var{package} for @var{system}
 (@pxref{Derivations}).
 
@@ -7523,22 +7617,21 @@ must be a string denoting the target system type---e.g.,
 @code{"x86_64-linux"} for an x86_64 Linux-based GNU system.  @var{store}
 must be a connection to the daemon, which operates on the store
 (@pxref{The Store}).
-@end deffn
+@end defun
 
 @noindent
 @cindex cross-compilation
 Similarly, it is possible to compute a derivation that cross-builds a
 package for some other system:
 
-@deffn {Scheme Procedure} package-cross-derivation @var{store} @
-            @var{package} @var{target} [@var{system}]
+@defun package-cross-derivation store package target [system]
 Return the @code{<derivation>} object of @var{package} cross-built from
 @var{system} to @var{target}.
 
 @var{target} must be a valid GNU triplet denoting the target hardware
 and operating system, such as @code{"aarch64-linux-gnu"}
 (@pxref{Specifying Target Triplets,,, autoconf, Autoconf}).
-@end deffn
+@end defun
 
 Once you have package definitions, you can easily define @emph{variants}
 of those packages.  @xref{Defining Package Variants}, for more on that.
@@ -7724,7 +7817,7 @@ automatically corrected.
 @end table
 @end deftp
 
-@deffn {Scheme Syntax} this-package
+@defmac this-package
 When used in the @emph{lexical scope} of a package field definition, this
 identifier resolves to the package being defined.
 
@@ -7744,15 +7837,15 @@ cross-compiling:
 @end lisp
 
 It is an error to refer to @code{this-package} outside a package definition.
-@end deffn
+@end defmac
 
 The following helper procedures are provided to help deal with package
 inputs.
 
-@deffn {Scheme Procedure} lookup-package-input @var{package} @var{name}
-@deffnx {Scheme Procedure} lookup-package-native-input @var{package} @var{name}
-@deffnx {Scheme Procedure} lookup-package-propagated-input @var{package} @var{name}
-@deffnx {Scheme Procedure} lookup-package-direct-input @var{package} @var{name}
+@defun lookup-package-input package name
+@defunx lookup-package-native-input package name
+@defunx lookup-package-propagated-input package name
+@defunx lookup-package-direct-input package name
 Look up @var{name} among @var{package}'s inputs (or native, propagated,
 or direct inputs).  Return it if found, @code{#f} otherwise.
 
@@ -7768,7 +7861,7 @@ use it:
 
 In this example we obtain the @code{gmp} package that is among the
 direct inputs of @code{coreutils}.
-@end deffn
+@end defun
 
 @cindex development inputs, of a package
 @cindex implicit inputs, of a package
@@ -7777,8 +7870,7 @@ Sometimes you will want to obtain the list of inputs needed to
 package is compiled.  This is what the @code{package-development-inputs}
 procedure returns.
 
-@deffn {Scheme Procedure} package-development-inputs @var{package} @
-   [@var{system}] [#:target #f]
+@defun package-development-inputs package [system] [#:target #f]
 Return the list of inputs required by @var{package} for development
 purposes on @var{system}.  When @var{target} is true, return the inputs
 needed to cross-compile @var{package} from @var{system} to
@@ -7809,7 +7901,7 @@ because @code{hello} has zero explicit dependencies.  Conversely,
 gzip, GCC, libc, Bash, and more.  To visualize it, @command{guix graph
 hello} would show you explicit inputs, whereas @command{guix graph -t
 bag hello} would include implicit inputs (@pxref{Invoking guix graph}).
-@end deffn
+@end defun
 
 Because packages are regular Scheme objects that capture a complete
 dependency graph and associated build procedures, it is often useful to
@@ -7817,7 +7909,7 @@ write procedures that take a package and return a modified version
 thereof according to some parameters.  Below are a few examples.
 
 @cindex tool chain, choosing a package's tool chain
-@deffn {Scheme Procedure} package-with-c-toolchain @var{package} @var{toolchain}
+@defun package-with-c-toolchain package toolchain
 Return a variant of @var{package} that uses @var{toolchain} instead of
 the default GNU C/C++ toolchain.  @var{toolchain} must be a list of
 inputs (label/package tuples) providing equivalent functionality, such
@@ -7838,7 +7930,7 @@ fields and is instead pulled in by the build system.  Consequently, this
 procedure works by changing the build system of @var{package} so that it
 pulls in @var{toolchain} instead of the defaults.  @ref{Build Systems},
 for more on build systems.
-@end deffn
+@end defun
 
 @node origin Reference
 @subsection @code{origin} Reference
@@ -7955,8 +8047,7 @@ retrieved is determined by its @code{method} field.  The @code{(guix
 download)} module provides the most common method, @code{url-fetch},
 described below.
 
-@deffn {Scheme Procedure} url-fetch @var{url} @var{hash-algo} @var{hash} @
-           [name] [#:executable? #f]
+@defun url-fetch url hash-algo hash [name] [#:executable? #f]
 Return a fixed-output derivation that fetches data from @var{url} (a
 string, or a list of strings denoting alternate URLs), which is expected
 to have hash @var{hash} of type @var{hash-algo} (a symbol).  By default,
@@ -7969,19 +8060,19 @@ interpreted as the name of a mirror scheme, taken from @file{%mirror-file}.
 
 Alternatively, when URL starts with @code{file://}, return the
 corresponding file name in the store.
-@end deffn
+@end defun
 
 Likewise, the @code{(guix git-download)} module defines the
 @code{git-fetch} origin method, which fetches data from a Git version
 control repository, and the @code{git-reference} data type to describe
 the repository and revision to fetch.
 
-@deffn {Scheme Procedure} git-fetch @var{ref} @var{hash-algo} @var{hash}
+@defun git-fetch ref hash-algo hash
 Return a fixed-output derivation that fetches @var{ref}, a
 @code{<git-reference>} object.  The output is expected to have recursive
 hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
 the file name, or a generic name if @code{#f}.
-@end deffn
+@end defun
 
 @deftp {Data Type} git-reference
 This data type represents a Git reference for @code{git-fetch} to
@@ -8024,13 +8115,12 @@ For Mercurial repositories, the module @code{(guix hg-download)} defines
 the @code{hg-fetch} origin method and @code{hg-reference} data type for
 support of the Mercurial version control system.
 
-@deffn {Scheme Procedure} hg-fetch @var{ref} @var{hash-algo} @var{hash} @
-           [name]
+@defun hg-fetch ref hash-algo hash [name]
 Return a fixed-output derivation that fetches @var{ref}, a
 @code{<hg-reference>} object.  The output is expected to have recursive
 hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
 the file name, or a generic name if @code{#false}.
-@end deffn
+@end defun
 
 @node Defining Package Variants
 @section Defining Package Variants
@@ -8106,7 +8196,7 @@ from the @code{inputs} field of @code{gdb}.  The @code{modify-inputs}
 macro is a helper that can prove useful anytime you want to remove, add,
 or replace package inputs.
 
-@deffn {Scheme Syntax} modify-inputs @var{inputs} @var{clauses}
+@defmac modify-inputs inputs clauses
 Modify the given package inputs, as returned by @code{package-inputs} & co.,
 according to the given clauses.  Each clause must have one of the
 following forms:
@@ -8141,7 +8231,7 @@ The example below replaces the @code{guile} package from the inputs of
 
 The last type of clause is @code{append}, to add inputs at the back of
 the list.
-@end deffn
+@end defmac
 
 In some cases, you may find it useful to write functions
 (``procedures'', in Scheme parlance) that return a package based on some
@@ -8181,7 +8271,7 @@ These are pretty simple package variants.  As a convenience, the
 that directly maps to the more sophisticated package transformation
 options (@pxref{Package Transformation Options}):
 
-@deffn {Scheme Procedure} options->transformation @var{opts}
+@defun options->transformation opts
 Return a procedure that, when passed an object to build (package,
 derivation, etc.), applies the transformations specified by @var{opts} and returns
 the resulting objects.  @var{opts} must be a list of symbol/string pairs such as:
@@ -8193,7 +8283,7 @@ the resulting objects.  @var{opts} must be a list of symbol/string pairs such as
 
 Each symbol names a transformation and the corresponding string is an argument
 to that transformation.
-@end deffn
+@end defun
 
 For instance, a manifest equivalent to this command:
 
@@ -8232,8 +8322,7 @@ Dependency graph rewriting, for the purposes of swapping packages in the
 graph, is what the @code{package-input-rewriting} procedure in
 @code{(guix packages)} implements.
 
-@deffn {Scheme Procedure} package-input-rewriting @var{replacements} @
-           [@var{rewrite-name}] [#:deep? #t]
+@defun package-input-rewriting replacements [rewrite-name] [#:deep? #t]
 Return a procedure that, when passed a package, replaces its direct and
 indirect dependencies, including implicit inputs when @var{deep?} is
 true, according to @var{replacements}.  @var{replacements} is a list of
@@ -8242,7 +8331,7 @@ and the second one is the replacement.
 
 Optionally, @var{rewrite-name} is a one-argument procedure that takes
 the name of a package and returns its new name after rewrite.
-@end deffn
+@end defun
 
 @noindent
 Consider this example:
@@ -8270,10 +8359,13 @@ be replaced by name rather than by identity.
 @deffn {Scheme Procedure} package-input-rewriting/spec @var{replacements} [#:deep? #t]
 Return a procedure that, given a package, applies the given
 @var{replacements} to all the package graph, including implicit inputs
-unless @var{deep?} is false.  @var{replacements} is a list of
-spec/procedures pair; each spec is a package specification such as
-@code{"gcc"} or @code{"guile@@2"}, and each procedure takes a matching
-package and returns a replacement for that package.
+unless @var{deep?} is false.
+
+@var{replacements} is a list of spec/procedures pair; each spec is a
+package specification such as @code{"gcc"} or @code{"guile@@2"}, and
+each procedure takes a matching package and returns a replacement for
+that package.  Matching packages that have the @code{hidden?} property
+set are not replaced.
 @end deffn
 
 The example above could be rewritten this way:
@@ -8292,12 +8384,12 @@ A more generic procedure to rewrite a package dependency graph is
 @code{package-mapping}: it supports arbitrary changes to nodes in the
 graph.
 
-@deffn {Scheme Procedure} package-mapping @var{proc} [@var{cut?}] [#:deep? #f]
+@defun package-mapping proc [cut?] [#:deep? #f]
 Return a procedure that, given a package, applies @var{proc} to all the packages
 depended on and returns the resulting package.  The procedure stops recursion
 when @var{cut?} returns true for a given package.  When @var{deep?} is true, @var{proc} is
 applied to implicit inputs as well.
-@end deffn
+@end defun
 
 @node Writing Manifests
 @section Writing Manifests
@@ -8502,15 +8594,14 @@ related to a manifest entry coming from a @code{dependencies} field.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} concatenate-manifests @var{lst}
+@defun concatenate-manifests lst
 Concatenate the manifests listed in @var{lst} and return the resulting
 manifest.
-@end deffn
+@end defun
 
 @c TODO: <manifest-pattern>, manifest-lookup, manifest-remove, etc.
 
-@deffn {Scheme Procedure} package->manifest-entry @var{package} @
-  [@var{output}] [#:properties]
+@defun package->manifest-entry package [output] [#:properties]
 Return a manifest entry for the @var{output} of package @var{package},
 where @var{output} defaults to @code{"out"}, and with the given
 @var{properties}.  By default @var{properties} is the empty list or, if
@@ -8528,9 +8619,9 @@ output and the @code{send-email} output of the @code{git} package:
 (manifest (list (package->manifest-entry git)
                 (package->manifest-entry git "send-email")))
 @end lisp
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} packages->manifest @var{packages}
+@defun packages->manifest packages
 Return a list of manifest entries, one for each item listed in
 @var{packages}.  Elements of @var{packages} can be either package
 objects or package/string tuples denoting a specific output of a
@@ -8544,11 +8635,10 @@ concisely:
 
 (packages->manifest (list git `(,git "send-email")))
 @end lisp
-@end deffn
+@end defun
 
 @anchor{package-development-manifest}
-@deffn {Scheme Procedure} package->development-manifest @var{package} @
-  [@var{system}] [#:target]
+@defun package->development-manifest package [system] [#:target]
 Return a manifest for the @dfn{development inputs} of @var{package} for
 @var{system}, optionally when cross-compiling to @var{target}.
 Development inputs include both explicit and implicit inputs of
@@ -8576,7 +8666,7 @@ In this example, the development manifest that
 (GCC), the many supporting libraries (Boost, GLib, GTK, etc.), and a
 couple of additional development tools---these are the dependencies
 @command{guix show inkscape} lists.
-@end deffn
+@end defun
 
 @c TODO: Move (gnu packages) interface to a section of its own.
 
@@ -8584,7 +8674,7 @@ Last, the @code{(gnu packages)} module provides higher-level facilities
 to build manifests.  In particular, it lets you look up packages by
 name---see below.
 
-@deffn {Scheme Procedure} specifications->manifest @var{specs}
+@defun specifications->manifest specs
 Given @var{specs}, a list of specifications such as @code{"emacs@@25.2"}
 or @code{"guile:debug"}, return a manifest.  Specs have the format that
 command-line tools such as @command{guix install} and @command{guix
@@ -8601,7 +8691,7 @@ Notice that we do not need to worry about @code{use-modules}, importing
 the right set of modules, and referring to the right variables.
 Instead, we directly refer to packages in the same way as on the command
 line, which can often be more convenient.
-@end deffn
+@end defun
 
 @c TODO: specifications->package, etc.
 
@@ -9756,6 +9846,25 @@ be specified with the @code{#:node} parameter which defaults to
 @code{node}.
 @end defvar
 
+@defvar tree-sitter-build-system
+
+This variable is exported by @code{(guix build-system tree-sitter)}.  It
+implements procedures to compile grammars for the
+@url{https://tree-sitter.github.io/tree-sitter/, Tree-sitter} parsing
+library.  It essentially runs @code{tree-sitter generate} to translate
+@code{grammar.js} grammars to JSON and then to C.  Which it then
+compiles to native code.
+
+Tree-sitter packages may support multiple grammars, so this build system
+supports a @code{#:grammar-directories} keyword to specify a list of
+locations where a @code{grammar.js} file may be found.
+
+Grammars sometimes depend on each other, such as C++ depending on C and
+TypeScript depending on JavaScript.  You may use inputs to declare such
+dependencies.
+
+@end defvar
+
 Lastly, for packages that do not need anything as sophisticated, a
 ``trivial'' build system is provided.  It is trivial in the sense that
 it provides basically no support: it does not pull any implicit inputs,
@@ -10034,54 +10143,54 @@ procedures provided by @code{(guix build utils)}.
 
 This section documents procedures that deal with store file names.
 
-@deffn {Scheme Procedure} %store-directory
+@defun %store-directory
 Return the directory name of the store.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} store-file-name? @var{file}
+@defun store-file-name? file
 Return true if @var{file} is in the store.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} strip-store-file-name @var{file}
+@defun strip-store-file-name file
 Strip the @file{/gnu/store} and hash from @var{file}, a store file name.
 The result is typically a @code{"@var{package}-@var{version}"} string.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} package-name->name+version @var{name}
+@defun package-name->name+version name
 Given @var{name}, a package name like @code{"foo-0.9.1b"}, return two
 values: @code{"foo"} and @code{"0.9.1b"}.  When the version part is
 unavailable, @var{name} and @code{#f} are returned.  The first hyphen
 followed by a digit is considered to introduce the version part.
-@end deffn
+@end defun
 
 @subsection File Types
 
 The procedures below deal with files and file types.
 
-@deffn {Scheme Procedure} directory-exists? @var{dir}
+@defun directory-exists? dir
 Return @code{#t} if @var{dir} exists and is a directory.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} executable-file? @var{file}
+@defun executable-file? file
 Return @code{#t} if @var{file} exists and is executable.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} symbolic-link? @var{file}
+@defun symbolic-link? file
 Return @code{#t} if @var{file} is a symbolic link (aka. a ``symlink'').
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} elf-file? @var{file}
-@deffnx {Scheme Procedure} ar-file? @var{file}
-@deffnx {Scheme Procedure} gzip-file? @var{file}
+@defun elf-file? file
+@defunx ar-file? file
+@defunx gzip-file? file
 Return @code{#t} if @var{file} is, respectively, an ELF file, an
 @code{ar} archive (such as a @file{.a} static library), or a gzip file.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} reset-gzip-timestamp @var{file} [#:keep-mtime? #t]
+@defun reset-gzip-timestamp file [#:keep-mtime? #t]
 If @var{file} is a gzip file, reset its embedded timestamp (as with
 @command{gzip --no-name}) and return true.  Otherwise return @code{#f}.
 When @var{keep-mtime?} is true, preserve @var{file}'s modification time.
-@end deffn
+@end defun
 
 @subsection File Manipulation
 
@@ -10091,7 +10200,7 @@ such as @command{mkdir -p}, @command{cp -r}, @command{rm -r}, and
 @command{sed}.  They complement Guile's extensive, but low-level, file
 system interface (@pxref{POSIX,,, guile, GNU Guile Reference Manual}).
 
-@deffn {Scheme Syntax} with-directory-excursion @var{directory} @var{body}@dots{}
+@defmac with-directory-excursion directory body @dots{}
 Run @var{body} with @var{directory} as the process's current directory.
 
 Essentially, this macro changes the current directory to @var{directory}
@@ -10100,22 +10209,22 @@ guile, GNU Guile Reference Manual}).  It changes back to the initial
 directory when the dynamic extent of @var{body} is left, be it @i{via}
 normal procedure return or @i{via} a non-local exit such as an
 exception.
-@end deffn
+@end defmac
 
-@deffn {Scheme Procedure} mkdir-p @var{dir}
+@defun mkdir-p dir
 Create directory @var{dir} and all its ancestors.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} install-file @var{file} @var{directory}
+@defun install-file file directory
 Create @var{directory} if it does not exist and copy @var{file} in there
 under the same name.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} make-file-writable @var{file}
+@defun make-file-writable file
 Make @var{file} writable for its owner.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} copy-recursively @var{source} @var{destination} @
+@defun copy-recursively source destination @
   [#:log (current-output-port)] [#:follow-symlinks? #f] @
   [#:copy-file copy-file] [#:keep-mtime? #f] [#:keep-permissions? #t]
 Copy @var{source} directory to @var{destination}.  Follow symlinks if
@@ -10124,17 +10233,16 @@ Copy @var{source} directory to @var{destination}.  Follow symlinks if
 keep the modification time of the files in @var{source} on those of
 @var{destination}.  When @var{keep-permissions?} is true, preserve file
 permissions.  Write verbose output to the @var{log} port.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} delete-file-recursively @var{dir} @
-  [#:follow-mounts? #f]
+@defun delete-file-recursively dir [#:follow-mounts? #f]
 Delete @var{dir} recursively, like @command{rm -rf}, without following
 symlinks.  Don't follow mount points either, unless @var{follow-mounts?}
 is true.  Report but ignore errors.
-@end deffn
+@end defun
 
-@deffn {Scheme Syntax} substitute* @var{file} @
-  ((@var{regexp} @var{match-var}@dots{}) @var{body}@dots{}) @dots{}
+@defmac substitute* file @
+  ((regexp match-var@dots{}) body@dots{}) @dots{}
 Substitute @var{regexp} in @var{file} by the string returned by
 @var{body}.  @var{body} is evaluated with each @var{match-var} bound to
 the corresponding positional regexp sub-expression.  For example:
@@ -10160,19 +10268,19 @@ they are all subject to the substitutions.
 
 Be careful about using @code{$} to match the end of a line; by itself it
 won't match the terminating newline of a line.
-@end deffn
+@end defmac
 
 @subsection File Search
 
 @cindex file, searching
 This section documents procedures to search and filter files.
 
-@deffn {Scheme Procedure} file-name-predicate @var{regexp}
+@defun file-name-predicate regexp
 Return a predicate that returns true when passed a file name whose base
 name matches @var{regexp}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} find-files @var{dir} [@var{pred}] @
+@defun find-files dir [pred] @
   [#:stat lstat] [#:directories? #f] [#:fail-on-error? #f]
 Return the lexicographically sorted list of files under @var{dir} for
 which @var{pred} returns true.  @var{pred} is passed two arguments: the
@@ -10183,7 +10291,7 @@ case it is equivalent to @code{(file-name-predicate @var{pred})}.
 that symlinks are not followed.  If @var{directories?} is true, then
 directories will also be included.  If @var{fail-on-error?} is true,
 raise an exception upon error.
-@end deffn
+@end defun
 
 Here are a few examples where we assume that the current directory is
 the root of the Guix source tree:
@@ -10202,13 +10310,13 @@ the root of the Guix source tree:
 @result{} ("./libformat.a" "./libstore.a" @dots{})
 @end lisp
 
-@deffn {Scheme Procedure} which @var{program}
+@defun which program
 Return the complete file name for @var{program} as found in
 @code{$PATH}, or @code{#f} if @var{program} could not be found.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} search-input-file @var{inputs} @var{name}
-@deffnx {Scheme Procedure} search-input-directory @var{inputs} @var{name}
+@defun search-input-file inputs name
+@defunx search-input-directory inputs name
 Return the complete file name for @var{name} as found in @var{inputs};
 @code{search-input-file} searches for a regular file and
 @code{search-input-directory} searches for a directory.  If @var{name}
@@ -10217,7 +10325,7 @@ could not be found, an exception is raised.
 Here, @var{inputs} must be an association list like @code{inputs} and
 @code{native-inputs} as available to build phases (@pxref{Build
 Phases}).
-@end deffn
+@end defun
 
 Here is a (simplified) example of how @code{search-input-file} is used
 in a build phase of the @code{wireguard-tools} package:
@@ -10240,7 +10348,7 @@ You'll find handy procedures to spawn processes in this module,
 essentially convenient wrappers around Guile's @code{system*}
 (@pxref{Processes, @code{system*},, guile, GNU Guile Reference Manual}).
 
-@deffn {Scheme Procedure} invoke @var{program} @var{args}@dots{}
+@defun invoke program args@dots{}
 Invoke @var{program} with the given @var{args}.  Raise an
 @code{&invoke-error} exception if the exit code is non-zero; otherwise
 return @code{#t}.
@@ -10248,21 +10356,21 @@ return @code{#t}.
 The advantage compared to @code{system*} is that you do not need to
 check the return value.  This reduces boilerplate in shell-script-like
 snippets for instance in package build phases.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} invoke-error? @var{c}
+@defun invoke-error? c
 Return true if @var{c} is an @code{&invoke-error} condition.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} invoke-error-program @var{c}
-@deffnx {Scheme Procedure} invoke-error-arguments @var{c}
-@deffnx {Scheme Procedure} invoke-error-exit-status @var{c}
-@deffnx {Scheme Procedure} invoke-error-term-signal @var{c}
-@deffnx {Scheme Procedure} invoke-error-stop-signal @var{c}
+@defun invoke-error-program c
+@defunx invoke-error-arguments c
+@defunx invoke-error-exit-status c
+@defunx invoke-error-term-signal c
+@defunx invoke-error-stop-signal c
 Access specific fields of @var{c}, an @code{&invoke-error} condition.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} report-invoke-error @var{c} [@var{port}]
+@defun report-invoke-error c [port]
 Report to @var{port} (by default the current error port) about @var{c},
 an @code{&invoke-error} condition, in a human-friendly way.
 
@@ -10278,9 +10386,9 @@ Typical usage would look like this:
 
 @print{} command "date" "--imaginary-option" failed with status 1
 @end lisp
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} invoke/quiet @var{program} @var{args}@dots{}
+@defun invoke/quiet program args@dots{}
 Invoke @var{program} with @var{args} and capture @var{program}'s
 standard output and standard error.  If @var{program} succeeds, print
 nothing and return the unspecified value; otherwise, raise a
@@ -10304,7 +10412,7 @@ Here's an example:
     date: unrecognized option '--imaginary-option'
     Try 'date --help' for more information.
 @end lisp
-@end deffn
+@end defun
 
 @subsection Build Phases
 
@@ -10321,7 +10429,7 @@ manipulate alists.  The @code{(guix build utils)} module complements
 those with tools written with build phases in mind.
 
 @cindex build phases, modifying
-@deffn {Scheme Syntax} modify-phases @var{phases} @var{clause}@dots{}
+@defmac modify-phases phases clause@dots{}
 Modify @var{phases} sequentially as per each @var{clause}, which may
 have one of the following forms:
 
@@ -10334,7 +10442,7 @@ have one of the following forms:
 
 Where every @var{phase-name} above is an expression evaluating to a
 symbol, and @var{new-phase} an expression evaluating to a procedure.
-@end deffn
+@end defmac
 
 The example below is taken from the definition of the @code{grep}
 package.  It adds a phase to run after the @code{install} phase, called
@@ -10414,8 +10522,7 @@ are always found.  The wrapper would be used to set @env{PATH},
 To ease that task, the @code{(guix build utils)} module provides a
 couple of helpers to wrap commands.
 
-@deffn {Scheme Procedure} wrap-program @var{program} @
-  [#:sh @var{sh}] [#:rest @var{variables}]
+@defun wrap-program program [#:sh sh] [#:rest variables]
 Make a wrapper for @var{program}.  @var{variables} should look like this:
 
 @lisp
@@ -10447,10 +10554,9 @@ exec -a $0 location/of/.foo-real "$@@"
 If @var{program} has previously been wrapped by @code{wrap-program}, the
 wrapper is extended with definitions for @var{variables}.  If it is not,
 @var{sh} will be used as the interpreter.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} wrap-script @var{program} @
-  [#:guile @var{guile}] [#:rest @var{variables}]
+@defun wrap-script program [#:guile guile] [#:rest variables]
 Wrap the script @var{program} such that @var{variables} are set first.
 The format of @var{variables} is the same as in the @code{wrap-program}
 procedure.  This procedure differs from @code{wrap-program} in that it
@@ -10463,7 +10569,7 @@ second line.
 
 Note that this procedure can only be used once per file as Guile scripts are
 not supported.
-@end deffn
+@end defun
 
 @node Search Paths
 @section Search Paths
@@ -10652,13 +10758,12 @@ How do you turn search path specifications on one hand and a bunch of
 directories on the other hand in a set of environment variable
 definitions?  That's the job of @code{evaluate-search-paths}.
 
-@deffn {Scheme Procedure} evaluate-search-paths @var{search-paths} @
-  @var{directories} [@var{getenv}]
+@defun evaluate-search-paths search-paths directories [getenv]
 Evaluate @var{search-paths}, a list of search-path specifications, for
 @var{directories}, a list of directory names, and return a list of
 specification/value pairs.  Use @var{getenv} to determine the current
 settings and report only settings not already effective.
-@end deffn
+@end defun
 
 The @code{(guix profiles)} provides a higher-level helper procedure,
 @code{load-profile}, that sets the environment variables of a profile.
@@ -10762,7 +10867,7 @@ share any problems or suggestions you may have (@pxref{Contributing}).
 @end quotation
 @end defvr
 
-@deffn {Scheme Procedure} open-connection [@var{uri}] [#:reserve-space? #t]
+@defun open-connection [uri] [#:reserve-space? #t]
 Connect to the daemon over the Unix-domain socket at @var{uri} (a string).  When
 @var{reserve-space?} is true, instruct it to reserve a little bit of
 extra space on the file system so that the garbage collector can still
@@ -10770,11 +10875,11 @@ operate should the disk become full.  Return a server object.
 
 @var{file} defaults to @code{%default-socket-path}, which is the normal
 location given the options that were passed to @command{configure}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} close-connection @var{server}
+@defun close-connection server
 Close the connection to @var{server}.
-@end deffn
+@end defun
 
 @defvar current-build-output-port
 This variable is bound to a SRFI-39 parameter, which refers to the port
@@ -10784,8 +10889,8 @@ where build and error logs sent by the daemon should be written.
 Procedures that make RPCs all take a server object as their first
 argument.
 
-@deffn {Scheme Procedure} valid-path? @var{server} @var{path}
 @cindex invalid store items
+@defun valid-path? server path
 Return @code{#t} when @var{path} designates a valid store item and
 @code{#f} otherwise (an invalid item may exist on disk but still be
 invalid, for instance because it is the result of an aborted or failed
@@ -10793,20 +10898,19 @@ build).
 
 A @code{&store-protocol-error} condition is raised if @var{path} is not
 prefixed by the store directory (@file{/gnu/store}).
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} add-text-to-store @var{server} @var{name} @var{text} [@var{references}]
+@defun add-text-to-store server name text [references]
 Add @var{text} under file @var{name} in the store, and return its store
 path.  @var{references} is the list of store paths referred to by the
 resulting store path.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} build-derivations @var{store} @var{derivations} @
-  [@var{mode}]
+@defun build-derivations store derivations [mode]
 Build @var{derivations}, a list of @code{<derivation>} objects, @file{.drv}
 file names, or derivation/output pairs, using the specified
 @var{mode}---@code{(build-mode normal)} by default.
-@end deffn
+@end defun
 
 Note that the @code{(guix monads)} module provides a monad as well as
 monadic versions of the above procedures, with the goal of making it
@@ -10880,8 +10984,8 @@ derivations as Scheme objects, along with procedures to create and
 otherwise manipulate derivations.  The lowest-level primitive to create
 a derivation is the @code{derivation} procedure:
 
-@deffn {Scheme Procedure} derivation @var{store} @var{name} @var{builder} @
-  @var{args} [#:outputs '("out")] [#:hash #f] [#:hash-algo #f] @
+@defun derivation store name builder args @
+  [#:outputs '("out")] [#:hash #f] [#:hash-algo #f] @
   [#:recursive? #f] [#:inputs '()] [#:env-vars '()] @
   [#:system (%current-system)] [#:references-graphs #f] @
   [#:allowed-references #f] [#:disallowed-references #f] @
@@ -10926,7 +11030,7 @@ host CPU instruction set.
 
 @var{properties} must be an association list describing ``properties'' of the
 derivation.  It is kept as-is, uninterpreted, in the derivation.
-@end deffn
+@end defun
 
 @noindent
 Here's an example with a shell script as its builder, assuming
@@ -10959,8 +11063,7 @@ derivations with build code written in Scheme was achieved with
 @code{build-expression->derivation}, documented below.  This procedure
 is now deprecated in favor of the much nicer @code{gexp->derivation}.
 
-@deffn {Scheme Procedure} build-expression->derivation @var{store} @
-       @var{name} @var{exp} @
+@defun build-expression->derivation store name exp @
        [#:system (%current-system)] [#:inputs '()] @
        [#:outputs '("out")] [#:hash #f] [#:hash-algo #f] @
        [#:recursive? #f] [#:env-vars '()] [#:modules '()] @
@@ -10992,7 +11095,7 @@ See the @code{derivation} procedure for the meaning of
 @var{references-graphs}, @var{allowed-references},
 @var{disallowed-references}, @var{local-build?}, and
 @var{substitutable?}.
-@end deffn
+@end defun
 
 @noindent
 Here's an example of a single-output derivation that creates a directory
@@ -11126,16 +11229,16 @@ build a file-like object (@pxref{Using Guix Interactively}).
 The main syntactic forms to deal with monads in general are provided by
 the @code{(guix monads)} module and are described below.
 
-@deffn {Scheme Syntax} with-monad @var{monad} @var{body} ...
+@defmac with-monad monad body @dots{}
 Evaluate any @code{>>=} or @code{return} forms in @var{body} as being
 in @var{monad}.
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} return @var{val}
+@defmac return val
 Return a monadic value that encapsulates @var{val}.
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} >>= @var{mval} @var{mproc} ...
+@defmac >>= mval mproc @dots{}
 @dfn{Bind} monadic value @var{mval}, passing its ``contents'' to monadic
 procedures @var{mproc}@dots{}@footnote{This operation is commonly
 referred to as ``bind'', but that name denotes an unrelated procedure in
@@ -11154,12 +11257,10 @@ in this example:
 @result{} 4
 @result{} some-state
 @end lisp
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} mlet @var{monad} ((@var{var} @var{mval}) ...) @
-       @var{body} ...
-@deffnx {Scheme Syntax} mlet* @var{monad} ((@var{var} @var{mval}) ...) @
-       @var{body} ...
+@defmac mlet monad ((var mval) @dots{}) body @dots{}
+@defmacx mlet* monad ((var mval) @dots{}) body @dots{}
 Bind the variables @var{var} to the monadic values @var{mval} in
 @var{body}, which is a sequence of expressions.  As with the bind
 operator, this can be thought of as ``unpacking'' the raw, non-monadic
@@ -11173,9 +11274,9 @@ expression, and its result will become the result of the @code{mlet} or
 
 @code{mlet*} is to @code{mlet} what @code{let*} is to @code{let}
 (@pxref{Local Bindings,,, guile, GNU Guile Reference Manual}).
-@end deffn
+@end defmac
 
-@deffn {Scheme System} mbegin @var{monad} @var{mexp} ...
+@defmac mbegin monad mexp @dots{}
 Bind @var{mexp} and the following monadic expressions in sequence,
 returning the result of the last expression.  Every expression in the
 sequence must be a monadic expression.
@@ -11183,21 +11284,21 @@ sequence must be a monadic expression.
 This is akin to @code{mlet}, except that the return values of the
 monadic expressions are ignored.  In that sense, it is analogous to
 @code{begin}, but applied to monadic expressions.
-@end deffn
+@end defmac
 
-@deffn {Scheme System} mwhen @var{condition} @var{mexp0} @var{mexp*} ...
+@defmac mwhen condition mexp0 mexp* @dots{}
 When @var{condition} is true, evaluate the sequence of monadic
 expressions @var{mexp0}..@var{mexp*} as in an @code{mbegin}.  When
 @var{condition} is false, return @code{*unspecified*} in the current
 monad.  Every expression in the sequence must be a monadic expression.
-@end deffn
+@end defmac
 
-@deffn {Scheme System} munless @var{condition} @var{mexp0} @var{mexp*} ...
+@defmac munless condition mexp0 mexp* @dots{}
 When @var{condition} is false, evaluate the sequence of monadic
 expressions @var{mexp0}..@var{mexp*} as in an @code{mbegin}.  When
 @var{condition} is true, return @code{*unspecified*} in the current
 monad.  Every expression in the sequence must be a monadic expression.
-@end deffn
+@end defmac
 
 @cindex state monad
 The @code{(guix monads)} module provides the @dfn{state monad}, which
@@ -11247,10 +11348,10 @@ Pop a value from the current state and return it as a monadic value.
 The state is assumed to be a list.
 @end deffn
 
-@deffn {Scheme Procedure} run-with-state @var{mval} [@var{state}]
+@defun run-with-state mval [state]
 Run monadic value @var{mval} starting with @var{state} as the initial
 state.  Return two values: the resulting value, and the resulting state.
-@end deffn
+@end defun
 
 The main interface to the store monad, provided by the @code{(guix
 store)} module, is as follows.
@@ -11263,10 +11364,11 @@ effect is needed, a value of the store monad must be ``evaluated'' by
 passing it to the @code{run-with-store} procedure (see below).
 @end defvar
 
-@deffn {Scheme Procedure} run-with-store @var{store} @var{mval} [#:guile-for-build] [#:system (%current-system)]
+@defun run-with-store store mval @
+  [#:guile-for-build] [#:system (%current-system)]
 Run @var{mval}, a monadic value in the store monad, in @var{store}, an
 open store connection.
-@end deffn
+@end defun
 
 @deffn {Monadic Procedure} text-file @var{name} @var{text} [@var{references}]
 Return as a monadic value the absolute file name in the store of the file
@@ -11517,8 +11619,8 @@ package available on the build side, here's how you would do it:
 
 The syntactic form to construct gexps is summarized below.
 
-@deffn {Scheme Syntax} #~@var{exp}
-@deffnx {Scheme Syntax} (gexp @var{exp})
+@defmac #~@var{exp}
+@defmacx (gexp @var{exp})
 Return a G-expression containing @var{exp}.  @var{exp} may contain one
 or more of the following forms:
 
@@ -11572,9 +11674,9 @@ Like the above, but refers to native builds of the objects listed in
 
 G-expressions created by @code{gexp} or @code{#~} are run-time objects
 of the @code{gexp?} type (see below).
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} with-imported-modules @var{modules} @var{body}@dots{}
+@defmac with-imported-modules modules body@dots{}
 Mark the gexps defined in @var{body}@dots{} as requiring @var{modules}
 in their execution environment.
 
@@ -11596,9 +11698,9 @@ path, and the last one is created from the given file-like object.
 This form has @emph{lexical} scope: it has an effect on the gexps
 directly defined in @var{body}@dots{}, but not on those defined, say, in
 procedures called from @var{body}@dots{}.
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} with-extensions @var{extensions} @var{body}@dots{}
+@defmac with-extensions extensions body@dots{}
 Mark the gexps defined in @var{body}@dots{} as requiring
 @var{extensions} in their build and execution environment.
 @var{extensions} is typically a list of package objects such as those
@@ -11608,11 +11710,11 @@ Concretely, the packages listed in @var{extensions} are added to the
 load path while compiling imported modules in @var{body}@dots{}; they
 are also added to the load path of the gexp returned by
 @var{body}@dots{}.
-@end deffn
+@end defmac
 
-@deffn {Scheme Procedure} gexp? @var{obj}
+@defun gexp? obj
 Return @code{#t} if @var{obj} is a G-expression.
-@end deffn
+@end defun
 
 G-expressions are meant to be written to disk, either as code building
 some derivation, or as plain files in the store.  The monadic procedures
@@ -11699,8 +11801,7 @@ does not have any effect on what the G-expression does.
 @code{plain-file} can be used similarly; it differs in that the file
 content is directly passed as a string.
 
-@deffn {Scheme Procedure} local-file @var{file} [@var{name}] @
-   [#:recursive? #f] [#:select? (const #t)]
+@defun local-file file [name] [#:recursive? #f] [#:select? (const #t)]
 Return an object representing local file @var{file} to add to the store;
 this object can be used in a gexp.  If @var{file} is a literal string
 denoting a relative file name, it is looked up relative to the source
@@ -11720,24 +11821,23 @@ entries for which @var{select?} does not return true.
 
 This is the declarative counterpart of the @code{interned-file} monadic
 procedure (@pxref{The Store Monad, @code{interned-file}}).
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} plain-file @var{name} @var{content}
+@defun plain-file name content
 Return an object representing a text file called @var{name} with the given
 @var{content} (a string or a bytevector) to be added to the store.
 
 This is the declarative counterpart of @code{text-file}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} computed-file @var{name} @var{gexp} @
-  [#:local-build? #t] [#:options '()]
+@defun computed-file name gexp [#:local-build? #t] [#:options '()]
 Return an object representing the store item @var{name}, a file or
 directory computed by @var{gexp}.  When @var{local-build?} is true (the
 default), the derivation is built locally.  @var{options} is a list of
 additional arguments to pass to @code{gexp->derivation}.
 
 This is the declarative counterpart of @code{gexp->derivation}.
-@end deffn
+@end defun
 
 @deffn {Monadic Procedure} gexp->script @var{name} @var{exp} @
   [#:guile (default-guile)] [#:module-path %load-path] @
@@ -11768,14 +11868,13 @@ executable file @file{/gnu/store/@dots{}-list-files} along these lines:
 @end example
 @end deffn
 
-@deffn {Scheme Procedure} program-file @var{name} @var{exp} @
-          [#:guile #f] [#:module-path %load-path]
+@defun program-file name exp [#:guile #f] [#:module-path %load-path]
 Return an object representing the executable store item @var{name} that
 runs @var{gexp}.  @var{guile} is the Guile package used to execute that
 script.  Imported modules of @var{gexp} are looked up in @var{module-path}.
 
 This is the declarative counterpart of @code{gexp->script}.
-@end deffn
+@end defun
 
 @deffn {Monadic Procedure} gexp->file @var{name} @var{exp} @
             [#:set-load-path? #t] [#:module-path %load-path] @
@@ -11794,13 +11893,12 @@ The resulting file holds references to all the dependencies of @var{exp}
 or a subset thereof.
 @end deffn
 
-@deffn {Scheme Procedure} scheme-file @var{name} @var{exp} @
-          [#:splice? #f] [#:set-load-path? #t]
+@defun scheme-file name exp [#:splice? #f] [#:set-load-path? #t]
 Return an object representing the Scheme file @var{name} that contains
 @var{exp}.
 
 This is the declarative counterpart of @code{gexp->file}.
-@end deffn
+@end defun
 
 @deffn {Monadic Procedure} text-file* @var{name} @var{text} @dots{}
 Return as a monadic value a derivation that builds a text file
@@ -11828,7 +11926,7 @@ will reference @var{coreutils}, @var{grep}, and @var{sed}, thereby
 preventing them from being garbage-collected during its lifetime.
 @end deffn
 
-@deffn {Scheme Procedure} mixed-text-file @var{name} @var{text} @dots{}
+@defun mixed-text-file name text @dots{}
 Return an object representing store file @var{name} containing
 @var{text}.  @var{text} is a sequence of strings and file-like objects,
 as in:
@@ -11839,9 +11937,9 @@ as in:
 @end lisp
 
 This is the declarative counterpart of @code{text-file*}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} file-union @var{name} @var{files}
+@defun file-union name files
 Return a @code{<computed-file>} that builds a directory containing all of @var{files}.
 Each item in @var{files} must be a two-element list where the first element is the
 file name to use in the new directory, and the second element is a gexp
@@ -11856,9 +11954,9 @@ denoting the target file.  Here's an example:
 @end lisp
 
 This yields an @code{etc} directory containing these two files.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} directory-union @var{name} @var{things}
+@defun directory-union name things
 Return a directory that is the union of @var{things}, where @var{things} is a list of
 file-like objects denoting directories.  For example:
 
@@ -11867,9 +11965,9 @@ file-like objects denoting directories.  For example:
 @end lisp
 
 yields a directory that is the union of the @code{guile} and @code{emacs} packages.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} file-append @var{obj} @var{suffix} @dots{}
+@defun file-append obj suffix @dots{}
 Return a file-like object that expands to the concatenation of @var{obj}
 and @var{suffix}, where @var{obj} is a lowerable object and each
 @var{suffix} is a string.
@@ -11894,10 +11992,10 @@ There is one difference though: in the @code{file-append} case, the
 resulting script contains the absolute file name as a string, whereas in
 the second case, the resulting script contains a @code{(string-append
 @dots{})} expression to construct the file name @emph{at run time}.
-@end deffn
+@end defun
 
-@deffn {Scheme Syntax} let-system @var{system} @var{body}@dots{}
-@deffnx {Scheme Syntax} let-system (@var{system} @var{target}) @var{body}@dots{}
+@defmac let-system system body@dots{}
+@defmacx let-system (system target) body@dots{}
 Bind @var{system} to the currently targeted system---e.g.,
 @code{"x86_64-linux"}---within @var{body}.
 
@@ -11920,9 +12018,9 @@ spliced into the gexp depends on the target system, as in this example:
               (error "dunno!"))))
    "-net" "user" #$image)
 @end lisp
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} with-parameters ((@var{parameter} @var{value}) @dots{}) @var{exp}
+@defmac with-parameters ((parameter value) @dots{}) exp
 This macro is similar to the @code{parameterize} form for
 dynamically-bound @dfn{parameters} (@pxref{Parameters,,, guile, GNU
 Guile Reference Manual}).  The key difference is that it takes effect
@@ -11939,7 +12037,7 @@ for a given object:
 
 The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
-@end deffn
+@end defmac
 
 
 Of course, in addition to gexps embedded in ``host'' code, there are
@@ -11961,7 +12059,7 @@ corresponding to @var{obj} for @var{system}, cross-compiling for
 has an associated gexp compiler, such as a @code{<package>}.
 @end deffn
 
-@deffn {Procedure} gexp->approximate-sexp @var{gexp}
+@defun gexp->approximate-sexp gexp
 Sometimes, it may be useful to convert a G-exp into a S-exp.  For
 example, some linters (@pxref{Invoking guix lint}) peek into the build
 phases of a package to detect potential problems.  This conversion can
@@ -11969,7 +12067,7 @@ be achieved with this procedure.  However, some information can be lost
 in the process.  More specifically, lowerable objects will be silently
 replaced with some arbitrary object -- currently the list
 @code{(*approximate*)}, but this may change.
-@end deffn
+@end defun
 
 @node Invoking guix repl
 @section Invoking @command{guix repl}
@@ -12584,18 +12682,18 @@ or @code{guile@@1.8}.
 
 For instance, the following command builds Guix, but replaces its
 dependency on the current stable version of Guile with a dependency on
-the legacy version of Guile, @code{guile@@2.0}:
+the legacy version of Guile, @code{guile@@2.2}:
 
 @example
-guix build --with-input=guile=guile@@2.0 guix
+guix build --with-input=guile=guile@@2.2 guix
 @end example
 
 This is a recursive, deep replacement.  So in this example, both
 @code{guix} and its dependency @code{guile-json} (which also depends on
-@code{guile}) get rebuilt against @code{guile@@2.0}.
+@code{guile}) get rebuilt against @code{guile@@2.2}.
 
-This is implemented using the @code{package-input-rewriting} Scheme
-procedure (@pxref{Defining Packages, @code{package-input-rewriting}}).
+This is implemented using the @code{package-input-rewriting/spec} Scheme
+procedure (@pxref{Defining Packages, @code{package-input-rewriting/spec}}).
 
 @item --with-graft=@var{package}=@var{replacement}
 This is similar to @option{--with-input} but with an important difference:
@@ -14246,6 +14344,7 @@ for compatibility with an upgraded @code{flex} package.
 @table @code
 
 @item --list-transitive
+@itemx --T
 List all the packages which one or more packages depend upon.
 
 @example
@@ -16481,13 +16580,6 @@ supported hardware.
 @item @code{host-name}
 The host name.
 
-@item @code{hosts-file}
-@cindex hosts file
-A file-like object (@pxref{G-Expressions, file-like objects}) for use as
-@file{/etc/hosts} (@pxref{Host Names,,, libc, The GNU C Library
-Reference Manual}).  The default is a file with entries for
-@code{localhost} and @var{host-name}.
-
 @item @code{mapped-devices} (default: @code{'()})
 A list of mapped devices.  @xref{Mapped Devices}.
 
@@ -16566,12 +16658,14 @@ details.
 @item @code{services} (default: @code{%base-services})
 A list of service objects denoting system services.  @xref{Services}.
 
+@anchor{operating-system-essential-services}
 @cindex essential services
 @item @code{essential-services} (default: ...)
 The list of ``essential services''---i.e., things like instances of
-@code{system-service-type} and @code{host-name-service-type} (@pxref{Service
-Reference}), which are derived from the operating system definition itself.
-As a user you should @emph{never} need to touch this field.
+@code{system-service-type} (@pxref{Service Reference}) and
+@code{host-name-service-type}, which are derived from the operating
+system definition itself.  As a user you should @emph{never} need to
+touch this field.
 
 @item @code{pam-services} (default: @code{(base-pam-services)})
 @cindex PAM
@@ -16595,7 +16689,7 @@ is that only @code{root} and members of the @code{wheel} group may use
 
 @end table
 
-@deffn {Scheme Syntax} this-operating-system
+@defmac this-operating-system
 When used in the @emph{lexical scope} of an operating system field definition,
 this identifier resolves to the operating system being defined.
 
@@ -16613,7 +16707,7 @@ the definition of the @code{label} field:
 
 It is an error to refer to @code{this-operating-system} outside an operating
 system definition.
-@end deffn
+@end defmac
 
 @end deftp
 
@@ -16790,7 +16884,7 @@ example for an encrypted partition (@pxref{Mapped Devices}).
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} file-system-label @var{str}
+@defun file-system-label str
 This procedure returns an opaque file system label from @var{str}, a
 string:
 
@@ -16801,7 +16895,7 @@ string:
 
 File system labels are used to refer to file systems by label rather
 than by device name.  See above for examples.
-@end deffn
+@end defun
 
 The @code{(gnu system file-systems)} exports the following useful
 variables.
@@ -16852,7 +16946,7 @@ and unmount user-space FUSE file systems.  This requires the
 The @code{(gnu system uuid)} module provides tools to deal with file
 system ``unique identifiers'' (UUIDs).
 
-@deffn {Scheme Procedure} uuid @var{str} [@var{type}]
+@defun uuid str [type]
 Return an opaque UUID (unique identifier) object of the given @var{type}
 (a symbol) by parsing @var{str} (a string):
 
@@ -16869,7 +16963,7 @@ Return an opaque UUID (unique identifier) object of the given @var{type}
 
 UUIDs are another way to unambiguously refer to file systems in
 operating system configuration.  See the examples above.
-@end deffn
+@end defun
 
 
 @node Btrfs file system
@@ -17532,14 +17626,13 @@ optional variant name, an optional keyboard model name, and a possibly empty
 list of additional options.  In most cases the layout name is all you care
 about.
 
-@deffn {Scheme Procedure} keyboard-layout @var{name} [@var{variant}] @
-                [#:model] [#:options '()]
+@defun keyboard-layout name [variant] [#:model] [#:options '()]
 Return a new keyboard layout with the given @var{name} and @var{variant}.
 
 @var{name} must be a string such as @code{"fr"}; @var{variant} must be a
 string such as @code{"bepo"} or @code{"nodeadkeys"}.  See the
 @code{xkeyboard-config} package for valid options.
-@end deffn
+@end defun
 
 Here are a few examples:
 
@@ -17903,7 +17996,7 @@ This is the service that sets up ``special files'' such as
 @file{/bin/sh}; an instance of it is part of @code{%base-services}.
 
 The value associated with @code{special-files-service-type} services
-must be a list of tuples where the first element is the ``special file''
+must be a list of two-element lists where the first element is the ``special file''
 and the second element is its target.  By default it is:
 
 @cindex @file{/bin/sh}
@@ -17931,7 +18024,7 @@ to add a special file is @i{via} the @code{extra-special-file} procedure
 (see below).
 @end defvar
 
-@deffn {Scheme Procedure} extra-special-file @var{file} @var{target}
+@defun extra-special-file file target
 Use @var{target} as the ``special file'' @var{file}.
 
 For example, adding the following lines to the @code{services} field of
@@ -17942,11 +18035,13 @@ symlink:
 (extra-special-file "/usr/bin/env"
                     (file-append coreutils "/bin/env"))
 @end lisp
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} host-name-service @var{name}
-Return a service that sets the host name to @var{name}.
-@end deffn
+@defvar host-name-service-type
+Type of the service that sets the system host name, whose value
+is a string. This service is included in @code{operating-system} by
+default (@pxref{operating-system-essential-services,@code{essential-services}}).
+@end defvar
 
 @defvar console-font-service-type
 Install the given fonts on the specified ttys (fonts are per
@@ -17965,14 +18060,72 @@ package or any valid argument to @command{setfont}, as in this example:
 @end lisp
 @end defvar
 
-@deffn {Scheme Procedure} login-service @var{config}
-Return a service to run login according to @var{config}, a
-@code{<login-configuration>} object, which specifies the message of the day,
-among other things.
-@end deffn
+@defvar hosts-service-type
+Type of the service that populates the entries for (@file{/etc/hosts}).
+This service type can be @emph{extended} by passing it a list of
+@code{host} records.
+
+The example below shows how to add two entries to @file{/etc/hosts}:
+
+@c TRANSLATORS: The domain names below SHOULD NOT be translated.
+@c They're domains reserved for use in documentation. (RFC6761 Section 6.5)
+@c The addresses used are explained in RFC3849 and RFC5737.
+@lisp
+(simple-service 'add-extra-hosts
+                hosts-service-type
+                (list (host "192.0.2.1" "example.com"
+                            '("example.net" "example.org"))
+                      (host "2001:db8::1" "example.com"
+                            '("example.net" "example.org"))))
+@end lisp
+
+@quotation Note
+@cindex @file{/etc/hosts} default entries
+By default @file{/etc/hosts} comes with the following entries:
+@example
+127.0.0.1 localhost @var{host-name}
+::1       localhost @var{host-name}
+@end example
+
+For most setups this is what you want though if you find yourself in
+the situation where you want to change the default entries, you can
+do so in @code{operating-system} via @code{modify-services}
+(@pxref{Service Reference,@code{modify-services}}).
+
+The following example shows how to unset @var{host-name} from being an
+alias of @code{localhost}.
+@lisp
+(operating-system
+  ;; @dots{}
+
+  (essential-services
+   (modify-services
+     (operating-system-default-essential-services this-operating-system)
+     (hosts-service-type config => (list
+                                     (host "127.0.0.1" "localhost")
+                                     (host "::1"       "localhost"))))))
+@end lisp
+@end quotation
+@end defvar
+
+
+@defun host @var{address} @var{canonical-name} [@var{aliases}]
+Return a new record for the host at @var{address} with the given
+@var{canonical-name} and possibly @var{aliases}.
+
+@var{address} must be a string denoting a valid IPv4 or IPv6 address, and
+@var{canonical-name} and the strings listed in @var{aliases} must be valid
+host names.
+@end defun
+
+@defvar login-service-type
+Type of the service that provides a console login service, whose value
+is a @code{<login-configuration>} object.
+@end defvar
 
 @deftp {Data Type} login-configuration
-This is the data type representing the configuration of login.
+Data type representing the configuration of login, which specifies the
+@acronym{MOTD, message of the day}, among other things.
 
 @table @asis
 
@@ -17987,18 +18140,17 @@ the 'root' account has just been created.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} mingetty-service @var{config}
-Return a service to run mingetty according to @var{config}, a
-@code{<mingetty-configuration>} object, which specifies the tty to run, among
-other things.
-@end deffn
+@defvar mingetty-service-type
+Type of the service that runs Mingetty, an implementation of the
+virtual console log-in.  The value for this service is a
+@code{<mingetty-configuration>} object.
+@end defvar
 
 @deftp {Data Type} mingetty-configuration
-This is the data type representing the configuration of Mingetty, which
-provides the default implementation of virtual console log-in.
+Data type representing the configuration of Mingetty, which specifies
+the tty to run, among other things.
 
 @table @asis
-
 @item @code{tty}
 The name of the console this Mingetty runs on---e.g., @code{"tty1"}.
 
@@ -18025,19 +18177,18 @@ The Mingetty package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} agetty-service @var{config}
-Return a service to run agetty according to @var{config}, an
-@code{<agetty-configuration>} object, which specifies the tty to run,
-among other things.
-@end deffn
+@defvar agetty-service-type
+Type of the service that runs agetty, which implements virtual and
+serial console log-in.  The value for this service is a
+@code{<agetty-configuration>} object.
+@end defvar
 
 @deftp {Data Type} agetty-configuration
-This is the data type representing the configuration of agetty, which
-implements virtual and serial console log-in.  See the @code{agetty(8)}
-man page for more information.
+Data type representing the configuration of agetty, which specifies the
+tty to run, among other things@footnote{See the @code{agetty(8)}
+man page for more information.}.
 
 @table @asis
-
 @item @code{tty}
 The name of the console this agetty runs on, as a string---e.g.,
 @code{"ttyS0"}.  This argument is optional, it will default to
@@ -18208,18 +18359,17 @@ The option can be used to provides extra shepherd requirements (for example
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} kmscon-service-type @var{config}
-Return a service to run @uref{https://www.freedesktop.org/wiki/Software/kmscon,kmscon}
-according to @var{config}, a @code{<kmscon-configuration>} object, which
-specifies the tty to run, among other things.
-@end deffn
+@defvar kmscon-service-type
+Type of the service that runs @uref{https://www.freedesktop.org/wiki/Software/kmscon,kmscon},
+which implements virtual console log-in.  The value for this service is a
+@code{<kmscon-configuration>} object.
+@end defvar
 
 @deftp {Data Type} kmscon-configuration
-This is the data type representing the configuration of Kmscon, which
-implements virtual console log-in.
+Data type representing the configuration of Kmscon, which specifies the
+tty to run, among other things.
 
 @table @asis
-
 @item @code{virtual-terminal}
 The name of the console this Kmscon runs on---e.g., @code{"tty1"}.
 
@@ -18257,20 +18407,17 @@ The Kmscon package to use.
 @end table
 @end deftp
 
-@cindex name service cache daemon
-@cindex nscd
-@deffn {Scheme Procedure} nscd-service [@var{config}] [#:glibc glibc] @
-                [#:name-services '()]
-Return a service that runs the libc name service cache daemon (nscd) with the
-given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
-Service Switch}, for an example.
+@cindex @abbr{nscd, name service cache daemon}
+@defvar nscd-service-type
+Type of the service that runs the libc @abbr{nscd, name service cache
+daemon}, whose value is a @code{<nscd-configuration>} object.
 
 For convenience, the Shepherd service for nscd provides the following actions:
 
 @table @code
 @item invalidate
-@cindex cache invalidation, nscd
 @cindex nscd, cache invalidation
+@cindex cache invalidation, nscd
 This invalidate the given cache.  For instance, running:
 
 @example
@@ -18284,17 +18431,10 @@ invalidates the host name lookup cache of nscd.
 Running @command{herd statistics nscd} displays information about nscd usage
 and caches.
 @end table
-
-@end deffn
-
-@defvar %nscd-default-configuration
-This is the default @code{<nscd-configuration>} value (see below) used
-by @code{nscd-service}.  It uses the caches defined by
-@code{%nscd-default-caches}; see below.
 @end defvar
 
 @deftp {Data Type} nscd-configuration
-This is the data type representing the name service cache daemon (nscd)
+Data type representing the @abbr{nscd, name service cache daemon}
 configuration.
 
 @table @asis
@@ -18372,11 +18512,15 @@ privacy---often the result of host name lookups is in local cache, so
 external name servers do not even need to be queried.
 @end defvar
 
-@anchor{syslog-configuration-type}
 @cindex syslog
 @cindex logging
+@defvar syslog-service-type
+Type of the service that runs the syslog daemon, whose value is a
+@code{<syslog-configuration>} object.
+@end defvar
+
 @deftp {Data Type} syslog-configuration
-This data type represents the configuration of the syslog daemon.
+Data type representing the configuration of the syslog daemon.
 
 @table @asis
 @item @code{syslogd} (default: @code{#~(string-append #$inetutils "/libexec/syslogd")})
@@ -18384,18 +18528,11 @@ The syslog daemon to use.
 
 @item @code{config-file} (default: @code{%default-syslog.conf})
 The syslog configuration file to use.
+@xref{syslogd invocation,,, inetutils, GNU Inetutils}, for more
+information on the configuration file syntax.
 
 @end table
 @end deftp
-
-@anchor{syslog-service}
-@cindex syslog
-@deffn {Scheme Procedure} syslog-service @var{config}
-Return a service that runs a syslog daemon according to @var{config}.
-
-@xref{syslogd invocation,,, inetutils, GNU Inetutils}, for more
-information on the configuration file syntax.
-@end deffn
 
 @defvar guix-service-type
 This is the type of the service that runs the build daemon,
@@ -18556,15 +18693,30 @@ A list of file-like objects or strings pointing to additional directories the bu
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} udev-service [#:udev @var{eudev} #:rules @code{'()}]
-Run @var{udev}, which populates the @file{/dev} directory dynamically.
-udev rules can be provided as a list of files through the @var{rules}
-variable.  The procedures @code{udev-rule}, @code{udev-rules-service}
-and @code{file->udev-rule} from @code{(gnu services base)} simplify the
-creation of such rule files.
-@end deffn
+@defvar udev-service-type
+Type of the service that runs udev, a service which populates the
+@file{/dev} directory dynamically, whose value is a
+@code{<udev-configuration>} object.
 
-@deffn {Scheme Procedure} udev-rule [@var{file-name} @var{contents}]
+This service type can be @emph{extended} using procedures
+@code{udev-rules-service} along with @code{file->udev-rule} or
+@code{udev-rule} which simplify the process of writing udev rules.
+@end defvar
+
+@deftp {Data Type} udev-configuration
+Data type representing the configuration of udev.
+
+@table @asis
+@item @code{udev} (default: @code{eudev}) (type: file-like)
+Package object of the udev service.
+
+@item @code{rules} (default: @var{'()}) (type: list-of-file-like)
+List of file-like objects denoting udev-rule files.
+
+@end table
+@end deftp
+
+@defun udev-rule @var{file-name} @var{contents}
 Return a udev-rule file named @var{file-name} containing the rules
 defined by the @var{contents} literal.
 
@@ -18580,18 +18732,17 @@ upon detecting a USB device with a given product identifier.
                    "ATTR@{product@}==\"Example\", "
                    "RUN+=\"/path/to/script\"")))
 @end lisp
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} udev-rules-service [@var{name} @var{rules}] @
-               [#:groups @var{groups}]
-Return a service that extends @code{udev-service-type } with @var{rules}
+@defun udev-rules-service @var{name} @var{rules} [#:groups '()]
+Return a service that extends @code{udev-service-type} with @var{rules}
 and @code{account-service-type} with @var{groups} as system groups.
 This works by creating a singleton service type
 @code{@var{name}-udev-rules}, of which the returned service is an
 instance.
 
-Here we show how it can be used to extend @code{udev-service-type} with the
-previously defined rule @code{%example-udev-rule}.
+Here we show how it can be used to extend @code{udev-service-type}
+with the previously defined rule @code{%example-udev-rule}.
 
 @lisp
 (operating-system
@@ -18600,11 +18751,11 @@ previously defined rule @code{%example-udev-rule}.
    (cons (udev-rules-service 'usb-thing %example-udev-rule)
          %desktop-services)))
 @end lisp
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} file->udev-rule [@var{file-name} @var{file}]
-Return a udev file named @var{file-name} containing the rules defined
-within @var{file}, a file-like object.
+@defun file->udev-rule @var{file-name} @var{file}
+Return a udev-rule file named @var{file-name} containing the rules
+defined within @var{file}, a file-like object.
 
 The following example showcases how we can use an existing rule file.
 
@@ -18624,7 +18775,7 @@ The following example showcases how we can use an existing rule file.
        (sha256
         (base32 "0lmmagpyb6xsq6zcr2w1cyx9qmjqmajkvrdbhjx32gqf1d9is003"))))))
 @end lisp
-@end deffn
+@end defun
 
 Additionally, Guix package definitions can be included in @var{rules} in
 order to extend the udev rules with the definitions found under their
@@ -18786,13 +18937,24 @@ seconds for the negative lookups.  @xref{Invoking guix publish,
 @end table
 @end deftp
 
-@anchor{rngd-service}
-@deffn {Scheme Procedure} rngd-service [#:rng-tools @var{rng-tools}] @
-            [#:device "/dev/hwrng"]
-Return a service that runs the @command{rngd} program from @var{rng-tools}
-to add @var{device} to the kernel's entropy pool.  The service will fail if
-@var{device} does not exist.
-@end deffn
+@defvar rngd-service-type
+Type of the service that runs rng-tools rngd, whose value is a
+@code{<rngd-configuration>} object.
+@end defvar
+
+@deftp {Data Type} rngd-configuration
+Data type representing the configuration of rngd.
+
+@table @asis
+@item @code{rng-tools} (default: @code{rng-tools}) (type: file-like)
+Package object of the rng-tools rngd.
+
+@item @code{device} (default: @var{"/dev/hwrng"}) (type: string)
+Path of the device to add to the kernel's entropy pool.  The service
+will fail if @var{device} does not exist.
+
+@end table
+@end deftp
 
 @anchor{pam-limits-service}
 @cindex session limits
@@ -19222,11 +19384,17 @@ specifications,, mcron,GNU@tie{}mcron}).
 @item @code{log?} (default: @code{#t}) (type: boolean)
 Log messages to standard output.
 
+@item @code{log-file} (default: @code{"/var/log/mcron.log"}) (type: string)
+Log file location.
+
 @item @code{log-format} (default: @code{"~1@@*~a ~a: ~a~%"}) (type: string)
 @code{(ice-9 format)} format string for log messages.  The default value
-produces messages like "@samp{@var{pid} @var{name}: @var{message}"}
+produces messages like @samp{@var{pid} @var{name}: @var{message}}
 (@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message
 is also prefixed by a timestamp by GNU Shepherd.
+
+@item @code{date-format} (type: maybe-string)
+@code{(srfi srfi-19)} format string for date.
 
 @end table
 @end deftp
@@ -19692,6 +19860,12 @@ Data type representing the configuration of NetworkManager.
 @item @code{network-manager} (default: @code{network-manager})
 The NetworkManager package to use.
 
+@item @code{shepherd-requirement} (default: @code{'(wpa-supplicant)})
+This option can be used to provide a list of symbols naming Shepherd services
+that this service will depend on, such as @code{'wpa-supplicant} or
+@code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
+networks.
+
 @item @code{dns} (default: @code{"default"})
 Processing mode for DNS, which affects how NetworkManager uses the
 @code{resolv.conf} configuration file.
@@ -19740,10 +19914,6 @@ This is the list of available plugins for virtual private networks
 (VPNs).  An example of this is the @code{network-manager-openvpn}
 package, which allows NetworkManager to manage VPNs @i{via} OpenVPN.
 
-@item @code{iwd?} (default: @code{#f})
-NetworkManager will use iwd as a backend for wireless networking if this
-option is set to @code{#t}, otherwise it will use wpa-supplicant.
-
 @end table
 @end deftp
 
@@ -19771,11 +19941,15 @@ Data Type representing the configuration of connman.
 @item @code{connman} (default: @var{connman})
 The connman package to use.
 
+@item @code{shepherd-requirement} (default: @code{()})
+This option can be used to provide a list of symbols naming Shepherd services
+that this service will depend on, such as @code{'wpa-supplicant} or
+@code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
+networks.
+
 @item @code{disable-vpn?} (default: @code{#f})
 When true, disable connman's vpn plugin.
 
-@item @code{iwd?} (default: @code{#f})
-When true, ConnMan uses iwd to connect to wireless networks.
 @end table
 @end deftp
 
@@ -19890,7 +20064,7 @@ running a WiFi access point with @command{hostapd}, running the
 @command{inetd} ``superdaemon'', and more.  This section describes
 those.
 
-@deffn {Scheme Procedure} dhcpd-service-type
+@defvar dhcpd-service-type
 This type defines a service that runs a DHCP daemon.  To create a
 service of this type, you must supply a @code{<dhcpd-configuration>}.
 For example:
@@ -19901,7 +20075,7 @@ For example:
           (config-file (local-file "my-dhcpd.conf"))
           (interfaces '("enp0s25"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} dhcpd-configuration
 @table @asis
@@ -20137,7 +20311,7 @@ to use with the options @option{iburst} and @option{prefer}, as well as
 @end deftp
 
 @cindex OpenNTPD
-@deffn {Scheme Procedure} openntpd-service-type
+@defvar openntpd-service-type
 Run the @command{ntpd}, the Network Time Protocol (NTP) daemon, as implemented
 by @uref{http://www.openntpd.org, OpenNTPD}.  The daemon will keep the system
 clock synchronized with that of the given servers.
@@ -20152,7 +20326,7 @@ clock synchronized with that of the given servers.
   (constraints-from '("https://www.google.com/"))))
 
 @end lisp
-@end deffn
+@end defvar
 
 @defvar %openntpd-servers
 This variable is a list of the server addresses defined in
@@ -20581,41 +20755,71 @@ Furthermore, @code{(gnu services ssh)} provides the following services.
 @cindex SSH
 @cindex SSH server
 
-@deffn {Scheme Procedure} lsh-service [#:host-key "/etc/lsh/host-key"] @
-       [#:daemonic? #t] [#:interfaces '()] [#:port-number 22] @
-       [#:allow-empty-passwords? #f] [#:root-login? #f] @
-       [#:syslog-output? #t] [#:x11-forwarding? #t] @
-       [#:tcp/ip-forwarding? #t] [#:password-authentication? #t] @
-       [#:public-key-authentication? #t] [#:initialize? #t]
-Run the @command{lshd} program from @var{lsh} to listen on port @var{port-number}.
-@var{host-key} must designate a file containing the host key, and readable
-only by root.
+@defvar lsh-service-type
+Type of the service that runs the GNU@tie{}lsh secure shell (SSH)
+daemon, @command{lshd}.  The value for this service is a
+@code{<lsh-configuration>} object.
+@end defvar
 
-When @var{daemonic?} is true, @command{lshd} will detach from the
-controlling terminal and log its output to syslogd, unless one sets
-@var{syslog-output?} to false.  Obviously, it also makes lsh-service
-depend on existence of syslogd service.  When @var{pid-file?} is true,
-@command{lshd} writes its PID to the file called @var{pid-file}.
+@deftp {Data Type} lsh-configuration
+Data type representing the configuration of @command{lshd}.
 
-When @var{initialize?} is true, automatically create the seed and host key
-upon service activation if they do not exist yet.  This may take long and
-require interaction.
+@table @asis
+@item @code{lsh} (default: @code{lsh}) (type: file-like)
+The package object of the GNU@tie{}lsh secure shell (SSH) daemon.
 
-When @var{initialize?} is false, it is up to the user to initialize the
-randomness generator (@pxref{lsh-make-seed,,, lsh, LSH Manual}), and to create
-a key pair with the private key stored in file @var{host-key} (@pxref{lshd
-basics,,, lsh, LSH Manual}).
+@item @code{daemonic?} (default: @code{#t}) (type: boolean)
+Whether to detach from the controlling terminal.
 
-When @var{interfaces} is empty, lshd listens for connections on all the
-network interfaces; otherwise, @var{interfaces} must be a list of host names
-or addresses.
+@item @code{host-key} (default: @code{"/etc/lsh/host-key"}) (type: string)
+File containing the @dfn{host key}.  This file must be readable by
+root only.
 
-@var{allow-empty-passwords?} specifies whether to accept log-ins with empty
-passwords, and @var{root-login?} specifies whether to accept log-ins as
-root.
+@item @code{interfaces} (default: @code{()}) (type: list)
+List of host names or addresses that @command{lshd} will listen on.
+If empty, @command{lshd} listens for connections on all the network
+interfaces.
 
-The other options should be self-descriptive.
-@end deffn
+@item @code{port-number} (default: @code{22}) (type: integer)
+Port to listen on.
+
+@item @code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)
+Whether to accept log-ins with empty passwords.
+
+@item @code{root-login?} (default: @code{#f}) (type: boolean)
+Whether to accept log-ins as root.
+
+@item @code{syslog-output?} (default: @code{#t}) (type: boolean)
+Whether to log @command{lshd} standard output to syslogd.
+This will make the service depend on the existence of a syslogd service.
+
+@item @code{pid-file?} (default: @code{#f}) (type: boolean)
+When @code{#t}, @command{lshd} writes its PID to the file specified in
+@var{pid-file}.
+
+@item @code{pid-file} (default: @code{"/var/run/lshd.pid"}) (type: string)
+File that @command{lshd} will write its PID to.
+
+@item @code{x11-forwarding?} (default: @code{#t}) (type: boolean)
+Whether to enable X11 forwarding.
+
+@item @code{tcp/ip-forwarding?} (default: @code{#t}) (type: boolean)
+Whether to enable TCP/IP forwarding.
+
+@item @code{password-authentication?} (default: @code{#t}) (type: boolean)
+Whether to accept log-ins using password authentication.
+
+@item @code{public-key-authentication?} (default: @code{#t}) (type: boolean)
+Whether to accept log-ins using public key authentication.
+
+@item @code{initialize?} (default: @code{#t}) (type: boolean)
+When @code{#f}, it is up to the user to initialize the randomness
+generator (@pxref{lsh-make-seed,,, lsh, LSH Manual}), and to create
+a key pair with the private key stored in file @var{host-key}
+(@pxref{lshd basics,,, lsh, LSH Manual}).
+
+@end table
+@end deftp
 
 @cindex SSH
 @cindex SSH server
@@ -20809,19 +21013,18 @@ Match Address 192.168.0.1
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} dropbear-service [@var{config}]
-Run the @uref{https://matt.ucc.asn.au/dropbear/dropbear.html,Dropbear SSH
-daemon} with the given @var{config}, a @code{<dropbear-configuration>}
-object.
+@defvar dropbear-service-type
+Type of the service that runs the
+@url{https://matt.ucc.asn.au/dropbear/dropbear.html, Dropbear SSH daemon},
+whose value is a @code{<dropbear-configuration>} object.
 
-For example, to specify a Dropbear service listening on port 1234, add
-this call to the operating system's @code{services} field:
+For example, to specify a Dropbear service listening on port 1234:
 
 @lisp
-(dropbear-service (dropbear-configuration
-                    (port-number 1234)))
+(service dropbear-service-type (dropbear-configuration
+                                 (port-number 1234)))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} dropbear-configuration
 This data type represents the configuration of a Dropbear SSH daemon.
@@ -21005,30 +21208,13 @@ Logging level.
 @end table
 @end deftp
 
-@defvar %facebook-host-aliases
-This variable contains a string for use in @file{/etc/hosts}
-(@pxref{Host Names,,, libc, The GNU C Library Reference Manual}).  Each
-line contains a entry that maps a known server name of the Facebook
+@defvar block-facebook-hosts-service-type
+This service type adds a list of known Facebook hosts to the
+@file{/etc/hosts} file.
+(@pxref{Host Names,,, libc, The GNU C Library Reference Manual})
+Each line contains a entry that maps a known server name of the Facebook
 on-line service---e.g., @code{www.facebook.com}---to the local
 host---@code{127.0.0.1} or its IPv6 equivalent, @code{::1}.
-
-This variable is typically used in the @code{hosts-file} field of an
-@code{operating-system} declaration (@pxref{operating-system Reference,
-@file{/etc/hosts}}):
-
-@lisp
-(use-modules (gnu) (guix))
-
-(operating-system
-  (host-name "mymachine")
-  ;; ...
-  (hosts-file
-    ;; Create a /etc/hosts file with aliases for "localhost"
-    ;; and "mymachine", as well as for Facebook servers.
-    (plain-file "hosts"
-                (string-append (local-host-aliases host-name)
-                               %facebook-host-aliases))))
-@end lisp
 
 This mechanism can prevent programs running locally, such as Web
 browsers, from accessing Facebook.
@@ -21868,7 +22054,7 @@ disable security:
 @end lisp
 
 Or to set a PasswordFile for the classic (unsecure) VncAuth
-mecanism:
+mechanism:
 
 @lisp
 (vnc-server-command (file-append tigervnc-server "/bin/Xvnc"
@@ -21904,9 +22090,7 @@ Available @code{lightdm-gtk-greeter-configuration} fields are:
 @item @code{lightdm-gtk-greeter} (default: @code{lightdm-gtk-greeter}) (type: file-like)
 The lightdm-gtk-greeter package to use.
 
-@item @code{assets} @
-(default: @code{(adwaita-icon-theme gnome-themes-extrahicolor-icon-theme)}) @
-(type: list-of-file-likes)
+@item @code{assets} (default: @code{(adwaita-icon-theme gnome-themes-extra hicolor-icon-theme)}) (type: list-of-file-likes)
 The list of packages complementing the greeter, such as package
 providing icon themes.
 
@@ -21932,8 +22116,7 @@ The background image to use.
 Enable accessibility support through the Assistive Technology Service
 Provider Interface (AT-SPI).
 
-@item @code{a11y-states} @
-(default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
+@item @code{a11y-states} (default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
 The accessibility features to enable, given as list of symbols.
 
 @item @code{reader} (type: maybe-file-like)
@@ -21967,8 +22150,7 @@ The type of the seat, either the @code{local} or @code{xremote} symbol.
 @item @code{autologin-user} (type: maybe-string)
 The username to automatically log in with by default.
 
-@item @code{greeter-session} @
-(default: @code{lightdm-gtk-greeter}) (type: greeter-session)
+@item @code{greeter-session} (default: @code{lightdm-gtk-greeter}) (type: greeter-session)
 The greeter session to use, specified as a symbol.  Currently, only
 @code{lightdm-gtk-greeter} is supported.
 
@@ -22035,37 +22217,56 @@ default is @code{-nolisten tcp}.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} set-xorg-configuration @var{config} @
-  [@var{login-manager-service-type}]
+@defun set-xorg-configuration config [login-manager-service-type]
 Tell the log-in manager (of type @var{login-manager-service-type}) to use
 @var{config}, an @code{<xorg-configuration>} record.
 
 Since the Xorg configuration is embedded in the log-in manager's
 configuration---e.g., @code{gdm-configuration}---this procedure provides a
 shorthand to set the Xorg configuration.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} xorg-start-command [@var{config}]
+@defun xorg-start-command [config]
 Return a @code{startx} script in which the modules, fonts, etc. specified
 in @var{config}, are available.  The result should be used in place of
 @code{startx}.
 
 Usually the X server is started by a login manager.
-@end deffn
+@end defun
 
 
-@deffn {Scheme Procedure} screen-locker-service @var{package} [@var{program}]
-Add @var{package}, a package for a screen locker or screen saver whose
-command is @var{program}, to the set of setuid programs and add a PAM entry
-for it.  For example:
+@defvar screen-locker-service-type
+Type for a service that adds a package for a screen locker or screen
+saver to the set of setuid programs and add a PAM entry for it.  The
+value for this service is a @code{<screen-locker-configuration>} object.
+
+For example, to make XlockMore usable:
 
 @lisp
-(screen-locker-service xlockmore "xlock")
+(service screen-locker-service-type
+         (screen-locker-configuration
+           "xlock" (file-append xlockmore "/bin/xlock") #f))
 @end lisp
 
 makes the good ol' XlockMore usable.
-@end deffn
+@end defvar
 
+@deftp {Data Type} screen-locker-configuration
+Data type representing the configuration of
+@code{screen-locker-service-type}.
+
+@table @asis
+@item @code{name} (type: string)
+Name of the screen locker.
+
+@item @code{program} (type: gexp)
+Path to the executable for the screen locker as a G-Expression.
+
+@item @code{allow-empty-password?} (type: boolean)
+Whether to allow empty passwords.
+
+@end table
+@end deftp
 
 @node Printing Services
 @subsection Printing Services
@@ -22946,9 +23147,7 @@ support (@pxref{Networking Services, @code{modem-manager-service-type}}),
 energy and color management services, the @code{elogind} login and seat
 manager, the Polkit privilege service, the GeoClue location service, the
 AccountsService daemon that allows authorized users change system passwords,
-an NTP client (@pxref{Networking Services}), the Avahi daemon, and has the
-name service switch service configured to be able to use @code{nss-mdns}
-(@pxref{Name Service Switch, mDNS}).
+a NTP client (@pxref{Networking Services}) and the Avahi daemon.
 @end defvar
 
 The @code{%desktop-services} variable can be used as the @code{services}
@@ -23069,6 +23268,49 @@ The LXQT package to use.
 @end table
 @end deftp
 
+@defvar sugar-desktop-service-type
+This is the type of the service that runs the
+@uref{https://www.sugarlabs.org, Sugar desktop environment}.  Its value
+is a @code{sugar-desktop-configuration} object (see below).
+
+This service adds the @code{sugar} package to the system profile, as
+well as any selected Sugar activities.  By default it only includes a
+minimal set of activities.
+@end defvar
+
+@deftp {Data Type} sugar-desktop-configuration
+Configuration record for the Sugar desktop environment.
+
+@table @asis
+@item @code{sugar} (default: @code{sugar})
+The Sugar package to use.
+@item @code{gobject-introspection} (default: @code{gobject-introspection})
+The @code{gobject-introspection} package to use.  This package is used
+to access libraries installed as dependencies of Sugar activities.
+@item @code{activities} (default: @code{(list sugar-help-activity)})
+A list of Sugar activities to install.
+@end table
+@end deftp
+
+The following example configures the Sugar desktop environment with a
+number of useful activities:
+
+@lisp
+(use-modules (gnu))
+(use-package-modules sugar)
+(use-service-modules desktop)
+(operating-system
+  ...
+  (services (cons* (service sugar-desktop-service-type
+                            (sugar-desktop-configuration
+                              (activities (list sugar-browse-activity
+                                                sugar-help-activity
+                                                sugar-jukebox-activity
+                                                sugar-typing-turtle-activity))))
+                   %desktop-services))
+  ...)
+@end lisp
+
 @defvar enlightenment-desktop-service-type
 Return a service that adds the @code{enlightenment} package to the system
 profile, and extends dbus with actions from @code{efl}.
@@ -23106,120 +23348,172 @@ The actual service definitions included in @code{%desktop-services} and
 provided by @code{(gnu services dbus)} and @code{(gnu services desktop)}
 are described below.
 
-@deffn {Scheme Procedure} dbus-service [#:dbus @var{dbus}] [#:services '()] @
-                                       [#:verbose?]
-Return a service that runs the ``system bus'', using @var{dbus}, with
-support for @var{services}.  When @var{verbose?} is true, it causes the
-@samp{DBUS_VERBOSE} environment variable to be set to @samp{1}; a
-verbose-enabled D-Bus package such as @code{dbus-verbose} should be
-provided as @var{dbus} in this scenario.  The verbose output is logged
-to @file{/var/log/dbus-daemon.log}.
+@defvar dbus-root-service-type
+Type for a service that runs the D-Bus ``system bus''.
+@footnote{@uref{https://dbus.freedesktop.org/, D-Bus} is an inter-process
+communication facility.  Its system bus is used to allow system services
+to communicate and to be notified of system-wide events.}
 
-@uref{https://dbus.freedesktop.org/, D-Bus} is an inter-process communication
-facility.  Its system bus is used to allow system services to communicate
-and to be notified of system-wide events.
+The value for this service type is a @code{<dbus-configuration>} record.
+@end defvar
 
-@var{services} must be a list of packages that provide an
-@file{etc/dbus-1/system.d} directory containing additional D-Bus configuration
-and policy files.  For example, to allow avahi-daemon to use the system bus,
-@var{services} must be equal to @code{(list avahi)}.
-@end deffn
+@deftp {Data Type} dbus-configuration
+Data type representing the configuration for @code{dbus-root-service-type}.
 
-@deffn {Scheme Procedure} elogind-service [#:config @var{config}]
-Return a service that runs the @code{elogind} login and
-seat management daemon.  @uref{https://github.com/elogind/elogind,
-Elogind} exposes a D-Bus interface that can be used to know which users
+@table @asis
+@item @code{dbus} (default: @code{dbus}) (type: file-like)
+Package object for dbus.
+
+@item @code{services} (default: @code{()}) (type: list)
+List of packages that provide an @file{etc/dbus-1/system.d} directory
+containing additional D-Bus configuration and policy files.
+For example, to allow avahi-daemon to use the system bus, @var{services}
+must be equal to @code{(list avahi)}.
+
+@item @code{verbose?} (default: @code{#f}) (type: boolean)
+When @code{#t}, D-Bus is launched with environment variable
+@samp{DBUS_VERBOSE} set to @samp{1}.  A verbose-enabled D-Bus package
+such as @code{dbus-verbose} should be provided to @var{dbus} in this
+scenario. The verbose output is logged to
+@file{/var/log/dbus-daemon.log}.
+
+@end table
+@end deftp
+
+@subsubheading Elogind
+
+@uref{https://github.com/elogind/elogind, Elogind} is a login and seat
+management daemon that also handles most system-level power events for a
+computer, for example suspending the system when a lid is closed, or
+shutting it down when the power button is pressed.
+
+It also provides a D-Bus interface that can be used to know which users
 are logged in, know what kind of sessions they have open, suspend the
 system, inhibit system suspend, reboot the system, and other tasks.
 
-Elogind handles most system-level power events for a computer, for
-example suspending the system when a lid is closed, or shutting it down
-when the power button is pressed.
+@defvar elogind-service-type
+Type of the service that runs @command{elogind}, a login and
+seat management daemon.  The value for this service is a
+@code{<elogind-configuration>} object.
+@end defvar
 
-The @var{config} keyword argument specifies the configuration for
-elogind, and should be the result of an @code{(elogind-configuration
-(@var{parameter} @var{value})...)} invocation.  Available parameters and
-their default values are:
+@c TODO: field descriptions. This is best done by refactoring
+@c elogind-configuration to use define-configuration which embeds the
+@c descriptions in the code and then use configuration->documentation.
+@deftp {Data Type} elogind-configuration
+Data type representing the configuration of @command{elogind}.
 
-@table @code
-@item kill-user-processes?
-@code{#f}
-@item kill-only-users
-@code{()}
-@item kill-exclude-users
-@code{("root")}
-@item inhibit-delay-max-seconds
-@code{5}
-@item handle-power-key
-@code{poweroff}
-@item handle-suspend-key
-@code{suspend}
-@item handle-hibernate-key
-@code{hibernate}
-@item handle-lid-switch
-@code{suspend}
-@item handle-lid-switch-docked
-@code{ignore}
-@item handle-lid-switch-external-power
-@code{*unspecified*}
-@item power-key-ignore-inhibited?
-@code{#f}
-@item suspend-key-ignore-inhibited?
-@code{#f}
-@item hibernate-key-ignore-inhibited?
-@code{#f}
-@item lid-switch-ignore-inhibited?
-@code{#t}
-@item holdoff-timeout-seconds
-@code{30}
-@item idle-action
-@code{ignore}
-@item idle-action-seconds
-@code{(* 30 60)}
-@item runtime-directory-size-percent
-@code{10}
-@item runtime-directory-size
-@code{#f}
-@item remove-ipc?
-@code{#t}
-@item suspend-state
-@code{("mem" "standby" "freeze")}
-@item suspend-mode
-@code{()}
-@item hibernate-state
-@code{("disk")}
-@item hibernate-mode
-@code{("platform" "shutdown")}
-@item hybrid-sleep-state
-@code{("disk")}
-@item hybrid-sleep-mode
-@code{("suspend" "platform" "shutdown")}
+@table @asis
+@item @code{elogind} (default: @code{elogind}) (type: file-like)
+...
+
+@item @code{kill-user-processes?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{kill-only-users} (default: @code{'()}) (type: list)
+...
+
+@item @code{kill-exclude-users} (default: @code{'("root")}) (type: list-of-string)
+...
+
+@item @code{inhibit-delay-max-seconds} (default: @code{5}) (type: integer)
+...
+
+@item @code{handle-power-key} (default: @code{'poweroff}) (type: symbol)
+...
+
+@item @code{handle-suspend-key} (default: @code{'suspend}) (type: symbol)
+...
+
+@item @code{handle-hibernate-key} (default: @code{'hibernate}) (type: symbol)
+...
+
+@item @code{handle-lid-switch} (default: @code{'suspend}) (type: symbol)
+...
+
+@item @code{handle-lid-switch-docked} (default: @code{'ignore}) (type: symbol)
+...
+
+@item @code{handle-lid-switch-external-power} (default: @code{*unspecified*}) (type: symbol)
+...
+
+@item @code{power-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{suspend-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{hibernate-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{lid-switch-ignore-inhibited?} (default: @code{#t}) (type: boolean)
+...
+
+@item @code{holdoff-timeout-seconds} (default: @code{30}) (type: integer)
+...
+
+@item @code{idle-action} (default: @code{'ignore}) (type: symbol)
+...
+
+@item @code{idle-action-seconds} (default: @code{(* 30 60)}) (type: integer)
+...
+
+@item @code{runtime-directory-size-percent} (default: @code{10}) (type: integer)
+...
+
+@item @code{runtime-directory-size} (default: @code{#f}) (type: integer)
+...
+
+@item @code{remove-ipc?} (default: @code{#t}) (type: boolean)
+...
+
+@item @code{suspend-state} (default: @code{'("mem" "standby" "freeze")}) (type: list)
+...
+
+@item @code{suspend-mode} (default: @code{'()}) (type: list)
+...
+
+@item @code{hibernate-state} (default: @code{'("disk")}) (type: list)
+...
+
+@item @code{hibernate-mode} (default: @code{'("platform" "shutdown")}) (type: list)
+...
+
+@item @code{hybrid-sleep-state} (default: @code{'("disk")}) (type: list)
+...
+
+@item @code{hybrid-sleep-mode} (default: @code{'("suspend" "platform" "shutdown")}) (type: list)
+...
+
 @end table
-@end deffn
+@end deftp
 
-@deffn {Scheme Procedure} accountsservice-service @
-       [#:accountsservice @var{accountsservice}]
-Return a service that runs AccountsService, a system service that can
+@defvar accountsservice-service-type
+Type for the service that runs AccountsService, a system service that can
 list available accounts, change their passwords, and so on.
 AccountsService integrates with PolicyKit to enable unprivileged users
 to acquire the capability to modify their system configuration.
-@uref{https://www.freedesktop.org/wiki/Software/AccountsService/, the
-accountsservice web site} for more information.
+See @url{https://www.freedesktop.org/wiki/Software/AccountsService/,
+AccountsService} for more information.
 
-The @var{accountsservice} keyword argument is the @code{accountsservice}
-package to expose as a service.
-@end deffn
+The value for this service is a file-like object, by default it is
+set to @code{accountsservice} (the package object for AccountsService).
+@end defvar
 
-@deffn {Scheme Procedure} polkit-service @
-                         [#:polkit @var{polkit}]
-Return a service that runs the
-@uref{https://www.freedesktop.org/wiki/Software/polkit/, Polkit privilege
+@defvar polkit-service-type
+Type for the service that runs the
+@url{https://www.freedesktop.org/wiki/Software/polkit/, Polkit privilege
 management service}, which allows system administrators to grant access to
 privileged operations in a structured way.  By querying the Polkit service, a
 privileged system component can know when it should grant additional
 capabilities to ordinary users.  For example, an ordinary user can be granted
 the capability to suspend the system if the user is logged in locally.
-@end deffn
+
+The value for this service is a @code{<polkit-configuration>} object.
+@end defvar
+
+@c TODO: Document <polkit-configuration>, preferably by refactoring this to use
+@c       define-configuration and generating documentation from it.
 
 @defvar polkit-wheel-service
 Service that adds the @code{wheel} group as admins to the Polkit
@@ -23303,9 +23597,10 @@ Possible values are:
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} udisks-service [#:udisks @var{udisks}]
-Return a service for @uref{https://udisks.freedesktop.org/docs/latest/,
-UDisks}, a @dfn{disk management} daemon that provides user interfaces
+@defvar udisks-service-type
+Type for the service that runs
+@uref{https://udisks.freedesktop.org/docs/latest/, UDisks},
+a @dfn{disk management} daemon that provides user interfaces
 with notifications and ways to mount/unmount disks.  Programs that talk
 to UDisks include the @command{udisksctl} command, part of UDisks, and
 GNOME Disks.  Note that Udisks relies on the @command{mount} command, so
@@ -23313,7 +23608,19 @@ it will only be able to use the file-system utilities installed in the
 system profile.  For example if you want to be able to mount NTFS
 file-systems in read and write fashion, you'll need to have
 @code{ntfs-3g} installed system-wide.
-@end deffn
+
+The value for this service is a @code{<udisks-configuration>} object.
+@end defvar
+
+@deftp {Data Type} udisks-configuration
+Data type representing the configuration for @code{udisks-service-type}.
+
+@table @asis
+@item @code{udisks} (default: @code{udisks}) (type: file-like)
+Package object for UDisks.
+
+@end table
+@end deftp
 
 @defvar colord-service-type
 This is the type of the service that runs @command{colord}, a system
@@ -23366,7 +23673,7 @@ a system which relies on @code{%desktop-services}, you may use
 @end lisp
 @end defvar
 
-@deffn {Scheme Procedure} geoclue-application name [#:allowed? #t] [#:system? #f] [#:users '()]
+@defun geoclue-application name [#:allowed? #t] [#:system? #f] [#:users '()]
 Return a configuration allowing an application to access GeoClue
 location data.  @var{name} is the Desktop ID of the application, without
 the @code{.desktop} part.  If @var{allowed?} is true, the application
@@ -23375,7 +23682,7 @@ will have access to location information by default.  The boolean
 or not.  Finally @var{users} is a list of UIDs of all users for which
 this application is allowed location info access.  An empty users list
 means that all users are allowed.
-@end deffn
+@end defun
 
 @defvar %standard-geoclue-applications
 The standard list of well-known GeoClue application configurations,
@@ -23386,29 +23693,18 @@ IceCat and Epiphany both query the user before allowing a web page to
 know the user's location.
 @end defvar
 
-@deffn {Scheme Procedure} geoclue-service [#:colord @var{colord}] @
-                         [#:whitelist '()] @
-                         [#:wifi-geolocation-url "https://location.services.mozilla.com/v1/geolocate?key=geoclue"] @
-                         [#:submit-data? #f]
-                         [#:wifi-submission-url "https://location.services.mozilla.com/v1/submit?key=geoclue"] @
-                         [#:submission-nick "geoclue"] @
-                         [#:applications %standard-geoclue-applications]
-Return a service that runs the GeoClue location service.  This service
-provides a D-Bus interface to allow applications to request access to a
-user's physical location, and optionally to add information to online
-location databases.  See
-@uref{https://wiki.freedesktop.org/www/Software/GeoClue/, the GeoClue
-web site} for more information.
-@end deffn
+@defvar geoclue-service-type
+Type for the service that runs the
+@url{https://wiki.freedesktop.org/www/Software/GeoClue/, GeoClue}
+location service.  This service provides a D-Bus interface to allow
+applications to request access to a user's physical location, and
+optionally to add information to online location databases.
 
-@deffn {Scheme Procedure} bluetooth-service [#:bluez @var{bluez}] @
-       [@w{#:auto-enable? #f}]
-Return a service that runs the @command{bluetoothd} daemon, which
-manages all the Bluetooth devices and provides a number of D-Bus
-interfaces.  When AUTO-ENABLE? is true, the bluetooth controller is
-powered automatically at boot, which can be useful when using a
-bluetooth keyboard or mouse.
-@end deffn
+The value for this service is a @code{<geoclue-configuration>} object.
+@end defvar
+
+@c TODO: Document <geoclue-configuration>, preferably by refactoring this to use
+@c       define-configuration and generating documentation from it.
 
 @defvar bluetooth-service-type
 This is the type for the @uref{https://bluez.org/, Linux Bluetooth Protocol
@@ -24473,9 +24769,10 @@ in the subsections below.
 
 @subsubheading Dovecot Service
 
-@deffn {Scheme Procedure} dovecot-service [#:config (dovecot-configuration)]
-Return a service that runs the Dovecot IMAP/POP3/LMTP mail server.
-@end deffn
+@defvar dovecot-service-type
+Type for the service that runs the Dovecot IMAP/POP3/LMTP mail server,
+whose value is a @code{<dovecot-configuration>} object.
+@end defvar
 
 By default, Dovecot does not need much configuration; the default
 configuration object created by @code{(dovecot-configuration)} will
@@ -24490,9 +24787,9 @@ For example, to specify that mail is located at @code{maildir~/.mail},
 one would instantiate the Dovecot service like this:
 
 @lisp
-(dovecot-service #:config
-                 (dovecot-configuration
-                  (mail-location "maildir:~/.mail")))
+(service dovecot-service-type
+         (dovecot-configuration
+           (mail-location "maildir:~/.mail")))
 @end lisp
 
 The available configuration parameters follow.  Each parameter
@@ -27347,7 +27644,7 @@ client is already being used.  Otherwise, the
 procedures provided by this module can be used to obtain a suitable hash
 value.
 
-@deffn {Scheme Procedure} transmission-password-hash @var{password} @var{salt}
+@defun transmission-password-hash password salt
 Returns a string containing the result of hashing @var{password}
 together with @var{salt}, in the format recognized by Transmission
 clients for their @code{rpc-password} configuration setting.
@@ -27355,13 +27652,13 @@ clients for their @code{rpc-password} configuration setting.
 @var{salt} must be an eight-character string.  The
 @code{transmission-random-salt} procedure can be used to generate a
 suitable salt value at random.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} transmission-random-salt
+@defun transmission-random-salt
 Returns a string containing a random, eight-character salt value of the
 type generated and used by Transmission clients, suitable for passing to
 the @code{transmission-password-hash} procedure.
-@end deffn
+@end defun
 
 These procedures are accessible from within a Guile REPL started with
 the @command{guix repl} command (@pxref{Invoking guix repl}).  This is
@@ -29333,7 +29630,7 @@ The details for the @code{httpd-configuration}, @code{httpd-module},
 @code{httpd-config-file} and @code{httpd-virtualhost} record types are
 given below.
 
-@deffn {Data Type} httpd-configuration
+@deftp {Data Type} httpd-configuration
 This data type represents the configuration for the httpd service.
 
 @table @asis
@@ -29350,9 +29647,9 @@ G-expression that generates a file, for example a @code{plain-file}.  A
 file outside of the store can also be specified through a string.
 
 @end table
-@end deffn
+@end deftp
 
-@deffn {Data Type} httpd-module
+@deftp {Data Type} httpd-module
 This data type represents a module for the httpd service.
 
 @table @asis
@@ -29366,13 +29663,13 @@ within the store, for example @code{(file-append mod-wsgi
 "/modules/mod_wsgi.so")}.
 
 @end table
-@end deffn
+@end deftp
 
 @defvar %default-httpd-modules
 A default list of @code{httpd-module} objects.
 @end defvar
 
-@deffn {Data Type} httpd-config-file
+@deftp {Data Type} httpd-config-file
 This data type represents a configuration file for the httpd service.
 
 @table @asis
@@ -29451,9 +29748,9 @@ Any values which the service is extended with will be appended to this
 list.
 
 @end table
-@end deffn
+@end deftp
 
-@deffn {Data Type} httpd-virtualhost
+@deftp {Data Type} httpd-virtualhost
 This data type represents a virtualhost configuration block for the httpd service.
 
 These should be added to the extra-config for the httpd-service.
@@ -29477,7 +29774,7 @@ The contents of the @code{VirtualHost} directive, this should be a list
 of strings and G-expressions.
 
 @end table
-@end deffn
+@end deftp
 
 @anchor{NGINX}
 @subsubheading NGINX
@@ -29518,7 +29815,7 @@ configuration.  In our case, startup error messages can be found in
 @file{/var/log/nginx/error.log}.  The second location can be changed
 with the @var{log-directory} configuration option.
 
-@deffn {Data Type} nginx-configuration
+@deftp {Data Type} nginx-configuration
 This data type represents the configuration for NGinx.  Some
 configuration can be done through this and the other provided record
 types, or alternatively, a config file can be provided.
@@ -29658,7 +29955,7 @@ Extra content for the @code{http} block.  Should be string or a string
 valued G-expression.
 
 @end table
-@end deffn
+@end deftp
 
 @anchor{nginx-server-configuration}
 @deftp {Data Type} nginx-server-configuration
@@ -30258,13 +30555,11 @@ The time in seconds after which a process with no requests is killed.
 @end deftp
 
 
-@deffn {Scheme Procedure} nginx-php-location @
-       [#:nginx-package nginx] @
-       [socket (string-append "/var/run/php" @
-                              (version-major (package-version php)) @
-                              "-fpm.sock")]
+@defun nginx-php-location [#:nginx-package nginx] @
+  [socket (string-append "/var/run/php" @
+  (version-major (package-version php)) "-fpm.sock")]
 A helper function to quickly add php to an @code{nginx-server-configuration}.
-@end deffn
+@end defun
 
 A simple services setup for nginx with php can look like this:
 @lisp
@@ -30287,7 +30582,7 @@ The cat avatar generator is a simple service to demonstrate the use of php-fpm
 in @code{Nginx}.  It is used to generate cat avatar from a seed, for instance
 the hash of a user's email address.
 
-@deffn {Scheme Procedure} cat-avatar-generator-service @
+@defun cat-avatar-generator-service @
        [#:cache-dir "/var/cache/cat-avatar-generator"] @
        [#:package cat-avatar-generator] @
        [#:configuration (nginx-server-configuration)]
@@ -30295,7 +30590,7 @@ Returns an nginx-server-configuration that inherits @code{configuration}.  It
 extends the nginx configuration to add a server block that serves @code{package},
 a version of cat-avatar-generator.  During execution, cat-avatar-generator will
 be able to use @code{cache-dir} as its cache directory.
-@end deffn
+@end defun
 
 A simple setup for cat-avatar-generator can look like this:
 @lisp
@@ -31252,6 +31547,10 @@ in @var{servers}.
 @item @code{servers} (default: @code{'()})
 Specify IP address of upstream servers directly.
 
+@item @code{servers-file} (default: @code{#f})
+Specify file containing upstream servers. This file is re-read when dnsmasq receives SIGHUP.
+Could be either a string or a file-like object.
+
 @item @code{addresses} (default: @code{'()})
 For each entry, specify an IP address to return for any host in the
 given domains.  Queries in the domains are never forwarded and always
@@ -31622,20 +31921,22 @@ desktop-environment or should be run manually.
 
 It provides a @emph{client} service for your machine to connect to a
 VPN, and a @emph{server} service for your machine to host a VPN@.
+Both @code{openvpn-client-service-type} and
+@code{openvpn-server-service-type} can be run simultaneously.
 
-@deffn {Scheme Procedure} openvpn-client-service @
-       [#:config (openvpn-client-configuration)]
+@defvar openvpn-client-service-type
+Type of the service that runs @command{openvpn}, a VPN daemon, as a client.
 
-Return a service that runs @command{openvpn}, a VPN daemon, as a client.
-@end deffn
+The value for this service is a @code{<openvpn-client-configuration>}
+object.
+@end defvar
 
-@deffn {Scheme Procedure} openvpn-server-service @
-       [#:config (openvpn-server-configuration)]
+@defvar openvpn-server-service-type
+Type of the service that runs @command{openvpn}, a VPN daemon, as a server.
 
-Return a service that runs @command{openvpn}, a VPN daemon, as a server.
-
-Both can be run simultaneously.
-@end deffn
+The value for this service is a @code{<openvpn-server-configuration>}
+object.
+@end defvar
 
 @c %automatically generated documentation
 
@@ -32209,7 +32510,7 @@ guest only = yes\n"))))
 
 @end defvar
 
-@deftp{Data Type} samba-service-configuration
+@deftp {Data Type} samba-service-configuration
 Configuration record for the Samba suite.
 
 @table @asis
@@ -34296,20 +34597,20 @@ The QEMU package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} lookup-qemu-platforms @var{platforms}@dots{}
+@defun lookup-qemu-platforms platforms@dots{}
 Return the list of QEMU platform objects corresponding to
 @var{platforms}@dots{}.  @var{platforms} must be a list of strings
 corresponding to platform names, such as @code{"arm"}, @code{"sparc"},
 @code{"mips64el"}, and so on.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} qemu-platform? @var{obj}
+@defun qemu-platform? obj
 Return true if @var{obj} is a platform object.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} qemu-platform-name @var{platform}
+@defun qemu-platform-name platform
 Return the name of @var{platform}---a string such as @code{"arm"}.
-@end deffn
+@end defun
 
 
 @subsubheading QEMU Guest Agent
@@ -34555,7 +34856,7 @@ and to make maintenance and recovery tasks easy.  It consists of multiple
 services which are described later in this section.  In addition to the Ganeti
 service, you will need the OpenSSH service (@pxref{Networking Services,
 @code{openssh-service-type}}), and update the @file{/etc/hosts} file
-(@pxref{operating-system Reference, @code{hosts-file}}) with the cluster name
+(@pxref{Service Reference, @code{hosts-service-type}}) with the cluster name
 and address (or use a DNS server).
 
 All nodes participating in a Ganeti cluster should have the same Ganeti and
@@ -34569,14 +34870,6 @@ cluster node that supports multiple storage backends, and installs the
 (operating-system
   ;; @dots{}
   (host-name "node1")
-  (hosts-file (plain-file "hosts" (format #f "
-127.0.0.1       localhost
-::1             localhost
-
-192.168.1.200   ganeti.example.com
-192.168.1.201   node1.example.com node1
-192.168.1.202   node2.example.com node2
-")))
 
   ;; Install QEMU so we can use KVM-based instances, and LVM, DRBD and Ceph
   ;; in order to use the "plain", "drbd" and "rbd" storage backends.
@@ -34603,6 +34896,14 @@ cluster node that supports multiple storage backends, and installs the
                  (service openssh-service-type
                           (openssh-configuration
                            (permit-root-login 'prohibit-password)))
+
+                 (simple-service 'ganeti-hosts-entries hosts-service-type
+                                 (list
+                                   (host "192.168.1.200" "ganeti.example.com")
+                                   (host "192.168.1.201" "node1.example.com"
+                                         '("node1"))
+                                   (host "192.168.1.202" "node2.example.com"
+                                         '("node2"))))
 
                  (service ganeti-service-type
                           (ganeti-configuration
@@ -34805,27 +35106,27 @@ Alignment of the partition in sectors.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} debootstrap-variant @var{name} @var{configuration}
+@defun debootstrap-variant name configuration
 This is a helper procedure that creates a @code{ganeti-os-variant} record.  It
 takes two parameters: a name and a @code{debootstrap-configuration} object.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} debootstrap-os @var{variants}@dots{}
+@defun debootstrap-os variants@dots{}
 This is a helper procedure that creates a @code{ganeti-os} record.  It takes
 a list of variants created with @code{debootstrap-variant}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} guix-variant @var{name} @var{configuration}
+@defun guix-variant name configuration
 This is a helper procedure that creates a @code{ganeti-os-variant} record for
 use with the Guix OS provider.  It takes a name and a G-expression that returns
 a ``file-like'' (@pxref{G-Expressions, file-like objects}) object containing a
 Guix System configuration.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} guix-os @var{variants}@dots{}
+@defun guix-os variants@dots{}
 This is a helper procedure that creates a @code{ganeti-os} record.  It
 takes a list of variants produced by @code{guix-variant}.
-@end deffn
+@end defun
 
 @defvar %default-debootstrap-variants
 This is a convenience variable to make the debootstrap provider work
@@ -35323,7 +35624,7 @@ create an @code{nginx-location-configuration} from a
 @code{git-http-configuration} and then add that location to a web
 server.
 
-@deffn {Scheme Procedure} git-http-nginx-location-configuration @
+@defun git-http-nginx-location-configuration @
        [config=(git-http-configuration)]
 Compute an @code{nginx-location-configuration} that corresponds to the
 given Git http configuration.  An example nginx service definition to
@@ -35352,7 +35653,7 @@ certificate.  @xref{Certificate Services}.  The default @code{certbot}
 service will redirect all HTTP traffic on @code{git.my-host.org} to
 HTTPS@.  You will also need to add an @code{fcgiwrap} proxy to your
 system services.  @xref{Web Services}.
-@end deffn
+@end defun
 
 @subsubheading Cgit Service
 
@@ -37184,6 +37485,68 @@ notifications.
 @end table
 @end deftp
 
+@subsubheading fstrim Service
+@cindex fstrim service
+@cindex solid state drives, periodic trim
+@cindex solid state drives, trim
+
+The command @command{fstrim} can be used to discard (or @dfn{trim})
+unused blocks on a mounted file system.
+
+@c This was copied from the fstrim manpage, with some Texinfo touch-ups.
+@quotation Warning
+Running @command{fstrim} frequently, or even using
+@command{mount -o discard}, might negatively affect the lifetime of
+poor-quality SSD devices.  For most desktop and server systems a
+sufficient trimming frequency is once a week.  Note that not all devices
+support a queued trim, so each trim command incurs a performance penalty
+on whatever else might be trying to use the disk at the time.
+@end quotation
+
+@defvar fstrim-service-type
+Type for a service that periodically runs @command{fstrim}, whose value must
+be a @code{<fstrim-configuration>} object.  The service can be instantiated
+in its default configuration with:
+
+@lisp
+(service fstrim-service-type)
+@end lisp
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} fstrim-configuration
+Available @code{fstrim-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{util-linux}) (type: file-like)
+The package providing the @command{fstrim} command.
+
+@item @code{schedule} (default: @code{"0 0 * * 0"}) (type: mcron-time)
+Schedule for launching @command{fstrim}.  This can be a procedure, a
+list or a string.  For additional information, see @ref{Guile
+Syntax,,Job specification,mcron,the mcron manual}.  By default this is
+set to run weekly on Sunday at 00:00.
+
+@item @code{listed-in} (default: @code{("/etc/fstab" "/proc/self/mountinfo")}) (type: maybe-list-of-strings)
+List of files in fstab or kernel mountinfo format.  All missing or empty
+files are silently ignored.  The evaluation of the list @emph{stops}
+after the first non-empty file.  File systems with
+@code{X-fstrim.notrim} mount option in fstab are skipped.
+
+@item @code{verbose?} (default: @code{#t}) (type: boolean)
+Verbose execution.
+
+@item @code{quiet-unsupported?} (default: @code{#t}) (type: boolean)
+Suppress error messages if trim operation (ioctl) is unsupported.
+
+@item @code{extra-arguments} (type: maybe-list-of-strings)
+Extra options to append to @command{fstrim} (run @samp{man fstrim} for
+more information).
+
+@end table
+@end deftp
+@c %end of fragment
+
 @cindex modprobe
 @cindex kernel module loader
 @subsubheading Kernel Module Loader Service
@@ -37487,35 +37850,60 @@ under @file{pcsc/drivers} in the store directory of the package.
 @end table
 @end deftp
 
-@cindex lirc
-@subsubheading Lirc Service
+@cindex LIRC
+@subsubheading LIRC Service
 
 The @code{(gnu services lirc)} module provides the following service.
 
-@deffn {Scheme Procedure} lirc-service [#:lirc lirc] @
-       [#:device #f] [#:driver #f] [#:config-file #f] @
-       [#:extra-options '()]
-Return a service that runs @url{http://www.lirc.org,LIRC}, a daemon that
-decodes infrared signals from remote controls.
+@defvar lirc-service-type
+Type for a service that runs @url{http://www.lirc.org, LIRC}, a daemon
+that decodes infrared signals from remote controls.
 
-Optionally, @var{device}, @var{driver} and @var{config-file}
-(configuration file name) may be specified.  See @command{lircd} manual
-for details.
+The value for this service is a @code{<lirc-configuration>} object.
+@end defvar
 
-Finally, @var{extra-options} is a list of additional command-line options
-passed to @command{lircd}.
-@end deffn
+@deftp {Data Type} lirc-configuration
+Data type representing the configuration of @command{lircd}.
 
-@cindex spice
-@subsubheading Spice Service
+@table @asis
+@item @code{lirc} (default: @code{lirc}) (type: file-like)
+Package object for @command{lirc}.
+
+@item @code{device} (default: @code{#f}) (type: string)
+@itemx @code{driver} (default: @code{#f}) (type: string)
+@itemx @code{config-file} (default: @code{#f}) (type: string-or-file-like)
+TODO.  See @command{lircd} manual for details.
+
+@item @code{extra-options} (default: @code{'()}) (type: list-of-string)
+Additional command-line options to pass to @command{lircd}.
+
+@end table
+@end deftp
+
+@c TODO: Document <lirc-configuration>, preferably by refactoring this to use
+@c       define-configuration and generating documentation from it.
+
+@cindex SPICE
+@subsubheading SPICE Service
 
 The @code{(gnu services spice)} module provides the following service.
 
-@deffn {Scheme Procedure} spice-vdagent-service [#:spice-vdagent]
-Returns a service that runs @url{https://www.spice-space.org,VDAGENT}, a daemon
-that enables sharing the clipboard with a vm and setting the guest display
-resolution when the graphical console window resizes.
-@end deffn
+@defvar spice-vdagent-service-type
+Type of the service that runs @url{https://www.spice-space.org, VDAGENT},
+a daemon that enables sharing the clipboard with a vm and setting the
+guest display resolution when the graphical console window resizes.
+@end defvar
+
+@deftp {Data Type} spice-vdagent-configuration
+Data type representing the configuration of
+@code{spice-vdagent-service-type}.
+
+@table @asis
+@item @code{spice-vdagent} (default: @code{spice-vdagent}) (type: file-like)
+Package object for VDAGENT.
+
+@end table
+@end deftp
 
 @cindex inputattach
 @subsubheading inputattach Service
@@ -37551,25 +37939,17 @@ If true, this must be the name of a file to log messages to.
 
 @subsubheading Dictionary Service
 @cindex dictionary
+
 The @code{(gnu services dict)} module provides the following service:
 
 @defvar dicod-service-type
 This is the type of the service that runs the @command{dicod} daemon, an
 implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
-@end defvar
-
-@deffn {Scheme Procedure} dicod-service [#:config (dicod-configuration)]
-Return a service that runs the @command{dicod} daemon, an implementation
-of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
-
-The optional @var{config} argument specifies the configuration for
-@command{dicod}, which should be a @code{<dicod-configuration>} object, by
-default it serves the GNU Collaborative International Dictionary of English.
 
 You can add @command{open localhost} to your @file{~/.dico} file to make
 @code{localhost} the default server for @command{dico} client
 (@pxref{Initialization File,,, dico, GNU Dico Manual}).
-@end deffn
+@end defvar
 
 @deftp {Data Type} dicod-configuration
 Data type representing the configuration of dicod.
@@ -37634,22 +38014,24 @@ A @code{<dicod-database>} object serving the GNU Collaborative International
 Dictionary of English using the @code{gcide} package.
 @end defvar
 
-The following is an example @code{dicod-service} configuration.
+The following is an example @code{dicod-service-type} configuration.
 
 @lisp
-(dicod-service #:config
-  (dicod-configuration
-   (handlers (list (dicod-handler
-                    (name "wordnet")
-                    (module "dictorg")
-                    (options
-                     (list #~(string-append "dbdir=" #$wordnet))))))
-   (databases (list (dicod-database
-                     (name "wordnet")
-                     (complex? #t)
-                     (handler "wordnet")
-                     (options '("database=wn")))
-                    %dicod-database:gcide))))
+(service dicod-service-type
+         (dicod-configuration
+          (handlers (list
+                     (dicod-handler
+                      (name "wordnet")
+                      (module "dictorg")
+                      (options
+                       (list #~(string-append "dbdir=" #$wordnet))))))
+          (databases (list
+                      (dicod-database
+                       (name "wordnet")
+                       (complex? #t)
+                       (handler "wordnet")
+                       (options '("database=wn")))
+                      %dicod-database:gcide))))
 @end lisp
 
 @cindex Docker
@@ -37944,7 +38326,7 @@ is an example of a basic, explicit configuration:
 @end lisp
 @end defvar
 
-@deffn {Scheme Procedure} fail2ban-jail-service @var{svc-type} @var{jail}
+@defun fail2ban-jail-service svc-type jail
 Extend @var{svc-type}, a @code{<service-type>} object with @var{jail}, a
 @code{fail2ban-jail-configuration} object.
 
@@ -37964,7 +38346,7 @@ For example:
      (enabled? #t)))
    (openssh-configuration ...))))
 @end lisp
-@end deffn
+@end defun
 
 Below is the reference for the different @code{jail-service-type}
 configuration records.
@@ -38571,7 +38953,7 @@ here is how to use it and customize it further.
 
 @cindex initrd
 @cindex initial RAM disk
-@deffn {Scheme Procedure} raw-initrd @var{file-systems} @
+@defun raw-initrd file-systems @
        [#:linux-modules '()] [#:pre-mount #t] [#:mapped-devices '()] @
        [#:keyboard-layout #f] [#:helper-packages '()] @
        [#:qemu-networking? #f] [#:volatile-root? #f]
@@ -38600,9 +38982,9 @@ initrd can be used as a QEMU guest with para-virtualized I/O drivers.
 
 When @var{volatile-root?} is true, the root file system is writable but any changes
 to it are lost.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} base-initrd @var{file-systems} @
+@defun base-initrd file-systems @
        [#:mapped-devices '()] [#:keyboard-layout #f] @
        [#:qemu-networking? #f] [#:volatile-root? #f] @
        [#:linux-modules '()]
@@ -38624,7 +39006,7 @@ The initrd is automatically populated with all the kernel modules necessary
 for @var{file-systems} and for the given options.  Additional kernel
 modules can be listed in @var{linux-modules}.  They will be added to the initrd, and
 loaded at boot time in the order in which they appear.
-@end deffn
+@end defun
 
 Needless to say, the initrds we produce and use embed a
 statically-linked Guile, and the initialization program is a Guile
@@ -38632,13 +39014,13 @@ program.  That gives a lot of flexibility.  The
 @code{expression->initrd} procedure builds such an initrd, given the
 program to run in that initrd.
 
-@deffn {Scheme Procedure} expression->initrd @var{exp} @
+@defun expression->initrd exp @
        [#:guile %guile-static-stripped] [#:name "guile-initrd"]
 Return as a file-like object a Linux initrd (a gzipped cpio archive)
 containing @var{guile} and that evaluates @var{exp}, a G-expression,
 upon booting.  All the derivations referenced by @var{exp} are
 automatically copied to the initrd.
-@end deffn
+@end defun
 
 @node Bootloader Configuration
 @section Bootloader Configuration
@@ -38984,14 +39366,14 @@ The GRUB @code{gfxmode} to set (a list of screen resolution strings,
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} grub-theme
+@defun grub-theme
 Return the default GRUB theme used by the operating system if no
 @code{theme} field is specified in @code{bootloader-configuration}
 record.
 
 It comes with a fancy background image displaying the GNU and Guix
 logos.
-@end deffn
+@end defun
 
 For example, to override the default resolution, you may use something
 like
@@ -40243,7 +40625,7 @@ Services}).  This section provides a reference on how to manipulate
 services and service types.  This interface is provided by the
 @code{(gnu services)} module.
 
-@deffn {Scheme Procedure} service @var{type} [@var{value}]
+@defun service type [value]
 Return a new service of @var{type}, a @code{<service-type>} object (see
 below).  @var{value} can be any object; it represents the parameters of
 this particular service instance.
@@ -40268,20 +40650,20 @@ is equivalent to this:
 
 In both cases the result is an instance of @code{openssh-service-type}
 with the default configuration.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} service? @var{obj}
+@defun service? obj
 Return true if @var{obj} is a service.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} service-kind @var{service}
+@defun service-kind service
 Return the type of @var{service}---i.e., a @code{<service-type>} object.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} service-value @var{service}
+@defun service-value service
 Return the value associated with @var{service}.  It represents its
 parameters.
-@end deffn
+@end defun
 
 Here is an example of how a service is created and manipulated:
 
@@ -40310,8 +40692,8 @@ standard list combinators such as @code{map} and @code{fold} to do that
 @code{modify-services} simply provides a more concise form for this
 common pattern.
 
-@deffn {Scheme Syntax} modify-services @var{services} @
-  (@var{type} @var{variable} => @var{body}) @dots{}
+@defspec modify-services services @
+  (type variable => body) @dots{}
 
 Modify the services listed in @var{services} according to the given
 clauses.  Each clause has the form:
@@ -40344,7 +40726,7 @@ Such a clause removes all services of the given @var{type} from
 
 @xref{Using the Configuration System}, for example usage.
 
-@end deffn
+@end defspec
 
 Next comes the programming interface for service types.  This is
 something you want to know when writing new service definitions, but not
@@ -40402,24 +40784,23 @@ The returned service in this case has the default value specified by
 @xref{Service Types and Services}, for examples.
 @end deftp
 
-@deffn {Scheme Procedure} service-extension @var{target-type} @
-                              @var{compute}
+@defun service-extension target-type compute
 Return a new extension for services of type @var{target-type}.
 @var{compute} must be a one-argument procedure: @code{fold-services}
 calls it, passing it the value associated with the service that provides
 the extension; it must return a valid value for the target service.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} service-extension? @var{obj}
+@defun service-extension? obj
 Return true if @var{obj} is a service extension.
-@end deffn
+@end defun
 
 Occasionally, you might want to simply extend an existing service.  This
 involves creating a new service type and specifying the extension of
 interest, which can be verbose; the @code{simple-service} procedure
 provides a shorthand for this.
 
-@deffn {Scheme Procedure} simple-service @var{name} @var{target} @var{value}
+@defun simple-service name target value
 Return a service that extends @var{target} with @var{value}.  This works
 by creating a singleton service type @var{name}, of which the returned
 service is an instance.
@@ -40431,7 +40812,7 @@ an additional job:
 (simple-service 'my-mcron-job mcron-service-type
                 #~(job '(next-hour (3)) "guix gc -F 2G"))
 @end lisp
-@end deffn
+@end defun
 
 At the core of the service abstraction lies the @code{fold-services}
 procedure, which is responsible for ``compiling'' a list of services
@@ -40441,11 +40822,10 @@ command (@pxref{Invoking guix system}).  In essence, it propagates
 service extensions down the service graph, updating each node parameters
 on the way, until it reaches the root node.
 
-@deffn {Scheme Procedure} fold-services @var{services} @
-                            [#:target-type @var{system-service-type}]
+@defun fold-services services [#:target-type system-service-type]
 Fold @var{services} by propagating their extensions down to the root of
 type @var{target-type}; return the root service adjusted accordingly.
-@end deffn
+@end defun
 
 Lastly, the @code{(gnu services)} module also defines several essential
 service types, some of which are listed below.
@@ -40728,7 +41108,7 @@ info on actions.
 @end deftp
 
 @cindex configuration file, of Shepherd services
-@deffn {Scheme Procedure} shepherd-configuration-action
+@defun shepherd-configuration-action
 Return a @code{configuration} action to display @var{file}, which should
 be the name of the service's configuration file.
 
@@ -40758,7 +41138,7 @@ cat $(herd configuration tor)
 @end example
 
 This can come in as a handy debugging tool!
-@end deffn
+@end defun
 
 @defvar shepherd-root-service-type
 The service type for the Shepherd ``root service''---i.e., PID@tie{}1.
@@ -40822,8 +41202,7 @@ procedures that take some kind of Scheme value and returns a
 G-expression (@pxref{G-Expressions}), which should, once serialized to
 the disk, return a string.  More details are listed below.
 
-@deffn {Scheme Syntax} define-configuration @var{name} @var{clause1} @
-@var{clause2} ...
+@defmac define-configuration name clause1 clause2 @dots{}
 Create a record type named @code{@var{name}} that contains the
 fields found in the clauses.
 
@@ -40933,9 +41312,9 @@ macro which is a shorthand of this.
    (string "test")
    "Some documentation."))
 @end lisp   
-@end deffn
+@end defmac
 
-@deffn {Scheme Syntax} define-maybe @var{type}
+@defmac define-maybe type
 Sometimes a field should not be serialized if the user doesn’t specify a
 value.  To achieve this, you can use the @code{define-maybe} macro to
 define a ``maybe type''; if the value of a maybe type is left unset, or
@@ -40987,32 +41366,30 @@ whether its value is set or not.
    maybe-symbol
    "Docstring."))
 @end lisp
-@end deffn
+@end defmac
 
-@deffn (Scheme Procedure) maybe-value-set? @var{value}
+@defun maybe-value-set? value
 Predicate to check whether a user explicitly specified the value of a
 maybe field.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} serialize-configuration @var{configuration} @
-@var{fields}
+@defun serialize-configuration configuration fields
 Return a G-expression that contains the values corresponding to the
 @var{fields} of @var{configuration}, a record that has been generated by
 @code{define-configuration}.  The G-expression can then be serialized to
 disk by using something like @code{mixed-text-file}.
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} empty-serializer @var{field-name} @var{value}
+@defun empty-serializer field-name value
 A serializer that just returns an empty string.  The
 @code{serialize-package} procedure is an alias for this.
-@end deffn
+@end defun
 
 Once you have defined a configuration record, you will most likely also
 want to document it so that other people know to use it.  To help with
 that, there are two procedures, both of which are documented below.
 
-@deffn {Scheme Procedure} generate-documentation @var{documentation} @
-@var{documentation-name}
+@defun generate-documentation documentation documentation-name
 Generate a Texinfo fragment from the docstrings in @var{documentation},
 a list of @code{(@var{label} @var{fields} @var{sub-documentation} ...)}.
 @var{label} should be a symbol and should be the name of the
@@ -41042,16 +41419,15 @@ record in one of its @code{rcfile} field, therefore documentation for
 @var{documentation-name} should be a symbol and should be the name of
 the configuration record.
 
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} configuration->documentation
-@var{configuration-symbol}
+@defun configuration->documentation configuration-symbol
 Take @var{configuration-symbol}, the symbol corresponding to the name
 used when defining a configuration record with
 @code{define-configuration}, and print the Texinfo documentation of its
 fields.  This is useful if there aren’t any nested configuration records
 since it only prints the documentation for the top-level fields.
-@end deffn
+@end defun
 
 As of right now, there is no automated way to generate documentation for
 configuration records and put them in the manual.  Instead, every
@@ -41402,15 +41778,18 @@ service with the @code{simple-service} procedure from @code{(gnu
 services)}.
 
 @menu
-* Essential Home Services::  Environment variables, packages, on-* scripts.
-* Shells: Shells Home Services.                        POSIX shells, Bash, Zsh.
-* Mcron: Mcron Home Service.                           Scheduled User's Job Execution.
-* Power Management: Power Management Home Services.    Services for battery power.
-* Shepherd: Shepherd Home Service.                     Managing User's Daemons.
-* SSH: Secure Shell.                                   Setting up the secure shell client.
-* Desktop: Desktop Home Services.                      Services for graphical environments.
-* Guix: Guix Home Services.                            Services for Guix.
-* Fonts: Fonts Home Services.                          Services for managing User's fonts.
+* Essential Home Services::     Environment variables, packages, on-* scripts.
+* Shells: Shells Home Services.  POSIX shells, Bash, Zsh.
+* Mcron: Mcron Home Service.    Scheduled User's Job Execution.
+* Power Management: Power Management Home Services.  Services for battery power.
+* Shepherd: Shepherd Home Service.  Managing User's Daemons.
+* SSH: Secure Shell.            Setting up the secure shell client.
+* Desktop: Desktop Home Services.  Services for graphical environments.
+* Guix: Guix Home Services.     Services for Guix.
+* Fonts: Fonts Home Services.   Services for managing User's fonts.
+* Sound: Sound Home Services.   Dealing with audio.
+* Messaging: Messaging Home Services.   Services for managing messaging.
+* Media: Media Home Services.   Services for managing media.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -42170,6 +42549,43 @@ Extra content appended as-is to this @code{Host} block in
 
 @c %end of fragment
 
+@cindex ssh-agent
+The @uref{https://www.openssh.com, OpenSSH package} includes a daemon,
+the @command{ssh-agent} command, that manages keys to connect to remote
+machines using the @acronym{SSH, secure shell} protocol.  With the
+@code{(gnu home services ssh-agent)} service, you can configure the
+OpenSSH ssh-agent to run upon login.
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-ssh-agent-service-type
+  (home-ssh-agent-configuration
+   (extra-options '("-t" "1h30m"))))
+@end lisp
+
+@defvar home-ssh-agent-service-type
+This is the type of the @code{git daemon} home service, whose value is an
+@code{home-ssh-agent-configuration} object.
+@end defvar
+
+@deftp {Data Type} home-ssh-agent-configuration
+Available @code{home-ssh-agent-configuration} fields are:
+
+@table @asis
+@item @code{git} (default: @code{git}) (type: file-like)
+The git package to use.
+
+@item @code{socket-directory} (default: @code{@env{XDG_RUNTIME_DIR}/ssh-agent"}) (type: gexp)
+The directory to write the ssh-agent's @file{socket} file.
+
+@item @code{extra-options} (default: @code{'()})
+Extra options will be passed to @command{ssh-agent}, please run
+@command{man ssh-agent} for more information.
+
+@end table
+@end deftp
 
 @node Desktop Home Services
 @subsection Desktop Home Services
@@ -42263,6 +42679,77 @@ The package providing the @code{/bin/dbus-daemon} command.
 @end table
 @end deftp
 
+@defvar home-unclutter-service-type
+This is the service type for Unclutter, a program that runs on the
+background of an X11 session and detects when the X pointer hasn't moved
+for a specified idle timeout, after which it hides the cursor so that
+you can focus on the text underneath.  Its associated value must be a
+@code{home-unclutter-configuration} record, as shown below.
+
+A typical configuration, where we manually specify the idle timeout (in
+seconds), might look like this:
+
+@lisp
+(service home-unclutter-service-type
+         (home-unclutter-configuration
+          (idle-timeout 2)))
+@end lisp
+@end defvar
+
+@deftp {Data Type} home-unclutter-configuration
+The configuration record for @code{home-unclutter-service-type}.
+
+@table @asis
+@item @code{unclutter} (default: @code{unclutter}) (type: file-like)
+Unclutter package to use.
+
+@item @code{idle-timeout} (default: @code{5}) (type: integer)
+A timeout in seconds after which to hide cursor.
+@end table
+
+@end deftp
+
+@defvar home-xmodmap-service-type
+This is the service type for the
+@uref{https://gitlab.freedesktop.org/xorg/app/xmodmap,xmodmap} utility
+to modify keymaps and pointer button mappings under the Xorg display
+server.  Its associated value must be a
+@code{home-xmodmap-configuration} record, as shown below.
+
+The @code{key-map} field takes a list of objects, each of which is
+either a @dfn{statement} (a string) or an @dfn{assignment} (a pair of
+strings).  As an example, the snippet below swaps around the
+@kbd{Caps_Lock} and the @kbd{Control_L} keys, by first removing the
+keysyms (on the right-hand side) from the corresponding modifier maps
+(on the left-hand side), re-assigning them by swapping each other out,
+and finally adding back the keysyms to the modifier maps.
+
+@lisp
+(service home-xmodmap-service-type
+         (home-xmodmap-configuration
+          (key-map '(("remove Lock" . "Caps_Lock")
+                     ("remove Control" . "Control_L")
+                     ("keysym Control_L" . "Caps_Lock")
+                     ("keysym Caps_Lock" . "Control_L")
+                     ("add Lock" . "Caps_Lock")
+                     ("add Control" . "Control_L")))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} home-xmodmap-configuration
+The configuration record for @code{home-xmodmap-service-type}.  Its
+available fields are:
+
+@table @asis
+@item @code{xmodmap} (default: @code{xmodmap}) (type: file-like)
+The @code{xmodmap} package to use.
+
+@item @code{key-map} (default: @code{'()}) (type: list)
+The list of expressions to be read by @code{xmodmap} on service startup.
+
+@end table
+@end deftp
+
 @node Guix Home Services
 @subsection Guix Home Services
 
@@ -42323,6 +42810,173 @@ like this:
                 (list "~/.nix-profile/share/fonts"))
 @end lisp
 @end defvar
+
+@node Sound Home Services
+@subsection Sound Home Services
+
+The @code{(gnu home services sound)} module provides services related to
+sound support.
+
+@cindex PulseAudio, home service
+@cindex RTP, for PulseAudio
+
+The following services dynamically reconfigure the
+@uref{https://pulseaudio.org,PulseAudio sound server}: they let you
+toggle broadcast of audio output over the network using the
+@acronym{RTP, real-time transport protocol} and, correspondingly,
+playback of sound received over RTP.  Once
+@code{home-pulseaudio-rtp-sink-service-type} is among your home
+services, you can start broadcasting audio output by running this
+command:
+
+@example
+herd start pulseaudio-rtp-sink
+@end example
+
+You can then run a PulseAudio-capable mixer, such as @code{pavucontrol}
+or @code{pulsemixer} (both from the same-named package) to control which
+audio stream(s) should be sent to the RTP ``sink''.
+
+By default, audio is broadcasted to a multicast address: any device on
+the @acronym{LAN, local area network} receives it and may play it.
+Using multicast in this way puts a lot of pressure on the network and
+degrades its performance, so you may instead prefer sending to
+specifically one device.  The first way to do that is by specifying the
+IP address of the target device when starting the service:
+
+@example
+herd start pulseaudio-rtp-sink 192.168.1.42
+@end example
+
+The other option is to specify this IP address as the one to use by
+default in your home environment configuration:
+
+@lisp
+(service home-pulseaudio-rtp-sink-service-type
+         "192.168.1.42")
+@end lisp
+
+On the device where you intend to receive and play the RTP stream, you
+can use @code{home-pulseaudio-rtp-source-service-type}, like so:
+
+@lisp
+(service home-pulseaudio-rtp-source-service-type)
+@end lisp
+
+This will then let you start the receiving module for PulseAudio:
+
+@example
+herd start pulseaudio-rtp-source
+@end example
+
+Again, by default it will listen on the multicast address.  If, instead,
+you'd like it to listen for direct incoming connections, you can do that
+by running:
+
+@lisp
+(service home-pulseaudio-rtp-source-service-type
+         "0.0.0.0")
+@end lisp
+
+The reference of these services is given below.
+
+@defvar home-pulseaudio-rtp-sink-service-type
+@defvarx home-pulseaudio-rtp-source-service-type
+This is the type of the service to send, respectively receive, audio
+streams over @acronym{RTP, real-time transport protocol}.
+
+The value associated with this service is the IP address (a string)
+where to send, respectively receive, the audio stream.  By default,
+audio is sent/received on multicast address
+@code{%pulseaudio-rtp-multicast-address}.
+
+This service defines one Shepherd service: @code{pulseaudio-rtp-sink},
+respectively @code{pulseaudio-rtp-source}.  The service is not started
+by default, so you have to explicitly start it when you want to turn it
+on, as in this example:
+
+@example
+herd start pulseaudio-rtp-sink
+@end example
+
+Stopping the Shepherd service turns off broadcasting.
+@end defvar
+
+@defvar %pulseaudio-rtp-multicast-address
+This is the multicast address used by default by the two services above.
+@end defvar
+
+@node Messaging Home Services
+@subsection Messaging Home Services
+
+@cindex znc
+The @uref{https://znc.in, ZNC bouncer} can be run as a daemon to manage
+your IRC presence.  With the @code{(gnu home services znc)} service, you
+can configure ZNC to run upon login.
+
+You will have to provide a @file{~/.znc/configs/znc.conf} seperately.
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-znc-service-type)
+@end lisp
+
+@defvar home-znc-service-type
+This is the type of the @code{git daemon} home service, whose value is an
+@code{home-znc-configuration} object.
+@end defvar
+
+@deftp {Data Type} home-znc-configuration
+Available @code{home-znc-configuration} fields are:
+
+@table @asis
+@item @code{git} (default: @code{git}) (type: file-like)
+The git package to use.
+
+@item @code{extra-options} (default: @code{'()})
+Extra options will be passed to @command{znc}, please run @command{man
+znc} for more information.
+
+@end table
+@end deftp
+
+@node Media Home Services
+@subsection Media Home Services
+
+@cindex kodi
+The @uref{https://kodi.tv, KODI media center} can be run as a daemon on
+a media server.  With the @code{(gnu home services kodi)} service, you
+can configure KODI to run upon login.
+
+Here is an example of a service and its configuration that you could add
+to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-kodi-service-type
+  (home-kodi-configuration
+   (extra-options '("--settings="<settings-file>"))))
+@end lisp
+
+@defvar home-kodi-service-type
+This is the type of the @code{git daemon} home service, whose value is an
+@code{home-kodi-configuration} object.
+@end defvar
+
+@deftp {Data Type} home-kodi-configuration
+Available @code{home-kodi-configuration} fields are:
+
+@table @asis
+@item @code{git} (default: @code{git}) (type: file-like)
+The git package to use.
+
+@item @code{extra-options} (default: @code{'()})
+Extra options will be passed to @command{kodi}, please run @command{man
+kodi} for more information.
+
+@end table
+@end deftp
 
 @node Invoking guix home
 @section Invoking @command{guix home}

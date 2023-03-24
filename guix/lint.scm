@@ -33,7 +33,6 @@
 (define-module (guix lint)
   #:use-module (guix store)
   #:autoload   (guix base16) (bytevector->base16-string)
-  #:use-module (guix base32)
   #:autoload   (guix base64) (base64-encode)
   #:use-module (guix build-system)
   #:use-module (guix diagnostics)
@@ -533,7 +532,8 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   ;; Emit a warning if some inputs of PACKAGE are likely to should not be
   ;; an input at all.
   (let ((input-names '("python-setuptools"
-                       "python-pip")))
+                       "python-pip"
+                       "python-pre-commit")))
     (map (lambda (input)
            (make-warning
             package
@@ -1863,6 +1863,10 @@ them for PACKAGE."
      (description "Validate package descriptions")
      (check       check-description-style))
    (lint-checker
+     (name        'synopsis)
+     (description "Validate package synopses")
+     (check       check-synopsis-style))
+   (lint-checker
      (name        'inputs-should-be-native)
      (description "Identify inputs that should be native inputs")
      (check       check-inputs-should-be-native))
@@ -1926,10 +1930,7 @@ or a list thereof")
 
 (define %network-dependent-checkers
   (list
-   (lint-checker
-     (name        'synopsis)
-     (description "Validate package synopses")
-     (check       check-synopsis-style))
+
    (lint-checker
      (name        'gnu-description)
      (description "Validate synopsis & description of GNU packages")

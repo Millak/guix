@@ -1123,6 +1123,7 @@ an exception in such cases but perform the nearest sane action."
   "Return the number suitable for the 'flags' argument of 'mount' that
 corresponds to the symbols listed in FLAGS."
   (let loop ((flags flags))
+    ;; Note: Keep in sync with ‘invalid-file-system-flags’.
     (match flags
       (('read-only rest ...)
        (logior MS_RDONLY (loop rest)))

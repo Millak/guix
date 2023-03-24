@@ -3034,6 +3034,7 @@ memoized as a function of '%current-system'."
                                   ("flex" ,flex-boot0)))
                  (inputs `(("flex" ,flex-boot0)))
                  (arguments
+                  ;; TODO: On next rebuild cycle, reuse phases from 'mig'.
                   `(#:configure-flags
                     `(,(string-append "LDFLAGS=-Wl,-rpath="
                                       (assoc-ref %build-inputs "flex") "/lib/")))))))

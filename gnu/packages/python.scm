@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017, 2019 Eric Bavier <bavier@member.fsf.org>
@@ -559,13 +559,13 @@ data types.")
      (modify-inputs (package-inputs python-2.7)
        (replace "openssl" openssl)))
     (native-inputs
-     `(("tzdata" ,tzdata-for-tests)
-       ("unzip" ,unzip)
-       ("zip" ,(@ (gnu packages compression) zip))
-       ,@(if (%current-target-system)
-             `(("python3" ,this-package))
-             '())
-       ,@(package-native-inputs python-2)))
+     (let ((inputs (modify-inputs (package-native-inputs python-2)
+                     (prepend tzdata-for-tests
+                              unzip
+                              (@ (gnu packages compression) zip)))))
+       (if (%current-target-system)
+           (modify-inputs inputs (prepend this-package))
+           inputs)))
     (native-search-paths
      (list (guix-pythonpath-search-path version)
            ;; Used to locate tzdata by the zoneinfo module introduced in
@@ -592,9 +592,7 @@ data types.")
     ;; is invoked upon 'make install'.  'pip' also expects 'ctypes' and thus
     ;; libffi.  Expat is needed for XML support which is expected by a lot
     ;; of libraries out there.
-    (inputs `(("expat" ,expat)
-              ("libffi" ,libffi)
-              ("zlib" ,zlib)))))
+    (inputs (list expat libffi zlib))))
 
 (define-public python-minimal
   (package/inherit python
@@ -605,10 +603,7 @@ data types.")
     ;; OpenSSL is a mandatory dependency of Python 3.x, for urllib;
     ;; zlib is required by 'zipimport', used by pip.  Expat is needed
     ;; for XML support, which is generally expected to be available.
-    (inputs `(("expat" ,expat)
-              ("libffi" ,libffi)
-              ("openssl" ,openssl)
-              ("zlib" ,zlib)))))
+    (inputs (list expat libffi openssl zlib))))
 
 (define-public python-debug
   (package/inherit python

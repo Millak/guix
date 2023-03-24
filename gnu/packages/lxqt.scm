@@ -483,14 +483,14 @@ of other programs.")
 (define-public lxqt-panel
   (package
     (name "lxqt-panel")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1m0mm07ydmdlyyi6s4q1cwpxp609kcyc3gcmwbmyf0smadan3yd8"))))
+        (base32 "1604rb4yg1lgivvd76gaqb6dvq8bv8xy5f2vzj46prh0rbvhnf2b"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
@@ -786,14 +786,14 @@ for LXQt.")
 (define-public libfm-qt
   (package
     (name "libfm-qt")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0b423s6bkwijjrh14wca49ypz79sxci9lalxc5s29vwbhync09x0"))))
+        (base32 "00r35gb4x6fnsv6z6digr3661cwykxn32xq23an1n044v38lry6x"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no tests
@@ -817,14 +817,14 @@ components to build desktop file managers which belongs to LXDE.")
 (define-public pcmanfm-qt
   (package
     (name "pcmanfm-qt")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1k44a659mval4513p4yv63hqrbg9jqc8vrinl4mx5aja33pww5yg"))))
+        (base32 "0nz66b9mv6hqaxf5k3ijaf1694za5nv121y6jfq39db3a1qx7rm5"))))
     (build-system cmake-build-system)
     (arguments
      (list

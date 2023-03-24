@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@suse.cz>
 ;;; Copyright © 2015 Daniel Pimentel <d4n1@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Timo Eisenmann <eisenmann@fn.de>
@@ -27,7 +27,6 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
-  #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -119,27 +118,31 @@
     (propagated-inputs
      ;; All these inputs are in package config files in section
      ;; Requires.private.
-     (list dbus
-           elogind
-           eudev
-           fontconfig
-           freetype
-           fribidi
-           glib
-           harfbuzz
-           libinput-minimal
-           libjpeg-turbo
-           libsndfile
-           libpng
-           libunwind
-           libx11
-           libxkbcommon
-           luajit
-           lz4
-           openssl
-           pulseaudio
-           wayland
-           zlib))
+     (append
+       (list dbus
+             elogind
+             eudev
+             fontconfig
+             freetype
+             fribidi
+             glib
+             harfbuzz
+             libinput-minimal
+             libjpeg-turbo
+             libsndfile
+             libpng
+             libunwind
+             libx11
+             libxkbcommon)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems luajit))
+         (list luajit)
+         (list lua-5.2))
+       (list lz4
+             openssl
+             pulseaudio
+             wayland
+             zlib)))
     (arguments
      `(#:configure-flags
        `("-Dembedded-lz4=false"
@@ -149,6 +152,10 @@
          "-Dmount-path=/run/setuid-programs/mount"
          "-Dunmount-path=/run/setuid-programs/umount"
          "-Dnetwork-backend=connman"
+         ,,@(if (member (%current-system)
+                        (package-transitive-supported-systems luajit))
+              `("-Dlua-interpreter=luajit")
+              `("-Dlua-interpreter=lua"))
          ;; For Wayland.
          "-Dwl=true"
          "-Ddrm=true")

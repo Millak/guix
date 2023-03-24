@@ -41,7 +41,7 @@
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
-;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021-2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021, 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
@@ -546,7 +546,7 @@ The unified Libertinus family consists of:
                       make-flags)))))))
     (native-inputs
      (list bdftopcf font-util mkfontdir pkg-config python))
-    (home-page "http://terminus-font.sourceforge.net/")
+    (home-page "https://terminus-font.sourceforge.net/")
     (synopsis "Simple bitmap programming font")
     (description "Terminus Font is a clean, fixed-width bitmap font, designed
 for long periods of working with computers (8 or more hours per day).")
@@ -753,7 +753,7 @@ printing old Malayalam books without compromising the writing style.")
         (base32
          "0kph9l3g7jb2bpmxdbdg5zl56wacmnvdvsdn7is1gc750sqvsn31"))))
     (build-system font-build-system)
-    (home-page "http://www.gust.org.pl/projects/e-foundry/tex-gyre/")
+    (home-page "https://www.gust.org.pl/projects/e-foundry/tex-gyre/")
     (synopsis "Remake of Ghostscript fonts")
     (description "The TeX Gyre collection of fonts is the result of an
 extensive remake and extension of the freely available base PostScript fonts
@@ -982,11 +982,15 @@ display all Unicode symbols.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-unsupported
+          (add-after 'unpack 'enter-font-directory
+            (lambda _
+              ;; Note this ensures the correct license file is installed.
+              (chdir "fonts")))
+          (add-after 'enter-font-directory 'remove-unsupported
             (lambda* _
-              (delete-file "fonts/NotoColorEmoji_WindowsCompatible.ttf")
-              (delete-file "fonts/Noto-COLRv1-noflags.ttf")
-              (delete-file "fonts/Noto-COLRv1.ttf"))))))
+              (delete-file "NotoColorEmoji_WindowsCompatible.ttf")
+              (delete-file "Noto-COLRv1-noflags.ttf")
+              (delete-file "Noto-COLRv1.ttf"))))))
     (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
     (synopsis "Font for rendering color emoji characters")
     (description
@@ -1266,6 +1270,30 @@ work well in user interface (UI) environments.")
 Sans Pro family.")
     (license license:silofl1.1)))
 
+(define-public font-microsoft-cascadia
+  (package
+    (name "font-microsoft-cascadia")
+    (version "2111.01")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://github.com/microsoft/cascadia-code/"
+                    "releases/download/v"
+                    version
+                    "/CascadiaCode-"
+                    version
+                    ".zip"))
+              (sha256
+               (base32
+                "04p72jmbafblrliy5phqi6sqi52wgzpilf3rphppxf7zdlbnizai"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/microsoft/cascadia-code")
+    (synopsis "Monospaced font with programming ligatures")
+    (description
+     "Cascadia is a fun new coding font that comes bundled with Windows
+Terminal, and is now the default font in Visual Studio as well.")
+    (license license:silofl1.1)))
+
 (define-public font-fira-sans
   ;; Fira Sans v4.203 (which corresponds to Fira Mono v3.206) is the final
   ;; version to include UFO sources. It is the same version packaged by other
@@ -1532,7 +1560,7 @@ later hand-tweaked with the gbdfed(1) editor:
   </alias>
 </fontconfig>\n"))))
              #t)))))
-    (home-page "http://www.comicneue.com/")
+    (home-page "https://www.comicneue.com/")
     (synopsis "Font that fixes the shortcomings of Comic Sans")
     (description
      "Comic Neue is a font that attempts to create a respectable casual
@@ -1553,7 +1581,7 @@ guix repl <<EOF
              (ice-9 string-fun)
              (gnu packages fonts))
 
-(let ((new-version "16.4.0")
+(let ((new-version "20.0.0")
       (iosevka-hashes #nil)
       (iosevka-fails #nil))
   (for-each (lambda (font)
@@ -1575,7 +1603,9 @@ guix repl <<EOF
                   font-iosevka-aile
                   font-iosevka-curly
                   font-iosevka-curly-slab
-                  font-iosevka-etoile))
+                  font-iosevka-etoile
+                  font-iosevka-ss08
+                  font-iosevka-ss09))
   (for-each (lambda (hash)
               (format #t "~a: ~a~%" (car hash) (cdr hash)))
             (reverse iosevka-hashes))
@@ -1587,7 +1617,7 @@ EOF
 (define-public font-iosevka
   (package
     (name "font-iosevka")
-    (version "16.4.0")
+    (version "20.0.0")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1595,7 +1625,7 @@ EOF
                            "/releases/download/v" version
                            "/ttc-iosevka-" version ".zip"))
        (sha256
-        (base32 "07v98pr0anqbxn1yc55245k5ixxzfk2wmfq67zhz84aa18viqhbc"))))
+        (base32 "19f8p7zw7wbm8xbxm0kxv8k979bkqvx51hrckkc6nvddmigq1848"))))
     (build-system font-build-system)
     (home-page "https://be5invis.github.io/Iosevka/")
     (synopsis "Coders' typeface, built from code")
@@ -1618,7 +1648,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-slab-" version ".zip"))
        (sha256
-        (base32 "063qk1d75l1jq7gdwzqxd7j8j56g7da0aagsqm0lvwl217l7x48b"))))))
+        (base32 "0c8pxdz98xwd8sj1yc8gx2g2wfjyxk4951wmg55dibd3wj106rjp"))))))
 
 (define-public font-iosevka-term
   (package
@@ -1632,7 +1662,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttf-iosevka-term-" version ".zip"))
        (sha256
-        (base32 "17465bvg6fap53xfqwrg2g4fasv01w86wh658n1rf6djs3yzn1gx"))))
+        (base32 "1rln8cl1ah201ai2p34s6a52ggkgmgcx9gnvdnfgv4430bmnrpwc"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1653,7 +1683,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version "/"
                            "ttf-iosevka-term-slab-" version ".zip"))
        (sha256
-        (base32 "00pc4d8awdiziyzncah3fnh0ppvcdvi9cd7vyknl68f6fj283fvm"))))
+        (base32 "1sjz6h3w2c15jdfhqiibjshq5zfdjng28vcsl2dyxrb5wdxs7a01"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1674,7 +1704,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-aile-" version ".zip"))
        (sha256
-        (base32 "03y0xijb7c0kampm3gjb69mv8hikhsgqhlw1w3zfcjhr2vc62g6q"))))))
+        (base32 "0jcyx8wpw18d8igqr1hfrybrldkr0r9qs24jw4z0x5k4gbah7mmf"))))))
 
 (define-public font-iosevka-curly
   (package
@@ -1688,7 +1718,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-" version ".zip"))
        (sha256
-        (base32 "1i31zj0j8npgx7wn2qibih48s76qjxakz14sa2hgx908p8xyfwq5"))))))
+        (base32 "0hj4lx8cyvib21cp065a56ag9jkwpzs74a93cf557j0x91k3wja0"))))))
 
 (define-public font-iosevka-curly-slab
   (package
@@ -1702,7 +1732,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-slab-" version ".zip"))
        (sha256
-        (base32 "1xijhk5vbgs3c89a7g9cfjqjqv801gimjja4wqpvaficab692jh2"))))))
+        (base32 "10h58x5c32chvz4gdx8pifs1nd4ysnd4zq7pbjqsfv3h4lxz4r5h"))))))
 
 (define-public font-iosevka-etoile
   (package
@@ -1716,7 +1746,35 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-etoile-" version ".zip"))
        (sha256
-        (base32 "1rqagk6gyja15fa4m107ylbjwbhn811gbl9lbr9yzashw4drjpp9"))))))
+        (base32 "16lbcms4rnx7dh016c15wpz94b932hfvlng78jv1lhdr13w7s60z"))))))
+
+(define-public font-iosevka-ss08
+  (package
+    (inherit font-iosevka)
+    (name "font-iosevka-ss08")
+    (version (package-version font-iosevka))
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://github.com/be5invis/Iosevka"
+                           "/releases/download/v" version
+                           "/ttc-iosevka-ss08-" version ".zip"))
+       (sha256
+        (base32 "195w4nd0901zlyjq7a6n7pwjwi2b5vnm4gj4y6692axi660jdv4j"))))))
+
+(define-public font-iosevka-ss09
+  (package
+    (inherit font-iosevka)
+    (name "font-iosevka-ss09")
+    (version (package-version font-iosevka))
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://github.com/be5invis/Iosevka"
+                           "/releases/download/v" version
+                           "/ttc-iosevka-ss09-" version ".zip"))
+       (sha256
+        (base32 "1h5jfrpply7ypc4h6ivxs30qkrbni51zkj78xz6nz4zbnp923yi0"))))))
 
 (define-public font-sarasa-gothic
   (package

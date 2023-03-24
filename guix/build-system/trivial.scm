@@ -18,12 +18,10 @@
 
 (define-module (guix build-system trivial)
   #:use-module (guix store)
-  #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (guix packages)
   #:use-module (guix build-system)
-  #:use-module (ice-9 match)
   #:export (trivial-build-system))
 
 (define* (lower name

@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -240,7 +241,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.2
   (package
     (inherit ruby-3.1)
-    (version "3.2.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
@@ -249,7 +250,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1d18ifvdbf21cncpany948vc2gjw3qa36ck9b4i97pg60rrmgx6j"))))
+         "0333xln2jkqdfk5zwxas6rpyd4rff2910z99qnyrqi15mrhqcv3l"))))
     (inputs
      (modify-inputs (package-inputs ruby-3.1)
        (prepend libyaml)))))
@@ -259,7 +260,7 @@ a focus on simplicity and productivity.")
 (define-public mruby
   (package
     (name "mruby")
-    (version "2.1.2")
+    (version "3.2.0")
     (source
      (origin
        (method git-fetch)
@@ -269,7 +270,7 @@ a focus on simplicity and productivity.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fhfv8pi7i8jn2vgk2n2rjnbnfa12nhj514v8i4k353n7q4pmkh3"))))
+         "0c0scaqbnywrd9z1z4rnnj345rjc3vbklszm0rc6y6rzx1cxnsij"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -287,13 +288,9 @@ a focus on simplicity and productivity.")
              (substitute* "mrbgems/mruby-io/test/io.rb"
                (("assert\\('IO.popen.+$" m)
                 (string-append m "skip \"Hangs in the Guix build environment\"\n"))
-               (("assert\\('IO#isatty.+$" m)
-                (string-append m "skip \"Disable for Guix; there is no /dev/tty\"\n"))
                ;; This one is really weird.  The *expected* output is all wrong.
                (("assert\\('`cmd`.*" m)
-                (string-append m "skip \"Disable for Guix\"\n"))
-               (("echo foo")
-                (string-append (which "echo") " foo")))
+                (string-append m "skip \"Disable for Guix\"\n")))
              #t))
          ;; There is no install target
          (replace 'install
@@ -311,8 +308,8 @@ a focus on simplicity and productivity.")
     (home-page "https://github.com/mruby/mruby")
     (synopsis "Lightweight Ruby")
     (description "mruby is the lightweight implementation of the Ruby
-language.  Its syntax is Ruby 1.9 compatible.  mruby can be linked and
-embedded within your application.")
+language.  Its syntax is Ruby 3.x compatible except for pattern
+matching.  mruby can be linked and embedded within your application.")
     (license license:expat)))
 
 (define-public ruby-commander
@@ -3669,7 +3666,7 @@ use GNU gettext tools for maintenance.")
     (synopsis "Utility library to package internationalized libraries")
     (description
      "Packnga is a library to translate to many languages using YARD.")
-    (home-page "http://ranguba.org/packnga/")
+    (home-page "https://ranguba.org/packnga/")
     (license license:lgpl2.0+)))
 
 (define-public ruby-test-construct
@@ -5081,7 +5078,7 @@ to reproduce user environments.")
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
-    (home-page "http://www.nokogiri.org/")
+    (home-page "https://www.nokogiri.org/")
     (license license:expat)))
 
 (define-public ruby-method-source
@@ -6438,7 +6435,7 @@ lock with a counter.")
     (description
      "Oj is a JSON parser and generator for Ruby, where the encoding and
 decoding of JSON is implemented as a C extension to Ruby.")
-    (home-page "http://www.ohler.com/oj/")
+    (home-page "https://www.ohler.com/oj/")
     (license (list license:expat     ; Ruby code
                    license:bsd-3)))) ; extension code
 
@@ -6462,7 +6459,7 @@ decoding of JSON is implemented as a C extension to Ruby.")
 written as a native C extension.  It was designed to be an alternative to
 Nokogiri and other Ruby XML parsers for generic XML parsing and as an
 alternative to Marshal for Object serialization.")
-    (home-page "http://www.ohler.com/ox")
+    (home-page "https://www.ohler.com/ox")
     (license license:expat)))
 
 (define-public ruby-redcloth
@@ -11669,7 +11666,7 @@ entities.")
     (description
      "Sinatra is a DSL for quickly creating web applications in Ruby with
 minimal effort.")
-    (home-page "http://sinatrarb.com/")
+    (home-page "https://sinatrarb.com/")
     (license license:expat)))
 
 (define-public ruby-thin
@@ -12098,29 +12095,86 @@ defined in @file{.travis.yml} on your local machine, using @code{rvm},
     (license license:expat)))
 
 (define-public ruby-rugged
-  (package
-    (name "ruby-rugged")
-    (version "1.1.0")
-    (home-page "https://www.rubydoc.info/gems/rugged")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "rugged" version))
-       (sha256
-        (base32 "04aq913plcxjw71l5r62qgz3bx3466p0wvgyfqahg5n3nybmcwqy"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:tests? #f
-       #:gem-flags (list  "--" "--use-system-libraries")))
-    (inputs
-     (list libgit2))
-    (native-inputs
-     (list ruby-minitest ruby-pry ruby-rake-compiler))
-    (synopsis "Ruby bindings to the libgit2 linkable C Git library")
-    (description "Rugged is a library for accessing libgit2 in Ruby.  It gives
+  ;; The last release is old and doesn't build anymore (see:
+  ;; https://github.com/libgit2/rugged/issues/951).
+  (let ((commit "6379f23cedd5f527cf6a5c229627e366b590a22d")
+        (revision "0"))
+    (package
+      (name "ruby-rugged")
+      (version (git-version "1.6.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libgit2/rugged")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0yac7vm0l2jsdsxf2k7xbny4iyzsy8fhiy2g5sphhffp7xgynny8"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list #:gem-flags
+             #~(list "--" "--use-system-libraries")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'adjust-extconf.rb
+                   (lambda _
+                     ;; Neither using --with-git2-dir=$prefix nor providing
+                     ;; pkg-config allows locating the libgit2 prefix (see:
+                     ;; https://github.com/libgit2/rugged/issues/955).
+                     (substitute* "ext/rugged/extconf.rb"
+                       (("LIBGIT2_DIR = File.join.*'vendor', 'libgit2'.*")
+                        (format #f "LIBGIT2_DIR = ~s~%"
+                                #$(this-package-input "libgit2"))))))
+                 (delete 'check)        ;moved after the install phase
+                 (add-after 'install 'check
+                   (assoc-ref %standard-phases 'check))
+                 (add-before 'check 'set-GEM_PATH
+                   (lambda _
+                     (setenv "GEM_PATH" (string-append
+                                         (getenv "GEM_PATH") ":"
+                                         #$output "/lib/ruby/vendor_ruby"))))
+                 (add-before 'check 'disable-problematic-tests
+                   (lambda _
+                     (with-directory-excursion "test"
+                       (for-each delete-file
+                                 ;; These tests require an actual libgit2 git
+                                 ;; repository checkout.
+                                 '("blame_test.rb"
+                                   "blob_test.rb"
+                                   "cherrypick_test.rb"
+                                   "config_test.rb"
+                                   "commit_test.rb"
+                                   "diff_test.rb"
+                                   "index_test.rb"
+                                   "merge_test.rb"
+                                   "note_test.rb"
+                                   "object_test.rb"
+                                   "patch_test.rb"
+                                   "rebase_test.rb"
+                                   "reference_test.rb"
+                                   "remote_test.rb"
+                                   "repo_apply_test.rb"
+                                   "repo_ignore_test.rb"
+                                   "repo_pack_test.rb"
+                                   "repo_reset_test.rb"
+                                   "repo_test.rb"
+                                   "revert_test.rb"
+                                   "settings_test.rb"
+                                   "status_test.rb"
+                                   "submodule_test.rb"
+                                   "tag_test.rb"
+                                   "tree_test.rb"
+                                   "walker_test.rb"))
+                       (delete-file-recursively "online")))))))
+      (native-inputs (list git-minimal/pinned ruby-rake-compiler))
+      (inputs (list libgit2))
+      (synopsis "Ruby bindings to the libgit2 linkable C Git library")
+      (description "Rugged is a library for accessing libgit2 in Ruby.  It gives
 you the speed and portability of libgit2 with the beauty of the Ruby
 language.")
-    (license license:expat)))
+      (home-page "https://www.rubydoc.info/gems/rugged")
+      (license license:expat))))
 
 (define-public ruby-yell
   (package
@@ -12525,7 +12579,7 @@ reference object.  This object is not created until the first method dispatch.")
        (sha256
         (base32 "197wrgqrddgm1xs3yvjvd8vkvil4h4mdrcp16jmd4b57rxrrr769"))))
     (build-system ruby-build-system)
-    (home-page "http://mjackson.github.io/citrus/")
+    (home-page "https://mjackson.github.io/citrus/")
     (synopsis "Parsing Expressions for Ruby")
     (description "Citrus is a parsing library for Ruby that combines the
 expressiveness of the language with the parsing expressions.")
@@ -12549,7 +12603,7 @@ expressiveness of the language with the parsing expressions.")
       ruby-rspec
       ruby-rake-compiler
       ruby-yard))
-    (home-page "http://cbor.io/")
+    (home-page "https://cbor.io/")
     (synopsis "Concise Binary Object Representation")
     (description "CBOR is a library for the
 @acronym{CBOR, Concise Binary Object Representation} format, based on
@@ -12739,7 +12793,7 @@ using published rates from open-exchange-rates.  Compatible with the money gem."
      ;; No rakefile
      `(#:tests? #f))
     (propagated-inputs (list ruby-rack))
-    (home-page "http://roda.jeremyevans.net")
+    (home-page "https://roda.jeremyevans.net")
     (synopsis "Routing Tree Web Toolkit")
     (description "Roda is a routing tree web toolkit, designed for building fast
 and maintainable web applications in ruby.")

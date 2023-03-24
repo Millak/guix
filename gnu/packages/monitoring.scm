@@ -36,7 +36,6 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system gnu)
@@ -172,7 +171,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "6.0.12")
+    (version "6.0.14")
     (source
      (origin
        (method url-fetch)
@@ -180,7 +179,7 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "04083aa63bzfg5jp958nypbqr0hlcbhj73whlinr1ri3x1z0caz7"))
+        (base32 "0n6fqa9vbhh2syxii7ds2x6dnplrgrj98by1zl0ij1wfbnbxa6k3"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
@@ -414,7 +413,7 @@ HTTP.  Features:
          "1bk29w09zcpsv8hp0g0al7nwrxa07z0ycls3mbh83wfavk83aprl"))))
     (build-system python-build-system)
     (native-inputs (list python-six))
-    (home-page "http://graphiteapp.org/")
+    (home-page "https://graphiteapp.org/")
     (synopsis "Fixed size round-robin style database for Graphite")
     (description "Whisper is one of three components within the Graphite
 project.  Whisper is a fixed-size database, similar in design and purpose to
@@ -444,7 +443,7 @@ historical data.")
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
     (propagated-inputs
      (list python-cachetools python-txamqp python-urllib3 python-whisper))
-    (home-page "http://graphiteapp.org/")
+    (home-page "https://graphiteapp.org/")
     (synopsis "Backend data caching and persistence daemon for Graphite")
     (description "Carbon is a backend data caching and persistence daemon for
 Graphite.  Carbon is responsible for receiving metrics over the network,
@@ -666,7 +665,7 @@ future system load (i.e., capacity planning).")
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (arguments '(#:tests? #f)) ;; No included tests.
-    (home-page "http://www.maier-komor.de/hostscope.html")
+    (home-page "https://www.maier-komor.de/hostscope.html")
     (properties `((release-monitoring-url . ,home-page)))
     (synopsis
      "System monitoring tool for multiple hosts")
@@ -830,4 +829,3 @@ user-configured power thresholds.  This can be used to force powering off a
 laptop when the battery gets below critical levels, instead of damaging the
 battery.")
     (license license:isc)))
-

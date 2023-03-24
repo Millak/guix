@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +56,7 @@
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
@@ -63,6 +65,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages enchant)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -73,8 +76,8 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages hunspell)
-  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
@@ -300,7 +303,7 @@ can load dynamic libraries.")
          "1pmr598xxxm9j9dl93kq4dv36zyw0q2dh6d7x07hf134y9hhlnj9"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
-    (home-page "http://joe-editor.sourceforge.net/")
+    (home-page "https://joe-editor.sourceforge.net/")
     (synopsis "Console screen editor")
     (description
      "JOE is a powerful console screen editor with a \"mode-less\" user
@@ -708,7 +711,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -717,7 +720,7 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qhr9bkq4yl2qjainpsv7blzcji2q9ic9zcynawmhfqy3rmf8qlr"))))
+        (base32 "0d1r62s1qidspck0b1zf8dibyjn9g72agbkjcica4bvfylnbqz9z"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -772,7 +775,13 @@ environment with Markdown markup.")
                    #:icon "manuskript"
                    #:categories "Office;WordProcessor;"))))))))
     (inputs
-     (list pandoc python-lxml python-markdown python-pyqt qtsvg-5))
+     (list bash-minimal
+           pandoc
+           python-lxml
+           python-markdown
+           python-pyenchant
+           python-pyqt
+           qtsvg-5))
     (home-page "http://www.theologeek.ch/manuskript/")
     (synopsis "Tool for writers")
     (description "Manuskript provides a rich environment to help
@@ -992,14 +1001,14 @@ The basic features of Text Pieces are:
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.3.2")
+    (version "5.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (let ((v (apply string-append (string-split version #\.))))
               (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
        (sha256
-        (base32 "16jskdc0762iwpy4s75vmp27qds32pnpaj09h48c6qg3rmvrgslh"))))
+        (base32 "138yr6al4dn5mhw88shf1b19knwyj288mh5zrhwn8f7c6k6ldfy4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1256,57 +1265,6 @@ similar to vi/ex.")
 FreeDOS as a functional clone of the old MS-DOS program edlin.")
     (license license:gpl2+)))
 
-(define-public tree-sitter
-  (package
-    (name "tree-sitter")
-    (version "0.20.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tree-sitter/tree-sitter")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1z20518snyg0zp75qgs5bxmzjqws4dd19vnp6sya494za3qp5b6d"))
-              (modules '((guix build utils)))
-              (snippet '(begin
-                          ;; Remove bundled ICU parts
-                          (delete-file-recursively "lib/src/unicode")
-                          #t))))
-    (build-system gnu-build-system)
-    (inputs (list icu4c))
-    (arguments
-     (list #:phases
-           '(modify-phases %standard-phases
-              (delete 'configure))
-           #:tests? #f ; there are no tests for the runtime library
-           #:make-flags
-           #~(list (string-append "PREFIX="
-                                  #$output)
-                   (string-append "CC="
-                                  #$(cc-for-target)))))
-    (home-page "https://tree-sitter.github.io/tree-sitter/")
-    (synopsis "Incremental parsing system for programming tools")
-    (description
-     "Tree-sitter is a parser generator tool and an incremental parsing
-library.  It can build a concrete syntax tree for a source file and efficiently
-update the syntax tree as the source file is edited.
-
-Tree-sitter aims to be:
-
-@itemize
-@item General enough to parse any programming language
-@item Fast enough to parse on every keystroke in a text editor
-@item Robust enough to provide useful results even in the presence of syntax errors
-@item Dependency-free so that the runtime library (which is written in pure C)
-can be embedded in any application
-@end itemize
-
-This package includes the @code{libtree-sitter} runtime library.
-")
-    (license license:expat)))
-
 (define-public mle
   (package
     (name "mle")
@@ -1430,4 +1388,36 @@ quality of font rendering, and reduce CPU usage.")
 for configuration and extensibility.  It provides emulation modes for the
 key bindings of many editors (including Emacs and WordStar), and has syntax
 highlighting for dozens of languages.  Jed is very small and fast.")
+    (license license:gpl2+)))
+
+(define-public xnedit
+  (package
+    (name "xnedit")
+    (version "1.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/xnedit/" name "-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0fw3li7hr47hckm9pl1njx30lfr6cx2p094ir8zmgr91hyxidgld"))))
+
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output)
+                           (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f                       ;no tests
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'build
+                     (lambda* (#:key make-flags #:allow-other-keys)
+                       (apply invoke "make" "linux" make-flags))))))
+    (inputs (list motif pcre))
+    (native-inputs (list pkg-config))
+    (home-page "https://sourceforge.net/projects/xnedit/")
+    (synopsis "Fast and classic X11 text editor")
+    (description
+     "XNEdit is a fast and classic X11 text editor, based on NEdit,
+with full unicode support and antialiased text rendering.")
     (license license:gpl2+)))

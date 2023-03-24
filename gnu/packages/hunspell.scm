@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -262,7 +263,7 @@ spell-checking library.")
       (synopsis "Hunspell dictionary for Hungarian (hu_HU)")
       (description "This package provides a dictionary for the Hunspell
 spell-checking library.")
-      (home-page "http://magyarispell.sourceforge.net/")
+      (home-page "https://magyarispell.sourceforge.net/")
       (license (list license:gpl2 license:gpl3)))))
 
 (define* (hunspell-dictionary dict-name full-name #:key synopsis home-page license)
@@ -275,7 +276,7 @@ spell-checking library.")
                          (#\_ #\-)
                          (chr chr))
                        (string-downcase dict-name))))
-    (version "7.4.3.2")
+    (version "7.5.1.2")
     (source
      (origin
        (method git-fetch)
@@ -286,7 +287,7 @@ spell-checking library.")
               (string-append "libreoffice-" version))))
        (file-name (git-file-name "libreoffice-dictionaries" version))
        (sha256
-        (base32 "115p29ywyn7ncq664gxmcrrz55v23s34asd2hmrg4ahjp7ycrnmy"))))
+        (base32 "1yzhyx8zwlfdqw4swxyr1lq68im2bfi1chimyc15jmli72n32szs"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("source" ,source)))
@@ -312,6 +313,13 @@ spell-checking library.")
 spell-checking library.")
     (license license)
     (home-page home-page)))
+
+(define-public hunspell-dict-he-il
+  (let ((synopsis identity))
+    (hunspell-dictionary "he_IL" "Hebrew"
+                         #:synopsis (synopsis "Hunspell dictionary for Hebrew")
+                         #:home-page "http://hspell.ivrix.org.il/"
+                         #:license license:agpl3+)))
 
 (define-public hunspell-dict-it-it
   (let ((synopsis identity))

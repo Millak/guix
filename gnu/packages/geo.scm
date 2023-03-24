@@ -46,8 +46,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
-  #:use-module (guix build-system scons)
-  #:use-module (guix build-system r)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -832,7 +830,7 @@ pyproj, Rtree, and Shapely.")
       (list python-fiona python-pandas python-pyproj python-shapely))
     (native-inputs
       (list python-pytest))
-    (home-page "http://geopandas.org")
+    (home-page "https://geopandas.org")
     (synopsis "Geographic pandas extensions")
     (description "The goal of GeoPandas is to make working with
 geospatial data in Python easier.  It combines the capabilities of
@@ -1415,7 +1413,7 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1424,7 +1422,7 @@ based on the Osmium library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15fxr4xq7siy237763l7nswx7v0swr3qzs2h3zkjzgvajw4p6qii"))
+        (base32 "0ssz7ny4wx8dzl3027p37xc5h7m1aj6bzxzdc6g8fbp7q57ykvxz"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1435,8 +1433,7 @@ based on the Osmium library.")
        #:configure-flags
        (list "-DEXTERNAL_LIBOSMIUM=ON"
              "-DEXTERNAL_PROTOZERO=ON"
-             "-DEXTERNAL_FMT=ON"
-             "-DEXTERNAL_RAPIDJSON=ON")))
+             "-DEXTERNAL_FMT=ON")))
     (inputs
      (list boost
            bzip2
@@ -1447,7 +1444,6 @@ based on the Osmium library.")
            postgresql
            proj
            protozero
-           rapidjson
            zlib))
     (native-inputs
      (list python python-psycopg2))
@@ -1764,7 +1760,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18583")
+    (version "18646")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1773,7 +1769,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "01ghh9kl984lr8f70jsks31p6a4cqpxqjpmbc4x6mzbmvy87dfvy"))
+                "0zr3p1i39wi0f29lgb3xrnv6lijrq5ia8jxn4wnq1yz0xdlbg98i"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -2462,7 +2458,7 @@ visualization.")
 Information System (GIS) software.  It has been designed for an easy and
 effective implementation of spatial algorithms and it offers a comprehensive,
 growing set of geoscientific methods.")
-    (home-page "http://www.saga-gis.org")
+    (home-page "https://www.saga-gis.org")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
 (define-public qgis

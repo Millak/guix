@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Fabio Natali <me@fabionatali.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2023 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,8 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
@@ -1215,7 +1218,7 @@ support (for use with a variety of encodings) is provided.")
               (base32
                "0yyk0dr4yms82mwy4dc03zf5igyhgcb65icdah042rk23rlpxygv")
               #:trivial? #t))
-    (home-page "http://www.gust.org.pl/projects/e-foundry/latin-modern/")
+    (home-page "https://www.gust.org.pl/projects/e-foundry/latin-modern/")
     (synopsis "Latin Modern family of fonts")
     (description "The Latin Modern fonts are derived from the famous Computer
 Modern fonts designed by Donald E. Knuth and described in Volume E of his
@@ -1236,7 +1239,7 @@ Computers & Typesetting series.")
               (base32
                "0gqdk8x3r1iz4n8j6r3pcqbwalxvkihayvmjfq4iv6hwb0pvys8z")
               #:trivial? #t))
-    (home-page "http://www.gust.org.pl/projects/e-foundry/latin-modern")
+    (home-page "https://www.gust.org.pl/projects/e-foundry/latin-modern")
     (synopsis "OpenType maths fonts for Latin Modern")
     (description "Latin Modern Math is a maths companion for the Latin Modern
 family of fonts, in OpenType format.  For use with LuaLaTeX or XeLaTeX,
@@ -3165,6 +3168,30 @@ users, via its Plain TeX version.)")
 
 (define-deprecated-package texlive-generic-epsf texlive-epsf)
 
+(define-public texlive-fancyvrb
+  (package
+    (inherit (simple-texlive-package
+              "texlive-fancyvrb"
+              (list "/doc/latex/fancyvrb"
+                    "/tex/latex/fancyvrb/")
+              (base32
+               "1qlrmc70ck2v3wqh8gjd5jl0f6011zzcsg9a93qf1z9b9virvjy2")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-latex-upquote))
+    (home-page "https://ctan.org/macros/latex/contrib/fancyvrb")
+    (synopsis "Sophisticated verbatim text")
+    (description
+     "This package provides tools for the flexible handling of verbatim text
+including: verbatim commands in footnotes; a variety of verbatim environments
+with many parameters; ability to define new customized verbatim environments;
+save and restore verbatim text and environments; write and read files in
+verbatim mode; build @code{example} environments (showing both result and
+verbatim source).")
+    (license license:lppl1.3+)))
+
+;; FIXME: This package needs to be deprecated in favour of `texlive-fancyvrb',
+;; but this triggers 17k rebuilds.  So leave it there and wait for
+;; core-updates or a topic branch to catch-up.
 (define-public texlive-latex-fancyvrb
   (package
     (inherit (simple-texlive-package
@@ -3483,6 +3510,50 @@ arrows; record information about document class(es) used; and many more.")
     (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-oberdiek texlive-oberdiek)
+
+(define-public texlive-onedown
+  (let ((template
+         (simple-texlive-package
+          "texlive-onedown"
+          (list "doc/latex/onedown/"
+                "source/latex/onedown/"
+                "tex/latex/onedown/")
+          (base32
+           "04ih7i4v96ggwk4k1mpfx3dzcpi2siqablv93wryg7dk4cks5wkl"))))
+    (package
+      (inherit template)
+      (outputs '("doc" "out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/onedown")
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/onedown/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (texmf (string-append #$output "/share/texmf-dist"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (for-each
+                     (lambda (directory)
+                       (copy-recursively (string-append origin directory)
+                                         (string-append texmf directory)))
+                     '("/source" "/tex/latex/onedown"))
+                    (copy-recursively (string-append origin "/doc")
+                                      doc))))))))
+      (home-page "https://ctan.org/pkg/onedown")
+      (synopsis "Typeset bridge diagrams")
+      (description
+       "This is a comprehensive package to draw all sorts of bridge diagrams,
+including hands, bidding tables, trick tables, and expert quizzes.
+
+It works for all font sizes.  Different fonts for hands, bidding diagrams and
+compass are possible.  It also provides annotations to card and bidding
+diagrams, automated check on consistency of suit and hands, and multilingual
+output of bridge terms.")
+      (license license:lppl1.3+))))
 
 (define-public texlive-latex-rerunfilecheck
   (package
@@ -4151,7 +4222,7 @@ polyglossia package rather than Babel.")
                "fonts/vf/cs/cs-a35/")
               (base32 "1ww5lrqja051fh0ygmfdyy5a6bhwq9k5zv857vwiqf5syvw5djps")
               #:trivial? #t))
-    (home-page "http://petr.olsak.net/cstex/")
+    (home-page "https://petr.olsak.net/cstex/")
     (synopsis "Czech/Slovak-tuned Computer Modern fonts")
     (description "This package provides Czech/Slovak-tuned Computer Modern
 fonts in the Metafont format; Type 1 format versions (csfonts-t1) are also
@@ -4167,7 +4238,7 @@ available.")
               (list "tex/csplain/base/")
               (base32 "0cgrwc8lgf2x2hq6bb4kqxw597card985zdd9ipn7k98mmwrxhz3")
               #:trivial? #t))
-    (home-page "http://petr.olsak.net/csplain-e.html")
+    (home-page "https://petr.olsak.net/csplain-e.html")
     (synopsis "Plain TeX multilanguage support")
     (description "CSplain is a small extension of basic Plain TeX macros from
 which the formats @code{csplain} and @code{pdfcsplain} can be generated.  It
@@ -4957,6 +5028,7 @@ corresponding italics: light, regular, medium, bold, ...")
                (base32
                 "157pplavvm2z97b3jl4x41w11k6q9wgy074mfg0dwmsx5lm328jy"))))
     (build-system texlive-build-system)
+    (propagated-inputs (list texlive-catchfile))
     (arguments '(#:tex-directory "latex/ifplatform"))
     (home-page "https://www.ctan.org/pkg/ifplatform")
     (synopsis "Conditionals to test which platform is being used")
@@ -5303,6 +5375,26 @@ or as part of the LaTeX latex-tools set; this set contains: making dotless
 capabilities of longtable and tabularx; an environment for including plain TeX
 in LaTeX documents; a jiffy to create slashed characters for physicists.")
     (license license:lppl)))
+
+(define-public texlive-catchfile
+  (let ((template (simple-texlive-package
+                   "texlive-catchfile"
+                   (list "/doc/latex/catchfile/"
+                         "/source/latex/catchfile/"
+                         "/tex/generic/catchfile/")
+                   (base32
+                    "1dpxy64hs0bjp8d2dmikflc995vazf7fi6z92w51fnj2fidgl8gx"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/catchfile")))
+      (home-page "https://ctan.org/macros/latex/contrib/catchfile")
+      (synopsis "Catch an external file into a macro")
+      (description
+       "Catchfile catches the contents of a file and puts it in a macro.")
+      (license license:lppl1.3+))))
 
 (define-public texlive-doi
   (package
@@ -8173,7 +8265,7 @@ values (strings, macros, or numbers) pasted together.")
        ("perl-file-which" ,perl-file-which)
        ("perl-test-more" ,perl-test-most) ; FIXME: "more" would be sufficient
        ("perl-test-differences" ,perl-test-differences)))
-    (home-page "http://biblatex-biber.sourceforge.net/")
+    (home-page "https://biblatex-biber.sourceforge.net/")
     (synopsis "Backend for the BibLaTeX citation management tool")
     (description "Biber is a BibTeX replacement for users of biblatex.  Among
 other things it comes with full Unicode support.")
@@ -8246,11 +8338,52 @@ PDF documents.")
      (list poppler-qt5 qtbase-5 qtscript zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://www.xm1math.net/texmaker/")
+    (home-page "https://www.xm1math.net/texmaker/")
     (synopsis "LaTeX editor")
     (description "Texmaker is a program that integrates many tools needed to
 develop documents with LaTeX, in a single application.")
     (license license:gpl2+)))
+
+(define-public dvisvgm
+  (package
+    (name "dvisvgm")
+    (version "3.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mgieseki/dvisvgm")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11r401yqbw61n1mwsfk5qmwx2c92djwpl0q756qkds5kh25l9ci8"))))
+    (native-inputs (list pkg-config
+                         autoconf
+                         autoconf-archive
+                         automake
+                         python-wrapper
+                         libtool))
+    (inputs (list texlive-libkpathsea
+                  freetype
+                  fontforge
+                  clipper
+                  ghostscript
+                  xxhash
+                  google-brotli
+                  woff2
+                  zlib))
+    (build-system gnu-build-system)
+    (synopsis "Command-line utility for generating SVG from DVI, EPS and PDF
+files")
+    (description
+     "Dvisvgm converts TeX DVI, EPS and PDF files into an
+SVG (Scalable Vector Graphics) image.  It provides full font support including
+virtual fonts, font maps and sub-fonts.  The embedded SVG fonts can optionally
+be replaced with graphics paths for applications that do not support SVG
+fonts.  Dvisvgm supports also colors, emTeX, tpic, papersize, PDF mapfile
+and PostScript specials.  A working TeX installation is needed.")
+    (home-page "https://dvisvgm.de/")
+    (license license:gpl3+)))
 
 (define-public teximpatient
   ;; The homepage seems to be distributing this version which is currently the
@@ -10013,6 +10146,37 @@ various fonts are provided.  An alternative package
 the bundle.")
       (license license:lppl1.3c))))
 
+(define-public texlive-minted
+  (let ((template (simple-texlive-package
+                   "texlive-minted"
+                   (list "/doc/latex/minted/"
+                         "/source/latex/minted/"
+                         "/tex/latex/minted/")
+                   (base32
+                    "13cjsjb3b04n9arwp46ayk8fcicylxq5g1864cpxl1lxjxh1yi0l"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/minted")))
+      (propagated-inputs (list python-pygments
+                               texlive-etoolbox
+                               texlive-fancyvrb
+                               texlive-fvextra
+                               texlive-latex-float
+                               texlive-latex-framed
+                               texlive-latex-ifplatform
+                               texlive-latex-newfloat
+                               texlive-lineno
+                               texlive-xstring))
+      (home-page "https://ctan.org/pkg/minted")
+      (synopsis "Highlight source code in LaTeX documents")
+      (description "This package facilitates expressive syntax highlighting in
+LaTeX using the Pygments library.  This package also provides options to
+customize the highlighted source code output using fancyvrb and fvextra.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-caption
   (let ((template (simple-texlive-package
                    "texlive-caption"
@@ -11151,6 +11315,28 @@ span the full width of a page; it improves upon floatfig, and allows
 tables and figures to be set left/right or alternating on even/odd pages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fvextra
+  (let ((template (simple-texlive-package
+                   "texlive-fvextra"
+                   (list "/doc/latex/fvextra/"
+                         "/source/latex/fvextra/"
+                         "/tex/latex/fvextra/")
+                   (base32
+                    "0nawx1fh55yhqspy5jgss2qmwpqmikfrg7628smk931rph9nq0aa"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/fvextra")))
+      (home-page "https://ctan.org/macros/latex/contrib/fvextra")
+      (synopsis "Extensions and patches for fancyvrb")
+      (description
+       "This package provides several extensions to fancyvrb, including
+automatic line breaking and improved math mode.  It also patches some fancyvrb
+internals.")
+      (license license:lppl1.3+))))
+
 (define-public bibtool
   (package
     (name "bibtool")
@@ -11196,7 +11382,7 @@ and selecting references used in a publication.")
                              texlive-booktabs
                              texlive-endnotes
                              texlive-etoolbox
-                             texlive-generic-xstring
+                             texlive-xstring
                              texlive-latex-draftwatermark
                              texlive-latex-fancyhdr
                              texlive-latex-float
@@ -11497,6 +11683,8 @@ Polish of standard ``LaTeX names''.")
        "tex/latex/mdframed/")
       (base32 "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")
       #:trivial? #t))
+    (propagated-inputs (list texlive-latex-needspace
+                             texlive-zref))
     (home-page "https://ctan.org/pkg/mdframed")
     (synopsis "Framed environments that can split at page boundaries")
     (description
@@ -11991,16 +12179,34 @@ which the command @code{\\tab} advances typesetting position to the next
 defined ``tab stop''.")
     (license license:lppl1.3+)))
 
-(define-public texlive-generic-soul
+(define-public texlive-soul
   (let ((template (simple-texlive-package
-                   "texlive-generic-soul"
-                   (list "/doc/generic/soul/"
-                         "/tex/generic/soul/")
+                   "texlive-soul"
+                   (list "doc/generic/soul/"
+                         "source/generic/soul/"
+                         "tex/generic/soul/")
                    (base32
-                    "11jdgvfpcv10y5j898495lf29k2m03x39v9jzb4v79w4cgxcmfps")
-                   #:trivial? #t)))
+                    "0ikipdswzsafi4rr6q9xh3hkxk2n2683ym1879qcax41xs6cizdl"))))
     (package
       (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "generic/soul")
+         ((#:build-targets _ '()) '(list "soul.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/generic/soul/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
       (home-page "http://www.ctan.org/pkg/soul")
       (synopsis "Hyphenation for letterspacing, underlining, and more")
       (description
@@ -12012,9 +12218,11 @@ syllable.  The package itself does not support UTF-8 input in ordinary
 (PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
       (license license:lppl))))
 
-(define-public texlive-generic-xstring
+(define-deprecated-package texlive-generic-soul texlive-soul)
+
+(define-public texlive-xstring
   (let ((template (simple-texlive-package
-                   "texlive-generic-xstring"
+                   "texlive-xstring"
                    (list "/doc/generic/xstring/"
                          "/tex/generic/xstring/")
                    (base32
@@ -12032,6 +12240,8 @@ recurrences of, a substring.  The package works equally in Plain TeX and LaTeX
 (though e-TeX is always required).  The strings to be processed may contain
 (expandable) macros.")
       (license license:lppl1.3c))))
+
+(define-deprecated texlive-generic-xstring texlive-xstring)
 
 (define-public texlive-substr
   (package

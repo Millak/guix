@@ -40,6 +40,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -453,6 +454,58 @@ controls for certain tuners which may be paired with an audio device.")
        "This package provides HackRF devices support to the SoapySDR library.")
       (license license:expat))))
 
+(define-public soapymultisdr
+  (let ((commit "e8bd3298afaec04cb7ce2c8c516cb9cd8bd3bc9d")
+        (revision "1"))
+    (package
+      (name "soapymultisdr")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyMultiSDR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0f7d39s2zpgfi677i2aqp4zkf5c6cv8mpm7w8s7xj45bfhf94acl"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list soapysdr))
+      (home-page "https://github.com/pothosware/SoapyMultiSDR")
+      (synopsis "Multi-device support module for SoapySDR")
+      (description
+       "This is a SoapySDR module to use multiple supported devices under
+a single device wrapper.")
+      (license license:boost1.0))))
+
+(define-public soapyremote
+  (let ((commit "f375555e7380acfd2517acde598e2e553e08df88")
+        (revision "1"))
+    (package
+      (name "soapyremote")
+      (version (git-version "0.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyRemote")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0whn87wck7agsk3af4lh7nyyjn0ncs3xdny4vsd94qbjikfl6x5z"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list avahi soapysdr))
+      (arguments
+       '(#:tests? #f)) ; No test suite
+      (home-page "https://github.com/pothosware/SoapyRemote")
+      (synopsis "Remote support for Soapy SDR")
+      (description
+       "This is a SoapySDR module to use a supported device transparently over
+a local network link.")
+      (license license:boost1.0))))
+
 (define-public soapyrtlsdr
   (package
     (name "soapyrtlsdr")
@@ -687,7 +740,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            python-numpy
            python-pycairo
            python-pygobject
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-pyqtgraph
            python-pyyaml
            qtbase-5
@@ -1902,7 +1955,7 @@ methods:
              (substitute* "src/libcw/libcw_pa.c"
                (("libpulse-simple.so" all)
                 (search-input-file inputs "/lib/libpulse-simple.so"))))))))
-    (home-page "http://unixcw.sourceforge.net/")
+    (home-page "https://unixcw.sourceforge.net/")
     (synopsis "Morse code library and programs")
     (description
      "@code{unixcw} is a project providing the libcw library and a set of
@@ -1971,7 +2024,7 @@ intended for people who want to learn receiving and sending morse code.")
              (substitute* "src/cfgfile.c"
                (("/usr/share/")
                 (string-append (assoc-ref outputs "out") "/share/"))))))))
-    (home-page "http://gnuais.sourceforge.net/")
+    (home-page "https://gnuais.sourceforge.net/")
     (synopsis "AIS message demodulator and decoder")
     (description
      "This program contains algorithms to demodulate and decode AIS (Automatic
@@ -2042,7 +2095,6 @@ Compatible hardware/software:
            pulseaudio
            qtbase-5
            qtsvg-5
-           qtwebkit
            qwt
            speexdsp
            zlib))
@@ -2127,7 +2179,7 @@ defined radio with support for rtl-sdr.")
 (define-public csdr
   (package
     (name "csdr")
-    (version "0.18.0")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -2136,7 +2188,7 @@ defined radio with support for rtl-sdr.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sdni0p9qcf4yw1wf5jz1pyb9wv6wmdblirh2q6s7jblh50vfwz1"))))
+        (base32 "1vgl7d03khdql45jq5xxayqfhb5sasxhjmrl621gyk1k8kxaqs8a"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -2161,7 +2213,7 @@ program that can be used to build simple signal processing flow graphs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/glv2/convert-samples")
+             (url "https://codeberg.org/glv/convert-samples")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -2193,7 +2245,7 @@ Supported formats:
 @item cu32: complex made of unsigned 32 bit integers
 @item cf32: complex made of 32 bit floats
 @end itemize")
-    (home-page "https://github.com/glv2/convert-samples")
+    (home-page "https://codeberg.org/glv/convert-samples")
     (license license:gpl3+)))
 
 (define-public serialdv
@@ -2358,7 +2410,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.8.5")
+    (version "7.10.0")
     (source
      (origin
        (method git-fetch)
@@ -2367,7 +2419,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kfzmxbhfpvs8csfbhnl5nij6nlbr00s43392wfq35vnnkbgk5lv"))))
+        (base32 "0rl2qnc9s8cjwv77vfwgj66rz5zbxmixqh0gg6b29s4667pjvil6"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2383,6 +2435,7 @@ voice formats.")
            ffmpeg
            fftwf
            hackrf
+           hidapi
            libdab
            libusb
            mbelib
@@ -2689,7 +2742,7 @@ of devices than RTL-SDR.")
 (define-public urh
   (package
     (name "urh")
-    (version "2.9.3")
+    (version "2.9.4")
     (source
      (origin
        (method git-fetch)
@@ -2698,7 +2751,7 @@ of devices than RTL-SDR.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17r9fkw0icph7fayibp6qbdh4nxi8wy3mmd3djmh0c2jr8yz5fsf"))))
+        (base32 "1sx70mp4bjbymy1lp6p96ydpqlyq7rwnrw96nb6aaya63fl1ab8y"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython
@@ -2816,7 +2869,7 @@ Navigation Satellite System.")
 (define-public qdmr
   (package
     (name "qdmr")
-    (version "0.11.1")
+    (version "0.11.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2825,7 +2878,7 @@ Navigation Satellite System.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xbp4ica6bgsiwc57wzm8744dqik2fw77kh1gb8s3sa1q9my2vlx"))))
+                "1r40shli0c66f559m25hd1xagyblh8qhzz7wyqyy7r167fvzagfd"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;no tests

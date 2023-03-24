@@ -15,7 +15,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2020-2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -98,7 +98,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
@@ -122,6 +121,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
@@ -184,6 +184,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages skribilo)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -681,7 +682,7 @@ supported at your website.")
       (source (origin
                 (method hg-fetch)
                 (uri (hg-reference
-                      (url "http://hg.nginx.org/xslscript")
+                      (url "https://hg.nginx.org/xslscript")
                       (changeset changeset)))
                 (file-name (string-append name "-" version))
                 (sha256
@@ -705,7 +706,7 @@ supported at your website.")
                              out-bin
                              "/xslscript.pl"))
                  #t))))))
-      (home-page "http://hg.nginx.org/xslscript")
+      (home-page "https://hg.nginx.org/xslscript")
       (synopsis "XSLScript with NGinx specific modifications")
       (description
        "XSLScript is a terse notation for writing complex XSLT stylesheets.
@@ -1244,7 +1245,7 @@ project)
            (lambda _ (setenv "QT_QPA_PLATFORM" "offscreen") #t)))))
     (inputs
      (list qtbase-5))
-    (home-page "http://qjson.sourceforge.net")
+    (home-page "https://qjson.sourceforge.net")
     (synopsis "Library that maps JSON data to QVariant objects")
     (description "QJson is a Qt-based library that maps JSON data to
 @code{QVariant} objects.  JSON arrays will be mapped to @code{QVariantList}
@@ -1718,40 +1719,6 @@ domains (UTF-8 and IDNA2008 Punycode), is thread-safe, and handles IDNA2008
 UTS#46.")
     (license license:x11)))
 
-(define-public tidy
-  (package
-    (name "tidy")
-    (version "20091223")
-    (source (origin
-              (method cvs-fetch)
-              (uri (cvs-reference
-                    (root-directory
-                     ":pserver:anonymous@tidy.cvs.sourceforge.net:/cvsroot/tidy")
-                    (module "tidy")
-                    (revision "2009-12-23")))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "14dsnmirjcrvwsffqp3as70qr6bbfaig2fv3zvs5g7005jrsbvpb"))
-              (patches (search-patches "tidy-CVE-2015-5522+5523.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'bootstrap
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; configure.in and Makefile.am aren't in the root of the
-                      ;; source tree.
-                      (copy-recursively "build/gnuauto" ".")
-                      (setenv "AUTOMAKE" "automake --foreign")
-                      (invoke "autoreconf" "-vfi"))))))
-    (native-inputs
-     (list automake autoconf libtool))
-    (synopsis "HTML validator and tidier")
-    (description "HTML Tidy is a command-line tool and C library that can be
-used to validate and fix HTML data.")
-    (home-page "http://tidy.sourceforge.net/")
-    (license (license:x11-style "file:///include/tidy.h"))))
-
 (define-public esbuild
   (package
     (name "esbuild")
@@ -1967,7 +1934,7 @@ hash/signatures.")
        (sha256
         (base32 "0d0giry6bb57pnidymvdl7i5x9bq3ljk3g4bs294hcr5mj3cq0kw"))))
     (build-system gnu-build-system)
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "This package contains support scripts called by libquvi to
 parse media stream properties.")
@@ -2001,7 +1968,7 @@ parse media stream properties.")
          (list
           (string-append "liblua_CFLAGS=-I" lua "/include")
           (string-append "liblua_LIBS=-L" lua "/libs -llua")))))
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "libquvi is a library with a C API for parsing media stream
 URLs and extracting their actual media files.")
@@ -2023,7 +1990,7 @@ URLs and extracting their actual media files.")
     (native-inputs (list pkg-config))
     (inputs
      (list curl libquvi))
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "quvi is a command-line-tool suite to extract media files
 from streaming URLs.  It is a command-line wrapper for the libquvi library.")
@@ -2994,17 +2961,17 @@ development server with Starman.")
 (define-public perl-cgi
   (package
     (name "perl-cgi")
-    (version "4.52")
+    (version "4.55")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/L/LE/LEEJO/"
                            "CGI-" version ".tar.gz"))
        (sha256
-        (base32 "1bxrpxv95js8yinicminxdg41xvd85haj2gvlywg3zqdb66smqy8"))))
+        (base32 "1ck4ik5i0v394qgg9qah4p6x9hyls311g6iwi6ildprzn6a5x2b7"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-test-deep perl-test-nowarnings perl-test-warn))
+     (list perl-test-nowarnings perl-test-warn))
     (propagated-inputs
      (list perl-html-parser))
     (home-page "https://metacpan.org/release/CGI")
@@ -4764,8 +4731,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "7b69611755ac3b9132710d83a1139b4c5606578d")
-        (revision "36"))
+  (let ((commit "8c2f97eef82412a4309273e22b6edeaf53dc2d0e")
+        (revision "39"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4777,7 +4744,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0lmvmalgfbc6q80f8dwqikdd5kna2vl4jlmf2li206hmcq2hzh6p"))))
+                  "12k930vkg07i9xysli3fxbgn3hbqy2l5s9rybm7ayvbcmbdqmgcn"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4843,7 +4810,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers-1.1
+             guile-fibers-next
              guile-json-4
              guile-email
              guile-prometheus
@@ -6194,7 +6161,7 @@ used to start services with both privileged and non-privileged port numbers.")
                #t))))))
     (native-inputs
      (list libxslt))
-    (home-page "http://www.html-tidy.org/")
+    (home-page "https://www.html-tidy.org/")
     (synopsis "HTML Tidy with HTML5 support")
     (description
      "Tidy is a console application which corrects and cleans up
@@ -6205,6 +6172,9 @@ Tidy also provides @code{libtidy}, a C static and dynamic library that
 developers can integrate into their applications to make use of the
 functions of Tidy.")
     (license license:bsd-3)))
+
+(define-public tidy
+  (deprecated-package "tidy" tidy-html))
 
 (define-public hiawatha
   (package
@@ -7681,47 +7651,49 @@ features include:
     (license license:expat)))
 
 (define-public cat-avatar-generator
-  (package
-    (name "cat-avatar-generator")
-    (version "1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://framagit.org/Deevad/cat-avatar-generator.git")
-                     (commit "71c0c662742cafe8afd2d2d50ec84243113e35ad")))
-              (file-name (string-append name "-" version))
-              (sha256
-               (base32
-                "0s7b5whqsmfa57prbgl66ym551kg6ly0z14h5dgrlx4lqm70y2yw"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (srfi srfi-1)
-                      (srfi srfi-26))
-
-         (let ((source (assoc-ref %build-inputs "source"))
-               (php-dir (string-append %output "/share/web/" ,name "/")))
-           ;; The cache directory must not be in the store, but in a writable
-           ;; location.  The webserver will give us this location.
-           (copy-recursively source php-dir)
-           (substitute* (string-append php-dir "/cat-avatar-generator.php")
-             (("\\$cachepath = .*")
-              "if(isset($_SERVER['CACHE_DIR']))
+  (let ((commit "9360ea33f79d1dad3e43494b09878b5e3f6b41fa")
+        (revision "1"))
+    (package
+      (name "cat-avatar-generator")
+      (version (git-version "1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://framagit.org/Deevad/cat-avatar-generator.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0js4grqzsm4gvmcbmxv7zw4samfzi6nk4mn977ddcvla9g222rkm"))))
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils))
+         #:builder
+         (begin
+           (use-modules (guix build utils)
+                        (srfi srfi-1)
+                        (srfi srfi-26))
+           (let ((source (assoc-ref %build-inputs "source"))
+                 (php-dir (string-append %output "/share/web/" ,name)))
+             (install-file (string-append source "/cat-avatar-generator.php") php-dir)
+             (copy-recursively (string-append source "/avatars") (string-append php-dir "/avatars"))
+             ;; The cache directory must not be in the store, but in a writable
+             ;; location.  The webserver will give us this location.
+             (substitute* (string-append php-dir "/cat-avatar-generator.php")
+               (("\\$cachepath = .*")
+                "if(isset($_SERVER['CACHE_DIR']))
 $cachepath = $_SERVER['CACHE_DIR'];
 else
 die('You need to set the CACHE_DIR variable first.');"))
-           #t))))
-    (home-page "https://framagit.org/Deevad/cat-avatar-generator")
-    (synopsis "Random avatar generator")
-    (description "Cat avatar generator is a generator of cat pictures optimised
+             #t))))
+      (home-page "https://framagit.org/Deevad/cat-avatar-generator")
+      (synopsis "Random avatar generator")
+      (description "Cat avatar generator is a generator of cat pictures optimised
 to generate random avatars, or defined avatar from a \"seed\".  This is a
 derivation by David Revoy from the original MonsterID by Andreas Gohr.")
-    ;; expat for the code, CC-BY 4.0 for the artwork
-    (license (list license:expat
-                   license:cc-by4.0))))
+      ;; expat for the code, CC-BY 4.0 for the artwork
+      (license (list license:expat
+                     license:cc-by4.0)))))
 
 (define-public nghttp2
   (package
@@ -7893,17 +7865,41 @@ instructions on how to use Guix in a shared HPC environment.")
 (define-public httrack
   (package
     (name "httrack")
-    (version "3.49.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://mirror.httrack.com/historical/"
-                                  "httrack-" version ".tar.gz"))
-              (sha256
-               (base32
-                "09a0gm67nml86qby1k1gh7rdxamnrnzwr6l9r5iiq94favjs0xrl"))))
+    (version "3.49.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xroche/httrack")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1izn1h7gaxb2barclm2pj5kaz1mmddx2c35n70m0552q8ms4lvks"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'autogen
+            ;; Force reconfiguration to generate "test-driver".
+            (lambda _
+              (substitute* "configure.ac"
+                ;; Fix errors when running "configure" script.
+                (("AX_CHECK_(COMPILE|LINK)_FLAG\\(.*") "")
+                (("AX_CHECK_ALIGNED_ACCESS_REQUIRED") "")
+                (("gl_VISIBILITY") ""))
+              (invoke "autoreconf" "-vif")))
+          (add-after 'unpack 'copy-coucal-source
+            ;; Install Coucal source to work around missing submodule.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each (lambda (f) (install-file f "src/coucal"))
+                        (find-files #$(this-package-input "coucal")
+                                    "\\.(c|h|diff|orig)$")))))))
+    (native-inputs
+     (list autoconf automake libtool))
     (inputs
-     (list libressl zlib))
+     (list coucal libressl zlib))
     (home-page "https://www.httrack.com/")
     (synopsis "Easy-to-use offline browser utility")
     (description "HTTrack allows you to download a World Wide Web site from
@@ -7986,6 +7982,60 @@ bookmarks directly.  It can also present them in a web interface with
     (synopsis "rofi frontend for buku bookmarks manager")
     (description
      "This package provides a rofi frontend for the buku bookmark manager.")
+    (license license:gpl3+)))
+
+(define-public tissue
+  (package
+    (name "tissue")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://tissue.systemreboot.net/releases/tissue-"
+                                  version ".tar.lz"))
+              (sha256
+               (base32
+                "0vsybgnzv8nnwf58pnxrs4101xczl8jvxd1wzmk4vmdyrp8a2kkm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "prefix=" #$output))
+           #:modules `(((guix build guile-build-system)
+                        #:select (target-guile-effective-version))
+                       (guix build gnu-build-system)
+                       (guix build utils))
+           #:phases
+           (with-imported-modules '((guix build guile-build-system))
+             #~(modify-phases %standard-phases
+                 (replace 'patch-source-shebangs
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "bin/tissue"
+                       (("^exec guile")
+                        (string-append "exec "
+                                       (search-input-file inputs "/bin/guile"))))))
+                 (delete 'configure)
+                 (add-after 'install 'wrap
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (effective-version (target-guile-effective-version)))
+                       (wrap-program (string-append out "/bin/tissue")
+                         `("GUILE_LOAD_PATH" prefix
+                           (,(string-append out "/share/guile/site/" effective-version)
+                            ,(getenv "GUILE_LOAD_PATH")))
+                         `("GUILE_LOAD_COMPILED_PATH" prefix
+                           (,(string-append out "/lib/guile/"
+                                            effective-version "/site-ccache")
+                            ,(getenv "GUILE_LOAD_COMPILED_PATH")))))))))))
+    (inputs (list bash-minimal guile-3.0 guile-filesystem guile-git guile-xapian))
+    (native-inputs (list lzip))
+    (propagated-inputs (list skribilo))
+    (home-page "https://tissue.systemreboot.net")
+    (synopsis "Text based project information management system")
+    (description "tissue is an issue tracker and project information
+management system built on plain text files and git.  It is specifically
+intended for small free software projects.  It features a static site
+generator to build a project website and a powerful search interface to search
+through project issues and documentation.  The search interface is built on
+the Xapian search engine library, and is available both as a command-line
+program and as a web server.")
     (license license:gpl3+)))
 
 (define-public anonip
@@ -8072,7 +8122,7 @@ returned.")
        (sha256
         (base32 "1j3mzjlczjrk4ahc43s6kzpvzypzjmqz4sillnca5yadrwwgjf2x"))))
     (build-system gnu-build-system)
-    (home-page "http://htmlcxx.sourceforge.net/")
+    (home-page "https://htmlcxx.sourceforge.net/")
     (synopsis "Simple non-validating CSS1 and HTML parser for C++")
     (description "htmlcxx is a simple non-validating CSS1 and HTML parser for
 C++.  Although there are several other HTML parsers available, htmlcxx has some
@@ -8177,6 +8227,48 @@ in mind.  It has features such as:
 @item low memory footprint.
 @end itemize")
     (license license:isc)))
+
+(define-public kiln
+  (package
+    (name "kiln")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~adnano/kiln")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lvzv46hn80gffw47mcc28iahwqng7pvg500s9jlrq6mhr4k5ih4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~adnano/kiln"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man
+            (lambda _
+              (let ((man1 (string-append #$output "/share/man/man1")))
+                (system (string-append
+                         "scdoc"
+                         "< src/git.sr.ht/~adnano/kiln/docs/kiln.1.scd"
+                         "> kiln.1"))
+                (install-file "kiln.1" man1)))))))
+    (native-inputs
+     (list scdoc))
+    (propagated-inputs
+     (list go-github-com-google-shlex
+           go-github-com-pelletier-go-toml
+           go-gopkg-in-yaml-v3))
+    (home-page "https://kiln.adnano.co/")
+    (synopsis "Simple static site generator")
+    (description
+     "Kiln takes a different approach to building static sites.
+Instead of packing all functionality into kiln itself, the core is lightweight
+and can be extended with the use of external commands.")
+    (license license:expat)))
 
 (define-public siege
   (package

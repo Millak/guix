@@ -22,23 +22,19 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import opam)
-  #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (ice-9 peg)
   #:use-module ((ice-9 popen) #:select (open-pipe*))
-  #:use-module (ice-9 receive)
   #:use-module (ice-9 textual-ports)
-  #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module ((srfi srfi-26) #:select (cut))
   #:use-module ((web uri) #:select (string->uri uri->string))
   #:use-module ((guix build utils) #:select (dump-port find-files mkdir-p))
   #:use-module (guix build-system)
-  #:use-module (guix build-system ocaml)
+  #:use-module (guix i18n)
   #:use-module (guix diagnostics)
   #:use-module (guix http-client)
-  #:use-module (guix ui)
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix utils) #:select (cache-directory
@@ -49,7 +45,6 @@
                                               recursive-import
                                               spdx-string->license
                                               url-fetch))
-  #:use-module ((guix licenses) #:prefix license:)
   #:export (opam->guix-package
             opam-recursive-import
             %opam-updater

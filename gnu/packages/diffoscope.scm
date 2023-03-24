@@ -75,7 +75,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "233")
+    (version "239")
     (source
      (origin
        (method git-fetch)
@@ -84,7 +84,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m6fc7k8cd7ahra05vqccw1fdbjj6d20vr3q8v67ynnyih5nmbnb"))))
+        (base32 "1awxazbrqqzqr5x50kam50ibmnjvidynkzp2158rdx5gy5lmnwcy"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -244,7 +244,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.22")
+    (version "0.7.23")
     (source
      (origin
        (method git-fetch)
@@ -253,7 +253,7 @@ install.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qpjg37x2ha7lb113fb5cic5if3zv30zqijsmkq91ld909x30ggd"))))
+        (base32 "0hkzh4i3c5hrbvdkhbmwm5vmb4msnlm5rvhjin6h2ni40kix69g0"))))
     (inputs
      (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs
@@ -277,9 +277,7 @@ install.")
          (add-after 'unpack 'adjust-locales
            (lambda _
              (substitute* "reprotest/build.py"
-               (("'C.UTF-8'") "'en_US.UTF-8'")
-               (("'ru_RU.CP1251'") "'ru_RU.KOI8-R'")
-               (("'kk_KZ.RK1048'") "'kk_KZ'"))
+               (("'C.UTF-8'") "'en_US.UTF-8'"))
              (substitute* "reprotest/lib/adt_testbed.py"
                (("export LANG=C.UTF-8") "export LANG=en_US.UTF-8"))
              #t))

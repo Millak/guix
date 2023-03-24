@@ -1,0 +1,20 @@
+diff --git a/pasp-mode.el b/pasp-mode.el
+index 7f83645..5daf08e 100644
+--- a/pasp-mode.el
++++ b/pasp-mode.el
+@@ -199,9 +199,12 @@
+ Argument ENCODING The current buffer which holds the problem encoding.
+ Optional argument INSTANCE The problem instance which is solved by the encoding.
+   If no instance it is assumed to be also in the encoding file."
+-  (if 'instance
+-      (concat pasp-clingo-path " " pasp-clingo-options " " encoding " " instance)
+-    (concat pasp-clingo-path " " pasp-clingo-options " " encoding)))
++  (if instance
++      (concat pasp-clingo-path " " pasp-clingo-options " "
++              (shell-quote-argument encoding) " "
++              (shell-quote-argument instance))
++    (concat pasp-clingo-path " " pasp-clingo-options " "
++            (shell-quote-argument encoding))))
+ 
+ (defun pasp-run-clingo (encoding &optional instance)
+   "Run Clingo with some ASP input files.

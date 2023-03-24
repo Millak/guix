@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
+;;; Copyright © 2023 Csepp <raingloom@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -965,7 +966,7 @@ name = Guix Builder")
      ;; OPAM is used as a tool and not as a library, we can use the OCaml 4.14
      ;; compiled opam until opam is compatible with OCaml 5.0.
      `((ocaml5.0-variant . ,(delay opam))))
-    (home-page "http://opam.ocamlpro.com/")
+    (home-page "https://opam.ocamlpro.com/")
     (synopsis "Package manager for OCaml")
     (description
      "OPAM is a tool to manage OCaml packages.  It supports multiple
@@ -974,6 +975,39 @@ Git-friendly development workflow.")
 
     ;; The 'LICENSE' file waives some requirements compared to LGPLv3.
     (license license:lgpl3)))
+
+(define-public ocaml-opam-monorepo
+  (package
+    (name "ocaml-opam-monorepo")
+    (version "0.3.5")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/tarides/opam-monorepo/")
+                (commit version)))
+              (file-name name)
+              (sha256
+               (base32
+                "09lq788b1sai4v1nxd16b00pw0m55plcwrx3f9v5a90gpxg0a6sc"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; TODO
+     ;; Too many tests require a fully initialized opam, disabling them would
+     ;; be a huge pain.  "Mocking" opam init is difficult because it requires
+     ;; networking access.
+     '(#:tests? #f))
+    ;; TODO: not entirely clear if these should be native, test cross-building
+    (native-inputs (list ocaml-odoc
+                         pkg-config))
+    ;; (propagated-inputs lablgtk3) optional and is currently failing to build
+    (home-page "https://github.com/tarides/opam-monorepo")
+    (synopsis "Assemble and manage fully vendored Dune repositories")
+    (description
+     "The opam monorepo plugin provides a convenient interface to bridge the
+opam package manager with having a local copy of all the source code required
+to build a project using the dune build tool.")
+    (license license:isc)))
 
 (define-public ocaml-camlp-streams
   (package
@@ -1100,7 +1134,7 @@ concrete syntax of the language (Quotations, Syntax Extensions).")
                       (substitute* "_tags"
                         (("/bin/sh") (which "sh")))
                       #t)))))
-    (home-page "http://hevea.inria.fr/")
+    (home-page "https://hevea.inria.fr/")
     (synopsis "LaTeX to HTML translator")
     (description
      "HeVeA is a LaTeX to HTML translator that generates modern HTML 5.  It is
@@ -1208,7 +1242,7 @@ Emacs.")
     (arguments
      `(#:tests? #f)) ; No check target
     (properties `((ocaml4.07-variant . ,(delay (strip-ocaml4.07-variant ocaml-menhir)))))
-    (home-page "http://gallium.inria.fr/~fpottier/menhir/")
+    (home-page "https://gallium.inria.fr/~fpottier/menhir/")
     (synopsis "Parser generator")
     (description "Menhir is a parser generator.  It turns high-level grammar
 specifications, decorated with semantic actions expressed in the OCaml
@@ -2332,14 +2366,14 @@ manipulate such data.")
 (define-public ocaml-mtime
   (package
     (name "ocaml-mtime")
-    (version "1.4.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://erratique.ch/software/mtime/releases/"
+              (uri (string-append "https://erratique.ch/software/mtime/releases/"
                                   "mtime-" version ".tbz"))
               (sha256
                (base32
-                "1xy6lg52n2zynp4p164ym9j0f1b95j5n4bi5y4mbdrry9w99h32m"))))
+                "1ss4w3qxsfp51d88r0j7dzqs05dbb1xdx11hn1jl9cvd03ma0g9z"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list ocamlbuild opam))
@@ -2602,6 +2636,34 @@ simple (yet expressive) query language to select the tests to run.")
        `(#:package "alcotest"))
       (properties '()))))
 
+(define-public ocaml-expect-test-helpers-core
+  (package
+    (name "ocaml-expect-test-helpers-core")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/janestreet/expect_test_helpers_core")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bxs3g0zzym8agfcbpg5lmrh6hcb86z861bq40xhhfwqf4pzdbfa"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-base
+                             ocaml-base-quickcheck
+                             ocaml-core
+                             ocaml-ppx-jane
+                             ocaml-sexp-pretty
+                             ocaml-stdio
+                             ocaml-re))
+    (properties `((upstream-name . "expect_test_helpers_core")))
+    (home-page "https://github.com/janestreet/expect_test_helpers_core")
+    (synopsis "Helpers for writing expectation tests")
+    (description "Helper functions for writing expect tests.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-tools
   (package
     (name "ocaml-ppx-tools")
@@ -2779,7 +2841,7 @@ to which allows adding and looking up bindings in a type safe manner.")
 (define ocaml-eio
   (package
     (name "ocaml-eio")
-    (version "0.7")
+    (version "0.8.1")
     (home-page "https://github.com/ocaml-multicore/eio")
     (source
      (origin
@@ -2789,7 +2851,7 @@ to which allows adding and looking up bindings in a type safe manner.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256 (base32
-                "118raxdwv6pn5b152ffdhmwdi0l4wlwflcj2nmckfmm7v1z2fq4s"))))
+                "02q9i5wbb2497vd4ypc9d9p4zi3lmx0rsv8faiy7h8dnnzbjjf4z"))))
     (build-system dune-build-system)
     (arguments `(#:package "eio"))
     (propagated-inputs (list ocaml-bigstringaf
@@ -2803,7 +2865,10 @@ to which allows adding and looking up bindings in a type safe manner.")
                              ocaml-hmap
                              ocaml-mtime
                              ocaml-odoc))
-    (native-inputs (list ocaml-astring ocaml-crowbar ocaml-alcotest))
+    (native-inputs (list ocaml-astring
+                         ocaml-crowbar
+                         ocaml-alcotest
+                         ocaml-mdx))
     (synopsis "Effect-based direct-style IO API for OCaml")
     (description "This package provides an effect-based IO API for multicore
 OCaml with fibers.")
@@ -2829,7 +2894,7 @@ OCaml with fibers.")
 (define-public ocaml-uring
   (package
     (name "ocaml-uring")
-    (version "0.4")
+    (version "0.5")
     (home-page "https://github.com/ocaml-multicore/ocaml-uring")
     (source
       (origin
@@ -2839,7 +2904,7 @@ OCaml with fibers.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256 (base32
-                 "0k70y7nb2wrk2yql0pwnrhsp1x7k9ld4gd8iihbv6r34kcm3a5m1"))))
+                 "0ygx8v01bb5808wy6nppg40h1ns8b1f2l585lwc4389z4wrppk95"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-cstruct
@@ -2929,6 +2994,11 @@ process.  Also, in many cases, Lwt threads can interact without the need for
 locks or other synchronization primitives.")
     (license license:lgpl2.1)))
 
+;; TODO this alias is not ideal but ocaml-lwt already explicitly specifies a
+;; package argument and at least this way the importer doesn't try to
+;; re-import it.
+(define ocaml-lwt-ppx ocaml-lwt)
+
 (define-public ocaml-lwt-dllist
   (package
     (name "ocaml-lwt-dllist")
@@ -2949,6 +3019,152 @@ locks or other synchronization primitives.")
     (description "This OCaml library provides an implementation of a mutable
 doubly-linked list with Lwt iterators.")
     (license license:expat)))
+
+
+(define-public ocaml-shared-memory-ring
+  (package
+    (name "ocaml-shared-memory-ring")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/shared-memory-ring")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12cpbia39aifnd8rxpsra0lhssqj5qw0zygb5fd8kg58zy2clmrr"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "shared-memory-ring"))
+    (propagated-inputs (list ocaml-cstruct ocaml-ppx-cstruct ocaml-lwt-dllist
+                             ocaml-mirage-profile))
+    (native-inputs (list ocaml-ounit))
+    (home-page "https://github.com/mirage/shared-memory-ring")
+    (synopsis "Xen-style shared memory rings")
+    (description
+     "Libraries for creating shared memory producer/consumer rings.  The rings
+follow the Xen ABI and may be used to create or implement Xen virtual
+devices.")
+    (license license:isc)))
+
+(define-public ocaml-shared-memory-ring-lwt
+  (package
+    (inherit ocaml-shared-memory-ring)
+    (name "ocaml-shared-memory-ring-lwt")
+    (arguments
+     '(#:package "shared-memory-ring-lwt"))
+    (propagated-inputs (modify-inputs (package-propagated-inputs
+                                       ocaml-shared-memory-ring)
+                         (append ocaml-shared-memory-ring)))))
+
+(define-public ocaml-xenstore
+  (package
+    (name "ocaml-xenstore")
+    (version "2.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/ocaml-xenstore")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1acld5gxmvnhl5iyyy5ancpm7fv9d6ns1x32krcmb62p2czd00ky"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cstruct ocaml-ppx-cstruct ocaml-lwt))
+    (native-inputs (list ocaml-ounit2))
+    (home-page "https://github.com/mirage/ocaml-xenstore")
+    (synopsis "Xenstore protocol in pure OCaml")
+    (description "Repository contents:
+@itemize
+@item client library, a merge of the Mirage and XCP ones
+@item server library
+@item server instance which runs under Unix with libxc
+@item server instance which runs on mirage.
+@end itemize
+The client and the server libraries have sets of unit-tests.")
+    ;; Has a linking exception, see LICENSE.md.
+    (license license:lgpl2.1)))
+
+(define-public ocaml-mirage-xen
+  (package
+    (name "ocaml-mirage-xen")
+    (version "8.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-xen")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qydg92dbw8hj4b809apj0f51cjgmamq3zdf34a4wyn5jv85yzyx"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cstruct
+                             ocaml-lwt
+                             ocaml-shared-memory-ring-lwt
+                             ocaml-xenstore
+                             ocaml-lwt-dllist
+                             ;; ocaml-mirage-profile  dependency cycle
+                             ocaml-io-page
+                             ocaml-mirage-runtime
+                             ocaml-logs
+                             ocaml-fmt
+                             ocaml-bheap
+                             ocaml-duration))
+    (home-page "https://github.com/mirage/mirage-xen")
+    (synopsis "Xen core platform libraries for MirageOS")
+    (description
+     "MirageOS OS library for Xen targets, which handles the main
+loop and timers.  It also provides the low level C startup code and C stubs
+required by the OCaml code.")
+    (license license:isc)))
+
+(define-public ocaml-io-page
+  (package
+    (name "ocaml-io-page")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/io-page")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lmvm1whdw5s7rvi7jnjzicrp2j919dkjl856jwyjlq38f7qn0zm"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cstruct))
+    (native-inputs (list pkg-config ocaml-ounit))
+    (home-page "https://github.com/mirage/io-page")
+    (synopsis "Support for efficient handling of I/O memory pages")
+    (description
+     "IO pages are page-aligned, and wrapped in the @code{Cstruct} library to
+avoid copying the data contained within the page.")
+    (license license:isc)))
+
+(define-public ocaml-bheap
+  (package
+    (name "ocaml-bheap")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/backtracking/bheap")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b8md5zl4yz7j62jz0bf7lwyl0pyqkxqx36ghkgkbkxb4zzggfj1"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-stdlib-shims))
+    (home-page "https://github.com/backtracking/bheap")
+    (synopsis "Priority queues")
+    (description
+     "Traditional implementation of priority queues using a binary heap
+encoded in a resizable array.")
+    (license license:lgpl2.1)))
 
 (define-public ocaml-luv
   (package
@@ -3528,6 +3744,459 @@ and command-line tool.")
     ;; All other files under GNU gpl3
     (license (list license:gpl3+
                    license:lgpl2.1+))))
+
+(define-public ocaml-domain-name
+  (package
+    (name "ocaml-domain-name")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hannesm/domain-name/")
+                    (commit (string-append "v" version))))
+              (file-name name)
+              (sha256
+               (base32
+                "1a669zz1pc7sqbi1c13jsnp8algcph2b8gr5fjrjhyh3p232770k"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/hannesm/domain-name")
+    (synopsis "RFC 1035 Internet domain name data structure and parser")
+    (description
+     "Parses and constructs RFC compliant domain names.  The invariants on the
+length of domain names are preserved throughout the module.")
+    (license license:isc)))
+
+(define-public ocaml-macaddr
+  (package
+    (name "ocaml-macaddr")
+    (version "5.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/ocaml-ipaddr/")
+                    (commit (string-append "v" version))))
+              (file-name name)
+              (sha256
+               (base32
+                "1zgwx0ms3l4k4dzwnkrwq4zzqjrddjsvqn66mbd0rm6aq1ib019d"))))
+    (build-system dune-build-system)
+    (arguments '(#:package "macaddr"))
+    (propagated-inputs (list ocaml-cstruct ocaml-domain-name))
+    (native-inputs (list ocaml-ounit2 ocaml-ppx-sexp-conv))
+    (home-page "https://github.com/mirage/ocaml-ipaddr")
+    (synopsis "OCaml library for manipulation of MAC address representations")
+    (description
+     "Features:
+@itemize
+@item MAC-48 (Ethernet) address support
+@item @code{Macaddr} is a @code{Map.OrderedType}
+@item All types have sexplib serializers/deserializers optionally via the
+@code{Macaddr_sexp} library
+@end itemize")
+    (license license:isc)))
+
+(define-public ocaml-ipaddr
+  ;; same repo and versions as ocaml-macaddr
+  (package
+    (inherit ocaml-macaddr)
+    (name "ocaml-ipaddr")
+    (arguments '(#:package "ipaddr"))
+    (propagated-inputs (list ocaml-macaddr ocaml-domain-name))
+    (synopsis
+     "Library for manipulation of IP (and MAC) address representations")
+    (description
+     "IP address types with serialization, supporting a wide range of RFCs.")
+    (license license:isc)))
+
+(define-public ocaml-pecu
+  (package
+    (name "ocaml-pecu")
+    (version "0.6")
+    (source (origin
+              (method url-fetch)
+              (uri
+               "https://github.com/mirage/pecu/releases/download/v0.6/pecu-v0.6.tbz")
+              (sha256
+               (base32
+                "1iz5jj9lyl1pah8dfni4wv0qml0ir5zknv4zhw7v50sc8kdbglm9"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-fmt ocaml-alcotest ocaml-crowbar ocaml-astring))
+    (home-page "https://github.com/mirage/pecu")
+    (synopsis "Encoder/Decoder of Quoted-Printable (RFC2045 & RFC2047)")
+    (description
+     "This package provides a non-blocking encoder/decoder of Quoted-Printable
+according to RFC2045 and RFC2047 (about encoded-word).  Useful to translate
+contents of emails.")
+    (license license:expat)))
+
+(define-public ocaml-emile
+  (package
+    (name "ocaml-emile")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri
+               "https://github.com/mirage/emile/releases/download/v1.1/emile-v1.1.tbz")
+              (sha256
+               (base32
+                "0r1141makr0b900aby1gn0fccjv1qcqgyxib3bzq8fxmjqwjan8p"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-angstrom
+                             ocaml-ipaddr
+                             ocaml-base64
+                             ocaml-pecu
+                             ocaml-bigstringaf
+                             ocaml-uutf))
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/mirage/emile")
+    (synopsis "Parser of email address according RFC822")
+    (description
+     "This package provides a parser of email address according RFC822, RFC2822,
+RFC5321 and RFC6532.  It handles UTF-8 email addresses and encoded-word
+according RFC2047.")
+    (license license:expat)))
+
+(define-public ocaml-parse-argv
+  (package
+    (name "ocaml-parse-argv")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/parse-argv")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16n18zik6vkfnhv8jaigr90fwp1ykg23p61aqchym0jil4i4yq01"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-astring))
+    (native-inputs (list ocaml-ounit))
+    (home-page "https://github.com/mirage/parse-argv")
+    (synopsis "Process strings into sets of command-line arguments")
+    (description "Small implementation of a simple argv parser.")
+    (license license:isc)))
+
+(define-public ocaml-functoria-runtime
+  (package
+    (name "ocaml-functoria-runtime")
+    (version "4.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/mirage/mirage/")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name "mirage" version))
+       (sha256
+        (base32
+         "09mqbffrhnklbc50gaflkwb3h1xysqqiwb84a9q1phjl038pic6r"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "functoria-runtime"
+       ;; TODO
+       ;; again, requires opam for tests, which needs network access.
+       ;; most other tests seem to pass.
+       #:tests? #f))
+    (propagated-inputs
+     (list ocaml-cmdliner ocaml-fmt ocaml-logs ocaml-bos ocaml-ipaddr
+           ocaml-emile ocaml-uri))
+    (native-inputs
+     (list ocaml-alcotest))
+    (home-page "https://github.com/mirage/mirage")
+    (synopsis "Runtime support library for functoria-generated code")
+    (description
+     "This is the runtime support library for code generated by functoria.")
+    (license license:isc)))
+
+(define-public ocaml-mirage-runtime
+  (package
+    (inherit ocaml-functoria-runtime)
+    (name "ocaml-mirage-runtime")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "mirage-runtime"
+       ;; TODO again, wants opam, other tests seem to pass
+       ;; look for a way to disable tests that want network access
+       #:tests? #f))
+    (propagated-inputs (list ocaml-ipaddr ocaml-functoria-runtime ocaml-fmt
+                             ocaml-logs ocaml-lwt))
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/mirage/mirage")
+    (synopsis
+     "The base MirageOS runtime library, part of every MirageOS unikernel")
+    (description
+     "This package provides a bundle of useful runtime functions for
+applications built with MirageOS")
+    (license license:isc)))
+
+(define-public ocaml-functoria
+  (package
+    (inherit ocaml-functoria-runtime)
+    (name "ocaml-functoria")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "functoria"
+       ;; TODO again, wants opam, other tests seem to pass
+       ;; look for a way to disable tests that want network access
+       #:tests? #f))
+    (propagated-inputs (list ocaml-cmdliner ocaml-rresult ocaml-result
+                             ocaml-astring ocaml-fmt ocaml-logs ocaml-bos
+                             ocaml-fpath ocaml-emile ocaml-uri))
+    (native-inputs (list ocaml-alcotest ocaml-functoria-runtime))
+    (home-page "https://github.com/mirage/mirage")
+    (synopsis
+     "DSL to organize functor applications")
+    (description
+     "DSL to describe a set of modules and functors, their types and
+how to apply them in order to produce a complete application.  The main use
+case is mirage.")
+    (license license:isc)))
+
+(define-public ocaml-mirage
+  (package
+    (inherit ocaml-functoria-runtime)
+    (name "ocaml-mirage")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "mirage"
+       ;; TODO again, wants opam, other tests seem to pass
+       ;; look for a way to disable tests that want network access
+       #:tests? #f))
+    (propagated-inputs
+     (list ocaml-astring ocaml-bos ocaml-functoria ocaml-ipaddr ocaml-logs
+           ocaml-mirage-runtime ocaml-opam-monorepo))
+    (native-inputs (list ocaml-alcotest ocaml-fmt))
+    (home-page "https://github.com/mirage/mirage")
+    (synopsis
+     "The MirageOS library operating system")
+    (description
+     "Library operating system that constructs unikernels for secure,
+high-performance network applications across a variety of cloud computing and
+mobile platforms.  Code can be developed on a normal OS and then compiled into
+a fully-standalone, specialised unikernel.")
+    (license license:isc)))
+
+(define-public ocaml-mirage-bootvar-unix
+  (package
+    (name "ocaml-mirage-bootvar-unix")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-bootvar-unix")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vi13q0z5ffv5hf4q5lfvkia6j2s5520px0s2x4dbjgd52icizrz"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-lwt ocaml-parse-argv))
+    (home-page "https://github.com/mirage/mirage-bootvar-unix")
+    (synopsis "Unix implementation of MirageOS Bootvar interface")
+    (description "Library for passing boot parameters from Solo5 to MirageOS.")
+    (license license:isc)))
+
+(define-public ocaml-duration
+  (package
+    (name "ocaml-duration")
+    (version "0.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/hannesm/duration/")
+                (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vvxi0ipxmdz1k4h501brvccniwf3wpc32djbccyyrzraiz7qkff"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/hannesm/duration")
+    (synopsis "Conversions to various time units")
+    (description
+     "This package provides a duration is represented in nanoseconds as an
+unsigned 64 bit integer.  This has a range of up to 584 years.  Functions
+provided check the input and raise on negative or out of bound input.")
+    (license license:isc)))
+
+(define-public ocaml-mirage-time
+  (package
+    (name "ocaml-mirage-time")
+    (version "3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/mirage/mirage-time/releases/download/v"
+                    version "/mirage-time-v3.0.0.tbz"))
+              (sha256
+               (base32
+                "0z5xkhlgyhm22wyhwpf9r0rn4125cc3cxj6ccavyiiz2b2dr8h0d"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-lwt ocaml-duration))
+    (home-page "https://github.com/mirage/mirage-time")
+    (synopsis "Time operations for MirageOS")
+    (description
+     "Defines the signature for time-related operations for MirageOS.")
+    (license license:isc)))
+
+(define-public ocaml-mirage-clock
+  (package
+    (name "ocaml-mirage-clock")
+    (version "4.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-clock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rkara9i3dvnzrb8jl2vkx8hgamvxnksin67wmhbv9d4i758amjy"))))
+    (build-system dune-build-system)
+    (home-page "https://github.com/mirage/mirage-clock")
+    (synopsis "Libraries and module types for portable clocks")
+    (description
+     "This library implements portable support for an operating system
+timesource that is compatible with the MirageOS library interfaces.  It
+implements an @code{MCLOCK} module that represents a monotonic timesource
+since an arbitrary point, and @code{PCLOCK} which counts time since the Unix
+epoch.")
+    (license license:isc)))
+
+(define-public ocaml-ptime
+  (package
+    (name "ocaml-ptime")
+    ;; TODO 1.1.0 has some issues, so for now we are stuck with 0.8.5
+    (version "0.8.5")
+    (source (origin
+              (method url-fetch)
+              (uri
+               "https://erratique.ch/software/ptime/releases/ptime-0.8.5.tbz")
+              (sha256
+               (base32
+                "1fxq57xy1ajzfdnvv5zfm7ap2nf49znw5f9gbi4kb9vds942ij27"))))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:build-flags (list "build" "--with-js_of_ocaml" "true" "--tests"
+                           "true")
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (propagated-inputs (list ocaml-result js-of-ocaml))
+    (native-inputs (list ocaml-findlib ocamlbuild ocaml-topkg opam))
+    (home-page "https://erratique.ch/software/ptime")
+    (synopsis "POSIX time for OCaml")
+    (description
+     "Ptime offers platform independent POSIX time support in pure OCaml.  It
+provides a type to represent a well-defined range of POSIX timestamps with
+picosecond precision, conversion with date-time values, conversion with RFC
+3339 timestamps and pretty printing to a human-readable, locale-independent
+representation.")
+    (license license:isc)))
+
+(define-public ocaml-mirage-unix
+  (package
+    (name "ocaml-mirage-unix")
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/mirage/mirage-unix/releases/download/v"
+                    version "/mirage-unix-5.0.1.tbz"))
+              (sha256
+               (base32
+                "1y44hvsd5lxqbazwkv9n6cn936lpn8l7v82wf55w4183fp70nnjk"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-lwt ocaml-duration ocaml-mirage-runtime))
+    (home-page "https://github.com/mirage/mirage-unix")
+    (synopsis "Unix core platform libraries for MirageOS")
+    (description
+     "This package provides the MirageOS `OS` library for Unix targets, which
+handles the main loop and timers.")
+    (license license:isc)))
+
+(define-public ocaml-mirage-profile-unix
+  (package
+    (name "ocaml-mirage-profile-unix")
+    (version "0.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-profile/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11p3ai8g993algds9mbg4xf3is0agqah127r69fb7rm35dryzq95"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "mirage-profile-unix"
+       #:tests? #f ;depends on ocaml-mirage-profile which would form a loop
+       #:phases (modify-phases %standard-phases
+                  ;; TODO is there a way to do this with dune build flags?
+                  (add-after 'unpack 'disable-xen
+                    (lambda _
+                      ;; this way it is not detected as a build target
+                      (rename-file "xen" "_xen"))))))
+    (propagated-inputs (list ocaml-cstruct ocaml-ocplib-endian ocaml-lwt
+                             ocaml-mtime ocaml-ppx-cstruct))
+    (native-inputs (list ocaml-ppx-cstruct))
+    (home-page "https://github.com/mirage/mirage-profile")
+    (synopsis "Collects Ocaml/Lwt profiling information in CTF format")
+    (description
+     "Used to trace execution of OCaml/Lwt programs (such as Mirage
+unikernels) at the level of Lwt threads.  The traces can be viewed using
+JavaScript or GTK viewers provided by mirage-trace-viewer or processed by
+tools supporting the Common Trace Format.
+When compiled against a normal version of Lwt, OCaml's cross-module inlining
+will optimise these calls away, meaning there should be no overhead in the
+non-profiling case.")
+    (license license:bsd-2)))
+
+(define-public ocaml-mirage-profile
+  (package
+    (inherit ocaml-mirage-profile-unix)
+    (name "ocaml-mirage-profile")
+    (arguments
+     '(#:package "mirage-profile"
+       ;; TODO cyclic dependency with mirage-profile
+       ;; It could be broken using package variants, if not for
+       ;; propagated inputs leading to version conflicts.
+       #:tests? #f))
+    (propagated-inputs (modify-inputs (package-propagated-inputs
+                                       ocaml-mirage-profile-unix)
+                         (append ocaml-mirage-profile-unix)))))
+
+(define-public ocaml-mirage-logs
+  (package
+    (name "ocaml-mirage-logs")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-logs/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wv2hz1dj38jzc8nabin9p8im43ghy8f3crv7rf9szyyzyrdanp2"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-logs ocaml-ptime ocaml-mirage-clock
+                             ocaml-mirage-profile ocaml-lwt))
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/mirage/mirage-logs")
+    (synopsis
+     "Reporter for the Logs library that writes to stderr with timestamps")
+    (description
+     "Uses a Mirage @code{CLOCK} to write timestamped log messages.  It can
+also log only important messages to the console, while writing all received
+messages to a ring buffer which is displayed if an exception occurs.  If
+tracing is enabled (via mirage-profile), it also writes each log message to
+the trace buffer.")
+    (license license:isc)))
 
 (define-public ocaml-ocurl
   (package
@@ -4139,6 +4808,28 @@ writing to these structures, and they are accessed via the Bigarray module.")
                   "0jj3whs8r3jc524i9bb67rffh7y7r157hjgvws0bkxijxpjzwkbk"))))
       (properties '()))))
 
+;; TODO again, the "parent" package already has an explicit package argument,
+;; so a variant package doesn't make sense, at least these aliases help the
+;; importer out so it doesn't re-import things.  At least hopefully.
+(define ocaml-cstruct-unix ocaml-cstruct)
+(define ocaml-cstruct-sexp ocaml-cstruct)
+
+(define-public ocaml-ppx-cstruct
+  (package
+    (inherit ocaml-cstruct)
+    (name "ocaml-ppx-cstruct")
+    (properties `((upstream-name . "ppx_cstruct")))
+    (arguments
+     '(#:package "ppx_cstruct"
+       ;; TODO doesn't find test deps for some reason?
+       ;; I have no clue why.
+       #:tests? #f))
+    (propagated-inputs (modify-inputs (package-propagated-inputs ocaml-cstruct)
+                         (append ocaml-cstruct ocaml-ppxlib ocaml-sexplib)))
+    (native-inputs (modify-inputs (package-propagated-inputs ocaml-cstruct)
+                     (append ocaml-cstruct-sexp ocaml-findlib
+                             ocaml-ppx-sexp-conv)))))
+
 (define-public ocaml-hex
   (package
     (name "ocaml-hex")
@@ -4331,7 +5022,7 @@ Format module of the OCaml standard library.")
        ("ocaml-sedlex" ,ocaml-sedlex)
        ("ocaml-easy-format" ,ocaml-easy-format)
        ("ocaml-base64" ,ocaml-base64)))
-    (home-page "http://piqi.org")
+    (home-page "https://piqi.org")
     (synopsis "Data serialization and conversion library")
     (description "Piqilib is the common library used by the piqi command-line
 tool and piqi-ocaml.")
@@ -4405,7 +5096,7 @@ and 4 (random based) according to RFC 4122.")
                      (search-input-file inputs "/bin/sh")))))))
     (inputs (list lablgtk))
     (properties `((upstream-name . "ocamlgraph")))
-    (home-page "http://ocamlgraph.lri.fr/")
+    (home-page "https://ocamlgraph.lri.fr/")
     (synopsis "Graph library for OCaml")
     (description "OCamlgraph is a generic graph library for OCaml.")
     (license license:lgpl2.1)))
@@ -5538,7 +6229,7 @@ the OCaml language.")
                                "/lib/ocaml/site-lib/num"
                                " $(FUNCTORYLIB)")))
              #t)))))
-    (home-page "http://cubicle.lri.fr/")
+    (home-page "https://cubicle.lri.fr/")
     (synopsis "Model checker for array-based systems")
     (description "Cubicle is a model checker for verifying safety properties
 of array-based systems.  This is a syntactically restricted class of
@@ -5674,6 +6365,29 @@ functionality for parsing and pretty-printing s-expressions.")
       (janestreet-origin "sexplib" version
                          "0ksx62zsxhz8xmdrsn41n2hbc2qbyh3bxxc6946xisvgwh42h3q3"))
      (properties '()))))
+
+(define-public ocaml-sexp-pretty
+  (package
+    (name "ocaml-sexp-pretty")
+    (version "0.15.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/sexp_pretty")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08z9jpvgag5f029ns0a06lcdymg00vwi232xsy1rdv82zvc0x4ah"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-base ocaml-ppx-base ocaml-sexplib ocaml-re))
+    (properties `((upstream-name . "sexp_pretty")))
+    (home-page "https://github.com/janestreet/sexp_pretty")
+    (synopsis "S-expression pretty-printer")
+    (description
+     "Library for pretty-printing s-expressions, using better indentation
+rules than the default pretty printer in Sexplib.")
+    (license license:expat)))
 
 (define-public ocaml-base
   (package
@@ -6340,6 +7054,32 @@ storage of large amounts of data.")
       (license (list
                  license:asl2.0
                  license:bsd-3)))))
+
+(define-public ocaml-protocol-version-header
+  (package
+    (name "ocaml-protocol-version-header")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/janestreet/protocol_version_header")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s638cwf1357gg754rc4306654hhrhzqaqm2lp3yv5vj3ml8p4qy"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core ocaml-ppx-jane))
+    (properties `((upstream-name . "protocol_version_header")))
+    (home-page "https://github.com/janestreet/protocol_version_header")
+    (synopsis "Protocol versioning")
+    (description
+     "This library offers a lightweight way for applications protocols to
+version themselves.  The more protocols that add themselves to
+@code{Known_protocol}, the nicer error messages we will get when connecting to
+a service while using the wrong protocol.")
+    (license license:expat)))
 
 (define-public ocaml-octavius
   (package
@@ -7833,6 +8573,197 @@ the full Core is not available, such as in Javascript.")
                  ;; MLton and sjs
                  license:expat)))))
 
+(define-public ocaml-core-unix
+  (package
+    (name "ocaml-core-unix")
+    (version "0.15.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/core_unix")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h6lqaxpp4r06a63k8yr0g9y7wc8r35v2xzqgvkiiq1ypa48zzgm"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core
+                             ocaml-core-kernel
+                             ocaml-expect-test-helpers-core
+                             ocaml-jane-street-headers
+                             ocaml-jst-config
+                             ocaml-intrinsics
+                             ocaml-ppx-jane
+                             ocaml-sexplib
+                             ocaml-timezone
+                             ocaml-spawn))
+    (properties `((upstream-name . "core_unix")))
+    (home-page "https://github.com/janestreet/core_unix")
+    (synopsis "Unix-specific portions of Core")
+    (description
+     "Unix-specific extensions to some of the modules defined in core and
+core_kernel.")
+    (license license:expat)))
+
+(define-public ocaml-async-kernel
+  (package
+    (name "ocaml-async-kernel")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/async_kernel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01if6c8l2h64v7sk56xr8acnmj6g9whxcjrzzzvczspq88hq2bfh"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core ocaml-core-kernel ocaml-ppx-jane))
+    (properties `((upstream-name . "async_kernel")))
+    (home-page "https://github.com/janestreet/async_kernel")
+    (synopsis "Monadic concurrency library")
+    (description
+     "Contains @code{Async}'s core data structures, like
+@code{Deferred}.  @code{Async_kernel} is portable, and so can be used in
+JavaScript using @code{Async_js}.")
+    (license license:expat)))
+
+(define-public ocaml-async-unix
+  (package
+    (name "ocaml-async-unix")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/async_unix")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z4fgpn93iw0abd7l9kac28qgzgc5qr2x0s1n2zh49lsdn02n6ys"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-async-kernel ocaml-core ocaml-core-kernel
+                             ocaml-core-unix ocaml-ppx-jane))
+    (properties `((upstream-name . "async_unix")))
+    (home-page "https://github.com/janestreet/async_unix")
+    (synopsis "Monadic concurrency library")
+    (description
+     "Unix-related dependencies for things like system calls and
+threads.  Using these, it hooks the Async_kernel scheduler up to either epoll
+or select, depending on availability, and manages a thread pool that blocking
+system calls run in.")
+    (license license:expat)))
+
+(define-public ocaml-async-rpc-kernel
+  (package
+    (name "ocaml-async-rpc-kernel")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/async_rpc_kernel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b5rp5yam03ir4f1sixpzjg1zdqmkb7lvnaa82kac4fzk80gfrfr"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-async-kernel ocaml-core ocaml-ppx-jane
+                             ocaml-protocol-version-header))
+    (properties `((upstream-name . "async_rpc_kernel")))
+    (home-page "https://github.com/janestreet/async_rpc_kernel")
+    (synopsis "Platform-independent core of Async RPC library")
+    (description
+     "Library for building RPC-style protocols.  This library is the portable
+part of the Unix-oriented Async_rpc library, and is actively used in
+JavaScript.")
+    (license license:expat)))
+
+(define-public ocaml-async
+  (package
+    (name "ocaml-async")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/async")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pykmnsil754jsnr8gss91ykyjvivngx4ii0ih3nsg1x2jl9xmy2"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-async-kernel
+                             ocaml-async-rpc-kernel
+                             ocaml-async-unix
+                             ocaml-core
+                             ocaml-core-kernel
+                             ocaml-core-unix
+                             ocaml-ppx-jane
+                             ocaml-ppx-log
+                             ocaml-textutils))
+    ;; TODO one test dependency is deprecated, the other is nowhere to be found
+    (arguments
+     '(#:tests? #f))
+    ;; (native-inputs (list ocaml-netkit-sockets ocaml-qtest-deprecated))
+    (home-page "https://github.com/janestreet/async")
+    (synopsis "Asynchronous execution library")
+    (description
+     "Library for asynchronous programming, i.e., programming where some part
+of the program must wait for things that happen at times determined by some
+external entity (like a human or another program).")
+    (license license:expat)))
+
+(define-public ocaml-textutils-kernel
+  (package
+    (name "ocaml-textutils-kernel")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/textutils_kernel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "068g11d98wsb5a6ds0p5xybdmx5nx9bxa0k11dmh3l57kn4c169x"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core ocaml-ppx-jane ocaml-uutf))
+    (properties `((upstream-name . "textutils_kernel")))
+    (home-page "https://github.com/janestreet/textutils_kernel")
+    (synopsis "Text output utilities")
+    (description
+     "The subset of textutils using only core_kernel and working in
+javascript.")
+    (license license:expat)))
+
+(define-public ocaml-textutils
+  (package
+    (name "ocaml-textutils")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/textutils")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wass49h645wql9b7nck2iqlkf4648dkxvlvxixr7z80zcnb5rxr"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core
+                             ocaml-core-kernel
+                             ocaml-core-unix
+                             ocaml-ppx-jane
+                             ocaml-textutils-kernel
+                             ocaml-uutf))
+    (home-page "https://github.com/janestreet/textutils")
+    (synopsis "Text output utilities")
+    (description
+     "Utilities for working with terminal output, such as color printing.")
+    (license license:expat)))
+
 (define-public ocaml-timezone
   (package
     (name "ocaml-timezone")
@@ -8694,6 +9625,35 @@ exposed the intrinsics properly, the compiler doesn't have any fast blits
 between Bigstrings and other string-like types.  @code{bigstringaf} provides
 these missing pieces.")
     (license license:bsd-3)))
+
+(define-public ocaml-intrinsics
+  (package
+    (name "ocaml-intrinsics")
+    (version "0.15.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/ocaml_intrinsics")
+                    (commit (string-append "v" version))))
+              (file-name name)
+              (sha256
+               (base32
+                "1mazr1ka2zlm2s8bw5i555cnhi1bmr9yxvpn29d3v4m8lsnfm73z"))))
+    (build-system dune-build-system)
+    ;; TODO figure out how to get around this error:
+    ;; No rule found for alias test/runtime-deps-of-tests
+    (arguments
+     '(#:tests? #f))
+    (propagated-inputs (list dune-configurator))
+    (native-inputs (list ocaml-expect-test-helpers-core ocaml-core))
+    (properties `((upstream-name . "ocaml_intrinsics")))
+    (home-page "https://github.com/janestreet/ocaml_intrinsics")
+    (synopsis "AMD64 intrinsics with emulated fallbacks")
+    (description
+     "Provides an OCaml interface to operations that have dedicated hardware
+instructions on some micro-architectures, with default implementations using C
+stubs for all targets.")
+    (license license:expat)))
 
 (define-public ocaml-trie
   (package

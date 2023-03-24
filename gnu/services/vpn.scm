@@ -39,11 +39,12 @@
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (guix i18n)
+  #:use-module (guix deprecation)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
-  #:export (openvpn-client-service
-            openvpn-server-service
+  #:export (openvpn-client-service  ; deprecated
+            openvpn-server-service  ; deprecated
             openvpn-client-service-type
             openvpn-server-service-type
             openvpn-client-configuration
@@ -531,7 +532,8 @@ is truncated and rewritten every minute.")
                        (service-extension activation-service-type
                                           (const %openvpn-activation))))
                 (description "Run the OpenVPN server, which allows you to
-@emph{host} a @acronym{VPN, virtual private network}.")))
+@emph{host} a @acronym{VPN, virtual private network}.")
+                (default-value (openvpn-server-configuration))))
 
 (define openvpn-client-service-type
   (service-type (name 'openvpn-client)
@@ -544,12 +546,17 @@ is truncated and rewritten every minute.")
                                           (const %openvpn-activation))))
                 (description
                  "Run the OpenVPN client service, which allows you to connect
-to an existing @acronym{VPN, virtual private network}.")))
+to an existing @acronym{VPN, virtual private network}.")
+                (default-value (openvpn-client-configuration))))
 
-(define* (openvpn-client-service #:key (config (openvpn-client-configuration)))
+(define-deprecated
+  (openvpn-client-service #:key (config (openvpn-client-configuration)))
+  openvpn-client-service-type
   (service openvpn-client-service-type config))
 
-(define* (openvpn-server-service #:key (config (openvpn-server-configuration)))
+(define-deprecated
+  (openvpn-server-service #:key (config (openvpn-server-configuration)))
+  openvpn-server-service-type
   (service openvpn-server-service-type config))
 
 (define (generate-openvpn-server-documentation)

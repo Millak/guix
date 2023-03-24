@@ -52,7 +52,7 @@
                          perl))
                      ;;("python" ,python-wrapper)
     (inputs (list pcre))
-    (home-page "http://swig.org/")
+    (home-page "https://swig.org/")
     (synopsis
      "Interface compiler that connects C/C++ code to higher-level languages")
     (description

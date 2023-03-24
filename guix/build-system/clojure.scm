@@ -33,8 +33,6 @@
                 #:select
                 ((search-path-specification->sexp . search-path-spec->sexp)))
   #:use-module (guix utils)
-
-  #:use-module (ice-9 match)
   #:export (%clojure-build-system-modules
             clojure-build
             clojure-build-system))

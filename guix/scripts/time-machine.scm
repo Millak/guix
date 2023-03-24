@@ -22,7 +22,6 @@
   #:use-module (guix ui)
   #:use-module (guix scripts)
   #:use-module (guix inferior)
-  #:use-module (guix channels)
   #:use-module (guix store)
   #:use-module (guix status)
   #:use-module ((guix git)

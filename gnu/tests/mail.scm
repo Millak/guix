@@ -293,16 +293,16 @@ acl_check_data:
 (define %dovecot-os
   (simple-operating-system
    (service dhcp-client-service-type)
-   (dovecot-service #:config
-                    (dovecot-configuration
-                     (disable-plaintext-auth? #f)
-                     (ssl? "no")
-                     (auth-mechanisms '("anonymous"))
-                     (auth-anonymous-username "alice")
-                     (mail-location
-                      (string-append "maildir:~/Maildir"
-                                     ":INBOX=~/Maildir/INBOX"
-                                     ":LAYOUT=fs"))))))
+   (service dovecot-service-type
+            (dovecot-configuration
+             (disable-plaintext-auth? #f)
+             (ssl? "no")
+             (auth-mechanisms '("anonymous"))
+             (auth-anonymous-username "alice")
+             (mail-location
+              (string-append "maildir:~/Maildir"
+                             ":INBOX=~/Maildir/INBOX"
+                             ":LAYOUT=fs"))))))
 
 (define (run-dovecot-test)
   "Return a test of an OS running Dovecot service."

@@ -4,7 +4,7 @@
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021, 2022, 2023 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -251,10 +251,9 @@ provided and is #f."
                  (if (target-64bit? system)
                      "64"
                      "32")
-                 ;; missing (guix utils) predicate target-little-endian?
-                 (if (target-ppc32? system)
-                     "b"
-                     "l")))
+                 (if (target-little-endian? system)
+                     "l"
+                     "b")))
 
 (define* (racket-cs-native-supported-system? #:optional
                                              (system
@@ -467,7 +466,7 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.5.9.8")
+    (version "9.9.9-pre-release.14")
     ;; The version should match `scheme-version`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
@@ -1239,7 +1238,7 @@ syntax, with various aliases for commonly used patterns.")
                (replace 'install
                  (lambda* (#:key (make-flags '()) #:allow-other-keys)
                    (apply invoke "make" "chez-install" make-flags))))))
-    (home-page "http://synthcode.com/scheme/fmt")
+    (home-page "https://synthcode.com/scheme/fmt")
     (synopsis "Combinator formatting library for Chez Scheme")
     (description "This package provides a library of procedures for
 formatting Scheme objects to text in various ways, and for easily

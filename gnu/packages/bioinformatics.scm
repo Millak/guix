@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -56,7 +56,6 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
-  #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -720,6 +719,128 @@ suite native in R.")
 for all types of microbial diversity analyses.")
       (license license:expat))))
 
+(define-public r-codeandroll2
+  (let ((commit "d58e258851a5c0b430e8620d34dbeefb597c548f")
+        (revision "1"))
+    (package
+      (name "r-codeandroll2")
+      (version (git-version "2.3.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/CodeAndRoll2")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0sy88mfgw6qqhpnlc5020qzr1jllkcrxfhl2lw42bkl5nb56is71"))))
+      (properties `((upstream-name . "CodeAndRoll2")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-colorramps
+                               r-dplyr
+                               r-gplots
+                               r-gtools
+                               r-plyr
+                               r-rcolorbrewer
+                               r-sessioninfo
+                               r-sm
+                               r-stringendo
+                               r-stringr))
+      (home-page "https://github.com/vertesy/CodeAndRoll2")
+      (synopsis "CodeAndRoll2 for vector, matrix and list manipulations")
+      (description
+       "CodeAndRoll2 is a set of more than 130 productivity functions.
+These functions are used by MarkdownReports, ggExpress, and SeuratUtils.")
+      (license license:gpl3))))
+
+(define-public r-conospanel
+  (let ((commit "39e76b201a783b4e92fd615010a735a61746fbb9")
+        (revision "1"))
+    (package
+      (name "r-conospanel")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kharchenkolab/conosPanel")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zf0aj5d4iaxc3ghvjnaja5qby1avlmljzh94bpyvxbd359z9snn"))))
+      (properties `((upstream-name . "conosPanel")))
+      (build-system r-build-system)
+      (home-page "https://github.com/kharchenkolab/conosPanel")
+      (synopsis "Data for the conos package")
+      (description "The data within this package is a panel of four samples,
+each with 3000 cells.  There are two samples which are bone marrow (BM), and
+two samples which are cord blood (CB).")
+      (license license:gpl3))))
+
+(define-public r-conqur
+  (let ((commit "c7a88794efd4ecfe4d96988dceeec3b410222e48")
+        (revision "1"))
+    (package
+      (name "r-conqur")
+      (version (git-version "2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wdl2459/ConQuR")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19a7p2l67mgjy99i5ksjxlhzaqmrnyi1vzvwnhgnx2jrr6crj7rq"))))
+      (properties `((upstream-name . "ConQuR")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ade4
+                               r-ape
+                               r-compositions
+                               r-cqrreg
+                               r-doparallel
+                               r-dplyr
+                               r-fastdummies
+                               r-glmnet
+                               r-gplots
+                               r-gunifrac
+                               r-quantreg
+                               r-randomforest
+                               r-rocr
+                               r-vegan))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/wdl2459/ConQuR")
+      (synopsis "Batch effects removal for microbiome data")
+      (description
+       "This package conducts batch effects removal from a taxa read count
+table by a conditional quantile regression method.  The distributional
+attributes of microbiome data - zero-inflation and over-dispersion, are
+simultaneously considered.")
+      (license license:gpl3))))
+
+(define-public r-p2data
+  (let ((commit "7d4c0e17d7899f9d9b08ab2bf455abe150912f4c")
+        (revision "1"))
+    (package
+      (name "r-p2data")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kharchenkolab/p2data")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hadrldldxvhqs43aqs3c88bqfgql3wcfkbll3jz7fh6z7p3x324"))))
+      (properties `((upstream-name . "p2data")))
+      (build-system r-build-system)
+      (home-page "https://github.com/kharchenkolab/p2data")
+      (synopsis "Data for pagoda2")
+      (description "This package contains data used by pagoda2.  The data
+within this package are the 3000 bone marrow cells used for vignettes.")
+      (license license:gpl3))))
+
 (define-public r-rhtslib12
   (let ((commit "ee186daf04876969c7f31c16a0e0fda8e7c16a30")
         (revision "1"))
@@ -746,6 +867,57 @@ for all types of microbial diversity analyses.")
 high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
+
+(define-public r-stringendo
+  (let ((commit "83b8f2d82a09b33b9e895438bb523a021138be01")
+        (revision "1"))
+    (package
+      (name "r-stringendo")
+      (version (git-version "0.3.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/Stringendo")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ap0nhbyd6xx0yl2vgmwk38p22yrkv4k9hw13r35z4wf343rry6v"))))
+      (properties `((upstream-name . "Stringendo")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-devtools r-usethis))
+      (home-page "https://github.com/vertesy/Stringendo")
+      (synopsis "Stringendo is a string parsing library")
+      (description
+       "This package provides string parsing functionalites for generating
+plotnames, filenames and paths.")
+      (license license:gpl3))))
+
+(define-public r-readwriter
+  (let ((commit "71454f4aa706f5d2fbe606acd95abc14224e7058")
+        (revision "1"))
+    (package
+      (name "r-readwriter")
+      (version (git-version "0.2.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/ReadWriter")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0sp27smhdva2hi2x0svia2l56k8xrh7p5akn78g5b0lcvz4x3hd7"))))
+      (properties `((upstream-name . "ReadWriter")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-gdata r-gtools r-openxlsx r-readr r-stringendo))
+      (home-page "https://github.com/vertesy/ReadWriter")
+      (synopsis "Functions to read and write files conveniently")
+      (description
+       "ReadWriter is a set of R functions to read and write files
+conveniently.")
+      (license license:gpl3))))
 
 (define-public r-streamgraph
   (let ((commit "76f7173ec89d456ace5943a512e20b1f6810bbcb")
@@ -1178,6 +1350,53 @@ It is the demultiplexing module of Pegasus, which is used by Cumulus in the
 demultiplexing step.")
     (license license:bsd-3)))
 
+(define-public python-doubletdetection
+  (package
+    (name "python-doubletdetection")
+    (version "4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "doubletdetection" version))
+              (sha256
+               (base32
+                "0v0a19014h4p6x8pyz1s78xn3q5w5166cysvg574z6vw79a3s9vp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api")
+                 "poetry.core.masonry.api")))))))
+    (propagated-inputs
+     (list python-anndata
+           python-ipywidgets
+           python-leidenalg
+           python-vtraag-louvain
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-phenograph
+           python-scanpy
+           python-scipy
+           python-tqdm))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/JonathanShor/DoubletDetection")
+    (synopsis
+     "This is a package to detect doublets in single-cell RNA-seq count matrices")
+    (description
+     "This package provides a method to detect and enable removal of doublets
+from single-cell RNA-sequencing.")
+    (license license:expat)))
+
 (define-public python-hclust2
   (package
     (name "python-hclust2")
@@ -1254,6 +1473,66 @@ servers supporting the protocol.")
      "Pegasusio is a Python package for reading or writing single-cell
 genomics data.")
     (license license:bsd-3)))
+
+(define-public python-phenograph
+  (package
+    (name "python-phenograph")
+    (version "1.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PhenoGraph" version))
+              (sha256
+               (base32
+                "0nji449mzwgp1f87iknl5fmnjdkrhkfkapxvafxdw01s0jg8zcj6"))
+              (modules '((guix build utils)))
+              ;; Remove bundled binaries
+              (snippet
+               '(delete-file-recursively "phenograph/louvain"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This test can never succeed because Q_leiden is never set to
+          ;; anything other than None.
+          (add-after 'unpack 'disable-leiden-test
+            (lambda _
+              (substitute* "tests/test_cluster.py"
+                (("def test_run_leiden") "def _test_run_leiden"))))
+          (add-after 'unpack 'patch-louvain
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "phenograph/core.py"
+                (("lpath = os.path.*")
+                 (string-append "lpath = \""
+                                (dirname (search-input-file inputs "/bin/community"))
+                                "\"\n"))
+                (("linux-(community|hierarchy|convert)" _ thing) thing)
+                ;; Do not write binaries, because the unmodified "convert"
+                ;; from louvain only knows how to process plain text files.
+                (("with open\\(filename \\+ \".bin\", \"w\\+b\"\\) as f:")
+                 "with open(filename + \".bin\", \"w+\") as f:")
+                (("f.writelines\\(\\[e for t in zip\\(ij, s\\) for e in t\\]\\)")
+                 "for [src, dest], weight in zip(ij, s): \
+f.write(src.astype(\"str\") + ' ' + \
+dest.astype(\"str\") + ' ' + \
+weight.astype(\"str\") + '\\n')")))))))
+    (inputs
+     (list louvain))
+    (propagated-inputs
+     (list python-leidenalg
+           python-numpy
+           python-psutil
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/dpeerlab/PhenoGraph.git")
+    (synopsis "Graph-based clustering for high-dimensional single-cell data")
+    (description
+     "PhenoGraph is a clustering method designed for high-dimensional
+single-cell data.  It works by creating a graph representing phenotypic
+similarities between cells and then identifying communities in this graph.")
+    (license license:expat)))
 
 (define-public python-phylophlan
   (package
@@ -1469,7 +1748,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
            python-scipy))
     (native-inputs
      (list python-cython python-pytest python-pytest-cov python-nose))
-    (home-page "http://www.biom-format.org")
+    (home-page "https://www.biom-format.org")
     (synopsis "Biological Observation Matrix (BIOM) format utilities")
     (description
      "The BIOM file format is designed to be a general-use format for
@@ -2396,7 +2675,7 @@ errors at the end of reads.")
        ("python" ,python-wrapper)))
     (native-inputs
      (list perl perl-clone perl-test-deep perl-test-simple))
-    (home-page "http://bowtie-bio.sourceforge.net/bowtie2/index.shtml")
+    (home-page "https://bowtie-bio.sourceforge.net/bowtie2/index.shtml")
     (synopsis "Fast and sensitive nucleotide sequence read aligner")
     (description
      "Bowtie 2 is a fast and memory-efficient tool for aligning sequencing
@@ -2438,7 +2717,7 @@ gapped, local, and paired-end alignment modes.")
     (inputs
      (list python-wrapper tbb-2020 zlib))
     (supported-systems '("x86_64-linux"))
-    (home-page "http://bowtie-bio.sourceforge.net/index.shtml")
+    (home-page "https://bowtie-bio.sourceforge.net/index.shtml")
     (synopsis "Fast aligner for short nucleotide sequence reads")
     (description
      "Bowtie is a fast, memory-efficient short read aligner.  It aligns short
@@ -2559,7 +2838,7 @@ splice junctions between exons.")
     ;; Non-portable SSE instructions are used so building fails on platforms
     ;; other than x86_64.
     (supported-systems '("x86_64-linux"))
-    (home-page "http://bio-bwa.sourceforge.net/")
+    (home-page "https://bio-bwa.sourceforge.net/")
     (synopsis "Burrows-Wheeler sequence aligner")
     (description
      "BWA is a software package for mapping low-divergent sequences against a
@@ -3152,7 +3431,7 @@ time.")
            zlib))
     (native-inputs
      (list python-cython python-nose))
-    (home-page "http://crossmap.sourceforge.net/")
+    (home-page "https://crossmap.sourceforge.net/")
     (synopsis "Convert genome coordinates between assemblies")
     (description
      "CrossMap is a program for conversion of genome coordinates or annotation
@@ -3459,6 +3738,35 @@ and record oriented data modeling and the Semantic Web.")
 resources for bioinformatics.")
     (license license:bsd-3)))
 
+(define-public python-scrublet
+  (package
+    (name "python-scrublet")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scrublet" version))
+              (sha256
+               (base32
+                "0fk5pwk12yz9wpvwkl6j2l2g28f3x35b9r9n5bw6f0i9f0qgd191"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #false)) ;there are none
+    (propagated-inputs
+     (list python-annoy
+           python-cython
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pandas
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-umap-learn))
+    (home-page "https://github.com/swolock/scrublet")
+    (synopsis "Tool to indentify and remove doublets in single-cell data")
+    (description "This package provides a tool for identifying and removing
+doublets in single-cell RNA-seq data.")
+    (license license:expat)))
+
 (define-public cwltool
   (package
     (name "cwltool")
@@ -3661,6 +3969,80 @@ that can discover and genotype deletions, tandem duplications, inversions and
 translocations at single-nucleotide resolution in short-read massively parallel
 sequencing data.  It uses paired-ends and split-reads to sensitively and
 accurately delineate genomic rearrangements throughout the genome.")
+    (license license:gpl3+)))
+
+(define-public transanno
+  (package
+    (name "transanno")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/informationsea/transanno")
+             ;; Corresponds to tag v0.3.0
+             (commit "df49050c92644ea12d9d5c6fae2186ca436dbca3")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jpn7s3cnd9ybk4lmfbhj2arhf6cmrv7jp74n7n87m3a3irkaif1"))
+       (snippet
+        '(with-output-to-file "liftover-rs/build.rs"
+           (lambda _
+             (format #true
+                     "fn main() {~@
+                        println!(\"cargo:rustc-link-lib=lzma\");~@
+                        }~%"))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false          ;fails
+      #:tests? #false                   ;"cargo test" ignores build.rs
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-test-files
+            (lambda _
+              (delete-file "Cargo.lock")
+              (substitute* "liftover-rs/Cargo.toml"
+                (("anyhow = \"1\"") "anyhow = \"1.0.65\""))
+              (substitute* "liftover-rs/prepare-test.sh"
+                (("/bin/bash")
+                 (string-append #$(this-package-native-input "bash")
+                                "/bin/bash")))
+              (invoke "bash" "prepare-test-files.sh")))
+          (add-before 'patch-cargo-checksums 'do-not-build-xz
+            (lambda _
+              ;; Detection of liblzma (in rust-lzma-sys, pulled in by
+              ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
+              ;; request a static build somewhere.
+              (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
+                (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") ""))))
+          (add-before 'install 'chdir
+            (lambda _ (chdir "transanno"))))
+      #:cargo-inputs
+      `(("rust-anyhow" ,rust-anyhow-1)
+        ("rust-autocompress" ,rust-autocompress-0.2)
+        ("rust-bio" ,rust-bio-0.41)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nom" ,rust-nom-5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))
+      #:cargo-development-inputs
+      `(("rust-clap" ,rust-clap-2)
+        ("rust-lazy-static" ,rust-lazy-static-1))))
+    (native-inputs (list bash))
+    (home-page "https://github.com/informationsea/transanno")
+    (synopsis "LiftOver tool for new genome assemblies")
+    (description "This package provides an accurate VCF/GFF3/GTF LiftOver tool
+for new genome assemblies.")
     (license license:gpl3+)))
 
 (define-public trf
@@ -4747,7 +5129,7 @@ high-throughput sequencing (HTS) assays")
        ("java-xz" ,java-xz)))
     (native-inputs
      (list java-testng))
-    (home-page "http://samtools.github.io/htsjdk/")
+    (home-page "https://samtools.github.io/htsjdk/")
     (synopsis "Java API for high-throughput sequencing data (HTS) formats")
     (description
      "HTSJDK is an implementation of a unified Java library for accessing
@@ -4790,7 +5172,7 @@ manipulating HTS data.")
        ("java-xz" ,java-xz)))
     (native-inputs
      (list java-junit))
-    (home-page "http://samtools.github.io/htsjdk/")
+    (home-page "https://samtools.github.io/htsjdk/")
     (synopsis "Java API for high-throughput sequencing data (HTS) formats")
     (description
      "HTSJDK is an implementation of a unified Java library for accessing
@@ -4895,7 +5277,7 @@ manipulating HTS data.")
      (list java-htsjdk java-guava))
     (native-inputs
      (list java-testng))
-    (home-page "http://broadinstitute.github.io/picard/")
+    (home-page "https://broadinstitute.github.io/picard/")
     (synopsis "Tools for manipulating high-throughput sequencing data and formats")
     (description "Picard is a set of Java command line tools for manipulating
 high-throughput sequencing (HTS) data and formats.  Picard is implemented
@@ -4984,7 +5366,7 @@ Class-Path: /~a \
      (list java-htsjdk-2.10.1))
     (native-inputs
      (list java-testng java-guava))
-    (home-page "http://broadinstitute.github.io/picard/")
+    (home-page "https://broadinstitute.github.io/picard/")
     (synopsis "Tools for manipulating high-throughput sequencing data and formats")
     (description "Picard is a set of Java command line tools for manipulating
 high-throughput sequencing (HTS) data and formats.  Picard is implemented
@@ -5113,56 +5495,70 @@ VCF.")
 (define-public fastqc
   (package
     (name "fastqc")
-    (version "0.11.5")
+    (version "0.11.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.bioinformatics.babraham.ac.uk/"
-                           "projects/fastqc/fastqc_v"
-                           version "_source.zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/s-andrews/FastQC")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "18rrlkhcrxvvvlapch4dpj6xc6mpayzys8qfppybi8jrpgx5cc5f"))))
+         "00y9drm0bkpxw8xfl8ysss18jmnhj8blgqgr6fpa58rkpfcbg8qk"))
+       (snippet
+        '(for-each delete-file
+                   '("cisd-jhdf5.jar"
+                     "sam-1.103.jar"
+                     "jbzip2-0.9.jar")))))
     (build-system ant-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:build-target "build"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dependencies
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "build.xml"
-               (("jbzip2-0.9.jar")
-                (search-input-file inputs "/share/java/jbzip2.jar"))
-               (("sam-1.103.jar")
-                (search-input-file inputs
-                                   "/share/java/sam-1.112.jar"))
-               (("cisd-jhdf5.jar")
-                (search-input-file inputs
-                                   "/share/java/sis-jhdf5.jar")))))
-         ;; There is no installation target
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin"))
-                    (share (string-append out "/share/fastqc/"))
-                    (exe   (string-append share "/fastqc")))
-               (for-each mkdir-p (list bin share))
-               (copy-recursively "bin" share)
-               (substitute* exe
-                 (("my \\$java_bin = 'java';")
-                  (string-append "my $java_bin = '"
-                                 (assoc-ref inputs "java")
-                                 "/bin/java';")))
-               (chmod exe #o555)
-               (symlink exe (string-append bin "/fastqc"))
-               #t))))))
+     (list
+      #:tests? #f                       ;there are no tests
+      #:build-target "build"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-dependencies
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("build.xml" ".classpath")
+                (("jbzip2-0.9.jar")
+                 (search-input-file inputs "/share/java/jbzip2.jar"))
+                (("sam-1.103.jar")
+                 (search-input-file inputs "/share/java/sam-1.112.jar"))
+                (("cisd-jhdf5.jar")
+                 (search-input-file inputs "/share/java/sis-jhdf5.jar")))))
+          ;; There is no installation target
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((bin   (string-append #$output "/bin"))
+                     (share (string-append #$output "/share/fastqc/"))
+                     (exe   (string-append share "/fastqc")))
+                (for-each mkdir-p (list bin share))
+                (copy-recursively "bin" share)
+                (substitute* exe
+                  (("my \\$java_bin = \"java\";")
+                   (string-append "my $java_bin = \""
+                                  ;; Use java from the JRE, not the JDK
+                                  #$(this-package-input "icedtea") "/bin/java"
+                                  "\";"))
+                  (("\\$RealBin\\$delimiter\\$RealBin.*")
+                   (string-append
+                    (string-join
+                     (list
+                      share
+                      (search-input-file inputs "/share/java/sam-1.112.jar")
+                      (search-input-file inputs "/share/java/jbzip2.jar")
+                      (search-input-file inputs "/share/java/sis-jhdf5.jar"))
+                     "$delimiter")
+                    "\";\n")))
+                (chmod exe #o555)
+                (symlink exe (string-append bin "/fastqc"))))))))
     (inputs
-     `(("java" ,icedtea)
-       ("perl" ,perl)                   ; needed for the wrapper script
-       ("java-cisd-jhdf5" ,java-cisd-jhdf5)
-       ("java-picard-1.113" ,java-picard-1.113)
-       ("java-jbzip2" ,java-jbzip2)))
+     (list icedtea
+           java-cisd-jhdf5
+           java-picard-1.113
+           java-jbzip2
+           perl))                       ;needed for the wrapper script
     (native-inputs
      (list unzip))
     (home-page "https://www.bioinformatics.babraham.ac.uk/projects/fastqc/")
@@ -5190,7 +5586,7 @@ The main functions of FastQC are:
 (define-public fastp
   (package
     (name "fastp")
-    (version "0.20.1")
+    (version "0.23.2")
     (source
      (origin
        (method git-fetch)
@@ -5200,20 +5596,21 @@ The main functions of FastQC are:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ly8mxdvrcy23jwxyppysx3dhb1lwsqhfbgpyvargxhfk6k700x4"))))
+         "04nmrqpjc3qni0cbazlwvpg8rk1mkfmfma0n4q3zivs3zi6rfnav"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:make-flags
-       ,#~(list (string-append "PREFIX=" #$output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'install 'create-target-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
+     (list
+      #:tests? #false                   ;there are none
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'install 'create-target-dir
+            (lambda _
+              (mkdir-p (string-append #$output "/bin")))))))
     (inputs
-     (list zlib))
+     (list isa-l libdeflate))
     (home-page "https://github.com/OpenGene/fastp/")
     (synopsis "All-in-one FastQ preprocessor")
     (description
@@ -5404,21 +5801,22 @@ experiments and provide highly stable thresholds based on reproducibility.")
     (outputs '("out"      ;for library
                "python")) ;for Python bindings
     (arguments
-     `(#:configure-flags
-       ,#~(list "--without-sse" ; configure script probes for CPU features when SSE is enabled.
-                (string-append "--enable-python-binding=" #$output:python))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:configure-flags
+      #~(list "--without-sse" ; configure script probes for CPU features when SSE is enabled.
+              (string-append "--enable-python-binding=" #$output:python))
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'check 'set-SHELL-variable
            (lambda _
              ;; generator_manager.hpp either uses /bin/sh or $SHELL
              ;; to run tests.
              (setenv "SHELL" (which "bash")))))))
     (native-inputs
-     `(("bc" ,bc)
-       ("time" ,time)
-       ("python" ,python-wrapper)
-       ("pkg-config" ,pkg-config)))
+     (list bc
+           time
+           python-wrapper
+           pkg-config))
     (inputs
      (list htslib))
     (synopsis "Tool for fast counting of k-mers in DNA")
@@ -5567,7 +5965,7 @@ data.")
            tar
            wget
            zlib))
-    (home-page "http://kaiju.binf.ku.dk/")
+    (home-page "https://kaiju.binf.ku.dk/")
     (synopsis "Fast and sensitive taxonomic classification for metagenomics")
     (description "Kaiju is a program for sensitive taxonomic classification
 of high-throughput sequencing reads from metagenomic whole genome sequencing
@@ -6083,7 +6481,7 @@ predicts the locations of structural units in the sequences.")
        ("openblas" ,openblas)))
     (native-inputs
      (list which))
-    (home-page "http://www.bioinf.uni-leipzig.de/Software/proteinortho")
+    (home-page "https://www.bioinf.uni-leipzig.de/Software/proteinortho")
     (synopsis "Detect orthologous genes across species")
     (description
      "Proteinortho is a tool to detect orthologous genes across different
@@ -6358,7 +6756,7 @@ phylogenies.")
                            "rsem-run-prsem-testing-procedure"))))))))
     (inputs
      (list boost r-minimal perl htslib-1.3 zlib))
-    (home-page "http://deweylab.biostat.wisc.edu/rsem/")
+    (home-page "https://deweylab.biostat.wisc.edu/rsem/")
     (synopsis "Estimate gene expression levels from RNA-Seq data")
     (description
      "RSEM is a software package for estimating gene and isoform expression
@@ -6393,7 +6791,7 @@ BAM and Wiggle files in both transcript-coordinate and genomic-coordinate.")
            zlib))
     (native-inputs
      (list python-nose))
-    (home-page "http://rseqc.sourceforge.net/")
+    (home-page "https://rseqc.sourceforge.net/")
     (synopsis "RNA-seq quality control package")
     (description
      "RSeQC provides a number of modules that can comprehensively evaluate
@@ -6453,7 +6851,7 @@ distribution, coverage uniformity, strand specificity, etc.")
          ("readline" ,readline)))
       (native-inputs
        (list pkg-config))
-      (home-page "http://seek.princeton.edu")
+      (home-page "https://seek.princeton.edu")
       (synopsis "Gene co-expression search engine")
       (description
        "SEEK is a computational gene co-expression search engine.  SEEK provides
@@ -6494,7 +6892,7 @@ to the user's query of interest.")
     (native-inputs (list pkg-config))
     (inputs
      (list htslib ncurses perl python zlib))
-    (home-page "http://samtools.sourceforge.net")
+    (home-page "https://samtools.sourceforge.net")
     (synopsis "Utilities to efficiently manipulate nucleotide sequence alignments")
     (description
      "Samtools implements various utilities for post-processing nucleotide
@@ -7572,7 +7970,7 @@ optionally compressed by gzip.")
                (install-file "SNAPCommand" bin)))))))
     (native-inputs
      (list zlib))
-    (home-page "http://snap.cs.berkeley.edu/")
+    (home-page "https://snap.cs.berkeley.edu/")
     (synopsis "Short read DNA sequence aligner")
     (description
      "SNAP is a fast and accurate aligner for short DNA reads.  It is
@@ -7839,7 +8237,7 @@ sequences.")
          ;; no "configure" script
          (delete 'configure))))
     (inputs (list zlib))
-    (home-page "http://subread.sourceforge.net/")
+    (home-page "https://subread.sourceforge.net/")
     (synopsis "Tool kit for processing next-gen sequencing data")
     (description
      "The subread package contains the following tools: subread aligner, a
@@ -7886,7 +8284,7 @@ against local background noises.")
                (install-file "stringtie" bin)))))))
     (inputs
      (list bzip2 htslib-for-stringtie libdeflate zlib))
-    (home-page "http://ccb.jhu.edu/software/stringtie/")
+    (home-page "https://ccb.jhu.edu/software/stringtie/")
     (synopsis "Transcript assembly and quantification for RNA-Seq data")
     (description
      "StringTie is a fast and efficient assembler of RNA-Seq sequence
@@ -8019,6 +8417,43 @@ sequence.")
     ;; Infernal 1.1.3 requires VMX or SSE capability for parallel instructions.
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:bsd-3)))
+
+(define-public r-ggexpress
+  (let ((commit "82f169385f87af328ff971195c2f64ff3c573a8a")
+        (revision "1"))
+    (package
+      (name "r-ggexpress")
+      (version (git-version "0.6.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/ggExpress")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "122hnw8xv33ngcd4fd7hmf817a06ih1knrxxi0cgklj1fwinm0z4"))))
+      (properties `((upstream-name . "ggExpress")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-cowplot
+                               r-ggplot2
+                               r-ggpubr
+                               r-markdownhelpers
+                               r-markdownreports
+                               r-rcolorbrewer
+                               r-sessioninfo
+                               r-seurat
+                               r-sm
+                               r-stringendo
+                               r-tidyverse))
+      (home-page "https://github.com/vertesy/ggExpress")
+      (synopsis
+       "This is a fast tool to create, annotate and export plots in R")
+      (description
+       "This package is a set of R functions for generating precise figures.
+This tool helps you to create clean markdown reports about what you just
+discovered with your analysis script.")
+      (license license:gpl3))))
 
 (define-public r-gg3d
   (let ((commit "ffdd837d30c1671cd0895db94bdd7b1594dbfcb0")
@@ -8336,7 +8771,10 @@ Pore-C concatemers.")
                                r-seurat
                                r-singlecellexperiment
                                r-slingshot
-                               r-summarizedexperiment))
+                               r-summarizedexperiment
+                               python
+                               python-scrublet
+                               python-doubletdetection))
       (home-page "https://github.com/xnnba1984/DoubletCollection")
       (synopsis "Tool for finding doublets in scRNA-seq data")
       (description
@@ -8344,6 +8782,46 @@ Pore-C concatemers.")
 doublet-detection methods.  In addition, this tool is used for execution and
 benchmark of those eight mentioned methods.")
       (license license:gpl3+))))
+
+(define-public r-plsdabatch
+  (let ((commit "4aadf3a99709afae462db310386b6cf5db20088c")
+        (revision "1"))
+    (package
+      (name "r-plsdabatch")
+      (version (git-version "0.2.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/EvaYiwenWang/PLSDAbatch")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "047l923lq2ji7rwybh9b9zkblzvvhkpli5gb2x8g2q9f2n5022nr"))))
+      (properties `((upstream-name . "PLSDAbatch")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ggplot2
+                               r-ggpubr
+                               r-gridextra
+                               r-lmertest
+                               r-mixomics
+                               r-mvtnorm
+                               r-performance
+                               r-rdpack
+                               r-scales))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/EvaYiwenWang/PLSDAbatch")
+      (synopsis "PLSDA-batch")
+      (description
+       "This package provides a new batch effect correction method based on
+Projection to Latent Structures Discriminant Analysis named “PLSDA-batch” to
+correct data prior to any downstream analysis.  PLSDA-batch estimates latent
+components related to treatment and batch effects to remove batch variation.
+The method is multivariate, non-parametric and performs dimension reduction.
+Combined with centered log ratio transformation for addressing uneven library
+sizes and compositional structure, PLSDA-batch addresses all characteristics
+of microbiome data that existing correction methods have ignored so far.")
+      (license license:gpl3))))
 
 (define-public r-psupertime
   (let ((commit "73825a28d3bd9bc881c15ee0c4c218eec1c9c207")
@@ -8440,6 +8918,62 @@ target genes, Pando simultaneously infers gene modules and sets of regulatory
 regions for each transcription factor.")
     (license license:expat)))
 
+(define-public r-premessa
+  (let ((commit "68b42bb984637d0f3ad6a0ecc83e9278994afc85")
+        (revision "1"))
+    (package
+      (name "r-premessa")
+      (version (git-version "0.3.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ParkerICI/premessa")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1l0q431zk0lvg22130nx84gdqi7cpl05yah4am63lbx6m4c769pb"))
+                (snippet
+                 '(delete-file "inst/normalizer_shinyGUI/www/d3.min.js"))))
+      (properties `((upstream-name . "premessa")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'process-javascript
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-directory-excursion "inst/normalizer_shinyGUI/www/"
+                 (invoke "esbuild" (assoc-ref inputs "d3.v4.js")
+                         "--minify" "--outfile=d3.min.js")))))))
+      (propagated-inputs
+       (list r-data-table
+             r-flowcore
+             r-ggplot2
+             r-gridextra
+             r-hexbin
+             r-jsonlite
+             r-reshape
+             r-rhandsontable
+             r-shiny
+             r-shinyjqui))
+      (native-inputs
+       `(("esbuild" ,esbuild)
+         ("d3.v4.js"
+          ,(origin
+             (method url-fetch)
+             (uri "https://d3js.org/d3.v4.js")
+             (sha256
+              (base32
+               "0y7byf6kcinfz9ac59jxc4v6kppdazmnyqfav0dm4h550fzfqqlg"))))))
+      (home-page "https://github.com/ParkerICI/premessa")
+      (synopsis "Pre-processing of flow and mass cytometry data")
+      (description
+       "This is an R package for pre-processing of flow and mass cytometry
+data.  This package includes panel editing or renaming for FCS files,
+bead-based normalization and debarcoding.")
+      (license license:gpl3))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
@@ -8531,6 +9065,70 @@ auROC analysis.")
 visualization and analysis of single-cell data using R.")
       (license license:gpl3+))))
 
+(define-public r-markdownhelpers
+  (let ((commit "793372d28ebed607cc1d35f909a1caedb2b41ffe")
+        (revision "1"))
+    (package
+      (name "r-markdownhelpers")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/MarkdownHelpers")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1d18s2ydhfjm3hjkxz42dirhwrrv792m6mvkmypallaa2qnwrmkg"))))
+      (properties `((upstream-name . "MarkdownHelpers")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-devtools r-stringendo r-usethis))
+      (home-page "https://github.com/vertesy/MarkdownHelpers")
+      (synopsis "Helper functions for MarkdownReports and ggExpress")
+      (description
+       "This package provides a set of R functions to parse markdown and other
+generic helpers.")
+      (license license:gpl3))))
+
+(define-public r-markdownreports
+  (let ((commit "3ba1103e3ddc6df3a0c090eb884f5e65c461eb31")
+        (revision "1"))
+    (package
+      (name "r-markdownreports")
+      (version (git-version "4.5.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/MarkdownReports")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xmasdb630b6nvxi5m1i8pyxiy49nxpzyxf9h8spdppx92rhdkc8"))))
+      (properties `((upstream-name . "MarkdownReports")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-clipr
+             r-codeandroll2
+             r-colorramps
+             r-devtools
+             r-gplots
+             r-markdownhelpers
+             r-rcolorbrewer
+             r-readwriter
+             r-sessioninfo
+             r-sm
+             r-stringendo
+             r-venndiagram
+             r-vioplot))
+      (home-page "https://github.com/vertesy/MarkdownReports")
+      (synopsis "Tool for generating cientific figures and reports")
+      (description
+       "This is a set of R functions that allows you to generate precise
+figures.  This tool will create clean markdown reports about what you just
+discovered.")
+      (license license:gpl3))))
+
 (define-public r-snapatac
   (package
     (name "r-snapatac")
@@ -8579,6 +9177,30 @@ scale single cell ATAC-seq data which includes quality control, normalization,
 clustering analysis, differential analysis, motif inference and exploration of
 single cell ATAC-seq sequencing data.")
     (license license:gpl3)))
+
+(define-public r-tictoc
+  (package
+    (name "r-tictoc")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "tictoc" version))
+              (sha256
+               (base32
+                "0ka7zd857xfqb5afn0psn0yzfv2qjb0ddxfyiq6aggbnla5qc3qj"))))
+    (properties `((upstream-name . "tictoc")))
+    (build-system r-build-system)
+    (home-page "https://github.com/jabiru/tictoc")
+    (synopsis
+     "Time R scripts and implementations of stack and list structures")
+    (description
+     "The tictoc package provides the timing functions @code{tic} and
+@code{toc} that can be nested.  It provides an alternative to
+@code{system.time()} with a different syntax similar to that in another
+well-known software package.  @code{tic} and @code{toc} are easy to use, and
+are especially useful when timing several sections in more than a few lines of
+code.")
+    (license license:asl2.0)))
 
 (define-public r-tsis
   (let ((commit "24460298fbe1d26e4da390f6e4f3d4d9d62334dc")
@@ -9000,7 +9622,7 @@ of contact distributions around selected landmarks.")
                (base32
                 "1hsx6qgwr0i67fhy9257zj7s0ppncph2hjgbia5nn6nfmj0ax6l9"))))
     (build-system r-build-system)
-    (home-page "http://centipede.uchicago.edu/")
+    (home-page "https://centipede.uchicago.edu/")
     (synopsis "Predict transcription factor binding sites")
     (description
      "CENTIPEDE applies a hierarchical Bayesian mixture model to infer regions
@@ -9238,7 +9860,7 @@ experience substantial biological insertions and deletions.")
            perl-getopt-long
            perl-json
            perl-statistics-pca))
-    (home-page "http://prinseq.sourceforge.net/")
+    (home-page "https://prinseq.sourceforge.net/")
     (synopsis "Preprocess sequence data in FASTA or FASTQ formats")
     (description
      "PRINSEQ is a bioinformatics tool to help you preprocess your genomic or
@@ -9723,7 +10345,7 @@ AM_CONDITIONAL(AMPNG, true)"))
            zlib))
     (native-inputs
      (list autoconf automake libtool pkg-config))
-    (home-page "http://emboss.sourceforge.net")
+    (home-page "https://emboss.sourceforge.net")
     (synopsis "Molecular biology analysis suite")
     (description "EMBOSS is the \"European Molecular Biology Open Software
 Suite\".  EMBOSS is an analysis package specially developed for the needs of
@@ -10400,7 +11022,7 @@ remove biased methylation positions for RRBS sequence files.")
                (for-each (lambda (file)
                            (install-file file target))
                          (find-files "../exe" ".*"))))))))
-    (home-page "http://evolution.genetics.washington.edu/phylip/")
+    (home-page "https://evolution.genetics.washington.edu/phylip/")
     (synopsis "Tools for inferring phylogenies")
     (description "PHYLIP (the PHYLogeny Inference Package) is a package of
 programs for inferring phylogenies (evolutionary trees).")
@@ -14671,110 +15293,125 @@ datasets.")
 (define-public ngless
   (package
     (name "ngless")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ngless-toolkit/ngless.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0pb9f6b0yk9p4cdwiym8r190q1bcdiwvc7i2s6rw54qgi8r3g6pj"))
-       (patches (search-patches "ngless-unliftio.patch"))))
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "NGLess" version))
+              (sha256
+               (base32
+                "0pljyrlpr9r3cl5311dhgxdl8y40szyi4vprn34i3piy0qrldymi"))))
     (build-system haskell-build-system)
     (arguments
-     (list
-      #:haddock? #f    ;The haddock phase fails with: NGLess/CmdArgs.hs:20:1:
-                       ;error: parse error on input import
-                       ;import Options.Applicative
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'create-Versions.hs
-            (lambda _
-              (substitute* "Makefile"
-                (("BWA_VERSION = .*")
-                 (string-append "BWA_VERSION = "
-                                #$(package-version bwa) "\n"))
-                (("SAM_VERSION = .*")
-                 (string-append "SAM_VERSION = "
-                                #$(package-version samtools) "\n"))
-                (("PRODIGAL_VERSION = .*")
-                 (string-append "PRODIGAL_VERSION = "
-                                #$(package-version prodigal) "\n"))
-                (("MINIMAP2_VERSION = .*")
-                 (string-append "MINIMAP2_VERSION = "
-                                #$(package-version minimap2) "\n")))
-              (invoke "make" "NGLess/Dependencies/Versions.hs")))
-          (add-after 'create-Versions.hs 'create-cabal-file
-            (lambda _ (invoke "hpack")))
-          ;; These tools are expected to be installed alongside ngless.
-          (add-after 'install 'link-tools
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((bin (string-append #$output "/bin/")))
-                (symlink (search-input-file inputs "/bin/prodigal")
-                         (string-append bin "ngless-" #$version "-prodigal"))
-                (symlink (search-input-file inputs "/bin/minimap2")
-                         (string-append bin "ngless-" #$version "-minimap2"))
-                (symlink (search-input-file inputs "/bin/samtools")
-                         (string-append bin "ngless-" #$version "-samtools"))
-                (symlink (search-input-file inputs "/bin/bwa")
-                         (string-append bin "ngless-" #$version "-bwa"))))))))
-    (inputs
-     (list prodigal
-           bwa
-           samtools
-           minimap2
-           ghc-aeson
-           ghc-ansi-terminal
-           ghc-async
-           ghc-atomic-write
-           ghc-bytestring-lexing
-           ghc-conduit
-           ghc-conduit-algorithms
-           ghc-conduit-extra
-           ghc-configurator
-           ghc-convertible
-           ghc-data-default
-           ghc-diagrams-core
-           ghc-diagrams-lib
-           ghc-diagrams-svg
-           ghc-double-conversion
-           ghc-edit-distance
-           ghc-either
-           ghc-errors
-           ghc-extra
-           ghc-filemanip
-           ghc-file-embed
-           ghc-gitrev
-           ghc-hashtables
-           ghc-http-conduit
-           ghc-inline-c
-           ghc-inline-c-cpp
-           ghc-int-interval-map
-           ghc-missingh
-           ghc-optparse-applicative
-           ghc-regex
-           ghc-safe
-           ghc-safeio
-           ghc-strict
-           ghc-tar
-           ghc-tar-conduit
-           ghc-unliftio
-           ghc-unliftio-core
-           ghc-vector
-           ghc-yaml
-           ghc-zlib))
+     `(#:haddock? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'update-constraints
+           (lambda _
+             (substitute* "NGLess.cabal"
+               (("\\b(base)\\s+[^,]+" all dep)
+                dep))))
+         (add-after 'unpack 'create-Versions.hs
+           (lambda _
+             (substitute* "NGLess/Dependencies/Versions.hs"
+               (("bwaVersion = .+")
+                (string-append "bwaVersion = \""
+                               ,(package-version bwa) "\""))
+               (("samtoolsVersion = .+")
+                (string-append "samtoolsVersion = \""
+                               ,(package-version samtools) "\""))
+               (("prodigalVersion = .+")
+                (string-append "prodigalVersion = \""
+                               ,(package-version prodigal) "\""))
+               (("megahitVersion = .+")
+                (string-append "megahitVersion = \""
+                               ,(package-version megahit) "\""))
+               (("minimap2Version = .+")
+                (string-append "minimap2Version = \""
+                               ,(package-version minimap2) "\"")))))
+         ;; See NGLess/FileManagement.hs.
+         (add-after 'install 'wrap-program
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bwa (search-input-file inputs "/bin/bwa"))
+                      (samtools (search-input-file inputs "/bin/samtools"))
+                      (prodigal (search-input-file inputs "/bin/prodigal"))
+                      (minimap2 (search-input-file inputs "/bin/minimap2"))
+                      (megahit (search-input-file inputs "/bin/megahit")))
+                 (wrap-program (string-append out "/bin/ngless")
+                   `("NGLESS_BWA_BIN" " " = (,bwa))
+                   `("NGLESS_SAMTOOLS_BIN" " " = (,samtools))
+                   `("NGLESS_PRODIGAL_BIN" " " = (,prodigal))
+                   `("NGLESS_MINIMAP2_BIN" " " = (,minimap2))
+                   `("NGLESS_MEGAHIT_BIN" " " = (,megahit))))))
+          ;; Sanity check.
+          (add-after 'wrap-program 'check-install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((ngless (string-append (assoc-ref outputs "out") "/bin/ngless")))
+                 (invoke ngless "--check-install"))))
+          (add-after 'register 'remove-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
+    (inputs (list prodigal
+                  bwa
+                  samtools
+                  minimap2
+                  megahit
+                  ghc-missingh
+                  ghc-aeson
+                  ghc-ansi-terminal
+                  ghc-async
+                  ghc-atomic-write
+                  ghc-bytestring-lexing
+                  ghc-conduit
+                  ghc-conduit-algorithms
+                  ghc-conduit-extra
+                  ghc-configurator
+                  ghc-convertible
+                  ghc-data-default
+                  ghc-edit-distance
+                  ghc-either
+                  ghc-errors
+                  ghc-extra
+                  ghc-file-embed
+                  ghc-filemanip
+                  ghc-hashable
+                  ghc-hashtables
+                  ghc-hostname
+                  ghc-http-client
+                  ghc-http-conduit
+                  ghc-inline-c
+                  ghc-inline-c-cpp
+                  ghc-int-interval-map
+                  ghc-network
+                  ghc-optparse-applicative
+                  ghc-primitive
+                  ghc-random-shuffle
+                  ghc-regex
+                  ghc-resourcet
+                  ghc-safe
+                  ghc-stm-chans
+                  ghc-stm-conduit
+                  ghc-strict
+                  ghc-tar
+                  ghc-tar-conduit
+                  ghc-unix-compat
+                  ghc-unliftio
+                  ghc-unliftio-core
+                  ghc-vector
+                  ghc-vector-algorithms
+                  ghc-yaml
+                  ghc-zlib
+                  ghc-bzlib-conduit
+                  ghc-double-conversion
+                  ghc-safeio))
     (propagated-inputs
      (list r-r6 r-hdf5r r-iterators r-itertools r-matrix))
-    (native-inputs
-     (list ghc-hpack
-           ghc-quickcheck
-           ghc-test-framework
-           ghc-test-framework-hunit
-           ghc-test-framework-quickcheck2
-           ghc-test-framework-th))
+    (native-inputs (list ghc-hunit
+                         ghc-quickcheck
+                         ghc-tasty
+                         ghc-tasty-hunit
+                         ghc-tasty-quickcheck
+                         ghc-tasty-th))
     (home-page "https://ngless.embl.de/")
     (synopsis "DSL for processing next-generation sequencing data")
     (description "Ngless is a domain-specific language for
@@ -15514,6 +16151,60 @@ other data types e.g.: regulons (SCENIC), clusters from Seurat, trajectory
 information...  The package can also be used to extract data from @code{.loom}
 files.")
       (license license:expat))))
+
+(define-public r-seurat-utils
+  (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")
+        (revision "1"))
+    (package
+      (name "r-seurat-utils")
+      (version (git-version "1.6.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vertesy/Seurat.utils")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1mn64h375mkj6x4ix5493z32gqg96yc507j5jr0lx9g5wk1bf762"))))
+      (properties `((upstream-name . "Seurat.utils")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-codeandroll2
+                               r-cowplot
+                               r-dplyr
+                               r-ggcorrplot
+                               r-ggexpress
+                               r-ggplot2
+                               r-ggpubr
+                               r-ggrepel
+                               r-hgnchelper
+                               r-htmlwidgets
+                               r-markdownhelpers
+                               r-markdownreports
+                               r-matrix
+                               r-matrixstats
+                               r-princurve
+                               r-r-utils
+                               r-readr
+                               r-readwriter
+                               r-reshape2
+                               r-scales
+                               r-seurat
+                               r-soupx
+                               r-sparsematrixstats
+                               r-stringendo
+                               r-stringr
+                               r-tibble
+                               r-tictoc
+                               r-vroom))
+      (home-page "https://github.com/vertesy/Seurat.utils")
+      (synopsis "Collection of utility functions for Seurat")
+      (description
+       "This is a collection of utility functions for Seurat.  These functions
+allow the automation and multiplexing of plotting, 3D plotting, visualization
+of statistics & QC, interaction with the Seurat object.  Some functionalities
+require functions from CodeAndRoll and MarkdownReports libraries.")
+      (license license:gpl3))))
 
 (define-public r-seuratwrappers
   ;; There are no releases or tags.
@@ -16679,7 +17370,7 @@ The output is in SAM format.")
      (list libxml2))
     (native-inputs
      (list check swig))
-    (home-page "http://sbml.org/Software/libSBML")
+    (home-page "https://sbml.org/Software/libSBML")
     (synopsis "Process SBML files and data streams")
     (description "LibSBML is a library to help you read, write, manipulate,
 translate, and validate SBML files and data streams.  The @dfn{Systems Biology
@@ -16809,6 +17500,40 @@ base-call qualities and other sources of errors inherent in
 sequencing (e.g. mapping or base/indel alignment uncertainty), which are
 usually ignored by other methods or only used for filtering.")
     (license license:expat)))
+
+(define-public louvain
+  (package
+    (name "louvain")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri "mirror://sourceforge/louvain/louvain_latest.tar.gz")
+              (sha256
+               (base32
+                "0hqlv5jqc889nbv7j1bchrx4zhh69hgr2mqvfdygc7kwrywn22lb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-includes
+            (lambda _
+              (substitute* "main_community.cpp"
+                (("using namespace std;" m)
+                 (string-append "#include <unistd.h> /* for getpid */\n" m)))))
+          (replace 'install
+            (lambda _
+              (for-each
+               (lambda (exe)
+                 (install-file exe (string-append #$output "/bin")))
+               '("convert" "community" "hierarchy")))))))
+    (home-page "https://sourceforge.net/projects/louvain/")
+    (synopsis "Multi-criteria community detection")
+    (description "This package offers a set of functions to use in order to
+compute communities on graphs weighted or unweighted.")
+    (license license:gpl3+)))
 
 (define-public ivar
   (package
@@ -17598,7 +18323,6 @@ aligner.")
      (list python-black
            python-flake8
            python-hypothesis
-           python-pre-commit
            python-pytest
            python-setuptools-scm
            python-wheel))
@@ -17616,7 +18340,7 @@ populations.")
 (define-public scregseg
   (package
     (name "scregseg")
-    (version "0.1.1")
+    (version "0.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17625,16 +18349,22 @@ populations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k8hllr5if6k2mm2zj391fv40sfc008cjm04l9vgfsdppb80i112"))
+                "07g2barywa1wi8mggbxkbxqjw1fzd0a0l9cjdbkx4s40imb1dbxb"))
               (snippet
-               #~(begin
-                   (use-modules ((guix build utils)))
-                   (delete-file "src/scregseg/_utils.c")))))
-    (build-system python-build-system)
+               '(delete-file "src/scregseg/_utils.c"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false                  ; tests require network access
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
+         ;; Cython extensions have to be built before running the tests.
+         (add-before 'check 'build-extensions
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace")))
          (add-after 'unpack 'do-not-fail-to-find-sklearn
            (lambda _
              ;; XXX: I have no idea why it cannot seem to find sklearn.
@@ -18552,7 +19282,7 @@ useful for bioinformatic analysis.")
 (define-public go-github-com-biogo-hts-bam
   (package
     (name "go-github-com-biogo-hts-bam")
-    (version "1.4.3")
+    (version "1.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -18561,7 +19291,7 @@ useful for bioinformatic analysis.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "013ga6ilc4m3hyfr3yyiva9g4vs81afhj73v2sy7r75b5zxw7lx1"))))
+                "1vkcqxyajghx5p5j7g2i376nbsxh8q2smk0smlv8mi34yr7hlw5b"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/biogo/hts/bam"

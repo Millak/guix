@@ -2,7 +2,7 @@
 ;;; Copyright © 2013-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -168,8 +168,16 @@ XTerm*metaSendsEscape: true\n"))
 guile
 (use-modules (gdb))
 (execute (string-append \"set debug-file-directory \"
-                        (or (getenv \"GDB_DEBUG_FILE_DIRECTORY\")
-                            \"~/.guix-profile/lib/debug\")))
+                        (string-join
+                          (filter file-exists?
+                                  (append
+                                    (if (getenv \"GDB_DEBUG_FILE_DIRECTORY\")
+                                      (list (getenv \"GDB_DEBUG_FILE_DIRECTORY\"))
+                                      '())
+                                    (list \"~/.guix-home/profile/lib/debug\"
+                                          \"~/.guix-profile/lib/debug\"
+                                          \"/run/current-system/profile/lib/debug\")))
+                          \":\")))
 end
 
 # Authorize extensions found in the store, such as the
@@ -228,6 +236,9 @@ for a colorful Guile experience.\\n\\n\"))))\n"))
                        (when (file-exists? ".nanorc")
                          (mkdir-p ".config/nano")
                          (rename-file ".nanorc" ".config/nano/nanorc"))
+                       (when (file-exists? ".gdbinit")
+                         (mkdir-p ".config/gdb")
+                         (rename-file ".gdbinit" ".config/gdb/gdbinit"))
                        #t))))
 
 (define (find-duplicates list)

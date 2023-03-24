@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -225,14 +225,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.39.1")
+   (version "2.39.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0qf1wly7zagg23svpv533va5v213y7y3lfw76ldkf35k8w48m8s0"))))
+              "1mpjvhyw8mv2q941xny4d0gw3mb6b4bqaqbh73jd8b1v6zqpaps7"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -252,7 +252,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "0xf7ki90xw77nvmnkw50xaivyfi8jddfq0h8crzi7m9zjs7aa8mm"))))
+            "09cva868qb4705s884dzvbwkm78jlw4q8m6xj7nd7cwxy2i2ff8b"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
@@ -804,7 +804,7 @@ to GitHub contributions calendar.")
 (define-public libgit2
   (package
     (name "libgit2")
-    (version "1.4.3")
+    (version "1.5.1")
     (source (origin
               ;; Since v1.1.1, release artifacts are no longer offered (see:
               ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
@@ -815,18 +815,11 @@ to GitHub contributions calendar.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02x1a4zrzpzjd0yxnsi8njh5hgihc1iy1v4r0fnl8m4ckcgp6x2s"))
+                "04ypzpicpgq1wh6anwcmjjyh2b854lvjhxq0hq2hbsx7kb14qc1b"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (delete-file-recursively "deps")
-
-                  ;; The "refs:revparse::date" test is time-dependent: it
-                  ;; assumes "HEAD@{10 years ago}" matches a specific commit.
-                  ;; See <https://github.com/libgit2/libgit2/pull/6299>.
-                  (substitute* "tests/refs/revparse.c"
-                    (("test_object.*10 years ago.*" all)
-                     (string-append "// " all "\n")))))))
+                  (delete-file-recursively "deps")))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -868,10 +861,10 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
-(define-public libgit2-1.3
+(define-public libgit2-1.4
   (package
     (inherit libgit2)
-    (version "1.3.0")
+    (version "1.4.5")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -881,7 +874,22 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0vgpb2175a5dhqiy1iwywwppahgqhi340i8bsvafjpvkw284vazd"))))
+                "0q754ipc6skagszi93lcy6qr09ibavivm2q5i5fhpdblvlnv2p7x"))))))
+
+(define-public libgit2-1.3
+  (package
+    (inherit libgit2-1.4)
+    (version "1.3.2")
+    (source (origin
+              (inherit (package-source libgit2-1.4))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "1dngga8jq419z6ps65wpmh2jihcf70k6r98pb1m1yiwj7qqh9792"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libgit2)
        ((#:phases _ '%standard-phases)
@@ -893,22 +901,6 @@ write native speed custom Git applications in any language with bindings.")
                    (invoke "./libgit2_clar" "-v" "-Q")
                    ;; Tests may be disabled if cross-compiling.
                    (format #t "Test suite not run.~%"))))))))))
-
-(define-public libgit2-1.1
-  (package
-    (inherit libgit2-1.3)
-    (version "1.1.0")
-    (source (origin
-              (inherit (package-source libgit2-1.3))
-              (file-name #f)                      ;use the default name
-              (method url-fetch)
-              (uri (string-append "https://github.com/libgit2/libgit2/"
-                                  "releases/download/v" version
-                                  "/libgit2-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1fjdglkh04qv3b4alg621pxa689i0wlf8m7nf2755zawjr2zhwxd"))
-              (patches (search-patches "libgit2-mtime-0.patch"))))))
 
 (define-public git-crypt
   (package
@@ -1114,20 +1106,23 @@ a built-in cache to decrease server I/O pressure.")
 (define-public python-git-multimail
   (package
     (name "python-git-multimail")
-    (version "1.5.0.post1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "git-multimail" version))
        (sha256
         (base32
-         "1zkrbsa70anwpw86ysfwalrb7nsr064kygfiyikyq1pl9pcl969y"))))
+         "0hwgf2p2dd4z397wj0y558s8xxbkzbsa6yb9n1iax624y7swjng1"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch
            (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "setup.py"
+               (("'git-multimail', 'README.rst'")
+                "'README.rst'"))
              (substitute* "git-multimail/git_multimail.py"
                (("GIT_EXECUTABLE = 'git'")
                 (string-append "GIT_EXECUTABLE = '"
@@ -1672,8 +1667,8 @@ visualize your public Git repositories on a web interface.")
 
 (define-public pre-commit
   (package
-    (name "pre-commit")
-    (version "2.20.0")
+    (name "pre-commit") ;formerly known as python-pre-commit
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1682,7 +1677,11 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19jcg6nfnscp87h4wmbpw6r3lc8c75zkvb6wqgavq5dh7wkyg6pq"))))
+        (base32 "1rngcq1vd2phk45wp1cc5jz02wpi53fif0qwk633smfjcjj1kp41"))
+       (modules '((guix build utils)))
+       (snippet '(substitute* "setup.cfg"
+                   (("virtualenv>=20.10.0") ;our virtualenv (20.3.1) is fine
+                    "virtualenv>=20.0.8")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1715,6 +1714,18 @@ visualize your public Git repositories on a web interface.")
                        ;; Ruby and Node tests require node and gem.
                        "--ignore=tests/languages/node_test.py"
                        "--ignore=tests/languages/ruby_test.py"
+                       ;; Skip lang-specific (network) tests added in 3.1.1
+                       "--ignore=tests/languages/conda_test.py"
+                       "--ignore=tests/languages/coursier_test.py"
+                       "--ignore=tests/languages/dart_test.py"
+                       "--ignore=tests/languages/docker_test.py"
+                       "--ignore=tests/languages/docker_image_test.py"
+                       "--ignore=tests/languages/dotnet_test.py"
+                       "--ignore=tests/languages/golang_test.py"
+                       "--ignore=tests/languages/lua_test.py"
+                       "--ignore=tests/languages/perl_test.py"
+                       "--ignore=tests/languages/rust_test.py"
+                       "--ignore=tests/languages/swift_test.py"
                        "-k"
                        (string-append
                         ;; TODO: these tests fail with AssertionError.  It may
@@ -1722,7 +1733,8 @@ visualize your public Git repositories on a web interface.")
                         "not test_install_existing_hooks_no_overwrite"
                         " and not test_uninstall_restores_legacy_hooks"
                         " and not test_installed_from_venv"
-                        " and not test_healthy_venv_creator"))))))))
+                        " and not test_healthy_venv_creator"
+                        " and not test_r_hook and not test_r_inline"))))))))
     (native-inputs
      `(("git" ,git-minimal)
        ("python-covdefaults" ,python-covdefaults)
@@ -1738,7 +1750,6 @@ visualize your public Git repositories on a web interface.")
            python-identify
            python-nodeenv
            python-pyyaml
-           python-toml
            python-virtualenv))
     (home-page "https://pre-commit.com/")
     (synopsis "Framework for managing and maintaining pre-commit hooks")
@@ -1747,6 +1758,9 @@ visualize your public Git repositories on a web interface.")
 specify a list of hooks you want and pre-commit manages the installation and
 execution of any hook written in any language before every commit.")
     (license license:expat)))
+
+(define-public python-pre-commit
+  (deprecated-package "python-pre-commit" pre-commit))
 
 (define-public mercurial
   (package
@@ -2170,7 +2184,7 @@ patch associated with a particular revision of an RCS file.")
      '(#:tests? #f
        #:configure-flags (list "--with-external-zlib")))
     (inputs (list zlib nano))                    ; the default editor
-    (home-page "http://cvs.nongnu.org")
+    (home-page "https://cvs.nongnu.org")
     (synopsis "Historical centralized version control system")
     (description
      "CVS is a version control system, an important component of Source
@@ -2407,7 +2421,7 @@ any project with more than one developer, is one of Aegis's major functions.")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.7")
+    (version "2.5.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2415,7 +2429,7 @@ any project with more than one developer, is one of Aegis's major functions.")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "0xna55y1r1jssdmrzpinv96p7w00w9hn39q5l3d8l299dg4bmiyv"))
+                "14b38200bmwvi3030hqnwdsp34854ck3bzncj0wlljnpmr10l3mp"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2788,14 +2802,14 @@ specific files and directories.")
 (define-public src
   (package
     (name "src")
-    (version "1.29")
+    (version "1.31")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://www.catb.org/~esr/src/src-" version ".tar.gz"))
               (sha256
                (base32
-                "0ha287gc95vz6bdvn42pi3qibc56h1w5dshsvjvdn2zd283amksd"))))
+                "1p8f5xc6k4jrli3iimi64ng11c246qqwsw9bqrrqkrmhvqdh4kcv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags

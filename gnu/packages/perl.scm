@@ -28,13 +28,15 @@
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +64,8 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
+  #:use-module (guix memoization)
+  #:use-module (guix search-paths)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
@@ -85,11 +89,13 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:export (perl-extutils-pkgconfig))
 
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
@@ -4143,17 +4149,15 @@ the programmer to be mindfulof the space of platform variations.")
 (define-public perl-encode
   (package
     (name "perl-encode")
-    (version "3.10")
+    (version "3.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/D/DA/DANKOGAI/"
                            "Encode-" version ".tar.gz"))
        (sha256
-        (base32 "1a8rwcrxxhq81jcdvdwns05c65jwr5r6bxvby6vdcr3ny5m91my2"))))
+        (base32 "1x9f0naqskv9v7dif480vrzfmn8zhvq9g0w3r164v7pnxr4ghqwi"))))
     (build-system perl-build-system)
-    (propagated-inputs
-     (list perl-exporter perl-storable perl-parent))
     (home-page "https://metacpan.org/dist/Encode")
     (synopsis "Character encodings in Perl")
     (description "Encode module provides the interface between Perl strings and
@@ -4617,7 +4621,10 @@ convert Perl XS code into C code, the ExtUtils::Typemaps module to
 handle Perl/XS typemap files, and their submodules.")
     (license (package-license perl))))
 
-(define-public perl-extutils-pkgconfig
+;; This is the "primitive" perl-extutils-pkgconfig package.  People should use
+;; `perl-extutils-pkgconfig' instead (see below)', but we export
+;; %perl-extutils-pkgconfig so that `fold-packages' finds it.
+(define-public %perl-extutils-pkgconfig
   (package
     (name "perl-extutils-pkgconfig")
     (version "1.16")
@@ -4629,8 +4636,32 @@ handle Perl/XS typemap files, and their submodules.")
                (base32
                 "0vhwh0731rhh1sswmvagq0myn754dnkab8sizh6d3n6pjpcwxsmv"))))
     (build-system perl-build-system)
-    (propagated-inputs
-     (list pkg-config))
+    ;; XXX: Patch the pkg-config references to avoid propagating it, as that
+    ;; would cause the search path to be wrong when cross-building, due to
+    ;; propagated inputs being treated as host inputs, not native inputs.
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pkg-config-path
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let* ((target #$(%current-target-system))
+                     (pkg-config-name (if target
+                                          (string-append target "-pkg-config")
+                                          "pkg-config"))
+                     (pkg-config (search-input-file
+                                  (or native-inputs inputs)
+                                  (string-append "bin/" pkg-config-name))))
+                (substitute* '("Makefile.PL"
+                               "lib/ExtUtils/PkgConfig.pm")
+                  (("qx/pkg-config([^/]*)/" _ args)
+                   (string-append "`" pkg-config args "`"))
+                  (("(`|\")pkg-config" _ quote)
+                   (string-append quote pkg-config)))))))))
+    (native-inputs (list pkg-config))
+    ;; Note: do not use the pkg-config syntax here, as the search paths fields
+    ;; are not thunked and its value could be wrong.
+    (native-search-paths (list $PKG_CONFIG_PATH))
     (home-page "https://metacpan.org/release/ExtUtils-PkgConfig")
     (synopsis "Simplistic interface to pkg-config")
     (description
@@ -4639,6 +4670,29 @@ handle Perl/XS typemap files, and their submodules.")
 of perl extensions which bind libraries that @command{pkg-config} knows.
 It is really just boilerplate code that you would have written yourself.")
     (license license:lgpl2.1+)))
+
+(define-public cross-perl-extutils-pkgconfig
+  (mlambda (target)
+    "Return a perl-extutils-pkgconfig for TARGET, adjusting the search paths."
+    (package
+      (inherit %perl-extutils-pkgconfig)
+      ;; Ignore native inputs, and set `PKG_CONFIG_PATH' for target inputs.
+      (native-search-paths '())
+      (search-paths (list $PKG_CONFIG_PATH)))))
+
+(define (perl-extutils-pkgconfig-for-target target)
+  "Return a perl-extutils-pkgconfig package for TARGET, which may be either #f
+for a native build, or a GNU triplet."
+  (if target
+      (cross-perl-extutils-pkgconfig target)
+      %perl-extutils-pkgconfig))
+
+;; This hack mimics the one for pkg-config, to allow automatically choosing
+;; the native or the cross `pkg-config' depending on whether it's being used
+;; in a cross-build environment or not.
+(define-syntax perl-extutils-pkgconfig
+  (identifier-syntax (perl-extutils-pkgconfig-for-target
+                      (%current-target-system))))
 
 (define-public perl-extutils-typemaps-default
   (package
@@ -6563,7 +6617,7 @@ both positive and negative, in various ways.")
                (base32
                 "03bdcl9pn2bc9b50c50nhnr7m9wafylnb3v21zlch98h9c78x6j0"))))
     (build-system perl-build-system)
-    (home-page "http://search.cpan.org/dist/Math-VecStat")
+    (home-page "https://search.cpan.org/dist/Math-VecStat")
     (synopsis "Basic numeric stats on vectors")
     (description "This package provides some basic statistics on numerical
 vectors.  All the subroutines can take a reference to the vector to be
@@ -8598,6 +8652,26 @@ defaults, optional parameters, and extra \"slurpy\" parameters.")
     (description "PAR::Dist is a toolkit to create and manipulate PAR
 distributions.")
     (license (package-license perl))))
+
+(define-public perl-par
+  (package
+    (name "perl-par")
+    (version "1.018")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/R/RS/RSCHUPP/PAR-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0ifyjd1pxbfp8wxa9l8b1irjwln4gwh4nz256mjacjv194mh99bc"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-archive-zip perl-par-dist))
+    (home-page "https://metacpan.org/release/PAR")
+    (synopsis "Perl Archive Toolkit")
+    (description
+     "Perl module for using special zip files (called Perl ARchives) as
+libraries from which Perl modules can be loaded.")
+    (license license:perl-license)))
 
 (define-public perl-parent
   (deprecated-package "perl-parent" perl))
@@ -10917,7 +10991,7 @@ as exceptions to standard program flow.")
                (base32
                 "0w1k5ffcrpx0fm9jgprrwy0290k6cmy7dyk83s61063migi3r5z9"))))
     (build-system perl-build-system)
-    (home-page "http://perltidy.sourceforge.net/")
+    (home-page "https://perltidy.sourceforge.net/")
     (synopsis "Perl script tidier")
     (description "This package contains a Perl script which indents and
 reformats Perl scripts to make them easier to read.   The formatting can be
@@ -12250,6 +12324,40 @@ As a convenience, the PIR module is an empty subclass of this one that is less
 arduous to type for one-liners.")
     (license license:asl2.0)))
 
+(define-public perl-pcsc
+  (package
+    (name "perl-pcsc")
+    (version "1.4.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/W/WH/WHOM/pcsc-perl-" version
+                    ".tar.bz2"))
+              (sha256
+               (base32
+                "17f6i16jv6ci6459vh6y3sz94vgcvykjjszcl4xsykryakjvf8i7"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      ;; The test suite is disabled because it requires access to a card
+      ;; reader with a card inserted.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-dlopen
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "PCSCperl.h"
+                         (("libpcsclite.so.1")
+                          (search-input-file inputs
+                                             "/lib/libpcsclite.so.1"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list pcsc-lite))
+    (synopsis "Perl library for PC/SC")
+    (description
+     "This library allows communication with a smart card using PC/SC from a Perl
+script.")
+    (home-page "https://pcsc-perl.apdu.fr/")
+    (license license:gpl2+)))
+
 (define-public perl-pod-constants
   (package
     (name "perl-pod-constants")
@@ -12376,6 +12484,27 @@ regexp patterns in modules.")
     (synopsis "Parse Lisp S-Expressions into Perl data structures")
     (description "Data::SExpression parses Lisp S-Expressions into Perl data
 structures.")
+    (license license:perl-license)))
+
+(define-public perl-growl-gntp
+  (package
+    (name "perl-growl-gntp")
+    (version "0.21")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MA/MATTN/Growl-GNTP-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "0gq8ypam6ifp8f3s2mf5d6sw53m7h3ki1zfahh2p41kl8a77yy98"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build-tiny))
+    (propagated-inputs (list perl-crypt-cbc perl-data-uuid))
+    (home-page "https://metacpan.org/release/Growl-GNTP")
+    (synopsis "Perl implementation of the GNTP Protocol (client part)")
+    (description "Growl::GNTP is a Perl implementation of the client part
+of the  Growl Notification Transport Protocol (GNTP).")
     (license license:perl-license)))
 
 (define-public perl-socket-msghdr

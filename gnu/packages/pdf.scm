@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
@@ -53,7 +53,6 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
-  #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -90,6 +89,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -110,6 +110,60 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
+
+(define-public a4pdf
+  (package
+    (name "a4pdf")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jpakkane/a4pdf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "18062cm1qsbaymmjar0whbd7kaggy4x7wzp7xw94kcd1pwx2jp1p"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-missing-header
+                 (lambda _
+                   (substitute* "src/pdfgen.cpp"
+                     (("#include <cassert>" all)
+                      (string-append all "\n#include <unistd.h>")))))
+               (add-after 'unpack 'fix-glib-application-flags
+                 (lambda _
+                   ;; XXX: remove when bumping glib
+                   (substitute* "src/pdfviewer.cpp"
+                     (("G_APPLICATION_DEFAULT_FLAGS")
+                      "G_APPLICATION_FLAGS_NONE"))))
+               (add-after 'unpack 'fix-broken-tests
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                   (substitute* "test/a4pdftests.py"
+                     (("'Ghostscript not found, test suite can not be run.'")
+                      ;; Sucks, but there's no point in repairing a certain test
+                      ;; at the moment.
+                      "0")))))))
+    (inputs (list fmt
+                  freetype
+                  gtk
+                  lcms
+                  libjpeg-turbo
+                  libpng
+                  zlib))
+    (native-inputs (list font-google-noto
+                         ;; ghostscript
+                         pkg-config
+                         python
+                         python-pillow))
+    (home-page "https://github.com/jpakkane/a4pdf")
+    (synopsis "Color-managed PDF generator")
+    (description "A4PDF is a low-level libray for generating PDF files.
+It does not have a document model and instead uses PDF primitives
+directly.  It uses LittleCMS for color management but otherwise does not
+convert data in any way.")
+    (license license:asl2.0)))
 
 (define-public extractpdfmark
   (package
@@ -186,7 +240,7 @@ information.")
     (inputs
      (list python-poppler-qt5
            python-pypdf2
-           python-pyqt-without-qtwebkit
+           python-pyqt
            qtbase-5))
     (home-page "http://crazy-compilers.com/flyer-composer")
     (synopsis "Rearrange PDF pages to print as flyers on one sheet")
@@ -443,7 +497,7 @@ reading and editing of existing PDF files.")
 (define-public zathura-cb
   (package
     (name "zathura-cb")
-    (version "0.1.8")
+    (version "0.1.10")
     (source (origin
               (method url-fetch)
               (uri
@@ -451,7 +505,7 @@ reading and editing of existing PDF files.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "1i6cf0vks501cggwvfsl6qb7mdaf3sszdymphimfvnspw810faj5"))))
+                "1j5v32f9ki35v1jc7a067anhlgqplzrp4fqvznlixfhcm0bwmc49"))))
     (native-inputs (list pkg-config))
     (inputs (list libarchive zathura))
     (build-system meson-build-system)
@@ -460,7 +514,7 @@ reading and editing of existing PDF files.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-plugin-directory
-           ;; Something of a regression in 0.1.8: the new Meson build system
+           ;; Something of a regression in 0.1.10: the new Meson build system
            ;; now hard-codes an incorrect plugin directory.  Fix it.
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "meson.build"
@@ -477,7 +531,7 @@ using libarchive.")
 (define-public zathura-ps
   (package
     (name "zathura-ps")
-    (version "0.2.6")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri
@@ -485,7 +539,7 @@ using libarchive.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "0wygq89nyjrjnsq7vbpidqdsirjm6iq4w2rijzwpk2f83ys8bc3y"))))
+                "0ilf63wxn1yzis9m3qs8mxbk316yxdzwxrrv86wpiygm9hhgk5sq"))))
     (native-inputs (list pkg-config))
     (inputs (list libspectre zathura))
     (build-system meson-build-system)
@@ -494,7 +548,7 @@ using libarchive.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-plugin-directory
-           ;; Something of a regression in 0.2.6: the new Meson build system
+           ;; Something of a regression in 0.2.7: the new Meson build system
            ;; now hard-codes an incorrect plugin directory.  Fix it.
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "meson.build"
@@ -546,7 +600,7 @@ using the DjVuLibre library.")
 (define-public zathura-pdf-mupdf
   (package
     (name "zathura-pdf-mupdf")
-    (version "0.3.9")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -554,7 +608,7 @@ using the DjVuLibre library.")
                               "/download/zathura-pdf-mupdf-" version ".tar.xz"))
               (sha256
                (base32
-                "01vw0lrcj9g7d5h2xvm4xb08mvfld4syfr381fjrbdj52zm9bxvp"))))
+                "0pcjxvlh4hls8mjhjghhhihyy2kza8l27wdx0yq4bkd1g1b5f74c"))))
     (native-inputs (list pkg-config))
     (inputs
      (list gumbo-parser
@@ -596,7 +650,7 @@ by using the @code{mupdf} rendering library.")
 (define-public zathura-pdf-poppler
   (package
     (name "zathura-pdf-poppler")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -604,7 +658,7 @@ by using the @code{mupdf} rendering library.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "1vfl4vkyy3rf39r1sqaa7y8113bgkh2bkfq3nn2inis9mrykmk6m"))))
+                "12qhkshpp1wjfpjmjccsyi6wscqyqvaa19j85prjpyf65i9jg0gf"))))
     (native-inputs (list pkg-config))
     (inputs
      (list poppler zathura))
@@ -631,7 +685,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.5.1")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -639,7 +693,7 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "1c8vmfpghqlq5kdnq92bzzp2grym3x3kxxxqgs51178s4z7639lq"))))
+                "15314m9chmh5jkrd9vk2h2gwcwkcffv2kjcxkd4v3wmckz5sfjy6"))))
     (native-inputs
      (list pkg-config
            gettext-minimal
@@ -720,7 +774,7 @@ interaction.")
                ;; Look for freetype include files in the correct place.
                (substitute* "cmake/modules/FindFREETYPE.cmake"
                  (("/usr/local") freetype))))))))
-    (home-page "http://podofo.sourceforge.net")
+    (home-page "https://podofo.sourceforge.net")
     (synopsis "Tools to work with the PDF file format")
     (description
      "PoDoFo is a C++ library and set of command-line tools to work with the
@@ -884,21 +938,20 @@ program capable of converting PDF into other formats.")
    ;; Prior to the 7.0 release, QPDF was licensed under Artistic 2.0.
    ;; Users can still choose to use the old license at their option.
    (license (list license:asl2.0 license:clarified-artistic))
-   (home-page "http://qpdf.sourceforge.net/")))
+   (home-page "https://qpdf.sourceforge.net/")))
 
 (define-public qpdfview
   (package
     (name "qpdfview")
-    (version "0.4.18")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://launchpad.net/qpdfview/"
                            "trunk/" version "/+download/"
-                           "qpdfview-" version ".tar.gz"))
+                           "qpdfview-" (version-major+minor version) ".tar.gz"))
        (sha256
-        (base32 "0v1rl126hvblajnph2hkansgi0s8vjdc5yxrm4y3faa0lxzjwr6c"))
-       (patches (search-patches "qpdfview-qt515-compat.patch"))))
+        (base32 "16dy341927r2s1dza7g8ci1jyypfc4a6yfcvg9sxvjv1li0c9vs4"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -910,14 +963,14 @@ program capable of converting PDF into other formats.")
            qtbase-5
            qtsvg-5))
     (arguments
-     `(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "qpdfview.pri"
-               (("/usr") (assoc-ref outputs "out")))
-             (invoke "qmake" "qpdfview.pro"))))))
+     (list #:tests? #f ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (substitute* "qpdfview.pri"
+                     (("/usr") #$output))
+                   (invoke "qmake" "qpdfview.pro"))))))
     (home-page "https://launchpad.net/qpdfview")
     (synopsis "Tabbed document viewer")
     (description "@command{qpdfview} is a document viewer for PDF, PS and DJVU
@@ -943,7 +996,7 @@ SyncTeX support, and rudimentary support for annotations and forms.")
      (list gtk+-2 pango poppler glib libgnomecanvas))
     (native-inputs
      (list pkg-config))
-    (home-page "http://xournal.sourceforge.net/")
+    (home-page "https://xournal.sourceforge.net/")
     (synopsis "Notetaking using a stylus")
     (description
      "Xournal is an application for notetaking, sketching, keeping a journal
@@ -1122,7 +1175,7 @@ vector formats.")
                 (install-file "impressive.1" man1)))))))
     ;; TODO: Add dependency on pdftk.
     (inputs (list python-pygame python-pillow sdl xpdf))
-    (home-page "http://impressive.sourceforge.net")
+    (home-page "https://impressive.sourceforge.net")
     (synopsis "PDF presentation tool with visual effects")
     (description
      "Impressive is a tool to display PDF files that provides visual effects

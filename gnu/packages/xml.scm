@@ -449,7 +449,7 @@ based on libxml for XML parsing, tree manipulation and XPath support.")
      (list opensp))
     (native-inputs
      (list perl))
-    (home-page "http://openjade.sourceforge.net/")
+    (home-page "https://openjade.sourceforge.net/")
     (synopsis "ISO/IEC 10179:1996 standard DSSSL language implementation")
     (description "OpenJade is an implementation of Document Style Semantics
 and Specification Language (DSSSL), a style language to format SGML or XML
@@ -1102,7 +1102,7 @@ parsing/saving.")
                (base32
                 "1d17pyixbfvjyi2lb0cfp0ch8wwdf44mmg3r5pwqhyyqs66z601a"))))
     (build-system python-build-system)
-    (home-page "http://pyxb.sourceforge.net/")
+    (home-page "https://pyxb.sourceforge.net/")
     (synopsis "Python XML Schema Bindings")
     (description
      "PyXB (\"pixbee\") is a pure Python package that generates Python source
@@ -1151,14 +1151,14 @@ XSL-T processor.  It also performs any necessary post-processing.")
 (define-public xmlsec
   (package
     (name "xmlsec")
-    (version "1.2.36")
+    (version "1.2.37")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.aleksey.com/xmlsec/download/"
                                   "xmlsec1-" version ".tar.gz"))
               (sha256
                (base32
-                "100wsklff8x30rsg0xp191kg8p3z5va2d0q3iy08a791ic07xngh"))))
+                "0747w8mnnyawvvzlvhjpkwm3998c7l5f1hjy1gfvsmhydp5zp3az"))))
     (build-system gnu-build-system)
     (propagated-inputs                  ; according to xmlsec1.pc
      (list libxml2 libxslt))
@@ -1348,7 +1348,7 @@ C++ programming language.")
              #t))))))
    (inputs
     (list libxslt libxml2))
-   (home-page "http://xmlstar.sourceforge.net/")
+   (home-page "https://xmlstar.sourceforge.net/")
    (synopsis "Command line XML toolkit")
    (description "XMLStarlet is a set of command line utilities which can be
 used to transform, query, validate, and edit XML documents.  XPath is used to
@@ -1724,7 +1724,7 @@ support.")
              (substitute* "GNUmakefile"
                (("#! /bin/sh") (which "sh")))
              #t)))))
-    (home-page "http://xmlrpc-c.sourceforge.net/")
+    (home-page "https://xmlrpc-c.sourceforge.net/")
     (synopsis "Lightweight RPC library based on XML and HTTP")
     (description
      "XML-RPC is a quick-and-easy way to make procedure calls over the Internet.
@@ -1809,7 +1809,7 @@ modular implementation of XML-RPC for C and C++.")
                                 (files '("sgml"))
                                 (file-pattern "^catalog$|^CATALOG$|^.*\\.cat$")
                                 (file-type 'regular))))
-    (home-page "http://openjade.sourceforge.net/")
+    (home-page "https://openjade.sourceforge.net/")
     (synopsis "Suite of SGML/XML processing tools")
     (description "OpenSP is an object-oriented toolkit for SGML parsing and
 entity management.  It is a fork of James Clark's SP suite.  The tools it

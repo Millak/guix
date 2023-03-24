@@ -42,7 +42,7 @@
               (base32
                "1gyxf4bh9jp5gb3l6g5qy90zzcf3vcpk0irgwbv1lc6mrskyhxwg"))))
     (build-system gnu-build-system)
-    (home-page "http://argtable.sourceforge.net/")
+    (home-page "https://argtable.sourceforge.net/")
     (synopsis "Command line option parsing library")
     (description
      "Argtable is an ANSI C library for parsing GNU style command line
@@ -78,7 +78,7 @@ line syntax.")
              (substitute* "tests/testit.sh"   ;don't expect old libtool names
                (("lt-test1") "test1"))
              #t)))))
-    (home-page "http://rpm5.org/files/popt/")
+    (home-page "https://rpm5.org/files/popt/")
     (synopsis "Command line option parsing library")
     (description
      "This is the popt(3) command line option parsing library.  While it is

@@ -194,7 +194,7 @@ went to university in the 1990s, this is the library for you.")
        (list autoconf automake texinfo pkg-config))
       (inputs (list guile-3.0))
       (propagated-inputs (list guile-cairo))
-      (home-page "http://wingolog.org/projects/guile-charting/")
+      (home-page "https://wingolog.org/projects/guile-charting/")
       (synopsis "Create charts and graphs in Guile")
       (description
        "Guile-Charting is a Guile Scheme library to create bar charts and graphs
@@ -259,7 +259,7 @@ using the Cairo drawing library.")
                           `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
     (inputs
      (list libpng libx11 zlib))
-    (home-page "http://ploticus.sourceforge.net/")
+    (home-page "https://ploticus.sourceforge.net/")
     (synopsis "Command-line tool for producing plots and charts")
     (description
      "Ploticus is a non-interactive software package for producing plots,
@@ -272,14 +272,14 @@ colors, styles, options and details.")
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.84")
+    (version "2.85")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "1nycdmlhs3r1qj5miww19683qqjf4hihsjwzwjj1q4mq0hnp0rb7"))
+        (base32 "11zcfnc80sbh10w53j4rwnmz0g5xj78b8i7hzfslgya15jv5j1ac"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.

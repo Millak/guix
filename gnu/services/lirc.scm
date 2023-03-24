@@ -21,12 +21,13 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages lirc)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (ice-9 match)
   #:export (lirc-configuration
             lirc-configuation?
-            lirc-service
+            lirc-service  ; deprecated
             lirc-service-type))
 
 ;;; Commentary:
@@ -40,9 +41,12 @@
   lirc-configuation?
   (lirc          lirc-configuration-lirc          ;file-like
                  (default lirc))
-  (device        lirc-configuration-device)       ;string
-  (driver        lirc-configuration-driver)       ;string
-  (config-file   lirc-configuration-file)         ;string | file-like object
+  (device        lirc-configuration-device        ;string
+                 (default #f))
+  (driver        lirc-configuration-driver        ;string
+                 (default #f))
+  (config-file   lirc-configuration-file          ;string | file-like object
+                 (default #f))
   (extra-options lirc-configuration-options       ;list of strings
                  (default '())))
 
@@ -81,11 +85,13 @@
                        (service-extension activation-service-type
                                           (const %lirc-activation))))
                 (description "Run LIRC, a daemon that decodes infrared signals
-from remote controls.")))
+from remote controls.")
+                (default-value (lirc-configuration))))
 
-(define* (lirc-service #:key (lirc lirc)
+(define-deprecated (lirc-service #:key (lirc lirc)
                        device driver config-file
                        (extra-options '()))
+  lirc-service-type
   "Return a service that runs @url{http://www.lirc.org,LIRC}, a daemon that
 decodes infrared signals from remote controls.
 

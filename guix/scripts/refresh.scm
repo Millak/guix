@@ -43,15 +43,12 @@
   #:use-module (gnu packages)
   #:use-module ((gnu packages commencement) #:select (%final-inputs))
   #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 vlist)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-71)
-  #:use-module (ice-9 binary-ports)
   #:export (guix-refresh))
 
 
@@ -101,7 +98,7 @@
         (option '(#\r "recursive") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'recursive? #t result)))
-        (option '("list-transitive") #f #f
+        (option '(#\T "list-transitive") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'list-transitive? #t result)))
 
@@ -159,7 +156,7 @@ specified with `--select'.\n"))
   (display (G_ "
   -r, --recursive        check the PACKAGE and its inputs for upgrades"))
   (display (G_ "
-      --list-transitive  list all the packages that PACKAGE depends on"))
+  -T, --list-transitive  list all the packages that PACKAGE depends on"))
   (newline)
   (display (G_ "
       --keyring=FILE     use FILE as the keyring of upstream OpenPGP keys"))

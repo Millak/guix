@@ -93,7 +93,7 @@
                          `(("/bin/sh" ,(file-append bash "/bin/sh"))
                            ("/usr/bin/env" ,(file-append coreutils
                                                          "/bin/env"))))
-                (syslog-service))
+                (service syslog-service-type))
           (map (lambda (n)
                  (service hurd-getty-service-type
                           (hurd-getty-configuration

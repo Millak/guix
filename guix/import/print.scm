@@ -19,12 +19,11 @@
 
 (define-module (guix import print)
   #:use-module (guix base32)
-  #:use-module (guix utils)
   #:use-module (guix licenses)
   #:use-module (guix packages)
+  #:use-module ((guix diagnostics) #:select (location-file))
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
-  #:use-module (gnu packages)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (guix import utils)

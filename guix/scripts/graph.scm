@@ -20,7 +20,6 @@
 (define-module (guix scripts graph)
   #:use-module (guix ui)
   #:use-module (guix graph)
-  #:use-module (guix grafts)
   #:use-module (guix scripts)
   #:use-module (guix packages)
   #:use-module (guix monads)

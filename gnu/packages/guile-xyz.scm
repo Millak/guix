@@ -898,32 +898,26 @@ is not available for Guile 2.0.")
 (define-public guile-filesystem
   (package
     (name "guile-filesystem")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.com/leoprikler/guile-filesystem.git")
+                    (url "https://gitlab.com/lilyp/guile-filesystem")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1shmkc0y9r2sj3kw7hrsnamnp7y8xifkhf3m3rnfxczqg63k67vy"))))
+                "0waiaxcha584d0dc15nvs6gxh4clrfm2bwjidjsbqajgb03l4ngm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
      (list guile-3.0))
-    (home-page "https://gitlab.com/leoprikler/guile-filesystem")
+    (home-page "https://gitlab.com/lilyp/guile-filesystem")
     (synopsis "Complementary library to Guile's built-in file system procedures")
     (description "@code{guile-filesystem} provides a set of utility functions,
 that augment Guile's support for handling files and their names.")
     (license license:lgpl3+)))
-
-(define-public guile2.0-filesystem
-  (package
-    (inherit guile-filesystem)
-    (name "guile2.0-filesystem")
-    (inputs (list guile-2.0))))
 
 (define-public guile2.2-filesystem
   (package
@@ -2566,35 +2560,35 @@ $(libdir)/guile/@GUILE_EFFECTIVE_VERSION@/site-ccache\n")))))))
 modules, allowing for people to cooperate integrating their generic Guile
 modules into a coherent library.  Think \"a down-scaled, limited-scope CPAN
 for Guile\".  It provides the following modules:
-+@itemize
-+@item (apicheck) Describe and verify library programming interfaces.
-+@item (config load) Loading configuration files.
-+@item (container async-queue) A thread-safe message queue.
-+@item (container nodal-tree) A tree consisting of nodes with attributes.
-+@item (container delay-tree) A nodal tree with lazily evaluated fields.
-+@item (debugging assert) Helpful assert macro.
-+@item (debugging time) A simple macro to time the execution of an expression.
-+@item (graph topological-sort) Routines to perform topological sorts.
-+@item (htmlprag) Neil Van Dyke's permissive (\"pragmatic\") HTML parser.
-+@item (io string) SLIB's IO routines dealing with strings.
-+@item (logging logger) A flexible logging system.
-+@item (logging port-log) A logger that outputs to a port.
-+@item (logging rotating-log) A logger that rotates its output files.
-+@item (match-bind) Nifty and concise regular expression routines.
-+@item (math minima) A golden-section minimum finder.
-+@item (math primes) Functions related to prime numbers and factorization.
-+@item (os process) Spawning processes and capturing their output.
-+@item (scheme documentation) Macros to define different kinds of variables
-+with documentation.
-+@item (scheme kwargs) Defining functions with flexible keyword arguments.
-+@item (search basic) Classic search functions.
-+@item (string completion) Building blocks for tab completion.
-+@item (string soundex) The SOUNDEX string categorization algorithm.
-+@item (string transform) Beyond SRFI-13.
-+@item (string wrap) A versatile string formatter.
-+@item (term ansi-color) Generate ANSI color escape sequences.
-+@item (unit-test) A JUnit-style unit testing framework.
-+@end itemize")
+@itemize
+@item (apicheck) Describe and verify library programming interfaces.
+@item (config load) Loading configuration files.
+@item (container async-queue) A thread-safe message queue.
+@item (container nodal-tree) A tree consisting of nodes with attributes.
+@item (container delay-tree) A nodal tree with lazily evaluated fields.
+@item (debugging assert) Helpful assert macro.
+@item (debugging time) A simple macro to time the execution of an expression.
+@item (graph topological-sort) Routines to perform topological sorts.
+@item (htmlprag) Neil Van Dyke's permissive (\"pragmatic\") HTML parser.
+@item (io string) SLIB's IO routines dealing with strings.
+@item (logging logger) A flexible logging system.
+@item (logging port-log) A logger that outputs to a port.
+@item (logging rotating-log) A logger that rotates its output files.
+@item (match-bind) Nifty and concise regular expression routines.
+@item (math minima) A golden-section minimum finder.
+@item (math primes) Functions related to prime numbers and factorization.
+@item (os process) Spawning processes and capturing their output.
+@item (scheme documentation) Macros to define different kinds of variables
+with documentation.
+@item (scheme kwargs) Defining functions with flexible keyword arguments.
+@item (search basic) Classic search functions.
+@item (string completion) Building blocks for tab completion.
+@item (string soundex) The SOUNDEX string categorization algorithm.
+@item (string transform) Beyond SRFI-13.
+@item (string wrap) A versatile string formatter.
+@item (term ansi-color) Generate ANSI color escape sequences.
+@item (unit-test) A JUnit-style unit testing framework.
+@end itemize")
     ;; The whole is under GPLv3+, but some modules are under laxer
     ;; distribution terms such as LGPL and public domain.  See `COPYING' for
     ;; details.
@@ -2731,7 +2725,7 @@ See http://minikanren.org/ for more on miniKanren generally.")
        #:source-directory "src"))
     (native-inputs
      (list guile-3.0))
-    (home-page "http://synthcode.com/scheme/irregex")
+    (home-page "https://synthcode.com/scheme/irregex")
     (synopsis "S-expression based regular expressions")
     (description
      "Irregex is an s-expression based alternative to your classic
@@ -4396,7 +4390,7 @@ over, or update a value in arbitrary data structures.")
 (define-public guile-xapian
   (package
     (name "guile-xapian")
-    (version "0.3.0")
+    (version "0.3.1")
     (home-page "https://git.systemreboot.net/guile-xapian")
     (source
      (origin
@@ -4406,7 +4400,7 @@ over, or update a value in arbitrary data structures.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0k18navsd0rqx2zbqgvhzscvbls2sxs9k06n195s4bvyd50acfm5"))))
+         "0axbahbi52ji0fxhykn642265v58rdp2yqliqv456nqs038wb5ja"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
@@ -4522,6 +4516,32 @@ Relay Chat} (IRC).")
     (description "Guile-websocket provides an implementation of the
 WebSocket protocol as defined by RFC 6455.")
     (home-page "https://dthompson.us/projects/guile-websocket.html")
+    (license license:lgpl3+)))
+
+(define-public guile-gemini
+  (package
+    (name "guile-gemini")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/flatwhatson/guile-gemini")
+                    (commit "6d70c5dc6b35c26103f560f7e63c770a424dbca2")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rvqqirwsqn3nspr6z1smfp3rj7gc7hfq7cmadx7zxbr3yg5y04x"))))
+    (build-system guile-build-system)
+    (arguments
+     '(#:source-directory "src"))
+    (inputs (list guile-3.0-latest))
+    (propagated-inputs (list guile-fibers-1.1 guile-gnutls))
+    (home-page "https://github.com/flatwhatson/guile-gemini")
+    (synopsis "Guile implementation of the Gemini protocol")
+    (description
+     "Guile Gemini is an implementation of the Gemini protocol in Guile Scheme,
+providing both client and server functionality.  It uses GnuTLS to meet
+Gemini's TLS requirements, and Guile Fibers for concurrency.")
     (license license:lgpl3+)))
 
 (define-public guile-rdf

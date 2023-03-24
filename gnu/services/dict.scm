@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services dict)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix modules)
@@ -34,7 +35,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
-  #:export (dicod-service
+  #:export (dicod-service  ; deprecated
             dicod-service-type
             dicod-configuration
             dicod-handler
@@ -202,7 +203,8 @@ database {
 implements the standard DICT protocol supported by clients such as
 @command{dico} and GNOME Dictionary.")))
 
-(define* (dicod-service #:key (config (dicod-configuration)))
+(define-deprecated (dicod-service #:key (config (dicod-configuration)))
+  dicod-service-type
   "Return a service that runs the @command{dicod} daemon, an implementation
 of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
 

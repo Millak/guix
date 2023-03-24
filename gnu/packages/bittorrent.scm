@@ -385,7 +385,7 @@ and will take advantage of multiple processor cores where possible.")
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "1.2.15")
+    (version "1.2.18")
     (source
      (origin
        (method url-fetch)
@@ -394,7 +394,7 @@ and will take advantage of multiple processor cores where possible.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "0jr1c876mvwbbbnav8ldcdm1l6z3g404jc5wp8z902jcd0w8dbf8"))))
+        (base32 "0wpsaqadcicxl4lf1nc1i93c4yzjv8hpzhhrw1hdkrp4gn0vdwpy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-Dpython-bindings=ON"
@@ -416,7 +416,7 @@ and will take advantage of multiple processor cores where possible.")
                  ;; expiry date.  To ensure succesful builds in the future,
                  ;; fake the time to be roughly that of the release.
                  (setenv "FAKETIME_ONLY_CMDS" "test_ssl")
-                 (invoke "faketime" "2021-12-12"
+                 (invoke "faketime" "2022-10-24"
                          "ctest"
                          "--exclude-regex" (string-join disabled-tests "|")
                          "-j" (if parallel-tests?
@@ -440,7 +440,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.4.1")
+    (version "4.5.2")
     (source
      (origin
        (method git-fetch)
@@ -449,7 +449,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00whc4p209g2krsggxyq4sna01djbk1rbzkyjbq4qczvya01xn0w"))))
+        (base32 "07s0ypkd1zzkw9qhfwxxx7s6zizjz0448al17xmc1b48phn46hjk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

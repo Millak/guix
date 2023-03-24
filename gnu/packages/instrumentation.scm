@@ -43,6 +43,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
@@ -53,6 +54,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system linux-module)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -118,6 +120,32 @@ transforming, and analyzing traces.  It is also the reference parser
 implementation of the Common Trace Format (CTF), produced by tools such as
 LTTng and barectf.  This package provides a library with a C API, Python 3
 bindings, and the command-line tool @command{babeltrace2}.")
+    (license license:expat)))
+
+(define-public barectf
+  (package
+    (name "barectf")
+    (version "3.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "barectf" version))
+              (sha256
+               (base32
+                "0zhc9d4qnnl4fjj6354qb4bng4ykywn8x3l3acpv6sx439q6ylwd"))))
+    (build-system python-build-system)
+    (native-inputs (list gcc-toolchain
+                         gnu-make
+                         python-jinja2
+                         python-jsonschema
+                         python-pyyaml-5
+                         python-termcolor
+                         python-tox))
+    (home-page "https://barectf.org")
+    (synopsis "CTF tracer generator")
+    (description
+     "@command{barectf} is a generator of tracer which produces CTF data
+streams.  The generated C source code has no other dependencies than a few C
+standard library headers.")
     (license license:expat)))
 
 (define-public dyninst

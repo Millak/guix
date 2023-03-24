@@ -39,7 +39,6 @@
   #:autoload   (guix derivations) (read-derivation-from-file
                                    derivation-file-name
                                    build-derivations)
-  #:autoload   (guix serialization) (nar-error? nar-error-file)
   #:autoload   (guix nar) (restore-file-set)
   #:use-module ((guix utils) #:select (%current-system))
   #:use-module ((guix build syscalls)
@@ -220,7 +219,12 @@ number of seconds after which the connection times out."
         (session (make-session #:user (build-machine-user machine)
                                #:host (build-machine-name machine)
                                #:port (build-machine-port machine)
-                               #:timeout 10       ;initial timeout (seconds)
+                               ;; Multiple derivations may be offloaded in
+                               ;; parallel, and when there is a large amount
+                               ;; of data to be sent, it can choke lower
+                               ;; bandwidth connections and cause timeouts, so
+                               ;; set it to a large enough value.
+                               #:timeout 30 ;initial timeout (seconds)
                                ;; #:log-verbosity 'protocol
                                #:identity (build-machine-private-key machine)
 

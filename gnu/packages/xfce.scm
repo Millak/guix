@@ -66,6 +66,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
@@ -184,7 +185,7 @@ storage system.")
 (define-public libxfce4ui
   (package
     (name "libxfce4ui")
-    (version "4.18.1")
+    (version "4.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -192,7 +193,7 @@ storage system.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0bp5wl9r6wbl7a18wikldb6kvyqzaz16sk2bh9swwyqv08q7pgvf"))))
+                "01wlwigrq5icf6bz3waqxjd066hm0z397crxnlz0ri764w22sq5d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -395,7 +396,7 @@ management D-Bus specification.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.18.1")
+    (version "4.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -403,7 +404,7 @@ management D-Bus specification.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0wnfx08gacq803ha6ywvqfxn91brgbyymhi5x2xis713gl4mizgi"))
+                "1hbxwlw806qj7z1169ahwgkl1fm789z22r6dszddx2wzv8w9qv3w"))
               (patches (search-patches "xfce4-panel-plugins.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -627,7 +628,7 @@ your system in categories, so you can quickly find and launch them.")
 (define-public xfce4-session
   (package
     (name "xfce4-session")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -635,7 +636,7 @@ your system in categories, so you can quickly find and launch them.")
                                   "xfce4-session-" version ".tar.bz2"))
               (sha256
                (base32
-                "0zwsp2qc1bk87gbvx5fc8wb3hg2nq2ln0fjljks148171d8dpfiq"))
+                "1ky54pc0zi2q3qkpmccr3qa4c08j5c6bb6xxiczdnngjxrz9anhw"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -679,7 +680,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.18.1")
+    (version "4.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -687,7 +688,7 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "140xclvl05y3xwlckwnryxyj6y6gr8cpksrpzlhvip6jz9l0wxfm"))
+                "08jgvhxhh95rcgpvsfqn1rv7i45zj37zyhcpnkpmgbpshw83cqa6"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -724,7 +725,7 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "4.18.3")                           ;stable version = even minor
+    (version "4.18.4")                           ;stable version = even minor
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -732,7 +733,7 @@ like appearance, display, keyboard and mouse settings.")
                                   "thunar-" version ".tar.bz2"))
               (sha256
                (base32
-                "15rjbr9gdiqzpvy97vz8s9hhr35zvl2kr4q6iwxq0gwza4wfl0pl"))))
+                "1k7dkdhp353l1z2d55384c10iyp59n5qx0hawzf8lqhxzgi3qin4"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--with-custom-thunarx-dirs-enabled")))
@@ -1151,23 +1152,6 @@ search feature works like Xfce's app finder and makes it convenient to search
 for and start applications.")
     (license gpl2+)))
 
-(define-public mate-polkit-for-xfce
-  (package/inherit mate-polkit
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'patch-desktop
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((common (string-append
-                             (assoc-ref outputs "out") "/etc/xdg/autostart/"
-                             "polkit-mate-authentication-agent-"))
-                    (old (string-append common "1.desktop"))
-                    (new (string-append common "for-xfce-1.desktop")))
-               (substitute* old (("MATE;") "XFCE;"))
-               ;; To avoid a conflict if both MATE and XFCE are installed.
-               (rename-file old new)))))))
-    (properties `((hidden? . #t)))))
-
 (define-public xfce
   (package
     (name "xfce")
@@ -1237,7 +1221,7 @@ system resources, while still being visually appealing and user friendly.")
 (define-public xfce4-power-manager
   (package
     (name "xfce4-power-manager")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -1245,7 +1229,7 @@ system resources, while still being visually appealing and user friendly.")
                                   "xfce4-power-manager-" version ".tar.bz2"))
               (sha256
                (base32
-                "16n3f9zam3v8584rprckvr72gmgsv9kyqy690jkrybr5hrw4dvif"))))
+                "00zz9bhzsf2vww8mym9c093sz7va5716qb6kvdvn6ldp9h6b223b"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -1266,7 +1250,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.12.4")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/ristretto/"
@@ -1274,7 +1258,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
                                   "ristretto-" version ".tar.bz2"))
               (sha256
                (base32
-                "0c3rx02bk74fip7ishdxnbn0l9f48qbiglckzclz7v758fbmq074"))))
+                "00g3yk06h2xca73bq3dzyiha4ck8ps1vprc3il63knma3ns7crjr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils
@@ -1324,7 +1308,7 @@ memory usage graphically, and it can display processes as a tree.")
 (define-public orage
   (package
     (name "orage")
-    (version "4.16.0")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1332,7 +1316,7 @@ memory usage graphically, and it can display processes as a tree.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "000py6r63rlv7pjwvwd7ycrb383lny8ha7ha3qpwh1r0d8xil496"))))
+                "1v5385hps6jgcw1ky9vl7w7iryp0rzxz6s4lx72rz8yg4sdv84v3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list
@@ -1354,7 +1338,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.7.3")
+    (version "0.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1362,12 +1346,12 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0hz9x42cfwd52i02a50mqvw3qwpgb3hpnlxqnnlkc8bwadfn1nah"))))
+                "1jcmcjq2kay9kmzd5j5l8kasrzqb7aidp26q4nbmxghxxa3ncyf7"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
     (inputs
-     (list libxfce4ui libnotify xfce4-panel))
+     (list libxfce4ui libnotify sqlite xfce4-panel))
     (home-page "https://goodies.xfce.org/projects/applications/xfce4-notifyd")
     (synopsis "Show notification bubbles on Xfce")
     (description
@@ -1417,7 +1401,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.5.10")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1425,7 +1409,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1b9bal9wxmgpff6r7k48gnkd0vla7xljmiahjq6mdrdyaa6z7fkf"))))
+                "1m0k36fbh1gkxps3yjfagjnka13ndcfk3r588bc9ka5qhb2salr2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than

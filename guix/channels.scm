@@ -29,8 +29,6 @@
   #:use-module (guix base16)
   #:use-module (guix records)
   #:use-module (guix gexp)
-  #:use-module (guix modules)
-  #:use-module (guix discovery)
   #:use-module (guix monads)
   #:use-module (guix profiles)
   #:use-module (guix packages)
@@ -55,8 +53,6 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
-  #:use-module ((ice-9 rdelim) #:select (read-string))
-  #:use-module ((rnrs bytevectors) #:select (bytevector=?))
   #:export (channel
             channel?
             channel-name
@@ -952,6 +948,10 @@ be used as a profile hook."
                       (backtrace))))
               (mkdir #$output))))
 
+    (define channels
+      (map (compose string->symbol manifest-entry-name)
+           (manifest-entries manifest)))
+
     (gexp->derivation-in-inferior "guix-package-cache" build
                                   profile
 
@@ -960,8 +960,9 @@ be used as a profile hook."
                                   ;; instead of failing.
                                   #:silent-failure? #t
 
-                                  #:properties '((type . profile-hook)
-                                                 (hook . package-cache))
+                                  #:properties `((type . profile-hook)
+                                                 (hook . package-cache)
+                                                 (channels . ,channels))
                                   #:local-build? #t)))
 
 (define %channel-profile-hooks

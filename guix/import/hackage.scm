@@ -52,7 +52,6 @@
             hackage-recursive-import
             %hackage-updater
 
-            guix-package->hackage-name
             hackage-name->package-name
             hackage-fetch
             hackage-source-url
@@ -76,6 +75,7 @@
     "exceptions"
     "filepath"
     "ghc"
+    "ghc-bignum"
     "ghc-boot"
     "ghc-boot-th"
     "ghc-compact"
@@ -125,17 +125,6 @@ version is returned."
   (if (string-prefix? package-name-prefix name)
       (string-downcase name)
       (string-append package-name-prefix (string-downcase name))))
-
-(define guix-package->hackage-name
-  (let ((uri-rx (make-regexp "(https?://hackage.haskell.org|mirror://hackage)/package/([^/]+)/.*"))
-        (name-rx (make-regexp "(.*)-[0-9\\.]+")))
-    (lambda (package)
-      "Given a Guix package name, return the corresponding Hackage name."
-      (let* ((source-url (and=> (package-source package) origin-uri))
-             (name (match:substring (regexp-exec uri-rx source-url) 2)))
-        (match (regexp-exec name-rx name)
-          (#f name)
-          (m (match:substring m 1)))))))
 
 (define (read-cabal-and-hash port)
   "Read a Cabal file from PORT and return it and its hash in nix-base32
@@ -314,6 +303,7 @@ the hash of the Cabal file."
                          (bytevector->nix-base32-string (file-sha256 tarball))
                          "failed to download tar archive")))))
         (build-system haskell-build-system)
+        (properties '((upstream-name . ,name)))
         ,@(maybe-inputs 'inputs dependencies)
         ,@(maybe-inputs 'native-inputs native-dependencies)
         ,@(maybe-arguments)
@@ -370,7 +360,7 @@ respectively."
      (formatted-message
       (G_ "~a updater doesn't support updating to a specific version, sorry.")
       "hackage")))
-  (let* ((hackage-name (guix-package->hackage-name package))
+  (let* ((hackage-name (package-upstream-name* package))
          (cabal-meta (hackage-fetch hackage-name)))
     (match cabal-meta
       (#f
@@ -378,7 +368,10 @@ respectively."
                "warning: failed to parse ~a~%"
                (hackage-cabal-url hackage-name))
        #f)
-      ((_ *** ("version" (version)))
+      ;; Cabal files have no particular order and while usually the version
+      ;; as somewhere in the middle it can also be at the beginning,
+      ;; requiring two pattern.
+      ((or (_ *** ("version" (version))) (("version" (version)) _ ...))
        (let ((url (hackage-uri hackage-name version)))
          (upstream-source
           (package (package-name package))

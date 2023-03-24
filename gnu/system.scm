@@ -14,6 +14,7 @@
 ;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,7 +98,7 @@
             operating-system-user-services
             operating-system-packages
             operating-system-host-name
-            operating-system-hosts-file
+            operating-system-hosts-file ;deprecated
             operating-system-hurd
             operating-system-kernel
             operating-system-kernel-file
@@ -169,7 +170,7 @@
             read-boot-parameters-file
             boot-parameters->menu-entry
 
-            local-host-aliases
+            local-host-aliases                    ;deprecated
             %root-account
             %setuid-programs
             %sudoers-specification
@@ -208,6 +209,15 @@ VERSION is the target version of the boot-parameters record."
                          #$system "/boot")))
 
 ;; System-wide configuration.
+
+(define-with-syntax-properties (warn-hosts-file-field-deprecation
+                                (value properties))
+  (when value
+    (warning (source-properties->location properties)
+             (G_ "the 'hosts-file' field is deprecated, please use \
+'hosts-service-type' instead~%")))
+  value)
+
 ;; TODO: Add per-field docstrings/stexi.
 (define-record-type* <operating-system> operating-system
   make-operating-system
@@ -239,8 +249,9 @@ VERSION is the target version of the boot-parameters record."
             (default %base-firmware))
 
   (host-name operating-system-host-name)          ; string
-  (hosts-file operating-system-hosts-file         ; file-like | #f
-              (default #f))
+  (hosts-file %operating-system-hosts-file         ; deprecated
+              (default #f)
+              (sanitize warn-hosts-file-field-deprecation))
 
   (mapped-devices operating-system-mapped-devices ; list of <mapped-device>
                   (default '()))
@@ -295,6 +306,10 @@ VERSION is the target version of the boot-parameters record."
             (default (and=> (current-source-location)
                             source-properties->location))
             (innate)))
+
+(define-deprecated (operating-system-hosts-file os)
+  hosts-service-type
+  (%operating-system-hosts-file os))
 
 (define* (operating-system-kernel-arguments
           os root-device #:key (version %boot-parameters-version))
@@ -733,7 +748,8 @@ bookkeeping."
          (non-boot-fs  (non-boot-file-system-service os))
          (swaps        (swap-services os))
          (procs        (service user-processes-service-type))
-         (host-name    (host-name-service (operating-system-host-name os)))
+         (host-name    (operating-system-host-name os))
+         (hosts-file   (%operating-system-hosts-file os))
          (entries      (operating-system-directory-base-entries os)))
     (cons* (service system-service-type entries)
            (service linux-builder-service-type
@@ -755,12 +771,19 @@ bookkeeping."
                                     (operating-system-groups os))
                             (operating-system-skeletons os))
            (operating-system-etc-service os)
+           ;; XXX: hosts-file is deprecated
+           (if hosts-file
+               (simple-service 'deprecated-hosts-file etc-service-type
+                               (list `("hosts" ,hosts-file)))
+               (service hosts-service-type
+                        (local-host-entries host-name)))
            (service fstab-service-type
                     (filter file-system-needed-for-boot?
                             (operating-system-file-systems os)))
            (session-environment-service
             (operating-system-environment-variables os))
-           host-name procs root-fs
+           (service host-name-service-type host-name)
+           procs root-fs
            (service setuid-program-service-type
                     (operating-system-setuid-programs os))
            (service profile-service-type
@@ -774,7 +797,9 @@ bookkeeping."
                                   (operating-system-firmware os)))))))
 
 (define (hurd-default-essential-services os)
-  (let ((entries (operating-system-directory-base-entries os)))
+  (let ((host-name    (operating-system-host-name os))
+        (hosts-file   (%operating-system-hosts-file os))
+        (entries      (operating-system-directory-base-entries os)))
     (list (service system-service-type entries)
           %boot-service
           %hurd-startup-service
@@ -794,6 +819,12 @@ bookkeeping."
                            (operating-system-file-systems os)))
           (pam-root-service (operating-system-pam-services os))
           (operating-system-etc-service os)
+          ;; XXX: hosts-file is deprecated
+          (if hosts-file
+              (simple-service 'deprecated-hosts-file etc-service-type
+                              (list `("hosts" ,hosts-file)))
+              (service hosts-service-type
+                       (local-host-entries host-name)))
           (service setuid-program-service-type
                    (operating-system-setuid-programs os))
           (service profile-service-type (operating-system-packages os)))))
@@ -912,14 +943,17 @@ of PROVENANCE-SERVICE-TYPE to its services."
   "
 This is the GNU system.  Welcome.\n")
 
-(define (local-host-aliases host-name)
+(define-deprecated (local-host-aliases host-name)
+  local-host-entries
   "Return aliases for HOST-NAME, to be used in /etc/hosts."
   (string-append "127.0.0.1 localhost " host-name "\n"
                  "::1       localhost " host-name "\n"))
 
-(define (default-/etc/hosts host-name)
-  "Return the default /etc/hosts file."
-  (plain-file "hosts" (local-host-aliases host-name)))
+(define (local-host-entries host-name)
+  "Return <host> records for @var{host-name}."
+  (map (lambda (address)
+         (host address "localhost" (list host-name)))
+       '("127.0.0.1" "::1")))
 
 (define (validated-sudoers-file file)
   "Return a copy of FILE, a sudoers file, after checking that it is
@@ -933,9 +967,8 @@ syntactically correct."
                                "--check" "--file" #$file)
                        (copy-file #$file #$output)))))
 
-(define (os-release)
-  (plain-file "os-release"
-              "\
+(define os-release
+  (plain-file "os-release" "\
 NAME=\"Guix System\"
 ID=guix
 PRETTY_NAME=\"Guix System\"
@@ -967,10 +1000,9 @@ the /etc directory."
 
          (hurd       (operating-system-hurd os))
          (issue      (plain-file "issue" (operating-system-issue os)))
-         (nsswitch   (operating-system-name-service-switch os))
-         (nsswitch   (and nsswitch
-                          (plain-file "nsswitch.conf"
-                                      (name-service-switch->string nsswitch))))
+         (nsswitch   (and=> (operating-system-name-service-switch os)
+                            (compose (cut plain-file "nsswitch.conf" <>)
+                                     name-service-switch->string)))
          (sudoers    (operating-system-sudoers-file os))
 
         ;; Startup file for POSIX-compliant login shells, which set system-wide
@@ -1058,18 +1090,16 @@ then
   # as those in ~/.guix-profile and /run/current-system/profile.
   source /run/current-system/profile/etc/profile.d/bash_completion.sh
 fi\n")))
-    (etc-service
-     `(("os-release" ,#~#$(os-release))
+    (service etc-service-type
+     `(("os-release" ,os-release)
        ("services" ,(file-append net-base "/etc/services"))
        ("protocols" ,(file-append net-base "/etc/protocols"))
        ("rpc" ,(file-append net-base "/etc/rpc"))
-       ("login.defs" ,#~#$login.defs)
-       ("issue" ,#~#$issue)
-       ,@(if nsswitch `(("nsswitch.conf" ,#~#$nsswitch)) '())
-       ("profile" ,#~#$profile)
-       ("bashrc" ,#~#$bashrc)
-       ("hosts" ,#~#$(or (operating-system-hosts-file os)
-                         (default-/etc/hosts (operating-system-host-name os))))
+       ("login.defs" ,login.defs)
+       ("issue" ,issue)
+       ,@(if nsswitch `(("nsswitch.conf" ,nsswitch)) '())
+       ("profile" ,profile)
+       ("bashrc" ,bashrc)
        ;; Write the operating-system-host-name to /etc/hostname to prevent
        ;; NetworkManager from changing the system's hostname when connecting
        ;; to certain networks.  Some discussion at

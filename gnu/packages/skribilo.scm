@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,14 +34,14 @@
 (define-public skribilo
   (package
     (name "skribilo")
-    (version "0.9.5")
+    (version "0.10.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://savannah/skribilo/skribilo-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "02dzy2imqgfmwda4d1r51205si4c0r4fp2gf22sb0kv3qhhnm0h0"))))
+               "03pm2a9a5k0wkj10ywh6xi8flawm8sd396k4698gvvbc2zp4izwc"))))
     (build-system gnu-build-system)
     (arguments
      ;; Make the modules available under the usual location.

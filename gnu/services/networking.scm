@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,7 +81,9 @@
   #:use-module (json)
   #:re-export (static-networking-service
                static-networking-service-type)
-  #:export (%facebook-host-aliases
+  #:export (%facebook-host-aliases ;deprecated
+            block-facebook-hosts-service-type
+
             dhcp-client-service-type
             dhcp-client-configuration
             dhcp-client-configuration?
@@ -140,12 +143,17 @@
 
             network-manager-configuration
             network-manager-configuration?
+            network-manager-configuration-shepherd-requirement
             network-manager-configuration-dns
             network-manager-configuration-vpn-plugins
             network-manager-service-type
 
             connman-configuration
             connman-configuration?
+            connman-configuration-connman
+            connman-configuration-shepherd-requirement
+            connman-configuration-disable-vpn?
+            connman-configuration-iwd?
             connman-service-type
 
             modem-manager-configuration
@@ -235,39 +243,36 @@
 ;;;
 ;;; Code:
 
-(define %facebook-host-aliases
+(define facebook-host-aliases
   ;; This is the list of known Facebook hosts to be added to /etc/hosts if you
   ;; are to block it.
-  "\
-# Block Facebook IPv4.
-127.0.0.1   www.facebook.com
-127.0.0.1   facebook.com
-127.0.0.1   login.facebook.com
-127.0.0.1   www.login.facebook.com
-127.0.0.1   fbcdn.net
-127.0.0.1   www.fbcdn.net
-127.0.0.1   fbcdn.com
-127.0.0.1   www.fbcdn.com
-127.0.0.1   static.ak.fbcdn.net
-127.0.0.1   static.ak.connect.facebook.com
-127.0.0.1   connect.facebook.net
-127.0.0.1   www.connect.facebook.net
-127.0.0.1   apps.facebook.com
+  (let ((domains '("facebook.com" "www.facebook.com"
+                   "login.facebook.com" "www.login.facebook.com"
+                   "fbcdn.net" "www.fbcdn.net" "fbcdn.com" "www.fbcdn.com"
+                   "static.ak.fbcdn.net" "static.ak.connect.facebook.com"
+                   "connect.facebook.net" "www.connect.facebook.net"
+                   "apps.facebook.com")))
+    (append-map (lambda (name)
+                  (map (lambda (addr)
+                         (host addr name))
+                       (list "127.0.0.1" "::1"))) domains)))
 
-# Block Facebook IPv6.
-fe80::1%lo0 facebook.com
-fe80::1%lo0 login.facebook.com
-fe80::1%lo0 www.login.facebook.com
-fe80::1%lo0 fbcdn.net
-fe80::1%lo0 www.fbcdn.net
-fe80::1%lo0 fbcdn.com
-fe80::1%lo0 www.fbcdn.com
-fe80::1%lo0 static.ak.fbcdn.net
-fe80::1%lo0 static.ak.connect.facebook.com
-fe80::1%lo0 connect.facebook.net
-fe80::1%lo0 www.connect.facebook.net
-fe80::1%lo0 apps.facebook.com\n")
+(define-deprecated %facebook-host-aliases
+  block-facebook-hosts-service-type
+  (string-join
+   (map (lambda (x)
+          (string-append (host-address x) "\t"
+                         (host-canonical-name x) "\n"))
+        facebook-host-aliases)))
 
+(define block-facebook-hosts-service-type
+  (service-type
+   (name 'block-facebook-hosts)
+   (extensions
+    (list (service-extension hosts-service-type
+                             (const facebook-host-aliases))))
+   (default-value #f)
+   (description "Add a list of known Facebook hosts to @file{/etc/hosts}")))
 
 (define-record-type* <dhcp-client-configuration>
   dhcp-client-configuration make-dhcp-client-configuration
@@ -1135,16 +1140,29 @@ project's documentation} for more information."
 ;;; NetworkManager
 ;;;
 
+;; TODO: deprecated field, remove later.
+(define-with-syntax-properties (warn-iwd?-field-deprecation
+                                (value properties))
+  (when value
+    (warning (source-properties->location properties)
+             (G_ "the 'iwd?' field is deprecated, please use \
+'shepherd-requirement' field instead~%")))
+  value)
+
 (define-record-type* <network-manager-configuration>
   network-manager-configuration make-network-manager-configuration
   network-manager-configuration?
   (network-manager network-manager-configuration-network-manager
                    (default network-manager))
+  (shepherd-requirement network-manager-configuration-shepherd-requirement
+                        (default '(wpa-supplicant)))
   (dns network-manager-configuration-dns
        (default "default"))
   (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
                (default '()))
-  (iwd? network-manager-configuration-iwd? (default #f)))
+  (iwd? network-manager-configuration-iwd?  ; TODO: deprecated field, remove.
+        (default #f)
+        (sanitize warn-iwd?-field-deprecation)))
 
 (define (network-manager-activation config)
   ;; Activation gexp for NetworkManager
@@ -1200,28 +1218,51 @@ project's documentation} for more information."
 
 (define (network-manager-shepherd-service config)
   (match-record config <network-manager-configuration>
-    (network-manager dns vpn-plugins iwd?)
-    (let ((conf (plain-file "NetworkManager.conf"
-                            (string-append
-                             "[main]\ndns=" dns "\n"
-                             (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
-          (vpn  (vpn-plugin-directory vpn-plugins)))
+    (network-manager shepherd-requirement dns vpn-plugins iwd?)
+    (let* ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
+                     (and shepherd-requirement
+                          (memq 'iwd shepherd-requirement))))
+           (conf (plain-file "NetworkManager.conf"
+                             (string-append
+                              "[main]\ndns=" dns "\n"
+                              (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
+           (vpn  (vpn-plugin-directory vpn-plugins)))
       (list (shepherd-service
              (documentation "Run the NetworkManager.")
-             (provision '(networking))
-             (requirement (append '(user-processes dbus-system loopback)
-                                  (if iwd? '(iwd) '(wpa-supplicant))))
-             (start #~(make-forkexec-constructor
-                       (list (string-append #$network-manager
-                                            "/sbin/NetworkManager")
-                             (string-append "--config=" #$conf)
-                             "--no-daemon")
-                       #:environment-variables
-                       (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
-                                            "/lib/NetworkManager/VPN")
-                             ;; Override non-existent default users
-                             "NM_OPENVPN_USER="
-                             "NM_OPENVPN_GROUP=")))
+             (provision '(NetworkManager networking))
+             (requirement `(user-processes dbus-system loopback
+                            ,@shepherd-requirement
+                            ;; TODO: iwd? is deprecated and should be passed
+                            ;; with shepherd-requirement, remove later.
+                            ,@(if iwd? '(iwd) '())))
+             (start
+              #~(lambda _
+                  (let ((pid
+                         (fork+exec-command
+                          (list #$(file-append network-manager
+                                               "/sbin/NetworkManager")
+                                (string-append "--config=" #$conf)
+                                "--no-daemon")
+                          #:environment-variables
+                          (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
+                                               "/lib/NetworkManager/VPN")
+                                ;; Override non-existent default users
+                                "NM_OPENVPN_USER="
+                                "NM_OPENVPN_GROUP="
+                                ;; Allow NetworkManager to find the modules.
+                                (string-append
+                                 "LINUX_MODULE_DIRECTORY="
+                                 "/run/booted-system/kernel/lib/modules")))))
+                    ;; XXX: Despite the "online" name, this doesn't guarantee
+                    ;; WAN connectivity, it merely waits for NetworkManager
+                    ;; to finish starting-up. This is required otherwise
+                    ;; services will fail since the network interfaces be
+                    ;; absent until NetworkManager finishes setting them up.
+                    (system* #$(file-append network-manager "/bin/nm-online")
+                             "--wait-for-startup" "--quiet")
+                    ;; XXX: Finally, return the pid from running
+                    ;; fork+exec-command to shepherd.
+                    pid)))
              (stop #~(make-kill-destructor)))))))
 
 (define network-manager-service-type
@@ -1265,10 +1306,13 @@ wireless networking."))))
   connman-configuration?
   (connman      connman-configuration-connman
                 (default connman))
+  (shepherd-requirement connman-configuration-shepherd-requirement
+                        (default '()))
   (disable-vpn? connman-configuration-disable-vpn?
                 (default #f))
   (iwd?         connman-configuration-iwd?
-                (default #f)))
+                (default #f)
+                (sanitize warn-iwd?-field-deprecation)))
 
 (define (connman-activation config)
   (let ((disable-vpn? (connman-configuration-disable-vpn? config)))
@@ -1280,33 +1324,34 @@ wireless networking."))))
             (mkdir-p "/var/lib/connman-vpn/"))))))
 
 (define (connman-shepherd-service config)
-  "Return a shepherd service for Connman"
-  (and
-   (connman-configuration? config)
-   (let ((connman      (connman-configuration-connman config))
-         (disable-vpn? (connman-configuration-disable-vpn? config))
-         (iwd?         (connman-configuration-iwd? config)))
-     (list (shepherd-service
-            (documentation "Run Connman")
-            (provision '(networking))
-            (requirement
-             (append '(user-processes dbus-system loopback)
-                     (if iwd? '(iwd) '())))
-            (start #~(make-forkexec-constructor
-                      (list (string-append #$connman
-                                           "/sbin/connmand")
-                            "--nodaemon"
-                            "--nodnsproxy"
-                            #$@(if disable-vpn? '("--noplugin=vpn") '())
-                            #$@(if iwd? '("--wifi=iwd_agent") '()))
+  (match-record config <connman-configuration> (connman shepherd-requirement
+                                                disable-vpn? iwd?)
+    (let ((iwd? (or iwd?  ; TODO: deprecated field, remove later.
+                    (and shepherd-requirement
+                         (memq 'iwd shepherd-requirement)))))
+      (list (shepherd-service
+             (documentation "Run Connman")
+             (provision '(connman networking))
+             (requirement `(user-processes dbus-system loopback
+                                           ,@shepherd-requirement
+                                           ;; TODO: iwd? is deprecated and should be passed
+                                           ;; with shepherd-requirement, remove later.
+                                           ,@(if iwd? '(iwd) '())))
+             (start #~(make-forkexec-constructor
+                       (list (string-append #$connman
+                                            "/sbin/connmand")
+                             "--nodaemon"
+                             "--nodnsproxy"
+                             #$@(if disable-vpn? '("--noplugin=vpn") '())
+                             #$@(if iwd? '("--wifi=iwd_agent") '()))
 
-                      ;; As connman(8) notes, when passing '-n', connman
-                      ;; "directs log output to the controlling terminal in
-                      ;; addition to syslog."  Redirect stdout and stderr
-                      ;; to avoid spamming the console (XXX: for some reason
-                      ;; redirecting to /dev/null doesn't work.)
-                      #:log-file "/var/log/connman.log"))
-            (stop #~(make-kill-destructor)))))))
+                       ;; As connman(8) notes, when passing '-n', connman
+                       ;; "directs log output to the controlling terminal in
+                       ;; addition to syslog."  Redirect stdout and stderr
+                       ;; to avoid spamming the console (XXX: for some reason
+                       ;; redirecting to /dev/null doesn't work.)
+                       #:log-file "/var/log/connman.log"))
+             (stop #~(make-kill-destructor)))))))
 
 (define %connman-log-rotation
   (list (log-rotation

@@ -48,10 +48,10 @@
   (services (append (list (service dhcp-client-service-type)
                           ;; mingetty does not work on serial lines.
                           ;; Use agetty with board-specific serial parameters.
-                          (agetty-service
-                           (agetty-configuration
-                            (extra-options '("-L"))
-                            (baud-rate "115200")
-                            (term "vt100")
-                            (tty "ttyO0"))))
-                  %base-services)))
+                          (service agetty-service-type
+                                   (agetty-configuration
+                                    (extra-options '("-L"))
+                                    (baud-rate "115200")
+                                    (term "vt100")
+                                    (tty "ttyO0"))))
+                    %base-services)))

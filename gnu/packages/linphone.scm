@@ -59,9 +59,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system qt)
-  #:use-module (guix build-system glib-or-gtk)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system qt))
 
 (define-public bcunit
   (let ((commit "74021cc7cb20a4e177748dd2948173e1f9c270ae")

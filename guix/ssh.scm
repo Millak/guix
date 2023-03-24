@@ -477,7 +477,7 @@ Use SIZES to determine the size of ITEM, which is about to be sent."
   (define (display-bar %)
     (erase-current-line port)
     (format port "~3@a% ~a"
-            (inexact->exact (round (* 100. (/ sent total))))
+            (inexact->exact (round %))
             (progress-bar % (- (max (current-terminal-columns) 5) 5)))
     (force-output port))
 

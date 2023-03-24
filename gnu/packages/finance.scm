@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
+;;; Copyright © 2023 Skylar Hill <stellarskylark@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -213,57 +214,46 @@ line client and a client based on Qt.")
 
 (define-public bitcoin-core bitcoin-core-23.0)
 
-(define-public hledger
+(define-public ghc-hledger
   (package
-    (name "hledger")
-    (version "1.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/hledger/hledger-"
-             version
-             ".tar.gz"))
-       (sha256
-        (base32
-         "07fcfkmv4cy92njnf2qc7jh0naz96q962hxldcd7hk4k7ddv0mss"))))
+    (name "ghc-hledger")
+    (version "1.27.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hledger" version))
+              (sha256
+               (base32
+                "0qdg87m7ys2ykqqq32p7h7aw827w4f5bcqx4dspxxq6zqlvzddqb"))))
     (build-system haskell-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-doc
-            (lambda _
-              (install-file "hledger.info" (string-append #$output "/share/info"))
-              (install-file "hledger.1" (string-append #$output "/man/man1")))))))
-    (inputs
-     (list ghc-ansi-terminal
-           ghc-base-compat-batteries
-           ghc-cmdargs
-           ghc-data-default
-           ghc-decimal
-           ghc-diff
-           ghc-hashable
-           ghc-hledger-lib
-           ghc-lucid
-           ghc-math-functions
-           ghc-megaparsec
-           ghc-old-time
-           ghc-regex-tdfa
-           ghc-safe
-           ghc-aeson
-           ghc-extra
-           ghc-tasty
-           ghc-timeit
-           ghc-shakespeare
-           ghc-split
-           ghc-tabular
-           ghc-temporary
-           ghc-unordered-containers
-           ghc-utf8-string
-           ghc-utility-ht
-           ghc-wizards))
-    (home-page "https://hledger.org")
+    (properties '((upstream-name . "hledger")))
+    (inputs (list ghc-decimal
+                  ghc-diff
+                  ghc-aeson
+                  ghc-ansi-terminal
+                  ghc-breakpoint
+                  ghc-cmdargs
+                  ghc-data-default
+                  ghc-extra
+                  ghc-githash
+                  ghc-hashable
+                  ghc-hledger-lib
+                  ghc-lucid
+                  ghc-math-functions
+                  ghc-megaparsec
+                  ghc-microlens
+                  ghc-regex-tdfa
+                  ghc-safe
+                  ghc-shakespeare
+                  ghc-split
+                  ghc-tabular
+                  ghc-tasty
+                  ghc-temporary
+                  ghc-timeit
+                  ghc-unordered-containers
+                  ghc-utf8-string
+                  ghc-utility-ht
+                  ghc-wizards))
+    (home-page "http://hledger.org")
     (synopsis "Command-line interface for the hledger accounting system")
     (description
      "The command-line interface for the hledger accounting system.  Its basic
@@ -277,17 +267,34 @@ rewrite of Ledger, and one of the leading implementations of Plain Text
 Accounting.")
     (license license:gpl3)))
 
+(define-public hledger
+  (package
+    (inherit ghc-hledger)
+    (name "hledger")
+    (arguments
+     (list
+      #:haddock? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "hledger.info" (string-append #$output "/share/info"))
+              (install-file "hledger.1" (string-append #$output "/man/man1"))))
+           (add-after 'register 'remove-libraries
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))))
+
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.6.1")
+    (version "5.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/sources/"
                                   "homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "03wgyc777bzys32iv32yf7aj3z4hx87dskq1maw9l9jkqlqrqj1s"))))
+                "1w8nafqr54i3gksd2s0n246ip178qikn0jcmdx4ihg2dw1cdxsqj"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -304,7 +311,7 @@ and dynamically with report tools based on filtering and graphical charts.")
 (define-public ledger
   (package
     (name "ledger")
-    (version "3.2.1")
+    (version "3.3.1")
     (source
      (origin
        (method git-fetch)
@@ -313,14 +320,7 @@ and dynamically with report tools based on filtering and graphical charts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x6jxwss3wwzbzlwmnwb8yzjk8f9wfawif4f1b74z2qg6hc4r7f6"))
-       (snippet '(begin
-                   ;; Remove test that fails due to difference in
-                   ;; reported error message (missing leading "./" in the
-                   ;; file name); started some time after Guix commit
-                   ;; 727f05e1e285aa52f5a19ec923fdc2259859b4b1
-                   (delete-file "test/regress/BF3C1F82-2.test")
-                   #true))))
+        (base32 "13bbnfb08ymm54wg12dapqhalh7iialfs66qdbk2adl1aaq36wqa"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules (,@%cmake-build-system-modules
@@ -362,10 +362,6 @@ and dynamically with report tools based on filtering and graphical charts.")
              (setenv "TZDIR"
                      (search-input-directory inputs
                                              "share/zoneinfo"))
-             ;; Skip failing test BaselineTest_cmd-org.
-             ;; This is a known upstream issue. See
-             ;; https://github.com/ledger/ledger/issues/550
-             (setenv "ARGS" "-E BaselineTest_cmd-org")
              #t)))))
     (inputs
      (list boost
@@ -706,7 +702,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.1.2")
+    (version "0.18.2.0")
     (source
      (origin
        (method git-fetch)
@@ -724,7 +720,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "033hfc98gv28x05gc1ln6dmyc45cki4qdylmz35wh4dchyr74pf9"))))
+        (base32 "0k41mkz0lp8qavgy3d9813pkmyy8rnhd0fl7wvzdhr7fznqn9sca"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -811,7 +807,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.1.2")
+    (version "0.18.2.0")
     (source
      (origin
        (method git-fetch)
@@ -827,7 +823,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "1lwlkqj8liflk0jfzmlclm1xca0x3z8v3kcbzd671rgismm8v332"))))
+        (base32 "0ka20p4f6fbhkhrm1jbssnjh5sjl419fy418jl8hcg34jriywvck"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -1552,7 +1548,7 @@ information.")
                            patch
                            pkg-config))
       (build-system glib-or-gtk-build-system)
-      (home-page "http://gbonds.sourceforge.net")
+      (home-page "https://gbonds.sourceforge.net")
       (synopsis "@acronym{U.S.} Savings Bond inventory program for GNOME")
       (description
        "GBonds is a @acronym{U.S.} Savings Bond inventory program for the
@@ -1970,59 +1966,68 @@ generate a variety of reports from them, and provides a web interface.")
 (define-public hledger-web
   (package
     (name "hledger-web")
-    (version "1.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "hledger-web/hledger-web-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0ivszqcypw0j2wn4r7fv7dqm1pvr0b1y6rqpxagzyk8cxn3ic9g2"))))
+    (version "1.27.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hledger-web" version))
+              (sha256
+               (base32
+                "151dxci7dld8626dzw823sr3d9iaac92wfzbfcbdz4jh9f7n07wa"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hledger-web")))
+    (inputs (list ghc-decimal
+                  ghc-aeson
+                  ghc-base64
+                  ghc-blaze-html
+                  ghc-blaze-markup
+                  ghc-breakpoint
+                  ghc-case-insensitive
+                  ghc-clientsession
+                  ghc-cmdargs
+                  ghc-conduit
+                  ghc-conduit-extra
+                  ghc-data-default
+                  ghc-extra
+                  ghc-hjsmin
+                  ghc-hledger
+                  ghc-hledger-lib
+                  ghc-hspec
+                  ghc-http-client
+                  ghc-http-conduit
+                  ghc-http-types
+                  ghc-megaparsec
+                  ghc-network
+                  ghc-shakespeare
+                  ghc-unix-compat
+                  ghc-unordered-containers
+                  ghc-utf8-string
+                  ghc-wai
+                  ghc-wai-cors
+                  ghc-wai-extra
+                  ghc-wai-handler-launch
+                  ghc-warp
+                  ghc-yaml
+                  ghc-yesod
+                  ghc-yesod-core
+                  ghc-yesod-form
+                  ghc-yesod-static
+                  ghc-yesod-test))
     (arguments
-     `(#:tests? #f ; TODO: fail.
-       #:cabal-revision
-       ("1" "1hnw10ibhbafbsfj5lzlxwjg4cjnqr5bb51n6mqbi30qqabgq78x")))
-    (inputs
-     (list ghc-aeson
-           ghc-blaze-html
-           ghc-blaze-markup
-           ghc-case-insensitive
-           ghc-clientsession
-           ghc-cmdargs
-           ghc-conduit-extra
-           ghc-conduit
-           ghc-data-default
-           ghc-decimal
-           ghc-extra
-           ghc-hjsmin
-           ghc-hledger-lib
-           ghc-hspec
-           ghc-http-client
-           ghc-http-conduit
-           ghc-http-types
-           ghc-megaparsec
-           ghc-network
-           ghc-shakespeare
-           ghc-unix-compat
-           ghc-unordered-containers
-           ghc-utf8-string
-           ghc-wai-cors
-           ghc-wai-extra
-           ghc-wai
-           ghc-wai-handler-launch
-           ghc-warp
-           ghc-yaml
-           ghc-yesod-core
-           ghc-yesod-form
-           ghc-yesod
-           ghc-yesod-static
-           ghc-yesod-test
-           hledger))
-    (home-page "https://hledger.org")
+     (list
+      #:haddock? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests write to $HOME.
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp")))
+           (add-after 'register 'remove-libraries
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
+    (home-page "http://hledger.org")
     (synopsis "Web-based user interface for the hledger accounting system")
-    (description "This package provides a simple Web-based User
+    (description
+     "This package provides a simple Web-based User
 Interface (UI) for the hledger accounting system.  It can be used as a
 local, single-user UI, or as a multi-user UI for viewing, adding, and
 editing on the Web.")
@@ -2178,7 +2183,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.18.1")
+    (version "6.19.0")
     (source
      (origin
        (method git-fetch)
@@ -2186,17 +2191,19 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0f0kly374pkgnpnx60hac0bg9297a5zhycss6p37iavayn28jg39"))
+       (sha256 (base32 "10vaq6ld4sddnpmv9dg71fjvw1jrfaddrp3bq6p3dxhsl153khm4"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
         ;; "src/3rdparty/". It requires changes to some "cmake/..." scripts
         ;; and to some source files.
-        #~(substitute* "src/donate.h"
-            (("constexpr const int kDefaultDonateLevel = 1;")
-             "constexpr const int kDefaultDonateLevel = 0;")
-            (("constexpr const int kMinimumDonateLevel = 1;")
-             "constexpr const int kMinimumDonateLevel = 0;")))))
+        #~(begin
+            (delete-file-recursively "src/3rdparty/hwloc")
+            (substitute* "src/donate.h"
+              (("constexpr const int kDefaultDonateLevel = 1;")
+               "constexpr const int kDefaultDonateLevel = 0;")
+              (("constexpr const int kMinimumDonateLevel = 1;")
+               "constexpr const int kMinimumDonateLevel = 0;"))))))
     (build-system cmake-build-system)
     (inputs
      (list
@@ -2234,7 +2241,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "2.6")
+    (version "3.1")
     (source
      (origin
        (method git-fetch)
@@ -2243,7 +2250,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0832mv3f4c61w8s25higjbmmajjkvjdriw1xfygjiw5qxdcs202z"))
+       (sha256 (base32 "0fvm864p4pxjsb03g88jkaj3wj94dkxrbwjwa1jk6s11skzn0z68"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
@@ -2257,13 +2264,22 @@ mining.")
     (inputs
      (list cppzmq curl gss libuv rapidjson zeromq))
     (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'install
-            (lambda _
-              (install-file "p2pool" (string-append #$output "/bin")))))))
+     (list ; FIXME: Linking fails when LTO is activated.
+           #:configure-flags #~(list "-DWITH_LTO=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (mkdir-p "tests")
+                     (chdir "tests")
+                     (invoke "cmake" "../../source/tests")
+                     (invoke "make" "-j" (number->string (parallel-job-count)))
+                     (invoke "./p2pool_tests")
+                     (chdir ".."))))
+               (replace 'install
+                 (lambda _
+                   (install-file "p2pool" (string-append #$output "/bin")))))))
     (home-page "https://p2pool.io/")
     (synopsis "Decentralized Monero mining pool")
     (description "Monero P2Pool is a peer-to-peer Monero mining pool.  P2Pool
@@ -2271,3 +2287,67 @@ combines the advantages of pool and solo mining; you still fully control your
 Monero node and what it mines, but you get frequent payouts like on a regular
 pool.")
     (license license:gpl3)))
+
+(define-public opentaxsolver
+  ;; The OTS version is formatted like tax-year_version. So, at time of
+  ;; writing, the version is 2022_20.00. Each part of this is used in
+  ;; different places in the source uri, so it's convenient to have them
+  ;; separately like this.
+  (let ((tax-year "2022")
+        (ots-version "20.00"))
+    (package
+      (name "opentaxsolver")
+      (version (string-append tax-year "_" ots-version))
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "mirror://sourceforge/opentaxsolver/OTS_"
+                             tax-year "/v" ots-version
+                             "_linux/OpenTaxSolver" version "_linux64.tgz"))
+         (sha256
+          (base32
+           "06k0a72bmwdmr71dvrp8b4vl8vilnggsh92hrp7wjdgcjj9m074w"))
+         (patches (search-patches "opentaxsolver-file-browser-fix.patch"))))
+      (build-system glib-or-gtk-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ;no configure script
+            ;; OTS does provide a shellscript that does exactly this, but we
+            ;; need to do it ourselves to specify the correct compiler and to
+            ;; delete the GUI binaries.
+            (replace 'build
+              (lambda _
+                (delete-file "Run_taxsolve_GUI")
+                (delete-file-recursively "bin")
+                (mkdir "bin")
+                (chdir "src/Gui_gtk")
+                (invoke "make"
+                        (string-append "CC=" #$(cc-for-target)))
+                (chdir "..")
+                (invoke "make"
+                        (string-append "CC=" #$(cc-for-target)))))
+            ;; OTS doesn't provide a `make install` target, because it assumes
+            ;; it'll be run from the tarball. So, we do it ourselves, making
+            ;; sure to replicate the directory structure of the tarball.
+            (replace 'install
+              (lambda _
+                (copy-recursively "../bin"
+                                  (string-append #$output "/bin"))
+                (symlink (string-append #$output "/bin/ots_gui2")
+                         (string-append #$output "/bin/Run_taxsolve_GUI"))
+                (copy-recursively "../tax_form_files"
+                                  (string-append #$output "/tax_form_files"))
+                (copy-recursively "formdata"
+                                  (string-append #$output "/src/formdata")))))))
+      (native-inputs (list pkg-config))
+      (inputs (list gtk+-2))
+      (synopsis "Yearly tax preparation tool")
+      (description
+       "OpenTaxSolver is a program for calculating tax form entries for
+federal and state personal income taxes.  It automatically fills out and
+prints your forms for mailing.")
+      (home-page "https://opentaxsolver.sourceforge.net/")
+      (license license:gpl2+))))

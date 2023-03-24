@@ -49,8 +49,8 @@
 (define %libvirt-os
   (simple-operating-system
    (service dhcp-client-service-type)
-   (dbus-service)
-   (polkit-service)
+   (service dbus-root-service-type)
+   (service polkit-service-type)
    (service libvirt-service-type)))
 
 (define (run-libvirt-test)

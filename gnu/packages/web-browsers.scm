@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -38,7 +38,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages web-browsers)
-  #:use-module (guix build-system asdf)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -160,14 +159,14 @@ management, extensions such as advertisement blocker and colorful tabs.")
 (define-public links
   (package
     (name "links")
-    (version "2.28")
+    (version "2.29")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "1d2lyj9k2s6brk38k51qfpddwh2w96w6gh9jq5br9rfy2fdlkm9g"))))
+                "163rmng8zkwy0pv9wxcpc0j3gz27g8ba9myrgs7ny6lfng09dai2"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -469,7 +468,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.5.2")
+    (version "2.5.4")
     (source
      (origin
        (method url-fetch)
@@ -477,7 +476,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "0279fi4lx8sfxz3mx6ar0wz01kiiqa1zkv9fxc6xw0y4vlacxgx9"))))
+        (base32 "1c8skkc5vjbvbslz65hzrj9d05v4zbcjbli61ikjmr174lhb4q54"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs))               ; for tests
@@ -492,7 +491,7 @@ interface.")
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
            ;; that it's __init__.py is used first.
            python-pyqtwebengine
-           python-pyqt-without-qtwebkit
+           python-pyqt
            ;; While qtwebengine-5 is provided by python-pyqtwebengine, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
            qtwebengine-5))
@@ -706,7 +705,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.15.1")
+    (version "1.15.5")
     (source
      (origin
        (method url-fetch)
@@ -714,7 +713,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "04596gbi6fpz555dclhd2z1q60myk3ypc37v3g9brfm1kmbpssac"))
+        (base32 "187h42qqddf7595bzf0wb2vc9yd76ad99vbwl9sdhmy8d6qma6gs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -739,6 +738,10 @@ is fully configurable and extensible in Common Lisp.")
            pcre
            sdl2
            zlib))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))))
     (home-page "https://gmi.skyjake.fi/lagrange/")
     (synopsis "Graphical Gemini client")
     (description
@@ -830,7 +833,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9.14")
+    (version "0.9.9.141")
     (source
      (origin
        (method git-fetch)
@@ -839,7 +842,7 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xpqakqg4827wv92vvzwcvkqzr8d523fvnyjvnj4ac83d4w6nnls"))))
+        (base32 "0hx52kaq0q9iccalkxk50q1v3mf9ypardjgv56d5sdrbhfqyashl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf

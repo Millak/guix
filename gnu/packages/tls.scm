@@ -51,6 +51,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system meson)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
@@ -207,12 +208,16 @@ living in the same process.")
                            "download/" version "/p11-kit-" version ".tar.xz"))
        (sha256
         (base32 "1y5fm9gwhkh902r26p90qf1g2h1ziqrk4hgf9i9sxm2wzlz7ignq"))))
+    (build-system meson-build-system)
     (arguments
      ;; Use the default certificates so that users such as flatpak find them.
      ;; See <https://issues.guix.gnu.org/49957>.
      (substitute-keyword-arguments (package-arguments p11-kit)
        ((#:configure-flags flags ''())
-        ''("--with-trust-paths=/etc/ssl/certs/ca-certificates.crt"))))))
+        ''("-Dtrust_paths=/etc/ssl/certs/ca-certificates.crt"))
+       ;; p11-kit is still on gnu-build-system.
+       ((#:phases gnu-phases)
+        '%standard-phases)))))
 
 (define-public gnutls
   (package
@@ -412,6 +417,12 @@ required structures.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-more-shebangs
             (lambda _
+              (substitute* "autogen.sh"
+                (("\\$gnulib_tool \\$gnulib_tool_options")
+                 "sh $gnulib_tool $gnulib_tool_options"))
+              (substitute* "configure.ac"
+                (("build-aux/git-version-gen")
+                 "sh build-aux/git-version-gen"))
               (for-each patch-shebang
                         '("autopull.sh" "autogen.sh"))))
           (replace 'bootstrap
@@ -618,7 +629,7 @@ OpenSSL for TARGET."
   (package
     (inherit openssl-1.1)
     (name "openssl")
-    (version "1.1.1s")
+    (version "1.1.1t")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -631,12 +642,12 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
               (sha256
                (base32
-                "1amnwis6z2piqs022cpbcg828rql62yjnsqxnvdg0vzfc3kh3b65"))))))
+                "0fwxhlv7ary9nzg5mx07x1jj3wkbizxh56qy7l6bzp5iplj9pvld"))))))
 
 (define-public openssl-3.0
   (package
     (inherit openssl-1.1)
-    (version "3.0.7")
+    (version "3.0.8")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -649,7 +660,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "0virbkcrw7nn3gr5r51z722gs1ppig0casj0c9pnj3i65829s143"))))
+                "0gjb7qjl2jnzs1liz3rrccrddxbk6q3lg8z27jn1xwzx72zx44vc"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl-1.1)
        ((#:phases phases '%standard-phases)
@@ -759,13 +770,13 @@ netcat implementation that supports TLS.")
   (package
     (name "python-acme")
     ;; Remember to update the hash of certbot when updating python-acme.
-    (version "1.28.0")
+    (version "2.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "acme" version))
               (sha256
                (base32
-                "12fmw4g63pzbrmmrkk6hgg0k5px6jyx3scv9fmn60h21387jv0hz"))))
+                "1z6293g4pyxvx5w7v07j8wnaxyr7srsqfqvgly888b8k52fq9ipa"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -817,7 +828,7 @@ netcat implementation that supports TLS.")
               (uri (pypi-uri "certbot" version))
               (sha256
                (base32
-                "0p4cpakx1kc8lczlgxqryr2asnyrvw6p5wmkamkjqdsf3z7xhm2b"))))
+                "12nd9nmdj3bf1xlvhj1ln473xbyv4qzxf6qhz0djbca7jl59zlwk"))))
     (build-system python-build-system)
     (arguments
      `(,@(substitute-keyword-arguments (package-arguments python-acme)
@@ -845,13 +856,11 @@ netcat implementation that supports TLS.")
     (propagated-inputs
      (list python-acme
            python-cryptography
-           python-zope-interface
            python-pyrfc3339
            python-pyopenssl
            python-configobj
            python-configargparse
            python-distro
-           python-zope-component
            python-parsedatetime
            python-psutil
            python-requests

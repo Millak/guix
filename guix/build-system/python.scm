@@ -24,7 +24,6 @@
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix utils)
-  #:use-module (guix memoization)
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (guix packages)
@@ -32,9 +31,7 @@
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
   #:export (%python-build-system-modules
             package-with-python2
             strip-python2-variant

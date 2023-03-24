@@ -9,21 +9,22 @@
 # Went He <1437061699@qq.com>, 2021.
 # Edward Zhang <edwardzcn98@gmail.com>, 2022.
 # Julien Lepiller <fedora-account@lepiller.eu>, 2022.
+# Wen Wu Song <iyzsong@envs.net>, 2023.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-08-10 21:17+0000\n"
-"Last-Translator: Julien Lepiller <fedora-account@lepiller.eu>\n"
+"PO-Revision-Date: 2023-03-07 19:27+0000\n"
+"Last-Translator: Wen Wu Song <iyzsong@envs.net>\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/projects/guix/guix/zh_CN/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 4.15.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -47,15 +48,15 @@ msgid "Try adding @code{(use-package-modules ~a)}."
 msgstr "尝试添加 @code{(use-package-modules ~a)}。"
 
 #: gnu.scm:122
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "You may use @command{guix system search ~a} to search for a service\n"
 "matching @code{~a}.\n"
 "If you get the line @code{location: gnu/services/foo.scm:188:2},\n"
 "add @code{foo} to the @code{use-service-modules} form."
 msgstr ""
-"你可以使用@command{guix package --show=foo | grep location} 来定位软件包 @code{foo}的位置。\n"
-"如果你得到了结果 @code{location: gnu/packages/bar.scm:174:2}，将@code{bar}添加到 @{use-package-modules} 中。"
+"你可以使用 @command{guix system search ~a} 来搜寻匹配 @code{~a} 的服务。\n"
+"如果你得到了结果 @code{location: gnu/services/fo.scm:188:2}，将 @code{foo} 添加到 @{use-service-modules} 中。"
 
 #: gnu.scm:131
 #, scheme-format
@@ -78,9 +79,9 @@ msgid "choosing ~a@~a from ~a~%"
 msgstr "从 ~a~% 选择 ~a@~a"
 
 #: gnu/packages.scm:488 guix/scripts/package.scm:226
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "package '~a' has been superseded by '~a'~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr "包 '~a' 已被 '~a' 代替~%"
 
 #: gnu/packages.scm:495 gnu/packages.scm:512
 #, scheme-format
@@ -100,24 +101,24 @@ msgstr "包 `~a' 缺乏输出 `~a'~%"
 #: gnu/services.scm:265
 #, scheme-format
 msgid "~a: no value specified for service of type '~a'"
-msgstr ""
+msgstr "~a: '~a' 类型的服务未指定其值"
 
 #: gnu/services.scm:295
 msgid "This is a simple service."
-msgstr ""
+msgstr "这是一个简单的服务。"
 
 #: gnu/services.scm:376
 msgid ""
 "Build the operating system top-level directory, which in\n"
 "turn refers to everything the operating system needs: its kernel, initrd,\n"
 "system profile, boot script, and so on."
-msgstr ""
+msgstr "构建操作系统顶级目录，该顶级目录引用了操作系统所需的一切事物：它的内核，初始化内存磁盘镜像，系统 profile ，启动脚本，等等。"
 
 #: gnu/services.scm:406
 msgid ""
 "Produce the operating system's boot script, which is spawned\n"
 "by the initrd once the root file system is mounted."
-msgstr ""
+msgstr "产生操作系统的启动脚本，该脚本将由初始化内存磁盘镜像在挂在 root 文件系统后执行。"
 
 #: gnu/services.scm:519
 msgid ""
@@ -125,52 +126,54 @@ msgid ""
 "itself: the channels used when building the system, and its configuration\n"
 "file, when available."
 msgstr ""
+"在系统中存储其来源信息，包含：构建本系统时所使用\n"
+"的 channels ，以及系统的配置文件，若可得到时。"
 
 #: gnu/services.scm:602
 msgid ""
 "Delete files from @file{/tmp}, @file{/var/run}, and other\n"
 "temporary locations at boot time."
-msgstr ""
+msgstr "在启动时删除 @file{/tmp}, @file{/var/run}, 以及其他临时目录下的文件。"
 
 #: gnu/services.scm:664
 msgid ""
 "Run @dfn{activation} code at boot time and upon\n"
 "@command{guix system reconfigure} completion."
-msgstr ""
+msgstr "在启动和 @command{guix system reconfigure} 完成时执行 @dfn{activation} 代码。"
 
 #: gnu/services.scm:736
 msgid ""
 "This service creates an @file{rc} script in the\n"
 "system; that script is responsible for booting the Hurd."
-msgstr ""
+msgstr "这个服务在系统中创建一个 @file{rc} 脚本文件；该脚本负责启动 Hurd 。"
 
 #: gnu/services.scm:754
 msgid ""
 "Add special files to the root file system---e.g.,\n"
 "@file{/usr/bin/env}."
-msgstr ""
+msgstr "向 root 文件系统中添加一些特殊文件，例如： @file{/usr/bin/env} 。"
 
 #: gnu/services.scm:777
 #, scheme-format
 msgid "duplicate '~a' entry for /etc"
-msgstr ""
+msgstr "为 /etc 指定的条目 '~a' 重复"
 
 #: gnu/services.scm:805
 msgid "Populate the @file{/etc} directory."
-msgstr ""
+msgstr "填充 @file{/etc} 目录。"
 
 #: gnu/services.scm:845
 msgid ""
 "Populate @file{/run/setuid-programs} with the specified\n"
 "executables, making them setuid and/or setgid."
-msgstr ""
+msgstr "用指定的可执行文件填充 @file{/run/setuid-programs} 目录，并赋予这些文件对应的 setuid 和 setgid 权限。"
 
 #: gnu/services.scm:871
 msgid ""
 "This is the @dfn{system profile}, available as\n"
 "@file{/run/current-system/profile}.  It contains packages that the sysadmin\n"
 "wants to be globally available to all the system users."
-msgstr ""
+msgstr "这是 @dfn{system profile} ，位于 @file{/run/current-system/profile} 。它包含了系统管理员想要的对所有系统用户全局可用的软件包。"
 
 #: gnu/services.scm:891
 msgid ""
@@ -4590,10 +4593,9 @@ msgid "while creating symlink '~a': ~a~%"
 msgstr "连接到 `~a' 失败：~a~%"
 
 #: guix/scripts/pull.scm:640
-#, fuzzy
 msgid "  ~h new package: ~a~%"
 msgid_plural "  ~h new packages: ~a~%"
-msgstr[0] "~A: 未知包~%"
+msgstr[0] "  ~h 新软件包： ~a~%"
 
 #: guix/scripts/pull.scm:648
 #, fuzzy

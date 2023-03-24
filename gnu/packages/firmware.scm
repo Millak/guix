@@ -69,6 +69,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -347,6 +348,45 @@ broadband modem as found, for example, on PinePhone.")
     (home-page "https://gitlab.com/mobian1/devices/eg25-manager")
     (license license:gpl3+)))
 
+(define-public fcode-utils
+  (package
+    (name "fcode-utils")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openbios/fcode-utils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yyqmiqvlf644jrv8x39aqdqywdnm80k62d2assgcammwbc7krya"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "tests"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ; No configure script.
+    (native-inputs
+     (list tcsh))
+    (home-page "https://www.openfirmware.info/FCODE_suite")
+    (synopsis "Utilities to process FCODE, OpenFirmware's byte code")
+    (description "This is the OpenBIOS FCODE suite.  It contains a set of
+utilites used to process FCODE, OpenFirmware's byte code, consisting of:
+@enumerate
+@item toke - A tokenizer
+@item detok - A detokenizer
+@item romheaders - A PCI rom header utility
+@item localvalues - A portable implementation of Forth local values
+@end enumerate")
+    (license (list license:gpl2
+                   ;; localvalues implementation and some documentation.
+                   license:cpl1.0))))
+
 (define* (make-openbios-package name arch)
   (let ((target (cond
                  ((string-suffix? "ppc" arch)
@@ -355,20 +395,23 @@ broadband modem as found, for example, on PinePhone.")
                   "x86_64-linux-gnu")
                  ((string-suffix? "x86" arch)
                   "i686-linux-gnu")
-                 (else (string-append arch "-linux-gnu")))))
+                 (else (string-append arch "-linux-gnu"))))
+        ;; 1.1 was released in May 2013.
+        (commit "af97fd7af5e7c18f591a7b987291d3db4ffb28b5")
+        (revision "1"))
   (package
     (name name)
-    (version "1.1")
+    (version (git-version "1.1" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/openbios/openbios")
-                    (commit (string-append "v" version))))
+                    (commit commit)))
               (file-name (git-file-name "openbios" version))
-              (patches (search-patches "openbios-gcc-warnings.patch"))
               (sha256
                (base32
-                "11cr0097aiw4hc07v5hfl95753ikyra5ig4nv899ci7l42ilrrbr"))))
+                "1xp1b6xgx40i0j3a5y3id0d1p8vdvapai8szganxg3zrvj53fh0n"))
+              (patches (search-patches "openbios-aarch64-riscv64-support.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
@@ -380,8 +423,9 @@ broadband modem as found, for example, on PinePhone.")
                      (("TZ=UTC date \\+")
                       "TZ=UTC date --date=@1 +"))))
                (replace 'configure
-                 (lambda _
-                   (invoke "./config/scripts/switch-arch" #$arch)))
+                 (lambda* (#:key (configure-flags #~'()) #:allow-other-keys)
+                   (apply invoke "./config/scripts/switch-arch" #$arch
+                          configure-flags)))
                (replace 'install
                  (lambda _
                    (let ((build-target
@@ -396,9 +440,9 @@ broadband modem as found, for example, on PinePhone.")
                                            "\\.elf$"))))))))
     (native-inputs
      (append (if (string-prefix? (%current-system) target)
-                 '()
-                 (list (cross-gcc target) (cross-binutils target)))
-             (list libxslt which)))
+                 (list gcc-10)
+                 (list (cross-gcc target #:xgcc gcc-10) (cross-binutils target)))
+             (list fcode-utils libxslt which)))
     (home-page "https://openfirmware.info/Welcome_to_OpenBIOS")
     (synopsis "Open Firmware implementation")
     (description
@@ -414,11 +458,6 @@ provide OpenFirmware functionality on top of an already running system.")
       (inherit base)
       (arguments
        (substitute-keyword-arguments (package-arguments base)
-         ((#:system system (%current-system))
-          (if (string-prefix? "aarch64-linux" (or (%current-system)
-                                                  (%current-target-system)))
-            "armhf-linux"
-            system))
          ;; No need to cross-compile, package produces reproducible firmware.
          ((#:target _ #f) #f)
          ((#:phases phases)

@@ -514,6 +514,11 @@ by running 'set' in the shell."
        (catch #t
          (lambda ()
            (load-profile profile manifest #:pure? #t)
+
+           ;; Mark the terminal as "unknown" do avoid ANSI escape codes such
+           ;; as bracketed paste that would mess up the output of the script.
+           (setenv "TERM" "")
+
            (setenv "GUIX_ENVIRONMENT" profile)
            (close-fdes controller)
            (login-tty inferior)
@@ -664,8 +669,8 @@ command name."
         (let ((closest (string-closest executable available
                                        #:threshold 12)))
           (unless (or (not closest) (string=? closest executable))
-            (display-hint (format #f (G_ "Did you mean '~a'?~%")
-                                  closest)))))))))
+            (display-hint (G_ "Did you mean '~a'?~%")
+                          closest))))))))
 
 (define* (launch-environment/fork command profile manifest
                                   #:key pure? (white-list '()))
@@ -767,14 +772,17 @@ WHILE-LIST."
              (append
               (override-user-mappings
                user home
-               (append user-mappings
-                       ;; Share current working directory, unless asked not to.
-                       (if map-cwd?
-                           (list (file-system-mapping
-                                  (source cwd)
-                                  (target cwd)
-                                  (writable? #t)))
-                           '())))
+               (append
+                ;; Share current working directory, unless asked not to.
+                (if map-cwd?
+                    (list (file-system-mapping
+                           (source cwd)
+                           (target cwd)
+                           (writable? #t)))
+                    '())
+                ;; Add the user mappings *after* the current working directory
+                ;; so that a user can layer bind mounts on top of it.
+                user-mappings))
               ;; Mappings for the union closure of all inputs.
               (map (lambda (dir)
                      (file-system-mapping

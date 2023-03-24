@@ -527,7 +527,7 @@ and a @command{fsck.vfat} compatibility symlink for use in an initrd.")
        (sha256
         (base32 "1gmdxr36allrgap2j4dv238d8awkj327ww0jjwpjwrpbvfpyzjf4"))))
     (build-system gnu-build-system)
-    (home-page "http://sg.danny.cz/sg/sdparm.html")
+    (home-page "https://sg.danny.cz/sg/sdparm.html")
     (synopsis "Provide access to SCSI device parameters")
     (description
      "Sdparm reads and modifies SCSI device parameters.  These devices can be
@@ -562,7 +562,7 @@ and unloading removable media and some other housekeeping functions.")
                           (string-append "manprefix=")
                           (string-append "DESTDIR="
                                          (assoc-ref %outputs "out")))))
-    (home-page "http://idle3-tools.sourceforge.net")
+    (home-page "https://idle3-tools.sourceforge.net")
     (synopsis "Change or disable Western Digital hard drives' Idle3 timer")
     (description
      "Idle3-tools provides a utility to get, set, or disable the Idle3 timer
@@ -575,14 +575,14 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
 (define-public gparted
   (package
     (name "gparted")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gparted/gparted/gparted-"
                            version "/gparted-" version ".tar.gz"))
        (sha256
-        (base32 "1gl7g1lg72s63a9xlc4kcc6ksq6r7h8k9a6456xbxzak5rwklag5"))))
+        (base32 "1pm8jah6lakv83zm3isx4bgmi5xdwaqkjxmiv7qky224m4kfm59w"))))
     (build-system glib-or-gtk-build-system)
     (arguments
       ;; Tests require access to files outside the build container, such
@@ -1448,7 +1448,7 @@ reliably with @code{bmaptool} than with traditional tools, like @code{dd} or
      (list autoconf automake libtool pkg-config))
     (inputs
      (list cairo pango tokyocabinet ncurses))
-    (home-page "http://duc.zevv.nl")
+    (home-page "https://duc.zevv.nl")
     (synopsis "Library and suite of tools for inspecting disk usage")
     (description "Duc maintains a database of accumulated sizes of
 directories of the file system, and allows you to query this database with

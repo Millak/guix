@@ -57,7 +57,7 @@
       (inputs
        (list libx11 libxt))
       (synopsis "Connect to Plan 9 systems")
-      (home-page "http://drawterm.9front.org")
+      (home-page "https://drawterm.9front.org")
       (description
        "@command{drawterm} is a client for connecting venerable systems to
 Plan 9 systems.  It behaves like a Plan 9 kernel and will attempt to

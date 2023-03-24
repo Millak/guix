@@ -75,6 +75,7 @@
             knuth
             lal1.3
             lgpl2.0 lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3 lgpl3+ llgpl
+            lpl1.02
             lppl lppl1.0+ lppl1.1+ lppl1.2 lppl1.2+
             lppl1.3 lppl1.3+
             lppl1.3a lppl1.3a+
@@ -516,6 +517,11 @@ at URI, which may be a file:// URI pointing the package's tree."
            "https://opensource.franz.com/preamble.html"
            "Lisp Lesser General Public License"))
 
+(define lpl1.02 ;Lucent
+  (license "LPL 1.02"
+           "https://directory.fsf.org/wiki/License:LPL-1.02"
+           "https://www.gnu.org/licenses/license-list.html#lucent102"))
+
 (define lppl
   (license "LPPL (any version)"
            "https://www.latex-project.org/lppl/lppl-1-0/"
@@ -613,7 +619,7 @@ at URI, which may be a file:// URI pointing the package's tree."
 
 (define nmap
   (license "Nmap license"
-           "https://svn.nmap.org/nmap/COPYING"
+           "https://svn.nmap.org/nmap/LICENSE"
            "https://fedoraproject.org/wiki/Licensing/Nmap"))
 
 (define ogl-psi1.0

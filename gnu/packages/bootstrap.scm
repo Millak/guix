@@ -30,7 +30,6 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system)
-  #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module ((guix store)
                 #:select (%store-monad interned-file text-file store-lift))

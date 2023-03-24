@@ -26,8 +26,6 @@
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
-  #:use-module (ice-9 match)
-  #:use-module (srfi srfi-26)
   #:export (hexpm-uri
             hexpm-package-url
             %rebar-build-system-modules

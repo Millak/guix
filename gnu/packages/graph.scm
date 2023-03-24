@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -230,24 +230,30 @@ lines.")
                 "0kc9v5ampq2paw6sls6zdchvqvis7b1z8xhdvlhz5xxdr1vj5xnn"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
           (add-before 'build 'skip-npm
             ;; npm is not packaged so build without it
             (lambda _
               (setenv "SKIP_NPM" "T")))
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "packages/python/plotly")
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-x" "plotly/tests/test_core")
-               (invoke "pytest" "-x" "plotly/tests/test_io")
-               ;; FIXME: Add optional dependencies and enable their tests.
-               ;; (invoke "pytest" "-x" "plotly/tests/test_optional")
-               (invoke "pytest" "_plotly_utils/tests")))))))
+          (add-after 'unpack 'fix-version
+            ;; Versioneer is useless when there is no git metadata.
+            (lambda _
+              (substitute* "packages/python/plotly/setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version)))))
+          (add-after 'fix-version 'chdir
+            (lambda _
+              (chdir "packages/python/plotly")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-x" "plotly/tests/test_core")
+                (invoke "pytest" "-x" "plotly/tests/test_io")
+                ;; FIXME: Add optional dependencies and enable their tests.
+                ;; (invoke "pytest" "-x" "plotly/tests/test_optional")
+                (invoke "pytest" "_plotly_utils/tests")))))))
     (native-inputs
      (list python-ipywidgets python-pytest python-xarray))
     (propagated-inputs
@@ -310,6 +316,41 @@ subplots, multiple-axes, polar charts, and bubble charts.")
      "This package provides a pure Python implementation of the Louvain
 algorithm for community detection in large networks.")
     (license license:bsd-3)))
+
+(define-public python-vtraag-louvain
+  (package
+    (name "python-vtraag-louvain")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "louvain" version))
+              (sha256
+               (base32
+                "16l2zi4jwc3vpvpnz32jv7xy0g5087dp9y57wxplj1xa9r312x0i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'do-not-use-bundled-igraph
+           (lambda _
+             (substitute* "setup.py"
+               (("self.external = False")
+                "self.external = True")
+               (("self.use_pkgconfig = False")
+                "self.use_pkgconfig = True")))))))
+    (inputs (list igraph))
+    (propagated-inputs (list python-igraph))
+    (native-inputs
+     (list pkg-config
+           python-ddt
+           python-setuptools-scm))
+    (home-page "https://github.com/vtraag/louvain")
+    (synopsis "Community detection in large networks")
+    (description
+     "Louvain is a general algorithm for methods of community detection in
+large networks.")
+    (license license:gpl3+)))
 
 (define-public faiss
   (package
@@ -555,7 +596,7 @@ of graphs.")
      (list pkg-config))
     (inputs
      (list gd))
-    (home-page "http://www.mcternan.me.uk/mscgen/")
+    (home-page "https://www.mcternan.me.uk/mscgen/")
     (synopsis "Message Sequence Chart Generator")
     (description "Mscgen is a small program that parses Message Sequence Chart
 descriptions and produces PNG, SVG, EPS or server side image maps (ismaps) as
@@ -570,7 +611,7 @@ transformed into common image formats for display or printing.")
 (define-public python-graph-tool
   (package
     (name "python-graph-tool")
-    (version "2.45")
+    (version "2.46")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -578,7 +619,7 @@ transformed into common image formats for display or printing.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0s46qqg454kwq2px7x1a4ckryclkxnrz1r7gj6bv40nsrynafbgr"))))
+                "0x9jgnq9xcja3q954y7nhdzd374p4h203pymxh51b6lqqbq0hm9h"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules (,@%gnu-build-system-modules

@@ -68,7 +68,7 @@
            zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://tvtime.sourceforge.net")
+    (home-page "https://tvtime.sourceforge.net")
     (synopsis "Television viewer")
     (description
      "Tvtime processes the input from your video capture card and

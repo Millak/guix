@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2016 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2016, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -38,6 +38,8 @@
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,7 +67,6 @@
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module (guix build-system go)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -92,13 +93,11 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
-;; According to https://golang.org/doc/install/gccgo, gccgo-4.8.2 includes a
-;; complete go-1.1.2 implementation, gccgo-4.9 includes a complete go-1.2
-;; implementation, and gccgo-5 a complete implementation of go-1.4.  Ultimately
-;; we hope to build go-1.5+ with a bootstrap process using gccgo-5.  As of
-;; go-1.5, go cannot be bootstrapped without go-1.4, so we need to use go-1.4 or
-;; gccgo-5.  Mips is not officially supported, but it should work if it is
-;; bootstrapped.
+;; According to https://go.dev/doc/install/gccgo, gccgo-11 includes a complete
+;; implementation of go-1.16 and gccgo-12 includes a complete implementation of
+;; go-1.18.  Starting with go-1.5 go cannot be built without an existing
+;; installation of go, so we need to use go-1.4 or gccgo.  For architectures which
+;; are not supported with go-1.4 we use a version of gccgo to bootstrap them.
 
 (define-public go-1.4
   (package
@@ -462,7 +461,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
     (native-inputs
      `(,@(if (member (%current-system) (package-supported-systems go-1.4))
            `(("go" ,go-1.4))
-           `(("go" ,gccgo-10)))
+           `(("go" ,gccgo-12)))
        ("go-skip-gc-test.patch" ,(search-patch "go-skip-gc-test.patch"))
        ,@(match (%current-system)
            ((or "armhf-linux" "aarch64-linux")
@@ -650,7 +649,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   (guix build utils))
        ;; TODO: Disable the test(s) in misc/cgo/test/cgo_test.go
        ;; that cause segfaults in the test suite.
-       #:tests? ,(not (target-aarch64?))
+       #:tests? ,(not (or (target-aarch64?) (target-riscv64?)))
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
@@ -836,13 +835,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   "README.md" "SECURITY.md"))))))))
     (inputs (if (not (target-arm?))
               (alist-delete "gcc:lib" (package-inputs go-1.16))
-              (package-inputs go-1.16)))
-    (native-inputs
-     (if (not (member (%current-system) (package-supported-systems go-1.4)))
-       ;; gccgo-10.4, 11.3 and lower has a bug which causes bootstrapping
-       ;; to fail. Use go-1.16 until we have a newer version available.
-       (alist-replace "go" (list go-1.16) (package-native-inputs go-1.16))
-       (package-native-inputs go-1.16)))))
+              (package-inputs go-1.16)))))
 
 (define-public go-1.18
   (package
@@ -887,6 +880,27 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                           '("CONTRIBUTING.md" "PATENTS" "README.md"
                             "SECURITY.md"))))))))))
 
+(define-public go-1.20
+  (package
+    (inherit go-1.19)
+    (name "go")
+    (version "1.20")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/golang/go")
+                    (commit (string-append "go" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0a7wjzv14kaqg5l7ambv5zj4rj7sgah9yhcg6k6da6ygm6bs4dv3"))))
+    (native-inputs
+     ;; Go 1.20 and later requires Go 1.17 as the bootstrap toolchain.
+     ;; See 'src/cmd/dist/notgo117.go' in the source code distribution,
+     ;; as well as the upstream discussion of this topic:
+     ;; https://go.dev/issue/44505
+     (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17)))))
+
 (define-public go go-1.17)
 
 (define make-go-std
@@ -928,6 +942,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.17 (make-go-std go-1.17))
 (define-public go-std-1.18 (make-go-std go-1.18))
 (define-public go-std-1.19 (make-go-std go-1.19))
+(define-public go-std-1.20 (make-go-std go-1.20))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
@@ -2047,7 +2062,14 @@ for speed on short messages.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y0kbzma55vmyqhyrw9ssgvxn6nw7d0zg72a7nz8vp1zly4hs6va"))))
+        (base32 "0y0kbzma55vmyqhyrw9ssgvxn6nw7d0zg72a7nz8vp1zly4hs6va"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Fix compatibility with go-1.18+
+            (substitute* "statik.go"
+              (("fmt\\.Println\\(helpText\\)")
+               "fmt.Print(helpText + \"\\n\")"))))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/rakyll/statik"))
@@ -4111,7 +4133,16 @@ applications as well as a program to generate applications and command files.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0gpmacngd0gpslnbkzi263f5ishigzgh6pbdv9hp092rnjl4nd31"))))
+          "0gpmacngd0gpslnbkzi263f5ishigzgh6pbdv9hp092rnjl4nd31"))
+        (snippet
+         #~(begin
+             (use-modules (guix build utils))
+             ;; Fix compatibility with go-1.19+
+             ;; https://github.com/spf13/pflag/issues/368
+             (substitute* "flag_test.go"
+               (("fmt\\.Println") "fmt.Print")
+               (("\\+ got\\)") "+ got + \"\\n\")")
+               (("\\+ defaultOutput\\)") "+ defaultOutput + \"\\n\")"))))))
     (build-system go-build-system)
     (arguments
       '(#:import-path "github.com/spf13/pflag"))
@@ -4664,7 +4695,7 @@ values.")
 (define-public go-gopkg-in-yaml-v3
   (package
     (name "go-gopkg-in-yaml-v3")
-    (version "3")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -4673,7 +4704,7 @@ values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06f4lnrp494wqaygv09dggr2dwf3z2bawqhnlnnwiamg5y787k4g"))))
+        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "gopkg.in/yaml.v3"))
@@ -6851,6 +6882,24 @@ and aid debugging.")
 a cron spec parser and job runner.")
     (license license:expat)))
 
+;; Required by actionlint. The version of `go-github-com-robfig-cron'
+;; packaged in Guix is newer and changed some error messages, causing
+;; unit tests in actionlint to fail.
+(define-public go-github-com-robfig-cron-1.2
+  (package
+    (inherit go-github-com-robfig-cron)
+    (name "go-github-com-robfig-cron")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/robfig/cron")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nv31m3940d9kf38lw2zs4hpj435bdi9mmim098rb3n4l07qrvva"))))))
+
 (define-public go-github-com-shirou-gopsutil
   (let ((commit "47ef3260b6bf6ead847e7c8fc4101b33c365e399")
         (revision "0"))
@@ -7378,6 +7427,17 @@ and Context cancellation for groups of goroutines working on subtasks of a
 common task.")
       (home-page "https://godoc.org/golang.org/x/sync/errgroup")
       (license license:bsd-3))))
+
+(define-public go-golang.org-x-sync-semaphore
+  (package
+    (inherit go-golang.org-x-sync-errgroup)
+    (name "go-golang.org-x-sync-semaphore")
+    (arguments
+     '(#:import-path "golang.org/x/sync/semaphore"
+       #:unpack-path "golang.org/x/sync"))
+    (synopsis "Weighted semaphore implementation in Go")
+    (description "Weighted semaphore implementation in Go.")
+    (home-page "https://godoc.org/golang.org/x/sync/semaphore")))
 
 (define (go-gotest-tools-source version sha256-base32-hash)
   (origin
@@ -9240,7 +9300,7 @@ configuration languages, but other uses may be possible too.")
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.0.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -9249,7 +9309,7 @@ configuration languages, but other uses may be possible too.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19fz68n262kvg2ssw4r6nik30zk6g6cy7rdi0fm05czwigqrdz1i"))))
+        (base32 "1k1dv1jkr72qpk5g363mhrg9hnf5c9qgv4l16l13m4yh08jp271d"))))
     (build-system go-build-system)
     (arguments `(#:import-path "filippo.io/age"))
     (inputs
@@ -9603,7 +9663,7 @@ JSON data to the machine.")
 (define-public go-golang-zx2c4-com-wireguard
   (package
     (name "go-golang-zx2c4-com-wireguard")
-    (version "0.0.20200320")
+    (version "0.0.20211016")
     (source
      (origin
        (method git-fetch)
@@ -9616,7 +9676,7 @@ JSON data to the machine.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fy4qsss3i3pkq1rpgjds4aipbwlh1dr9hbbf7jn2a1c63kfks0r"))))
+         "09a4gsh75a8bj71wr042afrma9frriqp60cm0cx6c9a8lv5yzzi0"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "golang.zx2c4.com/wireguard"))
@@ -11244,6 +11304,69 @@ kubernetes-sigs/yaml is a permanent fork of
 @url{https://github.com/ghodss/yaml,ghodss/yaml}.")
     (license (list license:expat license:bsd-3))))
 
+(define-public go-github-com-mitchellh-colorstring
+  (package
+    (name "go-github-com-mitchellh-colorstring")
+    (version "0.0.0-20190213212951-d06e56a500db")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mitchellh/colorstring")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d2mi5ziszfzdgaz8dg4b6sxa63nw1jnsvffacqxky6yz9m623kn"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/mitchellh/colorstring"))
+    (home-page "https://github.com/mitchellh/colorstring")
+    (synopsis "Functions to colorize strings for terminal output")
+    (description
+     "Colorstring provides functions for colorizing strings for terminal output.")
+    (license license:expat)))
+
+(define-public go-github-com-schollz-progressbar-v3
+  (package
+    (name "go-github-com-schollz-progressbar-v3")
+    (version "3.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/schollz/progressbar")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hjahr5r52i7w6iyvl3rpzr46iignhfdh4694fl7m2b4gkaw9gd6"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/schollz/progressbar/v3"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? import-path #:allow-other-keys)
+                   (when tests?
+                     ;; The full test suite requires Internet access, so only
+                     ;; run the short tests.
+                     (invoke "go" "test" "-test.short" import-path)))))))
+    (propagated-inputs
+     (list go-golang-org-x-term
+           go-github-com-stretchr-testify
+           go-github-com-mitchellh-colorstring
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-isatty
+           go-github-com-davecgh-go-spew))
+    (home-page "https://github.com/schollz/progressbar")
+    (synopsis "Simple command-line interface (CLI) progress bar")
+    (description
+     "This package provides a very simple thread-safe progress bar.  The
+@code{progressbar} implements an @code{io.Writer} so it can automatically
+detect the number of bytes written to a stream, so you can use it as a
+@code{progressbar} for an @code{io.Reader}.  When @code{progressbar}'s length
+is undetermined, a customizable spinner is shown.")
+    (license license:expat)))
+
 (define-public go-git-sr-ht-emersion-go-scfg
   (package
     (name "go-git-sr-ht-emersion-go-scfg")
@@ -11637,7 +11760,7 @@ library geared towards parsing MIME encoded emails.")
 (define-public go-github-com-gatherstars-com-jwz
   (package
     (name "go-github-com-gatherstars-com-jwz")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11646,7 +11769,7 @@ library geared towards parsing MIME encoded emails.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h37h5w139d3rhvp1n7kz2jm5zhk4pjzf3sip04v48nphkika60c"))))
+                "1zxg2vmka80m1vnlb1v1gdlrwnkpakcmwi1hxpl8jjjiyd4z2j2i"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/gatherstars-com/jwz"))

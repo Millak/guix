@@ -1079,7 +1079,7 @@ poorly hinted Adobe Type 1 font through the FreeType library and get it back
 with freshly generated hints.  The files produced by default are in
 human-readable form, which further needs to be encoded with t1utilities to
 work with most software requiring Type 1 fonts.")
-    (home-page "http://ttf2pt1.sourceforge.net/")
+    (home-page "https://ttf2pt1.sourceforge.net/")
     (license license:bsd-3)))
 
 (define-public woff2
@@ -1378,7 +1378,7 @@ company or university logos, handwritten notes, etc.  The resulting image is
 not \"jaggy\" like a bitmap, but smooth.  It can then be rendered at any
 resolution.")
     (license license:gpl2+)
-    (home-page "http://potrace.sourceforge.net/")))
+    (home-page "https://potrace.sourceforge.net/")))
 
 (define-public libotf
   (package
@@ -1423,7 +1423,7 @@ using the above tables.")
      "Raph Levien's Spiro package as a library.  A mechanism for drawing
 smooth contours with constant curvature at the spline joins.")
     (license license:gpl2+)
-    (home-page "http://libspiro.sourceforge.net/")))
+    (home-page "https://libspiro.sourceforge.net/")))
 
 (define-public libuninameslist
   (package

@@ -158,7 +158,7 @@ correct rounding.")
 for performing arithmetic on complex numbers.  It supports arbitrarily high
 precision and correctly rounds the results.")
    (license lgpl3+)
-   (home-page "http://www.multiprecision.org/mpc/")))
+   (home-page "https://www.multiprecision.org/mpc/")))
 
 (define-public mpfi
   ;; The last release, 1.5.4, lacks source files such as div_ext.c and others

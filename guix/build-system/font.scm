@@ -22,7 +22,6 @@
   #:use-module (guix monads)
   #:use-module (guix utils)
   #:use-module (guix packages)
-  #:use-module (guix derivations)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)

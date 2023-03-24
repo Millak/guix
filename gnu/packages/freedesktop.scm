@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
 ;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -66,6 +66,7 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
@@ -121,6 +122,7 @@
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
   #:use-module (gnu packages w3m)
@@ -797,7 +799,8 @@ of a the system to know what users are logged in, and where.")
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python gperf))
-    (inputs
+    (propagated-inputs
+     ;; Propagated because of pkg-config
      (list libcap))
     (synopsis "The sd-bus library, extracted from systemd")
     (description "Some projects rely on the sd-bus library for DBus support.
@@ -1506,7 +1509,7 @@ formats.")
      (list pkg-config))
     (inputs
      (list eudev))
-    (home-page "http://0pointer.de/blog/projects/being-smart.html")
+    (home-page "https://0pointer.de/blog/projects/being-smart.html")
     (synopsis "ATA S.M.A.R.T. reading and parsing library")
     (description
      "This library supports a subset of the ATA S.M.A.R.T. (Self-Monitoring,
@@ -1809,6 +1812,86 @@ modems and setup connections with them.")
      '((upstream-name . "ModemManager")))
     (license license:gpl2+)))
 
+(define-public telepathy-gabble
+  ;; telepathy-gabble bundles wocky, an unreleased library.  The latest commit
+  ;; includes a more recent version.
+  (let ((commit "f1c762df6328916b811a834047fedac8529cf157")
+        (revision "1"))
+    (package
+      (name "telepathy-gabble")
+      (version (git-version "0.18.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/TelepathyIM/telepathy-gabble/")
+               (commit commit)
+               (recursive? #true)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "00ss14hf1qwb42648cldghmfjfn1nkjvpy508b7vaz322fj37qa4"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; Parallel tests freeze.
+        #:parallel-tests? #false
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'delete-autogen
+             (lambda _ (delete-file "autogen.sh")))
+           (add-before 'configure 'configure-wocky
+             (lambda* (#:key configure-flags #:allow-other-keys)
+               (with-directory-excursion "lib/ext/wocky"
+                 (invoke "gtkdocize")
+                 (invoke "bash" "autoreconf" "-vif")
+                 (substitute* "configure"
+                   (("/bin/sh") (which "sh")))
+                 (apply invoke "bash" "configure" configure-flags)))))
+        #:configure-flags
+        #~(list (string-append "--prefix=" #$output)
+                "--disable-avahi-tests"
+                "--disable-dependency-tracking"
+                "--disable-Werror"
+                "--without-ca-certificates")))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             `(,glib "bin")             ;for glib-compile-schemas, etc.
+             gtk-doc
+             pkg-config))
+      (inputs
+       (list dbus
+             glib
+             gnutls
+             gobject-introspection
+             libnice
+             libsoup-minimal-2
+             libxslt
+             python))
+      (propagated-inputs
+       (list telepathy-glib))
+      (home-page "https://telepathy.freedesktop.org/components/telepathy-gabble/")
+      (synopsis "XMPP connection manager for Telepathy")
+      (description
+       "Gabble is a Jabber/XMPP connection manager for the Telepathy
+framework, currently supporting:
+
+@itemize
+@item single-user chats
+@item multi-user chats
+@item voice/video calling
+@item file transfer
+@end itemize
+
+with Jabber/XMPP interoperability.
+
+Telepathy is a D-Bus framework for unifying real time communication, including
+instant messaging, voice calls and video calls.  It abstracts differences
+between protocols to provide a unified interface for applications.")
+      (license license:lgpl2.1))))
+
 (define-public telepathy-logger
   (package
     (name "telepathy-logger")
@@ -1902,6 +1985,81 @@ messaging clients such as Empathy, GNOME Shell or KDE Telepathy.")
 for the Telepathy framework, allowing user interfaces and other clients to
 share connections to real-time communication services without conflicting.")
     (license license:lgpl2.1)))
+
+(define-public telepathy-salut
+  ;; telepathy-salut bundles wocky, an unreleased library.  The latest commit
+  ;; includes a more recent version.
+  (let ((commit "90dbe5e74ccdd063cb123212a754f994c9d2019f")
+        (revision "1"))
+    (package
+      (name "telepathy-salut")
+      (version (git-version "0.8.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/TelepathyIM/telepathy-salut")
+               (commit commit)
+               (recursive? #true)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "195pz8dgwhyy1cygd0rlncyr3c4wzhnf99sfjj5qmc8j195j1k7a"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'delete-autogen
+             (lambda _ (delete-file "autogen.sh")))
+           ;; The twisted tests all fail, but there are no logs, so we can't
+           ;; tell what's wrong.
+           (add-after 'unpack 'disable-twisted-tests
+             (lambda _
+               (substitute* "tests/Makefile.am"
+                 (("SUBDIRS = twisted") ""))))
+           (add-before 'configure 'configure-wocky
+             (lambda* (#:key configure-flags #:allow-other-keys)
+               (with-directory-excursion "lib/ext/wocky"
+                 (invoke "gtkdocize")
+                 (invoke "bash" "autoreconf" "-vif")
+                 (substitute* "configure"
+                   (("/bin/sh") (which "sh")))
+                 (apply invoke "bash" "configure" configure-flags)))))
+        #:configure-flags
+        #~(list (string-append "--prefix=" #$output)
+                "--disable-avahi-tests"
+                "--without-ca-certificates"
+                "--disable-Werror"
+                "--enable-olpc")))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             `(,glib "bin")             ;for glib-compile-schemas, etc.
+             gtk-doc
+             pkg-config))
+      (inputs
+       (list avahi
+             dbus
+             glib
+             gnutls
+             gobject-introspection
+             libxml2
+             libxslt
+             libsoup-minimal-2
+             python
+             `(,util-linux "lib")))
+      (propagated-inputs
+       (list telepathy-glib))
+      (home-page "https://telepathy.freedesktop.org/wiki/Components/")
+      (synopsis "Link-local XMPP connection manager")
+      (description
+       "Salut is a link-local XMPP (XEP-0174) connection manager for the
+Telepathy framework, currently supporting presence and single-user chats with
+iChat interoperability, and multi-user chats and Tubes using the
+@url{https://telepathy.freedesktop.org/wiki/Clique,Clique} protocol.")
+      (license license:lgpl2.1))))
 
 (define-public colord-gtk
   (package

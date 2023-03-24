@@ -41,8 +41,6 @@
   #:use-module (guix i18n)
   #:use-module (guix monads)
   #:use-module (gcrypt hash)
-  #:use-module (guix base32)
-  #:use-module (guix records)
   #:use-module (guix sets)
   #:export (<derivation>
             derivation?

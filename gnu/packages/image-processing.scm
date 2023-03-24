@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2014, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -242,7 +242,7 @@ licences similar to the Modified BSD licence."))))
     (native-inputs
      (list pkg-config
            python-wrapper))
-    (home-page "http://mia.sourceforge.net")
+    (home-page "https://mia.sourceforge.net")
     (synopsis "Toolkit for gray scale medical image analysis")
     (description "MIA provides a combination of command line tools, plug-ins,
 and libraries that make it possible run image processing tasks interactively
@@ -352,36 +352,59 @@ many popular formats.")
     (properties `((release-monitoring-url . "https://vtk.org/download/")))
     (build-system cmake-build-system)
     (arguments
-     '(#:build-type "Release"           ;Build without '-g' to save space.
-       #:configure-flags '(;"-DBUILD_TESTING:BOOL=TRUE"
-                           ;    ; not honored
-                           "-DVTK_USE_EXTERNAL=OFF" ;; default
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_expat=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_glew=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_jsoncpp=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_libharu=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_libproj=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_libxml2=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_lz4=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_ogg=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
-                           ;"-DVTK_MODULE_USE_EXTERNAL_VTK_pugixml=ON"    ; breaks IO/CityGML
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_sqlite=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_theora=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
-                           "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
-                           "-DVTK_MODULE_ENABLE_VTK_RenderingExternal=YES" ; For F3D
-                           "-DVTK_WRAP_PYTHON=ON"
-                           "-DVTK_PYTHON_VERSION:STRING=3"
-                           )
-       #:tests? #f))        ;XXX: test data not included
+     (list #:build-type "Release"           ;Build without '-g' to save space.
+           #:configure-flags
+           #~'( ;;"-DBUILD_TESTING:BOOL=TRUE"  ;not honored
+               "-DVTK_USE_EXTERNAL=OFF"           ;default
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_expat=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_glew=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_jsoncpp=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_libharu=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_libproj=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_libxml2=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_lz4=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_ogg=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
+               ;;"-DVTK_MODULE_USE_EXTERNAL_VTK_pugixml=ON" ;breaks IO/CityGML
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_sqlite=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_theora=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
+               "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
+               "-DVTK_MODULE_ENABLE_VTK_RenderingExternal=YES" ;for F3D
+               "-DVTK_WRAP_PYTHON=ON"
+               "-DVTK_PYTHON_VERSION:STRING=3"
+
+               "-DVTK_SMP_ENABLE_OPENNMP=ON"
+               "-DVTK_SMP_ENABLE_TBB=ON"
+               "-DVTK_USE_MPI=ON"
+               )
+
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'clear-reference-to-compiler
+                 (lambda _
+                   (define (choose . files)
+                     (let loop ((files files))
+                       (if (null? files)
+                           #f
+                           (if (file-exists? (car files))
+                               (car files)
+                               (loop (cdr files))))))
+
+                   ;; Do not retain a reference to GCC.
+                   (substitute* (choose
+                                 "Common/Core/vtkConfigureDeprecated.h.in" ;v9.x
+                                 "Common/Core/vtkConfigure.h.in") ;v7.x
+                     (("@CMAKE_CXX_COMPILER@") "c++")))))
+
+           #:tests? #f))                          ;XXX: test data not included
     (inputs
      (list double-conversion
            eigen
@@ -402,17 +425,20 @@ many popular formats.")
            mesa
            netcdf
            libpng
+           libtiff
+           openmpi
            proj-7
            python
            ;("pugixml" ,pugixml)
            sqlite
-           libtiff
            xorgproto
            zlib))
     (propagated-inputs
      ;; VTK's 'VTK-vtk-module-find-packages.cmake' calls
-     ;; 'find_package(THEORA)', which in turns looks for libogg.
-     (list libogg))
+     ;; 'find_package(THEORA)', which in turns looks for libogg.  Likewise for
+     ;; TBB.
+     (list libogg
+           tbb))
     (home-page "https://vtk.org/")
     (synopsis "Libraries for 3D computer graphics")
     (description
@@ -446,7 +472,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
        ((#:configure-flags flags)
         ;; Otherwise, the build would fail with: "error: invalid conversion
         ;; from ‘const char*’ to ‘char*’ [-fpermissive]".
-        `(cons "-DCMAKE_CXX_FLAGS=-fpermissive" ,flags))
+        #~(cons "-DCMAKE_CXX_FLAGS=-fpermissive" #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'remove-kernel-version
@@ -460,21 +486,18 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "4.5.4")
+    (version "4.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/opencv/opencv")
-                     (commit version)))
+                    (url "https://github.com/opencv/opencv")
+                    (commit version)))
               (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gf2xs3r4s51m20mpf0wdidpk0xzp3m2w6jx72fwldhn0pshlmcj"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Remove external libraries. We have almost all available
-                  ;; in Guix:
+                  ;; Remove external libraries.  Almost all of them are
+                  ;; available in Guix.
                   (with-directory-excursion "3rdparty"
                     (for-each delete-file-recursively
                               '("carotene"
@@ -498,20 +521,18 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                                 "tbb"
                                 "zlib")))
 
-                  ;; Milky icon set is non-free:
-                  (delete-file-recursively "modules/highgui/src/files_Qt/Milky")
-
-                  ;; Some jars found:
-                  (for-each delete-file
-                            '("modules/java/test/pure_test/lib/junit-4.11.jar"
-                              "samples/java/sbt/sbt/sbt-launch.jar"))))))
+                  ;; Delete any bundled .jar files.
+                  (for-each delete-file (find-files "." "\\.jar$"))))
+              (sha256
+               (base32
+                "0l45v41nns2jmn9nr9fb0yvhqzfjpxjxn75i1c02rsfy3r3lv22v"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       (list "-DWITH_ADE=OFF" ;we don't have a package for ade yet
+       (list "-DWITH_ADE=OFF"           ;we don't have a package for ade yet
              "-DWITH_IPP=OFF"
              "-DWITH_ITT=OFF"
-             "-DWITH_CAROTENE=OFF" ; only visible on arm/aarch64
+             "-DWITH_CAROTENE=OFF"      ; only visible on arm/aarch64
              "-DENABLE_PRECOMPILED_HEADERS=OFF"
              "-DOPENCV_GENERATE_PKGCONFIG=ON"
 
@@ -569,22 +590,20 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
              ;; This test fails with "unknown file: Failure"
              ;; But I couldn't figure out which file was missing:
              (substitute* "../opencv-contrib/modules/face/test/test_face_align.cpp"
-               (("(TEST\\(CV_Face_FacemarkKazemi, )(can_detect_landmarks\\).*)"
-                 all pre post)
-                (string-append pre "DISABLED_" post)))
+               (("\\bcan_detect_landmarks\\b" all)
+                (string-append "DISABLED_" all)))
 
-             ;; This test fails with a comparison between the expected 396 and
+             ;; This all fails with a comparison between the expected 396 and
              ;; the actual 440 in file size.
              (substitute* "modules/imgcodecs/test/test_exr.impl.hpp"
-               (("(TEST\\(Imgcodecs_EXR, )(readWrite_32FC1\\).*)" all pre post)
-                (string-append pre "DISABLED_" post)))
+               (("\\breadWrite_32FC1\\b" all)
+                (string-append "DISABLED_" all)))
 
              ;; These fail with protobuf parse errors that come from
-             ;; opencv-extra/testdata.
+             ;; opencv-extra/alldata.
              (substitute* "modules/dnn/test/test_layers.cpp"
-               (("(TEST_P\\(Test_Caffe_layers, )\
-(Accum\\).*|DataAugmentation\\).*|Resample\\).*|Correlation\\).*)" all pre post)
-                (string-append pre "DISABLED_" post)))))
+               (("\\b(Accum|DataAugmentation|Resample|Correlation|Interp)\\b" all)
+                (string-append "DISABLED_" all)))))
          (add-after 'unpack 'unpack-submodule-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir "../opencv-extra")
@@ -596,7 +615,8 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
          (add-after 'build 'do-not-install-3rdparty-file
            (lambda _
              (substitute* "cmake_install.cmake"
-               (("file\\(INSTALL .*source/3rdparty/include/opencl/LICENSE.txt.*") "\n"))))
+               (("file\\(INSTALL .*3rdparty/include/opencl/LICENSE.txt.*")
+                ""))))
          (add-before 'check 'start-xserver
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((xorg-server (assoc-ref inputs "xorg-server"))
@@ -608,7 +628,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                (zero? (system (format #f "~a/bin/Xvfb ~a &" xorg-server disp)))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("xorg-server" ,xorg-server-for-tests) ; For running the tests
+       ("xorg-server" ,xorg-server-for-tests) ;For running the tests
        ("opencv-extra"
         ,(origin
            (method git-fetch)
@@ -617,23 +637,24 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                  (commit version)))
            (file-name (git-file-name "opencv_extra" version))
            (sha256
-            (base32 "1fg2hxdvphdvagc2fkmhqk7qql9mp7pj2bmp8kmd7vicpr72qk82"))))
+            (base32
+             "0bdg5kwwdimnl2zp4ry5cmfxr9xb7zk2ml59853d90llsqjis47a"))))
        ("opencv-contrib"
         ,(origin
            (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/opencv/opencv_contrib")
-                 (commit version)))
+           (uri (git-reference (url "https://github.com/opencv/opencv_contrib")
+                               (commit version)))
            (file-name (git-file-name "opencv_contrib" version))
            (sha256
-            (base32 "0ga0l4ranp1834gxgp487ll1amvmssa02l2nk5ja5w0rx4d8hh26"))))))
+            (base32
+             "0hbfn835kxh3hwmwvzgdglm2np1ri3z7nfnf60gf4x6ikp89mv4r"))))))
     (inputs
      (list ffmpeg-4
            gtk+
            gtkglext
            hdf5
            ilmbase
-           imath ;should be propagated by openexr
+           imath                        ;should be propagated by openexr
            jasper
            libgphoto2
            libjpeg-turbo
@@ -845,24 +866,24 @@ including 2D color images.")
            (lambda _
              (setenv "HOME" "/tmp") #t)))))
     (inputs
-     `(("vips" ,vips)
-       ("glib" ,glib)
-       ("libtiff" ,libtiff)
-       ("gtk+-2" ,gtk+-2)
-       ("libxml2" ,libxml2)
-       ("libexif" ,libexif)
-       ("libjpeg" ,libjpeg-turbo)        ;required by vips.pc
-       ("librsvg" ,librsvg)
-       ("fftw" ,fftw)
-       ("libgsf" ,libgsf)
-       ("imagemagick" ,imagemagick)
-       ("orc" ,orc)
-       ("matio" ,matio)
-       ("lcms" ,lcms)
-       ("libwebp" ,libwebp)
-       ("openexr" ,openexr-2)
-       ("poppler" ,poppler)
-       ("gsl" ,gsl)))
+     (list vips
+           glib
+           libtiff
+           gtk+-2
+           libxml2
+           libexif
+           libjpeg-turbo ;required by vips.pc
+           librsvg
+           fftw
+           libgsf
+           imagemagick
+           orc
+           matio
+           lcms
+           libwebp
+           openexr-2
+           poppler
+           gsl))
     (native-inputs
      (list flex bison pkg-config))
     (home-page "https://github.com/libvips/nip2")

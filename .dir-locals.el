@@ -43,7 +43,7 @@
                ;; Hence the following "when", which might otherwise be unnecessary;
                ;; it prevents causing an error when root-dir-unexpanded is nil.
                (when root-dir-unexpanded
-                 (let* ((root-dir (expand-file-name root-dir-unexpanded))
+                 (let* ((root-dir (file-local-name (expand-file-name root-dir-unexpanded)))
                         ;; Workaround for bug https://issues.guix.gnu.org/43818.
                         (root-dir* (directory-file-name root-dir)))
 
@@ -72,6 +72,9 @@
    (eval . (put 'substitute* 'scheme-indent-function 1))
    (eval . (put 'match-record 'scheme-indent-function 2))
 
+   ;; TODO: Contribute these to Emacs' scheme-mode.
+   (eval . (put 'let-keywords 'scheme-indent-function 3))
+
    ;; 'modify-inputs' and its keywords.
    (eval . (put 'modify-inputs 'scheme-indent-function 1))
    (eval . (put 'replace 'scheme-indent-function 1))
@@ -94,8 +97,6 @@
    (eval . (put 'origin 'scheme-indent-function 0))
    (eval . (put 'build-system 'scheme-indent-function 0))
    (eval . (put 'bag 'scheme-indent-function 0))
-   (eval . (put 'computed-file 'scheme-indent-function 1))
-   (eval . (put 'gexp->derivation 'scheme-indent-function 1))
    (eval . (put 'graft 'scheme-indent-function 0))
    (eval . (put 'operating-system 'scheme-indent-function 0))
    (eval . (put 'file-system 'scheme-indent-function 0))

@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -70,6 +72,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -617,7 +620,7 @@ the position of the variable and allows you to modify its value.")
     (inputs
      (modify-inputs (package-inputs gnu-make)
        (prepend readline)))
-    (home-page "http://bashdb.sourceforge.net/remake/")
+    (home-page "https://bashdb.sourceforge.net/remake/")
     (description "Remake is an enhanced version of GNU Make that adds improved
 error reporting, better tracing, profiling, and a debugger.")
     (license license:gpl3+)))
@@ -859,6 +862,36 @@ engineering.")
     (home-page "https://github.com/epasveer/seer")
     ;; Note: Some icons in src/resources are creative commons 3.0 and/or 4.0.
     (license license:gpl3+)))
+
+(define-public ddd
+  (package
+    (name "ddd")
+    (version "3.3.12")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/ddd/ddd-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0p5nx387857w3v2jbgvps2p6mlm0chajcdw5sfrddcglsxkwvmis"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;tests require manual intervention
+           ;; Avoid "friend declaration specifies default arguments and isn’t
+           ;; a definition" errors.
+           #:configure-flags #~(list "CXXFLAGS=-fpermissive")))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list motif ncurses gdb))
+    (synopsis "Graphical front-end for GDB and other debuggers")
+    (description "GNU DDD, the Data Display Debugger, is a graphical front-end
+for command-line debuggers.  Many back-end debuggers are supported, notably
+the GNU debugger, GDB.  In addition to usual debugging features such as
+viewing the source files, DDD has additional graphical, interactive features
+to aid in debugging.")
+    (home-page "https://www.gnu.org/software/ddd/")
+    (license license:gpl3+)))
+
 
 (define-public delve
   (package

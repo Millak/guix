@@ -1,0 +1,52 @@
+From cddcc10becb013ae498ea9c2836792f407b61678 Mon Sep 17 00:00:00 2001
+From: Julien Lepiller <julien@lepiller.eu>
+Date: Tue, 7 Feb 2023 22:55:59 +0100
+Subject: [PATCH] Fix file corruption when using copy_file_range.
+
+This patch is adapted from https://github.com/php/php-src/pull/10440.
+---
+ main/streams/streams.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/main/streams/streams.c b/main/streams/streams.c
+index 20029fc7..68dc76c5 100644
+--- a/main/streams/streams.c
++++ b/main/streams/streams.c
+@@ -1634,8 +1634,21 @@ PHPAPI zend_result _php_stream_copy_to_stream_ex(php_stream *src, php_stream *de
+ 		char *p;
+ 
+ 		do {
+-			size_t chunk_size = (maxlen == 0 || maxlen > PHP_STREAM_MMAP_MAX) ? PHP_STREAM_MMAP_MAX : maxlen;
+-			size_t mapped;
++            /* We must not modify maxlen here, because otherwise the file copy fallback below can fail */
++            size_t chunk_size, must_read, mapped;
++            if (maxlen == 0) {
++				/* Unlimited read */
++				must_read = chunk_size = PHP_STREAM_MMAP_MAX;
++			} else {
++				must_read = maxlen - haveread;
++				if (must_read >= PHP_STREAM_MMAP_MAX) {
++					chunk_size = PHP_STREAM_MMAP_MAX;
++				} else {
++					/* In case the length we still have to read from the file could be smaller than the file size,
++					 * chunk_size must not get bigger the size we're trying to read. */
++					chunk_size = must_read;
++				}
++			}
+ 
+ 			p = php_stream_mmap_range(src, php_stream_tell(src), chunk_size, PHP_STREAM_MAP_MODE_SHARED_READONLY, &mapped);
+ 
+@@ -1667,8 +1680,8 @@ PHPAPI zend_result _php_stream_copy_to_stream_ex(php_stream *src, php_stream *de
+ 					return SUCCESS;
+ 				}
+ 				if (maxlen != 0) {
+-					maxlen -= mapped;
+-					if (maxlen == 0) {
++					must_read -= mapped;
++					if (must_read == 0) {
+ 						return SUCCESS;
+ 					}
+ 				}
+-- 
+2.38.1
+

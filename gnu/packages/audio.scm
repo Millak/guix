@@ -502,7 +502,7 @@ by MusicIP.")
     (description "LibTiMidity is a MIDI to WAVE converter library that uses
 Gravis Ultrasound-compatible patch files to generate digital audio data from
 General MIDI files.")
-    (home-page "http://libtimidity.sourceforge.net/")
+    (home-page "https://libtimidity.sourceforge.net/")
     (license
      ;; This project is dual-licensed.
      ;; Either of the following licenses can be exercised.
@@ -573,7 +573,7 @@ implementation of Adaptive Multi Rate Narrowband and Wideband
            qtbase-5))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://alsamodular.sourceforge.net/")
+    (home-page "https://alsamodular.sourceforge.net/")
     (synopsis "Realtime modular synthesizer and effect processor")
     (description
      "AlsaModularSynth is a digital implementation of a classical analog
@@ -856,7 +856,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.2.3")
+    (version "3.2.4")
     (source
      (origin
        (method git-fetch)
@@ -865,7 +865,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wg75fblxlnrn5kqvg0w1fi2pwdkn1nd6vgya3sad84l3ki7wpyh"))
+        (base32 "06kfxbfvvhbhwfzkvar6hir351606g29ij8b4hksxpzq338shgc3"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -986,6 +986,117 @@ engineers, musicians, soundtrack editors and composers.")
     (synopsis "Software for recording and editing sounds")
     (description
      "Audacity is a multi-track audio editor designed for recording, playing
+and editing digital audio.  It features digital effects and spectrum analysis
+tools.")
+    (license license:gpl2+)))
+
+(define-public tenacity
+  (package
+    (name "tenacity")
+    (version "1.3-beta2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/tenacityteam/tenacity")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pd2vxzqzq7ikz7l2a1h9qwq08276xicvphrpn47gvmwaslah1gn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%cmake-build-system-modules)
+      #:modules
+      '((guix build utils)
+        (guix build cmake-build-system)
+        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-upstream-headers
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("libraries/lib-files/FileNames.cpp")
+                (("\"/usr/include/linux/magic.h\"") "<linux/magic.h>"))))
+          (add-after 'unpack
+              'i-spy-with-my-little-eye-something-in-the-wrong-folder
+            (lambda _
+              (symlink (string-append (getcwd) "/images")
+                       "src/images")))
+          (add-after 'unpack 'fix-cmake-rpath
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("\\$ORIGIN/\\.\\./\\$\\{_PKGLIB\\}")
+                 (string-append (assoc-ref outputs "out") "/lib/tenacity"))
+                (("CMAKE_BUILD_WITH_INSTALL_RPATH [A-Z]*")
+                 "CMAKE_BUILD_WITH_INSTALL_RPATH TRUE")
+                (("CMAKE_INSTALL_RPATH_USE_LINK_PATH [A-Z]*")
+                 "CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE"))
+              (substitute* "src/CMakeLists.txt"
+                ;; Despite the name, this script breaks rpath.  Don't run it.
+                (("install.*linux/fix_rpath\\.cmake.*")
+                 "")
+                (("-Wl,--disable-new-dtags") "-Wl,--enable-new-dtags"))))
+          (replace 'configure
+            (lambda args
+              (define %configure (assoc-ref %standard-phases 'configure))
+              (with-exception-handler
+                  (lambda (error)
+                    (unless (invoke-error? error)
+                      (raise error))
+                    ;; Have you tried turning it off and on again?
+                    (apply invoke (invoke-error-program error)
+                           (invoke-error-arguments error)))
+                (lambda ()
+                  (apply %configure args))
+                #:unwind? #t)))
+          (add-after 'wrap-program 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
+      ;; Test suite?  Which test suite?
+      #:tests? #f))
+    (inputs
+     (list wxwidgets
+           gtk+
+           alsa-lib
+           jack-1
+           expat
+           lame
+           flac
+           ffmpeg
+           libid3tag
+           libjpeg-turbo
+           ;;("libsbsms" ,libsbsms)         ;bundled version is modified
+           libsndfile
+           mpg123
+           soundtouch
+           soxr ;replaces libsamplerate
+           sqlite
+           twolame
+           vamp
+           libvorbis
+           lv2
+           lilv ;for lv2
+           suil ;for lv2
+           portaudio
+           portmidi
+           wavpack))
+    (native-inputs
+     (list gettext-minimal              ;for msgfmt
+           libtool
+           pkg-config
+           python
+           which))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TENACITY_MODULES_PATH")
+            (files '("lib/tenacity/modules")))
+           (search-path-specification
+            (variable "TENACITY_PATH")
+            (files '("share/tenacity")))))
+    (home-page "https://tenacityaudio.org/")
+    (synopsis "Software for recording and editing sounds")
+    (description
+     "Tenacity is a multi-track audio editor designed for recording, playing
 and editing digital audio.  It features digital effects and spectrum analysis
 tools.")
     (license license:gpl2+)))
@@ -1132,7 +1243,7 @@ formant warp.")
        (list gtkmm-2 jack-2 lvtk))
       (native-inputs
        (list pkg-config))
-      (home-page "http://ll-plugins.nongnu.org/azr3/")
+      (home-page "https://ll-plugins.nongnu.org/azr3/")
       (synopsis "Tonewheel organ synthesizer")
       (description
        "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ
@@ -1488,7 +1599,7 @@ formats used to store information about DJ record libraries.")
            bison
            sed
            grep))
-    (home-page "http://taopm.sourceforge.net/")
+    (home-page "https://taopm.sourceforge.net/")
     (synopsis "Sound Synthesis with Physical Models")
     (description "Tao is a software package for sound synthesis using physical
 models.  It provides a virtual acoustic material constructed from masses and
@@ -2158,7 +2269,7 @@ also play midifiles using a Soundfont.")
                      #t))))
     (native-inputs
      (list tar bzip2))
-    (home-page "http://freepats.zenvoid.org")
+    (home-page "https://freepats.zenvoid.org")
     (synopsis "GUS compatible patches for MIDI players")
     (description
      "FreePats is a project to create a free and open set of GUS compatible
@@ -2312,7 +2423,7 @@ auto-wah.")
            libsndfile
            libsamplerate
            zlib))
-    (home-page "http://rakarrack.sourceforge.net/")
+    (home-page "https://rakarrack.sourceforge.net/")
     (synopsis "Audio effects processor")
     (description
      "Rakarrack is a richly featured multi-effects processor emulating a
@@ -2576,13 +2687,12 @@ audio signal streaming.")
      (list lv2
            lilv
            suil
-           gtk
-           gtkmm
+           gtk+
            qtbase-5
            jack-1))
     (native-inputs
      (list pkg-config))
-    (home-page "https://drobilla.net/software/jalv/")
+    (home-page "https://drobilla.net/software/jalv.html")
     (synopsis "Simple LV2 host for JACK")
     (description
      "Jalv is a simple but fully featured LV2 host for JACK.  It runs LV2
@@ -2698,7 +2808,7 @@ with applications that support them (e.g. PulseAudio).")
      `(;; liblo test FAILED
        ;; liblo server error 19 in setsockopt(IP_ADD_MEMBERSHIP): No such device
        #:tests? #f))
-    (home-page "http://liblo.sourceforge.net")
+    (home-page "https://liblo.sourceforge.net")
     (synopsis "Implementation of the Open Sound Control protocol")
     (description
      "liblo is a lightweight library that provides an easy to use
@@ -3468,7 +3578,7 @@ using Guix System.")
      (list pkg-config))
     (inputs
      (list libogg libtheora libvorbis speex))
-    (home-page "http://idjc.sourceforge.net/")
+    (home-page "https://idjc.sourceforge.net/")
     (synopsis "Broadcast streaming library with IDJC extensions")
     (description "This package provides libshout plus IDJC extensions.")
     ;; GNU Library (not Lesser) General Public License.
@@ -3704,7 +3814,7 @@ for loudness normalisation.")
            freepats))
     (native-inputs
      (list pkg-config))
-    (home-page "http://timidity.sourceforge.net/")
+    (home-page "https://timidity.sourceforge.net/")
     (synopsis "Software synthesizer for playing MIDI files")
     (description
      "TiMidity++ is a software synthesizer.  It can play MIDI files by
@@ -3789,7 +3899,7 @@ analysis plugins or audio feature extraction plugins.")
                                                "/ar-lib"))
              "ar-lib")
             #t)))))
-    (home-page "http://sbsms.sourceforge.net/")
+    (home-page "https://sbsms.sourceforge.net/")
     (synopsis "Library for time stretching and pitch scaling of audio")
     (description
      "SBSMS (Subband Sinusoidal Modeling Synthesis) is software for time
@@ -3867,7 +3977,7 @@ encode and decode wavpack files.")
                (base32
                 "1pnri98a603xk47smnxr551svbmgbzcw018mq1k6srbrq6kaaz25"))))
     (build-system gnu-build-system)
-    (home-page "http://modplug-xmms.sourceforge.net/")
+    (home-page "https://modplug-xmms.sourceforge.net/")
     (synopsis "Mod file playing library")
     (description
      "Libmodplug renders mod music files as raw audio data, for playing or
@@ -3888,7 +3998,7 @@ surround and reverb.")
                (base32
                 "1kycz4jsyvmf7ny9227b497wc7y5ligydi6fvvldmkf8hk63ad9m"))))
     (build-system gnu-build-system)
-    (home-page "http://xmp.sourceforge.net/")
+    (home-page "https://xmp.sourceforge.net/")
     (synopsis "Module player library")
     (description
      "Libxmp is a library that renders module files to PCM data.  It supports
@@ -3912,7 +4022,7 @@ Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT).")
      (list pkg-config))
     (inputs
      (list libxmp pulseaudio))
-    (home-page "http://xmp.sourceforge.net/")
+    (home-page "https://xmp.sourceforge.net/")
     (synopsis "Extended module player")
     (description
      "Xmp is a portable module player that plays over 90 mainstream and
@@ -3976,7 +4086,7 @@ control functionality, or just for playing around with the sound effects.")
            libpng
            libvorbis
            pulseaudio))
-    (home-page "http://sox.sourceforge.net")
+    (home-page "https://sox.sourceforge.net")
     (synopsis "Sound processing utility")
     (description
      "SoX (Sound eXchange) is a command line utility that can convert
@@ -4091,7 +4201,7 @@ interface.")
 (define-public qsynth
   (package
     (name "qsynth")
-    (version "0.5.7")
+    (version "0.9.9")
     (source
      (origin
        (method url-fetch)
@@ -4101,14 +4211,14 @@ interface.")
               (string-append "mirror://sourceforge/qsynth/qsynth (attic)"
                              "/qsynth-" version ".tar.gz")))
        (sha256
-        (base32 "18im4w8agj60nkppwbkxqnhpp13z5li3w30kklv4lgs20rvgbvl6"))))
-    (build-system gnu-build-system)
+        (base32 "1cjg25nva5ivahr0qqlvf6ybnpcx9jgrxbp4vgwkk64b4k9wnd4n"))))
+    (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" phase
     (native-inputs
-     (list qttools-5 pkg-config))
+     (list qttools pkg-config))
     (inputs
-     (list fluidsynth qtbase-5 qtx11extras))
+     (list fluidsynth qtbase qtsvg qtwayland))
     (home-page "https://qsynth.sourceforge.io")
     (synopsis "Graphical user interface for FluidSynth")
     (description
@@ -4473,7 +4583,7 @@ with support for HD extensions.")
       '(modify-phases %standard-phases
          (delete 'configure))))
     (inputs (list fftw))
-    (home-page "http://drc-fir.sourceforge.net/")
+    (home-page "https://drc-fir.sourceforge.net/")
     (synopsis "Digital room correction")
     (description
      "DRC is a program used to generate correction filters for acoustic
@@ -4599,7 +4709,7 @@ code, used in @code{libtoxcore}.")
     (synopsis "GSM 06.10 lossy speech compression library")
     (description "This C library provides an encoder and a decoder for the GSM
 06.10 RPE-LTP lossy speech compression algorithm.")
-    (home-page "http://quut.com/gsm/")
+    (home-page "https://quut.com/gsm/")
     (license (license:non-copyleft "file://COPYRIGHT"))))
 
 (define-public python-pyalsaaudio
@@ -5118,7 +5228,7 @@ developing fully accurate DirectX Audio runtime libraries.")
      (list alsa-lib gtk+-2 libsndfile portaudio))
     (native-inputs
      (list pkg-config))
-    (home-page "http://gnaural.sourceforge.net/")
+    (home-page "https://gnaural.sourceforge.net/")
     (synopsis "Binaural beat synthesizer")
     (description "Gnaural is a programmable auditory binaural beat synthesizer
 intended to be used for brainwave entrainment.  Gnaural supports creation of
@@ -6108,7 +6218,7 @@ managed by PipeWire.")
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list faad2 glib libmad libvorbis))
-    (home-page "http://streamripper.sourceforge.net")
+    (home-page "https://streamripper.sourceforge.net")
     (synopsis "Record audio streams to your hard drive")
     (description "Streamripper records shoutcast-compatible
 streams.  For shoutcast style streams it finds the “meta data” or track

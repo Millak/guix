@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2021, 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -5114,6 +5114,53 @@ they're not available.")
          ("rust-termion" ,rust-termion-1)
          ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-autocompress-0.2
+  (package
+    (name "rust-autocompress")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "autocompress" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16pjdfr5b2ixs2xk3h6mvxprxr84rpaips624d6vbap5vsdkvzx4"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:tests? #false ;The crate does not include test files
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'patch-cargo-checksums 'do-not-build-xz
+           (lambda _
+             ;; Detection of liblzma (in rust-lzma-sys, pulled in by
+             ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
+             ;; request a static build somewhere.
+             (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
+               (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") "")))))
+      #:cargo-inputs
+      `(("rust-brotli" ,rust-brotli-3)
+        ("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-lz4" ,rust-lz4-1)
+        ("rust-snap" ,rust-snap-1)
+        ("rust-xz2" ,rust-xz2-0.1)
+        ("rust-zstd" ,rust-zstd-0.9))
+      #:cargo-development-inputs
+      `(("rust-clap" ,rust-clap-2)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2))))
+    (inputs (list xz))
+    (home-page "https://github.com/informationsea/autocompress-rs")
+    (synopsis "Select decoder from magic bytes or encoder from file extension")
+    (description
+     "This crate lets you automatically select a suitable decoder from magic
+bytes or encoder from file extension.")
+    (license license:asl2.0)))
+
 (define-public rust-autocfg-1
   (package
     (name "rust-autocfg")
@@ -6753,6 +6800,59 @@ useful for bioinformatics, but also in other fields.")
 provides implementations of many algorithms and data structures that are
 useful for bioinformatics, but also in other fields.")
     (license license:expat)))
+
+(define-public rust-bio-0.41
+  (package
+    (inherit rust-bio-0.39)
+    (name "rust-bio")
+    (version "0.41.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bio" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11kmdd5rslnqjndldh7c2lzxsyapwz7fqm2yrkn3his460z44saa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-approx" ,rust-approx-0.5)
+        ("rust-bio-types" ,rust-bio-types-0.12)
+        ("rust-bit-set" ,rust-bit-set-0.5)
+        ("rust-bv" ,rust-bv-0.11)
+        ("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-custom-derive" ,rust-custom-derive-0.1)
+        ("rust-enum-map" ,rust-enum-map-0.6)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-getset" ,rust-getset-0.1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools-num" ,rust-itertools-num-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-multimap" ,rust-multimap-0.8)
+        ("rust-ndarray" ,rust-ndarray-0.15)
+        ("rust-newtype-derive" ,rust-newtype-derive-0.1)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-ordered-float" ,rust-ordered-float-1)
+        ("rust-pest" ,rust-pest-2)
+        ("rust-pest-derive" ,rust-pest-derive-2)
+        ("rust-petgraph" ,rust-petgraph-0.6)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-statrs" ,rust-statrs-0.15)
+        ("rust-strum" ,rust-strum-0.21)
+        ("rust-strum-macros" ,rust-strum-macros-0.21)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-triple-accel" ,rust-triple-accel-0.4)
+        ("rust-vec-map" ,rust-vec-map-0.8))
+       #:cargo-development-inputs
+       (("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-bit-field-0.10
   (package
@@ -18027,6 +18127,26 @@ from macros.")
 @code{Cargo.toml}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-downcast-0.11
+  (package
+    (name "rust-downcast")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "downcast" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wa78ahlc57wmqyq2ncr80l7plrkgz57xsg7kfzgpcnqac8gld8l"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/fkoep/downcast-rs")
+    (synopsis
+     "Trait for downcasting trait objects back to their original types")
+    (description
+     "This package provides a trait, and utilities, for downcasting trait
+objects back to their original types.  The same as the rust-downcast-rs crate.")
+    (license license:expat)))
+
 (define-public rust-downcast-rs-1
   (package
     (name "rust-downcast-rs")
@@ -26319,6 +26439,30 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
      "This package provides a library for HTML entity encoding and decoding.")
     (license (list license:asl2.0 license:expat license:mpl2.0))))
 
+(define-public rust-html-escape-0.2
+  (package
+    (name "rust-html-escape")
+    (version "0.2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "html-escape" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01f2v3c6j2rk5h2lhdbh62j07cm1fvzqw4vplj2sms83jpx5qc8m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-utf8-width" ,rust-utf8-width-0.1))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1))))
+    (home-page "https://magiclen.org/html-escape")
+    (synopsis "Library for encoding and escaping special characters in HTML")
+    (description
+     "This package provides a library for encoding and escaping special
+characters in HTML, decoding and unescaping HTML entities as well.")
+    (license license:expat)))
+
 (define-public rust-hts-sys-2
   (package
     (name "rust-hts-sys")
@@ -34044,6 +34188,92 @@ IOCP and Async I/O abstractions.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-mockall-0.11
+  (package
+    (name "rust-mockall")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mockall" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0k3g3xxf195vsnzmwza047dv89zlg6h5yj5774wjlndgpdvf8han"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Not all files included.
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-downcast" ,rust-downcast-0.11)
+        ("rust-fragile" ,rust-fragile-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-mockall-derive" ,rust-mockall-derive-0.11)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-predicates-tree" ,rust-predicates-tree-1))
+       #:cargo-development-inputs
+       (("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-mockall-double" ,rust-mockall-double-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/asomers/mockall")
+    (synopsis "Mock object library for Rust")
+    (description
+     "Mockall is a rich mocking library with a terse and ergonomic interface.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-mockall-derive-0.11
+  (package
+    (name "rust-mockall-derive")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mockall-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ixhmsrg5ky4b2jlvbxhlpr3mbv7frd6wr8msm005vijb5rmcb96"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
+    (home-page "https://github.com/asomers/mockall")
+    (synopsis "Procedural macros for the Mockall crate")
+    (description
+     "This package procides procedural macros for the Mockall crate.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-mockall-double-0.3
+  (package
+    (name "rust-mockall-double")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mockall-double" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xk6hjr7m73zly4hg3zmma437vqvrwnjxy2wfxy1hxbk52xwfwdf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/asomers/mockall")
+    (synopsis "Double test adapter that works well with Mockall")
+    (description
+     "This crate makes it even easier to use mocking by providing a way to
+select the mock struct at compile time.  Used with the Mockall crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-model-0.1
   (package
     (name "rust-model")
@@ -35641,7 +35871,7 @@ structures.")
         ("rust-time" ,rust-time-0.1)
         ("rust-typemap" ,rust-typemap-0.3)
         ("rust-url" ,rust-url-1))))
-    (home-page "http://nickel-org.github.io/")
+    (home-page "https://nickel-org.github.io/")
     (synopsis "Web application framework for Rust")
     (description
      "@code{nickel.rs} is a simple and lightweight foundation for web
@@ -35739,8 +35969,36 @@ nitrokey crate and others using it.")
 nitrokey-test crate.")
     (license license:gpl3+)))
 
+(define-public rust-nix-0.26
+  (package
+    (name "rust-nix")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "155610n6bp37sqg7p0qihzi0jnvqkpqc40nyik89frbc6lfqv9a6"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-bitflags" ,rust-bitflags-1)
+             ("rust-cfg-if" ,rust-cfg-if-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-memoffset" ,rust-memoffset-0.7))))
+    (home-page "https://github.com/nix-rust/nix")
+    (synopsis "Rust friendly bindings to *nix APIs")
+    (description
+     "Nix seeks to provide friendly bindings to various *nix platform APIs.
+The goal is to not provide a 100% unified interface, but to unify what can be
+while still providing platform specific APIs.")
+    (license license:expat)))
+
 (define-public rust-nix-0.24
   (package
+    (inherit rust-nix-0.26)
     (name "rust-nix")
     (version "0.24.2")
     (source
@@ -35750,21 +36008,13 @@ nitrokey-test crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1z35n1bhzslr7zawy2c0fl90jjy9l5b3lnsidls3908vfk0xnp0r"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
            #:cargo-inputs
            `(("rust-bitflags" ,rust-bitflags-1)
              ("rust-cfg-if" ,rust-cfg-if-1)
              ("rust-libc" ,rust-libc-0.2)
-             ("rust-memoffset" ,rust-memoffset-0.6))))
-    (home-page "https://github.com/nix-rust/nix")
-    (synopsis "Rust friendly bindings to *nix APIs")
-    (description
-     "Nix seeks to provide friendly bindings to various *nix platform APIs.
-The goal is to not provide a 100% unified interface, but to unify what can be
-while still providing platform specific APIs.")
-    (license license:expat)))
+             ("rust-memoffset" ,rust-memoffset-0.6))))))
 
 (define-public rust-nix-0.23
   (package
@@ -43519,6 +43769,80 @@ language.")
      "This package provides a Protocol Buffers implementation for the Rust
 language.")
     (license license:asl2.0)))
+
+;; It's recommended that rust-protobuf, rust-protobuf-codegen
+;; and rust-probuf-codegen-pure be the same version
+(define-public rust-protobuf-2
+  (package
+    (name "rust-protobuf")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "protobuf" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11bl8hf522s9mbkckivnn9n8s3ss4g41w6jmfdsswmr5adqd71lf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; missing files in the release tarball.
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/stepancheg/rust-protobuf/")
+    (synopsis "Rust implementation of Google protocol buffers")
+    (description
+     "This package provides a library to read and write protocol buffer's data.")
+    (license license:expat)))
+
+;; It's recommended that rust-protobuf, rust-protobuf-codegen
+;; and rust-probuf-codegen-pure be the same version
+(define-public rust-protobuf-codegen-2
+  (package
+    (name "rust-protobuf-codegen")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "protobuf-codegen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "031bx325lsgcx7wc76vc2cqph6q0b34jgc8nz0g2rkwcfnx3n4fy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-protobuf" ,rust-protobuf-2))))
+    (home-page "https://github.com/stepancheg/rust-protobuf/")
+    (synopsis "Code generator for rust-protobuf")
+    (description
+     "This package provides a code generator for rust-protobuf.  It includes a
+library to invoke programmatically (e.g. from @code{build.rs}) and
+@code{protoc-gen-rust} binary.")
+    (license license:expat)))
+
+;; It's recommended that rust-protobuf, rust-protobuf-codegen
+;; and rust-probuf-codegen-pure be the same version
+(define-public rust-protobuf-codegen-pure-2
+  (package
+    (name "rust-protobuf-codegen-pure")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "protobuf-codegen-pure" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0h34gfqlb7bqmgqv1mfgy5wk35z5r2h5ki3p3pdcmw1vqzmly6id"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-protobuf" ,rust-protobuf-2)
+        ("rust-protobuf-codegen" ,rust-protobuf-codegen-2))))
+    (home-page "https://github.com/stepancheg/rust-protobuf/")
+    (synopsis "Pure-rust codegen for protobuf using protobuf-parser")
+    (description "This package provides a pure-rust codegen for protobuf
+using protobuf-parser.")
+    (license license:expat)))
 
 (define-public rust-psl-2
   (package
@@ -54504,6 +54828,28 @@ Unicode strings.")
 I/O programming.")
     (license license:expat)))
 
+(define-public rust-smallbitvec-2
+  (package
+    (name "rust-smallbitvec")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "smallbitvec" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0plrbldsjpwip3afbzd8fgrnvdhizcg5z4ncfqs4q6x4qjflzkkm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-bit-vec" ,rust-bit-vec-0.4)
+        ("rust-rand" ,rust-rand-0.4))))
+    (home-page "https://github.com/servo/smallbitvec")
+    (synopsis "Bit vector optimized for size and inline storage")
+    (description "This package provides a bit vector optimized for size and
+inline storage.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-smallvec-1
   (package
     (name "rust-smallvec")
@@ -56711,7 +57057,7 @@ and Jaro-Winkler.")
 (define-public rust-structopt-0.3
   (package
     (name "rust-structopt")
-    (version "0.3.21")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
@@ -56720,14 +57066,27 @@ and Jaro-Winkler.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "136j0lvjmpv5syi751vxg8vb30gfyv4k81x8d18kxrj6xvbsqxsj"))))
+         "043sg3qxllann6q9i71d05qp3q13scmcvhxhd950ka2v8ij5qsqc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-structopt-derive" ,rust-structopt-derive-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-clap" ,rust-clap-2))))
+        ("rust-paw" ,rust-paw-1)
+        ("rust-clap" ,rust-clap-2))
+       #:cargo-development-inputs
+       (("rust-strum" ,rust-strum-0.21)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-rustversion" ,rust-rustversion-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'fixup-cargo-toml
+           (lambda _
+             (substitute* "Cargo.toml"
+               ;; feature does not exist
+               (("lints.*") "")
+               (("2.33") ,(package-version rust-clap-2))))))))
     (home-page "https://github.com/TeXitoi/structopt")
     (synopsis "Parse command line argument by defining a struct")
     (description
@@ -56762,7 +57121,7 @@ struct.")
 (define-public rust-structopt-derive-0.4
   (package
    (name "rust-structopt-derive")
-   (version "0.4.14")
+   (version "0.4.18")
    (source
     (origin
      (method url-fetch)
@@ -56771,7 +57130,7 @@ struct.")
       (string-append name "-" version ".tar.gz"))
      (sha256
       (base32
-       "143gjwvz3s86hwp070km83y25n8kqp5f01kb1dr19f4ilkywvaav"))))
+       "1q5gcigmvw0cinjxzpyrkflliq5r1ivljmrvfrl3phcwgwraxdfw"))))
    (build-system cargo-build-system)
    (arguments
     `(#:skip-build? #t
@@ -58988,6 +59347,28 @@ loading and layout routines of XeTeX as a crate, currently providing only
 a C API.")
     (license license:expat)))
 
+(define-public rust-temp-testdir-0.2
+  (package
+    (name "rust-temp-testdir")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "temp_testdir" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1z5yv6d9944md5zg6g0sbahv7xjga2k232x40x4l20kq8af1w7wj"))))
+    (build-system cargo-build-system)
+    #;
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/la10736/temp_testdir")
+    (synopsis "Use a temp directory")
+    (description
+     "This is a little crate to use a temp directory in crate.  You can chose
+whether to delete it after use or not for debugging purposes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tempdir-0.3
   (package
     (name "rust-tempdir")
@@ -60028,7 +60409,7 @@ fixed set of worker threads.")
         ("rust-log" ,rust-log-0.4)
         ("rust-ordered-float" ,rust-ordered-float-1)
         ("rust-threadpool" ,rust-threadpool-1))))
-    (home-page "http://thrift.apache.org")
+    (home-page "https://thrift.apache.org")
     (synopsis "Rust bindings for the Apache Thrift RPC system")
     (description
      "This crate provides Rust bindings for the Apache Thrift RPC system.")
@@ -63181,7 +63562,7 @@ etc. distance calculations and string search.")
         ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.20)
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.21))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "https://www.trust-dns.org/index.html")
     (synopsis "DNS over HTTPS extension for the Trust-DNS client")
     (description
      "Trust-DNS is a safe and secure DNS library.  This is an extension for
@@ -63315,7 +63696,7 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "https://www.trust-dns.org/index.html")
     (synopsis "native-tls extension for the Trust-DNS client")
     (description "Trust-DNS is a safe and secure DNS library.  This is an
 extension for the Trust-DNS client to use native-tls for TLS.")
@@ -63413,7 +63794,7 @@ extension for the Trust-DNS client to use native-tls for TLS.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "https://www.trust-dns.org/index.html")
     (synopsis "tokio-openssl extension for the Trust-DNS client")
     (description "Trust-DNS is a safe and secure DNS library.  This is an
 extension for the Trust-DNS client to use tokio-openssl for TLS.")
@@ -63531,7 +63912,7 @@ extension for the Trust-DNS client to use tokio-openssl for TLS.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-url" ,rust-url-2)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "https://www.trust-dns.org/index.html")
     (synopsis "Safe and secure DNS library")
     (description
      "Trust-DNS is a safe and secure DNS library.  This is the foundational
@@ -63691,7 +64072,7 @@ DNS protocol library for all Trust-DNS projects.")
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20)
         ("rust-trust-dns-rustls" ,rust-trust-dns-rustls-0.20)
         ("rust-webpki-roots" ,rust-webpki-roots-0.21))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "https://www.trust-dns.org/index.html")
     (synopsis "Safe and secure DNS library")
     (description
      "Trust-DNS is a safe and secure DNS library.  This Resolver library uses
@@ -63840,7 +64221,7 @@ other queries.")
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
         ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.20)
         ("rust-webpki" ,rust-webpki-0.21))))
-    (home-page "http://www.trust-dns.org/index.html")
+    (home-page "https://www.trust-dns.org/index.html")
     (synopsis "rustls extension for the Trust-DNS client")
     (description
      "Trust-DNS is a safe and secure DNS library.  This is an extension for
@@ -64611,7 +64992,7 @@ panic-free alternative to @code{core::fmt}.")
         (("rust-criterion" ,rust-criterion-0.3)
          ("rust-num-bigint" ,rust-num-bigint-0.4)
          ("rust-rug" ,rust-rug-1))))
-    (home-page "http://parity.io")
+    (home-page "https://parity.io")
     (synopsis "Large, fixed-size integer arithmetic in Rust")
     (description "This package is a Rust library for large, fixed-size integer
 arithmetic.")
@@ -68766,7 +69147,7 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
        (("rust-linked-hash-map" ,rust-linked-hash-map-0.5))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))))
-    (home-page "http://chyh1990.github.io/yaml-rust/")
+    (home-page "https://chyh1990.github.io/yaml-rust/")
     (synopsis "YAML 1.2 parser for Rust")
     (description "This package is a YAML 1.2 parser for Rust.")
     (license (list license:expat license:asl2.0))))

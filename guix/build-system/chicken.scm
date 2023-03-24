@@ -27,7 +27,6 @@
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
-  #:use-module (ice-9 match)
   #:export (%chicken-build-system-modules
             chicken-build
             chicken-build-system

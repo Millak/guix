@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -165,8 +165,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "d5fece6bfe6b2eaf93f936a4a6dea8fbfe118140")
-        (revision 3))
+        (commit "01fd830f2fdd388f56e6e00df747f052bbde3906")
+        (revision 4))
     (package
       (name "guix")
 
@@ -182,7 +182,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1q7qfxhfayhcia30w60klnv3q29a2n72vvf1wkdvwx55q3p8prsc"))
+                  "1kc4p6sakj57mdcd6avvbbw72q8irddn0cz7l17k0dp1463vjfl1"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -627,6 +627,11 @@ overridden by setting the 'current-guix-package' parameter."
     (arguments
      `(#:modules ((guix build utils)
                   (gnu build svg))
+
+       ;; There's no point in cross-compiling: a native build gives the same
+       ;; result, independently of the system type.
+       #:target #f
+
        #:builder
        ,(with-extensions (list guile-rsvg guile-cairo)
           #~(begin
@@ -824,7 +829,7 @@ symlinks to the files in a common directory such as /usr/local.")
     (description
      "XStow is a replacement of GNU Stow written in C++.  It supports all
 features of Stow with some extensions.")
-    (home-page "http://xstow.sourceforge.net/")
+    (home-page "https://xstow.sourceforge.net/")
     (license license:gpl2)))
 
 (define-public rpm
@@ -869,7 +874,8 @@ features of Stow with some extensions.")
            lua
            sqlite
            xz
-           zlib))
+           zlib
+           zstd))
     (propagated-inputs
      ;; popt is listed in the 'Requires' of rpm.pc.
      (list popt))
@@ -1357,19 +1363,19 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "6b1aa0654bf576f0adbb6adc68c5f7e4e0bae874")
-        (revision "70"))
+  (let ((commit "804165f14ccf613b7d76b2bda83fbfd49019f7e4")
+        (revision "74"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/git/guix/build-coordinator")
+                      (url "https://git.savannah.gnu.org/git/guix/build-coordinator.git")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1dnwjfax5mdmzd9xcwgsz0i3x4pvwswnz7a264qg684vdb2h4iz0"))
+                  "0qga8a7795cig211hya53qjvd2bxcpabpz8izc8zxrmz490wz24j"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1449,7 +1455,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers-1.1
+             guile-fibers-next
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1473,7 +1479,7 @@ environments.")
               guile-gnutls)
         (if (hurd-target?)
             '()
-            (list guile-fibers-1.1))))
+            (list guile-fibers-next))))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1666,19 +1672,19 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "8f7b2b24e36b306d543670b6a4d3310e5be2f944")
-        (revision "14"))
+  (let ((commit "659543cd9ad78f712b4b067863db0613423dd23b")
+        (revision "18"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.cbaines.net/git/guix/nar-herder")
+                      (url "https://git.savannah.gnu.org/git/guix/nar-herder.git")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1bgcsldrihsv357kyfcgv2brvdai03d7lrqs7sfgm7zfb75xvbl1"))
+                  "09ghbbrk5gazkpqxcvfnn56pp11sndn7hw00ipc8d95wqk53g9qg"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1895,14 +1901,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.14.1")
+    (version "1.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "17ykbp5lmlbv6241vw55zgqdp34wc12jbj5nhs4wb3018crq4g0a"))
+        (base32 "16b7f7n2mms6zgm0lj3fn86ny11xjn8cd3mrk1slwhvwnv8dnd4a"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
@@ -1953,10 +1959,12 @@ cp -r /tmp/locale/*/en_US.*")))
           ;; Many tests fail for unknown reasons, so we just run a few basic
           ;; tests.
           (replace 'check
-            (lambda _
-              (setenv "HOME" "/tmp")
-              (invoke "make" "check"
-                      "TESTS=tests/test-basic.sh tests/test-config.sh testcommon"))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "make" "check"
+                        "TESTS=tests/test-basic.sh tests/test-config.sh
+                        testcommon")))))))
     (native-inputs
      (list bison
            dbus ; for dbus-daemon
@@ -2142,7 +2150,7 @@ from R7RS, which allows most R7RS code to run on R6RS implementations.")
       (list dejagnu autoconf which))
     (inputs
       (list tcl less procps coreutils python-3))
-    (home-page "http://modules.sourceforge.net/")
+    (home-page "https://modules.sourceforge.net/")
     (synopsis "Shell environment variables and aliases management")
     (description "Modules simplify shell initialization and let users
 modify their environment during the session with modulefiles.  Modules are

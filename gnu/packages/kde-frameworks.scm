@@ -31,7 +31,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
-  #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -2435,38 +2434,6 @@ ini-style description files.")
 with su and ssh respectively.")
     (license license:lgpl2.1+)))
 
-(define-public kdewebkit
-  (package
-    (name "kdewebkit")
-    (version "5.98.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/portingAids/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "03bwwgzh1xfj4w7q2cvr7712yrjgf9qhqkqgzypcdb49gpvaq164"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules qttools-5))
-    (inputs
-     (list kconfig
-           kcoreaddons
-           kio
-           kjobwidgets
-           kparts
-           kservice
-           kwallet
-           qtbase-5
-           qtwebkit))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "KDE Integration for QtWebKit")
-    (description "This library provides KDE integration of the HTML rendering
-engine WebKit via QtWebKit.")
-    (license license:lgpl2.1+)))
-
 (define-public kemoticons
   (package
     (name "kemoticons")
@@ -2703,51 +2670,56 @@ consumption.")
                   qtscript
                   qtx11extras
                   sonnet
-                  `(,util-linux "lib") ; libmount
+                  `(,util-linux "lib")  ; libmount
                   zlib))
     (arguments
-     (list #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             ;; Better error message (taken from NixOS)
-             (substitute* "src/kiod/kiod_main.cpp"
-               (("(^\\s*qCWarning(KIOD_CATEGORY) << \"Error loading plugin:\")( << loader.errorString();)" _ a b)
-                (string-append a "<< name" b)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" (getcwd))
-               (setenv "XDG_RUNTIME_DIR" (getcwd))
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (invoke "dbus-launch" "ctest"
-                       "-E" ; FIXME: 17/69 tests fail.
-                       (string-append "(kiocore-jobtest"
-                                      "|kiocore-kmountpointtest"
-                                      "|kiocore-kfileitemtest"
-                                      "|kiocore-ktcpsockettest"
-                                      "|kiocore-mimetypefinderjobtest"
-                                      "|kiocore-krecentdocumenttest"
-                                      "|kiocore-http_jobtest"
-                                      "|kiogui-openurljobtest"
-                                      "|applicationlauncherjob_forkingtest"
-                                      "|applicationlauncherjob_scopetest"
-                                      "|applicationlauncherjob_servicetest"
-                                      "|commandlauncherjob_forkingtest"
-                                      "|commandlauncherjob_scopetest"
-                                      "|commandlauncherjob_servicetest"
-                                      "|kiowidgets-kdirmodeltest"
-                                      "|kiowidgets-kurifiltertest-colon-separator"
-                                      "|kiowidgets-kurifiltertest-space-separator)")))))
-         (add-after 'install 'add-symlinks
-           ;; Some package(s) (e.g. bluedevil) refer to these service types by
-           ;; the wrong name.  I would prefer to patch those packages, but I
-           ;; cannot find the files!
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((kst5 (string-append #$output "/share/kservicetypes5/")))
-               (symlink (string-append kst5 "kfileitemactionplugin.desktop")
-                        (string-append kst5 "kfileitemaction-plugin.desktop"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              ;; Better error message (taken from NixOS)
+              (substitute* "src/kiod/kiod_main.cpp"
+                (("(^\\s*qCWarning(KIOD_CATEGORY) << \
+\"Error loading plugin:\")( << loader.errorString();)" _ a b)
+                 (string-append a "<< name" b)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))
+                (setenv "XDG_RUNTIME_DIR" (getcwd))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (invoke "dbus-launch" "ctest"
+                        "-E"
+                        ;; The following tests fail or are flaky (see:
+                        ;; https://bugs.kde.org/show_bug.cgi?id=440721).
+                        (string-append "(kiocore-jobtest"
+                                       "|kiocore-kmountpointtest"
+                                       "|kiowidgets-kdirlistertest"
+                                       "|kiocore-kfileitemtest"
+                                       "|kiocore-ktcpsockettest"
+                                       "|kiocore-mimetypefinderjobtest"
+                                       "|kiocore-krecentdocumenttest"
+                                       "|kiocore-http_jobtest"
+                                       "|kiogui-openurljobtest"
+                                       "|applicationlauncherjob_forkingtest"
+                                       "|applicationlauncherjob_scopetest"
+                                       "|applicationlauncherjob_servicetest"
+                                       "|commandlauncherjob_forkingtest"
+                                       "|commandlauncherjob_scopetest"
+                                       "|commandlauncherjob_servicetest"
+                                       "|kiowidgets-kdirmodeltest"
+                                       "|kiowidgets-kurifiltertest-colon-separator"
+                                       "|kiowidgets-kurifiltertest-space-separator)")))))
+          (add-after 'install 'add-symlinks
+            ;; Some package(s) (e.g. bluedevil) refer to these service types by
+            ;; the wrong name.  I would prefer to patch those packages, but I
+            ;; cannot find the files!
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((kst5 (string-append #$output "/share/kservicetypes5/")))
+                (symlink (string-append kst5 "kfileitemactionplugin.desktop")
+                         (string-append kst5 "kfileitemaction-plugin.desktop"))))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Network transparent access to files and data")
     (description "This framework implements a lot of file management functions.

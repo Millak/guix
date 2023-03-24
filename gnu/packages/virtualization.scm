@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2017, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018. 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Andy Patterson <ajpatter@uwaterloo.ca>
@@ -302,7 +302,11 @@
                 ;; Comment out the test-char test, which needs networking and
                 ;; fails within the build environment.
                 ((".*'test-char':.*" all)
-                 (string-append "# " all)))))
+                 (string-append "# " all)))
+              (substitute* "tests/qtest/meson.build"
+                ;; These tests fail to get the expected number of tests
+                ;; on arm platforms.
+                (("'arm-cpu-features',") ""))))
           #$@(if (target-riscv64?)
                  '((add-after 'unpack 'disable-some-tests
                      (lambda _
@@ -1188,7 +1192,7 @@ of one or more RISC-V harts.")
                  (format #f "path = ~s;"
                          (search-input-directory (or native-inputs inputs)
                                                  "share/osinfo")))))))))
-    (inputs (list libsoup-minimal-2 libxml2 libxslt osinfo-db))
+    (inputs (list libsoup libxml2 libxslt osinfo-db))
     (native-inputs
      (list `(,glib "bin")                ;glib-mkenums, etc.
            gobject-introspection
@@ -2119,7 +2123,7 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.7.0")
+    (version "0.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/containers/bubblewrap/"
@@ -2127,7 +2131,7 @@ virtual machines.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1p59hawgpf16mc01ybf6dfb2b96pk7h65ls0si9yldyh1c8bfjkn"))
+                "0fik7l8rm4yjkasskj7gw52s8jg3xfy152wqisw3s0xrklad2ylm"))
                (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -2196,7 +2200,7 @@ by default and can be made read-only.")
      `(#:tests? #f))                    ; no tests exist
     (inputs
      (list libxrandr))
-    (home-page "http://bochs.sourceforge.net/")
+    (home-page "https://bochs.sourceforge.net/")
     (synopsis "Emulator for x86 PC")
     (description
      "Bochs is an emulator which can emulate Intel x86 CPU, common I/O

@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
@@ -33,7 +33,6 @@
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
@@ -172,49 +171,48 @@ module for the DMA capture of the video flow.")
 (define-public ccextractor
   (package
     (name "ccextractor")
-    (version "0.88")
+    (version "0.94")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/CCExtractor/ccextractor")
-         (commit (string-append "v" version))))
+       (uri (git-reference
+             (url "https://github.com/CCExtractor/ccextractor")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       ;; FIXME: Delete the 'src/thirdparty directory and unbundle the
+       ;; libraries it contains, such as freetype, libpng, zlib, and others.
+       (patches (search-patches "ccextractor-add-missing-header.patch"
+                                "ccextractor-autoconf-tesseract.patch"
+                                "ccextractor-fix-ocr.patch"))
        (sha256
-        (base32 "1sya45hvv4d46bk7541yimmafgvgyhkpsvwfz9kv6pm4yi1lz6nb"))))
-    (build-system cmake-build-system)
+        (base32 "1hrk4xlzkvk9pnv0yr4whcsh8h4fzk42mrf30dsr3xzh1lgpfslg"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; No target
-       #:configure-flags
-       (list
-        "-DWITH_FFMPEG=ON"
-        "-DWITH_OCR=ON"
-        "-DWITH_SHARING=ON"
-        "-DWITH_HARDSUBX=ON")
-       #:phases
-       (modify-phases %standard-phases
-         ;; The package is in a sub-dir of this repo.
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "src")
-             #t))
-         (add-after 'chdir 'fix-build-errors
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("libnanomsg")
-                "nanomsg"))
-             #t)))))
-    (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
-    (inputs
-     `(("ffmeg" ,ffmpeg-3.4)
-       ("nanomsg" ,nanomsg)
-       ("leptonica" ,leptonica)
-       ("ocr" ,tesseract-ocr)
-       ("zlib" ,zlib)))
+     (list #:configure-flags
+           #~(list "--enable-ffmpeg"
+                   "--enable-ocr"
+                   "--enable-hardsubx"
+                   ;; Disable Rust support, as there's no rust source included
+                   ;; and cargo wants to fetch the crates from the network
+                   ;; (see:
+                   ;; https://github.com/CCExtractor/ccextractor/issues/1502).
+                   "--without-rust")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "linux")))
+                        (add-after 'chdir 'patch-pre-build.sh
+                          (lambda _
+                            (substitute* "pre-build.sh"
+                              (("/usr/bin/env") (which "env")))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              ;; There is no test suite; simply run the binary
+                              ;; to validate there are no obvious problems.
+                              (invoke "./ccextractor" "--help")))))))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list ffmpeg-3.4 leptonica-1.80 tesseract-ocr-4))
     (synopsis "Closed Caption Extractor")
     (description "CCExtractor is a tool that analyzes video files and produces
 independent subtitle files from the closed captions data.  It is portable, small,
@@ -1171,3 +1169,29 @@ framework.  It plays all file formats gstreamer supports, so if you have a
 music collection which contains different file formats, like flac, ogg and
 mp3, you can use gst123 to play all your music files.")
     (license license:lgpl2.0+)))
+
+(define-public gst-plugins-espeak
+  (let ((commit "7f6e41274fb833a487a7ee8ac0c236f0821330cc")
+        (revision "1"))
+    (package
+      (name "gst-plugins-espeak")
+      (version (git-version "0.5.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/gst-plugins-espeak")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0va4ghcdda8cbqzv376hgmv1ay79va4kyazibfj8m5n52bhxxqgz"))))
+      (build-system gnu-build-system)
+      (inputs
+       (list espeak-ng gstreamer gst-plugins-base))
+      (native-inputs
+       (list autoconf automake libtool pkg-config))
+      (home-page "http://wiki.sugarlabs.org/go/Activity_Team/gst-plugins-espeak")
+      (synopsis "Use espeak ")
+      (description "This is a Gstreamer @code{src} plugin to use the espeak
+speech synthesizer as a sound source.")
+      (license license:lgpl2.0+))))

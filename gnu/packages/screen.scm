@@ -93,7 +93,7 @@ view to show two terminals at once.")
                #t))))
        ;; No check target.
        #:tests? #f))
-    (home-page "http://dtach.sourceforge.net/")
+    (home-page "https://dtach.sourceforge.net/")
     (synopsis "Emulates the detach feature of screen")
     (description
      "dtach is a tiny program that emulates the detach feature of screen,

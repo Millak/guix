@@ -21,7 +21,6 @@
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (rnrs io ports)
-  #:use-module (ice-9 match)
   #:export (gpg-command
             gpgconf-command
             with-fresh-gnupg-setup

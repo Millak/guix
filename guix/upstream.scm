@@ -48,7 +48,6 @@
   #:use-module (srfi srfi-35)
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
   #:export (upstream-source
             upstream-source?
             upstream-source-package

@@ -54,7 +54,6 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)

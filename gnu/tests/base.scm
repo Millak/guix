@@ -962,7 +962,7 @@ non-ASCII names from /tmp.")
     (name-service-switch %mdns-host-lookup-nss)
     (services (cons* (service avahi-service-type
                               (avahi-configuration (debug? #t)))
-                     (dbus-service)
+                     (service dbus-root-service-type)
                      (service dhcp-client-service-type) ;needed for multicast
 
                      ;; Enable heavyweight debugging output.

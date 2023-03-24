@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2014, 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2014, 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -28,9 +28,6 @@
   #:use-module (guix read-print)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-11)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-37)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (%standard-import-options
@@ -106,6 +103,5 @@ Run IMPORTER with ARGS.\n"))
          (let ((hint (string-closest importer importers #:threshold 3)))
            (report-error (G_ "~a: invalid importer~%") importer)
            (when hint
-             (display-hint
-              (format #f (G_ "Did you mean @code{~a}?~%") hint)))
+             (display-hint (G_ "Did you mean @code{~a}?~%") hint))
            (exit 1))))))

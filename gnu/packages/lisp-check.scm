@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 André A. Gomes <andremegafone@gmail.com>
@@ -378,6 +378,40 @@ easy to use so that you can quickly start testing.")
 (define-public ecl-clunit2
   (sbcl-package->ecl-package sbcl-clunit2))
 
+(define-public sbcl-confidence
+  (let ((commit "5cbc74715348e12e689afb2d459dcb216c640a44")
+        (revision "0"))
+    (package
+      (name "sbcl-confidence")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/melusina-org/cl-confidence")
+               (commit commit)))
+         (file-name (git-file-name "cl-confidence" version))
+         (sha256
+          (base32 "0zc135rvq2valrw15bh8k6i53v7kk5l7x0kccb1bf7pglc8zgivs"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("org.melusina.confidence"
+                         "org.melusina.confidence/testsuite")))
+      (inputs (list sbcl-alexandria))
+      (home-page "https://github.com/melusina-org/cl-confidence")
+      (synopsis "Interactive test framework for Common Lisp")
+      (description
+       "Confidence is a test framework for Common Lisp that focuses on
+simplicty.  It avoids bureaucracy and makes it easy to work interactively,
+without a complicated setup, and with explicit functions and decisions.")
+      (license license:expat))))
+
+(define-public ecl-confidence
+  (sbcl-package->ecl-package sbcl-confidence))
+
+(define-public cl-confidence
+  (sbcl-package->cl-source-package sbcl-confidence))
+
 (define-public sbcl-eos
   (let ((commit "b4413bccc4d142cbe1bf49516c3a0a22c9d99243")
         (revision "2"))
@@ -718,8 +752,8 @@ by Chris Riesbeck.")
   (sbcl-package->cl-source-package sbcl-nst))
 
 (define-public sbcl-parachute
-  (let ((commit "8bc3e1b5a1808341967aeb89516f9fab23cd1d9e")
-        (revision "0"))
+  (let ((commit "bd072b0e4d0ff3ee2201eca3eb28c287686ab49e")
+        (revision "1"))
     (package
       (name "sbcl-parachute")
       (version (git-version "1.5.0" revision commit))
@@ -732,7 +766,7 @@ by Chris Riesbeck.")
            (commit commit)))
          (file-name (git-file-name "cl-parachute" version))
          (sha256
-          (base32 "0cppp1sp9xqkgxgkwidhqzlsj03ywnar7z9mzwcliww8y0kv5555"))))
+          (base32 "0srjsklhr04snlv98021mb0a5lb8dlypv1lnjdhsdhjbbiwbw2n9"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils
@@ -815,7 +849,7 @@ advantages of @command{prove} are:
              (delete-file-recursively "debian")
              #t))))
       (build-system asdf-build-system/sbcl)
-      (home-page "http://quickdocs.org/ptester/")
+      (home-page "https://quickdocs.org/ptester/")
       (synopsis "Portable test harness package")
       (description
        "@command{ptester} is a portable testing framework based on Franz's
@@ -1098,7 +1132,7 @@ parameterization.")
       (description
        "The XLUnit package is a toolkit for building test suites.  It is based
 on the XPTest package by Craig Brozensky and the JUnit package by Kent Beck.")
-      (home-page "http://quickdocs.org/xlunit/")
+      (home-page "https://quickdocs.org/xlunit/")
       (license license:bsd-3))))
 
 (define-public cl-xlunit

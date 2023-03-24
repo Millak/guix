@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +21,6 @@
 (define-module (gnu packages opencl)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system copy)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -55,7 +55,7 @@
 (define-public opencl-headers
   (package
     (name "opencl-headers")
-    (version "2021.06.30")
+    (version "2023.02.06")
     (source
       (origin
         (method git-fetch)
@@ -64,7 +64,7 @@
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1nrvx0x9r1nz1qpmzbgffnn9h9pn2fwcxsksf101bkpmqziq5lii"))))
+         (base32 "1jxpx15gwxc6i7vp64xlzcxf57nl0qnaiip6jyr0j7iji47dm404"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Not enabled during build.
     (synopsis "The Khronos OpenCL headers")
@@ -96,7 +96,7 @@
 (define-public opencl-clhpp
   (package
     (name "opencl-clhpp")
-    (version "2.0.15")
+    (version "2023.02.06")
     (source
      (origin
        (method git-fetch)
@@ -104,14 +104,15 @@
              (url "https://github.com/KhronosGroup/OpenCL-CLHPP")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1wycdbvwbdn7lqdd3sby8471qg2zdisr70218ava6cfvxdsqcp83"))
+        (base32 "1m3v5apjv3qagym32xqg38pq6i8j5d8svz11clsx408nrlyngrj0"))
        (file-name (git-file-name name version))))
     (native-inputs
      `(("python" ,python-wrapper)))
     (propagated-inputs
      (list opencl-headers))
     (arguments
-     `(#:configure-flags (list "-DBUILD_EXAMPLES=OFF" "-DBUILD_TESTS=OFF")
+     `(#:configure-flags (list "-DBUILD_EXAMPLES=OFF" "-DBUILD_TESTS=OFF"
+                               "-DBUILD_TESTING=OFF") ;; CTest needs this to be turned off
        ;; The regression tests require a lot more dependencies.
        #:tests? #f))
     (build-system cmake-build-system)
@@ -124,7 +125,7 @@
 (define-public opencl-icd-loader
   (package
     (name "opencl-icd-loader")
-    (version "2021.06.30")
+    (version "2023.02.06")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -133,7 +134,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "007ws357n1ijrxal1bf9lwy68p0dz1sm9cfcfnnz5f88iwc9xd6m"))))
+                "1cmbcm6bz6kfvr0dy9hzf2vgfwcz8gbm8rxspqqpva6z74dz0qxr"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Tests need stub loader setup.
     (native-search-paths
@@ -278,38 +279,53 @@ back-end for the LLVM compiler framework.")
 (define-public pocl
   (package
     (name "pocl")
-    (version "1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pocl/pocl")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "1c4y69zks6hkq5fqh9waxgb8g4ka7y6h3vacmsm720kba0h57g8a"))
-       (file-name (git-file-name name version))))
+    (version "3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pocl/pocl")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1pw4q0hi5ynx34fvzryravz3jbh89f9cg60fkjj77sxh9xw8phdd"))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+                 '(begin
+                        ;; "kernel/test_printf_vectors" and
+                        ;; "kernel/test_printf_vectors_ulongn"
+                        ;; fail on aarch5 and likely other platforms
+                        ;; as commented in CMakeLists.txt
+                        ;; thus disable the block in CMakeList.txt adding
+                        ;; these two tests
+                       (substitute* "tests/kernel/CMakeLists.txt"
+                         (("NOT ENABLE_POCL_FLOAT_CONVERSION") "false"))))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list libltdl pkg-config))
-    (inputs
-     (list clang-9 llvm-9 `(,hwloc-2 "lib") opencl-icd-loader))
+    (native-inputs (list libltdl pkg-config python-3))
+    (inputs (list clang-15 llvm-15
+                  `(,hwloc-2 "lib") opencl-icd-loader))
     (arguments
-     `(#:configure-flags
-       (list "-DENABLE_ICD=ON"
-             "-DENABLE_TESTSUITES=ON"
-             ;; We are not developers, don't run conformance suite.
-             "-DENABLE_CONFORMANCE=OFF"
-             (string-append "-DEXTRA_HOST_LD_FLAGS=-L"
-                            (assoc-ref %build-inputs "libc") "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _
-             (setenv "HOME" "/tmp")
+     `(#:configure-flags (let* ((libdir (string-append (assoc-ref %outputs
+                                                                  "out")
+                                                       "/lib")))
+                           (list "-DENABLE_ICD=ON"
+                                 "-DENABLE_TESTSUITES=ON"
+                                 ;; We are not developers, don't run conformance suite.
+                                 "-DENABLE_CONFORMANCE=OFF"
+                                 (string-append "-DEXTRA_HOST_LD_FLAGS=-L"
+                                                (assoc-ref %build-inputs
+                                                           "libc") "/lib")
+                                 ;; We need both libdir and libdir/pocl in RUNPATH.
+                                 (string-append "-DCMAKE_INSTALL_RPATH="
+                                                libdir ";" libdir "/pocl")))
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'set-HOME
+                    (lambda _
+                      (setenv "HOME" "/tmp")
 
-             ;; Since 2.9.0, hwloc fails when /sys is missing, so provide a
-             ;; fake topology.
-             (setenv "HWLOC_SYNTHETIC" "4"))))))
+                      ;; Since 2.9.0, hwloc fails when /sys is missing, so provide a
+                      ;; fake topology.
+                      (setenv "HWLOC_SYNTHETIC" "4"))))))
     (home-page "http://portablecl.org/")
     (synopsis "Portable Computing Language (pocl), an OpenCL implementation")
     (description
@@ -382,7 +398,7 @@ A lexer, @code{pytools.lex}.
      (list opencl-headers pybind11 opencl-icd-loader))                     ;libOpenCL
     (propagated-inputs
      (list python-appdirs python-numpy python-pytools python-mako))
-    (home-page "http://mathema.tician.de/software/pyopencl")
+    (home-page "https://mathema.tician.de/software/pyopencl")
     (synopsis "Python wrapper for OpenCL")
     (description
      "PyOpenCL lets you access parallel computing devices such as GPUs from

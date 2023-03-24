@@ -51,6 +51,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -122,6 +123,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -364,7 +366,7 @@ more.")
      (list wxwidgets glib alsa-lib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://ariamaestosa.sourceforge.net/")
+    (home-page "https://ariamaestosa.sourceforge.net/")
     (synopsis "MIDI sequencer and editor")
     (description
      "Aria Maestosa is a MIDI sequencer and editor.  It lets you compose, edit
@@ -478,10 +480,74 @@ playing your music.")
                ;; qocoa is under MIT and CC by-sa for the icons.
                license:cc-by-sa3.0))))
 
+(define-public ctrlr
+  ;; The latest release from 2021 does not have a build system.
+  (let ((commit "8aa00d82127acda42ad9ac9b7b479461e9436aa4")
+        (revision "1"))
+    (package
+      (name "ctrlr")
+      (version (git-version "5.5.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/RomanKubiak/ctrlr")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lpfkjp9y0wh2kj02isv8ixnxn3wyvrxhkx0rybwzswfiz5kqdlm"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:cmake cmake                   ;needs 3.25
+        #:tests? #false                 ;there are none
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'pre-configure
+              (lambda _
+                ;; Override default location of fonts.conf.  Without this no
+                ;; fonts will be rendered at all.
+                (substitute* "JUCE/modules/juce_graphics/native/juce_linux_Fonts.cpp"
+                  (("/usr/share/fonts/fonts.conf")
+                   "/run/current-system/profile/etc/fonts/fonts.conf"))
+                ;; Do not build the VST or AU plugins, because these require
+                ;; external proprietary SDKs.
+                (substitute* "CMakeLists.txt"
+                  (("juce_set_vst2_sdk_path.*") "")
+                  (("FORMATS VST3 VST AU Standalone")
+                   "FORMATS Standalone")
+                  ;; BFD also need -liberty.
+                  (("list\\(APPEND ctrlrLibs \"bfd\"\\)" m)
+                   (string-append m "
+list(APPEND ctrlrLibs \"iberty\")")))))
+            ;; The install target doesn't install ctrlr but JUCE helpers.
+            (replace 'install
+              (lambda _
+                (install-file "ctrlr_artefacts/RelWithDebInfo/Standalone/ctrlr"
+                              (string-append #$output "/bin")))))))
+      (inputs
+       (list alsa-lib
+             boost
+             eudev
+             freetype
+             libiberty
+             libx11
+             webkitgtk))
+      (native-inputs
+       (list pkg-config))
+      (home-page "https://ctrlr.org/")
+      (synopsis "Control any MIDI-enabled hardware")
+      (description "This package provides a tool to control any MIDI-enabled
+hardware such as synthesizers, drum machines, samplers, or effects.  It lets
+you create custom user interfaces for your MIDI hardware.")
+      (license (list license:gpl2+
+                     license:gpl3       ;JUCE
+                     license:bsd-3)))))
+
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.14")
+    (version "1.0.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -490,7 +556,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0q8pmf7vr5yxzvfmw86f3m462s8ixaixwdv1z9x9ldkj5rqz45sf"))
+                "04ddplldlls0gxw8qppw6dsqhfnxamxfnnyq0i04mbs5hi83pcrz"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -1308,7 +1374,7 @@ biographies, reviews and more.")
            jack-2
            json-c
            pulseaudio))
-    (home-page "http://lingot.nongnu.org/")
+    (home-page "https://lingot.nongnu.org/")
     (synopsis "Accurate & configurable musical instrument tuner")
     (description
      "LINGOT is a musical instrument tuner.  It's accurate, easy to use, and
@@ -1386,7 +1452,7 @@ and auto-mapping slices to MIDI note numbers.")
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.24.0")
+    (version "2.24.1")
     (source
      (origin
        (method url-fetch)
@@ -1394,7 +1460,7 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "0scbyzbxqnzgibls62npg2i3sywnb146gw7jlvinj9dhj8xvxv9w"))))
+        (base32 "028m31fjcfgsq3f8ahz4hp2r36shsvkq1fjjibqdcp2aas3r1ifm"))))
     (build-system gnu-build-system)
     (arguments
       (list #:tests? #f                      ;out-test/collated-files.html fails
@@ -2495,44 +2561,64 @@ reverb effects.")
                 "1pff51imfgmgqzc6mdgwd1v9fci0a8hj85fnkdsvkdzbnxdzvs9r"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f                            ;no test suite
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'install
-                 (lambda _
-                   (let* ((bin (string-append #$output "/bin"))
-                          (lib (string-append #$output "/lib"))
-                          (share (string-append #$output "/share"))
-                          (clap (string-append lib "/clap"))
-                          (vst3 (string-append lib "/vst3")))
-                     (with-directory-excursion
-                         "PaulXStretch_artefacts/RelWithDebInfo"
-                       (install-file "Standalone/paulxstretch" bin)
-                       (install-file "CLAP/PaulXStretch.clap" clap)
-                       (mkdir-p vst3)
-                       (copy-recursively "VST3" vst3)
-                       (install-file (string-append
-                                      #$source
-                                      "/linux/paulxstretch.desktop")
-                                     (string-append share "/applications"))
-                       (install-file
-                        (string-append
-                         #$source
-                         "/images/paulxstretch_icon_1024_rounded.png")
-                        (string-append share "/pixmaps")))))))))
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "deps/juce/extras/Projucer/Source/ProjectSaving/\
+jucer_ProjectExport_CodeBlocks.h"
+                (("/usr/include/freetype2")
+                 (search-input-directory inputs "/include/freetype2")))
+              (substitute*
+                  "deps/juce/modules/juce_graphics/native/juce_linux_Fonts.cpp"
+                (("/etc/fonts")
+                 (search-input-directory inputs "/etc/fonts")))
+              (substitute*
+                  "deps/juce/modules/juce_gui_basics/native/x11/\
+juce_linux_XWindowSystem.cpp"
+                (("/usr/bin/dconf")
+                 (search-input-file inputs "/bin/dconf"))
+                (("/usr/bin/gsettings")
+                 (search-input-file inputs "/bin/gsettings")))))
+          (replace 'install
+            (lambda _
+              (let* ((lib (string-append #$output "/lib"))
+                     (share (string-append #$output "/share"))
+                     (clap (string-append lib "/clap"))
+                     (vst3 (string-append lib "/vst3")))
+                (with-directory-excursion
+                    "PaulXStretch_artefacts/RelWithDebInfo"
+                  (install-file "Standalone/paulxstretch"
+                                (string-append #$output "/bin"))
+                  (install-file "CLAP/PaulXStretch.clap" clap)
+                  (mkdir-p vst3)
+                  (copy-recursively "VST3" vst3)
+                  (install-file (string-append
+                                 #$source
+                                 "/linux/paulxstretch.desktop")
+                                (string-append share "/applications"))
+                  (install-file (string-append
+                                 #$source
+                                 "/images/paulxstretch_icon_1024_rounded.png")
+                                (string-append share "/pixmaps")))))))))
     (home-page "https://sonosaurus.com/paulxstretch/")
     (native-inputs (list pkg-config))
     (inputs (list alsa-lib
                   curl
+                  dconf
                   fftwf
+                  fontconfig
                   freetype
+                  `(,glib "bin")
                   jack-1
                   libx11
                   libxcursor
                   libxext
                   libxinerama
                   libxrandr))
-    (supported-systems '("x86_64-linux"))         ;pffft.c uses SIMD code
+    (supported-systems '("x86_64-linux")) ;pffft.c uses SIMD code
     (synopsis "Audio timestretching application and plugin")
     (description
      "PaulXStretch is an application/plugin is based on the PaulStretch
@@ -2582,7 +2668,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
            font-bitstream-vera))
     (native-inputs
      (list help2man pkg-config))
-    (home-page "http://setbfree.org")
+    (home-page "https://setbfree.org")
     (synopsis "Tonewheel organ")
     (description
      "setBfree is a MIDI-controlled, software synthesizer designed to imitate
@@ -2633,7 +2719,7 @@ Laurens Hammond and Don Leslie.")
      (list alsa-lib jack-2 liblo libx11))
     (native-inputs
      (list pkg-config))
-    (home-page "http://bristol.sourceforge.net/")
+    (home-page "https://bristol.sourceforge.net/")
     (synopsis "Synthesizer emulator")
     (description
      "Bristol is an emulation package for a number of different @code{classic}
@@ -2906,7 +2992,7 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
      (list alsa-lib))
     (native-inputs
      (list unzip))
-    (home-page "http://portmedia.sourceforge.net/portmidi/")
+    (home-page "https://portmedia.sourceforge.net/portmidi/")
     (synopsis "Library for MIDI I/O")
     (description
      "PortMidi is a library supporting real-time input and output of MIDI data
@@ -2939,7 +3025,7 @@ using a system-independent interface.")
      (list portmidi alsa-lib))
     (native-inputs
      (list python-cython unzip))
-    (home-page "http://portmedia.sourceforge.net/portmidi/")
+    (home-page "https://portmedia.sourceforge.net/portmidi/")
     (synopsis "Python bindings to PortMidi")
     (description
      "This package provides Python bindings to the PortMidi library.")
@@ -2967,7 +3053,7 @@ using a system-independent interface.")
            python-ly
            python-poppler-qt5
            python-pyportmidi
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-sip))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
@@ -3103,7 +3189,7 @@ instrument or MIDI file player.")
     (native-inputs
      (list pkg-config
            ruby))
-    (home-page "http://zynaddsubfx.sf.net/")
+    (home-page "https://zynaddsubfx.sf.net/")
     (synopsis "Software synthesizer")
     (description
      "ZynAddSubFX is a feature heavy realtime software synthesizer.  It offers
@@ -3165,7 +3251,7 @@ capabilities, custom envelopes, effects, etc.")
            zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://yoshimi.sourceforge.net/")
+    (home-page "https://yoshimi.sourceforge.net/")
     (synopsis "Multi-paradigm software synthesizer")
     (description
      "Yoshimi is a fork of ZynAddSubFX, a feature-heavy real-time software
@@ -3366,7 +3452,7 @@ computer's keyboard.")
      (list minixml jack-1 alsa-lib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://aj-snapshot.sourceforge.net/")
+    (home-page "https://aj-snapshot.sourceforge.net/")
     (synopsis "Snapshot connections between ALSA and JACK clients")
     (description "Aj-snapshot is a small program that can be used to make
 snapshots of the connections made between JACK and/or ALSA clients.  Because
@@ -3678,7 +3764,7 @@ event-based scripts for scrobbling, notifications, etc.")
 (define-public picard
   (package
     (name "picard")
-    (version "2.8.3")
+    (version "2.8.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3686,7 +3772,7 @@ event-based scripts for scrobbling, notifications, etc.")
                     "picard/picard-" version ".tar.gz"))
               (sha256
                (base32
-                "0h4yk1y4k23hkfk7k2in27rd34ani857m0vvn7xa8vxizz951dka"))))
+                "1kjl7iqgvvrv7mygsb7491cz872gm334489nyj0v8b79bxnzghdi"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -3709,7 +3795,7 @@ event-based scripts for scrobbling, notifications, etc.")
     (inputs
      (list chromaprint
            python-discid
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-mutagen
            python-fasteners
            python-pyyaml
@@ -4070,7 +4156,7 @@ modes available for improved Amiga ProTracker 2/3 compatibility.")
     (inputs
      (list alsa-lib ; for asound dependency
            libx11 libxext sdl))
-    (home-page "http://schismtracker.org")
+    (home-page "https://schismtracker.org")
     (synopsis "Oldschool sample-based music composition tool")
     (description
      "Schism Tracker is a reimplementation of Impulse Tracker, a program used to
@@ -4200,7 +4286,7 @@ formats, including most audio formats recognized by FFMpeg.")
     (version "1.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.fourmilab.ch/webtools/midicsv/"
+              (uri (string-append "https://www.fourmilab.ch/webtools/midicsv/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
@@ -4218,7 +4304,7 @@ processed by a program to transform the MIDI data (for example, to key
 transpose a composition or extract a track from a multi-track sequence).  A
 CSV file in the format created by midicsv may be converted back into a
 standard MIDI file with the csvmidi program.")
-    (home-page "http://www.fourmilab.ch/webtools/midicsv/")
+    (home-page "https://www.fourmilab.ch/webtools/midicsv/")
     (license license:public-domain)))
 
 (define-public gx-guvnor-lv2
@@ -4583,7 +4669,7 @@ plugins, a switch trigger, a toggle switch, and a peakmeter.")
      (list qtbase-5 alsa-lib jack-1 liblo lv2))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://qmidiarp.sourceforge.net/")
+    (home-page "https://qmidiarp.sourceforge.net/")
     (synopsis "MIDI arpeggiator")
     (description "QMidiArp is an advanced MIDI arpeggiator, programmable step
 sequencer and LFO.  It can hold any number of arpeggiator, sequencer, or LFO
@@ -4609,7 +4695,7 @@ modules running in parallel.")
      (list qtbase-5 alsa-lib))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://alsamodular.sourceforge.net/")
+    (home-page "https://alsamodular.sourceforge.net/")
     (synopsis "MIDI event router and filter")
     (description "QMidiRoute is a MIDI event router and filter.  MIDI note,
 control change, program change and pitch bend events are logged, and can be
@@ -4874,7 +4960,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.0")
+    (version "4.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4883,7 +4969,7 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16rcwr6fzghv8100syzicabqg8jqvng3zzsi6h3ja4zkp9hcbkcr"))
+        (base32 "1yri94xs4xw0lsvmk5q7bqnpgmdadchfn08r7bb2y07jsi8qgm6w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5105,7 +5191,7 @@ It is intended to be simple, GUI-toolkit-agnostic, and slightly biased
 towards familiarity with MIDI.  The DSSI distribution package contains
 a JACK/ALSA-sequencer reference host and some plugins as well as the
 specification and header.")
-    (home-page "http://dssi.sourceforge.net/")
+    (home-page "https://dssi.sourceforge.net/")
     ;; The DSSI interface is LGPL2.1+, some tests and examples are GPL2+.
     ;; The vast majority of examples are in the public domain.
     (license (list license:lgpl2.1+ license:gpl2+))))
@@ -6655,7 +6741,7 @@ plugin and a standalone JACK application.")
       (description "TAP (Tom's Audio Processing) plugins is a collection of
   audio effect plugins originally released as LADSPA plugins.  This package
   offers an LV2 version ported by moddevices.")
-      (home-page "http://tap-plugins.sourceforge.net/")
+      (home-page "https://tap-plugins.sourceforge.net/")
       (license license:gpl2))))
 
 (define-public wolf-shaper
@@ -6796,7 +6882,7 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
       (description "Shiru plugins is a collection of audio plugins created
   by Shiru, ported to LV2 by the Linux MAO project using the DISTRHO plugin
   framework.")
-      (home-page "http://shiru.untergrund.net/software.shtml")
+      (home-page "https://shiru.untergrund.net/software.shtml")
       (license license:wtfpl2))))
 
 (define-public a2jmidid
@@ -7083,6 +7169,40 @@ sending MIDI, OSC, and UDP to your audio/visual interfaces like Ableton,
 Renoise, VCV Rack, or SuperCollider.")
       (home-page "https://100r.co/site/orca.html")
       (license license:expat))))
+
+(define-public samplebrain
+  (package
+    (name "samplebrain")
+    (version "0.18.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/then-try-this/samplebrain")
+                    (commit (string-append "v" version "_release"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17p6n16x89bbzlpn9r7w1lgr1ifxs45npn8gxymkdr3j16dhg4zy"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda _
+                            (substitute* "samplebrain.pro"
+                              (("\\/usr")
+                               #$output))
+                            (invoke "qmake"))))))
+    (inputs (list fftw liblo libsndfile portaudio))
+    (home-page "https://thentrythis.org/projects/samplebrain/")
+    (synopsis "Sample mashing synthesizer designed by Aphex Twin")
+    (description
+     "Samplebrain chops samples up into a 'brain' of
+interconnected small sections called blocks which are connected into a network
+by similarity.  It processes a target sample, chopping it up into blocks in
+the same way, and tries to match each block with one in its brain to play in
+realtime.")
+    (license license:gpl2+)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

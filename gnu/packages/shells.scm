@@ -15,7 +15,7 @@
 ;;; Copyright © 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
@@ -118,7 +118,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "3.5.1")
+    (version "3.6.0")
     (source
      (origin
        (method url-fetch)
@@ -126,15 +126,10 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "0a39vf0wqq6asw5xcrwgdsc67h5bxkgxzy77f8bx6pd4qlympm56"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove bundled software.
-           (delete-file-recursively "pcre2")))))
+        (base32 "10b1xa1hpmi62rzh3qgxlw7xrhyigs8kssagccawmrryfxbls14p"))))
     (build-system cmake-build-system)
     (inputs
-     (list fish-foreign-env ncurses pcre2 ; don't use the bundled PCRE2
+     (list fish-foreign-env ncurses pcre2
            python))  ; for fish_config and manpage completions
     (native-inputs
      (list doxygen groff ; for 'fish --help'
@@ -612,7 +607,8 @@ use of experts and novices alike.")
          (file-name (string-append name "-" version "-checkout"))
          (sha256
           (base32
-           "1ghk08akiz7hff1pndi8rmgamgcrn2mv9asbss9l79d3c2iaav3q"))))
+           "1ghk08akiz7hff1pndi8rmgamgcrn2mv9asbss9l79d3c2iaav3q"))
+         (patches (search-patches "scsh-nonstring-search-path.patch"))))
       (build-system gnu-build-system)
       (arguments
        `(#:test-target "test"
@@ -631,6 +627,11 @@ use of experts and novices alike.")
        (list scheme48 scheme48-rx))
       (native-inputs
        (list autoconf automake))
+      (native-search-paths
+       (list (search-path-specification
+               (variable "SCSH_LIB_DIRS")
+               (separator " ")
+               (files '("share/scsh-0.7")))))
       (home-page "https://github.com/scheme/scsh")
       (synopsis "Unix shell embedded in Scheme")
       (description

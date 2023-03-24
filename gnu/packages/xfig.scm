@@ -64,7 +64,7 @@
                ;; The patch-dot-desktop-files phase requires a relative name.
                (("Exec=/usr/bin/xfig") "Exec=xfig"))
              #t)))))
-    (home-page "http://mcj.sourceforge.net/")
+    (home-page "https://mcj.sourceforge.net/")
     (synopsis "Interactive drawing tool")
     (description
      "Xfig is an interactive drawing tool which runs under X Window System.
@@ -146,7 +146,7 @@ selected in various ways.  For text, 35 fonts are available.")
          (add-after 'install 'install/doc
            (lambda _
              (invoke "make" "install.man"))))))
-    (home-page "http://mcj.sourceforge.net/")
+    (home-page "https://mcj.sourceforge.net/")
     (synopsis "Create portable LaTeX figures")
     (description
      "Transfig creates a makefile to translate figures described in Fig code

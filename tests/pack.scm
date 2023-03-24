@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,13 +28,16 @@
   #:use-module (guix tests)
   #:use-module (guix gexp)
   #:use-module (guix modules)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module ((gnu packages base) #:select (glibc-utf8-locales))
   #:use-module (gnu packages bootstrap)
+  #:use-module ((gnu packages package-management) #:select (rpm))
   #:use-module ((gnu packages compression) #:select (squashfs-tools))
   #:use-module ((gnu packages debian) #:select (dpkg))
   #:use-module ((gnu packages guile) #:select (guile-sqlite3))
   #:use-module ((gnu packages gnupg) #:select (guile-gcrypt))
+  #:use-module ((gnu packages linux) #:select (fakeroot))
   #:use-module (srfi srfi-64))
 
 (define %store
@@ -58,6 +61,17 @@
 (define %tar-bootstrap %bootstrap-coreutils&co)
 
 (define %ar-bootstrap %bootstrap-binutils)
+
+;;; This is a variant of the RPM package configured so that its database can
+;;; be created on a writable location readily available inside the build
+;;; container ("/tmp").
+(define rpm-for-tests
+  (package
+    (inherit rpm)
+    (arguments (substitute-keyword-arguments (package-arguments rpm)
+                 ((#:configure-flags flags '())
+                  #~(cons "--localstatedir=/tmp"
+                          (delete "--localstatedir=/var" #$flags)))))))
 
 
 (test-begin "pack")
@@ -125,10 +139,10 @@
   (test-assertm "self-contained-tarball + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (tarball (self-contained-tarball "tar-pack" profile
                                           #:localstatedir? #t))
          (check   (gexp->derivation
@@ -199,10 +213,10 @@
   (test-assertm "docker-image + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (tarball (docker-image "docker-pack" profile
                                 #:symlinks '(("/bin/Guile" -> "bin/guile"))
                                 #:localstatedir? #t))
@@ -240,10 +254,10 @@
   (test-assertm "squashfs-image + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (image   (squashfs-image "squashfs-pack" profile
                                   #:symlinks '(("/bin" -> "bin"))
                                   #:localstatedir? #t))
@@ -279,10 +293,10 @@
   (test-assertm "deb archive with symlinks and control files" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (deb (debian-archive
                "deb-pack" profile
                #:compressor %gzip-compressor
@@ -360,6 +374,47 @@
                                                  (stat "postinst"))))))
                   (assert (file-exists? "triggers"))
 
+                  (mkdir #$output))))))
+      (built-derivations (list check))))
+
+  (unless store (test-skip 1))
+  (test-assertm "rpm archive can be installed/uninstalled" store
+    (mlet* %store-monad
+        ((guile   (set-guile-for-build (default-guile)))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
+         (rpm-pack (rpm-archive "rpm-pack" profile
+                                #:compressor %gzip-compressor
+                                #:symlinks '(("/bin/guile" -> "bin/guile"))
+                                #:extra-options '(#:relocatable? #t)))
+         (check
+          (gexp->derivation "check-rpm-pack"
+            (with-imported-modules (source-module-closure
+                                    '((guix build utils)))
+              #~(begin
+                  (use-modules (guix build utils))
+
+                  (define fakeroot #+(file-append fakeroot "/bin/fakeroot"))
+                  (define rpm #+(file-append rpm-for-tests "/bin/rpm"))
+                  (mkdir-p "/tmp/lib/rpm")
+
+                  ;; Install the RPM package.  This causes RPM to validate the
+                  ;; signatures, header as well as the file digests, which
+                  ;; makes it a rather thorough test.
+                  (mkdir "test-prefix")
+                  (invoke fakeroot rpm "--install"
+                          (string-append "--prefix=" (getcwd) "/test-prefix")
+                          #$rpm-pack)
+
+                  ;; Invoke the installed Guile command.
+                  (invoke "./test-prefix/bin/guile" "--version")
+
+                  ;; Uninstall the RPM package.
+                  (invoke fakeroot rpm "--erase" "guile-bootstrap")
+
+                  ;; Required so the above is run.
                   (mkdir #$output))))))
       (built-derivations (list check)))))
 

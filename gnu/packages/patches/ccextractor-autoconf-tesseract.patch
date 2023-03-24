@@ -1,0 +1,37 @@
+Upstream status: https://github.com/CCExtractor/ccextractor/pull/1504
+
+From f587050c2b5805ff5feb667736381dcc9991a5d3 Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Date: Fri, 17 Mar 2023 00:57:13 -0400
+Subject: [PATCH] linux/configure.ac: Fix tesseract conditional problem.
+
+For tesseract-ocr's stock pkg-config, it would produce an error due to
+unquoted whitespace:
+
+  $ test ! -z `pkg-config --libs-only-l --silence-errors tesseract`
+  bash: test: syntax error: `-larchive' unexpected
+
+* linux/configure.ac: Use a positive test, and double-quote the $() command
+substitution.
+---
+ linux/configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/linux/configure.ac b/linux/configure.ac
+index 45fc11f3..118ee7fa 100644
+--- a/linux/configure.ac
++++ b/linux/configure.ac
+@@ -149,7 +149,7 @@ AS_IF([ (test x$ocr = xtrue || test x$hardsubx = xtrue) && test ! $HAS_LEPT -gt
+ AM_CONDITIONAL(HARDSUBX_IS_ENABLED, [ test x$hardsubx = xtrue ])
+ AM_CONDITIONAL(OCR_IS_ENABLED, [ test x$ocr = xtrue || test x$hardsubx = xtrue ])
+ AM_CONDITIONAL(FFMPEG_IS_ENABLED, [ test x$ffmpeg = xtrue ])
+-AM_CONDITIONAL(TESSERACT_PRESENT, [ test ! -z  `pkg-config --libs-only-l --silence-errors tesseract` ])
++AM_CONDITIONAL(TESSERACT_PRESENT, [ test -n  "$(pkg-config --libs-only-l --silence-errors tesseract)" ])
+ AM_CONDITIONAL(TESSERACT_PRESENT_RPI, [ test -d "/usr/include/tesseract" && test `ls -A /usr/include/tesseract | wc -l` -gt 0 ])
+ AM_CONDITIONAL(SYS_IS_LINUX, [ test `uname -s` = "Linux"])
+ AM_CONDITIONAL(SYS_IS_MAC, [ test `uname -s` = "Darwin"])
+
+base-commit: cb496a711923c984251483776e652ca9c027513c
+-- 
+2.39.1
+

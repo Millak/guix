@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -27,7 +27,6 @@
   #:use-module (guix store)
   #:use-module (guix derivations)
   #:use-module (guix packages)
-  #:use-module (guix memoization)
   #:use-module (guix utils)
   #:use-module (guix monads)
   #:use-module (guix gexp)
@@ -36,10 +35,8 @@
   #:autoload   (guix http-client) (http-fetch http-get-error?)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -377,12 +374,12 @@ use '--no-offload' instead~%")))
                       arg)
                      (if closest
                          (display-hint
-                          (format #f (G_ "Did you mean @code{~a}?
+                          (G_ "Did you mean @code{~a}?
 Try @option{--list-targets} to view available targets.~%")
-                                  closest))
+                          closest)
                          (display-hint
-                          (format #f (G_ "\
-Try @option{--list-targets} to view available targets.~%"))))
+                          (G_ "\
+Try @option{--list-targets} to view available targets.~%")))
                      (exit 1))))))))
 
 (define %standard-native-build-options
@@ -404,12 +401,12 @@ Try @option{--list-targets} to view available targets.~%"))))
                                    arg)
                      (if closest
                          (display-hint
-                          (format #f (G_ "Did you mean @code{~a}?
+                          (G_ "Did you mean @code{~a}?
 Try @option{--list-systems} to view available system types.~%")
-                                  closest))
+                          closest)
                          (display-hint
-                          (format #f (G_ "\
-Try @option{--list-systems} to view available system types.~%"))))
+                          (G_ "\
+Try @option{--list-systems} to view available system types.~%")))
                      (exit 1))))))))
 
 

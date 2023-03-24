@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -648,8 +648,7 @@ included.")
                      (substitute* "gold/Makefile.in"
                        ((" testsuite") " ")))))
                '())))))
-    (native-inputs
-     `(("bc" ,bc)))))
+    (native-inputs (list bc))))
 
 (define* (make-ld-wrapper name #:key
                           (target (const #f))

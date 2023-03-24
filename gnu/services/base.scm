@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
                 #:select (coreutils glibc glibc-utf8-locales tar
                           canonical-package))
   #:use-module ((gnu packages compression) #:select (gzip))
+  #:use-module (gnu packages fonts)
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
   #:autoload   (gnu packages hurd) (hurd)
   #:use-module (gnu packages package-management)
@@ -97,11 +99,19 @@
             file-system-service-type
             file-system-utilities
             swap-service
-            host-name-service
+            host-name-service  ; deprecated
+            host-name-service-type
             %default-console-font
             console-font-service-type
             console-font-service
             virtual-terminal-service-type
+
+            host
+            host?
+            host-address
+            host-canonical-name
+            host-aliases
+            hosts-service-type
 
             static-networking
             static-networking?
@@ -140,7 +150,7 @@
             udev-configuration?
             udev-configuration-rules
             udev-service-type
-            udev-service
+            udev-service  ; deprecated
             udev-rule
             file->udev-rule
             udev-rules-service
@@ -148,11 +158,11 @@
             login-configuration
             login-configuration?
             login-service-type
-            login-service
+            login-service  ; deprecated
 
             agetty-configuration
             agetty-configuration?
-            agetty-service
+            agetty-service  ; deprecated
             agetty-service-type
 
             mingetty-configuration
@@ -163,11 +173,11 @@
             mingetty-configuration-clear-on-logout?
             mingetty-configuration-mingetty
             mingetty-configuration?
-            mingetty-service
+            mingetty-service  ; deprecated
             mingetty-service-type
 
             %nscd-default-caches
-            %nscd-default-configuration
+            %nscd-default-configuration  ; deprecated
 
             nscd-configuration
             nscd-configuration?
@@ -176,11 +186,11 @@
             nscd-cache?
 
             nscd-service-type
-            nscd-service
+            nscd-service  ; deprecated
 
             syslog-configuration
             syslog-configuration?
-            syslog-service
+            syslog-service  ; deprecated
             syslog-service-type
             %default-syslog.conf
 
@@ -229,7 +239,7 @@
             rngd-configuration
             rngd-configuration?
             rngd-service-type
-            rngd-service
+            rngd-service  ; deprecated
 
             kmscon-configuration
             kmscon-configuration?
@@ -652,8 +662,10 @@ down.")))
 (define-record-type* <rngd-configuration>
   rngd-configuration make-rngd-configuration
   rngd-configuration?
-  (rng-tools rngd-configuration-rng-tools)        ;file-like
-  (device    rngd-configuration-device))          ;string
+  (rng-tools rngd-configuration-rng-tools         ;file-like
+             (default rng-tools))
+  (device    rngd-configuration-device            ;string
+             (default "/dev/hwrng")))
 
 (define rngd-service-type
   (shepherd-service-type
@@ -672,12 +684,13 @@ down.")))
         (provision '(trng))
         (start #~(make-forkexec-constructor '#$rngd-command))
         (stop #~(make-kill-destructor))))
+    (rngd-configuration)
     (description "Run the @command{rngd} random number generation daemon to
 supply entropy to the kernel's pool.")))
 
-(define* (rngd-service #:key
-                       (rng-tools rng-tools)
-                       (device "/dev/hwrng"))
+(define-deprecated (rngd-service #:key (rng-tools rng-tools)
+                                 (device "/dev/hwrng"))
+  rngd-service-type
   "Return a service that runs the @command{rngd} program from @var{rng-tools}
 to add @var{device} to the kernel's entropy pool.  The service will fail if
 @var{device} does not exist."
@@ -685,6 +698,73 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
            (rngd-configuration
             (rng-tools rng-tools)
             (device device))))
+
+;;;
+;;; /etc/hosts
+;;;
+
+(eval-when (expand load eval)
+  (define (valid-name? name)
+    "Return true if @var{name} is likely to be a valid host name."
+    (false-if-exception (not (string-any char-set:whitespace name)))))
+
+(define-compile-time-procedure (assert-valid-name (name valid-name?))
+  "Ensure @var{name} is likely to be a valid host name."
+  ;; TODO: RFC compliant implementation.
+  (unless (valid-name? name)
+    (raise
+     (make-compound-condition
+      (formatted-message (G_ "host name '~a' contains invalid characters")
+                         name)
+      (condition (&error-location
+                  (location
+                   (source-properties->location procedure-call-location)))))))
+  name)
+
+(define-record-type* <host> %host
+  ;; XXX: Using the record type constructor becomes tiresome when
+  ;; there's multiple records to make.
+  make-host host?
+  (address        host-address)
+  (canonical-name host-canonical-name
+                  (sanitize assert-valid-name))
+  (aliases        host-aliases
+                  (default '())
+                  (sanitize (cut map assert-valid-name <>))))
+
+(define* (host address canonical-name #:optional (aliases '()))
+  "Return a new record for the host at @var{address} with the given
+@var{canonical-name} and possibly @var{aliases}.
+
+@var{address} must be a string denoting a valid IPv4 or IPv6 address, and
+@var{canonical-name} and the strings listed in @var{aliases} must be valid
+host names."
+  (%host
+   (address address)
+   (canonical-name canonical-name)
+   (aliases aliases)))
+
+(define hosts-service-type
+  ;; Extend etc-service-type with a entry for @file{/etc/hosts}.
+  (let* ((serialize-host-record
+          (lambda (record)
+            (match-record record <host> (address canonical-name aliases)
+              (format #f "~a~/~a~{~^~/~a~}~%" address canonical-name aliases))))
+         (host-etc-service
+          (lambda (lst)
+            `(("hosts" ,(plain-file "hosts"
+                                    (format #f "~{~a~}"
+                                            (map serialize-host-record
+                                                 lst))))))))
+    (service-type
+     (name 'etc-hosts)
+     (extensions
+      (list
+       (service-extension etc-service-type
+                          host-etc-service)))
+     (compose concatenate)
+     (extend append)
+     (description "Populate the @file{/etc/hosts} file."))))
 
 
 ;;;
@@ -703,7 +783,8 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
       (one-shot? #t)))
    (description "Initialize the machine's host name.")))
 
-(define (host-name-service name)
+(define-deprecated (host-name-service name)
+  host-name-service-type
   "Return a service that sets the host name to @var{name}."
   (service host-name-service-type name))
 
@@ -749,10 +830,11 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
 of console keymaps with @command{loadkeys}.")))
 
 (define %default-console-font
-  ;; Note: 'LatGrkCyr-8x16' has the advantage of providing three common
-  ;; scripts as well as glyphs for em dash, quotation marks, and other Unicode
-  ;; codepoints notably found in the UTF-8 manual.
-  "LatGrkCyr-8x16")
+  ;; Note: the 'font-gnu-unifont' package cannot be cross-compiled (yet), but
+  ;; its "psf" output is the same whether it's built natively or not, hence
+  ;; 'ungexp-native'.
+  #~(string-append #+font-gnu-unifont:psf
+                   "/share/consolefonts/Unifont-APL8x16.psf.gz"))
 
 (define (console-font-shepherd-services tty+font)
   "Return a list of Shepherd services for each pair in TTY+FONT."
@@ -792,7 +874,7 @@ of console keymaps with @command{loadkeys}.")))
                                         "-C" #$device #$font))
                           ((0 71) #t)
                           (else #f))))
-             (stop #~(const #t))
+             (stop #~(const #f))
              (respawn? #f)))))
        tty+font))
 
@@ -859,7 +941,8 @@ Return a service that sets up Unicode support in @var{tty} and loads
                  "Provide a console log-in service as specified by its
 configuration value, a @code{login-configuration} object.")))
 
-(define* (login-service #:optional (config (login-configuration)))
+(define-deprecated (login-service #:optional (config (login-configuration)))
+  login-service-type
   "Return a service configure login according to @var{config}, which specifies
 the message of the day, among other things."
   (service login-service-type config))
@@ -1131,7 +1214,8 @@ to use as the tty.  This is primarily useful for headless systems."
                  "Provide console login using the @command{agetty}
 program.")))
 
-(define* (agetty-service config)
+(define-deprecated (agetty-service config)
+  agetty-service-type
   "Return a service to run agetty according to @var{config}, which specifies
 the tty to run, among other things."
   (service agetty-service-type config))
@@ -1196,7 +1280,8 @@ the tty to run, among other things."
                  "Provide console login using the @command{mingetty}
 program.")))
 
-(define* (mingetty-service config)
+(define-deprecated (mingetty-service config)
+  mingetty-service-type
   "Return a service to run mingetty according to @var{config}, which specifies
 the tty to run, among other things."
   (service mingetty-service-type config))
@@ -1262,7 +1347,8 @@ the tty to run, among other things."
                     (check-files? #t)             ;check /etc/services changes
                     (persistent? #t))))
 
-(define %nscd-default-configuration
+(define-deprecated %nscd-default-configuration
+  #f
   ;; Default nscd configuration.
   (nscd-configuration))
 
@@ -1416,18 +1502,45 @@ the tty to run, among other things."
                            (name-services (append
                                            (nscd-configuration-name-services config)
                                            name-services)))))
-                (default-value %nscd-default-configuration)
+                (default-value (nscd-configuration))
                 (description
                  "Runs libc's @dfn{name service cache daemon} (nscd) with the
 given configuration---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example.")))
 
-(define* (nscd-service #:optional (config %nscd-default-configuration))
+(define-deprecated (nscd-service #:optional (config (nscd-configuration)))
+  nscd-service-type
   "Return a service that runs libc's name service cache daemon (nscd) with the
 given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example."
   (service nscd-service-type config))
 
+;; Snippet adapted from the GNU inetutils manual.
+(define %default-syslog.conf
+  (plain-file "syslog.conf" "
+     # Log all error messages, authentication messages of
+     # level notice or higher and anything of level err or
+     # higher to the console.
+     # Don't log private authentication messages!
+     *.alert;auth.notice;authpriv.none      -/dev/console
+
+     # Log anything (except mail) of level info or higher.
+     # Don't log private authentication messages!
+     *.info;mail.none;authpriv.none         -/var/log/messages
+
+     # Log \"debug\"-level entries and nothing else.
+     *.=debug                               -/var/log/debug
+
+     # Same, in a different place.
+     *.info;mail.none;authpriv.none         -/dev/tty12
+
+     # The authpriv file has restricted access.
+     # 'fsync' the file after each line (hence the lack of a leading dash).
+     authpriv.*                              /var/log/secure
+
+     # Log all the mail messages in one place.
+     mail.*                                 -/var/log/maillog
+"))
 
 (define-record-type* <syslog-configuration>
   syslog-configuration  make-syslog-configuration
@@ -1457,37 +1570,12 @@ Service Switch}, for an example."
                      (umask mask)
                      pid))))
       (stop #~(make-kill-destructor))))
+   (syslog-configuration)
    (description "Run the syslog daemon, @command{syslogd}, which is
 responsible for logging system messages.")))
 
-;; Snippet adapted from the GNU inetutils manual.
-(define %default-syslog.conf
-  (plain-file "syslog.conf" "
-     # Log all error messages, authentication messages of
-     # level notice or higher and anything of level err or
-     # higher to the console.
-     # Don't log private authentication messages!
-     *.alert;auth.notice;authpriv.none      -/dev/console
-
-     # Log anything (except mail) of level info or higher.
-     # Don't log private authentication messages!
-     *.info;mail.none;authpriv.none         -/var/log/messages
-
-     # Log \"debug\"-level entries and nothing else.
-     *.=debug                               -/var/log/debug
-
-     # Same, in a different place.
-     *.info;mail.none;authpriv.none         -/dev/tty12
-
-     # The authpriv file has restricted access.
-     # 'fsync' the file after each line (hence the lack of a leading dash).
-     authpriv.*                              /var/log/secure
-
-     # Log all the mail messages in one place.
-     mail.*                                 -/var/log/maillog
-"))
-
-(define* (syslog-service #:optional (config (syslog-configuration)))
+(define-deprecated (syslog-service #:optional (config (syslog-configuration)))
+  syslog-service-type
   "Return a service that runs @command{syslogd} and takes
 @var{<syslog-configuration>} as a parameter.
 
@@ -2267,7 +2355,8 @@ item of @var{packages}."
 directory dynamically.  Get extra rules from the packages listed in the
 @code{rules} field of its value, @code{udev-configuration} object.")))
 
-(define* (udev-service #:key (udev eudev) (rules '()))
+(define-deprecated (udev-service #:key (udev eudev) (rules '()))
+  udev-service-type
   "Run @var{udev}, which populates the @file{/dev} directory dynamically.  Get
 extra rules from the packages listed in @var{rules}."
   (service udev-service-type
@@ -2502,7 +2591,7 @@ notably to select, copy, and paste text.  The default options use the
                   ;; TODO: Make this configurable.
                   #:environment-variables
                   (list (string-append "XDG_DATA_DIRS="
-                                       #$font-gnu-unifont "/share"))))
+                                       #+font-gnu-unifont "/share"))))
         (stop #~(make-kill-destructor)))))
    (description "Start the @command{kmscon} virtual terminal emulator for the
 Linux @dfn{kernel mode setting} (KMS).")))
@@ -2576,16 +2665,17 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
                             ipv6-address?))))
   (gateway     network-route-gateway (default #f)))
 
-(define* (cidr->netmask str #:optional (family AF_INET))
-  "Given @var{str}, a string in CIDR notation (e.g., \"1.2.3.4/24\"), return
+(eval-when (expand load eval)
+  (define* (cidr->netmask str #:optional (family AF_INET))
+    "Given @var{str}, a string in CIDR notation (e.g., \"1.2.3.4/24\"), return
 the netmask as a string like \"255.255.255.0\"."
-  (match (string-split str #\/)
-    ((ip (= string->number bits))
-     (let ((mask (ash (- (expt 2 bits) 1)
-                      (- (if (= family AF_INET6) 128 32)
-                         bits))))
-       (inet-ntop family mask)))
-    (_ #f)))
+    (match (string-split str #\/)
+      ((ip (= string->number bits))
+       (let ((mask (ash (- (expt 2 bits) 1)
+                        (- (if (= family AF_INET6) 128 32)
+                           bits))))
+         (inet-ntop family mask)))
+      (_ #f))))
 
 (define (cidr->ip str)
   "Strip the netmask bit of @var{str}, a CIDR-notation IP/netmask address."
@@ -3071,6 +3161,7 @@ to handle."
        (default-session-command (greetd-default-session-command config)))
     (mixed-text-file
      config-file-name
+     "[general]\n"
      "source_profile = " (if source-profile? "true" "false") "\n"
      "[terminal]\n"
      "vt = " terminal-vt "\n"
@@ -3210,7 +3301,7 @@ login manager daemon.")
                         (cons tty %default-console-font))
                       '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
-        (syslog-service)
+        (service syslog-service-type)
         (service agetty-service-type (agetty-configuration
                                        (extra-options '("-L")) ; no carrier detect
                                        (term "vt100")

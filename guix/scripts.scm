@@ -28,7 +28,6 @@
   #:use-module (guix monads)
   #:use-module (guix packages)
   #:use-module (guix derivations)
-  #:use-module ((guix profiles) #:select (%profile-directory))
   #:autoload   (guix describe) (current-profile-date)
   #:use-module (guix build syscalls)
   #:use-module (srfi srfi-1)
@@ -321,11 +320,11 @@ THRESHOLDS is a pair (ABSOLUTE-THRESHOLD . RELATIVE-THRESHOLD)."
                             absolute-threshold-in-bytes))
       (warning (G_ "only ~,1f GiB of free space available on ~a~%")
                (/ available 1. GiB) (%store-prefix))
-      (display-hint (format #f (G_ "Consider deleting old profile
+      (display-hint (G_ "Consider deleting old profile
 generations and collecting garbage, along these lines:
 
 @example
 guix gc --delete-generations=1m
-@end example\n"))))))
+@end example\n")))))
 
 ;;; scripts.scm ends here

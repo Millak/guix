@@ -23,10 +23,8 @@
   #:use-module (guix scripts)
   #:use-module (guix repl)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
-  #:use-module (rnrs bytevectors)
   #:autoload   (guix describe) (current-profile)
   #:autoload   (system repl repl) (start-repl)
   #:autoload   (system repl server)
@@ -211,6 +209,7 @@ call THUNK."
               ((guile)
                (save-module-excursion
                 (lambda ()
+                  (current-profile) ;populate (%package-module-path); see above
                   (set-user-module)
                   ;; Do not exit repl on SIGINT.
                   ((@@ (ice-9 top-repl) call-with-sigint)

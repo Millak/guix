@@ -3,7 +3,7 @@
 !#
 
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -141,6 +141,19 @@ and the r-build-system."
                       "guix/import/cran.scm"
                       "guix/scripts/import/cran.scm"
                       "tests/cran.scm")))
+
+(define-team tex
+  (team 'tex
+        #:name "TeX team"
+        #:description
+        "TeX, LaTeX, XeLaTeX, LuaTeX, TeXLive, the texlive-build-system, and
+the \"texlive\" importer."
+        #:scope (list "gnu/packages/tex.scm"
+                      "guix/build/texlive-build-system.scm"
+                      "guix/build-system/texlive.scm"
+                      "guix/import/texlive.scm"
+                      "guix/scripts/import/texlive.scm"
+                      "tests/texlive.scm")))
 
 (define-team julia
   (team 'julia
@@ -423,6 +436,18 @@ importer."
         "Reproducible Builds tooling and issues that affect any guix packages."
         #:scope (list "gnu/packages/diffoscope.scm")))
 
+(define-team xfce
+  (team 'xfce
+        #:name "Xfce team"
+        #:description "Xfce desktop environment."
+        #:scope (list "gnu/packages/xfce.scm")))
+
+(define-team lxqt
+  (team 'lxqt
+        #:name "LXQt team"
+        #:description "LXQt desktop environment."
+        #:scope (list "gnu/packages/lxqt.scm")))
+
 
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
@@ -490,7 +515,7 @@ importer."
 
 (define-member (person "Ricardo Wurmus"
                        "rekado@elephly.net")
-  r core mentors)
+  r core mentors tex)
 
 (define-member (person "Christopher Baines"
                        "mail@cbaines.net")
@@ -522,7 +547,7 @@ importer."
 
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
-  games localization)
+  games localization lxqt xfce)
 
 (define-member (person "Vagrant Cascadian"
                        "vagrant@reproducible-builds.org")

@@ -92,7 +92,7 @@ files in the destination.")
     (list popt))
    (native-inputs
     (list which perl))
-   (home-page "http://librsync.sourceforge.net/")
+   (home-page "https://librsync.sourceforge.net/")
    (synopsis "Implementation of the rsync remote-delta algorithm")
    (description
     "Librsync is a free software library that implements the rsync

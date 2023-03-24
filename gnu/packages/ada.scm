@@ -21,16 +21,10 @@
 (define-module (gnu packages ada)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (guix packages)
-  #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages check)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages python)
-  #:use-module (gnu packages python-xyz)
   #:use-module (ice-9 match))
 
 (define-public ada/ed

@@ -5,6 +5,8 @@
 ;;; Copyright © 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Philip Munksgaard <philip@munksgaard.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,12 +99,14 @@ and parameters ~s~%"
                    ,@(if tests?
                          '("--enable-tests")
                          '())
-                   ;; Build and link with shared libraries
+                   ;; Build static and shared libraries.
                    "--enable-shared"
-                   "--enable-executable-dynamic"
+                   "--enable-static"
+                   ;; Link executables statically by default.
+                   "--disable-executable-dynamic"
                    "--ghc-option=-fPIC"
-                   ,(string-append "--ghc-option=-optl=-Wl,-rpath=" (or lib out)
-                                   "/lib/$compiler/$pkg-$version")
+                   ;; Ensure static libraries can be used with -Wl,--gc-sections for size.
+                   "--ghc-option=-split-sections"
                    ,@configure-flags)))
     ;; Cabal errors if GHC_PACKAGE_PATH is set during 'configure', so unset
     ;; and restore it.
@@ -118,8 +122,7 @@ and parameters ~s~%"
       (setenv "CONFIG_SHELL" "sh"))
     (run-setuphs "configure" params)
 
-    (setenv "GHC_PACKAGE_PATH" ghc-path)
-    #t))
+    (setenv "GHC_PACKAGE_PATH" ghc-path)))
 
 (define* (build #:key parallel-build? #:allow-other-keys)
   "Build a given Haskell package."
@@ -130,18 +133,7 @@ and parameters ~s~%"
 
 (define* (install #:key outputs #:allow-other-keys)
   "Install a given Haskell package."
-  (run-setuphs "copy" '())
-  (when (assoc-ref outputs "static")
-    (let ((static (assoc-ref outputs "static"))
-          (lib (or (assoc-ref outputs "lib")
-                   (assoc-ref outputs "out"))))
-      (for-each (lambda (static-lib)
-                  (let* ((subdir (string-drop static-lib (string-length lib)))
-                         (new    (string-append static subdir)))
-                    (mkdir-p (dirname new))
-                    (rename-file static-lib new)))
-                (find-files lib "\\.a$"))))
-  #t)
+  (run-setuphs "copy" '()))
 
 (define* (setup-compiler #:key system inputs outputs #:allow-other-keys)
   "Setup the compiler environment."
@@ -175,8 +167,7 @@ and parameters ~s~%"
               conf-files)
     (invoke "ghc-pkg"
             (string-append "--package-db=" %tmp-db-dir)
-            "recache")
-    #t))
+            "recache")))
 
 (define* (register #:key name system inputs outputs #:allow-other-keys)
   "Generate the compiler registration and binary package database files for a
@@ -215,14 +206,53 @@ given Haskell package."
         (() #t)                         ;done
         ((id . tail)
          (if (not (vhash-assoc id seen))
-             (let ((dep-conf  (string-append src  "/" id ".conf"))
-                   (dep-conf* (string-append dest "/" id ".conf")))
-               (when (not (file-exists? dep-conf))
+             (let* ((dep-conf  (string-append src  "/" id ".conf"))
+                    (dep-conf* (string-append dest "/" id ".conf"))
+                    (dep-conf-exists? (file-exists? dep-conf))
+                    (dep-conf*-exists? (file-exists? dep-conf*))
+                    (next-tail (append lst (if dep-conf-exists? (conf-depends dep-conf) '()))))
+               (unless dep-conf*-exists?
+                 (unless dep-conf-exists?
                    (error (format #f "File ~a does not exist. This usually means the dependency ~a is missing. Was checking conf-file ~a." dep-conf id conf-file)))
-               (copy-file dep-conf dep-conf*) ;XXX: maybe symlink instead?
-               (loop (vhash-cons id #t seen)
-                     (append lst (conf-depends dep-conf))))
+                 (copy-file dep-conf dep-conf*)) ;XXX: maybe symlink instead?
+                (loop (vhash-cons id #t seen) next-tail))
              (loop seen tail))))))
+
+  (define (install-config-file conf-file dest output:doc output:lib)
+      ;; Copy CONF-FILE to DEST removing reference to OUTPUT:DOC from
+      ;; OUTPUT:LIB and using install-transitive-deps.
+      (let* ((contents (call-with-input-file conf-file read-string))
+             (id-rx (make-regexp "^id:[ \n\t]+([^ \t\n]+)$" regexp/newline))
+             (config-file-name+id
+              (match:substring (first (list-matches id-rx contents)) 1)))
+
+        (when (or
+               (and
+                (string? config-file-name+id)
+                (string-null? config-file-name+id))
+               (not config-file-name+id))
+          (error (format #f "The package id for ~a is empty. This is a bug." conf-file)))
+
+        ;; Remove reference to "doc" output from "lib" (or "out") by rewriting the
+        ;; "haddock-interfaces" field and removing the optional "haddock-html"
+        ;; field in the generated .conf file.
+        (when output:doc
+          (substitute* conf-file
+            (("^haddock-html: .*") "\n")
+            (((format #f "^haddock-interfaces: ~a" output:doc))
+             (string-append "haddock-interfaces: " output:lib)))
+          ;; Move the referenced file to the "lib" (or "out") output.
+          (match (find-files output:doc "\\.haddock$")
+            ((haddock-file . rest)
+             (let* ((subdir (string-drop haddock-file (string-length output:doc)))
+                    (new    (string-append output:lib subdir)))
+               (mkdir-p (dirname new))
+               (rename-file haddock-file new)))
+            (_ #f)))
+        (install-transitive-deps conf-file %tmp-db-dir dest)
+        (rename-file conf-file
+                     (string-append dest "/"
+                                    config-file-name+id ".conf"))))
 
   (let* ((out (assoc-ref outputs "out"))
          (doc (assoc-ref outputs "doc"))
@@ -233,7 +263,6 @@ given Haskell package."
          (config-dir (string-append lib
                                     "/ghc-" version
                                     "/" name ".conf.d"))
-         (id-rx (make-regexp "^id:[ \n\t]+([^ \t\n]+)$" regexp/newline))
          (config-file (string-append out "/" name ".conf"))
          (params
           (list (string-append "--gen-pkg-config=" config-file))))
@@ -241,53 +270,24 @@ given Haskell package."
     ;; The conf file is created only when there is a library to register.
     (when (file-exists? config-file)
       (mkdir-p config-dir)
-      (let* ((contents (call-with-input-file config-file read-string))
-             (config-file-name+id (match:substring (first (list-matches id-rx contents)) 1)))
-
-        (when (or
-                (and
-                  (string? config-file-name+id)
-                  (string-null? config-file-name+id))
-                (not config-file-name+id))
-          (error (format #f "The package id for ~a is empty. This is a bug." config-file)))
-
-        ;; Remove reference to "doc" output from "lib" (or "out") by rewriting the
-        ;; "haddock-interfaces" field and removing the optional "haddock-html"
-        ;; field in the generated .conf file.
-        (when doc
-          (substitute* config-file
-            (("^haddock-html: .*") "\n")
-            (((format #f "^haddock-interfaces: ~a" doc))
-             (string-append "haddock-interfaces: " lib)))
-          ;; Move the referenced file to the "lib" (or "out") output.
-          (match (find-files doc "\\.haddock$")
-            ((haddock-file . rest)
-             (let* ((subdir (string-drop haddock-file (string-length doc)))
-                    (new    (string-append lib subdir)))
-               (mkdir-p (dirname new))
-               (rename-file haddock-file new)))
-            (_ #f)))
-        (install-transitive-deps config-file %tmp-db-dir config-dir)
-        (rename-file config-file
-                     (string-append config-dir "/"
-                                    config-file-name+id ".conf"))
-        (invoke "ghc-pkg"
-                (string-append "--package-db=" config-dir)
-                "recache")))
-    #t))
+      (if (file-is-directory? config-file)
+          (for-each (cut install-config-file <> config-dir doc lib)
+           (find-files config-file))
+          (install-config-file config-file config-dir doc lib))
+      (invoke "ghc-pkg"
+              (string-append "--package-db=" config-dir)
+              "recache"))))
 
 (define* (check #:key tests? test-target #:allow-other-keys)
   "Run the test suite of a given Haskell package."
   (if tests?
       (run-setuphs test-target '())
-      (format #t "test suite not run~%"))
-  #t)
+      (format #t "test suite not run~%")))
 
 (define* (haddock #:key outputs haddock? haddock-flags #:allow-other-keys)
   "Generate the Haddock documentation of a given Haskell package."
   (when haddock?
-    (run-setuphs "haddock" haddock-flags))
-  #t)
+    (run-setuphs "haddock" haddock-flags)))
 
 (define* (patch-cabal-file #:key cabal-revision #:allow-other-keys)
   (when cabal-revision
@@ -296,8 +296,7 @@ given Haskell package."
       ((original)
        (format #t "replacing ~s with ~s~%" original cabal-revision)
        (copy-file cabal-revision original))
-      (_ (error "Could not find a Cabal file to patch."))))
-  #t)
+      (_ (error "Could not find a Cabal file to patch.")))))
 
 (define* (generate-setuphs #:rest empty)
   "Generate a default Setup.hs if needed."
@@ -307,8 +306,7 @@ given Haskell package."
     (with-output-to-file "Setup.hs"
       (lambda ()
         (format #t "import Distribution.Simple~%")
-        (format #t "main = defaultMain~%"))))
-  #t)
+        (format #t "main = defaultMain~%")))))
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases

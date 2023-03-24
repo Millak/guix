@@ -61,7 +61,6 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
@@ -265,7 +264,7 @@ focuses especially on Korean input (Hangul, Hanja, ...).")
 is lightweight, stable, powerful and supports many commonly used input methods,
 including Cangjie, Zhuyin, Dayi, Ranked, Shrimp, Greek, Anthy, Korean, Latin,
 Random Cage Fighting Birds, Cool Music etc.")
-    (home-page "http://hime-ime.github.io/")
+    (home-page "https://hime-ime.github.io/")
     (license (list license:gpl2+ license:lgpl2.1+
                    license:fdl1.2+)))) ; documentation
 
@@ -326,7 +325,7 @@ Random Cage Fighting Birds, Cool Music etc.")
     (synopsis "Chinese phonetic input method")
     (description "Chewing is an intelligent phonetic (Zhuyin/Bopomofo) input
 method, one of the most popular choices for Traditional Chinese users.")
-    (home-page "http://chewing.im/")
+    (home-page "https://chewing.im/")
     (license license:lgpl2.1+)))
 
 (define-public liblouis

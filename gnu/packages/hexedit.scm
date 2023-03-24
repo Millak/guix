@@ -90,7 +90,7 @@ the file and search through it.")
 with a special focus on executable binaries.  Its goal is to combine the
 low-level functionality of a debugger with the usability of an @dfn{Integrated
 Development Environment} (IDE).")
-    (home-page "http://hte.sourceforge.net/")
+    (home-page "https://hte.sourceforge.net/")
     (license license:gpl2)))
 
 (define-public bvi
@@ -112,5 +112,5 @@ Development Environment} (IDE).")
     (synopsis "Binary file editor")
     (description "@command{bvi} is a display-oriented editor for binary files,
 based on the @command{vi} text editor.")
-    (home-page "http://bvi.sourceforge.net/")
+    (home-page "https://bvi.sourceforge.net/")
     (license license:gpl3+)))

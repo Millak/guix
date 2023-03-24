@@ -111,6 +111,7 @@ MODULES =					\
   guix/derivations.scm				\
   guix/grafts.scm				\
   guix/repl.scm					\
+  guix/rpm.scm					\
   guix/transformations.scm			\
   guix/inferior.scm				\
   guix/describe.scm				\
@@ -178,6 +179,7 @@ MODULES =					\
   guix/build-system/ruby.scm			\
   guix/build-system/scons.scm			\
   guix/build-system/texlive.scm			\
+  guix/build-system/tree-sitter.scm		\
   guix/build-system/trivial.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
@@ -234,6 +236,7 @@ MODULES =					\
   guix/build/ruby-build-system.scm		\
   guix/build/scons-build-system.scm		\
   guix/build/texlive-build-system.scm		\
+  guix/build/tree-sitter-build-system.scm	\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
   guix/build/julia-build-system.scm		\
@@ -401,6 +404,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.2-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.2-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.2-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.2-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-i686.conf	\
@@ -533,6 +540,7 @@ SCM_TESTS =					\
   tests/pypi.scm				\
   tests/read-print.scm				\
   tests/records.scm				\
+  tests/rpm.scm					\
   tests/scripts.scm				\
   tests/search-paths.scm			\
   tests/services.scm				\

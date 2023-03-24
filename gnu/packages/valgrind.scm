@@ -6,6 +6,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Denis Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,7 +97,7 @@ also use Valgrind to build new tools.")
 (define-public valgrind/interactive
   (package/inherit
    valgrind
-   (version "3.17.0")
+   (version "3.20.0")
    (source (origin
              (method url-fetch)
              (uri (list (string-append "https://sourceware.org/pub/valgrind"
@@ -105,9 +106,8 @@ also use Valgrind to build new tools.")
                                        "/valgrind-" version ".tar.bz2")))
              (sha256
               (base32
-               "18l5jbk301j3462gipqn9bkfx44mdmwn0pwr73r40gl1irkfqfmd"))
+               "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))
              (patches (search-patches
-                       "valgrind-enable-arm.patch"
                        "valgrind-fix-default-debuginfo-path.patch"))))
    (inputs
     ;; GDB is needed to provide a sane default for `--db-command'.
@@ -148,19 +148,3 @@ also use Valgrind to build new tools.")
                       (string-length "/usr/lib/debug")
                       1))))))))))
    (properties '())))
-
-(define-public valgrind-3.20
-  (package
-    (inherit valgrind/interactive)
-    (version "3.20.0")
-    (source (origin
-              (inherit (package-source valgrind/interactive))
-              (uri (list (string-append "https://sourceware.org/pub/valgrind"
-                                        "/valgrind-" version ".tar.bz2")
-                         (string-append "ftp://sourceware.org/pub/valgrind"
-                                        "/valgrind-" version ".tar.bz2")))
-              (sha256
-               (base32
-                "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))
-              (patches (search-patches
-                        "valgrind-fix-default-debuginfo-path.patch"))))))

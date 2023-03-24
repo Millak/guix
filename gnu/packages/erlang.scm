@@ -383,7 +383,7 @@ Markdown.")
          (add-before 'check 'check-setup
            (lambda _
              (setenv "TERM" "xterm")))))) ; enable color in logs
-    (home-page "http://erlware.github.io/erlware_commons/")
+    (home-page "https://erlware.github.io/erlware_commons/")
     (synopsis "Additional standard library for Erlang")
     (description "Erlware Commons is an Erlware project focused on all aspects
 of reusable Erlang components.")

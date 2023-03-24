@@ -50,7 +50,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
-  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
@@ -564,6 +563,13 @@ rsnapshot uses hard links to deduplicate identical files.")
               (modules '((guix build utils)))
               (snippet
                '(begin
+                  ;; Gnulib's <stdio.h> refers to 'gets' for the purposes of
+                  ;; warning against its use, but 'gets' is no longer declared
+                  ;; in glibc's <stdio.h>.  Remove that warning.
+                  (substitute* "lib/stdio.in.h"
+                    (("_GL_WARN_ON_USE \\(gets,.*")
+                     "\n/* 'gets' is gone, rejoice! */\n"))
+
                   ;; Include all the libtirpc headers necessary to get the
                   ;; definitions of 'u_int', etc.
                   (substitute* '("src/block-server.c"
@@ -572,8 +578,7 @@ rsnapshot uses hard links to deduplicate identical files.")
                     (("#include <rpc/(.*)\\.h>" _ header)
                      (string-append "#include <rpc/types.h>\n"
                                     "#include <rpc/rpc.h>\n"
-                                    "#include <rpc/" header ".h>\n")))
-                  #t))))
+                                    "#include <rpc/" header ".h>\n")))))))
     (build-system gnu-build-system)
     (arguments
      '(;; Link against libtirpc.
@@ -598,12 +603,16 @@ rsnapshot uses hard links to deduplicate identical files.")
                                   (string-append (getenv "CPATH")
                                                  ":" tirpc))
                           (setenv "CPATH" tirpc)))))
-                  (add-before 'check 'skip-test
+                  (add-before 'check 'adjust-test
                     (lambda _
-                      ;; XXX: This test fails (1) because current GnuTLS no
-                      ;; longer supports OpenPGP authentication, and (2) for
-                      ;; some obscure reason.  Better skip it.
-                      (setenv "XFAIL_TESTS" "utils/block-server"))))))
+                      ;; This test uses a weird construct to spawn
+                      ;; 'chop-block-server' in the background.  Replace it
+                      ;; with something that actually works.
+                      (substitute* "tests/utils/block-server"
+                        (("chop_fail_if ! chop-block-server")
+                         "chop-block-server")
+                        (("'&'")
+                         "&")))))))
     (native-inputs
      (list guile-2.0 gperf-3.0 ;see <https://bugs.gnu.org/32382>
            pkg-config rpcsvc-proto))           ;for 'rpcgen'
@@ -1212,14 +1221,14 @@ backup.")
 (define-public disarchive
   (package
     (name "disarchive")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.ngyro.com/disarchive/"
                                   "disarchive-" version ".tar.gz"))
               (sha256
                (base32
-                "1pql8cspsxyx8cpw3xyhirnisv6rb4vj5mxr1d7w9la72q740n8s"))))
+                "16sjplkn9nr7zhfrqll7l1m2b2j4hg8k29p6bqjap9fkj6zpn2q2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1246,13 +1255,13 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "1.5.22")
+    (version "1.7.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgmatic" version))
        (sha256
-        (base32 "0pvqlj17vp81i7saxqh5hsaxqz29ldrjd7bcssh4g1h0ikmnaf2r"))))
+        (base32 "1scfh90qgv8xhafnnpl3pa9d8m4rg9xgvf21yybvmsnm5v1k2x5z"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -1261,10 +1270,15 @@ compression parameters used by Gzip.")
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; Set absolute store path to borg.
                    (substitute* "borgmatic/commands/borgmatic.py"
-                     (("location\\.get\\('local_path', 'borg'\\)")
-                      (string-append "location.get('local_path', '"
+                     (("\\.get\\('local_path', 'borg'\\)")
+                      (string-append ".get('local_path', '"
                                      (search-input-file inputs "bin/borg")
-                                     "')")))))
+                                     "')")))
+                   (substitute* "tests/unit/commands/test_borgmatic.py"
+                     (("(module.get_local_path.+ == )'borg'" all start)
+                      (string-append start "'"
+                                     (search-input-file inputs "bin/borg")
+                                     "'")))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
@@ -1334,7 +1348,7 @@ borgmatic is powered by borg.")
            python-paramiko
            python-peewee
            python-psutil
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-secretstorage
            ;; This is included so that the qt-wrap phase picks it up.
            qtsvg-5))
@@ -1361,7 +1375,7 @@ archives.")
     (native-inputs (list intltool pkg-config))
     (inputs (list gtk+))
     (propagated-inputs (list rsync))
-    (home-page "http://www.opbyte.it/grsync/")
+    (home-page "https://www.opbyte.it/grsync/")
     (synopsis "GTK frontend for rsync")
     (description
      "Grsync is a simple graphical interface using GTK for the @command{rsync}

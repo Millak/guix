@@ -57,6 +57,8 @@
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +79,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -97,6 +100,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
@@ -107,6 +111,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -128,6 +133,9 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages syncthing)
+  #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages xml)
@@ -310,7 +318,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.13")
+    (version "0.6.14")
     (source
      (origin
        (method git-fetch)
@@ -319,7 +327,7 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pjlm3gl85k7yhj594pmvfg6xfr1r3rmb68bb7212r4mxhj80rk0"))))
+        (base32 "0vvqlb8b5f70pl04ff46qim73mk8b8yp1mbbhslx4d4b7ywygjbc"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -764,7 +772,7 @@ and Matrox.")
           "1q700h9dqcm3zl6c3gj0qxxjcx6ibw2c51wjijydhwdcm26v5mqm"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-static")))
-    (home-page "http://bitmath.org/code/mtdev/")
+    (home-page "https://bitmath.org/code/mtdev/")
     (synopsis "Multitouch protocol translation library")
     (description "Mtdev is a stand-alone library which transforms all
 variants of kernel MT events to the slotted type B protocol.  The events
@@ -1778,7 +1786,7 @@ Saver extension) library.")
       (native-inputs (list autoconf automake libtool))
       (inputs
        (list libxt))
-      (home-page "http://www.vergenet.net/~conrad/software/xsel/")
+      (home-page "https://www.vergenet.net/~conrad/software/xsel/")
       (synopsis "Manipulate X selection")
       (description
        "XSel is a command-line program for getting and setting the contents of
@@ -1975,6 +1983,36 @@ The taskbar includes transparency and color settings for the font, icons,
 border, and background.  It also supports multihead setups, customized mouse
 actions, a built-in clock, a battery monitor and a system tray.")
     (license license:gpl2)))
+
+(define-public tofi
+  (package
+    (name "tofi")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/philj56/tofi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11bfi9his0cc5mzikamr5icv5mh2fyj9jy5l3sbbayj6jk51f68y"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.63))         ;requires meson 0.61 or later
+    (native-inputs (list pkg-config))
+    (inputs (list cairo
+                  harfbuzz
+                  libxkbcommon
+                  pango
+                  wayland
+                  wayland-protocols))
+    (home-page "https://github.com/philj56/tofi")
+    (synopsis "Application launcher for Wayland")
+    (description
+     "Tofi is a Dmenu and Rofi replacement for wlroots-based Wayland
+compositors such as Sway.")
+    (license license:expat)))
 
 (define-public dzen
   (let ((commit "488ab66019f475e35e067646621827c18a879ba1")
@@ -2839,11 +2877,11 @@ tools to complement clipnotify.")
     (license license:public-domain)))
 
 (define-public clipmenu
-  (let ((commit "bcbe7b144598db4a103f14e8408c4b7327d6d5e1")
+  (let ((commit "7c34ace1fbab76eb1c1dc9b30dd4ac1a7fe4b90b")
         (revision "1"))
     (package
       (name "clipmenu")
-      (version (string-append "6.0.1-"
+      (version (string-append "6.2.0-"
                               revision "." (string-take commit 7)))
       (source
        (origin
@@ -2854,54 +2892,53 @@ tools to complement clipnotify.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0053j4i14lz5m2bzc5sch5id5ilr1bl196mp8fp0q8x74w3vavs9"))))
+           "1403sw49ccb8xsd8v611fzp0csaglfz8nmz3wcjsk8x11h9jvxwy"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out  (assoc-ref outputs "out"))
-                      (bin  (string-append out "/bin"))
-                      (doc  (string-append %output "/share/doc/"
-                                           ,name "-" ,version)))
-                 (install-file "clipdel" bin)
-                 (install-file "clipmenu" bin)
-                 (install-file "clipmenud" bin)
-                 (install-file "README.md" doc)
-                 #t)))
-           (add-after 'install 'wrap-script
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out               (assoc-ref outputs "out"))
-                      (clipnotify        (assoc-ref inputs "clipnotify"))
-                      (coreutils-minimal (assoc-ref inputs "coreutils-minimal"))
-                      (gawk              (assoc-ref inputs "gawk"))
-                      (util-linux        (assoc-ref inputs "util-linux"))
-                      (xdotool           (assoc-ref inputs "xdotool"))
-                      (xsel              (assoc-ref inputs "xsel"))
-                      (guile             (search-input-file inputs "bin/guile")))
-                 (for-each
-                  (lambda (prog)
-                    (wrap-script (string-append out "/bin/" prog)
-                      #:guile guile
-                      `("PATH" ":" prefix
-                        ,(map (lambda (dir)
-                                (string-append dir "/bin"))
-                              (list clipnotify coreutils-minimal
-                                    gawk util-linux xdotool xsel)))))
-                  '("clipmenu" "clipmenud" "clipdel")))
-               #t))
-           (replace 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               ;; substitute a shebang appearing inside a string (the test
-               ;; file writes this string to a temporary file):
-               (substitute* "tests/test-clipmenu"
-                 (("#!/usr/bin/env bash")
-                  (string-append "#!" (which "bash"))))
-               (invoke "tests/test-clipmenu")
-               #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin"))
+                      (doc (string-append #$output "/share/doc/"
+                                          #$name "-" #$version)))
+                  (install-file "clipdel" bin)
+                  (install-file "clipmenu" bin)
+                  (install-file "clipmenud" bin)
+                  (install-file "clipfsck" bin)
+                  (install-file "clipctl" bin)
+                  (install-file "README.md" doc))))
+            (add-after 'install 'wrap-script
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((out               (assoc-ref outputs "out"))
+                       (clipnotify        (assoc-ref inputs "clipnotify"))
+                       (coreutils-minimal (assoc-ref inputs "coreutils-minimal"))
+                       (gawk              (assoc-ref inputs "gawk"))
+                       (util-linux        (assoc-ref inputs "util-linux"))
+                       (xdotool           (assoc-ref inputs "xdotool"))
+                       (xsel              (assoc-ref inputs "xsel"))
+                       (guile             (search-input-file inputs "bin/guile")))
+                  (for-each
+                   (lambda (prog)
+                     (wrap-script (string-append out "/bin/" prog)
+                       #:guile guile
+                       `("PATH" ":" prefix
+                         ,(map (lambda (dir)
+                                 (string-append dir "/bin"))
+                               (list clipnotify coreutils-minimal
+                                     gawk util-linux xdotool xsel)))))
+                   '("clipmenu" "clipmenud" "clipdel" "clipfsck" "clipctl")))))
+            (replace 'check
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                ;; substitute a shebang appearing inside a string (the test
+                ;; file writes this string to a temporary file):
+                (substitute* "tests/test-clipmenu"
+                  (("#!/usr/bin/env bash")
+                   (string-append "#!" (which "bash"))))
+                (invoke "tests/test-clipmenu"))))))
       (inputs
        (list clipnotify
              coreutils-minimal
@@ -2921,6 +2958,48 @@ to find all available clips and launches @command{dmenu} (or @command{rofi},
 depending on the value of @code{CM_LAUNCHER}) to let the user select a clip.
 After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
       (license license:public-domain))))
+
+(define-public clipman
+  (package
+    (name "clipman")
+    (version "1.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/yory8/" name "/"))
+                    (commit (string-append "v" version))))
+              (sha256 (base32
+                        "0b9kvj0dif4221dy6c1npknhhjxvbc4kygzhwxjirpwjws0yv6v9"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/yory8/clipman"
+           #:install-source? #f
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'patch
+                          (lambda _
+                            (substitute* "src/github.com/yory8/clipman/main.go"
+                              (("gopkg.in/alecthomas/kingpin.v2")
+                               "github.com/alecthomas/kingpin")
+                              (("\"wl-copy\"")
+                               (string-append "\"" (which "wl-copy") "\"")))))
+                        (delete 'install-license-files))))
+    (native-inputs (list go-github-com-alecthomas-template
+                         go-github-com-alecthomas-units))
+    (inputs (list go-github-com-kballard-go-shellquote
+                  go-github-com-alecthomas-kingpin
+                  libnotify
+                  wl-clipboard))
+    (synopsis "Basic clipboard manager with support for persisting copy buffers")
+    (description
+     "A clipboard manager for Wayland that relies on an external selector,
+such as @code{wofi}, @code{bemenu}, @code{dmenu}, or @code{rofi}.
+
+Run the binary in your session by adding @command{exec wl-paste -t text --watch
+clipman store} (or @command{exec wl-paste -t text --watch clipman store 1>>
+PATH/TO/LOGFILE 2>&1 &} to log errors) at the beginning of wherever you
+initialize programs.")
+    (home-page "https://github.com/yory8/clipman")
+    (license license:gpl3)))
 
 (define-public kbdd
   (package
@@ -3052,6 +3131,29 @@ applications.  The font and colors can be configured.")
      "Wofi is a launcher/menu program for wlroots based wayland compositors
 such as sway, similar to @command{rofi}.")
     (home-page "https://hg.sr.ht/~scoopta/wofi")
+    (license license:gpl3+)))
+
+(define-public nwg-launchers
+  (package
+    (name "nwg-launchers")
+    (version "0.7.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nwg-piotr/nwg-launchers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hq2qiqxvrw3g515ywcb676ljc8mdw3pyslgxr3vahizfljah1pv"))))
+    (build-system meson-build-system)
+    (native-inputs (list json-modern-cxx pkg-config))
+    (inputs (list gtk-layer-shell gtkmm-3 librsvg))
+    (home-page "https://github.com/nwg-piotr/nwg-launchers")
+    (synopsis "Application launchers for wlroots")
+    (description
+     "This package provides an application grid, button bar, and dmenu
+applications for Sway and other wlroots-based Wayland compositors.")
     (license license:gpl3+)))
 
 (define-public dex
@@ -3348,3 +3450,58 @@ the following features:
 @end itemize")
     (license (list license:expat  ;3 files under Expat license (see 'LICENSE')
                    license:gpl3+))))              ;the rest is GPLv3+
+
+(define-public xforms
+  ;; The latest stable release is ancient (2014) and fails with a linker
+  ;; error, so use the last commit.
+  (let ((revision "1")
+        (commit "2c1a9f151baf50887a517280645ec23379fb96f8"))
+    (package
+      (name "xforms")
+      (version (git-version "1.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/xforms.git/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12qc1j5g03n2zigvbwilx2zszr8sgv5wd259js7cwf8ffw4lzjf2"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-doc-makefile
+                            (lambda _
+                              (substitute* "doc/Makefile.am"
+                                (("/bin/mkdir")
+                                 "mkdir")))))
+             #:configure-flags #~(list "--enable-docs")))
+      (native-inputs (list autoconf
+                           automake
+                           libtool
+                           texinfo
+                           texi2html
+                           (texlive-updmap.cfg (list texlive-epsf
+                                                     texlive-tex-texinfo))
+                           imagemagick))
+      (propagated-inputs (list libx11 libxpm libjpeg-turbo))
+      (home-page "http://xforms-toolkit.org/")
+      (synopsis "GUI toolkit for X based on the X11 Xlib library")
+      (description
+       "XForms is a graphical user interface toolkit for X based on the X11
+Xlib library.  It allows you to create windows, containing all kinds of
+widgets (buttons, sliders, browsers, menus etc.) with a few lines of code and
+then attach actions to the widgets, i.e., have some function called when a
+button is pressed.  To make this even easier XForms comes with a program
+called @code{fdesign} that allows you to design a GUI for a program directly
+on the screen and which then writes out the necessary C code for it.")
+      (license license:lgpl2.1+))))
+
+(define-public xforms-gl
+  (package/inherit xforms
+    (name "xforms-gl")
+    (propagated-inputs (modify-inputs (package-propagated-inputs xforms)
+                         (append mesa)))
+    (synopsis
+     "GUI toolkit for X based on the X11 Xlib library, with OpenGL support")))

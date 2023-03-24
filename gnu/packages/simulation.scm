@@ -254,6 +254,113 @@ problems for efficient solution on parallel systems.")
     (license license:gpl3+)
     (home-page "https://openfoam.org")))
 
+(define-public open-simulation-interface
+  (package
+    (name "open-simulation-interface")
+    (version "3.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/"
+                                        "OpenSimulationInterface/"
+                                        "open-simulation-interface"))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09vclrvsawx608kk0vnzywr71xn11qzwxzh2j508zjfn0kvhyx7q"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f         ; tests are for the python package
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'unpack 'fix-cmake
+                           (lambda _
+                             (substitute* "CMakeLists.txt"
+                               (("-targets\\.cmake") "_targets.cmake")))))))
+    (native-inputs (list protobuf))
+    (home-page
+     "https://github.com/OpenSimulationInterface/open-simulation-interface")
+    (synopsis "Generic interface for environmental perception")
+    (description "The Open Simulation Interface is a generic interface based on
+Google's protocol buffers for the environmental perception of automated driving
+functions in virtual scenarios.")
+    (license license:mpl2.0)))
+
+(define-public python-open-simulation-interface
+  (package/inherit open-simulation-interface
+    (build-system python-build-system)
+    (arguments '())))
+
+(define-public esmini
+  (package
+    (name "esmini")
+    (version "2.27.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/esmini/esmini")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "esmini-use-pkgconfig.patch"
+                                       "esmini-no-clutter-log.patch"))
+              (modules '((guix build utils) (ice-9 ftw)))
+              (snippet
+               #~(with-directory-excursion "externals"
+                   (for-each
+                    (lambda (dir) (unless (member dir '("." ".." "expr"))
+                               (delete-file-recursively dir)))
+                    (scandir "."))))
+              (sha256
+               (base32
+                "07ccydz7kxy5jc52f8fmxg4nkr1spshfnpzcv0wgd5lqz9ghjahz"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DDYN_PROTOBUF=TRUE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("\\$\\{CMAKE_HOME_DIRECTORY\\}/bin")
+                 (string-append (assoc-ref outputs "out") "/bin")))
+              (substitute* "EnvironmentSimulator/CMakeLists.txt"
+                (("\\$\\{OSI_DIR\\}/(include|lib)(-dyn)?" all what)
+                 (search-input-directory
+                  inputs
+                  (string-append what "/osi"
+                                 #$(version-major
+                                    (package-version
+                                     (this-package-input
+                                      "open-simulation-interface"))))))
+                (("\\$\\{SUMO_BASE_DIR\\}/\\$\\{EXT_DIR_NAME\\}")
+                 #$(this-package-input "sumo")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion "EnvironmentSimulator/Unittest/"
+                (for-each invoke (find-files "_test$")))))
+          (add-after 'install 'move-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (mkdir-p (string-append out "/lib"))
+                (with-directory-excursion (string-append out "/bin")
+                  (for-each
+                   (lambda (f)
+                     (rename-file f (string-append out "/lib/"
+                                                   (basename f))))
+                   (find-files "." "\\.so$")))))))))
+    (inputs (list mesa
+                  openscenegraph `(,openscenegraph "pluginlib")
+                  open-simulation-interface
+                  protobuf pugixml sumo))
+    (native-inputs (list googletest pkg-config))
+    (home-page "https://github.com/esmini/esmini")
+    (synopsis "Basic OpenSCENARIO player")
+    (description "@command{esmini} is a tool to play OpenSCENARIO files.
+It is provided as both a standalone application and a shared library and has
+some support for generating and analysing traffic scenarios..")
+    (license license:mpl2.0)))
+
 (define-public python-fenics-dijitso
   (package
     (name "python-fenics-dijitso")
@@ -924,7 +1031,7 @@ command-line utility for mesh optimisation.")
                     (invoke "py.test" "-v" "tests/migration")
                     (invoke "py.test" "-v" "tests/pyadjoint")))
              #t)))))
-    (home-page "http://www.dolfin-adjoint.org")
+    (home-page "https://www.dolfin-adjoint.org")
     (synopsis "Automatic differentiation library")
     (description "@code{python-dolfin-adjoint} is a solver of
 differential equations associated with a governing system and a

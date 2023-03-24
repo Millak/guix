@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: guix-news-entry
+# key: entry...
+# --
+(entry (commit "$1")
+       (title
+        (en "$2"))
+       (body
+        (en "$3")))
