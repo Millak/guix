@@ -690,7 +690,10 @@ things like:
 @item structure from motion
 @item augmented reality
 @item machine learning
-@end itemize\n")
+@end itemize\n
+
+This package includes the Python bindings for OpenCV, which are also known as
+the OpenCV-Python library.")
     (home-page "https://opencv.org/")
     (license license:bsd-3)))
 
