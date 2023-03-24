@@ -210,13 +210,13 @@ for xls and xlsx files support to all @code{agate.Table} instances.")))
 (define-public csvkit
   (package
     (name "csvkit")
-    (version "1.0.5")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "csvkit" version))
               (sha256
                (base32
-                "1ffmbzk4rxnl1yhqfl58v7kvl5m9cbvjm8v7xp4mvr00sgs91lvv"))))
+                "08wj0hlmbdmklar12cjzqp91vcxzwifsvmgasszas8kbiyvvgpdy"))))
     (build-system python-build-system)
     (native-inputs
      (list python-psycopg2 ; to test PostgreSQL support
