@@ -3552,6 +3552,31 @@ parametric outlier detection on the PCs to identify aberrant arrays with a
 fixed Type I error rate.")
     (license license:artistic2.0)))
 
+(define-public r-arrayquality
+  (package
+    (name "r-arrayquality")
+    (version "1.78.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "arrayQuality" version))
+       (sha256
+        (base32 "0lq59y4pi13z4v1i1ah78xlchxy34x1lplsh0n42wlk88rk0rqxd"))))
+    (properties `((upstream-name . "arrayQuality")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gridbase
+           r-hexbin
+           r-limma
+           r-marray
+           r-rcolorbrewer))
+    (home-page "http://arrays.ucsf.edu/")
+    (synopsis "Assessing array quality on spotted arrays")
+    (description
+     "This package provides functions for performing print-run and array level
+quality assessment.")
+    (license license:lgpl2.0+)))
+
 (define-public r-asafe
   (package
     (name "r-asafe")
