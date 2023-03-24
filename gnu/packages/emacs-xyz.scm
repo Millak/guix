@@ -18844,7 +18844,7 @@ multiplexer.")
 (define-public emacs-plz
   (package
     (name "emacs-plz")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -18853,11 +18853,12 @@ multiplexer.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ack4rajjdmb3fqz5v394rqpvn9mfvbkrxra27yrcqz97mma1ki7"))))
+        (base32 "0sfgbq6nn9prxqg5qs576rlpszbhp70yj3d8r7hqckrd5s0sbk13"))))
     (build-system emacs-build-system)
     (inputs (list curl))
     (arguments
      (list
+      #:tests? #f                       ;require internet access
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'substitute-curl-path
