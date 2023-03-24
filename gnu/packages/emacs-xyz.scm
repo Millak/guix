@@ -31492,27 +31492,37 @@ contains a track position, playback will start at the specified position.")
 
 (define-public emacs-org-jira
   (package
-   (name "emacs-org-jira")
-   (version "4.4.1")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/ahungry/org-jira")
-           (commit version)))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32
-       "1pkqyvziwp2573hnr8s41chsbm40564f76i3l8ynjr7955nccsms"))))
-   (build-system emacs-build-system)
-   (propagated-inputs
-    (list emacs-dash emacs-org emacs-request))
-   (home-page "https://github.com/ahungry/org-jira")
-   (synopsis "Syncing between Jira and Org mode")
-   (description
-    "This package provides an extension to Org mode for syncing issues with
+    (name "emacs-org-jira")
+    (version "4.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ahungry/org-jira")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1pkqyvziwp2573hnr8s41chsbm40564f76i3l8ynjr7955nccsms"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "jiralib.el"
+                             "-l" "org-jira-sdk.el"
+                             "-l" "org-jira.el"
+                             "-l" "t/org-jira-t.el"
+                             "-l" "t/jiralib-t.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs
+     (list emacs-dash emacs-org emacs-request))
+    (home-page "https://github.com/ahungry/org-jira")
+    (synopsis "Syncing between Jira and Org mode")
+    (description
+     "This package provides an extension to Org mode for syncing issues with
 JIRA issue servers.")
-   (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public emacs-slime-volleyball
   (package
