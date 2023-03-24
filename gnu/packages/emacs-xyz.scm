@@ -31493,7 +31493,7 @@ contains a track position, playback will start at the specified position.")
 (define-public emacs-org-jira
   (package
    (name "emacs-org-jira")
-   (version "4.4.0")
+   (version "4.4.1")
    (source
     (origin
      (method git-fetch)
@@ -31503,10 +31503,10 @@ contains a track position, playback will start at the specified position.")
      (file-name (git-file-name name version))
      (sha256
       (base32
-       "1s91l4ibjvvc7rfvd8gldxqrcgjq00q83fdww217ck2ps5yrzyjl"))))
+       "1pkqyvziwp2573hnr8s41chsbm40564f76i3l8ynjr7955nccsms"))))
    (build-system emacs-build-system)
    (propagated-inputs
-    (list emacs-request emacs-s emacs-dash emacs-org))
+    (list emacs-request emacs-dash emacs-org))
    (home-page "https://github.com/ahungry/org-jira")
    (synopsis "Syncing between Jira and Org-mode")
    (description
