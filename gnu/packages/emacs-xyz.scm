@@ -9698,6 +9698,30 @@ insertion mode.  When enabled all keys are implicitly prefixed with
 sgml/html integration, and indentation (working with sgml).")
     (license license:gpl3+)))
 
+(define-public emacs-jit-spell
+  (package
+    (name "emacs-jit-spell")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/jit-spell-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "10h2nbp6lap26arwifhzs119mkfj76fvjsix3iccjjvfdi88wdn9"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/astoff/jit-spell")
+    (synopsis "Just-in-time spell checking")
+    (description
+     "This package highlights all misspelled words in a window, just like a
+word processor or web browser does.  This behavior is different from the
+built-in Flyspell package, which only checks words as the cursor moves over
+them.  Moreover, unlike Flyspell, Jit-spell communicates with the
+spell-checking subprocess entirely asynchronously, which can lead to a
+noticeable performance improvement.")
+    (license license:gpl3+)))
+
 (define-public emacs-company-cabal
   ;; The latest version is 0.3.0, but no release has been provided after 0.2.1.
   (let ((commit "62112a7259e24bd6c08885629a185afe512b7d3d")
