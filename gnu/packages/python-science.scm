@@ -245,33 +245,61 @@ logic, also known as grey logic.")
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
 
+(define-public python-scikit-optimize
+  (package
+    (name "python-scikit-optimize")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scikit-optimize" version))
+              (sha256
+               (base32
+                "0230ya8bwrzxjwcy2vz23a3hg6caggnnmg2vq1f9zz2797kckn3p"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-joblib
+           python-matplotlib
+           python-numpy
+           python-pyaml
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://scikit-optimize.github.io/")
+    (synopsis "Sequential model-based optimization toolbox")
+    (description "Scikit-Optimize, or @code{skopt}, is a simple and efficient
+library to minimize (very) expensive and noisy black-box functions.  It
+implements several methods for sequential model-based optimization.
+@code{skopt} aims to be accessible and easy to use in many contexts.")
+    (license license:bsd-3)))
+
 (define-public python-scikit-allel
   (package
     (name "python-scikit-allel")
     (version "1.3.5")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "scikit-allel" version))
-        (sha256
-         (base32 "1vg88ng6gd175gzk39iz1drxig5l91dyx398w2kbw3w8036zv8gj"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit-allel" version))
+       (sha256
+        (base32 "1vg88ng6gd175gzk39iz1drxig5l91dyx398w2kbw3w8036zv8gj"))))
     (build-system python-build-system)
     (arguments
      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "python" "setup.py" "build_ext" "--inplace")
-                 (invoke "python" "-m" "pytest" "-v" "allel"
-                         ;; AttributeError: 'Dataset' object has no attribute 'asstr'
-                         "-k" (string-append
-                                "not test_vcf_to_hdf5"
-                                " and not test_vcf_to_hdf5_exclude"
-                                " and not test_vcf_to_hdf5_rename"
-                                " and not test_vcf_to_hdf5_group"
-                                " and not test_vcf_to_hdf5_ann"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "setup.py" "build_ext" "--inplace")
+                (invoke "python" "-m" "pytest" "-v" "allel"
+                        ;; AttributeError: 'Dataset' object has no attribute 'asstr'
+                        "-k" (string-append
+                              "not test_vcf_to_hdf5"
+                              " and not test_vcf_to_hdf5_exclude"
+                              " and not test_vcf_to_hdf5_rename"
+                              " and not test_vcf_to_hdf5_group"
+                              " and not test_vcf_to_hdf5_ann"))))))))
     (propagated-inputs
      (list python-dask
            python-numpy))
