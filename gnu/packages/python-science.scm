@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -169,6 +169,57 @@ the SciPy stack.  It provides many user-friendly and efficient numerical
 routines such as routines for numerical integration and optimization.")
     (license license:bsd-3)))
 
+(define-public python-scikit-allel
+  (package
+    (name "python-scikit-allel")
+    (version "1.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scikit-allel" version))
+       (sha256
+        (base32 "1vg88ng6gd175gzk39iz1drxig5l91dyx398w2kbw3w8036zv8gj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; AttributeError: 'Dataset' object has no attribute 'asstr'
+              "not test_vcf_to_hdf5"
+              " and not test_vcf_to_hdf5_exclude"
+              " and not test_vcf_to_hdf5_rename"
+              " and not test_vcf_to_hdf5_group"
+              " and not test_vcf_to_hdf5_ann"
+              ;; Does not work with recent hmmlearn
+              " and not test_roh_mhmm_0pct"
+              " and not test_roh_mhmm_100pct"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-ext
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-dask
+           python-numpy))
+    (native-inputs
+     (list python-cython
+           ;; The following are all needed for the tests
+           htslib
+           python-h5py
+           python-hmmlearn
+           python-numexpr
+           python-pytest
+           python-scipy
+           python-setuptools-scm
+           python-zarr))
+    (home-page "https://github.com/cggh/scikit-allel")
+    (synopsis "Explore and analyze genetic variation data")
+    (description
+     "This package provides utilities for exploratory analysis of large scale
+genetic variation data.")
+    (license license:expat)))
+
 (define-public python-scikit-fuzzy
   (package
     (name "python-scikit-fuzzy")
@@ -272,54 +323,6 @@ library to minimize (very) expensive and noisy black-box functions.  It
 implements several methods for sequential model-based optimization.
 @code{skopt} aims to be accessible and easy to use in many contexts.")
     (license license:bsd-3)))
-
-(define-public python-scikit-allel
-  (package
-    (name "python-scikit-allel")
-    (version "1.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scikit-allel" version))
-       (sha256
-        (base32 "1vg88ng6gd175gzk39iz1drxig5l91dyx398w2kbw3w8036zv8gj"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "setup.py" "build_ext" "--inplace")
-                (invoke "python" "-m" "pytest" "-v" "allel"
-                        ;; AttributeError: 'Dataset' object has no attribute 'asstr'
-                        "-k" (string-append
-                              "not test_vcf_to_hdf5"
-                              " and not test_vcf_to_hdf5_exclude"
-                              " and not test_vcf_to_hdf5_rename"
-                              " and not test_vcf_to_hdf5_group"
-                              " and not test_vcf_to_hdf5_ann"))))))))
-    (propagated-inputs
-     (list python-dask
-           python-numpy))
-    (native-inputs
-     (list python-cython
-           ;; The following are all needed for the tests
-           htslib
-           python-h5py
-           python-hmmlearn
-           python-numexpr
-           python-pytest
-           python-scipy
-           python-setuptools-scm
-           python-zarr))
-    (home-page "https://github.com/cggh/scikit-allel")
-    (synopsis "Explore and analyze genetic variation data")
-    (description
-     "This package provides utilities for exploratory analysis of large scale
-genetic variation data.")
-    (license license:expat)))
 
 (define-public python-trimesh
   (package
