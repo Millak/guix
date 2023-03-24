@@ -98,7 +98,7 @@ charts now and don't care if they're perfect.")))
 (define-public python-agate
   (wireservice-package
    (name "python-agate")
-   (version "1.6.1")
+   (version "1.7.1")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -107,9 +107,10 @@ charts now and don't care if they're perfect.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "077zj8xad8hsa3nqywvf7ircirmx3krxdipl8wr3dynv3l3khcpl"))))
+               "1wqyml7f70hr7zhgwvwqy4bdshlbcmp4jmyc5y12jyx10xp3sk7c"))))
    (native-inputs
-    `(("python-nose" ,python-nose)
+    `(("locales" ,python-agate-locales)
+      ("python-nose" ,python-nose)
       ("python-sphinx" ,python-sphinx)
       ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
       ("python-csselect" ,python-cssselect)
