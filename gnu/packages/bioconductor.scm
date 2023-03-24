@@ -11102,32 +11102,57 @@ problems in genomics, brain imaging, astrophysics, and data mining.")
 @code{Rcpp}.")
    (license license:gpl2+)))
 
+(define-public r-apcomplex
+  (package
+    (name "r-apcomplex")
+    (version "2.66.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "apComplex" version))
+       (sha256
+        (base32 "057p1bsqqw3r49bsx78prqc4jha468bfx50gpl62giix0cfs007f"))))
+    (properties `((upstream-name . "apComplex")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-graph
+           r-org-sc-sgd-db
+           r-rbgl
+           r-rgraphviz))
+    (home-page "https://bioconductor.org/packages/apComplex")
+    (synopsis "Estimate protein complex membership using AP-MS protein data")
+    (description
+     "This package provides functions to estimate a bipartite graph of protein
+complex membership using @acronym{AP-MS, affinity purification–mass
+spectrometry} data.")
+    (license license:lgpl2.0+)))
+
 (define-public r-apeglm
   (package
-   (name "r-apeglm")
-   (version "1.22.1")
-   (source (origin
-            (method url-fetch)
-            (uri (bioconductor-uri "apeglm" version))
-            (sha256
-             (base32
-              "19r1mhpkn3xy6l188c14k9xgn25xqc718bwrlmnz63lak6mp4ws7"))))
-   (properties `((upstream-name . "apeglm")))
-   (build-system r-build-system)
-   (propagated-inputs
-    (list r-emdbook
-          r-genomicranges
-          r-rcpp
-          r-rcppeigen
-          r-rcppnumerical
-          r-summarizedexperiment))
-   (native-inputs (list r-knitr r-rmarkdown))
-   (home-page "https://bioconductor.org/packages/apeglm")
-   (synopsis "Approximate posterior estimation for GLM coefficients")
-   (description "This package provides Bayesian shrinkage estimators for
+    (name "r-apeglm")
+    (version "1.22.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "apeglm" version))
+              (sha256
+               (base32
+                "19r1mhpkn3xy6l188c14k9xgn25xqc718bwrlmnz63lak6mp4ws7"))))
+    (properties `((upstream-name . "apeglm")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-emdbook
+           r-genomicranges
+           r-rcpp
+           r-rcppeigen
+           r-rcppnumerical
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr r-rmarkdown))
+    (home-page "https://bioconductor.org/packages/apeglm")
+    (synopsis "Approximate posterior estimation for GLM coefficients")
+    (description "This package provides Bayesian shrinkage estimators for
 effect sizes for a variety of GLM models, using approximation of the
 posterior for individual coefficients.")
-   (license license:gpl2)))
+    (license license:gpl2)))
 
 (define-public r-greylistchip
   (package
