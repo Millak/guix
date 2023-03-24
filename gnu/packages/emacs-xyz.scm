@@ -31506,11 +31506,11 @@ contains a track position, playback will start at the specified position.")
        "1pkqyvziwp2573hnr8s41chsbm40564f76i3l8ynjr7955nccsms"))))
    (build-system emacs-build-system)
    (propagated-inputs
-    (list emacs-request emacs-dash emacs-org))
+    (list emacs-dash emacs-org emacs-request))
    (home-page "https://github.com/ahungry/org-jira")
-   (synopsis "Syncing between Jira and Org-mode")
+   (synopsis "Syncing between Jira and Org mode")
    (description
-    "This package provides an extension to org-mode for syncing issues with
+    "This package provides an extension to Org mode for syncing issues with
 JIRA issue servers.")
    (license license:gpl3+)))
 
