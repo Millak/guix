@@ -118,6 +118,28 @@ analysis.")
 based on mapping using Entrez Gene identifiers.")
     (license license:artistic2.0)))
 
+(define-public r-org-sc-sgd-db
+  (package
+    (name "r-org-sc-sgd-db")
+    (version "3.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "org.Sc.sgd.db" version
+                              'annotation))
+       (sha256
+        (base32 "1anxk5sgzgkdk4n1c7gjyzy56wa2bkifghs9m1mh82l95kyvk2ig"))))
+    (properties `((upstream-name . "org.Sc.sgd.db")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi))
+    (home-page "https://bioconductor.org/packages/org.Sc.sgd.db")
+    (synopsis "Genome wide annotation for Yeast")
+    (description
+     "This package provides genome wide annotation for Yeast, primarily based
+on mapping using ORF identifiers from @acronym{SGD, Saccharomyces Genome
+Database}.")
+    (license license:artistic2.0)))
+
 (define-public r-pd-mapping50k-xba240
   (package
     (name "r-pd-mapping50k-xba240")
