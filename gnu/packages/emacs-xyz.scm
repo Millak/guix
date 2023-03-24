@@ -17254,11 +17254,21 @@ in Emacs.")
         (base32 "01yw10z1kf38nz4z3gmpx56wmc7a7caf4nk6rccg0w4kklqw1h94"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-source-directory
-           (lambda _
-             (chdir "lisp"))))))
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "../tests/php-mode-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-testing-bed
+            (lambda _
+              ;; This file is necessary for `php-project-root' test.
+              (call-with-output-file "tests/project/1/.git"
+                (const #t))))
+          (add-after 'prepare-testing-bed 'enter-source-directory
+            (lambda _
+              (chdir "lisp"))))))
     (propagated-inputs (list emacs-projectile))
     (home-page "https://github.com/ejmr/php-mode")
     (synopsis "Major mode for editing PHP code")
