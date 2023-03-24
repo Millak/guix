@@ -18535,6 +18535,37 @@ the read count and GC content bias.")
 validating output, provides an S4 SBML DOM, converts SBML to R graph objects.")
     (license license:artistic2.0)))
 
+(define-public r-hybridmtest
+  (package
+    (name "r-hybridmtest")
+    (version "1.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "HybridMTest" version))
+       (sha256
+        (base32 "19pycad35hc7ylnsz75bv029y1r6j9xvrbhzk4i64i7jn8gi7ngh"))))
+    (properties `((upstream-name . "HybridMTest")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-fdrtool
+           r-mass
+           r-survival))
+    (home-page "https://bioconductor.org/packages/HybridMTest")
+    (synopsis "Hybrid multiple testing")
+    (description
+     "This package performs hybrid multiple testing that incorporates method
+selection and assumption evaluations into the analysis using @acronym{EBP,
+empirical Bayes probability} estimates obtained by Grenander density
+estimation.  For instance, for 3-group comparison analysis, Hybrid Multiple
+testing considers EBPs as weighted EBPs between F-test and H-test with EBPs
+from Shapiro Wilk test of normality as weigth.  Instead of just using EBPs
+from F-test only or using H-test only, this methodology combines both types of
+EBPs through EBPs from Shapiro Wilk test of normality.  This methodology uses
+then the law of total EBPs.")
+    (license license:gpl2+)))
+
 (define-public r-hypergraph
   (package
     (name "r-hypergraph")
