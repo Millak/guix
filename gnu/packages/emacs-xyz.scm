@@ -14638,7 +14638,7 @@ extensions.")
 (define-public emacs-evil-collection
   (package
     (name "emacs-evil-collection")
-    (version "0.0.8")
+    (version "0.0.9")
     (source
      (origin
        (method git-fetch)
@@ -14647,7 +14647,7 @@ extensions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "159i3qvjnp7jiffwpr517nnxcy3w3g40302vyzxvz6mb6qay6f2c"))))
+        (base32 "1y1ig4shqaaiiwqm5pv8hvh8ynr6irhffkgmpyzmhdaaicxnfazc"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-evil emacs-annalist))
