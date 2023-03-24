@@ -692,10 +692,12 @@ source.")))
                          (search-input-file (or native-inputs inputs)
                                             "/opt/racket-vm/bin/racket")
                          "../rktboot/main.rkt"
-                         #$@(if (racket-cs-native-supported-system?)
-                                #~()
-                                (let ((m (nix-system->pbarch-machine-type)))
-                                  #~("--machine" #$m)))))))))))))
+                         ;; Temporary handling of builds on non-x86 architectures,
+                         ;; see https://github.com/racket/racket/issues/3948
+                         ;; Autodetect in rktboot only addresses x86 archs, so far.
+                         #$@(let ((m (or (racket-cs-native-supported-system?)
+                                         (nix-system->pbarch-machine-type))))
+                              #~("--machine" #$m))))))))))))
     (supported-systems
      (package-supported-systems chez-scheme-for-racket))
     (home-page "https://github.com/racket/ChezScheme")
