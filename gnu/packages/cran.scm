@@ -3408,6 +3408,41 @@ convenience functions useful for using CSS selectors on XML nodes.  This
 package is a port of the Python package @code{cssselect}.")
     (license license:bsd-3)))
 
+(define-public r-repmis
+  (package
+    (name "r-repmis")
+    (version "0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "repmis" version))
+       (sha256
+        (base32 "0z5mjbsl24yjbl0aawr35grcal44rf2xbwv1hy7bdkms94ix79b5"))))
+    (properties `((upstream-name . "repmis")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'install 'change-home-dir
+           (lambda _
+             ;; Change from /homeless-shelter to /tmp for write permission.
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list r-data-table
+           r-digest
+           r-httr
+           r-plyr
+           r-r-cache))
+    (home-page "https://cran.r-project.org/package=repmis")
+    (synopsis "Miscellaneous tools for reproducible research")
+    (description
+     "This package is a colletion of tools to load R packages and
+automatically generate BibTeX files citing them as well as load and cache
+plain-text and Excel formatted data stored on GitHub, and from other
+sources.")
+    (license license:gpl3+)))
+
 (define-public r-reprex
   (package
     (name "r-reprex")
