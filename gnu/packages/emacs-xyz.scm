@@ -26918,6 +26918,31 @@ scratch, and you think the Spacemacs theme looks good.
           (base32 "11lwckqcgzsahrkkm5wk1ph4kc7d4yz05r7251g8c9f0q6vdj9dp"))
          (file-name (git-file-name name version)))))))
 
+(define-public emacs-column-enforce-mode
+  (let ((commit "14a7622f2268890e33536ccd29510024d51ee96f")
+        (revision "1"))
+    (package
+      (name "emacs-column-enforce-mode")
+      (version (git-version "1.0.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/jordonbiondo/column-enforce-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1vxra5vk78yns2sw89m41bggczqg1akq6xvzfs9kylhkg5yz3g7g"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/jordonbiondo/column-enforce-mode")
+      (synopsis "Highlight text that extends beyond a certain column")
+      (description
+       "Column Enforce mode highlights text that extends beyond a certain
+column.  It can be used to enforce 80 column rule.  It can also be configured
+for any @var{N}-column rule.")
+      (license license:gpl3+))))
+
 (define-public emacs-column-marker
   (package
     (name "emacs-column-marker")
