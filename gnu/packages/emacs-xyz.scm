@@ -256,6 +256,7 @@
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages wget)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
@@ -27690,6 +27691,37 @@ chevron marks.")
 Nix expressions.  It supports syntax highlighting, indenting and refilling of
 comments.")
     (license license:lgpl2.1+)))
+
+(define-public emacs-nyxt
+  (package
+    (name "emacs-nyxt")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~conses/nyxt.el")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hgb10pk5m3v2gsl4h6i821nyzksss0rk4hhjnfb7nm98lalzbl6"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "nyxt.el"
+                ("nyxt-path"
+                 (search-input-file inputs "/bin/nyxt"))))))))
+    (inputs (list nyxt))
+    (propagated-inputs (list emacs-sly))
+    (home-page "https://git.sr.ht/~conses/nyxt.el")
+    (synopsis "Interact with Nyxt from Emacs")
+    (description "This package consists of custom logic to interact with Nyxt
+from Emacs.")
+    (license license:gpl3+)))
 
 (define-public emacs-libmpdel
   (package
