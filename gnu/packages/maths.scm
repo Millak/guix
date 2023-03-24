@@ -3044,44 +3044,44 @@ can solve two kinds of problems:
     (version "8.1.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/octave/octave-"
-                          version ".tar.xz"))
-      (sha256
-       (base32
-        "00lis18dsb13v9nvz0z4cs7v4y634jc0vb04lxfw9pshwriikglv"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/octave/octave-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "00lis18dsb13v9nvz0z4cs7v4y634jc0vb04lxfw9pshwriikglv"))))
     (build-system gnu-build-system)
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("arpack" ,arpack-ng)
-       ("bdb" ,bdb)
-       ("curl" ,curl)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("fltk" ,fltk)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("gl2ps" ,gl2ps)
-       ("glpk" ,glpk)
-       ("glu" ,glu)
-       ("graphicsmagick" ,graphicsmagick)
+     (list alsa-lib
+           arpack-ng
+           bdb
+           curl
+           fftw
+           fftwf
+           fltk
+           fontconfig
+           freetype
+           gl2ps
+           glpk
+           glu
+           graphicsmagick
 
-       ;; TODO: libjpeg-turbo is indirectly required through libtiff.  In
-       ;; the next rebuild cycle, add an absolute reference for -ljpeg in
-       ;; libtiff.la instead of having to provide it here.
-       ("libjpeg" ,libjpeg-turbo)
+           ;; TODO: libjpeg-turbo is indirectly required through libtiff.  In
+           ;; the next rebuild cycle, add an absolute reference for -ljpeg in
+           ;; libtiff.la instead of having to provide it here.
+           libjpeg-turbo
 
-       ("hdf5" ,hdf5)
-       ("lapack" ,lapack)
-       ("libsndfile" ,libsndfile)
-       ("libxft" ,libxft)
-       ("mesa" ,mesa)
-       ("pcre" ,pcre)
-       ("portaudio" ,portaudio)
-       ("qhull" ,qhull)
-       ("readline" ,readline)
-       ("suitesparse" ,suitesparse)
-       ("zlib" ,zlib)))
+           hdf5
+           lapack
+           libsndfile
+           libxft
+           mesa
+           pcre
+           portaudio
+           qhull
+           readline
+           suitesparse
+           zlib))
     (native-inputs
      (list gfortran
            pkg-config
@@ -3121,8 +3121,7 @@ can solve two kinds of problems:
              (substitute* "libinterp/corefcn/help.h"
                (("\"makeinfo\"")
                 (string-append
-                 "\"" (assoc-ref inputs "texinfo") "/bin/makeinfo\"")))
-             #t)))))
+                 "\"" (assoc-ref inputs "texinfo") "/bin/makeinfo\""))))))))
     (home-page "https://www.gnu.org/software/octave/")
     (synopsis "High-level language for numerical computation (no GUI)")
     (description "GNU Octave is a high-level interpreted language that is
