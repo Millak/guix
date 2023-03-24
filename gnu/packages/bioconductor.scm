@@ -21397,6 +21397,27 @@ statistical dependencies in messy, complex data.")
 other functional sequencing data.")
     (license license:gpl2)))
 
+(define-public r-parody
+  (package
+    (name "r-parody")
+    (version "1.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "parody" version))
+       (sha256
+        (base32 "0n2pmpnpwh16hb58v821xn42jm4a7wjsdf6sqxapjjw9w432mjac"))))
+    (properties `((upstream-name . "parody")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/parody")
+    (synopsis "Parametric and resistant outlier detection")
+    (description
+     "The parody package provides routines for univariate and multivariate
+outlier detection with a focus on parametric methods, but support for some
+methods based on resistant statistics.")
+    (license license:artistic2.0)))
+
 (define-public r-pathview
   (package
     (name "r-pathview")
