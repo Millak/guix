@@ -14649,10 +14649,20 @@ extensions.")
        (sha256
         (base32 "1y1ig4shqaaiiwqm5pv8hvh8ynr6irhffkgmpyzmhdaaicxnfazc"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-evil emacs-annalist))
     (arguments
-     `(#:include (cons* "^modes\\/" %default-include)))
+     (list
+      #:include #~(cons* "^modes\\/" %default-include)
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-L" "."
+                             "-L" "./test"
+                             "-l" "evil-collection-test.el"
+                             "-l" "evil-collection-magit-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (native-inputs
+     (list emacs-magit))
+    (propagated-inputs
+     (list emacs-annalist emacs-evil))
     (home-page "https://github.com/emacs-evil/evil-collection")
     (synopsis "Collection of Evil bindings for many major and minor modes")
     (description "This is a collection of Evil bindings for the parts of
