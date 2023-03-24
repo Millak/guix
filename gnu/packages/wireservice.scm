@@ -150,7 +150,7 @@ support to all @code{agate.Table} instances.")))
 (define-public python-agate-dbf
   (wireservice-package
    (name "python-agate-dbf")
-   (version "0.2.1")
+   (version "0.2.2")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -159,7 +159,7 @@ support to all @code{agate.Table} instances.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1y49fi6pmm7gzhajvqmfpcca2sqnwj24fqnsvzwk7r1hg2iaa2gi"))))
+               "03l3qlyw7588jhjjsiy15valqlzs8gjai8f74v18zv2za0zjqbzl"))))
    (native-inputs
     `(("python-nose" ,python-nose)
       ("python-sphinx" ,python-sphinx)
