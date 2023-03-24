@@ -3516,6 +3516,42 @@ Bioconductor microarray data containers @code{(ExpressionSet},
 supported.")
     (license license:lgpl2.0+)))
 
+(define-public r-arraymvout
+  (package
+    (name "r-arraymvout")
+    (version "1.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "arrayMvout" version))
+       (sha256
+        (base32 "1wdqcfa0h070lky4m2h5k4wg8lg7014y0gk95gip5zags29zjwqb"))))
+    (properties `((upstream-name . "arrayMvout")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'install 'change-home-dir
+           (lambda _
+             ;; Change from /homeless-shelter to /tmp for write permission.
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list r-affy
+           r-affycontam
+           r-biobase
+           r-lumi
+           r-mdqc
+           r-parody))
+    (home-page "https://bioconductor.org/packages/arrayMvout")
+    (synopsis "Multivariate outlier detection for expression array QA")
+    (description
+     "This package supports the application of diverse quality metrics to
+AffyBatch instances, summarizing these metrics via PCA, and then performing
+parametric outlier detection on the PCs to identify aberrant arrays with a
+fixed Type I error rate.")
+    (license license:artistic2.0)))
+
 (define-public r-asafe
   (package
     (name "r-asafe")
