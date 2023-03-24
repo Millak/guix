@@ -26,6 +26,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages python-web)
@@ -87,6 +88,12 @@
    (synopsis "Python charting for 80% of humans")
    (description "Leather is a Python charting library for those who need
 charts now and don't care if they're perfect.")))
+
+(define python-agate-locales
+  (make-glibc-utf8-locales
+   glibc
+   #:locales (list "ko_KR")
+   #:name "python-agate-locales"))
 
 (define-public python-agate
   (wireservice-package
