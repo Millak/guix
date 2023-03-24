@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -2011,72 +2011,66 @@ following features:
     (name "subversion")
     (version "1.14.2")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://apache/subversion/"
-                                 "subversion-" version ".tar.bz2"))
-             (sha256
-              (base32
-               "0a6csc84hfymm8b5cnvq1n1p3rjjf33qy0z7y1k8lwkm1f6hw4y9"))))
+              (method url-fetch)
+              (uri (string-append "mirror://apache/subversion/"
+                                  "subversion-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0a6csc84hfymm8b5cnvq1n1p3rjjf33qy0z7y1k8lwkm1f6hw4y9"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--enable-static=no")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-libtool-wrapper-ls
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; This substitution allows tests svnauthz_tests and svnlook_tests
-             ;; to pass.  These tests execute svnauthz and svnlook through
-             ;; their libtool wrapper scripts from svn hooks, whose empty
-             ;; environments cause "ls: command not found" errors.  It would be
-             ;; nice if this fix ultimately made its way into libtool.
-             (let ((coreutils (assoc-ref inputs "coreutils")))
-               (substitute* "libtool"
-                 (("\\\\`ls") (string-append "\\`" coreutils "/bin/ls")))
-               #t)))
-         (add-before 'build 'patch-test-sh
-           (lambda _
-             (substitute* "subversion/tests/libsvn_repos/repos-test.c"
-               (("#!/bin/sh") (string-append "#!" (which "sh"))))
-             #t))
-         (add-before 'check 'set-PARALLEL
-           (lambda* (#:key parallel-tests? #:allow-other-keys)
-             (if parallel-tests?
-                 (setenv "PARALLEL" (number->string (parallel-job-count)))
-                 (simple-format #t "parallel-tests? are disabled\n"))
-             #t))
-         (add-after 'install 'install-perl-bindings
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Follow the instructions from 'subversion/bindings/swig/INSTALL'.
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "make" "swig-pl-lib")
-               ;; FIXME: Test failures.
-               ;; (invoke "make" "check-swig-pl")
-               (invoke "make" "install-swig-pl-lib")
+     (list
+      #:configure-flags #~(list "--enable-static=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'patch-libtool-wrapper-ls
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; This substitution allows tests svnauthz_tests and svnlook_tests
+              ;; to pass.  These tests execute svnauthz and svnlook through
+              ;; their libtool wrapper scripts from svn hooks, whose empty
+              ;; environments cause "ls: command not found" errors.  It would be
+              ;; nice if this fix ultimately made its way into libtool.
+              (substitute* "libtool"
+                (("\\\\`ls")
+                 (string-append "\\`" (search-input-file inputs "bin/ls"))))))
+          (add-before 'build 'patch-test-sh
+            (lambda _
+              (substitute* "subversion/tests/libsvn_repos/repos-test.c"
+                (("#!/bin/sh") (string-append "#!" (which "sh"))))))
+          (add-before 'check 'set-PARALLEL
+            (lambda* (#:key parallel-tests? #:allow-other-keys)
+              (if parallel-tests?
+                  (setenv "PARALLEL" (number->string (parallel-job-count)))
+                  (simple-format #t "parallel-tests? are disabled\n"))))
+          (add-after 'install 'install-perl-bindings
+            (lambda _
+              ;; Follow the instructions from 'subversion/bindings/swig/INSTALL'.
+              (invoke "make" "swig-pl-lib")
+              ;; FIXME: Test failures.
+              ;; (invoke "make" "check-swig-pl")
+              (invoke "make" "install-swig-pl-lib")
 
-               ;; Set the right installation prefix.
-               (with-directory-excursion
-                   "subversion/bindings/swig/perl/native"
-                 (invoke "perl" "Makefile.PL"
-                         "NO_PERLLOCAL=1"
-                         (string-append "PREFIX=" out))
-                 (invoke "make" "install"
-                         (string-append "OTHERLDFLAGS="
-                                        "-Wl,-rpath="
-                                        out "/lib")))))))))
+              ;; Set the right installation prefix.
+              (with-directory-excursion "subversion/bindings/swig/perl/native"
+                (invoke "perl" "Makefile.PL" "NO_PERLLOCAL=1"
+                        (string-append "PREFIX=" #$output))
+                (invoke "make" "install"
+                        (string-append "OTHERLDFLAGS=-Wl,-rpath="
+                                       #$output "/lib"))))))))
     (native-inputs
-      (list pkg-config
-            ;; For the Perl bindings.
-            swig))
+     (list pkg-config
+           ;; For the Perl bindings.
+           swig))
     (inputs
-      `(("apr" ,apr)
-        ("apr-util" ,apr-util)
-        ("lz4" ,lz4)
-        ("serf" ,serf)
-        ("perl" ,perl)
-        ("python" ,python-wrapper)
-        ("sqlite" ,sqlite)
-        ("utf8proc" ,utf8proc)
-        ("zlib" ,zlib)))
+     (list apr
+           apr-util
+           lz4
+           perl
+           python-wrapper
+           serf
+           sqlite
+           utf8proc
+           zlib))
     (home-page "https://subversion.apache.org/")
     (synopsis "Revision control system")
     (description
