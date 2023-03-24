@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2842,7 +2843,7 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
 (define-public mosquitto
   (package
     (name "mosquitto")
-    (version "1.6.12")
+    (version "2.0.15")
     (source
      (origin
        (method url-fetch)
@@ -2850,10 +2851,10 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1yq7y329baa1ly488rw125c3mvsnsa7kjkik602xv1xpkz8p73al"))))
+         "1ils0ckxz86gvr37k2gfl4q9gs12625dhhb7i6lcg49z5v9v2da7"))))
     (build-system cmake-build-system)
     (inputs
-     (list openssl))
+     (list openssl libxslt))
     (synopsis "Message broker")
     (description "This package provides Eclipse Mosquitto, a message broker
 that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1.  Mosquitto
