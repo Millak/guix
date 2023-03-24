@@ -2019,9 +2019,7 @@ following features:
                "0a6csc84hfymm8b5cnvq1n1p3rjjf33qy0z7y1k8lwkm1f6hw4y9"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-tests? #f             ; TODO Seems to cause test failures on
-                                        ; i686-linux
-       #:configure-flags '("--enable-static=no")
+     '(#:configure-flags '("--enable-static=no")
        #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'patch-libtool-wrapper-ls
