@@ -6056,6 +6056,14 @@ structured and unstructured grid problems.")))
         (base32
          "0vr8c1mz1k6mz0sgh6n3scl5c3a71iqmy5fnydrgq504icj4vym4"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'install-matioConfig.h
+            (lambda _
+              (install-file "src/matioConfig.h"
+                            (string-append #$output "/include")))))))
     (inputs
      (list zlib hdf5-1.8))
     (home-page "http://matio.sourceforge.net/")
