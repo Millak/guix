@@ -1273,7 +1273,7 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
 (define-public volk
   (package
     (name "volk")
-    (version "2.4.1")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1283,19 +1283,26 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
              (recursive? #t)))          ; for cpu_features git submodule
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mkqiw0i2fbbsk46zvk8yv5swl7ifhq6y1dlfphq8dsmkvxckqby"))))
+        (base32 "0a59lnjh6hx2bmyn04f8r0ymwss1ss1iih2jwrl9jblkxsw0i3lh"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-check-lgpl-test
+           ;; Disable the failing check-lgpl test that is supposed to be run
+           ;; only by upstream developers to check the authors and licenses
+           ;; of contributions in the git history.
+           (lambda _
+             (substitute* "scripts/licensing/count_contrib.sh"
+               (("#!/bin/bash" all)
+                (string-append all "\nexit 0")))))
          (add-after 'install 'remove-static-libraries
            ;; Remove libcpu_features.a (and any others that might appear).
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (lib (string-append out "/lib")))
                (for-each delete-file (find-files lib "\\.a$"
-                                                 #:fail-on-error? #t))
-               #t)))
+                                                 #:fail-on-error? #t)))))
          (add-after 'install 'wrap-pythonpath
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1311,8 +1318,7 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
                (wrap-program file
                  `("GUIX_PYTHONPATH" ":" prefix (,path))
                  `("PATH" ":" prefix
-                   (,(string-append python "/bin:")))))
-             #t)))))
+                   (,(string-append python "/bin:"))))))))))
     (inputs
      `(("boost" ,boost)
        ("python" ,python-wrapper)
@@ -1324,7 +1330,8 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
 with machine-specific optimizations for mathematical functions.  It also
 provides a machine-independent interface to select the best such procedures to
 use on a given system.")
-    (license license:gpl3+)))
+    (license (list license:asl2.0 ; cpu_features
+                   license:lgpl3+))))
 
 (define-public libredwg
   (package
