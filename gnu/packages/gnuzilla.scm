@@ -706,9 +706,11 @@ variable defined below.  It requires guile-json to be installed."
            libxcomposite
            libxt
            libffi
-           ffmpeg
+           ;; Support for FFmpeg 6 was only added in version 112 (see:
+           ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
+           ffmpeg-5
            libvpx
-           icu4c-71  ; TODO: Change to 'icu4c' when its version is >= 71.
+           icu4c-71       ;TODO: Change to 'icu4c' when its version is >= 71.
            pixman
            pulseaudio
            mesa
@@ -964,7 +966,7 @@ variable defined below.  It requires guile-json to be installed."
               ;; complain that it's not able to change Cargo.lock.
               ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1726373
               (substitute* "build/RunCbindgen.py"
-                           (("\"--frozen\",") ""))))
+                (("\"--frozen\",") ""))))
           (delete 'bootstrap)
           (replace 'configure
             ;; configure does not work followed by both "SHELL=..." and
@@ -1492,7 +1494,8 @@ ca495991b7852b855"))
            cairo
            cups
            dbus-glib
-           ffmpeg
+           ;; Support for FFmpeg 6 was only added in version 112 (see:
+           ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1819374).
            freetype
            gdk-pixbuf
            glib

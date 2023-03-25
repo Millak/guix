@@ -1579,14 +1579,14 @@ operate properly.")
 (define-public ffmpeg
   (package
     (name "ffmpeg")
-    (version "5.1.2")
+    (version "6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1p7kxr0f9f9d0pyyxq9ciaj9ch2drmcw5p9jk22j111ccrnp17k1"))))
+                "10kh2f4y4isfqj4xpcqqnzk611jh89ywcjyjnq9c2jcv5p18ggjp"))))
     (build-system gnu-build-system)
     (inputs
      (append
@@ -1728,8 +1728,8 @@ operate properly.")
          "--disable-static"
 
          #$@(if (target-riscv64?)
-              '("--extra-cflags=-fPIC")
-              '())
+                '("--extra-cflags=-fPIC")
+                '())
 
          ;; Runtime cpu detection is not implemented on
          ;; MIPS, so we disable some features.
@@ -1770,9 +1770,21 @@ convert and stream audio and video.  It includes the libavcodec
 audio/video codec library.")
     (license license:gpl2+)))
 
-(define-public ffmpeg-4
+(define-public ffmpeg-5
   (package
     (inherit ffmpeg)
+    (version "5.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1p7kxr0f9f9d0pyyxq9ciaj9ch2drmcw5p9jk22j111ccrnp17k1"))))))
+
+(define-public ffmpeg-4
+  (package
+    (inherit ffmpeg-5)
     (version "4.4.2")
     (source (origin
              (method url-fetch)
