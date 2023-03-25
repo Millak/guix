@@ -12275,6 +12275,34 @@ functions also support labelled data, and all integrate seamlessly into a
 tidyverse workflow.")
     (license license:gpl3)))
 
+(define-public r-nodbi
+  (package
+    (name "r-nodbi")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "nodbi" version))
+              (sha256
+               (base32
+                "1hn0wy2ry9l3wwqrshmf82cxigkm16wycwprv458bcvb5k6ayy5m"))))
+    (properties `((upstream-name . "nodbi")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dbi
+           r-jqr
+           r-jsonify
+           r-jsonlite
+           r-stringi
+           r-uuid))
+    (home-page "https://docs.ropensci.org/nodbi/")
+    (synopsis "NoSQL database connector")
+    (description
+     "This is a package for simplified document database access and
+manipulation, providing a common API across supported NoSQL databases
+Elasticsearch, CouchDB, MongoDB as well as SQLite/JSON1, PostgreSQL, and
+DuckDB.")
+    (license license:expat)))
+
 (define-public r-nortest
   (package
     (name "r-nortest")
