@@ -349,7 +349,7 @@
 
 (define-public ffmpeg-jami
   (package
-    (inherit ffmpeg-5)
+    (inherit ffmpeg)
     (name "ffmpeg-jami")
     ;; XXX: Use a slightly older version, otherwise the
     ;; 'libopusdec-enable-FEC' patch doesn't apply.
@@ -363,7 +363,7 @@
                 "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
     (outputs '("out" "debug"))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg-5)
+     (substitute-keyword-arguments (package-arguments ffmpeg)
        ((#:configure-flags _ '())
         #~(cons* "--disable-static"
                  "--enable-shared"

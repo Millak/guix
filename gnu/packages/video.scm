@@ -1576,7 +1576,7 @@ These tools require a supported graphics chip, driver, and VA-API back end to
 operate properly.")
     (license license:expat)))
 
-(define-public ffmpeg-5
+(define-public ffmpeg
   (package
     (name "ffmpeg")
     (version "5.1.2")
@@ -1772,7 +1772,7 @@ audio/video codec library.")
 
 (define-public ffmpeg-4
   (package
-    (inherit ffmpeg-5)
+    (inherit ffmpeg)
     (version "4.4.2")
     (source (origin
              (method url-fetch)
@@ -1781,10 +1781,10 @@ audio/video codec library.")
              (sha256
               (base32
                "14xadxm1yaamp216nq09xwasxg5g133v86dbb33mdg5di1zrlhdg"))))
-    (inputs (modify-inputs (package-inputs ffmpeg-5)
+    (inputs (modify-inputs (package-inputs ffmpeg)
               (replace "sdl2" sdl2-2.0)))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg-5)
+     (substitute-keyword-arguments (package-arguments ffmpeg)
        ((#:configure-flags flags ''())
         #~(cons "--enable-avresample" #$flags))))))
 
@@ -1862,8 +1862,6 @@ audio/video codec library.")
     ;; the build, and we'd rather not add features to this old package anymore.
     (inputs (modify-inputs (package-inputs ffmpeg-3.4)
               (delete "libwebp")))))
-
-(define-public ffmpeg ffmpeg-5)
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
