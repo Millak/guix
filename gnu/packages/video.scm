@@ -3476,40 +3476,8 @@ and JACK.")
     (license license:gpl2+)))
 
 (define-public obs-websocket
-  (package
-    (name "obs-websocket")
-    (version "4.9.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Palakis/obs-websocket")
-             (commit version)
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0giwhm0rbc578qng4invqqma935zzjlf05msz1gx986aqk654s7k"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f                      ;no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-permission-change
-           (lambda* _
-             (substitute* "CMakeLists.txt"
-               ;; Remove lines that set writeable permissions on outputs.
-               (("PERMISSIONS [^)]*") "")
-               (("set\\(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS") "")
-               ;; Ug^WClever hack to comment out the next line, which is ‘)’.
-               (("(OWNER|GROUP|WORLD)_READ .*") "#")))))))
-    (inputs
-     (list obs qtbase-5))
-    (home-page "https://github.com/Palakis/obs-websocket")
-    (synopsis "OBS plugin for remote control via WebSockets")
-    (description "This OBS plugin allows you to establish a WebSocket channel
-from within your running OBS instance so that you can control it remotely from
-programs on your current machine or on other machines.")
-    (license license:gpl2+)))
+  ;; Functionality was merged into OBS.
+  (deprecated-package "obs-websocket" obs))
 
 (define-public obs-wlrobs
   (package
