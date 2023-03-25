@@ -5498,6 +5498,42 @@ freedom to design figures for better understanding complex patterns behind
 multi-dimensional data.")
     (license license:gpl2+)))
 
+(define-public r-ctrialsgov
+  (package
+    (name "r-ctrialsgov")
+    (version "0.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ctrialsgov" version))
+              (sha256
+               (base32
+                "0hdh1fdfaja8amf7fkvk1c6yif703132bvacq0j9pk5jr97czgpw"))))
+    (properties `((upstream-name . "ctrialsgov")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dbi
+           r-dplyr
+           r-ggplot2
+           r-htmlwidgets
+           r-lubridate
+           r-matrix
+           r-plotly
+           r-purrr
+           r-rlang
+           r-stringi
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=ctrialsgov")
+    (synopsis
+     "Query data from U.S. National Library of Medicine's Clinical Trials Database")
+    (description
+     "This package provides tools to query the U.S. National Library of
+Medicine's Clinical Trials database.  Functions are provided for a variety of
+techniques for searching the data using range queries, categorical filtering,
+and by searching for full-text keywords.  Minimal graphical tools are also
+provided for interactively exploring the constructed data.")
+    (license license:expat)))
+
 (define-public r-powerlaw
   (package
     (name "r-powerlaw")
