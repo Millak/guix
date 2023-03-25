@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -729,7 +729,7 @@ your calls and messages.")
 (define-public pjproject
   (package
     (name "pjproject")
-    (version "2.12.1")
+    (version "2.13")
     (source
      (origin
        (method git-fetch)
@@ -739,7 +739,7 @@ your calls and messages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xrj4sznbaip22y9hclff6y81l285bzkkj1smzifskpk3kiwp00w"))
+         "0ld0adp9y2ydnz2ldwdzig3hpk4ayx1va6aqc3nja8zfdnd36fyb"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -820,7 +820,10 @@ your calls and messages.")
                  "#define INCLUDE_TCP_TEST 0\n")
                 ;; The TSX tests takes a very long time to run; skip them.
                 (("#define INCLUDE_TSX_GROUP.*")
-                 "#define INCLUDE_TSX_GROUP 0\n"))
+                 "#define INCLUDE_TSX_GROUP 0\n")
+                ;; The resolve test requires a working domain name resolver.
+                (("#define INCLUDE_RESOLVE_TEST.*")
+                 "#define INCLUDE_RESOLVE_TEST 0\n"))
               (substitute* "pjsip/src/test/dns_test.c"
                 ;; The round_robin_test fails non-deterministically (depending
                 ;; on load); skip it (see:
