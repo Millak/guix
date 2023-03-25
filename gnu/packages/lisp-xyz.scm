@@ -4638,68 +4638,73 @@ Lisp implementations.")
   (sbcl-package->ecl-package sbcl-closer-mop))
 
 (define-public sbcl-cl-cffi-gtk
-  (let ((commit "e9a46df65995d9a16e6c8dbdc1e09b775eb4a966"))
+  (let ((commit "1700fe672c65455c1fc33061ec92a3df84287ec7")
+        (revision "3"))
     (package
       (name "sbcl-cl-cffi-gtk")
-      (version (git-version "0.11.2" "2" commit))
+      (version (git-version "3.8.8" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Ferada/cl-cffi-gtk/")
+               (url "https://github.com/sharplispers/cl-cffi-gtk/")
                (commit commit)))
          (file-name (git-file-name "cl-cffi-gtk" version))
          (sha256
-          (base32
-           "04vix0gmqsj91lm975sx7jhlnz5gq1xf9jp873mp7c8frc5dk1jj"))))
+          (base32 "1cn2f6b62axjzdzfv971218ably32dvqfdy499li25vjd8nb2qm3"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cairo" ,cairo)
-         ("cffi" ,sbcl-cffi)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("gdk-pixbuf" ,gdk-pixbuf)
-         ("glib" ,glib)
-         ("gtk" ,gtk+)
-         ("iterate" ,sbcl-iterate)
-         ("pango" ,pango)
-         ("trivial-features" ,sbcl-trivial-features)
-         ("trivial-garbage" ,sbcl-trivial-garbage)))
+       (list cairo
+             gdk-pixbuf
+             glib
+             gtk+
+             pango
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-closer-mop
+             sbcl-iterate
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
       (arguments
-       `(;; TODO: Tests fail with memory fault.
-         ;; See https://github.com/Ferada/cl-cffi-gtk/issues/24.
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "glib/glib.init.lisp"
-                 (("libglib|libgthread" all)
-                  (string-append (assoc-ref inputs "glib") "/lib/" all)))
-               (substitute* "gobject/gobject.init.lisp"
-                 (("libgobject" all)
-                  (string-append (assoc-ref inputs "glib") "/lib/" all)))
-               (substitute* "gio/gio.init.lisp"
-                 (("libgio" all)
-                  (string-append (assoc-ref inputs "glib") "/lib/" all)))
-               (substitute* "cairo/cairo.init.lisp"
-                 (("libcairo" all)
-                  (string-append (assoc-ref inputs "cairo") "/lib/" all)))
-               (substitute* "pango/pango.init.lisp"
-                 (("libpango" all)
-                  (string-append (assoc-ref inputs "pango") "/lib/" all)))
-               (substitute* "gdk-pixbuf/gdk-pixbuf.init.lisp"
-                 (("libgdk_pixbuf" all)
-                  (string-append (assoc-ref inputs "gdk-pixbuf") "/lib/" all)))
-               (substitute* "gdk/gdk.init.lisp"
-                 (("libgdk" all)
-                  (string-append (assoc-ref inputs "gtk") "/lib/" all)))
-               (substitute* "gdk/gdk.package.lisp"
-                 (("libgtk" all)
-                  (string-append (assoc-ref inputs "gtk") "/lib/" all))))))))
-      (home-page "https://github.com/Ferada/cl-cffi-gtk/")
+       (list
+        ;; TODO: Tests fail with memory fault.
+        ;; See https://github.com/Ferada/cl-cffi-gtk/issues/24.
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "glib/glib.init.lisp"
+                  (("libglib-[0-9.]*\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all)))
+                  (("libgthread-[0-9.]*\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all))))
+                (substitute* "gobject/gobject.init.lisp"
+                  (("libgobject-[0-9.]*\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all))))
+                (substitute* "gio/gio.init.lisp"
+                  (("libgio-[0-9.]*\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all))))
+                (substitute* "cairo/cairo.init.lisp"
+                  (("libcairo\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all))))
+                (substitute* "pango/pango.init.lisp"
+                  (("libpango-[0-9.]*\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all)))
+                  (("libpangocairo-[0-9.]*\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all))))
+                (substitute* "gdk-pixbuf/gdk-pixbuf.init.lisp"
+                  (("libgdk_pixbuf-[0-9.]*\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all))))
+                (substitute* "gdk/gdk.init.lisp"
+                  (("libgdk-[0-9]\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all))))
+                (substitute* "gdk/gdk.package.lisp"
+                  (("libgtk-[0-9]\\.so" all)
+                   (search-input-file inputs (string-append "/lib/" all)))))))))
+      (home-page "https://github.com/sharplispers/cl-cffi-gtk/")
       (synopsis "Common Lisp binding for GTK+3")
       (description
        "@command{cl-cffi-gtk} is a Lisp binding to GTK+ 3 (GIMP Toolkit) which
