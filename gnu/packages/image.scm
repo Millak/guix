@@ -571,9 +571,27 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
       (sha256
        (base32 "06f6d08xvmsiki4mc1qs985gsjqmsxx793a93b72y25q84wbg9x9"))))
    (build-system gnu-build-system)
-   (inputs (list libjpeg-turbo))
    (arguments
-    '(#:tests? #f))                     ; no tests
+    `(#:tests? #f                       ; no tests
+      ,@(if (and (target-riscv64?)
+                 (%current-target-system))
+          (list #:phases
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'update-config-scripts
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (for-each (lambda (file)
+                                    (install-file
+                                      (search-input-file
+                                        (or native-inputs inputs)
+                                        (string-append "/bin/" file)) "./tools"))
+                                  '("config.guess" "config.sub"))))))
+          '())))
+   (inputs (list libjpeg-turbo))
+   (native-inputs
+    (if (and (target-riscv64?)
+             (%current-target-system))
+      (list config)
+      '()))
    (synopsis "Optimize JPEG images")
    (description
     "jpegoptim provides lossless optimization (based on optimizing
