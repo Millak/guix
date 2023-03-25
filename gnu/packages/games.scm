@@ -9094,7 +9094,7 @@ levels to unlock.")
 (define simgear
   (package
     (name "simgear")
-    (version "2020.3.17")
+    (version "2020.3.18")
     (source
      (origin
        (method url-fetch)
@@ -9102,7 +9102,7 @@ levels to unlock.")
                            (version-major+minor version) "/"
                            "simgear-" version ".tar.bz2"))
        (sha256
-        (base32 "0z1pkxs4fw8xkiainxgcpayhmn0b4c0sc2j6q88x66zzvk89qpjc"))
+        (base32 "1jin6rbz4s83x4k91lbdw5gb0vrc8frbmwpc55wl0wmiaqjwzhbc"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -9147,7 +9147,7 @@ and also provides the base for the FlightGear Flight Simulator.")
                            (version-major+minor version) "/"
                            "flightgear-" version ".tar.bz2"))
        (sha256
-        (base32 "0m0qbyf9i84avkfmjm1a5bijl1nqs7wnpw7rfz53ls52mkgdww36"))
+        (base32 "0dyyi1v97w3mdwsv9kdd194inz1461wqv3zy3wyai0n17wdf7a1r"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -9219,7 +9219,7 @@ and also provides the base for the FlightGear Flight Simulator.")
                                "FlightGear-" version "-data.txz"))
            (sha256
             (base32
-             "1s6qahfia3llghfqgx990brg7gbb7z7accsq528kcyp6k8mvlpia"))))))
+             "0f2jn2br27ahf5gggx70zcp80wrylahw7nbqdcx7ml9qphg6rjak"))))))
     (home-page "https://www.flightgear.org/")
     (synopsis "Flight simulator")
     (description "The goal of the FlightGear project is to create a
