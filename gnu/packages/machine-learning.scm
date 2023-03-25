@@ -583,6 +583,34 @@ optimizing, and searching weighted finite-state transducers (FSTs).")
        '("--enable-shared" "--enable-far" "--enable-ngram-fsts"
          "--enable-lookahead-fsts" "--with-pic" "--disable-bin")))))
 
+(define-public sentencepiece
+  (package
+    (name "sentencepiece")
+    (version "0.1.97")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/sentencepiece")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kzfkp2pk0vabyw3wmkh16h11chzq63mzc20ddhsag5fp6s91ajg"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list gperftools))
+    (home-page "https://github.com/google/sentencepiece")
+    (synopsis "Unsupervised tokenizer for Neural Network-based text generation")
+    (description
+     "SentencePiece is an unsupervised text tokenizer and detokenizer mainly
+for Neural Network-based text generation systems where the vocabulary size is
+predetermined prior to the neural model training.  SentencePiece implements
+subword units---e.g., byte-pair-encoding (BPE) and unigram language
+model---with the extension of direct training from raw sentences.
+SentencePiece allows us to make a purely end-to-end system that does not
+depend on language-specific pre- or post-processing.")
+    (license license:asl2.0)))
+
 (define-public shogun
   (package
     (name "shogun")
