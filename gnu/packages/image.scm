@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -458,7 +459,7 @@ lossless JPEG manipulations such as rotation, scaling or cropping:
            (lambda _
              ;; The Makefile uses optimization level 1, so the same
              ;; level is used here for consistency.
-             (invoke "gcc" "-shared" "-fPIC" "-O"
+             (invoke ,(cc-for-target) "-shared" "-fPIC" "-O"
                      ;; Common files.
                      "adapthuff.o" "image.o" "strcodec.o" "strPredQuant.o"
                      "strTransform.o" "perfTimerANSI.o"
@@ -469,7 +470,7 @@ lossless JPEG manipulations such as rotation, scaling or cropping:
                      "encode.o" "segenc.o" "strenc.o" "strFwdTransform.o"
                      "strPredQuantEnc.o"
                      "-o" "libjpegxr.so")
-             (invoke "gcc" "-shared" "-fPIC" "-O"
+             (invoke ,(cc-for-target) "-shared" "-fPIC" "-O"
                      ;; Glue files.
                      "JXRGlue.o" "JXRMeta.o" "JXRGluePFC.o" "JXRGlueJxr.o"
                      ;; Test files.
