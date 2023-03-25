@@ -5520,6 +5520,45 @@ freedom to design figures for better understanding complex patterns behind
 multi-dimensional data.")
     (license license:gpl2+)))
 
+(define-public r-ctrdata
+  (package
+    (name "r-ctrdata")
+    (version "1.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ctrdata" version))
+              (sha256
+               (base32
+                "076v3bll8s6m61wcbwgrgrm34g0wa7gsc90mbwxwap1xfxyzjjsg"))))
+    (properties `((upstream-name . "ctrdata")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-clipr
+           r-curl
+           r-dplyr
+           r-httr
+           r-jsonlite
+           r-lubridate
+           r-nodbi
+           r-rvest
+           r-stringi
+           r-xml2))
+    (native-inputs (list r-r-rsp))
+    (home-page "https://cran.r-project.org/package=ctrdata")
+    (synopsis "Retrieve and analyze clinical trials in public registers")
+    (description
+     "This package provides a system for querying, retrieving and analyzing
+protocol- and results-related information on clinical trials from three public
+registers, the European Union Clinical Trials Register (EUCTR),
+ClinicalTrials.gov (CTGOV) and the ISRCTN.  Trial information is downloaded,
+converted and stored in a database.  Functions are included to identify
+deduplicated records, to easily find and extract variables (fields) of
+interest even from complex nesting as used by the registers, and to update
+previous queries.  The package can be used for meta-analysis and
+trend-analysis of the design and conduct as well as for results of clinical
+trials.")
+    (license license:expat)))
+
 (define-public r-ctrialsgov
   (package
     (name "r-ctrialsgov")
