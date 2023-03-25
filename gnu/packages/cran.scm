@@ -3246,6 +3246,28 @@ re-imagining of @code{httr} that uses a pipe-based interface and solves more
 of the problems that API wrapping packages face.")
     (license license:expat)))
 
+(define-public r-jsonify
+  (package
+    (name "r-jsonify")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "jsonify" version))
+              (sha256
+               (base32
+                "0bxgyj5b1hnijq5315g050giixy4k5mjz2zdx8yil0igb5ifji9p"))))
+    (properties `((upstream-name . "jsonify")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rapidjsonr r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=jsonify")
+    (synopsis
+     "Convert between R objects and JavaScript Object Notation (JSON)")
+    (description
+     "This package enables conversions between R objects and JavaScript Object
+Notation (JSON) using the rapidjsonr library.")
+    (license license:expat)))
+
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
