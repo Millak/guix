@@ -400,6 +400,70 @@ Performance is achieved by using the LLVM JIT compiler.")
 (define-public guile-aiscm-next
   (deprecated-package "guile-aiscm-next" guile-aiscm))
 
+(define-public llama-cpp
+  (let ((commit "3cd8dde0d1357b7f11bdd25c45d5bf5e97e284a0")
+        (revision "0"))
+    (package
+      (name "llama-cpp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ggerganov/llama.cpp")
+               (commit (string-append "master-" (string-take commit 7)))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0i7c92cxqs31xklrn688978kk29agivgxjgvsb45wzm65gc6hm5c"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:modules '((ice-9 textual-ports)
+                    (guix build utils)
+                    ((guix build python-build-system) #:prefix python:)
+                    (guix build cmake-build-system))
+        #:imported-modules `(,@%cmake-build-system-modules
+                             (guix build python-build-system))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'install-python-scripts
+              (lambda _
+                (let ((bin (string-append #$output "/bin/")))
+                  (define (make-script script)
+                    (let ((suffix (if (string-suffix? ".py" script) "" ".py")))
+                      (call-with-input-file
+                          (string-append "../source/" script suffix)
+                        (lambda (input)
+                          (call-with-output-file (string-append bin script)
+                            (lambda (output)
+                              (format output "#!~a/bin/python3\n~a"
+                                      #$(this-package-input "python")
+                                      (get-string-all input))))))
+                      (chmod (string-append bin script) #o555)))
+                  (mkdir-p bin)
+                  (make-script "convert-pth-to-ggml")
+                  (make-script "convert-gptq-to-ggml")
+                  (make-script "quantize.py")
+                  (substitute* (string-append bin "quantize.py")
+                    (("os\\.getcwd\\(\\), quantize_script_binary")
+                     (string-append "\"" bin "\", quantize_script_binary"))))))
+            (add-after 'install-python-scripts 'wrap-python-scripts
+              (assoc-ref python:%standard-phases 'wrap))
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin/")))
+                  (install-file "bin/quantize" bin)
+                  (copy-file "bin/main" (string-append bin "llama"))))))))
+      (inputs (list python))
+      (propagated-inputs
+       (list python-numpy python-pytorch python-sentencepiece))
+      (home-page "https://github.com/ggerganov/llama.cpp")
+      (synopsis "Port of Facebook's LLaMA model in C/C++")
+      (description "This package provides a port to Facebook's LLaMA collection
+of foundation language models.  It requires models parameters to be downloaded
+independently to be able to run a LLaMA model.")
+      (license license:expat))))
+
 (define-public mcl
   (package
     (name "mcl")
