@@ -5202,6 +5202,95 @@ packages.")
     ;;  GPUQREngine, RBio, SuiteSparse_GPURuntime, SuiteSparseQR, UMFPACK
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+
+;; This outdated version is used to build the scilab package.
+(define-public suitesparse-3
+  (package
+    (inherit suitesparse)
+    (name "suitesparse")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DrTimothyAldenDavis/SuiteSparse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wxk755nzps0c9la24zqknqkzjp6rcj5q9jhd973mff1pqja3clz"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f  ;no "check" target
+       #:make-flags
+       ,#~(list
+           (string-append "CC=gcc")
+           "AR=gcc -shared -o"
+           "RANLIB=touch"
+           "CFLAGS=-O3 -fPIC -I../Include"
+           "TBB=-ltbb"
+
+           ;; Disable metis@4 (nonfree) support.
+           "CHOLMOD_CONFIG=-DNPARTITION"
+           "METIS="
+           "METIS_PATH="
+
+           ;; The default is to link against netlib lapack.  Use OpenBLAS
+           ;; instead.
+           "BLAS=-lopenblas" "LAPACK=-lopenblas"
+
+           (string-append "INSTALL_LIB="
+                          (assoc-ref %outputs "out") "/lib")
+           (string-append "INSTALL_INCLUDE="
+                          (assoc-ref %outputs "out") "/include")
+           "library")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'correct-build-configuration
+           (lambda _
+             ;; Invert build order: CHOLMOD before KLU.
+             (substitute* "Makefile"
+               (("\t\\( cd CHOLMOD ; \\$\\(MAKE\\) \\)\n$")
+                "")
+               (("\\( cd KLU ; \\$\\(MAKE\\) \\)")
+                (string-append "( cd CHOLMOD ; $(MAKE) )\n\t"
+                               "( cd KLU ; $(MAKE) )")))
+             ;; Build shared libraries.
+             (substitute* (find-files "." "akefile$")
+               (("lib([a-z]+)\\.a" all libname)
+                (string-append "lib" libname ".so")))
+             ;; Delete broken KLU Demo step.
+             (substitute* "KLU/Makefile"
+               (("\\( cd Demo ; \\$\\(MAKE\\) \\)")
+                ""))))
+         (replace 'install
+           (lambda _
+             ;; Install libraries.
+             (for-each
+              (lambda (x)
+                (install-file
+                 x
+                 (string-append (assoc-ref %outputs "out") "/lib")))
+              (find-files "." "\\.so$"))
+             ;; Install header files.
+             (for-each
+              (lambda (x)
+                (install-file
+                 x
+                 (string-append (assoc-ref %outputs "out") "/include")))
+              (find-files "." "\\.h$"))))
+         ,@(if (target-riscv64?)
+               ;; GraphBLAS FTBFS on riscv64-linux
+               `((add-after 'unpack 'skip-graphblas
+                   (lambda _
+                     (substitute* "Makefile"
+                       ((".*cd GraphBLAS.*") "")
+                       (("metisinstall gbinstall moninstall")
+                        "moninstall")))))
+               '())
+         (delete 'configure))))         ;no configure script
+    (inputs
+     (list tbb openblas gmp mpfr))))
+
 (define-public atlas
   (package
     (name "atlas")
