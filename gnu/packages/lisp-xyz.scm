@@ -4154,61 +4154,57 @@ is statically typed so there are differences.")
   (sbcl-package->cl-source-package sbcl-varjo))
 
 (define-public sbcl-cffi
-  (package
-    (name "sbcl-cffi")
-    (version "0.24.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cffi/cffi")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "cl-cffi" version))
-       (sha256
-        (base32 "17ryim4xilb1rzxydfr7595dnhqkk02lmrbkqrkvi9091shi4cj3"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list libffi
-           sbcl-alexandria
-           sbcl-babel
-           sbcl-trivial-features))
-    (native-inputs
-     (list pkg-config
-           sbcl-bordeaux-threads
-           sbcl-rt))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-arm-support
-           (lambda _
-             ;; This is apparently deprecated since libffi-3.3.
-             (substitute* "libffi/libffi-types.lisp"
-               (("\\\(\\\(:unix64.*") ")\n"))))
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "libffi/libffi.lisp"
-               (("libffi.so.7" all) (string-append
-                                     (assoc-ref inputs "libffi")
-                                     "/lib/" all)))
-             (substitute* "toolchain/c-toolchain.lisp"
-               (("\"cc\"") (format #f "~S" (which "gcc"))))))
-         (add-after 'build 'install-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "grovel/common.h"
-                           (string-append
-                            (assoc-ref outputs "out")
-                            "/include/grovel")))))
-       #:asd-systems '("cffi"
-                       "cffi-libffi"
-                       "cffi-uffi-compat")))
-    (home-page "https://common-lisp.net/project/cffi/")
-    (synopsis "Common Foreign Function Interface for Common Lisp")
-    (description "The Common Foreign Function Interface (CFFI)
+  (let ((commit "33970351e71bb5f12ba56fc40270089e948ae112")
+        (revision "1"))
+    (package
+      (name "sbcl-cffi")
+      (version (git-version "0.24.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cffi/cffi")
+               (commit commit)))
+         (file-name (git-file-name "cl-cffi" version))
+         (sha256
+          (base32 "1h7cw15f08gm6m4yz8hk7qkfwp7mwwnykjc5py6dhjakv0wh1g37"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list libffi
+             sbcl-alexandria
+             sbcl-babel
+             sbcl-trivial-features))
+      (native-inputs
+       (list pkg-config
+             sbcl-bordeaux-threads
+             sbcl-rt))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "libffi/libffi.lisp"
+                       (("libffi.so.8" all)
+                        (search-input-file inputs (string-append "/lib/" all))))
+                     (substitute* "toolchain/c-toolchain.lisp"
+                       (("\"cc\"")
+                        (format #f "~S" (which "gcc"))))))
+                 (add-after 'build 'install-headers
+                   (lambda _
+                     (install-file "grovel/common.h"
+                                   (string-append #$output
+                                                  "/include/grovel")))))
+             #:asd-systems ''("cffi"
+                              "cffi-libffi"
+                              "cffi-uffi-compat")))
+      (home-page "https://common-lisp.net/project/cffi/")
+      (synopsis "Common Foreign Function Interface for Common Lisp")
+      (description "The Common Foreign Function Interface (CFFI)
 purports to be a portable foreign function interface for Common Lisp.
 The CFFI library is composed of a Lisp-implementation-specific backend
 in the CFFI-SYS package, and a portable frontend in the CFFI
 package.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public cl-cffi
   (sbcl-package->cl-source-package sbcl-cffi))
