@@ -8650,3 +8650,109 @@ primal-dual interior-point method are made available.  Interfaces are
 provided for applications written in C++ and Python.  Parallel
 computation is supported via MPI.")
     (license license:bsd-2))))
+
+(define-public scilab
+  (package
+    (name "scilab")
+    (version "5.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://oos.eu-west-2.outscale.com/scilab-releases/"
+                       version "/scilab-" version "-src.tar.gz"))
+       (sha256
+        (base32 "1hx57aji5d78brwqcf8a34i1hasm3h4nw46xjg7cgxj09s8yz5kq"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config gfortran))
+    (inputs (list libxml2
+                  `(,pcre "bin")
+                  `(,pcre "out")
+                  readline
+                  hdf5-1.8
+                  curl
+                  openblas
+                  lapack
+                  arpack-ng
+                  fftw
+                  gettext-minimal
+                  suitesparse-3
+                  tcl
+                  tk
+                  libx11
+                  matio))
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       ,#~(list
+           "--enable-relocatable"
+           "--disable-static-system-lib"
+           ;; Disable all java code.
+           "--without-gui"
+           "--without-javasci"
+           "--disable-build-help"
+           "--with-external-scirenderer"
+           ;; Tcl and Tk library locations.
+           (string-append "--with-tcl-include="
+                          (string-drop-right
+                           (search-input-file %build-inputs "include/tcl.h")
+                           (string-length "/tcl.h")))
+           (string-append "--with-tcl-library="
+                          (string-drop-right
+                           (search-input-directory %build-inputs "lib/tcl8")
+                           (string-length "/tcl8")))
+           (string-append "--with-tk-include="
+                          (string-drop-right
+                           (search-input-file %build-inputs "include/tk.h")
+                           (string-length "/tk.h")))
+           (string-append "--with-tk-library="
+                          (string-drop-right
+                           (search-input-directory %build-inputs "lib/tk8.6")
+                           (string-length "/tk8.6")))
+           ;; There are some 2018-fortran errors that are ignored
+           ;; with this fortran compiler flag.
+           "FFLAGS=-fallow-argument-mismatch")
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-before 'build 'pre-build
+              (lambda _
+                ;; Fix scilab script.
+                (substitute* "bin/scilab"
+                  (("\\/bin\\/ls")
+                   (which "ls")))
+                ;; Fix core.start.
+                (substitute* "modules/core/etc/core.start"
+                  (("'SCI/modules")
+                   "SCI+'/modules"))
+                ;; Fix fortran compilation error.
+                (substitute*
+                    "modules/differential_equations/src/fortran/twodq.f"
+                  (("node\\(10\\),node1\\(10\\),node2\\(10\\),coef")
+                   "node(9),node1(9),node2(9),coef"))
+                ;; Fix C compilation errors.
+                ;; remove &
+                (substitute* "modules/hdf5/src/c/h5_readDataFromFile_v1.c"
+                  (("(H5Rdereference\\(_iDatasetId, H5R_OBJECT, )&(.*)\\);$"
+                    all common ref)
+                   (string-append common ref)))
+                ;; fix multiple definitions
+                (substitute* "modules/tclsci/src/c/TCL_Command.h"
+                  (("^__thread")
+                   "extern __thread"))
+                (substitute* "modules/tclsci/src/c/InitTclTk.c"
+                  (("BOOL TK_Started = FALSE;" all)
+                   (string-append all "\n"
+                                  "__threadId TclThread;" "\n"
+                                  "__threadSignal InterpReady;" "\n"
+                                  "__threadSignalLock InterpReadyLock;"
+                                  "\n")))
+                ;; Set SCIHOME to /tmp before macros compilation.
+                (setenv "SCIHOME" "/tmp"))))))
+    (home-page "https://scilab.org")
+    (synopsis "Software for engineers and scientists")
+    (description "This package provides the non-graphical version of the Scilab
+software for engineers and scientists. Scilab is used for signal processing,
+statistical analysis, image enhancement, fluid dynamics simulations, numerical
+optimization, and modeling, simulation of explicit and implicit dynamical
+systems and symbolic manipulations.")
+    (license license:cecill)))                    ;CeCILL v2.1
