@@ -1168,16 +1168,15 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.8.13")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/djcb/mu")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0y4f5p7pwmaj8733rjzg29038dw33057qlsbsq2wapvp24wcjymr"))))
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/djcb/mu/releases/download/v"
+                           version "/mu-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0fmcxypvl77k7si5g3c0pak13hy2ilz8a6567m7p2apjr33j223z"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
