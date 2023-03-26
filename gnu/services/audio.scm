@@ -140,6 +140,11 @@
 (define list-of-symbol?
   (list-of symbol?))
 
+
+;;;
+;;; MPD
+;;;
+
 (define (mpd-serialize-field field-name value)
   (let ((field (if (string? field-name) field-name
                    (uglify-field-name field-name)))
@@ -294,7 +299,17 @@ disconnect all listeners even when playback is accidentally stopped.")
 for this audio output: the @code{hardware} mixer, the @code{software}
 mixer, the @code{null} mixer (allows setting the volume, but with no
 effect; this can be used as a trick to implement an external mixer
-External Mixer) or no mixer (@code{none}).")
+External Mixer) or no mixer (@code{none})."
+   (sanitizer
+    (lambda (x)  ; TODO: deprecated, remove me later.
+      (cond
+       ((symbol? x)
+        (warning (G_ "symbol value for 'mixer-type' is deprecated, \
+use string instead~%"))
+        (symbol->string x))
+       ((string? x) x)
+       (else
+        (configuration-field-error #f 'mixer-type x))))))
 
   (replay-gain-handler
    maybe-string
