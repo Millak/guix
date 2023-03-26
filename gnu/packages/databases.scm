@@ -3640,6 +3640,60 @@ in Python for ranking documents indexed using the SQLite's FTS4 full
 text search extension.")
     (license license:asl2.0)))
 
+(define-public python-sqlite-utils
+  (package
+    (name "python-sqlite-utils")
+    (version "3.30")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/simonw/sqlite-utils")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a58syvh5jp40vi5libsxkqy99z75kj4ckxqmylbhd342ppfy1wp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "setup.py"
+                              ;; This is a variant designed to have a binary
+                              ;; wheel made available on PyPI, which is not a
+                              ;; concern to Guix.
+                              (("click-default-group-wheel")
+                               "click-default-group")))))))
+    (propagated-inputs (list python-click python-click-default-group
+                             python-dateutil python-sqlite-fts4
+                             python-tabulate))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/simonw/sqlite-utils")
+    (synopsis
+     "CLI tool and Python utility functions for manipulating SQLite databases")
+    (description
+     "This package provides a CLI tool and Python utility functions for
+manipulating SQLite databases.  It's main features are:
+@itemize
+@item
+Pipe JSON (or CSV or TSV) directly into a new SQLite database file,
+automatically creating a table with the appropriate schema.
+@item
+Run in-memory SQL queries, including joins, directly against data in
+CSV, TSV or JSON files and view the results.
+@item
+Configure SQLite full-text search against your database tables and run
+search queries against them, ordered by relevance.
+@item
+Run transformations against your tables to make schema changes that
+SQLite ALTER TABLE does not directly support, such as changing the type
+of a column.
+@item
+Extract columns into separate tables to better normalize your existing
+data.
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public python-pickleshare
   (package
     (name "python-pickleshare")
