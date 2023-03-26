@@ -658,6 +658,48 @@ appended to the configuration.")
 (define-maybe/no-serialization integer)
 (define-maybe/no-serialization mympd-ip-acl)
 
+(define %mympd-user
+  (user-account
+      (name "mympd")
+      (group %lazy-group)
+      (system? #t)
+      (comment "myMPD user")
+      (home-directory "/var/empty")
+      (shell (file-append shadow "/sbin/nologin"))))
+
+(define %mympd-group
+  (user-group
+   (name "mympd")
+   (system? #t)))
+
+;;; TODO: Procedures for unsupported value types, to be removed.
+(define (mympd-user-sanitizer value)
+  (cond ((user-account? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'user' is not supported, use \
+user-account instead~%"))
+         (user-account
+          (inherit %mympd-user)
+          (name value)
+          ;; XXX: this is to be lazily substituted in (…-accounts)
+          ;; with the value from 'group'.
+          (group %lazy-group)))
+        (else
+         (configuration-field-error #f 'user value))))
+
+(define (mympd-group-sanitizer value)
+  (cond ((user-group? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'group' is not supported, use \
+user-group instead~%"))
+         (user-group
+          (inherit %mympd-group)
+          (name value)))
+        (else
+         (configuration-field-error #f 'group value))))
+;;;
+
+
 ;; XXX: The serialization procedures are insufficient since we require
 ;; access to multiple fields at once.
 ;; Fields marked with empty-serializer are never serialized and are
@@ -675,13 +717,15 @@ will depend on."
    empty-serializer)
 
   (user
-   (string "mympd")
+   (user-account %mympd-user)
    "Owner of the @command{mympd} process."
+   (sanitizer mympd-user-sanitizer)
    empty-serializer)
 
   (group
-   (string "nogroup")
+   (user-group %mympd-group)
    "Owner group of the @command{mympd} process."
+   (sanitizer mympd-group-sanitizer)
    empty-serializer)
 
   (work-directory
@@ -816,7 +860,8 @@ prompting a pin from the user.")
   (match-record config <mympd-configuration> (package shepherd-requirement
                                               user work-directory
                                               cache-directory log-level log-to)
-    (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level)))
+    (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level))
+          (username (user-account-name user)))
       (shepherd-service
        (documentation "Run the myMPD daemon.")
        (requirement `(loopback user-processes
@@ -826,7 +871,7 @@ prompting a pin from the user.")
                                ,@shepherd-requirement))
        (provision '(mympd))
        (start #~(begin
-                  (let* ((pw (getpwnam #$user))
+                  (let* ((pw (getpwnam #$username))
                          (uid (passwd:uid pw))
                          (gid (passwd:gid pw)))
                     (for-each (lambda (dir)
@@ -836,8 +881,8 @@ prompting a pin from the user.")
 
                   (make-forkexec-constructor
                    `(#$(file-append package "/bin/mympd")
-                     "--user" #$user
-                     #$@(if (eqv? log-to 'syslog) '("--syslog") '())
+                     "--user" #$username
+                     #$@(if (eq? log-to 'syslog) '("--syslog") '())
                      "--workdir" #$work-directory
                      "--cachedir" #$cache-directory)
                    #:environment-variables (list #$log-level*)
@@ -846,14 +891,11 @@ prompting a pin from the user.")
 
 (define (mympd-accounts config)
   (match-record config <mympd-configuration> (user group)
-                (list (user-group (name group)
-                                  (system? #t))
-                      (user-account (name user)
-                                    (group group)
-                                    (system? #t)
-                                    (comment "myMPD user")
-                                    (home-directory "/var/empty")
-                                    (shell (file-append shadow "/sbin/nologin"))))))
+    ;; TODO: Deprecation code, to be removed.
+    (let ((user (if (eq? (user-account-group user) %lazy-group)
+                    (%set-user-group user group)
+                    user)))
+      (list user group))))
 
 (define (mympd-log-rotation config)
   (match-record config <mympd-configuration> (log-to)

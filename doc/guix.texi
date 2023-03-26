@@ -33738,12 +33738,15 @@ The package object of the myMPD server.
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 
-@item @code{user} (default: @code{"mympd"}) (type: string)
+@item @code{user} (default: @code{%mympd-user}) (type: user-account)
 Owner of the @command{mympd} process.
 
-@item @code{group} (default: @code{"nogroup"}) (type: string)
+The default @code{%mympd-user} is a system user with the name ``mympd'',
+who is a part of the group @var{group} (see below).
+@item @code{group} (default: @code{%mympd-group}) (type: user-group)
 Owner group of the @command{mympd} process.
 
+The default @code{%mympd-group} is a system group with name ``mympd''.
 @item @code{work-directory} (default: @code{"/var/lib/mympd"}) (type: string)
 Where myMPD will store its data.
 
