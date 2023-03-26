@@ -570,6 +570,45 @@ communicate with each other, and positioned as an asynchronous successor to
 WSGI.  This package includes libraries for implementing ASGI servers.")
     (license license:bsd-3)))
 
+(define-public python-asgi-csrf
+  (package
+    (name "python-asgi-csrf")
+    (version "0.9")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/simonw/asgi-csrf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j134mjh0ff61rvkm3q67m463j1bhyxc9dwsdany3scnd4vsqqws"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; Provide a null config to avoid the extraneous dependency on
+           ;; python-pytest-coverage.
+           #~(list "-c" "/dev/null"
+                   ;; Disable two failing tests (see:
+                   ;; https://github.com/simonw/asgi-csrf/issues/24).
+                   "-k" (string-append
+                         "not (test_multipart "
+                         "or test_multipart_failure_wrong_token)"))))
+    (propagated-inputs (list python-itsdangerous python-multipart))
+    (native-inputs (list python-asgi-lifespan
+                         python-httpx
+                         python-pytest
+                         python-pytest-asyncio
+                         python-starlette))
+    (home-page "https://github.com/simonw/asgi-csrf")
+    (synopsis "ASGI middleware for protecting against CSRF attacks")
+    (description "This Asynchronous Server Gateway Interface (ASGI)
+middleware protects against Cross-site request forgery (CSRF) attacks.
+It implements the Double Submit Cookie pattern, where a cookie is set
+that is then compared to a @code{csrftoken} hidden form field or a
+@code{x-csrftoken} HTTP header.")
+    (license license:asl2.0)))
+
 (define-public python-asgi-lifespan
   (package
     (name "python-asgi-lifespan")
