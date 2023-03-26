@@ -49,7 +49,7 @@
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
-;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
@@ -569,6 +569,48 @@ stream is an enhanced asynchronous iterable.")
 communicate with each other, and positioned as an asynchronous successor to
 WSGI.  This package includes libraries for implementing ASGI servers.")
     (license license:bsd-3)))
+
+(define-public python-asgi-lifespan
+  (package
+    (name "python-asgi-lifespan")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/florimondmanca/asgi-lifespan")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10a5ci9ddr8wnjf3wai7xifbbplirhyrgvw4p28q0ha63cvhb2j2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-c" "/dev/null"           ;ignore coverage-related options
+             "-k"
+             (string-append
+              ;; XXX: Some tests fail because of a 'lifespan.shutdown.failed'
+              ;; extra event, perhaps because our version of trio is older.
+              "not (test_lifespan_manager[asyncio-None-ValueError-None]"
+              " or test_lifespan_manager[asyncio-ValueError-None-None]"
+              " or test_lifespan_manager[asyncio-ValueError-ValueError-None]"
+              " or test_lifespan_manager[trio-None-ValueError-None]"
+              " or test_lifespan_manager[trio-ValueError-None-None]"
+              " or test_lifespan_manager[trio-ValueError-ValueError-None])"))))
+    (native-inputs (list python-pytest
+                         python-pytest-asyncio
+                         python-pytest-trio
+                         python-starlette))
+    (propagated-inputs (list python-sniffio))
+    (home-page "https://github.com/florimondmanca/asgi-lifespan")
+    (synopsis "Programmatic startup/shutdown of ASGI apps")
+    (description "Programmatically send startup/shutdown lifespan events
+into Asynchronous Server Gateway Interface (ASGI) applications.  When
+used in combination with an ASGI-capable HTTP client such as HTTPX, this
+allows mocking or testing ASGI applications without having to spin up an
+ASGI server.")
+    (license license:expat)))
 
 (define-public python-css-html-js-minify
   (package
