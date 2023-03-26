@@ -3260,14 +3260,14 @@ notifications.")
 (define-public pounce
   (package
     (name "pounce")
-    (version "3.0")
+    (version "3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://git.causal.agency/pounce/snapshot/pounce-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1w4x34bspkqvk9p7bfj0zmvmbzvxb7lxrrr3g6lrfdj9f3qzfxpp"))))
+        (base32 "0kk0jrfiwfaybr0i5xih3b0yd4i6v3bz866a7xal1j8wddalbwlp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests
@@ -3279,7 +3279,7 @@ notifications.")
      (list pkg-config universal-ctags))
     (inputs
      (list libressl))
-    (home-page "https://code.causal.agency/june/pounce")
+    (home-page "https://git.causal.agency/pounce")
     (synopsis "Simple multi-client TLS-only IRC bouncer")
     (description
      "@command{pounce} is a multi-client, TLS-only IRC bouncer.  It maintains
