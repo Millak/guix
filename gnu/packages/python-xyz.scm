@@ -31637,6 +31637,24 @@ GeoJSON to WKT/WKB (Well-Known Text/Binary) or GeoPackage Binary, and vice
 versa.  Extended WKB/WKT are also supported.")
     (license license:asl2.0)))
 
+(define-public python-cogapp
+  (package
+    (name "python-cogapp")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cogapp" version))
+              (sha256
+               (base32
+                "1c0xx3p3lzrlyqhmccyq9c50f8v9pqk2992gb4nl50h2yy1m3s8v"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://nedbatchelder.com/code/cog")
+    (synopsis "Content generation tool that leverages Python")
+    (description "Cog is a file generation tool.  It allows using pieces of
+Python code as generators in your source files to generate arbitrary text.")
+    (license license:expat)))
+
 (define-public python-bsdiff4
   (package
     (name "python-bsdiff4")
