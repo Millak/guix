@@ -82,6 +82,9 @@
   (format #f "~a = ~a;" name value))
 
 (define-configuration serializable-configuration
+  (port (number 80) "The port number." (serializer custom-number-serializer)))
+
+(define-configuration serializable-configuration-deprecated
   (port (number 80) "The port number." custom-number-serializer))
 
 (test-assert "serialize-configuration"
@@ -89,8 +92,14 @@
    (let ((config (serializable-configuration)))
      (serialize-configuration config serializable-configuration-fields))))
 
+(test-assert "serialize-configuration [deprecated]"
+  (gexp?
+   (let ((config (serializable-configuration-deprecated)))
+     (serialize-configuration
+      config serializable-configuration-deprecated-fields))))
+
 (define-configuration serializable-configuration
-  (port (number 80) "The port number." custom-number-serializer)
+  (port (number 80) "The port number." (serializer custom-number-serializer))
   (no-serialization))
 
 (test-assert "serialize-configuration with no-serialization"

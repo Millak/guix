@@ -200,7 +200,7 @@
    "Backend to use to detect changes in the @code{log-path}.  The default is
 'auto.  To consult the defaults of the jail configuration, refer to the
 @file{/etc/fail2ban/jail.conf} file of the @code{fail2ban} package."
-   fail2ban-jail-configuration-serialize-backend)
+   (serializer fail2ban-jail-configuration-serialize-backend))
   (max-retry
    maybe-integer
    "The number of failures before a host get banned
@@ -269,7 +269,7 @@ names matching their filter name.")
    maybe-symbol
    "The encoding of the log files handled by the jail.
 Possible values are: @code{'ascii}, @code{'utf-8} and @code{'auto}."
-   fail2ban-jail-configuration-serialize-log-encoding)
+   (serializer fail2ban-jail-configuration-serialize-log-encoding))
   (log-path
    (list-of-strings '())
    "The file names of the log files to be monitored.")
@@ -280,7 +280,7 @@ Possible values are: @code{'ascii}, @code{'utf-8} and @code{'auto}."
    (text-config '())
    "Extra content for the jail configuration, provided as a list of file-like
 objects."
-   serialize-text-config)
+   (serializer serialize-text-config))
   (prefix fail2ban-jail-configuration-))
 
 (define list-of-fail2ban-jail-configurations?

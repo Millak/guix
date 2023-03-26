@@ -370,7 +370,7 @@ Available values: @code{notice}, @code{info}, @code{verbose},
   (music-dir ; TODO: deprecated, remove later
    maybe-string
    "The directory to scan for music files."
-   mpd-serialize-deprecated-field)
+   (serializer mpd-serialize-deprecated-field))
 
   (playlist-directory
    maybe-string
@@ -379,7 +379,7 @@ Available values: @code{notice}, @code{info}, @code{verbose},
   (playlist-dir ; TODO: deprecated, remove later
    maybe-string
    "The directory to store playlists."
-   mpd-serialize-deprecated-field)
+   (serializer mpd-serialize-deprecated-field))
 
   (db-file
    maybe-string
@@ -405,16 +405,17 @@ IPv6 addresses must be enclosed in square brackets when a different
 port is used.
 To use a Unix domain socket, an absolute path or a path starting with @code{~}
 can be specified here."
-   (lambda (_ endpoints)
-     (if (maybe-value-set? endpoints)
-         (mpd-serialize-list-of-strings "bind_to_address" endpoints)
-         "")))
+   (serializer
+    (lambda (_ endpoints)
+      (if (maybe-value-set? endpoints)
+          (mpd-serialize-list-of-strings "bind_to_address" endpoints)
+          ""))))
 
   (address ; TODO: deprecated, remove later
    maybe-string
    "The address that mpd will bind to.
 To use a Unix domain socket, an absolute path can be specified here."
-   mpd-serialize-deprecated-field)
+   (serializer mpd-serialize-deprecated-field))
 
   (database
    maybe-mpd-plugin
@@ -431,29 +432,29 @@ To use a Unix domain socket, an absolute path can be specified here."
   (inputs
    (list-of-mpd-plugin '())
    "List of MPD input plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "input" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "input" x))))
 
   (archive-plugins
    (list-of-mpd-plugin '())
    "List of MPD archive plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "archive_plugin" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "archive_plugin" x))))
 
   (input-cache-size
    maybe-string
    "MPD input cache size."
-   (lambda (_ x)
-     (if (maybe-value-set? x)
-         #~(string-append "\ninput_cache {\n"
-                          #$(mpd-serialize-string "size" x)
-                          "}\n") "")))
+   (serializer (lambda (_ x)
+                 (if (maybe-value-set? x)
+                     #~(string-append "\ninput_cache {\n"
+                                      #$(mpd-serialize-string "size" x)
+                                      "}\n") ""))))
 
   (decoders
    (list-of-mpd-plugin '())
    "List of MPD decoder plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "decoder" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "decoder" x))))
 
   (resampler
    maybe-mpd-plugin
@@ -462,8 +463,8 @@ To use a Unix domain socket, an absolute path can be specified here."
   (filters
    (list-of-mpd-plugin '())
    "List of MPD filter plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "filter" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "filter" x))))
 
   (outputs
    (list-of-mpd-plugin-or-output (list (mpd-output)))
@@ -473,8 +474,8 @@ By default this is a single output using pulseaudio.")
   (playlist-plugins
    (list-of-mpd-plugin '())
    "List of MPD playlist plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "playlist_plugin" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "playlist_plugin" x))))
 
   (extra-options
    (alist '())
