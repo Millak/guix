@@ -234,7 +234,7 @@ more information)."
        ;; lists are ungexp'd correctly since @var{schedule}
        ;; can be either a procedure, a string or a list.
        #$(if (list? schedule)
-             `(list ,@schedule)
+             #~'(#$@schedule)
              schedule)
        (lambda ()
          (system* #$(file-append package "/sbin/fstrim")
