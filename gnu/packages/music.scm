@@ -6497,7 +6497,7 @@ and as an LV2 plugin.")
            flex
            font-dseg
            gettext-minimal
-           glib-next
+           glib
            glibc
            graphviz
            gtk
@@ -6535,7 +6535,7 @@ and as an LV2 plugin.")
      ;; XDG_DATA_DIRS.
      (list breeze-icons                 ;native because not executable
            help2man
-           `(,glib-next "bin")          ;for 'glib-compile-resources'
+           `(,glib "bin")               ;for 'glib-compile-resources'
            pkg-config
            python-sphinx
            python-sphinx-intl

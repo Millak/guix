@@ -632,7 +632,7 @@ printing and other features typical of a source code editor.")
      ;; gtksourceview-5.pc refers to all these.
      (list fontconfig
            fribidi
-           glib-next
+           glib
            gtk
            libxml2
            pango
@@ -2928,11 +2928,11 @@ Unix desktop environment under X11 as well as Wayland.")
                             (substitute* "meson.build"
                               (("gtk_update_icon_cache: true")
                                "gtk_update_icon_cache: false")))))))
-    (native-inputs (list `(,glib-next "bin")
+    (native-inputs (list `(,glib "bin")
                          gobject-introspection
                          pkg-config
                          vala))
-    (inputs (list glib-next gtk libadwaita))
+    (inputs (list glib gtk libadwaita))
     (home-page "https://gitlab.gnome.org/GNOME/libpanel")
     (synopsis "Dock and panel library for GTK 4")
     (description "Libpanel provides a library to create IDE-like applications

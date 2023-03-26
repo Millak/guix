@@ -12856,7 +12856,7 @@ GObject introspection bindings.")
     (propagated-inputs
      (list polkit))
     (inputs
-     (list glib-next
+     (list glib
            gtk
            json-glib
            libadwaita
@@ -12865,7 +12865,7 @@ GObject introspection bindings.")
            polkit))
     (native-inputs
      (list gettext-minimal
-           `(,glib-next "bin")          ;for gdbus-codegen, etc.
+           `(,glib "bin")          ;for gdbus-codegen, etc.
            itstool
            libxml2
            pkg-config))
@@ -13133,7 +13133,7 @@ your data.")
                    (substitute* "build-aux/meson/meson_post_install.py"
                      (("gtk-update-icon-cache") (which "true"))))))))
     (native-inputs
-     (list `(,glib-next "bin")
+     (list `(,glib "bin")
            gettext-minimal
            itstool
            pkg-config))
@@ -13141,7 +13141,7 @@ your data.")
      (list json-glib
            jsonrpc-glib
            gettext-minimal
-           glib-next
+           glib
            gsettings-desktop-schemas
            gspell
            libgda
