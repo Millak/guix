@@ -6211,7 +6211,7 @@ Transformation Options}) so it should be lossless.
 
 @item --profile=@var{profile}
 @itemx -p @var{profile}
-Create an environment containing the packages installed in @var{profile}. 
+Create an environment containing the packages installed in @var{profile}.
 Use @command{guix package} (@pxref{Invoking guix package}) to create
 and manage profiles.
 
@@ -6657,7 +6657,7 @@ interpreted as packages that will be added to the environment directly.
 
 @item --profile=@var{profile}
 @itemx -p @var{profile}
-Create an environment containing the packages installed in @var{profile}. 
+Create an environment containing the packages installed in @var{profile}.
 Use @command{guix package} (@pxref{Invoking guix package}) to create
 and manage profiles.
 
@@ -12667,7 +12667,7 @@ candidates, and even to test their impact on packages that depend on
 them:
 
 @example
-guix build elogind --with-source=@dots{}/shepherd-0.9.0rc1.tar.gz 
+guix build elogind --with-source=@dots{}/shepherd-0.9.0rc1.tar.gz
 @end example
 
 @dots{} or to build from a checkout in a pristine environment:
@@ -23783,7 +23783,7 @@ created for.
 Restricts all controllers to the specified transport. @code{'dual} means both
 BR/EDR and LE are enabled (if supported by the hardware).
 
-Possible values are: 
+Possible values are:
 
 @itemize @bullet
 @item
@@ -33494,14 +33494,17 @@ Data type representing the configuration of @command{mpd}.
 @item @code{package} (default: @code{mpd}) (type: file-like)
 The MPD package.
 
-@item @code{user} (default: @code{"mpd"}) (type: string)
+@item @code{user} (default: @code{%mpd-user}) (type: user-account)
 The user to run mpd as.
 
-@item @code{group} (default: @code{"mpd"}) (type: string)
+The default @code{%mpd-user} is a system user with the name ``mpd'',
+who is a part of the group @var{group} (see below).
+@item @code{group} (default: @code{%mpd-group}) (type: user-group)
 The group to run mpd as.
 
+The default @code{%mpd-group} is a system group with name ``mpd''.
 @item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
-This is a list of symbols naming Shepherd services that this service
+A list of symbols naming Shepherd services that this service
 will depend on.
 
 @item @code{environment-variables} (default: @code{("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")}) (type: list-of-strings)
@@ -41215,7 +41218,7 @@ A clause can have one of the following forms:
 (@var{field-name}
  (@var{type} @var{default-value})
  @var{documentation})
- 
+
 (@var{field-name}
  (@var{type} @var{default-value})
  @var{documentation}
@@ -41289,7 +41292,7 @@ A simple serializer procedure could look like this:
 (define (serialize-boolean field-name value)
   (let ((value (if value "true" "false")))
     #~(string-append #$field-name #$value)))
-@end lisp  
+@end lisp
 
 In some cases multiple different configuration records might be defined
 in the same file, but their serializers for the same type might have to
@@ -41307,7 +41310,7 @@ manually specify a custom @var{serializer} for every field.
 
 (define (bar-serialize-string field-name value)
   @dots{})
-  
+
 (define-configuration foo-configuration
   (label
    (string)
@@ -41339,7 +41342,7 @@ macro which is a shorthand of this.
   (field
    (string "test")
    "Some documentation."))
-@end lisp   
+@end lisp
 @end defmac
 
 @defmac define-maybe type
@@ -44145,7 +44148,7 @@ down in its dependency graph.  As it turns out, GLib does not have a
    from /gnu/store/@dots{}-glib-2.62.6/lib/libglib-2.0.so.0
 #1  0x00007ffff608a7d6 in gobject_init_ctor ()
    from /gnu/store/@dots{}-glib-2.62.6/lib/libgobject-2.0.so.0
-#2  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=1, argv=argv@@entry=0x7fffffffcfd8, 
+#2  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=1, argv=argv@@entry=0x7fffffffcfd8,
     env=env@@entry=0x7fffffffcfe8) at dl-init.c:72
 #3  0x00007ffff7fe2866 in call_init (env=0x7fffffffcfe8, argv=0x7fffffffcfd8, argc=1, l=<optimized out>)
     at dl-init.c:118
@@ -44174,7 +44177,7 @@ Starting program: /gnu/store/@dots{}-profile/bin/sh -c exec\ inkscape
 #0  g_getenv (variable=variable@@entry=0x7ffff60c7a2e "GOBJECT_DEBUG") at ../glib-2.62.6/glib/genviron.c:252
 #1  0x00007ffff608a7d6 in gobject_init () at ../glib-2.62.6/gobject/gtype.c:4380
 #2  gobject_init_ctor () at ../glib-2.62.6/gobject/gtype.c:4493
-#3  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=3, argv=argv@@entry=0x7fffffffd088, 
+#3  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=3, argv=argv@@entry=0x7fffffffd088,
     env=env@@entry=0x7fffffffd0a8) at dl-init.c:72
 @dots{}
 @end example

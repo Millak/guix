@@ -140,6 +140,14 @@
 (define list-of-symbol?
   (list-of symbol?))
 
+;; Helpers for deprecated field types, to be removed later.
+(define %lazy-group (make-symbol "%lazy-group"))
+
+(define (%set-user-group user group)
+  (user-account
+   (inherit user)
+   (group (user-group-name group))))
+
 
 ;;;
 ;;; MPD
@@ -164,9 +172,30 @@
 (define (mpd-serialize-list-of-strings field-name value)
   #~(string-append #$@(map (cut mpd-serialize-string field-name <>) value)))
 
+(define (mpd-serialize-user-account field-name value)
+  (mpd-serialize-string field-name (user-account-name value)))
+
+(define (mpd-serialize-user-group field-name value)
+  (mpd-serialize-string field-name (user-group-name value)))
+
 (define-maybe string (prefix mpd-))
 (define-maybe list-of-strings (prefix mpd-))
 (define-maybe boolean (prefix mpd-))
+
+(define %mpd-user
+  (user-account
+      (name "mpd")
+      (group %lazy-group)
+      (system? #t)
+      (comment "Music Player Daemon (MPD) user")
+      ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data
+      (home-directory "/var/lib/mpd")
+      (shell (file-append shadow "/sbin/nologin"))))
+
+(define %mpd-group
+  (user-group
+   (name "mpd")
+   (system? #t)))
 
 ;;; TODO: Procedures for deprecated fields, to be removed.
 
@@ -196,6 +225,33 @@
   (mpd-serialize-field "port" value))
 
 (define-maybe port (prefix mpd-))
+
+;;; Procedures for unsupported value types, to be removed.
+
+(define (mpd-user-sanitizer value)
+  (cond ((user-account? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'user' is deprecated, use \
+user-account instead~%"))
+         (user-account
+          (inherit %mpd-user)
+          (name value)
+          ;; XXX: This is to be lazily substituted in (…-accounts)
+          ;; with the value from 'group'.
+          (group %lazy-group)))
+        (else
+         (configuration-field-error #f 'user value))))
+
+(define (mpd-group-sanitizer value)
+  (cond ((user-group? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'group' is deprecated, use \
+user-group instead~%"))
+         (user-group
+          (inherit %mpd-group)
+          (name value)))
+        (else
+         (configuration-field-error #f 'group value))))
 
 ;;;
 
@@ -347,12 +403,14 @@ to be appended to the audio output configuration.")
    empty-serializer)
 
   (user
-   (string "mpd")
-   "The user to run mpd as.")
+   (user-account %mpd-user)
+   "The user to run mpd as."
+   (sanitizer mpd-user-sanitizer))
 
   (group
-   (string "mpd")
-   "The group to run mpd as.")
+   (user-group %mpd-group)
+   "The group to run mpd as."
+   (sanitizer mpd-group-sanitizer))
 
   (shepherd-requirement
    (list-of-symbol '())
@@ -517,7 +575,8 @@ appended to the configuration.")
                                             log-file playlist-directory
                                             db-file state-file sticker-file
                                             environment-variables)
-    (let* ((config-file (mpd-serialize-configuration config)))
+    (let ((config-file (mpd-serialize-configuration config))
+          (username (user-account-name user)))
       (shepherd-service
        (documentation "Run the MPD (Music Player Daemon)")
        (requirement `(user-processes loopback ,@shepherd-requirement))
@@ -526,7 +585,7 @@ appended to the configuration.")
                   (and=> #$(maybe-value log-file)
                          (compose mkdir-p dirname))
 
-                  (let ((user (getpw #$user)))
+                  (let ((user (getpw #$username)))
                     (for-each
                      (lambda (x)
                        (when (and x (not (file-exists? x)))
@@ -560,17 +619,11 @@ appended to the configuration.")
 
 (define (mpd-accounts config)
   (match-record config <mpd-configuration> (user group)
-    (list (user-group
-           (name group)
-           (system? #t))
-          (user-account
-           (name user)
-           (group group)
-           (system? #t)
-           (comment "Music Player Daemon (MPD) user")
-           ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data
-           (home-directory "/var/lib/mpd")
-           (shell (file-append shadow "/sbin/nologin"))))))
+    ;; TODO: Deprecation code, to be removed.
+    (let ((user (if (eq? (user-account-group user) %lazy-group)
+                    (%set-user-group user group)
+                    user)))
+      (list user group))))
 
 (define mpd-service-type
   (service-type
