@@ -1804,28 +1804,29 @@ which need to be installed separately.")
            ;; ("cracklib" ,cracklib)
            ))
     (arguments
-     `(;; Most users, such as `shadow', expect the headers to be under
-       ;; `security'.
-       #:configure-flags (list (string-append "--includedir="
-                                              (assoc-ref %outputs "out")
-                                              "/include/security")
-                               ;; explicit libdir for pkgconfig files
-                               ;; drop with 1.5.3, which fixes
-                               ;; https://github.com/linux-pam/linux-pam/issues/466
-                               (string-append "--libdir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib")
+     (list
+      ;; Most users, such as `shadow', expect the headers to be under
+      ;; `security'.
+      #:configure-flags #~(list (string-append "--includedir="
+                                               (assoc-ref %outputs "out")
+                                               "/include/security")
+                                ;; explicit libdir for pkgconfig files
+                                ;; drop with 1.5.3, which fixes
+                                ;; https://github.com/linux-pam/linux-pam/issues/466
+                                (string-append "--libdir="
+                                               (assoc-ref %outputs "out")
+                                               "/lib")
 
-                               ;; XXX: <rpc/rpc.h> is missing from glibc when
-                               ;; cross-compiling, so we have to disable NIS
-                               ;; support altogether.
-                               ,@(if (%current-target-system)
-                                     '("--disable-nis")
-                                     '()))
+                                ;; XXX: <rpc/rpc.h> is missing from glibc when
+                                ;; cross-compiling, so we have to disable NIS
+                                ;; support altogether.
+                                #$@(if (%current-target-system)
+                                       #~("--disable-nis")
+                                       #~()))
 
-       ;; XXX: Tests won't run in chroot, presumably because /etc/pam.d
-       ;; isn't available.
-       #:tests? #f))
+      ;; XXX: Tests won't run in chroot, presumably because /etc/pam.d
+      ;; isn't available.
+      #:tests? #f))
     (home-page "http://www.linux-pam.org/")
     (synopsis "Pluggable authentication modules for Linux")
     (description
