@@ -3621,6 +3621,25 @@ this library provides functions to facilitate such comparisons.")
 SQLAlchemy Database Toolkit for Python.")
     (license license:expat)))
 
+(define-public python-sqlite-fts4
+  (package
+    (name "python-sqlite-fts4")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sqlite-fts4" version))
+              (sha256
+               (base32
+                "034kx0ac556sywy1p4qcrc36l24w3q0xwswqv2z9s3k8yvm5xc3q"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/simonw/sqlite-fts4")
+    (synopsis "Python functions for working with SQLite FTS4 search")
+    (description "This package provides custom SQLite functions written
+in Python for ranking documents indexed using the SQLite's FTS4 full
+text search extension.")
+    (license license:asl2.0)))
+
 (define-public python-pickleshare
   (package
     (name "python-pickleshare")
