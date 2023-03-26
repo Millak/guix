@@ -1824,6 +1824,16 @@ which need to be installed separately.")
                                        #~("--disable-nis")
                                        #~()))
 
+      #:phases (if (target-hurd?)
+                   #~(modify-phases %standard-phases
+                       (add-after 'unpack 'skip-pam-limits
+                         (lambda _
+                           ;; 'pam_limits.c' uses <sys/prctl.h>, which is
+                           ;; Linux-specific.  Skip it on GNU/Hurd.
+                           (substitute* "modules/Makefile.in"
+                             (("pam_limits") "")))))
+                   #~%standard-phases)
+
       ;; XXX: Tests won't run in chroot, presumably because /etc/pam.d
       ;; isn't available.
       #:tests? #f))
