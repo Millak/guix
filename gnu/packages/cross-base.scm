@@ -577,7 +577,9 @@ and the cross tool chain."
            ((#:configure-flags flags)
             `(cons ,(string-append "--host=" target)
                    ,(if (target-hurd? target)
-                        `(cons "--disable-werror" ,flags)
+                        `(append (list "--disable-werror"
+                                       ,@%glibc/hurd-configure-flags)
+                                 ,flags)
                         flags)))
            ((#:phases phases)
             `(modify-phases ,phases
