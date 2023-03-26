@@ -1322,11 +1322,14 @@ and many external plugins.")
          "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
     (arguments
      (substitute-keyword-arguments (package-arguments python-pytest)
-      ((#:phases phases #~%standard-phases)
+       ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-before 'build 'pretend-version
               (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))))
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytest)
+       (replace "python-pluggy" python-pluggy-next)))))
 
 (define-public python-pytest-bootstrap
   (package
