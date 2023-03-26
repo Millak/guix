@@ -140,6 +140,14 @@
 (define list-of-symbol?
   (list-of symbol?))
 
+;; Helpers for deprecated field types, to be removed later.
+(define %lazy-group (make-symbol "%lazy-group"))
+
+(define (%set-user-group user group)
+  (user-account
+   (inherit user)
+   (group (user-group-name group))))
+
 
 ;;;
 ;;; MPD
