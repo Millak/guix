@@ -41219,7 +41219,7 @@ A clause can have one of the following forms:
 (@var{field-name}
  (@var{type} @var{default-value})
  @var{documentation}
- @var{serializer})
+ (serializer @var{serializer}))
 
 (@var{field-name}
  (@var{type})
@@ -41228,7 +41228,18 @@ A clause can have one of the following forms:
 (@var{field-name}
  (@var{type})
  @var{documentation}
- @var{serializer})
+ (serializer @var{serializer}))
+
+(@var{field-name}
+ (@var{type})
+ @var{documentation}
+ (sanitizer @var{sanitizer})
+
+(@var{field-name}
+ (@var{type})
+ @var{documentation}
+ (sanitizer @var{sanitizer})
+ (serializer @var{serializer}))
 @end example
 
 @var{field-name} is an identifier that denotes the name of the field in
@@ -41250,6 +41261,20 @@ an object of the record type.
 @c short like package synopses?
 @var{documentation} is a string formatted with Texinfo syntax which
 should provide a description of what setting this field does.
+
+@var{sanitizer} is a procedure which takes one argument,
+a user-supplied value, and returns a ``sanitized'' value for the field.
+If no sanitizer is specified, a default sanitizer is used, which raises
+an error if the value is not of type @var{type}.
+
+An example of a sanitizer for a field that accepts both strings and
+symbols looks like this:
+@lisp
+(define (sanitize-foo value)
+  (cond ((string? value) value)
+        ((symbol? value) (symbol->string value))
+        (else (error "bad value"))))
+@end lisp
 
 @var{serializer} is the name of a procedure which takes two arguments,
 the first is the name of the field, and the second is the value
