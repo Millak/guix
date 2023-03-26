@@ -213,9 +213,10 @@ option in fstab are skipped.")
    maybe-list-of-strings
    "Extra options to append to @command{fstrim} (run @samp{man fstrim} for
 more information)."
-   (lambda (_ value)
-     (if (maybe-value-set? value)
-         value '())))
+   (serializer
+    (lambda (_ value)
+      (if (maybe-value-set? value)
+          value '()))))
   (prefix fstrim-))
 
 (define (serialize-fstrim-configuration config)
