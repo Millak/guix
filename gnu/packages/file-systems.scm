@@ -260,6 +260,45 @@ unmaintained---to use the @code{inotify} API instead of the deprecated
 @code{dnotify} to monitor file changes.")
     (license license:gpl2+)))
 
+(define-public avfs
+  (package
+    (name "avfs")
+    (version "1.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/avf/avfs/" version
+                                  "/avfs-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1kvjaaj2dlps98alpc8rhnzhk4vriw46f3y7b2h0jq2d21j3p7xd"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--enable-library" "--enable-fuse")))
+    (native-inputs (list pkg-config))
+    (inputs (list xz fuse))
+    (synopsis "Virtual file system that allows browsing of compressed files")
+    (description
+     "AVFS is a FUSE-based filesystem that allows browsing of compressed
+files.  It provides the @command{mountavfs} command that starts a small
+@command{avfsd} daemon.  When a specially formatted path under @file{~/.avfs}
+is accessed, the daemon provides listings and content access on the fly.  The
+canonical form of virtual file name is:
+
+@example
+[basepath]#handler[options][:parameters][/internalpath]
+@end example
+
+Example file names:
+@itemize
+@item @file{~/.avfs/home/user/archive.tar.gz#ugz#utar/path/file}
+@item @file{~/.avfs/#http:localhost|some|path}
+@end itemize
+
+@code{emacs-dired-hacks} has @code{dired-avfs} module which enables seamless
+integration with @code{avfs}.")
+    (home-page "http://avf.sourceforge.net/")
+    (license license:gpl2+)))
+
 (define-public davfs2
   (package
     (name "davfs2")
