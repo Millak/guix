@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5152,3 +5153,84 @@ generic interface to caching backends of any variety, and additionally
 provides API hooks which integrate these cache backends with the locking
 mechanism of @code{dogpile}.")
     (license license:expat)))
+
+(define-public datasette
+  (package
+    (name "datasette")
+    (version "0.64.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/simonw/datasette")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c8ajdaraynrjvsb8xxxnkb7zgm5fwq60qczaz00n465ki80j4h3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; There are multiple unexplained test failures (see:
+      ;; https://github.com/simonw/datasette/issues/2048).
+      #~(list "-k" (string-append
+                    "not (test_database_page_for_database_with_dot_in_name"
+                    " or test_row_strange_table_name"
+                    " or test_database_with_space_in_name"
+                    " or test_tilde_encoded_database_names"
+                    " or test_weird_database_names"
+                    " or test_css_classes_on_body"
+                    " or test_templates_considered"
+                    " or test_row_html_compound_primary_key"
+                    " or test_edit_sql_link_on_canned_queries"
+                    " or test_alternate_url_json"
+                    " or test_table_with_slashes_in_name"
+                    " or test_searchable"
+                    " or test_custom_query_with_unicode_characters"
+                    " or test_searchmode)")
+              "-n" (number->string (parallel-job-count))
+              "-m" "not serial")        ;cannot run in parallel
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; The package needlessly specifies exact versions
+              ;; of dependencies, when it works fine with others.
+              (substitute* "setup.py"
+                (("(black)==[0-9\\.]+" _ package)
+                 package)
+                (("click-default-group-wheel")
+                 "click-default-group")))))))
+    (propagated-inputs
+     (list python-aiofiles
+           python-asgi-csrf
+           python-asgiref
+           python-click
+           python-click-default-group
+           python-httpx
+           python-hupper
+           python-itsdangerous
+           python-janus
+           python-jinja2
+           python-mergedeep
+           python-pint
+           python-pluggy-next
+           python-pyyaml
+           python-uvicorn))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-black
+           python-cogapp
+           python-pytest-7.1
+           python-pytest-asyncio
+           python-pytest-runner
+           python-pytest-timeout
+           python-pytest-xdist-next
+           python-setuptools
+           python-trustme))
+    (home-page "https://datasette.io/")
+    (synopsis "Multi-tool for exploring and publishing data")
+    (description "Datasette is a tool for exploring and publishing data.
+It helps people take data of any shape or size and publish that as an
+interactive, explorable website and accompanying API.")
+    (license license:asl2.0)))
