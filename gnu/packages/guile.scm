@@ -58,6 +58,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages version-control)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -344,51 +345,51 @@ without requiring the source code to be rewritten.")
        ;; cross-compiling.
        ((#:parallel-build? _ #f)
         (not (%current-target-system)))
-       ((#:configure-flags flags ''())
+       ((#:configure-flags flags #~'())
         ;; XXX: JIT-enabled Guile crashes in obscure ways on GNU/Hurd.
-        `(cons* ,@(if (hurd-target?)
-                      '("--disable-jit")
-                      '())
-                ;; -fexcess-precision=standard is required when compiling for
-                ;; i686-linux, otherwise "numbers.test" will fail
-                ;; (see <https://issues.guix.gnu.org/49368> and
-                ;; <https://issues.guix.gnu.org/49659>).
-                ;; TODO: Keep this in GUILE-2.2 and remove from here on next
-                ;; rebuild cycle.
-                ,@(if (target-x86-32?)
-                      '("CFLAGS=-g -O2 -fexcess-precision=standard")
-                      '())
-                "--enable-mini-gmp"
-                '("--disable-static")))
+        #~(cons* #$@(if (hurd-target?)
+                        #~("--disable-jit")
+                        #~())
+                 ;; -fexcess-precision=standard is required when compiling for
+                 ;; i686-linux, otherwise "numbers.test" will fail
+                 ;; (see <https://issues.guix.gnu.org/49368> and
+                 ;; <https://issues.guix.gnu.org/49659>).
+                 ;; TODO: Keep this in GUILE-2.2 and remove from here on next
+                 ;; rebuild cycle.
+                 #$@(if (target-x86-32?)
+                        #~("CFLAGS=-g -O2 -fexcess-precision=standard")
+                        #~())
+                 "--enable-mini-gmp"
+                 '("--disable-static")))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'check 'disable-stack-overflow-test
-             (lambda _
-               ;; This test can invoke the "OOM killer", especially when
-               ;; running on emulated hardware (QEMU).  Skip it.
-               (substitute* "test-suite/standalone/test-stack-overflow"
-                 (("!#")
-                  "!#\n(exit 77)\n"))))
+        #~(modify-phases #$phases
+            (add-before 'check 'disable-stack-overflow-test
+              (lambda _
+                ;; This test can invoke the "OOM killer", especially when
+                ;; running on emulated hardware (QEMU).  Skip it.
+                (substitute* "test-suite/standalone/test-stack-overflow"
+                  (("!#")
+                   "!#\n(exit 77)\n"))))
 
-           ,@(if (target-ppc32?)
-               `((add-after 'unpack 'adjust-bootstrap-flags
-                   (lambda _
-                     ;; Upstream knows about suggested solution.
-                     ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
-                     ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=977223#46
-                     (substitute* "stage0/Makefile.in"
-                       (("^GUILE_OPTIMIZATIONS.*")
-                        "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
-               '())
-           ,@(if (or (target-ppc32?)
-                     (target-riscv64?))
-               `((add-after 'unpack 'skip-failing-fdes-test
-                   (lambda _
-                     ;; ERROR: ((system-error "seek" "~A" ("Bad file descriptor") (9)))
-                     (substitute* "test-suite/tests/ports.test"
-                       (("fdes not closed\"" all) (string-append all "(exit 77)")))
-                     #t)))
-               '())))))
+            #$@(if (target-ppc32?)
+                   #~((add-after 'unpack 'adjust-bootstrap-flags
+                        (lambda _
+                          ;; Upstream knows about suggested solution.
+                          ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
+                          ;; https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=977223#46
+                          (substitute* "stage0/Makefile.in"
+                            (("^GUILE_OPTIMIZATIONS.*")
+                             "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
+                   #~())
+            #$@(if (or (target-ppc32?)
+                       (target-riscv64?))
+                   #~((add-after 'unpack 'skip-failing-fdes-test
+                        (lambda _
+                          ;; ERROR: ((system-error "seek" "~A" ("Bad file descriptor") (9)))
+                          (substitute* "test-suite/tests/ports.test"
+                            (("fdes not closed\"" all) (string-append all "(exit 77)")))
+                          #t)))
+                   #~())))))
 
     (native-search-paths
      (list (search-path-specification
@@ -436,20 +437,20 @@ without requiring the source code to be rewritten.")
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (add-before 'bootstrap 'set-version
-               (lambda _
-                 ;; Tell 'git-version-gen' what version this is, or it will
-                 ;; just pick "UNKNOWN", making it unusable as a replacement
-                 ;; for 'guile-3.0'.  XXX: This is inaccurate when using
-                 ;; '--with-branch' but using (package-version this-package)
-                 ;; wouldn't give us a valid version string.
-                 (call-with-output-file ".tarball-version"
-                   (lambda (port)
-                     (display ,version port)))))
-             (add-before 'check 'skip-failing-tests
-               (lambda _
-                 (delete-file "test-suite/tests/version.test")))))))
+          #~(modify-phases ,phases
+              (add-before 'bootstrap 'set-version
+                (lambda _
+                  ;; Tell 'git-version-gen' what version this is, or it will
+                  ;; just pick "UNKNOWN", making it unusable as a replacement
+                  ;; for 'guile-3.0'.  XXX: This is inaccurate when using
+                  ;; '--with-branch' but using (package-version this-package)
+                  ;; wouldn't give us a valid version string.
+                  (call-with-output-file ".tarball-version"
+                    (lambda (port)
+                      (display #$version port)))))
+              (add-before 'check 'skip-failing-tests
+                (lambda _
+                  (delete-file "test-suite/tests/version.test")))))))
       (native-inputs
        (modify-inputs (package-native-inputs guile-3.0)
          (prepend autoconf
