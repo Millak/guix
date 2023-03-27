@@ -2320,22 +2320,20 @@ processes or computers.")
     (license (package-license qtbase))))
 
 (define-public qtspeech
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtspeech")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0xskp9dzjy5nqszygk8gwvjyiylgynx5sq3nk2vi3zwgfdh5jpm4"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f))) ; TODO: Enable the tests
-    (inputs
-     (list qtbase-5))
-    (native-inputs
-     (list perl qtdeclarative-5 qtmultimedia-5 qtxmlpatterns))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1q56lyj7s05sx52j5z6gcs000mni4c7mb7qyq4lfval7c06hw5p6"))))
+    (arguments (substitute-keyword-arguments (package-arguments qtsvg-5)
+                 ((#:tests? _ #f) #f))) ; TODO: Enable the tests
+    (inputs (list qtbase-5))
+    (native-inputs (list perl qtdeclarative-5 qtmultimedia-5 qtxmlpatterns))
     (synopsis "Qt Speech module")
     (description "The Qt Speech module enables a Qt application to support
 accessibility features such as text-to-speech, which is useful for end-users
