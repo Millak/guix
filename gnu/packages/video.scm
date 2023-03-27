@@ -1587,6 +1587,7 @@ operate properly.")
               (sha256
                (base32
                 "10kh2f4y4isfqj4xpcqqnzk611jh89ywcjyjnq9c2jcv5p18ggjp"))))
+    (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (inputs
      (append
@@ -1726,6 +1727,8 @@ operate properly.")
 
          ;; The static libraries are 23 MiB
          "--disable-static"
+
+         "--disable-stripping"
 
          #$@(if (target-riscv64?)
                 '("--extra-cflags=-fPIC")
