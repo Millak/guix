@@ -1869,27 +1869,26 @@ application without necessarily including a full web browser stack by using
 native APIs where it makes sense.")))
 
 (define-public qtlocation
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtlocation")
     (version "5.15.5")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0mlhhhcxx3gpr9kh04c6fljxcj50c2j21r0wb9f7d7nk4flip7b2"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "0mlhhhcxx3gpr9kh04c6fljxcj50c2j21r0wb9f7d7nk4flip7b2"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f)   ; TODO: Enable the tests
+       ((#:tests? _ #f) #f)             ; TODO: Enable the tests
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'check 'pre-check
-             (lambda _
-               (setenv "HOME" "/tmp")))))))
-    (native-inputs
-     (list perl qtdeclarative-5 qtquickcontrols-5 qtserialport))
-    (inputs
-     (list icu4c openssl qtbase-5 zlib))
+        #~(modify-phases #$phases
+            (add-before 'check 'pre-check
+              (lambda _
+                (setenv "HOME" "/tmp")))))))
+    (native-inputs (list perl qtdeclarative-5 qtquickcontrols-5 qtserialport))
+    (inputs (list icu4c openssl qtbase-5 zlib))
     (synopsis "Qt Location and Positioning modules")
     (description "The Qt Location module provides an interface for location,
 positioning and geolocation plugins.")))
