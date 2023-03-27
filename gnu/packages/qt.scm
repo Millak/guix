@@ -1608,38 +1608,38 @@ set of plugins for interacting with pulseaudio and GStreamer.")
     (license (package-license qtbase))))
 
 (define-public qtwayland-5
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtwayland")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (patches (search-patches "qtwayland-gcc-11.patch"
-                                      "qtwayland-dont-recreate-callbacks.patch"
-                                      "qtwayland-cleanup-callbacks.patch"))
-             (sha256
-              (base32
-               "0yy8qf9kn15iqsxi2r7jbcsc0vsdyfz7bbxmfn4i9qmz1yvg0jgr"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (patches (search-patches "qtwayland-gcc-11.patch"
+                                       "qtwayland-dont-recreate-callbacks.patch"
+                                       "qtwayland-cleanup-callbacks.patch"))
+              (sha256
+               (base32
+                "0aa5jcvvap6qca6imdkhs1mhv5bnaxn466mmpl7x78jx1za7n3ps"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'disable-failing-tests
-             (lambda _
-               ;; FIXME: tst_seatv4::animatedCursor() fails for no good
-               ;; reason and breaks these two tests.
-               (substitute* "tests/auto/client/seatv4/tst_seatv4.cpp"
-                 (((string-append "QVERIFY\\(!cursorSurface\\(\\)->"
-                                  "m_waitingFrameCallbacks\\.empty\\(\\)\\);"))
-                  "")
-                 (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);")
-                  ""))))
-           (add-before 'check 'set-test-environment
-             (lambda _
-               ;; Do not fail just because /etc/machine-id is missing.
-               (setenv "DBUS_FATAL_WARNINGS" "0")))))))
-    (native-inputs
-     (list glib perl pkg-config qtdeclarative-5))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'disable-failing-tests
+              (lambda _
+                ;; FIXME: tst_seatv4::animatedCursor() fails for no good
+                ;; reason and breaks these two tests.
+                (substitute* "tests/auto/client/seatv4/tst_seatv4.cpp"
+                  (((string-append "QVERIFY\\(!cursorSurface\\(\\)->"
+                                   "m_waitingFrameCallbacks\\.empty\\(\\)\\);"))
+                   "")
+                  (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);")
+                   ""))))
+            (add-before 'check 'set-test-environment
+              (lambda _
+                ;; Do not fail just because /etc/machine-id is missing.
+                (setenv "DBUS_FATAL_WARNINGS" "0")))))))
+    (native-inputs (list glib perl pkg-config qtdeclarative-5))
     (inputs
      (list fontconfig
            freetype
