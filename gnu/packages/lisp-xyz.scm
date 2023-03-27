@@ -19177,6 +19177,86 @@ encodings.")
 (define-public cl-mime
   (sbcl-package->cl-source-package sbcl-cl-mime))
 
+(define-public sbcl-cl-mixed
+  (let ((commit "4aaff134d3902d93a2a8605c10de4bcfc62d7afa")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-mixed")
+      (version (git-version "2.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/cl-mixed")
+               (commit commit)))
+         (file-name (git-file-name "cl-mixed" version))
+         (sha256
+          (base32 "1mrj95lxb1gbxxm89x8gy1ifw2ic1p5wwpapkxcd2jr8abw7zny0"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Delete bundled libraries.
+          `(begin
+             (delete-file-recursively "static")))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("cl-mixed"
+                         "cl-mixed-examples"
+                         "cl-mixed-flac"
+                         "cl-mixed-vorbis"
+                         "cl-mixed-alsa"
+                         "cl-mixed-jack"
+                         "cl-mixed-mpg123"
+                         "cl-mixed-mpt"
+                         "cl-mixed-out123"
+                         "cl-mixed-pulse"
+                         "cl-mixed-sdl2"
+                         "cl-mixed-wav")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "low-level.lisp"
+                 (("libmixed.so.2")
+                  (search-input-file inputs "/lib/libmixed.so.2"))))))))
+      (inputs
+       (list libmixed
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-cl-flac
+             sbcl-cl-mpg123
+             sbcl-cl-out123
+             sbcl-cl-vorbis
+             sbcl-documentation-utils
+             sbcl-sdl2
+             sbcl-static-vectors
+             sbcl-trivial-features))
+      (home-page "https://shirakumo.github.io/cl-mixed/")
+      (synopsis "Extended audio library for Common Lisp")
+      (description
+       "This package provides CFFI binding to @code{libmixed} audio library for
+Common Lisp with support of other audio formats available on GNU/Linux systems:
+
+@itemize
+
+@item @acronym{Alsa, Advanced Linux Sound Architecture}
+@item @acronym{Jack, JackAudio toolkit}
+@item @acronym{Openmpt, Libopenmpt playback drain for tracker files}
+@item @acronym{PulseAudio, PulseAudio based playback drain}
+@item Flac (via CL-FLAC)
+@item Mpg123 (via CL-MPG123)
+@item Ogg/vorbis (via CL-VORBIS)
+@item Out123 (via CL-OUT123)
+@item WAV
+
+@end itemize")
+      (license license:zlib))))
+
+(define-public ecl-cl-mixed
+  (sbcl-package->ecl-package sbcl-cl-mixed))
+
+(define-public cl-mixed
+  (sbcl-package->cl-source-package sbcl-cl-mixed))
+
 (define-public sbcl-lispbuilder-sdl
   (let ((commit "589b3c6d552bbec4b520f61388117d6c7b3de5ab"))
     (package
