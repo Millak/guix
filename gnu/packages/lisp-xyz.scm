@@ -2428,6 +2428,43 @@ consistent across multiple Common Lisp implementations.")
 (define-public ecl-trivial-features
   (sbcl-package->ecl-package sbcl-trivial-features))
 
+(define-public sbcl-harmony
+  (let ((commit "0b57483cc0341936c201b620f82a8542c606991f")
+        (revision "0"))
+    (package
+      (name "sbcl-harmony")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/harmony")
+               (commit commit)))
+         (file-name (git-file-name "cl-harmony" version))
+         (sha256
+          (base32 "0pqmfi3yi3gi7b7dyayrb621hp60rn7hasq0cl0fis3vg0fp5dja"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-atomics
+             sbcl-bordeaux-threads
+             sbcl-cl-mixed
+             sbcl-stealth-mixin
+             sbcl-trivial-features))
+      (home-page "https://shirakumo.github.io/harmony/")
+      (synopsis "Common Lisp sound server and sound processing library")
+      (description
+       "HARMONY is a library that provides you with audio processing tools as
+well as an audio server to play back music, sfx, and so forth.  It is most
+suited for use in a game engine, but may feasibly also be used for more
+advanced things such as a DAW")
+      (license license:zlib))))
+
+(define-public ecl-harmony
+  (sbcl-package->ecl-package sbcl-harmony))
+
+(define-public cl-harmony
+  (sbcl-package->cl-source-package sbcl-harmony))
+
 (define-public sbcl-hu.dwim.asdf
   (let ((commit "67cdf84390e530af4303cc4bc815fdf2a5e48f59"))
     (package
