@@ -28081,6 +28081,57 @@ generation as well as numerous distributions.")
 (define-public ecl-cl-variates
   (sbcl-package->ecl-package sbcl-cl-variates))
 
+(define-public sbcl-cl-vorbis
+  (let ((commit "c5835cd7091aea9e2e389ad359d244542d637758")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-vorbis")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/cl-vorbis")
+               (commit commit)))
+         (file-name (git-file-name "cl-vorbis" version))
+         (sha256
+          (base32 "0713pl5c2khfpf8m3h1l2y0ilack7akf580h70jq6qcrnq3h4b40"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Delete bundled libraries, GlibC and Vorbis sources.
+          `(begin
+             (delete-file-recursively "static")
+             (for-each delete-file '("glibc-2.13.h"
+                                     "stb_vorbis.c"
+                                     "stb_vorbis_patch.c"))))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "low-level.lisp"
+                 (("libvorbis-lin-amd64.so")
+                  (search-input-file inputs "/lib/libvorbis.so"))))))))
+      (inputs
+       (list libvorbis
+             sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-static-vectors
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
+      (home-page "https://shirakumo.github.io/cl-vorbis/")
+      (synopsis "OGG/Vorbis decoding using stb_vorbis for Common Lisp")
+      (description "This package provides CFFI bindings for the
+@code{stb_vorbis} audio library to Common Lisp.")
+      (license license:zlib))))
+
+(define-public ecl-cl-vorbis
+  (sbcl-package->ecl-package sbcl-cl-vorbis))
+
+(define-public cl-vorbis
+  (sbcl-package->cl-source-package sbcl-cl-vorbis))
+
 (define-public sbcl-cephes
   (let ((commit "d87146fa38c8425ffb5fe425eee5eb3e818bacd4")
         (revision "0"))
