@@ -2097,17 +2097,17 @@ types.  The effects cover functional areas such as blending, masking, blurring,
 coloring, and many more.")))
 
 (define-public qtgamepad
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtgamepad")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0wa4d8f025hlp4bmdzdy5wcahm9wjg6bkwig8dpw9nrsj3idz5b0"))))
-    (native-inputs
-     (list perl pkg-config))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "0vgxprgk7lak209wsg2ljzfkpwgjzscpbxmj5fyvvwm2pbnpspvk"))))
+    (native-inputs (list perl pkg-config))
     (inputs
      (list fontconfig
            freetype
