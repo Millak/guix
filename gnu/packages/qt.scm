@@ -1181,38 +1181,35 @@ XML and custom data models.  It contains programs such as xmlpatterns and
 xmlpatternsvalidator.")))
 
 (define-public qtdeclarative-5
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtdeclarative")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0ji5131g7h2mrgxw1wxc5mcvmsn3fbw64j28gzpa25gv3vcnkhaw"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1kb8nj17vmnky0ayiwypim7kf6rmlmfcjf6gnrw8rydmp61w0vh2"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ;TODO: Enable the tests
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'build 'fix-qt5core-install-prefix
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 ;; The Qt5Core install prefix is set to qtbase, but qmlcachegen
-                 ;; is provided by qtdeclarative-5.
-                 (substitute*
-                     "lib/cmake/Qt5QuickCompiler/Qt5QuickCompilerConfig.cmake"
-                   (("\\$\\{_qt5Core_install_prefix\\}") out)))))
-           ;; TODO: Add phase unconditionally.
-           ,@(if (target-riscv64?)
-               '((add-after 'unpack 'fix-linking-riscv64
-                   (lambda _
-                     (substitute* "src/qml/qml.pro"
-                       (("DEFINES \\+= QT_NO_FOREACH")
-                        (string-append
-                          "isEqual(QT_ARCH, \"riscv64\"): QMAKE_LIBS += -latomic\n\n"
-                          "DEFINES += QT_NO_FOREACH"))))))
-               '())))))
+        #~(modify-phases #$phases
+            (add-after 'build 'fix-qt5core-install-prefix
+              (lambda _
+                ;; The Qt5Core install prefix is set to qtbase, but qmlcachegen
+                ;; is provided by qtdeclarative-5.
+                (substitute*
+                    "lib/cmake/Qt5QuickCompiler/Qt5QuickCompilerConfig.cmake"
+                  (("\\$\\{_qt5Core_install_prefix\\}") #$output))))
+            (add-after 'unpack 'fix-linking-riscv64
+              (lambda _
+                (substitute* "src/qml/qml.pro"
+                  (("DEFINES \\+= QT_NO_FOREACH")
+                   (string-append
+                    "isEqual(QT_ARCH, \"riscv64\"): QMAKE_LIBS += -latomic\n\n"
+                    "DEFINES += QT_NO_FOREACH")))))))))
     (native-inputs
      (list perl
            pkg-config
