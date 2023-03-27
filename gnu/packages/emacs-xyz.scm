@@ -29743,6 +29743,27 @@ generating a temp buffer in which any useful Emacs utilities and modes can be
 invoked.")
       (license license:gpl3+))))
 
+(define-public emacs-exwm-modeline
+  (package
+    (name "emacs-exwm-modeline")
+    (version "0.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SqrtMinusOne/exwm-modeline")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b84wa8n5740p7wyia3skc8683inypha51w85mxn62wz6vfpjfp4"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-exwm))
+    (home-page "https://github.com/SqrtMinusOne/exwm-modeline")
+    (synopsis "Modeline segment for EXWM")
+    (description "This package provides a modeline segment to display EXWM
+workspaces.")
+    (license license:gpl3+)))
+
 (define-public emacs-ert-async
   (package
     (name "emacs-ert-async")
