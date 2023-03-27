@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -677,6 +677,70 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
     (description "The GNU Astronomy Utilities (Gnuastro) is a suite of
 programs for the manipulation and analysis of astronomical data.")
     (license license:gpl3+)))
+
+(define-public phd2
+  (package
+    (name "phd2")
+    (version "2.6.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenPHDGuiding/phd2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n87xsv9gzrwk1ygws4vw397ffq40xybp5b3c3bd5kcmff0avaw9"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "thirdparty" "thirdparty.cmake")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DOPENSOURCE_ONLY=yes"
+                                     "-DUSE_SYSTEM_CFITSIO=yes"
+                                     "-DUSE_SYSTEM_EIGEN3=yes"
+                                     "-DUSE_SYSTEM_GTEST=yes"
+                                     "-DUSE_SYSTEM_LIBINDI=yes"
+                                     "-DUSE_SYSTEM_LIBUSB=yes")))
+    (native-inputs
+     (list gettext-minimal
+           googletest
+           perl
+           pkg-config
+           python))
+    (inputs
+     (list cfitsio
+           curl
+           eigen
+           gtk+
+           indi
+           libnova
+           libusb
+           wxwidgets
+           zlib))
+    (home-page "https://openphdguiding.org")
+    (synopsis "Teleskope guiding software")
+    (description
+     "PHD2 is the enhanced, second generation version of the PHD guiding software
+from Stark Labs.")
+    (license license:bsd-3)))
 
 (define-public sextractor
   (package
