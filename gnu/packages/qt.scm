@@ -2074,20 +2074,20 @@ not available.")))
   (deprecated-package "qtquickcontrols2" qtdeclarative))
 
 (define-public qtgraphicaleffects
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtgraphicaleffects")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0xznn5zqp6xrqfgl54l8cig9asqf9m2hz0p3ga514rh8spmdazr3"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "0wypji8i19kjq18qd92z8kkd3fj2n0d5hgh6xiza96833afvibj9"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f))) ; TODO: Enable the tests
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+       ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
+    (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Graphical Effects module")
     (description "The Qt Graphical Effects module provides a set of QML types
 for adding visually impressive and configurable effects to user interfaces.
