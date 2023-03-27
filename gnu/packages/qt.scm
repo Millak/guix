@@ -872,13 +872,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qt3d")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-urls name version))
               (sha256
                (base32
-                "1m3y7d58crn0qgfwkimxcggssn2pbs8nj5b9diwns6rwqg4aqk20"))))
+                "18hbv4l9w0czaxcch6af9130fgs4sf400xp0pfzl81c78fwrkfsb"))))
     (propagated-inputs `())
     (native-inputs (list perl))
     (inputs (list mesa qtbase-5 vulkan-headers zlib))
