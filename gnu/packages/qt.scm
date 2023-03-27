@@ -1440,25 +1440,26 @@ consume data received from the server, or both.")
     (license (package-license qtbase))))
 
 (define-public qtsensors
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtsensors")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0zlhm4js02niibb23rw87wf4ik0gy4ai08fwprnwy7zf4rm1ss3d"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1fdpgbikvxjacyipcyac0czqhv96pvc75dl9cyafslws8m53fm56"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:parallel-tests? _ #f) #f) ; can lead to race condition
+       ((#:parallel-tests? _ #f) #f)    ; can lead to race condition
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'fix-tests
              (lambda _
                (substitute* "tests/auto/qsensorgestures_gestures/tst_sensorgestures_gestures.cpp"
-                 (("2000") "5000")                                      ;lengthen test timeout
-                 (("QTest::newRow(\"twist\") << \"twist\"") ""))))))))  ;failing test
+                 (("2000") "5000")      ;lengthen test timeout
+                 (("QTest::newRow(\"twist\") << \"twist\"") "")))))))) ;failing test
     (native-inputs
      (list perl qtdeclarative-5))
     (inputs (list qtbase-5))
