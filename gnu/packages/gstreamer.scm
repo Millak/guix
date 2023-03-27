@@ -646,7 +646,7 @@ for the GStreamer multimedia library.")
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.20.3")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
@@ -655,10 +655,11 @@ for the GStreamer multimedia library.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "1dv8b2md1xk6d45ir1wzbvqhxbvm6mxv881rjl0brnjwpw3c5wzq"))))
+        (base32 "1k3l17kzyzfqv8imph7vc227vzz7jamk42g9xcm09zdlai311ya4"))))
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.63
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases
       #~(modify-phases %standard-phases
