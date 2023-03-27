@@ -2047,20 +2047,20 @@ applications scriptable.  This module provides a set of extra components that
 can be used to build complete interfaces in Qt Quick.")))
 
 (define-public qtquickcontrols2-5
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtquickcontrols2")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "1cxg4ml07k1zcyi5m4lx06sz8f5l67isb5vhk7nakxm0wnn7p8y4"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "058dkj6272za47vnz3mxsmwsj85gxf6g0ski645fphk8s3jp2bk5"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f))) ; TODO: Enable the tests
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+       ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
+    (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Quick Controls 2 and other Quick 2 modules")
     (description "The Qt Quick Controls 2 module contains the Qt Labs Platform
 module that provides platform integration: native dialogs, menus and menu bars,
