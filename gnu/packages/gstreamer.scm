@@ -1099,7 +1099,7 @@ binary, but none of the actual plugins.")))
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.20.3")
+    (version "1.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1107,10 +1107,11 @@ binary, but none of the actual plugins.")))
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "1p6g05k88nbbv5x9madsvphxcdkfl1z0lmp39p6bhmg9x8h82d6v"))))
+                "1fryl7rifgjkcc3wsfn4c3as3znhr8y8jnsib8kn8nk83m28l04n"))))
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.63
       #:modules `((guix build meson-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:prefix python:))
