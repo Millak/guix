@@ -119,6 +119,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
@@ -6923,6 +6924,53 @@ mostly Common Lisp implementation.")
 
 (define-public ecl-cl-fastcgi
   (sbcl-package->ecl-package sbcl-cl-fastcgi))
+
+(define-public sbcl-cl-flac
+  (let ((commit "d094d33d3cc2cf263263b917798d338eded3c532")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-flac")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/cl-flac")
+               (commit commit)))
+         (file-name (git-file-name "cl-flac" version))
+         (sha256
+          (base32 "1dgr5xqf175hzq3sxpbixxia2k2g3rz0pn6msch4dnvk7a1naqlc"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Delete bundled libraries.
+          `(begin
+             (delete-file-recursively "static")))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "low-level.lisp"
+                 (("libflac.so")
+                  (search-input-file inputs "/lib/libFLAC.so"))))))))
+      (inputs
+       (list flac
+             sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
+      (home-page "https://shirakumo.github.io/cl-flac")
+      (synopsis "CFFI bindings to libflac for Common Lisp")
+      (description "This package provides CFFI bindings to the @code{libflac}
+audio library for Common Lisp.")
+      (license license:zlib))))
+
+(define-public ecl-cl-flac
+  (sbcl-package->ecl-package sbcl-cl-flac))
+
+(define-public cl-flac
+  (sbcl-package->cl-source-package sbcl-cl-flac))
 
 (define-public sbcl-clack
   (let ((commit "6fd0279424f7ba5fd4f92d69a1970846b0b11222")
