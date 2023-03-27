@@ -1739,29 +1739,28 @@ compositor libraries.")
 interacting with serial ports from within Qt.")))
 
 (define-public qtserialbus
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtserialbus")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "180gm1jvqfn0h3251zafdd1wd3af00phwaa5qljsbrj6s6ywj79j"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "0ws3pjbp4g8f49k8q0qa5hgyisbyk3m7kl8pwzkfws048glvz570"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'patch-libsocketcan-reference
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let* ((libcansocket (assoc-ref inputs "libsocketcan"))
-                      (libcansocket.so (string-append libcansocket
-                                                      "/lib/libsocketcan.so")))
-                 (substitute* "src/plugins/canbus/socketcan/libsocketcan.cpp"
-                   (("QStringLiteral\\(\"socketcan\"\\)")
-                    (format #f "QStringLiteral(~s)" libcansocket.so))))))))))
-    (inputs
-     (list libsocketcan qtbase-5 qtserialport))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-libsocketcan-reference
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/plugins/canbus/socketcan/libsocketcan.cpp"
+                  (("QStringLiteral\\(\"socketcan\"\\)")
+                   (format #f "QStringLiteral(~s)"
+                           (search-input-file inputs
+                                              "lib/libsocketcan.so"))))))))))
+    (inputs (list libsocketcan qtbase-5 qtserialport))
     (synopsis "Qt Serial Bus module")
     (description "The Qt Serial Bus API provides classes and functions to
 access the various industrial serial buses and protocols, such as CAN, ModBus,
