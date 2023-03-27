@@ -1359,15 +1359,16 @@ integrate QML code with JavaScript and C++.")
     (license (package-license qtbase))))
 
 (define-public qtconnectivity
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtconnectivity")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0b2dnxw1rjbp1srhgns148cwl99f50mx29588dal3avv0f73s597"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1j6qgkg77ycwcjxnhh38i9np1z8pjsqrzvfk3zsyq07f6k563fnc"))))
     (native-inputs
      (list perl pkg-config qtdeclarative-5))
     (inputs
