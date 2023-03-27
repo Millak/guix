@@ -54,7 +54,7 @@ index cad4a2709..7c1d2c9de 100644
 +    for (i = 0; i < conf.ifc_len / sizeof(struct ifreq); i++) {
 +	const char *name = reqs[i].ifr_name;
 +
-+        if (!ucs_netif_is_active(name)) {
++        if (!ucs_netif_is_active(name, AF_INET)) {
 +            continue;
 +        }
 +
@@ -87,9 +87,9 @@ index cad4a2709..7c1d2c9de 100644
                                     unsigned *num_devices_p)
 @@ -599,9 +663,9 @@ ucs_status_t uct_tcp_query_devices(uct_md_h md,
  
-     dir = opendir(netdev_dir);
+     dir = opendir(UCT_TCP_IFACE_NETDEV_DIR);
      if (dir == NULL) {
--        ucs_error("opendir(%s) failed: %m", netdev_dir);
+-        ucs_error("opendir(%s) failed: %m", UCT_TCP_IFACE_NETDEV_DIR);
 -        status = UCS_ERR_IO_ERROR;
 -        goto out;
 +	/* When /sys is unavailable, as can be the case in a container,
