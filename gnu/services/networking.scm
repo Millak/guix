@@ -536,6 +536,7 @@ restrict source notrap nomodify noquery\n"))
              (provision '(ntpd))
              (documentation "Run the Network Time Protocol (NTP) daemon.")
              (requirement '(user-processes networking))
+             (actions (list (shepherd-configuration-action ntpd.conf)))
              (start #~(make-forkexec-constructor
                        (list (string-append #$ntp "/bin/ntpd") "-n"
                              "-c" #$ntpd.conf "-u" "ntpd"
