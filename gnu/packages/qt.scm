@@ -1708,30 +1708,32 @@ compositor libraries.")
     (license (package-license qtbase))))
 
 (define-public qtserialport
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtserialport")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0xg2djwhrj5jqamawlp75g70nmwbp2ph2hh1pm45s36jkxm0k7al"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "04i8pdyml1sw4dkk9vyw2xy5bz3fp6f90fws7ag5y8iizfgs5v2v"))))
     (native-inputs (list perl))
-    (inputs
-     (list qtbase-5 eudev))
+    (inputs (list qtbase-5 eudev))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'patch-dlopen-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/serialport/qtudev_p.h"
-               ;; Use the absolute paths for dynamically loaded libs,
-               ;; otherwise the lib will be searched in LD_LIBRARY_PATH which
-               ;; typically is not set in guix.
-               (("^\\s*(udevLibrary->setFileNameAndVersion\\(QStringLiteral\\(\")(udev\"\\),\\s*[0-9]+\\);)" _ a b)
-                (string-append a (assoc-ref inputs "eudev") "/lib/lib" b)))))))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-dlopen-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/serialport/qtudev_p.h"
+                  ;; Use the absolute paths for dynamically loaded libs,
+                  ;; otherwise the lib will be searched in LD_LIBRARY_PATH which
+                  ;; typically is not set in guix.
+                  (("setFileNameAndVersion\\(QStringLiteral\\(\"udev\")")
+                   (format #f "setFileNameAndVersion(QStringLiteral(~s))"
+                           (string-append #$(this-package-input "eudev")
+                                          "/lib/libudev"))))))))))
     (synopsis "Qt Serial Port module")
     (description "The Qt Serial Port module provides the library for
 interacting with serial ports from within Qt.")))
