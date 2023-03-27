@@ -13420,6 +13420,27 @@ Python, together offering features such as navigation, documentation,
 completion, interactive development and more.")
       (license license:gpl3+))))
 
+(define-public emacs-railscasts-theme
+  (let ((commit "1340c3f6c2717761cab95617cf8dcbd962b1095b")
+        (revision "0"))
+    (package
+      (name "emacs-railscasts-theme")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mikenichols/railscasts-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "021x1l5kzsbm0qj5a3bngxa7ickm4lbwsdz81a2ks9pi1ivmw205"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/mikenichols/railscasts-theme")
+      (synopsis "Railscasts is a color theme for Emacs")
+      (description "Railscasts is a color theme for Emacs.")
+      (license license:expat))))
+
 (define-public emacs-rainbow-delimiters
   (package
     (name "emacs-rainbow-delimiters")
