@@ -2181,17 +2181,17 @@ information and perform area based monitoring.")
     (license (package-license qtbase))))
 
 (define-public qtpurchasing
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtpurchasing")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "04z6mwzn73gg56hgs7gividinfgndx4kmcnp7w6h3wamrdlkfdx7"))))
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "0bjky5ncg9yhz4a63g3jl1r5pa6i09f6g8wgzs591mhybrbmhcw8"))))
+    (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Purchasing module")
     (description "The Qt Purchasing module provides and in-app API for
 purchasing goods and services.")))
