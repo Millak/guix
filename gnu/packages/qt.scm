@@ -1926,22 +1926,21 @@ plugin for Adobe After Effects.")
     (license (package-license qtbase))))
 
 (define-public qttools-5
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qttools")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0v7wkzq9i8w3qrw0z8al7lb6clr57lfisyb1fm9cnhi73fvph1vd"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1i79fwsn799x3n3jidp3f4gz9d5vi9gg6p8g8lbswb832gggigm3"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f))) ; TODO: Enable the tests
-    (native-inputs
-     (list perl qtdeclarative-5 vulkan-headers))
-    (inputs
-     (list mesa qtbase-5))
+       ((#:tests? _ #f) #f)))           ; TODO: Enable the tests
+    (native-inputs (list perl qtdeclarative-5 vulkan-headers))
+    (inputs (list mesa qtbase-5))
     (synopsis "Qt Tools and Designer modules")
     (description "The Qt Tools module provides a set of applications to browse
 the documentation, translate applications, generate help files and other stuff
