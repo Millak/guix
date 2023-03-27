@@ -613,44 +613,44 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
          (replace "libgc" libgc/static-libs)))
       (arguments
        (substitute-keyword-arguments (package-arguments guile)
-         ((#:configure-flags flags '())
+         ((#:configure-flags flags #~'())
           ;; When `configure' checks for ltdl availability, it
           ;; doesn't try to link using libtool, and thus fails
           ;; because of a missing -ldl.  Work around that.
-          `(list "LDFLAGS=-ldl" "--enable-mini-gmp"
+          #~(list "LDFLAGS=-ldl" "--enable-mini-gmp"
 
-                 ;; Guile does an LTO build by default, but in 3.0.9 it
-                 ;; wrongfully picks 'ar' instead of 'gcc-ar', so work around
-                 ;; it (see <https://issues.guix.gnu.org/61086>).
-                 ,@(if (version-prefix? "3.0" (package-version guile))
-                       '("AR=gcc-ar" "RANLIB=gcc-ranlib")
-                       '())
+                  ;; Guile does an LTO build by default, but in 3.0.9 it
+                  ;; wrongfully picks 'ar' instead of 'gcc-ar', so work around
+                  ;; it (see <https://issues.guix.gnu.org/61086>).
+                  #$@(if (version-prefix? "3.0" (package-version guile))
+                         #~("AR=gcc-ar" "RANLIB=gcc-ranlib")
+                         #~())
 
-                 ,@(if (hurd-target?)
-                       '("--disable-jit")
-                       '())))
+                  #$@(if (hurd-target?)
+                         #~("--disable-jit")
+                         #~())))
          ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
+          #~(modify-phases #$phases
 
-             ;; Do not record the absolute file name of 'sh' in
-             ;; (ice-9 popen).  This makes 'open-pipe' unusable in
-             ;; a build chroot ('open-pipe*' is fine) but avoids
-             ;; keeping a reference to Bash.
-             (delete 'pre-configure)
+              ;; Do not record the absolute file name of 'sh' in
+              ;; (ice-9 popen).  This makes 'open-pipe' unusable in
+              ;; a build chroot ('open-pipe*' is fine) but avoids
+              ;; keeping a reference to Bash.
+              (delete 'pre-configure)
 
-             (add-before 'configure 'static-guile
-               (lambda _
-                 (substitute* "libguile/Makefile.in"
-                   ;; Create a statically-linked `guile'
-                   ;; executable.
-                   (("^guile_LDFLAGS =")
-                    "guile_LDFLAGS = -all-static")
+              (add-before 'configure 'static-guile
+                (lambda _
+                  (substitute* "libguile/Makefile.in"
+                    ;; Create a statically-linked `guile'
+                    ;; executable.
+                    (("^guile_LDFLAGS =")
+                     "guile_LDFLAGS = -all-static")
 
-                   ;; Add `-ldl' *after* libguile-2.0.la.
-                   (("^guile_LDADD =(.*)$" _ ldadd)
-                    (string-append "guile_LDADD = "
-                                   (string-trim-right ldadd)
-                                   " -ldl\n")))))))
+                    ;; Add `-ldl' *after* libguile-2.0.la.
+                    (("^guile_LDADD =(.*)$" _ ldadd)
+                     (string-append "guile_LDADD = "
+                                    (string-trim-right ldadd)
+                                    " -ldl\n")))))))
          ((#:tests? _ #f)
           ;; There are uses of `dynamic-link' in
           ;; {foreign,coverage}.test that don't fly here.
