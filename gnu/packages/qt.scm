@@ -1472,21 +1472,21 @@ recognition API for devices.")))
   (package
     (inherit qtsvg-5)
     (name "qtmultimedia")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0q76iy1frcgm85mid17lh4p6gnn04n19n6zklgpv4w3md1ng97xw"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 (delete-file-recursively
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1fz0ffpckvbg6qfhab2rrzfnvh4mlalqxcn0kbkd21mi44apjirk"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively
                    "examples/multimedia/spectrum/3rdparty")
-                 ;; We also prevent the spectrum example from being built.
-                 (substitute* "examples/multimedia/multimedia.pro"
-                   (("spectrum") "#"))))))
+                  ;; We also prevent the spectrum example from being built.
+                  (substitute* "examples/multimedia/multimedia.pro"
+                    (("spectrum") "#"))))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
