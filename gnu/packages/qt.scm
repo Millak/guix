@@ -2283,36 +2283,41 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
     (license (package-license qtbase))))
 
 (define-public qtremoteobjects
-  (package (inherit qtsvg-5)
+  (package
     (name "qtremoteobjects")
-    (version "5.15.5")
+    (version "6.3.2")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "1m0xcqlbxsfn0cd4ajin1h3i4l51dajmkw91v0r4a61xi14i0kks"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "099b3vchi458i4fci9kfwan871jplqlk5l8q78mfnh33g80qnasi"))))
+    (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'remove-failing-test
-             (lambda _
-               ;; This test can't find its imports.
-               (substitute* "tests/auto/qml/qml.pro"
-                 (("integration") "# integration")
-                 (("usertypes") "# usertypes"))
-               ;; disable failing tests: they need network
-               (substitute* "tests/auto/auto.pro"
-                 (("integration_multiprocess proxy_multiprocess integration_external restart")
-                   "integration_multiprocess"))))))))
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-display
+            (lambda _
+              ;; Make Qt render "offscreen", required for tests.
+              (setenv "QT_QPA_PLATFORM" "offscreen")))
+          (delete 'check)               ;move after the install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              (setenv "QML2_IMPORT_PATH"
+                      (string-append #$output "/lib/qt6/qml:"
+                                     (getenv "QML2_IMPORT_PATH"))))))))
+    (native-inputs (list perl vulkan-headers))
+    (inputs (list libxkbcommon qtbase qtdeclarative))
     (synopsis "Qt Remote Objects module")
     (description "The Qt Remote Objects module is an @dfn{inter-process
 communication} (IPC) module developed for Qt.  The idea is to extend existing
 Qt's functionalities to enable an easy exchange of information between
-processes or computers.")))
+processes or computers.")
+    (home-page (package-home-page qtbase))
+    (license (package-license qtbase))))
 
 (define-public qtspeech
   (package (inherit qtsvg-5)
