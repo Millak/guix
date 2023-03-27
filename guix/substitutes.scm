@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
@@ -35,6 +35,7 @@
                 #:select ((open-connection-for-uri
                            . guix:open-connection-for-uri)
                           resolve-uri-reference))
+  #:autoload   (gnutls) (error->string error/premature-termination)
   #:use-module (guix progress)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
@@ -152,6 +153,13 @@ indicates that PATH is unavailable at CACHE-URL."
                   (strerror
                    (system-error-errno `(system-error ,@args)))))
        #f)
+      (('gnutls-error error proc . rest)
+       (if (eq? error error/premature-termination)
+           (begin
+             (warning (G_ "~a: TLS connection failed: in ~a: ~a~%") host
+                      proc (error->string error))
+             #f)
+           (apply throw 'gnutls-error error proc rest)))
       (args
        (apply throw args)))))
 
