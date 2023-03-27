@@ -2197,26 +2197,26 @@ information and perform area based monitoring.")
 purchasing goods and services.")))
 
 (define-public qtcharts
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtcharts")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0y051i1837bfybkf8cm7cx8k5wjmbi47pxawaaz6wm0hd2z5b4qi"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1q11ank69l9qw3iks2svr0g2g6pzng9v8p87dpsmjs988f4ysmll"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'remove-failing-test
-             (lambda _
-               (substitute* "tests/auto/auto.pro"
-                 (("qml") "# qml")
-                 (("qml-qtquicktest") "# qml-qtquicktest"))))))))
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'remove-failing-test
+              (lambda _
+                (substitute* "tests/auto/auto.pro"
+                  (("qml") "# qml")
+                  (("qml-qtquicktest") "# qml-qtquicktest"))))))))
+    (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Charts module")
     (description "The Qt Charts module provides a set of easy to use chart
 components.  It uses the Qt Graphics View Framework, therefore charts can be
