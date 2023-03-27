@@ -49,7 +49,7 @@
 ;;; Copyright © 2019, 2020, 2021 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2019 Todor Kondić <tk.code@protonmail.com>15669
 ;;; Copyright © 2019 Amar Singh <nly@disroot.org>
-;;; Copyright © 2019, 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
+;;; Copyright © 2019, 2022, 2023 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2019, 2020 Amin Bandali <bandali@gnu.org>
@@ -5363,33 +5363,31 @@ environments.")
     (license license:gpl2+)))
 
 (define-public emacs-lemon
-  (let ((commit "37a6e6d6ef0900ca19c820a2dbc122c7fe6d86cf")
-        (revision "0"))
-    (package
-      (name "emacs-lemon")
-      (version (git-version "2.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/emacs-weirdware/lemon")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0bc77vzi4p6mlzmhgybbldlpcsiiv4xqrd5lnc7wzvmxv8byhqpm"))))
-      (build-system emacs-build-system)
-      (native-inputs
-       (list emacs-blight emacs-emms))
-      (propagated-inputs
-       (list emacs-s))
-      (home-page "https://codeberg.org/emacs-weirdware/lemon")
-      (synopsis "System monitors in the echo area")
-      (description
-       "Lemon is a tiny system monitor which displays system information in
+  (package
+    (name "emacs-lemon")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/emacs-weirdware/lemon")
+             (commit "b10e992a25757a91723c7d554a5fa8e14291e702")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18yclk2zzqcahzhz2kq8g9gy1xnnxiy6rxs2lwhskj475kvwy2f9"))))
+    (build-system emacs-build-system)
+    (native-inputs
+     (list emacs-blight emacs-emms))
+    (propagated-inputs
+     (list emacs-s))
+    (home-page "https://codeberg.org/emacs-weirdware/lemon")
+    (synopsis "System monitors in the echo area")
+    (description
+     "Lemon is a tiny system monitor which displays system information in
 the echo area when Emacs is has been idle for a few seconds.  This is a fork
 of zk_phi’s Symon, which has been largely rewritten.  It works nicely with
 EXWM.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-sx
   (let ((version "20191229")
@@ -7144,7 +7142,7 @@ snippets for yasnippet.")
   ;; Package has no release.  Version is extracted from "Version:" keyword in
   ;; main file.
   (let ((commit "02b1da6278e43cc9cc0356110cc6bfbb37eb8241")
-	(revision "1"))
+        (revision "1"))
     (package
       (name "emacs-mode-line-idle")
       (version (git-version "0.1" revision commit))
@@ -7228,7 +7226,7 @@ truncation.")
 (define-public emacs-sqlite
   ;; XXX: There is no tagged commit.
   (let ((commit "dad42b8bbca4994be1871343dd18fd6528ee5797")
-	(revision "0"))
+        (revision "0"))
     (package
       (name "emacs-sqlite")
       (build-system emacs-build-system)
@@ -7237,8 +7235,8 @@ truncation.")
        (origin
          (method git-fetch)
          (uri (git-reference
-	       (url "https://gitlab.com/cnngimenez/sqlite.el")
-	       (commit commit)))
+               (url "https://gitlab.com/cnngimenez/sqlite.el")
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "06ln4vijl8kii3nzc5cscgsadx1fqgxksflijd3ain83bn8g4wrd"))))
@@ -9023,7 +9021,7 @@ SuperCollider is a platform for audio synthesis and algorithmic composition.")
 (define-public emacs-soothe-theme
   ;; There is no named branch.
   (let ((commit "0786fe70c6c1b4ddcfb932fdc6862b9611cfc09b")
-	(revision "0"))
+        (revision "0"))
     (package
      (name "emacs-soothe-theme")
      (version (git-version "20141027.2233" revision commit))
@@ -9031,11 +9029,11 @@ SuperCollider is a platform for audio synthesis and algorithmic composition.")
       (origin
        (method git-fetch)
        (uri (git-reference
-	     (url "https://github.com/emacsfodder/emacs-soothe-theme")
-	     (commit commit)))
+             (url "https://github.com/emacsfodder/emacs-soothe-theme")
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-	(base32 "10gh1hvxq9gm29r6qzlnva7vjidd7n4kih4z2ihyvbvy9za20xqw"))))
+        (base32 "10gh1hvxq9gm29r6qzlnva7vjidd7n4kih4z2ihyvbvy9za20xqw"))))
      (build-system emacs-build-system)
      (home-page "https://github.com/emacsfodder/emacs-soothe-theme")
      (synopsis "Colorful, but muted theme for Emacs, dark background with light text")
@@ -18199,12 +18197,12 @@ variable instead, to remind you of that variable's meaning.")
      (origin
        (method git-fetch)
        (uri (git-reference
-	     (url "https://github.com/rejeep/ert-runner.el")
-	     (commit (string-append "v" version))))
+             (url "https://github.com/rejeep/ert-runner.el")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-	(base32
-	 "08gygn9fjank5gpi4v6ynrkn0jbknxbwsn7md4p9ndygdbmnkf98"))))
+        (base32
+         "08gygn9fjank5gpi4v6ynrkn0jbknxbwsn7md4p9ndygdbmnkf98"))))
     (build-system emacs-build-system)
     (inputs
      (list emacs-ansi
@@ -18216,22 +18214,22 @@ variable instead, to remind you of that variable's meaning.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-	 (add-after 'install 'install-executable
-	   (lambda* (#:key inputs outputs #:allow-other-keys)
-	     (let ((out (assoc-ref outputs "out"))
-		   (source-directory (string-append
-				      (getenv "TMPDIR") "/source")))
-	       (substitute* "bin/ert-runner"
-		 (("ERT_RUNNER=\"\\$\\(dirname \\$\\(dirname \\$0\\)\\)")
-		  (string-append "ERT_RUNNER=\"" (elpa-directory out))))
-	       (install-file "bin/ert-runner" (string-append out "/bin"))
-	       (wrap-program (string-append out "/bin/ert-runner")
-		 (list "EMACSLOADPATH" ":" 'prefix
-		       ;; Do not capture the transient source directory in
-		       ;; the wrapper.
-		       (delete source-directory
-			       (string-split (getenv "EMACSLOADPATH") #\:))))
-	       #t))))
+         (add-after 'install 'install-executable
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (source-directory (string-append
+                                      (getenv "TMPDIR") "/source")))
+               (substitute* "bin/ert-runner"
+                 (("ERT_RUNNER=\"\\$\\(dirname \\$\\(dirname \\$0\\)\\)")
+                  (string-append "ERT_RUNNER=\"" (elpa-directory out))))
+               (install-file "bin/ert-runner" (string-append out "/bin"))
+               (wrap-program (string-append out "/bin/ert-runner")
+                 (list "EMACSLOADPATH" ":" 'prefix
+                       ;; Do not capture the transient source directory in
+                       ;; the wrapper.
+                       (delete source-directory
+                               (string-split (getenv "EMACSLOADPATH") #\:))))
+               #t))))
        #:include (cons* "^reporters/.*\\.el$" %default-include)))
     (home-page "https://github.com/rejeep/ert-runner.el")
     (synopsis "Opinionated Ert testing workflow")
@@ -20024,8 +20022,8 @@ files.")
        (origin
          (method git-fetch)
          (uri (git-reference
-	       (url "https://github.com/jschaf/powershell.el")
-	       (commit commit)))
+               (url "https://github.com/jschaf/powershell.el")
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1cxhzaaig88zhylyycvb3849r85j1ijqklnh9zbqsfl2zhpb0g5c"))))
@@ -33268,8 +33266,8 @@ Wordnet.")
 
 (define-public emacs-metal-mercury-mode
   (let ((commit "99e2d8fb7177cae3bfa2dec2910fc28216d5f5a8")
-	(revision "1")
-	(version "0.0.0"))
+        (revision "1")
+        (version "0.0.0"))
     (package
       (name "emacs-metal-mercury-mode")
       (version (git-version version revision commit))
