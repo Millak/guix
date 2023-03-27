@@ -1822,25 +1822,26 @@ application).")
     (license (package-license qtbase))))
 
 (define-public qtwebglplugin
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtwebglplugin")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "1m0p4ssykw07lbip2qyv6w34f8ng13bxb63j0w446f5w0492nn9f"))))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "1gvzhgfn55kdp5g11fg5yja5xb6wghx5sfc8vfp8zzpxnak7pbn1"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'disable-network-tests
-             (lambda _ (substitute* "tests/plugins/platforms/platforms.pro"
-                         (("webgl") "# webgl"))))))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'disable-network-tests
+              (lambda _
+                (substitute* "tests/plugins/platforms/platforms.pro"
+                  (("webgl") "# webgl"))))))))
     (native-inputs '())
-    (inputs
-     (list mesa qtbase-5 qtdeclarative-5 qtwebsockets-5 zlib))
+    (inputs (list mesa qtbase-5 qtdeclarative-5 qtwebsockets-5 zlib))
     (synopsis "QPA plugin for running applications via a browser using
 streamed WebGL commands")
     (description "Qt back end that uses WebGL for rendering. It allows Qt
