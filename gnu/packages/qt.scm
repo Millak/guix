@@ -2008,20 +2008,19 @@ the Qt community.")
     (license (list license:gpl3))))
 
 (define-public qtscript
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtscript")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "17yk0p8ci47xlfpllc17arlycng47wrnnskimskzz85bspabc8pm"))
-             (patches (search-patches "qtscript-disable-tests.patch"))))
-    (native-inputs
-     (list perl qttools-5))
-    (inputs
-     (list qtbase-5))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "0rjj1pn0fwdq0qz0nzisxza671ywfrq5cv6iplywfyflh7q4dmcs"))
+              (patches (search-patches "qtscript-disable-tests.patch"))))
+    (native-inputs (list perl qttools-5))
+    (inputs (list qtbase-5))
     (synopsis "Qt Script module")
     (description "Qt provides support for application scripting with ECMAScript.
 The following guides and references cover aspects of programming with
