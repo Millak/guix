@@ -21448,8 +21448,7 @@ joysticks, and other such HID devices.")
                          ;; ...
                          ;; "trial-glop"
                          "trial-gltf"
-                         ;; TODO: It requires a long packaging journey.
-                         ;; "trial-harmony"
+                         "trial-harmony"
                          "trial-jpeg"
                          "trial-notify"
                          "trial-png"
@@ -21495,6 +21494,7 @@ joysticks, and other such HID devices.")
              sbcl-form-fiddle
              sbcl-glop
              sbcl-glsl-toolkit
+             sbcl-harmony
              sbcl-ieee-floats
              sbcl-jzon
              sbcl-lambda-fiddle
