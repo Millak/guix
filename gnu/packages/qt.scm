@@ -337,13 +337,13 @@ system, and the core design of Django is reused in Grantlee.")
 (define-public qtbase-5
   (package
     (name "qtbase")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
               (method url-fetch)
               (uri (qt-urls name version))
               (sha256
                (base32
-                "1p2fa94m1y8qzhdfi2d7dck93qh1lgsinibwl1wy92bwmacwfhhc"))
+                "175ynjndpzsw69vnsq4swykn9f48568ww9b4z3yw7azkqwk13cdz"))
               ;; Use TZDIR to avoid depending on package "tzdata".
               (patches (search-patches "qtbase-use-TZDIR.patch"
                                        "qtbase-moc-ignore-gcc-macro.patch"
@@ -364,50 +364,50 @@ system, and the core design of Django is reused in Grantlee.")
            ;; Use which the package, not the function
            (@ (gnu packages base) which)))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("cups" ,cups)
-       ("dbus" ,dbus)
-       ("double-conversion" ,double-conversion)
-       ("eudev" ,eudev)
-       ("expat" ,expat)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)                   ;for GTK theme support
-       ("harfbuzz" ,harfbuzz)
-       ("icu4c" ,icu4c)
-       ("libinput" ,libinput-minimal)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmng" ,libmng)
-       ("libpng" ,libpng)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxcursor" ,libxcursor)
-       ("libxfixes" ,libxfixes)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxml2" ,libxml2)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxslt" ,libxslt)
-       ("libxtst" ,libxtst)
-       ("mtdev" ,mtdev)
-       ("mariadb-dev" ,mariadb "dev")
-       ("nss" ,nss)
-       ("openssl" ,openssl)
-       ("pcre2" ,pcre2)
-       ("postgresql" ,postgresql)
-       ("pulseaudio" ,pulseaudio)
-       ("sqlite" ,sqlite)
-       ("unixodbc" ,unixodbc)
-       ("xcb-util" ,xcb-util)
-       ("xcb-util-image" ,xcb-util-image)
-       ("xcb-util-keysyms" ,xcb-util-keysyms)
-       ("xcb-util-renderutil" ,xcb-util-renderutil)
-       ("xcb-util-wm" ,xcb-util-wm)
-       ("xdg-utils" ,xdg-utils)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           cups
+           dbus
+           double-conversion
+           eudev
+           expat
+           fontconfig
+           freetype
+           glib
+           gtk+               ;for GTK theme support
+           harfbuzz
+           icu4c
+           libinput-minimal
+           libjpeg-turbo
+           libmng
+           libpng
+           libx11
+           libxcomposite
+           libxcursor
+           libxfixes
+           libxi
+           libxinerama
+           libxkbcommon
+           libxml2
+           libxrandr
+           libxrender
+           libxslt
+           libxtst
+           mtdev
+           `(,mariadb "dev")
+           nss
+           openssl
+           pcre2
+           postgresql
+           pulseaudio
+           sqlite
+           unixodbc
+           xcb-util
+           xcb-util-image
+           xcb-util-keysyms
+           xcb-util-renderutil
+           xcb-util-wm
+           xdg-utils
+           zlib))
     (native-inputs
      (list bison
            flex
