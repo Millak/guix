@@ -44,6 +44,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)
@@ -463,7 +464,7 @@ the GStreamer multimedia framework.")
 (define-public gstreamer
   (package
     (name "gstreamer")
-    (version "1.20.3")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
@@ -472,22 +473,22 @@ the GStreamer multimedia framework.")
              version ".tar.xz"))
        (sha256
         (base32
-         "0aisl8nazcfi4b5j6fz8zwpp0k9csb022zniz65b2pxxpdjayzb0"))))
+         "0wg7zlj2pqkkxk71a1mwi4lc960ifv4n7spwzlakcxi6z5csfg6d"))))
     (build-system meson-build-system)
     (arguments
-     (list
-      #:disallowed-references (list python)
-      #:phases
-      #~(modify-phases %standard-phases
-          #$@%common-gstreamer-phases
-          #$@(if (string-prefix? "i686" (or (%current-target-system)
-                                            (%current-system)))
-                 ;; FIXME: These tests consistently fail in the Guix CI:
-                 ;;   https://issues.guix.gnu.org/57868
-                 '((add-after 'unpack 'disable-systemclock-test
-                     (lambda _
-                       (substitute* "tests/check/gst/gstsystemclock.c"
-                         (("tcase_add_test \\(tc_chain, \
+     (list #:disallowed-references (list python)
+           #:meson meson-0.63
+           #:phases
+           #~(modify-phases %standard-phases
+               #$@%common-gstreamer-phases
+               #$@(if (string-prefix? "i686" (or (%current-target-system)
+                                                 (%current-system)))
+                      ;; FIXME: These tests consistently fail in the Guix CI:
+                      ;;   https://issues.guix.gnu.org/57868
+                      '((add-after 'unpack 'disable-systemclock-test
+                          (lambda _
+                            (substitute* "tests/check/gst/gstsystemclock.c"
+                              (("tcase_add_test \\(tc_chain, \
 test_stress_cleanup_unschedule.*")
                           "")
                          (("tcase_add_test \\(tc_chain, \
