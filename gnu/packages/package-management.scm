@@ -1363,8 +1363,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "d6ae42f19691267d915cd66174436f33debabec0")
-        (revision "75"))
+  (let ((commit "3c9354e1c0b0767e0121ecbd03abfe37c895e34b")
+        (revision "76"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1375,7 +1375,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0rd1bhlx7a78wd4c0zifwc8b4wm497y0z6dw19r7d47s4l63w35m"))
+                  "19gc4ya56inxnjpf1br2sdva0k4jyc1jn5q84qdfpiwn1ryb0jjd"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1414,7 +1414,7 @@ environments.")
                                          "guile-gnutls"
                                          ,@(if (hurd-target?)
                                                '()
-                                               '("guile-fibers")))))
+                                               '("guile-fibers-next")))))
                       (wrap-program file
                         `("PATH" ":" prefix
                           (,bin
