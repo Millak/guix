@@ -2123,27 +2123,26 @@ primary target audience are embedded devices with fullscreen user interfaces,
 and mobile applications targeting TV-like form factors.")))
 
 (define-public qtscxml
-  (package (inherit qtsvg-5)
+  (package
+    (inherit qtsvg-5)
     (name "qtscxml")
-    (version "5.15.5")
+    (version "5.15.8")
     (source (origin
-             (method url-fetch)
-             (uri (qt-urls name version))
-             (sha256
-              (base32
-               "0xf5mqsrw16h8xjglymgfc8qg2qa5bi4fgdl4j3dkhvvpr7vrphp"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 (delete-file-recursively "tests/3rdparty")
-                 ;; the scion test refers to the bundled 3rd party test code.
-                 (substitute* "tests/auto/auto.pro"
-                   (("scion") "#"))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments qtsvg-5)
-       ((#:tests? _ #f) #f))) ; TODO: Enable the tests
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "17j6npvgr8q3lyrqmvfh1n47mkhfzk18r998hcjm2w75xj46km1n"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "tests/3rdparty")
+                  ;; the scion test refers to the bundled 3rd party test code.
+                  (substitute* "tests/auto/auto.pro"
+                    (("scion") "#"))))))
+    (arguments (substitute-keyword-arguments (package-arguments qtsvg-5)
+                 ((#:tests? _ #f) #f))) ; TODO: Enable the tests
+    (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt SCXML module")
     (description "The Qt SCXML module provides functionality to create state
 machines from SCXML files.  This includes both dynamically creating state
