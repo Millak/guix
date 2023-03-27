@@ -470,42 +470,45 @@ without requiring the source code to be rewritten.")
     (source (package-source guile))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-silent-rules"
-                           "--enable-mini-gmp")   ;for Guile >= 3.0.6
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'chdir
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (invoke "make" "-C" "libguile" "scmconfig.h")
-                      (invoke "make" "-C" "lib")
-                      (chdir "guile-readline")
+     (list #:configure-flags
+           #~'("--disable-silent-rules"
+               "--enable-mini-gmp")               ;for Guile >= 3.0.6
 
-                      (substitute* "Makefile"
-                        (("../libguile/libguile-[[:graph:]]+\\.la")
-                         ;; Remove dependency on libguile-X.Y.la.
-                         "")
-                        (("^READLINE_LIBS = (.*)$" _ libs)
-                         ;; Link against the provided libguile.
-                         (string-append "READLINE_LIBS = "
-                                        "-lguile-$(GUILE_EFFECTIVE_VERSION) "
-                                        libs "\n"))
-                        (("\\$\\(top_builddir\\)/meta/build-env")
-                         ;; Use the provided Guile, not the one from
-                         ;; $(builddir).
-                         "")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'chdir
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (invoke "make" "-C" "libguile" "scmconfig.h")
+                   (invoke "make" "-C" "lib")
+                   (chdir "guile-readline")
 
-                        ;; Install modules to the 'site' directories.
-                        (("^moddir = .*$")
-                         "moddir = $(pkgdatadir)/site/$(GUILE_EFFECTIVE_VERSION)\n")
-                        (("^ccachedir = .*$")
-                         "ccachedir = $(pkglibdir)/$(GUILE_EFFECTIVE_VERSION)/site-ccache\n"))
+                   (substitute* "Makefile"
+                     (("../libguile/libguile-[[:graph:]]+\\.la")
+                      ;; Remove dependency on libguile-X.Y.la.
+                      "")
+                     (("^READLINE_LIBS = (.*)$" _ libs)
+                      ;; Link against the provided libguile.
+                      (string-append "READLINE_LIBS = "
+                                     "-lguile-$(GUILE_EFFECTIVE_VERSION) "
+                                     libs "\n"))
+                     (("\\$\\(top_builddir\\)/meta/build-env")
+                      ;; Use the provided Guile, not the one from
+                      ;; $(builddir).
+                      "")
 
-                      ;; Load 'guile-readline.so' from the right place.
-                      (substitute* "ice-9/readline.scm"
-                        (("load-extension \"guile-readline\"")
-                         (format #f "load-extension \
+                     ;; Install modules to the 'site' directories.
+                     (("^moddir = .*$")
+                      "moddir = $(pkgdatadir)/site/$(GUILE_EFFECTIVE_VERSION)\n")
+                     (("^ccachedir = .*$")
+                      "ccachedir = $(pkglibdir)/$(GUILE_EFFECTIVE_VERSION)/site-ccache\n"))
+
+                   ;; Load 'guile-readline.so' from the right place.
+                   (substitute* "ice-9/readline.scm"
+                     (("load-extension \"guile-readline\"")
+                      (format #f "load-extension \
  (string-append ~s \"/lib/guile/\" (effective-version) \"/extensions/guile-readline\")"
-                                 (assoc-ref outputs "out"))))
-                      #t)))))
+                              (assoc-ref outputs "out"))))
+                   #t)))))
     (home-page (package-home-page guile))
     (native-inputs (package-native-inputs guile))
     (propagated-inputs (package-propagated-inputs guile))
