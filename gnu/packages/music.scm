@@ -674,6 +674,7 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
     (inputs
      (list alsa-lib
            ao
+           elogind ;for MPRIS support
            faad2
            ffmpeg
            flac
