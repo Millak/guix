@@ -761,14 +761,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.20.3")
+    (version "1.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kys6m5hg5bc30wfg8qa3s7dmkdz3kj1j8lhvn3267fxalxw24bs"))
+                "03lza1gq1j5gpz13fql47aaljs9k7qih02j2zzwnd1nr4brbcf9g"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -777,21 +777,12 @@ model to base your own plug-in on, here it is.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.63
       #:configure-flags #~(list "-Dsctp-internal-usrsctp=disabled")
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases
       #~(modify-phases %standard-phases
           #$@%common-gstreamer-phases
-          #$@(if (string-prefix? "arm" (or (%current-target-system)
-                                           (%current-system)))
-                 ;; Disable test that fails on ARMv7.
-                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/issues/1188
-                 `((add-after 'unpack 'disable-asfmux-test
-                     (lambda _
-                       (substitute* "tests/check/meson.build"
-                         (("\\[\\['elements/asfmux\\.c'\\]\\],")
-                          "")))))
-                 '())
           (add-after 'unpack 'adjust-tests
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (let ((gst-plugins-good (assoc-ref (or native-inputs inputs)
@@ -803,17 +794,10 @@ model to base your own plug-in on, here it is.")
                    (string-append "'GST_PLUGIN_SYSTEM_PATH_1_0', '"
                                   gst-plugins-good "/lib/gstreamer-1.0'"))
 
-                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1136
-                  ((".*elements/msdkh264enc\\.c.*") "")
-                  ((".*elements/svthevcenc\\.c.*") "")
-
                   ;; The 'elements_shm.test_shm_live' test sometimes times out
                   ;; (see:
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790).
                   ((".*'elements/shm\\.c'.*") "")
-
-                  ;; FIXME: Why is this failing.
-                  ((".*elements/dash_mpd\\.c.*") "")
 
                   ;; This test is flaky on at least some architectures.
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
@@ -823,9 +807,6 @@ model to base your own plug-in on, here it is.")
                             "'elements/camerabin.c'], true, ],"))
                          '())
 
-                  ;; These tests are flaky and occasionally time out:
-                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
-                  ((".*elements/curlhttpsrc\\.c.*") "")
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
                   ((".*elements/dtls\\.c.*") ""))
                 (substitute* "tests/check/elements/zxing.c"
