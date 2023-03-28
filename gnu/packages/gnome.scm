@@ -5053,7 +5053,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
 (define-public libsoup-minimal-2
   (package
     (inherit libsoup-minimal)
-    (version "2.74.2")
+    (version "2.74.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsoup/"
@@ -5061,7 +5061,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "0n8is108n0dn4dw7nm2wq9rydcm1vy47w40wywfrxqazdrjjg97h"))))
+                "04rgv6hkyhgi7lak9865yxgbgky6gc635p7w6nhcbj64rx0prdz4"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libsoup-minimal)
        ((#:phases phases)
