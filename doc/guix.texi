@@ -60,7 +60,7 @@ Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
-Copyright @copyright{} 2018, 2019, 2020, 2022 Florian Pelz@*
+Copyright @copyright{} 2018, 2019, 2020, 2022, 2023 Florian Pelz@*
 Copyright @copyright{} 2018 Laura Lazzati@*
 Copyright @copyright{} 2018 Alex Vong@*
 Copyright @copyright{} 2019 Josh Holland@*
@@ -38696,11 +38696,12 @@ However, most other programs that can talk HTTPS---@command{wget},
 certificates can be found.
 
 @cindex @code{nss-certs}
-In Guix, this is done by adding a package that provides certificates
-to the @code{packages} field of the @code{operating-system} declaration
-(@pxref{operating-system Reference}).  Guix includes one such package,
-@code{nss-certs}, which is a set of CA certificates provided as part of
-Mozilla's Network Security Services.
+For users of Guix System, this is done by adding a package that
+provides certificates to the @code{packages} field of the
+@code{operating-system} declaration (@pxref{operating-system
+Reference}).  Guix includes one such package, @code{nss-certs}, which
+is a set of CA certificates provided as part of Mozilla's Network
+Security Services.
 
 Note that it is @emph{not} part of @code{%base-packages}, so you need to
 explicitly add it.  The @file{/etc/ssl/certs} directory, which is where
