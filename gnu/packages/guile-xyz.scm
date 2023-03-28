@@ -310,6 +310,43 @@ more.")
 currently does not do much, but it might in the future.")
     (license license:gpl3+)))
 
+(define-public guile-openai
+  (let ((commit "252f2d5660bb546015d18c60be96d3cf60c4dcfa")
+        (revision "1"))
+    (package
+      (name "guile-openai")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/flatwhatson/guile-openai")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1qv0kr30d1x7ap1b0h03gl5pzp20xw4qd6b3l5v4iz4ka8qna9gi"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:scheme-file-regexp
+        #~(lambda (file info)
+            (let ((name (basename file)))
+              (and (string-suffix? ".scm" name)
+                   (not (string=? (basename file) "guix.scm")))))))
+      (inputs (list guile-3.0-latest))
+      (propagated-inputs
+       (list guile-colorized
+             guile-gnutls
+             guile-json-4
+             guile-picture-language))
+      (home-page "https://gitlab.com/flatwhatson/guile-openai")
+      (synopsis "Guile implementation of the OpenAI API")
+      (description
+       "Guile OpenAI is an implementation of the OpenAI API in Guile Scheme,
+providing a convenient interface for interactive programming with their AI
+models.")
+      (license license:agpl3+))))
+
 ;; There are no releases yet of this package.
 (define-public guile-pipe
   (let ((commit "0746ec38d19d844dff0c6f62f209b2b6c8d8872e")
