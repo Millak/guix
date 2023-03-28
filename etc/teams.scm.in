@@ -568,6 +568,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "vagrant@reproducible-builds.org")
   reproduciblebuilds)
 
+(define-member (person "Zhu Zihao"
+                       "all_but_last@163.com")
+  localization xfce)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
