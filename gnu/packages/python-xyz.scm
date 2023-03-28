@@ -32064,6 +32064,17 @@ software by taking care of all interactions with low-level network programming
 interfaces.")
     (license license:gpl2)))
 
+(define-public python-zeroc-ice-3.6
+  (package
+    (inherit python-zeroc-ice)
+    (version "3.6.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zeroc-ice" version))
+              (sha256
+               (base32
+                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
