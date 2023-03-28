@@ -32044,6 +32044,26 @@ functions
 markdown-compliant strings.")
     (license license:expat)))
 
+(define-public python-zeroc-ice
+  (package
+    (name "python-zeroc-ice")
+    (version "3.7.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zeroc-ice" version))
+              (sha256
+               (base32
+                "0bqkrjxp2fbz34x3wxkxji39kxinypzg8q2994sibiay29mpipxb"))))
+    (build-system pyproject-build-system)
+    (inputs (list openssl))
+    (home-page "https://zeroc.com")
+    (synopsis "RPC framework")
+    (description
+     "Ice is a comprehensive RPC framework.  Ice helps you network your
+software by taking care of all interactions with low-level network programming
+interfaces.")
+    (license license:gpl2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
