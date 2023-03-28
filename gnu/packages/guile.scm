@@ -371,6 +371,16 @@ without requiring the source code to be rewritten.")
                   (("!#")
                    "!#\n(exit 77)\n"))))
 
+            #$@(if (target-hurd?)
+                   #~((add-before 'build 'patch-posix-spawn-usage
+                        (lambda _
+                          ;; TODO: Move patch to 'source' on next rebuild
+                          ;; cycle.
+                          (define patch
+                            #$(local-file
+                               (search-patch "guile-hurd-posix-spawn.patch")))
+                          (invoke "patch" "--force" "-p1" "-i" patch))))
+                   #~())
             #$@(if (target-ppc32?)
                    #~((add-after 'unpack 'adjust-bootstrap-flags
                         (lambda _
