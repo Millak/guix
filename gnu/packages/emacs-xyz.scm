@@ -36613,6 +36613,27 @@ a Vertico extension which provides a way to pop up a frame at point to show
 a vertical completion UI.")
     (license license:gpl3+)))
 
+(define-public emacs-tintin-mode
+  (let ((commit "82e71e1db92ee3d94c7d0208bafc5de337193de8")
+	(revision "1"))
+    (package
+      (name "emacs-tintin-mode")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+	 (method git-fetch)
+	 (uri (git-reference
+	       (url "https://github.com/sunwayforever/tintin-mode")
+	       (commit commit)))
+	 (file-name (git-file-name name version))
+	 (sha256
+	  (base32 "1p6ryqb8m30cp0zyawb6bs8wy3ga7gm60lcan0xx1fy3wx8qip33"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/sunwayforever/tintin-mode")
+      (synopsis "Emacs major mode for highlighting and indenting TinTin++ scripts.")
+      (description "This major mode focuses on highlighting as many aspects of the TinTin++ scripting language as possible, organizing commands into functional categories and highlighting specific modes that many commands use to accomplish different tasks.")
+      (license license:asl2.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
