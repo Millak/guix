@@ -17283,6 +17283,48 @@ guidelines.  It also includes a couple handy IDE-type features such as
 documentation search and a source and class browser.")
     (license license:gpl3+)))
 
+(define-public emacs-pippel
+  (let ((commit "cb194952ee150e77601d3233dabdb521b976ee79")
+        (revision "0"))
+    (package
+      (name "emacs-pippel")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/arifer612/pippel")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17606l24yyrjxa4rc0p2zj50lfbayqldw4phhi59yqf61289d520"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons "^pippel\\.py$" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'substitute-pippel-package-path
+              (lambda _
+                (emacs-substitute-variables "pippel.el"
+                  ("pippel-package-path" (elpa-directory #$output)))))
+            (add-after 'unpack 'substitute-python-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "pippel.el"
+                  ("pippel-python-command"
+                   (search-input-file inputs "/bin/python"))))))))
+      (inputs
+       (list python-wrapper))
+      (propagated-inputs
+       (list emacs-dash emacs-s))
+      (home-page "https://github.com/arifer612/pippel")
+      (synopsis "Emacs frontend to Python package manager Pip")
+      (description
+       "Pippel is an Emacs frontend for the Python package manager Pip.  As
+Pippel also uses Tabulated List mode, it provides a similar package menu like
+@code{package-list-packages}.")
+      (license license:gpl3+))))
+
 (define-public emacs-pos-tip
   (package
     (name "emacs-pos-tip")
