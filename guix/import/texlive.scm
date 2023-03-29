@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -260,6 +260,12 @@ of those files are returned that are unexpectedly installed."
                                        %texlive-tag "/Master/texmf-dist"))
                    (locations dirs)
                    (revision %texlive-revision)))
+             ;; Ignore arch-dependent packages.
+             (filtered-depends
+              (or (and=> (assoc-ref data 'depend)
+                         (lambda (inputs)
+                           (remove (cut string-suffix? ".ARCH" <>) inputs)))
+                  '()))
              (source (with-store store
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
@@ -278,14 +284,15 @@ of those files are returned that are unexpectedly installed."
         ;; package->definition in (guix import utils) expects to see a
         ;; version field.
         (version ,version)
-        ,@(or (and=> (assoc-ref data 'depend)
-                     (lambda (inputs)
-                       `((propagated-inputs
-                          (list ,@(map (lambda (tex-name)
-                                         (let ((name (guix-name tex-name)))
-                                           (string->symbol name)))
-                                       inputs))))))
-              '())
+        ,@(match filtered-depends
+            (() '())
+            (inputs
+             `((propagated-inputs
+                (list ,@(map
+                         (lambda (tex-name)
+                           (let ((name (guix-name tex-name)))
+                             (string->symbol name)))
+                         inputs))))))
         ,@(or (and=> (assoc-ref data 'catalogue-ctan)
                      (lambda (url)
                        `((home-page ,(string-append "https://ctan.org" url)))))
@@ -295,7 +302,7 @@ of those files are returned that are unexpectedly installed."
                        (assoc-ref data 'longdesc)))
         (license ,(string->license
                    (assoc-ref data 'catalogue-license))))
-     (or (assoc-ref data 'depend) (list)))))
+     filtered-depends)))
 
 (define texlive->guix-package
   (memoize
