@@ -523,7 +523,7 @@ and the older vCalendar.")
 (define-public kcodecs
   (package
     (name "kcodecs")
-    (version "5.98.0")
+    (version "5.104.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -532,12 +532,10 @@ and the older vCalendar.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0n10r7s9r25xp7vlym41qi421kld00niig73yark7yghj0r41jcz"))))
+                "0swxj2kr37pnwdxsipfii8q02g58lvm9lsh4kflqgfjyhvv0kjby"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules gperf qttools-5))
-    (inputs
-     (list qtbase-5))
+    (native-inputs (list extra-cmake-modules gperf qttools-5))
+    (inputs (list qtbase-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "String encoding and manipulating library")
     (description "KCodecs provide a collection of methods to manipulate
