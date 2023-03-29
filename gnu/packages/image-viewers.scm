@@ -254,7 +254,7 @@ actions.")
            libarchive
            libchamplain
            libheif
-           libjpeg
+           libjpeg-turbo
            libpng
            libraw
            libtiff
