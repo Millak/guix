@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2023 Andrew Whatson <whatson@tailcall.au>
+;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1113,7 +1114,7 @@ a Common Lisp environment.")
 (define-public gerbil
   (package
     (name "gerbil")
-    (version "0.16")
+    (version "0.17.0")
     (source
      (origin
        (method git-fetch)
@@ -1122,7 +1123,7 @@ a Common Lisp environment.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vng0kxpnwsg8jbjdpyn4sdww36jz7zfpfbzayg9sdpz6bjxjy0f"))))
+        (base32 "0c0nspm659ybgmqlppdv7sxzll4hwkvcp9qmcsip6d0kz0p8r9c3"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1172,6 +1173,14 @@ a Common Lisp environment.")
                    "./tutorial/proxy/build-static.ss"
                    "./tutorial/proxy/build.ss")))
              #t))
+         (add-after 'configure 'create-gx-version.scm
+           (lambda _
+             (with-output-to-file (string-append
+                                   (getcwd)
+                                   "/gerbil/runtime/gx-version.scm")
+               (lambda _
+                 (write `(define (gerbil-version-string)
+                           ,(string-append "v" ,(version-major+minor version))))))))
          (replace
           'build
           (lambda*
@@ -1195,7 +1204,7 @@ a Common Lisp environment.")
                (copy-recursively "../bin" bin)
                (copy-recursively "../lib" lib)))))))
     (native-inputs
-     (list coreutils util-linux))
+     (list coreutils gambit-c util-linux))
     (propagated-inputs
      (list gambit-c zlib openssl sqlite))
     (build-system gnu-build-system)
