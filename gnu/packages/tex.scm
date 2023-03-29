@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -3211,6 +3211,22 @@ save and restore verbatim text and environments; write and read files in
 verbatim mode; build \"example\" environments (showing both result and
 verbatim source).")
     (license license:lppl1.0+)))
+
+(define-public texlive-glyphlist
+  (package
+    (inherit (simple-texlive-package
+              "texlive-glyphlist"
+              (list "fonts/map/glyphlist/")
+              (base32
+               "12nmmyh77vr2622lzi11nm1z1k2bxs7jz018yl4rwjlpg0sxg1ja")
+              #:trivial? #t))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Adobe glyph list and TeX extensions")
+    (description
+     "This package provides a map between traditional Adobe glyph names and
+Unicode points; it is maintained by Adobe.  The additional
+@file{texglyphlist.txt} is maintained as part of lcdf-typetools.")
+    (license license:asl2.0)))
 
 (define-public texlive-graphics-def
   (package
