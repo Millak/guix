@@ -298,10 +298,9 @@ of those files are returned that are unexpectedly installed."
                        `((home-page ,(string-append "https://ctan.org" url)))))
               '((home-page "https://www.tug.org/texlive/")))
         (synopsis ,(assoc-ref data 'shortdesc))
-        (description ,(beautify-description
-                       (assoc-ref data 'longdesc)))
         (license ,(string->license
                    (assoc-ref data 'catalogue-license))))
+        (description ,(and=> (assoc-ref data 'longdesc) beautify-description))
      filtered-depends)))
 
 (define texlive->guix-package
