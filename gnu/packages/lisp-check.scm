@@ -402,7 +402,7 @@ easy to use so that you can quickly start testing.")
       (synopsis "Interactive test framework for Common Lisp")
       (description
        "Confidence is a test framework for Common Lisp that focuses on
-simplicty.  It avoids bureaucracy and makes it easy to work interactively,
+simplicity.  It avoids bureaucracy and makes it easy to work interactively,
 without a complicated setup, and with explicit functions and decisions.")
       (license license:expat))))
 

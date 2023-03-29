@@ -2072,7 +2072,7 @@ for Inria, a public research institute in computer science and mathematics.")
 (define-public font-sil-gentium
   (package
     (name "font-sil-gentium")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2080,7 +2080,7 @@ for Inria, a public research institute in computer science and mathematics.")
                     version ".zip"))
               (sha256
                (base32
-                "0m7189870hha217n1vgpmf89mwggrxkh679ffi1lxpnjggqi2n9k"))))
+                "0wxhsxv7xqsfbrywax0lcbmyfbrvrcm5g4c7a2v4j4cng4xi08cv"))))
     ;; Note: The zip file provides TTF files only, but the developer release,
     ;; which contains additional files, has a 'SOURCES.txt' file that says
     ;; that "the primary source files for the fonts are the fonts themselves".
@@ -2098,7 +2098,7 @@ italics shapes.  This package provides only TrueType files (TTF).")
 (define-public font-sil-andika
   (package
     (name "font-sil-andika")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2106,7 +2106,7 @@ italics shapes.  This package provides only TrueType files (TTF).")
                     version ".zip"))
               (sha256
                (base32
-                "01zm7p32gxfwmv7h3cfj2vx59846w2y6rxqy67grn2dyjh8pljv0"))))
+                "0z7qvjlidn3m2k40mwnm3azf3wd8pi1yvy2q30p5vkyyzhipb6nc"))))
     ;; As for Gentium (see above), the TTF files are considered source.
     (build-system font-build-system)
     (synopsis "Sans serif font designed especially for literacy use")
@@ -2121,7 +2121,7 @@ confused with one another.  This package provides only TrueType files (TTF).")
 (define-public font-sil-charis
   (package
     (name "font-sil-charis")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2129,7 +2129,7 @@ confused with one another.  This package provides only TrueType files (TTF).")
                     version ".zip"))
               (sha256
                (base32
-                "1zcvw37f1a7gkml3yfm6hxh93844llm7xj4w52600qq3ndrm8gjy"))))
+                "1pksr5wc9grdj75md4phr1a0gpjxk7xlmhv2nybsd2hbfrssl2ab"))))
     ;; As for Gentium (see above), the TTF files are considered source.
     (build-system font-build-system)
     (synopsis "Serif font for the Cyrillic and Latin alphabets")

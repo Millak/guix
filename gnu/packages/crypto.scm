@@ -868,6 +868,8 @@ BLAKE.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32 "04z631v0vzl52g73v390ask5fnzi5wg83lcjkjhpmmymaz0jn152"))))
+      ;; "This code requires at least SSE2".
+      (supported-systems '("x86_64-linux"))
       (build-system gnu-build-system)
       (arguments
        `(#:make-flags (list (string-append "CC=" ,(cc-for-target))

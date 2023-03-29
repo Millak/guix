@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2022⁠–⁠2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -137,9 +137,6 @@
                                    str)
                                #\-) "_")))
 
-(define list-of-string?
-  (list-of string?))
-
 (define list-of-symbol?
   (list-of symbol?))
 
@@ -159,11 +156,11 @@
 (define mpd-serialize-string mpd-serialize-field)
 (define mpd-serialize-boolean mpd-serialize-field)
 
-(define (mpd-serialize-list-of-string field-name value)
+(define (mpd-serialize-list-of-strings field-name value)
   #~(string-append #$@(map (cut mpd-serialize-string field-name <>) value)))
 
 (define-maybe string (prefix mpd-))
-(define-maybe list-of-string (prefix mpd-))
+(define-maybe list-of-strings (prefix mpd-))
 (define-maybe boolean (prefix mpd-))
 
 ;;; TODO: Procedures for deprecated fields, to be removed.
@@ -349,7 +346,8 @@ will depend on."
    empty-serializer)
 
   (environment-variables
-   (list-of-string '())
+   (list-of-strings '("PULSE_CLIENTCONFIG=/etc/pulse/client.conf"
+                      "PULSE_CONFIG=/etc/pulse/daemon.conf"))
    "A list of strings specifying environment variables."
    empty-serializer)
 
@@ -400,7 +398,7 @@ Available values: @code{notice}, @code{info}, @code{verbose},
    "The default port to run mpd on.")
 
   (endpoints
-   maybe-list-of-string
+   maybe-list-of-strings
    "The addresses that mpd will bind to. A port different from
 @var{default-port} may be specified, e.g. @code{localhost:6602} and
 IPv6 addresses must be enclosed in square brackets when a different
@@ -409,7 +407,7 @@ To use a Unix domain socket, an absolute path or a path starting with @code{~}
 can be specified here."
    (lambda (_ endpoints)
      (if (maybe-value-set? endpoints)
-         (mpd-serialize-list-of-string "bind_to_address" endpoints)
+         (mpd-serialize-list-of-strings "bind_to_address" endpoints)
          "")))
 
   (address ; TODO: deprecated, remove later
@@ -581,11 +579,11 @@ appended to the configuration.")
 
 (define-configuration/no-serialization mympd-ip-acl
   (allow
-   (list-of-string '())
+   (list-of-strings '())
    "Allowed IP addresses.")
 
   (deny
-   (list-of-string '())
+   (list-of-strings '())
    "Disallowed IP addresses."))
 
 (define-maybe/no-serialization integer)
@@ -707,12 +705,12 @@ prompting a pin from the user.")
       ((? string? val) val)))
 
   (define (ip-acl-serialize-configuration config)
-    (define (serialize-list-of-string prefix lst)
+    (define (serialize-list-of-strings prefix lst)
       (map (cut format #f "~a~a" prefix <>) lst))
     (string-join
      (append
-      (serialize-list-of-string "+" (mympd-ip-acl-allow config))
-      (serialize-list-of-string "-" (mympd-ip-acl-deny config))) ","))
+      (serialize-list-of-strings "+" (mympd-ip-acl-allow config))
+      (serialize-list-of-strings "-" (mympd-ip-acl-deny config))) ","))
 
   ;; myMPD configuration fields are serialized as individual files under
   ;; <work-directory>/config/.
@@ -752,7 +750,11 @@ prompting a pin from the user.")
     (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level)))
       (shepherd-service
        (documentation "Run the myMPD daemon.")
-       (requirement `(loopback user-processes ,@shepherd-requirement))
+       (requirement `(loopback user-processes
+                               ,@(if (eq? log-to 'syslog)
+                                     '(syslog)
+                                     '())
+                               ,@shepherd-requirement))
        (provision '(mympd))
        (start #~(begin
                   (let* ((pw (getpwnam #$user))

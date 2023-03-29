@@ -970,7 +970,10 @@ backend device."
                           (string->pointer key)
                           (string->pointer "")
                           0)))
-        (cond ((< size 0) #f)
+        (cond ((< size 0)
+               (throw 'system-error "getxattr" "~S: ~A"
+                      (list file key (strerror err))
+                      (list err)))
               ((zero? size) "")
               ;; Get VALUE in buffer of SIZE.  XXX actual size can race.
               (else (let*-values (((buf) (make-bytevector size))

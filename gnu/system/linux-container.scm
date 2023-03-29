@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Google LLC
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,9 +50,12 @@ from OS that are needed on the bare metal and not in a container."
   (define base
     (remove (lambda (service)
               (memq (service-kind service)
-                    (list (service-kind %linux-bare-metal-service)
-                          firmware-service-type
-                          system-service-type)))
+                    (cons* (service-kind %linux-bare-metal-service)
+                           firmware-service-type
+                           system-service-type
+                           (if shared-network?
+                               (list hosts-service-type)
+                               '()))))
             (operating-system-default-essential-services os)))
 
   (cons (service system-service-type

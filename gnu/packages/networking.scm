@@ -30,7 +30,7 @@
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2019, 2020, 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2019, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2019 Daniel Schaefer <git@danielschaefer.me>
@@ -58,6 +58,7 @@
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,7 +201,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
 (define-public arp-scan
   (package
     (name "arp-scan")
-    (version "1.9.8")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -210,7 +211,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18pck3hi7caykpkry5ri16w4w8m11g8gvh3qx5rhwsc6d9xa2a6d"))))
+        (base32 "1d603by2v7gj6bdxn1d23l425q115dk5qfk3ywbj6wbsjysqhbq5"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
@@ -2912,6 +2913,39 @@ networks.")
 speedtest.net.")
     (license license:asl2.0)))
 
+(define-public atftp
+  (package
+    (name "atftp")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.code.sf.net/p/atftp/code")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "019qrh2wpvr577ksvs3s82q6kiqm5i6869aj7qba326b59lhkxrc"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'autoreconf
+                          (lambda _
+                            (invoke "autoreconf" "-vif"))))))
+    (native-inputs (list autoconf automake perl pkg-config))
+    (inputs (list pcre2 procps readline tcp-wrappers))
+    (home-page "https://sourceforge.net/projects/atftp/")
+    (synopsis "Advanced TFTP server and client")
+    (description
+     "This package provides a multi-threaded TFTP server that implements all
+options, including all extensions, as specified in RFC 1350, RFC 2090, RFC
+2347, RFC 2348, RFC 2349 and RFC7440.  Atftpd also supports a multicast
+protocol known as mtftp, which was defined in the PXE specification.
+
+The server is socket activated by default but supports being started from
+@command{inetd} as well as in daemon mode.")
+    (license license:gpl2+)))
+
 (define-public tftp-hpa
   (package
     (name "tftp-hpa")
@@ -4235,46 +4269,6 @@ cables.")
                    (license:non-copyleft ; slirpvde
                     "file://COPYING.slirpvde"
                     "See COPYING.slirpvde in the distribution."))))))
-
-(define-public haproxy
-  (package
-    (name "haproxy")
-    (version "2.1.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.haproxy.org/download/"
-                                  (version-major+minor version)
-                                  "/src/haproxy-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0fd3c1znid5a9w3gcf77b85hm2a2558w9s02c4b7xzkmivqnqbir"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (let* ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "DOCDIR=" out "/share/" ,name)
-               "TARGET=linux-glibc"
-               "USE_LUA=1"
-               "USE_OPENSSL=1"
-               "USE_ZLIB=1"
-               "USE_PCRE_2=1"))
-       #:tests? #f  ; there are only regression tests, using varnishtest
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
-    (inputs
-     (list lua openssl pcre2 zlib))
-    (home-page "https://www.haproxy.org/")
-    (synopsis "Reliable, high performance TCP/HTTP load balancer")
-    (description "HAProxy offers @acronym{HA, high availability}, load
-balancing, and proxying for TCP and HTTP-based applications.  It is particularly
-suited to Web sites crawling under very high loads while needing persistence or
-Layer 7 processing.  Supporting tens of thousands of connections is clearly
-realistic with today's hardware.")
-    (license (list license:gpl2+
-                   license:lgpl2.1
-                   license:lgpl2.1+))))
 
 (define-public lldpd
   (package

@@ -1755,6 +1755,51 @@ compositions like @code{XOR} and @code{NAND} are emulated on top of them.
 Expressions are constructed from parsed strings or directly in Python.")
     (license license:bsd-2)))
 
+(define-public python-hatchling
+  (package
+    (name "python-hatchling")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hatchling" version))
+              (sha256
+               (base32
+                "1isk1kqra0sm2sj2yp39sgk62mx0bp1jnbkwdcl3a1vjrji7blpq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-depend-on-hatchling
+            (lambda _
+              ;; We don't use hatchling.
+              (delete-file "pyproject.toml")
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "\
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools']
+")))
+              (call-with-output-file "setup.cfg"
+                (lambda (port)
+                  (format port "\
+[metadata]
+name = hatchling
+version = '~a' " #$version))))))))
+    (propagated-inputs
+     (list python-editables
+           python-importlib-metadata
+           python-packaging
+           python-pathspec
+           python-pluggy
+           python-tomli))
+    (home-page "https://pypi.org/project/hatchling/")
+    (synopsis "Extensible Python build backend")
+    (description "Hatchling is an extensible Python build backend.")
+    (license license:expat)))
+
 (define-public python-hdf4
   (package
    (name "python-hdf4")
@@ -2845,6 +2890,84 @@ downloaded, or download a strip for a particular date or index, if possible.")
 from @code{lxml}.  It aims to provide a low memory, compatible implementation
 of @code{xmlfile}.")
     (license license:expat)))
+
+(define-public python-omero-py
+  (package
+    (name "python-omero-py")
+    (version "5.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ome/omero-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0n94v5dpmh873hjqd9k9ky85iab4xh37ibmi13rqpclv01ibvvxa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-m" "not broken" "-rf" "test" "-s"
+             ;; TestImport tries to download Java things; TestSessions
+             ;; and TestBuildQuery require networking.
+             "-k" "not TestImport and not TestSessions and not TestBuildQuery")
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 match)
+                  (srfi srfi-1)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-artifacts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((zip-file
+                     (match inputs
+                       (((labels . files) ...)
+                        (find (cut string-suffix? "omero-blitz-5.5.5-python.zip" <>)
+                              files)))))
+                (setenv "ZIP_FILE"
+                        (or zip-file (error "failed to find artifact file"))))))
+          ;; Some tests need this, such as TestTempFileManager
+          (add-after 'build 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp")))
+          ;; The sanity check mistakes omero_model_TypeAnnotationI.py for a
+          ;; module to load.
+          (delete 'sanity-check)
+          ;; The argument parser is picky and interprets the "-real" part as
+          ;; the first argument.
+          (add-after 'wrap 'rename-executable
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (rename-file ".omero-real" ".omero")
+                (substitute* "omero"
+                  (("bin/.omero-real") "bin/.omero"))))))))
+    (propagated-inputs
+     (list python-appdirs
+           python-future
+           python-numpy
+           python-pillow
+           python-pyyaml
+           python-requests
+           python-tables
+           python-zeroc-ice-3.6))
+    (native-inputs
+     (list python-mox3
+           python-pytest
+           python-pytest-rerunfailures
+           python-pytest-xdist
+           unzip
+           (origin
+             (method url-fetch)
+             (uri "https://artifacts.openmicroscopy.org/artifactory/\
+ome.releases/org/openmicroscopy/omero-blitz/5.5.5/omero-blitz-5.5.5-python.zip")
+             (sha256
+              (base32 "0wyja1zv19c1r3m31gsp555jzj3cg2v2pl00zlybpw3qd36yffwc")))))
+    (home-page "https://github.com/ome/omero-py")
+    (synopsis "Python bindings to the OMERO.blitz server")
+    (description "This package provides Python bindings to the OMERO.blitz
+server.")
+    (license license:gpl2)))
 
 (define-public python-openpyxl
   (package
@@ -31996,6 +32119,37 @@ functions
     (description "This package allows the programmatic creation of
 markdown-compliant strings.")
     (license license:expat)))
+
+(define-public python-zeroc-ice
+  (package
+    (name "python-zeroc-ice")
+    (version "3.7.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zeroc-ice" version))
+              (sha256
+               (base32
+                "0bqkrjxp2fbz34x3wxkxji39kxinypzg8q2994sibiay29mpipxb"))))
+    (build-system pyproject-build-system)
+    (inputs (list openssl))
+    (home-page "https://zeroc.com")
+    (synopsis "RPC framework")
+    (description
+     "Ice is a comprehensive RPC framework.  Ice helps you network your
+software by taking care of all interactions with low-level network programming
+interfaces.")
+    (license license:gpl2)))
+
+(define-public python-zeroc-ice-3.6
+  (package
+    (inherit python-zeroc-ice)
+    (version "3.6.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zeroc-ice" version))
+              (sha256
+               (base32
+                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

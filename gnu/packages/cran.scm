@@ -3246,6 +3246,28 @@ re-imagining of @code{httr} that uses a pipe-based interface and solves more
 of the problems that API wrapping packages face.")
     (license license:expat)))
 
+(define-public r-jsonify
+  (package
+    (name "r-jsonify")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "jsonify" version))
+              (sha256
+               (base32
+                "0bxgyj5b1hnijq5315g050giixy4k5mjz2zdx8yil0igb5ifji9p"))))
+    (properties `((upstream-name . "jsonify")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rapidjsonr r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=jsonify")
+    (synopsis
+     "Convert between R objects and JavaScript Object Notation (JSON)")
+    (description
+     "This package enables conversions between R objects and JavaScript Object
+Notation (JSON) using the rapidjsonr library.")
+    (license license:expat)))
+
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
@@ -5497,6 +5519,81 @@ computational and visual environment in R, it gives users more convenience and
 freedom to design figures for better understanding complex patterns behind
 multi-dimensional data.")
     (license license:gpl2+)))
+
+(define-public r-ctrdata
+  (package
+    (name "r-ctrdata")
+    (version "1.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ctrdata" version))
+              (sha256
+               (base32
+                "076v3bll8s6m61wcbwgrgrm34g0wa7gsc90mbwxwap1xfxyzjjsg"))))
+    (properties `((upstream-name . "ctrdata")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-clipr
+           r-curl
+           r-dplyr
+           r-httr
+           r-jsonlite
+           r-lubridate
+           r-nodbi
+           r-rvest
+           r-stringi
+           r-xml2))
+    (native-inputs (list r-r-rsp))
+    (home-page "https://cran.r-project.org/package=ctrdata")
+    (synopsis "Retrieve and analyze clinical trials in public registers")
+    (description
+     "This package provides a system for querying, retrieving and analyzing
+protocol- and results-related information on clinical trials from three public
+registers, the European Union Clinical Trials Register (EUCTR),
+ClinicalTrials.gov (CTGOV) and the ISRCTN.  Trial information is downloaded,
+converted and stored in a database.  Functions are included to identify
+deduplicated records, to easily find and extract variables (fields) of
+interest even from complex nesting as used by the registers, and to update
+previous queries.  The package can be used for meta-analysis and
+trend-analysis of the design and conduct as well as for results of clinical
+trials.")
+    (license license:expat)))
+
+(define-public r-ctrialsgov
+  (package
+    (name "r-ctrialsgov")
+    (version "0.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ctrialsgov" version))
+              (sha256
+               (base32
+                "0hdh1fdfaja8amf7fkvk1c6yif703132bvacq0j9pk5jr97czgpw"))))
+    (properties `((upstream-name . "ctrialsgov")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dbi
+           r-dplyr
+           r-ggplot2
+           r-htmlwidgets
+           r-lubridate
+           r-matrix
+           r-plotly
+           r-purrr
+           r-rlang
+           r-stringi
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=ctrialsgov")
+    (synopsis
+     "Query data from U.S. National Library of Medicine's Clinical Trials Database")
+    (description
+     "This package provides tools to query the U.S. National Library of
+Medicine's Clinical Trials database.  Functions are provided for a variety of
+techniques for searching the data using range queries, categorical filtering,
+and by searching for full-text keywords.  Minimal graphical tools are also
+provided for interactively exploring the constructed data.")
+    (license license:expat)))
 
 (define-public r-powerlaw
   (package
@@ -12216,6 +12313,34 @@ variables, setting and replacing missing values.  The data transformation
 functions also support labelled data, and all integrate seamlessly into a
 tidyverse workflow.")
     (license license:gpl3)))
+
+(define-public r-nodbi
+  (package
+    (name "r-nodbi")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "nodbi" version))
+              (sha256
+               (base32
+                "1hn0wy2ry9l3wwqrshmf82cxigkm16wycwprv458bcvb5k6ayy5m"))))
+    (properties `((upstream-name . "nodbi")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dbi
+           r-jqr
+           r-jsonify
+           r-jsonlite
+           r-stringi
+           r-uuid))
+    (home-page "https://docs.ropensci.org/nodbi/")
+    (synopsis "NoSQL database connector")
+    (description
+     "This is a package for simplified document database access and
+manipulation, providing a common API across supported NoSQL databases
+Elasticsearch, CouchDB, MongoDB as well as SQLite/JSON1, PostgreSQL, and
+DuckDB.")
+    (license license:expat)))
 
 (define-public r-nortest
   (package

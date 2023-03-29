@@ -484,7 +484,7 @@ display servers.  It supports many different languages and emoji.")
          "1nai806smz3zcb2l5iny4x7li0fak0rzmjg6vlyhdqm8z25b166p"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list docbook-xsl docbook-xml-4.1.2 libxslt w3m xmlto))
+     (list docbook-xsl docbook-xml-4.1.2 libxslt w3m-for-tests xmlto))
     (inputs
      (list bash-minimal                 ;for 'wrap-program'
            coreutils

@@ -1136,6 +1136,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/fp16-implicit-double.patch		\
   %D%/packages/patches/fp16-system-libraries.patch		\
   %D%/packages/patches/fpc-reproducibility.patch		\
+  %D%/packages/patches/fpm-newer-clamp-fix.patch		\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeimage-unbundle.patch		\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
@@ -1201,7 +1202,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/gdm-remove-hardcoded-xwayland-path.patch	\
   %D%/packages/patches/gdm-wayland-session-wrapper-from-env.patch	\
   %D%/packages/patches/gdm-pass-gdk-pixbuf-loader-env.patch	\
-  %D%/packages/patches/geeqie-clutter.patch			\
   %D%/packages/patches/gemmi-fix-pegtl-usage.patch		\
   %D%/packages/patches/gemmi-fix-sajson-types.patch		\
   %D%/packages/patches/genimage-mke2fs-test.patch		\
@@ -1299,6 +1299,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-fibers-epoll-instance-is-dead.patch \
   %D%/packages/patches/guile-fibers-fd-finalizer-leak.patch	\
   %D%/packages/patches/guile-fibers-wait-for-io-readiness.patch \
+  %D%/packages/patches/guile-fix-invalid-unicode-handling.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-git-adjust-for-libgit2-1.2.0.patch \
   %D%/packages/patches/guile-present-coding.patch		\
@@ -1820,6 +1821,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch 	\
   %D%/packages/patches/rottlog-direntry.patch 			\
+  %D%/packages/patches/ruby-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch	\
   %D%/packages/patches/ruby-anystyle-data-immutable-install.patch	\
   %D%/packages/patches/ruby-anystyle-fix-dictionary-populate.patch	\

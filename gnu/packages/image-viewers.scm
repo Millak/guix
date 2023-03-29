@@ -24,7 +24,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
 ;;;
@@ -67,6 +67,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages djvu)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
@@ -101,6 +102,7 @@
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vim)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
@@ -231,7 +233,7 @@ actions.")
 (define-public geeqie
   (package
     (name "geeqie")
-    (version "1.6")
+    (version "2.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -239,43 +241,31 @@ actions.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1i9yd8lddp6b9s9vjjjzbpqj4bvwidxc6kiba6vdrk7dda5akyky"))
-              (file-name (git-file-name name version))
-              (patches (search-patches "geeqie-clutter.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; Enable support for a "map" pane using GPS data.
-     `(#:configure-flags '("CFLAGS=-O2 -g -fcommon"
-                           "--enable-map"
-                           "--enable-gtk3")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'correctly-locate-aux-scripts
-                    ;; The git checkout has symlinks under the auxdir
-                    ;; directory pointing to /usr/share/automake-1.16/depcomp
-                    ;; and /usr/share/automake-1.16/install-sh, which causes
-                    ;; the configure phase to fail (see:
-                    ;; https://github.com/BestImageViewer/geeqie/issues/936).
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((automake (assoc-ref inputs "automake")))
-                        (delete-file "auxdir/depcomp")
-                        (symlink (car (find-files automake "depcomp"))
-                                 "auxdir/depcomp")
-                        (delete-file "auxdir/install-sh")
-                        (symlink (car (find-files automake "install-sh"))
-                                 "auxdir/install-sh")))))))
+                "199s0f3khnycr5vhk2ww3xnnasz7dzwxdl89pxjadq6rpgprfqyh"))
+              (file-name (git-file-name name version))))
+    (build-system meson-build-system)
     (inputs
-     (list clutter
-           libchamplain
-           lcms
+     (list djvulibre
            exiv2
+           ffmpegthumbnailer
+           gtk+
+           gspell
+           lcms
+           libarchive
+           libchamplain
+           libheif
+           libjpeg
            libpng
-           gtk+))
+           libraw
+           libtiff
+           poppler
+           libwebp))
     (native-inputs
-     (list autoconf
-           automake
-           `(,glib "bin") ; glib-gettextize
+     (list `(,glib "bin") ; glib-gettextize
            intltool
-           pkg-config))
+           pkg-config
+           xxd
+           yelp-tools))
     (home-page "https://www.geeqie.org/")
     (synopsis "Lightweight GTK+ based image viewer")
     (description

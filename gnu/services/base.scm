@@ -1554,14 +1554,17 @@ Service Switch}, for an example."
   (shepherd-service-type
    'syslog
    (lambda (config)
+     (define config-file
+       (syslog-configuration-config-file config))
+
      (shepherd-service
       (documentation "Run the syslog daemon (syslogd).")
       (provision '(syslogd))
       (requirement '(user-processes))
+      (actions (list (shepherd-configuration-action config-file)))
       (start #~(let ((spawn (make-forkexec-constructor
                              (list #$(syslog-configuration-syslogd config)
-                                   "--rcfile"
-                                   #$(syslog-configuration-config-file config))
+                                   "--rcfile" #$config-file)
                              #:pid-file "/var/run/syslog.pid")))
                  (lambda ()
                    ;; Set the umask such that file permissions are #o640.

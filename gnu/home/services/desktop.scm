@@ -2,6 +2,7 @@
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 conses <contact@conses.eu>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,7 +38,10 @@
             home-dbus-service-type
 
             home-unclutter-configuration
-            home-unclutter-service-type))
+            home-unclutter-service-type
+
+            home-xmodmap-configuration
+            home-xmodmap-service-type))
 
 
 ;;;

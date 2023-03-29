@@ -131,6 +131,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpd)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -744,7 +745,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.3.1")
+    (version "3.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -752,7 +753,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "1m0jl9d2ikwb1s2cpm3q7f73h84mai9y31k8bhsq8y47jbkc6slk"))))
+                "1mp1xl64sin3d4nkh19qmnic1c9qcwf9v7mkzji76pg3mzd823jg"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
@@ -1777,7 +1778,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.16")
+    (version "0.9.17")
     (source
      (origin
        (method git-fetch)
@@ -1786,7 +1787,7 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06vwsax8z6vvvav4c1d40nfiljc7h1cla57r43nv8dw86n539ic5"))))
+        (base32 "1709ck7931804mhirnki03cvx60c4dxg668fyz6jpzy8djg5xlxi"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -1798,6 +1799,7 @@ compository, supporting the following featuers:
                   libmpdclient
                   libnl
                   libxml2
+                  playerctl
                   pulseaudio
                   spdlog
                   wayland))

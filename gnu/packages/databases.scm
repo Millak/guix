@@ -32,7 +32,7 @@
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
@@ -2470,6 +2470,66 @@ receiving replies to and from a Redis server.  It comes with a synchronous
 API, asynchronous API and reply parsing API.  Only the binary-safe Redis
 protocol is supported.")
     (home-page "https://github.com/redis/hiredis")
+    (license license:bsd-3)))
+
+(define-public ruby-hiredis
+  (package
+    (name "ruby-hiredis")
+    (version "0.6.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/redis/hiredis-rb")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05y4g7frhym59m9x208zpvg2qvqvfjlgqmygxj8sqgl07n0ww1ks"))
+              (patches (search-patches
+                        "ruby-hiredis-use-system-hiredis.patch"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;require native extension
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-hiredis-include-directory
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "ext/hiredis_ext/extconf.rb"
+                ;; Adjust the hiredis include directory.
+                (("\\$CFLAGS << \" -I/usr/include/hiredis\"")
+                 (format #f "$CFLAGS << \" -I~a\""
+                         (search-input-directory inputs "include/hiredis"))))))
+          (add-after 'unpack 'disable-building-c-extension
+            (lambda _
+              ;; FIXME: The produced native extension appears to segfault when
+              ;; run; disable building it until a solution is found (see:
+              ;; https://github.com/redis/hiredis-rb/issues/93).
+              (substitute* "ext/hiredis_ext/extconf.rb"
+                (("build_hiredis = true")
+                 "build_hiredis = false"))))
+          ;; FIXME: Un-comment phase after the extension can be made to run
+          ;; without crashing (see above).
+          ;; (add-after 'build 'build-ext
+          ;;   (lambda _
+          ;;     (setenv "CC" #$(cc-for-target))
+          ;;     (invoke "rake" "compile")))
+          (add-before 'check 'start-redis
+            (lambda _
+              (invoke "redis-server" "--daemonize" "yes")))
+          (add-after 'install 'delete-mkmf.log
+            (lambda _
+              ;; This build log captures non-deterministic file names (see:
+              ;; https://github.com/rubygems/rubygems/issues/6259).
+              (for-each delete-file (find-files #$output "^mkmf\\.log$")))))))
+    (native-inputs (list redis ruby-rake-compiler))
+    (inputs (list hiredis))
+    (synopsis "Ruby wrapper for hiredis")
+    (description "@code{hiredis-rb} is a Ruby extension that wraps
+@code{hiredis}, a minimalist C client for Redis.  Both the synchronous
+connection API and a separate protocol reader are supported.  It is primarily
+intended to speed up parsing multi bulk replies.")
+    (home-page "https://github.com/redis/hiredis-rb")
     (license license:bsd-3)))
 
 (define-public ruby-redis

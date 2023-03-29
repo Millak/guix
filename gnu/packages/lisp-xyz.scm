@@ -192,6 +192,54 @@ portable between implementations.")
 (define-public ecl-alexandria
   (sbcl-package->ecl-package sbcl-alexandria))
 
+(define-public sbcl-reader
+  (package
+   (name "sbcl-reader")
+   (version "0.10.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/digikar99/reader")
+           (commit (string-append "v" version))))
+     (sha256
+      (base32 "0pbv6w0d8d4qmfkdsz2rk21bp1las9r7pyvpmd95qjz7kpxrirl7"))
+     (file-name (git-file-name "cl-reader" version))))
+   (build-system asdf-build-system/sbcl)
+   (arguments
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "reader.lisp"
+               (("echo")
+                (search-input-file inputs "/bin/echo"))))))))
+   (inputs
+     (list coreutils ; Needed for call to echo.
+           sbcl-alexandria
+           sbcl-fiveam ; Tests are written directly in the source files.
+           sbcl-hash-set
+           sbcl-iterate
+           sbcl-split-sequence
+           sbcl-trivial-types))
+   (synopsis "Reader macros for common objects and data structures")
+   (description "This package provides a utility library intended
+at providing configurable reader macros for common tasks such as
+accessors, hash-tables, sets, uiop:run-program, arrays and a few others.")
+   (home-page "https://github.com/digikar99/reader/")
+   (license license:expat)))
+
+(define-public cl-reader
+  (sbcl-package->cl-source-package sbcl-reader))
+
+(define-public ecl-reader
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-reader))
+    (arguments
+     ;; TODO: Tests fail on call to coreutils echo for ecl.
+     `(#:tests? #f))))
+
 (define-public sbcl-stdutils
   (let ((commit "4a4e5a4036b815318282da5dee2a22825369137b")
         (revision "0"))
@@ -258,6 +306,37 @@ text.")
 
 (define-public ecl-langutils
   (sbcl-package->ecl-package sbcl-langutils))
+
+(define-public sbcl-hash-set
+  (let ((commit "6feb20de457f14e24a83815be1097aa02cca5986")
+        (revision "0"))
+    (package
+      (name "sbcl-hash-set")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/samebchase/hash-set")
+               (commit commit)))
+         (file-name (git-file-name "cl-hash-set" version))
+         (sha256
+          (base32 "0a966y9yfarhmki4wwzg371ziaygnp13yc6r13w9zz327fkhz8na"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (inputs (list sbcl-alexandria))
+      (home-page "https://github.com/samebchase/hash-set/")
+      (synopsis "Implementation of a hash-set")
+      (description "This package provides an implementation of the
+hash-set data structure.  It has constant time lookup, insertion and
+deletion.")
+      (license license:unlicense))))
+
+(define-public cl-hash-set
+  (sbcl-package->cl-source-package sbcl-hash-set))
+
+(define-public ecl-hash-set
+  (sbcl-package->ecl-package sbcl-hash-set))
 
 (define-public sbcl-duologue
   (let ((commit "ea1ada244a81da65f85b548823c9a6d7c9c145e1")
@@ -5739,6 +5818,40 @@ the format used by the popular compression tool bzip2.")
 (define-public ecl-chipz
   (sbcl-package->ecl-package sbcl-chipz))
 
+(define-public sbcl-cl-tls
+  (let ((commit "2ab4fc3ae7e79e451126a9bb6bc38ca2cd2cb4ba")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-tls")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shrdlu68/cl-tls")
+               (commit commit)))
+         (file-name (git-file-name "cl-tls" version))
+         (sha256
+          (base32 "1j6gwv21ibkk6xd1xxm54wgwp09dzqg60b8z72hivpnq8gwm0ba7"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-base64
+             sbcl-fast-io
+             sbcl-ironclad))
+      (home-page "https://github.com/shrdlu68/cl-tls")
+      (synopsis "Implementation of Transport Layer Security Protocols")
+      (description "This package provides prototype Common Lisp
+implementations of TLS, RFC5246, ASN.1, x{501,509}, and PKCS{1,3,5,8}.")
+      (license license:bsd-3))))
+
+(define-public cl-tls
+  (sbcl-package->cl-source-package sbcl-cl-tls))
+
+(define-public ecl-cl-tls
+  (sbcl-package->ecl-package sbcl-cl-tls))
+
 (define-public sbcl-dns-client
   (let ((commit "9f252e9c2bb61c57a6cd367e21ad366b0d3e87e0")
         (revision "0"))
@@ -5773,6 +5886,49 @@ DNS records.")
 
 (define-public cl-dns-client
   (sbcl-package->cl-source-package sbcl-dns-client))
+
+(define-public sbcl-lisp-pay
+  (let ((commit "c4de776f0a284709931ff3674160ced3b41bd000")
+        (revision "0"))
+    (package
+      (name "sbcl-lisp-pay")
+      (version (git-version "0.0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/K1D77A/lisp-pay")
+               (commit commit)))
+         (file-name (git-file-name "cl-lisp-pay" version))
+         (sha256
+          (base32 "09r6qy4fipriqa0d6g9qm6dq992lr58vh24g5j0adm19i5fnjavh"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cl-base64
+             sbcl-cl-str
+             sbcl-cl-tls
+             sbcl-closer-mop
+             sbcl-dexador
+             sbcl-hu.dwim.defclass-star
+             sbcl-hunchentoot
+             sbcl-ironclad
+             sbcl-jonathan
+             sbcl-lack
+             sbcl-ningle
+             sbcl-shasht))
+      (home-page "https://github.com/K1D77A/lisp-pay/")
+      (synopsis "Wrappers over multiple Payment Processor APIs")
+      (description "This library provides payment API wrappers over
+BTCPay, Paypal, and Stripe.")
+      (license license:expat))))
+
+(define-public cl-lisp-pay
+  (sbcl-package->cl-source-package sbcl-lisp-pay))
+
+(define-public ecl-lisp-pay
+  (sbcl-package->ecl-package sbcl-lisp-pay))
 
 (define-public sbcl-drakma
   (package
@@ -5863,6 +6019,46 @@ connections (keep-alive), and SSL.")
     (arguments
      ;; Tests fail on ECL with 'Socket error in "socket": EINVAL'.
      '(#:tests? #f))))
+
+(define-public sbcl-lunamech-matrix-api
+  (let ((commit "aa54a820149584c237b03d500ad83397fe25dc92")
+        (revision "0"))
+    (package
+      (name "sbcl-lunamech-matrix-api")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/K1D77A/lunamech-matrix-api")
+               (commit commit)))
+         (file-name (git-file-name "cl-lunamech-matrix-api" version))
+         (sha256
+          (base32 "0a664qq4m5gk4iv5ck63gmsl3218jhjsalawklj56wn2pw0cf8a0"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-json
+             sbcl-cl-str
+             sbcl-closer-mop
+             sbcl-dexador
+             sbcl-do-urlencode
+             sbcl-drakma
+             sbcl-jonathan
+             sbcl-plump
+             sbcl-quri
+             sbcl-reader
+             sbcl-shasht))
+      (home-page "https://github.com/K1D77A/lunamech-matrix-api/")
+      (synopsis "Implementation of the Matrix API")
+      (description "This package provides an implementation of the Matrix
+API for Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-lunamech-matrix-api
+  (sbcl-package->cl-source-package sbcl-lunamech-matrix-api))
+
+(define-public ecl-lunamech-matrix-api
+  (sbcl-package->ecl-package sbcl-lunamech-matrix-api))
 
 (define-public sbcl-trivial-types
   (package
@@ -23762,6 +23958,37 @@ Vernacular builds on Overlord and is inspired by Racket.")
 
 (define-public cl-vernacular
   (sbcl-package->cl-source-package sbcl-vernacular))
+
+(define-public sbcl-osc
+  (let ((commit "9f0a9d3da310a3a0f654f48af0203816f3f371ad")
+        (revision "0"))
+    (package
+     (name "sbcl-osc")
+     (version (git-version "0.7" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zzkt/osc")
+               (commit commit)))
+         (file-name (git-file-name "cl-osc" version))
+         (sha256
+          (base32 "0gh29zcl9pmy3xlmwzpf9www2z06ah6b4jk06sj2cvxbc15nblqa"))))
+     (build-system asdf-build-system/sbcl)
+     (inputs (list sbcl-usocket))
+     (synopsis "Implementation of the Open Sound Control protocol")
+     (description "This package provides a common lisp implementation
+of the Open Sound Control Protocol aka OSC.  The code should be close
+to the ansi standard, and does not rely on any external code/ffi/etc+
+to do the basic encoding and decoding of packets.")
+     (home-page "https://github.com/zzkt/osc/")
+     (license (list license:gpl3 license:llgpl)))))
+
+(define-public cl-osc
+  (sbcl-package->cl-source-package sbcl-osc))
+
+(define-public ecl-osc
+  (sbcl-package->ecl-package sbcl-osc))
 
 (define-public sbcl-cmn
   (package

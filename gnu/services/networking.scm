@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
@@ -536,6 +536,7 @@ restrict source notrap nomodify noquery\n"))
              (provision '(ntpd))
              (documentation "Run the Network Time Protocol (NTP) daemon.")
              (requirement '(user-processes networking))
+             (actions (list (shepherd-configuration-action ntpd.conf)))
              (start #~(make-forkexec-constructor
                        (list (string-append #$ntp "/bin/ntpd") "-n"
                              "-c" #$ntpd.conf "-u" "ntpd"
@@ -1235,6 +1236,7 @@ project's documentation} for more information."
                             ;; TODO: iwd? is deprecated and should be passed
                             ;; with shepherd-requirement, remove later.
                             ,@(if iwd? '(iwd) '())))
+             (actions (list (shepherd-configuration-action conf)))
              (start
               #~(lambda _
                   (let ((pid
