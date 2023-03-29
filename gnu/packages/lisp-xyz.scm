@@ -24124,6 +24124,67 @@ Vernacular builds on Overlord and is inspired by Racket.")
 (define-public cl-vernacular
   (sbcl-package->cl-source-package sbcl-vernacular))
 
+(define-public sbcl-cl-collider
+  (let ((commit "a46908896982868955b29bfb3a5337a0af489b0b")
+        (revision "0"))
+    (package
+     (name "sbcl-cl-collider")
+     (version (git-version "2018.7.15" revision commit))
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/byulparan/cl-collider")
+               (commit commit)))
+         (file-name (git-file-name "cl-collider" version))
+         (sha256
+          (base32 "10wvjbwvbgr0b57hpfxycg90yjmb29pirygr1sxrdaqxll328sz1"))))
+     (build-system asdf-build-system/sbcl)
+     (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-executables-and-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "server.lisp"
+                       (("/usr/local/lib/SuperCollider/plugins")
+                        (search-input-directory
+                         inputs "/lib/SuperCollider/plugins"))
+                       (("/usr/local/share/SuperCollider/Extensions")
+                        (search-input-directory
+                         inputs "/share/SuperCollider/Extensions"))
+                       (("which scsynth")
+                        (string-append
+                         "which "
+                         (search-input-file inputs "/bin/scsynth")))
+                       (("jack_connect")
+                        (search-input-file inputs "/bin/jack_connect"))))))))
+     (inputs
+       (list jack-1
+             supercollider
+             sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-cl-ppcre
+             sbcl-flexi-streams
+             sbcl-ieee-floats ; sc-osc dependencies.
+             sbcl-named-readtables
+             sbcl-osc
+             sbcl-pileup
+             sbcl-simple-inferiors ; For ecl.
+             sbcl-split-sequence
+             sbcl-usocket))
+     (synopsis "SuperCollider client for CommonLisp")
+     (description "This package provides a SuperCollider client for
+Common Lisp.")
+     (home-page "https://github.com/byulparan/cl-collider/")
+     (license license:public-domain))))
+
+(define-public cl-collider
+  (sbcl-package->cl-source-package sbcl-cl-collider))
+
+(define-public ecl-cl-collider
+  (sbcl-package->ecl-package sbcl-cl-collider))
+
 (define-public sbcl-osc
   (let ((commit "9f0a9d3da310a3a0f654f48af0203816f3f371ad")
         (revision "0"))
