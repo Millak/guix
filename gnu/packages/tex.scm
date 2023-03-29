@@ -24,6 +24,7 @@
 ;;; Copyright © 2022 Fabio Natali <me@fabionatali.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2023 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11353,6 +11354,24 @@ can be used to process indexes for documents marked up using (La)TeX, Nroff
 family and SGML-based languages.  Xindy is highly configurable, both in markup
 terms and in terms of the collating order of the text being processed.")
     (license license:gpl2+)))
+
+(define-public texlive-nth
+  (package
+    (inherit (simple-texlive-package
+              "texlive-nth"
+              (list "tex/generic/nth/")
+              (base32
+               "0716sd99xjdkplm7jdmg4lx8lpfnnx6mxjp1l1sp2bfqcg73p4hm")
+              #:trivial? #t))
+    (home-page "https://ctan.org/macros/generic/misc/nth.sty")
+    (synopsis "Generate English ordinal numbers")
+    (description
+     "The command @code{\\nth{<number>}} generates English ordinal numbers of
+the form 1st, 2nd, 3rd, 4th, etc.  LaTeX package options may specify that the
+ordinal mark be superscripted, and that negative numbers may be treated; Plain
+TeX users have no access to package options, so need to redefine macros for
+these changes.")
+    (license license:public-domain)))
 
 (define-public texlive-fmtcount
   (package
