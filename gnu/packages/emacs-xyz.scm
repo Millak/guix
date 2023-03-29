@@ -418,6 +418,45 @@ favourite Scheme implementation, you also need the corresponding geiser package,
 e.g. emacs-geiser-guile for Guile.")
     (license license:bsd-3)))
 
+(define-public emacs-gptel
+  (package
+    (name "emacs-gptel")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/karthink/gptel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fg3dms7d05zpvkf8kxxh9726qvdfpmfsrgpc9fzm557ai13yhi5"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-appropriate-curl
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "gptel-curl.el"
+                (("\"curl\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/curl")
+                                "\"")))
+              (emacs-substitute-variables "gptel.el"
+                ("gptel-use-curl" 't)))))))
+    (inputs (list curl))
+    (propagated-inputs (list emacs-map))
+    (home-page "https://github.com/karthink/gptel")
+    (synopsis "GPTel is a simple ChatGPT client for Emacs")
+    (description
+     "GPTel is a simple ChatGPT asynchronous client for Emacs with no external
+dependencies.  It can interact with ChatGPT from any Emacs buffer with ChatGPT
+responses encoded in Markdown or Org markup.  It supports conversations, not
+just one-off queries and multiple independent sessions.  It requires an OpenAI
+API key.")
+    (license license:gpl3+)))
+
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
