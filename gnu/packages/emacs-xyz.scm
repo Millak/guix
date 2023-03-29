@@ -5376,6 +5376,17 @@ environments.")
        (sha256
         (base32 "18yclk2zzqcahzhz2kq8g9gy1xnnxiy6rxs2lwhskj475kvwy2f9"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+
+      ;; Only one test out of the four passes
+      #:test-command #~(list "emacs" "-Q" "--batch" "-L" "."
+                             ;; "-l" "lemon--test.el"
+                             ;; "-l" "lemon-monitor--test.el"
+                             ;; "-l" "lemon-sparkline--test.el"
+                             "-l" "lemon-time--test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (native-inputs
      (list emacs-blight emacs-emms))
     (propagated-inputs
