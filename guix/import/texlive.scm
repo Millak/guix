@@ -246,11 +246,15 @@ of those files are returned that are unexpectedly installed."
 (define (tlpdb->package name version package-database)
   (and-let* ((data (assoc-ref package-database name))
              (dirs (files->directories
-                    (map (lambda (dir)
-                           (string-drop dir (string-length "texmf-dist/")))
-                         (append (or (assoc-ref data 'docfiles) (list))
-                                 (or (assoc-ref data 'runfiles) (list))
-                                 (or (assoc-ref data 'srcfiles) (list))))))
+                    (filter-map (lambda (dir)
+                                  ;; Ignore any file not starting with the
+                                  ;; expected prefix.  Nothing good can come
+                                  ;; from this.
+                                  (and (string-prefix? "texmf-dist/" dir)
+                                       (string-drop dir (string-length "texmf-dist/"))))
+                                (append (or (assoc-ref data 'docfiles) (list))
+                                        (or (assoc-ref data 'runfiles) (list))
+                                        (or (assoc-ref data 'srcfiles) (list))))))
              (name (guix-name name))
              ;; TODO: we're ignoring the VERSION argument because that
              ;; information is distributed across %texlive-tag and
