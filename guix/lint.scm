@@ -1224,14 +1224,7 @@ password, provided REF's URI is HTTP or HTTPS."
                 '())))
          ((git-reference? (origin-uri origin))
           (warnings-for-uris
-           ;; for atftp, lint produced a warning:
-           ;;   gnu/packages/networking.scm:2924:5: atftp@0.8.0:
-           ;;     URI https://git.code.sf.net/p/atftp/code not reachable:
-           ;;     404 ("Not Found")
-           ;; fix from here:  https://issues.guix.gnu.org/62156#3
-           (list (string->uri (string-append
-                               (git-reference-url (origin-uri origin))
-                               "/info/refs")))))
+           (list (string->uri (git-reference-url (origin-uri origin))))))
          ((or (svn-reference? (origin-uri origin))
               (svn-multi-reference? (origin-uri origin)))
           (let ((uri (svn-reference-uri-with-userinfo (origin-uri origin))))
