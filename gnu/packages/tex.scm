@@ -12392,6 +12392,50 @@ interest.  Since most such counters are simply incremented when they are
 changed, the recorded value will usually be the maximum value.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-xetex
+  (package
+    (inherit (simple-texlive-package
+              "texlive-xetex"
+              (list "/doc/man/man1/xetex.1"
+                    "/doc/man/man1/xelatex.1"
+                    "/doc/xetex/base/"
+                    "/fonts/misc/xetex/fontmapping/base/"
+                    "/tex/xelatex/xetexconfig/")
+              (base32
+               "1gmgagvsv2qknrjzjk840ca3wging8wfc20rgq7bnhphm9n87m6q")
+              #:trivial? #t))
+    (propagated-inputs
+     (list texlive-generic-atbegshi
+           texlive-latex-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-dvipdfmx
+           texlive-etex
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyphen-base
+           texlive-latex-base
+           texlive-fonts-latex
+           texlive-latex-l3backend
+           texlive-latex-l3kernel
+           texlive-latex-l3packages
+           texlive-lm
+           texlive-tex-ini-files
+           texlive-tex-plain
+           texlive-unicode-data))
+    (home-page "https://www.tug.org/texlive/")
+    (synopsis "Extended variant of TeX for use with Unicode sources")
+    (description
+     "XeTeX is a TeX typesetting engine using Unicode and supporting modern font
+technologies such as OpenType, TrueType or Apple Advanced Typography (AAT),
+including OpenType mathematics fonts.  XeTeX supports many extensions that
+reflect its origins in linguistic research; it also supports micro-typography
+(as available in pdfTeX).  XeTeX was developed by the SIL (the first version
+was specifically developed for those studying linguistics, and using Macintosh
+computers).  XeTeX's immediate output is an extended variant of DVI format,
+which is ordinarily processed by a tightly bound processor (called
+@code{xdvipdfmx}), that produces PDF.")
+    (license license:x11)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
