@@ -1763,19 +1763,18 @@ subprocess and see the output as well as any file modifications.")
 (define-public python-testtools-bootstrap
   (package
     (name "python-testtools-bootstrap")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "testtools" version))
        (sha256
         (base32
-         "0gxjbjk93jjqi491k4s9rh3ia37v21yifd35pvizv7sgv4rk9hap"))))
+         "02mkphygx8897617m8qnmj0alksyvvfcjmazzfxyrlzjq0a5xdi8"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))
     (propagated-inputs
-     `(("python-extras" ,python-extras)
-       ("python-fixtures" ,python-fixtures-bootstrap)
+     `(("python-fixtures" ,python-fixtures-bootstrap)
        ("python-pbr" ,python-pbr-minimal)))
     (home-page "https://github.com/testing-cabal/testtools")
     (synopsis
