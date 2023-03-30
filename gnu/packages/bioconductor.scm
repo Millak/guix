@@ -1565,6 +1565,28 @@ cluster labels and labels identifying spiked in cells.  Column metadata
 includes channel names, protein marker names, and protein marker classes.")
     (license license:expat)))
 
+(define-public r-illumina450probevariants-db
+  (package
+    (name "r-illumina450probevariants-db")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Illumina450ProbeVariants.db"
+                                     version 'experiment))
+              (sha256
+               (base32
+                "1c1iqxi17s1a1sa1vab2ma7pjq1dxal7ibsiahj66ys0pa4sm42p"))))
+    (properties `((upstream-name . "Illumina450ProbeVariants.db")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/Illumina450ProbeVariants.db")
+    (synopsis
+     "Variant data from 1000 Genomes Project for Illumina HumanMethylation450 Bead Chip probes")
+    (description
+     "This package includes details on variants for each probe on the 450k
+bead chip for each of the four populations (Asian, American, African and
+European).")
+    (license license:gpl3)))
+
 (define-public r-italicsdata
   (package
     (name "r-italicsdata")
