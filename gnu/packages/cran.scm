@@ -30961,14 +30961,14 @@ vignette for more information and examples.")
 (define-public r-distributional
   (package
     (name "r-distributional")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "distributional" version))
        (sha256
         (base32
-         "0pr34yq6igb7ciqss2ldwa7gc55xvla040x8rkd8m2hcrz5mczkj"))))
+         "1y08s301mxz7c54lxa1j0zzbsrgphxv5hsyam3jswcw274rxd0y8"))))
     (properties
      `((upstream-name . "distributional")))
     (build-system r-build-system)
