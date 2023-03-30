@@ -5900,6 +5900,68 @@ genome data packages and support for efficient SNP representation.")
 analysis.")
     (license license:artistic2.0)))
 
+(define-public r-champ
+  (package
+    (name "r-champ")
+    (version "2.28.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ChAMP" version))
+              (sha256
+               (base32
+                "10ss0a3miqrx92vy1r1h5rv3mnjn4iyl32q86s0x59d3fvqp2cx1"))))
+    (properties `((upstream-name . "ChAMP")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bumphunter
+           r-champdata
+           r-combinat
+           r-dendextend
+           r-dmrcate
+           r-dnacopy
+           r-doparallel
+           r-dt
+           r-genomicranges
+           r-ggplot2
+           r-globaltest
+           r-goseq
+           r-hmisc
+           r-illumina450probevariants-db
+           r-illuminahumanmethylation450kmanifest
+           r-illuminahumanmethylationepicanno-ilm10b4-hg19
+           r-illuminahumanmethylationepicmanifest
+           r-illuminaio
+           r-impute
+           r-isva
+           r-kpmt
+           r-limma
+           r-marray
+           r-matrixstats
+           r-minfi
+           r-missmethyl
+           r-plotly
+           r-plyr
+           r-preprocesscore
+           r-prettydoc
+           r-quadprog
+           r-qvalue
+           r-rcolorbrewer
+           r-rmarkdown
+           r-rpmm
+           r-shiny
+           r-shinythemes
+           r-sva
+           r-watermelon))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ChAMP")
+    (synopsis
+     "Chip analysis methylation pipeline for Illumina HumanMethylation450 and EPIC")
+    (description
+     "The package includes quality control metrics, a selection of
+normalization methods and novel methods to identify differentially methylated
+regions and to highlight copy number alterations.")
+    (license license:gpl3)))
+
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
