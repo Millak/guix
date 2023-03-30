@@ -8003,13 +8003,13 @@ and density estimation")
 (define-public r-smurf
   (package
     (name "r-smurf")
-    (version "1.1.4")
+    (version "1.1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "smurf" version))
               (sha256
                (base32
-                "09a56ayqnnal1h5xxnh4pcn0zyi1kg2fj40y872n4jcnbl8xcvbi"))))
+                "1gpzzj67x0i70vw1x4rv56mhk2b74ynvdsy93rzmdk6b2h3dvv46"))))
     (properties `((upstream-name . "smurf")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8020,8 +8020,7 @@ and density estimation")
            r-mgcv
            r-rcolorbrewer
            r-rcpp
-           r-rcpparmadillo
-           r-speedglm))
+           r-rcpparmadillo))
     (native-inputs (list r-knitr))
     (home-page "https://gitlab.com/TReynkens/smurf")
     (synopsis "Sparse multi-type regularized feature modeling")
