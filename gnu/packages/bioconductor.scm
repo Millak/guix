@@ -1521,6 +1521,40 @@ methylation microarrays, and an object depicting which CpGs on the array are
 associated with cell type.")
     (license license:artistic2.0)))
 
+(define-public r-flowsorted-blood-epic
+  (package
+    (name "r-flowsorted-blood-epic")
+    (version "2.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "FlowSorted.Blood.EPIC" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1vybj69jxnirqg6ik03q3pb1vv23z8mir7wpi2ys7iljf5ixzgl1"))))
+    (properties `((upstream-name . "FlowSorted.Blood.EPIC")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationhub
+           r-experimenthub
+           r-genefilter
+           r-minfi
+           r-nlme
+           r-quadprog
+           r-s4vectors
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/immunomethylomics/FlowSorted.Blood.EPIC")
+    (synopsis
+     "Illumina EPIC data on immunomagnetic sorted peripheral adult blood cells")
+    (description
+     "This package provides raw data objects to be used for blood cell
+proportion estimation in minfi and similar packages.  The
+@code{FlowSorted.Blood.EPIC} object is based in samples assayed by Brock
+Christensen and colleagues; for details see Salas et al. 2018.
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110554.")
+    (license license:gpl3)))
+
 (define-public r-genelendatabase
   (package
     (name "r-genelendatabase")
