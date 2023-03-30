@@ -7356,16 +7356,16 @@ Neyman, 1936; cf.  Spiller et al., 2012), etc.")
 (define-public r-mumin
   (package
     (name "r-mumin")
-    (version "1.47.1")
+    (version "1.47.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "MuMIn" version))
               (sha256
                (base32
-                "1xhsc9hmx2b3zqyvpjs64rs90ccrfcsglrq2mhh85mgplsnva8qj"))))
+                "0xqasb79lmdhff25zalzrpjwv6qs9qnxr54ypnqjjgshi96mbwvg"))))
     (properties `((upstream-name . "MuMIn")))
     (build-system r-build-system)
-    (propagated-inputs (list r-matrix r-nlme))
+    (propagated-inputs (list r-insight r-matrix r-nlme))
     (home-page "https://cran.r-project.org/package=MuMIn")
     (synopsis "Multi-Model Inference")
     (description
