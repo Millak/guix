@@ -398,10 +398,8 @@ libskba (working with X.509 certificates and CMS data).")
     (native-inputs
      (list gnupg))
     (propagated-inputs
-     ;; Needs to be propagated because gpgme.h includes gpg-error.h.
-     (list libgpg-error))
-    (inputs
-     (list libassuan))
+     ;; As required by the pkg-config's Requires.private.
+     (list libgpg-error libassuan))
     (home-page "https://www.gnupg.org/related_software/gpgme/")
     (synopsis "Library providing simplified access to GnuPG functionality")
     (description
