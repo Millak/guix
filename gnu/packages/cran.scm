@@ -592,6 +592,35 @@ edition of the book \"Data Mining with R, learning with case studies\"
 by Luis Torgo, published by CRC Press.")
     (license license:gpl2+)))
 
+(define-public r-embedsom
+  (package
+    (name "r-embedsom")
+    (version "2.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "EmbedSOM" version))
+              (sha256
+               (base32
+                "0k4hja5y7qd0n3gfaxzxrz4wpxc1w9d4d4xbb63rq2nfk3lj7a42"))))
+    (properties `((upstream-name . "EmbedSOM")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-fnn
+           r-ggplot2
+           r-igraph
+           r-matrix
+           r-rtsne
+           r-umap
+           r-uwot))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/exaexa/EmbedSOM")
+    (synopsis "Fast embedding guided by self-organizing map")
+    (description
+     "This package provides a smooth mapping of multidimensional points into
+low-dimensional space defined by a self-organizing map.  It is designed to
+work with FlowSOM and flow-cytometry use-cases.")
+    (license license:gpl3+)))
+
 (define-public r-emdist
   (package
     (name "r-emdist")
