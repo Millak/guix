@@ -1587,6 +1587,29 @@ gene expression indicate a role for enhancer priming in immune response\", publi
 in Nature Genetics, January 2018.")
     (license license:gpl2+)))
 
+(define-public r-minfidata
+  (package
+    (name "r-minfidata")
+    (version "0.44.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "minfiData" version 'experiment))
+              (sha256
+               (base32
+                "15s3kc629m2c78vkidmp6kcc28sn1wzjzrxazmd8z7x8cdad3q4g"))))
+    (properties `((upstream-name . "minfiData")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-illuminahumanmethylation450kanno-ilmn12-hg19
+           r-illuminahumanmethylation450kmanifest
+           r-minfi))
+    (home-page "https://bioconductor.org/packages/minfiData")
+    (synopsis "Example data for the Illumina Methylation 450k array")
+    (description
+     "This package provides data from 6 samples across 2 groups from 450k
+methylation arrays.")
+    (license license:artistic2.0)))
+
 (define-public r-msdata
   (package
     (name "r-msdata")
