@@ -15650,11 +15650,10 @@ extensibility.")
     (license license:gpl3+)))
 
 (define-public emacs-autocrypt
-  (let ((commit "5b55f8d37545e9c441788627c17e350d7edf4055")
-        (revision "0"))
+  (let ((commit "a90aa6b644fe8cf72af9e1615a7c50b36b739e7c")) ;version bump
     (package
       (name "emacs-autocrypt")
-      (version (git-version "0.4.0" revision commit))
+      (version "0.4.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -15663,18 +15662,14 @@ extensibility.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0b06xnjkgwjpxl96mdi674pmvdaiwncifi1a30wxhl1dwr7kr084"))))
+                  "124qf96g2xbz3wz0ihix4l1g4prpa023hx0klf72clx92dhjjgjj"))))
       (build-system emacs-build-system)
       (home-page "https://git.sr.ht/~pkal/autocrypt")
       (synopsis "Autocrypt implementation for Emacs")
-      (description "@code{emacs-autocrypt} is an implementation of
-Autocrypt (@url{https://autocrypt.org/}) for various Emacs MUAs.  Autocrypt is
+      (description "Autocrypt package is an implementation of
+Autocrypt (@url{https://autocrypt.org/}) for various Emacs MUAs,
 a cryptographic protocol for email clients aiming to simplify key exchange and
-encryption.
-
-Run @code{M-x autocrypt-create-account} to initialize an autocrypt key, and
-add @code{autocrypt-mode} to your MUA's hooks (@code{gnus-mode-hook},
-@code{message-mode-hook}, ...) to activate its usage.")
+encryption.")
       (license license:cc0))))
 
 (define-public emacs-nginx-mode
