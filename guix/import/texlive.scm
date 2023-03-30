@@ -297,9 +297,10 @@ of those files are returned that are unexpectedly installed."
                            (let ((name (guix-name tex-name)))
                              (string->symbol name)))
                          inputs))))))
-        ,@(or (and=> (assoc-ref data 'catalogue-ctan)
-                     (lambda (url)
-                       `((home-page ,(string-append "https://ctan.org" url)))))
+        ,@(or (and=> (assoc-ref data 'name)
+                     (lambda (name)
+                       `((home-page ,(string-append "https://ctan.org/pkg/"
+                                                    name)))))
               '((home-page "https://www.tug.org/texlive/")))
         (synopsis ,(assoc-ref data 'shortdesc))
         (description ,(and=> (assoc-ref data 'longdesc) beautify-description))
