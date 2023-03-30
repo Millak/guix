@@ -73,9 +73,7 @@ TARGET."
                  "connman" "network-manager" "network-manager-applet"
                  "openssh" "ntp" "tor"
                  "linux-libre" "grub-hybrid"
-                 ;; FIXME: Add IceCat when Rust is available on i686.
-                 ;;"icecat"
-                 ))
+                 "icecat"))
           %default-xorg-modules))
 
 (define %packages-to-cross-build
