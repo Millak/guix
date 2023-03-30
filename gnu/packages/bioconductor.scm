@@ -4727,6 +4727,32 @@ makes available functions for visualization and exploration of the data and
 results.")
     (license license:gpl3+)))
 
+(define-public r-dss
+  (package
+    (name "r-dss")
+    (version "2.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DSS" version))
+              (sha256
+               (base32
+                "1qm0pq6495fn2zrbddaadb1w01ry76rg8mmbmxf3zws9pww48jgf"))))
+    (properties `((upstream-name . "DSS")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-biocparallel r-bsseq))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/DSS")
+    (synopsis "Dispersion shrinkage for sequencing data")
+    (description
+     "DSS is an R library performing differential analysis for count-based
+sequencing data.  It detects @dfn{differentially expressed genes} (DEGs) from
+RNA-seq, and differentially methylated loci or regions (DML/DMRs) from
+@dfn{bisulfite sequencing} (BS-seq).  The core of DSS is a dispersion
+shrinkage method for estimating the dispersion parameter from Gamma-Poisson or
+Beta-Binomial distributions.")
+    ;; Any version of the GPL
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-bluster
   (package
    (name "r-bluster")
