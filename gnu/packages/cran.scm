@@ -972,14 +972,14 @@ pronounceable identifiers.")
 (define-public r-googlesheets4
   (package
     (name "r-googlesheets4")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "googlesheets4" version))
        (sha256
         (base32
-         "14b5lzn6vjn72mw7vf3lzm2ppbjf0wr0n6sw0v5r6h4lk37cnki8"))))
+         "1jcfih6f62phj7fdvknkkj46s9cvsnhshvkglg6xif7mpr1mbqah"))))
     (properties `((upstream-name . "googlesheets4")))
     (build-system r-build-system)
     (propagated-inputs
@@ -991,12 +991,14 @@ pronounceable identifiers.")
            r-googledrive
            r-httr
            r-ids
+           r-lifecycle
            r-magrittr
            r-purrr
            r-rematch2
            r-rlang
            r-tibble
-           r-vctrs))
+           r-vctrs
+           r-withr))
     (home-page "https://github.com/tidyverse/googlesheets4")
     (synopsis "Access Google Sheets using the Sheets API V4")
     (description
