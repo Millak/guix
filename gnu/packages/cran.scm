@@ -7149,6 +7149,28 @@ is being phased out.  A modern MySQL client based on Rcpp is available from
 the RMariaDB package.")
     (license license:gpl2)))
 
+(define-public r-rpmm
+  (package
+    (name "r-rpmm")
+    (version "1.25")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "RPMM" version))
+              (sha256
+               (base32
+                "1j48dh434wfhfzka0l21w6f73qlwfm70r9gdddhn504i2d5m4jph"))))
+    (properties `((upstream-name . "RPMM")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cluster))
+    (home-page "https://cran.r-project.org/package=RPMM")
+    (synopsis "Recursively partitioned mixture model")
+    (description
+     "This package provides a recursively partitioned mixture model for Beta
+and Gaussian mixtures.  This is a model-based clustering algorithm that
+returns a hierarchy of classes, similar to hierarchical clustering, but also
+similar to finite mixture models.")
+    (license license:gpl2+)))
+
 (define-public r-rpostgresql
   (package
     (name "r-rpostgresql")
