@@ -3360,7 +3360,7 @@ contain over 620 classes.")
 (define-public python-pyqtwebengine
   (package
     (name "python-pyqtwebengine")
-    (version %qt-version)
+    (version "5.15.9")
     (source
      (origin
        (method url-fetch)
@@ -3373,9 +3373,10 @@ contain over 620 classes.")
        (sha256
         (base32
          "0hdr0g0rzlhsnylhfk826pq1lw8p9dqcr8yma2wy9dgjrj6n0ixb"))))
-    (build-system gnu-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list python python-sip
+           python-pyqt-builder
            ;; qtbase is required for qmake
            qtbase-5))
     (inputs
@@ -3387,49 +3388,23 @@ contain over 620 classes.")
        ("qtdeclarative-5" ,qtdeclarative-5)
        ("qtwebchannel-5" ,qtwebchannel-5)
        ("qtwebengine-5" ,qtwebengine-5)))
-    (arguments
-     `(#:modules ((srfi srfi-1)
-                  ((guix build python-build-system) #:select (python-version))
-                  ,@%gnu-build-system-modules)
-       #:imported-modules ((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
+     (arguments
+      (list
+       #:tests? #f ; No tests.
+       #:configure-flags
+       #~`(@ ("--verbose" . "") ; Print commands run.
+             ("--jobs" . ,(number->string (parallel-job-count))))
        #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (sipdir (string-append out "/share/sip"))
-                    (pyqt-sipdir (string-append
-                                  (assoc-ref inputs "python-pyqt") "/share/sip"))
-                    (python (assoc-ref inputs "python"))
-                    (lib (string-append out "/lib/python"
-                                        (python-version python)
-                                        "/site-packages/PyQt5"))
-                    (stubs (string-append lib "/PyQt5")))
-
-               (mkdir-p sipdir)
-               (invoke "python" "configure.py"
-                       "-w"
-                       "--no-dist-info"
-                       "--destdir" lib
-                       "--no-qsci-api"
-                       "--stubsdir" stubs
-                       "--sipdir" sipdir
-                       "--pyqt-sipdir" pyqt-sipdir))))
-         ;; Because this has a different prefix than python-pyqt then we need
-         ;; to make this a namespace of its own.
-         (add-after 'install 'make-namespace
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((__init__.py (string-append
-                                  (assoc-ref outputs "out")
-                                  "/lib/python"
-                                  (python-version (assoc-ref inputs "python"))
-                                  "/site-packages/PyQt5/__init__.py")))
-               (with-output-to-file __init__.py
-                 (lambda _ (display "
-from pkgutil import extend_path
-__path__ = extend_path(__path__, __name__)
-")))))))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'set-include-dirs
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((python (assoc-ref inputs "python"))
+                      (python-pyqt (assoc-ref inputs "python-pyqt"))
+                      (sip-include-dirs (string-append
+                                         python-pyqt "/lib/python"
+                                         (python-version python)
+                                         "/site-packages/PyQt5/bindings")))
+               (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
     (home-page "https://www.riverbankcomputing.com/software/pyqtwebengine/intro")
     (synopsis "Python bindings for QtWebEngine")
     (description
