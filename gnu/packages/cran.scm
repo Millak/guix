@@ -1140,6 +1140,33 @@ Functions include searching for people, searching by DOI, or searching by
 Orcid ID.")
     (license license:expat)))
 
+(define-public r-ruv
+  (package
+    (name "r-ruv")
+    (version "0.9.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ruv" version))
+              (sha256
+               (base32
+                "1n4q9mrp9f644spbns6bbnzmlabrg90hwkdfg3hnm3rxp9b4xid0"))))
+    (properties `((upstream-name . "ruv")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-gridextra r-scales))
+    (home-page "https://cran.r-project.org/web/packages/ruv/index.html")
+    (synopsis "Detect and remove unwanted variation using negative controls")
+    (description
+     "This package implements the RUV (Remove Unwanted Variation) algorithms.
+These algorithms attempt to adjust for systematic errors of unknown origin in
+high-dimensional data.  The algorithms were originally developed for use with
+genomic data, especially microarray data, but may be useful with other types
+of high-dimensional data as well.  The algorithms require the user to specify
+a set of negative control variables, as described in the references.  The
+algorithms included in this package are RUV-2, RUV-4, RUV-inv, RUV-rinv,
+RUV-I, and RUV-III, along with various supporting algorithms.")
+    ;; Any version of the GPL.
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-waldo
   (package
     (name "r-waldo")
