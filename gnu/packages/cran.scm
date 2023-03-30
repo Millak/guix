@@ -3275,6 +3275,29 @@ re-imagining of @code{httr} that uses a pipe-based interface and solves more
 of the problems that API wrapping packages face.")
     (license license:expat)))
 
+(define-public r-jade
+  (package
+    (name "r-jade")
+    (version "2.0-3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "JADE" version))
+              (sha256
+               (base32
+                "1fj2wawx5ac1fvlp28naqha0i17f1sb47j2qqzgccvx17ycqmmjn"))))
+    (properties `((upstream-name . "JADE")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-clue))
+    (home-page "https://cran.r-project.org/package=JADE")
+    (synopsis "Blind source separation methods")
+    (description
+     "In this package Cardoso's JADE algorithm as well as his functions for
+joint diagonalization are ported to R.  Also several other @dfn{blind source
+separation} (BSS) methods, like AMUSE and SOBI, and some criteria for
+performance evaluation of BSS algorithms, are given.  The package is described
+in Miettinen, Nordhausen and Taskinen (2017) <doi:10.18637/jss.v076.i02>.")
+    (license license:gpl2+)))
+
 (define-public r-jsonify
   (package
     (name "r-jsonify")
