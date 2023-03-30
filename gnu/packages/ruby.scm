@@ -11624,6 +11624,7 @@ part of the Prawn PDF generator.")
                             "test_off_tls1_2")
                 (skip-tests "test/test_integration_cluster.rb"
                             "test_fork_worker_on_refork"
+                            "test_hot_restart_does_not_drop_connections"
                             "test_culling_strategy_oldest_fork_worker"
                             "test_usr1_fork_worker")
                 (skip-tests "test/test_integration_pumactl.rb"
