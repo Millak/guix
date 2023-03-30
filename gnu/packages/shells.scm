@@ -20,6 +20,7 @@
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -398,7 +399,10 @@ written by Paul Haahr and Byron Rakitzis.")
               (patch-flags '("-p0"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf perl))
+     (append (if (target-riscv64?)
+                 (list config)
+                 '())
+             (list autoconf perl)))
     (inputs
      (list ncurses))
     (arguments
@@ -411,6 +415,18 @@ written by Paul Haahr and Byron Rakitzis.")
                          (("CC_FOR_GETHOST=\"cc\"")
                           "CC_FOR_GETHOST=\"gcc\""))
                        #t)))
+                '())
+          ,@(if (target-riscv64?)
+                ;; TODO: remove after commit
+                ;; 3c33503f9aec4412dc1a95927a8c5c357c7b851e or 6.24.00
+                `((add-after 'unpack 'update-config-scripts
+                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                      (for-each (lambda (file)
+                                  (install-file
+                                   (search-input-file
+                                    (or native-inputs inputs)
+                                    (string-append "/bin/" file)) "."))
+                                '("config.guess" "config.sub")))))
                 '())
           (add-before 'check 'patch-test-scripts
             (lambda _
