@@ -1936,7 +1936,7 @@ protocol.")))
            ;; Package is not loadable on its own at this stage.
            (delete 'sanity-check))))
     (propagated-inputs
-     (list python-pbr-minimal python-six))
+     (list python-pbr-minimal python-six python-extras))
     (home-page "https://launchpad.net/python-fixtures")
     (synopsis "Python test fixture library")
     (description
