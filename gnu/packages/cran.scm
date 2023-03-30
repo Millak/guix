@@ -11216,19 +11216,18 @@ finance, conversion from and to JSON, and many other applications.")
 (define-public r-dtplyr
   (package
     (name "r-dtplyr")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dtplyr" version))
        (sha256
         (base32
-         "1y40yrfdw1wbx7jqmql69yi3q52lzjpqgr4jwnhjr33hw6kxvg0v"))))
+         "1rfnr1f3dzzivzmw9jjaclckkany6c625bqr8lkx32qbcjd6iad5"))))
     (properties `((upstream-name . "dtplyr")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-crayon
            r-data-table
            r-dplyr
            r-glue
