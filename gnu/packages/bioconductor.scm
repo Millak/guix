@@ -14341,6 +14341,46 @@ gene fusion discovery.  It can be applied to all major sequencing techologies
 and to both short and long sequence reads.")
     (license license:gpl3)))
 
+(define-public r-flowai
+  (package
+    (name "r-flowai")
+    (version "1.28.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "flowAI" version))
+              (sha256
+               (base32
+                "18zrlnjw89iglxhw65ys8x4r44pdzp5chrgwx7w44sh7yd8576g9"))))
+    (properties `((upstream-name . "flowAI")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-changepoint
+           r-flowcore
+           r-ggplot2
+           r-knitr
+           r-plyr
+           r-rcolorbrewer
+           r-reshape2
+           r-rmarkdown
+           r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/flowAI")
+    (synopsis
+     "Automatic and interactive quality control for flow cytometry data")
+    (description
+     "This package is able to perform an automatic or interactive quality
+control on FCS data acquired using flow cytometry instruments.  By evaluating
+three different properties:
+
+@enumerate
+@item flow rate
+@item signal acquisition, and
+@item dynamic range,
+@end enumerate
+
+the quality control enables the detection and removal of anomalies.")
+    (license license:gpl2+)))
+
 (define-public r-flowutils
   (package
     (name "r-flowutils")
