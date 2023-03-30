@@ -12496,6 +12496,32 @@ for SPARQL.  It can also execute queries against a SPARQL HTTP endpoint, such
 as Fuseki or DBPedia.")
     (license license:gpl3+)))
 
+(define-public emacs-sphinx-doc
+  (let ((commit "1eda612a44ef027e5229895daa77db99a21b8801")
+        (revision "1"))
+    (package
+      (name "emacs-sphinx-doc")
+      (version (git-version "0.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/naiquevin/sphinx-doc.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0q72i95yx3xa57jlgr7dik6prf20hi8bp8xf3f5c6ificv7i5378"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-dash emacs-s))
+      (home-page "https://github.com/naiquevin/sphinx-doc.el")
+      (synopsis
+       "Generate Sphinx friendly docstrings for Python functions in Emacs")
+      (description
+       "Sphinx Doc is an Emacs minor mode for inserting docstring skeletons
+for Python functions and methods.  The structure of the docstring is as per
+the equirement of the Sphinx documentation generator.")
+      (license license:expat))))
+
 (define-public emacs-better-defaults
   (package
     (name "emacs-better-defaults")
@@ -12504,8 +12530,8 @@ as Fuseki or DBPedia.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://git.sr.ht/~technomancy/better-defaults")
-              (commit version)))
+             (url "https://git.sr.ht/~technomancy/better-defaults")
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
