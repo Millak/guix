@@ -177,7 +177,7 @@ low-end hardware and serving many concurrent requests.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list atk
+     (list at-spi2-core
            gtk
            glib
            pango

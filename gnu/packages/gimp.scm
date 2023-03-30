@@ -333,7 +333,7 @@ buffers.")
               ;; ./configure requests not to annoy upstream with packaging bugs.
               "--with-bug-report-url=https://bugs.gnu.org/guix")))
     (inputs
-     (list atk
+     (list at-spi2-core
            babl
            gegl
            gexiv2

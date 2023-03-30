@@ -260,7 +260,7 @@ contains the graphical user interface for synfig.")
          ("python" ,python-wrapper)))
       (inputs
        `(("agg" ,agg)
-         ("atk" ,atk)
+         ("at-spi2-core" ,at-spi2-core)
          ("boost" ,boost)
          ("curl" ,curl)
          ("ffmpeg" ,ffmpeg-2.8)

@@ -2704,7 +2704,7 @@ forgotten when the session ends.")
            libgnome-keyring
            adwaita-icon-theme
            gdk-pixbuf
-           atk
+           at-spi2-core
            pango
            gtk+
            glib
@@ -3299,7 +3299,7 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
           '())
       (list gtk+ libxml2)))
     (native-inputs
-     (list atk                          ;for tests
+     (list at-spi2-core                          ;for tests
            docbook-xml-4.2
            docbook-xsl
            gettext-minimal
@@ -6357,7 +6357,7 @@ without stepping on each others toes.")
            libxslt
            pkg-config))
     (propagated-inputs
-     (list atk
+     (list at-spi2-core
            cairo
            cogl
            glib
@@ -6744,7 +6744,7 @@ discovery protocols.")
     (inputs
      (list gtk+
            gdk-pixbuf
-           atk
+           at-spi2-core
            cairo
            dbus-glib
            xorgproto
@@ -6866,7 +6866,7 @@ which can read a large number of file formats.")
      ;;clutter-gtk
      ;;clutter-gst
      (list adwaita-icon-theme
-           atk
+           at-spi2-core
            bash-minimal
            brasero
            json-glib
@@ -8021,7 +8021,7 @@ to display dialog boxes from the commandline and shell scripts.")
      (list gsettings-desktop-schemas-next ;required by libmutter.pc
            gtk+                           ;required by libmutter.pc
            ;; mutter-clutter-1.0.pc and mutter-cogl-1.0.pc refer to these:
-           atk
+           at-spi2-core
            cairo
            eudev
            gdk-pixbuf
@@ -11646,7 +11646,7 @@ micro-pauses and rest breaks, and restricts you to your daily limit.")
            pkg-config
            yelp-tools))
     (inputs
-     (list atk
+     (list at-spi2-core
            gtk))
     (synopsis "GNOME hexadecimal editor")
     (description "The GHex program can view and edit files in two ways:

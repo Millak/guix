@@ -60,7 +60,7 @@
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
     (inputs
-     (list atk glib))
+     (list at-spi2-core glib))
     (home-page "https://gtk-rs.org/")
     (synopsis "FFI bindings to libatk-1")
     (description "FFI bindings to libatk-1")
@@ -90,7 +90,7 @@
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs (list pkg-config))
     (inputs
-     (list atk glib))))
+     (list at-spi2-core glib))))
 
 (define-public rust-atk-sys-0.9
   (package
@@ -138,7 +138,7 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
     (inputs
-     (list atk glib))
+     (list at-spi2-core glib))
     (home-page "https://gtk-rs.org/")
     (synopsis "Rust bindings for the ATK library")
     (description "Rust bindings for the ATK library")
@@ -1469,7 +1469,7 @@
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
     (native-inputs (list pkg-config))
     (inputs
-     (list atk cairo glib gtk+ pango))
+     (list at-spi2-core cairo glib gtk+ pango))
     (home-page "https://gtk-rs.org/")
     (synopsis "Rust bindings for the GTK+ 3 library")
     (description "This package provides Rust bindings for the GTK+ 3 library.")

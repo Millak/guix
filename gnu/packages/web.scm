@@ -6628,7 +6628,7 @@ file links.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list atk
+     (list at-spi2-core
            cairo
            gdk-pixbuf
            gtk+

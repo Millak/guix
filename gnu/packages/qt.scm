@@ -2640,7 +2640,7 @@ using the Enchant spell-checking library.")
            ruby))
     (inputs
      (list alsa-lib
-           atk
+           at-spi2-core
            cups-minimal
            curl
            dbus

@@ -346,7 +346,7 @@ Graphviz and LaTeX.")
                `("PATH" ":" prefix
                  (,(dirname (search-input-file inputs "bin/dot"))))))))))
     (inputs
-     (list atk
+     (list at-spi2-core
            (librsvg-for-system)
            harfbuzz
            graphviz

@@ -934,7 +934,7 @@ is part of the GNOME accessibility project.")
     (build-system gnu-build-system)
     (outputs '("out" "bin" "doc" "debug"))
     (propagated-inputs
-     (list atk
+     (list at-spi2-core
            cairo
            glib
            (librsvg-for-system)
@@ -1030,8 +1030,7 @@ application suites.")
        (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
                                 "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     (propagated-inputs
-     (list atk
-           at-spi2-core
+     (list at-spi2-core
            cairo
            fribidi
            fontconfig
@@ -1587,7 +1586,7 @@ documents.")
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
-           atk
+           at-spi2-core
            ;;("corba" ,corba) ; not packaged yet
            gconf
            gobject-introspection
@@ -1797,7 +1796,7 @@ text rendering library.")
        ("python" ,python)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
-     (list glibmm atk))
+     (list glibmm at-spi2-core))
     (synopsis "C++ bindings for ATK")
     (description "ATKmm is the C++ binding for the ATK library.")
     (home-page "https://wiki.gnome.org/Accessibility")

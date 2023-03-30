@@ -123,7 +123,7 @@
            pkg-config))
     (inputs
      (list libappindicator
-           atk
+           at-spi2-core
            avahi
            cairo
            cups

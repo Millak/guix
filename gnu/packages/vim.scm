@@ -243,7 +243,7 @@ with the editor vim.")))
        (prepend pkg-config xorg-server-for-tests)))
     (inputs
      `(("acl" ,acl)
-       ("atk" ,atk)
+       ("at-spi2-core" ,at-spi2-core)
        ("attr" ,attr)
        ("cairo" ,cairo)
        ("fontconfig" ,fontconfig)

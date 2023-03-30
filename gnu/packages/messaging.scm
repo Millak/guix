@@ -1373,7 +1373,7 @@ Encryption to Gajim.")
            vala))
     (inputs
      (list adwaita-icon-theme
-           atk
+           at-spi2-core
            bash-minimal
            cairo
            librsvg

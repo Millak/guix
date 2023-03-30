@@ -521,7 +521,7 @@ assorted menu related utility programs.")
            docbook-xml
            gobject-introspection))
     (inputs
-     (list atk
+     (list at-spi2-core
            dbus
            dbus-glib
            glib
@@ -732,7 +732,7 @@ infamous 'Wanda the Fish'.")
        ("xmllint" ,libxml2)
        ("zlib" ,zlib)))
     (inputs
-     `(("atk" ,atk)
+     `(("at-spi2-core" ,at-spi2-core)
        ("cairo" ,cairo)
        ("caja" ,caja)
        ("dconf" ,dconf)
@@ -921,7 +921,7 @@ icons on the MATE desktop.  It works on local and remote file systems.")
            xmodmap
            gobject-introspection))
     (inputs
-     `(("atk" ,atk)
+     `(("at-spi2-core" ,at-spi2-core)
        ("cairo" ,cairo)
        ("caja" ,caja)
        ("dconf" ,dconf)
@@ -1061,7 +1061,7 @@ sessions, panels, menus, file management, and preferences.")
     (native-inputs
      (list gettext-minimal intltool pkg-config yelp-tools))
     (inputs
-     (list atk
+     (list at-spi2-core
            glib
            gtk+
            libxml2
@@ -1228,7 +1228,7 @@ can be used as backgrounds in the MATE Desktop environment.")
            xorgproto
            yelp-tools))
     (inputs
-     (list atk
+     (list at-spi2-core
            cairo
            glib
            gtk+
@@ -1277,7 +1277,7 @@ can be used as backgrounds in the MATE Desktop environment.")
            pkg-config
            yelp-tools))
     (inputs
-     (list atk
+     (list at-spi2-core
            cairo
            dconf
            dbus
@@ -1382,7 +1382,7 @@ can be used as backgrounds in the MATE Desktop environment.")
        ("pkg-config" ,pkg-config)
        ("yelp-tools" ,yelp-tools)))
     (inputs
-     (list atk
+     (list at-spi2-core
            cairo
            enchant-1.6
            glib
