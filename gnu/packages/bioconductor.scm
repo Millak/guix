@@ -1414,6 +1414,26 @@ curated cell type labels, for use in procedures like automated annotation of
 single-cell data or deconvolution of bulk RNA-seq.")
     (license license:gpl3)))
 
+(define-public r-champdata
+  (package
+    (name "r-champdata")
+    (version "2.30.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ChAMPdata" version 'experiment))
+              (sha256
+               (base32
+                "0rz762szfl02h4d3dj7ckd41ji9mdsja8nxqw6fl086z337041zw"))))
+    (properties `((upstream-name . "ChAMPdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics r-genomicranges))
+    (home-page "https://bioconductor.org/packages/ChAMPdata")
+    (synopsis "Data packages for ChAMP package")
+    (description
+     "This package provides datasets needed for ChAMP including a test dataset
+and blood controls for CNA analysis.")
+    (license license:gpl3)))
+
 (define-public r-chromstardata
   (package
     (name "r-chromstardata")
