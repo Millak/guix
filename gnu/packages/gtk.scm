@@ -158,41 +158,6 @@ such as mate-panel and xfce4-panel.")
     (home-page "https://gitlab.com/vala-panel-project/vala-panel-appmenu")
     (license (list license:lgpl3))))
 
-(define-public atk
-  (package
-    (name "atk")
-    (version "2.36.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version)  "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1217cmmykjgkkim0zr1lv5j13733m4w5vipmy4ivw0ll6rz28xpv"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:glib-or-gtk? #t ; To wrap binaries and/or compile schemas
-       ,@(if (%current-target-system)
-             `(#:configure-flags
-               ;; introspection requires running binaries for the host system
-               ;; on the build system.
-               '("-Dintrospection=false"))
-             '())))
-    (propagated-inputs (list glib)) ; required by atk.pc
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")             ; glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection) ; g-ir-compiler, etc.
-       ("pkg-config" ,pkg-config)))
-    (synopsis "GNOME accessibility toolkit")
-    (description
-     "ATK provides the set of accessibility interfaces that are implemented
-by other toolkits and applications.  Using the ATK interfaces, accessibility
-tools have full access to view and control running applications.")
-    (license license:lgpl2.1+)
-    (home-page "https://wiki.gnome.org/Accessibility")))
-
 (define-public cairo
   (package
     (name "cairo")
@@ -914,6 +879,9 @@ is part of the GNOME accessibility project.")
 
 (define-public at-spi2-atk
   (deprecated-package "at-spi2-atk" at-spi2-core))
+
+(define-public atk
+  (deprecated-package "atk" at-spi2-core))
 
 (define-public gtk+-2
   (package
