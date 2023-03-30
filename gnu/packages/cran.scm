@@ -13545,14 +13545,14 @@ both to consistency and asymptotic normality.")
 (define-public r-dofuture
   (package
     (name "r-dofuture")
-    (version "0.12.2")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doFuture" version))
        (sha256
         (base32
-         "0w07pmzpsfq4kvfc745s1i9b6dfn1df1wrfi4s9ys4ir3g2s8nk1"))))
+         "1pxwpfmxswbsd1f2ifj9kdq9hi9q0x2wwv2kv0xq178ymmywi2sz"))))
     (properties `((upstream-name . "doFuture")))
     (build-system r-build-system)
     (arguments
@@ -13561,7 +13561,7 @@ both to consistency and asymptotic normality.")
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list r-foreach r-future r-globals r-iterators))
+     (list r-foreach r-future r-future-apply r-globals r-iterators))
     (native-inputs
      (list r-r-rsp)) ; vignette builder
     (home-page "https://github.com/HenrikBengtsson/doFuture")
