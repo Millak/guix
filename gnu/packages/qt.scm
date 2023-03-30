@@ -54,6 +54,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -3274,7 +3275,7 @@ module provides support functions to the automatically generated code.")
 (define-public python-pyqt
   (package
     (name "python-pyqt")
-    (version %qt-version)
+    (version "5.15.9")
     (source
       (origin
         (method url-fetch)
@@ -3287,11 +3288,12 @@ module provides support functions to the automatically generated code.")
         (file-name (string-append "PyQt5-" version ".tar.gz"))
         (sha256
          (base32
-          "0q53xn1ax2kpfqwxkasby787ryq5a21chmw1p345cp0kp7py71dw"))
+          "1h649rb1afdxskp28x524yp5kd9a97ainh9bd4mkxp4h390fhhfw"))
         (patches (search-patches "pyqt-configure.patch"))))
-    (build-system gnu-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list qtbase-5)) ; for qmake
+     (list qtbase-5 ; for qmake
+           python-pyqt-builder))
     (propagated-inputs
      (list python-sip python-pyqt5-sip))
     (inputs
@@ -3310,47 +3312,24 @@ module provides support functions to the automatically generated code.")
        ("qtx11extras" ,qtx11extras)
        ("qtxmlpatterns" ,qtxmlpatterns)))
     (arguments
-     `(#:modules ((srfi srfi-1)
-                  ((guix build python-build-system) #:select (python-version))
-                  ,@%gnu-build-system-modules)
-       #:imported-modules ((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
+      (list
+       #:tests? #f ; No tests.
+       #:configure-flags
+       #~`(@ ("--verbose" . "") ; Print commands run.
+             ("--confirm-license" . "")
+             ("--jobs" . ,(number->string (parallel-job-count))))
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          ;; When building python-pyqtwebengine, <qprinter.h> can not be
          ;; included.  Here we substitute the full path to the header in the
          ;; store.
-         (add-before 'configure 'substitute-source
+         (add-after 'unpack 'substitute-source
            (lambda* (#:key inputs  #:allow-other-keys)
              (let* ((qtbase (assoc-ref inputs "qtbase"))
                     (qtprinter.h (string-append "\"" qtbase "/include/qt5/QtPrintSupport/qprinter.h\"")))
-               (substitute* "sip/QtPrintSupport/qprinter.sip"
-                 (("<qprinter.h>") qtprinter.h)))))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (sip (string-append out "/share/sip"))
-                    (plugins (string-append out "/lib/qt5/plugins"))
-                    (designer (string-append plugins "/designer"))
-                    (qml (string-append plugins "/PyQt5"))
-                    (python (assoc-ref inputs "python"))
-                    (lib (string-append out "/lib/python"
-                                        (python-version python)
-                                        "/site-packages"))
-                    (stubs (string-append lib "/PyQt5")))
-               (invoke "python" "configure.py"
-                       "--confirm-license"
-                       "--bindir" bin
-                       "--destdir" lib
-                       "--designer-plugindir" designer
-                       "--qml-plugindir" qml
-                       ; Where to install the PEP 484 Type Hints stub
-                       ; files. Without this the stubs are tried to be
-                       ; installed into the python package's
-                       ; site-package directory, which is read-only.
-                       "--stubsdir" stubs
-                       "--sipdir" sip)))))))
+               (substitute* (list "sip/QtPrintSupport/qprinter.sip"
+                                  "sip/QtPrintSupport/qpyprintsupport_qlist.sip")
+                 (("<qprinter.h>") qtprinter.h))))))))
     (home-page "https://www.riverbankcomputing.com/software/pyqt/intro")
     (synopsis "Python bindings for Qt")
     (description
