@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,9 +74,7 @@ TARGET."
                  "connman" "network-manager" "network-manager-applet"
                  "openssh" "ntp" "tor"
                  "linux-libre" "grub-hybrid"
-                 ;; FIXME: Add IceCat when Rust is available on i686.
-                 ;;"icecat"
-                 ))
+                 "icecat"))
           %default-xorg-modules))
 
 (define %packages-to-cross-build
