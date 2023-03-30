@@ -14128,6 +14128,34 @@ analysing cytometry data in R.")
 spatial single-cell expression data.")
       (license license:expat))))
 
+(define-public r-illuminahumanmethylationepicanno-ilm10b5-hg38
+  (let ((commit "3db06910e27f626e0cc8b335ff45cf9a4050a36a")
+        (revision "1"))
+    (package
+      (name "r-illuminahumanmethylationepicanno-ilm10b5-hg38")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/achilleasNP/IlluminaHumanMethylationEPICanno.ilm10b5.hg38")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y8fhiwmkldi57f8nq64njfgljw68cm6pb1vh44hjwcc12k48sqr"))))
+      (properties `((upstream-name . "IlluminaHumanMethylationEPICanno.ilm10b5.hg38")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-minfi))
+      (home-page
+       "https://github.com/achilleasNP/IlluminaHumanMethylationEPICanno.ilm10b5.hg38")
+      (synopsis "Illumina Human Methylation EPIC Annotation version 1.0B5")
+      (description
+       "This package provides a companion annotation file to the
+@code{IlluminaHumanMethylationEPICmanifest} package based on the same
+annotation 1.0B5.")
+      (license license:artistic2.0))))
+
 (define-public gffread
   ;; We cannot use the tagged release because it is not in sync with gclib.
   ;; See https://github.com/gpertea/gffread/issues/26
