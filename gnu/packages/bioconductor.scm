@@ -1498,6 +1498,29 @@ display copy number variation.  Files are stored as GRanges objects from the
 GenomicRanges Bioconductor package.")
     (license license:gpl2)))
 
+(define-public r-flowsorted-blood-450k
+  (package
+    (name "r-flowsorted-blood-450k")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "FlowSorted.Blood.450k"
+                                     version 'experiment))
+              (sha256
+               (base32
+                "1ha9qsp5g3g2yhnk574x6xhg95bb29ywvmg3ns1c50z69v6wbraq"))))
+    (properties `((upstream-name . "FlowSorted.Blood.450k")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (home-page "https://bioconductor.org/packages/FlowSorted.Blood.450k")
+    (synopsis
+     "Illumina HumanMethylation data on sorted blood cell populations")
+    (description
+     "This package provides raw data objects for the Illumina 450k DNA
+methylation microarrays, and an object depicting which CpGs on the array are
+associated with cell type.")
+    (license license:artistic2.0)))
+
 (define-public r-genelendatabase
   (package
     (name "r-genelendatabase")
