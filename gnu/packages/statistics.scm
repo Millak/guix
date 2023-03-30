@@ -2648,17 +2648,17 @@ were originally a part of the r-devtools package.")
 (define-public r-hms
   (package
     (name "r-hms")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hms" version))
        (sha256
         (base32
-         "1vdx08irnh8q5232hriv47hh88hc55nbbrff7y6zbainff2akrhy"))))
+         "10h2k5j97fggq3hc0qzxv1q9821y21m326v3x99zsvpl1b3g89p6"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ellipsis r-lifecycle r-pkgconfig r-rlang r-vctrs))
+     (list r-lifecycle r-pkgconfig r-rlang r-vctrs))
     (home-page "https://github.com/rstats-db/hms")
     (synopsis "Pretty time of day")
     (description
