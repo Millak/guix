@@ -13991,6 +13991,85 @@ cells with similar identification cards in the different cytometric profiles
 is then merged.")
       (license license:gpl2))))
 
+(define-public r-cytoexplorer
+  (let ((commit "0efb1cc19fc701ae03905cf1b8484c1dfeb387df")
+        (revision "1"))
+    (package
+      (name "r-cytoexplorer")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DillonHammill/CytoExploreR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1y7dadsy15i47rjmdq6ns80jzm6p0zmixll37q68ba2c7xn5pq3v"))
+         (snippet
+          '(delete-file
+            "docs/articles/CytoExploreR_files/vis-4.20.1/vis.min.js"))))
+      (properties `((upstream-name . "CytoExploreR")))
+      (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'process-javascript
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-directory-excursion "docs/articles/CytoExploreR_files/"
+                 (let ((source (search-input-file inputs "/dist/vis.js"))
+                       (target "vis-4.20.1/vis.min.js"))
+                   (invoke "esbuild" source "--minify"
+                           (string-append "--outfile=" target)))))))))
+      (propagated-inputs
+       (list r-biocgenerics
+             r-bslib
+             r-data-table
+             r-dplyr
+             r-embedsom
+             r-flowai
+             r-flowcore
+             r-flowworkspace
+             r-gtools
+             r-magrittr
+             r-mass
+             r-opencyto
+             r-purrr
+             r-rhandsontable
+             r-robustbase
+             r-rsvd
+             r-rtsne
+             r-shiny
+             r-superheat
+             r-tibble
+             r-tidyr
+             r-umap
+             r-visnetwork))
+      (native-inputs
+       `(("esbuild" ,esbuild)
+         ("r-knitr" ,r-knitr)
+         ("js-vis"
+          ,(let ((version "4.20.1"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/almende/vis")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-vis" version))
+               (sha256
+                (base32
+                 "09ldcqzzki5c0jlwas5992qjffqxnx6j5sl703qccfw7rg1hn469")))))))
+      (home-page "https://github.com/DillonHammill/CytoExploreR")
+      (synopsis "Interactive analysis of cytometry data")
+      (description
+       "This package has been developed under ROpenSci gudelines to integrate
+conventional and cutting edge cytometry analysis tools under a unified
+framework.  It aims to represent an intuitive and interactive approach to
+analysing cytometry data in R.")
+      (license license:gpl2))))
+
 (define-public r-giotto
   (let ((commit "3c8067cedbf6e3112edcac2ae796de05fd9d6fe4")
         (revision "1"))
