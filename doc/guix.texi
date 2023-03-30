@@ -96,7 +96,7 @@ Copyright @copyright{} 2021 Domagoj Stolfa@*
 Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
-Copyright @copyright{} 2021, 2022 Josselin Poiret@*
+Copyright @copyright{} 2021-2023 Josselin Poiret@*
 Copyright @copyright{} 2021, 2023 muradm@*
 Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
@@ -6270,6 +6270,14 @@ building or downloading any missing package, and runs the
 @example
 guix shell python python-numpy -- python3
 @end example
+
+Note that it is necessary to include the main @code{python} package in
+this command even if it is already installed into your environment.
+This is so that the shell environment knows to set @env{PYTHONPATH} and
+other related variables.  The shell environment cannot check the
+previously installed environment, because then it would be
+non-deterministic.  This is true for most libraries: their corresponding
+language package should be included in the shell invocation.
 
 @quotation Note
 @cindex shebang, for @command{guix shell}
