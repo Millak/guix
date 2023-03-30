@@ -12512,6 +12512,12 @@ as Fuseki or DBPedia.")
                  (base32
                   "0q72i95yx3xa57jlgr7dik6prf20hi8bp8xf3f5c6ificv7i5378"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-l" "sphinx-doc-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs (list emacs-dash emacs-s))
       (home-page "https://github.com/naiquevin/sphinx-doc.el")
       (synopsis
