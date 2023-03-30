@@ -1796,7 +1796,7 @@ subprocess and see the output as well as any file modifications.")
                (invoke "python" "-m" "testtools.run"
                        "testtools.tests.test_suite")))))))
     (propagated-inputs
-     (list python-extras python-fixtures python-pbr))
+     (list python-fixtures python-pbr))
     (native-inputs
      `(("python-testscenarios" ,python-testscenarios-bootstrap)))
     (description
