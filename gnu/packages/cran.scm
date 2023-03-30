@@ -16195,22 +16195,39 @@ netCDF files.")
 Bioconductor packages.")
     (license license:artistic2.0)))
 
+;; TODO: one more minified JavaScript files is included that should be built
+;; from the included .src.js files, but it is not entirely clear how.  The
+;; file is inst/htmlwidgets/lib/rglClass/rglClass.min.js.
 (define-public r-rgl
   (package
     (name "r-rgl")
-    (version "1.0.1")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgl" version))
        (sha256
         (base32
-         "1j1g1b1j6azhg944ddzzrxgynb2bfl14l5qz58n4mhvxrbx018w9"))))
+         "1blasg60x38z57ds6x7yb4rvjx21yf4s99q93sl1w9h6mg14d8jg"))
+       (snippet
+        '(delete-file "inst/htmlwidgets/lib/CanvasMatrix/CanvasMatrix.min.js"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/"
+               (let ((source "CanvasMatrix/CanvasMatrix.src.js")
+                     (target "CanvasMatrix/CanvasMatrix.min.js"))
+                 (invoke "esbuild" source "--minify"
+                         (string-append "--outfile=" target)))))))))
     (native-inputs
-     (list pkg-config
+     (list esbuild
+           pkg-config
            r-knitr
-           r-rmarkdown)) ;for vignettes
+           r-rmarkdown))                ;for vignettes
     (inputs
      (list freetype
            libpng
