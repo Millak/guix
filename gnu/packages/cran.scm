@@ -13376,13 +13376,13 @@ ABC algorithms.")
 (define-public r-abctools
   (package
     (name "r-abctools")
-    (version "1.1.4")
+    (version "1.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abctools" version))
        (sha256
-        (base32 "02c473fqj7yd27flma2x7flqzqbrnba2xfcjy466nww0sm1vvhjg"))))
+        (base32 "0yxmj28ym8919l27m04yjyc7mya1iy5ap4p980grsh7m4cgpx3bh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abc r-abind r-hmisc r-plyr))
