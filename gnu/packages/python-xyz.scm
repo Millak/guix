@@ -24613,7 +24613,8 @@ project.")
                          ;; OSError: protocol not found.
                          " and not test_getprotobyname"
                          ;; EOFError: Ran out of input.
-                         " and not test_static_tool_sees_all_symbols"))))))))
+                         " and not test_static_tool_sees_all_symbols")
+                        "trio/tests")))))))
     (native-inputs
      (list python-astor
            python-ipython
