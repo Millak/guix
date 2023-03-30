@@ -640,6 +640,28 @@ from several related annotation packages.")
 data.")
     (license license:artistic2.0)))
 
+(define-public r-illuminahumanmethylation450kmanifest
+  (package
+    (name "r-illuminahumanmethylation450kmanifest")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri
+                    "IlluminaHumanMethylation450kmanifest"
+                    version 'annotation))
+              (sha256
+               (base32
+                "0qx75xwifrbkqmbkd8dhf44c34ibmbivqh7y8rvgrsizmi5ybcj1"))))
+    (properties `((upstream-name . "IlluminaHumanMethylation450kmanifest")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (home-page
+     "https://bioconductor.org/packages/IlluminaHumanMethylation450kmanifest")
+    (synopsis "Annotation for Illumina's 450k methylation arrays")
+    (description "This package provides a manifest for Illumina's 450k array
+data.")
+    (license license:artistic2.0)))
+
 (define-public r-org-ce-eg-db
   (package
     (name "r-org-ce-eg-db")
