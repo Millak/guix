@@ -5819,14 +5819,14 @@ rows, dropping names) to see if the modified versions are identical.")
 (define-public r-dendextend
   (package
     (name "r-dendextend")
-    (version "1.16.0")
+    (version "1.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dendextend" version))
        (sha256
         (base32
-         "0rl4f0b73s1gdjfxgpnz87lhv131qazxb6vsv2935ad266fd0bzc"))))
+         "08g5z5qyrn2nkw1jw5520sval4jf9l6invqwvzsv8dkjkq8nxsc7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-magrittr r-viridis))
