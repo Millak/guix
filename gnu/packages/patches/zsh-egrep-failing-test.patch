@@ -1,0 +1,11 @@
+--- a/Test/E01options.ztst	2023-03-30 21:34:12.372309112 +0200
++++ b/Test/E01options.ztst	2023-03-30 21:34:33.212335339 +0200
+@@ -649,7 +649,7 @@
+ >noktarg1
+ >0 1
+ 
+-  showopt() { setopt | egrep 'localoptions|ksharrays'; }
++  showopt() { setopt | grep -E 'localoptions|ksharrays'; }
+   f1() { setopt localoptions ksharrays; showopt }
+   f2() { setopt ksharrays; showopt }
+   setopt kshoptionprint
