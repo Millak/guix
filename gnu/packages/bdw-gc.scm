@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,7 +47,8 @@
               "181ni2rn9qjbl4ilqdjrd1a4h8siv5bgmzqgg4595q32n2y0f0gk"))))
    (build-system gnu-build-system)
    (arguments
-    (list
+    (append
+     (list
      #:configure-flags
      #~(list
         ;; Install gc_cpp.h et al.
@@ -62,7 +63,13 @@
         #$@(if (target-hurd? (or (%current-system)
                                  (%current-target-system)))
                #~("--disable-gcj-support")
-               #~()))))
+               #~())))
+     (if (target-ppc64le?)
+       (list #:make-flags
+             ;; This is a known workaround upstream.
+             ;; https://github.com/ivmai/bdwgc/issues/479
+             #~(list "CFLAGS_EXTRA=-DNO_SOFT_VDB"))
+       '())))
    (native-inputs (list pkg-config))
    (propagated-inputs
     (if (%current-target-system)
