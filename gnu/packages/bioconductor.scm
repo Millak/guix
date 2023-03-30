@@ -6454,6 +6454,48 @@ other types of genomic data that produce counts, including ChIP-seq, SAGE and
 CAGE.")
     (license license:gpl2+)))
 
+(define-public r-enmix
+  (package
+    (name "r-enmix")
+    (version "1.34.02")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ENmix" version))
+              (sha256
+               (base32
+                "0rn541xfsxfdyzy3dn727bwrfpkgp12282lax7xg1j8584mk4pcf"))))
+    (properties `((upstream-name . "ENmix")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationhub
+           r-biobase
+           r-doparallel
+           r-dynamictreecut
+           r-experimenthub
+           r-foreach
+           r-genefilter
+           r-geneplotter
+           r-gplots
+           r-gtools
+           r-illuminaio
+           r-impute
+           r-iranges
+           r-matrixstats
+           r-minfi
+           r-preprocesscore
+           r-quadprog
+           r-rpmm
+           r-s4vectors
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/release/bioc/html/ENmix.html")
+    (synopsis
+     "Quality control and analysis tools for Illumina DNA methylation BeadChip")
+    (description
+     "This package provides tools for quality control, analysis and
+visualization of Illumina DNA methylation array data.")
+    (license license:artistic2.0)))
+
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
