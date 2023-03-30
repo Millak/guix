@@ -2856,18 +2856,19 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.20")
+    (version "2.21")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "178mc3dqm11y58k8jdhm1yi11bbl1h7bls9d8f94ngmlzjdhbxyp"))))
+          (base32 "0a5czn18clfnw0a9nd5v98ah4h47i32423s6jdf126ni4aj20ny2"))))
     (properties `((upstream-name . "rmarkdown")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bslib
            r-evaluate
+           r-fontawesome
            r-htmltools
            r-jquerylib
            r-jsonlite
