@@ -3009,13 +3009,13 @@ engine (version 3.8.8.2) is included.")
 (define-public r-rcurl
   (package
     (name "r-rcurl")
-    (version "1.98-1.10")
+    (version "1.98-1.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RCurl" version))
               (sha256
                (base32
-                "1m7i0q9scrh2bfr0nqs029052kznhlv3siz9055pzdvgig7jnqjs"))))
+                "1ci6lsxm0f13yzw712gcbq23syl54x5llvhs2w1b8wwm9vqgx0qs"))))
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
@@ -3032,7 +3032,7 @@ if (certs != \"\") { .opts = merge.list(.opts, list(cainfo=certs)) }
     (native-inputs
      (list libxml2))
     (inputs
-     (list curl zlib))
+     (list curl))
     (propagated-inputs
      (list r-bitops))
     (home-page "https://www.omegahat.net/RCurl")
