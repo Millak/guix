@@ -6591,6 +6591,30 @@ profiles and assignment of a status (gain, normal or loss) to each chromosomal
 regions identified.")
     (license license:gpl2)))
 
+(define-public r-globaltest
+  (package
+    (name "r-globaltest")
+    (version "5.52.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "globaltest" version))
+              (sha256
+               (base32
+                "1g5dv3bw0fj8sq0hsr8c7nh6n1rzvx1bisqlyqjqq3f8lsyb51kb"))))
+    (properties `((upstream-name . "globaltest")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotate r-annotationdbi r-biobase r-survival))
+    (home-page "https://bioconductor.org/packages/globaltest")
+    (synopsis
+     "Test groups of covariates for association with a response variable")
+    (description
+     "The global test tests groups of covariates (or features) for association
+with a response variable.  This package implements the test with diagnostic
+plots and multiple testing utilities, along with several functions to
+facilitate the use of this test for gene set testing of GO and KEGG terms.")
+    (license license:gpl2+)))
+
 (define-public r-gostats
   (package
     (name "r-gostats")
