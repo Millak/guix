@@ -64,12 +64,17 @@
                                  (%current-target-system)))
                #~("--disable-gcj-support")
                #~())))
-     (if (target-ppc64le?)
-       (list #:make-flags
-             ;; This is a known workaround upstream.
-             ;; https://github.com/ivmai/bdwgc/issues/479
-             #~(list "CFLAGS_EXTRA=-DNO_SOFT_VDB"))
-       '())))
+     (cond
+       ((target-ppc64le?)
+        (list #:make-flags
+              ;; This is a known workaround upstream.
+              ;; https://github.com/ivmai/bdwgc/issues/479
+              #~(list "CFLAGS_EXTRA=-DNO_SOFT_VDB")))
+       ((target-ppc32?)
+        (list #:make-flags
+              ;; Similar to above.
+              #~(list "CFLAGS_EXTRA=-DNO_MPROTECT_VDB")))
+       (else '()))))
    (native-inputs (list pkg-config))
    (propagated-inputs
     (if (%current-target-system)
