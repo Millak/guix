@@ -5669,13 +5669,13 @@ multi-dimensional data.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.11.1")
+    (version "1.12.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "076v3bll8s6m61wcbwgrgrm34g0wa7gsc90mbwxwap1xfxyzjjsg"))))
+                "1m12vjwvzrwwb4d513vk171r25ww92qqv7rd2c3srmwzfi9ngy74"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5683,6 +5683,7 @@ multi-dimensional data.")
            r-curl
            r-dplyr
            r-httr
+           r-jqr
            r-jsonlite
            r-lubridate
            r-nodbi
