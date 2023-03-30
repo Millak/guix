@@ -1958,7 +1958,7 @@ python-fixtures package instead.")
                        "fixtures.test_suite")))))))
     (propagated-inputs
      ;; Fixtures uses pbr at runtime to check versions, etc.
-     (list python-pbr python-six))
+     (list python-pbr python-six python-extras))
     (native-inputs
      `(("python-mock" ,python-mock)
        ("python-testtools" ,python-testtools-bootstrap)))
