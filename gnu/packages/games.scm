@@ -75,6 +75,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8256,7 +8257,7 @@ your score gets higher, you level up and the blocks fall faster.")
 (define-public endless-sky
   (package
     (name "endless-sky")
-    (version "0.9.16.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -8265,10 +8266,13 @@ your score gets higher, you level up and the blocks fall faster.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cb2g1cb0mk6x9gq2x7n10rxlfhsq8wnssk068j6h80al3hhybly"))))
-    (build-system scons-build-system)
+        (base32 "1zbizmigxdwpi3m7sxv9hhf3aa18kbhsfrp48zy3iw2v64pw9l3r"))))
+    (build-system cmake-build-system)
     (arguments
-     (list #:scons-flags #~(list (string-append "PREFIX=" #$output))
+     (list #:configure-flags #~(list "-DES_USE_VCPKG=0"
+                                     "-DES_USE_SYSTEM_LIBRARIES=1")
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:build-type "Release"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-paths
@@ -8277,11 +8281,8 @@ your score gets higher, you level up and the blocks fall faster.")
                    (substitute* "source/Files.cpp"
                      (("/usr/local") #$output))
                    ;; Install game binary into %out/bin.
-                   (substitute* "SConstruct"
-                     (("games\"") "bin\""))))
-               (add-before 'build 'use-gcc-ar
-                 ;; Use gcc-ar to support LTO.
-                 (lambda _ (setenv "AR" "gcc-ar"))))))
+                   (substitute* "CMakeLists.txt"
+                     (("games\\)") "bin)")))))))
     (inputs
      (list glew
            libjpeg-turbo
