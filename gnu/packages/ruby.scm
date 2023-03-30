@@ -11595,6 +11595,12 @@ part of the Prawn PDF generator.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "bundle" "exec" "rake" "test"))))
+          (add-after 'install 'delete-mkmf.log
+            (lambda _
+              ;; Rubygems installs build log files that embed volatile file
+              ;; names (see:
+              ;; https://github.com/rubygems/rubygems/issues/6259).
+              (for-each delete-file (find-files #$output "^mkmf\\.log$"))))
           (add-before 'check 'disable-problematic-tests
             (lambda _
               (let-syntax ((skip-tests
