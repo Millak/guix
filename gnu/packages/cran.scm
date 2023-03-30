@@ -9737,14 +9737,14 @@ interface.")
 (define-public r-trend
   (package
     (name "r-trend")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "trend" version))
        (sha256
         (base32
-         "1mr5g5gaxiqj6x83ngcbwwh57vhrhcz0x9dh0rmvs9y2ivk29ccs"))))
+         "12xswr925jjbkdccjiigkr6a44jmgvzwvnizciv6rr3mnklv6n66"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-extradistr))
