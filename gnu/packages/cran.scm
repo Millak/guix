@@ -6683,6 +6683,26 @@ hypergeometric distributions.  In addition two random number generators of
 George Marsaglia are included.")
     (license license:gpl2+)))
 
+(define-public r-kpmt
+  (package
+    (name "r-kpmt")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "kpmt" version))
+              (sha256
+               (base32
+                "15d26khc0v3kc1c7l1avqp48pfqmc6xj32029mv7myivr41ashk3"))))
+    (properties `((upstream-name . "kpmt")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrixstats))
+    (home-page "https://cran.r-project.org/package=kpmt")
+    (synopsis "Known population median test")
+    (description
+     "This package provides functions that implement the known population
+median test.")
+    (license license:expat)))
+
 (define-public r-ksamples
   (package
     (name "r-ksamples")
