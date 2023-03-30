@@ -14156,6 +14156,32 @@ spatial single-cell expression data.")
 annotation 1.0B5.")
       (license license:artistic2.0))))
 
+(define-public r-maxprobes
+  (let ((commit "c2120dba972e12115280ef274ff80550cee5b264")
+        (revision "1"))
+    (package
+      (name "r-maxprobes")
+      (version (git-version "0.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/markgene/maxprobes")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1kij9bds2l9mwm519bzyd2608563qjlmbrayhva1s0vgml5iq9wh"))))
+      (properties `((upstream-name . "maxprobes")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-minfi r-minfidata))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/markgene/maxprobes")
+      (synopsis "Methylation array cross-reactive probes")
+      (description
+       "The Maxprobes package collects cross-reactive probes of Illumina
+methylation array 450K and EPIC/850K.")
+      (license license:gpl2+))))
+
 (define-public gffread
   ;; We cannot use the tagged release because it is not in sync with gclib.
   ;; See https://github.com/gpertea/gffread/issues/26
