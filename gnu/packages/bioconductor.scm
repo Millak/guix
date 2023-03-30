@@ -8800,6 +8800,33 @@ sequence motif occurrences across a large set of sequences centred at a common
 reference point and sorted by a user defined feature.")
     (license license:gpl3+)))
 
+(define-public r-shinymethyl
+  (package
+    (name "r-shinymethyl")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "shinyMethyl" version))
+              (sha256
+               (base32
+                "1xbadc4xszcqh211r8z0wp417f17aczz834icli17mcsl996ln3a"))))
+    (properties `((upstream-name . "shinyMethyl")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-illuminahumanmethylation450kmanifest
+           r-matrixstats
+           r-minfi
+           r-rcolorbrewer
+           r-shiny))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/shinyMethyl")
+    (synopsis "Interactive visualization for Illumina methylation arrays")
+    (description
+     "This package provides an interactive tool for visualizing Illumina
+methylation array data.  Both the 450k and EPIC array are supported.")
+    (license license:artistic2.0)))
+
 (define-public r-shortread
   (package
     (name "r-shortread")
