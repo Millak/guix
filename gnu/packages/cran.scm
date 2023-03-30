@@ -16281,13 +16281,13 @@ to colexicographical order.")
 (define-public r-multidplyr
   (package
     (name "r-multidplyr")
-    (version "0.1.2")
+    (version "0.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "multidplyr" version))
               (sha256
                (base32
-                "081x9n46dl6vpp5q6pilw3w5wpdi3r9kwi9n6h4k2p2iqg1s96lb"))))
+                "18yl24s1g8wf3xi6f0k7jhs99ka4dslxf5p9ax9m5l1rbva5xdwj"))))
     (properties `((upstream-name . "multidplyr")))
     (build-system r-build-system)
     (propagated-inputs
