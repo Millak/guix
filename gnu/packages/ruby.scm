@@ -6243,8 +6243,9 @@ to reproduce user environments.")
       #~(modify-phases %standard-phases
           (add-after 'install 'delete-mkmf.log
             (lambda _
-              ;; This build log captures non-deterministic file names (see:
-              ;; https://github.com/sparklemotion/nokogiri/issues/2755).
+              ;; Rubygems installs build log files that embed volatile file
+              ;; names (see:
+              ;; https://github.com/rubygems/rubygems/issues/6259).
               (for-each delete-file (find-files #$output "^mkmf\\.log$")))))))
     (native-inputs (list ruby-hoe))
     (inputs (list zlib libxml2 libxslt))
