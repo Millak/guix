@@ -4692,6 +4692,46 @@ spent loading the full derfinder package when running the F-statistics
 calculation in parallel.")
     (license license:artistic2.0)))
 
+(define-public r-dmrcate
+  (package
+    (name "r-dmrcate")
+    (version "2.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DMRcate" version))
+              (sha256
+               (base32
+                "0iphlsbam5fcxbj5j0cmqk3wz5ykwz0mvk3qbrhzxbpf2h4w2qib"))))
+    (properties `((upstream-name . "DMRcate")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bsseq
+           r-dss
+           r-edger
+           r-experimenthub
+           r-genomeinfodb
+           r-genomicranges
+           r-gviz
+           r-iranges
+           r-limma
+           r-minfi
+           r-missmethyl
+           r-plyr
+           r-s4vectors
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/DMRcate")
+    (synopsis "Methylation array and sequencing spatial analysis methods")
+    (description
+     "This is a package for de novo identification and extraction of
+@dfn{differentially methylated regions} (DMRs) from the human genome using
+@dfn{Whole Genome Bisulfite Sequencing} (WGBS) and Illumina Infinium
+Array (450K and EPIC) data.  It provides functionality for filtering probes
+possibly confounded by SNPs and cross-hybridisation.  It includes
+@code{GRanges} generation and plotting functions.")
+    ;; GPLv3 with additional liability disclaimer.
+    (license license:gpl3)))
+
 (define-public r-drimseq
   (package
     (name "r-drimseq")
