@@ -15670,7 +15670,7 @@ extensibility.")
 Autocrypt (@url{https://autocrypt.org/}) for various Emacs MUAs,
 a cryptographic protocol for email clients aiming to simplify key exchange and
 encryption.")
-      (license license:cc0))))
+      (license license:gpl3+))))
 
 (define-public emacs-nginx-mode
   (package
