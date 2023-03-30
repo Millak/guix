@@ -3463,14 +3463,14 @@ itself.")
 (define-public python-pyqt-builder
   (package
    (name "python-pyqt-builder")
-   (version "1.9.0")
+   (version "1.14.1")
    (source
     (origin
      (method url-fetch)
      (uri (pypi-uri "PyQt-builder" version))
      (sha256
       (base32
-       "0nh0054c54ji3sm6d268fccf0y5f613spswwgwqd3rnn816hnljl"))))
+       "00m5piryz9l4hp5z1ncaqicsp29kj71akdh4b10432zz18q3xg43"))))
    (build-system python-build-system)
    (inputs
     (list python-sip))
