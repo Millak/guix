@@ -461,7 +461,8 @@ GLib/GIO, GTK, GStreamer and Webkit."
   (team 'lxqt
         #:name "LXQt team"
         #:description "LXQt desktop environment."
-        #:scope (list "gnu/packages/lxqt.scm")))
+        #:scope (list "gnu/packages/lxqt.scm"
+                      "gnu/packages/qt.scm")))
 
 
 (define-member (person "Eric Bavier"
