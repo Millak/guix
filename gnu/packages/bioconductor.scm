@@ -4808,6 +4808,28 @@ domains etc.) from quantification of all types of RNASeq by tools such as
 Kallisto, Salmon, StringTie, Cufflinks/Cuffdiff etc.")
     (license license:gpl2+)))
 
+;; This is a CRAN package, but it depends on qvalue from Bioconductor.
+(define-public r-isva
+  (package
+    (name "r-isva")
+    (version "1.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "isva" version))
+              (sha256
+               (base32
+                "05qx9q0kg4ma23v4abhihw0vz017nq6hv2jzsiqx4d20ngh1dl4z"))))
+    (properties `((upstream-name . "isva")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-fastica r-jade r-qvalue))
+    (home-page "https://cran.r-project.org/package=isva")
+    (synopsis "Independent surrogate variable analysis")
+    (description
+     "Independent Surrogate Variable Analysis is an algorithm for feature
+selection in the presence of potential confounding factors (see Teschendorff
+AE et al 2011, <doi: 10.1093/bioinformatics/btr171>).")
+    (license license:gpl2)))
+
 (define-public r-italics
   (package
     (name "r-italics")
