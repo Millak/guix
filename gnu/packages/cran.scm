@@ -27540,14 +27540,14 @@ it may be seen by an animal with less acute vision.")
 (define-public r-caret
   (package
     (name "r-caret")
-    (version "6.0-93")
+    (version "6.0-94")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "caret" version))
        (sha256
         (base32
-         "01sa1h9pc3a062pwm0rxadvg9qxszwcylya7llv08fcxhy46n5ac"))))
+         "1a191n9qswvf8ri6id8picqgdqx15l6mp996v6f77fv0l8yfh597"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-e1071
