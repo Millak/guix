@@ -24528,15 +24528,48 @@ function and interfaces to external frameworks.")
 (define-public r-covr
   (package
     (name "r-covr")
-    (version "3.6.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "covr" version))
        (sha256
-        (base32 "0mqiqmbwq5f083lda208nqd4ya0f912bkkya2i62fkqsii1ibgpz"))))
+        (base32 "0ns8xbq1l21mg8p2aiqv5h306a3vpn64j6jrgzbv8iv1a7kqrrmc"))
+       (modules '((guix build utils)))
+       (snippet
+        '(with-directory-excursion "inst/www/shared"
+           (for-each delete-file
+                     '("bootstrap/js/bootstrap.min.js"
+                       "bootstrap/shim/html5shiv.min.js"
+                       "bootstrap/shim/respond.min.js"))))))
     (properties `((upstream-name . "covr")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/www/shared"
+                (call-with-values
+                    (lambda ()
+                      (unzip2
+                       `((,(search-input-file inputs "/dist/js/bootstrap.js")
+                          "bootstrap/js/bootstrap.min.js")
+                         (,(search-input-file inputs "/dist/html5shiv.js")
+                          "bootstrap/shim/html5shiv.min.js")
+                         (,(search-input-file inputs "/dest/respond.src.js")
+                          "bootstrap/shim/respond.min.js"))))
+                  (lambda (sources targets)
+                    (for-each (lambda (source target)
+                                (format #true "Processing ~a --> ~a~%"
+                                        source target)
+                                (invoke "esbuild" source "--minify"
+                                        (string-append "--outfile=" target)))
+                              sources targets)))))))))
     (propagated-inputs
      (list r-crayon
            r-digest
@@ -24546,7 +24579,38 @@ function and interfaces to external frameworks.")
            r-withr
            r-yaml))
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list esbuild
+           r-knitr  ;for vignettes
+           (let ((version "3.3.5"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/twbs/bootstrap")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "js-bootstrap" version))
+               (sha256
+                (base32
+                 "1zxrjhnnd594rflnwzqhbx3rx0gjlh6hgx9v2nppgkmrkqb7y1a4"))))
+           (let ((version "3.7.2"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/aFarkas/html5shiv")
+                     (commit version)))
+               (file-name (git-file-name "js-html5shiv" version))
+               (sha256
+                (base32
+                 "0mw4bbl9a9d1ibywscjgmbky0jkj4081l1yd4x3ss0flwaa3fwsk"))))
+           (let ((version "1.4.2"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/scottjehl/Respond")
+                     (commit version)))
+               (file-name (git-file-name "js-respond" version))
+               (sha256
+                (base32
+                 "00xid731rirc7sdy1gc8qal3v9g0agr2qx15hm4x97l1lcbylyn2"))))))
     (home-page "https://github.com/r-lib/covr")
     (synopsis "Test coverage for R packages")
     (description
