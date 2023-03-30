@@ -112,6 +112,11 @@ knowledge of the Z-Wave protocol.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-before 'build 'patch-compiler
+           (lambda _
+             (substitute* "binding.gyp"
+               (("std=c\\+\\+11")
+                "std=c++17"))))
          (replace 'build
            ;; For some reason, `npm install` doesn't build
            ;; the addon automatically, so we do it explicitly here.
