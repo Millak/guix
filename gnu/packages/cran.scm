@@ -10358,13 +10358,13 @@ It also includes interpolation functions.")
 (define-public r-simplermarkdown
   (package
     (name "r-simplermarkdown")
-    (version "0.0.4")
+    (version "0.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "simplermarkdown" version))
        (sha256
-        (base32 "069pgx5m22rdqa21lyn5zqm9ym3g7w6z1d2wjwms8b1f2cp6266g"))))
+        (base32 "0lffwsrhsdqcqhklh24v0y0x6w4vq9jch93m330kfdv2amab1l06"))))
     (properties `((upstream-name . "simplermarkdown")))
     (build-system r-build-system)
     (propagated-inputs
