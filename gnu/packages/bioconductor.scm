@@ -662,6 +662,28 @@ data.")
 data.")
     (license license:artistic2.0)))
 
+(define-public r-illuminahumanmethylationepicanno-ilm10b4-hg19
+  (package
+    (name "r-illuminahumanmethylationepicanno-ilm10b4-hg19")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri
+                    "IlluminaHumanMethylationEPICanno.ilm10b4.hg19"
+                    version 'annotation))
+              (sha256
+               (base32
+                "0687b4k8hwfc18qgdd9ypv1skp37jd204fszba0gmrv3dc92i09c"))))
+    (properties `((upstream-name . "IlluminaHumanMethylationEPICanno.ilm10b4.hg19")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (home-page
+     "https://doi.org/doi:10.18129/B9.bioc.IlluminaHumanMethylationEPICanno.ilm10b4.hg19")
+    (synopsis "Annotation for Illumina's EPIC methylation arrays")
+    (description
+     "This is an annotation package for Illumina's EPIC methylation arrays.")
+    (license license:artistic2.0)))
+
 (define-public r-org-ce-eg-db
   (package
     (name "r-org-ce-eg-db")
