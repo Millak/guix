@@ -1061,6 +1061,28 @@ experience.")
     (home-page "http://fluxbox.org/")
     (license license:expat)))
 
+(define-public fbautostart
+  (package
+    (name "fbautostart")
+    (version "2.718281828")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/paultag/fbautostart.git")
+                     (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "13h6j5khi5axqhflzhayzgvyhxylmk5vsgin235ji440mzd516gz"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake))
+    (synopsis "XDG autostarter for Fluxbox window manager")
+    (description "This package provides an autostarter complaint with
+the XDG Autostart specification.")
+    (home-page "https://github.com/paultag/fbautostart")
+    (license license:expat)))
+
 (define-public fnott
   (package
     (name "fnott")
