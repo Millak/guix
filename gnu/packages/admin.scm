@@ -3448,6 +3448,52 @@ throughput (in the same interval).")
     (home-page "http://dag.wiee.rs/home-made/dstat/")
     (license license:gpl2+)))
 
+(define-public dool
+  (package
+    (name "dool")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scottchiefbaker/dool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "dool" version))
+       (sha256
+        (base32 "13qq52lq7z3pl2mgrhwqh8c69p9x5rkyjqjswszd6vdbzm7zk7yq"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-symlinks-and-snap-packaging
+            ;; Remove symlinks that make 'ensure-no-mtimes-pre-1980 fail.
+            (lambda _
+              (delete-file "examples/dstat.py")
+              (delete-file-recursively "packaging/snap")))
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (substitute* "install.py"
+                (("(bin_dir *= ?).*" _ prefix)
+                 (string-append prefix  "\"" #$output "/bin/\"\n"))
+                (("(plugin_dir *= ?).*" _ prefix)
+                 (string-append prefix "\"" #$output "/share/dool/\"\n"))
+                (("(manpage_dir *= ?).*" _ prefix)
+                 (string-append prefix "\"" #$output "/share/man/man1/\"\n")))
+              (invoke "python" "install.py" "--root")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./dool" "--version")
+                (invoke "./dool" "-taf" "1" "5")))))))
+    (synopsis "Command line system resource monitoring tool")
+    (description "Dool is a command line tool to monitor many aspects of your
+system: CPU, Memory, Network, Load Average, etc.  It also includes a robust
+plug-in architecture to allow monitoring other system metrics.")
+    (home-page "https://github.com/scottchiefbaker/dool")
+    (license license:gpl2+)))
+
 (define-public thefuck
   (package
     (name "thefuck")
