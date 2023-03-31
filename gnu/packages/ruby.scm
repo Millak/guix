@@ -7799,7 +7799,7 @@ alternative to Marshal for Object serialization.")
 (define-public ruby-pg
   (package
     (name "ruby-pg")
-    (version "1.3.5")
+    (version "1.4.6")
     (home-page "https://github.com/ged/ruby-pg")
     (source
      (origin
@@ -7810,7 +7810,7 @@ alternative to Marshal for Object serialization.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0c2k2cibd5wwdhva68j5hhfpybm3wmvn2ym4ppn5mqmddwkjkvnk"))))
+         "0k7jgx7x7p6gbsbrv2l5rq27nff2nphnls1sdq525d82b068qnfm"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -7842,10 +7842,8 @@ alternative to Marshal for Object serialization.")
                              (string-append (getenv "GEM_PATH") ":" new-gem))
                      (when tests?
                        (invoke "rspec"))))))))
-    (native-inputs
-     (list ruby-rake-compiler ruby-hoe ruby-rspec))
-    (inputs
-     (list postgresql))
+    (native-inputs (list ruby-rake-compiler ruby-hoe ruby-rspec))
+    (inputs (list postgresql))
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
 with PostgreSQL 9.0 and later.")
