@@ -315,6 +315,17 @@ supports HTTP, HTTPS and GnuTLS.")
       #:parallel-tests? #f              ;parallel tests aren't supported
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "src/cadet/Makefile.in"
+                ;; The speed_reliable tests appear to be unreliable (see:
+                ;; https://bugs.gnunet.org/view.php?id=7787).
+                (("test_cadet_[0-9]+_speed_reliable\\$\\(EXEEXT)")
+                 ""))
+              (substitute* "src/core/Makefile.in"
+                ;; The 'test_core_api' test fails non-deterministically (see:
+                ;; https://bugs.gnunet.org/view.php?id=7784).
+                (("test_core_api\\$\\(EXEEXT) ") ""))))
           (add-before 'check 'set-env-var-for-tests
             (lambda _
               (setenv "LANG" "en_US.UTF-8")))
