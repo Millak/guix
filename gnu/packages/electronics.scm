@@ -333,7 +333,7 @@ supported devices, as well as input/output file format support.")
            sdl2
            sqlite
            zlib))
-    (home-page "https://openboardview.org/")
+    (home-page "https://github.com/OpenBoardView/OpenBoardView")
     (synopsis "Viewer for BoardView files")
     (description "OpenBoardView is a viewer for BoardView files, which present
 the details of a printed circuit board (PCB).  It comes with features
