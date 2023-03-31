@@ -993,7 +993,7 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
      (list
       bash-minimal python perl clisp
       ;; Unicode data:
-      ucd-next
+      ucd
       ;; Programs for the tests:
       cppi indent git-minimal/pinned autoconf))
     (home-page "https://www.gnu.org/software/gnulib/")
