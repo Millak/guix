@@ -29,7 +29,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022, 2023 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
@@ -214,7 +214,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.0
   (package
     (inherit ruby-2.7)
-    (version "3.0.5")
+    (version "3.0.6")
     (source
      (origin
        (method url-fetch)
@@ -223,7 +223,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1pnxbdkkh2miq9nqfq2qscvh76nprzg0r620d9ckdzih42xbaz6g"))))
+         "1lfvgm6jbspmwmc3haww83l1l8vl1airzi08ljrcz19dws9yxjxm"))))
     (inputs
      (modify-inputs (package-inputs ruby-2.7)
        (replace "openssl" openssl)))))
