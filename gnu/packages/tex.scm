@@ -4865,40 +4865,54 @@ make direct processing by LaTeX easier.  The package can be used either in
 conjunction with BibTeX or as a replacement for BibTeX.")
     (license license:lppl1.3+)))
 
-(define-public texlive-latex-bigfoot
-  (package
-    (name "texlive-latex-bigfoot")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "bigfoot"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "092g8alnsdwlgl1isdnqrr32l161994295kadr1n05d81xgj5wnv"))))
-    (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/bigfoot"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-generated-file
-           (lambda _
-             (for-each delete-file (find-files "." "\\.drv$"))
-             #t)))))
-    (home-page "https://www.ctan.org/pkg/bigfoot")
-    (synopsis "Footnotes for critical editions")
-    (description
-     "This package aims to provide a one-stop solution to requirements for
-footnotes.  It offers: Multiple footnote apparatus superior to that of
+(define-public texlive-bigfoot
+  (let ((template (simple-texlive-package
+                   "texlive-bigfoot"
+                   (list "doc/latex/bigfoot/"
+                         "source/latex/bigfoot/"
+                         "tex/latex/bigfoot/")
+                   (base32
+                    "140b4bbjcgajd1flznmi3ga6lx5pna2nxybr2dqm9515lny8gwf0"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/bigfoot")
+         ((#:build-targets _ '()) '(list "bigfoot.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/bigfoot/")))
+              (add-after 'chdir 'delete-drv-files
+                (lambda _
+                  (for-each delete-file (find-files "." "\\.drv$"))))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-etex texlive-ncctools))
+      (home-page "https://ctan.org/pkg/bigfoot")
+      (synopsis "Footnotes for critical editions")
+      (description
+       "The package aims to provide a one-stop solution to requirements for
+footnotes.  It offers multiple footnote apparatus superior to that of
 @code{manyfoot}.  Footnotes can be formatted in separate paragraphs, or be run
-into a single paragraph (this choice may be selected per footnote series);
-Things you might have expected (such as @code{\\verb}-like material in
-footnotes, and color selections over page breaks) now work.  Note that the
-majority of the bigfoot package's interface is identical to that of
-@code{manyfoot}; users should seek information from that package's
-documentation.  The bigfoot bundle also provides the @code{perpage} and
-@code{suffix} packages.")
-    (license license:gpl2+)))
+into a single paragraph.  Note that the majority of the @code{bigfoot}
+package's interface is identical to that of @code{manyfoot}; users should seek
+information from that package's documentation.
+
+The @code{bigfoot} bundle also provides the @code{perpage} and @code{suffix}
+packages.")
+      (license license:gpl2+))))
+
+(define-deprecated-package texlive-latex-bigfoot texlive-bigfoot)
 
 (define-public texlive-latex-blindtext
   (package
@@ -5342,7 +5356,7 @@ rotated.")
                "12clzcw2cl7g2chr2phgmmiwxw4859cln1gbx1wgp8bl9iw590nc")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-latex-bigfoot ; for suffix
+     (list texlive-bigfoot ; for suffix
            texlive-filemod
            texlive-latex-graphics
            texlive-latex-ifplatform
