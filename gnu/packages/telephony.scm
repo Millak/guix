@@ -297,6 +297,9 @@ reimplementation.")
             (sha256 (base32
                      "1mv080rvrhyxyhgqiqr8r9jdqhg3xhfawjvfj5zgj47h59nggjba"))))
    (build-system gnu-build-system)
+   (arguments
+    ;; Does not work with std=c++17, which is the default in modern GCC versions.
+    `(#:configure-flags '("CXXFLAGS=-std=c++14")))
    (inputs (list gnutls))
    (synopsis "Common C++ framework for threaded applications")
    (description "GNU uCommon C++ is meant as a very light-weight C++ library
