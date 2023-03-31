@@ -17349,6 +17349,36 @@ can also be used to get the exact location, font or color of the text.")
 is made as zipfile like as possible.")
     (license license:isc)))
 
+(define-public python-slugid
+  (package
+    (name "python-slugid")
+    (version "2.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/taskcluster/slugid.py")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1h64p2jlqv6lsmw8h2j203kx3bhv72cwzpk5gdhsaamw30cp3h1i"))))
+    (build-system python-build-system)
+    (native-inputs (list python-nose))
+    (arguments
+      (list #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key inputs tests? #:allow-other-keys)
+                (when tests?
+                  ;; The project uses tox to run the tests via nose.
+                  (invoke "nosetests" "-v" "test.py")))))))
+    (home-page "http://taskcluster.github.io/slugid.py")
+    (synopsis "Module for Base64 encoded UUID v4 slugs")
+    (description "This package provides a module for generating v4
+UUIDs and encoding them into 22 character URL-safe base64 slug
+representation.")
+    (license license:mpl2.0)))
+
 (define-public python-rich
   (package
     (name "python-rich")
