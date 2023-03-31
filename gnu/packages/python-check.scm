@@ -1152,25 +1152,18 @@ compliance.")
 (define-public python-pytest-isort
   (package
     (name "python-pytest-isort")
-    (version "2.0.0")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-isort" version))
+       (uri (pypi-uri "pytest_isort" version))
        (sha256
-        (base32 "05wi28zlqk3jafpjal8j523y5jcsx3xl3id9rx93qfjgkif8q6l2"))))
+        (base32 "0v0qa5l22y3v0nfkpvghbinzyj2rh4f54k871lrp992lbvf02y06"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+     `(#:tests? #f)) ; No tests in PyPi tarball.
     (propagated-inputs
      (list python-isort python-pytest))
-    (native-inputs
-     (list python-mock))
     (home-page "https://github.com/moccu/pytest-isort/")
     (synopsis "Pytest plugin to check import ordering using isort")
     (description
