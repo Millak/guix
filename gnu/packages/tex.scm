@@ -13318,22 +13318,47 @@ are provided to:
 @end itemize")
     (license license:lppl1.0+)))
 
-(define-public texlive-latex-totcount
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-totcount"
-              (list "doc/latex/totcount/"
-                    "tex/latex/totcount/")
-              (base32 "0z4mijyk3z7555q8da41aiji602plis5z261z4rr1fl8sndhnhn1")
-              #:trivial? #t))
-    (build-system texlive-build-system)
-    (home-page "https://ctan.org/pkg/totcount")
-    (synopsis "Find the last value of a counter")
-    (description
-     "This package records the value that was last set, for any counter of
+(define-public texlive-totcount
+  (let ((template (simple-texlive-package
+                   "texlive-totcount"
+                   (list "doc/latex/totcount/"
+                         "source/latex/totcount/"
+                         "tex/latex/totcount/")
+                   (base32
+                    "1rj9ncip5h2cbdljjqwxqsg14pb4mimzhz290q872n32w7rxkp28"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (build-system texlive-build-system)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/totcount")
+         ((#:tex-format _ #t) "latex")
+         ((#:build-targets _ '()) '(list "totcount.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/totcount/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-latex-graphics))
+      (home-page "https://ctan.org/pkg/totcount")
+      (synopsis "Find the last value of a counter")
+      (description
+       "This package records the value that was last set, for any counter of
 interest.  Since most such counters are simply incremented when they are
 changed, the recorded value will usually be the maximum value.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-totcount texlive-totcount)
 
 (define-public texlive-xetex
   (package
