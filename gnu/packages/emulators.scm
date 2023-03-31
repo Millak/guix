@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2579,4 +2580,43 @@ on a Commodore C64, C128 etc.")
       (description
        "This package provides an assembler and emulator for the Uxn
 stack-machine, written in ANSI C.  Graphical output is implemented using SDL2.")
+      (license license:expat))))
+
+(define-public emu8051
+  (let ((commit "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8")
+        (revision "1"))
+    (package
+      (name "emu8051")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jarikomppa/emu8051")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xxmkcwvd5fjnhwbricafg4xvxvr8dxhfanyfp4rbksw37dgk2fx"))
+                (modules '((guix build utils)))
+                (snippet #~(begin
+                             ;; Replace LDFLAGS -lcurses to -lncurses
+                             (substitute* "Makefile"
+                               (("-lcurses") "-lncurses"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;No test suite
+             #:make-flags #~(list (string-append "CC="
+                                                 #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)    ;No ./configure script
+                 (replace 'install
+                   ;; No installation procedure
+                   (lambda _
+                     (install-file "emu"
+                                   (string-append #$output "/bin")))))))
+      (inputs (list ncurses))
+      (home-page "https://github.com/jarikomppa/emu8051")
+      (synopsis "8051/8052 emulator with curses-based UI")
+      (description "emu8051 is a simulator of the 8051/8052 microcontrollers.")
       (license license:expat))))

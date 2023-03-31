@@ -42,6 +42,7 @@
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,8 +67,8 @@
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -86,6 +87,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet) ; libmicrohttpd
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -95,6 +97,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linphone)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages machine-learning)
@@ -120,8 +123,6 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages telephony)
-  #:use-module (gnu packages linphone)
-  #:use-module (gnu packages linux)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
@@ -3963,6 +3964,55 @@ key of digital audio.")
 compression modes.  This package contains command-line programs and library to
 encode and decode wavpack files.")
     (license license:bsd-3)))
+
+(define-public libmixed
+  ;; Release is much outdated.
+  (let ((commit "91e6b9f2438bca41205fade02c9d8f4f938838b6")
+        (revision "0"))
+    (package
+      (name "libmixed")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/libmixed")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01vwgv8ivpg7a4y95krkgh656mmklsn1k3fmhwp474aj82grd3m4"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; FIXME: (Sharlatan-20230326T121542+0100): Tests failed 1/34, 1 failed,
+        ;; 33 passed. There is not simple way to disable just one test.
+        ;; https://github.com/Shirakumo/libmixed/issues/13
+        #:tests? #f
+        #:configure-flags
+        #~(list "-DBUILD_STATIC=OFF"
+                "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
+                "-DCMAKE_C_FLAGS=-O3 -fPIC")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("/usr/local") #$output))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "./tester")))))))
+      (native-inputs (list doxygen graphviz))
+      (inputs (list mpg123 ncurses))
+      (home-page "https://github.com/Shirakumo/libmixed")
+      (synopsis "Low-level audio mixer pipeline library")
+      (description
+       "Libmixed is a library for real-time audio processing pipelines for use
+in audio/video/games.  It can serve as a base architecture for complex DSP
+systems.")
+      (license (list license:bsd-2 ; libsamplerate
+                     license:gpl2 ; spiralfft
+                     license:zlib)))))
 
 (define-public libmodplug
   (package

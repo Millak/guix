@@ -40,7 +40,7 @@
 (define-module (gnu services base)
   #:use-module (guix store)
   #:use-module (guix deprecation)
-  #:autoload   (guix diagnostics) (warning &fix-hint)
+  #:autoload   (guix diagnostics) (warning formatted-message &fix-hint)
   #:autoload   (guix i18n) (G_)
   #:use-module (guix combinators)
   #:use-module (gnu services)
@@ -246,7 +246,7 @@
             kmscon-service-type
 
             pam-limits-service-type
-            pam-limits-service
+            pam-limits-service  ; deprecated
 
             greetd-service-type
             greetd-configuration
@@ -1588,17 +1588,13 @@ information on the configuration file syntax."
 
 
 (define pam-limits-service-type
-  (let ((security-limits
-         ;; Create /etc/security containing the provided "limits.conf" file.
-         (lambda (limits-file)
-           `(("security/limits.conf"
-              ,limits-file))))
-        (pam-extension
+  (let ((pam-extension
          (lambda (pam)
            (let ((pam-limits (pam-entry
                               (control "required")
                               (module "pam_limits.so")
-                              (arguments '("conf=/etc/security/limits.conf")))))
+                              (arguments
+                               '("conf=/etc/security/limits.conf")))))
              (if (member (pam-service-name pam)
                          '("login" "greetd" "su" "slim" "gdm-password" "sddm"
                            "sudo" "sshd"))
@@ -1606,7 +1602,27 @@ information on the configuration file syntax."
                   (inherit pam)
                   (session (cons pam-limits
                                  (pam-service-session pam))))
-                 pam)))))
+                 pam))))
+
+        ;; XXX: Using file-like objects is deprecated, use lists instead.
+        ;;      This is to be reduced into the list? case when the deprecated
+        ;;      code gets removed.
+        ;; Create /etc/security containing the provided "limits.conf" file.
+        (security-limits
+         (match-lambda
+           ((? file-like? obj)
+            (warning (G_ "Using file-like value for \
+'pam-limits-service-type' is deprecated~%"))
+            `(("security/limits.conf" ,obj)))
+           ((? list? lst)
+            `(("security/limits.conf"
+               ,(plain-file "limits.conf"
+                            (string-join (map pam-limits-entry->string lst)
+                                         "\n" 'suffix)))))
+           (_ (raise
+               (formatted-message
+                (G_ "invalid input for 'pam-limits-service-type'~%")))))))
+
     (service-type
      (name 'limits)
      (extensions
@@ -1616,9 +1632,11 @@ information on the configuration file syntax."
      (description
       "Install the specified resource usage limits by populating
 @file{/etc/security/limits.conf} and using the @code{pam_limits}
-authentication module."))))
+authentication module.")
+     (default-value '()))))
 
-(define* (pam-limits-service #:optional (limits '()))
+(define-deprecated (pam-limits-service #:optional (limits '()))
+  pam-limits-service-type
   "Return a service that makes selected programs respect the list of
 pam-limits-entry specified in LIMITS via pam_limits.so."
   (service pam-limits-service-type

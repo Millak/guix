@@ -18959,7 +18959,6 @@ will fail if @var{device} does not exist.
 @end table
 @end deftp
 
-@anchor{pam-limits-service}
 @cindex session limits
 @cindex ulimit
 @cindex priority
@@ -18967,22 +18966,23 @@ will fail if @var{device} does not exist.
 @cindex jackd
 @cindex nofile
 @cindex open file descriptors
-@deffn {Scheme Procedure} pam-limits-service [#:limits @code{'()}]
-
-Return a service that installs a configuration file for the
+@anchor{pam-limits-service-type}
+@defvar pam-limits-service-type
+Type of the service that installs a configuration file for the
 @uref{http://linux-pam.org/Linux-PAM-html/sag-pam_limits.html,
-@code{pam_limits} module}.  The procedure optionally takes a list of
-@code{pam-limits-entry} values, which can be used to specify
+@code{pam_limits} module}.  The value for this service type is
+a list of @code{pam-limits-entry} values, which can be used to specify
 @code{ulimit} limits and @code{nice} priority limits to user sessions.
+By default, the value is the empty list.
 
 The following limits definition sets two hard and soft limits for all
 login sessions of users in the @code{realtime} group:
 
 @lisp
-(pam-limits-service
- (list
-  (pam-limits-entry "@@realtime" 'both 'rtprio 99)
-  (pam-limits-entry "@@realtime" 'both 'memlock 'unlimited)))
+(service pam-limits-service-type
+         (list
+          (pam-limits-entry "@@realtime" 'both 'rtprio 99)
+          (pam-limits-entry "@@realtime" 'both 'memlock 'unlimited)))
 @end lisp
 
 The first entry increases the maximum realtime priority for
@@ -18994,9 +18994,9 @@ Another useful example is raising the maximum number of open file
 descriptors that can be used:
 
 @lisp
-(pam-limits-service
- (list
-  (pam-limits-entry "*" 'both 'nofile 100000)))
+(service pam-limits-service-type
+         (list
+          (pam-limits-entry "*" 'both 'nofile 100000)))
 @end lisp
 
 In the above example, the asterisk means the limit should apply to any
@@ -19005,7 +19005,7 @@ maximum system value visible in the @file{/proc/sys/fs/file-max} file,
 else the users would be prevented from login in.  For more information
 about the Pluggable Authentication Module (PAM) limits, refer to the
 @samp{pam_limits} man page from the @code{linux-pam} package.
-@end deffn
+@end defvar
 
 @defvar greetd-service-type
 @uref{https://git.sr.ht/~kennylevinsen/greetd, @code{greetd}} is a minimal and

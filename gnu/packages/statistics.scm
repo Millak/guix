@@ -1299,14 +1299,14 @@ agnes cluster diagrams.")
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "0dji1iyf6x9vg6gjklzkb3x9vfydfi95idkvckj6208b1rwgwsj4"))))
+         "10rlx1ciyvh0ayic03kckv360idl9s1zyc2ar5lisns786c1hnns"))))
     (build-system r-build-system)
     (native-inputs
      (list pkg-config))
@@ -1317,7 +1317,6 @@ agnes cluster diagrams.")
            r-fontquiver
            r-gfonts
            r-htmltools
-           r-memoise
            r-rcpp
            r-systemfonts))
     (home-page "https://cran.r-project.org/web/packages/gdtools")
@@ -1816,13 +1815,13 @@ and printing capabilities than traditional data frames.")
 (define-public r-dplyr
   (package
     (name "r-dplyr")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "dplyr" version))
               (sha256
                (base32
-                "1msfp29lbddwdv8ibc2nkan0g1g4y4w5fws6802v6h6x95g57c4c"))))
+                "1xxvspk1nyns39dp2fqvxbvvnkkz4rcgmhrcrznr3h1qpayj9p6z"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -1853,14 +1852,14 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "0a5cnh0fr81mak9ccqr91nsjqlxsnf6a2lmwrsgv7g1sjag0b4p1"))))
+         "1b3zf2ai4kp96wd6i4jg9b3n37bwbw7lfvxvs1i1kcn6brch1p0d"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-blob
@@ -2649,17 +2648,17 @@ were originally a part of the r-devtools package.")
 (define-public r-hms
   (package
     (name "r-hms")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hms" version))
        (sha256
         (base32
-         "1vdx08irnh8q5232hriv47hh88hc55nbbrff7y6zbainff2akrhy"))))
+         "10h2k5j97fggq3hc0qzxv1q9821y21m326v3x99zsvpl1b3g89p6"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ellipsis r-lifecycle r-pkgconfig r-rlang r-vctrs))
+     (list r-lifecycle r-pkgconfig r-rlang r-vctrs))
     (home-page "https://github.com/rstats-db/hms")
     (synopsis "Pretty time of day")
     (description
@@ -2857,18 +2856,19 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.20")
+    (version "2.21")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "178mc3dqm11y58k8jdhm1yi11bbl1h7bls9d8f94ngmlzjdhbxyp"))))
+          (base32 "0a5czn18clfnw0a9nd5v98ah4h47i32423s6jdf126ni4aj20ny2"))))
     (properties `((upstream-name . "rmarkdown")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bslib
            r-evaluate
+           r-fontawesome
            r-htmltools
            r-jquerylib
            r-jsonlite
@@ -2890,13 +2890,13 @@ variety of formats.")
 (define-public r-gtable
   (package
     (name "r-gtable")
-    (version "0.3.2")
+    (version "0.3.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gtable" version))
               (sha256
                (base32
-                "1j162vkyvkyyz61smw36crgmd76jic17n9qfmn0cyvafzdyqyiwd"))))
+                "0fkv19h64cyxsadplvyzbpjliy9wlfg56hc8znvqg972g3cmi6ig"))))
     (properties `((upstream-name . "gtable")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3009,13 +3009,13 @@ engine (version 3.8.8.2) is included.")
 (define-public r-rcurl
   (package
     (name "r-rcurl")
-    (version "1.98-1.10")
+    (version "1.98-1.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RCurl" version))
               (sha256
                (base32
-                "1m7i0q9scrh2bfr0nqs029052kznhlv3siz9055pzdvgig7jnqjs"))))
+                "1ci6lsxm0f13yzw712gcbq23syl54x5llvhs2w1b8wwm9vqgx0qs"))))
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
@@ -3032,7 +3032,7 @@ if (certs != \"\") { .opts = merge.list(.opts, list(cainfo=certs)) }
     (native-inputs
      (list libxml2))
     (inputs
-     (list curl zlib))
+     (list curl))
     (propagated-inputs
      (list r-bitops))
     (home-page "https://www.omegahat.net/RCurl")
@@ -3172,14 +3172,14 @@ statements.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "1.6-2")
+    (version "1.6-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "0livckkhci3w1x9xai2m0a30fj06qsks2qds7y5jr9vwx03jqg21"))))
+         "0x7k5ycbvnfqsygrcyaaxnl0060x6869b345xc697hhr9sfxb4ai"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-nlme))
     (home-page "https://cran.r-project.org/web/packages/segmented")
@@ -3801,13 +3801,13 @@ analysis of large sparse or dense matrices.")
 (define-public r-glmnet
   (package
    (name "r-glmnet")
-   (version "4.1-6")
+   (version "4.1-7")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "glmnet" version))
      (sha256
-      (base32 "0c3y9g3k0f0yclcffxzgfhfylb3py0iydhyspcjdrl44lb7cdi5y"))))
+      (base32 "1a7af2658z9fmx0rcdx401lj86q73qkvsvlfnrp2bw4xv43bd85k"))))
    (build-system r-build-system)
    (native-inputs
     (list gfortran r-knitr))
@@ -4307,14 +4307,14 @@ and tidyr provides no margins or aggregation.")
 (define-public r-hexbin
   (package
     (name "r-hexbin")
-    (version "1.28.2")
+    (version "1.28.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hexbin" version))
        (sha256
         (base32
-         "0bbhs5pwxh474w62sq6gqvih7habancxng9wd4f2rgn6lv9zhhb2"))))
+         "0pyy97bh9xf9hijg3iw1z4ri01571r1fx7xqm3fjkzx4q48kbcqf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
@@ -5392,14 +5392,14 @@ can be efficiently implemented directly in the R language.")
 (define-public r-robustbase
   (package
     (name "r-robustbase")
-    (version "0.95-0")
+    (version "0.95-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robustbase" version))
        (sha256
         (base32
-         "094pxwp78bmqyn6vncyzrazqxnn8abqsbzhlcq44avfz8qffmyjw"))))
+         "1sm37gqs35cvkacigsla8kzvpzjzsrgkabf58ymk9pzcndnx4b46"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
@@ -5840,13 +5840,13 @@ Companion to Applied Regression, Third Edition, Sage.")
 (define-public r-car
   (package
     (name "r-car")
-    (version "3.1-1")
+    (version "3.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "car" version))
        (sha256
-        (base32 "1g6jdcxl2aig6zirdn3k5l48sjmpljzy1aadnlr6mr6pxqamiicg"))))
+        (base32 "1j3l8r3j05769gdfrqz0n38xviq6pww1cjrgdd0fkj3sjy8k89l9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
@@ -5988,14 +5988,14 @@ multivariate case.")
 (define-public r-tclust
   (package
     (name "r-tclust")
-    (version "1.5-2")
+    (version "1.5-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tclust" version))
        (sha256
         (base32
-         "12vg9q35srddjidrn3q955xybn6ldraya35s4955ypj61arp89j9"))))
+         "1a3i6kvfzc2d6rdf75w03n5172jihhqa8mvzcb4m8l0w6mgdlm9b"))))
     (build-system r-build-system)
     ;; These are all suggested packages, not build dependencies.
     (propagated-inputs
@@ -7356,16 +7356,16 @@ Neyman, 1936; cf.  Spiller et al., 2012), etc.")
 (define-public r-mumin
   (package
     (name "r-mumin")
-    (version "1.47.1")
+    (version "1.47.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "MuMIn" version))
               (sha256
                (base32
-                "1xhsc9hmx2b3zqyvpjs64rs90ccrfcsglrq2mhh85mgplsnva8qj"))))
+                "0xqasb79lmdhff25zalzrpjwv6qs9qnxr54ypnqjjgshi96mbwvg"))))
     (properties `((upstream-name . "MuMIn")))
     (build-system r-build-system)
-    (propagated-inputs (list r-matrix r-nlme))
+    (propagated-inputs (list r-insight r-matrix r-nlme))
     (home-page "https://cran.r-project.org/package=MuMIn")
     (synopsis "Multi-Model Inference")
     (description

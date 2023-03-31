@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -246,11 +246,15 @@ of those files are returned that are unexpectedly installed."
 (define (tlpdb->package name version package-database)
   (and-let* ((data (assoc-ref package-database name))
              (dirs (files->directories
-                    (map (lambda (dir)
-                           (string-drop dir (string-length "texmf-dist/")))
-                         (append (or (assoc-ref data 'docfiles) (list))
-                                 (or (assoc-ref data 'runfiles) (list))
-                                 (or (assoc-ref data 'srcfiles) (list))))))
+                    (filter-map (lambda (dir)
+                                  ;; Ignore any file not starting with the
+                                  ;; expected prefix.  Nothing good can come
+                                  ;; from this.
+                                  (and (string-prefix? "texmf-dist/" dir)
+                                       (string-drop dir (string-length "texmf-dist/"))))
+                                (append (or (assoc-ref data 'docfiles) (list))
+                                        (or (assoc-ref data 'runfiles) (list))
+                                        (or (assoc-ref data 'srcfiles) (list))))))
              (name (guix-name name))
              ;; TODO: we're ignoring the VERSION argument because that
              ;; information is distributed across %texlive-tag and
@@ -260,6 +264,12 @@ of those files are returned that are unexpectedly installed."
                                        %texlive-tag "/Master/texmf-dist"))
                    (locations dirs)
                    (revision %texlive-revision)))
+             ;; Ignore arch-dependent packages.
+             (filtered-depends
+              (or (and=> (assoc-ref data 'depend)
+                         (lambda (inputs)
+                           (remove (cut string-suffix? ".ARCH" <>) inputs)))
+                  '()))
              (source (with-store store
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
@@ -278,24 +288,25 @@ of those files are returned that are unexpectedly installed."
         ;; package->definition in (guix import utils) expects to see a
         ;; version field.
         (version ,version)
-        ,@(or (and=> (assoc-ref data 'depend)
-                     (lambda (inputs)
-                       `((propagated-inputs
-                          (list ,@(map (lambda (tex-name)
-                                         (let ((name (guix-name tex-name)))
-                                           (string->symbol name)))
-                                       inputs))))))
-              '())
-        ,@(or (and=> (assoc-ref data 'catalogue-ctan)
-                     (lambda (url)
-                       `((home-page ,(string-append "https://ctan.org" url)))))
+        ,@(match filtered-depends
+            (() '())
+            (inputs
+             `((propagated-inputs
+                (list ,@(map
+                         (lambda (tex-name)
+                           (let ((name (guix-name tex-name)))
+                             (string->symbol name)))
+                         inputs))))))
+        ,@(or (and=> (assoc-ref data 'name)
+                     (lambda (name)
+                       `((home-page ,(string-append "https://ctan.org/pkg/"
+                                                    name)))))
               '((home-page "https://www.tug.org/texlive/")))
         (synopsis ,(assoc-ref data 'shortdesc))
-        (description ,(beautify-description
-                       (assoc-ref data 'longdesc)))
-        (license ,(string->license
-                   (assoc-ref data 'catalogue-license))))
-     (or (assoc-ref data 'depend) (list)))))
+        (description ,(and=> (assoc-ref data 'longdesc) beautify-description))
+        (license ,(and=> (assoc-ref data 'catalogue-license)
+                         string->license)))
+     filtered-depends)))
 
 (define texlive->guix-package
   (memoize

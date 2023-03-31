@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3573,6 +3574,79 @@ this library provides functions to facilitate such comparisons.")
 SQLAlchemy Database Toolkit for Python.")
     (license license:expat)))
 
+(define-public python-sqlite-fts4
+  (package
+    (name "python-sqlite-fts4")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sqlite-fts4" version))
+              (sha256
+               (base32
+                "034kx0ac556sywy1p4qcrc36l24w3q0xwswqv2z9s3k8yvm5xc3q"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/simonw/sqlite-fts4")
+    (synopsis "Python functions for working with SQLite FTS4 search")
+    (description "This package provides custom SQLite functions written
+in Python for ranking documents indexed using the SQLite's FTS4 full
+text search extension.")
+    (license license:asl2.0)))
+
+(define-public python-sqlite-utils
+  (package
+    (name "python-sqlite-utils")
+    (version "3.30")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/simonw/sqlite-utils")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a58syvh5jp40vi5libsxkqy99z75kj4ckxqmylbhd342ppfy1wp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "setup.py"
+                              ;; This is a variant designed to have a binary
+                              ;; wheel made available on PyPI, which is not a
+                              ;; concern to Guix.
+                              (("click-default-group-wheel")
+                               "click-default-group")))))))
+    (propagated-inputs (list python-click python-click-default-group
+                             python-dateutil python-sqlite-fts4
+                             python-tabulate))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/simonw/sqlite-utils")
+    (synopsis
+     "CLI tool and Python utility functions for manipulating SQLite databases")
+    (description
+     "This package provides a CLI tool and Python utility functions for
+manipulating SQLite databases.  It's main features are:
+@itemize
+@item
+Pipe JSON (or CSV or TSV) directly into a new SQLite database file,
+automatically creating a table with the appropriate schema.
+@item
+Run in-memory SQL queries, including joins, directly against data in
+CSV, TSV or JSON files and view the results.
+@item
+Configure SQLite full-text search against your database tables and run
+search queries against them, ordered by relevance.
+@item
+Run transformations against your tables to make schema changes that
+SQLite ALTER TABLE does not directly support, such as changing the type
+of a column.
+@item
+Extract columns into separate tables to better normalize your existing
+data.
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public python-pickleshare
   (package
     (name "python-pickleshare")
@@ -5031,3 +5105,84 @@ generic interface to caching backends of any variety, and additionally
 provides API hooks which integrate these cache backends with the locking
 mechanism of @code{dogpile}.")
     (license license:expat)))
+
+(define-public datasette
+  (package
+    (name "datasette")
+    (version "0.64.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/simonw/datasette")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c8ajdaraynrjvsb8xxxnkb7zgm5fwq60qczaz00n465ki80j4h3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; There are multiple unexplained test failures (see:
+      ;; https://github.com/simonw/datasette/issues/2048).
+      #~(list "-k" (string-append
+                    "not (test_database_page_for_database_with_dot_in_name"
+                    " or test_row_strange_table_name"
+                    " or test_database_with_space_in_name"
+                    " or test_tilde_encoded_database_names"
+                    " or test_weird_database_names"
+                    " or test_css_classes_on_body"
+                    " or test_templates_considered"
+                    " or test_row_html_compound_primary_key"
+                    " or test_edit_sql_link_on_canned_queries"
+                    " or test_alternate_url_json"
+                    " or test_table_with_slashes_in_name"
+                    " or test_searchable"
+                    " or test_custom_query_with_unicode_characters"
+                    " or test_searchmode)")
+              "-n" (number->string (parallel-job-count))
+              "-m" "not serial")        ;cannot run in parallel
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; The package needlessly specifies exact versions
+              ;; of dependencies, when it works fine with others.
+              (substitute* "setup.py"
+                (("(black)==[0-9\\.]+" _ package)
+                 package)
+                (("click-default-group-wheel")
+                 "click-default-group")))))))
+    (propagated-inputs
+     (list python-aiofiles
+           python-asgi-csrf
+           python-asgiref
+           python-click
+           python-click-default-group
+           python-httpx
+           python-hupper
+           python-itsdangerous
+           python-janus
+           python-jinja2
+           python-mergedeep
+           python-pint
+           python-pluggy-next
+           python-pyyaml
+           python-uvicorn))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-black
+           python-cogapp
+           python-pytest-7.1
+           python-pytest-asyncio
+           python-pytest-runner
+           python-pytest-timeout
+           python-pytest-xdist-next
+           python-setuptools
+           python-trustme))
+    (home-page "https://datasette.io/")
+    (synopsis "Multi-tool for exploring and publishing data")
+    (description "Datasette is a tool for exploring and publishing data.
+It helps people take data of any shape or size and publish that as an
+interactive, explorable website and accompanying API.")
+    (license license:asl2.0)))

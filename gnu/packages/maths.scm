@@ -5218,6 +5218,95 @@ packages.")
     ;;  GPUQREngine, RBio, SuiteSparse_GPURuntime, SuiteSparseQR, UMFPACK
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+
+;; This outdated version is used to build the scilab package.
+(define-public suitesparse-3
+  (package
+    (inherit suitesparse)
+    (name "suitesparse")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DrTimothyAldenDavis/SuiteSparse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wxk755nzps0c9la24zqknqkzjp6rcj5q9jhd973mff1pqja3clz"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f  ;no "check" target
+       #:make-flags
+       ,#~(list
+           (string-append "CC=gcc")
+           "AR=gcc -shared -o"
+           "RANLIB=touch"
+           "CFLAGS=-O3 -fPIC -I../Include"
+           "TBB=-ltbb"
+
+           ;; Disable metis@4 (nonfree) support.
+           "CHOLMOD_CONFIG=-DNPARTITION"
+           "METIS="
+           "METIS_PATH="
+
+           ;; The default is to link against netlib lapack.  Use OpenBLAS
+           ;; instead.
+           "BLAS=-lopenblas" "LAPACK=-lopenblas"
+
+           (string-append "INSTALL_LIB="
+                          (assoc-ref %outputs "out") "/lib")
+           (string-append "INSTALL_INCLUDE="
+                          (assoc-ref %outputs "out") "/include")
+           "library")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'correct-build-configuration
+           (lambda _
+             ;; Invert build order: CHOLMOD before KLU.
+             (substitute* "Makefile"
+               (("\t\\( cd CHOLMOD ; \\$\\(MAKE\\) \\)\n$")
+                "")
+               (("\\( cd KLU ; \\$\\(MAKE\\) \\)")
+                (string-append "( cd CHOLMOD ; $(MAKE) )\n\t"
+                               "( cd KLU ; $(MAKE) )")))
+             ;; Build shared libraries.
+             (substitute* (find-files "." "akefile$")
+               (("lib([a-z]+)\\.a" all libname)
+                (string-append "lib" libname ".so")))
+             ;; Delete broken KLU Demo step.
+             (substitute* "KLU/Makefile"
+               (("\\( cd Demo ; \\$\\(MAKE\\) \\)")
+                ""))))
+         (replace 'install
+           (lambda _
+             ;; Install libraries.
+             (for-each
+              (lambda (x)
+                (install-file
+                 x
+                 (string-append (assoc-ref %outputs "out") "/lib")))
+              (find-files "." "\\.so$"))
+             ;; Install header files.
+             (for-each
+              (lambda (x)
+                (install-file
+                 x
+                 (string-append (assoc-ref %outputs "out") "/include")))
+              (find-files "." "\\.h$"))))
+         ,@(if (target-riscv64?)
+               ;; GraphBLAS FTBFS on riscv64-linux
+               `((add-after 'unpack 'skip-graphblas
+                   (lambda _
+                     (substitute* "Makefile"
+                       ((".*cd GraphBLAS.*") "")
+                       (("metisinstall gbinstall moninstall")
+                        "moninstall")))))
+               '())
+         (delete 'configure))))         ;no configure script
+    (inputs
+     (list tbb openblas gmp mpfr))))
+
 (define-public atlas
   (package
     (name "atlas")
@@ -6072,6 +6161,14 @@ structured and unstructured grid problems.")))
         (base32
          "0vr8c1mz1k6mz0sgh6n3scl5c3a71iqmy5fnydrgq504icj4vym4"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'install-matioConfig.h
+            (lambda _
+              (install-file "src/matioConfig.h"
+                            (string-append #$output "/include")))))))
     (inputs
      (list zlib hdf5-1.8))
     (home-page "http://matio.sourceforge.net/")
@@ -8569,3 +8666,109 @@ primal-dual interior-point method are made available.  Interfaces are
 provided for applications written in C++ and Python.  Parallel
 computation is supported via MPI.")
     (license license:bsd-2))))
+
+(define-public scilab
+  (package
+    (name "scilab")
+    (version "5.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://oos.eu-west-2.outscale.com/scilab-releases/"
+                       version "/scilab-" version "-src.tar.gz"))
+       (sha256
+        (base32 "1hx57aji5d78brwqcf8a34i1hasm3h4nw46xjg7cgxj09s8yz5kq"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config gfortran))
+    (inputs (list libxml2
+                  `(,pcre "bin")
+                  `(,pcre "out")
+                  readline
+                  hdf5-1.8
+                  curl
+                  openblas
+                  lapack
+                  arpack-ng
+                  fftw
+                  gettext-minimal
+                  suitesparse-3
+                  tcl
+                  tk
+                  libx11
+                  matio))
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       ,#~(list
+           "--enable-relocatable"
+           "--disable-static-system-lib"
+           ;; Disable all java code.
+           "--without-gui"
+           "--without-javasci"
+           "--disable-build-help"
+           "--with-external-scirenderer"
+           ;; Tcl and Tk library locations.
+           (string-append "--with-tcl-include="
+                          (string-drop-right
+                           (search-input-file %build-inputs "include/tcl.h")
+                           (string-length "/tcl.h")))
+           (string-append "--with-tcl-library="
+                          (string-drop-right
+                           (search-input-directory %build-inputs "lib/tcl8")
+                           (string-length "/tcl8")))
+           (string-append "--with-tk-include="
+                          (string-drop-right
+                           (search-input-file %build-inputs "include/tk.h")
+                           (string-length "/tk.h")))
+           (string-append "--with-tk-library="
+                          (string-drop-right
+                           (search-input-directory %build-inputs "lib/tk8.6")
+                           (string-length "/tk8.6")))
+           ;; There are some 2018-fortran errors that are ignored
+           ;; with this fortran compiler flag.
+           "FFLAGS=-fallow-argument-mismatch")
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-before 'build 'pre-build
+              (lambda _
+                ;; Fix scilab script.
+                (substitute* "bin/scilab"
+                  (("\\/bin\\/ls")
+                   (which "ls")))
+                ;; Fix core.start.
+                (substitute* "modules/core/etc/core.start"
+                  (("'SCI/modules")
+                   "SCI+'/modules"))
+                ;; Fix fortran compilation error.
+                (substitute*
+                    "modules/differential_equations/src/fortran/twodq.f"
+                  (("node\\(10\\),node1\\(10\\),node2\\(10\\),coef")
+                   "node(9),node1(9),node2(9),coef"))
+                ;; Fix C compilation errors.
+                ;; remove &
+                (substitute* "modules/hdf5/src/c/h5_readDataFromFile_v1.c"
+                  (("(H5Rdereference\\(_iDatasetId, H5R_OBJECT, )&(.*)\\);$"
+                    all common ref)
+                   (string-append common ref)))
+                ;; fix multiple definitions
+                (substitute* "modules/tclsci/src/c/TCL_Command.h"
+                  (("^__thread")
+                   "extern __thread"))
+                (substitute* "modules/tclsci/src/c/InitTclTk.c"
+                  (("BOOL TK_Started = FALSE;" all)
+                   (string-append all "\n"
+                                  "__threadId TclThread;" "\n"
+                                  "__threadSignal InterpReady;" "\n"
+                                  "__threadSignalLock InterpReadyLock;"
+                                  "\n")))
+                ;; Set SCIHOME to /tmp before macros compilation.
+                (setenv "SCIHOME" "/tmp"))))))
+    (home-page "https://scilab.org")
+    (synopsis "Software for engineers and scientists")
+    (description "This package provides the non-graphical version of the Scilab
+software for engineers and scientists. Scilab is used for signal processing,
+statistical analysis, image enhancement, fluid dynamics simulations, numerical
+optimization, and modeling, simulation of explicit and implicit dynamical
+systems and symbolic manipulations.")
+    (license license:cecill)))                    ;CeCILL v2.1

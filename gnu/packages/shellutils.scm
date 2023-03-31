@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -220,6 +221,60 @@ in Zsh intelligently.")
      "Fish-like fast/unobtrusive autosuggestions for zsh.  It suggests commands
 as you type.")
     (license license:expat)))
+
+(define-public zsh-completions
+  (package
+    (name "zsh-completions")
+    (version "0.34.0")
+    (home-page "https://github.com/zsh-users/zsh-completions")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jjgvzj3v31yibjmq50s80s3sqi4d91yin45pvn3fpnihcrinam9"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("src/" "share/zsh/site-functions/")
+                        ("README.md" "share/doc/zsh-completions/"))))
+    (synopsis "Additional completion definitions for Zsh")
+    (description
+     "This projects aims at gathering/developing new completion scripts that
+are not available in Zsh yet.  The scripts may be contributed to the Zsh
+project when stable enough.")
+    (license (license:non-copyleft "file://LICENSE"
+              "Custom BSD-like, permissive, non-copyleft license."))))
+
+(define-public zsh-history-substring-search
+  (package
+    (name "zsh-history-substring-search")
+    (version "1.0.2")
+    (home-page "https://github.com/zsh-users/zsh-history-substring-search")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0y8va5kc2ram38hbk2cibkk64ffrabfv1sh4xm7pjspsba9n5p1y"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("zsh-history-substring-search.plugin.zsh"
+                         "share/zsh/plugins/zsh-history-substring-search/")
+                        ("zsh-history-substring-search.zsh"
+                         "share/zsh/plugins/zsh-history-substring-search/")
+                        ("README.md" "share/doc/zsh-history-substring-search/"))))
+    (synopsis "ZSH port of Fish history search (up arrow)")
+    (description
+     "This is a clean-room implementation of the Fish shell's history search
+feature, where you can type in any part of any command from history and then
+press chosen keys, such as the UP and DOWN arrows, to cycle through matches.")
+    (license license:bsd-3)))
 
 (define-public zsh-syntax-highlighting
   (package

@@ -264,7 +264,6 @@ does not have a default value" field kind)))
                       (serializer field-serializer)
                       (default-value-thunk
                         (lambda ()
-                          (display '#,(id #'stem #'% #'stem))
                           (if (maybe-value-set? (syntax->datum field-default))
                               field-default
                               (configuration-missing-default-value

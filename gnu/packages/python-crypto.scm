@@ -1503,21 +1503,14 @@ items and collections, editing items, locking and unlocking collections
 (define-public python-trustme
   (package
     (name "python-trustme")
-    (version "0.6.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trustme" version))
        (sha256
-        (base32 "0v3vr5z6apnfmklf07m45kv5kaqvm6hxrkaqywch57bjd2siiywx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
+        (base32 "0v2qzszmyazfgc1snicdr4b4qdajpjd4pbinpgrn9vfff0yv41sy"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-more-itertools
            python-pyopenssl
@@ -1526,7 +1519,9 @@ items and collections, editing items, locking and unlocking collections
            python-service-identity
            python-zipp))
     (propagated-inputs
-     (list python-cryptography))
+     (list python-cryptography
+           python-idna
+           python-ipaddress))
     (home-page "https://github.com/python-trio/trustme")
     (synopsis "Fake a certificate authority for tests")
     (description

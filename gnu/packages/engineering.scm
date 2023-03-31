@@ -132,6 +132,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
@@ -1618,6 +1619,49 @@ specified in high-level description language into ready-to-compile C code for
 the API of spice simulators.  Based on transformations specified in XML
 language, ADMS transforms Verilog-AMS code into other target languages.")
     (license license:gpl3)))
+
+(define-public audmes
+  (package
+    (name "audmes")
+    (version "20220420")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/audmes/audmes%20sources/"
+                           "audmes-source-" version ".zip"))
+       (sha256
+        (base32 "0yxjq2p1ca2wy2idwrlxr3b4vbp0d9268jll90y7l55fbid8vkp2"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'prepare-csv.h
+           (lambda* (#:key inputs #:allow-other-keys)
+             (mkdir "libfccp")
+             (install-file (search-input-file inputs "csv.h") "libfccp"))))))
+    (inputs
+     (list alsa-lib pulseaudio wxwidgets))
+    (native-inputs
+     (list unzip
+           (let ((commit "4ade42d5f8c454c6c57b3dce9c51c6dd02182a66"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/ben-strasser/fast-cpp-csv-parser")
+                     (commit commit)))
+               (file-name (git-file-name "csv.h" (git-version "0" "0" commit)))
+               (sha256
+                (base32
+                 "1y7ads97gkrjg1jc532n8gmjry0qhqxginw1gq7b4lk9s0pyl540"))))))
+    (home-page "https://sourceforge.net/projects/audmes/")
+    (synopsis "Oscilloscope and spectrum analyzer using sound card")
+    (description
+     "The audio measurement system is a system for audio measurement through
+sound card.  It contains: generator, oscilloscope, audio spectrum
+analyzer (FFT) and frequency sweep plot.")
+    (license license:gpl2+)))
 
 (define-public capstone
   (package

@@ -782,6 +782,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/messaging.scm			\
   %D%/tests/networking.scm			\
   %D%/tests/package-management.scm		\
+  %D%/tests/pam.scm				\
   %D%/tests/reconfigure.scm			\
   %D%/tests/rsync.scm				\
   %D%/tests/samba.scm				\
