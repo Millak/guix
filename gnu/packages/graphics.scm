@@ -541,7 +541,7 @@ typically encountered in feature film production.")
     (inputs
      (list boost
            embree
-           ffmpeg
+           ffmpeg-5
            fftw
            freetype
            glew
