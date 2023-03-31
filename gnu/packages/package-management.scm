@@ -1151,6 +1151,9 @@ written entirely in Python.")
     (build-system python-build-system)
     (arguments
      (list
+      #:modules '((guix build python-build-system)
+                  (guix build utils)
+                  (ice-9 format))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -1175,22 +1178,26 @@ written entirely in Python.")
                  "@pytest.mark.tool(\"cmake\")"))))
           (add-before 'check 'configure-tests
             (lambda _
-              (call-with-output-file "conans/test/conftest_user.py"
-                (lambda (port)
-                  (format port "\
+              (let* ((cmake-version #$(version-major+minor
+                                       (package-version cmake)))
+                     (pkg-config-version #$(version-major+minor
+                                            (package-version pkg-config))))
+                (call-with-output-file "conans/test/conftest_user.py"
+                  (lambda (port)
+                    (format port "\
 tools_locations = {
     'apt_get': {'disabled': True},
     'bazel': {'disabled': True},
-    'cmake': {'default': '3.25',
+    'cmake': {'default': '~a',
               '3.15': {'disabled': True},
               '3.16': {'disabled': True},
               '3.17': {'disabled': True},
               '3.19': {'disabled': True},
-              '3.25': {}},
+              '~:*~a': {}},
     'pkg_config': {'exe': 'pkg-config',
-                   'default': '0.29',
-                   '0.29': {}},
-    'svn': {'disabled': True}}~%")))))
+                   'default': '~a',
+                   '~:*~a': {}},
+    'svn': {'disabled': True}}~%" cmake-version pkg-config-version))))))
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" "/tmp")))
