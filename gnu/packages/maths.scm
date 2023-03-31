@@ -1444,8 +1444,7 @@ incompatible with HDF5.")
              (substitute* "hl/fortran/src/Makefile.in"
                (("libhdf5hl_fortran_la_LDFLAGS =")
                 (string-append "libhdf5hl_fortran_la_LDFLAGS = -Wl,-rpath="
-                               (assoc-ref outputs "fortran") "/lib")))
-             #t))
+                               (assoc-ref outputs "fortran") "/lib")))))
          (add-after 'configure 'patch-settings
            (lambda _
              ;; libhdf5.settings contains the full path of the
@@ -1458,16 +1457,14 @@ incompatible with HDF5.")
               ;; Don't record the build-time kernel version to make the
               ;; settings file reproducible.
               (("Uname information:.*")
-               "Uname information: Linux\n"))
-             #t))
+               "Uname information: Linux\n"))))
          (add-after 'install 'patch-references
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin"))
                    (zlib (assoc-ref inputs "zlib")))
                (substitute* (find-files bin "h5p?cc")
                  (("-lz" lib)
-                  (string-append "-L" zlib "/lib " lib)))
-               #t)))
+                  (string-append "-L" zlib "/lib " lib))))))
          (add-after 'install 'split
             (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; Move all fortran-related files
@@ -1502,8 +1499,7 @@ incompatible with HDF5.")
                             (rename-file file
                                          (string-append fex "/" (basename file))))
                           (find-files ex ".*"))
-                (delete-file-recursively ex))
-              #t)))))
+                (delete-file-recursively ex)))))))
     (home-page "https://www.hdfgroup.org")
     (synopsis "Management suite for extremely large and complex data")
     (description "HDF5 is a suite that makes possible the management of
