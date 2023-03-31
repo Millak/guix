@@ -1209,7 +1209,7 @@ tools_locations = {
                 (setenv "CONFIG_SHELL" (which "sh"))
                 (setenv "PATH" (string-append (getenv "PATH") ":"
                                               #$output "/bin"))
-                (invoke "python" "-m" "pytest"
+                (invoke "python" "-m" "pytest" "-vv"
                         "-n" (number->string (parallel-job-count))
                         "-m" "not slow"
                         ;; Disable problematic tests.
@@ -1222,6 +1222,12 @@ tools_locations = {
                          ;; expected by the following test.
                          "and not pkg_config_path "
                          "and not compare " ;caused by newer node-semver?
+                         ;; This test hard-codes a compiler version.
+                         "and not test_toolchain "
+                         ;; The 'test_list' tests may fail
+                         ;; non-deterministically (see:
+                         ;; https://github.com/conan-io/conan/issues/13583).
+                         "and not test_list "
                          ;; These tests fail when Autoconf attempt to load a
                          ;; shared library in the same directory (see:
                          ;; https://github.com/conan-io/conan/issues/13577).
