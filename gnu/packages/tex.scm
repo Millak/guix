@@ -12799,6 +12799,23 @@ allow hyphenation (the corresponding commands in LaTeX, all of whose names are
 lower-case, prevent hyphenation altogether).")
     (license license:lppl1.3c)))
 
+(define-public texlive-relsize
+  (package
+    (inherit (simple-texlive-package
+              "texlive-relsize"
+              (list "doc/latex/relsize/"
+                    "tex/latex/relsize/")
+              (base32
+               "07g9wqxsh3a9rmfbppaqhyic82a1i1habizaf4hpdi3246w6nnby")
+              #:trivial? #t))
+    (home-page "https://ctan.org/pkg/relsize")
+    (synopsis "Set the font size relative to the current font size")
+    (description
+     "The basic command of the package is @code{\\relsize}, whose argument is
+a number of @code{\\magsteps} to change size; from this are defined commands
+@code{\\larger}, @code{\\smaller}, @code{\\textlarger}, etc.")
+    (license license:public-domain)))
+
 (define-public texlive-everysel
   (package
     (inherit
