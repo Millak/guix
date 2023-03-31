@@ -244,7 +244,7 @@
     (native-inputs
      (list pkg-config which net-base perl))
 
-    (home-page "https://golang.org/")
+    (home-page "https://go.dev/")
     (synopsis "Compiler and libraries for Go, a statically-typed language")
     (description "Go, also commonly referred to as golang, is an imperative
 programming language designed primarily for systems programming.  Go is a
