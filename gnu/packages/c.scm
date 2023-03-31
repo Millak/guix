@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -1144,6 +1144,54 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
     (description "@code{mimalloc} is a drop-in replacement for @code{malloc}.")
     (home-page "https://microsoft.github.io/mimalloc/")
     (license license:expat)))
+
+;;; The package is named orangeduck-mpc to differentiate it from GNU mpc.
+(define-public orangeduck-mpc
+  ;; The last release lacks an 'install' target.
+  (let ((commit "7c910e9303833c349f7432188ff77f2745254df2")
+        (revision "0"))
+    (package
+      (name "orangeduck-mpc")
+      (version (git-version "0.9.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/orangeduck/mpc")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "01a4vcxdnz0fbn90c9zc3jzklyqqvp9sfjpjwpq0f5r0l2pp37ad"))
+                (patches
+                 (search-patches "orangeduck-mpc-fix-pkg-config.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                  (string-append "PREFIX=" #$output))
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-Makefile
+                            (lambda _
+                              (substitute* "Makefile"
+                                ;; Do not attempt to alter the permissions,
+                                ;; otherwise 'install' would error with
+                                ;; "cannot stat [...] Permission denied"
+                                ;; errors.
+                                (("\\s\\-m[0-9]{3}\\s")
+                                 " "))))
+                          (delete 'configure))))
+      (home-page "https://github.com/orangeduck/mpc")
+      (synopsis "Parser Combinator library for C ")
+      (description "@code{mpc} is a lightweight Parser Combinator library for C.
+@code{mpc} can help with tasks such as:
+@itemize
+@item Building a new programming language
+@item Building a new data format
+@item Parsing an existing programming language
+@item Parsing an existing data format
+@item Embedding a Domain Specific Language
+@item Implementing Greenspun's Tenth Rule.
+@end itemize")
+      (license license:bsd-2))))
 
 ;;; Factored out of the ck package so that it can be adjusted and called on
 ;;; the host side easily, without impacting the package definition.
