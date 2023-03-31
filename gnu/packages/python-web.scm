@@ -26,7 +26,7 @@
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
@@ -3765,13 +3765,13 @@ for the basic TCP/IP protocols.")
 (define-public python-geventhttpclient
   (package
     (name "python-geventhttpclient")
-    (version "1.5.3")
+    (version "2.0.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "geventhttpclient" version))
               (sha256
                (base32
-                "104p14p67xa5gch8dy2zqmzmjra31fflk1c1alrry8dp8bzwj3nq"))
+                "04qmcc7qpnif70ph61339dcld4g107fkhpa0gdmbs8z98v9kkg4a"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3794,15 +3794,14 @@ for the basic TCP/IP protocols.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest"  "src/geventhttpclient/tests" "-v"
+               (invoke "pytest" "src/geventhttpclient/tests" "-v"
                        ;; Append the test modules to sys.path to avoid
                        ;; namespace conflict which breaks SSL tests.
                        "--import-mode=append")))))))
-    (native-inputs
-     (list python-dpkt python-pytest))
-    (propagated-inputs
-     (list python-brotli python-certifi python-gevent python-six))
-    (home-page "https://github.com/gwik/geventhttpclient")
+    (native-inputs (list python-dpkt python-pytest))
+    (propagated-inputs (list python-brotli python-certifi python-gevent
+                             python-six python-urllib3))
+    (home-page "https://github.com/geventhttpclient/geventhttpclient")
     (synopsis "HTTP client library for gevent")
     (description "@code{python-geventhttpclient} is a high performance,
 concurrent HTTP client library for python using @code{gevent}.")
