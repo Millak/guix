@@ -13136,23 +13136,44 @@ underscores), and hyphenation of text typeset in monospaced (e.g., cmtt)
 fonts.")
     (license license:lppl1.3c+)))
 
-(define-public texlive-latex-lastpage
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-lastpage"
-              (list "doc/latex/lastpage/"
-                    "tex/latex/lastpage/")
-              (base32 "0q6x743b8fkw9r82lrxy49f9xsg81bffynwvpnvpnp3h4mkafvdb")
-              #:trivial? #t))
-    (build-system texlive-build-system)
-    (home-page "https://ctan.org/pkg/lastpage")
-    (synopsis "Reference last page for Page N of M type footers")
-    (description
-     "This package enables referencing the number of pages in a LaTeX document
-through the introduction of a new label which can be referenced like
+(define-public texlive-lastpage
+  (let ((template  (simple-texlive-package
+                    "texlive-lastpage"
+                    (list "doc/latex/lastpage/"
+                          "source/latex/lastpage/"
+                          "tex/latex/lastpage/")
+                    (base32
+                     "1cmzl0jkid4w60bjlyxrc5bynbc3lwq5nr77rsip0q9hprxykxks"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/lastpage")
+         ((#:build-targets _ '()) '(list "lastpage.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/lastpage/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://ctan.org/pkg/lastpage")
+      (synopsis "Reference last page for Page N of M type footers")
+      (description
+       "This package enables referencing the number of pages in a LaTeX
+document through the introduction of a new label which can be referenced like
 @code{\\pageref{LastPage}} to give a reference to the last page of a document.
-It is particularly useful in the page footer that says: Page N of M.")
-    (license license:lppl1.3c+)))
+It is particularly useful in the page footer that says: @samp{Page N of M}.")
+      (license license:lppl1.3+))))
+
+(define-deprecated-package texlive-latex-lastpage texlive-lastpage)
 
 (define-public texlive-latex-tabto-ltx
   (package
