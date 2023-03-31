@@ -8552,28 +8552,47 @@ dvipng, but it also works when you are using PDFTeX for generating PDF
 files.")
     (license license:gpl3+)))
 
-(define-public texlive-latex-acronym
-  (package
-    (name "texlive-latex-acronym")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "acronym"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "09pd4wynksg1y1ddxnqbhk2dc185zw5nyi794d86n3qx8l014ijy"))))
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/acronym"))
-    (home-page "https://www.ctan.org/pkg/acronym")
-    (synopsis "Expand acronyms at least once")
-    (description
-     "This package ensures that all acronyms used in the text are spelled out
-in full at least once.  It also provides an environment to build a list of
+(define-public texlive-acronym
+  (let ((template (simple-texlive-package
+                   "texlive-acronym"
+                   (list "doc/latex/acronym/"
+                         "source/latex/acronym/"
+                         "tex/latex/acronym/")
+                   (base32
+                    "0p2sws3qy7wv0v6bsy6c5j36n9s1ps7b1z7dmg1370schrjpqnfh"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/acronym")
+         ((#:build-targets _ '()) '(list "acronym.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/acronym/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-bigfoot texlive-relsize texlive-xstring))
+      (home-page "https://ctan.org/pkg/acronym")
+      (synopsis "Expand acronyms at least once")
+      (description
+       "This package ensures that all acronyms used in the text are spelled
+out in full at least once.  It also provides an environment to build a list of
 acronyms used.  The package is compatible with PDF bookmarks.  The package
-requires the suffix package, which in turn requires that it runs under
+requires the @code{suffix} package, which in turn requires that it runs under
 e-TeX.")
-    (license license:lppl1.3+)))
+      (license license:lppl1.3+))))
+
+(define-deprecated-package texlive-latex-acronym texlive-acronym)
 
 (define-public texlive-pdftex
   (package
