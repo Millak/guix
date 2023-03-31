@@ -347,7 +347,7 @@ that sense aims to replace the current internet protocol stack.  Along with
 an application for secure publication of files, it has grown to include all
 kinds of basic applications for the foundation of a GNU internet.")
     (license license:agpl3+)
-    (home-page "https://gnunet.org/en/")))
+    (home-page "https://www.gnunet.org/en/")))
 
 (define-public guile-gnunet                       ;GSoC 2015!
   (let ((commit "d12167ab3c8d7d6caffd9c606e389ef043760602")
