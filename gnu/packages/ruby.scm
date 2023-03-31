@@ -7819,10 +7819,8 @@ alternative to Marshal for Object serialization.")
                              (string-append (getenv "GEM_PATH") ":" new-gem))
                      (when tests?
                        (invoke "rspec"))))))))
-    (native-inputs
-     (list ruby-rake-compiler ruby-hoe ruby-rspec))
-    (inputs
-     (list postgresql))
+    (native-inputs (list ruby-rake-compiler ruby-hoe ruby-rspec))
+    (inputs (list postgresql))
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
 with PostgreSQL 9.3 and later.")
