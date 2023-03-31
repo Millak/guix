@@ -4,7 +4,7 @@
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -252,7 +252,7 @@ supported devices, as well as input/output file format support.")
 (define-public openboardview
   (package
     (name "openboardview")
-    (version "9.0.3")
+    (version "9.95.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -270,10 +270,11 @@ supported devices, as well as input/output file format support.")
                                 (delete-file-recursively f)))
                             (scandir "." (negate (cut member <> keep))))))
               (patches
-               (search-patches "openboardview-use-system-imgui.patch"))
+               (search-patches "openboardview-use-system-imgui.patch"
+                               "openboardview-use-system-mpc.patch"))
               (sha256
                (base32
-                "0wmplzgi3rpkcajdrnkxvqhgxrn6qdxa6vwgd24bm10ryyhiqw54"))))
+                "1safjd729a7591rigkiy3c678bivrj5q1qwg1f18sijhlsfkf5b3"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -302,6 +303,7 @@ supported devices, as well as input/output file format support.")
             ;; directly rather than "utf8/utf8.h".
             (lambda _
               (substitute* '("src/openboardview/FileFormats/BRDFile.cpp"
+                             "src/openboardview/FileFormats/BRDFileBase.cpp"
                              "src/openboardview/BoardView.cpp")
                 (("utf8/utf8.h") "utf8.h"))))
           (add-before 'configure 'dynamically-load-gtk-via-absolute-path
@@ -327,6 +329,7 @@ supported devices, as well as input/output file format support.")
      (list fontconfig
            gtk+
            imgui
+           orangeduck-mpc
            sdl2
            sqlite
            zlib))
