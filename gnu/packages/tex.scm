@@ -9235,6 +9235,70 @@ typeset the table of contents in multiple columns.")
 
 (define-deprecated-package texlive-latex-ms texlive-ms)
 
+(define-public texlive-ncctools
+  (let ((template (simple-texlive-package
+                   "texlive-ncctools"
+                   (list "doc/latex/ncctools/"
+                         "source/latex/ncctools/"
+                         "tex/latex/ncctools/")
+                   (base32
+                    "1g3fpvrg6kx2ns97ih6iwdk0rcbxlv043x8rdppxdincl2lvbdx5"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/ncctools")
+         ((#:build-targets _ '()) '(list "ncctools.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/ncctools/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-amsmath texlive-latex-graphics))
+      (home-page "https://ctan.org/pkg/ncctools")
+      (synopsis "Collection of general packages for LaTeX")
+      (description
+       "The NCCtools bundle contains many packages for general use under LaTeX;
+many are also used by NCC LaTeX.  The bundle includes tools for:
+@itemize
+@item executing commands after a package is loaded;
+@item watermarks;
+@item counter manipulation;
+@item improvements to the @code{description} environment;
+@item hyphenation of compound words;
+@item new levels of footnotes;
+@item space-filling patterns;
+@item poor man's Black Board Bold symbols;
+@item alignment of the content of a box; use comma as decimal separator;
+@item boxes with their own crop marks;
+@item page cropmarks;
+@item improvements to fancy headers;
+@item float styles, mini floats, side floats;
+@item manually marked footnotes;
+@item extension of amsmath;
+@item control of paragraph skip;
+@item an envelope to the @code{graphicx} package;
+@item dashed and multiple rules;
+@item alternative techniques for declarations of sections, captions, and
+toc-entries;
+@item generalised text-stretching;
+@item generation of new theorem-like environments;
+@item control of the text area;
+@item centered page layouts;
+@item un-numbered top-level section.
+@end itemize")
+      (license license:lppl))))
+
 (define-public texlive-numprint
   (let ((template
          (simple-texlive-package
