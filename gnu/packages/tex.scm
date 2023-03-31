@@ -12452,6 +12452,46 @@ syllable.  The package itself does not support UTF-8 input in ordinary
 
 (define-deprecated-package texlive-generic-soul texlive-soul)
 
+(define-public texlive-soulutf8
+  (let ((template (simple-texlive-package
+                   "texlive-soulutf8"
+                   (list "doc/latex/soulutf8/"
+                         "source/latex/soulutf8/"
+                         "tex/generic/soulutf8/")
+                   (base32
+                    "0d9lv3xsads8ms642ys3pghxnsa2hlzafkcx66d2hbq224bz1phc"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "generic/soulutf8")
+         ((#:build-targets _ '()) '(list "soulutf8.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/soulutf8/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-generic-etexcmds
+             texlive-generic-infwarerr
+             texlive-soul))
+      (home-page "https://ctan.org/pkg/soulutf8")
+      (synopsis "Permit use of UTF-8 characters in @code{soul}")
+      (description
+       "This package extends package @code{soul} and adds some support for
+UTF-8.  Namely the input encodings in @file{utf8.def} from package
+@code{inputenc} and @file{utf8x.def} from package @code{ucs} are supported.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-xstring
   (let ((template (simple-texlive-package
                    "texlive-xstring"
