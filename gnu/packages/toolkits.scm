@@ -66,7 +66,12 @@
           (replace 'build
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Build main library.
-              (apply invoke #$(cc-for-target) "-I" (getcwd)
+              (apply invoke #$(cc-for-target)
+                     ;; This option is necessary at least for OpenBoardView,
+                     ;; otherwise it would fail with the "Too many vertices in
+                     ;; ImDrawList using 16-bit indices".
+                     "-DImDrawIdx=unsigned int"
+                     "-I" (getcwd)
                      "-I" (search-input-directory inputs "include/freetype2")
                      "-g" "-O2" "-fPIC" "-shared"
                      "-lGL" "-lSDL2" "-lglfw"
