@@ -777,14 +777,14 @@ ready for production.")
 (define-public qelectrotech
   (package
     (name "qelectrotech")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://git.tuxfamily.org/qet/qet.git/"
                            "snapshot/qet-" version ".tar.gz"))
        (sha256
-        (base32 "0w70fqwhqqzga1kfp34v8z1xf9988nvvi3d5gwl2sg429p9mpsk2"))))
+        (base32 "1qkgagx2bk2jfzs3d91kki01y5bs5p85f4c8xjxn45hmw4rl512b"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: tests are built for the CMake build option but it seems to be
