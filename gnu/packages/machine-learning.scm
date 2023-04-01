@@ -17,6 +17,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
@@ -3907,7 +3909,6 @@ simple speech recognition.")
            (add-after 'unpack 'chdir
              (lambda _ (chdir "package/python"))))))
       (propagated-inputs (list python-vosk))
-      (inputs (list pulseaudio xdotool))
       (home-page "https://github.com/ideasman42/nerd-dictation")
       (synopsis "Offline speech-to-text for desktop Linux")
       (description "\
@@ -3919,38 +3920,76 @@ there are no background processes.  Dictation is accessed manually with
 @code{nerd-dictation begin} and @code{nerd-dictation end} commands.")
       (license license:gpl2+))))
 
-(define-public nerd-dictation/wayland
-  (package
-    (inherit nerd-dictation)
-    (name "nerd-dictation-wayland")
-    (inputs (list bash-minimal nerd-dictation))
-    (propagated-inputs (list ydotool sox))
-    (build-system trivial-build-system)
-    (arguments
-     (list
-      #:modules '((guix build utils))
-      #:builder
-      #~(begin
-          (use-modules (guix build utils))
-          (let* ((exe (string-append #$output "/bin/nerd-dictation"))
-                 (original-exe #$(file-append nerd-dictation
-                                              "/bin/nerd-dictation"))
-                 (bash #$(this-package-input "bash-minimal"))
-                 (bash-exe (string-append bash "/bin/bash")))
-            (mkdir-p (dirname exe))
-            (call-with-output-file exe
-              (lambda (port)
-                (format port "#!~a
+(define (nerd-dictation-gexp input-name output-name bash nerd-dictation)
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+
+        (let* ((exe (string-append #$output "/bin/nerd-dictation"))
+               (nerd-dictation-exe
+                #$(file-append nerd-dictation "/bin/nerd-dictation")))
+          (mkdir-p (dirname exe))
+          (call-with-output-file exe
+            (lambda (port)
+              (format port "#!~a
 if [ \"$1\" = begin ]
   then
-    exec ~a $@ --input=SOX --simulate-input-tool=YDOTOOL
+    exec ~a $@ --input=~a --simulate-input-tool=~a
   else
     exec ~a $@
 fi"
-                        bash-exe
-                        original-exe
-                        original-exe)))
-            (chmod exe #o555)))))))
+                      #$(file-append bash "/bin/bash")
+                      nerd-dictation-exe
+                      #$input-name
+                      #$output-name
+                      nerd-dictation-exe)))
+          (chmod exe #o555)))))
+
+(define-public nerd-dictation/xdotool
+  (package
+    (inherit nerd-dictation)
+    (name "nerd-dictation-xdotool")
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder
+           (nerd-dictation-gexp "PAREC" "XDOTOOL"
+                                (this-package-input "bash-minimal")
+                                (this-package-input "nerd-dictation"))))
+    (inputs (list bash-minimal nerd-dictation))
+    (propagated-inputs (list pulseaudio xdotool))))
+
+(define-public nerd-dictation/sox-xdotool
+  (package
+    (inherit nerd-dictation/xdotool)
+    (name "nerd-dictation-sox-xdotool")
+    (arguments
+     (list #:builder
+           (nerd-dictation-gexp "SOX" "XDOTOOL"
+                                (this-package-input "bash-minimal")
+                                (this-package-input "nerd-dictation"))))
+    (propagated-inputs (list sox xdotool))))
+
+(define-public nerd-dictation/sox-ydotool
+  (package
+    (inherit nerd-dictation/xdotool)
+    (name "nerd-dictation-sox-ydotool")
+    (arguments
+     (list #:builder
+           (nerd-dictation-gexp "SOX" "YDOTOOL"
+                                (this-package-input "bash-minimal")
+                                (this-package-input "nerd-dictation"))))
+    (propagated-inputs (list sox ydotool))))
+
+(define-public nerd-dictation/sox-wtype
+  (package
+    (inherit nerd-dictation/xdotool)
+    (name "nerd-dictation-sox-wtype")
+    (arguments
+     (list #:builder
+           (nerd-dictation-gexp "SOX" "WTYPE"
+                                (this-package-input "bash-minimal")
+                                (this-package-input "nerd-dictation"))))
+    (propagated-inputs (list sox wtype))))
 
 (define-public python-brian2
   (package
