@@ -89,32 +89,33 @@
                      ;; fontconfig.
                      (find-files "misc" "\\.cpp$"))))
           (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (doc (assoc-ref outputs "doc"))
-                     (header? (cut string-suffix? ".h" <>))
+            (lambda _
+              (let* ((header? (cut string-suffix? ".h" <>))
                      (imgui-headers (scandir "." header?))
                      (backend-headers (find-files
                                        "backends"
                                        "(glfw|opengl|sdl|vulkan).*\\.h$"))
                      (misc-headers (find-files "misc" "\\.h$")))
-                (install-file "libimgui.so" (string-append out "/lib"))
+                (install-file "libimgui.so" (string-append #$output "/lib"))
                 ;; Install headers.
                 (for-each (lambda (f)
-                            (install-file f (string-append out "/include/imgui")))
+                            (install-file f (string-append #$output
+                                                           "/include/imgui")))
                           imgui-headers)
                 (for-each (lambda (f)
                             (install-file f (string-append
-                                             out "/include/imgui/backends")))
+                                             #$output
+                                             "/include/imgui/backends")))
                           backend-headers)
                 (for-each (lambda (f)
-                            (install-file f (string-append
-                                             out "/include/imgui/" (dirname f))))
+                            (install-file f (string-append #$output
+                                                           "/include/imgui/"
+                                                           (dirname f))))
                           misc-headers)
                 ;; Install examples.
-                (copy-recursively
-                 "examples" (string-append
-                             doc "/share/imgui/examples"))))))))
+                (copy-recursively "examples"
+                                  (string-append #$output:doc
+                                                 "/share/imgui/examples"))))))))
     (inputs (list fontconfig glfw mesa sdl2))
     (home-page "https://github.com/ocornut/imgui")
     (synopsis "Immediate-mode C++ GUI library with minimal dependencies")
