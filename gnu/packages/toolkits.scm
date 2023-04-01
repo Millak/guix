@@ -32,7 +32,7 @@
 (define-public imgui
   (package
     (name "imgui")
-    (version "1.88")
+    (version "1.89.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41,7 +41,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13cw4hx55y5z678r558hv7znfz666wh0w849c5padnj4nkpbihdi"))
+                "1j79gsg9i969slygrwm0dp5mkzagglawxxagjpi3009wyp6lj6l8"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled fonts.
@@ -82,7 +82,9 @@
                      "imgui_widgets.cpp"
                      ;; Include the supported backends.
                      "backends/imgui_impl_glfw.cpp"
-                     "backends/imgui_impl_sdl.cpp"
+                     (if (file-exists? "backends/imgui_impl_sdl2.cpp")
+                         "backends/imgui_impl_sdl2.cpp"
+                         "backends/imgui_impl_sdl.cpp")
                      "backends/imgui_impl_opengl2.cpp"
                      "backends/imgui_impl_opengl3.cpp"
                      ;; Include wrappers for C++ standard library (STL) and
