@@ -496,7 +496,7 @@ matching them against regular expressions.")
 (define-public xfce4-pulseaudio-plugin
   (package
     (name "xfce4-pulseaudio-plugin")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
@@ -505,7 +505,7 @@ matching them against regular expressions.")
                            (version-major+minor version) "/"
                            "xfce4-pulseaudio-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "05f12fzn8q1y7jkzanxy82pzl00km66gngb5j6d5k8kbx9ykj9a4"))))
+        (base32 "05k02ilvffddgbp6in9wpjvg6vzlcxxw09nmj29hzba44klc04bf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config dbus-glib dbus))
