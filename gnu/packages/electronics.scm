@@ -298,14 +298,6 @@ supported devices, as well as input/output file format support.")
                   "add_subdirectory("
                   (search-input-directory inputs "share/glad") ;source_dir
                   " src/glad)\n")))))                          ;binary dir
-          (add-before 'configure 'fix-utf8-include-directive
-            ;; Our utf8-h package makes the header available as "utf8.h"
-            ;; directly rather than "utf8/utf8.h".
-            (lambda _
-              (substitute* '("src/openboardview/FileFormats/BRDFile.cpp"
-                             "src/openboardview/FileFormats/BRDFileBase.cpp"
-                             "src/openboardview/BoardView.cpp")
-                (("utf8/utf8.h") "utf8.h"))))
           (add-before 'configure 'dynamically-load-gtk-via-absolute-path
             ;; The GTK library is not linked thus not present in the RUNPATH of
             ;; the produced binary; the absolute path of the libraries must to

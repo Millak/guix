@@ -1365,20 +1365,21 @@ will take care of dispatching tasks to available cores.")
                   "0x9f7ivww8c7cigf4ck0hfx2bm79qgx6q4ccwzqbzkrmcrl9shfb"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'build)
-           (delete 'configure)
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (with-directory-excursion "test"
-                   (invoke "cmake" ".")
-                   (invoke "make")))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (install-file "utf8.h" (string-append out "/include"))))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'build)
+            (delete 'configure)
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "test"
+                    (invoke "cmake" ".")
+                    (invoke "make")))))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (install-file "utf8.h"
+                              (string-append #$output "/include/utf8")))))))
       (home-page "https://github.com/sheredom/utf8.h")
       (synopsis "Single header UTF-8 string functions for C and C++")
       (description "A simple one header solution to supporting UTF-8 strings in
