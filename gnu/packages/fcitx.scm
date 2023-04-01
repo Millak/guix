@@ -52,7 +52,7 @@
 (define-public fcitx-qt5
   (package
     (name "fcitx-qt5")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method git-fetch)
@@ -63,7 +63,7 @@
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "13sanrir696fv7s44b7q453s5qi4r7ag0r3iyggyzk8xyf6rw8fk"))))
+        (base32 "1gw51m7hfnplkym33dzwfa8g0q20ji61pr80s2i6xhy2glrm1ssj"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -71,12 +71,12 @@
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-install-dir
            (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "quickphrase-editor/CMakeLists.txt"
+             (substitute* "qt5/quickphrase-editor/CMakeLists.txt"
                (("\\$\\{FCITX4_ADDON_INSTALL_DIR\\}")
                 (string-append
                  (assoc-ref outputs "out")
                  "/lib/fcitx")))
-             (substitute* "platforminputcontext/CMakeLists.txt"
+             (substitute* "qt5/platforminputcontext/CMakeLists.txt"
                (("\\$\\{CMAKE_INSTALL_QTPLUGINDIR\\}")
                 (string-append
                  (assoc-ref outputs "out")
