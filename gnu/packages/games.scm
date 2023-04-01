@@ -5800,7 +5800,7 @@ programmers may also add their own favorite language.")
 (define-public bambam
   (package
     (name "bambam")
-    (version "1.0.0")
+    (version "1.2.1")
     (source
       (origin
         (method git-fetch)
@@ -5809,7 +5809,7 @@ programmers may also add their own favorite language.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "18cwd1wpyyx8y61cags9bkdhx9x858xicc4y1c9c2s0xjmgzhl3i"))))
+         (base32 "148cqahklqd4m88j5z1xf3fh4vha41f31wian11hkas106mbsya9"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
