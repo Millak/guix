@@ -320,7 +320,9 @@ supported devices, as well as input/output file format support.")
     (inputs
      (list fontconfig
            gtk+
-           imgui
+           ;; OpenBoardView can build with Dear ImGui 1.88, but there are some
+           ;; usability problems such as the difficulty to register clicks.
+           imgui-1.87
            orangeduck-mpc
            sdl2
            sqlite
