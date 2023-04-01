@@ -1339,7 +1339,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.8.0")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1347,10 +1347,22 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jcmcjq2kay9kmzd5j5l8kasrzqb7aidp26q4nbmxghxxa3ncyf7"))))
+                "115fy87lcn9scwx52kjs0g250q2d3r10sahl6l8l38fs13dqm8p3"))))
     (build-system glib-or-gtk-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-configure
+                 (lambda _
+                   (substitute* "configure"
+                     (("\\$PKG_CONFIG --variable=gdbus_codegen gio-2.0")
+                      "which gdbus-codegen")
+                     (("\\$PKG_CONFIG --variable=glib_compile_resources gio-2.0")
+                      "which glib-compile-resources")
+                     (("\\$PKG_CONFIG --variable=glib_genmarshal glib-2.0")
+                      "which glib-genmarshal")))))))
     (native-inputs
-     (list intltool pkg-config))
+     (list intltool pkg-config (list glib "bin") which))
     (inputs
      (list libxfce4ui libnotify sqlite xfce4-panel))
     (home-page "https://goodies.xfce.org/projects/applications/xfce4-notifyd")
