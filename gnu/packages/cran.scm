@@ -14456,6 +14456,48 @@ equations, and Cox proportional hazards models.  Functions are available to
 handle data from simple random samples as well as complex surveys.")
     (license license:gpl3+)))
 
+(define-public r-targets
+  (package
+    (name "r-targets")
+    (version "0.14.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "targets" version))
+              (sha256
+               (base32
+                "0mhwvlbxnb4w054pjiw2smss28i90sg52w8v040y7sqy6gq2c8n6"))))
+    (properties `((upstream-name . "targets")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-base64url
+                             r-callr
+                             r-cli
+                             r-codetools
+                             r-data-table
+                             r-digest
+                             r-igraph
+                             r-knitr
+                             r-r6
+                             r-rlang
+                             r-tibble
+                             r-tidyselect
+                             r-vctrs
+                             r-withr
+                             r-yaml))
+    (native-inputs (list r-knitr))
+    (home-page "https://docs.ropensci.org/targets/")
+    (synopsis "Dynamic function-oriented Make-like declarative pipelines")
+    (description
+     "This package provides a pipeline toolkit for statistics and data science
+in R; the @code{targets} package brings function-oriented programming to
+Make-like declarative pipelines.  It orchestrates a pipeline as a graph of
+dependencies, skips steps that are already up to date, runs the necessary
+computation with optional parallel workers, abstracts files as R objects, and
+provides tangible evidence that the results are reproducible given the
+underlying code and data.  The methodology in this package borrows from GNU
+Make (2015, ISBN:978-9881443519) and drake (2018,
+<doi:10.21105/joss.00550>).")
+    (license license:expat)))
+
 (define-public r-dvmisc
   (package
     (name "r-dvmisc")
