@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Milran <milranmike@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -928,3 +928,52 @@ and manipulation.")
     (description
      "libskk is a library to deal with Japanese kana-to-kanji conversion method.")
     (license license:gpl3+)))
+
+(define-public mecab
+  (package
+    (name "mecab")
+    (version "0.996")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/taku910/mecab")
+                     ;; latest commit
+                     (commit "046fa78b2ed56fbd4fac312040f6d62fc1bc31e3")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hdv7rgn8j0ym9gsbigydwrbxa8cx2fb0qngg1ya15vvbw0lk4aa"))
+              (patches
+                (search-patches
+                  "mecab-variable-param.patch"))))
+    (build-system gnu-build-system)
+    (native-search-paths
+      (list (search-path-specification
+              (variable "MECAB_DICDIR")
+              (separator #f)
+              (files '("lib/mecab/dic")))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "mecab")))
+         (add-before 'build 'add-mecab-dicdir-variable
+           (lambda _
+             (substitute* "mecabrc.in"
+               (("dicdir = .*")
+                "dicdir = $MECAB_DICDIR"))
+             (substitute* "mecab-config.in"
+               (("echo @libdir@/mecab/dic")
+                "if [ -z \"$MECAB_DICDIR\" ]; then
+  echo @libdir@/mecab/dic
+else
+  echo \"$MECAB_DICDIR\"
+fi")))))))
+    (inputs (list libiconv))
+    (home-page "https://taku910.github.io/mecab")
+    (synopsis "Morphological analysis engine for texts")
+    (description "Mecab is a morphological analysis engine developped as a
+collaboration between the Kyoto university and Nippon Telegraph and Telephone
+Corporation.  The engine is independent of any language, dictionary or corpus.")
+    (license (list license:gpl2+ license:lgpl2.1+ license:bsd-3))))
