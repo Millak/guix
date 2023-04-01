@@ -371,7 +371,7 @@ the Anthy input method.")
 (define-public fcitx5-chinese-addons
   (package
     (name "fcitx5-chinese-addons")
-    (version "5.0.16")
+    (version "5.0.17")
     (source
      (origin
        (method url-fetch)
@@ -379,7 +379,7 @@ the Anthy input method.")
                            "/fcitx5-chinese-addons/fcitx5-chinese-addons-"
                            version "_dict.tar.xz"))
        (sha256
-        (base32 "06s7d3n4h5b0msw0b48pmy3xcz7268b7r00p3wfr83wb1m9rv0xw"))))
+        (base32 "0vilq49q02hrim0dg4z3rm6p3ma8v4smh0r5q5rrj6bkyf1apivx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
