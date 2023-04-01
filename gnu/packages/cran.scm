@@ -14457,43 +14457,6 @@ equations, and Cox proportional hazards models.  Functions are available to
 handle data from simple random samples as well as complex surveys.")
     (license license:gpl3+)))
 
-(define-public r-tarchetypes
-  (package
-    (name "r-tarchetypes")
-    (version "0.7.5")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "tarchetypes" version))
-              (sha256
-               (base32
-                "05yhq8xnrpk37x7fq0yjw4m527ji28s16dskfmljrbrzb064nw2g"))))
-    (properties `((upstream-name . "tarchetypes")))
-    (build-system r-build-system)
-    (propagated-inputs (list r-digest
-                             r-dplyr
-                             r-fs
-                             r-furrr
-                             r-future
-                             r-future-callr
-                             r-rlang
-                             r-targets
-                             r-tibble
-                             r-tidyselect
-                             r-vctrs
-                             r-withr))
-    (home-page "https://docs.ropensci.org/tarchetypes/")
-    (synopsis "Archetypes for Targets")
-    (description
-     "Function-oriented Make-like declarative pipelines for statistics and
-data science are supported in the targets R package.  As an extension to
-targets, the tarchetypes package provides convenient user-side functions to
-make targets easier to use.  By establishing reusable archetypes for common
-kinds of targets and pipelines, these functions help express complicated
-reproducible pipelines concisely and compactly.  The methods in this package
-were influenced by the drake R package by Will Landau (2018)
-<doi:10.21105/joss.00550>.")
-    (license license:expat)))
-
 (define-public r-targets
   (package
     (name "r-targets")
