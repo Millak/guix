@@ -262,7 +262,7 @@ supports HTTP, HTTPS and GnuTLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.19.3")
+    (version "0.19.4")
     (source
      (origin
        (method url-fetch)
@@ -270,7 +270,7 @@ supports HTTP, HTTPS and GnuTLS.")
                            ".tar.gz"))
        (sha256
         (base32
-         "09bspbjl6cll8wcrl1vnb56jwp30pcrg1yyj6xy3i0fl2bzdbdw2"))
+         "16q0mkkr9b33wlm307ignfgvv0kilzr42155m5dpz66m13s3v9h0"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
