@@ -19310,6 +19310,38 @@ can be resolved using any future-supported backend, e.g. parallel on the local
 machine or distributed on a compute cluster.")
     (license license:gpl2+)))
 
+(define-public r-future-callr
+  (package
+    (name "r-future-callr")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "future.callr" version))
+              (sha256
+               (base32
+                "1w7wq2nrvj65a25nsb5h99258p9565qwnlvcc07nyc21gm5zrg9k"))))
+    (properties `((upstream-name . "future.callr")))
+    (build-system r-build-system)
+    ;; This is needed for the vignette builder R.rsp.
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list r-callr r-future))
+    (native-inputs (list r-markdown r-r-rsp))
+    (home-page "https://future.callr.futureverse.org")
+    (synopsis "Future API for Parallel Processing using 'callr'")
+    (description
+     "This is an implementation of the Future API on top of the callr package.
+This allows you to process futures, as defined by the future package, in
+parallel out of the box, on your local machine.  Contrary to backends relying
+on the parallel package (e.g. @code{future::multisession}) and socket
+connections, the callr backend provided here can run more than 125 parallel R
+processes.")
+    (license license:lgpl2.1+)))
+
 (define-public r-rsvd
   (package
     (name "r-rsvd")
