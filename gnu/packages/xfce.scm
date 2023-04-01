@@ -1005,7 +1005,7 @@ local and remote file systems and manage bookmarks of such.")
 (define-public parole
   (package
     (name "parole")
-    (version "4.16.0")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1013,7 +1013,7 @@ local and remote file systems and manage bookmarks of such.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1rx7apylqb7mf1dl0sswj1630fca3ddk4x1gcdmlv5ykrkc5lc0d"))))
+                "0w9p9zf87pnpl44bay8srrsczscxpmbsriwzqzv31gis9ny2zrdv"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1040,7 +1040,8 @@ local and remote file systems and manage bookmarks of such.")
            gst-plugins-good
            libnotify
            libxfce4ui
-           libxfce4util))
+           libxfce4util
+           taglib))
     (home-page "https://www.xfce.org/")
     (synopsis "Media player based on the GStreamer framework")
     (description "Parole is a modern simple media player based on the
