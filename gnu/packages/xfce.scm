@@ -330,7 +330,7 @@ development.")
 (define-public garcon
   (package
     (name "garcon")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -338,7 +338,7 @@ development.")
                                   "garcon-" version ".tar.bz2"))
               (sha256
                (base32
-                "050sy6l4xzqibz4kqxymkc37rqpg37vsf48wnw18b2vaas3k8qsl"))))
+                "02y2nkxwx5mp1w6x2ydi3hpgymk7159zvyzk70afp5dcdlm96ypy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list `(,glib "bin") gobject-introspection intltool pkg-config))
