@@ -21403,8 +21403,8 @@ tested (as shown in the examples).")
   (sbcl-package->cl-source-package sbcl-sdl2-ttf))
 
 (define-public sbcl-cl-gamepad
-  (let ((commit "647f6ee8f40048286d743d79845c3753fba9d8f1")
-        (revision "2"))
+  (let ((commit "d5b99fbaa2e39294d23061699e8f1e761eda7205")
+        (revision "3"))
     (package
       (name "sbcl-cl-gamepad")
       (version (git-version "3.0.0" revision commit))
@@ -21416,10 +21416,11 @@ tested (as shown in the examples).")
                (commit commit)))
          (file-name (git-file-name "cl-gamepad" version))
          (sha256
-          (base32 "0w9lcahgqacc39932jp2ghid9sl4wg4vyaza8vdnghmixdl49cin"))))
+          (base32 "0y6kg9wq92p07i1chm1v7j7p77iqc5c985pdvmmivcip8zmd4hm4"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:phases
+       `(#:tests? #f ; No tests
+         #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'patch-evdev-lib-path
              (lambda* (#:key inputs #:allow-other-keys)
