@@ -6962,6 +6962,43 @@ mostly Common Lisp implementation.")
 (define-public ecl-cl-fastcgi
   (sbcl-package->ecl-package sbcl-cl-fastcgi))
 
+(define-public sbcl-cl-fast-ecs
+  (package
+    (name "sbcl-cl-fast-ecs")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/lockie/cl-fast-ecs")
+             (commit version)))
+       (file-name (git-file-name "cl-fast-ecs" version))
+       (sha256
+        (base32 "06cnhm8zpyqyjr17mji5wvj4gh2glpdw8gqy1vwrq3vgphfmg560"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-parachute))
+    (inputs
+     (list sbcl-alexandria sbcl-trivial-garbage))
+    (home-page "https://lockie.gitlab.io/cl-fast-ecs/")
+    (synopsis "Blazingly fast Entity-Component-System microframework")
+    (description
+     "CL-FAST-ECS is a Common Lisp library providing an implementation of the
+@acronym{ECS, Entity-Component-System} pattern, primarily focused on speed and
+interactive development.
+
+ECS is an architectural data-oriented design pattern that allows for the
+effective processing of a large number of in-game objects while keeping the code
+and data separated.  This provides flexibility in the way that game objects are
+built at runtime.")
+    (license license:expat)))
+
+(define-public cl-fast-ecs
+  (sbcl-package->cl-source-package sbcl-cl-fast-ecs))
+
+(define-public ecl-cl-fast-ecs
+  (sbcl-package->ecl-package sbcl-cl-fast-ecs))
+
 (define-public sbcl-cl-flac
   (let ((commit "d094d33d3cc2cf263263b917798d338eded3c532")
         (revision "0"))
