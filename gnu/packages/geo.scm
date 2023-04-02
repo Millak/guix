@@ -1183,8 +1183,17 @@ utilities for data translation and processing.")
                (invoke "python" "-m" "pytest" "--pyargs" "cartopy"
                        ;; These tests require online data.
                        "-m" "not natural_earth and not network"
-                       ;; This one too but it's not marked as such.
-                       "-k" "not test_gridliner_labels_bbox_style")))))))
+                       "-k"
+                       (string-append
+                         ;; This one too but it's not marked as such.
+                         "not test_gridliner_labels_bbox_style"
+                         ;; Those tests fail with proj 9.2.0
+                         ;; https://github.com/SciTools/cartopy/issues/2145
+                         " and not test_epsg"
+                         " and not test_default"
+                         " and not test_eccentric_globe"
+                         " and not test_ellipsoid_transform"
+                         " and not test_eccentric_globe"))))))))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
