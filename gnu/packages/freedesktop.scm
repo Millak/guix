@@ -225,72 +225,75 @@ application-centers for distributions.")
        (sha256
         (base32 "1sd8syldyq6bphfdm129s3gq554vfv7vh1vcwzk48gjryf101awk"))
        (patches
-        (search-patches
-         "farstream-gupnp.patch"        ;for test 'transmitter/rawudp'
-         "farstream-make.patch"))))
+        (search-patches "farstream-gupnp.patch" ;for test 'transmitter/rawudp'
+                        "farstream-make.patch"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:configure-flags
-       (list
-        "--enable-gtk-doc"
-        "--enable-glib-asserts"
-        (string-append "--with-html-dir="
-                       (assoc-ref %outputs "doc")
-                       "/share/gtk-doc/html"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'copy-common
-           (lambda _
-             (delete-file "autogen.sh")
-             (copy-recursively
-              (assoc-ref %build-inputs "common")
-              "common")))
-         (add-after 'unpack 'disable-problematic-tests
-           (lambda _
-             (substitute* "tests/check/Makefile.am"
-               ;; This test fails since updating gstreamer to version 1.22.1
-               ;; (see:
-               ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/25).
-               (("^\trtp/recvcodecs.*") "")
-               ;; This test timeouts despite changing the value of
-               ;; 'CK_DEFAULT_TIMEOUT' to 600 (see:
-               ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/20).
-               (("^\ttransmitter/nice.*") ""))))
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "docs"
-               (substitute* '("libs/farstream-libs-docs.sgml"
-                              "plugins/farstream-plugins-docs.sgml")
-                 (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/")))))))))
+     (list
+      #:configure-flags
+      #~(list "--enable-gtk-doc"
+              "--enable-glib-asserts"
+              (string-append "--with-html-dir=" #$output
+                             "/share/gtk-doc/html"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-common
+            (lambda _
+              (delete-file "autogen.sh")
+              (copy-recursively
+               #$(origin
+                   (method git-fetch)
+                   (uri
+                    (git-reference
+                     (url "https://gitlab.freedesktop.org/gstreamer/common.git")
+                     (commit "52adcdb89a9eb527df38c569539d95c1c7aeda6e")))
+                   (file-name (git-file-name "common" "latest.52adcdb"))
+                   (sha256
+                    (base32
+                     "1zlm1q1lgcb76gi82rial5bwy2j9sz1x6x48ijhiz89cml7xxd1r")))
+               "common")))
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "tests/check/Makefile.am"
+                ;; This test fails since updating gstreamer to version 1.22.1
+                ;; (see:
+                ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/25).
+                (("^\trtp/recvcodecs.*") "")
+                ;; This test timeouts despite changing the value of
+                ;; 'CK_DEFAULT_TIMEOUT' to 600 (see:
+                ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/20).
+                (("^\ttransmitter/nice.*") ""))))
+          (add-after 'unpack 'patch-docbook-xml
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (with-directory-excursion "docs"
+                (substitute* '("libs/farstream-libs-docs.sgml"
+                               "plugins/farstream-plugins-docs.sgml")
+                  (("http://www.oasis-open.org/docbook/xml/4.1.2/")
+                   (search-input-directory (or native-inputs inputs)
+                                           "xml/dtd/docbook/")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("common"
-        ,(origin
-           (method git-fetch)
-           (uri
-            (git-reference
-             (url "https://gitlab.freedesktop.org/gstreamer/common.git")
-             (commit "52adcdb89a9eb527df38c569539d95c1c7aeda6e")))
-           (file-name (git-file-name "common" "latest.52adcdb"))
-           (sha256
-            (base32 "1zlm1q1lgcb76gi82rial5bwy2j9sz1x6x48ijhiz89cml7xxd1r"))))
-       ("docbook-xml" ,docbook-xml-4.1.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("libtool" ,libtool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("xsltproc" ,libxslt)))
+     (list autoconf
+           automake
+           docbook-xml-4.1.2
+           docbook-xsl
+           gobject-introspection
+           gtk-doc/stable
+           libtool
+           libxslt
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
-     (list glib gtk+ gupnp-igd libnice))
+     (list glib
+           gtk+
+           gupnp-igd
+           libnice))
     (propagated-inputs
-     (list gstreamer gst-plugins-bad gst-plugins-base gst-plugins-good))
+     (list gstreamer
+           gst-plugins-bad
+           gst-plugins-base
+           gst-plugins-good))
     (synopsis "The Farstream VVoIP framework")
     (description "Farstream is a collection of GStreamer modules and libraries
 for videoconferencing.")
