@@ -7089,8 +7089,8 @@ theory accurate to internal-time-units-per-second.")
   (sbcl-package->ecl-package sbcl-cl-log))
 
 (define-public sbcl-log4cl
-  (let ((commit "75c4184fe3dbd7dec2ca590e5f0176de8ead7911")
-        (revision "1"))
+  (let ((commit "fe3da517147d023029782ced7cd989ba24f1e62d")
+        (revision "2"))
     (package
       (name "sbcl-log4cl")
       (version (git-version "1.1.4" revision commit))
@@ -7102,7 +7102,7 @@ theory accurate to internal-time-units-per-second.")
                (commit commit)))
          (file-name (git-file-name "cl-log4cl" version))
          (sha256
-          (base32 "0mjkw4w3ksxvn87jqdnailqy2h6sziwmp4gf73jym45x9l5zahi5"))))
+          (base32 "0n119sy35k9yl4n18az1sw9a7saa5jh3v44863b305by1p5xdy7k"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-stefil))
