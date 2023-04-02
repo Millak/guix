@@ -1655,14 +1655,14 @@ persisted.
 (define-public python-rtree
   (package
     (name "python-rtree")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Rtree" version))
        (sha256
-        (base32 "10lnhf67c9pb0yisxdqmb52dy6lj1za1h9d4p69v0ihk2a138j6h"))))
-    (build-system python-build-system)
+        (base32 "0aalh07fyf6vpr0a6zswnqvvrjhyic1zg6w4bl368fihkilj2892"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1672,11 +1672,7 @@ persisted.
                (substitute* "rtree/finder.py"
                  (("find_library\\(\"spatialindex_c\"\\)")
                   (string-append  "\"" libspatialindex
-                                  "/lib/libspatialindex_c.so\""))))))
-         (replace 'check
-           (lambda* (#:key outputs tests? #:allow-other-keys)
-             (when tests?
-                 (invoke "pytest")))))))
+                                  "/lib/libspatialindex_c.so\"")))))))))
     (native-inputs
      (list python-numpy python-pytest python-wheel))
     (inputs
