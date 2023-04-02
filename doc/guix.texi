@@ -41869,11 +41869,12 @@ services)}.
 * Power Management: Power Management Home Services.  Services for battery power.
 * Shepherd: Shepherd Home Service.  Managing User's Daemons.
 * SSH: Secure Shell.            Setting up the secure shell client.
+* GPG: GNU Privacy Guard.       Setting up GPG and related tools.
 * Desktop: Desktop Home Services.  Services for graphical environments.
 * Guix: Guix Home Services.     Services for Guix.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
-* Messaging: Messaging Home Services.   Services for managing messaging.
+* Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
 @end menu
 @c In addition to that Home Services can provide
@@ -42639,15 +42640,18 @@ The @uref{https://www.openssh.com, OpenSSH package} includes a daemon,
 the @command{ssh-agent} command, that manages keys to connect to remote
 machines using the @acronym{SSH, secure shell} protocol.  With the
 @code{(gnu home services ssh-agent)} service, you can configure the
-OpenSSH ssh-agent to run upon login.
+OpenSSH ssh-agent to run upon login.  @xref{GNU Privacy Guard,
+@code{home-gpg-agent-service-type}}, for an alternative to OpenSSH's
+@command{ssh-agent}.
+
 
 Here is an example of a service and its configuration that you could add
 to the @code{services} field of your @code{home-environment}:
 
 @lisp
 (service home-ssh-agent-service-type
-  (home-ssh-agent-configuration
-   (extra-options '("-t" "1h30m"))))
+         (home-ssh-agent-configuration
+          (extra-options '("-t" "1h30m"))))
 @end lisp
 
 @defvar home-ssh-agent-service-type
@@ -42671,6 +42675,87 @@ Extra options will be passed to @command{ssh-agent}, please run
 
 @end table
 @end deftp
+
+@node GNU Privacy Guard
+@subsection GNU Privacy Guard
+
+@cindex GNU Privacy Guard, Home service
+@cindex GPG, Home service
+The @code{(gnu home services gnupg)} modules provides services that help
+you set up the GNU Privacy Guard, also known as GnuPG or GPG, in your
+home environment.
+
+@cindex gpg-agent, Home service
+@cindex SSH agent, with gpg-agent
+The @code{gpg-agent} service configures and sets up GPG's agent, the
+program that is responsible for managing OpenPGP private keys and,
+optionally, OpenSSH (secure shell) private keys (@pxref{Invoking
+GPG-AGENT,,, gnupg, Using the GNU Privacy Guard}).
+
+As an example, here is how you would configure @code{gpg-agent} with SSH
+support such that it uses the Emacs-based Pinentry interface when
+prompting for a passphrase:
+
+@lisp
+(service home-gpg-agent-service-type
+         (home-gpg-agent-configuration
+          (pinentry-program
+           (file-append pinentry-emacs "/bin/pinentry-emacs"))
+          (ssh-support? #t)))
+@end lisp
+
+The service reference is given below.
+
+@defvar home-gpg-agent-service-type
+This is the service type for @command{gpg-agent} (@pxref{Invoking
+GPG-AGENT,,, gnupg, Using the GNU Privacy Guard}).  Its value must be a
+@code{home-gpg-agent-configuration}, as shown below.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} home-gpg-agent-configuration
+Available @code{home-gpg-agent-configuration} fields are:
+
+@table @asis
+@item @code{gnupg} (default: @code{gnupg}) (type: file-like)
+The GnuPG package to use.
+
+@item @code{pinentry-program} (type: file-like)
+Pinentry program to use.  Pinentry is a small user interface that
+@command{gpg-agent} delegates to anytime it needs user input for a
+passphrase or @acronym{PIN,personal identification number}
+(@pxref{Top,,, pinentry,Using the PIN-Entry}).
+
+@item @code{ssh-support?} (default: @code{#f}) (type: boolean)
+Whether to enable @acronym{SSH,secure shell} support.  When true,
+@command{gpg-agent} acts as a drop-in replacement for OpenSSH's
+@command{ssh-agent} program, taking care of OpenSSH secret keys and
+directing passphrase requests to the chosen Pinentry program.
+
+@item @code{default-cache-ttl} (default: @code{600}) (type: integer)
+Time a cache entry is valid, in seconds.
+
+@item @code{max-cache-ttl} (default: @code{7200}) (type: integer)
+Maximum time a cache entry is valid, in seconds.  After this time a
+cache entry will be expired even if it has been accessed recently.
+
+@item @code{default-cache-ttl-ssh} (default: @code{1800}) (type: integer)
+Time a cache entry for SSH keys is valid, in seconds.
+
+@item @code{max-cache-ttl-ssh} (default: @code{7200}) (type: integer)
+Maximum time a cache entry for SSH keys is valid, in seconds.
+
+@item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
+Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 
 @node Desktop Home Services
 @subsection Desktop Home Services
