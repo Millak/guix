@@ -24907,13 +24907,13 @@ programs that do multiple things at the same time with parallelized I/O.")
 (define-public python-trio-typing
   (package
     (name "python-trio-typing")
-    (version "0.5.0")
+    (version "0.8.0")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "trio-typing" version))
       (sha256
-       (base32 "1yvlj4vf3wyvp16dw6vyfm4i2idm8lvdc3fvjhi6mhm62zv7s07j"))))
+       (base32 "15wa66cs165wawh4pi808ac43n67b8jqddi5ppdcbkj5gfi68hpi"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
