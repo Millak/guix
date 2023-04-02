@@ -44,6 +44,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
@@ -854,30 +855,24 @@ require a spatial database such as PostGIS.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1n8qjn184p5a2s3j6x6iyc1i7p3l3xnbqqxm6ajwgwv6j5fw1d5a"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ; TODO: Disable network tests
-               (invoke "pytest" "tests"
-                       "-k"
-                       (string-append
-                         ;; The following tests require network access.
-                         "not test_geocode_to_gdf"
-                         " and not test_stats"
-                         " and not test_osm_xml"
-                         " and not test_elevation"
-                         " and not test_routing"
-                         " and not test_plots"
-                         " and not test_find_nearest"
-                         " and not test_api_endpoints"
-                         " and not test_graph_save_load"
-                         " and not test_graph_from_functions"
-                         " and not test_geometries"))))))))
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+               ;; The following tests require network access.
+               "not test_geocode_to_gdf"
+               " and not test_stats"
+               " and not test_osm_xml"
+               " and not test_elevation"
+               " and not test_routing"
+               " and not test_plots"
+               " and not test_find_nearest"
+               " and not test_api_endpoints"
+               " and not test_graph_save_load"
+               " and not test_graph_from_functions"
+               " and not test_geometries"))))
     (propagated-inputs
       (list python-folium
             python-geopandas
