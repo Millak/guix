@@ -14062,8 +14062,8 @@ files.")
   (sbcl-package->cl-source-package sbcl-cl-mpg123))
 
 (define-public sbcl-cl-out123
-  (let ((commit "6b58d3f8c2a28ad09059ac4c60fb3c781b9b421b")
-        (revision "1"))
+  (let ((commit "41771bfd419e7349ad569f8e6fcd8a26d6f9e5b7")
+        (revision "2"))
     (package
       (name "sbcl-cl-out123")
       (version (git-version "1.0.0" revision commit))
@@ -14075,39 +14075,29 @@ files.")
                (commit commit)))
          (file-name (git-file-name "cl-out123" version))
          (sha256
-          (base32 "0mdwgfax6sq68wvdgjjp78i40ah7wqkpqnvaq8a1c509k7ghdgv1"))
+          (base32 "0ahgc5l5lbpl3ini4pn5crh8b7dlr386pxczl0d4h6djhccxzs4w"))
          (modules '((guix build utils)))
          (snippet
           '(begin
              ;; Remove bundled pre-compiled libraries.
-             (delete-file-recursively "static")
-             #t))))
+             (delete-file-recursively "static")))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:phases
+       `(#:tests? #f ; No tests
+         #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "low-level.lisp"
-                 (("libout123.so" all)
-                  (string-append (assoc-ref inputs "libout123")
-                                 "/lib/" all)))))
-           ;; NOTE: (Sharlatan-20210129T134529+0000): ECL package `ext' has no
-           ;; exported macro `without-interrupts' it's moved to `mp' package
-           ;; https://github.com/Shirakumo/cl-out123/issues/2
-           ;; https://gitlab.com/embeddable-common-lisp/ecl/-/blob/develop/src/lsp/mp.lsp
-           (add-after 'unpack 'fix-ecl-package-name
-             (lambda _
-               (substitute* "wrapper.lisp"
-                 (("ext:without-interrupts.*") "mp:without-interrupts\n"))
-               #t)))))
+                 (("libout123.so")
+                  (search-input-file inputs "/lib/libout123.so"))))))))
       (inputs
-       `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cffi" ,sbcl-cffi)
-         ("documentation-utils" ,sbcl-documentation-utils)
-         ("libout123" ,mpg123)
-         ("trivial-features" ,sbcl-trivial-features)
-         ("trivial-garbage" ,sbcl-trivial-garbage)))
+       (list mpg123
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
       (home-page "https://shirakumo.github.io/cl-out123/")
       (synopsis "Common Lisp bindings to libout123")
       (description
