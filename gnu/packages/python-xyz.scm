@@ -24757,13 +24757,13 @@ project.")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.20.0")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio" version))
        (sha256
-        (base32 "0w30cwmdwfa8zq2agqv3h62jzwwsk7ms8f683ag8f3jx279m42k7"))))
+        (base32 "1kxa9v0cds0xnklvzppv4ix4xg81r73p5pm4qlvv2iqa832z2s6f"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -24789,7 +24789,8 @@ project.")
                          ;; Assertion errors.
                          " and not test_guest_mode_ki"
                          " and not test_run_in_trio_thread_ki"
-                         " and not test_simple_cancel_scope_usage_doesnt_create_cyclic_garbage"
+                         " and not test_simple_cancel_scope_usage_doesnt_create\
+_cyclic_garbage"
                          " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
                          " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
                          " and not test_locals_destroyed_promptly_on_cancel"
@@ -24819,6 +24820,8 @@ project.")
     (propagated-inputs
      (list python-async-generator
            python-attrs
+           python-cffi
+           python-exceptiongroup
            python-idna
            python-outcome
            python-sniffio
