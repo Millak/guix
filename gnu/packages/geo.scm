@@ -13,7 +13,7 @@
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
@@ -2464,14 +2464,14 @@ growing set of geoscientific methods.")
 (define-public qgis
   (package
     (name "qgis")
-    (version "3.26.2")
+    (version "3.30.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://qgis.org/downloads/qgis-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1hsq3wchsf7db7134fgg9xzzap35q1s4r6649d0krbw80xw5asca"))))
+        (base32 "0mdgqyqr3nswp5qfpjrpr35lxizcrz73a1gs3ddxsd1xr9amzb5s"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules ((guix build cmake-build-system)
@@ -2513,20 +2513,56 @@ growing set of geoscientific methods.")
                (("\\$\\(git rev-parse --show-toplevel\\)")
                 (getcwd)))))
          (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
+           (lambda* (#:key inputs outputs tests? parallel-tests?
+                     #:allow-other-keys)
              (when tests?
              (setenv "HOME" "/tmp")
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
              (setenv "TRAVIS" "true")
              (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+             (let* ((out (assoc-ref outputs "out"))
+                    (grass-version ,(package-version grass))
+                    (grass-majorminor (string-join
+                                       (list-head
+                                        (string-split grass-version #\.) 2)
+                                       ""))
+                    (grass (string-append (assoc-ref inputs "grass")
+                                          "/grass" grass-majorminor)))
+               (setenv "GISBASE" grass))
              (invoke "ctest"
+                     "-j" (if parallel-tests?
+                              (number->string (parallel-job-count))
+                              "1")
                      "-E" (string-join
                            '(;; Disable tests that require network access
+                             "PyQgsExternalStorageAwsS3"
+                             "PyQgsExternalStorageWebDav"
                              "qgis_filedownloader"
+                             "test_core_networkaccessmanager"
+                             "test_core_tiledownloadmanager"
+                             "test_gui_filedownloader"
+                             "test_provider_wcsprovider"
+                             ;; Disable tests that need OGR built with
+                             ;; libspatialite support
+                             "PyQgsAttributeTableModel"
+                             "PyQgsOGRProviderSqlite"
+                             "PyQgsWFSProvider"
+                             "PyQgsOapifProvider"
+                             ;; Disable tests that need Python compiled
+                             ;; with loadable SQLite extensions.
+                             "PyQgsFieldFormattersTest"
+                             "PyQgsSpatialiteProvider"
+                             "PyQgsLayerDependencies"
+                             "PyQgsDBManagerGpkg"
+                             "PyQgsDBManagerSpatialite"
+                             ;; Disable tests that need poppler (with Cairo)
+                             "PyQgsLayoutExporter"
+                             "PyQgsPalLabelingLayout"
+                             ;; Disable tests that need Orfeo ToolBox
+                             "ProcessingOtbAlgorithmsTest"
                              ;; TODO: Find why the following tests fail
                              "ProcessingQgisAlgorithmsTestPt1"
-                             "ProcessingQgisAlgorithmsTestPt2"
                              "ProcessingQgisAlgorithmsTestPt3"
                              "ProcessingQgisAlgorithmsTestPt4"
                              "ProcessingGdalAlgorithmsRasterTest"
@@ -2535,68 +2571,42 @@ growing set of geoscientific methods.")
                              "ProcessingGrass7AlgorithmsRasterTestPt1"
                              "ProcessingGrass7AlgorithmsRasterTestPt2"
                              "ProcessingGrass7AlgorithmsVectorTest"
-                             "ProcessingOtbAlgorithmsTest"
                              "test_core_authmanager"
                              "test_core_compositionconverter"
-                             "test_core_coordinatereferencesystem"
+                             "test_core_expression"
                              "test_core_gdalutils"
-                             "test_core_labelingengine"
-                             "test_core_layout"
-                             "test_core_layouthtml"
-                             "test_core_layoutlabel"
-                             "test_core_layoutmultiframe"
                              "test_core_layoutpicture"
-                             "test_core_legendrenderer"
-                             "test_core_networkaccessmanager"
-                             "test_core_rasterfilewriter"
-                             "test_core_tiledownloadmanager"
-                             "test_gui_dualview"
-                             "test_gui_htmlwidgetwrapper"
-                             "test_gui_filedownloader"
+                             "test_core_pointcloudlayerexporter"
+                             "test_core_projectstorage"
+                             "test_core_coordinatereferencesystem"
                              "test_gui_queryresultwidget"
+                             "test_provider_copcprovider"
+                             "test_analysis_processingalgspt1"
                              "test_analysis_processingalgspt2"
                              "test_analysis_processing"
-                             "test_provider_wcsprovider"
-                             "qgis_grassprovidertest7"
-                             "test_app_gpsinformationwidget"
+                             "test_app_gpsintegration"
                              "PyQgsAnnotation"
-                             "PyQgsAttributeTableModel"
                              "PyQgsAuthenticationSystem"
-                             "PyQgsExternalStorageWebDAV"
-                             "PyQgsFieldFormattersTest"
+                             "PyQgsDatumTransform"
                              "PyQgsFileUtils"
                              "PyQgsGeometryTest"
                              "PyQgsGoogleMapsGeocoder"
+                             "PyQgsGroupLayer"
                              "PyQgsHashLineSymbolLayer"
-                             "PyQgsLayoutExporter"
                              "PyQgsLayoutHtml"
                              "PyQgsLineSymbolLayers"
                              "PyQgsMapLayer"
-                             "PyQgsNetworkContentFetcherRegistry"
                              "PyQgsOGRProviderGpkg"
-                             "PyQgsOGRProviderSqlite"
-                             "PyQgsPalLabelingCanvas"
-                             "PyQgsPalLabelingLayout"
-                             "PyQgsPalLabelingPlacement"
-                             "PyQgsProcessExecutable"
+                             "PyQgsProcessExecutablePt1"
+                             "PyQgsProcessExecutablePt2"
                              "PyQgsProviderConnectionGpkg"
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsOGRProvider"
-                             "PyQgsSpatialiteProvider"
                              "PyQgsVectorFileWriter"
                              "PyQgsVectorLayerEditBuffer"
-                             "PyQgsVectorLayerEditBufferGroup"
-                             "PyQgsVectorLayerProfileGenerator"
                              "PyQgsVirtualLayerProvider"
-                             "PyQgsWFSProvider"
-                             "PyQgsWFSProviderGUI"
-                             "PyQgsOapifProvider"
-                             "PyQgsLayerDependencies"
-                             "PyQgsDBManagerGpkg"
-                             "PyQgsDBManagerSpatialite"
                              "PyQgsAuxiliaryStorage"
                              "PyQgsSelectiveMasking"
-                             "qgis_shellcheck"
                              "qgis_sipify"
                              "qgis_sip_include"
                              "qgis_sip_uptodate")
@@ -2665,6 +2675,7 @@ growing set of geoscientific methods.")
            qtdeclarative-5
            qtkeychain
            qtlocation
+           qtmultimedia-5
            qtserialport
            qtsvg-5
            qwt
