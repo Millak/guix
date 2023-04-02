@@ -91,6 +91,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/desktop.scm			\
   %D%/home/services/symlink-manager.scm		\
   %D%/home/services/fontutils.scm		\
+  %D%/home/services/gnupg.scm			\
   %D%/home/services/guix.scm			\
   %D%/home/services/media.scm			\
   %D%/home/services/messaging.scm		\
