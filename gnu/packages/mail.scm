@@ -408,6 +408,45 @@ software.  GNU Mailutils provides the following commands:
      ;; Libraries are under LGPLv3+, and programs under GPLv3+.
      (list license:gpl3+ license:lgpl3+))))
 
+(define-public mairix
+  (let ((commit "1cc06f4a73ba4b940008c1ffc398d2ac708cd6d6")
+        (revision "0"))
+    (package
+      (name "mairix")
+      (version (git-version "0.24" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vandry/mairix")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12bhmk5j77cl3vjda48cmdysq1c2yjzvfv6zm4hlky6d5g3l49d7"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:parallel-tests? #f
+        #:phases #~(modify-phases %standard-phases
+                     (replace 'configure
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (invoke "./configure"
+                                 (string-append "--prefix=" #$output)))))))
+      (native-inputs
+       (list bison flex))
+      (inputs
+       (list bzip2
+             openssl
+             perl
+             xz
+             zlib))
+      (home-page "https://github.com/vandry/mairix")
+      (synopsis "Program for indexing and searching email messages")
+      (description
+       "Mairix is a program for indexing and searching email messages stored in
+Maildir, MH, MMDF or mbox folders.")
+      (license license:gpl2))))
+
 (define-public go-gitlab.com-shackra-goimapnotify
   (package
     (name "go-gitlab.com-shackra-goimapnotify")
