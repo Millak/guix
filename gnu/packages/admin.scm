@@ -3991,7 +3991,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public uwufetch
   (package
     (name "uwufetch")
-    (version "2.0")
+    (version "2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4000,7 +4000,7 @@ you are running, what theme or icon set you are using, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s4pzaqmlq6rn54kgmlpcrc0sy3q5zn6lxh4448k9iimshljsjfs"))))
+                "182jwkm4vacz2bhyn7v4jl9bxs7md51az958r0qfp9ky71m2q3vh"))))
     (build-system gnu-build-system)
     (arguments
      (list
