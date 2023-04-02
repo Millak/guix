@@ -1755,7 +1755,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pillow-CVE-2022-45199.patch	\
   %D%/packages/patches/python-pyfakefs-remove-bad-test.patch	\
   %D%/packages/patches/python-pyflakes-test-location.patch	\
-  %D%/packages/patches/python2-pyopenssl-openssl-compat.patch	\
   %D%/packages/patches/python-flint-includes.patch		\
   %D%/packages/patches/python-libxml2-utf8.patch		\
   %D%/packages/patches/python-magic-python-bytecode.patch	\
