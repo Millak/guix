@@ -598,7 +598,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "9.1.1")
+    (version "9.2.0")
     (source
      (origin
        (method url-fetch)
@@ -606,7 +606,7 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0fbd1vj4cj19kwh03vdn0a4hr0xaacvi876yyyw5xfsj1q0x8g00"))))
+         "03nm1sgvh237my7ss6kayn6887cbnayvjxrrxsrfcakkmbsida6y"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config))
     (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
