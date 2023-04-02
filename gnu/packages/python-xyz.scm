@@ -3542,7 +3542,7 @@ and is not compatible with JSON.")
 (define-public python-exceptiongroup
   (package
     (name "python-exceptiongroup")
-    (version "1.0.0rc8")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3551,7 +3551,7 @@ and is not compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xsbpv22n51p6yvyvz231mf8zhbi1i88b4zmacaxxx31zrq5ifv4"))))
+                "0wcvzwgjs0xmggs6dh92jxdqi988gafzh10hrzvw10kasy0xakfj"))))
     (build-system python-build-system)
     (arguments
      (list
