@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2021, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -245,17 +245,18 @@ application-centers for distributions.")
              (delete-file "autogen.sh")
              (copy-recursively
               (assoc-ref %build-inputs "common")
-              "common")
-             #t))
-         (add-after 'unpack 'disable-timeout-tests
+              "common")))
+         (add-after 'unpack 'disable-problematic-tests
            (lambda _
              (substitute* "tests/check/Makefile.am"
-               ;; This test timeouts despite changing
-               ;; the value of 'CK_DEFAULT_TIMEOUT' to 600,
-               ;; as per %common-gstreamer-phases.
-               ;; Reported to upstream:
-               ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/20
-               (("[ \t]*transmitter/nice.*$") ""))))
+               ;; This test fails since updating gstreamer to version 1.22.1
+               ;; (see:
+               ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/25).
+               (("^\trtp/recvcodecs.*") "")
+               ;; This test timeouts despite changing the value of
+               ;; 'CK_DEFAULT_TIMEOUT' to 600 (see:
+               ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/20).
+               (("^\ttransmitter/nice.*") ""))))
          (add-after 'unpack 'patch-docbook-xml
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "docs"
@@ -263,8 +264,7 @@ application-centers for distributions.")
                               "plugins/farstream-plugins-docs.sgml")
                  (("http://www.oasis-open.org/docbook/xml/4.1.2/")
                   (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t)))))
+                                 "/xml/dtd/docbook/")))))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -274,11 +274,10 @@ application-centers for distributions.")
            (uri
             (git-reference
              (url "https://gitlab.freedesktop.org/gstreamer/common.git")
-             (commit "88e512ca7197a45c4114f7fa993108f23245bf50")))
-           (file-name
-            (git-file-name "common" "latest.88e512c"))
+             (commit "52adcdb89a9eb527df38c569539d95c1c7aeda6e")))
+           (file-name (git-file-name "common" "latest.52adcdb"))
            (sha256
-            (base32 "1nk94pnskjyngqcfb9p32g4yvf4nzpjszisw24r9azl0pawqpsn6"))))
+            (base32 "1zlm1q1lgcb76gi82rial5bwy2j9sz1x6x48ijhiz89cml7xxd1r"))))
        ("docbook-xml" ,docbook-xml-4.1.2)
        ("docbook-xsl" ,docbook-xsl)
        ("gobject-introspection" ,gobject-introspection)
