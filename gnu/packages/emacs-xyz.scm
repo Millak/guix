@@ -9664,14 +9664,14 @@ sgml/html integration, and indentation (working with sgml).")
 (define-public emacs-jit-spell
   (package
     (name "emacs-jit-spell")
-    (version "0.2")
+    (version "0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/jit-spell-"
                                   version ".tar"))
               (sha256
                (base32
-                "10h2nbp6lap26arwifhzs119mkfj76fvjsix3iccjjvfdi88wdn9"))))
+                "0q8wd9phd0zcjhc92j633vz82fr0ji8zc9vir7kcn1msrf6jspwz"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/astoff/jit-spell")
