@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2022, 2023 Juliana Sims <jtsims@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -783,11 +783,11 @@ Build has features such as:
     (license license:gpl2+)))
 
 (define-public genie
-  (let ((commit "b139103697bbb62db895e4cc7bfe202bcff4ff25")
+  (let ((commit "22cc907a4351db46c55f73e6aa901f1b2f0c52ad")
         (revision "0"))
     (package
       (name "genie")
-      (version (git-version "1167" revision commit))
+      (version (git-version "1170" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -796,7 +796,7 @@ Build has features such as:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "16plshzkyjjzpfcxnwjskrs7i4gg0qn92h2k0rbfl4a79fgmwvwv"))))
+                  "1wxhbdnr52qa2xr1i83577mwr25fxr5vby4r7m5brp9z5a08fwry"))))
       (build-system gnu-build-system)
       (arguments
        (list #:phases #~(modify-phases %standard-phases
