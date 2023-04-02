@@ -1863,14 +1863,14 @@ library.")
 (define-public python-h5py
   (package
     (name "python-h5py")
-    (version "3.6.0")
+    (version "3.8.0")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "h5py" version))
       (sha256
        (base32
-        "0afv805vqrm5071g7alwv41920nhh8kjv4m5nbia9awj9a0x4ll7"))))
+        "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no test target
