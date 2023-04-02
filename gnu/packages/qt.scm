@@ -772,6 +772,9 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                       ;; Actual   (dt5.offsetFromUtc()): 0
                       ;; Expected (46800)              : 46800
                       "tst_qdatetime"
+                      ;; The tst_QObjectRace::destroyRace is flaky (see:
+                      ;; https://bugreports.qt.io/browse/QTBUG-103489).
+                      "tst_qobjectrace"
                       ;; The 'tst_QSettings::fromFile' assumes the data
                       ;; location to be relative to the root directory and
                       ;; fails.
