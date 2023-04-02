@@ -490,21 +490,21 @@ the GStreamer multimedia framework.")
                             (substitute* "tests/check/gst/gstsystemclock.c"
                               (("tcase_add_test \\(tc_chain, \
 test_stress_cleanup_unschedule.*")
-                          "")
-                         (("tcase_add_test \\(tc_chain, \
+                               "")
+                              (("tcase_add_test \\(tc_chain, \
 test_stress_reschedule.*")
-                          "")))))
-                 '())
-          (add-after 'patch-shebangs 'do-not-capture-python
-            (lambda _
-              ;; The patch-source-shebangs phase causes the following build
-              ;; script to reference Python in its shebang, which is
-              ;; unnecessary.
-              (substitute* (string-append #$output
-                                          "/libexec/gstreamer-1.0/"
-                                          "gst-plugins-doc-cache-generator")
-                (((which "python3"))
-                 "/usr/bin/env python3")))))))
+                               "")))))
+                      '())
+               (add-after 'patch-shebangs 'do-not-capture-python
+                 (lambda _
+                   ;; The patch-source-shebangs phase causes the following build
+                   ;; script to reference Python in its shebang, which is
+                   ;; unnecessary.
+                   (substitute* (string-append
+                                 #$output "/libexec/gstreamer-1.0/"
+                                 "gst-plugins-doc-cache-generator")
+                     (((which "python3"))
+                      "/usr/bin/env python3")))))))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
