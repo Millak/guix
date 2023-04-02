@@ -9219,6 +9219,8 @@ in @code{html-mode}.")
                             (delete-file f))
                           doc-files)
                 (delete-file-recursively "doc")))))))
+    (propagated-inputs
+     (list emacs-macrostep))
     (native-inputs
      (list texinfo))
     (home-page "https://github.com/slime/slime")
