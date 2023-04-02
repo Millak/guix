@@ -674,6 +674,11 @@ for the GStreamer multimedia library.")
                  (string-append prefix "\"" libsoup "\"\n")))))
           (add-after 'unpack 'skip-failing-tests
             (lambda _
+              (substitute* "tests/check/elements/flvmux.c"
+                ;; This test randomly times out (see:
+                ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/786).
+                ((".*tcase_add_test.*test_video_caps_late.*")
+                 ""))
               (substitute* "tests/check/meson.build"
                 ;; Reported as shaky upstream, see
                 ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/785>
