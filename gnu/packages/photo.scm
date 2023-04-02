@@ -207,22 +207,21 @@ cameras (CRW/CR2, NEF, RAF, DNG, and others).")
     ;; both two licensing modes for your changes/additions."
     (license (list license:lgpl2.1 license:cddl1.0))))
 
-
 (define-public libexif
   (package
     (name "libexif")
-    (version "0.6.22")
+    (version "0.6.24")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/libexif/libexif/releases"
-                    "/download/libexif-"
-                    (string-map (lambda (x) (if (char=? x #\.) #\_ x)) version)
-                    "-release/libexif-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libexif/libexif.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mhcad5zab7fsn120rd585h8ncwkq904nzzrq8vcd72hzk4g2j2h"))))
+                "0zi5vvb0khlzc6xyfayk6mjx5lgkrj8r7s8lfv4j7wkcgndjga0j"))))
     (build-system gnu-build-system)
+    (native-inputs (list autoconf automake gettext-minimal libtool))
     (home-page "https://libexif.github.io/")
     (synopsis "Read and manipulate EXIF data in digital photographs")
     (description
