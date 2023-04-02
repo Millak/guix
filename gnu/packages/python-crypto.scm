@@ -654,19 +654,17 @@ ciphers, message digests and key derivation functions.")
     (propagated-inputs '())
     (synopsis "Core implementation of the Cryptography Python library")))
 
-;; This is the last version which is compatable with python-cryptography < 35.
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "21.0.0")
+    (version "23.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "1cqcc20fwl521z3fxsc1c98gbnhb14q55vrvjfp6bn6h8rg8qbay"))
-       (patches (search-patches "python2-pyopenssl-openssl-compat.patch"))))
+         "1dxhip610zw1j2bz35g1w1h7vh374g0bnzn4nsqj65n6pswrh544"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -678,7 +676,7 @@ ciphers, message digests and key derivation functions.")
                 ;; PyOpenSSL runs tests against a certificate with a fixed
                 ;; expiry time.  To ensure successful builds in the future,
                 ;; set the time to roughly the release date.
-                (invoke "faketime" "2022-02-01" "py.test" "-v" "-k"
+                (invoke "faketime" "2023-03-25" "pytest" "-vv" "-k"
                         (string-append
                          ;; This test tries to look up certificates from
                          ;; the compiled-in default path in OpenSSL, which
@@ -690,17 +688,13 @@ ciphers, message digests and key derivation functions.")
                          ;; Fails on i686-linux and possibly other 32-bit platforms
                          ;; https://github.com/pyca/pyopenssl/issues/974
                          "and not test_verify_with_time"))))))))
-    (propagated-inputs
-     (list python-cryptography python-six))
-    (inputs
-     (list openssl))
-    (native-inputs
-     (list libfaketime python-flaky python-pretend python-pytest))
+    (propagated-inputs (list python-cryptography))
+    (inputs (list openssl))
+    (native-inputs (list libfaketime python-flaky python-pretend python-pytest))
     (home-page "https://github.com/pyca/pyopenssl")
     (synopsis "Python wrapper module around the OpenSSL library")
-    (description
-      "PyOpenSSL is a high-level wrapper around a subset of the OpenSSL
-library.")
+    (description "PyOpenSSL is a high-level wrapper around a subset of the
+OpenSSL library.")
     (license license:asl2.0)))
 
 (define-public python-ed25519
