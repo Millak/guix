@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -3084,40 +3084,37 @@ data structures and to operate on them.")
 @code{Poke Ras mode} and @code{Poke Map mode}.")))
 
 (define-public pcb2gcode
-  ;; Take some additional commits after v2.4.0 to fix build against
-  ;; geos 3.10.1.
-  (let ((commit "ae41f9fe41e57ee5d0cced6c3b3c8aea9c3f5392"))
-    (package
-     (name "pcb2gcode")
-     (version (git-version "2.4.0" "1" commit))
-     (source
-      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pcb2gcode/pcb2gcode")
-             (commit commit)
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1r1qmvpn5ffi2xpq2gigwsk8kn79s4s2ywfvicwf8i7rzwhkdf17"))))
-     (build-system gnu-build-system)
-     (inputs
-      (list boost
-            geos
-            gerbv
-            glibmm
-            gtkmm-2
-            librsvg))
-     (native-inputs
-      (list autoconf automake libtool pkg-config))
-     (home-page "https://github.com/pcb2gcode/pcb2gcode")
-     (synopsis "Generate G-code for milling PCBs")
-     (description "pcb2gcode is a command-line program for isolation routing
+  (package
+   (name "pcb2gcode")
+   (version "2.5.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/pcb2gcode/pcb2gcode")
+           (commit (string-append "v" version))
+           (recursive? #t)))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32
+       "01s41znkcq9x1rinsdqrrdj8p35isckrcxs14ajsi7wr39n1m5kk"))))
+   (build-system gnu-build-system)
+   (inputs
+    (list boost
+          geos
+          gerbv
+          glibmm
+          gtkmm-2
+          librsvg))
+   (native-inputs
+    (list autoconf automake libtool pkg-config))
+   (home-page "https://github.com/pcb2gcode/pcb2gcode")
+   (synopsis "Generate G-code for milling PCBs")
+   (description "pcb2gcode is a command-line program for isolation routing
 and drilling of PCBs.  It takes Gerber files as input and outputs G-code files
 for the milling of PCBs.  It also includes an autoleveller for the automatic
 dynamic calibration of the milling depth.")
-     (license license:gpl3+))))
+   (license license:gpl3+)))
 
 ;; libdxfrw has no readme, no version release, no tags.  Initial commit says
 ;; "libdxfrw-0.6.3 import", but it shares no git history with "upstream"
