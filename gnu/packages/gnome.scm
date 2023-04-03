@@ -73,6 +73,7 @@
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
+;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3725,6 +3726,12 @@ diagrams.")
                (("gdk_pixbuf_cache_file = .*$")
                 "gdk_pixbuf_cache_file = $(TMPDIR)/loaders.cache\n"))
              #t))
+         (add-before 'check 'fix-test-with-pango-1.50
+           (lambda _
+	     ;; Changes between pango 1.48 and 1.50 caused the text to be one
+	     ;; pixel lower in the output image compared to the reference.
+             (substitute* "tests/fixtures/reftests/bugs/587721-text-transform.svg"
+	       (("660\\.9") "659.9"))))
          (add-before 'check 'remove-failing-tests
            (lambda _
              (with-directory-excursion "tests/fixtures/reftests"
