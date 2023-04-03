@@ -245,9 +245,8 @@ tags = [\"WS_X11\"]")
                 (("\\[tool.sip.project\\]")
                  (string-append "[tool.sip.project]
 sip-include-dirs = [\""
-                                #$(this-package-input
-                                   "python-pyqt")
-                                "/share/sip\"]")))
+                   #$(this-package-input "python-pyqt")
+                   "/lib/python3.10/site-packages/PyQt5/bindings\"]")))
               (substitute* "src/calibre/ebooks/pdf/pdftohtml.py"
                 (("PDFTOHTML = 'pdftohtml'")
                  (string-append "PDFTOHTML = \""
