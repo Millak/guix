@@ -697,7 +697,7 @@ safety and thread safety guarantees.")
 
 (define rust-1.68
   (rust-bootstrapped-package
-   rust-1.67 "1.68.0" "0qkdm4naj729bl72pl513p0xxpmcwyskmd8gfyj358i3kyqxix7a"))
+   rust-1.67 "1.68.2" "15ifyd5jj8rd979dkakp887hgmhndr68pqaqvd2hqkfdywirqcwk"))
 
 ;;; Note: Only the latest versions of Rust are supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
