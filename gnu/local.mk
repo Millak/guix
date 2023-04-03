@@ -865,9 +865,6 @@ MODULES_NOT_COMPILED +=				\
 
 patchdir = $(guilemoduledir)/%D%/packages/patches
 dist_patch_DATA =						\
-  %D%/packages/patches/a2ps-CVE-2001-1593.patch	\
-  %D%/packages/patches/a2ps-CVE-2014-0466.patch	\
-  %D%/packages/patches/a2ps-CVE-2015-8107.patch	\
   %D%/packages/patches/abcl-fix-build-xml.patch	\
   %D%/packages/patches/ableton-link-system-libraries-debian.patch	\
   %D%/packages/patches/abiword-explictly-cast-bools.patch	\
