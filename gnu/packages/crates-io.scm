@@ -9850,7 +9850,7 @@ box''.")
 (define-public rust-cc-1
   (package
     (name "rust-cc")
-    (version "1.0.73")
+    (version "1.0.79")
     (source
      (origin
        (method url-fetch)
@@ -9858,7 +9858,7 @@ box''.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "04ccylrjq94jssh8f7d7hxv64gs9f1m1jrsxb7wqgfxk4xljmzrg"))))
+         "07x93b8zbf3xc2dggdd460xlk1wg8lxm6yflwddxj8b15030klsh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
