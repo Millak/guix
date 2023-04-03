@@ -20470,20 +20470,28 @@ traits but without the boilerplate.")
 (define-public rust-eyre-0.6
   (package
     (name "rust-eyre")
-    (version "0.6.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "eyre" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1f0fbmrcykp84av1yb1d4cqj28jwf0zg1z49a1cgw8vrcf7ms8mw"))))
+    (version "0.6.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "eyre" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1sy7x8p74jfx1mvj4ifl0lxkxaqvmswdgdr84y1dqb6055d6nasc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-indenter" ,rust-indenter-0.3)
-        ("rust-once-cell" ,rust-once-cell-1))))
+     `(#:cargo-inputs (("rust-indenter" ,rust-indenter-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pyo3" ,rust-pyo3-0.13))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-backtrace" ,rust-backtrace-0.3)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-pyo3" ,rust-pyo3-0.13)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-syn" ,rust-syn-1)
+                                   ("rust-thiserror" ,rust-thiserror-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (native-inputs (list python))
     (home-page "https://github.com/yaahc/eyre")
     (synopsis "Trait object based error handling type")
     (description
