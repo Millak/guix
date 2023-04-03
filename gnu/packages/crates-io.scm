@@ -40750,20 +40750,22 @@ runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
 (define-public rust-pem-1
   (package
     (name "rust-pem")
-    (version "1.0.2")
+    (version "1.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "pem" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0iqrvfnm71x9pvff39d5ajwn3gc9glxlv4d4h22max7342db18z9"))))
+          (base32 "1f184b7vs5kgwglfsy9adqqy7625jsq8jj1lsxah9abn78kmr0x8"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-base64" ,rust-base64-0.13))
+        (("rust-base64" ,rust-base64-0.13)
+         ("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
-        (("rust-criterion" ,rust-criterion-0.3))))
+        (("rust-criterion" ,rust-criterion-0.3)
+         ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/jcreekmore/pem-rs")
     (synopsis "Parse and encode PEM-encoded data")
     (description
