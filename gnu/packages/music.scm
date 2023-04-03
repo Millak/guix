@@ -569,8 +569,8 @@ you create custom user interfaces for your MIDI hardware.")
                      (let ((bundled '("singleapplication")))
                        (if (not
                             (string-match
-                              (string-append ".?*(" (string-join bundled "|") ")")
-                              dir))
+                             (string-append ".?*(" (string-join bundled "|") ")")
+                             dir))
                            (delete-file-recursively dir))))
                    (find-files "3rdparty"
                                (lambda (file stat)
@@ -582,23 +582,23 @@ you create custom user interfaces for your MIDI hardware.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out             (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/strawberry")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "bin/strawberry")
+               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                 (,(getenv "GST_PLUGIN_SYSTEM_PATH"))))))
          (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server")))
-               (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-               (setenv "DISPLAY" ":1")
-               (setenv "HOME" (getcwd))))))))
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (system (format #f "~a :1 &"
+                             (search-input-file (or native-inputs inputs)
+                                                "bin/Xvfb")))
+             (setenv "DISPLAY" ":1")
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           googletest
+           pkg-config
+           qttools
+           xorg-server-for-tests))
     (inputs
      (list alsa-lib
            boost
