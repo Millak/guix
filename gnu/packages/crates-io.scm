@@ -5733,8 +5733,42 @@ RFC4648 Base32 or in Crockford Base32.")
 c6e7d37.  However, this package works only up to 128 bytes.")
     (license license:expat)))
 
+(define-public rust-base64-0.21
+  (package
+    (name "rust-base64")
+    (version "0.21.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "base64" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sidjip5b33sr6w7kasfj9qxpbda41nw0x4gjjk55g55a6mdv954"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rstest" ,rust-rstest-0.15)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
+        ("rust-structopt" ,rust-structopt-0.3))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      (substitute* "Cargo.toml"
+                        (("0.12.0")
+                         ,(package-version rust-rstest-0.15))
+                        (("0.3.0")
+                         ,(package-version rust-rstest-reuse-0.4))))))))
+    (home-page "https://github.com/marshallpierce/rust-base64")
+    (synopsis "Encodes and decodes base64 as bytes or utf8")
+    (description
+     "This package encodes and decodes base64 as bytes or utf8.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-base64-0.13
   (package
+    (inherit rust-base64-0.21)
     (name "rust-base64")
     (version "0.13.0")
     (source
@@ -5745,7 +5779,6 @@ c6e7d37.  However, this package works only up to 128 bytes.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1z82g23mbzjgijkpcrilc7nljpxpvpf7zxf6iyiapkgka2ngwkch"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-development-inputs
@@ -5753,17 +5786,12 @@ c6e7d37.  However, this package works only up to 128 bytes.")
         ("rust-rand" ,rust-rand-0.6)
         ("rust-structopt" ,rust-structopt-0.3))
        #:phases
-        (modify-phases %standard-phases
+       (modify-phases %standard-phases
          (add-after 'unpack 'fix-criterion-minor-version
-          (lambda* _
-           (substitute* "Cargo.toml"
-             (("0\\.3\\.2")
-              ,(package-version rust-criterion-0.3))))))))
-    (home-page "https://github.com/marshallpierce/rust-base64")
-    (synopsis "Encodes and decodes base64 as bytes or utf8")
-    (description
-     "This package encodes and decodes base64 as bytes or utf8.")
-    (license (list license:expat license:asl2.0))))
+           (lambda* _
+             (substitute* "Cargo.toml"
+               (("0\\.3\\.2")
+                ,(package-version rust-criterion-0.3))))))))))
 
 (define-public rust-base64-0.12
   (package
