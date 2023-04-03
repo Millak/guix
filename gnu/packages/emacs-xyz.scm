@@ -24768,27 +24768,25 @@ appropriate directory if no @code{eshell} session is active.")
     (license license:gpl3+)))
 
 (define-public emacs-eshell-syntax-highlighting
-  (let ((commit "1ba39a9ffb2298cd716a4314cf3f369028c7bafe")
-        (revision "0"))
-    (package
-      (name "emacs-eshell-syntax-highlighting")
-      (version (git-version "0.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/akreisher/eshell-syntax-highlighting")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0w2f5a9cxa365hcc92c24b3kq5dwry3prig57jgnicwmjn5nkqlz"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/akreisher/eshell-syntax-highlighting")
-      (synopsis "Add syntax highlighting to Eshell")
-      (description
-       "This package highlights user commands at the Eshell interactive prompt
+  (package
+    (name "emacs-eshell-syntax-highlighting")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/akreisher/eshell-syntax-highlighting")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ib46fs70grx7rmw45i817v1dyvcj0b8xdmndvaz7papiimf6vrj"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/akreisher/eshell-syntax-highlighting")
+    (synopsis "Add syntax highlighting to Eshell")
+    (description
+     "This package highlights user commands at the Eshell interactive prompt
 to provide feedback on the validity of commands and syntax.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-eshell-z
   (package
