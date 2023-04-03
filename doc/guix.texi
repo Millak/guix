@@ -29889,6 +29889,11 @@ started.
 @item @code{log-directory} (default: @code{"/var/log/nginx"})
 The directory to which NGinx will write log files.
 
+@item @code{log-level} (default: @code{'error}) (type: symbol)
+Logging level, which can be any of the following values: @code{'debug},
+@code{'info}, @code{'notice}, @code{'warn}, @code{'error}, @code{'crit},
+@code{'alert}, or @code{'emerg}.
+
 @item @code{run-directory} (default: @code{"/var/run/nginx"})
 The directory in which NGinx will create a pid file, and write temporary
 files.
