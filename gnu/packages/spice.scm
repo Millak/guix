@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages gl)
@@ -356,6 +358,8 @@ resolution scaling on graphical console window resize.")
                (base32
                 "1rrjlclm6ad63gah1fa4yfwrz4z6vgq2yrybbvzvvdbxrgl4vgzv"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.60))
     (propagated-inputs
      ;; The following inputs are required in the pkg-config file.
      (list glib
