@@ -125,7 +125,7 @@ with Microsoft Compiled HTML (CHM) files")
 (define-public calibre
   (package
     (name "calibre")
-    (version "5.36.0")
+    (version "5.44.0")
     (source
      (origin
        (method url-fetch)
@@ -134,7 +134,7 @@ with Microsoft Compiled HTML (CHM) files")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1c036qmn7lxq0899c2xzzs6whz7z0557frnfqisbvfxa13b2sadk"))
+         "1v48mzmr9z9rs6s7r8fgaqs6vnxnin1hyzwmwmal78inzpma7ykg"))
        (modules '((guix build utils)))
        (snippet
         '(begin
