@@ -840,7 +840,11 @@ This has the effect of killing old worker processes and starting new ones, using
 the same configuration file.  It is useful for situations where the same nginx
 configuration file can point to different things after a reload, such as
 renewed TLS certificates, or @code{include}d files.")
-                 (procedure (nginx-action "-s" "reload"))))))))))
+                 (procedure (nginx-action "-s" "reload")))
+               (shepherd-action
+                (name 'reopen)
+                (documentation "Re-open log files.")
+                (procedure (nginx-action "-s" "reopen"))))))))))
 
 (define nginx-service-type
   (service-type (name 'nginx)
