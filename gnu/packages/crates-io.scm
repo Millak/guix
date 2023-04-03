@@ -3758,17 +3758,17 @@ library for Rust.")
              ("rust-mime" ,rust-mime-0.3)
              ("rust-mime-guess" ,rust-mime-guess-2))))))
 
-(define-public rust-asn1-derive-0.8
+(define-public rust-asn1-derive-0.13
   (package
     (name "rust-asn1-derive")
-    (version "0.8.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "asn1_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "098w0mxz4bx9w7v72gsl5wva6f0qbvzyc52m0s0n8svqbyh4z2dw"))))
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asn1-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1bvqriazb23gysygpzng1dhzjgnlv274q2yj5gpmlpl7jp0pkaxz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -3782,17 +3782,19 @@ library for Rust.")
      "This package provides #[derive] support for @code{asn1}.")
     (license license:bsd-3)))
 
-(define-public rust-asn1-0.8
+(define-public rust-asn1-derive-0.8
   (package
-    (name "rust-asn1")
+    (inherit rust-asn1-derive-0.13)
+    (name "rust-asn1-derive")
     (version "0.8.7")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "asn1" version))
+       (uri (crate-uri "asn1_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1caacmvgn463n1yc4ac6vl9phrh56ij7l3xgf6qgzbpyjm8v7zyg"))))
+        (base32 "098w0mxz4bx9w7v72gsl5wva6f0qbvzyc52m0s0n8svqbyh4z2dw"))))))
+
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
