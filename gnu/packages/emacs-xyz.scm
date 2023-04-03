@@ -12600,7 +12600,7 @@ mode with the package emacs-julia-mode.")
 (define-public emacs-julia-snail
   (package
     (name "emacs-julia-snail")
-    (version "1.1.5")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12609,7 +12609,7 @@ mode with the package emacs-julia-mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04nh37izz04lxkvkxhsig8khbrrgdl4p6pkjsv5bxymnp84zwlw7"))))
+                "1m6hh041gc10dfc1q5vxrgv64s1240whc9igqjm7asmnprajdiab"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -12621,6 +12621,7 @@ mode with the package emacs-julia-mode.")
      (list libvterm
            emacs-julia-mode             ;required by parser
            emacs-parsec                 ;required by parser
+           emacs-popup
            emacs-vterm
            julia-tokenize
            julia-cstparser))
