@@ -12,12 +12,11 @@
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 aecepoglu <aecepoglu@fastmail.fm>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Antero Mejr <antero@kodmin.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
@@ -27720,6 +27719,33 @@ hash table functionality, it preserves insertion order except after
 removals, and it allows lookup of its elements by either hash table key
 or numerical index.  A corresponding hash set type is also provided.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-indexmap-1.7
+  (package
+    (inherit rust-indexmap-1)
+    (name "rust-indexmap")
+    (version "1.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "indexmap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19b2zwfajhsfcgny0clv8y4jppy704znfhv8nv2dw9a18l2kcqxw"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.11)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-fnv" ,rust-fnv-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-serde-derive" ,rust-serde-derive-1))))))
 
 (define-public rust-indicatif-0.16
   (package
