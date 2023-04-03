@@ -27981,9 +27981,17 @@ tabulated-lists).")
               (invoke "make" "info")))
           (add-before 'install 'build-terminfo-database
             (lambda _
-              (invoke "make" "terminfo"))))))
+              (invoke "make" "terminfo")))
+          (add-before 'install 'patch-ncurses-tic-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((tic (search-input-file inputs "/bin/tic")))
+                (substitute* "eat.el"
+                  (("\\(executable-find \"tic\"\\)")
+                   (string-append "\"" tic "\"")))))))))
     (native-inputs
-     (list ncurses texinfo))
+     (list texinfo))
+    (inputs
+     (list ncurses))
     (home-page "https://codeberg.org/akib/emacs-eat")
     (synopsis "Terminal emulator in Emacs")
     (description
