@@ -36655,8 +36655,12 @@ a vertical completion UI.")
 	  (base32 "1p6ryqb8m30cp0zyawb6bs8wy3ga7gm60lcan0xx1fy3wx8qip33"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/sunwayforever/tintin-mode")
-      (synopsis "Emacs major mode for highlighting and indenting TinTin++ scripts.")
-      (description "This major mode focuses on highlighting as many aspects of the TinTin++ scripting language as possible, organizing commands into functional categories and highlighting specific modes that many commands use to accomplish different tasks.")
+      (synopsis "Emacs major mode for TinTin++ scripts")
+      (description
+       "This major mode focuses on highlighting as many aspects of the
+TinTin++ scripting language as possible, organizing commands into functional
+categories and highlighting specific modes that many commands use to
+accomplish different tasks.")
       (license license:asl2.0))))
 
 ;;;
