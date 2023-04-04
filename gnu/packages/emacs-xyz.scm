@@ -15896,6 +15896,26 @@ reference to any other metadata.  Denote basically streamlines the creation of
 such files while providing facilities to link between them.")
     (license license:gpl3+)))
 
+(define-public emacs-denote-menu
+  (package
+    (name "emacs-denote-menu")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/"
+                           "denote-menu-" version ".tar"))
+       (sha256
+        (base32 "12ry0rv45hv1vrwx9wih72s9h0f3r18xssnkzfa9ilp77kgbas5q"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-denote))
+    (home-page "https://www.scss.tcd.ie/~sulimanm/posts/denote-menu.html")
+    (synopsis "View and filter Denote files in a tabulated list")
+    (description "This package provides an interface for viewing your
+Denote files that goes beyond using the standard Dired Emacs command to
+view your Denote directory.")
+    (license license:gpl3+)))
+
 (define-public emacs-logos
   ;; XXX: Upstream did not tag latest release.  Use the commit matching
   ;; version bump.
