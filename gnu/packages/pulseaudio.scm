@@ -48,6 +48,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages check)
@@ -76,38 +77,27 @@
 (define-public libsndfile
   (package
     (name "libsndfile")
-    (version "1.0.30")
+    (version "1.2.0")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/erikd/libsndfile"
-                                 "/releases/download/v" version
-                                 "/libsndfile-" version ".tar.bz2"))
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/libsndfile/libsndfile/")
+                    (commit version)))
+             (file-name (git-file-name name version))
              (sha256
               (base32
-               "06k1wj3lwm7vf21s8yqy51k6nrkn9z610bj1gxb618ag5hq77wlx"))
-             (modules '((ice-9 textual-ports) (guix build utils)))
+               "10lm5mn171ynykkvq5ad8m1zriv01w25s6hx0l3wphdd4p6f7c92"))
+             (modules '((guix build utils)))
              (snippet
               '(begin
-                 ;; Remove carriage returns (CRLF) to prevent bogus
-                 ;; errors from bash like "$'\r': command not found".
-                 (let ((data (call-with-input-file
-                                 "tests/pedantic-header-test.sh.in"
-                               (lambda (port)
-                                 (string-join
-                                  (string-split (get-string-all port)
-                                                #\return))))))
-                   (call-with-output-file "tests/pedantic-header-test.sh.in"
-                     (lambda (port) (format port data))))
-
-                 ;; While at it, fix hard coded executable name.
+                 ;; Fix hard coded executable name.
                  (substitute* "tests/test_wrapper.sh.in"
-                   (("^/usr/bin/env") "env"))
-                 #t))))
+                   (("^/usr/bin/env") "env"))))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list flac libogg libvorbis opus))
     (native-inputs
-     (list pkg-config python))
+     (list autoconf autogen automake libtool pkg-config python))
     (home-page "http://www.mega-nerd.com/libsndfile/")
     (synopsis "Reading and writing files containing sampled sound")
     (description
