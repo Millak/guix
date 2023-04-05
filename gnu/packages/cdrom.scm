@@ -250,7 +250,7 @@ reconstruction capability.")
 (define-public cdrdao
   (package
     (name "cdrdao")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
      (origin
        (method git-fetch)
@@ -260,7 +260,7 @@ reconstruction capability.")
               (string-append "rel_" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gcl8ibyylamy2d1piq3749nw3xrlp12r0spzp2gmni57b8a6b7j"))))
+        (base32 "1hh1lm4wr1vhsq2brczn94h88h3bppvjidj9cfqkl20jhaj38968"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -274,9 +274,12 @@ reconstruction capability.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'fix-configure.ac
            (lambda _
-             ;; Remove reference to missing macro.
-             (substitute* "configure.ac" (("^AM_GCONF_SOURCE_2.*") ""))
-             #t)))))
+             ;; Remove references to missing macros.
+             (substitute* "configure.ac"
+              (("^AM_GCONF_SOURCE_2.*") "")
+              ;; This was introduced in autoconf-2.70, but is described
+              ;; as usually not needed in the autoconf documentation.
+              (("^AC_CHECK_INCLUDES_DEFAULT") "")))))))
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
