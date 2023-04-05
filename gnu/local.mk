@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
-# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022 Andreas Enge <andreas@enge.fr>
+# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
 # Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -1616,6 +1616,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/openboardview-use-system-utf8.patch	\
   %D%/packages/patches/openbox-python3.patch			\
   %D%/packages/patches/openfoam-4.1-cleanup.patch			\
+  %D%/packages/patches/openjdk-9-pointer-comparison.patch       \
+  %D%/packages/patches/openjdk-9-setsignalhandler.patch         \
   %D%/packages/patches/openjdk-10-idlj-reproducibility.patch	\
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\

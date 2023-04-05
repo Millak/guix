@@ -871,7 +871,9 @@ new Date();"))
                                     (find-files "." ".*.(bin|exe|jar)$"))))
               (sha256
                (base32
-                "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))))
+                "1v92nzdqx07c35x945awzir4yk0fk22vky6fpp8mq9js930sxsz0"))
+              (patches (search-patches "openjdk-9-pointer-comparison.patch"
+                                       "openjdk-9-setsignalhandler.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments

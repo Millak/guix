@@ -1,0 +1,24 @@
+Patch taken from file comparison with openjdk@19.
+
+diff -u -r openjdk-9.alt/hotspot/test/runtime/StackGuardPages/exeinvoke.c openjdk-9/hotspot/test/runtime/StackGuardPages/exeinvoke.c
+--- openjdk-9.alt/hotspot/test/runtime/StackGuardPages/exeinvoke.c	2023-04-05 13:46:58.689964892 +0200
++++ openjdk-9/hotspot/test/runtime/StackGuardPages/exeinvoke.c	2023-04-05 14:15:52.435613325 +0200
+@@ -67,8 +67,17 @@
+   longjmp(context, 1);
+ }
+ 
++static char* altstack = NULL;
++
+ void set_signal_handler() {
+-  static char altstack[SIGSTKSZ];
++  if (altstack == NULL) {
++    // Dynamically allocated in case SIGSTKSZ is not constant
++    altstack = (char*)malloc(SIGSTKSZ);
++    if (altstack == NULL) {
++      fprintf(stderr, "Test ERROR. Unable to malloc altstack space\n");
++      exit(7);
++    }
++  }
+ 
+   stack_t ss = {
+     .ss_size = SIGSTKSZ,

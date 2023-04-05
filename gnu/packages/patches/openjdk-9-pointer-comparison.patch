@@ -1,0 +1,27 @@
+The following patch prevents build failures due to comparisons between
+a pointer and an integer. It has been adapted from openjdk@10.
+
+diff -u -r openjdk-9.alt/hotspot/src/share/vm/memory/virtualspace.cpp openjdk-9/hotspot/src/share/vm/memory/virtualspace.cpp
+--- openjdk-9.alt/hotspot/src/share/vm/memory/virtualspace.cpp	2023-04-05 13:46:58.841965513 +0200
++++ openjdk-9/hotspot/src/share/vm/memory/virtualspace.cpp	2023-04-05 13:48:43.902387837 +0200
+@@ -581,7 +581,7 @@
+   assert(markOopDesc::encode_pointer_as_mark(&_base[size])->decode_pointer() == &_base[size],
+          "area must be distinguishable from marks for mark-sweep");
+ 
+-  if (base() > 0) {
++  if (base() != NULL) {
+     MemTracker::record_virtual_memory_type((address)base(), mtJavaHeap);
+   }
+ }
+diff -u -r openjdk-9.alt/hotspot/src/share/vm/opto/lcm.cpp openjdk-9/hotspot/src/share/vm/opto/lcm.cpp
+--- openjdk-9.alt/hotspot/src/share/vm/opto/lcm.cpp	2023-04-05 13:46:58.849965545 +0200
++++ openjdk-9/hotspot/src/share/vm/opto/lcm.cpp	2023-04-05 13:47:53.566187260 +0200
+@@ -39,7 +39,7 @@
+ // Check whether val is not-null-decoded compressed oop,
+ // i.e. will grab into the base of the heap if it represents NULL.
+ static bool accesses_heap_base_zone(Node *val) {
+-  if (Universe::narrow_oop_base() > 0) { // Implies UseCompressedOops.
++  if (Universe::narrow_oop_base() != NULL) { // Implies UseCompressedOops.
+     if (val && val->is_Mach()) {
+       if (val->as_Mach()->ideal_Opcode() == Op_DecodeN) {
+         // This assumes all Decodes with TypePtr::NotNull are matched to nodes that
