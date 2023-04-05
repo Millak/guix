@@ -7804,16 +7804,6 @@ alternative to Marshal for Object serialization.")
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              ;; These tests fail because DNS is unavailable, giving an
-              ;; unexpected fallback executable in the connection string.
-              (substitute* "spec/pg/connection_spec.rb"
-                (("it (\"accepts an URI and adds( proper)? hostaddr\")" test)
-                 (string-append "xit " test))
-                (("it \"can create a connection option string from an option\
- string and a hash\"" test)
-                 (string-append "xit " test)))))
                (add-before 'build 'compile
                  (lambda _
                    (invoke "rake" "compile")))
@@ -7833,7 +7823,7 @@ alternative to Marshal for Object serialization.")
     (inputs (list postgresql))
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
-with PostgreSQL 9.0 and later.")
+with PostgreSQL 9.3 and later.")
     (license license:ruby)))
 
 (define-public ruby-byebug
