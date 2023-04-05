@@ -461,7 +461,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.2.0")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
@@ -469,7 +469,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "1y8sn7yyqyg1n82byaw5csjr8a6m7g6839krq9k9zc79vxzr3c0q"))))
+        (base32 "1b3vr6njwqfvnrx3qpbg5aqcbl1z8nxnxcgyyw0sd4a20z33jfk0"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
