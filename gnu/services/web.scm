@@ -1144,6 +1144,14 @@ a webserver.")
    (uri "~ \\.php$")
    (body (list
           "fastcgi_split_path_info ^(.+\\.php)(/.+)$;"
+
+          ;; Include some upstream recommendations from
+          ;; https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi
+          ;; Mitigate https://httpoxy.org/ vulnerabilities
+          "fastcgi_param HTTP_PROXY \"\";"
+          ;; Only pass existing php files to the backend.
+          "if (!-f $document_root$fastcgi_script_name) { return 404; }"
+
           (string-append "fastcgi_pass unix:" socket ";")
           "fastcgi_index index.php;"
           (list "include " nginx-package "/share/nginx/conf/fastcgi.conf;")))))
