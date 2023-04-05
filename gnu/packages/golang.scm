@@ -700,7 +700,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                (substitute* "src/time/zoneinfo_unix.go"
                  (("/usr/share/zoneinfo/") tzdata-path)))))
          ;; Keep this synchronized with the package inputs.
-         ;; Also keep syncthonized with later versions of go.
          ,@(if (or (target-arm?) (target-ppc64le?))
              '((add-after 'unpack 'patch-gcc:lib
                  (lambda* (#:key inputs #:allow-other-keys)
@@ -864,6 +863,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      (substitute-keyword-arguments (package-arguments go-1.17)
        ((#:phases phases)
         `(modify-phases ,phases
+           (delete 'adjust-test-suite)
            ;; See the platforms using this phase in go-1.17.
            (replace 'patch-gcc:lib
              (lambda* (#:key inputs #:allow-other-keys)
