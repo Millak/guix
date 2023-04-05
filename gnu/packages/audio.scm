@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
@@ -5506,6 +5506,25 @@ over OSC.  Carla currently supports LADSPA (including LRDF), DSSI, LV2, VST2,
 and VST3 plugin formats, plus SF2 and SFZ file support.  It uses JACK as the
 default and preferred audio driver but also supports native drivers like ALSA.")
     (license license:gpl2+)))
+
+;;; This package variant tracks the latest in-development 2.6 release.
+(define-public carla-2.6
+  (let ((commit "aa400535b31c67f4b6c1b28e6e20e4d4f82111a3")
+        (revision "0"))
+    (package
+      (inherit carla)
+      (name "carla")
+      (version (git-version "2.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/falkTX/Carla")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0cnj2sgr60f5h6wdfmihc214wf3n74686sipl3iyzmylqrcyhbjn")))))))
 
 (define-public ecasound
   (package
