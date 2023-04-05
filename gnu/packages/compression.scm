@@ -1635,6 +1635,13 @@ or junctions, and always follows hard links.")
 (define-public zstd
   (package
     (name "zstd")
+    ;; Replace to avoid the data corruption bug fixed in Zstd 1.5.5.
+    ;; https://github.com/facebook/zstd/releases/tag/v1.5.5
+    (replacement zstd-1.5.5)
+    ;; Hide this buggy package in the Guix UI. If you add another
+    ;; property to this package, adjust the properties in the package
+    ;; replacement accordingly.
+    (properties `((hidden? . #true)))
     (version "1.5.0")
     (source
      (origin
@@ -1720,6 +1727,20 @@ speed.")
                    license:expat         ; lib/dictBuilder/divsufsort.[ch]
                    license:public-domain ; zlibWrapper/examples/fitblk*
                    license:zlib))))      ; zlibWrapper/{gz*.c,gzguts.h}
+
+(define-public zstd-1.5.5
+  (package
+    (inherit zstd)
+    ;; Don't hide this package from the UI.
+    (properties '())
+    (version "1.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/facebook/zstd/releases/download/"
+                           "v" version "/zstd-" version ".tar.gz"))
+       (sha256
+        (base32 "1r1ydmj7ib3g5372yj3k40vl3b9ax0154qg2lqcy7ylwhb69chww"))))))
 
 (define-public pzstd
   (package/inherit zstd
