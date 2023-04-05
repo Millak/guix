@@ -1466,7 +1466,8 @@ blacklisted.certs.pem"
                  ;; not available in bash-minimal
                  (substitute* "make/autoconf/basics.m4"
                    (("if help") "if command -v"))
-                 (for-each delete-file (find-files "." "\\.(bin|exe|jar)$"))))))))
+                 (for-each delete-file (find-files "." "\\.(bin|exe|jar)$"))))
+             (patches (search-patches "openjdk-10-setsignalhandler.patch"))))))
 
 (define-public openjdk15
   (make-openjdk
