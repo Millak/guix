@@ -700,7 +700,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                (substitute* "src/time/zoneinfo_unix.go"
                  (("/usr/share/zoneinfo/") tzdata-path)))))
          ;; Keep this synchronized with the package inputs.
-         ,@(if (target-arm?)
+         ,@(if (or (target-arm?) (target-ppc64le?))
              '((add-after 'unpack 'patch-gcc:lib
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
@@ -721,6 +721,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                          "ldflags = setextld(ldflags, compiler)\n"
                          "ldflags = append(ldflags, \"-r\")\n"
                          "ldflags = append(ldflags, \"" gcclib "\")\n")))))))
+             '())
+         ;; Backported from later versions of go to workaround 64k page sizes.
+         ,@(if (target-ppc64le?)
+             '((add-after 'unpack 'adjust-test-suite
+                 (lambda _
+                   (substitute* "misc/cgo/testshared/shared_test.go"
+                     (("100000") "256000")))))
              '())
          (add-after 'patch-source 'disable-failing-tests
            (lambda _
@@ -833,7 +840,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   (install-file file (string-append out "/share/doc/go")))
                 '("AUTHORS" "CONTRIBUTORS" "CONTRIBUTING.md" "PATENTS"
                   "README.md" "SECURITY.md"))))))))
-    (inputs (if (not (target-arm?))
+    (inputs (if (not (or (target-arm?) (target-ppc64le?)))
               (alist-delete "gcc:lib" (package-inputs go-1.16))
               (package-inputs go-1.16)))))
 
@@ -856,6 +863,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      (substitute-keyword-arguments (package-arguments go-1.17)
        ((#:phases phases)
         `(modify-phases ,phases
+           (delete 'adjust-test-suite)
            ;; See the platforms using this phase in go-1.17.
            (replace 'patch-gcc:lib
              (lambda* (#:key inputs #:allow-other-keys)
