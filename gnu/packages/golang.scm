@@ -851,7 +851,32 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ph3ajfq5q8j3nd91pfb25pm21aiphc58zf7fwis0h3a6nqbdyq9"))))))
+         "0ph3ajfq5q8j3nd91pfb25pm21aiphc58zf7fwis0h3a6nqbdyq9"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.17)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           ;; See the platforms using this phase in go-1.17.
+           (replace 'patch-gcc:lib
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
+                 ;; Add libgcc to runpath
+                 (substitute* "src/cmd/link/internal/ld/lib.go"
+                   (("!rpath.set") "true"))
+                 (substitute* "src/cmd/go/internal/work/gccgo.go"
+                   (("cgoldflags := \\[\\]string\\{\\}")
+                    (string-append "cgoldflags := []string{"
+                                   "\"-Wl,-rpath=" gcclib "\""
+                                   "}"))
+                   (("\"-lgcc_s\", ")
+                    (string-append
+                     "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
+                 (substitute* "src/cmd/go/internal/work/gc.go"
+                   (("ldflags, err := setextld\\(ldflags, compiler\\)")
+                    (string-append
+                     "ldflags, err := setextld(ldflags, compiler)\n"
+                     "ldflags = append(ldflags, \"-r\")\n"
+                     "ldflags = append(ldflags, \"" gcclib "\")\n"))))))))))))
 
 (define-public go-1.19
   (package
