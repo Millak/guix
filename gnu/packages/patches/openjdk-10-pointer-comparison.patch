@@ -1,0 +1,14 @@
+Patch inspired by file comparison with openjdk@19.
+
+diff -u -r openjdk-10.alt/src/hotspot/os/linux/os_linux.cpp openjdk-10/src/hotspot/os/linux/os_linux.cpp
+--- openjdk-10.alt/src/hotspot/os/linux/os_linux.cpp	2023-04-05 15:02:56.994779480 +0200
++++ openjdk-10/src/hotspot/os/linux/os_linux.cpp	2023-04-05 15:07:47.267537301 +0200
+@@ -2155,7 +2155,7 @@
+     }
+ 
+     p = OSContainer::cpu_cpuset_memory_nodes();
+-    if (p < 0)
++    if (p == NULL)
+       st->print("cpu_memory_nodes() failed\n");
+     else {
+       st->print("cpu_memory_nodes: %s\n", p);
