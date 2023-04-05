@@ -905,6 +905,17 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      (substitute-keyword-arguments (package-arguments go-1.18)
        ((#:phases phases)
         #~(modify-phases #$phases
+            ;; These are recurring test failures, depending on having a new
+            ;; enough version of gccgo.  gccgo-12.2 fails with go-1.19.7.
+            ;; https://github.com/golang/go/issues/22224
+            ;; https://github.com/golang/go/issues/25324
+            (add-after 'unpack 'skip-TestGoPathShlibGccgo-tests
+              (lambda _
+                (substitute* "misc/cgo/testshared/shared_test.go"
+                  (("TestGoPathShlibGccgo.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n"))
+                  (("TestTwoGopathShlibsGccgo.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n")))))
             (replace 'install-doc-files
               (lambda _
                 (for-each (lambda (file)
