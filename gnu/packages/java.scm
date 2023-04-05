@@ -1432,7 +1432,8 @@ new Date();"))
         "0mbhdrk12b6878kby0flnbak7444dlpm0ihlmf92vk59y1c02bc2"))
       (modules '((guix build utils)))
       (snippet
-       '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
+       '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))
+      (patches (search-patches "openjdk-10-setsignalhandler.patch"))))
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk11)
       ((#:phases phases)
