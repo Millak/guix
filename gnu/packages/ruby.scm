@@ -7798,7 +7798,7 @@ alternative to Marshal for Object serialization.")
 (define-public ruby-pg
   (package
     (name "ruby-pg")
-    (version "1.3.5")
+    (version "1.4.6")
     (home-page "https://github.com/ged/ruby-pg")
     (source
      (origin
@@ -7809,23 +7809,13 @@ alternative to Marshal for Object serialization.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0c2k2cibd5wwdhva68j5hhfpybm3wmvn2ym4ppn5mqmddwkjkvnk"))))
+         "0k7jgx7x7p6gbsbrv2l5rq27nff2nphnls1sdq525d82b068qnfm"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              ;; These tests fail because DNS is unavailable, giving an
-              ;; unexpected fallback executable in the connection string.
-              (substitute* "spec/pg/connection_spec.rb"
-                (("it (\"accepts an URI and adds( proper)? hostaddr\")" test)
-                 (string-append "xit " test))
-                (("it \"can create a connection option string from an option\
- string and a hash\"" test)
-                 (string-append "xit " test)))))
                (add-before 'build 'compile
                  (lambda _
                    (invoke "rake" "compile")))
@@ -7847,7 +7837,7 @@ alternative to Marshal for Object serialization.")
      (list postgresql))
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
-with PostgreSQL 9.0 and later.")
+with PostgreSQL 9.3 and later.")
     (license license:ruby)))
 
 (define-public ruby-byebug
