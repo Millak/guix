@@ -1492,7 +1492,8 @@ blacklisted.certs.pem"
   (make-openjdk openjdk15 "16.0.2"
                 "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"
    (source (origin
-             (inherit (package-source base))))))
+             (inherit (package-source base))
+             (patches (search-patches "openjdk-10-setsignalhandler.patch"))))))
 
 (define-public openjdk17
   (make-openjdk
