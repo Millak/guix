@@ -1144,11 +1144,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;; Linux-Libre.
 ;; Reference: https://jxself.org/linux-libre/
 
-(define-public linux-libre-lts-version         linux-libre-5.15-version)
-(define-public linux-libre-lts-gnu-revision    linux-libre-5.15-gnu-revision)
-(define-public linux-libre-lts-pristine-source linux-libre-5.15-pristine-source)
-(define-public linux-libre-lts-source          linux-libre-5.15-source)
-(define-public linux-libre-lts                 linux-libre-5.15)
+(define-public linux-libre-lts-version         linux-libre-6.1-version)
+(define-public linux-libre-lts-gnu-revision    linux-libre-6.1-gnu-revision)
+(define-public linux-libre-lts-pristine-source linux-libre-6.1-pristine-source)
+(define-public linux-libre-lts-source          linux-libre-6.1-source)
+(define-public linux-libre-lts                 linux-libre-6.1)
 
 
 ;;;
