@@ -239,7 +239,7 @@ classification.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "0qbq1rqp94l530f043qzp8aw5lj7dng9wq0miffd7spd1ff638wq"))))
+                  "07kdsngvr4n1qxpqzv1nlay7g41d6jzjppa8vzmrg220s8ing87z"))))
       (build-system gnu-build-system)
       (arguments
        `(#:imported-modules (,@%gnu-build-system-modules

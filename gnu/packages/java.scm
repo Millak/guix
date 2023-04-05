@@ -11240,7 +11240,7 @@ outputting XML data from Java code.")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "18q3i6jgm6rkw8aysfgihgywrdc5nvijrwnslmi3ww497jvri6ja"))))
+                "0zjqmsad4xk0iar23hdyvx19nxczybd2bh0i35xrafli5cmh720k"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "geronimo-xbean-reflect.jar"
@@ -11291,7 +11291,7 @@ and graphs of objects for dependency injection frameworks")
               (file-name (string-append name "-" version "-source"))
               (sha256
                (base32
-                "119yn795jvnjf52si84q192s8wag1k013iabg78b7wnadssnnh31"))))
+                "1mky4zyl2xsqlgrkairaj5971byvhwk2z9bq8snsgvlr11ydc0zf"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f

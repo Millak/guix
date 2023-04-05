@@ -3718,7 +3718,7 @@ Other features include a live preview and live streaming.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "18yfkr70lr1x1hc8snn2ldnbzdcc7b64xmkqrfk8w59gpg7sl1xn"))))
+                "1srzyjks9s0g4k7ms8vc0hjby2g6shndnr552hl63pn90sgmwxs9"))))
     (build-system gnu-build-system)
     (arguments
      ;; libsmpeg fails to build with -std=c++11, which is the default with
@@ -3754,7 +3754,7 @@ and MPEG system streams.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0jfi085rf3fa5xsn0vd3nqf32my8ph9c6a9445y7a8lrlz4dms64"))))
+                "1jy9xqykhwfg8in0fxjcqcvwazii1ckzs39wp749b926q7ny5bwy"))))
     (inputs
      (list sdl))))
 
