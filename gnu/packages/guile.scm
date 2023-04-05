@@ -391,10 +391,11 @@ without requiring the source code to be rewritten.")
                             (("^GUILE_OPTIMIZATIONS.*")
                              "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
                    #~())
-            #$@(if (target-ppc64le?)
+            #$@(if (target-powerpc?)
                    #~((add-after 'unpack 'skip-oom-test
                         (lambda _
-                          ;; This test hangs with guile-3.0.9 and libgc-8.2.2.
+                          ;; This test hangs with guile-3.0.9 and libgc-8.2.2 and
+                          ;; fails completely on powerpc-linux.
                           (substitute* "test-suite/standalone/test-out-of-memory"
                             (("!#") "!#\n\n(exit 77)\n")))))
                    #~())
