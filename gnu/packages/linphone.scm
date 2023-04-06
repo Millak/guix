@@ -151,7 +151,7 @@ writing, administering, and running unit tests in C.")
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Fix decaf dependency (see:
              ;; https://gitlab.linphone.org/BC/public/bctoolbox/-/issues/3).
-             (let* ((decaf (assoc-ref inputs "decaf")))
+             (let* ((decaf (assoc-ref inputs "libdecaf")))
                (substitute* (find-files "." "CMakeLists.txt")
                  (("find_package\\(Decaf CONFIG\\)")
                   "set(DECAF_FOUND 1)")
@@ -182,9 +182,7 @@ writing, administering, and running unit tests in C.")
                (with-directory-excursion "tester"
                  (invoke "./bctoolbox_tester"))))))))
     (inputs
-     `(("bcunit" ,bcunit)
-       ("decaf" ,libdecaf)
-       ("mbedtls" ,mbedtls-apache)))
+     (list bcunit libdecaf mbedtls-apache))
     (synopsis "Belledonne Communications Tool Box")
     (description "BcToolBox is an utilities library used by Belledonne
 Communications software like belle-sip, mediastreamer2 and linphone.")
