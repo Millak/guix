@@ -15178,14 +15178,14 @@ effects models and Bayesian models.")
 (define-public r-ggeffects
   (package
     (name "r-ggeffects")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggeffects" version))
        (sha256
         (base32
-         "067r9qp3r4iwkhfiwbjil59af93c55rxg6z4l4hiwqypalkmgxwg"))))
+         "0pzg1mddy1s5z5cmvmdkk6hqhipdr866z1y5qh4c6n93svwlyvnj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-insight))
