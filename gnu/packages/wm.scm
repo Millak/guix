@@ -2718,7 +2718,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "1.8.3")
+    (version "2.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2727,7 +2727,7 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vm97ak0589v39m3fljf1qhy92dqgiqcrrfp757gg7q58qwa6dkf"))))
+                "0fxfmxl7p63l07lqb83q5lx16hm0rixcidghx00gp08x2yrgr4x9"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dxwayland=true")
