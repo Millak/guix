@@ -3,6 +3,7 @@
 ;;; Copyright © 2020, 2021 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -176,9 +177,10 @@ writing, administering, and running unit tests in C.")
                (("if \\(file_exists\\(\"..\"\\)\\)")
                 "if (NULL)"))))
          (replace 'check
-           (lambda _
-             (with-directory-excursion "tester"
-               (invoke "./bctoolbox_tester")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "tester"
+                 (invoke "./bctoolbox_tester"))))))))
     (inputs
      `(("bcunit" ,bcunit)
        ("decaf" ,libdecaf)
