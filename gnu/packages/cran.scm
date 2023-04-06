@@ -31029,24 +31029,22 @@ here.")
 (define-public r-projpred
   (package
     (name "r-projpred")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "projpred" version))
        (sha256
         (base32
-         "1cny3svzrmqc1yxqms7l4v1ilpw8yfb5akn41zm95nnv3mzvn0bg"))))
+         "0faf0hq5kvibqyzgqqz2sdqms8g3vvxy6calpm6d2wzmbczi5v5n"))))
     (properties `((upstream-name . "projpred")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
-           r-dplyr
            r-gamm4
            r-ggplot2
            r-lme4
            r-loo
-           r-magrittr
            r-mass
            r-mclogit
            r-mgcv
@@ -31055,7 +31053,6 @@ here.")
            r-ordinal
            r-rcpp
            r-rcpparmadillo
-           r-rlang
            r-rstantools
            r-ucminf))
     (native-inputs (list r-knitr r-rmarkdown))
