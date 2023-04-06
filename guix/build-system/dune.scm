@@ -25,6 +25,7 @@
   #:use-module (guix gexp)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
+  #:use-module ((guix build-system gnu) #:prefix gnu:)
   #:use-module ((guix build-system ocaml) #:prefix ocaml:)
   #:use-module (guix packages)
   #:use-module (srfi srfi-1)
