@@ -245,7 +245,7 @@ IETF.")
 (define-public belcard
   (package
     (name "belcard")
-    (version "4.4.34")
+    (version "5.2.49")
     (source
      (origin
        (method git-fetch)
@@ -254,7 +254,7 @@ IETF.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16x2xp8d0a115132zhy1kpxkyj86ia7vrsnpjdg78fnbvmvysc8m"))))
+        (base32 "1rl1x7rnlnncb45sjp8r2xbcwr9l8qv5bhfybhr0mmvsv3a4k4a3"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
