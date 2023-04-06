@@ -258,37 +258,34 @@ IETF.")
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
-     `(#:configure-flags '("-DENABLE_STATIC=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-vcard-grammar-location
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (vcard-grammar
-                     (string-append out "/share/belr/grammars/vcard_grammar")))
-               (substitute* "include/belcard/vcard_grammar.hpp"
-                 (("define VCARD_GRAMMAR \"vcard_grammar\"")
-                  (format #f "define VCARD_GRAMMAR ~s" vcard-grammar))))))
-         (add-after 'install 'install-tester
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (tester (assoc-ref outputs "tester"))
-                   (test-name (string-append ,name "_tester")))
-               (for-each mkdir-p
-                         (list (string-append tester "/bin")
-                               (string-append tester "/share")))
-               (rename-file (string-append out "/bin/" test-name)
-                            (string-append tester "/bin/" test-name))
-               (rename-file (string-append out "/share/" test-name)
-                            (string-append tester "/share/" test-name)))))
-         (delete 'check)
-         (add-after 'install-tester 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (let* ((tester (assoc-ref outputs "tester"))
-                      (belcard_tester (string-append tester
-                                                     "/bin/belcard_tester")))
-                 (invoke belcard_tester))))))))
+     (list
+      #:configure-flags '(list "-DENABLE_STATIC=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-vcard-grammar-location
+            (lambda _
+              (let ((vcard-grammar
+                     (string-append #$output
+                                    "/share/belr/grammars/vcard_grammar")))
+                (substitute* "include/belcard/vcard_grammar.hpp"
+                  (("define VCARD_GRAMMAR \"vcard_grammar\"")
+                   (format #f "define VCARD_GRAMMAR ~s" vcard-grammar))))))
+          (add-after 'install 'install-tester
+            (lambda _
+              (let ((test-name (string-append #$name "_tester")))
+                (for-each mkdir-p
+                          (list (string-append #$output:tester "/bin")
+                                (string-append #$output:tester "/share")))
+                (rename-file (string-append #$output "/bin/" test-name)
+                             (string-append #$output:tester "/bin/" test-name))
+                (rename-file (string-append #$output "/share/" test-name)
+                             (string-append #$output:tester "/share/" test-name)))))
+          (delete 'check)
+          (add-after 'install-tester 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke (string-append #$output:tester
+                                       "/bin/belcard_tester"))))))))
     (inputs
      (list bctoolbox belr))
     (synopsis "Belledonne Communications VCard Library")
