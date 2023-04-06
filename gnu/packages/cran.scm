@@ -34413,13 +34413,13 @@ Journal of Statistical Software, 39(10), 1-24.")
 (define-public r-densestbayes
   (package
     (name "r-densestbayes")
-    (version "1.0-2.1")
+    (version "1.0-2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "densEstBayes" version))
        (sha256
-        (base32 "1pzmgn65lv91zg1588qhwczy9f2zgciknlc4l072mvh2i7hncw2b"))))
+        (base32 "0ydnjyprv8fz037nkfvjd8w6hg4a19lbnq4kl7yankxksjfdyqc3"))))
     (properties `((upstream-name . "densEstBayes")))
     (build-system r-build-system)
     (propagated-inputs
