@@ -38412,13 +38412,13 @@ matching or aggregation, retrieving coordinates, print, summary, etc.")
 (define-public r-gstat
   (package
     (name "r-gstat")
-    (version "2.1-0")
+    (version "2.1-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gstat" version))
               (sha256
                (base32
-                "0vrdiyjav92wbbms8ljmv1i0l8cdjblfnmhyrsd1a7v0z93fp9jp"))))
+                "09ax28di93r4r334qwdp84i95809lkr6587w4xlgpvsma7k0bcj8"))))
     (properties `((upstream-name . "gstat")))
     (build-system r-build-system)
     (propagated-inputs
