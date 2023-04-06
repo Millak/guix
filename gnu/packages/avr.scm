@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -24,6 +24,7 @@
 
 (define-module (gnu packages avr)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -52,34 +53,32 @@
       (arguments
        (substitute-keyword-arguments (package-arguments xgcc)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'set-paths 'augment-CPLUS_INCLUDE_PATH
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((gcc (assoc-ref inputs  "gcc")))
-                   ;; Remove the default compiler from CPLUS_INCLUDE_PATH to
-                   ;; prevent header conflict with the GCC from native-inputs.
-                   (setenv "CPLUS_INCLUDE_PATH"
-                           (string-join
-                            (delete (string-append gcc "/include/c++")
-                                    (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                  #\:))
-                            ":"))
-                   (format #t
-                           "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
-                           (getenv "CPLUS_INCLUDE_PATH"))
-                   #t)))
-             ;; Without a working multilib build, the resulting GCC lacks
-             ;; support for nearly every AVR chip.
-             (add-after 'unpack 'fix-genmultilib
-               (lambda _
-                 ;; patch-shebang doesn't work here because there are actually
-                 ;; several scripts inside this script, each with a #!/bin/sh
-                 ;; that needs patching.
-                 (substitute* "gcc/genmultilib"
-                   (("#!/bin/sh") (string-append "#!" (which "sh"))))
-                 #t))))
+          #~(modify-phases #$phases
+              (add-after 'set-paths 'augment-CPLUS_INCLUDE_PATH
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((gcc (assoc-ref inputs  "gcc")))
+                    ;; Remove the default compiler from CPLUS_INCLUDE_PATH to
+                    ;; prevent header conflict with the GCC from native-inputs.
+                    (setenv "CPLUS_INCLUDE_PATH"
+                            (string-join
+                             (delete (string-append gcc "/include/c++")
+                                     (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                   #\:))
+                             ":"))
+                    (format #t
+                            "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                            (getenv "CPLUS_INCLUDE_PATH")))))
+              ;; Without a working multilib build, the resulting GCC lacks
+              ;; support for nearly every AVR chip.
+              (add-after 'unpack 'fix-genmultilib
+                (lambda _
+                  ;; patch-shebang doesn't work here because there are actually
+                  ;; several scripts inside this script, each with a #!/bin/sh
+                  ;; that needs patching.
+                  (substitute* "gcc/genmultilib"
+                    (("#!/bin/sh") (string-append "#!" (which "sh"))))))))
          ((#:configure-flags flags)
-          `(delete "--disable-multilib" ,flags))))
+          #~(delete "--disable-multilib" #$flags))))
       (native-search-paths
        (list (search-path-specification
               (variable "CROSS_C_INCLUDE_PATH")
