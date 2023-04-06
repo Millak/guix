@@ -60,6 +60,8 @@
 ;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -131,6 +133,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpd)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -1539,7 +1542,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.15.1")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -1548,7 +1551,7 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))
+        (base32 "11kcica9waj1a1xgbi12gif9z5z0b4xzycbcgawbgdmj77pws8sk"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -1559,7 +1562,13 @@ functionality to display information about the most commonly used services.")
                (("Xwayland") (string-append (assoc-ref inputs
                                                        "xorg-server-xwayland")
                                             "/bin/Xwayland")))
-             #t)))))
+             #t))
+         (add-before 'configure 'fix-meson-file
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "backend/drm/meson.build"
+               (("/usr/share/hwdata/pnp.ids")
+                (string-append (assoc-ref inputs "hwdata")
+                               "/share/hwdata/pnp.ids"))))))))
     (propagated-inputs
      (list ;; As required by wlroots.pc.
            eudev
@@ -1574,7 +1583,9 @@ functionality to display information about the most commonly used services.")
            xcb-util-wm
            xorg-server-xwayland))
     (native-inputs
-     (list pkg-config))
+     (list
+       `(,hwdata "pnp")
+       pkg-config))
     (home-page "https://github.com/swaywm/wlroots")
     (synopsis "Pluggable, composable, unopinionated modules for building a
 Wayland compositor")
