@@ -1521,19 +1521,24 @@ instances over the network, and general QSO and DXpedition logging.")
        (sha256
         (base32 "1lqd77v9xm58k9g9kfwxva3mmzm1yyk1v27nws5j1a293zfg2hkw"))))
     (build-system qt-build-system)
-    (native-inputs
-     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
-    (inputs
-     `(("boost" ,boost)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("hamlib" ,wsjtx-hamlib)
-       ("libusb" ,libusb)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtserialport" ,qtserialport)))
     (arguments
-     `(#:tests? #f)) ; No test suite
+     (list #:tests? #f)) ; No test suite
+    (native-inputs
+     (list asciidoc
+           gfortran
+           pkg-config
+           qttools-5
+           ruby-asciidoctor))
+    (inputs
+     (list boost
+           fftw
+           fftwf
+           libusb
+           qtbase-5
+           qtmultimedia-5
+           qtserialport
+           wsjtx-hamlib))
+    (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
     (synopsis "Weak-signal ham radio communication program")
     (description
      "WSJT-X implements communication protocols or modes called FT4, FT8,
@@ -1541,7 +1546,6 @@ JT4, JT9, JT65, QRA64, ISCAT, MSK144, and WSPR, as well as one called Echo for
 detecting and measuring your own radio signals reflected from the Moon.  These
 modes were all designed for making reliable, confirmed QSOs under extreme
 weak-signal conditions.")
-    (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
     (license license:gpl3)))
 
 (define-public jtdx
