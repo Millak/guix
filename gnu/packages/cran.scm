@@ -35753,14 +35753,14 @@ latter.")
 (define-public r-readtext
   (package
     (name "r-readtext")
-    (version "0.81")
+    (version "0.82")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "readtext" version))
         (sha256
           (base32
-            "0k782h5hns5v5h8a6qyfqck2hc15nq0awg8bsp196q4zviv5jw3c"))))
+            "13j0avf5443m46lczdznpw1zlc01psk61m5wrxks9inv0684xg1s"))))
     (properties `((upstream-name . "readtext")))
     (build-system r-build-system)
     (propagated-inputs
@@ -35770,12 +35770,12 @@ latter.")
             r-httr
             r-jsonlite
             r-pdftools
+            r-pillar
             r-readods
             r-readxl
             r-streamr
             r-stringi
             r-striprtf
-            r-tibble
             r-xml2))
     (native-inputs (list r-knitr))
     (home-page
