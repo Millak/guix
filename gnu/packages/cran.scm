@@ -13278,13 +13278,13 @@ supported classes are those defined in packages @code{network} and
 (define-public r-interp
   (package
     (name "r-interp")
-    (version "1.1-3")
+    (version "1.1-4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "interp" version))
               (sha256
                (base32
-                "0gzsnlg8f7knb100n6vv6307c3v2jd8f9qzrq62jkc6g71mn0kmp"))))
+                "01jdwcv25khnma7i0zcynkr5sw0dzb2agqimhrpdg91jh4w5sysg"))))
     (properties `((upstream-name . "interp")))
     (build-system r-build-system)
     (propagated-inputs (list r-deldir r-rcpp r-rcppeigen))
