@@ -478,7 +478,7 @@ including both ARM and x86.")
 (define-public belle-sip
   (package
     (name "belle-sip")
-    (version "4.4.34")
+    (version "5.2.49")
     (source
      (origin
        (method git-fetch)
@@ -487,65 +487,78 @@ including both ARM and x86.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kknnlczq7dpqaj1dwxvy092dzrqjy11ndkv90rqwmdryigkjk6z"))))
+        (base32 "0yx1qvzp11ysh24hxrvz7dm69j8zswa0xcx9m42vcv95z72166cq"))))
     (build-system cmake-build-system)
     (outputs '("out" "tester"))
     (arguments
-     `(#:configure-flags (list "-DENABLE_STATIC=NO"
-                               "-DENABLE_MDNS=ON")
+     (list
+      #:configure-flags '(list "-DENABLE_STATIC=NO"
+                               "-DENABLE_MDNS=ON"
+                               ;; We skip a test and thus have an unused
+                               ;; procedure, so we need to disable -Werror.
+                               "-DENABLE_STRICT=OFF")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Fix mDNS dependency.
-             (let* ((avahi (assoc-ref inputs "avahi")))
-               (substitute* (find-files "." "CMakeLists.txt")
-                 (("find_package\\(DNSSD REQUIRED\\)")
-                  "set(DNSSD_FOUND 1)")
-                 (("\\$\\{DNSSD_INCLUDE_DIRS\\}")
-                  (string-append avahi "/include/avahi-compat-libdns_sd"))
-                 (("\\$\\{DNSSD_LIBRARIES\\}")
-                  "dns_sd")))
-             (substitute* "src/CMakeLists.txt"
-               ;; ANTLR would use multithreaded DFA generation otherwise,
-               ;; which would not be reproducible.
-               (("-Xmultithreaded ") ""))))
-         (delete 'check)                ;move after install
-         (add-after 'install 'separate-outputs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (tester (assoc-ref outputs "tester"))
-                    (tester-name "belle_sip_tester"))
-               (for-each mkdir-p (list (string-append tester "/bin")
-                                       (string-append tester "/share")))
-               (rename-file (string-append out "/bin")
-                            (string-append tester "/bin"))
-               (rename-file (string-append out "/share/" tester-name)
-                            (string-append tester "/share/" tester-name)))))
-         (add-after 'separate-outputs 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((tester (string-append (assoc-ref outputs "tester")
-                                          "/bin/belle_sip_tester")))
-               (for-each (lambda (suite-name)
-                           (invoke tester "--suite" suite-name))
-                         (list "Object inheritance"
-                               "SIP URI"
-                               "FAST SIP URI"
-                               "FAST SIP URI 2"
-                               "Generic uri"
-                               "Headers"
-                               "Core"
-                               "SDP"
-                               ;;"Resolver"
-                               "Message"
-                               "Authentication helper"
-                               ;;"Register"
-                               ;;"Dialog"
-                               "Refresher"
-                               ;;"HTTP stack"
-                               "Object"))))))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; Fix mDNS dependency.
+               (let* ((avahi (assoc-ref inputs "avahi")))
+                 (substitute* (find-files "." "CMakeLists.txt")
+                   (("find_package\\(DNSSD REQUIRED\\)")
+                    "set(DNSSD_FOUND 1)")
+                   (("\\$\\{DNSSD_INCLUDE_DIRS\\}")
+                    (string-append avahi "/include/avahi-compat-libdns_sd"))
+                   (("\\$\\{DNSSD_LIBRARIES\\}")
+                    "dns_sd")))
+               ;; Disable broken test.  This test uses
+               ;; bctbx_unescaped_string_only_chars_in_rules from bctoolbox,
+               ;; which unescapes too much.
+               (substitute* "tester/belle_sip_base_uri_tester.c"
+                 (("[ \t]*TEST_NO_TAG.*test_unescaping_good_chars\\),")
+                  ""))
+               (substitute* "src/sdp/parser.cc"
+                 (("load\\(\"sdp_grammar\"\\)")
+                  (string-append "load(\"" #$output
+                                 "/share/belr/grammars/sdp_grammar\")")))
+               (substitute* "src/CMakeLists.txt"
+                 ;; ANTLR would use multithreaded DFA generation otherwise,
+                 ;; which would not be reproducible.
+                 (("-Xmultithreaded ") ""))))
+           (delete 'check)              ;move after install
+           (add-after 'install 'separate-outputs
+             (lambda _
+               (let ((tester-name "belle_sip_tester"))
+                 (for-each mkdir-p (list (string-append #$output:tester "/bin")
+                                         (string-append #$output:tester "/share")))
+                 (rename-file (string-append #$output "/bin")
+                              (string-append #$output:tester "/bin"))
+                 (rename-file (string-append #$output "/share/" tester-name)
+                              (string-append #$output:tester "/share/" tester-name)))))
+           (add-after 'separate-outputs 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (let ((tester (string-append #$output:tester
+                                              "/bin/belle_sip_tester")))
+                   (for-each (lambda (suite-name)
+                               (invoke tester "--suite" suite-name))
+                             (list "Object inheritance"
+                                   "SIP URI"
+                                   "FAST SIP URI"
+                                   "FAST SIP URI 2"
+                                   "Generic uri"
+                                   "Headers"
+                                   "Core"
+                                   "SDP"
+                                   ;;"Resolver"
+                                   "Message"
+                                   "Authentication helper"
+                                   ;;"Register"
+                                   ;;"Dialog"
+                                   "Refresher"
+                                   ;;"HTTP stack"
+                                   "Object")))))))))
     (inputs
-     (list avahi bctoolbox zlib))
+     (list avahi bctoolbox belr zlib))
     (synopsis "Belledonne Communications SIP Library")
     (description "Belle-sip is a modern library implementing SIP transport,
 transaction and dialog layers.  It is written in C, with an object-oriented
