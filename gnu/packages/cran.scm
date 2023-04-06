@@ -1935,13 +1935,13 @@ scale-sensitive information.")
 (define-public r-ggvenn
   (package
     (name "r-ggvenn")
-    (version "0.1.9")
+    (version "0.1.10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggvenn" version))
               (sha256
                (base32
-                "0bm52j3idchignp6nrw7c76jlbfkjf5zng258957vq019vx9qxrq"))))
+                "0gl7z8hrn2wmmb59fvfv2hsw40p629aj086dv0kwlv162zqidqfd"))))
     (properties `((upstream-name . "ggvenn")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr r-ggplot2))
