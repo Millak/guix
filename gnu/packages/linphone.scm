@@ -131,7 +131,7 @@ writing, administering, and running unit tests in C.")
 (define-public bctoolbox
   (package
     (name "bctoolbox")
-    (version "4.4.34")
+    (version "5.2.49")
     (source
      (origin
        (method git-fetch)
@@ -140,11 +140,14 @@ writing, administering, and running unit tests in C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bfswwvvdshaahg4jd2j10f0sci8809s4khajd0m6b059zwc7y25"))))
+        (base32 "0b51308jy5z32gp594r78jvbyrha16sanxdnbcmxgrwnb4myqx5j"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:configure-flags '("-DENABLE_STATIC=OFF")
+     `(#:configure-flags (list "-DENABLE_STATIC=OFF"
+                               ;; Do not use -Werror, because due to skipping
+                               ;; a test there are unused procedures.
+                               "-DENABLE_STRICT=OFF")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-cmake
@@ -163,7 +166,7 @@ writing, administering, and running unit tests in C.")
            (lambda _
              ;; The following test relies on networking; disable it.
              (substitute* "tester/port.c"
-               (("[ \t]*TEST_NO_TAG.*bctbx_addrinfo_sort_test\\)")
+               (("[ \t]*TEST_NO_TAG.*bctbx_addrinfo_sort_test\\),")
                 ""))))
          (add-after 'unpack 'fix-installed-resource-directory-detection
            (lambda _
