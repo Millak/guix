@@ -2562,16 +2562,17 @@ conventions.")
 (define-public r-ecp
   (package
     (name "r-ecp")
-    (version "3.1.3")
+    (version "3.1.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ecp" version))
               (sha256
                (base32
-                "0n602jssl6rf596nwm6hbl7s9vdlqi20w8mrhxicj373mw5v22m8"))))
+                "0kf0kkawds86kqx3p2ahyzw9xvaz5bz51ffik3f1g5b5lwjvz60v"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
+    (native-inputs (list r-r-rsp))
     (home-page "https://cran.r-project.org/web/packages/ecp/")
     (synopsis "Multiple change-point analysis of multivariate data")
     (description
