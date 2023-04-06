@@ -2305,6 +2305,29 @@ and help selectively enable or disable diagnostic functions based on major
 modes.")
     (license license:expat)))
 
+(define-public emacs-flymake-popon
+  (package
+    (name "emacs-flymake-popon")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/akib/emacs-flymake-popon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ljqnnl5k2f62ilahilx0ldv0spjp9hpgyikd4py1348flzq4k31"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+      (list emacs-popon
+            emacs-posframe))
+    (home-page "https://codeberg.org/akib/emacs-flymake-popon")
+    (synopsis "Flymake diagnostics on cursor hover")
+    (description "This package shows Flymake diagnostics on cursor hover.")
+    (license license:gpl3+)))
+
 (define-public emacs-flymake-flycheck
   (package
     (name "emacs-flymake-flycheck")
