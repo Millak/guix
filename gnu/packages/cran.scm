@@ -33318,14 +33318,14 @@ for creating, simulating, or validating values for such parameters.")
 (define-public r-tune
   (package
     (name "r-tune")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tune" version))
        (sha256
         (base32
-         "044bz8g3p8vj97w9ycpiw39iakzghxbqzmb4lxqpplpxymc8ybkm"))))
+         "1pp3pgxwpqihxfjwf9mb5rc0yv60q47n7z399z21zp4jbwryxymh"))))
     (properties `((upstream-name . "tune")))
     (build-system r-build-system)
     (propagated-inputs
