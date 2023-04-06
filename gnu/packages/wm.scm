@@ -1596,7 +1596,7 @@ modules for building a Wayland compositor.")
 (define-public sway
   (package
     (name "sway")
-    (version "1.7")
+    (version "1.8")
     (source
      (origin
        (method git-fetch)
@@ -1605,7 +1605,7 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ss3l258blyf2d0lwd7pi7ga1fxfj8pxhag058k7cmjhs3y30y5l"))))
+        (base32 "17dqr2lkmcv2ssp7vky27zw599i77whpb1aqh1s6kl8a8vkrz6mg"))))
     (build-system meson-build-system)
     (arguments
      `(;; elogind is propagated by wlroots -> libseat
@@ -1634,6 +1634,7 @@ modules for building a Wayland compositor.")
                   libinput-minimal
                   libxkbcommon
                   pango
+                  pcre2
                   swaybg
                   wayland
                   wlroots))
