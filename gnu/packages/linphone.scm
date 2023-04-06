@@ -58,6 +58,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt))
@@ -195,7 +196,7 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
 (define-public belr
   (package
     (name "belr")
-    (version "4.4.34")
+    (version "5.2.49")
     (source
      (origin
        (method git-fetch)
@@ -204,36 +205,33 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w2canwwm0qb99whnangvaybvjzq8xg6vksqxykgr8fbx7clw03h"))))
+        (base32 "1bj8qd4ahbff476z0ccwsxy7qznqi6n5l1pdd7zbvk0h53zyj74c"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
-     `(#:configure-flags '("-DENABLE_STATIC=OFF")
+     (list
+      #:configure-flags '(list "-DENABLE_STATIC=OFF")
        #:phases
-       (modify-phases %standard-phases
-         (delete 'check)                ;moved after the install phase
-         (add-after 'install 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((tester (assoc-ref outputs "tester"))
-                    (belr_tester (string-append tester "/bin/belr_tester"))
-                    (tester-share (string-append tester "/share/belr_tester")))
-               (invoke belr_tester))))
-         (add-after 'install 'move-tester
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (tester (assoc-ref outputs "tester")))
+       #~(modify-phases %standard-phases
+           (delete 'check)              ;moved after the install phase
+           (add-after 'install 'check
+             (lambda* (#:key tests? outputs #:allow-other-keys)
+               (when tests?
+                 (invoke (string-append #$output:tester "/bin/belr_tester")))))
+           (add-after 'install 'move-tester
+             (lambda _
                (for-each mkdir-p
-                         (list (string-append tester "/bin")
-                               (string-append tester "/share")))
+                         (list (string-append #$output:tester "/bin")
+                               (string-append #$output:tester "/share")))
                (rename-file
-                (string-append out "/bin/belr_tester")
-                (string-append tester "/bin/belr_tester"))
+                (string-append #$output "/bin/belr_tester")
+                (string-append #$output:tester "/bin/belr_tester"))
                (rename-file
-                (string-append out "/share/belr-tester")
+                (string-append #$output "/share/belr-tester/res")
                 ;; The detect_res_prefix procedure in bctoolbox's tester.c
                 ;; resolves the resource path based on the executable path and
                 ;; name, so have it match.
-                (string-append tester "/share/belr_tester"))))))))
+                (string-append #$output:tester "/share/belr_tester")))))))
     (inputs
      (list bctoolbox))
     (synopsis "Belledonne Communications Language Recognition Library")
