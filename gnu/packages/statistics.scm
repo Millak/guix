@@ -6015,14 +6015,14 @@ diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
 (define-public r-ranger
   (package
     (name "r-ranger")
-    (version "0.14.1")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ranger" version))
        (sha256
         (base32
-         "06zf5mi6yfgb68m6m83k01r4ikj5nldrvrbh3jqwz8axalfl16ax"))))
+         "0bibv9xf6w8k8nsc13f2yd4kx99aq0i758h3wfh089szgkpdjrad"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-matrix r-rcppeigen))
