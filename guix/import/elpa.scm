@@ -34,6 +34,7 @@
   #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
@@ -405,7 +406,7 @@ type '<elpa-package>'."
   (define repo (elpa-repository package))
 
   (when version
-    (error
+    (raise
      (formatted-message
       (G_ "~a updater doesn't support updating to a specific version, sorry.")
       "elpa")))

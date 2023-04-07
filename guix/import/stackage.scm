@@ -145,7 +145,7 @@ included in the Stackage LTS release."
       "Return an <upstream-source> for the latest Stackage LTS release of
 PACKAGE or #f if the package is not included in the Stackage LTS release."
       (when version
-        (error
+        (raise
          (formatted-message
           (G_ "~a updater doesn't support updating to a specific version, sorry.")
           "stackage")))
