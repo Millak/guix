@@ -29,6 +29,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module ((srfi srfi-26) #:select (cut))
+  #:use-module (srfi srfi-34)
   #:use-module ((web uri) #:select (string->uri uri->string))
   #:use-module ((guix build utils) #:select (dump-port find-files mkdir-p))
   #:use-module (guix build-system)
@@ -417,7 +418,7 @@ package in OPAM."
 (define* (latest-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
   (when version
-    (error
+    (raise
      (formatted-message
       (G_ "~a updater doesn't support updating to a specific version, sorry.")
       "opam")))

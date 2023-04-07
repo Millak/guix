@@ -28,6 +28,7 @@
   #:use-module ((ice-9 rdelim) #:select (read-line))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (json)
   #:use-module (gcrypt hash)
   #:use-module (guix diagnostics)
@@ -310,7 +311,7 @@ in RELEASE, a <cpan-release> record."
 (define* (latest-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
   (when version
-    (error
+    (raise
      (formatted-message
       (G_ "~a updater doesn't support updating to a specific version, sorry.")
       "cpan")))

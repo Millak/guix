@@ -356,7 +356,7 @@ respectively."
 (define* (latest-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
   (when version
-    (error
+    (raise
      (formatted-message
       (G_ "~a updater doesn't support updating to a specific version, sorry.")
       "hackage")))

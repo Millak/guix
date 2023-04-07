@@ -22,6 +22,7 @@
   #:use-module (ice-9 threads)
   #:use-module (ice-9 hash-table)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-34)
   #:use-module (guix diagnostics)
   #:use-module ((guix packages) #:prefix package:)
   #:use-module (guix upstream)
@@ -492,7 +493,7 @@ or #false if the latest release couldn't be determined."
   (define source (package:package-source pkg))
 
   (when version
-    (error
+    (raise
      (formatted-message
       (G_ "~a updater doesn't support updating to a specific version, sorry.")
       "minetest")))
