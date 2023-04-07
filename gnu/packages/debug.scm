@@ -837,7 +837,7 @@ engineering.")
 (define-public seer-gdb
   (package
     (name "seer-gdb")
-    (version "1.14")
+    (version "1.16")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -846,7 +846,7 @@ engineering.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "16mz1c58jf1zrgjpxmp58bx8viyidhs1qg0y8ql2f07wgyy6zx33"))))
+                "0jdvyg2jab1pvf36pvkyrfsg2wyy8zp1qx0v2ksclgrnr1hja6k6"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ; Those are strangely manual
