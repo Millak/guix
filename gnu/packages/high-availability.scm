@@ -60,7 +60,7 @@
 (define-public haproxy
   (package
     (name "haproxy")
-    (version "2.7.5")
+    (version "2.7.6")
     (source
      (origin
        (method url-fetch)
@@ -68,7 +68,7 @@
                            (version-major+minor version)
                            "/src/haproxy-" version ".tar.gz"))
        (sha256
-        (base32 "00j5lwvrf8lgfid3108gclxbd46v3mnd4lh0lw4l0nn3f0rf9ip2"))))
+        (base32 "0kxpvrn6iaxhw2f2hrxblns6pnxmrds3vvs9h6nwbkrzvdykagqk"))))
     (build-system gnu-build-system)
     (arguments
      (list
