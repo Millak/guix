@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2016, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -63,7 +63,7 @@
   svn-reference?
   (url        svn-reference-url)                    ; string
   (revision   svn-reference-revision)               ; number
-  (recursive? svn-reference-recursive? (default #t))
+  (recursive? svn-reference-recursive? (default #f))
   (user-name  svn-reference-user-name (default #f))
   (password   svn-reference-password (default #f)))
 
@@ -132,7 +132,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (url        svn-multi-reference-url)                 ; string
   (revision   svn-multi-reference-revision)            ; number
   (locations  svn-multi-reference-locations)           ; list of strings
-  (recursive? svn-multi-reference-recursive? (default #t))
+  (recursive? svn-multi-reference-recursive? (default #f))
   (user-name  svn-multi-reference-user-name (default #f))
   (password   svn-multi-reference-password (default #f)))
 
