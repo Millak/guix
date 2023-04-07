@@ -500,6 +500,35 @@ obtain information about the CPU being used: supported instruction set,
 processor name, cache information, and topology information.")
       (license license:bsd-2))))
 
+(define-public clog
+  (package
+    (inherit cpuinfo) ;distributed with cpuinfo but not built by it
+    (name "clog")
+    (source (origin
+              (inherit (package-source cpuinfo))
+              (patches (search-patches "clog-fix-shared-build.patch"))))
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "deps/clog"))))))
+    (native-inputs (list googletest))
+    (inputs '())
+    (synopsis "C-style logging library based on printf")
+    (description
+     "This package provides a C-style library for logging errors,
+warnings, information notes, and debug information.  Its features are:
+@itemize
+@item printf-style interface for formatting variadic parameters.
+@item Separate functions for logging errors, warnings, information notes, and
+debug information.
+@item Independent logging settings for different modules.
+@item Logging to logcat on Android and stderr/stdout on other platforms.
+@item Compatible with C99 and C++.
+@item Covered with unit tests.
+@end itemize")))
+
 (define-public psimd
   ;; There is currently no tag in this repo.
   (let ((commit "072586a71b55b7f8c584153d223e95687148a900")

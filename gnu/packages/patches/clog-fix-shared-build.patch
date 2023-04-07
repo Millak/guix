@@ -1,0 +1,85 @@
+Author: Antero Mejr <antero@mailbox.org>
+Notes: Disabled function visibility hacks and googletest download. Enabled
+non-static builds.
+
+diff --git a/deps/clog/CMakeLists.txt b/deps/clog/CMakeLists.txt
+index 083f519..b7b225a 100644
+--- a/deps/clog/CMakeLists.txt
++++ b/deps/clog/CMakeLists.txt
+@@ -38,20 +38,8 @@ SET(CONFU_DEPENDENCIES_SOURCE_DIR ${CMAKE_SOURCE_DIR}/deps
+ SET(CONFU_DEPENDENCIES_BINARY_DIR ${CMAKE_BINARY_DIR}/deps
+   CACHE PATH "Confu-style dependencies binary directory")
+ 
+-IF(CLOG_BUILD_TESTS)
+-  IF(NOT DEFINED GOOGLETEST_SOURCE_DIR)
+-    MESSAGE(STATUS "Downloading Google Test to ${CONFU_DEPENDENCIES_SOURCE_DIR}/googletest (define GOOGLETEST_SOURCE_DIR to avoid it)")
+-    CONFIGURE_FILE(cmake/DownloadGoogleTest.cmake "${CONFU_DEPENDENCIES_BINARY_DIR}/googletest-download/CMakeLists.txt")
+-    EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+-      WORKING_DIRECTORY "${CONFU_DEPENDENCIES_BINARY_DIR}/googletest-download")
+-    EXECUTE_PROCESS(COMMAND "${CMAKE_COMMAND}" --build .
+-      WORKING_DIRECTORY "${CONFU_DEPENDENCIES_BINARY_DIR}/googletest-download")
+-    SET(GOOGLETEST_SOURCE_DIR "${CONFU_DEPENDENCIES_SOURCE_DIR}/googletest" CACHE STRING "Google Test source directory")
+-  ENDIF()
+-ENDIF()
+-
+ # ---[ clog library
+-ADD_LIBRARY(clog STATIC src/clog.c)
++ADD_LIBRARY(clog src/clog.c)
+ SET_TARGET_PROPERTIES(clog PROPERTIES
+   C_STANDARD 99
+   C_EXTENSIONS NO)
+@@ -74,16 +62,6 @@ INSTALL(TARGETS clog
+ 
+ # ---[ clog tests
+ IF(CLOG_BUILD_TESTS)
+-  # ---[ Build google test
+-  IF(NOT TARGET gtest)
+-    IF(MSVC AND NOT CLOG_RUNTIME_TYPE STREQUAL "static")
+-      SET(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+-    ENDIF()
+-    ADD_SUBDIRECTORY(
+-      "${GOOGLETEST_SOURCE_DIR}"
+-      "${CONFU_DEPENDENCIES_BINARY_DIR}/googletest")
+-  ENDIF()
+-
+   ADD_EXECUTABLE(clog-test test/clog.cc)
+   SET_TARGET_PROPERTIES(clog-test PROPERTIES
+     CXX_STANDARD 11
+diff --git a/deps/clog/include/clog.h b/deps/clog/include/clog.h
+index 4143761..aa9000f 100644
+--- a/deps/clog/include/clog.h
++++ b/deps/clog/include/clog.h
+@@ -11,16 +11,6 @@
+ #define CLOG_INFO 4
+ #define CLOG_DEBUG 5
+ 
+-#ifndef CLOG_VISIBILITY
+-	#if defined(__ELF__)
+-		#define CLOG_VISIBILITY __attribute__((__visibility__("internal")))
+-	#elif defined(__MACH__)
+-		#define CLOG_VISIBILITY __attribute__((__visibility__("hidden")))
+-	#else
+-		#define CLOG_VISIBILITY
+-	#endif
+-#endif
+-
+ #ifndef CLOG_ARGUMENTS_FORMAT
+ 	#if defined(__GNUC__)
+ 		#define CLOG_ARGUMENTS_FORMAT __attribute__((__format__(__printf__, 1, 2)))
+@@ -33,11 +23,11 @@
+ extern "C" {
+ #endif
+ 
+-CLOG_VISIBILITY void clog_vlog_debug(const char* module, const char* format, va_list args);
+-CLOG_VISIBILITY void clog_vlog_info(const char* module, const char* format, va_list args);
+-CLOG_VISIBILITY void clog_vlog_warning(const char* module, const char* format, va_list args);
+-CLOG_VISIBILITY void clog_vlog_error(const char* module, const char* format, va_list args);
+-CLOG_VISIBILITY void clog_vlog_fatal(const char* module, const char* format, va_list args);
++void clog_vlog_debug(const char* module, const char* format, va_list args);
++void clog_vlog_info(const char* module, const char* format, va_list args);
++void clog_vlog_warning(const char* module, const char* format, va_list args);
++void clog_vlog_error(const char* module, const char* format, va_list args);
++void clog_vlog_fatal(const char* module, const char* format, va_list args);
+ 
+ #define CLOG_DEFINE_LOG_DEBUG(log_debug_function_name, module, level) \
+ 	CLOG_ARGUMENTS_FORMAT \
