@@ -24,7 +24,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -985,7 +985,7 @@ application suites.")
   (package
     (inherit gtk+-2)
     (name "gtk+")
-    (version "3.24.30")
+    (version "3.24.37")
     (source
      (origin
        (method url-fetch)
@@ -994,9 +994,13 @@ application suites.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1a9vg840fjq1mmm403b67k624qrkxh9shaz9pv7z9l8a6bzvyxds"))
+         "0mvzzgjrzzir7nzx379yz3swzk3pn1s283hgzm8l2yakq2sg0ib7"))
        (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
                                 "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
+    ;; There is no "doc" output, because adding gtk-doc here would introduce a
+    ;; dependency cycle with itself.
+    (outputs '("out" "bin"))
+    (build-system meson-build-system)
     (propagated-inputs
      (list at-spi2-core
            cairo
@@ -1032,12 +1036,12 @@ application suites.")
            libxml2
            rest))
     (native-inputs
-     (list docbook-xml-4.1.2
+     (list docbook-xml-4.3
+           docbook-xsl
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
            hicolor-icon-theme
-           perl
            pkg-config
            python-wrapper
            sassc
@@ -1048,43 +1052,34 @@ application suites.")
     (arguments
      (list
       #:imported-modules `((guix build glib-or-gtk-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%meson-build-system-modules)
       #:modules '((guix build utils)
-                  (guix build gnu-build-system)
+                  (guix build meson-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
       #:disallowed-references (list xorg-server-for-tests)
-      ;; 47 MiB goes to "out" (24 of which is locale data!), and 26 MiB goes
-      ;; to "doc".
-      #:configure-flags #~(list (string-append "--with-html-dir="
-                                               #$output "/share/gtk-doc/html")
-                                "--enable-cloudproviders"
-                                ;; The header file <gdk/gdkwayland.h> is required
-                                ;; by gnome-control-center
-                                "--enable-wayland-backend"
-                                ;; This is necessary to build both backends.
-                                "--enable-x11-backend"
-                                ;; This enables the HTML5 websocket backend.
-                                "--enable-broadway-backend")
+      #:configure-flags
+      #~(list "-Dcloudproviders=true"   ;for cloud-providers support
+              "-Dcolord=yes"            ;for color printing support
+              "-Dbroadway_backend=true"
+              "-Dman=true")
+      ;; Use the same test options as upstream uses for their CI (see the
+      ;; .gitlab-ci/run-tests.sh file).
+      #:test-options '(list "--suite=gtk"
+                            "--no-suite=failing"
+                            "--no-suite=flaky"
+                            "--no-suite=gsk-compare-broadway")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              ;; These tests fail only in the containerized environment, for
+              ;; unknown reasons.
+              (substitute* "testsuite/gtk/meson.build"
+                ((".*\\['defaultvalue'],.*") "")
+                ((".*\\['objects-finalize',.*") ""))))
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
             (assoc-ref glib-or-gtk:%standard-phases
                        'generate-gdk-pixbuf-loaders-cache-file))
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (substitute* "testsuite/gtk/Makefile.in"
-                (("builderparser cellarea check-icon-names check-cursor-names")
-                 "builderparser cellarea check-cursor-names")
-                (("notify no-gtk-init object objects-finalize papersize rbtree")
-                 "no-gtk-init papersize rbtree")
-                (("stylecontext templates textbuffer textiter treemodel treepath")
-                 "stylecontext textbuffer textiter treemodel treepath"))
-              (substitute* "testsuite/a11y/Makefile.in"
-                (("accessibility-dump tree-performance text children derive")
-                 "tree-performance text children derive"))
-              (substitute* "testsuite/reftests/Makefile.in"
-                (("TEST_PROGS = gtk-reftest")
-                 "TEST_PROGS = "))))
           (add-before 'check 'pre-check
             (lambda _
               ;; Tests require a running X server.
