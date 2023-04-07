@@ -26,6 +26,16 @@
 (channel-news
  (version 0)
 
+ (entry (commit "21564fada141bfba25d471518b293b6004244c3a")
+        (title
+         (en "Linux-libre LTS kernel updated to 6.1")
+         (de "Linux-libre LTS Kernel wird auf 6.1 aktualisiert"))
+        (body
+         (en "The default version of the @code{linux-libre-lts} kernel has been
+             updated to the 6.1 longterm release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre-lts}-Kernel basiert
+              jetzt auf der 6.1-Versionsreihe (Langzeitunterstützung).")))
+
  (entry (commit "57db09aae73e3713a10c5253758d84e1046f80dc")
         (title
          (en "Using Guix within @command{guix shell --container}")
