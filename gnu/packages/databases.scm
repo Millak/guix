@@ -4106,7 +4106,7 @@ reasonable substitute.")
 (define-public python-redis
   (package
     (name "python-redis")
-    (version "4.5.2")
+    (version "4.5.4")
     (source (origin
               ;; The PyPI archive lacks some test resources such as the TLS
               ;; certificates under docker/stunnel/keys.
@@ -4117,7 +4117,7 @@ reasonable substitute.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cz3gji3rb1h5dczyl11hm42wgsbz5v896cgbi14dij160b7m35i"))))
+                "0s5pswykjcyqbx471ib3gwy29xxa5ckgch9hy476x2s4pvhkbgmr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
