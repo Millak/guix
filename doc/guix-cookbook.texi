@@ -23,6 +23,7 @@ Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
 Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
 Copyright @copyright{} 2023 Ludovic Courtès
+Copyright @copyright{} 2023 Thomas Ieong
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -128,6 +129,7 @@ System Configuration
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
 * Running Guix on a Linode Server::  Running Guix on a Linode Server.
+* Running Guix on a Kimsufi Server::  Running Guix on a Kimsufi Server.
 * Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
@@ -1575,6 +1577,7 @@ reference.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager::  Handle customization of a Window manager on Guix System.
 * Running Guix on a Linode Server::  Running Guix on a Linode Server.
+* Running Guix on a Kimsufi Server::  Running Guix on a Kimsufi Server.
 * Setting up a bind mount::     Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor::  Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua::   Configuring NGINX web-server to load Lua modules.
@@ -2678,6 +2681,253 @@ By the way, if you save it as a disk image right at this point, you'll
 have an easy time spinning up new Guix images!  You may need to
 down-size the Guix image to 6144MB, to save it as an image.  Then you
 can resize it again to the max size.
+
+@node Running Guix on a Kimsufi Server
+@section Running Guix on a Kimsufi Server
+@cindex kimsufi, Kimsufi, OVH
+
+To run Guix on a server hosted by @uref{https://www.kimsufi.com/,
+Kimsufi}, click on the netboot tab then select rescue64-pro and restart.
+
+OVH will email you the credentials required to ssh into a Debian system.
+
+Now you can run the "install guix from @pxref{Binary Installation,,,
+guix, GNU Guix}" steps:
+
+@example
+wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+chmod +x guix-install.sh
+./guix-install.sh
+guix pull
+@end example
+
+Partition the drives and format them, first stop the raid array:
+
+@example
+mdadm --stop /dev/md127
+mdadm --zero-superblock /dev/sda2 /dev/sdb2
+@end example
+
+Then wipe the disks and set up the partitions, we will create
+a RAID 1 array.
+
+@example
+wipefs -a /dev/sda
+wipefs -a /dev/sdb
+
+parted /dev/sda --align=opt -s -m -- mklabel gpt
+parted /dev/sda --align=opt -s -m -- \
+ mkpart bios_grub 1049kb 512MiB \
+ set 1 bios_grub on
+parted /dev/sda --align=opt -s -m -- \
+ mkpart primary 512MiB -512MiB
+ set 2 raid on
+parted /dev/sda --align=opt -s -m -- mkpart primary linux-swap 512MiB 100%
+
+parted /dev/sdb --align=opt -s -m -- mklabel gpt
+parted /dev/sdb --align=opt -s -m -- \
+     mkpart bios_grub 1049kb 512MiB \
+     set 1 bios_grub on
+parted /dev/sdb --align=opt -s -m -- \
+     mkpart primary 512MiB -512MiB \
+     set 2 raid on
+parted /dev/sdb --align=opt -s -m -- mkpart primary linux-swap 512MiB 100%
+@end example
+
+Create the array:
+
+@example
+mdadm --create /dev/md127 --level=1 --raid-disks=2 \
+  --metadata=0.90 /dev/sda2 /dev/sdb2
+@end example
+
+Now create file systems on the relevant partitions, first the boot
+partitions:
+
+@example
+mkfs.ext4  /dev/sda1
+mkfs.ext4  /dev/sdb1
+@end example
+
+Then the root partition:
+
+@example
+mkfs.ext4 /dev/md127
+@end example
+
+Initialize the swap partitions:
+
+@example
+mkswap /dev/sda3
+swapon /dev/sda3
+mkswap /dev/sdb3
+swapon /dev/sdb3
+@end example
+
+Mount the guix drive:
+
+@example
+mkdir /mnt/guix
+mount /dev/md127 /mnt/guix
+@end example
+
+Now is time to write an operating system declaration @file{os.scm} file;
+here is a sample:
+
+@lisp
+(use-modules (gnu) (guix))
+(use-service-modules networking ssh vpn virtualization sysctl admin mcron)
+(use-package-modules ssh certs tls tmux vpn virtualization)
+
+(operating-system
+  (host-name "kimsufi")
+
+  (bootloader (bootloader-configuration
+	       (bootloader grub-bootloader)
+	       (targets (list "/dev/sda" "/dev/sdb"))
+	       (terminal-outputs '(console))))
+
+  ;; Add a kernel module for RAID-1 (aka. "mirror").
+  (initrd-modules (cons* "raid1"  %base-initrd-modules))
+
+  (mapped-devices
+   (list (mapped-device
+          (source (list "/dev/sda2" "/dev/sdb2"))
+          (target "/dev/md127")
+          (type raid-device-mapping))))
+
+  (swap-devices
+   (list (swap-space
+          (target "/dev/sda3"))
+         (swap-space
+          (target "/dev/sdb3"))))
+
+  (issue
+   ;; Default contents for /etc/issue.
+   "\
+This is the GNU system at Kimsufi.  Welcome.\n")
+
+  (file-systems (cons* (file-system
+		         (mount-point "/")
+		         (device "/dev/md127")
+		         (type "ext4")
+		         (dependencies mapped-devices))
+		       %base-file-systems))
+
+  (users (cons (user-account
+	        (name "guix")
+	        (comment "guix")
+	        (group "users")
+	        (supplementary-groups '("wheel"))
+	        (home-directory "/home/guix"))
+	       %base-user-accounts))
+
+  (sudoers-file
+   (plain-file "sudoers" "\
+root ALL=(ALL) ALL
+%wheel ALL=(ALL) ALL
+guix ALL=(ALL) NOPASSWD:ALL\n"))
+
+  ;; Globally-installed packages.
+  (packages (cons* tmux nss-certs gnutls wireguard-tools %base-packages))
+  (services
+   (cons*
+    (service static-networking-service-type
+	     (list (static-networking
+		    (addresses (list (network-address
+				      (device "enp3s0")
+				      (value "@var{server-ip-address}/24"))))
+		    (routes (list (network-route
+				   (destination "default")
+				   (gateway "@var{server-gateway}"))))
+		    (name-servers '("213.186.33.99")))))
+
+    (service unattended-upgrade-service-type)
+
+    (service openssh-service-type
+	     (openssh-configuration
+	      (openssh openssh-sans-x)
+	      (permit-root-login #f)
+	      (authorized-keys
+	       `(("guix" ,(plain-file "@var{ssh-key-name.pub}"
+                                      "@var{ssh-public-key-content}"))))))
+    (modify-services %base-services
+      (sysctl-service-type
+       config =>
+       (sysctl-configuration
+	(settings (append '(("net.ipv6.conf.all.autoconf" . "0")
+			    ("net.ipv6.conf.all.accept_ra" . "0"))
+			  %default-sysctl-settings))))))))
+@end lisp
+
+Don't forget to substitute the @var{server-ip-address},
+@var{server-gateway}, @var{ssh-key-name} and
+@var{ssh-public-key-content} variables with your own values.
+
+The gateway is the last usable IP in your block so if you have a server
+with an IP of @samp{37.187.79.10} then its gateway will be
+@samp{37.187.79.254}.
+
+Transfer your operating system declaration @file{os.scm} file on the
+server via the @command{scp} or @command{sftp} commands.
+
+Now all that is left is to install Guix with a @code{guix system init}
+and restart.
+
+However we first need to set up a chroot, because the root partition of
+the rescue system is mounted on an aufs partition and if you try to
+install Guix it will fail at the GRUB install step complaining about the
+canonical path of "aufs".
+
+Install packages that will be used in the chroot:
+
+@example
+guix install bash-static parted util-linux-with-udev coreutils guix
+@end example
+
+Then run the following to create directories needed for the chroot:
+
+@example
+cd /mnt && \
+mkdir -p bin etc gnu/store root/.guix-profile/ root/.config/guix/current \
+  var/guix proc sys dev
+@end example
+
+Copy the host resolv.conf in the chroot:
+
+@example
+cp /etc/resolv.conf etc/
+@end example
+
+Mount block devices, the store and its database and the current guix config:
+
+@example
+mount --rbind /proc /mnt/proc
+mount --rbind /sys /mnt/sys
+mount --rbind /dev /mnt/dev
+mount --rbind /var/guix/ var/guix/
+mount --rbind /gnu/store gnu/store/
+mount --rbind /root/.config/ root/.config/
+mount --rbind /root/.guix-profile/bin/ bin
+mount --rbind /root/.guix-profile root/.guix-profile/
+@end example
+
+Chroot in /mnt and install the system:
+
+@example
+chroot /mnt/ /bin/bash
+
+guix system init /root/os.scm /guix
+@end example
+
+Finally, from the web user interface (UI), change @samp{netboot} to
+@samp{boot to disk} and restart (also from the web UI).
+
+Wait a few minutes and try to ssh with @code{ssh
+guix@@@var{server-ip-address>} -i @var{path-to-your-ssh-key}}
+
+You should have a Guix system up and running on Kimsufi;
+congratulations!
 
 @node Setting up a bind mount
 @section Setting up a bind mount
