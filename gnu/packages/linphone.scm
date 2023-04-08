@@ -448,7 +448,7 @@ implements the RFC 3550 standard.")
 (define-public bzrtp
   (package
     (name "bzrtp")
-    (version "4.4.34")
+    (version "5.2.49")
     (source
      (origin
        (method git-fetch)
@@ -457,7 +457,7 @@ implements the RFC 3550 standard.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yjmsbqmymzl4r7sba6w4a2yld8m6hzafr6jf7sj0syhwpnc3zv6"))))
+        (base32 "0dvn1w0g9c07llz9n82l6qdzz8lzz74jcdm1yyfks0jy7i63cr8w"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
