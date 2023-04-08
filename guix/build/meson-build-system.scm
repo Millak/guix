@@ -73,7 +73,7 @@
 
     (mkdir build-dir)
     (chdir build-dir)
-    (apply invoke "meson" args)))
+    (apply invoke "meson" "setup" args)))
 
 (define* (build #:key parallel-build?
                 #:allow-other-keys)
