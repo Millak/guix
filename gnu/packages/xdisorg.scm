@@ -1995,8 +1995,6 @@ actions, a built-in clock, a battery monitor and a system tray.")
                (base32
                 "11bfi9his0cc5mzikamr5icv5mh2fyj9jy5l3sbbayj6jk51f68y"))))
     (build-system meson-build-system)
-    (arguments
-     (list #:meson meson-0.63))         ;requires meson 0.61 or later
     (native-inputs (list pkg-config))
     (inputs (list cairo
                   harfbuzz

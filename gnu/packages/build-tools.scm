@@ -408,7 +408,7 @@ resembles Python.")
                                              "test_contents_subdirs")
                                            " and not ")))))))))
     (propagated-inputs
-     (list meson-0.63                   ;>=0.62 required
+     (list meson
            ninja
            ;; XXX: python-meson forcefully sets the RUNPATH of binaries
            ;; for vendoring purposes, and uses PatchELF for that(!).  This

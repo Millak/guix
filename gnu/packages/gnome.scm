@@ -4948,8 +4948,7 @@ from the GSettings schemas in gsettings-desktop-schemas.")
                 "0ll9220d6qf9m7wdi5xhq69p8h8whs7l5h5nzdhlbn99qh5388bz"))))
     (build-system meson-build-system)
     (arguments
-     (list #:meson meson-0.63
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
                  (lambda* (#:key inputs #:allow-other-keys)
@@ -13128,7 +13127,6 @@ profiler via Sysprof, debugging support, and more.")
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:meson meson-0.63
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-sources

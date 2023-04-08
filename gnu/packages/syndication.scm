@@ -523,8 +523,6 @@ a simple interface that makes it easy to organize and browse feeds.")
                 (sha256
                  (base32 "1i0llzzm3lc2kw7rjhb46c7wlknsb6r9bdrf61chi2pk6hpjyscv"))))
       (build-system meson-build-system)
-      (arguments
-       (list #:meson meson-0.63))
       (inputs (list fmt tidy-html pybind11 python pugixml))
       (native-inputs (list cmake pkg-config)) ; need cmake to find pybind11
       (home-page "https://gitlab.com/gabmus/syndication-domination")

@@ -472,7 +472,6 @@ exec smbd $@")))
            flex
            gettext-minimal
            `(,glib "bin")               ;gtester, etc.
-           meson-0.63
            ninja
            perl
            pkg-config

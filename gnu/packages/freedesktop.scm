@@ -149,7 +149,6 @@
     (build-system meson-build-system)
     (arguments
      (list
-      #:meson meson-0.63
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases

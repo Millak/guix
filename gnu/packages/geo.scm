@@ -340,7 +340,6 @@ topology functions.")
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:meson meson-0.63
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'skip-cache-and-database-updates
