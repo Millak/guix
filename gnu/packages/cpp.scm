@@ -1642,6 +1642,8 @@ almost every type of file containing key/value pairs.")
     (inputs
      (list ;;("boost ,boost)
            expat))
+    (native-inputs
+     (list gcc-10)) ;does not build with gcc-12
     (home-page "https://www.codesynthesis.com/projects/libcutl/")
     (synopsis "C++ utility library with generic and independent components")
     (description "libcutl is a C++ utility library.  It contains a collection
