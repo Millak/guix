@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -283,10 +283,10 @@ files and generates build instructions for the Ninja build system.")
       ;; X11 license.
       (license (list license:bsd-3 license:x11)))))
 
-(define-public meson-0.63
+(define-public meson
   (package
     (name "meson")
-    (version "0.63.2")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mesonbuild/meson/"
@@ -294,28 +294,23 @@ files and generates build instructions for the Ninja build system.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1gwba75z47m2hv3w08gw8sgqgbknjr7rj1qwr510bgknxwbjy8hn"))))
+                "1hfk75wcrci7jhv9wbsjqghblrqnf1gbqmvwrhl8flbgvqqbf9nr"))))
     (build-system python-build-system)
     (arguments
-     `(;; FIXME: Tests require many additional inputs and patching many
-       ;; hard-coded file system locations in "run_unittests.py".
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  ;; Meson calls the various executables in out/bin through the
-                  ;; Python interpreter, so we cannot use the shell wrapper.
-                  (replace 'wrap
-                    (lambda* (#:key outputs inputs #:allow-other-keys)
-                      (let ((python-version
-                             (python-version (assoc-ref inputs "python")))
-                            (output (assoc-ref outputs "out")))
-                        (substitute* (string-append output "/bin/meson")
-                          (("# EASY-INSTALL-ENTRY-SCRIPT")
-                           (format #f "\
+     (list #:tests? #f                  ;disabled to avoid extra dependencies
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Meson calls the various executables in out/bin through the
+               ;; Python interpreter, so we cannot use the shell wrapper.
+               (replace 'wrap
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (substitute* (search-input-file outputs "bin/meson")
+                     (("# EASY-INSTALL-ENTRY-SCRIPT")
+                      (format #f "\
 import sys
-sys.path.insert(0, '~a/lib/python~a/site-packages')
-# EASY-INSTALL-ENTRY-SCRIPT"
-                                   output python-version)))))))))
-    (inputs (list python-wrapper ninja))
+sys.path.insert(0, '~a')
+# EASY-INSTALL-ENTRY-SCRIPT" (site-packages inputs outputs)))))))))
+    (inputs (list python ninja))
     (home-page "https://mesonbuild.com/")
     (synopsis "Build system designed to be fast and user-friendly")
     (description
@@ -326,40 +321,6 @@ Autoconf/Automake/make combo.  Build specifications, also known as @dfn{Meson
 files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
-
-(define-public meson-0.60
-  (package
-    (inherit meson-0.63)
-    (version "0.60.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mesonbuild/meson/"
-                                  "releases/download/" version  "/meson-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "13mrrizg4vl6n5k7fz6amyafnn3i097dcarr552qc0ca6nlmzjl7"))
-              (patches (search-patches
-                        "meson-allow-dirs-outside-of-prefix.patch"))))))
-
-;;; This older Meson variant is kept for now for gtkmm and others that may
-;;; have problems with 0.60.
-(define-public meson-0.59
-  (package
-    (inherit meson-0.60)
-    (version "0.59.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mesonbuild/meson/"
-                                  "releases/download/" version  "/meson-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "117cm8794h291lca1wljz1pwnzidgbvrpg3mw3np6ksma368hyd7"))
-              (patches (search-patches
-                        "meson-allow-dirs-outside-of-prefix.patch"))))))
-
-(define-public meson meson-0.63)
 
 (define-public meson-python
   (package
