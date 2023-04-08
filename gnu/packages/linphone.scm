@@ -652,37 +652,34 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
                                 ;; "Player"
                                 "TextStream"))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("python" ,python-wrapper)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list graphviz doxygen python-wrapper xorg-server-for-tests))
     (inputs
-     `(("alsa" ,alsa-lib)
-       ("bcg729" ,bcg729)
-       ("bcmatroska2" ,bcmatroska2)
-       ("bctoolbox" ,bctoolbox)
-       ("ffmpeg" ,ffmpeg-4)
-       ("glew" ,glew)
-       ("glu" ,glu)
-       ("glx" ,mesa-utils)
-       ("gsm" ,gsm)
-       ("opengl" ,mesa)
-       ("opus" ,opus)
-       ("ortp" ,ortp)
-       ("pcap" ,libpcap)
-       ("portaudio" ,portaudio)
-       ("pulseaudio" ,pulseaudio)
-       ("spandsp" ,spandsp)
-       ("speex" ,speex)
-       ("speexdsp" ,speexdsp)
-       ("srtp" ,libsrtp)
-       ("theora" ,libtheora)
-       ("turbojpeg" ,libjpeg-turbo)
-       ("v4l" ,v4l-utils)
-       ("vpx" ,libvpx)
-       ("x11" ,libx11)
-       ("xv" ,libxv)
-       ("zrtp" ,bzrtp)))
+     (list alsa-lib
+           bcg729
+           bcmatroska2
+           bctoolbox
+           ffmpeg-4
+           glew
+           glu
+           mesa-utils
+           gsm
+           mesa
+           opus
+           ortp
+           libpcap
+           portaudio
+           pulseaudio
+           spandsp
+           speex
+           speexdsp
+           libsrtp
+           libtheora
+           libjpeg-turbo
+           v4l-utils
+           libvpx
+           libx11
+           libxv
+           bzrtp))
     (synopsis "Belledonne Communications Streaming Engine")
     (description "Mediastreamer2 is a powerful and lightweight streaming engine
 for telephony applications.  This media processing and streaming toolkit is
