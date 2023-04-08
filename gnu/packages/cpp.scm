@@ -1736,7 +1736,7 @@ and a traversal mechanism.")
                 (string-append "edge_dispatcher::" all)))))
          (delete 'configure))))
     (native-inputs
-     (list build))
+     (list build gcc-10))
     (inputs
      (list libcutl))
     (synopsis "C++ Command Line Interface (CLI) definition language")
