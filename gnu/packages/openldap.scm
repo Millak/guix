@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
@@ -176,6 +176,21 @@
      "OpenLDAP is a free implementation of the Lightweight Directory Access Protocol.")
     (license openldap2.8)
     (home-page "https://www.openldap.org/")))
+
+(define-public openldap-for-linphone
+  (package
+    (inherit openldap-2.6)
+    (name "openldap")
+    (version "2.6.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.linphone.org/BC/public/external/openldap/")
+                    (commit "8a885896a3fb88098d970ab96316c0b7f18367b8")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yd3cnngr5z3nymnml8fynspxgdzap7y7glp601nbkdj67wyg0k8"))))))
 
 (define-public nss-pam-ldapd
   (package
