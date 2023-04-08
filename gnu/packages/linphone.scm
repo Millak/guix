@@ -395,7 +395,7 @@ such as conferencing.")
 (define-public ortp
   (package
     (name "ortp")
-    (version "4.4.34")
+    (version "5.2.49")
     (source
      (origin
        (method git-fetch)
@@ -404,7 +404,7 @@ such as conferencing.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r1kvjzyfvkf66in4p51wi87balzg3sw3aq6r4xr609mz86spi5m"))))
+        (base32 "1hzbrj1ny3lr9sql0lrxggc48sqv5j2yvbpnrdnph88pwzrdnbn5"))))
     (build-system cmake-build-system)
     (outputs '("out""tester"
                "doc"))                  ;1.5 MiB of HTML doc
@@ -412,6 +412,7 @@ such as conferencing.")
      (list
       #:tests? #f                       ;requires networking
       #:configure-flags '(list "-DENABLE_STATIC=NO"
+                               "-DENABLE_DOC=NO" ;XXX: missing link for b64
                                "-DENABLE_TESTS=YES")
       #:phases
       #~(modify-phases %standard-phases
