@@ -1688,7 +1688,7 @@ pointers, containers, compiler building blocks, etc.")
                        #:include-regexp ("\\.so$")))
                     args))))))
     (native-inputs
-     (list build))
+     (list build gcc-10))
     (inputs
      `(("libcutl" ,libcutl)
        ("libxerces-c" ,xerces-c)))
