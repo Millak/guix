@@ -38612,7 +38612,7 @@ system for OpenSSL.")
         ("rust-vcpkg" ,rust-vcpkg-0.2))))
     (native-inputs
      (list pkg-config))
-    (inputs
+    (propagated-inputs
      (list openssl))
     (home-page "https://github.com/sfackler/rust-openssl")
     (synopsis "FFI bindings to OpenSSL")
