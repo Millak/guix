@@ -39,7 +39,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -1649,44 +1649,35 @@ tour of all gnome components and allows the user to set them up.")
 
 (define-public gnome-user-share
   (package
-   (name "gnome-user-share")
-   (version "3.34.0")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major+minor version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "04r9ck9v4i0d31grbli1d4slw2d6dcsfkpaybkwbzi7wnj72l30x"))))
-   (build-system meson-build-system)
-   (arguments
-    `(#:glib-or-gtk? #t
-      #:meson ,meson-0.60
-      #:configure-flags
-       `("-Dsystemduserunitdir=/tmp/empty"
-         ;; Enable nautilus extension for file sharing.
-         "-Dnautilus_extension=true")))
-   (native-inputs
-    `(("gettext" ,gettext-minimal)
-      ("glib:bin" ,glib "bin")
-      ("gobject-introspection" ,gobject-introspection)
-      ("gtk+:bin" ,gtk+ "bin")
-      ("pkg-config" ,pkg-config)
-      ("yelp-tools" ,yelp-tools)))
-   (inputs
-    (list glib
-          gnome-bluetooth
-          gtk+
-          libcanberra
-          libnotify
-          nautilus))      ; For nautilus extension.
-   (synopsis "File sharing for GNOME desktop")
-   (description "GNOME User Share is a small package that binds together
+    (name "gnome-user-share")
+    (version "43.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1kiq2n39yz7szcf7wrs5vhd2hdn04zx1pxgp7qskycaq0nm0dwqd"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:configure-flags
+           #~(list "-Dsystemduserunitdir=/tmp/empty")))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk "bin")
+           pkg-config
+           yelp-tools))
+    (inputs (list glib gtk))
+    (synopsis "File sharing for GNOME desktop")
+    (description "GNOME User Share is a small package that binds together
 various free software projects to bring easy to use user-level file
 sharing to the masses.")
-   (home-page "https://gitlab.gnome.org/GNOME/gnome-user-share")
-   (license license:gpl2+)))
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-user-share")
+    (license license:gpl2+)))
 
 (define-public sushi
   (package
