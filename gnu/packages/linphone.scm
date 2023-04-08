@@ -465,9 +465,7 @@ implements the RFC 3550 standard.")
         "-DENABLE_STATIC=NO"
         "-DENABLE_TESTS=YES")))
     (inputs
-     `(("bctoolbox" ,bctoolbox)
-       ("sqlite3" ,sqlite)
-       ("xml2" ,libxml2)))
+     (list bctoolbox libxml2 sqlite))
     (synopsis "Belledonne Communications ZRTP Library")
     (description "BZRTP is an implementation of ZRTP keys exchange protocol,
 written in C.  It is fully portable and can be executed on many platforms
