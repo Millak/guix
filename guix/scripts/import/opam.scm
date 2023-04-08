@@ -47,8 +47,8 @@ Import and convert the opam package for PACKAGE-NAME.\n"))
   (display (G_ "
   -r, --recursive        import packages recursively"))
   (display (G_ "
-      --repo             import packages from this opam repository (name, URL or local path)
-                         can be used more than once"))
+      --repo=REPOSITORY  import packages from REPOSITORY (name, URL, or
+                         file name); can be used more than once"))
   (display (G_ "
   -V, --version          display version information and exit"))
   (newline)
