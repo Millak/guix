@@ -591,68 +591,66 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
     (outputs '("out" "doc" "tester"))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DENABLE_STATIC=NO"
+     (list
+      #:configure-flags '(list "-DENABLE_STATIC=NO"
                                "-DENABLE_PCAP=YES"
                                ;; Do not fail on compile warnings.
                                "-DENABLE_STRICT=NO"
                                "-DENABLE_PORTAUDIO=YES"
                                "-DENABLE_G729B_CNG=YES")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("VERSION [0-9]+\\.[0-9]+\\.[0-9]+")
-                (string-append "VERSION " ,version)))))
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* "src/otherfilters/mspcapfileplayer.c"
-               (("O_BINARY") "L_INCR"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getenv "TEMP"))))
-         (delete 'check)                ;move after install
-         (add-after 'install 'separate-outputs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (tester (assoc-ref outputs "tester"))
-                    (tester-name (string-append ,name "_tester"))
-                    (doc (assoc-ref outputs "doc"))
-                    (doc-name (string-append ,name "-" ,version)))
-               (for-each mkdir-p
-                         (list (string-append tester "/bin")
-                               (string-append tester "/share")
-                               (string-append doc "/share/doc")))
-               ;; Move the tester executable.
-               (rename-file (string-append out "/bin/" tester-name)
-                            (string-append tester "/bin/" tester-name))
-               ;; Move the tester data files.
-               (rename-file (string-append out "/share/" tester-name)
-                            (string-append tester "/share/" tester-name))
-               ;; Move the HTML documentation.
-               (rename-file (string-append out "/share/doc/" doc-name)
-                            (string-append doc "/share/doc/" doc-name)))))
-         (add-after 'separate-outputs 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((tester (string-append  (assoc-ref outputs "tester")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("VERSION [0-9]+\\.[0-9]+\\.[0-9]+")
+                 (string-append "VERSION " #$version)))))
+          (add-after 'unpack 'patch-source
+            (lambda _
+              (substitute* "src/otherfilters/mspcapfileplayer.c"
+                (("O_BINARY") "L_INCR"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getenv "TEMP"))))
+          (delete 'check)               ;move after install
+          (add-after 'install 'separate-outputs
+            (lambda _
+              (let ((tester-name (string-append #$name "_tester"))
+                    (doc-name (string-append #$name "-" #$version)))
+                (for-each mkdir-p
+                          (list (string-append #$output:tester "/bin")
+                                (string-append #$output:tester "/share")
+                                (string-append #$output:doc "/share/doc")))
+                ;; Move the tester executable.
+                (rename-file (string-append #$output "/bin/" tester-name)
+                             (string-append #$output:tester "/bin/" tester-name))
+                ;; Move the tester data files.
+                (rename-file (string-append #$output "/share/" tester-name)
+                             (string-append #$output:tester "/share/" tester-name))
+                ;; Move the HTML documentation.
+                (rename-file (string-append #$output "/share/doc/" doc-name)
+                             (string-append #$output:doc "/share/doc/" doc-name)))))
+          (add-after 'separate-outputs 'check
+            (lambda _
+              (let ((tester (string-append #$output:tester
                                            "/bin/mediastreamer2_tester")))
-               (for-each (lambda (suite-name)
-                           (invoke tester "--suite" suite-name))
-                         ;; Some tests fail, due to requiring access to the
-                         ;; sound card or the network.
-                           (list "Basic Audio"
-                                 ;; "Sound Card"
-                                 ;; "AdaptiveAlgorithm"
-                                 ;; "AudioStream"
-                                 ;; "VideoStream"
-                                 "H26x Tools"
-                                 "Framework"
-                                 ;; "Player"
-                                 "TextStream"))))))))
+                (for-each (lambda (suite-name)
+                            (invoke tester "--suite" suite-name))
+                          ;; Some tests fail, due to requiring access to the
+                          ;; sound card or the network.
+                          (list "Basic Audio"
+                                ;; "Sound Card"
+                                ;; "AdaptiveAlgorithm"
+                                ;; "AudioStream"
+                                ;; "VideoStream"
+                                "H26x Tools"
+                                "Framework"
+                                ;; "Player"
+                                "TextStream"))))))))
     (native-inputs
      `(("dot" ,graphviz)
        ("doxygen" ,doxygen)
