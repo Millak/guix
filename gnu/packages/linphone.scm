@@ -409,31 +409,31 @@ such as conferencing.")
     (outputs '("out""tester"
                "doc"))                  ;1.5 MiB of HTML doc
     (arguments
-     `(#:tests? #f                      ;requires networking
-       #:configure-flags (list "-DENABLE_STATIC=NO"
+     (list
+      #:tests? #f                       ;requires networking
+      #:configure-flags '(list "-DENABLE_STATIC=NO"
                                "-DENABLE_TESTS=YES")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-strings
-           ;; See: https://gitlab.linphone.org/BC/public/ortp/-/issues/5.
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("VERSION [0-9]+\\.[0-9]+\\.[0-9]+")
-                (string-append "VERSION " ,version))
-               (("\\$\\{ORTP_DOC_VERSION\\}")
-                ,version))))
-         (add-after 'install 'separate-outputs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc"))
-                    (doc-src (string-append out "/share/doc/ortp-" ,version))
-                    (doc-dest (string-append doc "/share/doc/ortp-" ,version))
-                    (tester (assoc-ref outputs "tester")))
-               (for-each mkdir-p (list (string-append doc "/share/doc")
-                                       (string-append tester "/bin")))
-               (rename-file doc-src doc-dest)
-               (rename-file (string-append out "/bin")
-                            (string-append tester "/bin"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version-strings
+            ;; See: https://gitlab.linphone.org/BC/public/ortp/-/issues/5.
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("VERSION [0-9]+\\.[0-9]+\\.[0-9]+")
+                 (string-append "VERSION " #$version))
+                (("\\$\\{ORTP_DOC_VERSION\\}")
+                 #$version))))
+          (add-after 'install 'separate-outputs
+            (lambda _
+              (let* ((doc-src
+                      (string-append #$output "/share/doc/ortp-" #$version))
+                     (doc-dest
+                      (string-append #$output:doc "/share/doc/ortp-" #$version)))
+                (for-each mkdir-p (list (string-append #$output:doc "/share/doc")
+                                        (string-append #$output:tester "/bin")))
+                (rename-file doc-src doc-dest)
+                (rename-file (string-append #$output "/bin")
+                             (string-append #$output:tester "/bin"))))))))
     (native-inputs
      `(("dot" ,graphviz)
        ("doxygen" ,doxygen)))
