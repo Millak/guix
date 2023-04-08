@@ -17933,6 +17933,49 @@ adaptations.")
 (define-public cl-radiance
   (sbcl-package->cl-source-package sbcl-radiance))
 
+(define-public sbcl-radiance-contribs
+  (let ((commit "710b3e1f9971e48368d52eea0b407f2e8f510981")
+        (revision "1"))
+    (package
+      (name "sbcl-radiance-contribs")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/radiance-contribs")
+               (commit commit)))
+         (file-name (git-file-name "radiance-contribs" version))
+         (sha256
+          (base32 "08ivnd7a6vfciqna680qpx6zj6vw9xcbrzq29iz3x7x9sp1pqgq3"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; TODO: Include more contribs.
+       `(#:asd-systems '("r-clip"
+                         "i-log4cl"
+                         "i-sqlite"
+                         "r-data-model"
+                         "r-simple-rate"
+                         "r-welcome")))
+      (inputs
+       (list sbcl-radiance
+             sbcl-cffi
+             sbcl-clip
+             sbcl-cl-sqlite
+             sbcl-log4cl))
+      (home-page "https://shirakumo.github.io/radiance/")
+      (synopsis "Standard implementations and drivers for the radiance interfaces")
+      (description
+       "This is a collection of useful helper modules and standard
+implementations for Radiance interfaces.")
+      (license license:zlib))))
+
+(define-public ecl-radiance-contribs
+  (sbcl-package->ecl-package sbcl-radiance-contribs))
+
+(define-public cl-radiance-contribs
+  (sbcl-package->cl-source-package sbcl-radiance-contribs))
+
 (define-public sbcl-daemon
   (let ((commit "d5652f4332c3cee21e9bf83b9237129605004597")
         (revision "1"))
