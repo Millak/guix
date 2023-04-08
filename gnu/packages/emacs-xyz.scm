@@ -12718,7 +12718,7 @@ to all the other commands, too.")
 (define-public emacs-js2-mode
   (package
     (name "emacs-js2-mode")
-    (version "20220710")
+    (version "20230408")
     (source
      (origin
        (method git-fetch)
@@ -12727,7 +12727,7 @@ to all the other commands, too.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0whvhmgpv6yxqiljd1l4a880i0dhp0z0jxqaad7jjvwij07vvla4"))))
+        (base32 "1vwykla43315wlky52807pn2nm508dx6593alk7hnrl2qkl7852s"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
@@ -12735,7 +12735,7 @@ to all the other commands, too.")
     (home-page "https://github.com/mooz/js2-mode/")
     (synopsis "Improved JavaScript editing mode for Emacs")
     (description
-     "Js2-mode provides a JavaScript major mode for Emacs that is more
+     "Js2 mode provides a JavaScript major mode for Emacs that is more
 advanced than the built-in javascript-mode.  Features include accurate syntax
 highlighting using a recursive-descent parser, on-the-fly reporting of syntax
 errors and strict-mode warnings, smart line-wrapping within comments and
