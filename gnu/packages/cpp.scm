@@ -1779,7 +1779,7 @@ documentation.")
                                                     ,version)))))
                   (delete 'configure))))
     (native-inputs
-     (list build cli))
+     (list build cli gcc-10))
     (inputs
      (list libcutl libnsl libxsd-frontend))
     (propagated-inputs
