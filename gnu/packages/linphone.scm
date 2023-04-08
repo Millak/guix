@@ -435,8 +435,7 @@ such as conferencing.")
                 (rename-file (string-append #$output "/bin")
                              (string-append #$output:tester "/bin"))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)))
+     (list graphviz doxygen))
     (inputs
      (list bctoolbox))
     (synopsis "Belledonne Communications RTP Library")
