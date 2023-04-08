@@ -297,7 +297,7 @@ format.")
 (define-public bcmatroska2
   (package
     (name "bcmatroska2")
-    (version "0.23")
+    (version "5.2.1")
     (source
      (origin
        (method git-fetch)
@@ -306,11 +306,22 @@ format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1avl9w18kh4dxm3g8j0bkw39bksd7bz3nfxvyibqqnz63ds8vfi2"))))
+        (base32 "14c79znw37q3yc7llbv2wmxmm4a3ws6iq3cvgkbmcnf7hmhm7zdi"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                                     ; No test target
-       #:configure-flags (list "-DENABLE_STATIC=NO"))) ; Not required
+     (list
+      #:tests? #f                                     ;No test target
+      #:phases
+      '(modify-phases %standard-phases
+         ;; See
+         ;; https://gitlab.linphone.org/BC/public/bcmatroska2/-/merge_requests/18
+         (add-after 'unpack 'fix-build-system
+           (lambda _
+             (substitute* "corec/corec/CMakeLists.txt"
+               (("helpers/file/file_libc.c") "")))))
+      #:configure-flags
+      '(list "-DENABLE_STATIC=NO"))) ;Not required
+    (inputs (list bctoolbox))
     (synopsis "Belledonne Communications Media Container")
     (description "BcMatroska is a free and open standard multi-media container
 format.  It can hold an unlimited number of video, audio, picture, or subtitle
