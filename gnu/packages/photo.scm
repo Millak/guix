@@ -470,98 +470,99 @@ photographic equipment.")
         (base32 "1b3vr6njwqfvnrx3qpbg5aqcbl1z8nxnxcgyyw0sd4a20z33jfk0"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
-                           "-DBUILD_TESTING=On")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'libOpenCL-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Statically link to libOpenCL.
-             (substitute* "./src/common/dlopencl.c"
-               (("\"libOpenCL\"")
-                (string-append "\"" (assoc-ref inputs "opencl-icd-loader")
-                               "/lib/libOpenCL.so\"")))))
-         (add-after 'unpack 'fix-missing-include
-           (lambda _
-             ;; Fix missing include needed to build tests.  See upstream
-             ;; issue: https://github.com/darktable-org/darktable/issues/12604
-             (substitute* "./src/common/variables.h"
-               (("once")
-                "once\n#include \"common/image.h\""))))
-         (add-before 'configure 'prepare-build-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Rawspeed fails to build with GCC due to OpenMP error:
-             ;; "undefined reference to `GOMP_loop_nonmonotonic_dynamic_next'"
-             (setenv "CC" "clang") (setenv "CXX" "clang++")
-             ;; Darktable looks for opencl-c.h in the LLVM dir. Guix installs
-             ;; it to the Clang dir. We fix this by patching CMakeLists.txt.
-             (substitute* "CMakeLists.txt"
-               (("\\$\\{LLVM_INSTALL_PREFIX\\}")
-                (assoc-ref %build-inputs "clang")))))
-         (add-before 'configure 'set-LDFLAGS
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append
-                      "-Wl,-rpath="
-                      (assoc-ref outputs "out") "/lib/darktable"))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (string-append (assoc-ref outputs "out")
-                                          "/bin/darktable")
-               ;; For GtkFileChooserDialog.
-               `("GSETTINGS_SCHEMA_DIR" =
-                 (,(string-append (assoc-ref inputs "gtk+")
-                                  "/share/glib-2.0/schemas")))))))))
+     (list
+      #:configure-flags
+      #~(list "-DBINARY_PACKAGE_BUILD=On"
+              "-DBUILD_TESTING=On")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'libOpenCL-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Statically link to libOpenCL.
+              (substitute* "./src/common/dlopencl.c"
+                (("\"libOpenCL\"")
+                 (string-append "\""
+                                (search-input-file inputs "/lib/libOpenCL.so")
+                                "\"")))))
+          (add-after 'unpack 'fix-missing-include
+            (lambda _
+              ;; Fix missing include needed to build tests.  See upstream
+              ;; issue: https://github.com/darktable-org/darktable/issues/12604
+              (substitute* "./src/common/variables.h"
+                (("once")
+                 "once\n#include \"common/image.h\""))))
+          (add-before 'configure 'prepare-build-environment
+            (lambda _
+              ;; Rawspeed fails to build with GCC due to OpenMP error:
+              ;; "undefined reference to `GOMP_loop_nonmonotonic_dynamic_next'"
+              (setenv "CC" "clang")
+              (setenv "CXX" "clang++")
+              ;; Darktable looks for opencl-c.h in the LLVM dir. Guix installs
+              ;; it to the Clang dir. We fix this by patching CMakeLists.txt.
+              (substitute* "CMakeLists.txt"
+                (("\\$\\{LLVM_INSTALL_PREFIX\\}")
+                 #$(this-package-native-input "clang")))))
+          (add-before 'configure 'set-LDFLAGS
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib/darktable"))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/darktable")
+                ;; For GtkFileChooserDialog.
+                `("GSETTINGS_SCHEMA_DIR" =
+                  (,(string-append #$(this-package-input "gtk+")
+                                   "/share/glib-2.0/schemas")))))))))
     (native-inputs
-     `(("clang" ,clang-11)
-       ("cmocka" ,cmocka)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("llvm" ,llvm-11) ;should match the Clang version
-       ("opencl-headers" ,opencl-headers)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("po4a" ,po4a)
-       ("python-wrapper" ,python-wrapper)
-       ("ruby" ,ruby)))
+     (list clang-11
+           cmocka
+           desktop-file-utils
+           `(,glib "bin")
+           gobject-introspection
+           intltool
+           llvm-11                      ;should match the Clang version
+           opencl-headers
+           perl
+           pkg-config
+           po4a
+           python-wrapper
+           ruby))
     (inputs
      (list bash-minimal
            cairo
-           colord-gtk ;optional, for color profile support
-           cups ;optional, for printing support
+           colord-gtk                   ;optional, for color profile support
+           cups                         ;optional, for printing support
            curl
            dbus-glib
            exiv2
            freeimage
-           gmic ;optional, for HaldcLUT support
+           gmic                         ;optional, for HaldcLUT support
            graphicsmagick
            gsettings-desktop-schemas
            gtk+
            imath
-           iso-codes ;optional, for language names in the preferences
+           iso-codes          ;optional, for language names in the preferences
            json-glib
            lcms
-           lensfun ;optional, for the lens distortion plugin
-           libgphoto2 ;optional, for camera tethering
-           libavif ;optional, for AVIF support
+           lensfun                   ;optional, for the lens distortion plugin
+           libgphoto2                ;optional, for camera tethering
+           libavif                   ;optional, for AVIF support
            libjpeg-turbo
            libomp
            libpng
            librsvg
-           libsecret ;optional, for storing passwords
+           libsecret                    ;optional, for storing passwords
            libsoup-minimal-2
            libtiff
-           libwebp ;optional, for WebP support
+           libwebp                      ;optional, for WebP support
            libxml2
            libxslt
            libheif
-           lua-5.4 ;optional, for plugins
-           opencl-icd-loader ;optional, for OpenCL support
-           openexr ;optional, for EXR import/export
-           openjpeg ;optional, for JPEG2000 export
-           osm-gps-map ;optional, for geotagging view
+           lua-5.4                      ;optional, for plugins
+           opencl-icd-loader            ;optional, for OpenCL support
+           openexr                      ;optional, for EXR import/export
+           openjpeg                     ;optional, for JPEG2000 export
+           osm-gps-map                  ;optional, for geotagging view
            pugixml
            python-jsonschema
            sdl2
@@ -576,8 +577,8 @@ and enhance them.")
     (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
     (properties
      '((release-monitoring-url . "https://github.com/darktable-org/darktable/releases")))
-    (license (list license:gpl3+ ;; Darktable itself.
-                   license:lgpl2.1+)))) ;; Rawspeed library.
+    (license (list license:gpl3+        ;Darktable itself
+                   license:lgpl2.1+)))) ;Rawspeed library
 
 (define-public photoflare
   (package
