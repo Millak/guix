@@ -23,6 +23,7 @@
 (define-module (gnu packages linphone)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages cpp)
@@ -744,7 +745,7 @@ device.")
 (define-public liblinphone
   (package
     (name "liblinphone")
-    (version "4.4.34")
+    (version "5.2.50")
     (source
      (origin
        (method git-fetch)
@@ -753,30 +754,32 @@ device.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lwabr93jw24y04pdqnw9dgg8jb3lzfplyx19f83jgp9dj8kmfq9"))))
+        (base32 "1lvbva234rmck57cxgswgqqvnq8r58i0ls4qgpymrxdfj74rinxj"))))
     (outputs '("out" "tester"))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; Tests require networking
-       #:configure-flags (list "-DENABLE_STATIC=NO"
-                               "-DENABLE_DOC=NO" ;requires unpackaged javasphinx
-                               "-DENABLE_LDAP=YES")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'separate-outputs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (tester (assoc-ref outputs "tester"))
-                    (tester-name (string-append ,name "_tester")))
-               (for-each mkdir-p
-                         (list (string-append tester "/bin")
-                               (string-append tester "/share")))
-               (rename-file (string-append out "/bin/" tester-name)
-                            (string-append tester "/bin/" tester-name))
-               (rename-file (string-append out "/bin/groupchat_benchmark")
-                            (string-append tester "/bin/groupchat_benchmark"))
-               (rename-file (string-append out "/share/" tester-name)
-                            (string-append tester "/share/" tester-name))))))))
+     (list
+      #:tests? #f                       ; Tests require networking
+      #:configure-flags
+      '(list "-DENABLE_FLEXIAPI=NO"  ;requires jsoncpp, but it cannot be found
+             "-DENABLE_STATIC=NO"
+             "-DENABLE_DOC=NO"       ;requires unpackaged javasphinx
+             "-DENABLE_LDAP=YES"
+             "-DENABLE_STRICT=NO")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'separate-outputs
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((tester-name (string-append #$name "_tester")))
+                (for-each mkdir-p
+                          (list (string-append #$output:tester "/bin")
+                                (string-append #$output:tester "/share")))
+                (rename-file (string-append #$output "/bin/" tester-name)
+                             (string-append #$output:tester "/bin/" tester-name))
+                (rename-file (string-append #$output "/bin/groupchat_benchmark")
+                             (string-append #$output:tester "/bin/groupchat_benchmark"))
+                (rename-file (string-append #$output "/share/" tester-name)
+                             (string-append #$output:tester "/share/" tester-name))))))))
     (native-inputs
      (list graphviz
            doxygen
@@ -792,16 +795,17 @@ device.")
            belle-sip
            belr
            bzrtp
-           openldap
-           xsd
            lime
-           mediastreamer2
            libnotify
+           libxml2
+           mediastreamer2
+           openldap-for-linphone
            ortp
            soci
            sqlite
-           libxml2
-           zlib))
+           xsd
+           zlib
+           zxing-cpp))
     (synopsis "Belledonne Communications Softphone Library")
     (description "Liblinphone is a high-level SIP library integrating
 all calling and instant messaging features into an unified
