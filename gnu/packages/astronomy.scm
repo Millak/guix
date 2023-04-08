@@ -2057,6 +2057,35 @@ standard astronomy libraries:
 @end itemize\n")
       (license license:gpl2+))))
 
+(define-public libxisf
+  (package
+    (name "libxisf")
+    ;; TODO: v0.2.2 (current latest) failed to build on configure phase, issue
+    ;; was open directly with author as he hosts source on seflhosted gitea.
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitea.nouspiro.space/nou/libXISF")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fz9mmj1nz5v7hlr53q8na7khadfn1hm0d1gfpzzw3167bqpy2xv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list lz4 pugixml zlib))
+    (home-page "https://nouspiro.space/?page_id=306")
+    (synopsis "Astronomical library to load and write XISF file format")
+    (description
+     "LibXISF is C++ library that can read and write XISF files produced by
+PixInsight.  It implements XISF 1.0 specification.")
+    (license license:gpl3+)))
+
 (define-public missfits
   (package
     (name "missfits")
