@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,10 +41,28 @@
                     #:allow-other-keys)
   "Configure the given package."
   (let* ((out (assoc-ref outputs "out"))
+         (bindir (assoc-ref outputs "bin"))
+         (libdir (assoc-ref outputs "lib"))
+         (includedir (assoc-ref outputs "include"))
          (source-dir (getcwd))
          (build-dir "../build")
          (prefix (assoc-ref outputs "out"))
          (args `(,(string-append "--prefix=" prefix)
+                 ,@(if bindir
+                       (list (string-append "--bindir=" bindir "/bin"))
+                       '())
+                 ,@(if libdir
+                       (cons (string-append "--libdir=" libdir "/lib")
+                             (if includedir
+                                 '()
+                                 (list
+                                  (string-append "--includedir="
+                                                 libdir "/include"))))
+                       '())
+                 ,@(if includedir
+                       (list (string-append "--includedir="
+                                            includedir "/include"))
+                       '())
                  ,(string-append "--buildtype=" build-type)
                  ,(string-append "-Dc_link_args=-Wl,-rpath="
                                  (assoc-ref outputs "out") "/lib")
