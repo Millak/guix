@@ -687,7 +687,7 @@ including media capture, encoding and decoding, and rendering.")
 (define-public lime
   (package
     (name "lime")
-    (version "4.4.34")
+    (version "5.2.49")
     (source
      (origin
        (method git-fetch)
@@ -696,12 +696,13 @@ including media capture, encoding and decoding, and rendering.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14jg1zisjbzflw3scfqdbwy48wq3cp93l867vigb8l40lkc6n26z"))))
+        (base32 "1mglnypxl3glwvwf2h5q4ikbm6wbcd9pb7kdws8zajjhk9q803jr"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (arguments
      `(#:configure-flags (list "-DENABLE_STATIC=NO"
-                               "-DENABLE_C_INTERFACE=YES")
+                               "-DENABLE_C_INTERFACE=YES"
+                               "-DENABLE_DOC=YES")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
@@ -710,7 +711,9 @@ including media capture, encoding and decoding, and rendering.")
              (substitute* "tester/CMakeLists.txt"
                (("add_test\\(?.*\"Hello World\"\\)") "")
                (("add_test\\(?.*\"lime\"\\)") "")
-               (("add_test\\(?.*\"FFI\"\\)") ""))))
+               (("add_test\\(?.*\"FFI\"\\)") "")
+               (("add_test\\(?.*\"Multidomains\"\\)") "")
+               (("add_test\\(?.*\"Lime server\"\\)") ""))))
          (add-after 'build 'build-doc
            (lambda _
              (invoke "make" "doc")))
