@@ -4787,7 +4787,7 @@ The drivers officially supported by @code{libdbi} are:
 (define-public soci
   (package
     (name "soci")
-    (version "4.0.2")
+    (version "4.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4796,7 +4796,7 @@ The drivers officially supported by @code{libdbi} are:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qc6d71lyrfh5zb7pmfihd1hjyazlkgq6p0g06ans77wnnjh0k9l"))))
+                "12aq7pama96l2c1kmfkclb4bvrsxs9a8ppgk5gmzw45w2lg35i0y"))))
     (build-system cmake-build-system)
     (propagated-inputs
      ;; Headers of soci has include-references to headers of these inputs.
