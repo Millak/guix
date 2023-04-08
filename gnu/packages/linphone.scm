@@ -818,7 +818,7 @@ and video calls or instant messaging capabilities to an application.")
 (define-public linphone-desktop
   (package
     (name "linphone-desktop")
-    (version "4.2.5")
+    (version "5.0.14")
     (source
      (origin
        (method git-fetch)
@@ -827,41 +827,55 @@ and video calls or instant messaging capabilities to an application.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gq4l9p21rbrcksa7fbkzn9fzbbynqmn6ni6lhnvzk359sb1xvbz"))
+        (base32 "0glrfsp087ni5hn6x6p4f6y63r4nyp061yyy0rfgddbxkzdqi2j1"))
        (patches (search-patches "linphone-desktop-without-sdk.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
-     `(#:tests? #f                      ; No test target
-       #:configure-flags (list "-DENABLE_UPDATE_CHECK=NO"
-                               "-DENABLE_DAEMON=YES"
-                               "-DENABLE_CONSOLE_UI=YES")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'pre-configure
-           (lambda _
-             (make-file-writable "linphone-app/linphoneqt_version.cmake")
-             (substitute* "linphone-app/linphoneqt_version.cmake"
-               (("\\$\\{GUIX-SET-VERSION\\}") ,version))))
-         (add-after 'install 'post-install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (liblinphone (assoc-ref inputs "liblinphone"))
-                    (grammar-dest (string-append out "/share/belr/grammars")))
-               ;; Remove unnecessary Qt configuration file.
-               (delete-file (string-append out "/bin/qt.conf"))
-               ;; Not using the FHS exposes an issue where the client
-               ;; refers to its own directories, which lacks files
-               ;; installed by the dependencies.
-               (symlink (string-append liblinphone "/lib")
-                        (string-append out "/lib"))
-               (symlink (string-append liblinphone "/share/sounds")
-                        (string-append out "/share/sounds"))
-               (symlink (string-append liblinphone "/share/linphone/rootca.pem")
-                        (string-append out "/share/linphone/rootca.pem"))
-               (mkdir-p (dirname grammar-dest))
-               (symlink (string-append liblinphone "/share/belr/grammars")
-                        grammar-dest)))))))
+     (list
+      #:tests? #f                       ; No test target
+      #:configure-flags
+      #~(list (string-append "-DFULL_VERSION=" #$version)
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+              (string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
+              (string-append "-DCMAKE_INSTALL_DATAROOTDIR=" #$output "/share")
+              (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
+              "-DENABLE_UPDATE_CHECK=NO"
+              "-DENABLE_DAEMON=YES"
+              "-DENABLE_CONSOLE_UI=YES")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'pre-configure
+            (lambda _
+              (make-file-writable "linphone-app/linphoneqt_version.cmake")
+              (substitute* "linphone-app/linphoneqt_version.cmake"
+                (("\\$\\{GUIX-SET-VERSION\\}") #$version))))
+          (add-before 'install 'pre-install
+            (lambda _
+              (mkdir-p (string-append #$output "/share/linphone"))
+              (symlink (string-append #$(this-package-input "liblinphone")
+                                      "/share/sounds")
+                       (string-append #$output
+                                      "/share/sounds"))))
+          (add-after 'install 'post-install
+            (lambda _
+              (let* ((liblinphone #$(this-package-input "liblinphone"))
+                     (grammar-dest (string-append #$output "/share/belr/grammars")))
+                ;; Remove unnecessary Qt configuration file.
+                (delete-file (string-append #$output "/bin/qt.conf"))
+                ;; Not using the FHS exposes an issue where the client
+                ;; refers to its own directories, which lacks files
+                ;; installed by the dependencies.
+                (for-each
+                 (lambda (file)
+                   (symlink file
+                            (string-append #$output "/lib/" (basename file))))
+                 (find-files (string-append liblinphone "/lib")))
+                (symlink (string-append liblinphone "/share/linphone/rootca.pem")
+                         (string-append #$output "/share/linphone/rootca.pem"))
+                (mkdir-p (dirname grammar-dest))
+                (symlink (string-append liblinphone "/share/belr/grammars")
+                         grammar-dest)))))))
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
