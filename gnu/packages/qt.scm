@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Quiliro <quiliro@fsfla.org>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -759,6 +759,9 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                       ;; The 'tst_qfilesystemwatcher' installs a watcher on
                       ;; '/home', which doesn't exist in the build container.
                       "tst_qfilesystemwatcher"
+                      ;; Not all of the tested formats are supported by our
+                      ;; build of openssl; 871 passed, 122 failed.
+                      "tst_qsslkey"
                       ;; The 'mockplugins' test fail following error: "Unknown
                       ;; platform linux-g++", and the other plugin tests
                       ;; depend on it.
