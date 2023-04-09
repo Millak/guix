@@ -17158,6 +17158,55 @@ bringing dynamism to class definition.")
 (define-public cl-markdown
   (sbcl-package->cl-source-package sbcl-cl-markdown))
 
+(define-public sbcl-cl-markless
+  (let ((commit "a0e145c03103bd3bf7e275d5ac0e19e8381eb844")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-markless")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/cl-markless")
+               (commit commit)))
+         (file-name (git-file-name "cl-markless" version))
+         (sha256
+          (base32 "154ax1yk0b1035yij29c5pgfn7ifghrxy821mk68wyljg8afgvh5"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-3bmd
+             sbcl-babel
+             sbcl-command-line-arguments
+             sbcl-documentation-utils
+             sbcl-plump
+             sbcl-trivial-gray-streams
+             sbcl-trivial-indent
+             sbcl-trivial-mimes
+             sbcl-zip))
+      (arguments
+       '(#:asd-systems '("cl-markless"
+                         "cl-markless-plump"
+                         "cl-markless-epub"
+                         "cl-markless-markdown"
+                         "cl-markless-standalone")))
+      (home-page "https://shirakumo.github.io/cl-markless/")
+      (synopsis "Parser implementation for Markless")
+      (description "This is an implementation of the \"Markless
+standard\" (@url{https://github.com/shirakumo/markless}) at version 1.0.  It
+handles the parsing of plaintext from a stream into an abstract syntax tree
+composed out of strings and component objects.  From there the AST can be
+easily compiled into a target markup language like HTML.")
+      (license license:zlib))))
+
+(define-public ecl-cl-markless
+  (sbcl-package->ecl-package sbcl-cl-markless))
+
+(define-public cl-markless
+  (sbcl-package->cl-source-package sbcl-cl-markless))
+
 (define-public sbcl-magicffi
   (let ((commit "d88f2f280c31f639e4e05be75215d8a8dce6aef2"))
     (package
