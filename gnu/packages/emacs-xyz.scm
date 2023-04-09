@@ -22059,7 +22059,7 @@ Citar note support:
 @item ability to query note citations by reference
 @item ``live'' updating of Citar UI for presence of notes
 @end itemize")
-    (license license:gpl3)))
+    (license license:gpl3+)))
 
 (define-public emacs-helm-bibtex
   (let ((commit "8ebf50d5bd368082d0b7ab79d26a52f372cdef98")
