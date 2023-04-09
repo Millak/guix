@@ -28842,7 +28842,7 @@ processes for Emacs.")
 (define-public emacs-treemacs
   (package
     (name "emacs-treemacs")
-    (version "3.0")
+    (version "3.1")
     (source
      (origin
        (method git-fetch)
@@ -28851,20 +28851,8 @@ processes for Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l6pbfrkl0v1iyc43vyhchbcfy7cjhinn8pw07aq4ssh6lxil7kp"))))
+        (base32 "1rs0l0k9fd8xav627944jfm518yillcmjbdrkzjw3xq1wx80pn95"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-ace-window
-           emacs-dash
-           emacs-f
-           emacs-ht
-           emacs-hydra
-           emacs-pfuture
-           emacs-s))
-    (native-inputs
-     (list emacs-buttercup emacs-el-mock))
-    (inputs
-     (list python))
     (arguments
      (list
       #:tests? #t
@@ -28881,16 +28869,6 @@ processes for Emacs.")
             ;; Elisp directory is not in root of the source.
             (lambda _
               (chdir "src/elisp")))
-          (add-before 'check 'delete-failing-tests
-            ;; FIXME: 4 tests out of 254 are failing.
-            (lambda _
-              (emacs-batch-edit-file "../../test/treemacs-test.el"
-                '(progn
-                  (goto-char (point-min))
-                  (re-search-forward "describe \"treemacs--parent\"")
-                  (beginning-of-line)
-                  (kill-sexp)
-                  (basic-save-buffer)))))
           (add-before 'install 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (make-file-writable "treemacs-core-utils.el")
@@ -28917,6 +28895,18 @@ processes for Emacs.")
                 (copy-recursively
                  "src/scripts"
                  (string-append (elpa-directory #$output) "/scripts"))))))))
+    (native-inputs
+     (list emacs-buttercup emacs-el-mock))
+    (inputs
+     (list python))
+    (propagated-inputs
+     (list emacs-ace-window
+           emacs-dash
+           emacs-f
+           emacs-ht
+           emacs-hydra
+           emacs-pfuture
+           emacs-s))
     (home-page "https://github.com/Alexander-Miller/treemacs")
     (synopsis "Emacs tree style file explorer")
     (description
