@@ -32,6 +32,7 @@
   #:use-module ((guix scripts build) #:select (%standard-build-options))
   #:use-module (guix store)
   #:use-module (guix utils)
+  #:use-module (guix discovery)
   #:use-module (guix packages)
   #:use-module (guix profiles)
   #:use-module (guix upstream)
@@ -44,6 +45,7 @@
   #:use-module ((gnu packages commencement) #:select (%final-inputs))
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
@@ -71,8 +73,23 @@
                     ((or "core" "non-core")
                      (alist-cons 'select (string->symbol arg)
                                  result))
+                    ((? (cut string-prefix? "module:" <>))
+                     (let ((mod (cond
+                                 ;; Shorthand name: "module:guile".
+                                 ((string-match "module:([^\( ]+)$" arg) =>
+                                  (lambda (m)
+                                    `(gnu packages ,(string->symbol
+                                                     (match:substring m 1)))))
+                                 ;; Full name : "module:(gnu packages guile)".
+                                 ((string-match "module:\\(([^)]+)\\)$" arg) =>
+                                  (lambda (m)
+                                    (map string->symbol
+                                         (string-split
+                                          (match:substring m 1) #\space))))
+                                 (else (leave (G_ "invalid module: ~a~%") arg)))))
+                       (alist-cons 'select (cons 'module mod) result)))
                     (x
-                     (leave (G_ "~a: invalid selection; expected `core' or `non-core'~%")
+                     (leave (G_ "~a: invalid selection; expected `core', `non-core' or `module:NAME'~%")
                             arg)))))
         (option '(#\t "type") #t #f
                 (lambda (opt name arg result)
@@ -141,8 +158,10 @@ specified with `--select'.\n"))
   (display (G_ "
   -u, --update           update source files in place"))
   (display (G_ "
-  -s, --select=SUBSET    select all the packages in SUBSET, one of
-                         `core' or `non-core'"))
+  -s, --select=SUBSET    select all the packages in SUBSET, one of `core`,
+                         `non-core' or `module:NAME' (eg: module:guile)
+                         the module can also be fully specified as
+                         'module:(gnu packages guile)'"))
   (display (G_ "
   -m, --manifest=FILE    select all the packages from the manifest in FILE"))
   (display (G_ "
@@ -257,13 +276,20 @@ update would trigger a complete rebuild."
        (let ((select? (match (assoc-ref opts 'select)
                         ('core core-package?)
                         ('non-core (negate core-package?))
-                        (_ (const #t)))))
+                        (_ (const #t))))
+             (modules (match (assoc-ref opts 'select)
+                         (('module . mod)
+                          (list (resolve-interface mod)))
+                         (_ (all-modules (%package-module-path)
+                                         #:warn
+                                         warn-about-load-error)))))
          (map update-spec
               (fold-packages (lambda (package result)
                                (if (select? package)
                                    (keep-newest package result)
                                    result))
-                             '()))))
+                             '()
+                             modules))))
       (some                                       ;user-specified packages
        some)))
 

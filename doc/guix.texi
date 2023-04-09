@@ -14227,8 +14227,8 @@ $ ./pre-inst-env guix refresh -s non-core -u
 
 @item --select=[@var{subset}]
 @itemx -s @var{subset}
-Select all the packages in @var{subset}, one of @code{core} or
-@code{non-core}.
+Select all the packages in @var{subset}, one of @code{core}, @code{non-core}
+or @code{module:@var{name}}.
 
 The @code{core} subset refers to all the packages at the core of the
 distribution---i.e., packages that are used to build ``everything
@@ -14240,6 +14240,11 @@ terms of build time or bandwidth used to achieve the upgrade.
 The @code{non-core} subset refers to the remaining packages.  It is
 typically useful in cases where an update of the core packages would be
 inconvenient.
+
+The @code{module:@var{name}} subset refers to all the packages in a
+specified guile module.  The module can be specified as
+@code{module:guile} or @code{module:(gnu packages guile)}, the former is
+a shorthand for the later.
 
 @item --manifest=@var{file}
 @itemx -m @var{file}
