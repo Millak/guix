@@ -1198,7 +1198,6 @@ application suites.")
             (lambda _
               (for-each mkdir-p
                         (list
-                         (string-append #$output:bin "/bin")
                          (string-append #$output:bin "/share/applications")
                          (string-append #$output:bin "/share/icons")
                          (string-append #$output:bin "/share/man")
@@ -1210,7 +1209,6 @@ application suites.")
                            (string-append #$output dir)
                            (string-append #$output:bin dir)))
                         (list
-                         "/bin"
                          "/share/applications"
                          "/share/icons"
                          "/share/man"
