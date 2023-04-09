@@ -103,14 +103,14 @@ complexity.")))
 (define-public s6
   (package
    (name "s6")
-   (version "2.11.1.2")
+   (version "2.11.3.2")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6/s6-"
                          version ".tar.gz"))
      (sha256
-      (base32 "18h38piz117ilx7ch9f7hl6bxm2w06z7lc7f5hwsr7c87sz7853c"))))
+      (base32 "0x6zjc3126fjhj8accyxgrw7r7ysrb7d13dfs87bxzzhsa5165kw"))))
    (build-system gnu-build-system)
    (inputs (list skalibs execline))
    (arguments
