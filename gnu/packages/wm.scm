@@ -1416,7 +1416,7 @@ It is inspired by Xmonad and dwm.  Its major features include:
                 (mkdir-p xsessions)
                 (make-desktop-entry-file
                  (string-append xsessions "/cwm.desktop")
-                 #:name: cwm
+                 #:name "cwm"
                  #:exec (string-append #$output "/bin/cwm")
                  #:try-exec (string-append #$output "/bin/cwm")
                  #:comment '((#f "OpenBSD Calm Window Manager fork")))))))))
