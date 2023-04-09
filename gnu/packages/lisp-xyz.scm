@@ -26909,6 +26909,41 @@ functionality similar to what was originally found in @code{sdl2kit}.
 (define-public ecl-glkit
   (sbcl-package->ecl-package sbcl-glkit))
 
+(define-public sbcl-cl-fond
+  (let ((commit "dac975cbc73f231b400d5b8d8539b16330239a4a")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-fond")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/cl-fond")
+               (commit commit)))
+         (file-name (git-file-name "cl-fond" version))
+         (sha256
+          (base32 "03ygcw1azb44bhdsqcq99xi4ci0by76ap5jf5l2d1vfxq04v8grq"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cffi
+             sbcl-cl-opengl
+             sbcl-documentation-utils
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
+      (home-page "https://shirakumo.github.io/cl-fond/")
+      (synopsis "Bindings to libfond, a simple text rendering engine for OpenGL")
+      (description "This is a Common Lisp bindings library to libfond, a
+simple OpenGL text rendering engine.")
+      (license license:zlib))))
+
+(define-public cl-fond
+  (sbcl-package->cl-source-package sbcl-cl-fond))
+
+(define-public ecl-cl-fond
+  (sbcl-package->ecl-package sbcl-cl-fond))
+
 (define-public sbcl-doplus
   (package
     (name "sbcl-doplus")
