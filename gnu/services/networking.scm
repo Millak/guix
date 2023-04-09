@@ -138,7 +138,16 @@
 
             tor-configuration
             tor-configuration?
-            tor-hidden-service
+            tor-configuration-tor
+            tor-configuration-config-file
+            tor-configuration-hidden-services
+            tor-configuration-socks-socket-type
+            tor-configuration-control-socket-path
+            tor-onion-service-configuration
+            tor-onion-service-configuration?
+            tor-onion-service-configuration-name
+            tor-onion-service-configuration-mapping
+            tor-hidden-service  ; deprecated
             tor-service-type
 
             network-manager-configuration
@@ -908,7 +917,7 @@ applications in communication.  It is used by Jami, for example.")))
                     (default '()))
   (socks-socket-type tor-configuration-socks-socket-type ; 'tcp or 'unix
                      (default 'tcp))
-  (control-socket?  tor-control-socket-path
+  (control-socket?  tor-configuration-control-socket-path
                     (default #f)))
 
 (define %tor-accounts
@@ -922,11 +931,22 @@ applications in communication.  It is used by Jami, for example.")))
          (home-directory "/var/empty")
          (shell (file-append shadow "/sbin/nologin")))))
 
-(define-record-type <hidden-service>
-  (hidden-service name mapping)
-  hidden-service?
-  (name    hidden-service-name)                   ;string
-  (mapping hidden-service-mapping))               ;list of port/address tuples
+(define-configuration/no-serialization tor-onion-service-configuration
+  (name
+   string
+   "Name for this Onion Service.  This creates a
+@file{/var/lib/tor/hidden-services/@var{name}} directory, where the
+@file{hostname} file contains the @indicateurl{.onion} host name for this
+Onion Service.")
+
+  (mapping
+   alist
+   "Association list of port to address mappings.  The following example:
+@lisp
+'((22 . \"127.0.0.1:22\")
+  (80 . \"127.0.0.1:8080\"))
+@end lisp
+maps ports 22 and 80 of the Onion Service to the local ports 22 and 8080."))
 
 (define (tor-configuration->torrc config)
   "Return a 'torrc' file for CONFIG."
@@ -966,7 +986,7 @@ HiddenServicePort ~a ~a~%"
                                                 tcp-port host))
                                       ports hosts)))
                          '#$(map (match-lambda
-                                   (($ <hidden-service> name mapping)
+                                   (($ <tor-onion-service-configuration> name mapping)
                                     (cons name mapping)))
                                  hidden-services))
 
@@ -1053,7 +1073,7 @@ HiddenServicePort ~a ~a~%"
       (chmod "/var/lib" #o755)
 
       (for-each initialize
-                '#$(map hidden-service-name
+                '#$(map tor-onion-service-configuration-name
                         (tor-configuration-hidden-services config)))))
 
 (define tor-service-type
@@ -1066,7 +1086,7 @@ HiddenServicePort ~a ~a~%"
                        (service-extension activation-service-type
                                           tor-activation)))
 
-                ;; This can be extended with hidden services.
+                ;; This can be extended with Tor Onion Services.
                 (compose concatenate)
                 (extend (lambda (config services)
                           (tor-configuration
@@ -1079,21 +1099,14 @@ HiddenServicePort ~a ~a~%"
                  "Run the @uref{https://torproject.org, Tor} anonymous
 networking daemon.")))
 
-(define tor-hidden-service-type
-  ;; A type that extends Tor with hidden services.
-  (service-type (name 'tor-hidden-service)
-                (extensions
-                 (list (service-extension tor-service-type list)))
-                (description
-                 "Define a new Tor @dfn{hidden service}.")))
-
-(define (tor-hidden-service name mapping)
+(define-deprecated (tor-hidden-service name mapping)
+  #f
   "Define a new Tor @dfn{hidden service} called @var{name} and implementing
 @var{mapping}.  @var{mapping} is a list of port/host tuples, such as:
 
 @example
- '((22 \"127.0.0.1:22\")
-   (80 \"127.0.0.1:8080\"))
+ '((22 . \"127.0.0.1:22\")
+   (80 . \"127.0.0.1:8080\"))
 @end example
 
 In this example, port 22 of the hidden service is mapped to local port 22, and
@@ -1105,8 +1118,11 @@ service.
 
 See @uref{https://www.torproject.org/docs/tor-hidden-service.html.en, the Tor
 project's documentation} for more information."
-  (service tor-hidden-service-type
-           (hidden-service name mapping)))
+  (simple-service 'tor-hidden-service
+                  tor-service-type
+                  (list (tor-onion-service-configuration
+                         (name name)
+                         (mapping mapping)))))
 
 
 ;;;
