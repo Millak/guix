@@ -22034,7 +22034,7 @@ citations.")
 (define-public emacs-citar-org-roam
   (package
     (name "emacs-citar-org-roam")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -22043,7 +22043,7 @@ citations.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h1lrx5fg51qpyxh3lrb7x392a5rr8q5a7dihscfzhr38ba1pfh6"))))
+        (base32 "0iwhwfllbcd938qkvh5m5cn6s8pn01xb02yjbv1hl4jpiayianqa"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-citar emacs-org-roam))
     (home-page "https://github.com/emacs-citar/citar-org-roam")
