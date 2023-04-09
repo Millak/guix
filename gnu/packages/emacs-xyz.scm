@@ -28931,23 +28931,23 @@ utilities.")
   (package
     (inherit emacs-treemacs)
     (name "emacs-treemacs-extra")
-    (propagated-inputs
-     `(,@(package-propagated-inputs emacs-treemacs)
-       ("emacs-all-the-icons" ,emacs-all-the-icons)
-       ("emacs-evil" ,emacs-evil)
-       ("emacs-magit" ,emacs-magit)
-       ("emacs-projectile" ,emacs-projectile)
-       ("emacs-perspective" ,emacs-perspective)
-       ("emacs-persp-mode" ,emacs-persp-mode)
-       ("mu" ,mu)))
     (arguments
      (substitute-keyword-arguments
          (package-arguments emacs-treemacs)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'chdir-elisp 'copy-extra
-             (lambda _
-               (copy-recursively "../extra" ".")))))))))
+        #~(modify-phases #$phases
+            (add-after 'chdir-elisp 'copy-extra
+              (lambda _
+                (copy-recursively "../extra" ".")))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs emacs-treemacs)
+       (append emacs-all-the-icons
+               emacs-evil
+               emacs-magit
+               emacs-projectile
+               emacs-persp-mode
+               emacs-perspective
+               mu)))))
 
 (define-public emacs-libyaml
   ;; Upstream made no release so far.
