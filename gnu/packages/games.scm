@@ -3637,7 +3637,7 @@ for common mesh file formats, and collision detection.")
   (package
     (inherit irrlicht)
     (name "irrlicht-for-minetest")
-    (version "1.9.0mt8")
+    (version "1.9.0mt10")
     (source
      (origin
        (method git-fetch)
@@ -3647,7 +3647,7 @@ for common mesh file formats, and collision detection.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1646pj40dqkzbbc2lxzbmq2pjyrkgggbi2lah6pa5mv420p402kg"))))
+         "0y5vchz91khs8dmrkpgc7sqmvzx2yjj6svivvm80r4yppv7s03rw"))))
     (build-system cmake-build-system)
     (arguments
      ;; No check target.

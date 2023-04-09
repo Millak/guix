@@ -52,7 +52,7 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.6.1")
+    (version "5.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -61,7 +61,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bgk369n7r52vh3hdngrlf98k3v84ch2qp341xhs53ixrns2crfn"))
+                "008l44zwwsarwk4hn7wx2nj2m21b1iqsphl7g69rrlxj760zl0pl"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -106,7 +106,8 @@
                   "(void)0;"))
                (setenv "MINETEST_SUBGAME_PATH" ; for check
                        (string-append (getcwd) "/games"))))
-           (replace 'check
+           (delete 'check)
+           (add-after 'install 'check
              (lambda* (#:key tests? #:allow-other-keys)
                ;; Thanks to our substitutions, the tests should also run
                ;; when invoked on the target outside of `guix build'.
@@ -165,7 +166,7 @@ in different ways.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w0vdk6a1rhsfwyfviayfwsyqbzwikqazkgbrfl39anf3a50rvv1"))))
+                "02kbj1h6jsq6k8x4v2ir0njczdz7nyx6dbym85ixxp3mrqxiws61"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan
