@@ -359,7 +359,11 @@ resolution scaling on graphical console window resize.")
                 "1rrjlclm6ad63gah1fa4yfwrz4z6vgq2yrybbvzvvdbxrgl4vgzv"))))
     (build-system meson-build-system)
     (arguments
-     (list #:meson meson-0.60))
+     (list #:configure-flags
+           ;; Otherwise, the validate-runpath phase fails.
+           #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                                  (search-input-directory %build-inputs
+                                                          "lib/nss")))))
     (propagated-inputs
      ;; The following inputs are required in the pkg-config file.
      (list glib
