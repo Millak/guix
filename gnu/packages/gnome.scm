@@ -9865,48 +9865,51 @@ can add your own files to the collection.")
                    license:cc-by-sa3.0))))
 
 (define-public gnome-screenshot
-  (package
-    (name "gnome-screenshot")
-    (version "41.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/" name "/"
-                           (version-major version) "/"
-                           name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "15wmikwk62cdi93gas77nqh4fbhlrxrncyfmcd1gfa34jbn7vnsa"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:meson ,meson-0.60
-       #:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "build-aux/postinstall.py"
-               (("gtk-update-icon-cache") "true")))))))
-    (native-inputs
-     (list appstream-glib
-           desktop-file-utils           ; for update-desktop-database
-           gettext-minimal
-           `(,glib "bin")               ; for glib-compile-schemas, etc.
-           pkg-config
-           python))
-    (inputs
-     (list gtk+
-           libhandy
-           libx11
-           libxext))
-    (home-page "https://gitlab.gnome.org/GNOME/gnome-screenshot")
-    (synopsis "Take pictures of your screen")
-    (description
-     "GNOME Screenshot is a utility used for taking screenshots of the entire
+  ;; GNOME Screenshot hasn't had a release in a long time, and the last one
+  ;; (41) doesn't build with a recent Meson.
+  (let ((commit "9f067cf428b6bac78ffac31c1a17a20fb2c24843")
+        (revision "0"))
+    (package
+      (name "gnome-screenshot")
+      (version (git-version "41.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.gnome.org/GNOME/gnome-screenshot")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10a3yd9qmfhxiw984a9fyvgrfq6i3w2yxayac0n7qqjl9ysxwb31"))))
+      (build-system meson-build-system)
+      (arguments
+       `(#:glib-or-gtk? #t
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'skip-gtk-update-icon-cache
+             ;; Don't create 'icon-theme.cache'.
+             (lambda _
+               (substitute* "build-aux/postinstall.py"
+                 (("gtk-update-icon-cache") "true")))))))
+      (native-inputs
+       (list appstream-glib
+             desktop-file-utils           ; for update-desktop-database
+             gettext-minimal
+             `(,glib "bin")               ; for glib-compile-schemas, etc.
+             pkg-config
+             python))
+      (inputs
+       (list gtk+
+             libhandy
+             libx11
+             libxext))
+      (home-page "https://gitlab.gnome.org/GNOME/gnome-screenshot")
+      (synopsis "Take pictures of your screen")
+      (description
+       "GNOME Screenshot is a utility used for taking screenshots of the entire
 screen, a window or a user defined area of the screen, with optional
 beautifying border effects.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public dconf-editor
   (package
