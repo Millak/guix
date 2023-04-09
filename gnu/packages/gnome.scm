@@ -2331,7 +2331,7 @@ The gnome-about program helps find which version of GNOME is installed.")
 (define-public gnome-disk-utility
   (package
     (name "gnome-disk-utility")
-    (version "42.0")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2339,18 +2339,22 @@ The gnome-about program helps find which version of GNOME is installed.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "02q906gn420xbf1f0apazryzqfv5b1ammz1vrci66hk79m2n8r8v"))))
+                "1vx3wyvidjyzr4141p3zrvgx88rp7vwj6n3sf7c3gnvci6bi00q2"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind=libelogind")
-       #:meson ,meson-0.60
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")
+               (("glib_compile_schemas: true")
+                "glib_compile_schemas: false")
+               (("update_desktop_database: true")
+                "update_desktop_database: false")))))))
     (native-inputs
      (list docbook-xml
            docbook-xsl
@@ -2372,7 +2376,7 @@ The gnome-about program helps find which version of GNOME is installed.")
            libpwquality
            libsecret
            udisks))
-    (home-page "https://git.gnome.org/browse/gnome-disk-utility")
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-disk-utility")
     (synopsis "Disk management utility for GNOME")
     (description "Disk management utility for GNOME.")
     (license license:gpl2+)))
