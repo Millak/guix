@@ -910,7 +910,13 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
               "0yw2cpw7ygfd6jlgpwbi8vsnvv9p55zxp9h17x77z2qq733pf8jx"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:disallowed-references (,perl)
+    `(#:configure-flags '(,@(if (%current-target-system)
+                              ;; We cannot check for these devices
+                              ;; when cross compiling.
+                              `("ac_cv_file__dev_random=yes"
+                                "ac_cv_file__dev_urandom=yes")
+                              '()))
+      #:disallowed-references (,perl)
       #:phases
       (modify-phases %standard-phases
         (add-before 'configure 'patch-paths
