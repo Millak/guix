@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2013, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -313,7 +313,10 @@ output file formats and printers.")
    (source (package-source ghostscript))
    (build-system gnu-build-system)
    (native-inputs
-    (list libtool automake autoconf))
+    (append (if (target-riscv64?)
+              (list config)
+              '())
+            (list libtool automake autoconf)))
    (arguments
     `(#:phases
       (modify-phases %standard-phases
@@ -331,7 +334,17 @@ output file formats and printers.")
             (substitute* "autogen.sh"
               (("^.*\\$srcdir/configure.*") "")
               (("^ + && echo Now type.*$")  ""))
-            (invoke "bash" "autogen.sh"))))))
+            (invoke "bash" "autogen.sh")))
+        ,@(if (target-riscv64?)
+            `((add-after 'unpack 'update-config-scripts
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (for-each (lambda (file)
+                              (install-file
+                               (search-input-file
+                                (or native-inputs inputs)
+                                (string-append "/bin/" file)) "ijs"))
+                            '("config.guess" "config.sub")))))
+            '()))))
    (synopsis "IJS driver framework for inkjet and other raster devices")
    (description
     "IJS is a protocol for transmission of raster page images.  This package
