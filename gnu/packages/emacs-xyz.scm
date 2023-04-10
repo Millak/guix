@@ -36735,6 +36735,30 @@ categories and highlighting specific modes that many commands use to
 accomplish different tasks.")
       (license license:asl2.0))))
 
+(define-public emacs-totp
+  (let ((commit "a5e059b8475b32bc7f5ddadda248cf84449ed722") ;no releases
+        (revision "0"))
+    (package
+      (name "emacs-totp")
+      (home-page "https://github.com/juergenhoetzel/emacs-totp")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0b76fxk9r3n9zii75q1957ivb6ap5px5h87kagxz083nl77jky7a"))))
+      (build-system emacs-build-system)
+      (synopsis "Generate Time-based One-time Passwords (TOTP) in Emacs")
+      (description
+       "emacs-TOTP implements @acronym{TOTP, Time-based One-time Passwords} as
+specified in RFC 6238.  It supports reading secrets in HEX and multiple base32
+variations, including non-standard base32 encodings.")
+       (license license:gpl3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
