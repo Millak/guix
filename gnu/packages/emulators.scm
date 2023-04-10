@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2539,7 +2540,7 @@ on a Commodore C64, C128 etc.")
     (license license:zlib)))
 
 (define-public uxn
-  (let ((commit "1b2049e238df96f32335edf1c6db35bd09f8b42d")
+  (let ((commit "83237c9641490d303a42c81ca247314d11055dea")
         (revision "1"))
     (package
       (name "uxn")
@@ -2552,7 +2553,7 @@ on a Commodore C64, C128 etc.")
                 (file-name (string-append name "-" version))
                 (sha256
                  (base32
-                  "0d3hy1db1mfk2l7q7wdxvp1z0vkmyyb9pdp81d9zm58ylpxaq2cp"))))
+                  "159qfz66k1jc43jhyl8by3yiphsr2dyiyclw1x7mkr3zciwc29z3"))))
       (build-system gnu-build-system)
       (arguments
        (list #:tests? #f ;no tests
