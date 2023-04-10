@@ -1894,6 +1894,54 @@ reading and writing.")
 (define-public cl-zip
   (sbcl-package->cl-source-package sbcl-zip))
 
+(define-public sbcl-zippy
+  (let ((commit "ed9bca591ded2ff27a9ac95d9a60827773a0e707")
+        (revision "1"))
+    (package
+      (name "sbcl-zippy")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/zippy/")
+               (commit commit)))
+         (sha256
+          (base32 "16cvyyf2nzd9r3fcy4w6d5wh8n3x833wldmrxmnzd3k2xrkhzfl9"))
+         (file-name (git-file-name "zippy" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-documentation-utils
+             sbcl-file-attributes
+             sbcl-pathname-utils
+             sbcl-alexandria
+             sbcl-nibbles
+             sbcl-babel
+             sbcl-3bz
+             sbcl-salza2))
+      (synopsis "Fast zip archive library")
+      (description "Zippy is a library for the PKWARE Zip archive format.  It
+can read and write zip files.  It features:
+
+@itemize
+@item archive inspection without extraction;
+@item Zip64 support;
+@item split archive support;
+@item PKWARE decryption;
+@item fast deflate decompression thanks to 3bz;
+@item operates on streams and vectors;
+@item can compress stream->stream;
+@item extensible for other encryption and compression mechanisms.
+@end itemize\n")
+      (home-page "https://shinmera.github.io/zippy/")
+      (license license:zlib))))
+
+(define-public ecl-zippy
+  (sbcl-package->ecl-package sbcl-zippy))
+
+(define-public cl-zippy
+  (sbcl-package->cl-source-package sbcl-zippy))
+
 (define-public sbcl-cl-vectors
   (package
     (name "sbcl-cl-vectors")
