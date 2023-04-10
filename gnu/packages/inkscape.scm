@@ -233,7 +233,7 @@ endif()~%~%"
             libxml2
             libxslt
             libgc
-            librsvg                     ;for the pixbuf loader
+            (librsvg-for-system)        ;for the pixbuf loader
             libsoup-minimal-2
             libcdr
             libvisio
@@ -294,7 +294,5 @@ as the native format.")
                    `("GDK_PIXBUF_MODULE_FILE" =
                      (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))))
     (inputs (modify-inputs (package-inputs inkscape/stable)
-              (append bash-minimal
-                      librsvg           ;for the pixbuf loader
-                      python-cssselect)))        ;to render qrcode
+              (append python-cssselect)))        ;to render qrcode
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))
