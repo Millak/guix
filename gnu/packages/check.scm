@@ -2347,14 +2347,14 @@ programs, something like CSmith, a random generator of C programs.")
 (define-public python-lit
   (package
     (name "python-lit")
-    (version "14.0.3")
+    (version "16.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "lit" version))
         (sha256
          (base32
-          "162x7pddwl395c3mdb0mfn3f5z24x1jz6g27x303lfxpzidnn4m4"))))
+          "04dyv8b2nbdbn61zdgm042a21dwidyapn9zbinlf879a29rc6jiw"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2363,7 +2363,7 @@ programs, something like CSmith, a random generator of C programs.")
            (lambda _
              (invoke "python" "lit.py" "tests"))))))
     (native-inputs
-     (list llvm))
+     (list llvm-14))
     (home-page "https://llvm.org/")
     (synopsis "LLVM Software Testing Tool")
     (description "@code{lit} is a portable tool for executing LLVM and Clang
