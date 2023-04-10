@@ -3532,6 +3532,14 @@ D lang development to be installed in user profiles.  This includes
 gdc, as well as libc (headers and binaries, plus debugging symbols
 in the @code{debug} output), and binutils.")))
 
+(define-public gdc-toolchain-11
+  (package (inherit (make-gcc-toolchain gdc-11))
+    (synopsis "Complete GCC tool chain for D lang development")
+    (description "This package provides a complete GCC tool chain for
+D lang development to be installed in user profiles.  This includes
+gdc, as well as libc (headers and binaries, plus debugging symbols
+in the @code{debug} output), and binutils.")))
+
 ;; Provide the Fortran toolchain package only for the version of gfortran that
 ;; is used by Guix internally to build Fortran libraries, because combining
 ;; code compiled with different versions can cause problems.
