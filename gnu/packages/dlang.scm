@@ -190,8 +190,8 @@ to a minimal test case.")
        ("tzdata" ,tzdata)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("lld-wrapper" ,(make-lld-wrapper lld-11 #:lld-as-ld? #t))
-       ("llvm" ,llvm-11)
+     `(("lld-wrapper" ,(make-lld-wrapper lld-14 #:lld-as-ld? #t))
+       ("llvm" ,llvm-14)
        ("ldc" ,gdmd)
        ("ninja" ,ninja)
        ("python-wrapper" ,python-wrapper)
@@ -357,7 +357,7 @@ integration tests...\n")
      (append (delete "llvm"
                      (alist-replace "ldc" (list ldc-bootstrap)
                                     (package-native-inputs ldc-bootstrap)))
-         `(("clang" ,clang-11)          ;propagates llvm and clang-runtime
+         `(("clang" ,clang-14)          ;propagates llvm and clang-runtime
            ("python-lit" ,python-lit))))))
 
 (define-public dub
