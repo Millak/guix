@@ -137,7 +137,7 @@ to a minimal test case.")
                                    (dirname (search-input-file inputs "/bin/gdc"))
                                    "\";\n"))))))))
       (inputs
-       (list gdc-10 perl))
+       (list gdc-11 perl))
       (home-page "https://github.com/D-Programming-GDC/gdmd")
       (synopsis "DMD-like wrapper for GDC")
       (description "This package provides a DMD-like wrapper for the
