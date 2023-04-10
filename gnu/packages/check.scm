@@ -2360,8 +2360,9 @@ programs, something like CSmith, a random generator of C programs.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "python" "lit.py" "tests"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "lit.py" "tests")))))))
     (native-inputs
      (list llvm-14))
     (home-page "https://llvm.org/")
