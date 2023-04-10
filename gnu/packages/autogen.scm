@@ -3,6 +3,7 @@
 ;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,10 +44,15 @@
         (base32 "16mlbdys8q4ckxlvxyhwkdnh1ay9f6g0cyp1kylkpalgnik398gq"))
        (modules '((guix build utils)))
        (snippet
-        ;; Address '-Werror=format-overflow' error.
-        '(substitute* "getdefs/getdefs.c"
-           (("def_bf\\[[[:space:]]*MAXNAMELEN[[:space:]]*\\]")
-            "def_bf[MAXNAMELEN + 10]")))))
+        '(begin
+           ;; Address '-Werror=format-overflow' error.
+           (substitute* "getdefs/getdefs.c"
+             (("def_bf\\[[[:space:]]*MAXNAMELEN[[:space:]]*\\]")
+              "def_bf[MAXNAMELEN + 10]"))
+           ;; Address '-Werror=format-truncation' error on i686.
+           (substitute* "autoopts/usage.c"
+             (("vfmt\\[sizeof\\(vfmtfmt\\)\\]")
+              "vfmt[sizeof(vfmtfmt) + 6]"))))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config which))
     (inputs (list guile-3.0 perl))          ; for doc generator mdoc
