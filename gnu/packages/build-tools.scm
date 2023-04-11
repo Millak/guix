@@ -77,6 +77,7 @@
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python))
 
 (define-public bam
@@ -325,59 +326,25 @@ resembles Python.")
 (define-public meson-python
   (package
     (name "meson-python")
-    (version "0.8.1")
+    (version "0.12.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "meson_python" version))
               (sha256
                (base32
-                "0k2yn0iws1n184sdznzmfw4xgbqgq5cn02hpc7m0xdaxryj1ybs4"))))
-    (build-system python-build-system)
+                "1hpjw9qj6ff8ixjs0pz7qysc8v57jxgaf5n1p6bqm9bh3mc3wnrx"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'avoid-ninja-dependency
-                 (lambda _
-                   ;; Avoid dependency on the "ninja" PyPI distribution,
-                   ;; which is a meta-package that simply downloads and
-                   ;; installs ninja from the web ...
-                   (substitute* "pyproject.toml"
-                     (("'ninja',")
-                      ""))))
-               (replace 'build
-                 (lambda _
-                   ;; ZIP does not support timestamps before 1980.
-                   (setenv "SOURCE_DATE_EPOCH" "315532800")
-                   (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-               (replace 'install
-                 (lambda _
-                   (let ((whl (car (find-files "dist" "\\.whl$"))))
-                     (invoke "pip" "--no-cache-dir" "--no-input"
-                             "install" "--no-deps" "--prefix" #$output whl))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv" "tests" "-k"
-                             (string-append
-                              "not "
-                              ;; These tests require a git checkout.
-                              (string-join '("test_contents_unstaged"
-                                             "test_no_pep621"
-                                             "test_pep621"
-                                             "test_dynamic_version"
-                                             "test_contents"
-                                             "test_contents_subdirs")
-                                           " and not ")))))))))
+     ;; The project is configured to use itself to build ('mesonpy') and fails;
+     ;; use another PEP 517 build system.
+     (list #:build-backend "setuptools.build_meta"
+           #:test-flags #~(list "tests"
+                                ;; The test_pep518 tries to install
+                                ;; dependencies from the network using pip.
+                                "-k" "not test_pep518")))
     (propagated-inputs
      (list meson
            ninja
-           ;; XXX: python-meson forcefully sets the RUNPATH of binaries
-           ;; for vendoring purposes, and uses PatchELF for that(!).  This
-           ;; functionality is not useful in Guix, but removing this
-           ;; dependency is tricky.  There is discussion upstream about making
-           ;; it optional, but for now we'll just carry it:
-           ;; https://github.com/FFY00/meson-python/issues/125
-           patchelf
            python-colorama
            python-pyproject-metadata
            python-tomli
@@ -387,14 +354,16 @@ resembles Python.")
            python-wheel
 
            ;; For tests.
+           git-minimal/pinned
+           patchelf
            pkg-config
+           python-cython
            python-gitpython
            python-pytest
            python-pytest-mock))
-    (home-page "https://github.com/FFY00/mesonpy")
+    (home-page "https://github.com/mesonbuild/meson-python")
     (synopsis "Meson-based build backend for Python")
-    (description
-     "meson-python is a PEP 517 build backend for Meson projects.")
+    (description "Meson-python is a PEP 517 build backend for Meson projects.")
     (license license:expat)))
 
 (define-public premake4
