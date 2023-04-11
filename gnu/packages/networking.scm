@@ -3709,55 +3709,56 @@ communication over HTTP.")
     (license license:agpl3+)))
 
 (define-public restinio
-  (package
-    (name "restinio")
-    (version "0.6.17")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Stiffstream/restinio")
-                    (commit (string-append "v." version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jpvfa2sjkihbkcc1q6c9zb1vry9mkkhbz2jrl831bqslpq9la3p"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      ;; Multiple tests fail to run in the build container due to host name
-      ;; resolution (see: https://github.com/Stiffstream/restinio/issues/172).
-      #:tests? #f
-      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
-                                "-DRESTINIO_INSTALL=ON"
-                                "-DRESTINIO_TEST=ON"
-                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
-                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "dev"))))))
-    (native-inputs
-     (list catch2
-           clara
-           json-dto))
-    (inputs
-     (list openssl
-           sobjectizer))
-    (propagated-inputs
-     ;; These are all #include'd by restinio's .hpp header files.
-     (list asio
-           fmt
-           http-parser
-           pcre
-           pcre2
-           zlib))
-    (home-page "https://stiffstream.com/en/products/restinio.html")
-    (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
-    (description "RESTinio is a header-only C++14 library that gives you an embedded
+  ;; Temporarily use an unreleased commit, which includes fixes to be able to
+  ;; run the test suite in the resolver-less Guix build environment.
+  (let ((revision "0")
+        (commit "eda471ec3a2815965ca02ec93a1124a342b7601d"))
+    (package
+      (name "restinio")
+      (version (git-version "0.6.18" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Stiffstream/restinio")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0f4w7714r0ic7csgxydw2vzfh35ssk34pns9jycmc08dzc3r7whb"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                  "-DRESTINIO_INSTALL=ON"
+                                  "-DRESTINIO_TEST=ON"
+                                  "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                  "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'change-directory
+              (lambda _
+                (chdir "dev"))))))
+      (native-inputs
+       (list catch2
+             clara
+             json-dto))
+      (inputs
+       (list openssl
+             sobjectizer))
+      (propagated-inputs
+       ;; These are all #include'd by restinio's .hpp header files.
+       (list asio
+             fmt
+             http-parser
+             pcre
+             pcre2
+             zlib))
+      (home-page "https://stiffstream.com/en/products/restinio.html")
+      (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
+      (description "RESTinio is a header-only C++14 library that gives you an embedded
 HTTP/Websocket server.  It is based on standalone version of ASIO
 and targeted primarily for asynchronous processing of HTTP-requests.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public opendht
   (package
