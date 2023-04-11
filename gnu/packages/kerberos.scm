@@ -256,7 +256,8 @@ After installation, the system administrator should generate keys using
                          e2fsprogs      ;for 'compile_et'
                          flex
                          texinfo
-                         unzip ;for tests
+                         unzip          ;for tests
+                         pkg-config
                          python))
     (inputs (list readline
                   bash-minimal
