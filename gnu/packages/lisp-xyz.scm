@@ -18134,6 +18134,51 @@ attributes not supported by the Common Lisp standard functions.")
 (define-public cl-file-attributes
   (sbcl-package->cl-source-package sbcl-file-attributes))
 
+(define-public sbcl-depot
+  (let ((commit "73822d9f480cbad00971b45ee80117297a67fb53")
+        (revision "1"))
+    (package
+      (name "sbcl-depot")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/depot/")
+               (commit commit)))
+         (sha256
+          (base32 "1v42pirdwbxy8l8i9a2jmbpri8a62vh0r4vm25xwaak0y4gr71va"))
+         (file-name (git-file-name "depot" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-atomics
+             sbcl-babel
+             sbcl-documentation-utils
+             sbcl-trivial-features
+             sbcl-trivial-gray-streams
+             sbcl-zippy))
+      ;; TODO: Some 6 tests fail, why?  See https://github.com/Shinmera/depot/issues/2.
+      (arguments
+       '(#:asd-systems '("depot"
+                         "depot-in-memory"
+                         "depot-virtual"
+                         "depot-zip")))
+      (synopsis "Protocol for transparent collections of files")
+      (description "This is a system presenting a protocol for \"file
+systems\": things that present a collection of \"files,\" which are things
+that have several attributes, and a central data payload.  Most notably this
+includes the OS filesystem, but can also be used to address other
+filesystem-like things like archives, object stores, etc. in the same
+manner.")
+      (home-page "https://shinmera.github.io/depot/")
+      (license license:zlib))))
+
+(define-public ecl-depot
+  (sbcl-package->ecl-package sbcl-depot))
+
+(define-public cl-depot
+  (sbcl-package->cl-source-package sbcl-depot))
+
 (define-public sbcl-cl-difflib
   (let ((commit "98eb335c693f1881584b83ca7be4a0fe05355c4e")
         (revision "0"))
