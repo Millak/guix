@@ -28840,6 +28840,43 @@ and so on easy.")
 (define-public ecl-cl-modio
   (sbcl-package->ecl-package sbcl-cl-modio))
 
+(define-public sbcl-cl-steamworks
+  (let ((commit "9d6a4de653a8cc256ae35e0298912b518aa92ba3")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-steamworks")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/cl-steamworks/")
+               (commit commit)))
+         (sha256
+          (base32 "1fzj3rlqw1kwdlmh0ga0y71p2n1adflcamzx4yp9kga552c1db5j"))
+         (file-name (git-file-name "cl-steamworks" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-float-features
+             sbcl-trivial-features
+             sbcl-trivial-garbage
+             sbcl-trivial-gray-streams))
+      (synopsis "Wrapper for the Valve SteamWorks API")
+      (description "This is a wrapper library to allow you to interface with
+the Valve SteamWorks API.")
+      (home-page "https://shinmera.github.io/cl-steamworks/")
+      (license license:zlib))))
+
+(define-public cl-steamworks
+  (sbcl-package->cl-source-package sbcl-cl-steamworks))
+
+(define-public ecl-cl-steamworks
+  (sbcl-package->ecl-package sbcl-cl-steamworks))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
