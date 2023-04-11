@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
@@ -60,6 +60,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages password-utils)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -702,6 +703,64 @@ message digests and key derivation functions.")
            python-pytz
            python-pytest
            python-setuptools-rust))))
+
+;;; This is the Rust component of the python-cryptography library, extracted
+;;; as a separate package to ease the Rust build.
+(define-public python-cryptography-rust
+  (package
+    (inherit python-cryptography)
+    (name "python-cryptography-rust")
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cargo-build-system)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (ice-9 match))
+      ;; XXX: Building the test objects appear to fail due to a missing link
+      ;; directive to Python's shared library (e.g.: "ld:
+      ;; cryptography_rust.c950d742-cgu.11:(.text._ZN3...+0x57): undefined
+      ;; reference to `PyLong_FromLong'").
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "src/rust")))
+          (replace 'unpack-rust-crates
+            ;; This is to avoid the non-crate source from being erroneously
+            ;; unpacked by this phase, causing an error.
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (apply (assoc-ref %standard-phases 'unpack-rust-crates)
+                     (append args
+                             (list #:inputs (alist-delete "source" inputs))))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (apply (assoc-ref %standard-phases 'configure)
+                     (append args
+                             (list #:inputs (alist-delete "source" inputs))))))
+          (add-after 'install 'install-shared-library
+            (lambda _
+              (install-file "target/release/libcryptography_rust.so"
+                            (string-append #$output "/lib")))))
+      #:cargo-inputs
+      `(("rust-asn1-0.13" ,rust-asn1-0.13)
+        ("rust-chrono-0.4" ,rust-chrono-0.4)
+        ("rust-foreign-types-shared-0.1" ,rust-foreign-types-shared-0.1)
+        ("rust-once-cell-1" ,rust-once-cell-1)
+        ("rust-openssl-0.10" ,rust-openssl-0.10)
+        ("rust-openssl-sys-0.9" ,rust-openssl-sys-0.9)
+        ("rust-ouroboros-0.15" ,rust-ouroboros-0.15)
+        ("rust-pem-1" ,rust-pem-1)
+        ("rust-pyo3-0.15" ,rust-pyo3-0.15))
+      #:cargo-development-inputs
+      `(("rust-cc" ,rust-cc-1))))
+    (native-inputs (list pkg-config python python-cffi))
+    ;; XXX: Adding rust-openssl-sys-0.9 is needed because #:cargo-inputs
+    ;; doesn't honor propagated-inputs.
+    (inputs (list python rust-openssl-sys-0.9))
+    (propagated-inputs '())
+    (synopsis "Core implementation of the Cryptography Python library")))
 
 ;; This is the last version which is compatable with python-cryptography < 35.
 (define-public python-pyopenssl
