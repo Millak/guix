@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -288,16 +289,8 @@ and triple stores.")
               (base32
                "0ilimkczibiwwvc12i14b8zi6ng42hjf9j907g8dik8rlmnlh3zm"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-ldflags
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
-    (home-page "https://drobilla.net/software/serd/")
+    (native-inputs (list python-minimal))
+    (home-page "https://drobilla.net/software/serd.html")
     (synopsis "Library for RDF syntax supporting Turtle and NTriples")
     (description
      "Serd is a lightweight C library for RDF syntax which supports reading
