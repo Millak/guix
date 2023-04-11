@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -190,9 +191,17 @@ a completion indication."
         ((regexp-exec %fraction-line-rx line)
          =>
          (lambda (match)
-           (let ((done  (string->number (match:substring match 1)))
-                 (total (string->number (match:substring match 3))))
-             (update (* 100. (/ done total))))))
+           (let* ((done  (string->number (match:substring match 1)))
+                  (total (string->number (match:substring match 3)))
+                  ;; It's possible that both done and total are 0 (see:
+                  ;; https://issues.guix.gnu.org/62766).  Special case this
+                  ;; pathological case as a null progress (0).
+                  (progress (catch 'numerical-overflow
+                              (lambda ()
+                                (/ done total))
+                              (lambda _
+                                0))))
+             (update (* 100. progress)))))
         ((regexp-exec %phase-start-rx line)
          =>
          (lambda (match)
