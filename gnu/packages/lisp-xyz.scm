@@ -28801,6 +28801,45 @@ environment for Common Lisp.")
 ;; (define-public ecl-lisp-stat
 ;;   (sbcl-package->ecl-package sbcl-lisp-stat))
 
+(define-public sbcl-cl-modio
+  (let ((commit "2fd288af27b574f448357fa6de4b42acf44e2f11")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-modio")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/cl-modio/")
+               (commit commit)))
+         (sha256
+          (base32 "0hz87v81pi8kr2c7az30czpdf7v757lkzlsmdcc59p94pipca7m9"))
+         (file-name (git-file-name "cl-modio" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-zippy
+             sbcl-jzon
+             sbcl-cl-ppcre
+             sbcl-drakma
+             sbcl-documentation-utils
+             sbcl-language-codes))
+      (synopsis "Client library for the mod.io API")
+      (description "This is a client library to interact with the
+\"mod.io\" (@url{https://mod.io}) platform to manage \"mods\" or extensions
+for games and other applications.  It covers the full v1 API and includes
+convenience methods to make interacting with the API as well as syncing mods
+and so on easy.")
+      (home-page "https://shinmera.github.io/cl-modio/")
+      (license license:zlib))))
+
+(define-public cl-modio
+  (sbcl-package->cl-source-package sbcl-cl-modio))
+
+(define-public ecl-cl-modio
+  (sbcl-package->ecl-package sbcl-cl-modio))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
