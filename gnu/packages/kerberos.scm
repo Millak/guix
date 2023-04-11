@@ -176,6 +176,8 @@ After installation, the system administrator should generate keys using
               (sha256
                (base32
                 "0f4dblav859p5hn7b2jdj1akw6d8p32as6bj6zym19kghh3s51zx"))
+              (patches
+               (search-patches "heimdal-CVE-2022-45142.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
