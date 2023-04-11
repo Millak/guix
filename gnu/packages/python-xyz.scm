@@ -16354,7 +16354,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-iniconfig
            python-moto
            python-msgpack
-           python-pytest
+           python-pytest-7.1            ;for pytest-subtests
            python-pytest-celery
            python-pytest-subtests
            python-pytest-timeout
