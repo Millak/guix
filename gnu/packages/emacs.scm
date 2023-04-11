@@ -393,33 +393,31 @@ languages.")
     (license license:gpl3+)))
 
 (define-public emacs-next
-  (let ((commit "f1f571e72ae10285762d3a941e56f7c4048272af")
-        (revision "1"))
-    (package
-      (inherit emacs)
-      (name "emacs-next")
-      (version (git-version "29.0.60" revision commit))
-      (source
-       (origin
-         (inherit (package-source emacs))
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs.git/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         ;; emacs-source-date-epoch.patch is no longer necessary
-         (patches (search-patches "emacs-exec-path.patch"
-                                  "emacs-fix-scheme-indent-function.patch"
-                                  "emacs-native-comp-driver-options.patch"))
-         (sha256
-          (base32
-           "1rildbxq53yvc2rllg2qccgxzbbnr6qbija0lyqacsy8dlzaysch"))))
-      (inputs
-       (modify-inputs (package-inputs emacs)
-         (prepend sqlite)))
-      (native-inputs
-       (modify-inputs (package-native-inputs emacs)
-         (prepend autoconf))))))
+  (package
+    (inherit emacs)
+    (name "emacs-next")
+    (version "29.0.90")
+    (source
+     (origin
+       (inherit (package-source emacs))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.savannah.gnu.org/git/emacs.git/")
+             (commit (string-append "emacs-" version))))
+       (file-name (git-file-name name version))
+       ;; emacs-source-date-epoch.patch is no longer necessary
+       (patches (search-patches "emacs-exec-path.patch"
+                                "emacs-fix-scheme-indent-function.patch"
+                                "emacs-native-comp-driver-options.patch"))
+       (sha256
+        (base32
+         "1lmw3fa6c5w5d6cvk8vdqvqn67hm5lcxy9xykmvcgx258vs7x975"))))
+    (inputs
+     (modify-inputs (package-inputs emacs)
+       (prepend sqlite)))
+    (native-inputs
+     (modify-inputs (package-native-inputs emacs)
+       (prepend autoconf)))))
 
 (define-public emacs-next-tree-sitter
   (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
