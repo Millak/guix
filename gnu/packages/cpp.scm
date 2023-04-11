@@ -1048,6 +1048,11 @@ point and then, after each tween step, plugging back the result.")
                                "-DCMAKE_EXE_LINKER_FLAGS=-lgtest -lpthread -lgmock")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-max
+           (lambda _
+             (substitute* "absl/debugging/failure_signal_handler.cc"
+               (("std::max\\(SIGSTKSZ, 65536\\)")
+                "std::max<size_t>(SIGSTKSZ, 65536)"))))
          (add-before 'configure 'remove-gtest-check
            ;; The CMakeLists fails to find our googletest for some reason, but
            ;; it works nonetheless.
