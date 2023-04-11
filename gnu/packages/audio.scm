@@ -6225,20 +6225,15 @@ systems.")
 (define-public mda-lv2
   (package
     (name "mda-lv2")
-    (version "1.2.6")
+    (version "1.2.10")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "http://download.drobilla.net/mda-lv2-"
-                            version ".tar.bz2"))
+                            version ".tar.xz"))
         (sha256
-         (base32 "1nspk2j11l65m5r9z5isw8j749vh9a89wgx8mkrrq15f4iq12rnd"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f  ; There are no tests.
-       #:configure-flags
-       (list (string-append "--prefix="
-                            (assoc-ref %outputs "out")))))
+         (base32 "0nm7qahkrxjydv1wii46ca6948srwhjilhlp54z9bpcnln35ksmf"))))
+    (build-system meson-build-system)
     (inputs
      (list lv2))
     (native-inputs
@@ -6247,7 +6242,7 @@ systems.")
      (list (search-path-specification
             (variable "LV2_PATH")
             (files '("lib/lv2")))))
-    (home-page "https://drobilla.net/software/mda-lv2")
+    (home-page "https://drobilla.net/software/mda-lv2.html")
     (synopsis "Audio plug-in pack for LV2")
     (description
      "MDA-LV2 is an LV2 port of the MDA plugins.  It includes effects and a few
