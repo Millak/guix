@@ -3722,22 +3722,22 @@ input/output.")
 (define-public sratom
   (package
     (name "sratom")
-    (version "0.6.6")
+    (version "0.6.14")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/sratom-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "178v90qvsp6lw4sqdmdz0bzyjkgwhv9m75ph1d1z8say5bv0p4gv"))))
-    (build-system waf-build-system)
+                "1rm1mkzmqr8k818xxpm69f5jp1fnxjglj3l5ngcysfmq1psgm0lr"))))
+    (build-system meson-build-system)
     (arguments `(#:tests? #f))          ;no check target
     (propagated-inputs
      ;; In Requires of sratom-0.pc.
      (list lv2 serd sord))
     (native-inputs
      (list pkg-config))
-    (home-page "https://drobilla.net/software/sratom/")
+    (home-page "https://drobilla.net/software/sratom.html")
     (synopsis "Library for serialising LV2 atoms to/from RDF")
     (description
      "Sratom is a library for serialising LV2 atoms to/from RDF, particularly
