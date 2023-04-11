@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -76,38 +76,29 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject))
 
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.9.1")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1jcb94xal7w7ax80kaivqqics36v8smi4a3xngyxbrh0i538rli6"))))
-    (build-system python-build-system)
+        (base32 "19gk88nvrxl050nasz25qpmmqvbdk247bkj09jx8jibv1awdzy9c"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      ;; FIXME: The default 'mesonpy' build system doesn't seem to work with
+      ;; our pyproject-build-system, errors with: AttributeError: 'list'
+      ;; object has no attribute 'items' (see:
+      ;; https://issues.guix.gnu.org/62781).
+      #:build-backend "setuptools.build_meta"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'loosen-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("numpy==") "numpy>=")
-                (("meson==") "meson>="))))
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -157,7 +148,6 @@
            meson-python
            pkg-config
            python-cython
-           python-pypa-build
            python-pytest
            python-pytest-xdist
            python-threadpoolctl))
