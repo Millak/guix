@@ -313,22 +313,13 @@ ideal (e.g. in LV2 implementations or embedded applications).")
               (base32
                "06vkqk3dnn15zdnzklahib2pvbfspy2zcrnvhmxnw8fbbxyxj3r2"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no check target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'set-ldflags
-            (lambda _
-              (setenv "LDFLAGS"
-                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (inputs
      (list pcre))
     (native-inputs
      (list pkg-config))
     (propagated-inputs
      (list serd))                 ; required by sord-0.pc
-    (home-page "https://drobilla.net/software/sord/")
+    (home-page "https://drobilla.net/software/sord.html")
     (synopsis "C library for storing RDF data in memory")
     (description
      "Sord is a lightweight C library for storing RDF data in memory.")
