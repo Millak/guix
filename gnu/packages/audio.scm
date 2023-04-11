@@ -3041,24 +3041,19 @@ frequencies.  This data is then formatted to MIDI and written to disk.")
 (define-public lilv
   (package
     (name "lilv")
-    (version "0.24.12")
+    (version "0.24.20")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/lilv-"
-                                 version ".tar.bz2"))
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "0qchfsyrsrp2pdpd59025kllycr04ddpzd03ha1iz70ci687g8r6"))))
-    (build-system waf-build-system)
+               "1g7f29i0jajswyg67k7hdnmyqk32fmmxw6xppf9fm1mjp2wq5c2g"))))
+    (build-system meson-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
        #:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'set-ldflags
-          (lambda* (#:key outputs #:allow-other-keys)
-            (setenv "LDFLAGS"
-                    (string-append "-Wl,-rpath="
-                                   (assoc-ref outputs "out") "/lib"))))
          (add-after 'unpack 'full-store-path-to-shared-library
            (lambda* (#:key outputs #:allow-other-keys)
              (with-directory-excursion "bindings/python"
@@ -3070,7 +3065,7 @@ frequencies.  This data is then formatted to MIDI and written to disk.")
      (list lv2 serd sord sratom))
     (native-inputs
      (list python pkg-config))
-    (home-page "https://drobilla.net/software/lilv")
+    (home-page "https://drobilla.net/software/lilv.html")
     (synopsis "Library to simplify use of LV2 plugins in applications")
     (description
      "Lilv is a C library to make the use of LV2 plugins as simple as possible
