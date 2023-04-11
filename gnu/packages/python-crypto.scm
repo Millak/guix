@@ -1236,18 +1236,17 @@ derivation function.")
 (define-public python-service-identity
   (package
     (name "python-service-identity")
-    (version "18.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "service_identity" version))
-       (sha256
-        (base32
-         "0b9f5qiqjy8ralzgwjgkhx82h6h8sa7532psmb8mkd65md5aan08"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-attrs python-pyasn1 python-pyasn1-modules
-           python-pyopenssl))
+    (version "21.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "service-identity" version))
+              (sha256
+               (base32
+                "0d4x84crbz0a17d8gi90z6zlxwm9pslc65rx0cdw2797ra360v3f"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-idna python-pytest))
+    (propagated-inputs (list python-attrs python-cryptography python-pyasn1
+                             python-pyasn1-modules python-six))
     (home-page "https://service-identity.readthedocs.io/")
     (synopsis "Service identity verification for PyOpenSSL")
     (description
