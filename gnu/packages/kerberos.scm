@@ -35,6 +35,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages libidn)
@@ -166,7 +167,7 @@ After installation, the system administrator should generate keys using
 (define-public heimdal
   (package
     (name "heimdal")
-    (version "7.7.0")
+    (version "7.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -174,14 +175,14 @@ After installation, the system administrator should generate keys using
                     "heimdal-" version "/" "heimdal-" version ".tar.gz"))
               (sha256
                (base32
-                "06vx3cb01s4lv3lpv0qzbbj97cln1np1wjphkkmmbk1lsqa36bgh"))
+                "0f4dblav859p5hn7b2jdj1akw6d8p32as6bj6zym19kghh3s51zx"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   (substitute* "configure"
                     (("User=.*$") "User=Guix\n")
                     (("Host=.*$") "Host=GNU")
-                    (("Date=.*$") "Date=2019\n"))))))
+                    (("Date=.*$") "Date=2022\n"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -249,7 +250,7 @@ After installation, the system administrator should generate keys using
     (native-inputs (list e2fsprogs ;for 'compile_et'
                          texinfo
                          unzip ;for tests
-                         perl))
+                         python))
     (inputs (list readline
                   bash-minimal
                   bdb
