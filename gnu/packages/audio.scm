@@ -3081,18 +3081,15 @@ significantly faster and have minimal dependencies.")
 (define-public lv2
   (package
     (name "lv2")
-    (version "1.18.2")
+    (version "1.18.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://lv2plug.in/spec/lv2-"
-                                 version ".tar.bz2"))
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "0pp0n9x1rg8d4fw853z9cvfifjdi4bl85yjxxddqa1acfjy1z2af"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f                      ; no check target
-       #:configure-flags '("--no-plugins")))
+               "0gwm63jrvg9lww0rl3sjkgbjwfz0vascpb19cfxmhkmm477ipibq"))))
+    (build-system meson-build-system)
     (inputs
      ;; Leaving off cairo and gtk+-2.0 which are needed for example plugins
      (list libsndfile))
