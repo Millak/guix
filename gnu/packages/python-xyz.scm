@@ -141,6 +141,7 @@
 ;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7474,24 +7475,14 @@ color scales, and color space conversion easy.  It has support for:
 (define-public python-pyspnego
   (package
     (name "python-pyspnego")
-    (version "0.1.6")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/jborean93/pyspnego")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0pfh2x0539f0k2qi2pbjm64b2fqp64c63xxpinvg1yfaw915kgpb"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyspnego" version))
+              (sha256
+               (base32
+                "1ps34laa0kvvp33az173hp5l0hnk8cr0bfqmlgw64ry5cv09qjg0"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-mock))
     (propagated-inputs
