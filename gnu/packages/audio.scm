@@ -17,7 +17,7 @@
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2021 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018, 2022, 2023 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2022, 2023, 2024 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -74,6 +74,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
@@ -115,6 +117,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)  ;libsndfile, libsamplerate
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
@@ -129,6 +132,7 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -6394,3 +6398,96 @@ be separated.")
       (description "Cubeb is Mozilla's cross-platform audio library.")
       (home-page "https://github.com/mozilla/cubeb")
       (license license:isc))))
+
+(define-public easyeffects
+  (package
+    (name "easyeffects")
+    (version "7.0.1") ; later version require gtk 4.10
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wwmm/easyeffects")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0c49yd4dfh7qarq5h651dgxdbs71is4pp1sl8r0gfswqji6bv39w"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list `(,glib "bin") ;for glib-compile-resources
+           gettext-minimal
+           itstool
+           pkg-config))
+    (inputs
+     (list fftwf
+           fmt
+           gsl
+           gtk
+           json-modern-cxx ;nlohmann_json
+           libadwaita
+           libbs2b
+           libebur128
+           libportal
+           libsamplerate
+           libsigc++
+           libsndfile
+           lilv
+           pango
+           pipewire
+           rnnoise
+           speex
+           speexdsp
+           tbb
+           zita-convolver))
+    ;; Propagating these allows EasyEffects to find the plugins via their
+    ;; search-path specification
+    (propagated-inputs
+     (list calf
+           lsp-plugins
+           lv2
+           mda-lv2
+           rubberband
+           zam-plugins))
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _ ; Remove dependency on needless desktop cache stuff.
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true") "gtk_update_icon_cache: false")
+               (("update_desktop_database: true") "update_desktop_database: false")))))))
+    (home-page "https://github.com/wwmm/easyeffects")
+    (synopsis "Realtime Audio effects interface for Pipewire")
+    (description "EasyEffects is an advanced audio manipulation tool providing
+a graphical user interface to apply various effects and filters to audio
+streams using Pipewire.  Effects can be applied in real time to audio inputs or
+outputs such as a microphone to reduce noise or apply many other effects
+including:
+
+@itemize
+@item Auto gain
+@item Bass enhancer
+@item Bass loudness
+@item Compressor
+@item Convolver
+@item Crossfeed
+@item Crystalizer
+@item De-esser
+@item Delay
+@item Echo Canceller
+@item Equalizer
+@item Exciter
+@item Filter (low-pass, high-pass, band-pass and band-reject modes)
+@item Gate
+@item Limiter
+@item Loudness
+@item Maximizer
+@item Multiband compressor
+@item Multiband gate
+@item Noise reduction
+@item Pitch
+@item Reverberation
+@item Speech Processor
+@item Stereo tools
+@end itemize")
+    (license license:gpl3+)))
