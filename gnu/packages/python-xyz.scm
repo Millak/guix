@@ -968,7 +968,7 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
                 "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest
+     (list python-pytest-7.1            ;for pytest-subtests
            python-pytest-cov
            python-pytest-mpl
            python-pytest-subtests
