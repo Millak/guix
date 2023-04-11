@@ -30,10 +30,12 @@
 
 (define-module (gnu packages kerberos)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages gettext)
@@ -41,6 +43,7 @@
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages openldap)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages readline)
@@ -249,15 +252,19 @@ After installation, the system administrator should generate keys using
                           (format #t "#!~a~%exit 1~%" (which "sh")))))))
        ;; Tests fail when run in parallel.
        #:parallel-tests? #f))
-    (native-inputs (list e2fsprogs ;for 'compile_et'
+    (native-inputs (list bison
+                         e2fsprogs      ;for 'compile_et'
+                         flex
                          texinfo
-                         unzip ;for tests
+                         unzip          ;for tests
+                         pkg-config
                          python))
     (inputs (list readline
                   bash-minimal
                   bdb
-                  e2fsprogs ;for libcom_err
-                  mit-krb5
+                  e2fsprogs             ;for libcom_err
+                  libcap-ng
+                  openldap
                   sqlite))
     (home-page "http://www.h5l.org/")
     (synopsis "Kerberos 5 network authentication")
