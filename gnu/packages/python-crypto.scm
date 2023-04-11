@@ -525,17 +525,17 @@ for example, for recording or replaying web content.")
 is used by the Requests library to verify HTTPS requests.")
     (license license:asl2.0)))
 
-(define-public python-cryptography-vectors-next
+(define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "37.0.4")
+    (version "40.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "1a1yi37ygw0jp72q280cmxd3qn9y9vmcch2bcnjkg2g2202l0qas"))))
+         "0hd0ppss5xg0kzf36q8cdaxh1xw8ry4k7jkianlf832xbdmp0q44"))))
     (build-system python-build-system)
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
@@ -544,165 +544,57 @@ is used by the Requests library to verify HTTPS requests.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
-(define-public python-cryptography-vectors
-  (package
-    (inherit python-cryptography-vectors-next)
-    (version "3.4.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cryptography_vectors" version))
-              (sha256
-               (base32 "1wl0ynh3lzhc6q59g8mybvijmnp195x7fjxlb3h3sgcraw14312c"))))))
-
-(define-public python-cryptography-next
+(define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "37.0.4")
+    (version "40.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "10haq7sn8mrdlhcfs791rczknnxm0wpww0lkpjzcqx141ryc3yb3"))))
-    (build-system python-build-system)
+         "0wilrilfcyl78caxcpna2k3aya6qamppwv4j35262pz9n7wg40r8"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules (append %cargo-build-system-modules
-                                 %python-build-system-modules)
-      #:modules `(((guix build cargo-build-system) #:prefix cargo:)
-                  ,@%python-build-system-modules
-                  (srfi srfi-1)
-                  (ice-9 match))
-      #:phases
-      #~(modify-phases (@ (guix build python-build-system) %standard-phases)
-          (add-after 'unpack 'adjust-pyo3-requirement
-            (lambda _
-              ;; The package depends on 0.15.2, which is not on crates.io(!?).
-              ;; Downgrade to 0.15.1...
-              (substitute* "src/rust/Cargo.toml"
-                (("pyo3 = \\{ version = \"0\\.15\\.2\"")
-                 "pyo3 = { version = \"0.15.1\""))))
-          (add-before 'build 'configure-cargo
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Hide irrelevant inputs from cargo-build-system so it does
-              ;; not try to unpack sanity-check.py, etc.
-              (let ((cargo-inputs (filter (match-lambda
-                                            ((name . path)
-                                             (or (string-prefix? "rust-" name)
-                                                 (string=? "gcc" name))))
-                                          inputs)))
-                (with-directory-excursion "src/rust"
-                  ((assoc-ref cargo:%standard-phases 'unpack-rust-crates)
-                   #:inputs cargo-inputs
-                   #:vendor-dir "guix-vendor")
-                  ((assoc-ref cargo:%standard-phases 'configure)
-                   #:inputs cargo-inputs)
-                  ((assoc-ref cargo:%standard-phases 'patch-cargo-checksums)
-                   #:vendor-dir "guix-vendor"))
-                (rename-file "src/rust/.cargo" ".cargo"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests")))))))
-    (inputs
-     (list openssl
-           ;; TODO: Most of these inputs are transitive dependencies of
-           ;; the Rust requirements (see src/rust/cargo.toml).  Surely
-           ;; there is a better way than manually listing everything..?
-           rust-aliasable-0.1
-           rust-asn1-0.8
-           rust-asn1-derive-0.8
-           rust-autocfg-1
-           rust-base64-0.13
-           rust-bitflags-1
-           rust-cfg-if-0.1
-           rust-cfg-if-1
-           rust-chrono-0.4
-           rust-cloudabi-0.1
-           rust-lazy-static-1
-           rust-libc-0.2
-           rust-indoc-0.3
-           rust-indoc-impl-0.3
-           rust-inflector-0.11
-           rust-instant-0.1
-           rust-lock-api-0.4
-           rust-num-integer-0.1
-           rust-num-traits-0.2
-           rust-once-cell-1
-           rust-ouroboros-0.15
-           rust-ouroboros-macro-0.15
-           rust-parking-lot-0.11
-           rust-parking-lot-core-0.8
-           rust-paste-0.1
-           rust-paste-impl-0.1
-           rust-pem-1
-           rust-proc-macro-error-1
-           rust-proc-macro-error-attr-1
-           rust-proc-macro-hack-0.5
-           rust-proc-macro2-1
-           rust-pyo3-0.15
-           rust-pyo3-build-config-0.15
-           rust-pyo3-macros-0.15
-           rust-pyo3-macros-backend-0.15
-           rust-quote-1
-           rust-redox-syscall-0.2
-           rust-scopeguard-1
-           rust-smallvec-1
-           rust-stable-deref-trait-1
-           rust-syn-1
-           rust-unicode-xid-0.2
-           rust-unindent-0.1
-           rust-version-check-0.9
-           rust-winapi-0.3))
-    (propagated-inputs
-     (list python-asn1crypto python-cffi python-six python-idna
-           python-iso8601))
-    (native-inputs
-     (list python-cryptography-vectors-next
-           python-hypothesis
-           python-pretend
-           python-pytz
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-subtests
-           python-setuptools-rust
-           rust
-           `(,rust "cargo")))
-    (home-page "https://github.com/pyca/cryptography")
-    (synopsis "Cryptographic recipes and primitives for Python")
-    (description
-      "cryptography is a package which provides cryptographic recipes and
-primitives to Python developers.  It aims to be the “cryptographic standard
-library” for Python.  The package includes both high level recipes, and low
-level interfaces to common cryptographic algorithms such as symmetric ciphers,
-message digests and key derivation functions.")
-    ;; Distributed under either BSD-3 or ASL2.0
-    (license (list license:bsd-3 license:asl2.0))))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'disable-rust-extension-build
+                     (lambda _
+                       ;; The Rust extension is built separately as
+                       ;; 'python-cryptography-rust', so there's no need
+                       ;; to build it here.
+                       (substitute* "pyproject.toml"
+                         ((".*setuptools-rust.*") ""))
+                       (delete-file "setup.py")))
+                   (add-before 'check 'symlink-rust-library
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (symlink (search-input-file
+                                 inputs "lib/libcryptography_rust.so")
+                                (string-append (site-packages inputs outputs)
+                                               "/cryptography/hazmat/bindings/"
+                                               "_rust.abi3.so")))))))
 
-(define-public python-cryptography
-  (package
-    (inherit python-cryptography-next)
-    (version "3.4.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cryptography" version))
-              (sha256
-               (base32 "072awar70cwfd2hnx0pvp1dkc7gw45mbm3wcyddvxz5frva5xk4l"))))
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-no-rust
-                 (lambda _
-                   (setenv "CRYPTOGRAPHY_DONT_BUILD_RUST" "1"))))))
-    (inputs (list openssl-1.1))
     (native-inputs
      (list python-cryptography-vectors
            python-hypothesis
+           python-iso8601
            python-pretend
-           python-pytz
-           python-pytest
-           python-setuptools-rust))))
+           python-pytest-7.1            ;for subtests
+           python-pytest-benchmark
+           python-pytest-subtests))
+    (inputs (list python-cryptography-rust))
+    (propagated-inputs (list python-cffi))
+    (home-page "https://github.com/pyca/cryptography")
+    (synopsis "Cryptographic recipes and primitives for Python")
+    (description
+     "@code{cryptography} is a package which provides cryptographic recipes
+and primitives to Python developers.  It aims to be the “cryptographic
+standard library” for Python.  The package includes both high level recipes,
+and low level interfaces to common cryptographic algorithms such as symmetric
+ciphers, message digests and key derivation functions.")
+    ;; Distributed under either BSD-3 or ASL2.0
+    (license (list license:bsd-3 license:asl2.0))))
 
 ;;; This is the Rust component of the python-cryptography library, extracted
 ;;; as a separate package to ease the Rust build.
