@@ -715,6 +715,42 @@ accesses and changes.")
 (define-public ecl-file-notify
   (sbcl-package->ecl-package sbcl-file-notify))
 
+(define-public sbcl-file-select
+  (let ((commit "ef25f6d7c78ed9e0b62119979af8c4b5b0f8c774")
+        (revision "1"))
+    (package
+      (name "sbcl-file-select")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/file-select")
+               (commit commit)))
+         (file-name (git-file-name "file-select" version))
+         (sha256
+          (base32 "1qh32ymljw5c98zzbvjfq6jzwlzs4qxi8gh4gw8pixir6y1inxaa"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-float-features))
+      (home-page "https://shinmera.github.io/file-select/")
+      (synopsis "Invoke the native file selection dialogs to open or save files")
+      (description
+       "This library allows you to open native file dialogs to open and save
+files.  This is useful if you have an application that's primarily text based
+and would like a more convenient file selection utility, or if you are working
+with a UI toolkit that does not offer a way to access the native file dialogs
+directly.")
+      (license license:zlib))))
+
+(define-public cl-file-select
+  (sbcl-package->cl-source-package sbcl-file-select))
+
+(define-public ecl-file-select
+  (sbcl-package->ecl-package sbcl-file-select))
+
 (define-public sbcl-bodge-queue
   (let ((commit "948c9a501dcd412689952d09eb7453ec2722336a")
         (revision "0"))
