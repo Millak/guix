@@ -27,7 +27,7 @@
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
@@ -1207,7 +1207,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.0")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch)
@@ -1215,7 +1215,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                            version "/mu-" version ".tar.xz"))
        (sha256
         (base32
-         "0fmcxypvl77k7si5g3c0pak13hy2ilz8a6567m7p2apjr33j223z"))))
+         "0mj43lnxr11wg354q8svcqjc403b36igb7ia406yavw6xfk46w9f"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1233,6 +1233,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                            (guix build emacs-utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-system
+            (lambda _
+              (substitute* "lib/meson.build"
+                (("dependencies: \\[ lib_mu_message_dep" m)
+                 (string-append m ", thread_dep")))
+              (substitute* "lib/utils/meson.build"
+                (("dependencies: \\[glib_dep" m)
+                 (string-append m ", thread_dep")))))
           (add-after 'unpack 'patch-bin-references
             (lambda _
               (substitute* '("guile/tests/test-mu-guile.cc"
