@@ -17,7 +17,7 @@
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2021 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018, 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2022, 2023 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -3867,16 +3867,16 @@ disks as various audio file formats.")
 (define-public vamp
   (package
     (name "vamp")
-    (version "2.6")
+    (version "2.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://code.soundsoftware.ac.uk"
-                    "/attachments/download/1520/vamp-plugin-sdk-"
-                    version ".tar.gz"))
+                    "https://code.soundsoftware.ac.uk/attachments/download/"
+                    "2691" ; This mysterious number changes with each update
+                    "/vamp-plugin-sdk-" version ".tar.gz"))
               (sha256
                (base32
-                "0pzq0yy2kdl3jgfc2aqmh5m55nk1ild0hq8mydiiw35c6y0mglyh"))))
+                "0pzpkxrz71fzqd2m83kjyafzqzrifzsq5phcn7mqq52blii3gbxf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
