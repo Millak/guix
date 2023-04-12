@@ -738,9 +738,12 @@ suite of the @code{psautohint} package.")
        (uri (pypi-uri "psautohint" version))
        (sha256
         (base32 "0zzz7hy1kkkjfrrm9ly2di3xv2x1ywdqhbyqy21k670jysldw3nm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      ;; The CJKSparseVar.subset.hinted.otf test fails with slightly different
+      ;; output caused by the newer fonttools version used in Guix.
+      #:test-flags #~(list "-k" "not CJKSparseVar.subset.hinted.otf")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'copy-font-data
@@ -750,11 +753,7 @@ suite of the @code{psautohint} package.")
                #$(this-package-native-input "psautohint-font-data")
                "tests/integration/data")
               (for-each make-file-writable
-                        (find-files "tests/integration/data"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
+                        (find-files "tests/integration/data")))))))
     (propagated-inputs (list python-fonttools-next))
     (native-inputs
      (list psautohint-font-data
