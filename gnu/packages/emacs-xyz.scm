@@ -124,6 +124,7 @@
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3100,6 +3101,30 @@ Selectrum.")
     (description "This package provides an annotation function to show
 playback status, artist name and title for Emprise using Marginalia.")
     (license license:gpl3+)))
+
+(define-public emacs-eradio
+  (let ((commit "47769986c79def84307921f0277e9bb2714756c2")
+        (revision "0"))
+    (package
+      (name "emacs-eradio")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/olavfosse/eradio")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0lks2pph44qxc9l34nr55ha667974r8ckxdwmvcp6v9mnm05317s"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/olavfosse/eradio")
+      (synopsis "Simple radio player for GNU Emacs")
+      (description
+       "Eradio is a simple internet radio player for Emacs.  Start, stop or
+toggle custom-defined channels.  An external media player like mpv or VLC is
+required.")
+      (license license:gpl3+))))
 
 
 ;;;
