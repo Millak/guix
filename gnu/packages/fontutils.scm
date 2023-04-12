@@ -249,7 +249,8 @@ them as it goes.")
            python-setuptools-scm
            python-wheel))
     (inputs
-     (list java-antlr4-runtime-cpp
+     (list bash-minimal
+           java-antlr4-runtime-cpp
            libxml2
            `(,util-linux "lib")))
     (propagated-inputs
