@@ -950,7 +950,7 @@ par compared to the rest.")
 (define-public gst-plugins-ugly
   (package
     (name "gst-plugins-ugly")
-    (version "1.22.1")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
@@ -958,7 +958,7 @@ par compared to the rest.")
         (string-append "https://gstreamer.freedesktop.org/src/"
                        name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1hhmi1jds1lcdr0w9jmi1ys0nkyfbpvb2jvw7k5f3g416khxkcsa"))))
+        (base32 "1486x08bwasq6l7kc75nph5az61siq9mbgkgpw4kf1mxn16z8c4g"))))
     (build-system meson-build-system)
     (arguments
      (list #:meson meson-0.63
