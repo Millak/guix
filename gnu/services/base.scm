@@ -1549,7 +1549,21 @@ Service Switch}, for an example."
    (documentation "Run the syslog daemon (syslogd).")
    (provision '(syslogd))
    (requirement '(user-processes))
-   (actions (list (shepherd-configuration-action syslog.conf)))
+   (actions
+    (list (shepherd-configuration-action syslog.conf)
+          (shepherd-action
+           (name 'reload)
+           (documentation "Reload the configuration file from disk.")
+           (procedure
+            #~(lambda (pid)
+                (if pid
+                    (begin
+                      (kill pid SIGHUP)
+                      (display #$(G_ "Service syslog has been asked to \
+reload its settings file.")))
+                    (display #$(G_ "Service syslog is not running."))))))))
+   ;; Note: a static file name is used for syslog.conf so that the reload
+   ;; action work as intended.
    (start #~(let ((spawn (make-forkexec-constructor
                           (list #$(syslog-configuration-syslogd config)
                                 #$(string-append "--rcfile=" syslog.conf))

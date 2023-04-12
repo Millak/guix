@@ -18573,6 +18573,18 @@ Type of the service that runs the syslog daemon, whose value is a
 @code{<syslog-configuration>} object.
 @end defvar
 
+To have a modified @code{syslog-configuration} come into effect after
+reconfiguring your system, the @samp{reload} action should be preferred
+to restarting the service, as many services such as the login manager
+depend on it and would be restarted as well:
+
+@example
+# herd reload syslog
+@end example
+
+which will cause the running @command{syslogd} process to reload its
+configuration.
+
 @deftp {Data Type} syslog-configuration
 Data type representing the configuration of the syslog daemon.
 
