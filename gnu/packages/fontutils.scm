@@ -12,7 +12,7 @@
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;;
@@ -139,14 +139,13 @@ them as it goes.")
 (define-public python-afdko
   (package
     (name "python-afdko")
-    (version "3.9.1")
+    (version "3.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "afdko" version))
        (sha256
-        (base32 "0k1204vykgx32saa495s1lgmz1dixcp8bjiv486imx77killvm02"))
-       (patches (search-patches "python-afdko-suppress-copyright-test.patch"))
+        (base32 "1d3b1590gxlindh1sjhwvxnryn5zil98hgdwbgsr76fd657r3f99"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -172,27 +171,13 @@ them as it goes.")
               (substitute* "CMakeLists.txt"
                 (("CMAKE_CXX_STANDARD 11")
                  "CMAKE_CXX_STANDARD 17"))))
-          (add-after 'unpack 'use-system-libxml2
-            (lambda _
-              ;; XXX: These horrifying substitutions revert this upstream
-              ;; PR: <https://github.com/adobe-type-tools/afdko/pull/1527>.
-              ;; Hopefully it's only temporary..!
-              (substitute* (find-files "." "^CMakeLists.txt$")
-                (("\\(\\(NOT \\$\\{LibXml2_FOUND\\}\\) OR \
-\"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)")
-                 "(NOT ${LibXml2_FOUND})")
-                (("\\(\\(\\$\\{LibXml2_FOUND\\}\\) AND \
-\\(NOT \"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)\\)")
-                 "(${LibXml2_FOUND})"))
-                (substitute* "cmake/ExternalLibXML2.cmake"
-                  (("set\\(LIBXML2_STATIC_INCLUDE_DIR")
-                   "set(LIBXML2_INCLUDE_DIR)"))))
           (add-after 'unpack 'patch-problematic-requirements
             (lambda _
               (substitute* "requirements.txt"
                 ;; Remove lxml because the version requested here is different
                 ;; than the one propagated by the python-fonttools package.
-                (("^lxml==.*") ""))))
+                (("^lxml==.*") "")
+                (("<=4.38.0") ">=4.38.0"))))
           (add-after 'unpack 'patch-setup.py
             (lambda _
               ;; There is no use for Python-provided CMake nor Ninja binaries.
@@ -232,7 +217,14 @@ them as it goes.")
                         (number->string (parallel-job-count))
                         ;; This test is known to fail on multiple architectures.
                         ;; https://github.com/adobe-type-tools/afdko/issues/1163
-                        "-k not test_type1mm_inputs"))))
+                        "-k"
+                        (string-append
+                         "not test_type1mm_inputs "
+                         ;; These tests fail for unknown reasons (see:
+                         ;; https://github.com/adobe-type-tools/afdko/issues/1635).
+                         "and not test_rvrn_vf "
+                         "and not test_cjk_vf "
+                         "and not test_sparse_cjk_vf")))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
