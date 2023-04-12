@@ -13,12 +13,13 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
-;;; Copyright © 2020, 2021, 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2020-2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
+;;; Copyright © 2022 SeerLite <seerlite@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1051,6 +1052,7 @@ variable defined below.  It requires guile-json to be installed."
                                         "eudev"
                                         "pulseaudio"
                                         ;; For the integration of native notifications
+                                        ;; (same reason as icedove)
                                         "libnotify"))))
                 (wrap-program (car (find-files lib "^icecat$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
@@ -1479,10 +1481,13 @@ ca495991b7852b855"))
                      (pulseaudio #$(this-package-input "pulseaudio"))
                      (pulseaudio-lib (string-append pulseaudio "/lib"))
                      (eudev #$(this-package-input "eudev"))
-                     (eudev-lib (string-append eudev "/lib")))
+                     (eudev-lib (string-append eudev "/lib"))
+                     ;; For the integration of native notifications (same reason as icecat)
+                     (libnotify #$(this-package-input "libnotify"))
+                     (libnotify-lib (string-append libnotify "/lib")))
                 (wrap-program (car (find-files lib "^icedove$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
-                  `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))))))))
+                  `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib ,libnotify-lib)))))))))
     (inputs
      (list alsa-lib
            bzip2
@@ -1502,6 +1507,7 @@ ca495991b7852b855"))
            libffi
            libgnome
            libjpeg-turbo
+           libnotify
            libpng-apng
            libvpx
            libxcomposite
