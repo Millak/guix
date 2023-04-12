@@ -222,7 +222,7 @@ cameras (CRW/CR2, NEF, RAF, DNG, and others).")
                 "0zi5vvb0khlzc6xyfayk6mjx5lgkrj8r7s8lfv4j7wkcgndjga0j"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake gettext-minimal libtool))
-    (home-page "https://libexif.github.io/")
+    (home-page "https://github.com/libexif/libexif")
     (synopsis "Read and manipulate EXIF data in digital photographs")
     (description
      "The libexif C library allows applications to read, edit, and save EXIF
