@@ -10163,6 +10163,55 @@ for more information.")
 (define-public ecl-documentation-utils-extensions
   (sbcl-package->ecl-package sbcl-documentation-utils-extensions))
 
+(define-public sbcl-staple
+  (let ((commit "0ee8e25fe6fe8fa83b2a6c93d4febd468c3eaa4e")
+        (revision "1"))
+    (package
+      (name "sbcl-staple")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/staple/")
+               (commit commit)))
+         (sha256
+          (base32 "0qf0if7py3n4rszg25lcavpsqikfz6k5dvcmh5q67y8x5r12i5m7"))
+         (file-name (git-file-name "staple" version))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("staple-package-recording"
+                         "staple-code-parser"
+                         "staple"
+                         "staple-markdown"
+                         "staple-markless"
+                         "staple-restructured-text")))
+      (inputs
+       (list sbcl-3bmd
+             sbcl-babel
+             sbcl-cl-docutils
+             sbcl-cl-markless
+             sbcl-cl-ppcre
+             sbcl-clip
+             sbcl-concrete-syntax-tree
+             sbcl-definitions
+             sbcl-documentation-utils
+             sbcl-eclector
+             sbcl-language-codes
+             sbcl-pathname-utils))
+      (synopsis "Generate documentation about Lisp projects through an HTML template")
+      (description "Staple is a documentation system.  It provides you with a
+way to generate standalone documentation accumulated from various sources such
+as readmes, documentation files, and docstrings.")
+      (home-page "https://Shinmera.github.io/staple/")
+      (license license:zlib))))
+
+(define-public cl-staple
+  (sbcl-package->cl-source-package sbcl-staple))
+
+(define-public ecl-staple
+  (sbcl-package->ecl-package sbcl-staple))
+
 (define-public sbcl-form-fiddle
   (let ((commit "e0c23599dbb8cff3e83e012f3d86d0764188ad18")
         (revision "0"))
