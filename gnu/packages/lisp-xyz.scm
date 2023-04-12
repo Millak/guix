@@ -10091,6 +10091,42 @@ results.")
 (define-public ecl-trivial-indent
   (sbcl-package->ecl-package sbcl-trivial-indent))
 
+(define-public sbcl-data-format-validation
+  (let ((commit "95d44766e829582598f9dcdc5c23719c462d5bfb")
+        (revision "1"))
+    (package
+      (name "sbcl-data-format-validation")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/willijar/cl-data-format-validation/")
+           (commit commit)))
+         (file-name (git-file-name "data-format-validation" version))
+         (sha256
+          (base32
+           "0zmk47xmicyqvp1impn8kgh5373ysmx3gfpqcvbi9r31qsir2nqa"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-ppcre))
+      (synopsis "Validation and conversion between user and internal data")
+      (description
+       "@code{data-format-validation} is a library for Common Lisp providing a
+consistent regular interface for converting (and validating) external data (in
+the form of strings usually) into internal data types and for formatting
+internal data back into external presentable strings, all according to a
+conversion or type specification.")
+      (home-page "http://www.jarw.org.uk/lisp/cl-data-format-validation.html")
+      (license license:gpl3))))
+
+(define-public cl-data-format-validation
+  (sbcl-package->cl-source-package sbcl-data-format-validation))
+
+(define-public ecl-data-format-validation
+  (sbcl-package->ecl-package sbcl-data-format-validation))
+
 (define-public sbcl-documentation-utils
   (let ((commit "98630dd5f7e36ae057fa09da3523f42ccb5d1f55")
         (revision "0"))
