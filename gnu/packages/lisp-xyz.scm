@@ -29087,6 +29087,55 @@ that should make it much easier to write a client for a new chat protocol.")
 (define-public maiden
   (sbcl-package->cl-source-package sbcl-maiden))
 
+(define-public sbcl-speechless
+  (let ((commit "50e9b03bdfc8a3bc0836a650d92de47b51c39834")
+        (revision "1"))
+    (package
+      (name "sbcl-speechless")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/speechless/")
+               (commit commit)))
+         (sha256
+          (base32 "1k0kc2l98jyv04l48xnj38qwpddan80c7m41srjld64jkna0fhas"))
+         (file-name (git-file-name "speechless" version))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-markless
+             sbcl-documentation-utils))
+      (synopsis "Dialogue system language implementation")
+      (description "This is a system implementing an advanced dialogue system
+that is capable of complex dialogue flow including choice trees and
+conditional branching.  Speechless was first developed for the
+\"Kandria\" (@url{https://kandria.com}) game, and has since been separated and
+made public in the hopes that it may find use elsewhere or inspire other
+developers to build similar systems.
+
+Speechless is based on the
+\"Markless\" (@url{https://shirakumo.github.io/markless}) document standard
+for its syntax and makes use of Markless' ability to be extended to add
+additional constructs useful for dialogue systems.
+
+Speechless can compile dialogue from its base textual form into an efficient
+instruction set, which is then executed when the game is run.  Execution of the
+dialogue is completely engine-agnostic, and only requires some simple
+integration with a client protocol to run.
+
+Thanks to Markless' extensibility, Speechless can also be further extended to
+include additional syntax and constructs that may be useful for your
+particular game.")
+      (home-page "http://shirakumo.github.io/speechless/")
+      (license license:zlib))))
+
+(define-public speechless
+  (sbcl-package->cl-source-package sbcl-speechless))
+
+(define-public ecl-speechless
+  (sbcl-package->ecl-package sbcl-speechless))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
