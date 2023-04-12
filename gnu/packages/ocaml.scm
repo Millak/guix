@@ -9230,7 +9230,12 @@ variants.")
                             "test/bin/mdx-test/misc/no-such-prelude/test.expected")
                (("`") "'")
                (("COMMAND") "[COMMAND]")
-               (("\\.\\.\\.") "…")))))))
+               (("\\.\\.\\.") "…"))))
+         (add-after 'fix-test-format 'fix-egrep
+           (lambda _
+             ;; egrep is obsolescent; using grep -E
+             (substitute* "test/bin/mdx-test/expect/padding/test-case.md"
+               (("egrep") "grep -E")))))))
     (propagated-inputs
      (list ocaml-fmt
            ocaml-astring
