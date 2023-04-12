@@ -482,13 +482,13 @@ to generate OpenType font binaries from Unified Font Objects (UFOs).")
 (define-public python-fontmath
   (package
     (name "python-fontmath")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fontMath" version ".zip"))
        (sha256
-        (base32 "014407hpvqdx123g06i664qrfq86bf9l621x7jllpgqw3rqir2sc"))))
+        (base32 "070v1jz5f18g15if459ppwswq4w5hzffwp1gvdc5j47bgz5qflva"))))
     (build-system python-build-system)
     (propagated-inputs (list python-fonttools))
     (native-inputs
