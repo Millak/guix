@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
@@ -1532,30 +1532,43 @@ Service Switch}, for an example."
   (config-file          syslog-configuration-config-file
                         (default %default-syslog.conf)))
 
-(define syslog-service-type
-  (shepherd-service-type
-   'syslog
-   (lambda (config)
-     (define config-file
-       (syslog-configuration-config-file config))
+;;; Note: a static file name is used for syslog.conf so that the reload action
+;;; work as intended.
+(define syslog.conf "/etc/syslog.conf")
 
-     (shepherd-service
-      (documentation "Run the syslog daemon (syslogd).")
-      (provision '(syslogd))
-      (requirement '(user-processes))
-      (actions (list (shepherd-configuration-action config-file)))
-      (start #~(let ((spawn (make-forkexec-constructor
-                             (list #$(syslog-configuration-syslogd config)
-                                   "--rcfile" #$config-file)
-                             #:pid-file "/var/run/syslog.pid")))
-                 (lambda ()
-                   ;; Set the umask such that file permissions are #o640.
-                   (let ((mask (umask #o137))
-                         (pid  (spawn)))
-                     (umask mask)
-                     pid))))
-      (stop #~(make-kill-destructor))))
-   (syslog-configuration)
+(define (syslog-etc configuration)
+  (match-record configuration <syslog-configuration>
+    (config-file)
+    (list `(,(basename syslog.conf) ,config-file))))
+
+(define (syslog-shepherd-service config)
+  (define config-file
+    (syslog-configuration-config-file config))
+
+  (shepherd-service
+   (documentation "Run the syslog daemon (syslogd).")
+   (provision '(syslogd))
+   (requirement '(user-processes))
+   (actions (list (shepherd-configuration-action syslog.conf)))
+   (start #~(let ((spawn (make-forkexec-constructor
+                          (list #$(syslog-configuration-syslogd config)
+                                #$(string-append "--rcfile=" syslog.conf))
+                          #:pid-file "/var/run/syslog.pid")))
+              (lambda ()
+                ;; Set the umask such that file permissions are #o640.
+                (let ((mask (umask #o137))
+                      (pid  (spawn)))
+                  (umask mask)
+                  pid))))
+   (stop #~(make-kill-destructor))))
+
+(define syslog-service-type
+  (service-type
+   (name 'syslog)
+   (default-value (syslog-configuration))
+   (extensions (list (service-extension shepherd-root-service-type
+                                        (compose list syslog-shepherd-service))
+                     (service-extension etc-service-type syslog-etc)))
    (description "Run the syslog daemon, @command{syslogd}, which is
 responsible for logging system messages.")))
 
