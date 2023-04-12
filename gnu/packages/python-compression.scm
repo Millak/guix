@@ -508,13 +508,13 @@ wrapper.  It provides a backport of the @code{Path} object.")
 (define-public python-zopfli
   (package
     (name "python-zopfli")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zopfli" version ".zip"))
        (sha256
-        (base32 "1ipjkcgdbplsrhr31ypk48px8cax4cm9gcjj7yrcrhg20ql3s9p5"))))
+        (base32 "1z1akqx3fjnwa75insch9p08hafikqdvqkj6mxv1k6fr81sxnj9d"))))
     (build-system python-build-system)
     (arguments
      (list
