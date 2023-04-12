@@ -1546,7 +1546,7 @@ generate bitmaps.")
 (define-public python-statmake
   (package
     (name "python-statmake")
-    (version "0.5.1")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1555,7 +1555,7 @@ generate bitmaps.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qavzspxhwnaayj5mxq6ncjjziggabxj157ls04h2rdrpq167706"))))
+                "1k6fkzyhsfkgi599sb017wzf4jzbnp5wjg1kla1b33vgjpa7n5nw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
