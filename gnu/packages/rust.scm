@@ -759,6 +759,24 @@ safety and thread safety guarantees.")
                    "src/tools/cargo/tests/testsuite/init/mercurial_autodetect/mod.rs"
                    (("fn mercurial_autodetect")
                     "#[ignore]\nfn mercurial_autodetect"))))
+             (add-after 'unpack 'disable-tests-broken-on-aarch64
+               (lambda _
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite/"
+                   (substitute* "build_script_extra_link_arg.rs"
+                     (("^fn build_script_extra_link_arg_bin_single" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "build_script.rs"
+                     (("^fn env_test" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "collisions.rs"
+                     (("^fn collision_doc_profile_split" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "concurrent.rs"
+                     (("^fn no_deadlock_with_git_dependencies" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "features2.rs"
+                     (("^fn dep_with_optional_host_deps_activated" m)
+                      (string-append "#[ignore]\n" m))))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
