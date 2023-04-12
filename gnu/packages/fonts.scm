@@ -260,37 +260,41 @@ Cyrillic, Canadian Syllabics and most Latin based languages are supported.")
     (license license:cc0)))
 
 (define-public font-abattis-cantarell
-  (package
-    (name "font-abattis-cantarell")
-    (version "0.303")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/GNOME/cantarell-fonts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1d1ay0fdqchk0wa5yqxis2c98imvzsbbd2kjv0x8sk4fm419847b"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-Dbuildstatics=true")))
-    (native-inputs
-     (list gettext-minimal
-           psautohint
-           python
-           python-cffsubr
-           python-fontmath
-           python-statmake
-           python-ufo2ft))
-    (home-page "https://wiki.gnome.org/Projects/CantarellFonts")
-    (synopsis "Cantarell sans-serif typeface")
-    (description "The Cantarell font family is a contemporary Humanist
+  ;; Use the latest commit, as the last released version, 0.303, has problems
+  ;; with the newer statmake.  The dependency has been removed in the latest
+  ;; code base.
+  (let ((commit "e049149faf0c15b0711e8d790e2333be923f0486")
+        (revision "0"))
+    (package
+      (name "font-abattis-cantarell")
+      (version (git-version "0.303" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.gnome.org/GNOME/cantarell-fonts")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "032csq99bkmmgh9mmmbrgg4fzxgkcsvxv4wy595qms72mmlgmcc7"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-Dbuildstatics=true")))
+      (native-inputs
+       (list gettext-minimal
+             psautohint
+             python
+             python-cffsubr
+             python-fontmath
+             python-ufo2ft))
+      (home-page "https://wiki.gnome.org/Projects/CantarellFonts")
+      (synopsis "Cantarell sans-serif typeface")
+      (description "The Cantarell font family is a contemporary Humanist
 sans-serif designed for on-screen reading.  It is used by GNOME@tie{}3.
 This package contains both the non-variable as well as the variable versions
 of the font.")
-    (license license:silofl1.1)))
+      (license license:silofl1.1))))
 
 (define-public font-lato
   (package
