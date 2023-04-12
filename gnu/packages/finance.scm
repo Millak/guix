@@ -621,7 +621,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.12")
+    (version "4.2.14")
     (source
      (origin
        (method git-fetch)
@@ -630,7 +630,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bfnfpdyi3q5zq0zj07dq82aj3cihnr7j82gy4ch97182lsl6nms"))))
+        (base32 "086rqqxxh1dmw1qiwmry6sraai3xg44sb85wdw8zkj30si9780kk"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -651,11 +651,6 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
               (substitute* "electroncash/secp256k1.py"
                 (("libsecp256k1.so.0")
                  (search-input-file inputs "lib/libsecp256k1.so.0")))))
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "contrib/requirements/requirements.txt"
-                (("qdarkstyle==2\\.6\\.8")
-                 "qdarkstyle"))))
           (add-after 'install 'wrap-qt
             (lambda* (#:key outputs inputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
