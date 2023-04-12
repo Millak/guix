@@ -3697,9 +3697,9 @@ Ruby Gems.")
                (("/usr/bin/zip") (which "zip")))))
          (add-after 'patch-source-shebangs 'unpatch-some-source-shebangs
            (lambda _
-             ;; The test compare zipped files with data test files; since the
+             ;; The tests compare zipped files with data test files; since the
              ;; zip files do not have their shebangs patched, the data files
-             ;; compared to their extracted version must also be left
+             ;; compared with their extracted version must also be left
              ;; un-patched.
              (substitute* (find-files "test/data" "\\.(txt|rb)$")
                (((which "ruby"))
