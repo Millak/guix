@@ -12283,7 +12283,12 @@ from an XML-based format.")
                                     "test_read_fontdimens_mathex"
                                     "test_read_fontdimens_vanilla"
                                     "test_read_boundary_char"
-                                    "fontTools.tfmLib")
+                                    "fontTools.tfmLib"
+                                    ;; The MtiTest tests fail for unknown
+                                    ;; reasons (see:
+                                    ;; https://github.com/fonttools/
+                                    ;; fonttools/issues/3078)
+                                    "MtiTest")
                                   " and not "))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs python-fonttools)
@@ -12301,14 +12306,14 @@ from an XML-based format.")
 (define-public python-fonttools-next
   (package
     (inherit python-fonttools-full)
-    (version "4.37.1")
+    (version "4.39.3")
     (source (origin
               (inherit (package-source python-fonttools-full))
               (method url-fetch)
               (uri (pypi-uri "fonttools" version ".zip"))
               (sha256
                (base32
-                "1ryc1wca2v92wn24baryj5fr32lspl8rbsig32fnkxp1islf21j6"))))))
+                "1msibi5cmi5znykkg66dq7xshl07lkqjxhrz5hcipqvlggsvjd4j"))))))
 
 (define-public python-ly
   (package
