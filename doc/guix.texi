@@ -14398,7 +14398,7 @@ for compatibility with an upgraded @code{flex} package.
 @table @code
 
 @item --list-transitive
-@itemx --T
+@itemx -T
 List all the packages which one or more packages depend upon.
 
 @example
@@ -18464,7 +18464,7 @@ The Kmscon package to use.
 @cindex @abbr{nscd, name service cache daemon}
 @defvar nscd-service-type
 Type of the service that runs the libc @abbr{nscd, name service cache
-daemon}, whose value is a @code{<nscd-configuration>} object.
+daemon}, whose value is an @code{<nscd-configuration>} object.
 
 For convenience, the Shepherd service for nscd provides the following actions:
 
@@ -18992,7 +18992,7 @@ seconds for the negative lookups.  @xref{Invoking guix publish,
 @end deftp
 
 @defvar rngd-service-type
-Type of the service that runs rng-tools rngd, whose value is a
+Type of the service that runs rng-tools rngd, whose value is an
 @code{<rngd-configuration>} object.
 @end defvar
 
@@ -26315,7 +26315,7 @@ variables.
 
 @defvar getmail-service-type
 This is the type of the @uref{http://pyropus.ca/software/getmail/, Getmail}
-mail retriever, whose value should be an @code{getmail-configuration}.
+mail retriever, whose value should be a @code{getmail-configuration}.
 @end defvar
 
 Available @code{getmail-configuration} fields are:
@@ -31520,7 +31520,7 @@ The list of knot-zone-configuration used by this configuration.
 
 @defvar knot-resolver-service-type
 This is the type of the knot resolver service, whose value should be
-an @code{knot-resolver-configuration} object as in this example:
+a @code{knot-resolver-configuration} object as in this example:
 
 @lisp
 (service knot-resolver-service-type
@@ -31557,7 +31557,7 @@ Number of milliseconds for @code{kres-cache-gc} to periodically trim the cache.
 @subsubheading Dnsmasq Service
 
 @defvar dnsmasq-service-type
-This is the type of the dnsmasq service, whose value should be an
+This is the type of the dnsmasq service, whose value should be a
 @code{dnsmasq-configuration} object as in this example:
 
 @lisp
@@ -37570,7 +37570,7 @@ on whatever else might be trying to use the disk at the time.
 
 @defvar fstrim-service-type
 Type for a service that periodically runs @command{fstrim}, whose value must
-be a @code{<fstrim-configuration>} object.  The service can be instantiated
+be an @code{<fstrim-configuration>} object.  The service can be instantiated
 in its default configuration with:
 
 @lisp
@@ -42313,7 +42313,7 @@ for home services is that they have to be declared in a
 record.
 
 @defvar home-mcron-service-type
-This is the type of the @code{mcron} home service, whose value is an
+This is the type of the @code{mcron} home service, whose value is a
 @code{home-mcron-configuration} object.  It allows to manage scheduled
 tasks.
 
@@ -42661,7 +42661,7 @@ to the @code{services} field of your @code{home-environment}:
 @end lisp
 
 @defvar home-ssh-agent-service-type
-This is the type of the @code{git daemon} home service, whose value is an
+This is the type of the @code{ssh-agent} home service, whose value is a
 @code{home-ssh-agent-configuration} object.
 @end defvar
 
@@ -42669,8 +42669,8 @@ This is the type of the @code{git daemon} home service, whose value is an
 Available @code{home-ssh-agent-configuration} fields are:
 
 @table @asis
-@item @code{git} (default: @code{git}) (type: file-like)
-The git package to use.
+@item @code{openssh} (default: @code{openssh}) (type: file-like)
+The OpenSSH package to use.
 
 @item @code{socket-directory} (default: @code{@env{XDG_RUNTIME_DIR}/ssh-agent"}) (type: gexp)
 The directory to write the ssh-agent's @file{socket} file.
@@ -43100,7 +43100,7 @@ to the @code{services} field of your @code{home-environment}:
 @end lisp
 
 @defvar home-znc-service-type
-This is the type of the @code{git daemon} home service, whose value is an
+This is the type of the ZNC home service, whose value is a
 @code{home-znc-configuration} object.
 @end defvar
 
@@ -43108,8 +43108,8 @@ This is the type of the @code{git daemon} home service, whose value is an
 Available @code{home-znc-configuration} fields are:
 
 @table @asis
-@item @code{git} (default: @code{git}) (type: file-like)
-The git package to use.
+@item @code{znc} (default: @code{znc}) (type: file-like)
+The ZNC package to use.
 
 @item @code{extra-options} (default: @code{'()})
 Extra options will be passed to @command{znc}, please run @command{man
@@ -43122,9 +43122,9 @@ znc} for more information.
 @subsection Media Home Services
 
 @cindex kodi
-The @uref{https://kodi.tv, KODI media center} can be run as a daemon on
+The @uref{https://kodi.tv, Kodi media center} can be run as a daemon on
 a media server.  With the @code{(gnu home services kodi)} service, you
-can configure KODI to run upon login.
+can configure Kodi to run upon login.
 
 Here is an example of a service and its configuration that you could add
 to the @code{services} field of your @code{home-environment}:
@@ -43136,7 +43136,7 @@ to the @code{services} field of your @code{home-environment}:
 @end lisp
 
 @defvar home-kodi-service-type
-This is the type of the @code{git daemon} home service, whose value is an
+This is the type of the Kodi home service, whose value is a
 @code{home-kodi-configuration} object.
 @end defvar
 
@@ -43144,8 +43144,8 @@ This is the type of the @code{git daemon} home service, whose value is an
 Available @code{home-kodi-configuration} fields are:
 
 @table @asis
-@item @code{git} (default: @code{git}) (type: file-like)
-The git package to use.
+@item @code{kodi} (default: @code{kodi}) (type: file-like)
+The Kodi package to use.
 
 @item @code{extra-options} (default: @code{'()})
 Extra options will be passed to @command{kodi}, please run @command{man
