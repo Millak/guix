@@ -10121,11 +10121,49 @@ conversion or type specification.")
       (home-page "http://www.jarw.org.uk/lisp/cl-data-format-validation.html")
       (license license:gpl3))))
 
-(define-public cl-data-format-validation
-  (sbcl-package->cl-source-package sbcl-data-format-validation))
+(define-public sbcl-cl-docutils
+  (let ((commit "756b5ad42360e84d8225fa69815bdd1623ceaa40")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-docutils")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/willijar/cl-docutils/")
+           (commit commit)))
+         (file-name (git-file-name "cl-docutils" version))
+         (sha256
+          (base32
+           "132bxlj0jlhiabi29mygmkcbbgyb5s1yz1xdfhm3pgrf9f8605gg"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("docutils")))
+      (inputs
+       (list sbcl-cl-ppcre
+             sbcl-data-format-validation
+             sbcl-trivial-gray-streams))
+      (synopsis "Document utilities and Restructured text parser")
+      (description
+       "@code{cl-docutils} is a Common Lisp implementation of the Docutils text
+processing system for processing plaintext into presentational formats such as
+HTML and LaTeX.  It is based upon the Python Docutils reference implementation
+but uses Common Lisp idioms making it easier to extend and more flexible.  As
+with the reference implementation it includes a parser for the reStructured
+text plaintext markup syntax which is suitable for marking up documentation
+and for use as user markup for collaborative web sites.  It is successfully
+used to support a higher education peer-review assessment and online tutorial
+system.")
+      (home-page "http://www.jarw.org.uk/lisp/cl-docutils.html")
+      (license license:gpl3))))
 
-(define-public ecl-data-format-validation
-  (sbcl-package->ecl-package sbcl-data-format-validation))
+(define-public cl-docutils
+  (sbcl-package->cl-source-package sbcl-cl-docutils))
+
+(define-public ecl-cl-docutils
+  (sbcl-package->ecl-package sbcl-cl-docutils))
 
 (define-public sbcl-documentation-utils
   (let ((commit "98630dd5f7e36ae057fa09da3523f42ccb5d1f55")
