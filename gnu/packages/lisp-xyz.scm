@@ -28991,6 +28991,47 @@ the Valve SteamWorks API.")
 (define-public ecl-cl-steamworks
   (sbcl-package->ecl-package sbcl-cl-steamworks))
 
+(define-public sbcl-forge
+  (let ((commit "012324e251d91436f4a610e2fe2eb50674c3c3ce")
+        (revision "1"))
+    (package
+      (name "sbcl-forge")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/forge/")
+               (commit commit)))
+         (sha256
+          (base32 "006vi2ihrn28pzrwa8b7axmv98bdaxzx7lacnh9pbacbjg3b7hb0"))
+         (file-name (git-file-name "forge" version))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("forge-support"
+                         "forge-communication"
+                         "forge")))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-cl-ppcre
+             sbcl-closer-mop
+             sbcl-documentation-utils
+             sbcl-ironclad
+             sbcl-pathname-utils
+             sbcl-promise
+             sbcl-usocket
+             sbcl-verbose))
+      (synopsis "General, modular build system")
+      (description "Forge is a generic build system.  Refer to documentation
+for the specific kind of project you're building to get the full picture.")
+      (home-page "https://github.com/shinmera/forge")
+      (license license:zlib))))
+
+(define-public forge
+  (sbcl-package->cl-source-package sbcl-forge))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
