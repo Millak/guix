@@ -3694,29 +3694,16 @@ Ruby Gems.")
          (add-before 'check 'patch-tests
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "test/gentestfiles.rb"
-               (("/usr/bin/zip") (which "zip")))
-             (substitute* "test/input_stream_test.rb"
-               (("/usr/bin/env ruby") (which "ruby")))))
-         (add-before 'check 'disable-problematic-tests
+               (("/usr/bin/zip") (which "zip")))))
+         (add-after 'patch-source-shebangs 'unpatch-some-source-shebangs
            (lambda _
-             (let-syntax ((skip-tests
-                           (syntax-rules ()
-                             ((_ file test ...)
-                              (substitute* file
-                                (((string-append "def " test ".*") all)
-                                 (string-append
-                                  all "    skip('fails on guix')\n")) ...)))))
-               ;; The test failures were reported here:
-               ;; https://github.com/rubyzip/rubyzip/issues/552.
-               (skip-tests "test/stored_support_test.rb"
-                           "test_read")
-               (skip-tests "test/stored_support_test.rb"
-                           "test_encrypted_read")
-               (skip-tests "test/output_stream_test.rb"
-                           "test_put_next_entry_using_zip_entry_creates_\
-entries_with_correct_timestamps")
-               (skip-tests "test/file_options_test.rb"
-                           "test_restore_times_true")))))))
+             ;; The tests compare zipped files with data test files; since the
+             ;; zip files do not have their shebangs patched, the data files
+             ;; compared with their extracted version must also be left
+             ;; un-patched.
+             (substitute* (find-files "test/data" "\\.(txt|rb)$")
+               (((which "ruby"))
+                "/usr/bin/env ruby")))))))
     (native-inputs
      (list bundler ruby-simplecov zip unzip))
     (synopsis "Ruby module is for reading and writing zip files")
