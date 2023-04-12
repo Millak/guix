@@ -12164,36 +12164,17 @@ the @code{sendfile(2)} system call.")
 (define-public python-pyftpdlib
   (package
     (name "python-pyftpdlib")
-    (version "1.5.6")
+    (version "1.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyftpdlib" version))
        (sha256
-        (base32 "0pnv2byzmzg84q5nmmhn1xafvfil85qa5y52bj455br93zc5b9px"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke
-                 "pytest"
-                 ;; Deselect failing tests.
-                 "-k" (string-append
-                       ;; Using Pytest instead of the Makefile causes the
-                       ;; command line tests to fail on unknown Pytest
-                       ;; arguments.
-                       "not TestCommandLineParser "
-                       ;; https://github.com/giampaolo/pyftpdlib/issues/478
-                       "and not test_use_gmt_times "
-                       ;; https://github.com/giampaolo/pyftpdlib/issues/550
-                       "and not test_masquerade_address "
-                       ;; https://github.com/giampaolo/pyftpdlib/issues/500
-                       "and not test_rest_on_stor "
-                       "and not test_stor_ascii"))))))))
+        (base32 "0vk5gcx4svjrpm014ykwxmijqihgb4ha17kb3yphk0nv6x0wx8vy"))))
+    (build-system pyproject-build-system)
+    ;; Using Pytest instead of the Makefile causes the command line tests to
+    ;; fail on unknown Pytest arguments.
+    (arguments (list #:test-flags #~(list "-k" "not TestCommandLineParser")))
     (native-inputs (list python-psutil python-pytest))
     (propagated-inputs (list python-pyopenssl python-pysendfile))
     (home-page "https://github.com/giampaolo/pyftpdlib/")
