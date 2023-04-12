@@ -29032,6 +29032,61 @@ for the specific kind of project you're building to get the full picture.")
 (define-public forge
   (sbcl-package->cl-source-package sbcl-forge))
 
+(define-public sbcl-maiden
+  (let ((commit "164e8df1b513fcbf097315b51242d337c183a5ef")
+        (revision "1"))
+    (package
+      (name "sbcl-maiden")
+      (version (git-version "3.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/maiden/")
+               (commit commit)))
+         (sha256
+          (base32 "1m16qi019cmfpfs6538hc4qsplpb8nl9ly1qlckgfxgjag0z3wdr"))
+         (file-name (git-file-name "maiden" version))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("maiden"
+                         "maiden-commands"
+                         "maiden-networking"
+                         "maiden-client-entities"
+                         "maiden-irc"
+                         "maiden-silly")))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cl-base64
+             sbcl-cl+ssl
+             sbcl-closer-mop
+             sbcl-deeds
+             sbcl-documentation-utils
+             sbcl-drakma
+             sbcl-form-fiddle
+             sbcl-jsown
+             sbcl-lambda-fiddle
+             sbcl-lquery
+             sbcl-pathname-utils
+             sbcl-trivial-garbage
+             sbcl-trivial-indent
+             sbcl-ubiquitous
+             sbcl-usocket
+             sbcl-uuid
+             sbcl-verbose))
+      (synopsis "Modern and extensible chat bot framework")
+      (description "Maiden is a collection of systems to help you build
+applications and libraries that interact with chat servers.  It can help you
+build a chat bot, or a general chat client.  It also offers a variety of parts
+that should make it much easier to write a client for a new chat protocol.")
+      (home-page "http://shirakumo.github.io/maiden/")
+      (license license:zlib))))
+
+(define-public maiden
+  (sbcl-package->cl-source-package sbcl-maiden))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
