@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -1146,9 +1146,12 @@ features, and more.")
        (substitute-keyword-arguments (package-arguments eigen)
          ((#:phases phases)
           `(modify-phases ,phases
-             (delete 'disable-some-tests)))))
-      (native-inputs
-       (list gcc-7)))))
+             (delete 'disable-some-tests)
+             ;; This test cannot be compiled
+             (add-after 'unpack 'gcc-compatibility
+               (lambda _
+                 (substitute* "test/CMakeLists.txt"
+                   (("ei_add_test\\(stddeque") "#")))))))))))
 
 (define-public eigen-for-tensorflow-lite
   ;; This commit was taken from
