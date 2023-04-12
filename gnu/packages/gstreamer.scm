@@ -1035,7 +1035,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
 (define-public gst-editing-services
   (package
     (name "gst-editing-services")
-    (version "1.22.1")
+    (version "1.22.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1043,7 +1043,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
                     "gst-editing-services-" version ".tar.xz"))
               (sha256
                (base32
-                "0f0l2qanwi8msv16aqi3xxpslw9wn4rg1ibix6hbk940xw45x7hg"))))
+                "1gyfw11ns2la1cm6gvvvv5qj3q5gcvcypc3wk8kdwmrqzij18fs5"))))
     (build-system meson-build-system)
     (arguments
      (list
