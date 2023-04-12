@@ -18,6 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages rrdtool)
+  #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
@@ -31,58 +32,56 @@
   #:use-module (gnu packages xml)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
 (define-public rrdtool
   (package
     (name "rrdtool")
-    (version "1.7.2")
+    (version "1.8.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "http://oss.oetiker.ch/rrdtool/pub/rrdtool-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/oetiker/rrdtool-1.x")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nsqra0g2nja19akmf9x5y9hhgc35ml3w9dcdz2ayz7zgvmzm6d1"))))
+                "04dhygsp34dykrnbbcqni5f7hih0hzqbnj6d2sl439lqbx9k3q3b"))))
     (build-system gnu-build-system)
     (inputs
-     `(("cairo" ,cairo)
-       ("freetype" ,freetype)
-       ("glib" ,glib)
-       ("gtk" ,gtk+-2)
-       ("libxml2" ,libxml2)
-       ("pango" ,pango)
-       ("python" ,python)))
+     (list cairo
+           freetype
+           glib
+           gtk+-2
+           libxml2
+           pango
+           python))
     (native-inputs
      (list groff
            pkg-config
            ;; For tests.
            bc
-           perl ; will also build Perl bindings
+           perl                         ; will also build Perl bindings
            tzdata-for-tests))
     (arguments
-     `(#:disallowed-references (,tzdata-for-tests)
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'pre-configure
-           (lambda _
-             (substitute* "libtool"
-               (("/bin/sed") (which "sed")))
-             #t))
-         (add-before 'check 'prepare-test-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZDIR"
-                     (search-input-directory inputs "share/zoneinfo"))))
-         (add-after 'install 'remove-native-input-references
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (examples (string-append out "/share/rrdtool/examples")))
-               ;; Drop shebangs from examples to avoid depending on native-input
-               ;; perl.  It's clear from context and extension how to run them.
-               (substitute* (find-files examples "\\.pl$")
-                 (("^#!.*") ""))
-               #t))))))
+     (list
+      #:disallowed-references (list (gexp-input tzdata-for-tests))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-test-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZDIR"
+                      (search-input-directory inputs "share/zoneinfo"))))
+          (add-after 'install 'remove-native-input-references
+            (lambda _
+              (let ((examples (string-append #$output
+                                             "/share/rrdtool/examples")))
+                ;; Drop shebangs from examples to avoid depending on native-input
+                ;; perl.  It's clear from context and extension how to run them.
+                (substitute* (find-files examples "\\.pl$")
+                  (("^#!.*") ""))))))))
     (home-page "https://oss.oetiker.ch/rrdtool/")
     (synopsis "Time-series data storage and display system")
     (description
