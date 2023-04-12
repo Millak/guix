@@ -580,6 +580,7 @@ ksh, and tcsh.")
     (inputs
      (list python-distro
            python-ply
+           python-prompt-toolkit
            python-pygments
            python-pyperclip
            python-setproctitle))
