@@ -24841,19 +24841,12 @@ programs that do multiple things at the same time with parallelized I/O.")
     (version "0.8.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "trio-typing" version))
-      (sha256
-       (base32 "15wa66cs165wawh4pi808ac43n67b8jqddi5ppdcbkj5gfi68hpi"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
-    (native-inputs
-     (list python-attrs python-pytest))
+       (method url-fetch)
+       (uri (pypi-uri "trio-typing" version))
+       (sha256
+        (base32 "15wa66cs165wawh4pi808ac43n67b8jqddi5ppdcbkj5gfi68hpi"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-attrs python-pytest))
     (propagated-inputs
      (list python-mypy python-mypy-extensions python-trio
            python-typing-extensions))
