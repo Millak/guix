@@ -6660,7 +6660,12 @@ the OCaml code.")
              (substitute* "test/ppx_import_support/test.ml"
                (("\\(Failure") "Failure")
                (("  \"(Some ppx-es.*)\")" _ m)
-                (string-append " \"" m "\"."))))))))
+                (string-append " \"" m "\".")))))
+         (add-after 'fix-test-format 'fix-egrep
+           (lambda _
+             ;; egrep is obsolescent; using grep -E
+             (substitute* "test/expansion_context/run.t"
+               (("egrep") "grep -E")))))))
     (propagated-inputs
      (list ocaml-compiler-libs
            ocaml-ppx-derivers
