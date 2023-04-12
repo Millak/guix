@@ -342,20 +342,18 @@ Python strings.")
 (define-public python-lz4
   (package
     (name "python-lz4")
-    (version "4.0.2")
+    (version "4.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lz4" version))
        (sha256
         (base32
-         "16vj2bnhhdkcz2a2ai2mx2kf9ngx1cjr18636yp1514kq9r72fq8"))
+         "1nmc36j5xnk7mvwwpm0nb1sddjk5iv77h877fdkkxcngm621shz1"))
        (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove bundled copy of lz4.
-           (delete-file-recursively "lz4libs")
-           #t))))
+       (snippet '(begin
+                   ;; Remove bundled copy of lz4.
+                   (delete-file-recursively "lz4libs")))))
     (build-system python-build-system)
     (arguments
      (list #:phases
