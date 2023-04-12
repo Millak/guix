@@ -18170,6 +18170,39 @@ attributes not supported by the Common Lisp standard functions.")
 (define-public cl-file-attributes
   (sbcl-package->cl-source-package sbcl-file-attributes))
 
+(define-public sbcl-filesystem-utils
+  (let ((commit "4455bb6c43f4433dd68a34ddad9ed5aa9b649243"))
+    (package
+      (name "sbcl-filesystem-utils")
+      (version (git-version "1.0.0" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/filesystem-utils/")
+               (commit commit)))
+         (file-name (git-file-name "filesystem-utils" version))
+         (sha256
+          (base32 "0rww9r26zh44qwmj0b4sl95jngdn2h0239x5gjzak3gpdc3i3nbr"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-documentation-utils
+             sbcl-pathname-utils
+             sbcl-trivial-features))
+      (home-page "https://shinmera.github.io/filesystem-utils/")
+      (synopsis "Collection of utilities for filesystem interaction")
+      (description
+       "This is an extension library to @code{pathname-utils}, to allow
+dealing with common problems with filesystems, such as listing files, probing
+file types, determining default directories, etc.")
+      (license license:zlib))))
+
+(define-public ecl-filesystem-utils
+  (sbcl-package->ecl-package sbcl-filesystem-utils))
+
+(define-public cl-filesystem-utils
+  (sbcl-package->cl-source-package sbcl-filesystem-utils))
+
 (define-public sbcl-depot
   (let ((commit "73822d9f480cbad00971b45ee80117297a67fb53")
         (revision "1"))
