@@ -436,23 +436,15 @@ converts any cubic curves to quadratic.  The most useful function is probably
 (define-public python-ufo2ft
   (package
     (name "python-ufo2ft")
-    (version "2.28.0")
+    (version "2.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ufo2ft" version))
        (sha256
-        (base32 "068hm62s1iphyg66w96vgiif6ahpcsaf8fr44rk6jdf71f6fyqd5"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (native-inputs
-     (list python-pytest python-setuptools-scm))
+        (base32 "1rg2997af8blvswlwif0kpz2vxrlh555gzqslz6yv9y7i7v8lphl"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools-scm))
     (propagated-inputs
      (list python-booleanoperations
            python-cffsubr
