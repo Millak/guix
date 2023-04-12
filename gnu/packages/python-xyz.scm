@@ -15734,13 +15734,13 @@ expression.")
 (define-public python-unicodedata2
   (package
     (name "python-unicodedata2")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "unicodedata2" version))
        (sha256
-        (base32 "110nnvh02ssp92xbmswy39aa186jrmb7m41x4220wigl8c0dzxs1"))))
+        (base32 "0bcgls7m2zndpd8whgznnd5908jbsa50si2bh88wsn0agcznhv7d"))))
     (build-system python-build-system)
     (home-page "https://github.com/fonttools/unicodedata2")
     (synopsis "Python unicodedata backport")
