@@ -1693,7 +1693,7 @@ result back.")
         (base32
          "1psf5dqxvc38qzxvc305mkg5xpdmdkbkkfiyqlmdnkgh7z5dx025"))))
     (propagated-inputs (list python-execnet python-pytest
-                             python-pytest-forked-next))))
+                             python-pytest-forked))))
 
 (define-public python-pytest-timeout
   (package
@@ -1728,7 +1728,7 @@ timeout has been exceeded.")
 (define-public python-pytest-forked
   (package
     (name "python-pytest-forked")
-    (version "1.3.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -1738,29 +1738,23 @@ timeout has been exceeded.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1aip4kx50ynvykl7kq2mlbsi82vx701dvb8mm64lhp69bbv105rc"))))
-    (build-system python-build-system)
+         "1y93q914gwf0nshql1qix6sj826q163b04vw17zmwhsnbv00c2d3"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-setuptools-scm
-           (lambda _
-             (substitute* "setup.py"
-               (("use_scm_version=True")
-                (format #f "version=~s" ,version))
-               (("setup_requires=\\['setuptools_scm'\\],.*")
-                ""))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pretend-version
+                 ;; The version string is usually derived via setuptools-scm,
+                 ;; but without the git metadata available, the version string
+                 ;; is set to '0.0.0'.
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      ;; XXX: The bootstrap variant of Pytest is used to ensure the
      ;; 'hypothesis' plugin is not in the environment (due to
      ;; <http://issues.guix.gnu.org/25235>), which would cause the test suite
      ;; to fail (see: https://github.com/pytest-dev/pytest-forked/issues/54).
-     `(("python-pytest" ,python-pytest-bootstrap)))
+     (list python-pytest-bootstrap python-setuptools-scm))
     (home-page "https://github.com/pytest-dev/pytest-forked")
     (synopsis "Pytest plugin to run tests in isolated forked subprocesses")
     (description "This package provides a Pytest plugin which enables running
@@ -1768,23 +1762,6 @@ each test in a subprocess and will report if a test crashed the process.  It
 can be useful to isolate tests against undesirable global environment
 side-effects (such as setting environment variables).")
     (license license:expat)))
-
-(define-public python-pytest-forked-next
-  (package
-    (inherit python-pytest-forked)
-    (name "python-pytest-forked")
-    (version "1.4.0")
-    (source
-     (origin
-       (method git-fetch)               ;for tests
-       (uri (git-reference
-             (url "https://github.com/pytest-dev/pytest-forked")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0j9bbjny7h3b4fig6l26f26c697r67mm62fzdd9m9rqyy2bmnqjs"))))
-    (native-inputs (list python-pytest-bootstrap python-setuptools-scm))))
 
 (define-public python-scripttest
   (package
