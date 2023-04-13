@@ -2,7 +2,7 @@
 ;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2015, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015-2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -889,6 +889,15 @@ using compilers other than GCC."
                                           ":")
                                          "\nAM_CXXFLAGS = ")))))))
                '())
+         ,@(let ((version (package-version gcc)))
+                (if (and (target-ppc64le?)
+                    (version>=? version "11")
+                    (not (version>=? version "12")))
+               `((add-after 'unpack 'patch-powerpc
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (invoke "patch" "--force" "-p1" "-i"
+                             (assoc-ref inputs "powerpc64le-patch")))))
+               '()))
          ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
          (add-before 'chdir 'fix-rs6000-libdir
            (lambda _
@@ -905,7 +914,14 @@ using compilers other than GCC."
                                            "/include"))))
     (outputs '("out" "debug"))
     (inputs '())
-    (native-inputs '())
+    (native-inputs
+     `(,@(if (and (target-ppc64le?)
+                  (let ((version (package-version gcc)))
+                    (and
+                     (version>=? version "11")
+                     (not (version>=? version "12")))))
+             `(("powerpc64le-patch" ,(search-patch "gcc-11-libstdc++-powerpc.patch")))
+             '())))
     (propagated-inputs '())
     (synopsis "GNU C++ standard library")))
 
