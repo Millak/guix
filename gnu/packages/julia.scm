@@ -150,7 +150,8 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
               (sha256
                (base32
                 "0jf8dr5j7y8cjnr65kn38xps5h9m2qvi8g1yd8qgiip5r87ld3ad"))
-              (patches (search-patches "julia-SOURCE_DATE_EPOCH-mtime.patch"))))
+              (patches (search-patches "julia-SOURCE_DATE_EPOCH-mtime.patch"
+                                       "julia-Use-MPFR-4.2.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"

@@ -1,0 +1,228 @@
+This patch backports part of Julia upstream commit:
+
+    1e5fdb29f8858f3244f6aff116ee12e4c8247f3a
+    Author:     Simon Byrne <simon.byrne@gmail.com>
+    AuthorDate: Tue Jan 10 14:52:36 2023 -0800
+    Commit:     GitHub <noreply@github.com>
+    CommitDate: Tue Jan 10 17:52:36 2023 -0500
+
+    update MPFR to 4.2.0 (#48165)
+
+    Co-authored-by: Mosè Giordano <giordano@users.noreply.github.com>
+
+    6 files changed, 112 insertions(+), 79 deletions(-)
+    base/mpfr.jl                     | 34 ++++++++++++++--
+    deps/checksums/mpfr              | 68 ++++++++++++++++----------------
+    deps/mpfr.version                |  2 +-
+    stdlib/MPFR_jll/Project.toml     |  2 +-
+    stdlib/MPFR_jll/test/runtests.jl |  2 +-
+    test/math.jl                     | 83 +++++++++++++++++++++-------------------
+
+
+diff -ur julia-1.8.3-orig/base/mpfr.jl julia-1.8.3-patch/base/mpfr.jl
+--- julia-1.8.3-orig/base/mpfr.jl	2023-04-13 17:50:58.394891391 +0200
++++ julia-1.8.3-patch/base/mpfr.jl	2023-04-13 20:42:52.551833467 +0200
+@@ -16,7 +16,8 @@
+         cosh, sinh, tanh, sech, csch, coth, acosh, asinh, atanh, lerpi,
+         cbrt, typemax, typemin, unsafe_trunc, floatmin, floatmax, rounding,
+         setrounding, maxintfloat, widen, significand, frexp, tryparse, iszero,
+-        isone, big, _string_n, decompose
++        isone, big, _string_n, decompose, minmax,
++        sinpi, cospi, sincospi, sind, cosd, tand, asind, acosd, atand
+ 
+ import ..Rounding: rounding_raw, setrounding_raw
+ 
+@@ -745,7 +746,7 @@
+ end
+ 
+ # Functions for which NaN results are converted to DomainError, following Base
+-for f in (:sin, :cos, :tan, :sec, :csc, :acos, :asin, :atan, :acosh, :asinh, :atanh)
++for f in (:sin, :cos, :tan, :sec, :csc, :acos, :asin, :atan, :acosh, :asinh, :atanh, :sinpi, :cospi)
+     @eval begin
+         function ($f)(x::BigFloat)
+             isnan(x) && return x
+@@ -756,6 +757,7 @@
+         end
+     end
+ end
++sincospi(x::BigFloat) = (sinpi(x), cospi(x))
+ 
+ function atan(y::BigFloat, x::BigFloat)
+     z = BigFloat()
+@@ -763,6 +765,32 @@
+     return z
+ end
+ 
++# degree functions
++for f in (:sin, :cos, :tan)
++    @eval begin
++        function ($(Symbol(f,:d)))(x::BigFloat)
++            isnan(x) && return x
++            z = BigFloat()
++            ccall(($(string(:mpfr_,f,:u)), :libmpfr), Int32, (Ref{BigFloat}, Ref{BigFloat}, Culong, MPFRRoundingMode), z, x, 360, ROUNDING_MODE[])
++            isnan(z) && throw(DomainError(x, "NaN result for non-NaN input."))
++            return z
++        end
++        function ($(Symbol(:a,f,:d)))(x::BigFloat)
++            isnan(x) && return x
++            z = BigFloat()
++            ccall(($(string(:mpfr_a,f,:u)), :libmpfr), Int32, (Ref{BigFloat}, Ref{BigFloat}, Culong, MPFRRoundingMode), z, x, 360, ROUNDING_MODE[])
++            isnan(z) && throw(DomainError(x, "NaN result for non-NaN input."))
++            return z
++        end
++    end
++end
++function atand(y::BigFloat, x::BigFloat)
++    z = BigFloat()
++    ccall((:mpfr_atan2u, :libmpfr), Int32, (Ref{BigFloat}, Ref{BigFloat}, Ref{BigFloat}, Culong, MPFRRoundingMode), z, y, x, 360, ROUNDING_MODE[])
++    return z
++end
++
++
+ # Utility functions
+ ==(x::BigFloat, y::BigFloat) = ccall((:mpfr_equal_p, :libmpfr), Int32, (Ref{BigFloat}, Ref{BigFloat}), x, y) != 0
+ <=(x::BigFloat, y::BigFloat) = ccall((:mpfr_lessequal_p, :libmpfr), Int32, (Ref{BigFloat}, Ref{BigFloat}), x, y) != 0
+@@ -1018,7 +1046,7 @@
+     isfinite(x) || return string(Float64(x))
+     _prettify_bigfloat(string_mpfr(x, fmt))
+ end
+-_string(x::BigFloat) = _string(x, "%.Re")
++_string(x::BigFloat) = _string(x, "%Re")
+ _string(x::BigFloat, k::Integer) = _string(x, "%.$(k)Re")
+ 
+ string(b::BigFloat) = _string(b)
+diff -ur julia-1.8.3-orig/test/math.jl julia-1.8.3-patch/test/math.jl
+--- julia-1.8.3-orig/test/math.jl	2023-04-13 17:50:58.382891276 +0200
++++ julia-1.8.3-patch/test/math.jl	2023-04-13 21:13:55.377279761 +0200
+@@ -411,47 +411,51 @@
+     @test rad2deg(pi + (pi/3)*im) ≈ 180 + 60im
+ end
+ 
++# ensure zeros are signed the same
++⩲(x,y) = typeof(x) == typeof(y) && x == y && signbit(x) == signbit(y)
++⩲(x::Tuple, y::Tuple) = length(x) == length(y) && all(map(⩲,x,y))
++
+ @testset "degree-based trig functions" begin
+-    @testset "$T" for T = (Float32,Float64,Rational{Int})
++    @testset "$T" for T = (Float32,Float64,Rational{Int},BigFloat)
+         fT = typeof(float(one(T)))
+         fTsc = typeof( (float(one(T)), float(one(T))) )
+         for x = -400:40:400
+-            @test sind(convert(T,x))::fT ≈ convert(fT,sin(pi/180*x)) atol=eps(deg2rad(convert(fT,x)))
+-            @test cosd(convert(T,x))::fT ≈ convert(fT,cos(pi/180*x)) atol=eps(deg2rad(convert(fT,x)))
++            @test sind(convert(T,x))::fT ≈ sin(pi*convert(fT,x)/180) atol=eps(deg2rad(convert(fT,x)))
++            @test cosd(convert(T,x))::fT ≈ cos(pi*convert(fT,x)/180) atol=eps(deg2rad(convert(fT,x)))
+ 
+             s,c = sincosd(convert(T,x))
+-            @test s::fT ≈ convert(fT,sin(pi/180*x)) atol=eps(deg2rad(convert(fT,x)))
+-            @test c::fT ≈ convert(fT,cos(pi/180*x)) atol=eps(deg2rad(convert(fT,x)))
++            @test s::fT ≈ sin(pi*convert(fT,x)/180) atol=eps(deg2rad(convert(fT,x)))
++            @test c::fT ≈ cos(pi*convert(fT,x)/180) atol=eps(deg2rad(convert(fT,x)))
+         end
+         @testset "sind" begin
+-            @test sind(convert(T,0.0))::fT === zero(fT)
+-            @test sind(convert(T,180.0))::fT === zero(fT)
+-            @test sind(convert(T,360.0))::fT === zero(fT)
+-            T != Rational{Int} && @test sind(convert(T,-0.0))::fT === -zero(fT)
+-            @test sind(convert(T,-180.0))::fT === -zero(fT)
+-            @test sind(convert(T,-360.0))::fT === -zero(fT)
++            @test sind(convert(T,0.0))::fT ⩲ zero(fT)
++            @test sind(convert(T,180.0))::fT ⩲ zero(fT)
++            @test sind(convert(T,360.0))::fT ⩲ zero(fT)
++            T != Rational{Int} && @test sind(convert(T,-0.0))::fT ⩲ -zero(fT)
++            @test sind(convert(T,-180.0))::fT ⩲ -zero(fT)
++            @test sind(convert(T,-360.0))::fT ⩲ -zero(fT)
+             if T <: AbstractFloat
+                 @test isnan(sind(T(NaN)))
+             end
+         end
+         @testset "cosd" begin
+-            @test cosd(convert(T,90))::fT === zero(fT)
+-            @test cosd(convert(T,270))::fT === zero(fT)
+-            @test cosd(convert(T,-90))::fT === zero(fT)
+-            @test cosd(convert(T,-270))::fT === zero(fT)
++            @test cosd(convert(T,90))::fT ⩲ zero(fT)
++            @test cosd(convert(T,270))::fT ⩲ zero(fT)
++            @test cosd(convert(T,-90))::fT ⩲ zero(fT)
++            @test cosd(convert(T,-270))::fT ⩲ zero(fT)
+             if T <: AbstractFloat
+                 @test isnan(cosd(T(NaN)))
+             end
+         end
+         @testset "sincosd" begin
+-            @test sincosd(convert(T,-360))::fTsc === ( -zero(fT),  one(fT) )
+-            @test sincosd(convert(T,-270))::fTsc === (   one(fT), zero(fT) )
+-            @test sincosd(convert(T,-180))::fTsc === ( -zero(fT), -one(fT) )
+-            @test sincosd(convert(T, -90))::fTsc === (  -one(fT), zero(fT) )
+-            @test sincosd(convert(T,   0))::fTsc === (  zero(fT),  one(fT) )
+-            @test sincosd(convert(T,  90))::fTsc === (   one(fT), zero(fT) )
+-            @test sincosd(convert(T, 180))::fTsc === (  zero(fT), -one(fT) )
+-            @test sincosd(convert(T, 270))::fTsc === (  -one(fT), zero(fT) )
++            @test sincosd(convert(T,-360))::fTsc ⩲ ( -zero(fT),  one(fT) )
++            @test sincosd(convert(T,-270))::fTsc ⩲ (   one(fT), zero(fT) )
++            @test sincosd(convert(T,-180))::fTsc ⩲ ( -zero(fT), -one(fT) )
++            @test sincosd(convert(T, -90))::fTsc ⩲ (  -one(fT), zero(fT) )
++            @test sincosd(convert(T,   0))::fTsc ⩲ (  zero(fT),  one(fT) )
++            @test sincosd(convert(T,  90))::fTsc ⩲ (   one(fT), zero(fT) )
++            @test sincosd(convert(T, 180))::fTsc ⩲ (  zero(fT), -one(fT) )
++            @test sincosd(convert(T, 270))::fTsc ⩲ (  -one(fT), zero(fT) )
+             if T <: AbstractFloat
+                 @test_throws DomainError sincosd(T(Inf))
+                 @test all(isnan.(sincosd(T(NaN))))
+@@ -463,22 +467,22 @@
+             "sincospi" => (x->sincospi(x)[1], x->sincospi(x)[2])
+         )
+             @testset "pi * $x" for x = -3:0.3:3
+-                @test sinpi(convert(T,x))::fT ≈ convert(fT,sin(pi*x)) atol=eps(pi*convert(fT,x))
+-                @test cospi(convert(T,x))::fT ≈ convert(fT,cos(pi*x)) atol=eps(pi*convert(fT,x))
++                @test sinpi(convert(T,x))::fT ≈ sin(pi*convert(fT,x)) atol=eps(pi*convert(fT,x))
++                @test cospi(convert(T,x))::fT ≈ cos(pi*convert(fT,x)) atol=eps(pi*convert(fT,x))
+             end
+ 
+-            @test sinpi(convert(T,0.0))::fT === zero(fT)
+-            @test sinpi(convert(T,1.0))::fT === zero(fT)
+-            @test sinpi(convert(T,2.0))::fT === zero(fT)
+-            T != Rational{Int} && @test sinpi(convert(T,-0.0))::fT === -zero(fT)
+-            @test sinpi(convert(T,-1.0))::fT === -zero(fT)
+-            @test sinpi(convert(T,-2.0))::fT === -zero(fT)
++            @test sinpi(convert(T,0.0))::fT ⩲ zero(fT)
++            @test sinpi(convert(T,1.0))::fT ⩲ zero(fT)
++            @test sinpi(convert(T,2.0))::fT ⩲ zero(fT)
++            T != Rational{Int} && @test sinpi(convert(T,-0.0))::fT ⩲ -zero(fT)
++            @test sinpi(convert(T,-1.0))::fT ⩲ -zero(fT)
++            @test sinpi(convert(T,-2.0))::fT ⩲ -zero(fT)
+             @test_throws DomainError sinpi(convert(T,Inf))
+ 
+-            @test cospi(convert(T,0.5))::fT === zero(fT)
+-            @test cospi(convert(T,1.5))::fT === zero(fT)
+-            @test cospi(convert(T,-0.5))::fT === zero(fT)
+-            @test cospi(convert(T,-1.5))::fT === zero(fT)
++            @test cospi(convert(T,0.5))::fT ⩲ zero(fT)
++            @test cospi(convert(T,1.5))::fT ⩲ zero(fT)
++            @test cospi(convert(T,-0.5))::fT ⩲ zero(fT)
++            @test cospi(convert(T,-1.5))::fT ⩲ zero(fT)
+             @test_throws DomainError cospi(convert(T,Inf))
+         end
+         @testset "Check exact values" begin
+@@ -489,8 +493,8 @@
+             @test sincospi(one(T)/convert(T,6))[1] == 0.5
+             @test_throws DomainError sind(convert(T,Inf))
+             @test_throws DomainError cosd(convert(T,Inf))
+-            T != Float32 && @test cospi(one(T)/convert(T,3)) == 0.5
+-            T != Float32 && @test sincospi(one(T)/convert(T,3))[2] == 0.5
++            fT == Float64 && @test isapprox(cospi(one(T)/convert(T,3)), 0.5)
++            fT == Float64 && @test isapprox(sincospi(one(T)/convert(T,3))[2], 0.5)
+             T == Rational{Int} && @test sinpi(5//6) == 0.5
+             T == Rational{Int} && @test sincospi(5//6)[1] == 0.5
+         end
+@@ -538,8 +542,8 @@
+             end
+         end
+     end
+-    @test @inferred(sinc(0//1)) === 1.0
+-    @test @inferred(cosc(0//1)) === -0.0
++    @test @inferred(sinc(0//1)) ⩲ 1.0
++    @test @inferred(cosc(0//1)) ⩲ -0.0
+ 
+     # test right before/after thresholds of Taylor series
+     @test sinc(0.001) ≈ 0.999998355066745 rtol=1e-15
