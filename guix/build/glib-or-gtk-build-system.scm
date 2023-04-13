@@ -213,7 +213,7 @@ variable.  The cache file is installed under OUTPUTS.  Return the first cache
 file name if one was created else #f."
   (let* ((loaders (append-map
                    (cut find-files <> "^libpixbufloader-.*\\.so$")
-                   directories))
+                   (delete-duplicates directories)))
          (outputs* (map (cut string-append <> "/"
                              %gdk-pixbuf-loaders-cache-file)
                         outputs))
