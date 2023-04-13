@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023 Andrew Patterson <andrewpatt7@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,8 @@
   #:use-module (gnu packages fontutils)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
+  #:use-module (sxml simple)
 
   #:export (home-fontconfig-service-type))
 
@@ -35,17 +38,36 @@
 ;;;
 ;;; Code:
 
-(define (add-fontconfig-config-file directories)
+(define (write-fontconfig-doctype)
+  "Prints fontconfig's DOCTYPE to current-output-port."
+  ;; This is necessary because SXML doesn't seem to have a way to represent a doctype,
+  ;; but sxml->xml /does/ currently call any thunks in the SXML with the XML output port
+  ;; as current-output-port, allowing the output to include arbitrary text instead of
+  ;; just properly quoted XML.
+  (format #t "<!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>"))
+
+(define (config->sxml config)
+  "Converts a <home-fontconfig-configuration> record into the SXML representation
+of fontconfig's fonts.conf file."
+  (define (snippets->sxml snippet)
+    (match snippet
+      ((or (? string? dir)
+           (? gexp? dir))
+       `(dir ,dir))
+      ((? list?)
+       snippet)))
+  `(*TOP* (*PI* xml "version='1.0'")
+          ,write-fontconfig-doctype
+          (fontconfig
+           ,@(map snippets->sxml config))))
+
+(define (add-fontconfig-config-file config)
   `(("fontconfig/fonts.conf"
      ,(mixed-text-file
        "fonts.conf"
-       (apply string-append
-              `("<?xml version='1.0'?>
-<!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
-<fontconfig>\n" ,@(map (lambda (directory)
-                         (string-append "  <dir>" directory "</dir>\n"))
-                       directories)
-                "</fontconfig>\n"))))))
+       (call-with-output-string
+         (lambda (port)
+           (sxml->xml (config->sxml config) port)))))))
 
 (define (regenerate-font-cache-gexp _)
   `(("profile/share/fonts"

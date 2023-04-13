@@ -43084,8 +43084,10 @@ library is used by many applications to access fonts on the system.
 
 @defvar home-fontconfig-service-type
 This is the service type for generating configurations for Fontconfig.
-Its associated value is a list of strings (or gexps) pointing to fonts
-locations.
+Its associated value is a list of either strings (or gexps) pointing to
+fonts locations, or SXML (@pxref{SXML,,, guile, GNU Guile Reference
+Manual}) fragments to be converted into XML and put inside the main
+@code{fontconfig} node.
 
 Generally, it is better to extend this service than to directly
 configure it, as its default value is the default Guix Home's profile
@@ -43093,13 +43095,17 @@ font installation path (@file{~/.guix-home/profile/share/fonts}).  If
 you configure this service directly, be sure to include the above
 directory.
 
-A typical extension for adding an additional font directory might look
-like this:
+A typical extension for adding an additional font directory and setting
+a font as the default monospace font might look like this:
 
 @lisp
 (simple-service 'additional-fonts-service
                 home-fontconfig-service-type
-                (list "~/.nix-profile/share/fonts"))
+                (list "~/.nix-profile/share/fonts"
+                      '(alias
+                        (family "monospace")
+                        (prefer
+                         (family "Liberation Mono")))))
 @end lisp
 @end defvar
 
