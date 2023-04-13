@@ -3628,6 +3628,14 @@ for dealing with different structured file formats.")
         ("rust-yeslogic-fontconfig-sys" ,rust-yeslogic-fontconfig-sys-2))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-gdk-pixbuf-thumbnailer
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The gdk-pixbuf-thumbnailer location is assumed to be relative
+              ;; to librsvg's own installation prefix (see:
+              ;; https://gitlab.gnome.org/GNOME/librsvg/-/issues/955).
+              (substitute* "gdk-pixbuf-loader/librsvg.thumbnailer.in"
+                (("@bindir@/gdk-pixbuf-thumbnailer")
+                 (search-input-file inputs "bin/gdk-pixbuf-thumbnailer")))))
           (add-after 'unpack 'prepare-for-build
             (lambda _
               ;; In lieu of #:make-flags
