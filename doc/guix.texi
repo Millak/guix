@@ -10379,7 +10379,9 @@ Alternatively, @var{file} may be a list of file names, in which case
 they are all subject to the substitutions.
 
 Be careful about using @code{$} to match the end of a line; by itself it
-won't match the terminating newline of a line.
+won't match the terminating newline of a line.  For example, to match a
+whole line ending with a backslash, one needs a regex like
+@code{"(.*)\\\\\n$"}.
 @end defmac
 
 @subsection File Search
