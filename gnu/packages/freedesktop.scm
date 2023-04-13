@@ -1933,32 +1933,32 @@ different sorts of messages in different formats.")
     (license license:lgpl2.1+)))
 
 (define-public telepathy-idle
-  (package
-    (name "telepathy-idle")
-    (version "0.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/TelepathyIM/telepathy-idle")
-             (commit (string-append "telepathy-idle-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1pfw4g2cicw3ykxhsy743r0fc1yqbdrqxh2c5ha6am19dajcr95l"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     (list libxslt python-2 python2-dbus))
-    (propagated-inputs
-     (list telepathy-glib))
-    (home-page "https://telepathy.freedesktop.org/")
-    (synopsis "Telepathy IRC connection manager")
-    (description
-     "Idle is an IRC connection manager for the Telepathy framework.  This
+  ;; Use the latest commit, as the latest release does not support Python 3.
+  (let ((commit "b516eab0f2b92e078e0f5cab4224214d215b2ea5")
+        (revision "0"))
+    (package
+      (name "telepathy-idle")
+      (version (git-version "0.2.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/TelepathyIM/telepathy-idle")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02wb61h2k3hhis5y2xi5rhc6pmikd13x722hk620sqb9b3m5pn3s"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake libtool pkg-config))
+      (inputs (list libxslt python-wrapper python-dbus))
+      (propagated-inputs (list telepathy-glib))
+      (home-page "https://telepathy.freedesktop.org/")
+      (synopsis "Telepathy IRC connection manager")
+      (description
+       "Idle is an IRC connection manager for the Telepathy framework.  This
 package enables usage of IRC channels and private messages in Telepathy instant
 messaging clients such as Empathy, GNOME Shell or KDE Telepathy.")
-    (license (list license:lgpl2.1 license:lgpl2.1+))))
+      (license (list license:lgpl2.1 license:lgpl2.1+)))))
 
 (define-public telepathy-mission-control
   (package
