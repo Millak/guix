@@ -39,7 +39,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -2669,13 +2669,13 @@ forgotten when the session ends.")
 (define-public evince
   (package
     (name "evince")
-    (version "42.3")
+    (version "44.1")
     (source (origin
               (method url-fetch)
-              (uri "mirror://gnome/sources/evince/42/evince-42.3.tar.xz")
+              (uri "mirror://gnome/sources/evince/44/evince-44.1.tar.xz")
               (sha256
                (base32
-                "0pk42icnf4kdcaqaj17mcf4sxi82h1fdg2ds2zdrcv4lbj2czbj9"))))
+                "0523lzk7xpfr6gir8nx80fmp1lhajm837hilmgn8zczz2nxx7bqm"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -2686,8 +2686,10 @@ forgotten when the session ends.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("(glib_compile_schemas|gtk_update_icon_cache|\
+update_desktop_database): true" _ tool)
+                (string-append tool ": false"))))))))
     (inputs
      (list libarchive
            libgxps
