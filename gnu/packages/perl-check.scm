@@ -546,7 +546,7 @@ Test::More and friends.")
 (define-public perl-test-fatal
   (package
     (name "perl-test-fatal")
-    (version "0.014")
+    (version "0.016")
     (source
      (origin
        (method url-fetch)
@@ -554,7 +554,7 @@ Test::More and friends.")
                            "Test-Fatal-" version ".tar.gz"))
        (sha256
         (base32
-         "1c6bs68mss4q7cyapkv2c0jn66i21050p0faxf3s3417gdffzp5w"))))
+         "13vqdyk95y89msk1r8g1vp1jw6rzkl1y76lprnw3085sy8qd90vj"))))
     (build-system perl-build-system)
     (propagated-inputs (list perl-try-tiny))
     (home-page "https://metacpan.org/release/Test-Fatal")

@@ -44,6 +44,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)
@@ -403,7 +404,7 @@ arrays of data.")
 (define-public gstreamer-docs
   (package
     (name "gstreamer-docs")
-    (version "1.20.3")
+    (version "1.22.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -411,7 +412,7 @@ arrays of data.")
                     "/gstreamer-docs-" version ".tar.xz"))
               (sha256
                (base32
-                "1gziccq5f4fy23q6dm8nwbmzh68gn9rfbqw0xcn4r8yn82545z3k"))))
+                "1fljaydlinzw9jf5nkhwf7ihfzd5250k2cv220mi8dxxf7rgn18y"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -463,7 +464,7 @@ the GStreamer multimedia framework.")
 (define-public gstreamer
   (package
     (name "gstreamer")
-    (version "1.20.3")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
@@ -472,10 +473,12 @@ the GStreamer multimedia framework.")
              version ".tar.xz"))
        (sha256
         (base32
-         "0aisl8nazcfi4b5j6fz8zwpp0k9csb022zniz65b2pxxpdjayzb0"))))
+         "08cfz2vkf494rsg0bn75px26fxs3syvxnsc9lj5n074j0cvfgbxj"))))
     (build-system meson-build-system)
     (arguments
-     (list #:phases
+     (list #:disallowed-references (list python)
+           #:meson meson-0.63
+           #:phases
            #~(modify-phases %standard-phases
                #$@%common-gstreamer-phases
                #$@(if (string-prefix? "i686" (or (%current-target-system)
@@ -491,12 +494,22 @@ test_stress_cleanup_unschedule.*")
                               (("tcase_add_test \\(tc_chain, \
 test_stress_reschedule.*")
                                "")))))
-                      '()))))
+                      '())
+               (add-after 'patch-shebangs 'do-not-capture-python
+                 (lambda _
+                   ;; The patch-source-shebangs phase causes the following build
+                   ;; script to reference Python in its shebang, which is
+                   ;; unnecessary.
+                   (substitute* (string-append
+                                 #$output "/libexec/gstreamer-1.0/"
+                                 "gst-plugins-doc-cache-generator")
+                     (((which "python3"))
+                      "/usr/bin/env python3")))))))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
      ;;   Requires.private: gmodule-no-export-2.0 libunwind libdw
-     (list elfutils ; libdw
+     (list elfutils                     ;libdw
            glib libunwind))
     (native-inputs
      (list bash-completion
@@ -506,7 +519,7 @@ test_stress_reschedule.*")
            gobject-introspection
            perl
            pkg-config
-           python-wrapper))
+           python))
     (inputs
      (list gmp libcap
            ;; For tests.
@@ -533,7 +546,7 @@ This package provides the core library and elements.")
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
-    (version "1.20.3")
+    (version "1.22.2")
     (source
      (origin
       (method url-fetch)
@@ -541,7 +554,7 @@ This package provides the core library and elements.")
                           name "-" version ".tar.xz"))
       (sha256
        (base32
-        "17rw8wj1x1bg153m9z76pdvgz5k93m3riyalfpzq00x7h7fv6c3y"))))
+        "0jcxcx4mgfjvfb3ixibwhx8j330mq3ap469w7hapm6z79q614rgb"))))
     (build-system meson-build-system)
     (propagated-inputs
      (list glib                     ;required by gstreamer-sdp-1.0.pc
@@ -580,6 +593,7 @@ This package provides the core library and elements.")
            xorg-server-for-tests))
     (arguments
      (list
+      #:meson meson-0.63
       #:phases
       #~(modify-phases %standard-phases
           #$@%common-gstreamer-phases
@@ -632,7 +646,7 @@ for the GStreamer multimedia library.")
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.20.3")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
@@ -641,10 +655,11 @@ for the GStreamer multimedia library.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "1dv8b2md1xk6d45ir1wzbvqhxbvm6mxv881rjl0brnjwpw3c5wzq"))))
+        (base32 "1p8cpkk4dynglw0xswqyf57xl5fnxmb3xld71kv35cpj4nacb33w"))))
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.63
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases
       #~(modify-phases %standard-phases
@@ -659,6 +674,11 @@ for the GStreamer multimedia library.")
                  (string-append prefix "\"" libsoup "\"\n")))))
           (add-after 'unpack 'skip-failing-tests
             (lambda _
+              (substitute* "tests/check/elements/flvmux.c"
+                ;; This test randomly times out (see:
+                ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/786).
+                ((".*tcase_add_test.*test_video_caps_late.*")
+                 ""))
               (substitute* "tests/check/meson.build"
                 ;; Reported as shaky upstream, see
                 ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/785>
@@ -746,14 +766,14 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.20.3")
+    (version "1.22.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kys6m5hg5bc30wfg8qa3s7dmkdz3kj1j8lhvn3267fxalxw24bs"))
+                "03rd09wsrf9xjianpnnvamb4n3lndhd4x31srqsqab20wcfaz3rx"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -762,21 +782,12 @@ model to base your own plug-in on, here it is.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.63
       #:configure-flags #~(list "-Dsctp-internal-usrsctp=disabled")
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases
       #~(modify-phases %standard-phases
           #$@%common-gstreamer-phases
-          #$@(if (string-prefix? "arm" (or (%current-target-system)
-                                           (%current-system)))
-                 ;; Disable test that fails on ARMv7.
-                 ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/issues/1188
-                 `((add-after 'unpack 'disable-asfmux-test
-                     (lambda _
-                       (substitute* "tests/check/meson.build"
-                         (("\\[\\['elements/asfmux\\.c'\\]\\],")
-                          "")))))
-                 '())
           (add-after 'unpack 'adjust-tests
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (let ((gst-plugins-good (assoc-ref (or native-inputs inputs)
@@ -788,17 +799,10 @@ model to base your own plug-in on, here it is.")
                    (string-append "'GST_PLUGIN_SYSTEM_PATH_1_0', '"
                                   gst-plugins-good "/lib/gstreamer-1.0'"))
 
-                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1136
-                  ((".*elements/msdkh264enc\\.c.*") "")
-                  ((".*elements/svthevcenc\\.c.*") "")
-
                   ;; The 'elements_shm.test_shm_live' test sometimes times out
                   ;; (see:
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790).
                   ((".*'elements/shm\\.c'.*") "")
-
-                  ;; FIXME: Why is this failing.
-                  ((".*elements/dash_mpd\\.c.*") "")
 
                   ;; This test is flaky on at least some architectures.
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
@@ -808,9 +812,6 @@ model to base your own plug-in on, here it is.")
                             "'elements/camerabin.c'], true, ],"))
                          '())
 
-                  ;; These tests are flaky and occasionally time out:
-                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
-                  ((".*elements/curlhttpsrc\\.c.*") "")
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
                   ((".*elements/dtls\\.c.*") ""))
                 (substitute* "tests/check/elements/zxing.c"
@@ -949,7 +950,7 @@ par compared to the rest.")
 (define-public gst-plugins-ugly
   (package
     (name "gst-plugins-ugly")
-    (version "1.20.3")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
@@ -957,10 +958,11 @@ par compared to the rest.")
         (string-append "https://gstreamer.freedesktop.org/src/"
                        name "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1zdfsq0zm1d3wj3w3z44bf3v28clr8yd6qzmkjs09hq9k9w21alc"))))
+        (base32 "1486x08bwasq6l7kc75nph5az61siq9mbgkgpw4kf1mxn16z8c4g"))))
     (build-system meson-build-system)
     (arguments
-     (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
+     (list #:meson meson-0.63
+           #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
            #:phases
            #~(modify-phases %standard-phases
                #$@%common-gstreamer-phases
@@ -1006,7 +1008,7 @@ think twice about shipping them.")
 (define-public gst-libav
   (package
     (name "gst-libav")
-    (version "1.20.3")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
@@ -1015,8 +1017,9 @@ think twice about shipping them.")
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
        (sha256
-        (base32 "1zkxybdzdkn07wwmj0rrgxyvbry472dggjv2chdsmpzwc02x3v9z"))))
+        (base32 "1zfg7giwampmjxkqr5pqy66vck42b0akmwby661brwz8iy3zkapw"))))
     (build-system meson-build-system)
+    (arguments (list #:meson meson-0.63))
     (native-inputs
      (list perl pkg-config python-wrapper ruby))
     (inputs
@@ -1032,7 +1035,7 @@ decoders, muxers, and demuxers provided by FFmpeg.")
 (define-public gst-editing-services
   (package
     (name "gst-editing-services")
-    (version "1.20.3")
+    (version "1.22.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1040,10 +1043,11 @@ decoders, muxers, and demuxers provided by FFmpeg.")
                     "gst-editing-services-" version ".tar.xz"))
               (sha256
                (base32
-                "18msiadg6wi1636ylp02yfiwphxlz39gh3vbxchl9qpvd7g9dn2z"))))
+                "1gyfw11ns2la1cm6gvvvv5qj3q5gcvcypc3wk8kdwmrqzij18fs5"))))
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.63
       #:tests? #f                    ; FIXME: 16/23 failing tests.
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases #~(modify-phases %standard-phases
@@ -1100,7 +1104,7 @@ binary, but none of the actual plugins.")))
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.20.3")
+    (version "1.22.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1108,10 +1112,11 @@ binary, but none of the actual plugins.")))
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "1p6g05k88nbbv5x9madsvphxcdkfl1z0lmp39p6bhmg9x8h82d6v"))))
+                "1bak46bj92gyz613m99mnl0yw0qhbhq5dfxifnvldgp45kcb7wmy"))))
     (build-system meson-build-system)
     (arguments
      (list
+      #:meson meson-0.63
       #:modules `((guix build meson-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:prefix python:))

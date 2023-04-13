@@ -130,7 +130,7 @@ compressed video format.")
 (define-public speex
   (package
     (name "speex")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
       (method url-fetch)
@@ -138,7 +138,7 @@ compressed video format.")
                           version ".tar.gz"))
       (sha256
        (base32
-        "150047wnllz4r94whb9r73l5qf0z5z3rlhy98bawfbblmkq8mbpa"))))
+        "1spy51kaxfhpj8171gn1s69wz82nzkz2k0x7k0nhldwangrd8i2b"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -160,14 +160,14 @@ stereo encoding, and voice activity detection.")
 (define-public speexdsp
   (package
     (name "speexdsp")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.xiph.org/releases/speex/"
                                   "speexdsp-" version ".tar.gz"))
               (sha256
                (base32
-                "0wa7sqpk3x61zz99m7lwkgr6yv62ml6lfgs5xja65vlvdzy44838"))))
+                "0gadnnpg9994cindpnw35j45dnr4bflkig1aqxlrafd6wi1p6xwc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static"

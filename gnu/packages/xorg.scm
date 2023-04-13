@@ -24,7 +24,7 @@
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -6041,114 +6041,114 @@ basic eye-candy effects.")
        (patches (search-patches "xpra-4.2-systemd-run.patch"
                                 "xpra-4.2-install_libs.patch"))))
     (build-system python-build-system)
-    ;; see also http://xpra.org/trac/wiki/Dependencies
-    (inputs `(("bash-minimal" ,bash-minimal)    ; for wrap-program
-              ;; Essential dependencies.
-              ("libjpeg" ,libjpeg-turbo)
-              ("libwebp" ,libwebp)
-              ("ffmpeg" ,ffmpeg)
-              ("libx11" ,libx11)
-              ("libxrandr" ,libxrandr)
-              ("libxtst" ,libxtst)
-              ("libxfixes" ,libxfixes)
-              ("libxkbfile" ,libxkbfile)
-              ("libxcomposite" ,libxcomposite)
-              ("libxdamage" ,libxdamage)
-              ("libxext" ,libxext)
-              ("libxres" ,libxres)
-              ("lz4" ,lz4)
-              ("gtk+" ,gtk+)
-              ("python-pycairo" ,python-pycairo)
-              ("python-pygobject" ,python-pygobject)
-              ("xauth" ,xauth)
-              ("xorg-server" ,xorg-server)
-              ("xf86-video-dummy" ,xf86-video-dummy)
-              ("xf86-input-mouse" ,xf86-input-mouse)
-              ("xf86-input-keyboard" ,xf86-input-keyboard)
-              ("python-pillow" ,python-pillow)
-              ;; Optional dependencies.
-              ("libx264" ,libx264)
-              ("x265" ,x265)
-              ("libvpx" ,libvpx)
-              ("python-rencode" ,python-rencode) ; For speed.
-              ("python-numpy" ,python-numpy)
-              ("python-pyopengl" ,python-pyopengl) ; Drawing acceleration.
-              ("python-pyopengl-accelerate" ,python-pyopengl-accelerate) ; Same.
-              ("python-paramiko" ,python-paramiko) ; Tunneling over SSH.
-              ("python-dbus" ,python-dbus) ; For desktop notifications.
-              ("dbus" ,dbus)               ; For dbus-launch command.
-              ("python-lz4" ,python-lz4) ; Faster compression than zlib.
-              ("python-netifaces" ,python-netifaces)))
+    (inputs
+     (list bash-minimal                 ; for wrap-program
+           ;; Essential dependencies.
+           libjpeg-turbo
+           libwebp
+           ffmpeg
+           libx11
+           libxrandr
+           libxtst
+           libxfixes
+           libxkbfile
+           libxcomposite
+           libxdamage
+           libxext
+           libxres
+           lz4
+           gtk+
+           python-pycairo
+           python-pygobject
+           xauth
+           xorg-server
+           xf86-video-dummy
+           xf86-input-mouse
+           xf86-input-keyboard
+           python-pillow
+           ;; Optional dependencies.
+           libx264
+           x265
+           libvpx
+           python-rencode               ; For speed.
+           python-numpy
+           python-pyopengl              ; Drawing acceleration.
+           python-pyopengl-accelerate   ; Same.
+           python-paramiko              ; Tunneling over SSH.
+           python-dbus                  ; For desktop notifications.
+           dbus                         ; For dbus-launch command.
+           python-lz4                   ; Faster compression than zlib.
+           python-netifaces))
     (native-inputs (list pkg-config pandoc python-cython))
     (arguments
-     `(#:configure-flags '("--without-Xdummy"
-						   "--without-Xdummy_wrapper"
-                           "--with-opengl"
-                           "--without-debug"
-                           "--without-strict") ; Ignore compiler warnings.
-       #:modules ((guix build python-build-system)
+     (list
+      #:configure-flags #~(list "--without-Xdummy"
+                                "--without-Xdummy_wrapper"
+                                "--with-opengl"
+                                "--without-debug"
+                                "--without-strict") ; Ignore compiler warnings.
+      #:modules '((guix build python-build-system)
                   (guix build utils))
-       #:tests? #f ; Do not run test-cases. This would rebuild all modules and
-                                        ; they seem to require python2.
-       #:phases
-       (modify-phases %standard-phases
-         ;; Must pass the same flags as 'install, otherwise enabled modules may
-         ;; not be built.
-         (replace 'build
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             (apply invoke (append (list "python" "setup.py" "build")
-                                   configure-flags))))
-         (add-before 'install 'fix-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Fix binary paths.
-             (substitute* '("xpra/scripts/config.py" "xpra/x11/vfb_util.py")
-               (("\"Xvfb\"")
-                (string-append "\"" (assoc-ref inputs "xorg-server") "/bin/Xvfb\""))
-               (("\"Xorg\"")
-                (string-append "\"" (assoc-ref inputs "xorg-server") "/bin/Xorg\""))
-               (("\"xauth\"")
-                (string-append "\"" (assoc-ref inputs "xauth") "/bin/xauth\"")))
-             ;; Fix directory of config files.
-             (substitute* '("xpra/scripts/config.py" "xpra/platform/xposix/paths.py")
-               (("\"/etc/xpra/?\"")
-                (string-append "\"" (assoc-ref outputs "out") "/etc/xpra/\"")))
-             ;; XXX: Stolen from (gnu packages linux)
-             (define (append-to-file name body)
-               (let ((file (open-file name "a")))
-                 (display body file)
-                 (close-port file)))
-             ;; Add Xorg module paths.
-             (append-to-file
-              "fs/etc/xpra/xorg.conf"
-              (string-append "\nSection \"Files\"\nModulePath \""
-                             (assoc-ref inputs "xf86-video-dummy") "/lib/xorg/modules,"
-                             (assoc-ref inputs "xf86-input-mouse") "/lib/xorg/modules,"
-                             (assoc-ref inputs "xf86-input-keyboard") "/lib/xorg/modules,"
-                             (assoc-ref inputs "xorg-server") "/lib/xorg/modules\"\n"
-                             "EndSection\n\n"))
-             (substitute* '("xpra/scripts/config.py"
-                            "fs/etc/xpra/conf.d/60_server.conf.in"
-                            "tests/unittests/unit/server/mixins/notification_test.py")
-               ;; The trailing -- is intentional, so we only replace it inside
-               ;; a command line.
-               (("dbus-launch --")
-                (string-append (search-input-file inputs "/bin/dbus-launch")
-                               " --")))
-             ;; /run/user does not exist on guix system
-             (substitute* "./xpra/scripts/config.py"
-               (("socket-dir.*: \"\",")
-                "socket-dir\"        : \"~/.xpra\","))
-             #t))
-         ;; GTK3 will not be found, if GI can’t find its typelibs.
-         (add-after
-             'install 'wrap-program
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/xpra")))
-               ;; XXX: only export typelibs in inputs
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+      ;; Do not run test-cases.  This would rebuild all modules and they seem
+      ;; to require python2.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Must pass the same flags as 'install, otherwise enabled modules may
+          ;; not be built.
+          (replace 'build
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke (append (list "python" "setup.py" "build")
+                                    configure-flags))))
+          (add-before 'install 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Fix binary paths.
+              (substitute* '("xpra/scripts/config.py"
+                             "xpra/x11/vfb_util.py")
+                (("\"Xvfb\"")
+                 (format #f "~s" (search-input-file inputs "bin/Xvfb")))
+                (("\"Xorg\"")
+                 (format #f "~s" (search-input-file inputs "bin/Xorg")))
+                (("\"xauth\"")
+                 (format #f "~s" (search-input-file inputs "bin/xauth"))))
+              ;; Fix directory of config files.
+              (substitute* '("xpra/scripts/config.py"
+                             "xpra/platform/xposix/paths.py")
+                (("\"/etc/xpra/?\"")
+                 (string-append "\"" #$output "/etc/xpra/\"")))
+              ;; XXX: Stolen from (gnu packages linux)
+              (define (append-to-file name body)
+                (let ((file (open-file name "a")))
+                  (display body file)
+                  (close-port file)))
+              ;; Add Xorg module paths.
+              (append-to-file
+               "fs/etc/xpra/xorg.conf"
+               (string-append
+                "\nSection \"Files\"\nModulePath \""
+                #$(this-package-input "xf86-video-dummy") "/lib/xorg/modules,"
+                #$(this-package-input "xf86-input-mouse") "/lib/xorg/modules,"
+                #$(this-package-input "xf86-input-keyboard") "/lib/xorg/modules,"
+                #$(this-package-input "xorg-server") "/lib/xorg/modules\"\n"
+                "EndSection\n\n"))
+              (substitute* '("xpra/scripts/config.py"
+                             "fs/etc/xpra/conf.d/60_server.conf.in"
+                             "tests/unittests/unit/server/mixins/notification_test.py")
+                ;; The trailing -- is intentional, so we only replace it inside
+                ;; a command line.
+                (("dbus-launch --")
+                 (string-append (search-input-file inputs "/bin/dbus-launch")
+                                " --")))
+              ;; /run/user does not exist on guix system.
+              (substitute* "./xpra/scripts/config.py"
+                (("socket-dir.*: \"\",")
+                 "socket-dir\"        : \"~/.xpra\","))))
+          ;; GTK3 will not be found, if GI can’t find its typelibs.
+          (add-after 'install 'wrap-program
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; XXX: only export typelibs in inputs
+              (wrap-program (search-input-file outputs "bin/xpra")
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (home-page "https://www.xpra.org/")
     (synopsis "Remote access to individual applications or full desktops")
     (description "Xpra is a persistent remote display server and client for

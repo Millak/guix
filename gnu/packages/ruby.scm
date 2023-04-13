@@ -6243,8 +6243,9 @@ to reproduce user environments.")
       #~(modify-phases %standard-phases
           (add-after 'install 'delete-mkmf.log
             (lambda _
-              ;; This build log captures non-deterministic file names (see:
-              ;; https://github.com/sparklemotion/nokogiri/issues/2755).
+              ;; Rubygems installs build log files that embed volatile file
+              ;; names (see:
+              ;; https://github.com/rubygems/rubygems/issues/6259).
               (for-each delete-file (find-files #$output "^mkmf\\.log$")))))))
     (native-inputs (list ruby-hoe))
     (inputs (list zlib libxml2 libxslt))
@@ -7818,10 +7819,8 @@ alternative to Marshal for Object serialization.")
                              (string-append (getenv "GEM_PATH") ":" new-gem))
                      (when tests?
                        (invoke "rspec"))))))))
-    (native-inputs
-     (list ruby-rake-compiler ruby-hoe ruby-rspec))
-    (inputs
-     (list postgresql))
+    (native-inputs (list ruby-rake-compiler ruby-hoe ruby-rspec))
+    (inputs (list postgresql))
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
 with PostgreSQL 9.3 and later.")
@@ -11526,7 +11525,7 @@ part of the Prawn PDF generator.")
 (define-public ruby-puma
   (package
     (name "ruby-puma")
-    (version "6.1.1")
+    (version "6.2.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -11536,7 +11535,7 @@ part of the Prawn PDF generator.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v4nn3z0bj0ry0gpx1hsf5mzkinsx9sv716j4jf2nb1x6hcwv993"))))
+         "0d71h5ggvfgnxq9msd1hmcz3s8mspzf7kqas1hzr0w9pfafddyv3"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -11572,6 +11571,12 @@ part of the Prawn PDF generator.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "bundle" "exec" "rake" "test"))))
+          (add-after 'install 'delete-mkmf.log
+            (lambda _
+              ;; Rubygems installs build log files that embed volatile file
+              ;; names (see:
+              ;; https://github.com/rubygems/rubygems/issues/6259).
+              (for-each delete-file (find-files #$output "^mkmf\\.log$"))))
           (add-before 'check 'disable-problematic-tests
             (lambda _
               (let-syntax ((skip-tests
@@ -11594,6 +11599,7 @@ part of the Prawn PDF generator.")
                             "test_off_tls1_2")
                 (skip-tests "test/test_integration_cluster.rb"
                             "test_fork_worker_on_refork"
+                            "test_hot_restart_does_not_drop_connections"
                             "test_culling_strategy_oldest_fork_worker"
                             "test_usr1_fork_worker")
                 (skip-tests "test/test_integration_pumactl.rb"

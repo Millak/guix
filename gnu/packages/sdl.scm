@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -115,7 +115,7 @@ joystick, and graphics hardware.")
   (package
     (inherit sdl)
     (name "sdl2")
-    (version "2.24.0")
+    (version "2.26.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -123,7 +123,7 @@ joystick, and graphics hardware.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "15vd9najhjh6s9z9hhx7zp51iby690a1g3h7kcwjvyb82x5w7r4i"))))
+                "1q4r1camsr17mnpv00d6h3qy93b481rp68r6fbxbszq3vv1rplwm"))))
     (arguments
      (substitute-keyword-arguments (package-arguments sdl)
        ((#:configure-flags flags)
@@ -468,7 +468,7 @@ directory.")
 (define-public sdl2-image
   (package (inherit sdl-image)
     (name "sdl2-image")
-    (version "2.0.5")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
@@ -476,14 +476,15 @@ directory.")
         (string-append "https://www.libsdl.org/projects/SDL_image/release/"
                        "SDL2_image-" version ".tar.gz"))
        (sha256
-        (base32 "1l0864kas9cwpp2d32yxl81g98lx40dhbdp03dz7sbv84vhgdmdx"))))
+        (base32 "0xs7h5cp0sz082rn1bqjqbrgwjhwcskz9i6ikiisq2yhv2s5yda8"))))
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-image))))
+     (propagated-inputs-with-sdl2 sdl-image))
+    (properties '((upstream-name . "SDL2_image")))))
 
 (define-public sdl2-mixer
   (package (inherit sdl-mixer)
     (name "sdl2-mixer")
-    (version "2.0.4")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
@@ -496,32 +497,37 @@ directory.")
                    (delete-file-recursively "external")
                    #t))
        (sha256
-        (base32 "0694vsz5bjkcdgfdra6x9fq8vpzrl8m6q96gh58df7065hw5mkxl"))))
+        (base32 "0wd35a9fcj1bv534k9cr4jdk076dpiqq0ayk6cybmv3d6q8aiplc"))))
     (arguments
-      (substitute-keyword-arguments (package-arguments sdl-mixer)
-         ((#:configure-flags flags)
-          `(cons*
-            "--disable-music-opus-shared"
-            ;; These options were renamed in SDL2 mixer. Keeping the inherited
-            ;; variants produces a harmless warning.
-            "--disable-music-mod-modplug-shared"
-            "--disable-music-midi-fluidsynth-shared"
-            ,flags))))
-    (inputs
-     (modify-inputs (package-inputs sdl-mixer)
-       (delete "libmikmod")
-       (prepend opusfile
-                ;; The default MOD library changed in SDL2 mixer.
-                libmodplug)))
+     (list #:tests? #f                     ;no tests
+           #:configure-flags
+           #~'(;; Prefer system libraries to bundled codecs.
+               "--enable-music-flac-libflac"
+               "--enable-music-midi-fluidsynth"
+               "--enable-music-mod-modplug"
+               "--enable-music-mp3-mpg123"
+               "--enable-music-ogg-vorbis"
+               "--enable-music-opus"
+               ;; Link the libraries instead of dlopening them.
+               "--enable-music-flac-libflac-shared=no"
+               "--enable-music-midi-fluidsynth-shared=no"
+               "--enable-music-mod-modplug-shared=no"
+               "--enable-music-mp3-mpg123-shared=no"
+               "--enable-music-ogg-vorbis-shared=no"
+               "--enable-music-opus-shared=no")))
     (native-inputs
-     `(("pkgconfig" ,pkg-config))) ; Needed to find the opus library.
+     (list pkg-config))
+    (inputs '())
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-mixer))))
+     (modify-inputs (propagated-inputs-with-sdl2 sdl-mixer)
+       ;; In Requires.private of SDL2_mixer.pc.
+       (append flac fluidsynth libmodplug libvorbis mpg123 opusfile)))
+    (properties '((upstream-name . "SDL2_mixer")))))
 
 (define-public sdl2-net
   (package (inherit sdl-net)
     (name "sdl2-net")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
@@ -530,29 +536,35 @@ directory.")
                        "SDL2_net-" version ".tar.gz"))
        (sha256
         (base32
-         "08cxc1bicmyk89kiks7izw1rlx5ng5n6xpy8fy0zxni3b9z8mkhm"))))
+         "1svzhpf7k48jfga8ph127l99lwpgs5g5isgl9ybp2qiii0cqjjjf"))))
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-net))))
+     (propagated-inputs-with-sdl2 sdl-net))
+    (properties '((upstream-name . "SDL2_net")))))
 
 (define-public sdl2-ttf
   (package (inherit sdl-ttf)
     (name "sdl2-ttf")
-    (version "2.0.15")
+    (version "2.20.1")
     (source (origin
              (method url-fetch)
              (uri
               (string-append "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-"
                              version ".tar.gz"))
              (modules '((guix build utils)))
-             (snippet (begin
-                        ;; Remove bundled libraries.
-                        '(delete-file-recursively "external")
-                        #t))
+             (snippet
+              ;; Remove bundled libraries.
+              '(delete-file-recursively "external"))
              (sha256
               (base32
-               "0cyd48dipc0m399qy8s03lci8b0bpiy8xlkvrm2ia7wcv0dfpv59"))))
+               "0mqcgpcvzp927xv1gs51f2wqly9k9f8nxfxi69lxlfncyd8svkbq"))))
+    (arguments
+     (list #:configure-flags #~'("--enable-freetype-builtin=no"
+                                 "--enable-harfbuzz-builtin=no")))
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-ttf))))
+     (modify-inputs (propagated-inputs-with-sdl2 sdl-ttf)
+       ;; In Requires.private of SDL2_ttf.pc.
+       (prepend harfbuzz freetype)))
+    (properties '((upstream-name . "SDL2_ttf")))))
 
 (define-public guile-sdl
   (package

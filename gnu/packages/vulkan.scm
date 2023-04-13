@@ -2,8 +2,10 @@
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2022 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,10 +43,13 @@
   #:use-module (gnu packages wine)
   #:use-module (gnu packages xorg))
 
+;; Note: Remember to change vulkan-loader version when bumping this.
+(define %vulkan-sdk-version "sdk-1.3.231.1")
+
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version "1.5.3")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
@@ -53,7 +58,7 @@
              (commit version)))
        (sha256
         (base32
-         "069sivqajp7z4p44lmrz23lvf237xpkjxd4lzrg27836pwqcz9bj"))
+         "0z8b485hryya2g0jxv7amwg3fjj7pchbgnsa5ldf5fwgh5js0icm"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -76,19 +81,22 @@ and for the GLSL.std.450 extended instruction set.
 (define-public spirv-tools
   (package
     (name "spirv-tools")
-    (version "2020.2")
+    (version %vulkan-sdk-version)
     (source
      (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/KhronosGroup/SPIRV-Tools")
-            (commit (string-append "v" version))))
+            (commit version)))
       (sha256
-       (base32 "00b7xgyrcb2qq63pp3cnw5q1xqx2d9rfn65lai6n6r89s1vh3vg6"))
+       (base32 "03d489ind2az7w7q1slj3mdc04372r3qqbnd7m9akxbg7yix1a5j"))
       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
+                               ;; Some packages like mpv fail to link
+                               ;; when the static libraries are built.
+                               "-DSPIRV_TOOLS_BUILD_STATIC=OFF"
                                (string-append
                                 "-DSPIRV-Headers_SOURCE_DIR="
                                 (assoc-ref %build-inputs "spirv-headers")))))
@@ -105,7 +113,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
 (define-public spirv-cross
   (package
     (name "spirv-cross")
-    (version "2020-05-19")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
@@ -113,7 +121,7 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
              (url "https://github.com/KhronosGroup/SPIRV-Cross")
              (commit version)))
        (sha256
-        (base32 "0zyijp9zx9wbd4i5lwjap7n793iz6yjkf27la60dsffxl75yy9pd"))
+        (base32 "1ypbc1krkr0yywa1m976g3sjyb80l7hxwrnh6gp70w6va1dlnnn9"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -146,19 +154,18 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
 (define-public glslang
   (package
     (name "glslang")
-    (version "10-11.0.0")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/glslang")
-             ;; Tag "10-11.0.0" was moved to "11.0.0".
-             ;; FIXME: Use (commit version) on next update.
-             (commit "11.0.0")))
+             (commit version)))
+       (patches (search-patches "glslang-install-static-libs.patch"))
        (sha256
         (base32
-         "14mn2awswl022ls75mfpsnpsl0ai0jgfbqj3sxcsqawyj5f432py"))
-       (file-name (string-append name "-" version "-checkout"))))
+         "12a1zl8qxa28nbf6m67260c0lwdw3bqbj0jz1382wgm5px1fpqw6"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ;FIXME: requires bundled SPIRV-Tools
@@ -180,17 +187,17 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-headers
   (package
     (name "vulkan-headers")
-    (version "1.2.164")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Headers")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11wzxvwim4jna1yssbmprl211dhmz8vmrd498zww3bghzlj7bljv"))))
+         "167zdank6pn66mzjdwgrdlmhmsy4v2k0nhw0nwg649k863rgi00j"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; No tests.
@@ -204,48 +211,55 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-loader
   (package
     (name "vulkan-loader")
-    (version "1.2.162")
+    ;; XXX: Take a slightly newer commit to fix a test failure on i686:
+    ;; https://github.com/KhronosGroup/Vulkan-Loader/pull/1036
+    (version "sdk-1.3.232")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Loader")
-             (commit (string-append "v" version))))
+             (commit "v1.3.232")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15gx9ab6w1sjq9hkpbas7z2f8f47j6mlln6p3w26qmydjj8gfjjv"))))
+         "0w69sh669sx9pwlvv2rv92ds2hm2rbzsa6qqcmd8kcad0qfq7dz2"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       ,#~(list
-           (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
-                          #$(this-package-input "vulkan-headers"))
-           (string-append "-DCMAKE_INSTALL_INCLUDEDIR="
-                          #$(this-package-input "vulkan-headers")
-                          "/include"))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'unpack-googletest
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((gtest (assoc-ref inputs "googletest:source")))
-                        (when gtest
-                          (copy-recursively gtest "external/googletest"))
-                        #t)))
-                  (add-after 'unpack 'disable-loader-tests
-                    (lambda _
-                      ;; Many tests require a Vulkan driver.  Skip those.
-                      (substitute* "tests/loader_validation_tests.cpp"
-                        ((".*= vkCreateInstance.*" all)
-                         (string-append "GTEST_SKIP();\n" all))
-                        (("TEST_F.*InstanceExtensionEnumerated.*" all)
-                         (string-append all "\nGTEST_SKIP();\n")))
-                      #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
+                             (dirname (dirname
+                                       (search-input-directory
+                                        %build-inputs "include/vulkan"))))
+              "-DBUILD_TESTS=ON")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-pkg-config-file
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((vulkan-headers (dirname (search-input-directory
+                                               inputs "include/vulkan"))))
+                 ;; Ensure the pkg-config file refers to vulkan-headers.
+                 (substitute* "loader/vulkan.pc.in"
+                   (("^includedir=.*")
+                    (string-append "includedir=" vulkan-headers "\n"))))))
+           (add-after 'unpack 'use-system-googletest
+             (lambda _
+               ;; Inform the build system that googletest is already built.
+               (substitute* "CMakeLists.txt"
+                 ((".*if\\(TARGET gtest\\)")
+                  (string-append "    find_package(GTest REQUIRED)\n"
+                                 "    if(true)")))
+               ;; Use the namespaced variable.
+               (substitute* "tests/framework/CMakeLists.txt"
+                 (("PUBLIC gtest ")
+                  "PUBLIC GTest::gtest ")))))))
     (native-inputs
-     `(("googletest:source" ,(package-source googletest))
-       ("libxrandr" ,libxrandr)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("wayland" ,wayland)))
+     (list googletest
+           libxrandr
+           pkg-config
+           python
+           wayland))
     (inputs
      (list vulkan-headers))
     (home-page
@@ -266,20 +280,20 @@ and the ICD.")
 (define-public vulkan-tools
   (package
     (name "vulkan-tools")
-    (version "1.2.162")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Tools")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "129wzk7xj3vn3c8b4p7fzkd0npl58118s2i1d88gsfnlix54nagq"))))
+         "0jzwjfx4c7y15wkwfhhc64rzljpi47bxrm5jw5blfsqjh8zsd27a"))))
     (build-system cmake-build-system)
     (inputs
-     (list glslang libxrandr vulkan-loader wayland))
+     (list glslang libxrandr vulkan-loader wayland wayland-protocols))
     (native-inputs
      (list pkg-config python vulkan-headers))
     (arguments
@@ -298,7 +312,8 @@ API.")
 (define-public shaderc
   (package
     (name "shaderc")
-    (version "2020.4")
+    ;; shaderc doesn't follow the versioning scheme of vulkan sdk
+    (version "2022.3")
     (source
      (origin
        (method git-fetch)
@@ -308,7 +323,7 @@ API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07h78nd964h2bdm4drzws8i1gvyal8a3wlhbcm5qxqk6vknv8hrk"))))
+         "0sdbfi66zmqj0c5q5yv2zvcvry7557yzgxk2mwflyjgqh7kdhb8d"))))
     (build-system cmake-build-system)
     (arguments
      `(;; FIXME: Skip most of the tests, because enabling system gtest breaks
@@ -340,7 +355,16 @@ API.")
                          ,version
                          ,(package-version spirv-tools)
                          ,(package-version glslang))))
-             #t)))))
+             #t))
+         ;; see: https://github.com/google/shaderc/pull/1276
+         (add-after 'do-not-look-for-bundled-sources 'drop-additional-glslang-deps
+           (lambda _
+             (substitute* "glslc/CMakeLists.txt"
+               (("OSDependent OGLCompiler") ""))
+             (substitute* "libshaderc/CMakeLists.txt"
+               (("OSDependent OGLCompiler") ""))
+             (substitute* "libshaderc_util/CMakeLists.txt"
+               (("OSDependent OGLCompiler") "")))))))
     (inputs
      (list glslang python spirv-headers spirv-tools))
     (native-inputs
@@ -399,3 +423,127 @@ shader compilation.")
      (synopsis "Direct3D 12 to Vulkan translation library")
      (description "vkd3d is a library for translating Direct3D 12 to Vulkan.")
      (license license:lgpl2.1))))
+
+(define-public vulkan-validationlayers
+  (package
+    (name "vulkan-validationlayers")
+    (version %vulkan-sdk-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07djrk6yym4vl2b52wr09r8y649v5lark5hnr5rwvlxwxdmd9g75"))))
+    (build-system cmake-build-system)
+    (inputs (list glslang
+                  libxrandr
+                  mesa
+                  shaderc
+                  spirv-tools
+                  vulkan-loader
+                  wayland))
+    (native-inputs (list pkg-config python spirv-headers vulkan-headers))
+    (arguments
+     (list #:tests? #f ;no tests
+           #:configure-flags
+           #~(list "-DUSE_ROBIN_HOOD_HASHING=OFF"
+                   (string-append "-DGLSLANG_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/glslang"))))
+                   (string-append "-DSPIRV_HEADERS_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/spirv"))))
+                   (string-append "-DSPIRV_TOOLS_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/spirv-tools"))))
+                   (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/vulkan"))))
+                   "-Wno-dev")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'set-layer-path-in-manifest
+                          (lambda _
+                            (let ((manifest (string-append #$output
+                                             "/share/vulkan/explicit_layer.d"
+                                             "/VkLayer_khronos_validation.json")))
+                              (substitute* manifest
+                                (("\"libVkLayer_khronos_validation.so\"")
+                                 (string-append "\"" #$output
+                                  "/lib/libVkLayer_khronos_validation.so\"")))))))))
+    (home-page "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
+    (synopsis "Khronos official validation layers for Vulkan")
+    (description
+     "Vulkan-ValidationLayers provides the Khronos official validation layers that
+can assist development by enabling developers to verify their applications correctly
+use the Vulkan API.")
+    (license license:asl2.0)))
+
+(define-public volk
+  (package
+    (name "volk")
+    (version %vulkan-sdk-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zeux/volk")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xaw3kg754mknx8lfj1p74a9npjfvdvlpicvn0hla4495zpc10rq"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f                      ;no test
+       #:configure-flags '("-DVOLK_INSTALL=ON" "-DVOLK_PULL_IN_VULKAN=ON")))
+    (inputs (list vulkan-headers))
+    (synopsis "Meta loader for Vulkan API")
+    (description
+     "Volk is a meta-loader for Vulkan.  It allows you to dynamically load
+entrypoints required to use Vulkan without linking the Vulkan loader.
+Additionally, volk simplifies the use of Vulkan extensions by automatically
+loading all associated entrypoints.  Finally, volk enables loading Vulkan
+entrypoints directly from the driver which can increase performance by
+skipping loader dispatch overhead.")
+    (home-page "https://github.com/zeux/volk")
+    (license license:expat)))
+
+(define-public vulkan-memory-allocator
+  (package
+    (name "vulkan-memory-allocator")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1hpzjwl5bgqv9hmf1fdldihfllcbdg515f391a200klg0rnixdds"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; no test
+     `(#:tests? #f))
+    (inputs (list vulkan-loader vulkan-headers))
+    (synopsis "Vulkan memory allocation library")
+    (description
+     "The Vulkan Memory Allocator (VMA) library provides a simple and easy to
+integrate API to help users allocate memory for Vulkan buffer and image
+storage.")
+    (home-page
+     "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator")
+    (license license:expat)))

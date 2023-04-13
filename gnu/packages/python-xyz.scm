@@ -968,7 +968,7 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
                 "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest
+     (list python-pytest-7.1            ;for pytest-subtests
            python-pytest-cov
            python-pytest-mpl
            python-pytest-subtests
@@ -1863,14 +1863,14 @@ library.")
 (define-public python-h5py
   (package
     (name "python-h5py")
-    (version "3.6.0")
+    (version "3.8.0")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "h5py" version))
       (sha256
        (base32
-        "0afv805vqrm5071g7alwv41920nhh8kjv4m5nbia9awj9a0x4ll7"))))
+        "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no test target
@@ -3542,7 +3542,7 @@ and is not compatible with JSON.")
 (define-public python-exceptiongroup
   (package
     (name "python-exceptiongroup")
-    (version "1.0.0rc8")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3551,7 +3551,7 @@ and is not compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xsbpv22n51p6yvyvz231mf8zhbi1i88b4zmacaxxx31zrq5ifv4"))))
+                "0wcvzwgjs0xmggs6dh92jxdqi988gafzh10hrzvw10kasy0xakfj"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -12164,36 +12164,17 @@ the @code{sendfile(2)} system call.")
 (define-public python-pyftpdlib
   (package
     (name "python-pyftpdlib")
-    (version "1.5.6")
+    (version "1.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyftpdlib" version))
        (sha256
-        (base32 "0pnv2byzmzg84q5nmmhn1xafvfil85qa5y52bj455br93zc5b9px"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke
-                 "pytest"
-                 ;; Deselect failing tests.
-                 "-k" (string-append
-                       ;; Using Pytest instead of the Makefile causes the
-                       ;; command line tests to fail on unknown Pytest
-                       ;; arguments.
-                       "not TestCommandLineParser "
-                       ;; https://github.com/giampaolo/pyftpdlib/issues/478
-                       "and not test_use_gmt_times "
-                       ;; https://github.com/giampaolo/pyftpdlib/issues/550
-                       "and not test_masquerade_address "
-                       ;; https://github.com/giampaolo/pyftpdlib/issues/500
-                       "and not test_rest_on_stor "
-                       "and not test_stor_ascii"))))))))
+        (base32 "0vk5gcx4svjrpm014ykwxmijqihgb4ha17kb3yphk0nv6x0wx8vy"))))
+    (build-system pyproject-build-system)
+    ;; Using Pytest instead of the Makefile causes the command line tests to
+    ;; fail on unknown Pytest arguments.
+    (arguments (list #:test-flags #~(list "-k" "not TestCommandLineParser")))
     (native-inputs (list python-psutil python-pytest))
     (propagated-inputs (list python-pyopenssl python-pysendfile))
     (home-page "https://github.com/giampaolo/pyftpdlib/")
@@ -12302,7 +12283,12 @@ from an XML-based format.")
                                     "test_read_fontdimens_mathex"
                                     "test_read_fontdimens_vanilla"
                                     "test_read_boundary_char"
-                                    "fontTools.tfmLib")
+                                    "fontTools.tfmLib"
+                                    ;; The MtiTest tests fail for unknown
+                                    ;; reasons (see:
+                                    ;; https://github.com/fonttools/
+                                    ;; fonttools/issues/3078)
+                                    "MtiTest")
                                   " and not "))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs python-fonttools)
@@ -12320,14 +12306,14 @@ from an XML-based format.")
 (define-public python-fonttools-next
   (package
     (inherit python-fonttools-full)
-    (version "4.37.1")
+    (version "4.39.3")
     (source (origin
               (inherit (package-source python-fonttools-full))
               (method url-fetch)
               (uri (pypi-uri "fonttools" version ".zip"))
               (sha256
                (base32
-                "1ryc1wca2v92wn24baryj5fr32lspl8rbsig32fnkxp1islf21j6"))))))
+                "1msibi5cmi5znykkg66dq7xshl07lkqjxhrz5hcipqvlggsvjd4j"))))))
 
 (define-public python-ly
   (package
@@ -14608,26 +14594,24 @@ simulation, statistical modeling, machine learning and much more.")
 (define-public python-chardet
   (package
     (name "python-chardet")
-    (version "5.0.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "chardet" version))
        (sha256
         (base32
-         "1amqmz8731ly6f9rkbk09w4jqgmmgyxykd1bawhgrdbqzlmxys03"))))
+         "1r9ixxnish9j3dq4h0z0cwlkr4f5lgi6d8mhbzw59hbbjlmp2qhd"))))
     (native-inputs
      (list python-pytest))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:test-flags
+           ;; Disable test that fails sporadically:
+           ;; https://github.com/chardet/chardet/issues/256
+           #~'("-k" "not test_detect_all_and_detect_one_should_agree")
+           #:phases
            #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda _
-                   (invoke "pytest" "-vv" "-k"
-                           ;; Disable test that fails sporadically:
-                           ;; https://github.com/chardet/chardet/issues/256
-                           "not test_detect_all_and_detect_one_should_agree")))
                ;; This package provides a 'chardetect' executable that only
                ;; depends on Python, so customize the wrap phase to avoid
                ;; adding pytest and friends in order to save size.
@@ -15750,13 +15734,13 @@ expression.")
 (define-public python-unicodedata2
   (package
     (name "python-unicodedata2")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "unicodedata2" version))
        (sha256
-        (base32 "110nnvh02ssp92xbmswy39aa186jrmb7m41x4220wigl8c0dzxs1"))))
+        (base32 "0bcgls7m2zndpd8whgznnd5908jbsa50si2bh88wsn0agcznhv7d"))))
     (build-system python-build-system)
     (home-page "https://github.com/fonttools/unicodedata2")
     (synopsis "Python unicodedata backport")
@@ -16425,7 +16409,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-iniconfig
            python-moto
            python-msgpack
-           python-pytest
+           python-pytest-7.1            ;for pytest-subtests
            python-pytest-celery
            python-pytest-subtests
            python-pytest-timeout
@@ -24828,13 +24812,13 @@ project.")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.20.0")
+    (version "0.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio" version))
        (sha256
-        (base32 "0w30cwmdwfa8zq2agqv3h62jzwwsk7ms8f683ag8f3jx279m42k7"))))
+        (base32 "1kxa9v0cds0xnklvzppv4ix4xg81r73p5pm4qlvv2iqa832z2s6f"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -24860,7 +24844,8 @@ project.")
                          ;; Assertion errors.
                          " and not test_guest_mode_ki"
                          " and not test_run_in_trio_thread_ki"
-                         " and not test_simple_cancel_scope_usage_doesnt_create_cyclic_garbage"
+                         " and not test_simple_cancel_scope_usage_doesnt_create\
+_cyclic_garbage"
                          " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
                          " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
                          " and not test_locals_destroyed_promptly_on_cancel"
@@ -24890,6 +24875,8 @@ project.")
     (propagated-inputs
      (list python-async-generator
            python-attrs
+           python-cffi
+           python-exceptiongroup
            python-idna
            python-outcome
            python-sniffio
@@ -24906,22 +24893,15 @@ programs that do multiple things at the same time with parallelized I/O.")
 (define-public python-trio-typing
   (package
     (name "python-trio-typing")
-    (version "0.5.0")
+    (version "0.8.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "trio-typing" version))
-      (sha256
-       (base32 "1yvlj4vf3wyvp16dw6vyfm4i2idm8lvdc3fvjhi6mhm62zv7s07j"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
-    (native-inputs
-     (list python-attrs python-pytest))
+       (method url-fetch)
+       (uri (pypi-uri "trio-typing" version))
+       (sha256
+        (base32 "15wa66cs165wawh4pi808ac43n67b8jqddi5ppdcbkj5gfi68hpi"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-attrs python-pytest))
     (propagated-inputs
      (list python-mypy python-mypy-extensions python-trio
            python-typing-extensions))

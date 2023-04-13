@@ -5727,7 +5727,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
 (define-public bluez
   (package
     (name "bluez")
-    (version "5.64")
+    (version "5.66")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5735,7 +5735,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "0d6yl7l5zrlx5w3y503k72m9xsydx6gi1c65icchq1xknrjpwhxf"))))
+                "0x5mn9x6g626izxnw236933wvq83qagsh9qc9ac9550cb55sdzir"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7146,7 +7146,7 @@ of flash storage.")
 (define-public libseccomp
   (package
     (name "libseccomp")
-    (version "2.5.3")
+    (version "2.5.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/seccomp/libseccomp/"
@@ -7154,7 +7154,7 @@ of flash storage.")
                                   "/libseccomp-" version ".tar.gz"))
               (sha256
                (base32
-                "0xhan73zn4p0n7s8vx6s47wjmidvk4x8r90vfbljairn6f3mq1jr"))))
+                "1nyb3lspc5bsirpsx89vah3n54pmwlgxrwsfaxl01kq50i004afq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")

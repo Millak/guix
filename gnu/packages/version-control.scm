@@ -2020,6 +2020,10 @@ following features:
     (build-system gnu-build-system)
     (arguments
      (list
+      ;; Running the tests in parallel causes test failures on i686-linux.
+      ;; The issue was reported to users@subversion.apache.org, as suggested
+      ;; at https://subversion.apache.org/reporting-issues.
+      #:parallel-tests? #f
       #:configure-flags #~(list "--enable-static=no")
       #:phases
       #~(modify-phases %standard-phases

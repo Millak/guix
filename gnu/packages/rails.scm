@@ -81,6 +81,12 @@
                  "")
                 ((".*behaviors/encoded_key_cache_behavior.*")
                  ""))
+              (when #$(target-x86-32?)
+                ;; This test fails on i686 (see:
+                ;; https://github.com/rails/rails/issues/47832).
+                (substitute* "test/core_ext/duration_test.rb"
+                  (("def test_iso8601_output_and_reparsing.*" all)
+                   (string-append all "    skip('fails on i686')\n"))))
               (delete-file "test/evented_file_update_checker_test.rb")
               ;; These tests require cache_store_behavior, disabled above.
               (delete-file "test/cache/stores/file_store_test.rb")

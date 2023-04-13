@@ -1303,7 +1303,7 @@ language bindings to VIGRA.")
 (define-public libwebp
   (package
     (name "libwebp")
-    (version "1.2.2")
+    (version "1.2.4")
     (source
      (origin
        ;; No tarballs are provided for >0.6.1.
@@ -1314,7 +1314,7 @@ language bindings to VIGRA.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1khqkm5j9aiii9jfsbxzzyz3x33sifzcx537cyjyb3a2g2rl969k"))))
+         "1jndbc99dd19a6d7h4ds51xyak7gfddkbi41nxdm8n23w7ks35r8"))))
     (build-system gnu-build-system)
     (inputs
      (list freeglut
@@ -2214,7 +2214,8 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                  (string-append #$gdk-pixbuf "/bin/gdk-pixbuf-thumbnailer")))))
           (add-after 'install 'install-readme
             (lambda _
-              (let ((doc (string-append #$output "/share/doc/libavif-" #$version)))
+              (let ((doc (string-append #$output "/share/doc/libavif-"
+                                        #$(package-version this-package))))
                 (install-file "../source/README.md" doc))))
           (add-after 'install 'split
             (lambda _

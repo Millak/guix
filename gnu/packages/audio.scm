@@ -2062,7 +2062,7 @@ follower.")
 (define-public fluidsynth
   (package
     (name "fluidsynth")
-    (version "2.2.4")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2071,7 +2071,7 @@ follower.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1061rdj69503spkd8vmfl3fqvyg4l41k5xcc4gw7niy31hnpnjmn"))))
+                "05lr9f0q4x1kvgfa3xrfmagpwvijv9m1s316aa9figqlkcc5vv4k"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
@@ -2092,7 +2092,6 @@ follower.")
      (list alsa-lib
            glib
            jack-1
-           lash
            libsndfile
            readline))
     (home-page "https://www.fluidsynth.org/")
@@ -2747,60 +2746,6 @@ plugin function as a JACK application.")
 to be plugged into a wide range of audio synthesis and recording packages.")
     (license license:lgpl2.1+)))
 
-(define-public lash
-  (package
-    (name "lash")
-    (version "0.6.0-rc2")
-    (source (origin
-              (method url-fetch)
-              ;; The tilde is not permitted in the builder name, but is used
-              ;; in the tarball.
-              (uri (string-append
-                    "mirror://savannah/lash/lash-"
-                    (string-join (string-split version #\-) "~")
-                    ".tar.bz2"))
-              (file-name (string-append name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "12z1vx3krrzsfccpah9xjs68900xvr7bw92wx8np5871i2yv47iw"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(;; Glibc no longer includes Sun RPC support, so tell the build system
-       ;; to use libtirpc instead.
-       #:make-flags (list (string-append "CFLAGS=-I"
-                                         (assoc-ref %build-inputs "libtirpc")
-                                         "/include/tirpc -ltirpc"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; lashd embeds an ancient version of sigsegv so we just skip it
-         (add-after 'unpack 'skip-lashd
-           (lambda _
-             (substitute* '("Makefile.am" "Makefile.in")
-               (("lashd ") ""))
-             #t)))
-       #:configure-flags '("--disable-static")))
-    (inputs
-     `(("bdb" ,bdb)
-       ("gtk" ,gtk+-2)
-       ("jack" ,jack-1)
-       ("libtirpc" ,libtirpc)
-       ("readline" ,readline)
-       ("python" ,python-2)))
-    ;; According to pkg-config, packages depending on lash also need to have
-    ;; at least the following packages declared as inputs.
-    (propagated-inputs
-     (list alsa-lib dbus libxml2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://www.nongnu.org/lash/")
-    (synopsis "Audio application session manager")
-    (description
-     "LASH is a session management system for audio applications.  It allows
-you to save and restore audio sessions consisting of multiple interconneced
-applications, restoring program state (i.e. loaded patches) and the
-connections between them.")
-    (license license:gpl2+)))
-
 (define-public libbs2b
   (package
     (name "libbs2b")
@@ -3313,7 +3258,7 @@ lv2-c++-tools.")
 (define-public openal
   (package
     (name "openal")
-    (version "1.20.1")
+    (version "1.22.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3321,7 +3266,7 @@ lv2-c++-tools.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0vax0b1lgd4212bpxa1rciz52d4mv3dkfvcbbhzw4cjp698v1kmn"))))
+                "081xgkma2a19dscwx21xdpklh8gq399w4f1fx737qsx7rnawr55f"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f  ; no check target

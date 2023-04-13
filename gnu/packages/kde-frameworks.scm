@@ -97,7 +97,7 @@
 (define-public extra-cmake-modules
   (package
     (name "extra-cmake-modules")
-    (version "5.98.0")
+    (version "5.104.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -106,7 +106,7 @@
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0669m98vqy4hpacfjs7xpgjj1bns24kjybrjipxzp82092g8y69w"))))
+                "1nc5ynfz903jc87xawnww3pf1y73x9jvmxnbrj24nqv6vcgv57p4"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; Add test dependency, except on armhf where building it is too
@@ -523,7 +523,7 @@ and the older vCalendar.")
 (define-public kcodecs
   (package
     (name "kcodecs")
-    (version "5.98.0")
+    (version "5.104.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -532,12 +532,10 @@ and the older vCalendar.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0n10r7s9r25xp7vlym41qi421kld00niig73yark7yghj0r41jcz"))))
+                "0swxj2kr37pnwdxsipfii8q02g58lvm9lsh4kflqgfjyhvv0kjby"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules gperf qttools-5))
-    (inputs
-     (list qtbase-5))
+    (native-inputs (list extra-cmake-modules gperf qttools-5))
+    (inputs (list qtbase-5))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "String encoding and manipulating library")
     (description "KCodecs provide a collection of methods to manipulate

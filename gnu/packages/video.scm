@@ -849,7 +849,7 @@ television and DVD.  It is also known as AC-3.")
 (define-public libaom
   (package
     (name "libaom")
-    (version "3.3.0")
+    (version "3.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -858,7 +858,7 @@ television and DVD.  It is also known as AC-3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "024vhsx7bw9kajk65hhh5vmqrja0h33rmlcpngsj3yg4p8l29943"))))
+                "0arn8a88jz4mj69n8cs4qmrdjwhbvzsqgnx20wr9mq01b06kqich"))))
     (build-system cmake-build-system)
     (native-inputs
      (list perl pkg-config python)) ; to detect the version
@@ -866,7 +866,6 @@ television and DVD.  It is also known as AC-3.")
      `(#:tests? #f                      ; downloads many video clips
        #:configure-flags
        (list "-DBUILD_SHARED_LIBS=YES"
-             "-DENABLE_PIC=TRUE"
              "-DAOM_TARGET_CPU=generic"
              (string-append "-DCMAKE_INSTALL_PREFIX="
                             (assoc-ref %outputs "out")))
@@ -916,8 +915,8 @@ shared library and encoder and decoder command-line executables.")
 (define-public libx264
   ;; There are no tags in the repository, so we take the version number from
   ;; the X264_BUILD variable defined in x264.h.
-  (let ((version "161")
-        (commit "4c2aafd864dd201832ec2be0fef4484925146650")
+  (let ((version "164")
+        (commit "b093bbe7d9bc642c8f24067cbdcc73bb43562eab")
         (revision "0"))
     (package
       (name "libx264")
@@ -930,7 +929,7 @@ shared library and encoder and decoder command-line executables.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1i6v9h3xx9pi0zmlj3anwwjxqa63sbhy9crrif8dphipwfn9hyg5"))))
+                  "095pv8y6fqjg8mdvsfk12d0jqgyhip536a6vxhzm7qz8hfp96qhq"))))
       (build-system gnu-build-system)
       (native-inputs
        (list pkg-config nasm))
@@ -979,27 +978,6 @@ H.264 (MPEG-4 AVC) video streams.")
                      (license:non-copyleft ;extras/cl*.h
                       "file://extras/cl.h"
                       "See extras/cl.h in the distribution."))))))
-
-;;; TODO: Merge into libx264 on staging.
-(define-public libx264-next
-  ;; There are no tags in the repository, so we take the version number from
-  ;; the X264_BUILD variable defined in x264.h.
-  (let ((version "164")
-        (commit "b093bbe7d9bc642c8f24067cbdcc73bb43562eab")
-        (revision "0"))
-    (package
-      (inherit libx264)
-      (name "libx264")
-      (version (git-version version revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://code.videolan.org/videolan/x264.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "095pv8y6fqjg8mdvsfk12d0jqgyhip536a6vxhzm7qz8hfp96qhq")))))))
 
 (define-public mkvtoolnix
   (package
@@ -1523,14 +1501,14 @@ quality and performance.")
 (define-public libva
   (package
     (name "libva")
-    (version "2.15.0")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/intel/libva/releases/download/"
                            version "/libva-" version ".tar.bz2"))
        (sha256
-        (base32 "1jhy8qzfp4ydbxs9qd9km7k5wq8r4s2vq20r1q07lgld8l4x93i5"))))
+        (base32 "070aj9nw681a4m7f5xb662hhyib0w9q0i0s9v8vplh9cvfhaqpqi"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -1598,17 +1576,18 @@ These tools require a supported graphics chip, driver, and VA-API back end to
 operate properly.")
     (license license:expat)))
 
-(define-public ffmpeg-5
+(define-public ffmpeg
   (package
     (name "ffmpeg")
-    (version "5.1.2")
+    (version "6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1p7kxr0f9f9d0pyyxq9ciaj9ch2drmcw5p9jk22j111ccrnp17k1"))))
+                "10kh2f4y4isfqj4xpcqqnzk611jh89ywcjyjnq9c2jcv5p18ggjp"))))
+    (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (inputs
      (append
@@ -1749,9 +1728,11 @@ operate properly.")
          ;; The static libraries are 23 MiB
          "--disable-static"
 
+         "--disable-stripping"
+
          #$@(if (target-riscv64?)
-              '("--extra-cflags=-fPIC")
-              '())
+                '("--extra-cflags=-fPIC")
+                '())
 
          ;; Runtime cpu detection is not implemented on
          ;; MIPS, so we disable some features.
@@ -1792,6 +1773,18 @@ convert and stream audio and video.  It includes the libavcodec
 audio/video codec library.")
     (license license:gpl2+)))
 
+(define-public ffmpeg-5
+  (package
+    (inherit ffmpeg)
+    (version "5.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1p7kxr0f9f9d0pyyxq9ciaj9ch2drmcw5p9jk22j111ccrnp17k1"))))))
+
 (define-public ffmpeg-4
   (package
     (inherit ffmpeg-5)
@@ -1803,10 +1796,10 @@ audio/video codec library.")
              (sha256
               (base32
                "14xadxm1yaamp216nq09xwasxg5g133v86dbb33mdg5di1zrlhdg"))))
-    (inputs (modify-inputs (package-inputs ffmpeg-5)
+    (inputs (modify-inputs (package-inputs ffmpeg)
               (replace "sdl2" sdl2-2.0)))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg-5)
+     (substitute-keyword-arguments (package-arguments ffmpeg)
        ((#:configure-flags flags ''())
         #~(cons "--enable-avresample" #$flags))))))
 
@@ -1884,8 +1877,6 @@ audio/video codec library.")
     ;; the build, and we'd rather not add features to this old package anymore.
     (inputs (modify-inputs (package-inputs ffmpeg-3.4)
               (delete "libwebp")))))
-
-(define-public ffmpeg ffmpeg-5)
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
@@ -2395,7 +2386,7 @@ To load this plugin, specify the following option when starting mpv:
 (define-public libvpx
   (package
     (name "libvpx")
-    (version "1.11.0")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2404,7 +2395,7 @@ To load this plugin, specify the following option when starting mpv:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00f1jrclai2b6ys78dpsg6r1mvcyxlna93vxcz8zjyia24c2pjsb"))
+                "1x12f2bd4jqd532rnixmwvcx8d29yxiacpcxqqh86qczc49la8gm"))
               (patches (search-patches "libvpx-CVE-2016-2818.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -2433,22 +2424,6 @@ To load this plugin, specify the following option when starting mpv:
     (description "libvpx is a codec for the VP8/VP9 video compression format.")
     (license license:bsd-3)
     (home-page "https://www.webmproject.org/")))
-
-;;; TODO: Merge into libvpx on staging.
-(define-public libvpx-next
-  (package
-    (inherit libvpx)
-    (name "libvpx")
-    (version "1.12.0")
-    (source (origin
-              (inherit (package-source libvpx))
-              (uri (git-reference
-                    (url "https://chromium.googlesource.com/webm/libvpx")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1x12f2bd4jqd532rnixmwvcx8d29yxiacpcxqqh86qczc49la8gm"))))))
 
 (define-public orf-dl
   (let ((commit "2dbbe7ef4e0efe0f3c1d59c503108e22d9065999")
@@ -5324,12 +5299,7 @@ result in several formats:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))
-       (modules '((guix build utils)))
-       (snippet
-        '(substitute* "Cargo.toml"
-           (("\\[package\\]" m)
-            (string-append "cargo-features = [\"rust-version\"]\n" m))))))
+         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))))
     (build-system cargo-build-system)
     (arguments
      `(;; Strip the '--release' flag to work around the doctest failures with
@@ -5392,14 +5362,8 @@ result in several formats:
          (add-after 'unpack 'relax-versions
            (lambda _
              (substitute* "Cargo.toml"
-               ;; Allow using more recent versions of
+               ;; Allow using more recent versions of system-deps.
                (("~3.1.2") "~3"))))
-         (add-after 'configure 'force-rust-edition-2018
-           (lambda* (#:key vendor-dir #:allow-other-keys)
-             ;; Force all the dependencies to not be higher than edition 2018.
-             (with-fluids ((%default-port-encoding #f))
-               (substitute* (find-files vendor-dir "Cargo.toml")
-                 (("edition = \\\"2021\\\"") "edition = \"2018\"")))))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))

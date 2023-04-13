@@ -244,7 +244,7 @@
     (native-inputs
      (list pkg-config which net-base perl))
 
-    (home-page "https://golang.org/")
+    (home-page "https://go.dev/")
     (synopsis "Compiler and libraries for Go, a statically-typed language")
     (description "Go, also commonly referred to as golang, is an imperative
 programming language designed primarily for systems programming.  Go is a
@@ -631,7 +631,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.11")
+    (version "1.17.13")
     (source
      (origin
        (method git-fetch)
@@ -641,7 +641,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11wy6092qm7v0n10cjkyp49sbchqazi3vnij8k2sq7k7jaj63z5p"))))
+         "05m8gr050kagvn22lfnjrgms03l5iphd1m4v6z7yqlhn9gdp912d"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)

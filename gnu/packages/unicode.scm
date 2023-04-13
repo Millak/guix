@@ -77,14 +77,14 @@ renderer.")
 (define-public ucd
   (package
     (name "ucd")
-    (version "14.0.0")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch/zipbomb)
        (uri (string-append "https://www.unicode.org/Public/zipped/" version
                            "/UCD.zip"))
        (sha256
-        (base32 "001nq9w52ijma0vps40xwy2q6ylpyf1393lzb128ibypnmv54fh3"))))
+        (base32 "133inqn33hcfvylmps63yjr6rrqrfq6x7a5hr5fd51z6yc0f9gaz"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -96,20 +96,6 @@ renderer.")
 files listing Unicode character properties and related data.  It also includes
 test data for conformance to several important Unicode algorithms.")
     (license unicode)))
-
-(define-public ucd-next
-  (package
-    (inherit ucd)
-    (name "ucd")
-    (version "15.0.0")
-    (source
-     (origin
-       (method url-fetch/zipbomb)
-       (uri (string-append "https://www.unicode.org/Public/zipped/" version
-                           "/UCD.zip"))
-       (sha256
-        (base32
-         "133inqn33hcfvylmps63yjr6rrqrfq6x7a5hr5fd51z6yc0f9gaz"))))))
 
 (define (unicode-emoji-file name version hash)
   (origin

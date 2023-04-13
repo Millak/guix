@@ -1387,7 +1387,7 @@ incompatible with HDF5.")
 (define-public hdf5-1.8
   (package
     (name "hdf5")
-    (version "1.8.22")
+    (version "1.8.23")
     (source
      (origin
       (method url-fetch)
@@ -1402,7 +1402,7 @@ incompatible with HDF5.")
                                    (string-append major minor)))
                                 "/src/hdf5-" version ".tar.bz2")))
       (sha256
-       (base32 "194ki2s5jrgl4czkvy5nc9nwjyapah0fj72l0gb0aysplp38i6v8"))
+       (base32 "0km65mr6dgk4ia2dqr1b9dzw9qg15j5z35ymbys9cnny51z1zb39"))
       (patches (search-patches "hdf5-config-date.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1442,8 +1442,7 @@ incompatible with HDF5.")
              (substitute* "hl/fortran/src/Makefile.in"
                (("libhdf5hl_fortran_la_LDFLAGS =")
                 (string-append "libhdf5hl_fortran_la_LDFLAGS = -Wl,-rpath="
-                               (assoc-ref outputs "fortran") "/lib")))
-             #t))
+                               (assoc-ref outputs "fortran") "/lib")))))
          (add-after 'configure 'patch-settings
            (lambda _
              ;; libhdf5.settings contains the full path of the
@@ -1456,16 +1455,14 @@ incompatible with HDF5.")
               ;; Don't record the build-time kernel version to make the
               ;; settings file reproducible.
               (("Uname information:.*")
-               "Uname information: Linux\n"))
-             #t))
+               "Uname information: Linux\n"))))
          (add-after 'install 'patch-references
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin"))
                    (zlib (assoc-ref inputs "zlib")))
                (substitute* (find-files bin "h5p?cc")
                  (("-lz" lib)
-                  (string-append "-L" zlib "/lib " lib)))
-               #t)))
+                  (string-append "-L" zlib "/lib " lib))))))
          (add-after 'install 'split
             (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; Move all fortran-related files
@@ -1500,8 +1497,7 @@ incompatible with HDF5.")
                             (rename-file file
                                          (string-append fex "/" (basename file))))
                           (find-files ex ".*"))
-                (delete-file-recursively ex))
-              #t)))))
+                (delete-file-recursively ex)))))))
     (home-page "https://www.hdfgroup.org")
     (synopsis "Management suite for extremely large and complex data")
     (description "HDF5 is a suite that makes possible the management of
@@ -1512,7 +1508,7 @@ extremely large and complex data collections.")
 (define-public hdf5-1.10
   (package
     (inherit hdf5-1.8)
-    (version "1.10.7")
+    (version "1.10.9")
     (source
      (origin
        (method url-fetch)
@@ -1526,13 +1522,13 @@ extremely large and complex data collections.")
                                         (take (string-split version #\.) 2))
                                  "/src/hdf5-" version ".tar.bz2")))
        (sha256
-        (base32 "0pm5xxry55i0h7wmvc7svzdaa90rnk7h78rrjmnlkz2ygsn8y082"))
+        (base32 "14gih7kmjx4h3lc7pg4fwcl28hf1qqkf2x7rljpxqvzkjrqbxi00"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
 (define-public hdf5-1.12
   (package
     (inherit hdf5-1.8)
-    (version "1.12.1")
+    (version "1.12.2")
     (source
      (origin
        (method url-fetch)
@@ -1546,7 +1542,27 @@ extremely large and complex data collections.")
                                         (take (string-split version #\.) 2))
                                  "/src/hdf5-" version ".tar.bz2")))
        (sha256
-        (base32 "074g3z504xf77ff38igs30i1aqxpm508p7yw78ykva7dncrgbyda"))
+        (base32 "1zlawdzb0gsvcxif14fwr5ap2gk4b6j02wirr2hcx8hkcbivp20s"))
+       (patches (search-patches "hdf5-config-date.patch"))))))
+
+(define-public hdf5-1.14
+  (package
+    (inherit hdf5-1.8)
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://support.hdfgroup.org/ftp/HDF5/releases/"
+                                 "hdf5-" (version-major+minor version)
+                                 "/hdf5-" version "/src/hdf5-"
+                                 version ".tar.bz2")
+                  (string-append "https://support.hdfgroup.org/ftp/HDF5/"
+                                 "current"
+                                 (apply string-append
+                                        (take (string-split version #\.) 2))
+                                 "/src/hdf5-" version ".tar.bz2")))
+       (sha256
+        (base32 "181bdh8hp7v9xqwcby3lknr92lxlicc2hqscba3f5nhf8lrr9rz4"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
 (define-public hdf5

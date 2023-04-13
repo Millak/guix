@@ -1,12 +1,17 @@
-https://sources.debian.org/data/main/r/rust-openssl-sys/0.9.53-1/debian/patches/disable-vendor.patch
-"MIT" licensed according to debian/copyright file
-slightly modified to only change the vendored openssl-src dependency
-
-Starting from rust-openssl-sys@0.9.69 Cargo.toml starts searching for openssl-3.0.
-
---- a/Cargo.toml
-+++ b/Cargo.toml
-@@ -31,15 +31,12 @@
+--- openssl-sys-0.9.84/Cargo.toml.orig	2023-04-03 09:10:11.979197979 -0400
++++ openssl-sys-0.9.84/Cargo.toml	2023-04-03 12:07:30.285315609 -0400
+@@ -31,10 +31,6 @@
+ [package.metadata.pkg-config]
+ openssl = "1.0.1"
+ 
+-[dependencies.bssl-sys]
+-version = "0.1.0"
+-optional = true
+-
+ [dependencies.libc]
+ version = "0.2"
+ 
+@@ -46,16 +42,12 @@
  [build-dependencies.cc]
  version = "1.0"
  
@@ -18,9 +23,10 @@ Starting from rust-openssl-sys@0.9.69 Cargo.toml starts searching for openssl-3.
  version = "0.3.9"
  
  [features]
- vendored = ["openssl-src"]
-+openssl-src = []
+-unstable_boringssl = ["bssl-sys"]
+-vendored = ["openssl-src"]
++unstable_boringssl = []
++vendored = []
  
  [target."cfg(target_env = \"msvc\")".build-dependencies.vcpkg]
  version = "0.2.8"
-

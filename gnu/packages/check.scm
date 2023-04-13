@@ -1586,13 +1586,13 @@ Python's @code{random.seed}.")
 (define-public python-pytest-mock
   (package
     (name "python-pytest-mock")
-    (version "3.6.1")
+    (version "3.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mock" version))
        (sha256
-        (base32 "0qhfmd05z3g88bnwq6644jl6p5wy01i4yy7h8883z9jjih2pl8a0"))
+        (base32 "0kzdwwdjw001qzf1n4qzh7c364rvmb0cmkfqdwr2l9bwxy2v1ggv"))
        (modules '((guix build utils)))
        (snippet
         ;; Some tests do a string match on Pytest output, and fails when
@@ -1698,14 +1698,14 @@ result back.")
 (define-public python-pytest-timeout
   (package
     (name "python-pytest-timeout")
-    (version "2.0.2")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-timeout" version))
        (sha256
         (base32
-         "04l1cd2qyp3fbccw95a8nqg682r647v7yil8807dgs7xv9a8pyg6"))))
+         "1nf339zg6qam3681f72j9c8fbqk8qcilna92psmzh4n60isa0z60"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -2058,14 +2058,14 @@ have failed since the last commit or what tests are currently failing.")))
 (define-public python-coverage
   (package
     (name "python-coverage")
-    (version "5.2.1")
+    (version "5.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "coverage" version))
        (sha256
         (base32
-         "16z8i18msgs8k74n73dj9x49wzkl0vk4vq8k5pl1bsj70y7b4k53"))))
+         "0b112ly7vvplvm9l411aqknxhr7fzfyp28xhflhkcx78l3lqzrzb"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: 95 tests failed, 539 passed, 6 skipped, 2 errors.

@@ -481,13 +481,6 @@ an interpreter, a compiler, a debugger, and much more.")
                   (srfi srfi-1))
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-arm32?)
-             ;; TODO: Move to snippet in staging.
-             `((add-after 'unpack 'dont-force-armv5
-                 (lambda _
-                   (substitute* "src/runtime/Config.arm-linux"
-                     (("-march=armv5") "")))))
-             '())
          (delete 'configure)
          (add-after 'unpack 'fix-build-id
            ;; One of the build scripts makes a build id using the current date.

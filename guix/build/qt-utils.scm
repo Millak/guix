@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -87,9 +88,7 @@
       "/applications" "/cursors" "/fonts" "/icons" "/glib-2.0/schemas"
       "/mime" "/sounds" "/themes" "/wallpapers")
     '("XDG_CONFIG_DIRS" suffix directory "/etc/xdg")
-    ;; We wrap exactly to avoid potentially mixing Qt5/Qt6 components, which
-    ;; would cause warnings, perhaps problems.
-    `("QT_PLUGIN_PATH" = directory
+    `("QT_PLUGIN_PATH" prefix directory
       ,(format #f "/lib/qt~a/plugins" qt-major-version))
     `("QML2_IMPORT_PATH" = directory
       ,(format #f "/lib/qt~a/qml" qt-major-version))
