@@ -1521,7 +1521,9 @@ Service Switch}, for an example."
 
 # The authpriv file has restricted access.
 # 'fsync' the file after each line (hence the lack of a leading dash).
-authpriv.*                              /var/log/secure
+# Also include unprivileged auth logs of info or higher level
+# to conveniently gather the authentication data at the same place.
+authpriv.*;auth.info                    /var/log/secure
 
 # Log all the mail messages in one place.
 mail.*                                 -/var/log/maillog
