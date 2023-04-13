@@ -1497,31 +1497,34 @@ given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example."
   (service nscd-service-type config))
 
-;; Snippet adapted from the GNU inetutils manual.
+;;; Snippet adapted from the GNU inetutils manual.
 (define %default-syslog.conf
-  (plain-file "syslog.conf" "
-     # Log all error messages, authentication messages of
-     # level notice or higher and anything of level err or
-     # higher to the console.
-     # Don't log private authentication messages!
-     *.alert;auth.notice;authpriv.none      -/dev/console
+  (plain-file "syslog.conf" "\
+# See info '(inetutils) syslogd invocation' for the documentation
+# of the syslogd configuration syntax.
 
-     # Log anything (except mail) of level info or higher.
-     # Don't log private authentication messages!
-     *.info;mail.none;authpriv.none         -/var/log/messages
+# Log all error messages, authentication messages of
+# level notice or higher and anything of level err or
+# higher to the console.
+# Don't log private authentication messages!
+*.alert;auth.notice;authpriv.none      -/dev/console
 
-     # Log \"debug\"-level entries and nothing else.
-     *.=debug                               -/var/log/debug
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none         -/var/log/messages
 
-     # Same, in a different place.
-     *.info;mail.none;authpriv.none         -/dev/tty12
+# Log \"debug\"-level entries and nothing else.
+*.=debug                               -/var/log/debug
 
-     # The authpriv file has restricted access.
-     # 'fsync' the file after each line (hence the lack of a leading dash).
-     authpriv.*                              /var/log/secure
+# Same, in a different place.
+*.info;mail.none;authpriv.none         -/dev/tty12
 
-     # Log all the mail messages in one place.
-     mail.*                                 -/var/log/maillog
+# The authpriv file has restricted access.
+# 'fsync' the file after each line (hence the lack of a leading dash).
+authpriv.*                              /var/log/secure
+
+# Log all the mail messages in one place.
+mail.*                                 -/var/log/maillog
 "))
 
 (define-record-type* <syslog-configuration>
