@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
@@ -2814,52 +2814,19 @@ Xwrits hides itself until you should take another break.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "14gnkz18dipsa2v24f4nm9syxaa7g21iqjm7y65jn849ka2jr1h8"))))
-    (build-system scons-build-system)
-    (inputs
-     (list libx11))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("googletest" ,googletest)
-       ("googletest-source" ,(package-source googletest))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags
-       (list ,(string-append "CC=" (cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-sconstruct
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "SConstruct"
-               ;; scons doesn't pick up environment variables automatically
-               ;; so it needs help to find path variables
-               (("env = Environment\\(")
-                "env = Environment(
-                         ENV = {
-                           'PATH': os.environ['PATH'],
-                           'CPATH': os.environ['C_INCLUDE_PATH'],
-                           'LIBRARY_PATH': os.environ['LIBRARY_PATH'],
-                           'PKG_CONFIG_PATH': os.environ['PKG_CONFIG_PATH']
-                         },")
-               ;; Update path to gtest source files used in tests
-               (("/usr/src/gtest") (string-append
-                                    (assoc-ref inputs "googletest-source")
-                                    "/googletest"))
-               ;; Exclude one warning that causes a build error
-               (("-Werror") "-Werror -Wno-error=sign-compare"))
-             #t))
-         ;; The SConstruct script doesn't configure installation so
-         ;; binaries must be copied to the output path directly
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man1")))
-               (mkdir-p bin)
-               (install-file "xsettingsd" bin)
-               (install-file "dump_xsettings" bin)
-               (install-file "xsettingsd.1" man)
-               (install-file "dump_xsettings.1" man)
-               #t))))))
+     (list #:configure-flags #~(list "-DBUILD_TESTING=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-problematic-tests
+                          (lambda _
+                            (substitute* "config_parser_test.cc"
+                              ;; This test fails for unknown reasons (see:
+                              ;; https://github.com/derat/xsettingsd/issues/30).
+                              (("TEST\\(CharStreamTest, Basic")
+                               "TEST(CharStreamTest, DISABLED_Basic")))))))
+    (inputs (list libx11))
+    (native-inputs (list pkg-config googletest))
     (home-page "https://github.com/derat/xsettingsd")
     (synopsis "Xorg settings daemon")
     (description "@command{xsettingsd} is a lightweight daemon that provides settings to
