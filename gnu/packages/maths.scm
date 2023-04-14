@@ -6834,7 +6834,7 @@ Differences} (FD).")
 (define-public dune-geometry
   (package
     (name "dune-geometry")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -6842,7 +6842,7 @@ Differences} (FD).")
                            version "/dune-geometry-" version ".tar.gz"))
        (sha256
         (base32
-         "068mh3fd110xl27rwxqlqy4d9cpqw2vqm2pzfrripiaqscb3byfy"))))
+         "1bl1abipcf7zysmyyy2ikfx0nip55kasrb1bbkh11ghdilxrwwqy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
