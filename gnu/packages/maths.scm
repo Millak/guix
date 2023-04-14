@@ -7225,7 +7225,7 @@ operating on statically typed trees of objects.")
 (define-public dune-functions
   (package
     (name "dune-functions")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -7235,7 +7235,7 @@ operating on statically typed trees of objects.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "04dhr4asnl38bf1gp8hrk31maav33m7q71lhl2n5yk1q1x6i77nw"))))
+         "0pmi9vk0pdq9qp3xvknsndg8l6f2xkjr1rwbfbzsl9aj0qv9rn2p"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
