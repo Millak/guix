@@ -474,100 +474,95 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.3.1")
+    (version "3.3.5")                   ;3.3.x is the current LTS version
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "1jlc26axbhh97d2j6kfg9brgiq8j412mgmw7p41ah34apzq4inia"))))
+                "1pwl4lbc00g0bj97rd8l9fnrv3w1gny9ci6mrma3pp2acgs56502"))))
     (build-system cmake-build-system)
     (arguments
+     (list
+      ;; Test files are very large and not included in the release tarball.
+      #:tests? #f
+      #:configure-flags
       (let ((python-version (version-major+minor (package-version python))))
-       `(;; Test files are very large and not included in the release tarball.
-         #:tests? #f
-         #:configure-flags
-         (list "-DWITH_CODEC_FFMPEG=ON"
-               "-DWITH_CODEC_SNDFILE=ON"
-               "-DWITH_CYCLES=ON"
-               "-DWITH_DOC_MANPAGE=ON"
-               "-DWITH_FFTW3=ON"
-               "-DWITH_IMAGE_OPENJPEG=ON"
-               "-DWITH_INPUT_NDOF=ON"
-               "-DWITH_INSTALL_PORTABLE=OFF"
-               "-DWITH_JACK=ON"
-               "-DWITH_MOD_OCEANSIM=ON"
-               "-DWITH_OPENVDB=ON"
-               "-DWITH_OPENSUBDIV=ON"
-               "-DWITH_PYTHON_INSTALL=OFF"
-               (string-append "-DPYTHON_LIBRARY=python" ,python-version)
-               (string-append "-DPYTHON_LIBPATH=" (assoc-ref %build-inputs "python")
-                              "/lib")
-               (string-append "-DPYTHON_INCLUDE_DIR=" (assoc-ref %build-inputs "python")
-                              "/include/python" ,python-version)
-               (string-append "-DPYTHON_VERSION=" ,python-version)
-               (string-append "-DPYTHON_NUMPY_INCLUDE_DIRS="
-                              (assoc-ref %build-inputs "python-numpy")
-                              "/lib/python" ,python-version "/site-packages/numpy/core/include/")
-               (string-append "-DPYTHON_NUMPY_PATH="
-                              (assoc-ref %build-inputs "python-numpy")
-                              "/lib/python" ,python-version "/site-packages/"))
-         #:phases
-         (modify-phases %standard-phases
-           ;; XXX This file doesn't exist in the Git sources but will probably
-           ;; exist in the eventual 2.80 source tarball.
-           (add-after 'unpack 'fix-broken-import
-             (lambda _
-               (substitute* "release/scripts/addons/io_scene_fbx/json2fbx.py"
-                 (("import encode_bin") "from . import encode_bin"))
-               #t))
-           (add-after 'set-paths 'add-ilmbase-include-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; OpenEXR propagates ilmbase, but its include files do not
-               ;; appear in the C_INCLUDE_PATH, so we need to add
-               ;; "$ilmbase/include/OpenEXR/" to the C_INCLUDE_PATH to satisfy
-               ;; the dependency on "half.h" and "Iex.h".
-               (let ((headers (string-append
-                               (assoc-ref inputs "ilmbase")
-                               "/include/OpenEXR")))
-                 (setenv "C_INCLUDE_PATH"
-                         (string-append headers ":"
-                                        (or (getenv "C_INCLUDE_PATH") "")))
-                 (setenv "CPLUS_INCLUDE_PATH"
-                         (string-append headers ":"
-                                        (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))))
+        #~(list "-DWITH_CODEC_FFMPEG=ON"
+                "-DWITH_CODEC_SNDFILE=ON"
+                "-DWITH_CYCLES=ON"
+                "-DWITH_DOC_MANPAGE=ON"
+                "-DWITH_FFTW3=ON"
+                "-DWITH_IMAGE_OPENJPEG=ON"
+                "-DWITH_INPUT_NDOF=ON"
+                "-DWITH_INSTALL_PORTABLE=OFF"
+                "-DWITH_JACK=ON"
+                "-DWITH_MOD_OCEANSIM=ON"
+                "-DWITH_OPENVDB=ON"
+                "-DWITH_OPENSUBDIV=ON"
+                "-DWITH_PYTHON_INSTALL=OFF"
+                (string-append "-DPYTHON_LIBRARY=python" #$python-version)
+                (string-append "-DPYTHON_LIBPATH="
+                               (assoc-ref %build-inputs "python")
+                               "/lib")
+                (string-append "-DPYTHON_INCLUDE_DIR="
+                               (assoc-ref %build-inputs "python")
+                               "/include/python" #$python-version)
+                (string-append "-DPYTHON_VERSION=" #$python-version)
+                (string-append "-DPYTHON_NUMPY_INCLUDE_DIRS="
+                               (assoc-ref %build-inputs "python-numpy")
+                               "/lib/python" #$python-version
+                               "/site-packages/numpy/core/include/")
+                (string-append "-DPYTHON_NUMPY_PATH="
+                               (assoc-ref %build-inputs "python-numpy")
+                               "/lib/python" #$python-version
+                               "/site-packages/")
+                ;; OpenEXR propagates ilmbase, but its include files do not
+                ;; appear in the C_INCLUDE_PATH, so we need to add
+                ;; "$ilmbase/include/OpenEXR/" to the C_INCLUDE_PATH to
+                ;; satisfy the dependency on "half.h" and "Iex.h".
+                (string-append "-DCMAKE_CXX_FLAGS=-I"
+                               (search-input-directory %build-inputs
+                                                       "include/OpenEXR"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-broken-import
+            (lambda _
+              (substitute* "release/scripts/addons/io_scene_fbx/json2fbx.py"
+                (("import encode_bin")
+                 "from . import encode_bin")))))))
     (inputs
-     `(("boost" ,boost)
-       ("jemalloc" ,jemalloc)
-       ("libx11" ,libx11)
-       ("libxi" ,libxi)
-       ("libxrender" ,libxrender)
-       ("opencolorio" ,opencolorio)
-       ("openimageio" ,openimageio)
-       ("openexr" ,openexr-2)
-       ("opensubdiv" ,opensubdiv)
-       ("ilmbase" ,ilmbase)
-       ("openjpeg" ,openjpeg)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("ffmpeg" ,ffmpeg)
-       ("fftw" ,fftw)
-       ("gmp" ,gmp) ;; needed for boolean operations on meshes
-       ("jack" ,jack-1)
-       ("libsndfile" ,libsndfile)
-       ("freetype" ,freetype)
-       ("glew" ,glew)
-       ("openal" ,openal)
-       ("pugixml" ,pugixml)
-       ("python" ,python)
-       ("python-numpy" ,python-numpy)
-       ("openvdb" ,openvdb)
-       ("tbb" ,tbb)
-       ("zlib" ,zlib)
-       ("zstd" ,zstd "lib")
-       ("embree" ,embree)))
+     (list boost
+           embree
+           ffmpeg-5
+           fftw
+           freetype
+           glew
+           gmp                        ;needed for boolean operations on meshes
+           ilmbase
+           jack-1
+           jemalloc
+           libjpeg-turbo
+           libpng
+           libsndfile
+           libtiff
+           libx11
+           libxi
+           libxrender
+           openal
+           opencolorio
+           openexr-2
+           openimageio
+           openjpeg
+           opensubdiv
+           openvdb
+           pugixml
+           python
+           python-numpy
+           tbb
+           zlib
+           `(,zstd "lib")))
     (home-page "https://blender.org/")
     (synopsis "3D graphics creation suite")
     (description

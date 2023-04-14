@@ -2666,13 +2666,13 @@ forgotten when the session ends.")
 (define-public evince
   (package
     (name "evince")
-    (version "42.3")
+    (version "44.1")
     (source (origin
               (method url-fetch)
-              (uri "mirror://gnome/sources/evince/42/evince-42.3.tar.xz")
+              (uri "mirror://gnome/sources/evince/44/evince-44.1.tar.xz")
               (sha256
                (base32
-                "0pk42icnf4kdcaqaj17mcf4sxi82h1fdg2ds2zdrcv4lbj2czbj9"))))
+                "0523lzk7xpfr6gir8nx80fmp1lhajm837hilmgn8zczz2nxx7bqm"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -2683,8 +2683,10 @@ forgotten when the session ends.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("(glib_compile_schemas|gtk_update_icon_cache|\
+update_desktop_database): true" _ tool)
+                (string-append tool ": false"))))))))
     (inputs
      (list libarchive
            libgxps
@@ -4387,7 +4389,7 @@ engineering.")
 (define-public drawing
   (package
     (name "drawing")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4396,7 +4398,7 @@ engineering.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12xb522i7dxshw2ig12ald750fynlxan1lwz6gsxfa9p4ap2qypn"))))
+        (base32 "1yazs3jj8i8n64ki54rvh11q0yn46da105hdsjb7b80dpxspvlch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -5332,19 +5334,19 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
 (define-public gi-docgen
   (package
     (name "gi-docgen")
-    (version "2022.1")
+    (version "2023.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gi-docgen" version))
               (sha256
                (base32
-                "1v2wspm2ld27lq1n5v5pzrmkhchfa7p7ahp8rmjm4zcdyagqf7gr"))))
+                "18vzbw1k531qxi9qcwlxl97xk9dg16has7khg6a5d0pqrflyvbc8"))))
     (build-system python-build-system)
     (propagated-inputs (list python-jinja2
                              python-markdown
                              python-markupsafe
                              python-pygments
-                             python-toml
+                             python-tomli
                              python-typogrify))
     (home-page "https://gitlab.gnome.org/GNOME/gi-docgen")
     (synopsis "Documentation tool for GObject-based libraries")
@@ -8374,6 +8376,14 @@ users.")
                                                          "/sbin/dhclient")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-modprobe-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/libnm-platform/nm-platform-utils.c"
+                ;; The modprobe command location is not configurable (see:
+                ;; https://gitlab.freedesktop.org/NetworkManager/
+                ;; NetworkManager/-/issues/1257).
+                (("/sbin/modprobe")
+                 (search-input-file inputs "bin/modprobe")))))
           (add-after 'unpack 'patch-dlopen-call-to-libjansson.so
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/libnm-glib-aux/nm-json-aux.c"
@@ -8453,6 +8463,7 @@ users.")
            isc-dhcp
            iwd                          ;wpa_supplicant alternative
            jansson
+           kmod
            libgcrypt
            libgudev
            libndp
@@ -8485,7 +8496,7 @@ services.")
 (define-public network-manager-openvpn
   (package
     (name "network-manager-openvpn")
-    (version "1.10.0")
+    (version "1.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8494,7 +8505,7 @@ services.")
                     "/NetworkManager-openvpn-" version ".tar.xz"))
               (sha256
                (base32
-                "00fiyjbp42pdv5h2vdkzxd2rw32ikcinjgxrzdxak61kgw8d8iap"))))
+                "08bd0xnvbpsammfr9vlhdbyjw061pf72mb0jy8ivj892g2lg5w32"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -13125,7 +13136,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
@@ -13135,7 +13146,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pknm3xz2hai8y6ynlyz7y1k1kaay7mkpm1svx66ggjhz8jzcrj5"))))
+         "0yd4274qxpv0wg1lm6daip2nd135qq07pfl5wrm2rqlzs5mvqs3n"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13178,6 +13189,7 @@ profiler via Sysprof, debugging support, and more.")
            python-lxml
            python-magic
            python-natsort
+           python-piexif
            python-pillow
            python-pure-protobuf
            python-pycairo

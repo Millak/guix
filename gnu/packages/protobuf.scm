@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
@@ -49,6 +49,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages rails)
   #:use-module (gnu packages ruby)
   #:use-module (srfi srfi-1))
 
@@ -512,7 +513,7 @@ source files.")
 (define-public ruby-protobuf
   (package
     (name "ruby-protobuf")
-    (version "3.10.3")
+    (version "3.10.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -521,7 +522,7 @@ source files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yzz7jgpp6qip5d6qhzbkf5gqaydfk3z3c1ngccwzp6w6wa75g8a"))))
+                "12hp1clg83jfl35x1h2ymzpj5w83wrnqw7hjfc6mqa8lsvpw535r"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -529,8 +530,7 @@ source files.")
          (add-after 'unpack 'do-not-use-bundler-for-tests
            (lambda _
              (substitute* "spec/spec_helper.rb"
-               (("Bundler\\.setup.*") ""))
-             #t))
+               (("Bundler\\.setup.*") ""))))
          (add-after 'unpack 'relax-version-requirements
            (lambda _
              (substitute* ((@@ (guix build ruby-build-system) first-gemspec))
@@ -539,33 +539,30 @@ source files.")
                (("\"rubocop\",.*")
                 "'rubocop'\n")
                (("\"parser\",.*")
-                "'parser'\n"))
-             #t))
+                "'parser'\n"))))
          (add-after 'unpack 'patch-protoc
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((protoc (assoc-ref inputs "protobuf")))
-               (substitute* "lib/protobuf/tasks/compile.rake"
-                 (("\"protoc\"")
-                  (string-append "\"" protoc "/bin/protoc" "\"")))
-               #t)))
+             (substitute* "lib/protobuf/tasks/compile.rake"
+               (("\"protoc\"")
+                (string-append "\"" (search-input-file inputs "bin/protoc")
+                               "\"")))))
          (add-after 'unpack 'skip-failing-test
            ;; See: https://github.com/ruby-protobuf/protobuf/issues/419
            (lambda _
              (substitute* "spec/lib/protobuf/rpc/connectors/ping_spec.rb"
                (("expect\\(::IO\\)\\.to receive\\(:select\\).*" all)
-                (string-append "        pending\n" all)))
-             #t))
+                (string-append "        pending\n" all)))))
          (add-after 'replace-git-ls-files 'replace-more-git-ls-files
            (lambda _
              (substitute* ((@@ (guix build ruby-build-system) first-gemspec))
                (("`git ls-files -- \\{test,spec,features\\}/*`")
                 "`find test spec features -type f | sort`")
                (("`git ls-files -- bin/*`")
-                "`find bin -type f | sort`"))
-             #t))
+                "`find bin -type f | sort`"))))
          (replace 'check
-           (lambda _
-             (invoke "rspec"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "rspec")))))))
     (native-inputs
      (list ruby-benchmark-ips
            ruby-ffi-rzmq
@@ -583,26 +580,12 @@ source files.")
     (inputs
      (list protobuf))
     (propagated-inputs
-     (list ruby-activesupport ruby-middleware ruby-thor ruby-thread-safe))
+     (list ruby-activesupport
+           ruby-middleware
+           ruby-thor
+           ruby-thread-safe))
     (home-page "https://github.com/ruby-protobuf/protobuf")
     (synopsis "Implementation of Google's Protocol Buffers in Ruby")
     (description "Protobuf is an implementation of Google's Protocol Buffers
 in pure Ruby.")
     (license license:expat)))
-
-;;; This is a modified ruby-protobuf package used by ruby-cucumber-messages
-;;; until https://github.com/ruby-protobuf/protobuf/pull/411 and
-;;; https://github.com/ruby-protobuf/protobuf/pull/415 are merged upstream.
-(define-public ruby-protobuf-cucumber
-  (hidden-package
-   (package
-     (inherit ruby-protobuf)
-     (name "ruby-protobuf-cucumber")
-     (version "3.10.8")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (rubygems-uri "protobuf-cucumber" version))
-        (sha256
-         (base32
-          "1rd6naabhpfb1i5dr6fp5mqwaawsx0mqm73h5ycwkgbm1n2si872")))))))

@@ -29,11 +29,11 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 John D. Boy <jboy@bius.moe>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -1666,7 +1666,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit") ;formerly known as python-pre-commit
-    (version "3.1.1")
+    (version "3.2.2")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -1675,7 +1675,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rngcq1vd2phk45wp1cc5jz02wpi53fif0qwk633smfjcjj1kp41"))
+        (base32 "11zbnl08bqyl8s12i58szn5gcali4p6dwwbzln8bk92kb721s52r"))
        (modules '((guix build utils)))
        (snippet '(substitute* "setup.cfg"
                    (("virtualenv>=20.10.0") ;our virtualenv (20.3.1) is fine
@@ -2007,76 +2007,72 @@ following features:
 (define-public subversion
   (package
     (name "subversion")
-    (version "1.14.1")
+    (version "1.14.2")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://apache/subversion/"
-                                 "subversion-" version ".tar.bz2"))
-             (sha256
-              (base32
-               "1ag1hvcm9q92kgalzbbgcsq9clxnzmbj9nciz9lmabjx4lyajp9c"))))
+              (method url-fetch)
+              (uri (string-append "mirror://apache/subversion/"
+                                  "subversion-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0a6csc84hfymm8b5cnvq1n1p3rjjf33qy0z7y1k8lwkm1f6hw4y9"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:parallel-tests? #f             ; TODO Seems to cause test failures on
-                                        ; i686-linux
-       #:configure-flags '("--enable-static=no")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-libtool-wrapper-ls
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; This substitution allows tests svnauthz_tests and svnlook_tests
-             ;; to pass.  These tests execute svnauthz and svnlook through
-             ;; their libtool wrapper scripts from svn hooks, whose empty
-             ;; environments cause "ls: command not found" errors.  It would be
-             ;; nice if this fix ultimately made its way into libtool.
-             (let ((coreutils (assoc-ref inputs "coreutils")))
-               (substitute* "libtool"
-                 (("\\\\`ls") (string-append "\\`" coreutils "/bin/ls")))
-               #t)))
-         (add-before 'build 'patch-test-sh
-           (lambda _
-             (substitute* "subversion/tests/libsvn_repos/repos-test.c"
-               (("#!/bin/sh") (string-append "#!" (which "sh"))))
-             #t))
-         (add-before 'check 'set-PARALLEL
-           (lambda* (#:key parallel-tests? #:allow-other-keys)
-             (if parallel-tests?
-                 (setenv "PARALLEL" (number->string (parallel-job-count)))
-                 (simple-format #t "parallel-tests? are disabled\n"))
-             #t))
-         (add-after 'install 'install-perl-bindings
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Follow the instructions from 'subversion/bindings/swig/INSTALL'.
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "make" "swig-pl-lib")
-               ;; FIXME: Test failures.
-               ;; (invoke "make" "check-swig-pl")
-               (invoke "make" "install-swig-pl-lib")
+     (list
+      ;; Running the tests in parallel causes test failures on i686-linux.
+      ;; The issue was reported to users@subversion.apache.org, as suggested
+      ;; at https://subversion.apache.org/reporting-issues.
+      #:parallel-tests? #f
+      #:configure-flags #~(list "--enable-static=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'patch-libtool-wrapper-ls
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; This substitution allows tests svnauthz_tests and svnlook_tests
+              ;; to pass.  These tests execute svnauthz and svnlook through
+              ;; their libtool wrapper scripts from svn hooks, whose empty
+              ;; environments cause "ls: command not found" errors.  It would be
+              ;; nice if this fix ultimately made its way into libtool.
+              (substitute* "libtool"
+                (("\\\\`ls")
+                 (string-append "\\`" (search-input-file inputs "bin/ls"))))))
+          (add-before 'build 'patch-test-sh
+            (lambda _
+              (substitute* "subversion/tests/libsvn_repos/repos-test.c"
+                (("#!/bin/sh") (string-append "#!" (which "sh"))))))
+          (add-before 'check 'set-PARALLEL
+            (lambda* (#:key parallel-tests? #:allow-other-keys)
+              (if parallel-tests?
+                  (setenv "PARALLEL" (number->string (parallel-job-count)))
+                  (simple-format #t "parallel-tests? are disabled\n"))))
+          (add-after 'install 'install-perl-bindings
+            (lambda _
+              ;; Follow the instructions from 'subversion/bindings/swig/INSTALL'.
+              (invoke "make" "swig-pl-lib")
+              ;; FIXME: Test failures.
+              ;; (invoke "make" "check-swig-pl")
+              (invoke "make" "install-swig-pl-lib")
 
-               ;; Set the right installation prefix.
-               (with-directory-excursion
-                   "subversion/bindings/swig/perl/native"
-                 (invoke "perl" "Makefile.PL"
-                         "NO_PERLLOCAL=1"
-                         (string-append "PREFIX=" out))
-                 (invoke "make" "install"
-                         (string-append "OTHERLDFLAGS="
-                                        "-Wl,-rpath="
-                                        out "/lib")))))))))
+              ;; Set the right installation prefix.
+              (with-directory-excursion "subversion/bindings/swig/perl/native"
+                (invoke "perl" "Makefile.PL" "NO_PERLLOCAL=1"
+                        (string-append "PREFIX=" #$output))
+                (invoke "make" "install"
+                        (string-append "OTHERLDFLAGS=-Wl,-rpath="
+                                       #$output "/lib"))))))))
     (native-inputs
-      (list pkg-config
-            ;; For the Perl bindings.
-            swig))
+     (list pkg-config
+           ;; For the Perl bindings.
+           swig))
     (inputs
-      `(("apr" ,apr)
-        ("apr-util" ,apr-util)
-        ("lz4" ,lz4)
-        ("serf" ,serf)
-        ("perl" ,perl)
-        ("python" ,python-wrapper)
-        ("sqlite" ,sqlite)
-        ("utf8proc" ,utf8proc)
-        ("zlib" ,zlib)))
+     (list apr
+           apr-util
+           lz4
+           perl
+           python-wrapper
+           serf
+           sqlite
+           utf8proc
+           zlib))
     (home-page "https://subversion.apache.org/")
     (synopsis "Revision control system")
     (description

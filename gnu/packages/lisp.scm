@@ -481,13 +481,6 @@ an interpreter, a compiler, a debugger, and much more.")
                   (srfi srfi-1))
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-arm32?)
-             ;; TODO: Move to snippet in staging.
-             `((add-after 'unpack 'dont-force-armv5
-                 (lambda _
-                   (substitute* "src/runtime/Config.arm-linux"
-                     (("-march=armv5") "")))))
-             '())
          (delete 'configure)
          (add-after 'unpack 'fix-build-id
            ;; One of the build scripts makes a build id using the current date.
@@ -988,7 +981,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "284")
+    (version "285")
     (source
      (origin
        (method git-fetch)
@@ -997,64 +990,63 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v6dq1q98v3jdx7g67k15njkpp49iwf30n29rrhwng3b3njqm75g"))))
+        (base32 "1ypsgakhak0znmg3wzblfcwd4s4nanzm61dz66gwi48rfnq35znl"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list ,(string-append "cc=" (cc-for-target))
-             (string-append "--prefix=" (assoc-ref %outputs "out")))
-       #:test-target "tests"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-license-installation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("INSTALL(,.*LICENSE,.*)\\$\\(datadir\\)" _ match)
-                (string-append "INSTALL" match
-                               (assoc-ref outputs "out")
-                               "/share/doc/" ,name "-" ,version)))))
-         (delete 'install-license-files)
-         (add-after 'unpack 'inhibit-doc-syms-generation
-           (lambda _
-             (substitute* "genman.txr"
-               ;; Exit from genman.txr before it tries to write to
-               ;; stdlib/doc-syms.tl, which is anyway kept up to date with
-               ;; each release (and is already compiled to stdlib/doc-syms.tlo
-               ;; when genman.txr is run).
-               (("^@\\(output \"stdlib/doc-syms\\.tl\"\\).*" line)
-                (string-append "@(do (exit))\n" line)))))
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "stream.c"
-               (("/bin/sh")
-                (string-append (assoc-ref inputs "bash") "/bin/bash")))))
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* (list "tests/017/realpath.tl"
-                                "tests/017/realpath.expected")
-               (("/usr/bin") "/"))))
-         (replace 'configure
-           ;; ./configure is a hand-written script that can't handle standard
-           ;; autotools arguments like CONFIG_SHELL.
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             (setenv "txr_shell" (which "bash"))
-             (apply invoke "./configure" configure-flags)))
-         (add-after 'build 'build-doc
-           (lambda _
-             (setenv "GS_GENERATE_UUIDS" "0")
-             (invoke "make" "txr-manpage.html" "txr-manpage.pdf")))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append (assoc-ref outputs "out")
-                                       "/share/doc/" ,name "-" ,version)))
-               (for-each (lambda (f) (install-file f doc))
-                         '("txr-manpage.html" "txr-manpage.pdf")))))
-         (add-after 'install 'install-vim-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (syntax (string-append out "/share/vim/vimfiles/syntax")))
-               (install-file "tl.vim" syntax)
-               (install-file "txr.vim" syntax)))))))
+     (list #:configure-flags
+           #~(list (string-append "cc=" #$(cc-for-target))
+                   (string-append "--prefix=" #$output))
+           #:test-target "tests"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-license-installation
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("INSTALL(,.*LICENSE,.*)\\$\\(datadir\\)" _ match)
+                      (string-append "INSTALL" match #$output
+                                     "/share/doc/" #$name "-" #$version)))))
+               (delete 'install-license-files)
+               (add-after 'unpack 'inhibit-doc-syms-generation
+                 (lambda _
+                   (substitute* "genman.txr"
+                     ;; Exit from genman.txr before it tries to write to
+                     ;; stdlib/doc-syms.tl, which is anyway kept up to date
+                     ;; with each release (and is already compiled to
+                     ;; stdlib/doc-syms.tlo when genman.txr is run).
+                     (("^@\\(output \"stdlib/doc-syms\\.tl\"\\).*" line)
+                      (string-append "@(do (exit))\n" line)))))
+               (add-after 'unpack 'fix-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "stream.c"
+                     (("/bin/sh")
+                      (search-input-file inputs "/bin/bash")))))
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   (substitute* (list "tests/017/realpath.tl"
+                                      "tests/017/realpath.expected")
+                     (("/usr/bin") "/"))))
+               (replace 'configure
+                 ;; ./configure is a hand-written script that can't handle
+                 ;; standard autotools arguments like CONFIG_SHELL.
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   (setenv "txr_shell" (which "bash"))
+                   (apply invoke "./configure" configure-flags)))
+               (add-after 'build 'build-doc
+                 (lambda _
+                   (setenv "GS_GENERATE_UUIDS" "0")
+                   (invoke "make" "txr-manpage.html" "txr-manpage.pdf")))
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (let ((doc (string-append #$output "/share/doc/"
+                                             #$name "-" #$version)))
+                     (for-each (lambda (f) (install-file f doc))
+                               '("txr-manpage.html" "txr-manpage.pdf")))))
+               (add-after 'install 'install-vim-files
+                 (lambda _
+                   (let ((syntax (string-append #$output
+                                                "/share/vim/vimfiles/syntax")))
+                     (install-file "tl.vim" syntax)
+                     (install-file "txr.vim" syntax)))))))
     (native-inputs
      ;; Required to build the documentation.
      (list ghostscript
@@ -1073,7 +1065,7 @@ extraction language referred to as the TXR Pattern Language (sometimes just
 used for everything from \"one liner\" data transformation tasks at the
 command line, to data scanning and extracting scripts, to full application
 development in a wide-range of areas.")
-    (home-page "https://nongnu.org/txr/")
+    (home-page "https://www.nongnu.org/txr/")
     (license license:bsd-2)))
 
 (define picolisp32
@@ -1236,7 +1228,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.26.0")
+    (version "1.27.0")
     (source
      (origin
        (method git-fetch)
@@ -1245,7 +1237,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ghxchyxhcjs0vfzisafc27v05im4kya1jg827l4q2h92ras17x3"))))
+        (base32 "0fd5z9xviwfv635wxil20qjjigb275p3ns9cvxhfx27ca8kkphsj"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

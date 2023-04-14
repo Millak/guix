@@ -54,13 +54,14 @@
 ;;; Copyright © 2021 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 Ryan Sundberg <ryan@arctype.co>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
@@ -70,6 +71,7 @@
 ;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022, 2023 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -482,7 +484,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.2-version "6.2.7")
+(define-public linux-libre-6.2-version "6.2.10")
 (define-public linux-libre-6.2-gnu-revision "gnu")
 (define deblob-scripts-6.2
   (linux-libre-deblob-scripts
@@ -492,12 +494,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0ir5vvbdh6dly5ld8mfp7285g8k88w5bb32hj4wmgyqsbfqc6rf2")))
 (define-public linux-libre-6.2-pristine-source
   (let ((version linux-libre-6.2-version)
-        (hash (base32 "138dpmj8qr5fcji99kmi3sj34ah21bgqgzsz2lbhn37v059100s3")))
+        (hash (base32 "1zm4xvxdy6sqqwcich46mr4dh3kpmp40bawwahrg4lr7rp1n5iap")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.2)))
 
-(define-public linux-libre-6.1-version "6.1.20")
+(define-public linux-libre-6.1-version "6.1.23")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -507,7 +509,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0cchdhjra74zanyk14brv2l2dvxpg8dn58rn477lgfb44mcnhq33")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "1w1iy1i3bpzrs5rhvqbn2awxv5qqgng9n7jd5js66g0sq3l2sckn")))
+        (hash (base32 "1szblfmm8gx0am017y30ywc60b1gqarplgmcs5zy7bshhwp3fn3l")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -515,7 +517,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.103")
+(define-public linux-libre-5.15-version "5.15.106")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -525,12 +527,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "03hwhwbcicwyx5i30d6m715kwgrxz4h21xhk55wnawlk8zhx3r35")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "01fpipy8skmp4dyxgk8fk9k6hc0w0gvk7mm8f8pm7jhwcf0vlxh8")))
+        (hash (base32 "1r4g7ipcmj7k9dpwd5p2kd0f3iidnzl6z9g2cq4mfcw0h97r7rl4")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.175")
+(define-public linux-libre-5.10-version "5.10.177")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -540,12 +542,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1g4vabfswxzf9ahxc06k2ffksf84kcr2csx4m5kx680w0jqqnk80")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1kkv63v5lc0ahkl8sjmwhqxahmwmbxcbf4mfcmkf6d7j50p5cxz2")))
+        (hash (base32 "0waml6svj07b7f8yb1kzrflqlf61x4kcqbgsr372s484m3z628lz")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.237")
+(define-public linux-libre-5.4-version "5.4.240")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -555,12 +557,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1d6as1yk9svysh07hdybs8glvn8s9f8gwlbjl7f9m920pdam2r60")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "09smq8jsbpqfh135snljack2wj41anx8f8i0lmjcqcq5zzhgw25p")))
+        (hash (base32 "0ihf0rqhx7dav3k3igk29962sscb1xyniy2gx8chyllprr0z126w")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.278")
+(define-public linux-libre-4.19-version "4.19.280")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -570,12 +572,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1q0fgpbdwc21wj9wnjjb49dp84ch6ymd5na3iaabadwjs2nmb6bd")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0miyadgnd52cgw3bgpmx66kr1pgxh14b2f52fasy57b6wysv0lnv")))
+        (hash (base32 "1xmg9p3ky75n5q894f522s8nwcmbd5c15nmjr0n96m6xzag3kd7w")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.310")
+(define-public linux-libre-4.14-version "4.14.312")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -585,7 +587,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1ccggm19nl7pdcxmsm08fkqy8phz8rqfmww5ypizibdmnrmpn2v9")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0r91f3jj3y0cca4sfs0xa12lbrc62q2yzgval5ainwr74bk7dwlb")))
+        (hash (base32 "03bwrnm7z8jxxn681dd5jffrj76l14ngkcccfgbg1p4a0471q436")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -1143,11 +1145,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;; Linux-Libre.
 ;; Reference: https://jxself.org/linux-libre/
 
-(define-public linux-libre-lts-version         linux-libre-5.15-version)
-(define-public linux-libre-lts-gnu-revision    linux-libre-5.15-gnu-revision)
-(define-public linux-libre-lts-pristine-source linux-libre-5.15-pristine-source)
-(define-public linux-libre-lts-source          linux-libre-5.15-source)
-(define-public linux-libre-lts                 linux-libre-5.15)
+(define-public linux-libre-lts-version         linux-libre-6.1-version)
+(define-public linux-libre-lts-gnu-revision    linux-libre-6.1-gnu-revision)
+(define-public linux-libre-lts-pristine-source linux-libre-6.1-pristine-source)
+(define-public linux-libre-lts-source          linux-libre-6.1-source)
+(define-public linux-libre-lts                 linux-libre-6.1)
 
 
 ;;;
@@ -1504,7 +1506,7 @@ and the notification, WiFi, and Bluetooth LED.")
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
-    (version "3.1.4")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1513,7 +1515,7 @@ and the notification, WiFi, and Bluetooth LED.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00yq3bk4ss60q8zgykid6gzsi3n6grdnkk6dkdr8n42gwaprpbw7"))))
+        (base32 "13fncirqcci46zxmsrawsxpazip5k46i849dwkhkqlg0mg4vxxw5"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
@@ -2615,7 +2617,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
 (define-public strace
   (package
     (name "strace")
-    (version "5.18")
+    (version "6.2")
     (home-page "https://strace.io")
     (source (origin
              (method url-fetch)
@@ -2623,7 +2625,7 @@ Zerofree requires the file system to be unmounted or mounted read-only.")
                                  "/strace-" version ".tar.xz"))
              (sha256
               (base32
-               "11qi7pdm0ldycsg9qhsa50icm219mmvy16yw1ih3s9f9kakkwab0"))
+               "1s3pj6a6xx1p1w98ik03d8hc4xssl4ha4aa0039nhqj196j3hz8c"))
              (patches (search-patches "strace-readlink-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -4643,64 +4645,60 @@ compliance.")
 (define-public wireless-regdb
   (package
     (name "wireless-regdb")
-    (version "2020.11.20")
+    (version "2023.02.13")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://kernel.org/software/network/wireless-regdb/"
                     "wireless-regdb-" version ".tar.xz"))
               (sha256
-               (base32
-                "0liagyi6ppf5w474qk9j4jz5gbvvn8mc8al1dq4b1xrgv28485ml"))
+               (base32 "0wrf1c7mbsklwdn7jpwzlpjxwj0vgr61qyh88lx7bi2dd6lfi0gy"))
 
               ;; We're building 'regulatory.bin' by ourselves.
               (snippet '(begin
-                          (delete-file "regulatory.bin")
-                          #t))))
+                          (delete-file "regulatory.bin")))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'gzip-determinism
-           (lambda _
-             (substitute* "Makefile"
-               (("gzip") "gzip --no-name"))
-             #t))
-         (add-after 'unpack 'omit-signature
-           (lambda _
-             (substitute* "Makefile"
-               ;; Signing requires a REGDB_PUBCERT and REGDB_PRIVKEY which we
-               ;; don't provide (see below).  Disable it.
-               ((" regulatory\\.db\\.p7s") "")
-               ;; regulatory.db is built as a dependency of regulatory.db.p7s,
-               ;; but ‘make install’ depends only on the latter while installing
-               ;; both (and failing).  Depend on it explicitly.
-               (("^install: " all) (string-append all "regulatory.db ")))
-             #t))
-         (delete 'configure))  ; no configure script
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'gzip-determinism
+            (lambda _
+              (substitute* "Makefile"
+                (("gzip") "gzip --no-name"))))
+          (add-after 'unpack 'omit-signature
+            (lambda _
+              (substitute* "Makefile"
+                ;; Signing requires a REGDB_PUBCERT and REGDB_PRIVKEY which we
+                ;; don't provide (see below).  Disable it.
+                ((" regulatory\\.db\\.p7s") "")
+                ;; regulatory.db is built as a dependency of regulatory.db.p7s,
+                ;; but ‘make install’ depends only on the latter while
+                ;; installing both (and failing).  Depend on it explicitly.
+                (("^install: " all) (string-append all "regulatory.db ")))))
+          (delete 'configure))  ; no configure script
 
-       ;; The 'all' target of the makefile depends on $(REGDB_CHANGED), which
-       ;; is computed and can be equal to 'maintainer-clean'; when that
-       ;; happens, we can end up deleting the 'regulatory.bin' file that we
-       ;; just built.  Thus, build things sequentially.
-       #:parallel-build? #f
+      ;; The 'all' target of the makefile depends on $(REGDB_CHANGED), which
+      ;; is computed and can be equal to 'maintainer-clean'; when that
+      ;; happens, we can end up deleting the 'regulatory.bin' file that we
+      ;; just built.  Thus, build things sequentially.
+      #:parallel-build? #f
 
-       #:tests? #f                      ; no tests
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "FIRMWARE_PATH=$(PREFIX)/lib/firmware")
+      #:tests? #f                      ; no tests
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "FIRMWARE_PATH=$(PREFIX)/lib/firmware")
 
-               ;; Leave this empty so that db2bin.py doesn't try to sign
-               ;; ‘regulatory.bin’.  This allows us to avoid managing a key
-               ;; pair for the whole distribution.
-               (string-append "REGDB_PRIVKEY=")
-               ;; Don't generate a public key for the same reason.  These are
-               ;; used as Makefile targets and can't be the empty string.
-               (string-append "REGDB_PUBCERT=/dev/null")
-               (string-append "REGDB_PUBKEY=/dev/null")))))
+              ;; Leave this empty so that db2bin.py doesn't try to sign
+              ;; ‘regulatory.bin’.  This allows us to avoid managing a key
+              ;; pair for the whole distribution.
+              (string-append "REGDB_PRIVKEY=")
+              ;; Don't generate a public key for the same reason.  These are
+              ;; used as Makefile targets and can't be the empty string.
+              (string-append "REGDB_PUBCERT=/dev/null")
+              (string-append "REGDB_PUBKEY=/dev/null"))))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (home-page
      "https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb")
     (synopsis "Wireless regulatory database")
@@ -5705,7 +5703,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
 (define-public bluez
   (package
     (name "bluez")
-    (version "5.65")
+    (version "5.66")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5713,7 +5711,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "1m4n7nczjlbhb20bp2hwb2b85036xma5pqljmpk7ddalhgaa8r95"))))
+                "0x5mn9x6g626izxnw236933wvq83qagsh9qc9ac9550cb55sdzir"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7126,7 +7124,7 @@ of flash storage.")
 (define-public libseccomp
   (package
     (name "libseccomp")
-    (version "2.5.3")
+    (version "2.5.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/seccomp/libseccomp/"
@@ -7134,7 +7132,7 @@ of flash storage.")
                                   "/libseccomp-" version ".tar.gz"))
               (sha256
                (base32
-                "0xhan73zn4p0n7s8vx6s47wjmidvk4x8r90vfbljairn6f3mq1jr"))))
+                "1nyb3lspc5bsirpsx89vah3n54pmwlgxrwsfaxl01kq50i004afq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")
@@ -9448,6 +9446,44 @@ extended BPF (Berkeley Packet Filters), formally known as eBPF, a new feature
 that was first added to Linux 3.15.  Much of what BCC uses requires Linux 4.1
 and above.")
     (license license:asl2.0)))
+
+(define-public bpftool
+  (package
+    (name "bpftool")
+    (version (package-version linux-libre))
+    (source (package-source linux-libre))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ;This package has no tests.
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (invoke "make" "-C" "tools/bpf/bpftool"
+                              ,(string-append "CC=" (cc-for-target)))))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out")))
+                        (mkdir-p (string-append out "/sbin"))
+                        (mkdir-p (string-append out
+                                  "/share/bash-completion/completions"))
+                        (invoke "make"
+                                (string-append "prefix=" out)
+                                (string-append
+                                 "bash_compdir=" out
+                                 "/share/bash-completion/completions")
+                                "-C" "tools/bpf/bpftool"
+                                "install")))))))
+    (inputs (list elfutils                        ;provides libelf
+                  readline libcap zlib))
+    (native-inputs (list bison python-3))
+    ;; This tool does not have a proper web page.
+    (home-page
+     "https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/bpf/bpftool")
+    (synopsis "Tool for inspection and manipulation of eBPF programs and maps")
+    (description "@command{bpftool} allows for inspection and simple
+modification of BPF objects on the system.")
+    (license (package-license linux-libre))))
 
 (define-public bpftrace
   (package

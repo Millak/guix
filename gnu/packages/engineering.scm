@@ -35,7 +35,8 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022, 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,6 +133,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
@@ -298,7 +300,7 @@ utilities.")
   (package
     (inherit geda-gaf)
     (name "lepton-eda")
-    (version "1.9.14-20210407")
+    (version "1.9.18-20220529")
     (home-page "https://github.com/lepton-eda/lepton-eda")
     (source (origin
               (method git-fetch)
@@ -307,7 +309,7 @@ utilities.")
                     (commit version)))
               (sha256
                (base32
-                "0kyq0g6271vlwraw98637fn8bq2l6q4rll6748nn8rwsmfz71d0m"))
+                "06plrcab3s2rpyf0qv2gzc1yp33627xi8105niasgixckk6glnc2"))
               (file-name (git-file-name name version))))
     (arguments
      (list
@@ -328,28 +330,40 @@ utilities.")
                 "CFLAGS=-fcommon"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; For logs and auto-compilation
+              (setenv "HOME" "/tmp")
+
+              ;; Ensure that readline is found by lepton-shell
+              (substitute* "script.in"
+                (("\\(eval-when \\(expand load eval\\)" m)
+                 (string-append "
+(add-to-load-path \"" #$(this-package-input "guile-readline")
+"/share/guile/site/3.0\")
+(set! %load-compiled-path (cons \""
+#$(this-package-input "guile-readline")
+"/lib/guile/3.0/site-ccache/"
+"\" %load-compiled-path))
+" m)))))
           (add-before 'build 'fix-dynamic-link
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "libleptongui/scheme/schematic/ffi.scm.in"
-                (("@LIBLEPTONGUI@")
-                 (string-append #$output "/lib/libleptongui.so")))
-              (substitute* '("libleptongui/scheme/schematic/ffi/gtk.scm.in"
-                             "utils/attrib/lepton-attrib.scm")
-                (("@LIBGTK@")
-                 (search-input-file inputs "/lib/libgtk-3.so")))
-              (substitute* '("libleptongui/scheme/schematic/ffi/gobject.scm.in")
-                (("@LIBGOBJECT@")
-                 (search-input-file inputs "/lib/libgobject-2.0.so")))
-              (substitute* "liblepton/scheme/lepton/ffi.scm.in"
-                (("@LIBLEPTON@")
-                 (string-append #$output "/lib/liblepton.so")))
-              (substitute* "utils/attrib/lepton-attrib.scm"
-                (("@LIBLEPTONATTRIB@")
-                 (string-append (assoc-ref outputs "out")
-                                "/lib/libleptonattrib.so")))
-              (substitute* "liblepton/scheme/lepton/log.scm.in"
-                (("@LIBGLIB@")
-                 (search-input-file inputs "/lib/libglib-2.0.so")))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "liblepton/scheme/lepton/ffi/lib.scm"
+                (("\"liblepton\"")
+                 (string-append "\"" #$output "/lib/liblepton.so" "\""))
+                (("\"libleptonattrib\"")
+                 (string-append "\"" #$output "/lib/libleptonattrib.so" "\""))
+                (("\"libleptongui\"")
+                 (string-append "\"" #$output "/lib/libleptongui.so" "\""))
+                (("\"libglib-2.0\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libglib-2.0.so") "\""))
+                (("\"libgobject-2.0\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libgobject-2.0.so") "\""))
+                (("\"libgtk-3\"")
+                 (string-append
+                  "\"" (search-input-file inputs "/lib/libgtk-3.so") "\"")))
 
               ;; For finding libraries when running tests before installation.
               (setenv "LIBLEPTONGUI"
@@ -408,6 +422,7 @@ utilities.")
            gtk+
            gtksheet
            guile-3.0
+           guile-readline
            shared-mime-info
            m4
            pcb))
@@ -763,14 +778,14 @@ ready for production.")
 (define-public qelectrotech
   (package
     (name "qelectrotech")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://git.tuxfamily.org/qet/qet.git/"
                            "snapshot/qet-" version ".tar.gz"))
        (sha256
-        (base32 "0w70fqwhqqzga1kfp34v8z1xf9988nvvi3d5gwl2sg429p9mpsk2"))))
+        (base32 "1qkgagx2bk2jfzs3d91kki01y5bs5p85f4c8xjxn45hmw4rl512b"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: tests are built for the CMake build option but it seems to be
@@ -1613,6 +1628,49 @@ the API of spice simulators.  Based on transformations specified in XML
 language, ADMS transforms Verilog-AMS code into other target languages.")
     (license license:gpl3)))
 
+(define-public audmes
+  (package
+    (name "audmes")
+    (version "20220420")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/audmes/audmes%20sources/"
+                           "audmes-source-" version ".zip"))
+       (sha256
+        (base32 "0yxjq2p1ca2wy2idwrlxr3b4vbp0d9268jll90y7l55fbid8vkp2"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'prepare-csv.h
+           (lambda* (#:key inputs #:allow-other-keys)
+             (mkdir "libfccp")
+             (install-file (search-input-file inputs "csv.h") "libfccp"))))))
+    (inputs
+     (list alsa-lib pulseaudio wxwidgets))
+    (native-inputs
+     (list unzip
+           (let ((commit "4ade42d5f8c454c6c57b3dce9c51c6dd02182a66"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/ben-strasser/fast-cpp-csv-parser")
+                     (commit commit)))
+               (file-name (git-file-name "csv.h" (git-version "0" "0" commit)))
+               (sha256
+                (base32
+                 "1y7ads97gkrjg1jc532n8gmjry0qhqxginw1gq7b4lk9s0pyl540"))))))
+    (home-page "https://sourceforge.net/projects/audmes/")
+    (synopsis "Oscilloscope and spectrum analyzer using sound card")
+    (description
+     "The audio measurement system is a system for audio measurement through
+sound card.  It contains: generator, oscilloscope, audio spectrum
+analyzer (FFT) and frequency sweep plot.")
+    (license license:gpl2+)))
+
 (define-public capstone
   (package
     (name "capstone")
@@ -1810,7 +1868,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "38")
+    (version "40")
     (source
      (origin
        (method url-fetch)
@@ -1821,7 +1879,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "0mkw66d2isyyxssziwramd08amd7l1qm6dfg86r5s5kvqkv24gic"))))
+        (base32 "03c9irc44msdpqhbn2fhvb4g0sry8a2qgxl4mbbf557mq1xwl0z3"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -2418,7 +2476,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.24.1")
+    (version "0.26.0")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2426,7 +2484,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1shp8q8324dkwf448mv9zzi7krx882p122ma4fk015qz91sg4wff"))
+                "1v7dag6sm96b18y4p46cjjyqnq9r2r7qmiy0xvdwy3js4zf4iwcv"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
@@ -3033,40 +3091,37 @@ data structures and to operate on them.")
 @code{Poke Ras mode} and @code{Poke Map mode}.")))
 
 (define-public pcb2gcode
-  ;; Take some additional commits after v2.4.0 to fix build against
-  ;; geos 3.10.1.
-  (let ((commit "ae41f9fe41e57ee5d0cced6c3b3c8aea9c3f5392"))
-    (package
-     (name "pcb2gcode")
-     (version (git-version "2.4.0" "1" commit))
-     (source
-      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pcb2gcode/pcb2gcode")
-             (commit commit)
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1r1qmvpn5ffi2xpq2gigwsk8kn79s4s2ywfvicwf8i7rzwhkdf17"))))
-     (build-system gnu-build-system)
-     (inputs
-      (list boost
-            geos
-            gerbv
-            glibmm
-            gtkmm-2
-            librsvg))
-     (native-inputs
-      (list autoconf automake libtool pkg-config))
-     (home-page "https://github.com/pcb2gcode/pcb2gcode")
-     (synopsis "Generate G-code for milling PCBs")
-     (description "pcb2gcode is a command-line program for isolation routing
+  (package
+   (name "pcb2gcode")
+   (version "2.5.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/pcb2gcode/pcb2gcode")
+           (commit (string-append "v" version))
+           (recursive? #t)))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32
+       "01s41znkcq9x1rinsdqrrdj8p35isckrcxs14ajsi7wr39n1m5kk"))))
+   (build-system gnu-build-system)
+   (inputs
+    (list boost
+          geos
+          gerbv
+          glibmm
+          gtkmm-2
+          librsvg))
+   (native-inputs
+    (list autoconf automake libtool pkg-config))
+   (home-page "https://github.com/pcb2gcode/pcb2gcode")
+   (synopsis "Generate G-code for milling PCBs")
+   (description "pcb2gcode is a command-line program for isolation routing
 and drilling of PCBs.  It takes Gerber files as input and outputs G-code files
 for the milling of PCBs.  It also includes an autoleveller for the automatic
 dynamic calibration of the milling depth.")
-     (license license:gpl3+))))
+   (license license:gpl3+)))
 
 ;; libdxfrw has no readme, no version release, no tags.  Initial commit says
 ;; "libdxfrw-0.6.3 import", but it shares no git history with "upstream"
@@ -4044,7 +4099,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.4.1")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4052,7 +4107,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "1f5zzlnr2na4hkvcwn4n9cjlk6595945vwrw89pa683qk5mrb7b6"))))
+                "18zca3iwdif200wiivm065fs0a5g520q6380205cijca7ky81avi"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -4067,7 +4122,12 @@ form, numpad.
               "-Duse_sys_xxhash=enabled"
               "-Duse_sys_openssl=enabled"
               "-Duse_sys_tree_sitter=enabled"
-              "-Duse_sys_libuv=enabled"
+              "-Duse_sys_lzma=enabled"
+              "-Duse_sys_libmspack=enabled"
+              "-Duse_zlib=true"
+              "-Duse_lzma=true"
+              "-Dinstall_sigdb=false"
+              "-Duse_swift_demangler=true"
               "-Duse_gpl=true")
       #:phases
       #~(modify-phases %standard-phases
@@ -4078,10 +4138,13 @@ form, numpad.
               ;; And 2 of them are failing, reported upstream:
               ;; <https://github.com/rizinorg/rizin/issues/2905>.
               (substitute* "test/meson.build"
-                (("subdir\\('integration'\\)") "")))))))
+                (("subdir\\('integration'\\)") ""))
+              ;;; Skip analysis_var test, which is failing.
+              (substitute* "test/unit/meson.build"
+                (("'analysis_var',\n") "")))))))
     (native-inputs (list pkg-config))
     (inputs
-     (list capstone file libuv libzip lz4 openssl tree-sitter xxhash zlib))
+     (list capstone file libuv libzip lz4 openssl tree-sitter xxhash zlib libmspack))
     (home-page "https://rizin.re")
     (synopsis "Disasm, debug, analyze and manipulate binary files")
     (description

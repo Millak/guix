@@ -12,7 +12,7 @@
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;;
@@ -34,6 +34,7 @@
 (define-module (gnu packages fontutils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -158,14 +159,13 @@ them as it goes.")
 (define-public python-afdko
   (package
     (name "python-afdko")
-    (version "3.9.1")
+    (version "3.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "afdko" version))
        (sha256
-        (base32 "0k1204vykgx32saa495s1lgmz1dixcp8bjiv486imx77killvm02"))
-       (patches (search-patches "python-afdko-suppress-copyright-test.patch"))
+        (base32 "1d3b1590gxlindh1sjhwvxnryn5zil98hgdwbgsr76fd657r3f99"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -191,27 +191,13 @@ them as it goes.")
               (substitute* "CMakeLists.txt"
                 (("CMAKE_CXX_STANDARD 11")
                  "CMAKE_CXX_STANDARD 17"))))
-          (add-after 'unpack 'use-system-libxml2
-            (lambda _
-              ;; XXX: These horrifying substitutions revert this upstream
-              ;; PR: <https://github.com/adobe-type-tools/afdko/pull/1527>.
-              ;; Hopefully it's only temporary..!
-              (substitute* (find-files "." "^CMakeLists.txt$")
-                (("\\(\\(NOT \\$\\{LibXml2_FOUND\\}\\) OR \
-\"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)")
-                 "(NOT ${LibXml2_FOUND})")
-                (("\\(\\(\\$\\{LibXml2_FOUND\\}\\) AND \
-\\(NOT \"\\$\\{CMAKE_SYSTEM\\}\" MATCHES \"Linux\"\\)\\)")
-                 "(${LibXml2_FOUND})"))
-                (substitute* "cmake/ExternalLibXML2.cmake"
-                  (("set\\(LIBXML2_STATIC_INCLUDE_DIR")
-                   "set(LIBXML2_INCLUDE_DIR)"))))
           (add-after 'unpack 'patch-problematic-requirements
             (lambda _
               (substitute* "requirements.txt"
                 ;; Remove lxml because the version requested here is different
                 ;; than the one propagated by the python-fonttools package.
-                (("^lxml==.*") ""))))
+                (("^lxml==.*") "")
+                (("<=4.38.0") ">=4.38.0"))))
           (add-after 'unpack 'patch-setup.py
             (lambda _
               ;; There is no use for Python-provided CMake nor Ninja binaries.
@@ -251,7 +237,14 @@ them as it goes.")
                         (number->string (parallel-job-count))
                         ;; This test is known to fail on multiple architectures.
                         ;; https://github.com/adobe-type-tools/afdko/issues/1163
-                        "-k not test_type1mm_inputs"))))
+                        "-k"
+                        (string-append
+                         "not test_type1mm_inputs "
+                         ;; These tests fail for unknown reasons (see:
+                         ;; https://github.com/adobe-type-tools/afdko/issues/1635).
+                         "and not test_rvrn_vf "
+                         "and not test_cjk_vf "
+                         "and not test_sparse_cjk_vf")))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
@@ -276,7 +269,8 @@ them as it goes.")
            python-setuptools-scm
            python-wheel))
     (inputs
-     (list java-antlr4-runtime-cpp
+     (list bash-minimal
+           java-antlr4-runtime-cpp
            libxml2
            `(,util-linux "lib")))
     (propagated-inputs
@@ -463,23 +457,15 @@ converts any cubic curves to quadratic.  The most useful function is probably
 (define-public python-ufo2ft
   (package
     (name "python-ufo2ft")
-    (version "2.28.0")
+    (version "2.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ufo2ft" version))
        (sha256
-        (base32 "068hm62s1iphyg66w96vgiif6ahpcsaf8fr44rk6jdf71f6fyqd5"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (native-inputs
-     (list python-pytest python-setuptools-scm))
+        (base32 "1rg2997af8blvswlwif0kpz2vxrlh555gzqslz6yv9y7i7v8lphl"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools-scm))
     (propagated-inputs
      (list python-booleanoperations
            python-cffsubr
@@ -501,13 +487,13 @@ to generate OpenType font binaries from Unified Font Objects (UFOs).")
 (define-public python-fontmath
   (package
     (name "python-fontmath")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fontMath" version ".zip"))
        (sha256
-        (base32 "014407hpvqdx123g06i664qrfq86bf9l621x7jllpgqw3rqir2sc"))))
+        (base32 "070v1jz5f18g15if459ppwswq4w5hzffwp1gvdc5j47bgz5qflva"))))
     (build-system python-build-system)
     (propagated-inputs (list python-fonttools))
     (native-inputs
@@ -574,13 +560,13 @@ implementing the pen protocol for manipulating glyphs.")
   (hidden-package
    (package
      (name "python-fontparts-bootstrap")
-     (version "0.10.8")
+     (version "0.11.0")
      (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "fontParts" version ".zip"))
         (sha256
-         (base32 "0i5ww6yl9m74wnjd7gyvjkdh7m56haql4gv7lasmppdipay2209g"))))
+         (base32 "0j4h8hszky639gmfy1avmw670y80ya49kca8yc635h5ihl0c3v8x"))))
      (build-system python-build-system)
      (propagated-inputs
       (list python-booleanoperations
@@ -773,9 +759,12 @@ suite of the @code{psautohint} package.")
        (uri (pypi-uri "psautohint" version))
        (sha256
         (base32 "0zzz7hy1kkkjfrrm9ly2di3xv2x1ywdqhbyqy21k670jysldw3nm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      ;; The CJKSparseVar.subset.hinted.otf test fails with slightly different
+      ;; output caused by the newer fonttools version used in Guix.
+      #:test-flags #~(list "-k" "not CJKSparseVar.subset.hinted.otf")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'copy-font-data
@@ -785,12 +774,8 @@ suite of the @code{psautohint} package.")
                #$(this-package-native-input "psautohint-font-data")
                "tests/integration/data")
               (for-each make-file-writable
-                        (find-files "tests/integration/data"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
-    (propagated-inputs (list python-fonttools))
+                        (find-files "tests/integration/data")))))))
+    (inputs (list python-fonttools))
     (native-inputs
      (list psautohint-font-data
            python-fs
@@ -1573,7 +1558,7 @@ generate bitmaps.")
 (define-public python-statmake
   (package
     (name "python-statmake")
-    (version "0.5.1")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1582,7 +1567,7 @@ generate bitmaps.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qavzspxhwnaayj5mxq6ncjjziggabxj157ls04h2rdrpq167706"))))
+                "1k6fkzyhsfkgi599sb017wzf4jzbnp5wjg1kla1b33vgjpa7n5nw"))))
     (build-system pyproject-build-system)
     (arguments
      (list

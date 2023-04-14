@@ -2905,3 +2905,38 @@ Unix desktop environment under X11 as well as Wayland.")
     (synopsis "WebP GdkPixbuf loader library")
     (description "Webp-pixbuf-loader is a WebP format loader of GdkPixbuf.")
     (license license:lgpl2.0+)))
+
+(define-public libpanel
+  (package
+    (name "libpanel")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/libpanel")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10lkysbwg9w0lm1hj7lw4g7y9j8b88kmq07nfgx0r6f319znj12v"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-Ddocs=disabled")  ;fontconfig issue
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-gtk-update-icon-cache
+                          (lambda _
+                            (substitute* "meson.build"
+                              (("gtk_update_icon_cache: true")
+                               "gtk_update_icon_cache: false")))))))
+    (native-inputs (list `(,glib-next "bin")
+                         gobject-introspection
+                         pkg-config
+                         vala))
+    (inputs (list glib-next gtk libadwaita))
+    (home-page "https://gitlab.gnome.org/GNOME/libpanel")
+    (synopsis "Dock and panel library for GTK 4")
+    (description "Libpanel provides a library to create IDE-like applications
+using GTK and @code{libadwaita}.  It has widgets for panels, docks, columns
+and grids of pages.  Primarily, its design and implementation focus around the
+GNOME Builder and Drafting projects.")
+    (license license:lgpl3)))

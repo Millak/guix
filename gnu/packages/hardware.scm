@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 Marcel Kupiec <formbi@protonmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Spencer Skylar Chan <schan12@umd.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -482,31 +483,15 @@ RGB animations.")
 (define-public ddcutil
   (package
     (name "ddcutil")
-    (version "1.3.2")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.ddcutil.com/tarballs/"
                            "ddcutil-" version ".tar.gz"))
        (sha256
-        (base32 "0hm0cm4m4hk1jjy7kddg613mynvwlii3kp8al0j9v3c6mcx3p4mx"))))
+        (base32 "14svdjpw9xn1czl4vff4jg2i9bp83lxcbzxj7hxn63z3gzacaj4k"))))
     (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-udev-rules
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; Move the udev rules to their expected location in Guix
-              ;; System, so they can be more easily used.
-              (let ((rules.d (string-append #$output "/lib/udev/rules.d")))
-                (mkdir-p (dirname rules.d))
-                (rename-file (string-append #$output "/share/ddcutil/data")
-                             rules.d)
-                ;; Patch a reference to the ddcutil command.
-                (substitute* (string-append rules.d "/45-ddcutil-usb.rules")
-                  (("/usr/bin/ddcutil")
-                   (search-input-file outputs "bin/ddcutil")))))))))
     (native-inputs
      (list pkg-config))
     (inputs

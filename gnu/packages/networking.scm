@@ -30,7 +30,7 @@
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2019, 2020, 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2019, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2019 Daniel Schaefer <git@danielschaefer.me>
@@ -58,6 +58,7 @@
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,7 +201,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
 (define-public arp-scan
   (package
     (name "arp-scan")
-    (version "1.9.8")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -210,7 +211,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18pck3hi7caykpkry5ri16w4w8m11g8gvh3qx5rhwsc6d9xa2a6d"))))
+        (base32 "1d603by2v7gj6bdxn1d23l425q115dk5qfk3ywbj6wbsjysqhbq5"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
@@ -1755,41 +1756,36 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.3")
+    (version "4.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "04cmgvmkyvxdpfy08adxf3smklgzakrvyvb89rrr7yqaridy2lbc"))))
+        (base32 "0jz76ra86gy7r4wwb174lggnl5y29nn68l7ydw1kj1phcijrz854"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             ;; Skip test suite failing with "Program reassemble_test is not
-             ;; available" and alike errors.  Also skip test suite failing
-             ;; with "AssertionError: Program extcap/sdjournal is not
-             ;; available" error.'
-             (when tests?
-               (invoke "ctest"
-                       "-E"
-                       (string-join (list "suite_unittests" "suite_extcaps")
-                                    "|"))))))
-       ;; Build process chokes during `validate-runpath' phase.
-       ;;
-       ;; Errors are like the following:
-       ;; "/gnu/store/...wireshark-3.0.0/lib/wireshark/plugins/3.0/epan/ethercat.so:
-       ;; error: depends on 'libwireshark.so.12', which cannot be found in
-       ;; RUNPATH".  That is, "/gnu/store/...wireshark-3.0.0./lib" doesn't
-       ;; belong to RUNPATH.
-       ;;
-       ;; That’s not a problem in practice because "ethercat.so" is a plugin,
-       ;; so it’s dlopen’d by a process that already provides "libwireshark".
-       ;; For now, we disable this phase.
-       #:validate-runpath? #f))
+     (list
+      ;; This causes the plugins to register runpaths for the wireshark
+      ;; libraries, which would otherwise cause the validate-runpath phase to
+      ;; fail.
+      #:configure-flags #~(list (string-append "-DCMAKE_MODULE_LINKER_FLAGS="
+                                               "-Wl,-rpath=" #$output "/lib")
+                                "-DUSE_qt6=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-VV"
+                        "-j" (if parallel-tests?
+                                 (number->string (parallel-job-count))
+                                 "1")
+                        ;; Skip the suite_extcaps.case_extcaps.test_sdjournal
+                        ;; test as it requires sdjournal (from systemd) and
+                        ;; fails.
+                        "-E" "suite_extcaps")))))))
     (inputs
      (list c-ares
            glib
@@ -1802,14 +1798,15 @@ of the same name.")
            libssh
            libxml2
            lz4
-           lua-5.2                      ;Lua 5.3 unsupported
+           lua
            mit-krb5
            `(,nghttp2 "lib")
            minizip
            pcre2
-           qtbase-5
-           qtmultimedia-5
-           qtsvg-5
+           qt5compat
+           qtbase
+           qtmultimedia
+           qtsvg
            sbc
            snappy
            zlib
@@ -1822,7 +1819,7 @@ of the same name.")
            perl
            pkg-config
            python-wrapper
-           qttools-5))
+           qttools))
     (synopsis "Network traffic analyzer")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of
@@ -2913,6 +2910,39 @@ networks.")
 speedtest.net.")
     (license license:asl2.0)))
 
+(define-public atftp
+  (package
+    (name "atftp")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.code.sf.net/p/atftp/code")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "019qrh2wpvr577ksvs3s82q6kiqm5i6869aj7qba326b59lhkxrc"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'autoreconf
+                          (lambda _
+                            (invoke "autoreconf" "-vif"))))))
+    (native-inputs (list autoconf automake perl pkg-config))
+    (inputs (list pcre2 procps readline tcp-wrappers))
+    (home-page "https://sourceforge.net/projects/atftp/")
+    (synopsis "Advanced TFTP server and client")
+    (description
+     "This package provides a multi-threaded TFTP server that implements all
+options, including all extensions, as specified in RFC 1350, RFC 2090, RFC
+2347, RFC 2348, RFC 2349 and RFC7440.  Atftpd also supports a multicast
+protocol known as mtftp, which was defined in the PXE specification.
+
+The server is socket activated by default but supports being started from
+@command{inetd} as well as in daemon mode.")
+    (license license:gpl2+)))
+
 (define-public tftp-hpa
   (package
     (name "tftp-hpa")
@@ -3676,55 +3706,56 @@ communication over HTTP.")
     (license license:agpl3+)))
 
 (define-public restinio
-  (package
-    (name "restinio")
-    (version "0.6.17")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Stiffstream/restinio")
-                    (commit (string-append "v." version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jpvfa2sjkihbkcc1q6c9zb1vry9mkkhbz2jrl831bqslpq9la3p"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      ;; Multiple tests fail to run in the build container due to host name
-      ;; resolution (see: https://github.com/Stiffstream/restinio/issues/172).
-      #:tests? #f
-      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
-                                "-DRESTINIO_INSTALL=ON"
-                                "-DRESTINIO_TEST=ON"
-                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
-                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'change-directory
-            (lambda _
-              (chdir "dev"))))))
-    (native-inputs
-     (list catch2
-           clara
-           json-dto))
-    (inputs
-     (list openssl
-           sobjectizer))
-    (propagated-inputs
-     ;; These are all #include'd by restinio's .hpp header files.
-     (list asio
-           fmt
-           http-parser
-           pcre
-           pcre2
-           zlib))
-    (home-page "https://stiffstream.com/en/products/restinio.html")
-    (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
-    (description "RESTinio is a header-only C++14 library that gives you an embedded
+  ;; Temporarily use an unreleased commit, which includes fixes to be able to
+  ;; run the test suite in the resolver-less Guix build environment.
+  (let ((revision "0")
+        (commit "eda471ec3a2815965ca02ec93a1124a342b7601d"))
+    (package
+      (name "restinio")
+      (version (git-version "0.6.18" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Stiffstream/restinio")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0f4w7714r0ic7csgxydw2vzfh35ssk34pns9jycmc08dzc3r7whb"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                  "-DRESTINIO_INSTALL=ON"
+                                  "-DRESTINIO_TEST=ON"
+                                  "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                  "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'change-directory
+              (lambda _
+                (chdir "dev"))))))
+      (native-inputs
+       (list catch2
+             clara
+             json-dto))
+      (inputs
+       (list openssl
+             sobjectizer))
+      (propagated-inputs
+       ;; These are all #include'd by restinio's .hpp header files.
+       (list asio
+             fmt
+             http-parser
+             pcre
+             pcre2
+             zlib))
+      (home-page "https://stiffstream.com/en/products/restinio.html")
+      (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
+      (description "RESTinio is a header-only C++14 library that gives you an embedded
 HTTP/Websocket server.  It is based on standalone version of ASIO
 and targeted primarily for asynchronous processing of HTTP-requests.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public opendht
   (package
@@ -4236,46 +4267,6 @@ cables.")
                    (license:non-copyleft ; slirpvde
                     "file://COPYING.slirpvde"
                     "See COPYING.slirpvde in the distribution."))))))
-
-(define-public haproxy
-  (package
-    (name "haproxy")
-    (version "2.1.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.haproxy.org/download/"
-                                  (version-major+minor version)
-                                  "/src/haproxy-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0fd3c1znid5a9w3gcf77b85hm2a2558w9s02c4b7xzkmivqnqbir"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (let* ((out (assoc-ref %outputs "out")))
-         (list (string-append "PREFIX=" out)
-               (string-append "DOCDIR=" out "/share/" ,name)
-               "TARGET=linux-glibc"
-               "USE_LUA=1"
-               "USE_OPENSSL=1"
-               "USE_ZLIB=1"
-               "USE_PCRE_2=1"))
-       #:tests? #f  ; there are only regression tests, using varnishtest
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
-    (inputs
-     (list lua openssl pcre2 zlib))
-    (home-page "https://www.haproxy.org/")
-    (synopsis "Reliable, high performance TCP/HTTP load balancer")
-    (description "HAProxy offers @acronym{HA, high availability}, load
-balancing, and proxying for TCP and HTTP-based applications.  It is particularly
-suited to Web sites crawling under very high loads while needing persistence or
-Layer 7 processing.  Supporting tens of thousands of connections is clearly
-realistic with today's hardware.")
-    (license (list license:gpl2+
-                   license:lgpl2.1
-                   license:lgpl2.1+))))
 
 (define-public lldpd
   (package

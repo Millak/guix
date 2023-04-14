@@ -171,7 +171,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "6.0.12")
+    (version "6.0.14")
     (source
      (origin
        (method url-fetch)
@@ -179,7 +179,7 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "04083aa63bzfg5jp958nypbqr0hlcbhj73whlinr1ri3x1z0caz7"))
+        (base32 "0n6fqa9vbhh2syxii7ds2x6dnplrgrj98by1zl0ij1wfbnbxa6k3"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
@@ -829,4 +829,3 @@ user-configured power thresholds.  This can be used to force powering off a
 laptop when the battery gets below critical levels, instead of damaging the
 battery.")
     (license license:isc)))
-

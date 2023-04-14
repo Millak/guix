@@ -74,7 +74,6 @@
             origin-uri
             origin-method
             origin-hash
-            origin-sha256                         ;deprecated
             origin-file-name
             origin-actual-file-name
             origin-patches
@@ -345,14 +344,6 @@ as base32.  Otherwise, it must be a bytevector."
   "Build an <origin> record, automatically converting 'sha256' field
 specifications to 'hash'."
   (origin-compatibility-helper (fields ...) ()))
-
-(define-deprecated (origin-sha256 origin)
-  origin-hash
-  (let ((hash (origin-hash origin)))
-    (unless (eq? (content-hash-algorithm hash) 'sha256)
-      (raise (condition (&message
-                         (message (G_ "no SHA256 hash for origin"))))))
-    (content-hash-value hash)))
 
 (define (print-origin origin port)
   "Write a concise representation of ORIGIN to PORT."

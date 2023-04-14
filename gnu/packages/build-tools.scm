@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2022, 2023 Juliana Sims <jtsims@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -712,11 +712,11 @@ Build has features such as:
     (license license:gpl2+)))
 
 (define-public genie
-  (let ((commit "b139103697bbb62db895e4cc7bfe202bcff4ff25")
+  (let ((commit "22cc907a4351db46c55f73e6aa901f1b2f0c52ad")
         (revision "0"))
     (package
       (name "genie")
-      (version (git-version "1167" revision commit))
+      (version (git-version "1170" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -725,7 +725,7 @@ Build has features such as:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "16plshzkyjjzpfcxnwjskrs7i4gg0qn92h2k0rbfl4a79fgmwvwv"))))
+                  "1wxhbdnr52qa2xr1i83577mwr25fxr5vby4r7m5brp9z5a08fwry"))))
       (build-system gnu-build-system)
       (arguments
        (list #:phases #~(modify-phases %standard-phases
@@ -922,7 +922,7 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
      (list
       bash-minimal python perl clisp
       ;; Unicode data:
-      ucd-next
+      ucd
       ;; Programs for the tests:
       cppi indent git-minimal/pinned autoconf))
     (home-page "https://www.gnu.org/software/gnulib/")
@@ -948,3 +948,38 @@ maintenance-related files, for convenience.")
    #:version "2022-12-31"
    #:commit "875461ffdf58ac04677957b4ae4160465b83b940"
    #:hash (base32 "0bf7a6wdns9c5wwv60qfcn9llg0j6jz5ryd2qgsqqx2i6xkmp77c")))
+
+(define-public pdpmake
+  (package
+    (name "pdpmake")
+    (version "1.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rmyorston/pdpmake")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fjx5imd7s0h0yy8h2qc4vkdq7kxqcljnrw6h8n88720xha5z3cb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:parallel-tests? #f
+      #:make-flags
+      #~(list "DESTDIR=\"\""
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://frippery.org/make/")
+    (synopsis "POSIX make")
+    (description
+     "This package contains an implementation of POSIX make.  The default
+configuration enables extensions.  Generally these extensions are compatible
+with GNU make.")
+    ;; pdpmake is distributed under the public domain, but the sources include
+    ;; tests under the GPL license version 2.
+    (license (list license:gpl2 license:public-domain))))

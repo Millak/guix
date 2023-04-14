@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen0@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
@@ -51,6 +51,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +113,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
@@ -122,6 +124,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages game-development)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -140,6 +143,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
@@ -478,10 +482,74 @@ playing your music.")
                ;; qocoa is under MIT and CC by-sa for the icons.
                license:cc-by-sa3.0))))
 
+(define-public ctrlr
+  ;; The latest release from 2021 does not have a build system.
+  (let ((commit "8aa00d82127acda42ad9ac9b7b479461e9436aa4")
+        (revision "1"))
+    (package
+      (name "ctrlr")
+      (version (git-version "5.5.9" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/RomanKubiak/ctrlr")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lpfkjp9y0wh2kj02isv8ixnxn3wyvrxhkx0rybwzswfiz5kqdlm"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:cmake cmake                   ;needs 3.25
+        #:tests? #false                 ;there are none
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'pre-configure
+              (lambda _
+                ;; Override default location of fonts.conf.  Without this no
+                ;; fonts will be rendered at all.
+                (substitute* "JUCE/modules/juce_graphics/native/juce_linux_Fonts.cpp"
+                  (("/usr/share/fonts/fonts.conf")
+                   "/run/current-system/profile/etc/fonts/fonts.conf"))
+                ;; Do not build the VST or AU plugins, because these require
+                ;; external proprietary SDKs.
+                (substitute* "CMakeLists.txt"
+                  (("juce_set_vst2_sdk_path.*") "")
+                  (("FORMATS VST3 VST AU Standalone")
+                   "FORMATS Standalone")
+                  ;; BFD also need -liberty.
+                  (("list\\(APPEND ctrlrLibs \"bfd\"\\)" m)
+                   (string-append m "
+list(APPEND ctrlrLibs \"iberty\")")))))
+            ;; The install target doesn't install ctrlr but JUCE helpers.
+            (replace 'install
+              (lambda _
+                (install-file "ctrlr_artefacts/RelWithDebInfo/Standalone/ctrlr"
+                              (string-append #$output "/bin")))))))
+      (inputs
+       (list alsa-lib
+             boost
+             eudev
+             freetype
+             libiberty
+             libx11
+             webkitgtk))
+      (native-inputs
+       (list pkg-config))
+      (home-page "https://ctrlr.org/")
+      (synopsis "Control any MIDI-enabled hardware")
+      (description "This package provides a tool to control any MIDI-enabled
+hardware such as synthesizers, drum machines, samplers, or effects.  It lets
+you create custom user interfaces for your MIDI hardware.")
+      (license (list license:gpl2+
+                     license:gpl3       ;JUCE
+                     license:bsd-3)))))
+
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.15")
+    (version "1.0.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -490,7 +558,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04ddplldlls0gxw8qppw6dsqhfnxamxfnnyq0i04mbs5hi83pcrz"))
+                "1xcf9jighb759kdh4p32wib2pipgcx3qdf5x7da6cjhxjbzgfrk7"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -503,8 +571,8 @@ playing your music.")
                      (let ((bundled '("singleapplication")))
                        (if (not
                             (string-match
-                              (string-append ".?*(" (string-join bundled "|") ")")
-                              dir))
+                             (string-append ".?*(" (string-join bundled "|") ")")
+                             dir))
                            (delete-file-recursively dir))))
                    (find-files "3rdparty"
                                (lambda (file stat)
@@ -516,23 +584,23 @@ playing your music.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out             (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/strawberry")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "bin/strawberry")
+               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                 (,(getenv "GST_PLUGIN_SYSTEM_PATH"))))))
          (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server")))
-               (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-               (setenv "DISPLAY" ":1")
-               (setenv "HOME" (getcwd))))))))
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (system (format #f "~a :1 &"
+                             (search-input-file (or native-inputs inputs)
+                                                "bin/Xvfb")))
+             (setenv "DISPLAY" ":1")
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           googletest
+           pkg-config
+           qttools
+           xorg-server-for-tests))
     (inputs
      (list alsa-lib
            boost
@@ -1543,9 +1611,6 @@ Because Abjad wraps the LilyPond music notation package, you can use Abjad to co
 typographic detail of symbols on the page.")
      (license license:expat)))
 
-(define-public python-abjad
-  (deprecated-package "python-abjad" abjad))
-
 (define-public abjad-ext-rmakers
   (package
     (name "abjad-ext-rmakers")
@@ -2198,7 +2263,7 @@ a JACK session.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
@@ -2210,7 +2275,7 @@ a JACK session.")
         (search-patches "mixxx-link-qtscriptbytearray-qtscript.patch"
                         "mixxx-system-googletest-benchmark.patch"))
        (sha256
-        (base32 "0zrmy97lk0xdfnlvygshr8vradypmnypki3s1mhc296xhq96n6rm"))
+        (base32 "056zn0nxl7xrmg467ljdszsycrszsrzsc8k4s39mp4qxyd9qq4yn"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
@@ -2495,44 +2560,64 @@ reverb effects.")
                 "1pff51imfgmgqzc6mdgwd1v9fci0a8hj85fnkdsvkdzbnxdzvs9r"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f                            ;no test suite
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'install
-                 (lambda _
-                   (let* ((bin (string-append #$output "/bin"))
-                          (lib (string-append #$output "/lib"))
-                          (share (string-append #$output "/share"))
-                          (clap (string-append lib "/clap"))
-                          (vst3 (string-append lib "/vst3")))
-                     (with-directory-excursion
-                         "PaulXStretch_artefacts/RelWithDebInfo"
-                       (install-file "Standalone/paulxstretch" bin)
-                       (install-file "CLAP/PaulXStretch.clap" clap)
-                       (mkdir-p vst3)
-                       (copy-recursively "VST3" vst3)
-                       (install-file (string-append
-                                      #$source
-                                      "/linux/paulxstretch.desktop")
-                                     (string-append share "/applications"))
-                       (install-file
-                        (string-append
-                         #$source
-                         "/images/paulxstretch_icon_1024_rounded.png")
-                        (string-append share "/pixmaps")))))))))
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "deps/juce/extras/Projucer/Source/ProjectSaving/\
+jucer_ProjectExport_CodeBlocks.h"
+                (("/usr/include/freetype2")
+                 (search-input-directory inputs "/include/freetype2")))
+              (substitute*
+                  "deps/juce/modules/juce_graphics/native/juce_linux_Fonts.cpp"
+                (("/etc/fonts")
+                 (search-input-directory inputs "/etc/fonts")))
+              (substitute*
+                  "deps/juce/modules/juce_gui_basics/native/x11/\
+juce_linux_XWindowSystem.cpp"
+                (("/usr/bin/dconf")
+                 (search-input-file inputs "/bin/dconf"))
+                (("/usr/bin/gsettings")
+                 (search-input-file inputs "/bin/gsettings")))))
+          (replace 'install
+            (lambda _
+              (let* ((lib (string-append #$output "/lib"))
+                     (share (string-append #$output "/share"))
+                     (clap (string-append lib "/clap"))
+                     (vst3 (string-append lib "/vst3")))
+                (with-directory-excursion
+                    "PaulXStretch_artefacts/RelWithDebInfo"
+                  (install-file "Standalone/paulxstretch"
+                                (string-append #$output "/bin"))
+                  (install-file "CLAP/PaulXStretch.clap" clap)
+                  (mkdir-p vst3)
+                  (copy-recursively "VST3" vst3)
+                  (install-file (string-append
+                                 #$source
+                                 "/linux/paulxstretch.desktop")
+                                (string-append share "/applications"))
+                  (install-file (string-append
+                                 #$source
+                                 "/images/paulxstretch_icon_1024_rounded.png")
+                                (string-append share "/pixmaps")))))))))
     (home-page "https://sonosaurus.com/paulxstretch/")
     (native-inputs (list pkg-config))
     (inputs (list alsa-lib
                   curl
+                  dconf
                   fftwf
+                  fontconfig
                   freetype
+                  `(,glib "bin")
                   jack-1
                   libx11
                   libxcursor
                   libxext
                   libxinerama
                   libxrandr))
-    (supported-systems '("x86_64-linux"))         ;pffft.c uses SIMD code
+    (supported-systems '("x86_64-linux")) ;pffft.c uses SIMD code
     (synopsis "Audio timestretching application and plugin")
     (description
      "PaulXStretch is an application/plugin is based on the PaulStretch
@@ -4874,7 +4959,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4883,7 +4968,7 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x1aahpbvss3sjydcq6xdh198fmslgypixmd2gckfwjqzady662y"))
+        (base32 "1yri94xs4xw0lsvmk5q7bqnpgmdadchfn08r7bb2y07jsi8qgm6w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5019,7 +5104,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "4.4.2")
+    (version "4.5.0")
     (source
      (origin
        (method git-fetch)
@@ -5028,7 +5113,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01fy9jkbwj8h7p0cjpc9ghjvh2d8w6n7vs6w5jbacgs2i61jx6hh"))))
+        (base32 "0j66b8y1pyka2im5hbwz6yh3hip0wsw7fa3kwl2212wq1y2a4ys1"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -6351,62 +6436,100 @@ and as an LV2 plugin.")
     ;; distros to make necessary changes to integrate the software into the
     ;; distribution.
     (name "zrythm")
-    (version "1.0.0-alpha.12.0.1")
+    (version "1.0.0-beta.4.5.62")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://www.zrythm.org/releases/zrythm-"
-                            version ".tar.xz"))
-        (sha256
-          (base32
-           "1si4n8rdg0a3frlbj6yqpyzr4f20v3cpl4m6kv0yf7r25psyl5pk"))))
-   (build-system meson-build-system)
-   (arguments
-    `(#:glib-or-gtk? #t
-      #:configure-flags
-      `("-Dtests=true"
-        "-Dmanpage=true"
-        "-Ddseg_font=false"
-        "-Dgraphviz=enabled" ; for exporting routing graphs
-        "-Dguile=enabled" ; for Guile scripting
-        "-Djack=enabled" ; for JACK audio/MIDI backend
-        "-Drtmidi=enabled" ; for RtMidi backend (ALSA sequencer)
-        "-Dsdl=enabled"))) ; for SDL audio backend (which uses ALSA)
-   (inputs
-    `(("alsa-lib" ,alsa-lib)
-      ("jack" ,jack-1)
-      ("font-dseg" ,font-dseg)
-      ("fftw" ,fftw)
-      ("fftwf" ,fftwf)
-      ("gettext" ,gettext-minimal)
-      ("glibc" ,glibc)
-      ("graphviz" ,graphviz)
-      ("gtk+" ,gtk+)
-      ("gtksourceview" ,gtksourceview-4)
-      ("guile" ,guile-2.2)
-      ("libaudec" ,libaudec)
-      ("libcyaml" ,libcyaml)
-      ("libsamplerate" ,libsamplerate)
-      ("libsndfile" ,libsndfile)
-      ("libyaml" ,libyaml)
-      ("lilv" ,lilv)
-      ("lv2" ,lv2)
-      ("pulseaudio" ,pulseaudio)
-      ("reproc" ,reproc)
-      ("rubberband" ,rubberband)
-      ("rtmidi" ,rtmidi-4.0)
-      ("sdl2" ,sdl2)
-      ("xdg-utils" ,xdg-utils)
-      ("zstd" ,zstd "lib")))
-   (native-inputs
-     (list pkg-config help2man
-           `(,glib "bin"))) ; for 'glib-compile-resources'
-   (synopsis "Digital audio workstation focusing on usability")
-   (description "Zrythm is a digital audio workstation designed to be
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.zrythm.org/releases/zrythm-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "1nfb3h3aky8f8xslx6qzvcgcfrhlqa1v50kzanmpjxrx9dcllin7"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:tests? #f             ;123 pass, 3 fail. Appears network-related.
+           #:glib-or-gtk? #t
+           #:configure-flags
+           #~(list "-Dtests=true"
+                   "-Dmanpage=false"    ;fish-completions breaks this
+                   "-Ddseg_font=false"
+                   "-Dextra_optimizations=false" ;machine-specific
+                   "-Dgraphviz=enabled" ;for exporting routing graphs
+                   "-Dguile=enabled"    ;for Guile scripting
+                   "-Djack=enabled"     ;for JACK audio/MIDI backend
+                   "-Drtmidi=enabled"   ;for RtMidi backend (ALSA sequencer)
+                   "-Dsdl=enabled")   ;for SDL audio backend (which uses ALSA)
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'disable-guile-auto-compilation
+                 (lambda _
+                   (setenv "GUILE_AUTO_COMPILE" "0")))
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/zrythm")
+                     ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Zrythm to load
+                     ;; its own SVG icons in pure environments.
+                     `("GDK_PIXBUF_MODULE_FILE" =
+                       (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+    (inputs
+     (list alsa-lib
+           boost
+           carla-2.6
+           curl
+           fftw
+           fftwf
+           flex
+           font-dseg
+           gettext-minimal
+           glib-next
+           glibc
+           graphviz
+           gtk
+           gtksourceview
+           guile-2.2
+           jack-2
+           json-glib
+           libadwaita
+           libaudec
+           (module-ref
+            (resolve-interface '(gnu packages debug)) 'libbacktrace)
+           libcyaml
+           libpanel
+           (librsvg-for-system)
+           libsamplerate
+           libsndfile
+           libyaml
+           lilv
+           lv2
+           pango
+           pipewire
+           pulseaudio
+           reproc
+           rtmidi
+           rubberband
+           sdl2
+           vamp
+           xdg-utils
+           xxhash
+           zix
+           `(,zstd "lib")))
+    (native-inputs
+     ;; Zrythm require breeze-icons to be installed.  Having them listed in
+     ;; the native inputs cause them to be wrapped and made available via
+     ;; XDG_DATA_DIRS.
+     (list breeze-icons                 ;native because not executable
+           help2man
+           `(,glib-next "bin")          ;for 'glib-compile-resources'
+           pkg-config
+           python-sphinx
+           python-sphinx-intl
+           sassc))
+    (synopsis "Digital audio workstation focusing on usability")
+    (description "Zrythm is a digital audio workstation designed to be
 featureful and easy to use.  It offers unlimited automation options, LV2
 plugin support, JACK support and chord assistance.")
-   (home-page "https://www.zrythm.org")
-   (license license:agpl3+)))
+    (home-page "https://www.zrythm.org/en/index.html")
+    (license license:agpl3+)))
 
 (define-public dragonfly-reverb
   (package
@@ -6490,10 +6613,6 @@ as JACK standalone applications.")
 to be bundled with the Zrythm @dfn{digital audio workstation} (DAW).")
     (home-page "https://www.zrythm.org/en/plugins.html")
     (license license:agpl3+)))
-
-(define-public zlfo
-  ;; The "zlfo" package is now included in zplugins
-  (deprecated-package "zlfo" zplugins))
 
 (define-public remid-lv2
   (package
@@ -7083,6 +7202,40 @@ sending MIDI, OSC, and UDP to your audio/visual interfaces like Ableton,
 Renoise, VCV Rack, or SuperCollider.")
       (home-page "https://100r.co/site/orca.html")
       (license license:expat))))
+
+(define-public samplebrain
+  (package
+    (name "samplebrain")
+    (version "0.18.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/then-try-this/samplebrain")
+                    (commit (string-append "v" version "_release"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17p6n16x89bbzlpn9r7w1lgr1ifxs45npn8gxymkdr3j16dhg4zy"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda _
+                            (substitute* "samplebrain.pro"
+                              (("\\/usr")
+                               #$output))
+                            (invoke "qmake"))))))
+    (inputs (list fftw liblo libsndfile portaudio))
+    (home-page "https://thentrythis.org/projects/samplebrain/")
+    (synopsis "Sample mashing synthesizer designed by Aphex Twin")
+    (description
+     "Samplebrain chops samples up into a 'brain' of
+interconnected small sections called blocks which are connected into a network
+by similarity.  It processes a target sample, chopping it up into blocks in
+the same way, and tries to match each block with one in its brain to play in
+realtime.")
+    (license license:gpl2+)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

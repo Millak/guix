@@ -30,14 +30,14 @@
 (define-public skalibs
   (package
     (name "skalibs")
-    (version "2.12.0.1")
+    (version "2.13.1.1")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://skarnet.org/software/skalibs/skalibs-"
                           version ".tar.gz"))
       (sha256
-       (base32 "1182ldnz5dj266gqhzkygd17jdvd3n46c2jfdizw324dy5r8y8iy"))))
+       (base32 "0cwy37cc92409dsmj8c8whpnnqd9g375myxlp52aqzwzg6ms2wmj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no tests exist
@@ -61,14 +61,14 @@ and file system operations.  It is used by all skarnet.org software.")
 (define-public execline
   (package
     (name "execline")
-    (version "2.9.0.1")
+    (version "2.9.3.0")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://skarnet.org/software/execline/execline-"
                           version ".tar.gz"))
       (sha256
-       (base32 "1xiijn3r2rqji2pwhm9v0frkk7pv9m3ylmdajhmcmyqgz350y9h1"))))
+       (base32 "1393xka069n3rvc3dlg6c3ckzl1qgqkhvhlcxv6igl9216kpy0n8"))))
     (build-system gnu-build-system)
     (inputs (list skalibs))
     (arguments
@@ -103,14 +103,14 @@ complexity.")))
 (define-public s6
   (package
    (name "s6")
-   (version "2.11.1.2")
+   (version "2.11.3.2")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6/s6-"
                          version ".tar.gz"))
      (sha256
-      (base32 "18h38piz117ilx7ch9f7hl6bxm2w06z7lc7f5hwsr7c87sz7853c"))))
+      (base32 "0x6zjc3126fjhj8accyxgrw7r7ysrb7d13dfs87bxzzhsa5165kw"))))
    (build-system gnu-build-system)
    (inputs (list skalibs execline))
    (arguments
@@ -147,14 +147,14 @@ functionality with a very small amount of code.")))
 (define-public s6-dns
   (package
    (name "s6-dns")
-   (version "2.3.5.4")
+   (version "2.3.5.5")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6-dns/s6-dns-"
                          version ".tar.gz"))
      (sha256
-      (base32 "0hyvyi8qwgs6529hafl3yvkb3qaw4mad76n5rn1lyxf4f8j25bvn"))))
+      (base32 "1s0yzrzpjgbf1d0s4qxq5g2sgcm6skq3sphbm1qq1hr5a5frp5sn"))))
     (build-system gnu-build-system)
     (inputs (list skalibs))
     (arguments
@@ -176,14 +176,14 @@ as an alternative to the BIND, djbdns or other DNS clients.")))
 (define-public s6-networking
   (package
    (name "s6-networking")
-   (version "2.5.1.1")
+   (version "2.5.1.3")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6-networking/"
                          "s6-networking-" version ".tar.gz"))
      (sha256
-      (base32 "0624ls5d9iwx9nc05m99fbxd0jp0qjbp9as4whr3bhfrwd6rvivs"))))
+      (base32 "0xz98pzgx6kc9v1dka04gzw5f3rwww42c07liym0r7pzb74l77m0"))))
     (build-system gnu-build-system)
     (inputs (list skalibs execline s6 s6-dns))
     (arguments
@@ -216,14 +216,14 @@ clock synchronization.")))
 (define-public s6-rc
   (package
    (name "s6-rc")
-   (version "0.5.3.2")
+   (version "0.5.4.1")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6-rc/s6-rc-"
                          version ".tar.gz"))
      (sha256
-      (base32 "0f70sswqcmihynks3cs6kk97nywcp2lzr2hspp9578sadaba892g"))))
+      (base32 "1xjqc6vqqny8g47whgibjlas7f6szka372jrz5f308slgjmqq9np"))))
     (build-system gnu-build-system)
     (inputs (list skalibs execline s6))
     (arguments
@@ -255,7 +255,7 @@ environment.")))
 (define-public s6-portable-utils
   (package
    (name "s6-portable-utils")
-   (version "2.2.5.0")
+   (version "2.3.0.2")
    (source
     (origin
      (method url-fetch)
@@ -263,7 +263,7 @@ environment.")))
            "https://skarnet.org/software/s6-portable-utils/s6-portable-utils-"
            version ".tar.gz"))
      (sha256
-      (base32 "0dkfj6ymi5pxs981hh84kwg2ph2dv6xn2bim65fz4dpx6j4rzczb"))))
+      (base32 "1s6iqjz2mfq3rakqj3cwidjsbpkjcdjfah60m86na4ph6j8jc547"))))
     (build-system gnu-build-system)
     (inputs (list skalibs))
     (arguments
@@ -287,7 +287,7 @@ systems and other constrained environments, but they work everywhere.")))
 (define-public s6-linux-init
   (package
    (name "s6-linux-init")
-   (version "1.0.8.0")
+   (version "1.1.1.0")
    (source
     (origin
      (method url-fetch)
@@ -295,7 +295,7 @@ systems and other constrained environments, but they work everywhere.")))
            "https://skarnet.org/software/s6-linux-init/s6-linux-init-"
            version ".tar.gz"))
      (sha256
-      (base32 "1iixih6iwd618qqy06w2cig7rvlj4cn4m5mdcr060rngciwml1cj"))))
+      (base32 "1vm8aqlh8jkqrm3irhf53vvylxqizpqvjg3yb9z00yb568skyj5d"))))
     (build-system gnu-build-system)
     (inputs
      (list execline s6 skalibs))
@@ -331,7 +331,7 @@ all the details.")))
 (define-public s6-linux-utils
   (package
    (name "s6-linux-utils")
-   (version "2.6.0.0")
+   (version "2.6.1.2")
    (source
     (origin
      (method url-fetch)
@@ -339,7 +339,7 @@ all the details.")))
            "https://skarnet.org/software/s6-linux-utils/s6-linux-utils-"
            version ".tar.gz"))
      (sha256
-      (base32 "0ngd8ckak2xg6c63q0m8cvbrfnhpkx30r4g65q08g0hc99rk4wbc"))))
+      (base32 "1ncwkm5cpc0y6iysc5q64mk0pfvxnn7ihia1a137xrrdg1fxqqyq"))))
     (build-system gnu-build-system)
     (inputs (list skalibs))
     (arguments

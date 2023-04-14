@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Milran <milranmike@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -28,6 +28,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages freedesktop)
@@ -58,6 +59,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
@@ -928,3 +930,104 @@ and manipulation.")
     (description
      "libskk is a library to deal with Japanese kana-to-kanji conversion method.")
     (license license:gpl3+)))
+
+(define-public mecab
+  (package
+    (name "mecab")
+    (version "0.996")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/taku910/mecab")
+                     ;; latest commit
+                     (commit "046fa78b2ed56fbd4fac312040f6d62fc1bc31e3")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hdv7rgn8j0ym9gsbigydwrbxa8cx2fb0qngg1ya15vvbw0lk4aa"))
+              (patches
+                (search-patches
+                  "mecab-variable-param.patch"))))
+    (build-system gnu-build-system)
+    (native-search-paths
+      (list (search-path-specification
+              (variable "MECAB_DICDIR")
+              (separator #f)
+              (files '("lib/mecab/dic")))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "mecab")))
+         (add-before 'build 'add-mecab-dicdir-variable
+           (lambda _
+             (substitute* "mecabrc.in"
+               (("dicdir = .*")
+                "dicdir = $MECAB_DICDIR"))
+             (substitute* "mecab-config.in"
+               (("echo @libdir@/mecab/dic")
+                "if [ -z \"$MECAB_DICDIR\" ]; then
+  echo @libdir@/mecab/dic
+else
+  echo \"$MECAB_DICDIR\"
+fi")))))))
+    (inputs (list libiconv))
+    (home-page "https://taku910.github.io/mecab")
+    (synopsis "Morphological analysis engine for texts")
+    (description "Mecab is a morphological analysis engine developped as a
+collaboration between the Kyoto university and Nippon Telegraph and Telephone
+Corporation.  The engine is independent of any language, dictionary or corpus.")
+    (license (list license:gpl2+ license:lgpl2.1+ license:bsd-3))))
+
+(define-public mecab-ipadic
+  (package
+    (name "mecab-ipadic")
+    (version "2.7.0")
+    (source (package-source mecab))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "--with-dicdir=" (assoc-ref %outputs "out")
+                            "/lib/mecab/dic")
+             "--with-charset=utf8")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "mecab-ipadic")))
+         (add-before 'configure 'set-mecab-dir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "MECAB_DICDIR" (string-append (assoc-ref outputs "out")
+                                                   "/lib/mecab/dic")))))))
+    (native-inputs (list mecab)); for mecab-config
+    (home-page "https://taku910.github.io/mecab")
+    (synopsis "Dictionary data for MeCab")
+    (description "This package contains dictionnary data derived from
+ipadic for use with MeCab.")
+    (license (license:non-copyleft "mecab-ipadic/COPYING"))))
+
+(define-public mecab-unidic
+  (package
+    (name "mecab-unidic")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://clrd.ninjal.ac.jp/unidic_archive/cwj/"
+                                  version "/unidic-cwj-" version ".zip"))
+              (sha256
+               (base32
+                "1z132p2q3bgchiw529j2d7dari21kn0fhkgrj3vcl0ncg2m521il"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." "lib/mecab/dic"
+          #:include-regexp ("\\.bin$" "\\.def$" "\\.dic$" "dicrc")))))
+    (native-inputs (list unzip))
+    (home-page "https://clrd.ninjal.ac.jp/unidic/en/")
+    (synopsis "Dictionary data for MeCab")
+    (description "UniDic for morphological analysis is a dictionary for
+analysis with the morphological analyser MeCab, where the short units exported
+from the database are used as entries (heading terms).")
+    ;; triple-licensed (at the user’s choice)
+    (license (list license:gpl2+ license:lgpl2.1 license:bsd-3))))

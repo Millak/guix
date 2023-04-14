@@ -30,6 +30,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix licenses)
@@ -169,23 +170,22 @@ belonging to various licenses.")
 (define-public reuse
   (package
     (name "reuse")
-    (version "1.0.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reuse" version))
        (sha256
-        (base32 "1m78q5x19xvhywi1xl0prrag89ihvqiq14lba27rrxl75nz24c6v"))))
-    (build-system python-build-system)
+        (base32 "0ij2mpdnawjabnsy291157wzci9050dfclwib95phg7pnmd6xsw0"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-poetry-core python-pytest))
     (inputs
      (list python-binaryornot
            python-boolean.py
            python-debian
            python-jinja2
-           python-license-expression
-           python-requests))
+           python-license-expression))
     (home-page "https://reuse.software/")
     (synopsis "Provide and verify copyright and licensing information")
     (description

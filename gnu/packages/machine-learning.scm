@@ -16,7 +16,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -297,36 +297,19 @@ training, HMM clustering, HMM mixtures.")
 (define-public guile-aiscm
   (package
     (name "guile-aiscm")
-    (version "0.24.2")
+    (version "0.25.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wedesoft/aiscm")
-                    (commit "2e16e38391bf1638f1dd9a1cf4b25a25f6626078")))
+                    (commit "v0.25.2")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gwqpzl6irpaszkpxaf5wliwq19280632hlgxs3ikjkfg8mkqql0"))))
+                "1sagpxwrqxkn5b9zqzd07c9r7swmw45q672pa8fy6s71iw6a0x77"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags
-      #~(list (string-append "OPENCV_CFLAGS=-I" #$(this-package-input "opencv")
-                             "/include/opencv4")
-              (let ((modules
-                     (list "aruco" "barcode" "bgsegm" "bioinspired"
-                           "calib3d" "ccalib" "core" "datasets" "dnn"
-                           "dnn_objdetect" "dnn_superres" "dpm" "face"
-                           "features2d" "flann" "freetype" "fuzzy" "hdf"
-                           "hfs" "highgui" "img_hash" "imgcodecs" "imgproc"
-                           "intensity_transform" "line_descriptor" "mcc"
-                           "ml" "objdetect" "optflow" "phase_unwrapping"
-                           "photo" "plot" "quality" "rapid" "reg" "rgbd"
-                           "saliency" "shape" "stereo" "stitching"
-                           "structured_light" "superres" "surface_matching"
-                           "text" "tracking" "video" "videoio" "videostab"
-                           "wechat_qrcode" "ximgproc" "xobjdetect" "xphoto")))
-                (format #false "OPENCV_LIBS=~{-lopencv_~a~^ ~}" modules)))
       #:make-flags
       #~(list (string-append "GUILE_CACHE=" #$output "/lib/guile/3.0/site-ccache")
               (string-append "GUILE_EXT=" #$output "/lib/guile/3.0/extensions")
@@ -395,13 +378,12 @@ training, HMM clustering, HMM mixtures.")
            libxv
            mesa
            mjpegtools
-           opencv
            pandoc
            pulseaudio
            tensorflow))
     (native-inputs
-     (list clang-11
-           llvm-11
+     (list clang-13
+           llvm-13
            pkg-config
            protobuf-c-for-aiscm
            autoconf
@@ -417,6 +399,70 @@ Performance is achieved by using the LLVM JIT compiler.")
 
 (define-public guile-aiscm-next
   (deprecated-package "guile-aiscm-next" guile-aiscm))
+
+(define-public llama-cpp
+  (let ((commit "3cd8dde0d1357b7f11bdd25c45d5bf5e97e284a0")
+        (revision "0"))
+    (package
+      (name "llama-cpp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ggerganov/llama.cpp")
+               (commit (string-append "master-" (string-take commit 7)))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0i7c92cxqs31xklrn688978kk29agivgxjgvsb45wzm65gc6hm5c"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:modules '((ice-9 textual-ports)
+                    (guix build utils)
+                    ((guix build python-build-system) #:prefix python:)
+                    (guix build cmake-build-system))
+        #:imported-modules `(,@%cmake-build-system-modules
+                             (guix build python-build-system))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'install-python-scripts
+              (lambda _
+                (let ((bin (string-append #$output "/bin/")))
+                  (define (make-script script)
+                    (let ((suffix (if (string-suffix? ".py" script) "" ".py")))
+                      (call-with-input-file
+                          (string-append "../source/" script suffix)
+                        (lambda (input)
+                          (call-with-output-file (string-append bin script)
+                            (lambda (output)
+                              (format output "#!~a/bin/python3\n~a"
+                                      #$(this-package-input "python")
+                                      (get-string-all input))))))
+                      (chmod (string-append bin script) #o555)))
+                  (mkdir-p bin)
+                  (make-script "convert-pth-to-ggml")
+                  (make-script "convert-gptq-to-ggml")
+                  (make-script "quantize.py")
+                  (substitute* (string-append bin "quantize.py")
+                    (("os\\.getcwd\\(\\), quantize_script_binary")
+                     (string-append "\"" bin "\", quantize_script_binary"))))))
+            (add-after 'install-python-scripts 'wrap-python-scripts
+              (assoc-ref python:%standard-phases 'wrap))
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin/")))
+                  (install-file "bin/quantize" bin)
+                  (copy-file "bin/main" (string-append bin "llama"))))))))
+      (inputs (list python))
+      (propagated-inputs
+       (list python-numpy python-pytorch python-sentencepiece))
+      (home-page "https://github.com/ggerganov/llama.cpp")
+      (synopsis "Port of Facebook's LLaMA model in C/C++")
+      (description "This package provides a port to Facebook's LLaMA collection
+of foundation language models.  It requires models parameters to be downloaded
+independently to be able to run a LLaMA model.")
+      (license license:expat))))
 
 (define-public mcl
   (package
@@ -600,6 +646,53 @@ optimizing, and searching weighted finite-state transducers (FSTs).")
      '(#:configure-flags
        '("--enable-shared" "--enable-far" "--enable-ngram-fsts"
          "--enable-lookahead-fsts" "--with-pic" "--disable-bin")))))
+
+(define-public sentencepiece
+  (package
+    (name "sentencepiece")
+    (version "0.1.97")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/sentencepiece")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kzfkp2pk0vabyw3wmkh16h11chzq63mzc20ddhsag5fp6s91ajg"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list gperftools))
+    (home-page "https://github.com/google/sentencepiece")
+    (synopsis "Unsupervised tokenizer for Neural Network-based text generation")
+    (description
+     "SentencePiece is an unsupervised text tokenizer and detokenizer mainly
+for Neural Network-based text generation systems where the vocabulary size is
+predetermined prior to the neural model training.  SentencePiece implements
+subword units---e.g., byte-pair-encoding (BPE) and unigram language
+model---with the extension of direct training from raw sentences.
+SentencePiece allows us to make a purely end-to-end system that does not
+depend on language-specific pre- or post-processing.")
+    (license license:asl2.0)))
+
+(define-public python-sentencepiece
+  (package
+    (name "python-sentencepiece")
+    (version "0.1.97")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sentencepiece" version))
+       (sha256
+        (base32 "0v0z9ryl66432zajp099bcbnwkkldzlpjvgnjv9bq2vi19g300f9"))))
+    (build-system python-build-system)
+    (native-inputs (list pkg-config))
+    (propagated-inputs (list sentencepiece))
+    (home-page "https://github.com/google/sentencepiece")
+    (synopsis "SentencePiece python wrapper")
+    (description "This package provides a Python wrapper for the SentencePiece
+unsupervised text tokenizer.")
+    (license license:asl2.0)))
 
 (define-public shogun
   (package
@@ -3858,3 +3951,31 @@ fi"
 is therefore designed to be easy to learn and use, highly flexible and
 easily extensible.")
     (license license:cecill)))
+
+(define-public python-brian2tools
+  (package
+    (name "python-brian2tools")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "brian2tools" version))
+              (sha256
+               (base32
+                "0fn028mfy3qlzjkadd0wr5d7rcplijd5jphln414xifvvsb9jcc2"))))
+    (build-system python-build-system)
+    ;; Both pypi tarball and git repo lack test files.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list python-brian2
+                             python-libneuroml
+                             python-markdown-strings
+                             python-matplotlib
+                             python-pylems
+                             python-setuptools
+                             python-setuptools-scm))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/brian-team/brian2tools")
+    (synopsis "Tools for the Brian 2 simulator")
+    (description "Visualization and NeuroML import/export tools for the
+Brian 2 simulator.")
+    (license license:cecill)))
+

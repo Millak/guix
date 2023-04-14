@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2019, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
@@ -527,6 +527,20 @@ character-by-character.
                (base32
                 "1rqynfxl1zxwk4b42sniz9xlw285aidcrsfih51p8dy0rbb6clal"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'update-config-scripts
+             (lambda* (#:key native-inputs inputs #:allow-other-keys)
+               (for-each (lambda (file)
+                           (install-file
+                             (search-input-file
+                               (or native-inputs inputs)
+                               (string-append "/bin/" file)) "aux-build"))
+                         '("config.guess" "config.sub")))))))
+    (native-inputs
+     (list config))
     (synopsis "C/C++ configuration file library")
     (description
      "Libconfig is a simple library for manipulating structured configuration
@@ -711,7 +725,8 @@ in a portable way.")
                            "dbacl-" version ".tar.gz"))
        (sha256
         (base32 "1gas0112wqjvwn9qg3hxnawk7h3prr0w9b2h68f3p1ifd1kzn3gz"))
-       (patches (search-patches "dbacl-include-locale.h.patch"))))
+       (patches (search-patches "dbacl-include-locale.h.patch"
+                                "dbacl-icheck-multiple-definitions.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

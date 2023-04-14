@@ -52,6 +52,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +115,30 @@
     (description "Artifika is an upright italic font for fashionable display
 titling.")
     (license license:silofl1.1)))
+
+(define-public font-chivo
+  (let ((commit "dc61c468d79781eb5183426e88e844af16cdc3e5")
+        (revision "0"))
+    (package
+      (name "font-chivo")
+      (version (git-version "20221010" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Omnibus-Type/Chivo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0gdsnflnzwy8ajrk93dxwjashxisln58qcqa6dh4smnk7k0a34qs"))))
+      (build-system font-build-system)
+      (home-page "https://fonts.google.com/specimen/Chivo")
+      (synopsis "The Chivo family of fonts")
+      (description "Google Chivo Fonts is a grotesque family of fonts, ideal for
+highlights and headlines.  In october 2022, the family is upgraded to a
+variable font ranging from Thin to Black, including matching italics.  The
+glyphset has also been extended, supporting now a wider number of languages.")
+      (license license:silofl1.1))))
 
 (define-public font-ibm-plex
   (package
@@ -235,37 +260,41 @@ Cyrillic, Canadian Syllabics and most Latin based languages are supported.")
     (license license:cc0)))
 
 (define-public font-abattis-cantarell
-  (package
-    (name "font-abattis-cantarell")
-    (version "0.303")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/GNOME/cantarell-fonts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1d1ay0fdqchk0wa5yqxis2c98imvzsbbd2kjv0x8sk4fm419847b"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags #~(list "-Dbuildstatics=true")))
-    (native-inputs
-     (list gettext-minimal
-           psautohint
-           python
-           python-cffsubr
-           python-fontmath
-           python-statmake
-           python-ufo2ft))
-    (home-page "https://wiki.gnome.org/Projects/CantarellFonts")
-    (synopsis "Cantarell sans-serif typeface")
-    (description "The Cantarell font family is a contemporary Humanist
+  ;; Use the latest commit, as the last released version, 0.303, has problems
+  ;; with the newer statmake.  The dependency has been removed in the latest
+  ;; code base.
+  (let ((commit "e049149faf0c15b0711e8d790e2333be923f0486")
+        (revision "0"))
+    (package
+      (name "font-abattis-cantarell")
+      (version (git-version "0.303" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.gnome.org/GNOME/cantarell-fonts")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "032csq99bkmmgh9mmmbrgg4fzxgkcsvxv4wy595qms72mmlgmcc7"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-Dbuildstatics=true")))
+      (native-inputs
+       (list gettext-minimal
+             psautohint
+             python
+             python-cffsubr
+             python-fontmath
+             python-ufo2ft))
+      (home-page "https://wiki.gnome.org/Projects/CantarellFonts")
+      (synopsis "Cantarell sans-serif typeface")
+      (description "The Cantarell font family is a contemporary Humanist
 sans-serif designed for on-screen reading.  It is used by GNOME@tie{}3.
 This package contains both the non-variable as well as the variable versions
 of the font.")
-    (license license:silofl1.1)))
+      (license license:silofl1.1))))
 
 (define-public font-lato
   (package
@@ -2072,7 +2101,7 @@ for Inria, a public research institute in computer science and mathematics.")
 (define-public font-sil-gentium
   (package
     (name "font-sil-gentium")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2080,7 +2109,7 @@ for Inria, a public research institute in computer science and mathematics.")
                     version ".zip"))
               (sha256
                (base32
-                "0m7189870hha217n1vgpmf89mwggrxkh679ffi1lxpnjggqi2n9k"))))
+                "0wxhsxv7xqsfbrywax0lcbmyfbrvrcm5g4c7a2v4j4cng4xi08cv"))))
     ;; Note: The zip file provides TTF files only, but the developer release,
     ;; which contains additional files, has a 'SOURCES.txt' file that says
     ;; that "the primary source files for the fonts are the fonts themselves".
@@ -2098,7 +2127,7 @@ italics shapes.  This package provides only TrueType files (TTF).")
 (define-public font-sil-andika
   (package
     (name "font-sil-andika")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2106,7 +2135,7 @@ italics shapes.  This package provides only TrueType files (TTF).")
                     version ".zip"))
               (sha256
                (base32
-                "01zm7p32gxfwmv7h3cfj2vx59846w2y6rxqy67grn2dyjh8pljv0"))))
+                "0z7qvjlidn3m2k40mwnm3azf3wd8pi1yvy2q30p5vkyyzhipb6nc"))))
     ;; As for Gentium (see above), the TTF files are considered source.
     (build-system font-build-system)
     (synopsis "Sans serif font designed especially for literacy use")
@@ -2121,7 +2150,7 @@ confused with one another.  This package provides only TrueType files (TTF).")
 (define-public font-sil-charis
   (package
     (name "font-sil-charis")
-    (version "5.000")
+    (version "6.200")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2129,7 +2158,7 @@ confused with one another.  This package provides only TrueType files (TTF).")
                     version ".zip"))
               (sha256
                (base32
-                "1zcvw37f1a7gkml3yfm6hxh93844llm7xj4w52600qq3ndrm8gjy"))))
+                "1pksr5wc9grdj75md4phr1a0gpjxk7xlmhv2nybsd2hbfrssl2ab"))))
     ;; As for Gentium (see above), the TTF files are considered source.
     (build-system font-build-system)
     (synopsis "Serif font for the Cyrillic and Latin alphabets")

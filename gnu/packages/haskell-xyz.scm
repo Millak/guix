@@ -8315,6 +8315,9 @@ provided for those who need a drop-in replacement for Markdown.pl.")
     (name "pandoc")
     (arguments
      (list
+       ;; Create entirely self-contained binary by embedding the data files
+       ;; in the binary itself. Required for python-pypandoc.
+       #:configure-flags #~(list "-fembed_data_files")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'register 'remove-libraries

@@ -138,9 +138,6 @@ tunneling, and so on.")
                                    "See COPYING in the distribution."))
     (home-page "https://curl.haxx.se/")))
 
-(define-public curl-minimal
-  (deprecated-package "curl-minimal" curl))
-
 (define-public curl-ssh
   (package/inherit curl
     (arguments

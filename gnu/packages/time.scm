@@ -319,14 +319,14 @@ under several distributions that's hard or impossible to figure out.")
 (define-public python-isodate
   (package
     (name "python-isodate")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "isodate" version))
        (sha256
         (base32
-         "1n7jkz68kk5pwni540pr5zdh99bf6ywydk1p5pdrqisrawylldif"))))
+         "1sdx4z0x6kv1qxjfi0gd82wfg16wca04q0nb93ba1c78wwfqiia8"))))
     (build-system python-build-system)
     (native-inputs
      (list python-six))

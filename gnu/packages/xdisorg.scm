@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -133,6 +134,8 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages syncthing)
+  #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages xml)
@@ -360,7 +363,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
 (define-public copyq
 (package
   (name "copyq")
-  (version "6.3.2")
+  (version "7.0.0")
   (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -369,7 +372,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0qdf7lr6bdmsnz1k5nnzmbv4h0xj8jqg92x6089qdaz5s87x7vqr"))))
+              "0h8jz7v5xvpq23dh1sr600q5jlrfzm6wsnp7sln8hbgsn96n8kas"))))
   (build-system cmake-build-system)
   (arguments
    (list
@@ -2313,6 +2316,47 @@ before the system goes to sleep.")
       (home-page "https://bitbucket.org/raymonad/xss-lock")
       (license license:expat))))
 
+(define-public physlock
+  (package
+    (name "physlock")
+    (version "13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xyb3rt/physlock")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mz4xxjip5ldiw9jgfq9zvqb6w10bcjfx6939w1appqg8f521a7s"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+
+               (add-after 'unpack 'fix-makefile
+                 (lambda _
+                   (substitute* "main.c" ; remove extra newline in the prompt
+                     (("(fprintf.vt.ios, .%s.)\\n(., options->prompt)" all start end)
+                      (string-append start end)))
+                   (substitute* "Makefile" (("-m 4755 -o root -g root") "")))))
+
+           #:make-flags
+           #~(list "HAVE_SYSTEMD=0" "HAVE_ELOGIND=1"
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))))
+    (native-inputs (list linux-pam elogind))
+    (synopsis "Screen lock utility")
+    (description
+     "@command{physlock} locks all virtual terminals at once, only allowing the
+user of the active session (the user logged into the foreground virtual
+terminal) to unlock the computer.  It is an alternative to @command{vlock -an},
+written to overcome vlock's limitations regarding hibernate and suspend.")
+    (home-page "https://github.com/xyb3rt/physlock")
+    (license license:gpl2+)))
+
 (define-public python-pyperclip
   (package
     (name "python-pyperclip")
@@ -2768,52 +2812,19 @@ Xwrits hides itself until you should take another break.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "14gnkz18dipsa2v24f4nm9syxaa7g21iqjm7y65jn849ka2jr1h8"))))
-    (build-system scons-build-system)
-    (inputs
-     (list libx11))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("googletest" ,googletest)
-       ("googletest-source" ,(package-source googletest))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:scons ,scons-python2
-       #:scons-flags
-       (list ,(string-append "CC=" (cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-sconstruct
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "SConstruct"
-               ;; scons doesn't pick up environment variables automatically
-               ;; so it needs help to find path variables
-               (("env = Environment\\(")
-                "env = Environment(
-                         ENV = {
-                           'PATH': os.environ['PATH'],
-                           'CPATH': os.environ['C_INCLUDE_PATH'],
-                           'LIBRARY_PATH': os.environ['LIBRARY_PATH'],
-                           'PKG_CONFIG_PATH': os.environ['PKG_CONFIG_PATH']
-                         },")
-               ;; Update path to gtest source files used in tests
-               (("/usr/src/gtest") (string-append
-                                    (assoc-ref inputs "googletest-source")
-                                    "/googletest"))
-               ;; Exclude one warning that causes a build error
-               (("-Werror") "-Werror -Wno-error=sign-compare"))
-             #t))
-         ;; The SConstruct script doesn't configure installation so
-         ;; binaries must be copied to the output path directly
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man1")))
-               (mkdir-p bin)
-               (install-file "xsettingsd" bin)
-               (install-file "dump_xsettings" bin)
-               (install-file "xsettingsd.1" man)
-               (install-file "dump_xsettings.1" man)
-               #t))))))
+     (list #:configure-flags #~(list "-DBUILD_TESTING=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-problematic-tests
+                          (lambda _
+                            (substitute* "config_parser_test.cc"
+                              ;; This test fails for unknown reasons (see:
+                              ;; https://github.com/derat/xsettingsd/issues/30).
+                              (("TEST\\(CharStreamTest, Basic")
+                               "TEST(CharStreamTest, DISABLED_Basic")))))))
+    (inputs (list libx11))
+    (native-inputs (list pkg-config googletest))
     (home-page "https://github.com/derat/xsettingsd")
     (synopsis "Xorg settings daemon")
     (description "@command{xsettingsd} is a lightweight daemon that provides settings to
@@ -3399,7 +3410,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
 (define-public wvkbd
   (package
     (name "wvkbd")
-    (version "0.12")
+    (version "0.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3408,7 +3419,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05zl6jhw7pj7w2cd02m3i0zzn1z99kzwh2mlg9h96j5aw1x1lvp6"))))
+                "15jzmgydhbkdn1r885p9wm5sqnj4h7znkqk71f7d3x359l051sh7"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no tests
@@ -3445,3 +3456,58 @@ the following features:
 @end itemize")
     (license (list license:expat  ;3 files under Expat license (see 'LICENSE')
                    license:gpl3+))))              ;the rest is GPLv3+
+
+(define-public xforms
+  ;; The latest stable release is ancient (2014) and fails with a linker
+  ;; error, so use the last commit.
+  (let ((revision "1")
+        (commit "2c1a9f151baf50887a517280645ec23379fb96f8"))
+    (package
+      (name "xforms")
+      (version (git-version "1.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/xforms.git/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12qc1j5g03n2zigvbwilx2zszr8sgv5wd259js7cwf8ffw4lzjf2"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-doc-makefile
+                            (lambda _
+                              (substitute* "doc/Makefile.am"
+                                (("/bin/mkdir")
+                                 "mkdir")))))
+             #:configure-flags #~(list "--enable-docs")))
+      (native-inputs (list autoconf
+                           automake
+                           libtool
+                           texinfo
+                           texi2html
+                           (texlive-updmap.cfg (list texlive-epsf
+                                                     texlive-tex-texinfo))
+                           imagemagick))
+      (propagated-inputs (list libx11 libxpm libjpeg-turbo))
+      (home-page "http://xforms-toolkit.org/")
+      (synopsis "GUI toolkit for X based on the X11 Xlib library")
+      (description
+       "XForms is a graphical user interface toolkit for X based on the X11
+Xlib library.  It allows you to create windows, containing all kinds of
+widgets (buttons, sliders, browsers, menus etc.) with a few lines of code and
+then attach actions to the widgets, i.e., have some function called when a
+button is pressed.  To make this even easier XForms comes with a program
+called @code{fdesign} that allows you to design a GUI for a program directly
+on the screen and which then writes out the necessary C code for it.")
+      (license license:lgpl2.1+))))
+
+(define-public xforms-gl
+  (package/inherit xforms
+    (name "xforms-gl")
+    (propagated-inputs (modify-inputs (package-propagated-inputs xforms)
+                         (append mesa)))
+    (synopsis
+     "GUI toolkit for X based on the X11 Xlib library, with OpenGL support")))

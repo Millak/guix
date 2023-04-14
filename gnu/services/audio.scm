@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2022⁠–⁠2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -137,11 +137,21 @@
                                    str)
                                #\-) "_")))
 
-(define list-of-string?
-  (list-of string?))
-
 (define list-of-symbol?
   (list-of symbol?))
+
+;; Helpers for deprecated field types, to be removed later.
+(define %lazy-group (make-symbol "%lazy-group"))
+
+(define (%set-user-group user group)
+  (user-account
+   (inherit user)
+   (group (user-group-name group))))
+
+
+;;;
+;;; MPD
+;;;
 
 (define (mpd-serialize-field field-name value)
   (let ((field (if (string? field-name) field-name
@@ -159,12 +169,33 @@
 (define mpd-serialize-string mpd-serialize-field)
 (define mpd-serialize-boolean mpd-serialize-field)
 
-(define (mpd-serialize-list-of-string field-name value)
+(define (mpd-serialize-list-of-strings field-name value)
   #~(string-append #$@(map (cut mpd-serialize-string field-name <>) value)))
 
+(define (mpd-serialize-user-account field-name value)
+  (mpd-serialize-string field-name (user-account-name value)))
+
+(define (mpd-serialize-user-group field-name value)
+  (mpd-serialize-string field-name (user-group-name value)))
+
 (define-maybe string (prefix mpd-))
-(define-maybe list-of-string (prefix mpd-))
+(define-maybe list-of-strings (prefix mpd-))
 (define-maybe boolean (prefix mpd-))
+
+(define %mpd-user
+  (user-account
+      (name "mpd")
+      (group %lazy-group)
+      (system? #t)
+      (comment "Music Player Daemon (MPD) user")
+      ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data
+      (home-directory "/var/lib/mpd")
+      (shell (file-append shadow "/sbin/nologin"))))
+
+(define %mpd-group
+  (user-group
+   (name "mpd")
+   (system? #t)))
 
 ;;; TODO: Procedures for deprecated fields, to be removed.
 
@@ -194,6 +225,33 @@
   (mpd-serialize-field "port" value))
 
 (define-maybe port (prefix mpd-))
+
+;;; Procedures for unsupported value types, to be removed.
+
+(define (mpd-user-sanitizer value)
+  (cond ((user-account? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'user' is deprecated, use \
+user-account instead~%"))
+         (user-account
+          (inherit %mpd-user)
+          (name value)
+          ;; XXX: This is to be lazily substituted in (…-accounts)
+          ;; with the value from 'group'.
+          (group %lazy-group)))
+        (else
+         (configuration-field-error #f 'user value))))
+
+(define (mpd-group-sanitizer value)
+  (cond ((user-group? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'group' is deprecated, use \
+user-group instead~%"))
+         (user-group
+          (inherit %mpd-group)
+          (name value)))
+        (else
+         (configuration-field-error #f 'group value))))
 
 ;;;
 
@@ -297,7 +355,17 @@ disconnect all listeners even when playback is accidentally stopped.")
 for this audio output: the @code{hardware} mixer, the @code{software}
 mixer, the @code{null} mixer (allows setting the volume, but with no
 effect; this can be used as a trick to implement an external mixer
-External Mixer) or no mixer (@code{none}).")
+External Mixer) or no mixer (@code{none})."
+   (sanitizer
+    (lambda (x)  ; TODO: deprecated, remove me later.
+      (cond
+       ((symbol? x)
+        (warning (G_ "symbol value for 'mixer-type' is deprecated, \
+use string instead~%"))
+        (symbol->string x))
+       ((string? x) x)
+       (else
+        (configuration-field-error #f 'mixer-type x))))))
 
   (replay-gain-handler
    maybe-string
@@ -335,12 +403,14 @@ to be appended to the audio output configuration.")
    empty-serializer)
 
   (user
-   (string "mpd")
-   "The user to run mpd as.")
+   (user-account %mpd-user)
+   "The user to run mpd as."
+   (sanitizer mpd-user-sanitizer))
 
   (group
-   (string "mpd")
-   "The group to run mpd as.")
+   (user-group %mpd-group)
+   "The group to run mpd as."
+   (sanitizer mpd-group-sanitizer))
 
   (shepherd-requirement
    (list-of-symbol '())
@@ -349,7 +419,8 @@ will depend on."
    empty-serializer)
 
   (environment-variables
-   (list-of-string '())
+   (list-of-strings '("PULSE_CLIENTCONFIG=/etc/pulse/client.conf"
+                      "PULSE_CONFIG=/etc/pulse/daemon.conf"))
    "A list of strings specifying environment variables."
    empty-serializer)
 
@@ -372,7 +443,7 @@ Available values: @code{notice}, @code{info}, @code{verbose},
   (music-dir ; TODO: deprecated, remove later
    maybe-string
    "The directory to scan for music files."
-   mpd-serialize-deprecated-field)
+   (serializer mpd-serialize-deprecated-field))
 
   (playlist-directory
    maybe-string
@@ -381,7 +452,7 @@ Available values: @code{notice}, @code{info}, @code{verbose},
   (playlist-dir ; TODO: deprecated, remove later
    maybe-string
    "The directory to store playlists."
-   mpd-serialize-deprecated-field)
+   (serializer mpd-serialize-deprecated-field))
 
   (db-file
    maybe-string
@@ -400,23 +471,24 @@ Available values: @code{notice}, @code{info}, @code{verbose},
    "The default port to run mpd on.")
 
   (endpoints
-   maybe-list-of-string
+   maybe-list-of-strings
    "The addresses that mpd will bind to. A port different from
 @var{default-port} may be specified, e.g. @code{localhost:6602} and
 IPv6 addresses must be enclosed in square brackets when a different
 port is used.
 To use a Unix domain socket, an absolute path or a path starting with @code{~}
 can be specified here."
-   (lambda (_ endpoints)
-     (if (maybe-value-set? endpoints)
-         (mpd-serialize-list-of-string "bind_to_address" endpoints)
-         "")))
+   (serializer
+    (lambda (_ endpoints)
+      (if (maybe-value-set? endpoints)
+          (mpd-serialize-list-of-strings "bind_to_address" endpoints)
+          ""))))
 
   (address ; TODO: deprecated, remove later
    maybe-string
    "The address that mpd will bind to.
 To use a Unix domain socket, an absolute path can be specified here."
-   mpd-serialize-deprecated-field)
+   (serializer mpd-serialize-deprecated-field))
 
   (database
    maybe-mpd-plugin
@@ -433,29 +505,29 @@ To use a Unix domain socket, an absolute path can be specified here."
   (inputs
    (list-of-mpd-plugin '())
    "List of MPD input plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "input" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "input" x))))
 
   (archive-plugins
    (list-of-mpd-plugin '())
    "List of MPD archive plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "archive_plugin" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "archive_plugin" x))))
 
   (input-cache-size
    maybe-string
    "MPD input cache size."
-   (lambda (_ x)
-     (if (maybe-value-set? x)
-         #~(string-append "\ninput_cache {\n"
-                          #$(mpd-serialize-string "size" x)
-                          "}\n") "")))
+   (serializer (lambda (_ x)
+                 (if (maybe-value-set? x)
+                     #~(string-append "\ninput_cache {\n"
+                                      #$(mpd-serialize-string "size" x)
+                                      "}\n") ""))))
 
   (decoders
    (list-of-mpd-plugin '())
    "List of MPD decoder plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "decoder" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "decoder" x))))
 
   (resampler
    maybe-mpd-plugin
@@ -464,8 +536,8 @@ To use a Unix domain socket, an absolute path can be specified here."
   (filters
    (list-of-mpd-plugin '())
    "List of MPD filter plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "filter" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "filter" x))))
 
   (outputs
    (list-of-mpd-plugin-or-output (list (mpd-output)))
@@ -475,8 +547,8 @@ By default this is a single output using pulseaudio.")
   (playlist-plugins
    (list-of-mpd-plugin '())
    "List of MPD playlist plugin configurations."
-   (lambda (_ x)
-     (mpd-serialize-list-of-mpd-plugin "playlist_plugin" x)))
+   (serializer (lambda (_ x)
+                 (mpd-serialize-list-of-mpd-plugin "playlist_plugin" x))))
 
   (extra-options
    (alist '())
@@ -503,7 +575,8 @@ appended to the configuration.")
                                             log-file playlist-directory
                                             db-file state-file sticker-file
                                             environment-variables)
-    (let* ((config-file (mpd-serialize-configuration config)))
+    (let ((config-file (mpd-serialize-configuration config))
+          (username (user-account-name user)))
       (shepherd-service
        (documentation "Run the MPD (Music Player Daemon)")
        (requirement `(user-processes loopback ,@shepherd-requirement))
@@ -512,7 +585,7 @@ appended to the configuration.")
                   (and=> #$(maybe-value log-file)
                          (compose mkdir-p dirname))
 
-                  (let ((user (getpw #$user)))
+                  (let ((user (getpw #$username)))
                     (for-each
                      (lambda (x)
                        (when (and x (not (file-exists? x)))
@@ -546,17 +619,11 @@ appended to the configuration.")
 
 (define (mpd-accounts config)
   (match-record config <mpd-configuration> (user group)
-    (list (user-group
-           (name group)
-           (system? #t))
-          (user-account
-           (name user)
-           (group group)
-           (system? #t)
-           (comment "Music Player Daemon (MPD) user")
-           ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data
-           (home-directory "/var/lib/mpd")
-           (shell (file-append shadow "/sbin/nologin"))))))
+    ;; TODO: Deprecation code, to be removed.
+    (let ((user (if (eq? (user-account-group user) %lazy-group)
+                    (%set-user-group user group)
+                    user)))
+      (list user group))))
 
 (define mpd-service-type
   (service-type
@@ -581,15 +648,57 @@ appended to the configuration.")
 
 (define-configuration/no-serialization mympd-ip-acl
   (allow
-   (list-of-string '())
+   (list-of-strings '())
    "Allowed IP addresses.")
 
   (deny
-   (list-of-string '())
+   (list-of-strings '())
    "Disallowed IP addresses."))
 
 (define-maybe/no-serialization integer)
 (define-maybe/no-serialization mympd-ip-acl)
+
+(define %mympd-user
+  (user-account
+      (name "mympd")
+      (group %lazy-group)
+      (system? #t)
+      (comment "myMPD user")
+      (home-directory "/var/empty")
+      (shell (file-append shadow "/sbin/nologin"))))
+
+(define %mympd-group
+  (user-group
+   (name "mympd")
+   (system? #t)))
+
+;;; TODO: Procedures for unsupported value types, to be removed.
+(define (mympd-user-sanitizer value)
+  (cond ((user-account? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'user' is not supported, use \
+user-account instead~%"))
+         (user-account
+          (inherit %mympd-user)
+          (name value)
+          ;; XXX: this is to be lazily substituted in (…-accounts)
+          ;; with the value from 'group'.
+          (group %lazy-group)))
+        (else
+         (configuration-field-error #f 'user value))))
+
+(define (mympd-group-sanitizer value)
+  (cond ((user-group? value) value)
+        ((string? value)
+         (warning (G_ "string value for 'group' is not supported, use \
+user-group instead~%"))
+         (user-group
+          (inherit %mympd-group)
+          (name value)))
+        (else
+         (configuration-field-error #f 'group value))))
+;;;
+
 
 ;; XXX: The serialization procedures are insufficient since we require
 ;; access to multiple fields at once.
@@ -608,13 +717,15 @@ will depend on."
    empty-serializer)
 
   (user
-   (string "mympd")
+   (user-account %mympd-user)
    "Owner of the @command{mympd} process."
+   (sanitizer mympd-user-sanitizer)
    empty-serializer)
 
   (group
-   (string "nogroup")
+   (user-group %mympd-group)
    "Owner group of the @command{mympd} process."
+   (sanitizer mympd-group-sanitizer)
    empty-serializer)
 
   (work-directory
@@ -707,12 +818,12 @@ prompting a pin from the user.")
       ((? string? val) val)))
 
   (define (ip-acl-serialize-configuration config)
-    (define (serialize-list-of-string prefix lst)
+    (define (serialize-list-of-strings prefix lst)
       (map (cut format #f "~a~a" prefix <>) lst))
     (string-join
      (append
-      (serialize-list-of-string "+" (mympd-ip-acl-allow config))
-      (serialize-list-of-string "-" (mympd-ip-acl-deny config))) ","))
+      (serialize-list-of-strings "+" (mympd-ip-acl-allow config))
+      (serialize-list-of-strings "-" (mympd-ip-acl-deny config))) ","))
 
   ;; myMPD configuration fields are serialized as individual files under
   ;; <work-directory>/config/.
@@ -749,13 +860,18 @@ prompting a pin from the user.")
   (match-record config <mympd-configuration> (package shepherd-requirement
                                               user work-directory
                                               cache-directory log-level log-to)
-    (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level)))
+    (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level))
+          (username (user-account-name user)))
       (shepherd-service
        (documentation "Run the myMPD daemon.")
-       (requirement `(loopback user-processes ,@shepherd-requirement))
+       (requirement `(loopback user-processes
+                               ,@(if (eq? log-to 'syslog)
+                                     '(syslog)
+                                     '())
+                               ,@shepherd-requirement))
        (provision '(mympd))
        (start #~(begin
-                  (let* ((pw (getpwnam #$user))
+                  (let* ((pw (getpwnam #$username))
                          (uid (passwd:uid pw))
                          (gid (passwd:gid pw)))
                     (for-each (lambda (dir)
@@ -765,8 +881,8 @@ prompting a pin from the user.")
 
                   (make-forkexec-constructor
                    `(#$(file-append package "/bin/mympd")
-                     "--user" #$user
-                     #$@(if (eqv? log-to 'syslog) '("--syslog") '())
+                     "--user" #$username
+                     #$@(if (eq? log-to 'syslog) '("--syslog") '())
                      "--workdir" #$work-directory
                      "--cachedir" #$cache-directory)
                    #:environment-variables (list #$log-level*)
@@ -775,14 +891,11 @@ prompting a pin from the user.")
 
 (define (mympd-accounts config)
   (match-record config <mympd-configuration> (user group)
-                (list (user-group (name group)
-                                  (system? #t))
-                      (user-account (name user)
-                                    (group group)
-                                    (system? #t)
-                                    (comment "myMPD user")
-                                    (home-directory "/var/empty")
-                                    (shell (file-append shadow "/sbin/nologin"))))))
+    ;; TODO: Deprecation code, to be removed.
+    (let ((user (if (eq? (user-account-group user) %lazy-group)
+                    (%set-user-group user group)
+                    user)))
+      (list user group))))
 
 (define (mympd-log-rotation config)
   (match-record config <mympd-configuration> (log-to)

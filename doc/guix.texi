@@ -60,7 +60,7 @@ Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
-Copyright @copyright{} 2018, 2019, 2020, 2022 Florian Pelz@*
+Copyright @copyright{} 2018, 2019, 2020, 2022, 2023 Florian Pelz@*
 Copyright @copyright{} 2018 Laura Lazzati@*
 Copyright @copyright{} 2018 Alex Vong@*
 Copyright @copyright{} 2019 Josh Holland@*
@@ -113,6 +113,7 @@ Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
 Copyright @copyright{} 2023 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
+Copyright @copyright{} 2023 Karl Hallsby
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -4317,6 +4318,25 @@ The command to install its documentation is:
 guix install glib:doc
 @end example
 
+While the colon syntax works for command-line specification of package
+outputs, it will not work when using a package @emph{variable} in Scheme
+code.  For example, to add the documentation of @code{glib} to the
+globally installed packages of an @code{operating-system} (see
+@ref{operating-system Reference}), a list of two items, the first one
+being the package @emph{variable} and the second one the name of the
+output to select (a string), must be used instead:
+
+@lisp
+(use-modules (gnu packages glib))
+;; glib-with-documentation is the Guile symbol for the glib package
+(operating-system
+ ...
+ (packages
+  (append
+   (list (list glib-with-documentation "doc"))
+         %base-packages)))
+@end lisp
+
 Some packages install programs with different ``dependency footprints''.
 For instance, the WordNet package installs both command-line tools and
 graphical user interfaces (GUIs).  The former depend solely on the C
@@ -6191,7 +6211,7 @@ Transformation Options}) so it should be lossless.
 
 @item --profile=@var{profile}
 @itemx -p @var{profile}
-Create an environment containing the packages installed in @var{profile}. 
+Create an environment containing the packages installed in @var{profile}.
 Use @command{guix package} (@pxref{Invoking guix package}) to create
 and manage profiles.
 
@@ -6336,6 +6356,57 @@ include a version of glibc that will read
 cache (contrary to glibc in regular Guix usage) and set up the
 expected FHS directories: @file{/bin}, @file{/etc}, @file{/lib}, and
 @file{/usr} from the container's profile.
+
+@cindex nested containers, for @command{guix shell}
+@cindex container nesting, for @command{guix shell}
+@item --nesting
+@itemx -W
+When used with @option{--container}, provide Guix @emph{inside} the
+container and arrange so that it can interact with the build daemon that
+runs outside the container.  This is useful if you want, within your
+isolated container, to create other containers, as in this sample
+session:
+
+@example
+$ guix shell -CW coreutils
+[env]$ guix shell -C guile -- guile -c '(display "hello!\n")'
+hello!
+[env]$ exit
+@end example
+
+The session above starts a container with @code{coreutils} programs
+available in @env{PATH}.  From there, we spawn @command{guix shell} to
+create a @emph{nested} container that provides nothing but Guile.
+
+Another example is evaluating a @file{guix.scm} file that is untrusted,
+as shown here:
+
+@example
+guix shell -CW -- guix build -f guix.scm
+@end example
+
+The @command{guix build} command as executed above can only access the
+current directory.
+
+Under the hood, the @option{-W} option does several things:
+
+@itemize
+@item
+map the daemon's socket (by default
+@file{/var/guix/daemon-socket/socket}) inside the container;
+@item
+map the whole store (by default @file{/gnu/store}) inside the container
+such that store items made available by nested @command{guix}
+invocations are visible;
+@item
+add the currently-used @command{guix} command to the profile in the
+container, such that @command{guix describe} returns the same state
+inside and outside the container;
+@item
+share the cache (by default @file{~/.cache/guix}) with the host, to
+speed up operations such as @command{guix time-machine} and
+@command{guix shell}.
+@end itemize
 
 @item --rebuild-cache
 @cindex caching, of profiles
@@ -6637,7 +6708,7 @@ interpreted as packages that will be added to the environment directly.
 
 @item --profile=@var{profile}
 @itemx -p @var{profile}
-Create an environment containing the packages installed in @var{profile}. 
+Create an environment containing the packages installed in @var{profile}.
 Use @command{guix package} (@pxref{Invoking guix package}) to create
 and manage profiles.
 
@@ -8190,6 +8261,9 @@ Add @var{package}s to the front of the input list.
 
 @item (append @var{package}@dots{})
 Add @var{package}s to the end of the input list.
+
+@item (replace @var{name} @var{replacement})
+Replace the package called @var{name} with @var{replacement}.
 @end table
 
 The example below removes the GMP and ACL inputs of Coreutils and adds
@@ -12653,7 +12727,7 @@ candidates, and even to test their impact on packages that depend on
 them:
 
 @example
-guix build elogind --with-source=@dots{}/shepherd-0.9.0rc1.tar.gz 
+guix build elogind --with-source=@dots{}/shepherd-0.9.0rc1.tar.gz
 @end example
 
 @dots{} or to build from a checkout in a pristine environment:
@@ -14333,6 +14407,7 @@ for compatibility with an upgraded @code{flex} package.
 @table @code
 
 @item --list-transitive
+@itemx -T
 List all the packages which one or more packages depend upon.
 
 @example
@@ -17984,7 +18059,7 @@ This is the service that sets up ``special files'' such as
 @file{/bin/sh}; an instance of it is part of @code{%base-services}.
 
 The value associated with @code{special-files-service-type} services
-must be a list of tuples where the first element is the ``special file''
+must be a list of two-element lists where the first element is the ``special file''
 and the second element is its target.  By default it is:
 
 @cindex @file{/bin/sh}
@@ -18398,7 +18473,7 @@ The Kmscon package to use.
 @cindex @abbr{nscd, name service cache daemon}
 @defvar nscd-service-type
 Type of the service that runs the libc @abbr{nscd, name service cache
-daemon}, whose value is a @code{<nscd-configuration>} object.
+daemon}, whose value is an @code{<nscd-configuration>} object.
 
 For convenience, the Shepherd service for nscd provides the following actions:
 
@@ -18926,7 +19001,7 @@ seconds for the negative lookups.  @xref{Invoking guix publish,
 @end deftp
 
 @defvar rngd-service-type
-Type of the service that runs rng-tools rngd, whose value is a
+Type of the service that runs rng-tools rngd, whose value is an
 @code{<rngd-configuration>} object.
 @end defvar
 
@@ -18944,7 +19019,6 @@ will fail if @var{device} does not exist.
 @end table
 @end deftp
 
-@anchor{pam-limits-service}
 @cindex session limits
 @cindex ulimit
 @cindex priority
@@ -18952,22 +19026,23 @@ will fail if @var{device} does not exist.
 @cindex jackd
 @cindex nofile
 @cindex open file descriptors
-@deffn {Scheme Procedure} pam-limits-service [#:limits @code{'()}]
-
-Return a service that installs a configuration file for the
+@anchor{pam-limits-service-type}
+@defvar pam-limits-service-type
+Type of the service that installs a configuration file for the
 @uref{http://linux-pam.org/Linux-PAM-html/sag-pam_limits.html,
-@code{pam_limits} module}.  The procedure optionally takes a list of
-@code{pam-limits-entry} values, which can be used to specify
+@code{pam_limits} module}.  The value for this service type is
+a list of @code{pam-limits-entry} values, which can be used to specify
 @code{ulimit} limits and @code{nice} priority limits to user sessions.
+By default, the value is the empty list.
 
 The following limits definition sets two hard and soft limits for all
 login sessions of users in the @code{realtime} group:
 
 @lisp
-(pam-limits-service
- (list
-  (pam-limits-entry "@@realtime" 'both 'rtprio 99)
-  (pam-limits-entry "@@realtime" 'both 'memlock 'unlimited)))
+(service pam-limits-service-type
+         (list
+          (pam-limits-entry "@@realtime" 'both 'rtprio 99)
+          (pam-limits-entry "@@realtime" 'both 'memlock 'unlimited)))
 @end lisp
 
 The first entry increases the maximum realtime priority for
@@ -18979,9 +19054,9 @@ Another useful example is raising the maximum number of open file
 descriptors that can be used:
 
 @lisp
-(pam-limits-service
- (list
-  (pam-limits-entry "*" 'both 'nofile 100000)))
+(service pam-limits-service-type
+         (list
+          (pam-limits-entry "*" 'both 'nofile 100000)))
 @end lisp
 
 In the above example, the asterisk means the limit should apply to any
@@ -18990,7 +19065,7 @@ maximum system value visible in the @file{/proc/sys/fs/file-max} file,
 else the users would be prevented from login in.  For more information
 about the Pluggable Authentication Module (PAM) limits, refer to the
 @samp{pam_limits} man page from the @code{linux-pam} package.
-@end deffn
+@end defvar
 
 @defvar greetd-service-type
 @uref{https://git.sr.ht/~kennylevinsen/greetd, @code{greetd}} is a minimal and
@@ -19372,11 +19447,17 @@ specifications,, mcron,GNU@tie{}mcron}).
 @item @code{log?} (default: @code{#t}) (type: boolean)
 Log messages to standard output.
 
+@item @code{log-file} (default: @code{"/var/log/mcron.log"}) (type: string)
+Log file location.
+
 @item @code{log-format} (default: @code{"~1@@*~a ~a: ~a~%"}) (type: string)
 @code{(ice-9 format)} format string for log messages.  The default value
-produces messages like "@samp{@var{pid} @var{name}: @var{message}"}
+produces messages like @samp{@var{pid} @var{name}: @var{message}}
 (@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message
 is also prefixed by a timestamp by GNU Shepherd.
+
+@item @code{date-format} (type: maybe-string)
+@code{(srfi srfi-19)} format string for date.
 
 @end table
 @end deftp
@@ -23729,7 +23810,7 @@ created for.
 Restricts all controllers to the specified transport. @code{'dual} means both
 BR/EDR and LE are enabled (if supported by the hardware).
 
-Possible values are: 
+Possible values are:
 
 @itemize @bullet
 @item
@@ -26210,7 +26291,7 @@ variables.
 
 @defvar getmail-service-type
 This is the type of the @uref{http://pyropus.ca/software/getmail/, Getmail}
-mail retriever, whose value should be an @code{getmail-configuration}.
+mail retriever, whose value should be a @code{getmail-configuration}.
 @end defvar
 
 Available @code{getmail-configuration} fields are:
@@ -29784,6 +29865,11 @@ started.
 @item @code{log-directory} (default: @code{"/var/log/nginx"})
 The directory to which NGinx will write log files.
 
+@item @code{log-level} (default: @code{'error}) (type: symbol)
+Logging level, which can be any of the following values: @code{'debug},
+@code{'info}, @code{'notice}, @code{'warn}, @code{'error}, @code{'crit},
+@code{'alert}, or @code{'emerg}.
+
 @item @code{run-directory} (default: @code{"/var/run/nginx"})
 The directory in which NGinx will create a pid file, and write temporary
 files.
@@ -31410,7 +31496,7 @@ The list of knot-zone-configuration used by this configuration.
 
 @defvar knot-resolver-service-type
 This is the type of the knot resolver service, whose value should be
-an @code{knot-resolver-configuration} object as in this example:
+a @code{knot-resolver-configuration} object as in this example:
 
 @lisp
 (service knot-resolver-service-type
@@ -31447,7 +31533,7 @@ Number of milliseconds for @code{kres-cache-gc} to periodically trim the cache.
 @subsubheading Dnsmasq Service
 
 @defvar dnsmasq-service-type
-This is the type of the dnsmasq service, whose value should be an
+This is the type of the dnsmasq service, whose value should be a
 @code{dnsmasq-configuration} object as in this example:
 
 @lisp
@@ -33440,17 +33526,20 @@ Data type representing the configuration of @command{mpd}.
 @item @code{package} (default: @code{mpd}) (type: file-like)
 The MPD package.
 
-@item @code{user} (default: @code{"mpd"}) (type: string)
+@item @code{user} (default: @code{%mpd-user}) (type: user-account)
 The user to run mpd as.
 
-@item @code{group} (default: @code{"mpd"}) (type: string)
+The default @code{%mpd-user} is a system user with the name ``mpd'',
+who is a part of the group @var{group} (see below).
+@item @code{group} (default: @code{%mpd-group}) (type: user-group)
 The group to run mpd as.
 
+The default @code{%mpd-group} is a system group with name ``mpd''.
 @item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
-This is a list of symbols naming Shepherd services that this service
+A list of symbols naming Shepherd services that this service
 will depend on.
 
-@item @code{environment-variables} (default: @code{()}) (type: list-of-string)
+@item @code{environment-variables} (default: @code{("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")}) (type: list-of-strings)
 A list of strings specifying environment variables.
 
 @item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
@@ -33481,7 +33570,7 @@ The location of the sticker database.
 @item @code{default-port} (default: @code{6600}) (type: maybe-integer)
 The default port to run mpd on.
 
-@item @code{endpoints} (type: maybe-list-of-string)
+@item @code{endpoints} (type: maybe-list-of-strings)
 The addresses that mpd will bind to.  A port different from @var{default-port}
 may be specified, e.g. @code{localhost:6602} and IPv6 addresses must be
 enclosed in square brackets when a different port is used.
@@ -33681,12 +33770,15 @@ The package object of the myMPD server.
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 
-@item @code{user} (default: @code{"mympd"}) (type: string)
+@item @code{user} (default: @code{%mympd-user}) (type: user-account)
 Owner of the @command{mympd} process.
 
-@item @code{group} (default: @code{"nogroup"}) (type: string)
+The default @code{%mympd-user} is a system user with the name ``mympd'',
+who is a part of the group @var{group} (see below).
+@item @code{group} (default: @code{%mympd-group}) (type: user-group)
 Owner group of the @command{mympd} process.
 
+The default @code{%mympd-group} is a system group with name ``mympd''.
 @item @code{work-directory} (default: @code{"/var/lib/mympd"}) (type: string)
 Where myMPD will store its data.
 
@@ -33757,10 +33849,10 @@ Whether to preserve caches between service restarts.
 Available @code{mympd-ip-acl} fields are:
 
 @table @asis
-@item @code{allow} (default: @code{()}) (type: list-of-string)
+@item @code{allow} (default: @code{()}) (type: list-of-strings)
 Allowed IP addresses.
 
-@item @code{deny} (default: @code{()}) (type: list-of-string)
+@item @code{deny} (default: @code{()}) (type: list-of-strings)
 Disallowed IP addresses.
 
 @end table
@@ -37434,6 +37526,68 @@ notifications.
 @end table
 @end deftp
 
+@subsubheading fstrim Service
+@cindex fstrim service
+@cindex solid state drives, periodic trim
+@cindex solid state drives, trim
+
+The command @command{fstrim} can be used to discard (or @dfn{trim})
+unused blocks on a mounted file system.
+
+@c This was copied from the fstrim manpage, with some Texinfo touch-ups.
+@quotation Warning
+Running @command{fstrim} frequently, or even using
+@command{mount -o discard}, might negatively affect the lifetime of
+poor-quality SSD devices.  For most desktop and server systems a
+sufficient trimming frequency is once a week.  Note that not all devices
+support a queued trim, so each trim command incurs a performance penalty
+on whatever else might be trying to use the disk at the time.
+@end quotation
+
+@defvar fstrim-service-type
+Type for a service that periodically runs @command{fstrim}, whose value must
+be an @code{<fstrim-configuration>} object.  The service can be instantiated
+in its default configuration with:
+
+@lisp
+(service fstrim-service-type)
+@end lisp
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} fstrim-configuration
+Available @code{fstrim-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{util-linux}) (type: file-like)
+The package providing the @command{fstrim} command.
+
+@item @code{schedule} (default: @code{"0 0 * * 0"}) (type: mcron-time)
+Schedule for launching @command{fstrim}.  This can be a procedure, a
+list or a string.  For additional information, see @ref{Guile
+Syntax,,Job specification,mcron,the mcron manual}.  By default this is
+set to run weekly on Sunday at 00:00.
+
+@item @code{listed-in} (default: @code{("/etc/fstab" "/proc/self/mountinfo")}) (type: maybe-list-of-strings)
+List of files in fstab or kernel mountinfo format.  All missing or empty
+files are silently ignored.  The evaluation of the list @emph{stops}
+after the first non-empty file.  File systems with
+@code{X-fstrim.notrim} mount option in fstab are skipped.
+
+@item @code{verbose?} (default: @code{#t}) (type: boolean)
+Verbose execution.
+
+@item @code{quiet-unsupported?} (default: @code{#t}) (type: boolean)
+Suppress error messages if trim operation (ioctl) is unsupported.
+
+@item @code{extra-arguments} (type: maybe-list-of-strings)
+Extra options to append to @command{fstrim} (run @samp{man fstrim} for
+more information).
+
+@end table
+@end deftp
+@c %end of fragment
+
 @cindex modprobe
 @cindex kernel module loader
 @subsubheading Kernel Module Loader Service
@@ -38523,11 +38677,12 @@ However, most other programs that can talk HTTPS---@command{wget},
 certificates can be found.
 
 @cindex @code{nss-certs}
-In Guix, this is done by adding a package that provides certificates
-to the @code{packages} field of the @code{operating-system} declaration
-(@pxref{operating-system Reference}).  Guix includes one such package,
-@code{nss-certs}, which is a set of CA certificates provided as part of
-Mozilla's Network Security Services.
+For users of Guix System, this is done by adding a package that
+provides certificates to the @code{packages} field of the
+@code{operating-system} declaration (@pxref{operating-system
+Reference}).  Guix includes one such package, @code{nss-certs}, which
+is a set of CA certificates provided as part of Mozilla's Network
+Security Services.
 
 Note that it is @emph{not} part of @code{%base-packages}, so you need to
 explicitly add it.  The @file{/etc/ssl/certs} directory, which is where
@@ -41099,11 +41254,11 @@ A clause can have one of the following forms:
 (@var{field-name}
  (@var{type} @var{default-value})
  @var{documentation})
- 
+
 (@var{field-name}
  (@var{type} @var{default-value})
  @var{documentation}
- @var{serializer})
+ (serializer @var{serializer}))
 
 (@var{field-name}
  (@var{type})
@@ -41112,7 +41267,18 @@ A clause can have one of the following forms:
 (@var{field-name}
  (@var{type})
  @var{documentation}
- @var{serializer})
+ (serializer @var{serializer}))
+
+(@var{field-name}
+ (@var{type})
+ @var{documentation}
+ (sanitizer @var{sanitizer})
+
+(@var{field-name}
+ (@var{type})
+ @var{documentation}
+ (sanitizer @var{sanitizer})
+ (serializer @var{serializer}))
 @end example
 
 @var{field-name} is an identifier that denotes the name of the field in
@@ -41135,6 +41301,20 @@ an object of the record type.
 @var{documentation} is a string formatted with Texinfo syntax which
 should provide a description of what setting this field does.
 
+@var{sanitizer} is a procedure which takes one argument,
+a user-supplied value, and returns a ``sanitized'' value for the field.
+If no sanitizer is specified, a default sanitizer is used, which raises
+an error if the value is not of type @var{type}.
+
+An example of a sanitizer for a field that accepts both strings and
+symbols looks like this:
+@lisp
+(define (sanitize-foo value)
+  (cond ((string? value) value)
+        ((symbol? value) (symbol->string value))
+        (else (error "bad value"))))
+@end lisp
+
 @var{serializer} is the name of a procedure which takes two arguments,
 the first is the name of the field, and the second is the value
 corresponding to the field.  The procedure should return a string or
@@ -41148,7 +41328,7 @@ A simple serializer procedure could look like this:
 (define (serialize-boolean field-name value)
   (let ((value (if value "true" "false")))
     #~(string-append #$field-name #$value)))
-@end lisp  
+@end lisp
 
 In some cases multiple different configuration records might be defined
 in the same file, but their serializers for the same type might have to
@@ -41166,7 +41346,7 @@ manually specify a custom @var{serializer} for every field.
 
 (define (bar-serialize-string field-name value)
   @dots{})
-  
+
 (define-configuration foo-configuration
   (label
    (string)
@@ -41198,7 +41378,7 @@ macro which is a shorthand of this.
   (field
    (string "test")
    "Some documentation."))
-@end lisp   
+@end lisp
 @end defmac
 
 @defmac define-maybe type
@@ -41671,11 +41851,12 @@ services)}.
 * Power Management: Power Management Home Services.  Services for battery power.
 * Shepherd: Shepherd Home Service.  Managing User's Daemons.
 * SSH: Secure Shell.            Setting up the secure shell client.
+* GPG: GNU Privacy Guard.       Setting up GPG and related tools.
 * Desktop: Desktop Home Services.  Services for graphical environments.
 * Guix: Guix Home Services.     Services for Guix.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
-* Messaging: Messaging Home Services.   Services for managing messaging.
+* Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
 @end menu
 @c In addition to that Home Services can provide
@@ -42108,7 +42289,7 @@ for home services is that they have to be declared in a
 record.
 
 @defvar home-mcron-service-type
-This is the type of the @code{mcron} home service, whose value is an
+This is the type of the @code{mcron} home service, whose value is a
 @code{home-mcron-configuration} object.  It allows to manage scheduled
 tasks.
 
@@ -42441,19 +42622,22 @@ The @uref{https://www.openssh.com, OpenSSH package} includes a daemon,
 the @command{ssh-agent} command, that manages keys to connect to remote
 machines using the @acronym{SSH, secure shell} protocol.  With the
 @code{(gnu home services ssh-agent)} service, you can configure the
-OpenSSH ssh-agent to run upon login.
+OpenSSH ssh-agent to run upon login.  @xref{GNU Privacy Guard,
+@code{home-gpg-agent-service-type}}, for an alternative to OpenSSH's
+@command{ssh-agent}.
+
 
 Here is an example of a service and its configuration that you could add
 to the @code{services} field of your @code{home-environment}:
 
 @lisp
 (service home-ssh-agent-service-type
-  (home-ssh-agent-configuration
-   (extra-options '("-t" "1h30m"))))
+         (home-ssh-agent-configuration
+          (extra-options '("-t" "1h30m"))))
 @end lisp
 
 @defvar home-ssh-agent-service-type
-This is the type of the @code{git daemon} home service, whose value is an
+This is the type of the @code{ssh-agent} home service, whose value is a
 @code{home-ssh-agent-configuration} object.
 @end defvar
 
@@ -42461,8 +42645,8 @@ This is the type of the @code{git daemon} home service, whose value is an
 Available @code{home-ssh-agent-configuration} fields are:
 
 @table @asis
-@item @code{git} (default: @code{git}) (type: file-like)
-The git package to use.
+@item @code{openssh} (default: @code{openssh}) (type: file-like)
+The OpenSSH package to use.
 
 @item @code{socket-directory} (default: @code{@env{XDG_RUNTIME_DIR}/ssh-agent"}) (type: gexp)
 The directory to write the ssh-agent's @file{socket} file.
@@ -42473,6 +42657,87 @@ Extra options will be passed to @command{ssh-agent}, please run
 
 @end table
 @end deftp
+
+@node GNU Privacy Guard
+@subsection GNU Privacy Guard
+
+@cindex GNU Privacy Guard, Home service
+@cindex GPG, Home service
+The @code{(gnu home services gnupg)} modules provides services that help
+you set up the GNU Privacy Guard, also known as GnuPG or GPG, in your
+home environment.
+
+@cindex gpg-agent, Home service
+@cindex SSH agent, with gpg-agent
+The @code{gpg-agent} service configures and sets up GPG's agent, the
+program that is responsible for managing OpenPGP private keys and,
+optionally, OpenSSH (secure shell) private keys (@pxref{Invoking
+GPG-AGENT,,, gnupg, Using the GNU Privacy Guard}).
+
+As an example, here is how you would configure @code{gpg-agent} with SSH
+support such that it uses the Emacs-based Pinentry interface when
+prompting for a passphrase:
+
+@lisp
+(service home-gpg-agent-service-type
+         (home-gpg-agent-configuration
+          (pinentry-program
+           (file-append pinentry-emacs "/bin/pinentry-emacs"))
+          (ssh-support? #t)))
+@end lisp
+
+The service reference is given below.
+
+@defvar home-gpg-agent-service-type
+This is the service type for @command{gpg-agent} (@pxref{Invoking
+GPG-AGENT,,, gnupg, Using the GNU Privacy Guard}).  Its value must be a
+@code{home-gpg-agent-configuration}, as shown below.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} home-gpg-agent-configuration
+Available @code{home-gpg-agent-configuration} fields are:
+
+@table @asis
+@item @code{gnupg} (default: @code{gnupg}) (type: file-like)
+The GnuPG package to use.
+
+@item @code{pinentry-program} (type: file-like)
+Pinentry program to use.  Pinentry is a small user interface that
+@command{gpg-agent} delegates to anytime it needs user input for a
+passphrase or @acronym{PIN,personal identification number}
+(@pxref{Top,,, pinentry,Using the PIN-Entry}).
+
+@item @code{ssh-support?} (default: @code{#f}) (type: boolean)
+Whether to enable @acronym{SSH,secure shell} support.  When true,
+@command{gpg-agent} acts as a drop-in replacement for OpenSSH's
+@command{ssh-agent} program, taking care of OpenSSH secret keys and
+directing passphrase requests to the chosen Pinentry program.
+
+@item @code{default-cache-ttl} (default: @code{600}) (type: integer)
+Time a cache entry is valid, in seconds.
+
+@item @code{max-cache-ttl} (default: @code{7200}) (type: integer)
+Maximum time a cache entry is valid, in seconds.  After this time a
+cache entry will be expired even if it has been accessed recently.
+
+@item @code{default-cache-ttl-ssh} (default: @code{1800}) (type: integer)
+Time a cache entry for SSH keys is valid, in seconds.
+
+@item @code{max-cache-ttl-ssh} (default: @code{7200}) (type: integer)
+Maximum time a cache entry for SSH keys is valid, in seconds.
+
+@item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
+Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 
 @node Desktop Home Services
 @subsection Desktop Home Services
@@ -42811,7 +43076,7 @@ to the @code{services} field of your @code{home-environment}:
 @end lisp
 
 @defvar home-znc-service-type
-This is the type of the @code{git daemon} home service, whose value is an
+This is the type of the ZNC home service, whose value is a
 @code{home-znc-configuration} object.
 @end defvar
 
@@ -42819,8 +43084,8 @@ This is the type of the @code{git daemon} home service, whose value is an
 Available @code{home-znc-configuration} fields are:
 
 @table @asis
-@item @code{git} (default: @code{git}) (type: file-like)
-The git package to use.
+@item @code{znc} (default: @code{znc}) (type: file-like)
+The ZNC package to use.
 
 @item @code{extra-options} (default: @code{'()})
 Extra options will be passed to @command{znc}, please run @command{man
@@ -42833,9 +43098,9 @@ znc} for more information.
 @subsection Media Home Services
 
 @cindex kodi
-The @uref{https://kodi.tv, KODI media center} can be run as a daemon on
+The @uref{https://kodi.tv, Kodi media center} can be run as a daemon on
 a media server.  With the @code{(gnu home services kodi)} service, you
-can configure KODI to run upon login.
+can configure Kodi to run upon login.
 
 Here is an example of a service and its configuration that you could add
 to the @code{services} field of your @code{home-environment}:
@@ -42847,7 +43112,7 @@ to the @code{services} field of your @code{home-environment}:
 @end lisp
 
 @defvar home-kodi-service-type
-This is the type of the @code{git daemon} home service, whose value is an
+This is the type of the Kodi home service, whose value is a
 @code{home-kodi-configuration} object.
 @end defvar
 
@@ -42855,8 +43120,8 @@ This is the type of the @code{git daemon} home service, whose value is an
 Available @code{home-kodi-configuration} fields are:
 
 @table @asis
-@item @code{git} (default: @code{git}) (type: file-like)
-The git package to use.
+@item @code{kodi} (default: @code{kodi}) (type: file-like)
+The Kodi package to use.
 
 @item @code{extra-options} (default: @code{'()})
 Extra options will be passed to @command{kodi}, please run @command{man
@@ -44004,7 +44269,7 @@ down in its dependency graph.  As it turns out, GLib does not have a
    from /gnu/store/@dots{}-glib-2.62.6/lib/libglib-2.0.so.0
 #1  0x00007ffff608a7d6 in gobject_init_ctor ()
    from /gnu/store/@dots{}-glib-2.62.6/lib/libgobject-2.0.so.0
-#2  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=1, argv=argv@@entry=0x7fffffffcfd8, 
+#2  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=1, argv=argv@@entry=0x7fffffffcfd8,
     env=env@@entry=0x7fffffffcfe8) at dl-init.c:72
 #3  0x00007ffff7fe2866 in call_init (env=0x7fffffffcfe8, argv=0x7fffffffcfd8, argc=1, l=<optimized out>)
     at dl-init.c:118
@@ -44033,7 +44298,7 @@ Starting program: /gnu/store/@dots{}-profile/bin/sh -c exec\ inkscape
 #0  g_getenv (variable=variable@@entry=0x7ffff60c7a2e "GOBJECT_DEBUG") at ../glib-2.62.6/glib/genviron.c:252
 #1  0x00007ffff608a7d6 in gobject_init () at ../glib-2.62.6/gobject/gtype.c:4380
 #2  gobject_init_ctor () at ../glib-2.62.6/gobject/gtype.c:4493
-#3  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=3, argv=argv@@entry=0x7fffffffd088, 
+#3  0x00007ffff7fe275a in call_init (l=<optimized out>, argc=argc@@entry=3, argv=argv@@entry=0x7fffffffd088,
     env=env@@entry=0x7fffffffd0a8) at dl-init.c:72
 @dots{}
 @end example

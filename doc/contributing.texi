@@ -776,9 +776,8 @@ the word @code{python}.
 Some modules are compatible with only one version of Python, others with
 both.  If the package Foo is compiled with Python 3, we name it
 @code{python-foo}.  If it is compiled with Python 2, we name it
-@code{python2-foo}.  Packages should be added when they are necessary;
-we don't add Python 2 variants of the package unless we are going to use
-them.
+@code{python2-foo}.  Python 2 packages are being removed from the
+distribution; please do no not submit any new Python 2 packages.
 
 If a project already contains the word @code{python}, we drop this;
 for instance, the module python-dateutil is packaged under the names
@@ -1728,7 +1727,12 @@ project for at least 6 months.  This ensures enough interactions with
 the contributor, which is essential for mentoring and assessing whether
 they are ready to become a committer.  Commit access should not be
 thought of as a ``badge of honor'' but rather as a responsibility a
-contributor is willing to take to help the project.
+contributor is willing to take to help the project.  It is expected from
+all contributors, and even more so from committers, to help build
+consensus and make decisions based on consensus.  To learn what
+consensus decision making means and understand its finer details, you
+are encouraged to read
+@url{https://www.seedsforchange.org.uk/consensus}.
 
 The following sections explain how to get commit access, how to be ready
 to push commits, and the policies and community expectations for commits

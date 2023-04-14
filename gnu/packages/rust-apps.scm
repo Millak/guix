@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
@@ -1075,6 +1075,19 @@ rebase.")
               (base32
                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
 
+(define-public rust-cbindgen-0.20
+  (package
+    (inherit rust-cbindgen-0.24)
+    (name "rust-cbindgen")
+    (version "0.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cbindgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1p67vvjkxh07yfizfkvm6bjlv2bywrnl57hshcsz9h2x2qxrgqsi"))))))
+
 (define-public rust-cbindgen-0.19
   (package
     (inherit rust-cbindgen)
@@ -1275,41 +1288,6 @@ rebase.")
 are parsed concurrently using a thread pool to utilize all cpu cores.  A goal
 of the project is to be runnable on untrusted networks without crashing.")
     (license license:gpl3)))
-
-(define-public spotify-tui-0.25
-  (package
-    (name "spotify-tui")
-    (version "0.25.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "spotify-tui" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "08bpihkdv3rmcksnxp4cz04kawjs6spmwa3wr2k27b30x3q9cd4r"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:cargo-inputs
-        (("rust-anyhow" ,rust-anyhow-1)
-         ("rust-arboard" ,rust-arboard-1)
-         ("rust-backtrace" ,rust-backtrace-0.3)
-         ("rust-clap" ,rust-clap-2)
-         ("rust-crossterm" ,rust-crossterm-0.20)
-         ("rust-dirs" ,rust-dirs-3)
-         ("rust-rand" ,rust-rand-0.8)
-         ("rust-rspotify" ,rust-rspotify-0.10)
-         ("rust-serde" ,rust-serde-1)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-         ("rust-tokio" ,rust-tokio-0.2)
-         ("rust-tui" ,rust-tui-0.16)
-         ("rust-unicode-width" ,rust-unicode-width-0.1))))
-    (native-inputs (list pkg-config))
-    (inputs (list openssl))
-    (home-page "https://github.com/Rigellute/spotify-tui")
-    (synopsis "Terminal user interface for Spotify")
-    (description "This package provides a terminal user interface for Spotify")
-    (license (list license:expat license:asl2.0))))
 
 (define-public tectonic
   (package
@@ -1858,10 +1836,11 @@ language.  It is a part of a larger rls-2.0 effort to create excellent IDE
 support for Rust.")
     (license (list license:expat license:asl2.0))))
 
+;;; Note: keep in sync with our current Rust/Cargo version.
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.8.1+cargo-0.53")
+    (version "0.9.8+cargo-0.60")
     (source
       (origin
         (method url-fetch)
@@ -1870,12 +1849,12 @@ support for Rust.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0fwdxhdj2963xr6xfqr56i7hikhsdv562vgxq2dj3h2mi3dil1k6"))))
+          "1zdzs3drjr9p6chg32inyi05rfv1c12nkk4bi7qpha12m6rsn26d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cbindgen" ,rust-cbindgen-0.19)
-        ("rust-cargo" ,rust-cargo-0.53) ;
+       (("rust-cbindgen" ,rust-cbindgen-0.20)
+        ("rust-cargo" ,rust-cargo-0.60)
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
         ("rust-structopt" ,rust-structopt-0.3)

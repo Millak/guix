@@ -17,6 +17,8 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1758,7 +1760,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.251")
+    (version "0.252")
     (source
      (origin
        (method git-fetch)
@@ -1767,7 +1769,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "102p6kz4ph9m0sxsyavqhjzg00gmnq8m5mnd5sf14c61d2jc0vzk"))
+        (base32 "07qhcm1v47sy2wj30nx3cbhvcbgki0cl83gabr0miiw60fhgyn6j"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -2538,7 +2540,7 @@ on a Commodore C64, C128 etc.")
     (license license:zlib)))
 
 (define-public uxn
-  (let ((commit "1b2049e238df96f32335edf1c6db35bd09f8b42d")
+  (let ((commit "83237c9641490d303a42c81ca247314d11055dea")
         (revision "1"))
     (package
       (name "uxn")
@@ -2551,7 +2553,7 @@ on a Commodore C64, C128 etc.")
                 (file-name (string-append name "-" version))
                 (sha256
                  (base32
-                  "0d3hy1db1mfk2l7q7wdxvp1z0vkmyyb9pdp81d9zm58ylpxaq2cp"))))
+                  "159qfz66k1jc43jhyl8by3yiphsr2dyiyclw1x7mkr3zciwc29z3"))))
       (build-system gnu-build-system)
       (arguments
        (list #:tests? #f ;no tests
@@ -2579,4 +2581,43 @@ on a Commodore C64, C128 etc.")
       (description
        "This package provides an assembler and emulator for the Uxn
 stack-machine, written in ANSI C.  Graphical output is implemented using SDL2.")
+      (license license:expat))))
+
+(define-public emu8051
+  (let ((commit "5dc681275151c4a5d7b85ec9ff4ceb1b25abd5a8")
+        (revision "1"))
+    (package
+      (name "emu8051")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jarikomppa/emu8051")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xxmkcwvd5fjnhwbricafg4xvxvr8dxhfanyfp4rbksw37dgk2fx"))
+                (modules '((guix build utils)))
+                (snippet #~(begin
+                             ;; Replace LDFLAGS -lcurses to -lncurses
+                             (substitute* "Makefile"
+                               (("-lcurses") "-lncurses"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;No test suite
+             #:make-flags #~(list (string-append "CC="
+                                                 #$(cc-for-target)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)    ;No ./configure script
+                 (replace 'install
+                   ;; No installation procedure
+                   (lambda _
+                     (install-file "emu"
+                                   (string-append #$output "/bin")))))))
+      (inputs (list ncurses))
+      (home-page "https://github.com/jarikomppa/emu8051")
+      (synopsis "8051/8052 emulator with curses-based UI")
+      (description "emu8051 is a simulator of the 8051/8052 microcontrollers.")
       (license license:expat))))

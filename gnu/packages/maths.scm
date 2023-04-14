@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,7 +97,6 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
@@ -105,6 +105,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -127,12 +128,12 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages less)
-  #:use-module (gnu packages libffi)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -176,6 +177,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
@@ -458,6 +460,101 @@ universal constants, atomic numbers, and constants related to
 semiconductors.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/dionysus/")))
+
+(define-public dozenal
+  ;; There is no recent release, so use the latest commit.
+  (let ((revision "1")
+        (commit "328bc03ad544179f2cccda36763358c4216f188e"))
+    (package
+      (name "dozenal")
+      (version (git-version "12010904-3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/dgoodmaniii/dozenal")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0knwfwjqdv854l5ny7csdpvp7r0md6a2k43a1l2lkyw9k3cglpph"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; Some test scripts are included, but no makefile-driven
+        ;; tests, and they are all quite manual to run and check.
+        #:tests? #f
+        ;; Running with `make -j' causes the build to fail.  This is likely
+        ;; because this project uses the "recursive make" structure, where
+        ;; each subdirectory contains its own make file, which is called by
+        ;; the top-level makefile.
+        #:parallel-build? #f
+        #:make-flags
+        #~(list (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "dozenal")))
+            (add-after 'chdir 'patch-lua-references
+              (lambda _
+                (let ((lua-name (strip-store-file-name
+                                 #$(this-package-input "lua"))))
+                  (substitute* '("dozcal/Makefile"
+                                 "dozlua/Makefile")
+                    (("lua52")
+                     (string-take lua-name
+                                  (string-rindex lua-name #\.)))))))
+            (delete 'configure)
+            (add-before 'install 'make-bin-dir
+              (lambda _
+                (mkdir-p (string-append #$output "/bin"))))
+            (add-after 'install 'install-html-docs
+              (lambda _
+                (invoke "make"
+                        (string-append "prefix=" #$output)
+                        "installhtml")))
+            (add-after 'install-html-docs 'split-outputs
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (for-each
+                 (lambda (prog)
+                   (let ((orig (string-append #$output "/bin/" prog))
+                         (dst (string-append #$output:gui "/bin/" prog))
+                         (man-orig (string-append #$output
+                                                  "/share/man/man1/"
+                                                  prog ".1"))
+                         (man-dst (string-append #$output:gui
+                                                 "/share/man/man1/"
+                                                 prog ".1")))
+                     (mkdir-p (dirname dst))
+                     (rename-file orig dst)
+                     (mkdir-p (dirname man-dst))
+                     (rename-file man-orig man-dst)))
+                 '("xdozdc" "gdozdc"))
+                (wrap-program (string-append #$output:gui "/bin/" "gdozdc")
+                  `("PATH" = (,(string-append #$output "/bin")))
+                  `("PERL5LIB" = (,(getenv "PERL5LIB")))))))))
+      (outputs '("out" "gui"))
+      (native-inputs (list groff pkg-config))
+      (inputs (list bash-minimal        ;for wrap-program
+                    libhdate
+                    lua
+                    ncurses
+                    perl
+                    perl-tk
+                    perl-par
+                    xforms))
+      (synopsis "Suite of dozenal programs")
+      (description
+       "The dozenal suite is a set of programs designed to assist with working
+in the dozenal (also called \"duodecimal\" or \"base twelve\") system.  It
+includes number converters (dozenal-to-decimal and decimal-to-dozenal), an RPN
+calculator, a graphical calculator, a metric system converter (works with
+imperial, U.S. customary, SI metric, and the dozenal TGM), a pretty-printer
+for dozenal numbers, a date-and-time program, and a dozenal calendar programs,
+complete with events and to-dos.")
+      (home-page "https://codeberg.org/dgoodmaniii/dozenal")
+      (license license:gpl3+))))
 
 (define-public dsfmt
   (package
@@ -1136,14 +1233,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.4")
+    (version "5.4.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "00h97y8njhvfjbdvc0njw0znxbrlfynd1iazn8w3anvzhsvh08rp"))))
+        (base32 "06bly8cpqjdf744jg7yrgba9rdcm3gl4zf63y3c69v80ha8jgz02"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config texlive-tiny))
@@ -1290,7 +1387,7 @@ incompatible with HDF5.")
 (define-public hdf5-1.8
   (package
     (name "hdf5")
-    (version "1.8.22")
+    (version "1.8.23")
     (source
      (origin
       (method url-fetch)
@@ -1305,7 +1402,7 @@ incompatible with HDF5.")
                                    (string-append major minor)))
                                 "/src/hdf5-" version ".tar.bz2")))
       (sha256
-       (base32 "194ki2s5jrgl4czkvy5nc9nwjyapah0fj72l0gb0aysplp38i6v8"))
+       (base32 "0km65mr6dgk4ia2dqr1b9dzw9qg15j5z35ymbys9cnny51z1zb39"))
       (patches (search-patches "hdf5-config-date.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1345,8 +1442,7 @@ incompatible with HDF5.")
              (substitute* "hl/fortran/src/Makefile.in"
                (("libhdf5hl_fortran_la_LDFLAGS =")
                 (string-append "libhdf5hl_fortran_la_LDFLAGS = -Wl,-rpath="
-                               (assoc-ref outputs "fortran") "/lib")))
-             #t))
+                               (assoc-ref outputs "fortran") "/lib")))))
          (add-after 'configure 'patch-settings
            (lambda _
              ;; libhdf5.settings contains the full path of the
@@ -1359,16 +1455,14 @@ incompatible with HDF5.")
               ;; Don't record the build-time kernel version to make the
               ;; settings file reproducible.
               (("Uname information:.*")
-               "Uname information: Linux\n"))
-             #t))
+               "Uname information: Linux\n"))))
          (add-after 'install 'patch-references
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin"))
                    (zlib (assoc-ref inputs "zlib")))
                (substitute* (find-files bin "h5p?cc")
                  (("-lz" lib)
-                  (string-append "-L" zlib "/lib " lib)))
-               #t)))
+                  (string-append "-L" zlib "/lib " lib))))))
          (add-after 'install 'split
             (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; Move all fortran-related files
@@ -1403,8 +1497,7 @@ incompatible with HDF5.")
                             (rename-file file
                                          (string-append fex "/" (basename file))))
                           (find-files ex ".*"))
-                (delete-file-recursively ex))
-              #t)))))
+                (delete-file-recursively ex)))))))
     (home-page "https://www.hdfgroup.org")
     (synopsis "Management suite for extremely large and complex data")
     (description "HDF5 is a suite that makes possible the management of
@@ -1415,7 +1508,7 @@ extremely large and complex data collections.")
 (define-public hdf5-1.10
   (package
     (inherit hdf5-1.8)
-    (version "1.10.7")
+    (version "1.10.9")
     (source
      (origin
        (method url-fetch)
@@ -1429,13 +1522,13 @@ extremely large and complex data collections.")
                                         (take (string-split version #\.) 2))
                                  "/src/hdf5-" version ".tar.bz2")))
        (sha256
-        (base32 "0pm5xxry55i0h7wmvc7svzdaa90rnk7h78rrjmnlkz2ygsn8y082"))
+        (base32 "14gih7kmjx4h3lc7pg4fwcl28hf1qqkf2x7rljpxqvzkjrqbxi00"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
 (define-public hdf5-1.12
   (package
     (inherit hdf5-1.8)
-    (version "1.12.1")
+    (version "1.12.2")
     (source
      (origin
        (method url-fetch)
@@ -1449,7 +1542,27 @@ extremely large and complex data collections.")
                                         (take (string-split version #\.) 2))
                                  "/src/hdf5-" version ".tar.bz2")))
        (sha256
-        (base32 "074g3z504xf77ff38igs30i1aqxpm508p7yw78ykva7dncrgbyda"))
+        (base32 "1zlawdzb0gsvcxif14fwr5ap2gk4b6j02wirr2hcx8hkcbivp20s"))
+       (patches (search-patches "hdf5-config-date.patch"))))))
+
+(define-public hdf5-1.14
+  (package
+    (inherit hdf5-1.8)
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://support.hdfgroup.org/ftp/HDF5/releases/"
+                                 "hdf5-" (version-major+minor version)
+                                 "/hdf5-" version "/src/hdf5-"
+                                 version ".tar.bz2")
+                  (string-append "https://support.hdfgroup.org/ftp/HDF5/"
+                                 "current"
+                                 (apply string-append
+                                        (take (string-split version #\.) 2))
+                                 "/src/hdf5-" version ".tar.bz2")))
+       (sha256
+        (base32 "181bdh8hp7v9xqwcby3lknr92lxlicc2hqscba3f5nhf8lrr9rz4"))
        (patches (search-patches "hdf5-config-date.patch"))))))
 
 (define-public hdf5
@@ -2545,267 +2658,6 @@ Computational Engineering and Sciences} at The University of Texas at Austin.
 includes a complete LAPACK implementation.")
     (license license:bsd-3)))
 
-(define-public libpotassco
-  ;; No public release, update together with clasp
-  (let ((revision "1")
-        (commit "2f9fb7ca2c202f1b47643aa414054f2f4f9c1821"))
-    (package
-      (name "libpotassco")
-      (version (git-version "0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/potassco/libpotassco")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1c32f9gqclf7qx07lpx8wd720vfhkjqhzc6nyy8mjmgwpmb3iyyn"))))
-      (arguments
-       `(#:configure-flags '("-DLIB_POTASSCO_BUILD_TESTS=on"
-                             "-DLIB_POTASSCO_INSTALL_LIB=on"
-                             "-DBUILD_SHARED_LIBS=on")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-cmake
-             (lambda _
-               (substitute* "CMakeLists.txt"
-                 ;; clasp expects lowercase potassco and include directory is
-                 ;; lowercase as well, so let's use that
-                 (("\"cmake/Potassco\"") "\"cmake/potassco\"")
-                 (("PotasscoConfig\\.cmake") "potassco-config.cmake")
-                 (("PotasscoConfigVersion\\.cmake")
-                  "potassco-config-version.cmake"))
-               (rename-file "cmake/PotasscoConfig.cmake.in"
-                            "cmake/potassco-config.cmake.in"))))))
-      (build-system cmake-build-system)
-      (home-page "https://potassco.org/")
-      (synopsis "Utility library for Potassco's projects")
-      (description "@code{libpotassco} is a utility library providing functions
-and datatypes for
-@itemize
-@item parsing, writing, and converting logic programs in aspif and smodels
-format,
-@item passing information between a grounder and a solver,
-@item and defining and parsing command-line options and for creating
-command-line applications.
-@end itemize
-Furthermore, it comes with the tool @command{lpconvert} that converts either
-between aspif and smodels format or to a human-readable text format.")
-      (license license:expat))))
-
-(define-public clasp
-  (package
-    (name "clasp")
-    (version "3.3.9")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/potassco/clasp")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "163ps9zq7xppqy9hj5qnw6z5lcjnm4xf5fwjsavpia5ynm3hngcw"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags '("-DCLASP_BUILD_TESTS=on"
-                           "-DCLASP_INSTALL_LIB=on"
-                           "-DCLASP_USE_LOCAL_LIB_POTASSCO=off"
-                           "-DBUILD_SHARED_LIBS=on")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-cmake
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               ;; Use lowercase to be consistent with libpotassco
-               (("\"cmake/Clasp\"") "\"cmake/clasp\"")
-               (("ClaspConfig\\.cmake") "clasp-config.cmake")
-               (("ClaspConfigVersion\\.cmake")
-                "clasp-config-version.cmake"))
-             (substitute* "cmake/ClaspConfig.cmake.in"
-               (("find_package\\(Potassco") "find_package(potassco"))
-             (rename-file "cmake/ClaspConfig.cmake.in"
-                          "cmake/clasp-config.cmake.in"))))))
-    (inputs
-     (list libpotassco))
-    (home-page "https://potassco.org/")
-    (synopsis "Answer set solver")
-    (description "clasp is an answer set solver for (extended) normal and
-disjunctive logic programs.  The primary algorithm of clasp relies on
-conflict-driven nogood learning, a technique that proved very successful for
-satisfiability checking (SAT).")
-    (license license:expat)))
-
-(define-public clingo
-  (package
-    (name "clingo")
-    (version "5.6.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/potassco/clingo")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (delete-file-recursively "clasp")
-                   ;; TODO: Unvendor other third-party stuff
-                   (delete-file-recursively "third_party/catch")))
-              (sha256
-               (base32
-                "19s59ndcm2yj0kxlikfxnx2bmp6b7n31wq1zvwc7hyk37rqarwys"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:configure-flags #~`("-DCLINGO_BUILD_TESTS=on"
-                            "-DCLINGO_INSTALL_LIB=on"
-                            "-DCLINGO_BUILD_STATIC=off"
-                            "-DCLINGO_BUILD_SHARED=on"
-                            "-DCLINGO_USE_LOCAL_CLASP=off"
-                            "-DCLINGO_USE_LOCAL_CATCH=off")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-cmake
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("add_subdirectory\\(clasp\\)")
-                 "find_package(clasp REQUIRED)"))
-              (substitute* "libclingo/CMakeLists.txt"
-                (("\"cmake/Clingo\"") "\"cmake/clingo\"")
-                (("ClingoConfig\\.cmake") "clingo-config.cmake")
-                (("ClingoConfigVersion\\.cmake")
-                 "clingo-config-version.cmake"))
-              (substitute* "cmake/ClingoConfig.cmake.in"
-                (("find_package\\(Clasp") "find_package(clasp"))
-              (rename-file "cmake/ClingoConfig.cmake.in"
-                           "cmake/clingo-config.cmake.in")))
-          (add-after 'unpack 'skip-failing-tests
-            (lambda _
-              (with-directory-excursion "libclingo/tests"
-                (substitute* "CMakeLists.txt"
-                  (("COMMAND test_clingo" all)
-                   (string-append all
-                                  " -f "
-                                  "\"${CMAKE_CURRENT_SOURCE_DIR}/good.txt\"")))
-                (call-with-output-file "good.txt"
-                  (lambda (port)
-                    (for-each (lambda (test) (format port "~s~%" test))
-                              '("parse-ast-v2" "add-ast-v2" "build-ast-v2"
-                                "unpool-ast-v2" "parse_term"
-                                "propagator" "propgator-sequence-mining"
-                                "symbol" "visitor"))))))))))
-    (inputs (list catch2-3.1 clasp libpotassco))
-    (native-inputs (list pkg-config))
-    (home-page "https://potassco.org/")
-    (synopsis "Grounder and solver for logic programs")
-    (description "Clingo computes answer sets for a given logic program.")
-    (license license:expat)))
-
-(define-public python-clingo
-  (package
-    (inherit clingo)
-    (name "python-clingo")
-    (version (package-version clingo)) ; for #$version in arguments
-    (arguments
-     (substitute-keyword-arguments (package-arguments clingo)
-       ((#:configure-flags flags #~'())
-        #~(cons* "-DCLINGO_BUILD_WITH_PYTHON=pip"
-                 "-DCLINGO_USE_LIB=yes"
-                 #$flags))
-       ((#:imported-modules _ '())
-        `(,@%cmake-build-system-modules
-          (guix build python-build-system)))
-       ((#:modules _ '())
-        '((guix build cmake-build-system)
-          ((guix build python-build-system) #:prefix python:)
-          (guix build utils)))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'fix-failing-tests
-              (lambda _
-                (substitute* "libpyclingo/clingo/tests/test_conf.py"
-                  (("ctl\\.solve\\(on_statistics=on_statistics\\)" all)
-                   (string-append
-                    all
-                    "; self.skipTest(\"You shall not fail.\")")))))
-            (add-after 'install 'install-distinfo
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (with-directory-excursion (python:site-packages inputs outputs)
-                   (let ((dir (string-append "clingo-" #$version ".dist-info")))
-                     (mkdir-p dir)
-                     (call-with-output-file (string-append dir "/METADATA")
-                       (lambda (port)
-                         (format port "Metadata-Version: 1.1~%")
-                         (format port "Name: clingo~%")
-                         (format port "Version: ~a~%" #$version)))))))))))
-    (inputs (list clingo python-wrapper))
-    (propagated-inputs (list python-cffi))
-    (native-inputs (modify-inputs (package-native-inputs clingo)
-                     (prepend python-scikit-build)))
-    (synopsis "Python bindings for clingo")
-    (description "This package provides Python bindings to the clingo package,
-making it so that you can write @acronym{ASPs, Answer Set Programs} through
-Python code.")))
-
-(define-public python-clorm
-  (package
-   (name "python-clorm")
-   (version "1.4.1")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url "https://github.com/potassco/clorm")
-                  (commit (string-append "v" version))))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "0jx99y71mrgdicn1da5dwz5nzgvvpabrikff783sg4shbv2cf0b5"))))
-   (build-system pyproject-build-system)
-   (arguments
-    (list #:phases
-          #~(modify-phases %standard-phases
-              (add-before 'check 'fix-breaking-tests
-                (lambda _
-                  ;; noclingo tests rely on this being set
-                  (setenv "CLORM_NOCLINGO" "1")
-                  (delete-file "tests/test_mypy_query.py")
-                  (substitute* "tests/test_clingo.py"
-                    (("self\\.assertTrue\\(os_called\\)" all)
-                     (string-append "# " all))))))))
-   (propagated-inputs (list python-clingo))
-   (native-inputs (list python-typing-extensions))
-   (home-page "https://potassco.org")
-   (synopsis "Object relational mapping to clingo")
-   (description "@acronym{Clorm, Clingo ORM} provides an @acronym{ORM,
-Object Relational Mapping} interface to the @acronym{ASP, answer set
-programming} solver clingo.  Its goal is to make integration of clingo
-into Python programs easier.")
-   (license license:expat)))
-
-(define-public python-telingo
-  (package
-    (name "python-telingo")
-    (version "2.1.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/potassco/telingo")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (patches (search-patches "python-telingo-fix-comparison.patch"))
-              (sha256
-               (base32
-                "0g3khxfdzc2hc7dkiyyqhb399h6h21m5wkp6wy8w71n0m32fiy53"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-clingo))
-    (home-page "https://potassco.org/")
-    (synopsis "Solve dynamic temporal logic programs")
-    (description "This package provides a system to solve dynamic temporal
-logic programs based on clingo.")
-    (license license:expat)))
-
 (define-public scasp
   (let ((commit "89a427aa04ec6346425a40111c99b310901ffe51")
         (revision "1"))
@@ -2942,47 +2794,47 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "7.3.0")
+    (version "8.1.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/octave/octave-"
-                          version ".tar.xz"))
-      (sha256
-       (base32
-        "1wap9p9imxxqpnm27rxcvpjahk1wg440lzlygjb6iyncxdmfw255"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/octave/octave-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "00lis18dsb13v9nvz0z4cs7v4y634jc0vb04lxfw9pshwriikglv"))))
     (build-system gnu-build-system)
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("arpack" ,arpack-ng)
-       ("bdb" ,bdb)
-       ("curl" ,curl)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("fltk" ,fltk)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("gl2ps" ,gl2ps)
-       ("glpk" ,glpk)
-       ("glu" ,glu)
-       ("graphicsmagick" ,graphicsmagick)
+     (list alsa-lib
+           arpack-ng
+           bdb
+           curl
+           fftw
+           fftwf
+           fltk
+           fontconfig
+           freetype
+           gl2ps
+           glpk
+           glu
+           graphicsmagick
 
-       ;; TODO: libjpeg-turbo is indirectly required through libtiff.  In
-       ;; the next rebuild cycle, add an absolute reference for -ljpeg in
-       ;; libtiff.la instead of having to provide it here.
-       ("libjpeg" ,libjpeg-turbo)
+           ;; TODO: libjpeg-turbo is indirectly required through libtiff.  In
+           ;; the next rebuild cycle, add an absolute reference for -ljpeg in
+           ;; libtiff.la instead of having to provide it here.
+           libjpeg-turbo
 
-       ("hdf5" ,hdf5)
-       ("lapack" ,lapack)
-       ("libsndfile" ,libsndfile)
-       ("libxft" ,libxft)
-       ("mesa" ,mesa)
-       ("pcre" ,pcre)
-       ("portaudio" ,portaudio)
-       ("qhull" ,qhull)
-       ("readline" ,readline)
-       ("suitesparse" ,suitesparse)
-       ("zlib" ,zlib)))
+           hdf5
+           lapack
+           libsndfile
+           libxft
+           mesa
+           pcre
+           portaudio
+           qhull
+           readline
+           suitesparse
+           zlib))
     (native-inputs
      (list gfortran
            pkg-config
@@ -3022,8 +2874,7 @@ can solve two kinds of problems:
              (substitute* "libinterp/corefcn/help.h"
                (("\"makeinfo\"")
                 (string-append
-                 "\"" (assoc-ref inputs "texinfo") "/bin/makeinfo\"")))
-             #t)))))
+                 "\"" (assoc-ref inputs "texinfo") "/bin/makeinfo\""))))))))
     (home-page "https://www.gnu.org/software/octave/")
     (synopsis "High-level language for numerical computation (no GUI)")
     (description "GNU Octave is a high-level interpreted language that is
@@ -4942,10 +4793,6 @@ it also includes a BLAS compatibility layer which gives application developers
 access to BLIS implementations via traditional BLAS routine calls.")
     (license license:bsd-3)))
 
-(define-public blis-sandybridge (deprecated-package "blis-sandybridge" blis))
-(define-public blis-haswell (deprecated-package "blis-haswell" blis))
-(define-public blis-knl (deprecated-package "blis-knl" blis))
-
 (define ignorance blis)
 
 (define-public openlibm
@@ -5104,6 +4951,95 @@ packages.")
     ;; GPLv2+:
     ;;  GPUQREngine, RBio, SuiteSparse_GPURuntime, SuiteSparseQR, UMFPACK
     (license (list license:gpl2+ license:lgpl2.1+))))
+
+
+;; This outdated version is used to build the scilab package.
+(define-public suitesparse-3
+  (package
+    (inherit suitesparse)
+    (name "suitesparse")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DrTimothyAldenDavis/SuiteSparse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wxk755nzps0c9la24zqknqkzjp6rcj5q9jhd973mff1pqja3clz"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f  ;no "check" target
+       #:make-flags
+       ,#~(list
+           (string-append "CC=gcc")
+           "AR=gcc -shared -o"
+           "RANLIB=touch"
+           "CFLAGS=-O3 -fPIC -I../Include"
+           "TBB=-ltbb"
+
+           ;; Disable metis@4 (nonfree) support.
+           "CHOLMOD_CONFIG=-DNPARTITION"
+           "METIS="
+           "METIS_PATH="
+
+           ;; The default is to link against netlib lapack.  Use OpenBLAS
+           ;; instead.
+           "BLAS=-lopenblas" "LAPACK=-lopenblas"
+
+           (string-append "INSTALL_LIB="
+                          (assoc-ref %outputs "out") "/lib")
+           (string-append "INSTALL_INCLUDE="
+                          (assoc-ref %outputs "out") "/include")
+           "library")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'correct-build-configuration
+           (lambda _
+             ;; Invert build order: CHOLMOD before KLU.
+             (substitute* "Makefile"
+               (("\t\\( cd CHOLMOD ; \\$\\(MAKE\\) \\)\n$")
+                "")
+               (("\\( cd KLU ; \\$\\(MAKE\\) \\)")
+                (string-append "( cd CHOLMOD ; $(MAKE) )\n\t"
+                               "( cd KLU ; $(MAKE) )")))
+             ;; Build shared libraries.
+             (substitute* (find-files "." "akefile$")
+               (("lib([a-z]+)\\.a" all libname)
+                (string-append "lib" libname ".so")))
+             ;; Delete broken KLU Demo step.
+             (substitute* "KLU/Makefile"
+               (("\\( cd Demo ; \\$\\(MAKE\\) \\)")
+                ""))))
+         (replace 'install
+           (lambda _
+             ;; Install libraries.
+             (for-each
+              (lambda (x)
+                (install-file
+                 x
+                 (string-append (assoc-ref %outputs "out") "/lib")))
+              (find-files "." "\\.so$"))
+             ;; Install header files.
+             (for-each
+              (lambda (x)
+                (install-file
+                 x
+                 (string-append (assoc-ref %outputs "out") "/include")))
+              (find-files "." "\\.h$"))))
+         ,@(if (target-riscv64?)
+               ;; GraphBLAS FTBFS on riscv64-linux
+               `((add-after 'unpack 'skip-graphblas
+                   (lambda _
+                     (substitute* "Makefile"
+                       ((".*cd GraphBLAS.*") "")
+                       (("metisinstall gbinstall moninstall")
+                        "moninstall")))))
+               '())
+         (delete 'configure))))         ;no configure script
+    (inputs
+     (list tbb openblas gmp mpfr))))
 
 (define-public atlas
   (package
@@ -5966,6 +5902,14 @@ structured and unstructured grid problems.")))
         (base32
          "0vr8c1mz1k6mz0sgh6n3scl5c3a71iqmy5fnydrgq504icj4vym4"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'install-matioConfig.h
+            (lambda _
+              (install-file "src/matioConfig.h"
+                            (string-append #$output "/include")))))))
     (inputs
      (list zlib hdf5-1.8))
     (home-page "http://matio.sourceforge.net/")
@@ -8463,3 +8407,109 @@ primal-dual interior-point method are made available.  Interfaces are
 provided for applications written in C++ and Python.  Parallel
 computation is supported via MPI.")
     (license license:bsd-2))))
+
+(define-public scilab
+  (package
+    (name "scilab")
+    (version "5.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://oos.eu-west-2.outscale.com/scilab-releases/"
+                       version "/scilab-" version "-src.tar.gz"))
+       (sha256
+        (base32 "1hx57aji5d78brwqcf8a34i1hasm3h4nw46xjg7cgxj09s8yz5kq"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config gfortran))
+    (inputs (list libxml2
+                  `(,pcre "bin")
+                  `(,pcre "out")
+                  readline
+                  hdf5-1.8
+                  curl
+                  openblas
+                  lapack
+                  arpack-ng
+                  fftw
+                  gettext-minimal
+                  suitesparse-3
+                  tcl
+                  tk
+                  libx11
+                  matio))
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       ,#~(list
+           "--enable-relocatable"
+           "--disable-static-system-lib"
+           ;; Disable all java code.
+           "--without-gui"
+           "--without-javasci"
+           "--disable-build-help"
+           "--with-external-scirenderer"
+           ;; Tcl and Tk library locations.
+           (string-append "--with-tcl-include="
+                          (string-drop-right
+                           (search-input-file %build-inputs "include/tcl.h")
+                           (string-length "/tcl.h")))
+           (string-append "--with-tcl-library="
+                          (string-drop-right
+                           (search-input-directory %build-inputs "lib/tcl8")
+                           (string-length "/tcl8")))
+           (string-append "--with-tk-include="
+                          (string-drop-right
+                           (search-input-file %build-inputs "include/tk.h")
+                           (string-length "/tk.h")))
+           (string-append "--with-tk-library="
+                          (string-drop-right
+                           (search-input-directory %build-inputs "lib/tk8.6")
+                           (string-length "/tk8.6")))
+           ;; There are some 2018-fortran errors that are ignored
+           ;; with this fortran compiler flag.
+           "FFLAGS=-fallow-argument-mismatch")
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-before 'build 'pre-build
+              (lambda _
+                ;; Fix scilab script.
+                (substitute* "bin/scilab"
+                  (("\\/bin\\/ls")
+                   (which "ls")))
+                ;; Fix core.start.
+                (substitute* "modules/core/etc/core.start"
+                  (("'SCI/modules")
+                   "SCI+'/modules"))
+                ;; Fix fortran compilation error.
+                (substitute*
+                    "modules/differential_equations/src/fortran/twodq.f"
+                  (("node\\(10\\),node1\\(10\\),node2\\(10\\),coef")
+                   "node(9),node1(9),node2(9),coef"))
+                ;; Fix C compilation errors.
+                ;; remove &
+                (substitute* "modules/hdf5/src/c/h5_readDataFromFile_v1.c"
+                  (("(H5Rdereference\\(_iDatasetId, H5R_OBJECT, )&(.*)\\);$"
+                    all common ref)
+                   (string-append common ref)))
+                ;; fix multiple definitions
+                (substitute* "modules/tclsci/src/c/TCL_Command.h"
+                  (("^__thread")
+                   "extern __thread"))
+                (substitute* "modules/tclsci/src/c/InitTclTk.c"
+                  (("BOOL TK_Started = FALSE;" all)
+                   (string-append all "\n"
+                                  "__threadId TclThread;" "\n"
+                                  "__threadSignal InterpReady;" "\n"
+                                  "__threadSignalLock InterpReadyLock;"
+                                  "\n")))
+                ;; Set SCIHOME to /tmp before macros compilation.
+                (setenv "SCIHOME" "/tmp"))))))
+    (home-page "https://scilab.org")
+    (synopsis "Software for engineers and scientists")
+    (description "This package provides the non-graphical version of the Scilab
+software for engineers and scientists. Scilab is used for signal processing,
+statistical analysis, image enhancement, fluid dynamics simulations, numerical
+optimization, and modeling, simulation of explicit and implicit dynamical
+systems and symbolic manipulations.")
+    (license license:cecill)))                    ;CeCILL v2.1

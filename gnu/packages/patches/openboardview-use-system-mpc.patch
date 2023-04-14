@@ -1,0 +1,42 @@
+Upstream status: https://github.com/OpenBoardView/OpenBoardView/pull/281
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 452dfa9..e30c3cf 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -206,13 +206,15 @@ endif()
+ add_definitions(-DSTBI_FAILURE_USERMSG)
+ 
+ ## mpc - Micro Parser Combinators ##
+-execute_process(
+-	COMMAND git submodule update --init src/mpc
+-	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+-)
+-
+-add_library(mpc STATIC "mpc/mpc.c")
+-
++pkg_check_modules(MPC QUIET mpc)
++if(NOT MPC_FOUND)
++	execute_process(
++		COMMAND git submodule update --init src/mpc
++		WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
++    	)
++        add_library(mpc STATIC "mpc/mpc.c")
++        include_directories(${CMAKE_CURRENT_SOURCE_DIR}/mpc)
++endif()
+ 
+ ## OpenBoardView ##
+ add_subdirectory(openboardview)
+diff --git a/src/openboardview/FileFormats/GenCADFile.h b/src/openboardview/FileFormats/GenCADFile.h
+index 1ccf8df..c57f7ff 100644
+--- a/src/openboardview/FileFormats/GenCADFile.h
++++ b/src/openboardview/FileFormats/GenCADFile.h
+@@ -5,7 +5,7 @@
+ 
+ #include "build-generated/GenCADFileGrammar.h"
+ 
+-#include "mpc/mpc.h"
++#include "mpc.h"
+ 
+ #include <map>
+ #include <string>

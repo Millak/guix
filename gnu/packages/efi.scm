@@ -96,10 +96,6 @@ environment presented by Intel's EFI.")
 information.")
       (license license:bsd-2))))
 
-(define-public efi_analyzer
-  ;; For a short while the package name contained an underscore.
-  (deprecated-package "efi_analyzer" efi-analyzer))
-
 (define-public sbsigntools
   (package
     (name "sbsigntools")

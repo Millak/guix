@@ -622,7 +622,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.12")
+    (version "4.2.14")
     (source
      (origin
        (method git-fetch)
@@ -631,7 +631,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bfnfpdyi3q5zq0zj07dq82aj3cihnr7j82gy4ch97182lsl6nms"))))
+        (base32 "086rqqxxh1dmw1qiwmry6sraai3xg44sb85wdw8zkj30si9780kk"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -652,11 +652,6 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
               (substitute* "electroncash/secp256k1.py"
                 (("libsecp256k1.so.0")
                  (search-input-file inputs "lib/libsecp256k1.so.0")))))
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "contrib/requirements/requirements.txt"
-                (("qdarkstyle==2\\.6\\.8")
-                 "qdarkstyle"))))
           (add-after 'install 'wrap-qt
             (lambda* (#:key outputs inputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
@@ -703,7 +698,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.2.0")
+    (version "0.18.2.2")
     (source
      (origin
        (method git-fetch)
@@ -721,7 +716,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "0k41mkz0lp8qavgy3d9813pkmyy8rnhd0fl7wvzdhr7fznqn9sca"))))
+        (base32 "0hi6grf2xnnra60g3dzspahi0rwyiad6hc07n3pq3aknmz5xx8d4"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -808,7 +803,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.2.0")
+    (version "0.18.2.2")
     (source
      (origin
        (method git-fetch)
@@ -824,7 +819,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "0ka20p4f6fbhkhrm1jbssnjh5sjl419fy418jl8hcg34jriywvck"))))
+        (base32 "07gfvrxm3n0844ximm4rd3f3n0m125shpawdzg8blfjjbfr1k1ij"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -1807,7 +1802,12 @@ following three utilities are included with the library:
              ;; exist.
              (substitute* "src/Makefile.test.include"
                (("test/utilprocess_tests.cpp")
-                ""))))
+                ""))
+             ;; Disable PaymentServer failing test because it's using
+             ;; an expired SSL certificate.
+             (substitute* "src/qt/test/test_main.cpp"
+               (("if \\(QTest::qExec\\(&test2\\) != 0\\)")
+                "if (QTest::qExec(&test2) == 0)"))))
          (add-before 'check 'set-home
            (lambda _
              ;; Tests write to $HOME
@@ -2266,7 +2266,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method git-fetch)
@@ -2275,7 +2275,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0fvm864p4pxjsb03g88jkaj3wj94dkxrbwjwa1jk6s11skzn0z68"))
+       (sha256 (base32 "0jwddazvp9rv88dd2b67rn2y23grycnl539abl5ax6b8a89wm7i8"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively

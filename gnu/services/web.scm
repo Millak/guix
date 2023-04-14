@@ -15,6 +15,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Simen Endsjø <simendsjo@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,8 @@
   #:use-module (gnu packages logging)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages rust-apps)
+  #:autoload   (guix i18n) (G_)
+  #:use-module (guix diagnostics)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix modules)
@@ -61,6 +64,7 @@
   #:use-module ((guix packages) #:select (package-version))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:export (httpd-configuration
@@ -96,6 +100,7 @@
             nginx-configuration-nginx
             nginx-configuration-shepherd-requirement
             nginx-configuration-log-directory
+            nginx-configuration-log-level
             nginx-configuration-run-directory
             nginx-configuration-server-blocks
             nginx-configuration-upstream-blocks
@@ -562,6 +567,9 @@
                         (default '()))              ;list of symbols
   (log-directory nginx-configuration-log-directory  ;string
                  (default "/var/log/nginx"))
+  (log-level     nginx-configuration-log-level
+                 (sanitize assert-valid-log-level)
+                 (default 'error))
   (run-directory nginx-configuration-run-directory  ;string
                  (default "/var/run/nginx"))
   (server-blocks nginx-configuration-server-blocks
@@ -583,6 +591,14 @@
                  (default ""))
   (file          nginx-configuration-file         ;#f | string | file-like
                  (default #f)))
+
+(define (assert-valid-log-level level)
+  "Ensure @var{level} is one of @code{'debug}, @code{'info}, @code{'notice},
+@code{'warn}, @code{'error}, @code{'crit}, @code{'alert}, or @code{'emerg}."
+  (unless (memq level '(debug info notice warn error crit alert emerg))
+    (raise
+     (formatted-message (G_ "unknown log level '~a'~%") level)))
+  level)
 
 (define (config-domain-strings names)
  "Return a string denoting the nginx config representation of NAMES, a list
@@ -692,6 +708,7 @@ of index files."
   (match-record config
                 <nginx-configuration>
                 (nginx log-directory run-directory
+                 log-level
                  server-blocks upstream-blocks
                  server-names-hash-bucket-size
                  server-names-hash-bucket-max-size
@@ -704,7 +721,7 @@ of index files."
           (flatten
            "user nginx nginx;\n"
            "pid " run-directory "/pid;\n"
-           "error_log " log-directory "/error.log info;\n"
+           "error_log " log-directory "/error.log " (symbol->string log-level) ";\n"
            (map emit-load-module modules)
            (map emit-global-directive global-directives)
            "http {\n"
@@ -823,7 +840,11 @@ This has the effect of killing old worker processes and starting new ones, using
 the same configuration file.  It is useful for situations where the same nginx
 configuration file can point to different things after a reload, such as
 renewed TLS certificates, or @code{include}d files.")
-                 (procedure (nginx-action "-s" "reload"))))))))))
+                 (procedure (nginx-action "-s" "reload")))
+               (shepherd-action
+                (name 'reopen)
+                (documentation "Re-open log files.")
+                (procedure (nginx-action "-s" "reopen"))))))))))
 
 (define nginx-service-type
   (service-type (name 'nginx)

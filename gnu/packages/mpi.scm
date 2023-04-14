@@ -141,7 +141,7 @@ bind processes, and much more.")
 (define-public hwloc-2
   (package
     (inherit hwloc-1)
-    (version "2.9.0")
+    (version "2.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -149,7 +149,7 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "11v8hnl6fdsdbm3wnz5gg88f2ghixjyl7jlfmywj293ab5iyjw10"))))
+                "17jr14a5ns5rpwvy28fy7xqagbvfprsz7wrsjgh5gx7y40d97i3w"))))
 
     ;; libnuma is no longer needed.
     (inputs (modify-inputs (package-inputs hwloc-1)
@@ -168,16 +168,7 @@ bind processes, and much more.")
            (add-before 'check 'skip-tests-that-require-/sys
              (lambda _
                ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
-               (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")
-
-               ;; 'hwloc_backends' also requires /sys on non-x86 systems, for
-               ;; which hwloc lacks a topology backend not reliant on the
-               ;; operating system; skip it also on these machines.
-               (substitute* "tests/hwloc/hwloc_backends.c"
-                 ,@(if (not (target-x86?))
-                       '((("putenv\\(\\(char \\*\\) \"HWLOC_L" all)
-                          (string-append "exit (77);\n" all)))
-                       '()))))
+               (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")))
            (add-before 'check 'skip-test-that-fails-on-qemu
              (lambda _
                ;; Skip test that fails on emulated hardware due to QEMU bug:
@@ -185,8 +176,6 @@ bind processes, and much more.")
                (substitute* "tests/hwloc/hwloc_get_last_cpu_location.c"
                  (("hwloc_topology_init" all)
                   (string-append "exit (77);\n" all)))))))))))
-
-(define-deprecated hwloc-2.0 hwloc-2)
 
 (define-public hwloc
   ;; The latest stable series of hwloc.

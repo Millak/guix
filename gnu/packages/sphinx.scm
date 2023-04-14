@@ -804,18 +804,27 @@ scientific documentation.")
 (define-public python-breathe
   (package
     (name "python-breathe")
-    (version "4.34.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "breathe" version))
-       (sha256
-        (base32
-         "18fvphs1cb2cns9q82195fx7lmlwfikzwa10cczavpaax2jnh1xc"))))
+    (version "4.35.0")
+    (source (origin
+              (method git-fetch) ;git repo has tests
+              (uri (git-reference
+                    (url "https://github.com/breathe-doc/breathe")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hlcrhr533yjkz9ds83xnmn8h6z3r6vfzz7qrpy14n9j4ysyz59c"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-docutils python-sphinx))
-    (home-page "https://github.com/michaeljones/breathe")
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (with-directory-excursion "tests"
+                                (invoke "python" "-m" "pytest" "-v"))))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-docutils python-sphinx))
+    (home-page "https://www.breathe-doc.org")
     (synopsis "ReStructuredText and Sphinx bridge to Doxygen")
     (description "This package is an extension to reStructuredText and Sphinx
 to be able to read and render the Doxygen xml output.")

@@ -8,7 +8,7 @@
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
@@ -382,39 +382,55 @@ setup against another one.")
 (define-public python-locust
   (package
     (name "python-locust")
-    (version "2.8.6")
+    (version "2.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "locust" version))
        (sha256
         (base32
-         "1gn13j758j36knlcdyyyggn60rpw98iqdkvl3kjsz34brysic6q1"))))
+         "05cznfqda0yq2j351jjdssayvj5qc11xkbkwdvv81hcmz4xpyc56"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
+         (add-before 'check 'increase-resource-limits
            (lambda _
-             (substitute* "setup.py"
-               (("setuptools_scm<=6.0.1")
-                "setuptools_scm")
-               (("Jinja2<3.1.0")
-                "Jinja2"))))
+             ;; XXX: Copied from ungoogled-chromium.
+             ;; Try increasing the soft resource limit of max open files to 2048,
+             ;; or equal to the hard limit, whichever is lower.
+             (call-with-values (lambda () (getrlimit 'nofile))
+               (lambda (soft hard)
+                 (when (and soft (< soft 2048))
+                   (if hard
+                       (setrlimit 'nofile (min hard 2048) hard)
+                       (setrlimit 'nofile 2048 #f))
+                   (format #t
+                           "increased maximum number of open files from ~d to ~d~%"
+                           soft (if hard (min hard 2048) 2048)))))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "python" "-m" "pytest" "locust"
                        "-k" (string-join
-                             '(;; These tests return "non-zero exit status 1".
+                             '( ;; These tests return "non-zero exit status 1".
                                "not test_default_headless_spawn_options"
                                "not test_default_headless_spawn_options_with_shape"
                                "not test_headless_spawn_options_wo_run_time"
+                               ;; These tests fail with a HTTP return code of
+                               ;; 500 instead of 200, for unknown reasons.
+                               "not test_autostart_mutliple_locustfiles_with_shape"
+                               "not test_autostart_w_load_shape"
+                               "not test_autostart_wo_run_time"
+                               "not test_percentile_parameter"
                                ;; These tests depend on networking.
                                "not test_html_report_option"
+                               "not test_json_schema"
                                "not test_web_options"
-                               ;; This test fails because of the warning "System open
-                               ;; file limit '1024' is below minimum setting '10000'".
+                               ;; These tests fail because of the warning
+                               ;; "System open file limit '1024' is below
+                               ;; minimum setting '10000'".
+                               "not test_autostart_w_run_time"
                                "not test_skip_logging"
                                ;; On some (slow?) machines, the following tests
                                ;; fail, with the processes returning exit code
@@ -433,7 +449,6 @@ setup against another one.")
            python-flask-cors
            python-gevent
            python-geventhttpclient
-           python-jinja2
            python-msgpack
            python-psutil
            python-pyzmq
@@ -458,7 +473,7 @@ test any system or protocol.
 
 Note: Locust will complain if the available open file descriptors limit for
 the user is too low.  To raise such limit on a Guix System, refer to
-@samp{info guix --index-search=pam-limits-service}.")
+@samp{info guix --index-search=pam-limits-service-type}.")
     (license license:expat)))
 
 (define-public interbench

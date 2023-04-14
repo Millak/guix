@@ -98,7 +98,7 @@
         (option '(#\r "recursive") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'recursive? #t result)))
-        (option '("list-transitive") #f #f
+        (option '(#\T "list-transitive") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'list-transitive? #t result)))
 
@@ -156,7 +156,7 @@ specified with `--select'.\n"))
   (display (G_ "
   -r, --recursive        check the PACKAGE and its inputs for upgrades"))
   (display (G_ "
-      --list-transitive  list all the packages that PACKAGE depends on"))
+  -T, --list-transitive  list all the packages that PACKAGE depends on"))
   (newline)
   (display (G_ "
       --keyring=FILE     use FILE as the keyring of upstream OpenPGP keys"))

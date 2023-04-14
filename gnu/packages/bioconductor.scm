@@ -640,6 +640,50 @@ from several related annotation packages.")
 data.")
     (license license:artistic2.0)))
 
+(define-public r-illuminahumanmethylation450kmanifest
+  (package
+    (name "r-illuminahumanmethylation450kmanifest")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri
+                    "IlluminaHumanMethylation450kmanifest"
+                    version 'annotation))
+              (sha256
+               (base32
+                "0qx75xwifrbkqmbkd8dhf44c34ibmbivqh7y8rvgrsizmi5ybcj1"))))
+    (properties `((upstream-name . "IlluminaHumanMethylation450kmanifest")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (home-page
+     "https://bioconductor.org/packages/IlluminaHumanMethylation450kmanifest")
+    (synopsis "Annotation for Illumina's 450k methylation arrays")
+    (description "This package provides a manifest for Illumina's 450k array
+data.")
+    (license license:artistic2.0)))
+
+(define-public r-illuminahumanmethylationepicanno-ilm10b4-hg19
+  (package
+    (name "r-illuminahumanmethylationepicanno-ilm10b4-hg19")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri
+                    "IlluminaHumanMethylationEPICanno.ilm10b4.hg19"
+                    version 'annotation))
+              (sha256
+               (base32
+                "0687b4k8hwfc18qgdd9ypv1skp37jd204fszba0gmrv3dc92i09c"))))
+    (properties `((upstream-name . "IlluminaHumanMethylationEPICanno.ilm10b4.hg19")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (home-page
+     "https://doi.org/doi:10.18129/B9.bioc.IlluminaHumanMethylationEPICanno.ilm10b4.hg19")
+    (synopsis "Annotation for Illumina's EPIC methylation arrays")
+    (description
+     "This is an annotation package for Illumina's EPIC methylation arrays.")
+    (license license:artistic2.0)))
+
 (define-public r-org-ce-eg-db
   (package
     (name "r-org-ce-eg-db")
@@ -1392,6 +1436,26 @@ curated cell type labels, for use in procedures like automated annotation of
 single-cell data or deconvolution of bulk RNA-seq.")
     (license license:gpl3)))
 
+(define-public r-champdata
+  (package
+    (name "r-champdata")
+    (version "2.30.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ChAMPdata" version 'experiment))
+              (sha256
+               (base32
+                "0rz762szfl02h4d3dj7ckd41ji9mdsja8nxqw6fl086z337041zw"))))
+    (properties `((upstream-name . "ChAMPdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics r-genomicranges))
+    (home-page "https://bioconductor.org/packages/ChAMPdata")
+    (synopsis "Data packages for ChAMP package")
+    (description
+     "This package provides datasets needed for ChAMP including a test dataset
+and blood controls for CNA analysis.")
+    (license license:gpl3)))
+
 (define-public r-chromstardata
   (package
     (name "r-chromstardata")
@@ -1433,6 +1497,63 @@ mm10.  In addition, it contains a blacklist filter to remove regions that
 display copy number variation.  Files are stored as GRanges objects from the
 GenomicRanges Bioconductor package.")
     (license license:gpl2)))
+
+(define-public r-flowsorted-blood-450k
+  (package
+    (name "r-flowsorted-blood-450k")
+    (version "1.36.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "FlowSorted.Blood.450k"
+                                     version 'experiment))
+              (sha256
+               (base32
+                "1ha9qsp5g3g2yhnk574x6xhg95bb29ywvmg3ns1c50z69v6wbraq"))))
+    (properties `((upstream-name . "FlowSorted.Blood.450k")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-minfi))
+    (home-page "https://bioconductor.org/packages/FlowSorted.Blood.450k")
+    (synopsis
+     "Illumina HumanMethylation data on sorted blood cell populations")
+    (description
+     "This package provides raw data objects for the Illumina 450k DNA
+methylation microarrays, and an object depicting which CpGs on the array are
+associated with cell type.")
+    (license license:artistic2.0)))
+
+(define-public r-flowsorted-blood-epic
+  (package
+    (name "r-flowsorted-blood-epic")
+    (version "2.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "FlowSorted.Blood.EPIC" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1vybj69jxnirqg6ik03q3pb1vv23z8mir7wpi2ys7iljf5ixzgl1"))))
+    (properties `((upstream-name . "FlowSorted.Blood.EPIC")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationhub
+           r-experimenthub
+           r-genefilter
+           r-minfi
+           r-nlme
+           r-quadprog
+           r-s4vectors
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/immunomethylomics/FlowSorted.Blood.EPIC")
+    (synopsis
+     "Illumina EPIC data on immunomagnetic sorted peripheral adult blood cells")
+    (description
+     "This package provides raw data objects to be used for blood cell
+proportion estimation in minfi and similar packages.  The
+@code{FlowSorted.Blood.EPIC} object is based in samples assayed by Brock
+Christensen and colleagues; for details see Salas et al. 2018.
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110554.")
+    (license license:gpl3)))
 
 (define-public r-genelendatabase
   (package
@@ -1523,6 +1644,28 @@ cluster labels and labels identifying spiked in cells.  Column metadata
 includes channel names, protein marker names, and protein marker classes.")
     (license license:expat)))
 
+(define-public r-illumina450probevariants-db
+  (package
+    (name "r-illumina450probevariants-db")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Illumina450ProbeVariants.db"
+                                     version 'experiment))
+              (sha256
+               (base32
+                "1c1iqxi17s1a1sa1vab2ma7pjq1dxal7ibsiahj66ys0pa4sm42p"))))
+    (properties `((upstream-name . "Illumina450ProbeVariants.db")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/Illumina450ProbeVariants.db")
+    (synopsis
+     "Variant data from 1000 Genomes Project for Illumina HumanMethylation450 Bead Chip probes")
+    (description
+     "This package includes details on variants for each probe on the 450k
+bead chip for each of the four populations (Asian, American, African and
+European).")
+    (license license:gpl3)))
+
 (define-public r-italicsdata
   (package
     (name "r-italicsdata")
@@ -1564,6 +1707,79 @@ RNA-seq samples from Alasoo, et al. \"Shared genetic effects on chromatin and
 gene expression indicate a role for enhancer priming in immune response\", published
 in Nature Genetics, January 2018.")
     (license license:gpl2+)))
+
+(define-public r-minfidata
+  (package
+    (name "r-minfidata")
+    (version "0.44.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "minfiData" version 'experiment))
+              (sha256
+               (base32
+                "15s3kc629m2c78vkidmp6kcc28sn1wzjzrxazmd8z7x8cdad3q4g"))))
+    (properties `((upstream-name . "minfiData")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-illuminahumanmethylation450kanno-ilmn12-hg19
+           r-illuminahumanmethylation450kmanifest
+           r-minfi))
+    (home-page "https://bioconductor.org/packages/minfiData")
+    (synopsis "Example data for the Illumina Methylation 450k array")
+    (description
+     "This package provides data from 6 samples across 2 groups from 450k
+methylation arrays.")
+    (license license:artistic2.0)))
+
+(define-public r-missmethyl
+  (package
+    (name "r-missmethyl")
+    (version "1.32.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "missMethyl" version))
+              (sha256
+               (base32
+                "1rrm8m68kgjkrw1wdli5lrwqlavhbm490zgnj5vafzpvx7xajfma"))))
+    (properties `((upstream-name . "missMethyl")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi
+           r-biasedurn
+           r-biobase
+           r-biocgenerics
+           r-genomicranges
+           r-go-db
+           r-illuminahumanmethylation450kanno-ilmn12-hg19
+           r-illuminahumanmethylation450kmanifest
+           r-illuminahumanmethylationepicanno-ilm10b4-hg19
+           r-illuminahumanmethylationepicmanifest
+           r-iranges
+           r-limma
+           r-methylumi
+           r-minfi
+           r-org-hs-eg-db
+           r-ruv
+           r-s4vectors
+           r-statmod
+           r-stringr
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/missMethyl")
+    (synopsis "Analyzing Illumina HumanMethylation BeadChip data")
+    (description
+     "This is a package for normalization, testing for differential
+variability and differential methylation and gene set testing for data from
+Illumina's Infinium HumanMethylation arrays.  The normalization procedure is
+subset-quantile within-array normalization (SWAN), which allows Infinium I and
+II type probes on a single array to be normalized together.  The test for
+differential variability is based on an empirical Bayes version of Levene's
+test.  Differential methylation testing is performed using RUV, which can
+adjust for systematic errors of unknown origin in high-dimensional data by
+using negative control probes.  Gene ontology analysis is performed by taking
+into account the number of probes per gene on the array, as well as taking
+into account multi-gene associated probes.")
+    (license license:gpl2)))
 
 (define-public r-msdata
   (package
@@ -2516,13 +2732,13 @@ problems.")
 (define-public r-amaretto
   (package
     (name "r-amaretto")
-    (version "1.13.0")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AMARETTO" version))
               (sha256
                (base32
-                "18w65sf3h4yzw9v5xgkalxnkmgzgsx100v7qc7z4ifx10lgpji5n"))))
+                "06j75c4j71fkkw5s52nbzb3k084y2f4v4h3js9dgsxxrd6jkzfz9"))))
     (properties `((upstream-name . "AMARETTO")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2761,13 +2977,13 @@ for use in Bioconductor’s AnnotationHub.")
 (define-public r-anvil
   (package
     (name "r-anvil")
-    (version "1.10.1")
+    (version "1.10.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnVIL" version))
               (sha256
                (base32
-                "0iqsffkrxv28g9cddx2w05f2dbscwxhh6bpizwa8xaxhvn5bcpsv"))))
+                "1j7n8c47j3njd5rnlrj8bkn4q5z7jpm0c9rdq1mlwd2i1yy9fz9b"))))
     (properties `((upstream-name . "AnVIL")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4533,6 +4749,46 @@ spent loading the full derfinder package when running the F-statistics
 calculation in parallel.")
     (license license:artistic2.0)))
 
+(define-public r-dmrcate
+  (package
+    (name "r-dmrcate")
+    (version "2.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DMRcate" version))
+              (sha256
+               (base32
+                "0iphlsbam5fcxbj5j0cmqk3wz5ykwz0mvk3qbrhzxbpf2h4w2qib"))))
+    (properties `((upstream-name . "DMRcate")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bsseq
+           r-dss
+           r-edger
+           r-experimenthub
+           r-genomeinfodb
+           r-genomicranges
+           r-gviz
+           r-iranges
+           r-limma
+           r-minfi
+           r-missmethyl
+           r-plyr
+           r-s4vectors
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/DMRcate")
+    (synopsis "Methylation array and sequencing spatial analysis methods")
+    (description
+     "This is a package for de novo identification and extraction of
+@dfn{differentially methylated regions} (DMRs) from the human genome using
+@dfn{Whole Genome Bisulfite Sequencing} (WGBS) and Illumina Infinium
+Array (450K and EPIC) data.  It provides functionality for filtering probes
+possibly confounded by SNPs and cross-hybridisation.  It includes
+@code{GRanges} generation and plotting functions.")
+    ;; GPLv3 with additional liability disclaimer.
+    (license license:gpl3)))
+
 (define-public r-drimseq
   (package
     (name "r-drimseq")
@@ -4567,6 +4823,32 @@ transcripts) with the Dirichlet-multinomial distribution.  The package also
 makes available functions for visualization and exploration of the data and
 results.")
     (license license:gpl3+)))
+
+(define-public r-dss
+  (package
+    (name "r-dss")
+    (version "2.46.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "DSS" version))
+              (sha256
+               (base32
+                "1qm0pq6495fn2zrbddaadb1w01ry76rg8mmbmxf3zws9pww48jgf"))))
+    (properties `((upstream-name . "DSS")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-biocparallel r-bsseq))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/DSS")
+    (synopsis "Dispersion shrinkage for sequencing data")
+    (description
+     "DSS is an R library performing differential analysis for count-based
+sequencing data.  It detects @dfn{differentially expressed genes} (DEGs) from
+RNA-seq, and differentially methylated loci or regions (DML/DMRs) from
+@dfn{bisulfite sequencing} (BS-seq).  The core of DSS is a dispersion
+shrinkage method for estimating the dispersion parameter from Gamma-Poisson or
+Beta-Binomial distributions.")
+    ;; Any version of the GPL
+    (license (list license:gpl2+ license:gpl3+))))
 
 (define-public r-bluster
   (package
@@ -4763,6 +5045,28 @@ domains etc.) from quantification of all types of RNASeq by tools such as
 Kallisto, Salmon, StringTie, Cufflinks/Cuffdiff etc.")
     (license license:gpl2+)))
 
+;; This is a CRAN package, but it depends on qvalue from Bioconductor.
+(define-public r-isva
+  (package
+    (name "r-isva")
+    (version "1.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "isva" version))
+              (sha256
+               (base32
+                "05qx9q0kg4ma23v4abhihw0vz017nq6hv2jzsiqx4d20ngh1dl4z"))))
+    (properties `((upstream-name . "isva")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-fastica r-jade r-qvalue))
+    (home-page "https://cran.r-project.org/package=isva")
+    (synopsis "Independent surrogate variable analysis")
+    (description
+     "Independent Surrogate Variable Analysis is an algorithm for feature
+selection in the presence of potential confounding factors (see Teschendorff
+AE et al 2011, <doi: 10.1093/bioinformatics/btr171>).")
+    (license license:gpl2)))
+
 (define-public r-italics
   (package
     (name "r-italics")
@@ -4902,14 +5206,14 @@ mapping.")
 (define-public r-nmf
   (package
     (name "r-nmf")
-    (version "0.25")
+    (version "0.26")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NMF" version))
        (sha256
         (base32
-         "0kdl7yz4v7pms6y2lff4x5w7pwkx54488qx0v539qmvcbxv1if98"))))
+         "1h1fpjnj6vjvi9ygxpfxs8k5bhly0aflr54zj88khgzkylp5ci4d"))))
     (properties `((upstream-name . "NMF")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5239,14 +5543,14 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
 (define-public r-annotationforge
   (package
     (name "r-annotationforge")
-    (version "1.40.1")
+    (version "1.40.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationForge" version))
        (sha256
         (base32
-         "16wdcl56d5i8wrmin610kzs9ldy7h9w5fbnysjb1crkcgbikq1yy"))))
+         "1ab7nl9zrlhlkwjrjr69zqq5hy9a8rp457hcr075n8qm5r5lf6wd"))))
     (properties
      `((upstream-name . "AnnotationForge")))
     (build-system r-build-system)
@@ -5388,13 +5692,13 @@ on Bioconductor or which replace R functions.")
 (define-public r-biomart
   (package
     (name "r-biomart")
-    (version "2.54.0")
+    (version "2.54.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "biomaRt" version))
               (sha256
                (base32
-                "0c6agi652kbffqwd1r3c22ncisqaiy3gqbc9fz13767rr71im6lq"))))
+                "13nhp97cklaimc3cd931hz584nc58szk2gyxrkfhp7knfli6jbpi"))))
     (properties
      `((upstream-name . "biomaRt")))
     (build-system r-build-system)
@@ -5473,13 +5777,13 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.32.5")
+    (version "1.32.6")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "1yd6ln9cl3dcvfziar52fkvqi2lzm31l7j21r1rwl1mpkz0xapir"))))
+                "1aq3b5fjs8j0d6nf3992a6gnzvmmaxbbkrj1im0k6ppsqac6dlj0"))))
     (properties
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
@@ -5652,6 +5956,68 @@ genome data packages and support for efficient SNP representation.")
      "This package provides a collection of tools for performing category
 analysis.")
     (license license:artistic2.0)))
+
+(define-public r-champ
+  (package
+    (name "r-champ")
+    (version "2.28.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ChAMP" version))
+              (sha256
+               (base32
+                "10ss0a3miqrx92vy1r1h5rv3mnjn4iyl32q86s0x59d3fvqp2cx1"))))
+    (properties `((upstream-name . "ChAMP")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bumphunter
+           r-champdata
+           r-combinat
+           r-dendextend
+           r-dmrcate
+           r-dnacopy
+           r-doparallel
+           r-dt
+           r-genomicranges
+           r-ggplot2
+           r-globaltest
+           r-goseq
+           r-hmisc
+           r-illumina450probevariants-db
+           r-illuminahumanmethylation450kmanifest
+           r-illuminahumanmethylationepicanno-ilm10b4-hg19
+           r-illuminahumanmethylationepicmanifest
+           r-illuminaio
+           r-impute
+           r-isva
+           r-kpmt
+           r-limma
+           r-marray
+           r-matrixstats
+           r-minfi
+           r-missmethyl
+           r-plotly
+           r-plyr
+           r-preprocesscore
+           r-prettydoc
+           r-quadprog
+           r-qvalue
+           r-rcolorbrewer
+           r-rmarkdown
+           r-rpmm
+           r-shiny
+           r-shinythemes
+           r-sva
+           r-watermelon))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ChAMP")
+    (synopsis
+     "Chip analysis methylation pipeline for Illumina HumanMethylation450 and EPIC")
+    (description
+     "The package includes quality control metrics, a selection of
+normalization methods and novel methods to identify differentially methylated
+regions and to highlight copy number alterations.")
+    (license license:gpl3)))
 
 (define-public r-chipseeker
   (package
@@ -6145,6 +6511,48 @@ other types of genomic data that produce counts, including ChIP-seq, SAGE and
 CAGE.")
     (license license:gpl2+)))
 
+(define-public r-enmix
+  (package
+    (name "r-enmix")
+    (version "1.34.02")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ENmix" version))
+              (sha256
+               (base32
+                "0rn541xfsxfdyzy3dn727bwrfpkgp12282lax7xg1j8584mk4pcf"))))
+    (properties `((upstream-name . "ENmix")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationhub
+           r-biobase
+           r-doparallel
+           r-dynamictreecut
+           r-experimenthub
+           r-foreach
+           r-genefilter
+           r-geneplotter
+           r-gplots
+           r-gtools
+           r-illuminaio
+           r-impute
+           r-iranges
+           r-matrixstats
+           r-minfi
+           r-preprocesscore
+           r-quadprog
+           r-rpmm
+           r-s4vectors
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/release/bioc/html/ENmix.html")
+    (synopsis
+     "Quality control and analysis tools for Illumina DNA methylation BeadChip")
+    (description
+     "This package provides tools for quality control, analysis and
+visualization of Illumina DNA methylation array data.")
+    (license license:artistic2.0)))
+
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
@@ -6523,6 +6931,30 @@ genomic hybridization} data by detecting of the breakpoints in the genomic
 profiles and assignment of a status (gain, normal or loss) to each chromosomal
 regions identified.")
     (license license:gpl2)))
+
+(define-public r-globaltest
+  (package
+    (name "r-globaltest")
+    (version "5.52.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "globaltest" version))
+              (sha256
+               (base32
+                "1g5dv3bw0fj8sq0hsr8c7nh6n1rzvx1bisqlyqjqq3f8lsyb51kb"))))
+    (properties `((upstream-name . "globaltest")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotate r-annotationdbi r-biobase r-survival))
+    (home-page "https://bioconductor.org/packages/globaltest")
+    (synopsis
+     "Test groups of covariates for association with a response variable")
+    (description
+     "The global test tests groups of covariates (or features) for association
+with a response variable.  This package implements the test with diagnostic
+plots and multiple testing utilities, along with several functions to
+facilitate the use of this test for gene set testing of GO and KEGG terms.")
+    (license license:gpl2+)))
 
 (define-public r-gostats
   (package
@@ -7475,13 +7907,13 @@ previously been used in XCMS.")
 (define-public r-numbat
   (package
     (name "r-numbat")
-    (version "1.2.2")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "numbat" version))
               (sha256
                (base32
-                "06qq7i8k1mi7yg1irfbk3d2fmk7awvzj7h7r54hnr6pzywk7nmhc"))))
+                "0499i20kkpr58b59xmw7d4q4dgp6ryfb9jj55idvhaa2k1kv28n6"))))
     (properties `((upstream-name . "numbat")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
@@ -7962,14 +8394,14 @@ the available RAM.")
 (define-public r-rhdf5filters
   (package
     (name "r-rhdf5filters")
-    (version "1.10.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rhdf5filters" version))
        (sha256
         (base32
-         "17x2a3122mm3z9qnalw25am2x08cfpm17nwhigabid3ha3d2mgz1"))))
+         "14rkr0fisy7qrvjikpnwxwag79205hdxy6nkpwz501li4fr1rbnp"))))
     (properties `((upstream-name . "rhdf5filters")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8367,6 +8799,33 @@ Stephens (1990).")
 sequence motif occurrences across a large set of sequences centred at a common
 reference point and sorted by a user defined feature.")
     (license license:gpl3+)))
+
+(define-public r-shinymethyl
+  (package
+    (name "r-shinymethyl")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "shinyMethyl" version))
+              (sha256
+               (base32
+                "1xbadc4xszcqh211r8z0wp417f17aczz834icli17mcsl996ln3a"))))
+    (properties `((upstream-name . "shinyMethyl")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-illuminahumanmethylation450kmanifest
+           r-matrixstats
+           r-minfi
+           r-rcolorbrewer
+           r-shiny))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/shinyMethyl")
+    (synopsis "Interactive visualization for Illumina methylation arrays")
+    (description
+     "This package provides an interactive tool for visualizing Illumina
+methylation array data.  Both the 450k and EPIC array are supported.")
+    (license license:artistic2.0)))
 
 (define-public r-shortread
   (package
@@ -14341,6 +14800,46 @@ gene fusion discovery.  It can be applied to all major sequencing techologies
 and to both short and long sequence reads.")
     (license license:gpl3)))
 
+(define-public r-flowai
+  (package
+    (name "r-flowai")
+    (version "1.28.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "flowAI" version))
+              (sha256
+               (base32
+                "18zrlnjw89iglxhw65ys8x4r44pdzp5chrgwx7w44sh7yd8576g9"))))
+    (properties `((upstream-name . "flowAI")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-changepoint
+           r-flowcore
+           r-ggplot2
+           r-knitr
+           r-plyr
+           r-rcolorbrewer
+           r-reshape2
+           r-rmarkdown
+           r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/flowAI")
+    (synopsis
+     "Automatic and interactive quality control for flow cytometry data")
+    (description
+     "This package is able to perform an automatic or interactive quality
+control on FCS data acquired using flow cytometry instruments.  By evaluating
+three different properties:
+
+@enumerate
+@item flow rate
+@item signal acquisition, and
+@item dynamic range,
+@end enumerate
+
+the quality control enables the detection and removal of anomalies.")
+    (license license:gpl2+)))
+
 (define-public r-flowutils
   (package
     (name "r-flowutils")
@@ -14616,14 +15115,14 @@ statistics to the plot.")
 (define-public r-flowclust
   (package
     (name "r-flowclust")
-    (version "3.36.0")
+    (version "3.36.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowClust" version))
        (sha256
         (base32
-         "1l1lfgm6x06gyzda36m6gvqmb91zbrz8m83b1fnfzpxkhqha20yq"))))
+         "1r27nm5dxlhl5rk96dkjfx8326bvdgx55xg4w2zji3m49x9db2gs"))))
     (properties `((upstream-name . "flowClust")))
     (build-system r-build-system)
     (arguments
@@ -15730,14 +16229,14 @@ arrays based on fast wavelet-based functional models.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.28.7")
+    (version "1.28.9")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "0iv5c5p0g4axhanc62mmk0c43qcwdsxzslxh5qdck0v1kb7bd1d9"))))
+         "1al7wkbv26gldba61gq80c3mznsxwr7z5njv2s0lb7hnll9bscar"))))
     (properties
      `((upstream-name . "variancePartition")))
     (build-system r-build-system)
@@ -17930,14 +18429,14 @@ sequence (@code{DNAse-seq}) experiments.")
 (define-public r-singlecellexperiment
   (package
     (name "r-singlecellexperiment")
-    (version "1.20.0")
+    (version "1.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SingleCellExperiment" version))
        (sha256
         (base32
-         "1y9c9wf3009w4qh03zpsmc0ff0nkzal673a4nql5c11cn55sza2g"))))
+         "1xwa6ncmqp21a4zx1dbs9p9b9rqbxhdgq2279mj4yl0gnpyqr9d7"))))
     (properties
      `((upstream-name . "SingleCellExperiment")))
     (build-system r-build-system)
@@ -19518,14 +20017,14 @@ using aCGH or sequencing.")
 (define-public r-bionero
   (package
     (name "r-bionero")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNERO" version))
        (sha256
         (base32
-         "10nwgp8a9chn33p5k7cdp920rraiw187xfrylyd9bq010c7vp7xh"))))
+         "0ijdnl43cgzywgsz80jd6q0irixh6367qm1ll5ww1rcr4xas2nsl"))))
     (properties `((upstream-name . "BioNERO")))
     (build-system r-build-system)
     (propagated-inputs

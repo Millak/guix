@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -40,7 +40,7 @@
 (define-module (gnu services base)
   #:use-module (guix store)
   #:use-module (guix deprecation)
-  #:autoload   (guix diagnostics) (warning &fix-hint)
+  #:autoload   (guix diagnostics) (warning formatted-message &fix-hint)
   #:autoload   (guix i18n) (G_)
   #:use-module (guix combinators)
   #:use-module (gnu services)
@@ -223,7 +223,6 @@
             guix-publish-configuration-port
             guix-publish-configuration-host
             guix-publish-configuration-compression
-            guix-publish-configuration-compression-level ;deprecated
             guix-publish-configuration-nar-path
             guix-publish-configuration-cache
             guix-publish-configuration-ttl
@@ -246,7 +245,7 @@
             kmscon-service-type
 
             pam-limits-service-type
-            pam-limits-service
+            pam-limits-service  ; deprecated
 
             greetd-service-type
             greetd-configuration
@@ -703,9 +702,10 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
 ;;; /etc/hosts
 ;;;
 
-(define (valid-name? name)
-  "Return true if @var{name} is likely to be a valid host name."
-  (false-if-exception (not (string-any char-set:whitespace name))))
+(eval-when (expand load eval)
+  (define (valid-name? name)
+    "Return true if @var{name} is likely to be a valid host name."
+    (false-if-exception (not (string-any char-set:whitespace name)))))
 
 (define-compile-time-procedure (assert-valid-name (name valid-name?))
   "Ensure @var{name} is likely to be a valid host name."
@@ -813,21 +813,6 @@ host names."
    #t                                             ;default to UTF-8
    (description "Ensure the Linux virtual terminals run in UTF-8 mode.")))
 
-(define console-keymap-service-type
-  (shepherd-service-type
-   'console-keymap
-   (lambda (files)
-     (shepherd-service
-      (documentation (string-append "Load console keymap (loadkeys)."))
-      (provision '(console-keymap))
-      (start #~(lambda _
-                 (zero? (system* #$(file-append kbd "/bin/loadkeys")
-                                 #$@files))))
-      (respawn? #f)))
-   (description "@emph{This service is deprecated in favor of the
-@code{keyboard-layout} field of @code{operating-system}.}  Load the given list
-of console keymaps with @command{loadkeys}.")))
-
 (define %default-console-font
   ;; Note: the 'font-gnu-unifont' package cannot be cross-compiled (yet), but
   ;; its "psf" output is the same whether it's built natively or not, hence
@@ -899,14 +884,6 @@ package or any valid argument to @command{setfont}, as in this example:
                  font-terminus
                  \"/share/consolefonts/ter-132n\"))) ; for HDPI
 @end example\n")))
-
-(define* (console-font-service tty #:optional (font "LatGrkCyr-8x16"))
-  "This procedure is deprecated in favor of @code{console-font-service-type}.
-
-Return a service that sets up Unicode support in @var{tty} and loads
-@var{font} for that tty (fonts are per virtual console in Linux.)"
-  (simple-service (symbol-append 'console-font- (string->symbol tty))
-                  console-font-service-type `((,tty . ,font))))
 
 (define %default-motd
   (plain-file "motd" "This is the GNU operating system, welcome!\n\n"))
@@ -1553,14 +1530,17 @@ Service Switch}, for an example."
   (shepherd-service-type
    'syslog
    (lambda (config)
+     (define config-file
+       (syslog-configuration-config-file config))
+
      (shepherd-service
       (documentation "Run the syslog daemon (syslogd).")
       (provision '(syslogd))
       (requirement '(user-processes))
+      (actions (list (shepherd-configuration-action config-file)))
       (start #~(let ((spawn (make-forkexec-constructor
                              (list #$(syslog-configuration-syslogd config)
-                                   "--rcfile"
-                                   #$(syslog-configuration-config-file config))
+                                   "--rcfile" #$config-file)
                              #:pid-file "/var/run/syslog.pid")))
                  (lambda ()
                    ;; Set the umask such that file permissions are #o640.
@@ -1584,17 +1564,13 @@ information on the configuration file syntax."
 
 
 (define pam-limits-service-type
-  (let ((security-limits
-         ;; Create /etc/security containing the provided "limits.conf" file.
-         (lambda (limits-file)
-           `(("security/limits.conf"
-              ,limits-file))))
-        (pam-extension
+  (let ((pam-extension
          (lambda (pam)
            (let ((pam-limits (pam-entry
                               (control "required")
                               (module "pam_limits.so")
-                              (arguments '("conf=/etc/security/limits.conf")))))
+                              (arguments
+                               '("conf=/etc/security/limits.conf")))))
              (if (member (pam-service-name pam)
                          '("login" "greetd" "su" "slim" "gdm-password" "sddm"
                            "sudo" "sshd"))
@@ -1602,7 +1578,27 @@ information on the configuration file syntax."
                   (inherit pam)
                   (session (cons pam-limits
                                  (pam-service-session pam))))
-                 pam)))))
+                 pam))))
+
+        ;; XXX: Using file-like objects is deprecated, use lists instead.
+        ;;      This is to be reduced into the list? case when the deprecated
+        ;;      code gets removed.
+        ;; Create /etc/security containing the provided "limits.conf" file.
+        (security-limits
+         (match-lambda
+           ((? file-like? obj)
+            (warning (G_ "Using file-like value for \
+'pam-limits-service-type' is deprecated~%"))
+            `(("security/limits.conf" ,obj)))
+           ((? list? lst)
+            `(("security/limits.conf"
+               ,(plain-file "limits.conf"
+                            (string-join (map pam-limits-entry->string lst)
+                                         "\n" 'suffix)))))
+           (_ (raise
+               (formatted-message
+                (G_ "invalid input for 'pam-limits-service-type'~%")))))))
+
     (service-type
      (name 'limits)
      (extensions
@@ -1612,9 +1608,11 @@ information on the configuration file syntax."
      (description
       "Install the specified resource usage limits by populating
 @file{/etc/security/limits.conf} and using the @code{pam_limits}
-authentication module."))))
+authentication module.")
+     (default-value '()))))
 
-(define* (pam-limits-service #:optional (limits '()))
+(define-deprecated (pam-limits-service #:optional (limits '()))
+  pam-limits-service-type
   "Return a service that makes selected programs respect the list of
 pam-limits-entry specified in LIMITS via pam_limits.so."
   (service pam-limits-service-type
@@ -1987,10 +1985,7 @@ proxy of 'guix-daemon'...~%")
               (default #f))
   (compression       guix-publish-configuration-compression
                      (thunked)
-                     (default (default-compression this-record
-                                (current-source-location))))
-  (compression-level %guix-publish-configuration-compression-level ;deprecated
-                     (default #f))
+                     (default (default-compression this-record)))
   (nar-path    guix-publish-configuration-nar-path ;string
                (default "nar"))
   (cache       guix-publish-configuration-cache   ;#f | string
@@ -2004,25 +1999,14 @@ proxy of 'guix-daemon'...~%")
   (negative-ttl guix-publish-configuration-negative-ttl ;#f | integer
                 (default #f)))
 
-(define-deprecated (guix-publish-configuration-compression-level config)
-  "Return a compression level, the old way."
-  (match (guix-publish-configuration-compression config)
-    (((_ level) _ ...) level)))
-
-(define (default-compression config properties)
+(define (default-compression config)
   "Return the default 'guix publish' compression according to CONFIG, and
 raise a deprecation warning if the 'compression-level' field was used."
-  (match (%guix-publish-configuration-compression-level config)
-    (#f
-     ;; Default to low compression levels when there's no cache so that users
-     ;; get good bandwidth by default.
-     (if (guix-publish-configuration-cache config)
-         '(("gzip" 5) ("zstd" 19))
-         '(("gzip" 3) ("zstd" 3))))               ;zstd compresses faster
-    (level
-     (warn-about-deprecation 'compression-level properties
-                             #:replacement 'compression)
-     `(("gzip" ,level)))))
+  ;; Default to low compression levels when there's no cache so that users
+  ;; get good bandwidth by default.
+  (if (guix-publish-configuration-cache config)
+      '(("gzip" 5) ("zstd" 19))
+      '(("gzip" 3) ("zstd" 3))))               ;zstd compresses faster
 
 (define (guix-publish-shepherd-service config)
   (define (config->compression-options config)
@@ -2664,16 +2648,17 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
                             ipv6-address?))))
   (gateway     network-route-gateway (default #f)))
 
-(define* (cidr->netmask str #:optional (family AF_INET))
-  "Given @var{str}, a string in CIDR notation (e.g., \"1.2.3.4/24\"), return
+(eval-when (expand load eval)
+  (define* (cidr->netmask str #:optional (family AF_INET))
+    "Given @var{str}, a string in CIDR notation (e.g., \"1.2.3.4/24\"), return
 the netmask as a string like \"255.255.255.0\"."
-  (match (string-split str #\/)
-    ((ip (= string->number bits))
-     (let ((mask (ash (- (expt 2 bits) 1)
-                      (- (if (= family AF_INET6) 128 32)
-                         bits))))
-       (inet-ntop family mask)))
-    (_ #f)))
+    (match (string-split str #\/)
+      ((ip (= string->number bits))
+       (let ((mask (ash (- (expt 2 bits) 1)
+                        (- (if (= family AF_INET6) 128 32)
+                           bits))))
+         (inet-ntop family mask)))
+      (_ #f))))
 
 (define (cidr->ip str)
   "Strip the netmask bit of @var{str}, a CIDR-notation IP/netmask address."

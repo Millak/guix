@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1484,6 +1484,9 @@ the NIST server non-fatal."
                          (package-version package))))
         ((force lookup) name version)))))
 
+;; Prevent Guile 3 from inlining this procedure so we can mock it in tests.
+(set! package-vulnerabilities package-vulnerabilities)
+
 (define* (check-vulnerabilities package
                                 #:optional (package-vulnerabilities
                                             package-vulnerabilities))
@@ -1862,6 +1865,10 @@ them for PACKAGE."
      (description "Validate package descriptions")
      (check       check-description-style))
    (lint-checker
+     (name        'synopsis)
+     (description "Validate package synopses")
+     (check       check-synopsis-style))
+   (lint-checker
      (name        'inputs-should-be-native)
      (description "Identify inputs that should be native inputs")
      (check       check-inputs-should-be-native))
@@ -1925,10 +1932,7 @@ or a list thereof")
 
 (define %network-dependent-checkers
   (list
-   (lint-checker
-     (name        'synopsis)
-     (description "Validate package synopses")
-     (check       check-synopsis-style))
+
    (lint-checker
      (name        'gnu-description)
      (description "Validate synopsis & description of GNU packages")

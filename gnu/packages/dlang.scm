@@ -217,7 +217,8 @@ bootstrapping more recent compilers written in D.")
   (package
     (inherit ldc-bootstrap)
     (arguments
-     (substitute-keyword-arguments (package-arguments ldc-bootstrap)
+     (substitute-keyword-arguments
+       (strip-keyword-arguments '(#:tests?) (package-arguments ldc-bootstrap))
        ((#:make-flags _ #f)
         '(list "all"
                ;; Also build the test runner binaries.
@@ -226,7 +227,6 @@ bootstrapping more recent compilers written in D.")
         `(,@flags "-DBUILD_SHARED_LIBS=ON"
                   "-DLDC_LINK_MANUALLY=OFF"
                   "-DLDC_DYNAMIC_COMPILE=OFF"))
-       ((#:tests? _) #t)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'fix-compiler-rt-library-discovery

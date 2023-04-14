@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021, 2022 muradm <mail@muradm.net>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -154,7 +155,8 @@
             xfce-desktop-service
             xfce-desktop-service-type
 
-            x11-socket-directory-service
+            x11-socket-directory-service ;deprecated
+            x11-socket-directory-service-type
 
             enlightenment-desktop-configuration
             enlightenment-desktop-configuration?
@@ -1421,15 +1423,10 @@ rules."
    (default-value (gnome-desktop-configuration))
    (description "Run the GNOME desktop environment.")))
 
-(define-deprecated (gnome-desktop-service #:key (config
-                                                 (gnome-desktop-configuration)))
-  gnome-desktop-service-type
-  "Return a service that adds the @code{gnome} package to the system profile,
-and extends polkit with the actions from @code{gnome-settings-daemon}."
-  (service gnome-desktop-service-type config))
-
-;; MATE Desktop service.
-;; TODO: Add mate-screensaver.
+
+;;;
+;;; MATE Desktop service.
+;;; TODO: Add mate-screensaver.
 
 (define-record-type* <mate-desktop-configuration> mate-desktop-configuration
   make-mate-desktop-configuration
@@ -1458,14 +1455,6 @@ and extends polkit with the actions from @code{gnome-settings-daemon}."
                                       mate-package))))
    (default-value (mate-desktop-configuration))
    (description "Run the MATE desktop environment.")))
-
-(define-deprecated (mate-desktop-service #:key
-                                         (config
-                                          (mate-desktop-configuration)))
-  mate-desktop-service-type
-  "Return a service that adds the @code{mate} package to the system profile,
-and extends polkit with the actions from @code{mate-settings-daemon}."
-  (service mate-desktop-service-type config))
 
 
 ;;;
@@ -1497,16 +1486,7 @@ rules."
    (default-value (xfce-desktop-configuration))
    (description "Run the Xfce desktop environment.")))
 
-(define-deprecated (xfce-desktop-service #:key (config
-                                                (xfce-desktop-configuration)))
-  xfce-desktop-service-type
-  "Return a service that adds the @code{xfce} package to the system profile,
-and extends polkit with the ability for @code{thunar} to manipulate the file
-system as root from within a user session, after the user has authenticated
-with the administrator's password."
-  (service xfce-desktop-service-type config))
-
-+
+
 ;;;
 ;;; Lxqt desktop service.
 ;;;
@@ -1573,18 +1553,38 @@ rules."
 ;;; X11 socket directory service
 ;;;
 
-(define x11-socket-directory-service
+(define x11-socket-directory-service-type
+  (let ((x11-socket-directory-shepherd-service
+         (shepherd-service
+          (documentation "Create @file{/tmp/.X11-unix} for XWayland.")
+          (requirement '(file-systems))
+          (provision '(x11-socket-directory))
+          (one-shot? #t)
+          (start #~(lambda _
+                     (let ((directory "/tmp/.X11-unix"))
+                       (mkdir-p directory)
+                       (chmod directory #o1777)))))))
+    (service-type
+     (name 'x11-socket-directory-service)
+     (extensions
+      (list
+       (service-extension shepherd-root-service-type
+                          (compose
+                           list
+                           (const x11-socket-directory-shepherd-service)))))
+     (default-value #f) ; no default value required
+     (description
+      "Create @file{/tmp/.X11-unix} for XWayland.  When using X11, libxcb
+takes care of creating that directory however, when using XWayland, we
+need to create it beforehand."))))
+
+(define-deprecated x11-socket-directory-service
+  x11-socket-directory-service-type
   ;; Return a service that creates /tmp/.X11-unix.  When using X11, libxcb
   ;; takes care of creating that directory.  However, when using XWayland, we
   ;; need to create beforehand.  Thus, create it unconditionally here.
-  (simple-service 'x11-socket-directory
-                  activation-service-type
-                  (with-imported-modules '((guix build utils))
-                    #~(begin
-                        (use-modules (guix build utils))
-                        (let ((directory "/tmp/.X11-unix"))
-                          (mkdir-p directory)
-                          (chmod directory #o1777))))))
+  (service x11-socket-directory-service-type))
+
 
 ;;;
 ;;; Enlightenment desktop service.
@@ -1889,7 +1889,7 @@ applications needing access to be root.")
 
          (service ntp-service-type)
 
-         x11-socket-directory-service
+         (service x11-socket-directory-service-type)
 
          (service pulseaudio-service-type)
          (service alsa-service-type)

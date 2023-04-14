@@ -110,7 +110,7 @@ as ASCII text.")
 (define-public freeglut
   (package
     (name "freeglut")
-    (version "3.2.2")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -118,7 +118,7 @@ as ASCII text.")
                     "/download/v" version "/freeglut-" version ".tar.gz"))
               (sha256
                (base32
-                "0l3s57zw51fy3mn5qfdm4z775kfhflgxppanaxmskfzh5l44m565"))))
+                "1v7ayg3a03mv8b6lsr1qm21lbr8xg8dh3gdfxnbhl64vbn8wn2rw"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ;no test target
@@ -606,14 +606,14 @@ glxdemo, glxgears, glxheads, and glxinfo.")
 (define-public glew
   (package
     (name "glew")
-    (version "2.1.0")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/glew/glew/" version
                                   "/glew-" version ".tgz"))
               (sha256
                (base32
-                "159wk5dc0ykjbxvag5i1m2mhp23zkk6ra04l26y3jc3nwvkr3ph4"))
+                "1qak8f7g1iswgswrgkzc7idk7jmqgwrs58fhg2ai007v7j4q5z6l"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -623,12 +623,15 @@ glxdemo, glxgears, glxheads, and glxinfo.")
                   #t))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:make-flags (list (string-append "GLEW_PREFIX="
-                                         (assoc-ref %outputs "out"))
-                          (string-append "GLEW_DEST="
-                                         (assoc-ref %outputs "out")))
-       #:tests? #f))                              ;no 'check' target
+     (list #:make-flags #~(list (string-append "GLEW_PREFIX=" #$output)
+                                (string-append "GLEW_DEST=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'install 'delete-static
+                 (lambda _
+                   (delete-file (string-append #$output "/lib/libGLEW.a")))))
+           #:tests? #f))                ;no 'check' target
     (inputs
      (list libxi libxmu libx11 mesa))
 

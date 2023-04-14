@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2019, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2019, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -284,22 +284,12 @@ returns a shepherd <service> object."
 
 (define (load-services/safe files)
   "This is like 'load-services', but make sure only the subset of FILES that
-can be safely reloaded is actually reloaded.
-
-This is done to accommodate the Shepherd < 0.15.0 where services lacked the
-'replacement' slot, and where 'register-services' would throw an exception
-when passed a service with an already-registered name."
-  (eval-there `(let* ((services     (map primitive-load ',files))
-                      (slots        (map slot-definition-name
-                                         (class-slots <service>)))
-                      (can-replace? (memq 'replacement slots)))
-                 (define (registered? service)
-                   (not (null? (lookup-services (canonical-name service)))))
-
-                 (apply register-services
-                        (if can-replace?
-                            services
-                            (remove registered? services))))))
+can be safely reloaded is actually reloaded."
+  (eval-there `(let ((services (map primitive-load ',files)))
+                 ;; Since version 0.5.0 of the Shepherd, registering a service
+                 ;; that has the same name as an already-registered service
+                 ;; makes it a "replacement" of that previous service.
+                 (apply register-services services))))
 
 (define* (start-service name #:optional (arguments '()))
   (invoke-action name 'start arguments

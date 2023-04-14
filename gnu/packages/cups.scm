@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
@@ -272,6 +272,14 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
            #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'update-config-scripts
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   (for-each (lambda (file)
+                               (install-file
+                                (search-input-file
+                                 (or native-inputs inputs)
+                                 (string-append "/bin/" file)) "."))
+                             '("config.guess" "config.sub"))))
                (add-after 'unpack 'never-cupsAdminGetServerSettings
                  ;; Rather than just ask the daemon, this part of CUPS assumes
                  ;; that (1) it has access to a cupsd.conf under CUPS_SERVERROOT
@@ -310,7 +318,10 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
                      (("(\\$count != )33" _ prefix)
                       (string-append prefix "39"))))))))
     (native-inputs
-     (list pkg-config))
+     (append (if (target-riscv64?)
+                 (list config)
+                 '())
+             (list pkg-config)))
     (inputs
      (list zlib gnutls))
     (home-page "https://openprinting.github.io/cups")

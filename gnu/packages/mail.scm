@@ -27,7 +27,7 @@
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
@@ -407,6 +407,45 @@ software.  GNU Mailutils provides the following commands:
     (license
      ;; Libraries are under LGPLv3+, and programs under GPLv3+.
      (list license:gpl3+ license:lgpl3+))))
+
+(define-public mairix
+  (let ((commit "1cc06f4a73ba4b940008c1ffc398d2ac708cd6d6")
+        (revision "0"))
+    (package
+      (name "mairix")
+      (version (git-version "0.24" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vandry/mairix")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12bhmk5j77cl3vjda48cmdysq1c2yjzvfv6zm4hlky6d5g3l49d7"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:parallel-tests? #f
+        #:phases #~(modify-phases %standard-phases
+                     (replace 'configure
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (invoke "./configure"
+                                 (string-append "--prefix=" #$output)))))))
+      (native-inputs
+       (list bison flex))
+      (inputs
+       (list bzip2
+             openssl
+             perl
+             xz
+             zlib))
+      (home-page "https://github.com/vandry/mairix")
+      (synopsis "Program for indexing and searching email messages")
+      (description
+       "Mairix is a program for indexing and searching email messages stored in
+Maildir, MH, MMDF or mbox folders.")
+      (license license:gpl2))))
 
 (define-public go-gitlab.com-shackra-goimapnotify
   (package
@@ -1168,16 +1207,15 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.8.13")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/djcb/mu")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0y4f5p7pwmaj8733rjzg29038dw33057qlsbsq2wapvp24wcjymr"))))
+    (version "1.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/djcb/mu/releases/download/v"
+                           version "/mu-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0mj43lnxr11wg354q8svcqjc403b36igb7ia406yavw6xfk46w9f"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1195,6 +1233,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                            (guix build emacs-utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-system
+            (lambda _
+              (substitute* "lib/meson.build"
+                (("dependencies: \\[ lib_mu_message_dep" m)
+                 (string-append m ", thread_dep")))
+              (substitute* "lib/utils/meson.build"
+                (("dependencies: \\[glib_dep" m)
+                 (string-append m ", thread_dep")))))
           (add-after 'unpack 'patch-bin-references
             (lambda _
               (substitute* '("guile/tests/test-mu-guile.cc"

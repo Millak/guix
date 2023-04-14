@@ -40,6 +40,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -452,6 +453,58 @@ controls for certain tuners which may be paired with an audio device.")
       (description
        "This package provides HackRF devices support to the SoapySDR library.")
       (license license:expat))))
+
+(define-public soapymultisdr
+  (let ((commit "e8bd3298afaec04cb7ce2c8c516cb9cd8bd3bc9d")
+        (revision "1"))
+    (package
+      (name "soapymultisdr")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyMultiSDR")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0f7d39s2zpgfi677i2aqp4zkf5c6cv8mpm7w8s7xj45bfhf94acl"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list soapysdr))
+      (home-page "https://github.com/pothosware/SoapyMultiSDR")
+      (synopsis "Multi-device support module for SoapySDR")
+      (description
+       "This is a SoapySDR module to use multiple supported devices under
+a single device wrapper.")
+      (license license:boost1.0))))
+
+(define-public soapyremote
+  (let ((commit "f375555e7380acfd2517acde598e2e553e08df88")
+        (revision "1"))
+    (package
+      (name "soapyremote")
+      (version (git-version "0.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyRemote")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0whn87wck7agsk3af4lh7nyyjn0ncs3xdny4vsd94qbjikfl6x5z"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list avahi soapysdr))
+      (arguments
+       '(#:tests? #f)) ; No test suite
+      (home-page "https://github.com/pothosware/SoapyRemote")
+      (synopsis "Remote support for Soapy SDR")
+      (description
+       "This is a SoapySDR module to use a supported device transparently over
+a local network link.")
+      (license license:boost1.0))))
 
 (define-public soapyrtlsdr
   (package
@@ -1457,7 +1510,7 @@ instances over the network, and general QSO and DXpedition logging.")
 (define-public wsjtx
   (package
     (name "wsjtx")
-    (version "2.5.4")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -1466,21 +1519,26 @@ instances over the network, and general QSO and DXpedition logging.")
              (commit (string-append "wsjtx-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nciw9smrfcsirlwyny5r9h7sk2zvm40m56y1hxpgpmbnh6mqikh"))))
+        (base32 "1lqd77v9xm58k9g9kfwxva3mmzm1yyk1v27nws5j1a293zfg2hkw"))))
     (build-system qt-build-system)
-    (native-inputs
-     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
-    (inputs
-     `(("boost" ,boost)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("hamlib" ,wsjtx-hamlib)
-       ("libusb" ,libusb)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtserialport" ,qtserialport)))
     (arguments
-     `(#:tests? #f)) ; No test suite
+     (list #:tests? #f)) ; No test suite
+    (native-inputs
+     (list asciidoc
+           gfortran
+           pkg-config
+           qttools-5
+           ruby-asciidoctor))
+    (inputs
+     (list boost
+           fftw
+           fftwf
+           libusb
+           qtbase-5
+           qtmultimedia-5
+           qtserialport
+           wsjtx-hamlib))
+    (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
     (synopsis "Weak-signal ham radio communication program")
     (description
      "WSJT-X implements communication protocols or modes called FT4, FT8,
@@ -1488,7 +1546,6 @@ JT4, JT9, JT65, QRA64, ISCAT, MSK144, and WSPR, as well as one called Echo for
 detecting and measuring your own radio signals reflected from the Moon.  These
 modes were all designed for making reliable, confirmed QSOs under extreme
 weak-signal conditions.")
-    (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
     (license license:gpl3)))
 
 (define-public jtdx
@@ -2160,7 +2217,7 @@ program that can be used to build simple signal processing flow graphs.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/glv2/convert-samples")
+             (url "https://codeberg.org/glv/convert-samples")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -2192,7 +2249,7 @@ Supported formats:
 @item cu32: complex made of unsigned 32 bit integers
 @item cf32: complex made of 32 bit floats
 @end itemize")
-    (home-page "https://github.com/glv2/convert-samples")
+    (home-page "https://codeberg.org/glv/convert-samples")
     (license license:gpl3+)))
 
 (define-public serialdv

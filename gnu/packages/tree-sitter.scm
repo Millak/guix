@@ -301,6 +301,13 @@ will be used in description and synopsis."
        #:commit commit
        #:license (list license:asl2.0 license:expat))))
 
+(define-public tree-sitter-heex
+  (tree-sitter-grammar
+   "heex" "Heex"
+   "00330rgg67fq0d9gk1yswj78d9mn1jvvjmmy1k7cxpvm5993p3sw"
+   "0.6.0"
+   #:repository-url "https://github.com/phoenixframework/tree-sitter-heex"))
+
 (define-public tree-sitter-bash
   (tree-sitter-grammar
    "bash" "Bash"

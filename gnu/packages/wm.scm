@@ -134,6 +134,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages pciutils)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -747,7 +748,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.3.1")
+    (version "3.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -755,7 +756,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "1m0jl9d2ikwb1s2cpm3q7f73h84mai9y31k8bhsq8y47jbkc6slk"))))
+                "1mp1xl64sin3d4nkh19qmnic1c9qcwf9v7mkzji76pg3mzd823jg"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
@@ -1061,6 +1062,28 @@ drags, snap-to-border support, and virtual desktops.")
 and easy to handle yet full of features to make an easy and fast desktop
 experience.")
     (home-page "http://fluxbox.org/")
+    (license license:expat)))
+
+(define-public fbautostart
+  (package
+    (name "fbautostart")
+    (version "2.718281828")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/paultag/fbautostart.git")
+                     (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "13h6j5khi5axqhflzhayzgvyhxylmk5vsgin235ji440mzd516gz"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake))
+    (synopsis "XDG autostarter for Fluxbox window manager")
+    (description "This package provides an autostarter complaint with
+the XDG Autostart specification.")
+    (home-page "https://github.com/paultag/fbautostart")
     (license license:expat)))
 
 (define-public fnott
@@ -1396,7 +1419,7 @@ It is inspired by Xmonad and dwm.  Its major features include:
                 (mkdir-p xsessions)
                 (make-desktop-entry-file
                  (string-append xsessions "/cwm.desktop")
-                 #:name: cwm
+                 #:name "cwm"
                  #:exec (string-append #$output "/bin/cwm")
                  #:try-exec (string-append #$output "/bin/cwm")
                  #:comment '((#f "OpenBSD Calm Window Manager fork")))))))))
@@ -1789,7 +1812,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.16")
+    (version "0.9.17")
     (source
      (origin
        (method git-fetch)
@@ -1798,7 +1821,7 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06vwsax8z6vvvav4c1d40nfiljc7h1cla57r43nv8dw86n539ic5"))))
+        (base32 "1709ck7931804mhirnki03cvx60c4dxg668fyz6jpzy8djg5xlxi"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -1810,6 +1833,7 @@ compository, supporting the following featuers:
                   libmpdclient
                   libnl
                   libxml2
+                  playerctl
                   pulseaudio
                   spdlog
                   wayland))
@@ -1848,6 +1872,14 @@ to see how many cores are active, compared to having a bar for each
 core/thread.")
     (home-page "https://github.com/plattfot/cpu-histogram/")
     (license license:expat)))
+
+(define-public waybar-experimental
+  (let ((base waybar))
+    (package/inherit base
+      (name "waybar-experimental")
+      (arguments
+       (list #:configure-flags #~(list "-Dexperimental=true")))
+      (synopsis "Waybar with experimental features"))))
 
 (define-public wlr-randr
   (package

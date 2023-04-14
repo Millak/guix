@@ -13,7 +13,7 @@
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
@@ -44,6 +44,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
@@ -291,7 +292,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.11.1")
+    (version "3.11.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -299,7 +300,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1qhbirv1rbznv99ha0pa0zybvcsn0dsz2xfc65vr8bgrm77v63kd"))))
+                "1k744nwfa5sj4amzsdjxgac83wh6xfb9xi7z5bka7ic1jik7gw5i"))))
     (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -596,7 +597,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "9.1.1")
+    (version "9.2.0")
     (source
      (origin
        (method url-fetch)
@@ -604,7 +605,7 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0fbd1vj4cj19kwh03vdn0a4hr0xaacvi876yyyw5xfsj1q0x8g00"))))
+         "03nm1sgvh237my7ss6kayn6887cbnayvjxrrxsrfcakkmbsida6y"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config))
     (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
@@ -698,14 +699,14 @@ projections.")
 (define-public python-pyproj
   (package
     (name "python-pyproj")
-    (version "3.4.0")
+    (version "3.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyproj" version))
         (sha256
           (base32
-            "0czbfl5dd7jckbwvinfwiwdb99sxj796gfn3a9zqbsdc4xcl8257"))))
+            "1xhvr0n5gb7v6x0wd7cqmc0zrky2fag7bq2shx6l2qqq3icx2ncq"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -852,30 +853,24 @@ require a spatial database such as PostGIS.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1n8qjn184p5a2s3j6x6iyc1i7p3l3xnbqqxm6ajwgwv6j5fw1d5a"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ; TODO: Disable network tests
-               (invoke "pytest" "tests"
-                       "-k"
-                       (string-append
-                         ;; The following tests require network access.
-                         "not test_geocode_to_gdf"
-                         " and not test_stats"
-                         " and not test_osm_xml"
-                         " and not test_elevation"
-                         " and not test_routing"
-                         " and not test_plots"
-                         " and not test_find_nearest"
-                         " and not test_api_endpoints"
-                         " and not test_graph_save_load"
-                         " and not test_graph_from_functions"
-                         " and not test_geometries"))))))))
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+               ;; The following tests require network access.
+               "not test_geocode_to_gdf"
+               " and not test_stats"
+               " and not test_osm_xml"
+               " and not test_elevation"
+               " and not test_routing"
+               " and not test_plots"
+               " and not test_find_nearest"
+               " and not test_api_endpoints"
+               " and not test_graph_save_load"
+               " and not test_graph_from_functions"
+               " and not test_geometries"))))
     (propagated-inputs
       (list python-folium
             python-geopandas
@@ -1181,8 +1176,17 @@ utilities for data translation and processing.")
                (invoke "python" "-m" "pytest" "--pyargs" "cartopy"
                        ;; These tests require online data.
                        "-m" "not natural_earth and not network"
-                       ;; This one too but it's not marked as such.
-                       "-k" "not test_gridliner_labels_bbox_style")))))))
+                       "-k"
+                       (string-append
+                         ;; This one too but it's not marked as such.
+                         "not test_gridliner_labels_bbox_style"
+                         ;; Those tests fail with proj 9.2.0
+                         ;; https://github.com/SciTools/cartopy/issues/2145
+                         " and not test_epsg"
+                         " and not test_default"
+                         " and not test_eccentric_globe"
+                         " and not test_ellipsoid_transform"
+                         " and not test_eccentric_globe"))))))))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
@@ -1644,14 +1648,14 @@ persisted.
 (define-public python-rtree
   (package
     (name "python-rtree")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Rtree" version))
        (sha256
-        (base32 "10lnhf67c9pb0yisxdqmb52dy6lj1za1h9d4p69v0ihk2a138j6h"))))
-    (build-system python-build-system)
+        (base32 "0aalh07fyf6vpr0a6zswnqvvrjhyic1zg6w4bl368fihkilj2892"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1661,11 +1665,7 @@ persisted.
                (substitute* "rtree/finder.py"
                  (("find_library\\(\"spatialindex_c\"\\)")
                   (string-append  "\"" libspatialindex
-                                  "/lib/libspatialindex_c.so\""))))))
-         (replace 'check
-           (lambda* (#:key outputs tests? #:allow-other-keys)
-             (when tests?
-                 (invoke "pytest")))))))
+                                  "/lib/libspatialindex_c.so\"")))))))))
     (native-inputs
      (list python-numpy python-pytest python-wheel))
     (inputs
@@ -2462,14 +2462,14 @@ growing set of geoscientific methods.")
 (define-public qgis
   (package
     (name "qgis")
-    (version "3.26.2")
+    (version "3.30.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://qgis.org/downloads/qgis-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1hsq3wchsf7db7134fgg9xzzap35q1s4r6649d0krbw80xw5asca"))))
+        (base32 "0mdgqyqr3nswp5qfpjrpr35lxizcrz73a1gs3ddxsd1xr9amzb5s"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules ((guix build cmake-build-system)
@@ -2511,20 +2511,56 @@ growing set of geoscientific methods.")
                (("\\$\\(git rev-parse --show-toplevel\\)")
                 (getcwd)))))
          (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
+           (lambda* (#:key inputs outputs tests? parallel-tests?
+                     #:allow-other-keys)
              (when tests?
              (setenv "HOME" "/tmp")
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
              (setenv "TRAVIS" "true")
              (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
+             (let* ((out (assoc-ref outputs "out"))
+                    (grass-version ,(package-version grass))
+                    (grass-majorminor (string-join
+                                       (list-head
+                                        (string-split grass-version #\.) 2)
+                                       ""))
+                    (grass (string-append (assoc-ref inputs "grass")
+                                          "/grass" grass-majorminor)))
+               (setenv "GISBASE" grass))
              (invoke "ctest"
+                     "-j" (if parallel-tests?
+                              (number->string (parallel-job-count))
+                              "1")
                      "-E" (string-join
                            '(;; Disable tests that require network access
+                             "PyQgsExternalStorageAwsS3"
+                             "PyQgsExternalStorageWebDav"
                              "qgis_filedownloader"
+                             "test_core_networkaccessmanager"
+                             "test_core_tiledownloadmanager"
+                             "test_gui_filedownloader"
+                             "test_provider_wcsprovider"
+                             ;; Disable tests that need OGR built with
+                             ;; libspatialite support
+                             "PyQgsAttributeTableModel"
+                             "PyQgsOGRProviderSqlite"
+                             "PyQgsWFSProvider"
+                             "PyQgsOapifProvider"
+                             ;; Disable tests that need Python compiled
+                             ;; with loadable SQLite extensions.
+                             "PyQgsFieldFormattersTest"
+                             "PyQgsSpatialiteProvider"
+                             "PyQgsLayerDependencies"
+                             "PyQgsDBManagerGpkg"
+                             "PyQgsDBManagerSpatialite"
+                             ;; Disable tests that need poppler (with Cairo)
+                             "PyQgsLayoutExporter"
+                             "PyQgsPalLabelingLayout"
+                             ;; Disable tests that need Orfeo ToolBox
+                             "ProcessingOtbAlgorithmsTest"
                              ;; TODO: Find why the following tests fail
                              "ProcessingQgisAlgorithmsTestPt1"
-                             "ProcessingQgisAlgorithmsTestPt2"
                              "ProcessingQgisAlgorithmsTestPt3"
                              "ProcessingQgisAlgorithmsTestPt4"
                              "ProcessingGdalAlgorithmsRasterTest"
@@ -2533,68 +2569,42 @@ growing set of geoscientific methods.")
                              "ProcessingGrass7AlgorithmsRasterTestPt1"
                              "ProcessingGrass7AlgorithmsRasterTestPt2"
                              "ProcessingGrass7AlgorithmsVectorTest"
-                             "ProcessingOtbAlgorithmsTest"
                              "test_core_authmanager"
                              "test_core_compositionconverter"
-                             "test_core_coordinatereferencesystem"
+                             "test_core_expression"
                              "test_core_gdalutils"
-                             "test_core_labelingengine"
-                             "test_core_layout"
-                             "test_core_layouthtml"
-                             "test_core_layoutlabel"
-                             "test_core_layoutmultiframe"
                              "test_core_layoutpicture"
-                             "test_core_legendrenderer"
-                             "test_core_networkaccessmanager"
-                             "test_core_rasterfilewriter"
-                             "test_core_tiledownloadmanager"
-                             "test_gui_dualview"
-                             "test_gui_htmlwidgetwrapper"
-                             "test_gui_filedownloader"
+                             "test_core_pointcloudlayerexporter"
+                             "test_core_projectstorage"
+                             "test_core_coordinatereferencesystem"
                              "test_gui_queryresultwidget"
+                             "test_provider_copcprovider"
+                             "test_analysis_processingalgspt1"
                              "test_analysis_processingalgspt2"
                              "test_analysis_processing"
-                             "test_provider_wcsprovider"
-                             "qgis_grassprovidertest7"
-                             "test_app_gpsinformationwidget"
+                             "test_app_gpsintegration"
                              "PyQgsAnnotation"
-                             "PyQgsAttributeTableModel"
                              "PyQgsAuthenticationSystem"
-                             "PyQgsExternalStorageWebDAV"
-                             "PyQgsFieldFormattersTest"
+                             "PyQgsDatumTransform"
                              "PyQgsFileUtils"
                              "PyQgsGeometryTest"
                              "PyQgsGoogleMapsGeocoder"
+                             "PyQgsGroupLayer"
                              "PyQgsHashLineSymbolLayer"
-                             "PyQgsLayoutExporter"
                              "PyQgsLayoutHtml"
                              "PyQgsLineSymbolLayers"
                              "PyQgsMapLayer"
-                             "PyQgsNetworkContentFetcherRegistry"
                              "PyQgsOGRProviderGpkg"
-                             "PyQgsOGRProviderSqlite"
-                             "PyQgsPalLabelingCanvas"
-                             "PyQgsPalLabelingLayout"
-                             "PyQgsPalLabelingPlacement"
-                             "PyQgsProcessExecutable"
+                             "PyQgsProcessExecutablePt1"
+                             "PyQgsProcessExecutablePt2"
                              "PyQgsProviderConnectionGpkg"
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsOGRProvider"
-                             "PyQgsSpatialiteProvider"
                              "PyQgsVectorFileWriter"
                              "PyQgsVectorLayerEditBuffer"
-                             "PyQgsVectorLayerEditBufferGroup"
-                             "PyQgsVectorLayerProfileGenerator"
                              "PyQgsVirtualLayerProvider"
-                             "PyQgsWFSProvider"
-                             "PyQgsWFSProviderGUI"
-                             "PyQgsOapifProvider"
-                             "PyQgsLayerDependencies"
-                             "PyQgsDBManagerGpkg"
-                             "PyQgsDBManagerSpatialite"
                              "PyQgsAuxiliaryStorage"
                              "PyQgsSelectiveMasking"
-                             "qgis_shellcheck"
                              "qgis_sipify"
                              "qgis_sip_include"
                              "qgis_sip_uptodate")
@@ -2663,6 +2673,7 @@ growing set of geoscientific methods.")
            qtdeclarative-5
            qtkeychain
            qtlocation
+           qtmultimedia-5
            qtserialport
            qtsvg-5
            qwt

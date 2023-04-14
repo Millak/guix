@@ -1201,15 +1201,7 @@ use 'plain-file' instead~%")
 
     ;; By default, applications that use D-Bus, such as Emacs, abort at startup
     ;; when /etc/machine-id is missing.  Make sure these warnings are non-fatal.
-    ("DBUS_FATAL_WARNINGS" . "0")
-
-    ;; XXX: Normally we wouldn't need to do this, but our glibc@2.23 package
-    ;; used to look things up in 'PREFIX/lib/locale' instead of
-    ;; '/run/current-system/locale' as was intended.  Keep this hack around so
-    ;; that people who still have glibc@2.23-using packages in their profiles
-    ;; can use them correctly.
-    ;; TODO: Remove when glibc@2.23 is long gone.
-    ("GUIX_LOCPATH" . "/run/current-system/locale")))
+    ("DBUS_FATAL_WARNINGS" . "0")))
 
 ;; Ensure LST is a list of <setuid-program> records and warn otherwise.
 (define-with-syntax-properties (ensure-setuid-program-list (lst properties))

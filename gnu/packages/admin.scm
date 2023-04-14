@@ -3438,6 +3438,52 @@ throughput (in the same interval).")
     (home-page "http://dag.wiee.rs/home-made/dstat/")
     (license license:gpl2+)))
 
+(define-public dool
+  (package
+    (name "dool")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scottchiefbaker/dool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "dool" version))
+       (sha256
+        (base32 "13qq52lq7z3pl2mgrhwqh8c69p9x5rkyjqjswszd6vdbzm7zk7yq"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-symlinks-and-snap-packaging
+            ;; Remove symlinks that make 'ensure-no-mtimes-pre-1980 fail.
+            (lambda _
+              (delete-file "examples/dstat.py")
+              (delete-file-recursively "packaging/snap")))
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (substitute* "install.py"
+                (("(bin_dir *= ?).*" _ prefix)
+                 (string-append prefix  "\"" #$output "/bin/\"\n"))
+                (("(plugin_dir *= ?).*" _ prefix)
+                 (string-append prefix "\"" #$output "/share/dool/\"\n"))
+                (("(manpage_dir *= ?).*" _ prefix)
+                 (string-append prefix "\"" #$output "/share/man/man1/\"\n")))
+              (invoke "python" "install.py" "--root")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./dool" "--version")
+                (invoke "./dool" "-taf" "1" "5")))))))
+    (synopsis "Command line system resource monitoring tool")
+    (description "Dool is a command line tool to monitor many aspects of your
+system: CPU, Memory, Network, Load Average, etc.  It also includes a robust
+plug-in architecture to allow monitoring other system metrics.")
+    (home-page "https://github.com/scottchiefbaker/dool")
+    (license license:gpl2+)))
+
 (define-public thefuck
   (package
     (name "thefuck")
@@ -3512,7 +3558,7 @@ produce uniform output across heterogeneous networks.")
 (define-public cbatticon
   (package
     (name "cbatticon")
-    (version "1.6.10")
+    (version "1.6.13")
     (source
      (origin
        (method git-fetch)
@@ -3520,7 +3566,7 @@ produce uniform output across heterogeneous networks.")
              (url "https://github.com/valr/cbatticon")
              (commit version)))
        (sha256
-        (base32 "0ivm2dzhsa9ir25ry418r2qg2llby9j7a6m3arbvq5c3kaj8m9jr"))
+        (base32 "1xs37xrycvk0021r5l3xs4ijgf3lm25d2zhm8dppb5kx66xcj22m"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -3935,7 +3981,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public uwufetch
   (package
     (name "uwufetch")
-    (version "2.0")
+    (version "2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3944,7 +3990,7 @@ you are running, what theme or icon set you are using, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s4pzaqmlq6rn54kgmlpcrc0sy3q5zn6lxh4448k9iimshljsjfs"))))
+                "182jwkm4vacz2bhyn7v4jl9bxs7md51az958r0qfp9ky71m2q3vh"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4152,7 +4198,7 @@ hard-coded.")
 (define-public thermald
   (package
     (name "thermald")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
       (method git-fetch)
@@ -4161,7 +4207,7 @@ hard-coded.")
              (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "06p1154w3n4lm0nq8fdsr6ksxl8shrc9z8yz0sbviss9afpawxcg"))))
+       (base32 "08w0lanhk2rncvshrvxrpm84y9f9x7aa63vxi7fg6329c94cf78k"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

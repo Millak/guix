@@ -59,6 +59,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages debian)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
@@ -87,6 +88,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages perl)
@@ -98,6 +100,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
@@ -117,6 +120,7 @@
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -1133,7 +1137,7 @@ written entirely in Python.")
 (define-public conan
   (package
     (name "conan")
-    (version "1.50.0")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)               ;no tests in PyPI archive
@@ -1143,104 +1147,113 @@ written entirely in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1jjrinz5wkcxfvwdpldrv4h7vacdyz88cc4af5vi3sdnjra0i0m5"))))
+         "1y4qmqnw3s8xv64lgp388qpj9vqharyfqi5s8dxvgsns6cafv7lf"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "conans/requirements.txt"
-               (("node-semver==0.6.1")
-                "node-semver>=0.6.1")
-               (("Jinja2>=2.9, <3")
-                "Jinja2>=2.9")
-               (("PyYAML>=3.11, <6.0")
-                "PyYAML"))))
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((coreutils (assoc-ref inputs "coreutils")))
-               ;; It seems that PATH is manipulated, as printenv is not found
-               ;; during tests.  Patch in its exact location.
-               (substitute* "conan/tools/env/environment.py"
-                 (("printenv")
-                  (string-append coreutils "/bin/printenv")))
-               (substitute* "conans/client/envvars/environment.py"
-                 (("#!/usr/bin/env")
-                  (string-append "#!" coreutils "/bin/env"))))))
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? outputs #:allow-other-keys)
-             (define system ,(or (%current-target-system)
-                                 (%current-system)))
-             (when tests?
-               (setenv "PATH" (string-append (getenv "PATH") ":"
-                                             (assoc-ref outputs "out") "/bin"))
-               (invoke "python" "-m" "pytest"
-                       "-n" "auto"      ;parallelize tests
-                       "-m" "not slow and not tool_svn"
-                       ;; Disable problematic tests.
-                       "-k"
-                       (string-append
-                        ;; These tests rely on networking.
-                        "not shallow_clone_remote "
-                        "and not remote_build "
-                        "and not download_retries_errors "
-                        "and not ftp "
-                        "and not build_local_different_folders "
-                        ;; These expect CMake available at fixed versions.
-                        "and not custom_cmake "
-                        "and not default_cmake "
-                        "and not bazel " ;bazel is not packaged
-                        ;; Guix sets PKG_CONFIG_PATH itself, which is not
-                        ;; expected by the following test.
-                        "and not pkg_config_path "
-                        "and not compare " ;caused by newer node-semver?
-                        ;; Guix is not currently a supported package manager.
-                        "and not system_package_tool "
-                        ;; These expect GCC 5 to be available.
-                        "and not test_reuse "
-                        "and not test_install "
-                        ;; The installed configure script trips on the /bin/sh
-                        ;; shebang.  We'd have to patch it in the Python code.
-                        "and not test_autotools "
-                        "and not test_use_build_virtualenv "
-                        ;; This test is architecture-dependent.
-                        "and not test_toolchain_linux "
-                        ;; This one fails for unknown reasons (see:
-                        ;; https://github.com/conan-io/conan/issues/9671).
-                        "and not test_build "
-                        ;; These tests expect the 'apt' command to be available.
-                        "and not test_apt_check "
-                        "and not test_apt_install_substitutes "
-                        (if (not (string-prefix? "x86_64" system))
-                            ;; These tests either assume the machine is
-                            ;; x86_64, or require a cross-compiler to target
-                            ;; it.
-                            (string-append
-                             "and not cpp_package "
-                             "and not exclude_code_analysis "
-                             "and not cmakedeps_multi "
-                             "and not locally_build_linux "
-                             "and not custom_configuration "
-                             "and not package_from_system "
-                             "and not cross_build_command "
-                             "and not test_package "
-                             "and not test_deleted_os "
-                             "and not test_same ")
-                            "")
-                        (if (not (or (string-prefix? "x86_64" system)
-                                     (string-prefix? "i686" system)))
-                            ;; These tests either assume the machine is i686,
-                            ;; or require a cross-compiler to target it.
-                            (string-append
-                             "and not vcvars_raises_when_not_found "
-                             "and not conditional_generators "
-                             "and not test_folders "
-                             "and not settings_as_a_dict_conanfile ")
-                            "")))))))))
+     (list
+      #:modules '((guix build python-build-system)
+                  (guix build utils)
+                  (ice-9 format))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; It seems that PATH is manipulated, as printenv is not found
+              ;; during tests.  Patch in its exact location.
+              (substitute* "conan/tools/env/environment.py"
+                (("printenv")
+                 (search-input-file inputs "bin/printenv")))))
+          (add-after 'unpack 'patch-hard-coded-GCC-references
+            (lambda _
+              ;; The test suite expects GCC 9 to be used (see:
+              ;; https://github.com/conan-io/conan/issues/13575).  Render the
+              ;; check version agnostic.
+              (substitute* "conans/test/functional/toolchains/meson/_base.py"
+                (("__GNUC__9")
+                 "__GNUC__"))))
+          (add-after 'unpack 'use-current-cmake-for-tests
+            (lambda _
+              (substitute* (find-files "conans/test" "\\.py$")
+                (("@pytest.mark.tool\\(\"cmake\", \"3.23\")")
+                 "@pytest.mark.tool(\"cmake\")"))))
+          (add-before 'check 'configure-tests
+            (lambda _
+              (let* ((cmake-version #$(version-major+minor
+                                       (package-version cmake)))
+                     (pkg-config-version #$(version-major+minor
+                                            (package-version pkg-config))))
+                (call-with-output-file "conans/test/conftest_user.py"
+                  (lambda (port)
+                    (format port "\
+tools_locations = {
+    'apt_get': {'disabled': True},
+    'bazel': {'disabled': True},
+    'cmake': {'default': '~a',
+              '3.15': {'disabled': True},
+              '3.16': {'disabled': True},
+              '3.17': {'disabled': True},
+              '3.19': {'disabled': True},
+              '~:*~a': {}},
+    'pkg_config': {'exe': 'pkg-config',
+                   'default': '~a',
+                   '~:*~a': {}},
+    'svn': {'disabled': True}}~%" cmake-version pkg-config-version))))))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (replace 'check
+            (lambda* (#:key tests? outputs #:allow-other-keys)
+              (define system #$(or (%current-target-system)
+                                   (%current-system)))
+              (when tests?
+                (setenv "CONFIG_SHELL" (which "sh"))
+                (setenv "PATH" (string-append (getenv "PATH") ":"
+                                              #$output "/bin"))
+                (invoke "python" "-m" "pytest" "-vv"
+                        "-n" (number->string (parallel-job-count))
+                        "-m" "not slow"
+                        ;; Disable problematic tests.
+                        "-k"
+                        (string-append
+                         ;; These tests rely on networking.
+                         "not download_retries_errors "
+                         "and not ftp "
+                         ;; Guix sets PKG_CONFIG_PATH itself, which is not
+                         ;; expected by the following test.
+                         "and not pkg_config_path "
+                         "and not compare " ;caused by newer node-semver?
+                         ;; This test hard-codes a compiler version.
+                         "and not test_toolchain "
+                         ;; The 'test_list' tests may fail
+                         ;; non-deterministically (see:
+                         ;; https://github.com/conan-io/conan/issues/13583).
+                         "and not test_list "
+                         ;; These tests fail when Autoconf attempt to load a
+                         ;; shared library in the same directory (see:
+                         ;; https://github.com/conan-io/conan/issues/13577).
+                         "and not test_other_client_can_link_autotools "
+                         "and not test_autotools_lib_template "
+                         (if (not (string-prefix? "x86_64" system))
+                             ;; These tests either assume the machine is
+                             ;; x86_64, or require a cross-compiler to target
+                             ;; it.
+                             (string-append
+                              "and not cpp_package "
+                              "and not exclude_code_analysis "
+                              "and not cmakedeps_multi "
+                              "and not locally_build_linux "
+                              "and not custom_configuration "
+                              "and not package_from_system "
+                              "and not cross_build_command "
+                              "and not test_package "
+                              "and not test_same ")
+                             "")
+                         (if (not (or (string-prefix? "x86_64" system)
+                                      (string-prefix? "i686" system)))
+                             ;; This test only works with default arch "x86",
+                             ;; "x86_64", "sparc" or "sparcv9".
+                             "and not settings_as_a_dict_conanfile "
+                             "")))))))))
     (propagated-inputs
      (list python-bottle
            python-colorama
@@ -1260,22 +1273,23 @@ written entirely in Python.")
            python-tqdm
            python-urllib3))
     (inputs
-     (list coreutils))       ;for printenv
+     (list coreutils))                  ;for printenv
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("cmake" ,cmake)
-       ("git" ,git-minimal)
-       ("meson" ,meson)
-       ("ninja",ninja)
-       ("pkg-config" ,pkg-config)
-       ("python-bottle" ,python-bottle)
-       ("python-mock" ,python-mock)
-       ("python-parameterized" ,python-parameterized)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-xdist" ,python-pytest-xdist)
-       ("python-webtest" ,python-webtest)
-       ("which" ,which)))
+     (list autoconf-wrapper
+           automake
+           cmake
+           git-minimal
+           libtool
+           meson
+           ninja
+           pkg-config
+           python-bottle
+           python-mock
+           python-parameterized
+           python-pytest
+           python-pytest-xdist
+           python-webtest
+           which))
     (home-page "https://conan.io")
     (synopsis "Decentralized C/C++ package manager")
     (description "Conan is a package manager for C and C++ developers that
@@ -1363,8 +1377,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "7c1eedfba9ef5ccc5651cd5e88662c158e594a2c")
-        (revision "73"))
+  (let ((commit "7f6db4b55411f79ab5f2639318dc5871c1452f00")
+        (revision "77"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1375,7 +1389,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1prsxj3n8ggv28fqk00yvnbvy0da0lq6m553fs636s8b2yjka8nj"))
+                  "07pi5yjgagv0xyz9f5cnfz1c06gzx1mpi17h3a1w5h6lp3kwqrv9"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1414,7 +1428,7 @@ environments.")
                                          "guile-gnutls"
                                          ,@(if (hurd-target?)
                                                '()
-                                               '("guile-fibers")))))
+                                               '("guile-fibers-next")))))
                       (wrap-program file
                         `("PATH" ":" prefix
                           (,bin
@@ -1455,7 +1469,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers-1.1
+             guile-fibers-next
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1479,7 +1493,7 @@ environments.")
               guile-gnutls)
         (if (hurd-target?)
             '()
-            (list guile-fibers-1.1))))
+            (list guile-fibers-next))))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1901,14 +1915,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.14.3")
+    (version "1.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "1gpfax92kpchmbr3cp1w0cw5xjdwv11i1g3g9hp8akc9rc64gw2r"))
+        (base32 "16b7f7n2mms6zgm0lj3fn86ny11xjn8cd3mrk1slwhvwnv8dnd4a"))
        (patches
         (search-patches "flatpak-fix-path.patch"
                         "flatpak-unset-gdk-pixbuf-for-sandbox.patch"))))
@@ -1959,10 +1973,12 @@ cp -r /tmp/locale/*/en_US.*")))
           ;; Many tests fail for unknown reasons, so we just run a few basic
           ;; tests.
           (replace 'check
-            (lambda _
-              (setenv "HOME" "/tmp")
-              (invoke "make" "check"
-                      "TESTS=tests/test-basic.sh tests/test-config.sh testcommon"))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "make" "check"
+                        "TESTS=tests/test-basic.sh tests/test-config.sh
+                        testcommon")))))))
     (native-inputs
      (list bison
            dbus ; for dbus-daemon
@@ -2002,6 +2018,88 @@ applications")
     (description "Flatpak is a system for building, distributing, and running
 sandboxed desktop applications on GNU/Linux.")
     (license license:lgpl2.1+)))
+
+(define-public fpm
+  (package
+    (name "fpm")
+    (version "1.15.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/jordansissel/fpm")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1m2zxf7wyk7psvm611yxs68hnwm0pyqilsmcq3x791hz7rvbg68w"))
+              (patches (search-patches "fpm-newer-clamp-fix.patch"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* '("lib/fpm/util.rb"
+                                  "spec/fpm/util_spec.rb"
+                                  "spec/fpm/package/rpm_spec.rb")
+                     (("\"/bin/sh\"")
+                      (string-append "\"" (search-input-file inputs "bin/sh")
+                                     "\"")))))
+               (add-after 'extract-gemspec 'relax-requirements
+                 (lambda _
+                   (substitute* "fpm.gemspec"
+                     (("\"clamp\", \"~> 1.0.0\"")
+                      "\"clamp\", \">= 1.0.0\""))))
+               (add-after 'extract-gemspec 'disable-problematic-tests
+                 ;; Disable some tests which are failing (see:
+                 ;; https://github.com/jordansissel/fpm/issues/2000).
+                 (lambda _
+                   ;; There are 4 'NoMethodError' test failures in the
+                   ;; command_spec suite, for unknown reasons.
+                   (delete-file "spec/fpm/command_spec.rb")
+                   (substitute* "spec/fpm/package_spec.rb"
+                     (("@oldtmp = ENV\\[\"TMP\"]" all)
+                      "skip('fails with guix')"))
+                   (substitute* "spec/fpm/package/cpan_spec.rb"
+                     ;; This test is marked as expected to fail (pending) when
+                     ;; TRAVIS_OS_NAME is set, but passes with Guix; skip it.
+                     (("it \"should unpack tarball containing" all)
+                      (string-append "x" all)))
+                   (substitute* "spec/fpm/package/gem_spec.rb"
+                     ;; This test fails for unknown reason; perhaps a patched
+                     ;; shebang.
+                     (("it 'should not change the shebang'" all)
+                      (string-append "x" all)))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Set TRAVIS_OS_NAME to skip tests known to cause
+                     ;; problems in minimal environments.
+                     (setenv "TRAVIS_OS_NAME" "GNU Guix")
+                     (invoke "rspec")))))))
+    (native-inputs
+     (list dpkg
+           libarchive
+           node
+           perl-app-cpanminus
+           python
+           ruby-rspec
+           squashfs-tools
+           zstd))
+    (inputs
+     (list bash-minimal
+           ruby-arr-pm
+           ruby-backports
+           ruby-cabin
+           ruby-clamp
+           ruby-pleaserun
+           ruby-rexml
+           ruby-stud))
+    (home-page "https://github.com/jordansissel/fpm/")
+    (synopsis "Package building and mangling tool")
+    (description "@command{fpm} is a command to convert directories, RPMs,
+Python eggs, Ruby gems, and more to RPMs, debs, Solaris packages and more.")
+    (license license:expat)))
 
 (define-public akku
   (package

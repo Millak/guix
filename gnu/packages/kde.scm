@@ -14,7 +14,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
-;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
@@ -221,7 +221,7 @@ browser for easy news reading.")
 (define-public kdenlive
   (package
     (name "kdenlive")
-    (version "22.08.3")
+    (version "22.12.3")
     (source
      (origin
        (method git-fetch)
@@ -230,7 +230,7 @@ browser for easy news reading.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1016mwgrf4dwb945pc2kqm2j8vq86r01s19miq0h4wdgbfxa496c"))))
+        (base32 "0n7ca6c4nqr9z8ix70qjxw0rivh3hgqd187k4k8vp812yb49qrin"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: there is a single test that spawns other tests and
@@ -411,9 +411,6 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
     (description "KDevelop-PG-Qt is the parser generator used in KDevplatform
 for some KDevelop language plugins (Ruby, PHP, CSS...).")
     (license license:lgpl2.0+)))
-
-;; kdevplatform was merged into kdevelop as of 5.2.x
-(define-deprecated kdevplatform kdevelop)
 
 (define-public kdiagram
   (package

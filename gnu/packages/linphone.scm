@@ -912,9 +912,6 @@ and video calls or instant messaging capabilities to an application.")
     (home-page "https://linphone.org/technical-corner/linphone")
     (license license:gpl3+)))
 
-(define-public linphoneqt
-  (deprecated-package "linphoneqt" linphone-desktop))
-
 (define-public msopenh264
   (let ((commit "88697cc95140017760d6da408cb0efdc5e86e40a")
         (revision "0"))

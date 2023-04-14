@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -458,7 +459,7 @@ lossless JPEG manipulations such as rotation, scaling or cropping:
            (lambda _
              ;; The Makefile uses optimization level 1, so the same
              ;; level is used here for consistency.
-             (invoke "gcc" "-shared" "-fPIC" "-O"
+             (invoke ,(cc-for-target) "-shared" "-fPIC" "-O"
                      ;; Common files.
                      "adapthuff.o" "image.o" "strcodec.o" "strPredQuant.o"
                      "strTransform.o" "perfTimerANSI.o"
@@ -469,7 +470,7 @@ lossless JPEG manipulations such as rotation, scaling or cropping:
                      "encode.o" "segenc.o" "strenc.o" "strFwdTransform.o"
                      "strPredQuantEnc.o"
                      "-o" "libjpegxr.so")
-             (invoke "gcc" "-shared" "-fPIC" "-O"
+             (invoke ,(cc-for-target) "-shared" "-fPIC" "-O"
                      ;; Glue files.
                      "JXRGlue.o" "JXRMeta.o" "JXRGluePFC.o" "JXRGlueJxr.o"
                      ;; Test files.
@@ -1290,7 +1291,7 @@ language bindings to VIGRA.")
 (define-public libwebp
   (package
     (name "libwebp")
-    (version "1.2.2")
+    (version "1.2.4")
     (source
      (origin
        ;; No tarballs are provided for >0.6.1.
@@ -1301,7 +1302,7 @@ language bindings to VIGRA.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1khqkm5j9aiii9jfsbxzzyz3x33sifzcx537cyjyb3a2g2rl969k"))))
+         "1jndbc99dd19a6d7h4ds51xyak7gfddkbi41nxdm8n23w7ks35r8"))))
     (build-system gnu-build-system)
     (inputs
      (list freeglut
@@ -1725,9 +1726,6 @@ and decompress to 32-bit and big-endian pixel buffers (RGBX, XBGR, etc.).")
     (license (list license:bsd-3        ;the TurboJPEG API library and programs
                    license:ijg          ;the libjpeg library and associated tools
                    license:zlib))))     ;the libjpeg-turbo SIMD extensions
-
-(define-deprecated libjpeg libjpeg-turbo)
-(export libjpeg)
 
 (define-public niftilib
   (package
@@ -2199,7 +2197,8 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                  (string-append #$gdk-pixbuf "/bin/gdk-pixbuf-thumbnailer")))))
           (add-after 'install 'install-readme
             (lambda _
-              (let ((doc (string-append #$output "/share/doc/libavif-" #$version)))
+              (let ((doc (string-append #$output "/share/doc/libavif-"
+                                        #$(package-version this-package))))
                 (install-file "../source/README.md" doc))))
           (add-after 'install 'split
             (lambda _

@@ -75,6 +75,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3636,7 +3637,7 @@ for common mesh file formats, and collision detection.")
   (package
     (inherit irrlicht)
     (name "irrlicht-for-minetest")
-    (version "1.9.0mt8")
+    (version "1.9.0mt10")
     (source
      (origin
        (method git-fetch)
@@ -3646,7 +3647,7 @@ for common mesh file formats, and collision detection.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1646pj40dqkzbbc2lxzbmq2pjyrkgggbi2lah6pa5mv420p402kg"))))
+         "0y5vchz91khs8dmrkpgc7sqmvzx2yjj6svivvm80r4yppv7s03rw"))))
     (build-system cmake-build-system)
     (arguments
      ;; No check target.
@@ -5799,7 +5800,7 @@ programmers may also add their own favorite language.")
 (define-public bambam
   (package
     (name "bambam")
-    (version "1.0.0")
+    (version "1.2.1")
     (source
       (origin
         (method git-fetch)
@@ -5808,7 +5809,7 @@ programmers may also add their own favorite language.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "18cwd1wpyyx8y61cags9bkdhx9x858xicc4y1c9c2s0xjmgzhl3i"))))
+         (base32 "148cqahklqd4m88j5z1xf3fh4vha41f31wian11hkas106mbsya9"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -6014,7 +6015,7 @@ for Un*x systems with X11.")
 (define-public freeciv
   (package
    (name "freeciv")
-   (version "3.0.6")
+   (version "3.0.7")
    (source
     (origin
      (method url-fetch)
@@ -6026,7 +6027,7 @@ for Un*x systems with X11.")
                   (version-major+minor version) "/" version
                   "/freeciv-" version ".tar.xz")))
      (sha256
-      (base32 "0hp4mkbcf5sipqkfjynls4m1qlh6kn0mp3jlqjrjwylmgcah3rs0"))))
+      (base32 "1i6sm2ich9bazbg8wjzn8z1c5hgmg541lgw8f899fgfhgvqhdrpn"))))
    (build-system gnu-build-system)
    (inputs
     (list curl cyrus-sasl gtk+ sdl-mixer zlib))
@@ -6920,7 +6921,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.12")
+    (version "1.15")
     (source
      (origin
        (method git-fetch)
@@ -6929,7 +6930,7 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07mg7cp12g27dw8sya17jqz6qp93q7c8zadsvym3w602z87g40in"))))
+        (base32 "0gair1dfqgzjzvsasisv2szh3wgy8pfgmpxpisybn6svn294yzhf"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7611,7 +7612,7 @@ Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom.")
        ("sdl-mixer" ,sdl2-mixer)
        ("zlib" ,zlib)
        ("libpng" ,libpng)
-       ("curl" ,curl-minimal)
+       ("curl" ,curl)
        ("alsa-lib" ,alsa-lib)))
     (home-page "https://odamex.net/")
     (synopsis "Multiplayer Doom port")
@@ -8256,7 +8257,7 @@ your score gets higher, you level up and the blocks fall faster.")
 (define-public endless-sky
   (package
     (name "endless-sky")
-    (version "0.9.16.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -8265,10 +8266,13 @@ your score gets higher, you level up and the blocks fall faster.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cb2g1cb0mk6x9gq2x7n10rxlfhsq8wnssk068j6h80al3hhybly"))))
-    (build-system scons-build-system)
+        (base32 "1zbizmigxdwpi3m7sxv9hhf3aa18kbhsfrp48zy3iw2v64pw9l3r"))))
+    (build-system cmake-build-system)
     (arguments
-     (list #:scons-flags #~(list (string-append "PREFIX=" #$output))
+     (list #:configure-flags #~(list "-DES_USE_VCPKG=0"
+                                     "-DES_USE_SYSTEM_LIBRARIES=1")
+           #:make-flags #~(list (string-append "PREFIX=" #$output))
+           #:build-type "Release"
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-paths
@@ -8277,11 +8281,8 @@ your score gets higher, you level up and the blocks fall faster.")
                    (substitute* "source/Files.cpp"
                      (("/usr/local") #$output))
                    ;; Install game binary into %out/bin.
-                   (substitute* "SConstruct"
-                     (("games\"") "bin\""))))
-               (add-before 'build 'use-gcc-ar
-                 ;; Use gcc-ar to support LTO.
-                 (lambda _ (setenv "AR" "gcc-ar"))))))
+                   (substitute* "CMakeLists.txt"
+                     (("games\\)") "bin)")))))))
     (inputs
      (list glew
            libjpeg-turbo
@@ -9094,7 +9095,7 @@ levels to unlock.")
 (define simgear
   (package
     (name "simgear")
-    (version "2020.3.17")
+    (version "2020.3.18")
     (source
      (origin
        (method url-fetch)
@@ -9102,7 +9103,7 @@ levels to unlock.")
                            (version-major+minor version) "/"
                            "simgear-" version ".tar.bz2"))
        (sha256
-        (base32 "0z1pkxs4fw8xkiainxgcpayhmn0b4c0sc2j6q88x66zzvk89qpjc"))
+        (base32 "1jin6rbz4s83x4k91lbdw5gb0vrc8frbmwpc55wl0wmiaqjwzhbc"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -9147,7 +9148,7 @@ and also provides the base for the FlightGear Flight Simulator.")
                            (version-major+minor version) "/"
                            "flightgear-" version ".tar.bz2"))
        (sha256
-        (base32 "0m0qbyf9i84avkfmjm1a5bijl1nqs7wnpw7rfz53ls52mkgdww36"))
+        (base32 "0dyyi1v97w3mdwsv9kdd194inz1461wqv3zy3wyai0n17wdf7a1r"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -9219,7 +9220,7 @@ and also provides the base for the FlightGear Flight Simulator.")
                                "FlightGear-" version "-data.txz"))
            (sha256
             (base32
-             "1s6qahfia3llghfqgx990brg7gbb7z7accsq528kcyp6k8mvlpia"))))))
+             "0f2jn2br27ahf5gggx70zcp80wrylahw7nbqdcx7ml9qphg6rjak"))))))
     (home-page "https://www.flightgear.org/")
     (synopsis "Flight simulator")
     (description "The goal of the FlightGear project is to create a
@@ -11014,7 +11015,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "1.0.0")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -11023,7 +11024,7 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bvp9xhzlh4d6q5jlvz4nciald75g9v0vahzax47q9xgajnbibzk"))))
+        (base32 "18hl84lapmqc810rnh2wkd4p2mnfcl4gbmg5sizakqcfpahgsl33"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

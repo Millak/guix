@@ -16,7 +16,7 @@
 ;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
-;; Copyright © 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;; Copyright © 2021, 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
@@ -25,6 +25,80 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "21564fada141bfba25d471518b293b6004244c3a")
+        (title
+         (en "Linux-libre LTS kernel updated to 6.1")
+         (de "Linux-libre LTS Kernel wird auf 6.1 aktualisiert"))
+        (body
+         (en "The default version of the @code{linux-libre-lts} kernel has been
+             updated to the 6.1 longterm release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre-lts}-Kernel basiert
+              jetzt auf der 6.1-Versionsreihe (Langzeitunterstützung).")))
+
+ (entry (commit "57db09aae73e3713a10c5253758d84e1046f80dc")
+        (title
+         (en "Using Guix within @command{guix shell --container}")
+         (de "Guix innerhalb @command{guix shell --container} nutzen")
+         (fr "Utilisation de Guix dans @command{guix shell --container}"))
+        (body
+         (en "The @option{--container} (or @option{-C}) option lets you spawn
+a container---an isolated software environment.  In some cases, it is useful
+to use Guix from within the container, something that is normally not
+possible.
+
+The new @option{--nesting} (or @option{-W}) option lets you do exactly that: a
+container created with that option will let you use @command{guix} commands,
+including @command{guix shell -C}, @emph{inside} of it.
+
+The example below shows how to evaluate a @file{guix.scm} file to build a
+package from within an isolated container, which is useful if @file{guix.scm}
+is untrusted:
+
+@example
+guix shell -CW -- guix build -f guix.scm
+@end example
+
+Run @command{info \"(guix) Invoking guix shell\"} for more information.")
+         (de "Mit der Befehlszeilenoption @option{--container} (oder
+@option{-C}) können Sie Container anlegen, also isolierte
+Software-Umgebungen.  Allerdings will man manchmal Guix innerhalb eines
+Containers nutzen, was unmöglich ist, wenn Sie es normal aufrufen.
+
+Die neue Befehlszeilenoption @option{--nesting} (oder @option{-W}) ergänzt
+genau das: In einem damit angelegten Container lassen sich
+@command{guix}-Befehle, einschließlich @command{guix shell -C}, @emph{im
+Container} benutzen.
+
+Folgendes Beispiel zeigt, wie Sie eine Datei @file{guix.scm} auswerten lassen,
+um ein Paket aus dem isolierten Container heraus erstellen zu lassen. Das
+können Sie gebrauchen, wenn Sie @file{guix.scm} @emph{nicht} vertrauen:
+
+@example
+guix shell -CW -- guix build -f guix.scm
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr
+zu erfahren.")
+         (fr "L'option @option{--container} (ou @option{-C}) permet de
+démarrer un conteneur---un environnement logiciel isolé.  Dans certains cas,
+il peut être utile d'utiliser Guix à l'intérieur du conteneur, ce qui n'est
+normalement pas possible.
+
+La nouvelle option @option{--nesting} (ou @option{-W}) résoud ce problème : un
+conteneur créé avec cette option permet d'utiliser des commandes
+@command{guix} à l'intérieur, y compris @command{guix shell -C}.
+
+L'exemple ci-dessous montre comment évaluer un fichier @file{guix.scm} pour
+construire un paquet depuis un conteneur isolé, ce qui est utile si
+@file{guix.scm} n'est pas de confiance :
+
+@example
+guix shell -CW -- guix build -f guix.scm
+@end example
+
+Lancer @command{info \"(guix.fr) Invoquer guix shell\"} pour plus
+d'informations.")))
 
  (entry (commit "0e18c5e5bcb9204c278cfc75493d3b02b746d5c3")
         (title

@@ -10,7 +10,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -91,7 +91,7 @@
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:configure-flags #~(list "--enable-python-library"
+      #:configure-flags #~(list "--disable-gtk2"
                                 "--enable-gtk-doc"
                                 "--enable-memconf"
                                 (string-append
@@ -186,10 +186,8 @@
                (string-append #$output:doc "/share/gtk-doc"))))
           (add-after 'wrap-program 'wrap-with-additional-paths
             (lambda* (#:key outputs #:allow-other-keys)
-              ;; Make sure 'ibus-setup' runs with the correct PYTHONPATH and
-              ;; GI_TYPELIB_PATH.
+              ;; Make sure 'ibus-setup' runs with the correct GI_TYPELIB_PATH.
               (wrap-program (search-input-file outputs "bin/ibus-setup")
-                `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
                 `("GI_TYPELIB_PATH" ":" prefix
                   (,(getenv "GI_TYPELIB_PATH")
                    ,(string-append #$output "/lib/girepository-1.0")))))))))
@@ -198,7 +196,6 @@
            dbus
            dconf
            glib
-           gtk+-2
            gtk+
            iso-codes
            json-glib
@@ -206,9 +203,6 @@
            libx11
            libxkbcommon
            libxtst
-           python-pygobject
-           python
-           python-dbus
            setxkbmap
            ucd
            unicode-cldr-common
@@ -244,11 +238,29 @@ may also simplify input method development.")
 
 (define-public ibus
   (package/inherit ibus-minimal
-    (arguments (substitute-keyword-arguments (package-arguments ibus-minimal)
-                 ((#:configure-flags flags)
-                  #~(cons* "--enable-gtk4" #$flags))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments ibus-minimal)
+       ((#:configure-flags flags)
+        #~(cons* "--enable-gtk4"
+                 "--enable-python-library"
+                 #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'wrap-with-additional-paths
+              (lambda* (#:key outputs #:allow-other-keys)
+                ;; Make sure 'ibus-setup' runs with the correct
+                ;; GUIX_PYTHONPATH and GI_TYPELIB_PATH.
+                (wrap-program (search-input-file outputs "bin/ibus-setup")
+                  `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH")
+                     ,(string-append #$output "/lib/girepository-1.0"))))))))))
     (inputs (modify-inputs (package-inputs ibus-minimal)
-              (prepend gtk pango)))
+              (prepend gtk
+                       pango
+                       python
+                       python-dbus
+                       python-pygobject)))
     (properties (alist-delete 'hidden? (package-properties ibus-minimal)))))
 
 (define-public ibus-libpinyin

@@ -260,6 +260,45 @@ unmaintained---to use the @code{inotify} API instead of the deprecated
 @code{dnotify} to monitor file changes.")
     (license license:gpl2+)))
 
+(define-public avfs
+  (package
+    (name "avfs")
+    (version "1.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/avf/avfs/" version
+                                  "/avfs-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1kvjaaj2dlps98alpc8rhnzhk4vriw46f3y7b2h0jq2d21j3p7xd"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--enable-library" "--enable-fuse")))
+    (native-inputs (list pkg-config))
+    (inputs (list xz fuse))
+    (synopsis "Virtual file system that allows browsing of compressed files")
+    (description
+     "AVFS is a FUSE-based filesystem that allows browsing of compressed
+files.  It provides the @command{mountavfs} command that starts a small
+@command{avfsd} daemon.  When a specially formatted path under @file{~/.avfs}
+is accessed, the daemon provides listings and content access on the fly.  The
+canonical form of virtual file name is:
+
+@example
+[basepath]#handler[options][:parameters][/internalpath]
+@end example
+
+Example file names:
+@itemize
+@item @file{~/.avfs/home/user/archive.tar.gz#ugz#utar/path/file}
+@item @file{~/.avfs/#http:localhost|some|path}
+@end itemize
+
+@code{emacs-dired-hacks} has @code{dired-avfs} module which enables seamless
+integration with @code{avfs}.")
+    (home-page "http://avf.sourceforge.net/")
+    (license license:gpl2+)))
+
 (define-public davfs2
   (package
     (name "davfs2")
@@ -434,6 +473,80 @@ significantly increases the risk of irreversible data loss!")
     ;; Please follow <https://github.com/cosmos72/fstransform/issues/46>.
     (license (list license:gpl2         ; fsattr/src/e4attr.* → sbin/fsattr
                    license:gpl3+))))    ; the rest
+
+(define-public gocryptfs
+  (package
+    (name "gocryptfs")
+    (version "2.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rfjakob/gocryptfs")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1m0xk5imkx81i1l4wv1j1xh9ckp0gqssq4v46pkkcq2xlv2dvxlr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rfjakob/gocryptfs"
+      #:build-flags
+      #~(list
+         "-ldflags" (string-append
+                     "-X main.GitVersion=" #$version
+                     " -X main.GitVersionFuse=" #$(package-version
+                                                   go-github-com-hanwen-go-fuse-v2)
+                     " -X main.BuildDate=" "[reproducible]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; after 'check phase, should maybe unmount leftover mounts as in
+          ;; https://github.com/rfjakob/gocryptfs/blob/a55b3cc15a6d9bce116a90f33df4bc99d9dd6a10/test.bash#L28
+          (replace 'build
+            (lambda arguments
+              (for-each
+               (lambda (directory)
+                 (apply (assoc-ref %standard-phases 'build)
+                        (append arguments (list #:import-path directory))))
+               (list
+                "github.com/rfjakob/gocryptfs"
+                "github.com/rfjakob/gocryptfs/gocryptfs-xray"
+                "github.com/rfjakob/gocryptfs/contrib/statfs"
+                "github.com/rfjakob/gocryptfs/contrib/findholes"
+                "github.com/rfjakob/gocryptfs/contrib/atomicrename")))))))
+    (native-inputs (list
+                    go-github-com-hanwen-go-fuse-v2
+                    go-github-com-aperturerobotics-jacobsa-crypto
+                    go-github-com-jacobsa-oglematchers
+                    go-github-com-jacobsa-oglemock
+                    go-github-com-jacobsa-ogletest
+                    go-github-com-jacobsa-reqtrace
+                    go-github-com-pkg-xattr
+                    go-github-com-rfjakob-eme
+                    go-github-com-sabhiram-go-gitignore
+                    go-github-com-spf13-pflag
+                    go-golang-org-x-crypto
+                    go-golang-org-x-net
+                    go-golang-org-x-sys
+                    go-golang-org-x-term
+                    openssl
+                    pkg-config))
+    (home-page "https://github.com/rfjakob/gocryptfs")
+    (synopsis "Encrypted overlay filesystem")
+    (description
+     "Gocryptfs is an encrypted overlay filesystem written in Go.  It
+features a file-based encryption that is implemented as a mountable
+FUSE filesystem.
+
+Gocryptfs was inspired by EncFS and strives to fix its security issues
+while providing good performance.  Gocryptfs is as fast as EncFS in the
+default mode and significantly faster than paranoia mode in EncFS,
+which provides a security level comparable to Gocryptfs.
+
+On CPUs without AES-NI, gocryptfs uses OpenSSL through a thin wrapper
+called stupidgcm.  This provides a 4x speedup compared to Go's builtin
+AES-GCM implementation.")
+    (license license:expat)))
 
 (define-public gphotofs
   (package

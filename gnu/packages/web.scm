@@ -3544,16 +3544,18 @@ object knows about.")
 (define-public perl-http-daemon
   (package
     (name "perl-http-daemon")
-    (version "6.01")
+    (version "6.14")
     (source (origin
              (method url-fetch)
              (uri (string-append
-                   "mirror://cpan/authors/id/G/GA/GAAS/HTTP-Daemon-"
+                   "mirror://cpan/authors/id/O/OA/OALDERS/HTTP-Daemon-"
                    version ".tar.gz"))
              (sha256
               (base32
-               "1hmd2isrkilf0q0nkxms1q64kikjmcw9imbvrjgky6kh89vqdza3"))))
+               "079fkcq2vdrzdf0bml52kz73n9gdv1xg0qf72c9v505v7izpwxph"))))
     (build-system perl-build-system)
+    (native-inputs
+     (list perl-module-build perl-test-needs))
     (propagated-inputs
      (list perl-http-message perl-lwp-mediatypes))
     (license license:perl-license)
@@ -3616,7 +3618,7 @@ processing of request data as it arrives.")
 (define-public perl-http-message
   (package
     (name "perl-http-message")
-    (version "6.18")
+    (version "6.37")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3624,10 +3626,10 @@ processing of request data as it arrives.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "04lih0fn89jpyk74c4aq1rzq18h8v4zd3x0lik2r9dl8sdqd2q6h"))))
+               "00nq0xnpdba4valzgvzy3fgvck1ijrksdyzb4w9q6j72hl5dln8f"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-try-tiny))
+     (list perl-test-needs perl-try-tiny))
     (propagated-inputs
      (list perl-encode-locale perl-http-date perl-io-html
            perl-lwp-mediatypes perl-uri))
@@ -3855,14 +3857,14 @@ and IPv6 sockets, intended as a replacement for IO::Socket::INET.")
 (define-public perl-io-socket-ssl
   (package
     (name "perl-io-socket-ssl")
-    (version "2.074")
+    (version "2.081")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/S/SU/SULLR/"
                                   "IO-Socket-SSL-" version ".tar.gz"))
               (sha256
                (base32
-                "0cm810ys5az6z3h3pql71jpliva1gfd0dxwwh4lx194xwimnnj1n"))))
+                "0hw4c62abq0cs3ixi0ws96i2y0fij3452514dlqn7d6nm0kgig87"))))
     (build-system perl-build-system)
     (propagated-inputs
      (list perl-net-ssleay
@@ -6518,6 +6520,32 @@ internetarchive python module for programmatic access to archive.org.")
       (synopsis "Search code snippets on @url{https://commandlinefu.com}")
       (description "@code{clf} is a command line tool for searching code
 snippets on @url{https://commandlinefu.com}.")
+      (license license:expat))))
+
+(define-public nntpit
+  (let ((commit "c0d654736460d174a680b2e06c3a81ce883fc09a")
+        (revision "0"))
+    (package
+      (name "nntpit")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/taviso/nntpit")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1kkdh2qpkfw97hzw9jsxy5jzmhhv8261bj63mvr5c9qwlp6qs46g"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake glib pkg-config))
+      (inputs (list curl json-c libev))
+      (synopsis "Minimal reddit2nntp gateway server")
+      (description
+       "This is a simple reddit2nntp gateway server that lets you use a newsreader
+ to follow discussions on reddit.  The intention is for you to run it locally,
+ tell your newsreader to connect to localhost, and subreddits will appear as newsgroups!")
+      (home-page "https://github.com/taviso/nntpit")
       (license license:expat))))
 
 (define-public rss-bridge

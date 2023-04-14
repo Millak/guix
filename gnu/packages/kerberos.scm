@@ -31,16 +31,20 @@
 
 (define-module (gnu packages kerberos)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages openldap)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages readline)
@@ -169,7 +173,7 @@ After installation, the system administrator should generate keys using
 (define-public heimdal
   (package
     (name "heimdal")
-    (version "7.7.0")
+    (version "7.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -177,14 +181,16 @@ After installation, the system administrator should generate keys using
                     "heimdal-" version "/" "heimdal-" version ".tar.gz"))
               (sha256
                (base32
-                "06vx3cb01s4lv3lpv0qzbbj97cln1np1wjphkkmmbk1lsqa36bgh"))
+                "0f4dblav859p5hn7b2jdj1akw6d8p32as6bj6zym19kghh3s51zx"))
+              (patches
+               (search-patches "heimdal-CVE-2022-45142.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   (substitute* "configure"
                     (("User=.*$") "User=Guix\n")
                     (("Host=.*$") "Host=GNU")
-                    (("Date=.*$") "Date=2019\n"))))))
+                    (("Date=.*$") "Date=2022\n"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -249,15 +255,19 @@ After installation, the system administrator should generate keys using
                           (format #t "#!~a~%exit 1~%" (which "sh")))))))
        ;; Tests fail when run in parallel.
        #:parallel-tests? #f))
-    (native-inputs (list e2fsprogs ;for 'compile_et'
+    (native-inputs (list bison
+                         e2fsprogs      ;for 'compile_et'
+                         flex
                          texinfo
-                         unzip ;for tests
-                         perl))
+                         unzip          ;for tests
+                         pkg-config
+                         python))
     (inputs (list readline
                   bash-minimal
                   bdb
-                  e2fsprogs ;for libcom_err
-                  mit-krb5
+                  e2fsprogs             ;for libcom_err
+                  libcap-ng
+                  openldap
                   sqlite))
     (home-page "http://www.h5l.org/")
     (synopsis "Kerberos 5 network authentication")

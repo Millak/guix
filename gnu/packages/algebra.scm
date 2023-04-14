@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -34,6 +34,7 @@
 (define-module (gnu packages algebra)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -58,6 +59,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -224,7 +226,7 @@ the real span of the lattice.")
 (define-public pari-gp
   (package
     (name "pari-gp")
-    (version "2.15.2")
+    (version "2.15.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -232,7 +234,7 @@ the real span of the lattice.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1pg0przhb3cgyn0rwkx2mx7a7fpy6bxxl72bk98pca723q8jhimh"))))
+                "0s4jasvb3ghvxp9s2ifmr0lk7ckj9529zg28icmdgbyd723abxdd"))))
     (build-system gnu-build-system)
     (native-inputs (list (texlive-updmap.cfg
                           (list texlive-amsfonts))))
@@ -935,7 +937,7 @@ algorithms from the FORTRAN library MINPACK.")
 (define-public symengine
   (package
     (name "symengine")
-    (version "0.9.0")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -944,7 +946,7 @@ algorithms from the FORTRAN library MINPACK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17b6byrhk0bgvarqmg92nrrqhzll9as6x1smghmyq2h9xc373ap4"))))
+        (base32 "0qy5w5msq0zy7drbhdy0vx451zglha8jm5s4zzmvmsja5yyv8fx9"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -1821,3 +1823,81 @@ mathematical floating-point libraries (libm).  Amongst other features,
 it offers a certified infinity norm, an automatic polynomial
 implementer, and a fast Remez algorithm.")
    (license license:cecill-c)))
+
+(define-public form
+  ;; using this commit as it removes some invalid/ambiguous license info
+  (let ((commit "e7c52d3b07abe21f21718f5e70ee138e856f15ac")
+        (revision "0"))
+    (package
+      (name "form")
+      (version (git-version "4.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vermaseren/form")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15pjpn5s8d3sva18syhyymh5v1dijchk0xkf6d0m7cl2sj3qxxxq"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:configure-flags #~'("--enable-native=no")
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-src
+                            (lambda _
+                              (substitute* "check/examples.frm"
+                                ;; skip test that causes memory leak and fails
+                                (("#pend_if valgrind\\?")
+                                 "#pend_if 0"))
+                              (substitute* "sources/extcmd.c"
+                                (("/bin/sh")
+                                 (string-append
+                                  #$(this-package-input "bash-minimal")
+                                  "/bin/sh")))))
+                          (add-after 'build 'build-doxygen
+                            (lambda _
+                              (with-directory-excursion "doc/doxygen"
+                                (invoke "make" "html"))))
+                          (add-after 'install 'install-docs
+                            (lambda _
+                              (let ((doc (string-append
+                                          #$output "/share/doc/" #$name "-"
+                                          #$version "/html")))
+                                (mkdir-p doc)
+                                (copy-recursively "doc/doxygen/html" doc)))))))
+      (native-inputs (list autoconf automake doxygen ruby))
+      (inputs (list bash-minimal))
+      (home-page "https://www.nikhef.nl/~form/")
+      (synopsis "Symbolic manipulation system for very big expressions")
+      (description
+       "FORM is a symbolic manipulation system.  It reads symbolic expressions
+from files and executes symbolic/algebraic transformations upon them.  The
+answers are returned in a textual mathematical representation.  The size of
+the considered expressions in FORM is only limited by the available disk space
+and not by the available RAM.")
+      ;; XXX: Ignore this CVE to work around a name clash with the unrelated
+      ;; "neos/forms" package.
+      (properties '((lint-hidden-cve . ("CVE-2021-32697"))))
+      ;; x86_64 only due to test failures on other platforms.
+      ;; Developers say other platforms are not "tier 1" supported:
+      ;; https://github.com/vermaseren/form/issues/426
+      (supported-systems '("x86_64-linux"))
+      (license license:gpl3+))))
+
+(define-public parform
+  (package
+    (inherit form)
+    (name "parform")
+    (arguments
+     (substitute-keyword-arguments (package-arguments form)
+       ((#:configure-flags flags)
+        #~(cons* "--enable-parform=yes" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'mpi-setup
+              #$%openmpi-setup)))))
+    (inputs (list bash-minimal openmpi))
+    (description (string-append (package-description form)
+                                "  This package also includes
+@code{parform}, a version of FORM parallelized using OpenMPI."))))

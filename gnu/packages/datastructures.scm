@@ -27,6 +27,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -441,3 +442,42 @@ and tsl::robin_pg_set. The first two are faster and use a power of two growth
 policy, the last two use a prime growth policy instead and are able to cope
 better with a poor hash function.")
     (license license:expat)))
+
+(define-public zix
+  (let ((commit "56ec14c4369c591f5efbb500b0829b760bee7800")
+        (revision "0"))
+    (package
+      (name "zix")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/drobilla/zix.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "095b2vjmwh9swbwkkkjpcdhsi0c93lxrzd76k7hzdyyf7zb5rgdx"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-Ddocs=disabled"))) ;needs "sphinxygen"
+      (native-inputs (list pkg-config))
+      (home-page "https://gitlab.com/drobilla/zix")
+      (synopsis "C library of portability wrappers and data structures")
+      (description
+       "Zix is a C library of portability wrappers and data structures.  It
+provides the following components:
+@table @code
+@item ZixAllocator A customizable allocator.
+@item ZixBumpAllocator A simple realtime-safe bump-pointer allocator.
+@item ZixBTree A page-allocated B-tree.
+@item ZixHash An open-addressing hash table.
+@item ZixRing A lock-free realtime-safe ring buffer.
+@item ZixSem A portable semaphore wrapper.
+@item ZixThread A portable thread wrapper.
+@item ZixTree A binary search tree.
+@item zixgest.h Digest functions suitable for hashing arbitrary data.
+zix/filesystem.h Functions for working with filesystems.
+@item zix/path.h Functions for working with filesystem paths lexically.
+@end table")
+      (license license:isc))))

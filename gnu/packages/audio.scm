@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
@@ -37,11 +37,12 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
-;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2022, 2023 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,8 +67,8 @@
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -86,6 +87,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet) ; libmicrohttpd
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -95,6 +97,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linphone)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages machine-learning)
@@ -120,8 +123,6 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages telephony)
-  #:use-module (gnu packages linphone)
-  #:use-module (gnu packages linux)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
@@ -734,7 +735,7 @@ purposes developed at Queen Mary, University of London.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "7.2")
+    (version "7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -751,7 +752,7 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "1gv0wkzyx59lbnaf5iz9yva4akrd2zkhsmdk8wda3wz06zmk4w1r"))
+                "0bkhrgswhc9y1ly8nfg8hpwad77cgbr663dgj86h3aisljc4cdkw"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -2061,7 +2062,7 @@ follower.")
 (define-public fluidsynth
   (package
     (name "fluidsynth")
-    (version "2.2.4")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2070,7 +2071,7 @@ follower.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1061rdj69503spkd8vmfl3fqvyg4l41k5xcc4gw7niy31hnpnjmn"))))
+                "05lr9f0q4x1kvgfa3xrfmagpwvijv9m1s316aa9figqlkcc5vv4k"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
@@ -2091,7 +2092,6 @@ follower.")
      (list alsa-lib
            glib
            jack-1
-           lash
            libsndfile
            readline))
     (home-page "https://www.fluidsynth.org/")
@@ -2746,60 +2746,6 @@ plugin function as a JACK application.")
 to be plugged into a wide range of audio synthesis and recording packages.")
     (license license:lgpl2.1+)))
 
-(define-public lash
-  (package
-    (name "lash")
-    (version "0.6.0-rc2")
-    (source (origin
-              (method url-fetch)
-              ;; The tilde is not permitted in the builder name, but is used
-              ;; in the tarball.
-              (uri (string-append
-                    "mirror://savannah/lash/lash-"
-                    (string-join (string-split version #\-) "~")
-                    ".tar.bz2"))
-              (file-name (string-append name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "12z1vx3krrzsfccpah9xjs68900xvr7bw92wx8np5871i2yv47iw"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(;; Glibc no longer includes Sun RPC support, so tell the build system
-       ;; to use libtirpc instead.
-       #:make-flags (list (string-append "CFLAGS=-I"
-                                         (assoc-ref %build-inputs "libtirpc")
-                                         "/include/tirpc -ltirpc"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; lashd embeds an ancient version of sigsegv so we just skip it
-         (add-after 'unpack 'skip-lashd
-           (lambda _
-             (substitute* '("Makefile.am" "Makefile.in")
-               (("lashd ") ""))
-             #t)))
-       #:configure-flags '("--disable-static")))
-    (inputs
-     `(("bdb" ,bdb)
-       ("gtk" ,gtk+-2)
-       ("jack" ,jack-1)
-       ("libtirpc" ,libtirpc)
-       ("readline" ,readline)
-       ("python" ,python-2)))
-    ;; According to pkg-config, packages depending on lash also need to have
-    ;; at least the following packages declared as inputs.
-    (propagated-inputs
-     (list alsa-lib dbus libxml2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://www.nongnu.org/lash/")
-    (synopsis "Audio application session manager")
-    (description
-     "LASH is a session management system for audio applications.  It allows
-you to save and restore audio sessions consisting of multiple interconneced
-applications, restoring program state (i.e. loaded patches) and the
-connections between them.")
-    (license license:gpl2+)))
-
 (define-public libbs2b
   (package
     (name "libbs2b")
@@ -3312,7 +3258,7 @@ lv2-c++-tools.")
 (define-public openal
   (package
     (name "openal")
-    (version "1.20.1")
+    (version "1.22.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3320,7 +3266,7 @@ lv2-c++-tools.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0vax0b1lgd4212bpxa1rciz52d4mv3dkfvcbbhzw4cjp698v1kmn"))))
+                "081xgkma2a19dscwx21xdpklh8gq399w4f1fx737qsx7rnawr55f"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f  ; no check target
@@ -4018,6 +3964,55 @@ key of digital audio.")
 compression modes.  This package contains command-line programs and library to
 encode and decode wavpack files.")
     (license license:bsd-3)))
+
+(define-public libmixed
+  ;; Release is much outdated.
+  (let ((commit "91e6b9f2438bca41205fade02c9d8f4f938838b6")
+        (revision "0"))
+    (package
+      (name "libmixed")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/libmixed")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01vwgv8ivpg7a4y95krkgh656mmklsn1k3fmhwp474aj82grd3m4"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; FIXME: (Sharlatan-20230326T121542+0100): Tests failed 1/34, 1 failed,
+        ;; 33 passed. There is not simple way to disable just one test.
+        ;; https://github.com/Shirakumo/libmixed/issues/13
+        #:tests? #f
+        #:configure-flags
+        #~(list "-DBUILD_STATIC=OFF"
+                "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
+                "-DCMAKE_C_FLAGS=-O3 -fPIC")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("/usr/local") #$output))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "./tester")))))))
+      (native-inputs (list doxygen graphviz))
+      (inputs (list mpg123 ncurses))
+      (home-page "https://github.com/Shirakumo/libmixed")
+      (synopsis "Low-level audio mixer pipeline library")
+      (description
+       "Libmixed is a library for real-time audio processing pipelines for use
+in audio/video/games.  It can serve as a base architecture for complex DSP
+systems.")
+      (license (list license:bsd-2 ; libsamplerate
+                     license:gpl2 ; spiralfft
+                     license:zlib)))))
 
 (define-public libmodplug
   (package
@@ -5512,6 +5507,25 @@ and VST3 plugin formats, plus SF2 and SFZ file support.  It uses JACK as the
 default and preferred audio driver but also supports native drivers like ALSA.")
     (license license:gpl2+)))
 
+;;; This package variant tracks the latest in-development 2.6 release.
+(define-public carla-2.6
+  (let ((commit "aa400535b31c67f4b6c1b28e6e20e4d4f82111a3")
+        (revision "0"))
+    (package
+      (inherit carla)
+      (name "carla")
+      (version (git-version "2.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/falkTX/Carla")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0cnj2sgr60f5h6wdfmihc214wf3n74686sipl3iyzmylqrcyhbjn")))))))
+
 (define-public ecasound
   (package
     (name "ecasound")
@@ -5558,7 +5572,7 @@ in the package.")
 (define-public libaudec
   (package
     (name "libaudec")
-    (version "0.2.4")
+    (version "0.3.4")
     (source
       (origin
         (method git-fetch)
@@ -5568,7 +5582,7 @@ in the package.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "1570m2dfia17dbkhd2qhx8jjihrpm7g8nnyg6n4wif4vv229s7dz"))))
+            "02hhhpcfkycicygh6g9hzps255zkbbi33vks6yv6zk5wp9p2nspj"))))
    (build-system meson-build-system)
    (arguments
     `(#:configure-flags
@@ -6228,7 +6242,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.3.9")
+    (version "0.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6237,7 +6251,7 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zdqgn2a139bazazbccpb65zn7qdynndwm9mafq54nkpa7n7lri8"))))
+                "0h5y8n9xm9ay1w53hb5mw6k5i1sm8spz1izmw6yya49gv2pwyhrj"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib

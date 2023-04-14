@@ -294,13 +294,13 @@ to @code{cabal repl}).")
 (define-public git-annex
   (package
     (name "git-annex")
-    (version "10.20230227")
+    (version "10.20230321")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "git-annex" version))
        (sha256
-        (base32 "03cnx63gcrza9sshk9fvwq8c2p7cb7hj8h81g5dc1x56syigdpgi"))))
+        (base32 "1lbv0jzfr6knjcqd2ik4k2dw7brsnjmn33qwijpgivnsbf1q0ibz"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "git-annex")))
     (arguments

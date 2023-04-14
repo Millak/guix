@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,7 +124,15 @@ and the value is the msgstr.  The result only contains non fuzzy strings."
 
 (define xref-regexp
   ;; Texinfo cross-reference regexp.
-  (make-regexp "@(px|x)?ref\\{([^,}]+)"))
+  (make-regexp
+   (string-append "@(px|x)?ref\\{([^,}]+)("
+                  "\\}"                ;Match xref with one argument
+                  "|,[^,}]*\\}"        ;or two arguments
+                  "|,[^,}]*,[^,}]*\\}" ;or three arguments
+                  ;; or with an *empty* fourth argument:
+                  "|,[^,}]*,[^,}]*, *,"
+                  "|,[^,}]*,[^,}]*, *\\}"
+                  ")")))
 
 (define (translate-cross-references texi pofile)
   "Translate the cross-references that appear in @var{texi}, the initial
@@ -157,13 +166,15 @@ translation of a Texinfo file, using the msgid/msgstr pairs from @var{pofile}."
           (cons (string-drop content offset) result)))
         ((head . tail)
          (let ((prefix (match:substring head 1))
-               (ref    (canonicalize-whitespace (match:substring head 2))))
+               (ref    (canonicalize-whitespace (match:substring head 2)))
+               (rest   (match:substring head 3)))
            (define translated
              (string-append "@" (or prefix "")
                             "ref{"
                             (match (vhash-assoc ref translation-map)
                               (#f ref)
-                              ((_ . str) str))))
+                              ((_ . str) str))
+                            (or rest "")))
 
            (loop tail
                  (match:end head)

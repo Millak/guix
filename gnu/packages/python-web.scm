@@ -26,7 +26,7 @@
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
@@ -49,7 +49,7 @@
 ;;; Copyright © 2021 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
-;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
@@ -569,6 +569,87 @@ stream is an enhanced asynchronous iterable.")
 communicate with each other, and positioned as an asynchronous successor to
 WSGI.  This package includes libraries for implementing ASGI servers.")
     (license license:bsd-3)))
+
+(define-public python-asgi-csrf
+  (package
+    (name "python-asgi-csrf")
+    (version "0.9")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/simonw/asgi-csrf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j134mjh0ff61rvkm3q67m463j1bhyxc9dwsdany3scnd4vsqqws"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; Provide a null config to avoid the extraneous dependency on
+           ;; python-pytest-coverage.
+           #~(list "-c" "/dev/null"
+                   ;; Disable two failing tests (see:
+                   ;; https://github.com/simonw/asgi-csrf/issues/24).
+                   "-k" (string-append
+                         "not (test_multipart "
+                         "or test_multipart_failure_wrong_token)"))))
+    (propagated-inputs (list python-itsdangerous python-multipart))
+    (native-inputs (list python-asgi-lifespan
+                         python-httpx
+                         python-pytest
+                         python-pytest-asyncio
+                         python-starlette))
+    (home-page "https://github.com/simonw/asgi-csrf")
+    (synopsis "ASGI middleware for protecting against CSRF attacks")
+    (description "This Asynchronous Server Gateway Interface (ASGI)
+middleware protects against Cross-site request forgery (CSRF) attacks.
+It implements the Double Submit Cookie pattern, where a cookie is set
+that is then compared to a @code{csrftoken} hidden form field or a
+@code{x-csrftoken} HTTP header.")
+    (license license:asl2.0)))
+
+(define-public python-asgi-lifespan
+  (package
+    (name "python-asgi-lifespan")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/florimondmanca/asgi-lifespan")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10a5ci9ddr8wnjf3wai7xifbbplirhyrgvw4p28q0ha63cvhb2j2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-c" "/dev/null"           ;ignore coverage-related options
+             "-k"
+             (string-append
+              ;; XXX: Some tests fail because of a 'lifespan.shutdown.failed'
+              ;; extra event, perhaps because our version of trio is older.
+              "not (test_lifespan_manager[asyncio-None-ValueError-None]"
+              " or test_lifespan_manager[asyncio-ValueError-None-None]"
+              " or test_lifespan_manager[asyncio-ValueError-ValueError-None]"
+              " or test_lifespan_manager[trio-None-ValueError-None]"
+              " or test_lifespan_manager[trio-ValueError-None-None]"
+              " or test_lifespan_manager[trio-ValueError-ValueError-None])"))))
+    (native-inputs (list python-pytest
+                         python-pytest-asyncio
+                         python-pytest-trio
+                         python-starlette))
+    (propagated-inputs (list python-sniffio))
+    (home-page "https://github.com/florimondmanca/asgi-lifespan")
+    (synopsis "Programmatic startup/shutdown of ASGI apps")
+    (description "Programmatically send startup/shutdown lifespan events
+into Asynchronous Server Gateway Interface (ASGI) applications.  When
+used in combination with an ASGI-capable HTTP client such as HTTPX, this
+allows mocking or testing ASGI applications without having to spin up an
+ASGI server.")
+    (license license:expat)))
 
 (define-public python-css-html-js-minify
   (package
@@ -3684,13 +3765,13 @@ for the basic TCP/IP protocols.")
 (define-public python-geventhttpclient
   (package
     (name "python-geventhttpclient")
-    (version "1.5.3")
+    (version "2.0.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "geventhttpclient" version))
               (sha256
                (base32
-                "104p14p67xa5gch8dy2zqmzmjra31fflk1c1alrry8dp8bzwj3nq"))
+                "04qmcc7qpnif70ph61339dcld4g107fkhpa0gdmbs8z98v9kkg4a"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3713,15 +3794,14 @@ for the basic TCP/IP protocols.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest"  "src/geventhttpclient/tests" "-v"
+               (invoke "pytest" "src/geventhttpclient/tests" "-v"
                        ;; Append the test modules to sys.path to avoid
                        ;; namespace conflict which breaks SSL tests.
                        "--import-mode=append")))))))
-    (native-inputs
-     (list python-dpkt python-pytest))
-    (propagated-inputs
-     (list python-brotli python-certifi python-gevent python-six))
-    (home-page "https://github.com/gwik/geventhttpclient")
+    (native-inputs (list python-dpkt python-pytest))
+    (propagated-inputs (list python-brotli python-certifi python-gevent
+                             python-six python-urllib3))
+    (home-page "https://github.com/geventhttpclient/geventhttpclient")
     (synopsis "HTTP client library for gevent")
     (description "@code{python-geventhttpclient} is a high performance,
 concurrent HTTP client library for python using @code{gevent}.")

@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -496,7 +496,7 @@ in FITS files.")
                  (("self.use_system_fitsio") "True")
                  (("self.system_fitsio_includedir") includedir)
                  (("self.system_fitsio_libdir") libdir))))))))
-    (inputs (list curl-minimal))
+    (inputs (list curl))
     (propagated-inputs
      (list python-numpy cfitsio))
     (home-page "https://github.com/esheldon/fitsio")
@@ -663,7 +663,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
      '(#:configure-flags '("--disable-static")))
     (inputs
      (list cfitsio
-           curl-minimal
+           curl
            gsl
            libgit2
            libjpeg-turbo
@@ -677,6 +677,70 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
     (description "The GNU Astronomy Utilities (Gnuastro) is a suite of
 programs for the manipulation and analysis of astronomical data.")
     (license license:gpl3+)))
+
+(define-public phd2
+  (package
+    (name "phd2")
+    (version "2.6.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenPHDGuiding/phd2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n87xsv9gzrwk1ygws4vw397ffq40xybp5b3c3bd5kcmff0avaw9"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (define (directory? x)
+                (and=> (stat x #f)
+                       (compose (cut eq? 'directory <>) stat:type)))
+              (with-directory-excursion directory
+                (let* ((pred
+                        (negate (cut member <> (append '("." "..") preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (lambda (item)
+                              (if (directory? item)
+                                  (delete-file-recursively item)
+                                  (delete-file item)))
+                            items))))
+            (delete-all-but "thirdparty" "thirdparty.cmake")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DOPENSOURCE_ONLY=yes"
+                                     "-DUSE_SYSTEM_CFITSIO=yes"
+                                     "-DUSE_SYSTEM_EIGEN3=yes"
+                                     "-DUSE_SYSTEM_GTEST=yes"
+                                     "-DUSE_SYSTEM_LIBINDI=yes"
+                                     "-DUSE_SYSTEM_LIBUSB=yes")))
+    (native-inputs
+     (list gettext-minimal
+           googletest
+           perl
+           pkg-config
+           python))
+    (inputs
+     (list cfitsio
+           curl
+           eigen
+           gtk+
+           indi
+           libnova
+           libusb
+           wxwidgets
+           zlib))
+    (home-page "https://openphdguiding.org")
+    (synopsis "Teleskope guiding software")
+    (description
+     "PHD2 is the enhanced, second generation version of the PHD guiding software
+from Stark Labs.")
+    (license license:bsd-3)))
 
 (define-public sextractor
   (package
@@ -2056,6 +2120,35 @@ standard astronomy libraries:
 @item @code{libpasspice.so}: To work with NAIF/SPICE kernel.
 @end itemize\n")
       (license license:gpl2+))))
+
+(define-public libxisf
+  (package
+    (name "libxisf")
+    ;; TODO: v0.2.2 (current latest) failed to build on configure phase, issue
+    ;; was open directly with author as he hosts source on seflhosted gitea.
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitea.nouspiro.space/nou/libXISF")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fz9mmj1nz5v7hlr53q8na7khadfn1hm0d1gfpzzw3167bqpy2xv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DUSE_BUNDLED_LIBS=OFF")))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list lz4 pugixml zlib))
+    (home-page "https://nouspiro.space/?page_id=306")
+    (synopsis "Astronomical library to load and write XISF file format")
+    (description
+     "LibXISF is C++ library that can read and write XISF files produced by
+PixInsight.  It implements XISF 1.0 specification.")
+    (license license:gpl3+)))
 
 (define-public missfits
   (package

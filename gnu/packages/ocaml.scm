@@ -1117,14 +1117,14 @@ concrete syntax of the language (Quotations, Syntax Extensions).")
 (define-public hevea
   (package
     (name "hevea")
-    (version "2.35")
+    (version "2.36")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://hevea.inria.fr/old/"
                                   "hevea-" version ".tar.gz"))
               (sha256
                (base32
-                "1jwydkb9ldb1sx815c364dxgr569f2rbbzgxbn2kanrybpdbm2gi"))))
+                "0j06f8gb8f5is34kzmzy3znb0jkm2qd2l6rcl5v5qa9af3bmjrsx"))))
     (build-system gnu-build-system)
     (inputs
      (list ocaml))

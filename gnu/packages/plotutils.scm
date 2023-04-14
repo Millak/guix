@@ -4,6 +4,7 @@
 ;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
@@ -50,7 +52,9 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages web)
@@ -427,3 +431,54 @@ LaTeX does for scientific text.")
     ;; noted otherwise, are released under version 3 (or later) of the GNU
     ;; Lesser General Public License"
     (license license:lgpl3+)))
+
+(define-public ruby-unicode-plot
+  (package
+    (name "ruby-unicode-plot")
+    (version "0.0.5")
+    ;; Source at RubyGems.org doesn't have test fixtures.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/red-data-tools/unicode_plot.rb")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g67brnb7zp1xx9cp1x7bmyxwnvi2i8gplw7p1j7cppzin4kr1vj"))))
+    (build-system ruby-build-system)
+    (native-inputs (list bundler ruby-rake ruby-test-unit ruby-yard))
+    (propagated-inputs (list ruby-enumerable-statistics))
+    (synopsis "Library to plot your data by Unicode characters")
+    (description "UnicodePlot provides the feature to make charts with Unicode
+characters.  Supported charts are: barplot, boxplot, densityplot,
+histogram, lineplot, and scatterplot.")
+    (home-page "https://github.com/red-data-tools/unicode_plot.rb")
+    (license license:expat)))
+
+(define-public youplot
+  (package
+    (name "youplot")
+    (version "0.4.5")
+    ;; Source at RubyGems.org doesn't have tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/red-data-tools/YouPlot")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y54apw7hx9mhjnf277w9wayvq954mdnip4dpajhc0qjg2464c2b"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rake ruby-simplecov ruby-test-unit))
+    (propagated-inputs (list ruby-unicode-plot))
+    (synopsis "Command line tool that draw plots on the terminal")
+    (description
+     "YouPlot is a command line tool that draws plots on the terminal,
+powered by UnicodePlot gem.  It provides commands @command{youplot}
+and @command{uplot} (shorthand) are provided, and supports chart types
+of barplot, histogram, lineplot, scatter, density, boxplot, and count.")
+    (home-page "https://github.com/red-data-tools/YouPlot")
+    (license license:expat)))

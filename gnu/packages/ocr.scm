@@ -88,7 +88,7 @@ it produces text in 8-bit or UTF-8 formats.")
                (base32
                 "1m310cpb87xx8l8q7jy9fvzf6a0m8rm0dmjpbiwhc2mi6w4gn084"))))
     (build-system copy-build-system)
-    (arguments (list #:install-plan #~'(("." "share/tesseract-ocr/tessdata"))
+    (arguments (list #:install-plan #~'(("." "share/tessdata"))
                      #:phases #~(modify-phases %standard-phases
                                   (add-after 'unpack 'delete-broken-links
                                     (lambda _
@@ -131,15 +131,6 @@ models for the Tesseract OCR Engine.")
               (substitute* "configure.ac"
                 (("AC_SUBST\\(\\[XML_CATALOG_FILES])")
                  ""))))
-          (add-after 'unpack 'adjust-TESSDATA_PREFIX-macro
-            (lambda _
-              ;; Use a deeper TESSDATA_PREFIX hierarchy so that a more
-              ;; specific search-path than '/share' can be specified.  The
-              ;; build system uses CPPFLAGS for itself, so we can't simply set
-              ;; a make flag.
-              (substitute* "Makefile.am"
-                (("-DTESSDATA_PREFIX='\"@datadir@\"'")
-                 "-DTESSDATA_PREFIX='\"@datadir@/tesseract-ocr\"'"))))
           (add-after 'build 'build-training
             (lambda* (#:key parallel-build? #:allow-other-keys)
               (define n (if parallel-build? (number->string
@@ -155,7 +146,7 @@ models for the Tesseract OCR Engine.")
             ;; extended via TESSDATA_PREFIX.
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (define eng.traineddata
-                "/share/tesseract-ocr/tessdata/eng.traineddata")
+                "/share/tessdata/eng.traineddata")
               (install-file (search-input-file (or native-inputs inputs)
                                                eng.traineddata)
                             (dirname (string-append #$output
@@ -183,7 +174,7 @@ models for the Tesseract OCR Engine.")
      (list leptonica))
     (native-search-paths (list (search-path-specification
                                 (variable "TESSDATA_PREFIX")
-                                (files (list "share/tesseract-ocr/tessdata"))
+                                (files (list "share/tessdata"))
                                 (separator #f)))) ;single value
     (home-page "https://github.com/tesseract-ocr/tesseract")
     (synopsis "Optical character recognition engine")

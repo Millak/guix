@@ -244,7 +244,7 @@
     (native-inputs
      (list pkg-config which net-base perl))
 
-    (home-page "https://golang.org/")
+    (home-page "https://go.dev/")
     (synopsis "Compiler and libraries for Go, a statically-typed language")
     (description "Go, also commonly referred to as golang, is an imperative
 programming language designed primarily for systems programming.  Go is a
@@ -631,7 +631,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.11")
+    (version "1.17.13")
     (source
      (origin
        (method git-fetch)
@@ -641,7 +641,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11wy6092qm7v0n10cjkyp49sbchqazi3vnij8k2sq7k7jaj63z5p"))))
+         "05m8gr050kagvn22lfnjrgms03l5iphd1m4v6z7yqlhn9gdp912d"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
@@ -700,7 +700,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                (substitute* "src/time/zoneinfo_unix.go"
                  (("/usr/share/zoneinfo/") tzdata-path)))))
          ;; Keep this synchronized with the package inputs.
-         ,@(if (target-arm?)
+         ;; Also keep syncthonized with later versions of go.
+         ,@(if (or (target-arm?) (target-ppc64le?))
              '((add-after 'unpack 'patch-gcc:lib
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
@@ -721,6 +722,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                          "ldflags = setextld(ldflags, compiler)\n"
                          "ldflags = append(ldflags, \"-r\")\n"
                          "ldflags = append(ldflags, \"" gcclib "\")\n")))))))
+             '())
+         ;; Backported from later versions of go to workaround 64k page sizes.
+         ,@(if (target-ppc64le?)
+             '((add-after 'unpack 'adjust-test-suite
+                 (lambda _
+                   (substitute* "misc/cgo/testshared/shared_test.go"
+                     (("100000") "256000")))))
              '())
          (add-after 'patch-source 'disable-failing-tests
            (lambda _
@@ -833,7 +841,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   (install-file file (string-append out "/share/doc/go")))
                 '("AUTHORS" "CONTRIBUTORS" "CONTRIBUTING.md" "PATENTS"
                   "README.md" "SECURITY.md"))))))))
-    (inputs (if (not (target-arm?))
+    (inputs (if (not (or (target-arm?) (target-ppc64le?)))
               (alist-delete "gcc:lib" (package-inputs go-1.16))
               (package-inputs go-1.16)))))
 
@@ -851,13 +859,40 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ph3ajfq5q8j3nd91pfb25pm21aiphc58zf7fwis0h3a6nqbdyq9"))))))
+         "0ph3ajfq5q8j3nd91pfb25pm21aiphc58zf7fwis0h3a6nqbdyq9"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.17)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'adjust-test-suite)
+           ,@(if (or (target-arm?) (target-ppc64le?))
+               '((replace 'patch-gcc:lib
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib")))
+                       ;; Add libgcc to runpath
+                       (substitute* "src/cmd/link/internal/ld/lib.go"
+                         (("!rpath.set") "true"))
+                       (substitute* "src/cmd/go/internal/work/gccgo.go"
+                         (("cgoldflags := \\[\\]string\\{\\}")
+                          (string-append "cgoldflags := []string{"
+                                         "\"-Wl,-rpath=" gcclib "\""
+                                         "}"))
+                         (("\"-lgcc_s\", ")
+                          (string-append
+                           "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
+                       (substitute* "src/cmd/go/internal/work/gc.go"
+                         (("ldflags, err := setextld\\(ldflags, compiler\\)")
+                          (string-append
+                           "ldflags, err := setextld(ldflags, compiler)\n"
+                           "ldflags = append(ldflags, \"-r\")\n"
+                           "ldflags = append(ldflags, \"" gcclib "\")\n")))))))
+               '())))))))
 
 (define-public go-1.19
   (package
     (inherit go-1.18)
     (name "go")
-    (version "1.19.5")
+    (version "1.19.7")
     (source
      (origin
        (method git-fetch)
@@ -867,11 +902,22 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ah4l01h8qj0vj9668bdgr5m69fq16dz1fjlj332vhysxc6bkc27"))))
+         "0rrpfhv6vdwqs0jnld0iqsky5wlirir05czf34kvsf2db21nzdi9"))))
     (arguments
      (substitute-keyword-arguments (package-arguments go-1.18)
        ((#:phases phases)
         #~(modify-phases #$phases
+            ;; These are recurring test failures, depending on having a new
+            ;; enough version of gccgo.  gccgo-12.2 fails with go-1.19.7.
+            ;; https://github.com/golang/go/issues/22224
+            ;; https://github.com/golang/go/issues/25324
+            (add-after 'unpack 'skip-TestGoPathShlibGccgo-tests
+              (lambda _
+                (substitute* "misc/cgo/testshared/shared_test.go"
+                  (("TestGoPathShlibGccgo.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n"))
+                  (("TestTwoGopathShlibsGccgo.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/22224\")\n")))))
             (replace 'install-doc-files
               (lambda _
                 (for-each (lambda (file)
@@ -884,7 +930,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.19)
     (name "go")
-    (version "1.20")
+    (version "1.20.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -893,7 +939,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a7wjzv14kaqg5l7ambv5zj4rj7sgah9yhcg6k6da6ygm6bs4dv3"))))
+                "0ir0x17i9067i48ffskwlmbx1j4kfhch46zl8cwl88y23aw59qa2"))))
     (native-inputs
      ;; Go 1.20 and later requires Go 1.17 as the bootstrap toolchain.
      ;; See 'src/cmd/dist/notgo117.go' in the source code distribution,
@@ -1158,6 +1204,183 @@ form that bypasses network filtering, allowing the application to work on
 networks where it would otherwise be blocked or heavily throttled.")
     (license license:expat)))
 
+(define-public go-github-com-hanwen-go-fuse-v2
+  (let ((commit "915cf5413cdef5370ae3f953f8eb4cd9ac176d5c")
+        (revision "0"))
+    (package
+      (name "go-github-com-hanwen-go-fuse-v2")
+      (version (git-version "2.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hanwen/go-fuse")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ik0yvs9m40vxccpb0rpxc22fyqmcgyysc7w0yl9kn3jyr6qa1d5"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/hanwen/go-fuse/v2"))
+      (native-inputs (list
+                      go-golang-org-x-sys
+                      go-golang-org-x-sync
+                      go-github-com-kylelemons-godebug))
+      (home-page "https://github.com/hanwen/go-fuse")
+      (synopsis "Go bindings for FUSE filesystems")
+      (description
+       "This is a repository containing Go bindings for writing FUSE file systems.")
+      (license license:bsd-3))))
+
+(define-public go-github-com-aperturerobotics-jacobsa-crypto
+  (let ((commit "b1eb679742a8deed015a4406384eea6bd985d08a")
+        (revision "0"))
+    (package
+      (name "go-github-com-aperturerobotics-jacobsa-crypto")
+      (version (git-version "1.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/aperturerobotics/jacobsa-crypto")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "16dxigj8m6q18xqsy72iq287rh4fw0y0b9yqlw0qkclb8379n1z2"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/aperturerobotics/jacobsa-crypto"
+             ;; Source-only package.
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; Source-only package.
+                 (delete 'build))))
+      (home-page "https://github.com/aperturerobotics/jacobsa-crypto")
+      (synopsis "Cryptography missing from the Go standard library")
+      (description
+       "This repository contains Go packages related to cryptographic standards that are
+not included in the Go standard library.")
+      (license license:asl2.0))))
+
+(define-public go-github-com-jacobsa-oglematchers
+  (let ((commit "141901ea67cd4769c6800aa7bfdfc558fa22bda5")
+        (revision "0"))
+    (package
+      (name "go-github-com-jacobsa-oglematchers")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jacobsa/oglematchers")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09ff5x6vbhd9zl1z4yzyk573ifh16rry38q1rx986kbz4hqkmniq"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/jacobsa/oglematchers"
+         ;; break loop with with go-github-com-jacobsa-ogletest
+         #:tests? #f))
+      (home-page "https://github.com/jacobsa/oglematchers")
+      (synopsis "Matchers for Go testing framework")
+      (description
+       "Package oglematchers provides a set of matchers useful in a testing or mocking
+framework.  These matchers are inspired by and mostly compatible with Google
+Test for C++ and Google JS Test.")
+      (license license:asl2.0))))
+
+(define-public go-github-com-jacobsa-oglemock
+  (let ((commit "e94d794d06ffc6de42cb19d0dab3c219efdd6dcf")
+        (revision "0"))
+    (package
+      (name "go-github-com-jacobsa-oglemock")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jacobsa/oglemock")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "14yxf8ykwdwkcccksl6741xgzcf8qykyi58kp4maxpgscqhdl8rq"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/jacobsa/oglemock"
+        ;; break loop with with go-github-com-jacobsa-ogletest
+        #:tests? #f))
+      (native-inputs (list
+                      go-github-com-jacobsa-oglematchers))
+      (home-page "https://github.com/jacobsa/oglemock")
+      (synopsis "Mocking framework for unit tests")
+      (description
+       "Package oglemock provides a mocking framework for unit tests.")
+      (license license:asl2.0))))
+
+(define-public go-github-com-jacobsa-ogletest
+  (let ((commit "80d50a735a1108a2aeb7abc4a988d183f20c5292")
+        (revision "0"))
+    (package
+      (name "go-github-com-jacobsa-ogletest")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jacobsa/ogletest")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lbwbxzr75g65q07ry5k4kglxqs3ym7xkvqznzm55rm3qk76v83r"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/jacobsa/ogletest"
+         ;; These tests should be made working
+         #:tests? #f))
+      (native-inputs (list
+                      go-github-com-jacobsa-oglematchers
+                      go-github-com-jacobsa-oglemock
+                      go-github-com-jacobsa-reqtrace
+                      go-golang-org-x-net))
+      (home-page "https://github.com/jacobsa/ogletest")
+      (synopsis "Expressive unit tests")
+      (description
+       "Package ogletest provides a framework for writing expressive unit tests.  It
+integrates with the builtin testing package, so it works with the gotest
+command.  Unlike the testing package which offers only basic capabilities for
+signalling failures, it offers ways to express expectations and get nice failure
+messages automatically.")
+      (license license:asl2.0))))
+
+(define-public go-github-com-jacobsa-reqtrace
+  (let ((commit "245c9e0234cb2ad542483a336324e982f1a22934")
+        (revision "0"))
+    (package
+      (name "go-github-com-jacobsa-reqtrace")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jacobsa/reqtrace")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0zfyijig10896v42rvxka1n4wn6lijqz40y2281187l7mq8vv5jn"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/jacobsa/reqtrace"))
+      (inputs (list
+               go-golang-org-x-net))
+      (home-page "https://github.com/jacobsa/reqtrace")
+      (synopsis "Simple request tracing framework")
+      (description
+       "Package reqtrace contains a very simple request tracing framework.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-kataras-golog
   (package
     (name "go-github-com-kataras-golog")
@@ -1228,6 +1451,59 @@ terminals.")
      "This package implements a deep pretty printer for Go data structures to
 aid data snapshotting.")
     (license license:isc)))
+
+(define-public go-github-com-pkg-xattr
+  (package
+    (name "go-github-com-pkg-xattr")
+    (version "0.4.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pkg/xattr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qg4zh0d8m4adaiicsd0cpw0w6g8sk01f4jz7jyxgirh1wfcsqyz"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/pkg/xattr"))
+    (native-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/pkg/xattr")
+    (synopsis "Support for extended file system attributes")
+    (description
+     "Package xattr provides support for extended attributes on Linux, Darwin and
+FreeBSD.  Extended attributes are name:value pairs permanently associated with
+files or directories.  They are similar to the environment strings associated with
+a process.  An attribute may be defined or undefined.  If defined, its value may
+be empty or non-empty.  You can find more details here:
+@@url{https://en.wikipedia.org/wiki/Extended_file_attributes,
+https://en.wikipedia.org/wiki/Extended_file_attributes}
+.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-rfjakob-eme
+  (package
+    (name "go-github-com-rfjakob-eme")
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rfjakob/eme")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yrbhvy0337mf12fp8p4sy8ry8r3w2qfdf8val5hj07p2lri0cqk"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/rfjakob/eme"))
+    (home-page "https://github.com/rfjakob/eme")
+    (synopsis "EME for Go")
+    (description
+     "EME (ECB-Mix-ECB or, clearer, Encrypt-Mix-Encrypt) is a wide-block encryption
+mode developed by Halevi and Rogaway.")
+    (license license:expat)))
 
 (define-public go-github-com-shadowsocks-go-shadowsocks2
   (package
@@ -3118,11 +3394,11 @@ the official package.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-net
-  (let ((commit "ba9fcec4b297b415637633c5a6e8fa592e4a16c3")
-        (revision "4"))
+  (let ((commit "8e0e7d8d38f2b6d21d742845570dde2902d06a1d")
+        (revision "0"))
     (package
       (name "go-golang-org-x-net")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3131,15 +3407,17 @@ the official package.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1hbqvy6r0s5h0dpdqw8fynl3cq0acin3iyqki9xvl5r8h33yb9bx"))))
+                  "1fidlcn3vcz42v2lc0rpmqh3bz08bcklj6jvnmz2vvgc481ci5hy"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "golang.org/x/net"
-         ; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
+       (list
+        #:import-path "golang.org/x/net"
+        ;; Source-only package
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Source-only package
+            (delete 'build))))
       (synopsis "Go supplemental networking libraries")
       (description "This package provides supplemental Go networking libraries.")
       (home-page "https://go.googlesource.com/net")
@@ -3218,11 +3496,11 @@ packages.")
       (license license:bsd-3))))
 
 (define-public go-golang-org-x-sys
-  (let ((commit "ed5796bab16455f104b6a384d51b7f9990cb9806")
-        (revision "8"))
+  (let ((commit "b60007cc4e6f966b1c542e343d026d06723e5653")
+        (revision "0"))
     (package
       (name "go-golang-org-x-sys")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.4.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3231,15 +3509,17 @@ packages.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "081vs5bg91mwg5bdmlcvy2qyrvg766aicj47smcwfk4bbh0nc0qa"))))
+                  "0fr2d6fnpbqx6n89sg9lsinqkdaw49y068kqj2g0cxlhbh69hzii"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "golang.org/x/sys"
-         ;; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
+       (list
+        #:import-path "golang.org/x/sys"
+        ;; Source-only package
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Source-only package
+            (delete 'build))))
       (synopsis "Go support for low-level system interaction")
       (description "This package provides supplemental libraries offering Go
 support for low-level interaction with the operating system.")
@@ -9300,7 +9580,7 @@ configuration languages, but other uses may be possible too.")
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.0.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -9309,7 +9589,7 @@ configuration languages, but other uses may be possible too.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19fz68n262kvg2ssw4r6nik30zk6g6cy7rdi0fm05czwigqrdz1i"))))
+        (base32 "1k1dv1jkr72qpk5g363mhrg9hnf5c9qgv4l16l13m4yh08jp271d"))))
     (build-system go-build-system)
     (arguments `(#:import-path "filippo.io/age"))
     (inputs
@@ -11303,6 +11583,69 @@ methods @code{MarshalJSON} and @code{UnmarshalJSON} unlike
 kubernetes-sigs/yaml is a permanent fork of
 @url{https://github.com/ghodss/yaml,ghodss/yaml}.")
     (license (list license:expat license:bsd-3))))
+
+(define-public go-github-com-mitchellh-colorstring
+  (package
+    (name "go-github-com-mitchellh-colorstring")
+    (version "0.0.0-20190213212951-d06e56a500db")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mitchellh/colorstring")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d2mi5ziszfzdgaz8dg4b6sxa63nw1jnsvffacqxky6yz9m623kn"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/mitchellh/colorstring"))
+    (home-page "https://github.com/mitchellh/colorstring")
+    (synopsis "Functions to colorize strings for terminal output")
+    (description
+     "Colorstring provides functions for colorizing strings for terminal output.")
+    (license license:expat)))
+
+(define-public go-github-com-schollz-progressbar-v3
+  (package
+    (name "go-github-com-schollz-progressbar-v3")
+    (version "3.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/schollz/progressbar")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hjahr5r52i7w6iyvl3rpzr46iignhfdh4694fl7m2b4gkaw9gd6"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/schollz/progressbar/v3"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? import-path #:allow-other-keys)
+                   (when tests?
+                     ;; The full test suite requires Internet access, so only
+                     ;; run the short tests.
+                     (invoke "go" "test" "-test.short" import-path)))))))
+    (propagated-inputs
+     (list go-golang-org-x-term
+           go-github-com-stretchr-testify
+           go-github-com-mitchellh-colorstring
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-isatty
+           go-github-com-davecgh-go-spew))
+    (home-page "https://github.com/schollz/progressbar")
+    (synopsis "Simple command-line interface (CLI) progress bar")
+    (description
+     "This package provides a very simple thread-safe progress bar.  The
+@code{progressbar} implements an @code{io.Writer} so it can automatically
+detect the number of bytes written to a stream, so you can use it as a
+@code{progressbar} for an @code{io.Reader}.  When @code{progressbar}'s length
+is undetermined, a customizable spinner is shown.")
+    (license license:expat)))
 
 (define-public go-git-sr-ht-emersion-go-scfg
   (package

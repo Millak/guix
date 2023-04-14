@@ -1,0 +1,30 @@
+From 2396e90056706ef897acab3aaa081289c7336483 Mon Sep 17 00:00:00 2001
+From: LEPILLER Julien <julien.lepiller@irisa.fr>
+Date: Fri, 19 Apr 2019 11:48:39 +0200
+Subject: [PATCH] Allow variable parameters
+
+---
+ mecab/src/param.cpp | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/mecab/src/param.cpp b/mecab/src/param.cpp
+index 65328a2..006b1b5 100644
+--- a/mecab/src/param.cpp
++++ b/mecab/src/param.cpp
+@@ -79,8 +79,12 @@ bool Param::load(const char *filename) {
+     size_t s1, s2;
+     for (s1 = pos+1; s1 < line.size() && isspace(line[s1]); s1++);
+     for (s2 = pos-1; static_cast<long>(s2) >= 0 && isspace(line[s2]); s2--);
+-    const std::string value = line.substr(s1, line.size() - s1);
++    std::string value = line.substr(s1, line.size() - s1);
+     const std::string key   = line.substr(0, s2 + 1);
++
++    if(value.find('$') == 0) {
++        value = std::getenv(value.substr(1).c_str());
++    }
+     set<std::string>(key.c_str(), value, false);
+   }
+ 
+-- 
+2.20.1
+

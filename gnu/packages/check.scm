@@ -1321,11 +1321,15 @@ and many external plugins.")
          "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
     (arguments
      (substitute-keyword-arguments (package-arguments python-pytest)
-      ((#:phases phases #~%standard-phases)
+       ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-before 'build 'pretend-version
               (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))))
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytest)
+       (replace "python-pluggy" python-pluggy-next)
+       (replace "python-toml" python-tomli)))))
 
 (define-public python-pytest-bootstrap
   (package
@@ -1592,13 +1596,13 @@ Python's @code{random.seed}.")
 (define-public python-pytest-mock
   (package
     (name "python-pytest-mock")
-    (version "3.8.2")
+    (version "3.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mock" version))
        (sha256
-        (base32 "18pwr0qhr2z5rpfz7930986s55hh1gnmmq4m09q5h99rai2kzw3p"))
+        (base32 "0kzdwwdjw001qzf1n4qzh7c364rvmb0cmkfqdwr2l9bwxy2v1ggv"))
        (modules '((guix build utils)))
        (snippet
         ;; Some tests do a string match on Pytest output, and fails when
@@ -1702,7 +1706,7 @@ timeout has been exceeded.")
 (define-public python-pytest-forked
   (package
     (name "python-pytest-forked")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -1712,18 +1716,17 @@ timeout has been exceeded.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j9bbjny7h3b4fig6l26f26c697r67mm62fzdd9m9rqyy2bmnqjs"))))
-    (build-system python-build-system)
+         "1y93q914gwf0nshql1qix6sj826q163b04vw17zmwhsnbv00c2d3"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'pretend-version
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'pretend-version
+                 ;; The version string is usually derived via setuptools-scm,
+                 ;; but without the git metadata available, the version string
+                 ;; is set to '0.0.0'.
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      ;; XXX: The bootstrap variant of Pytest is used to ensure the
      ;; 'hypothesis' plugin is not in the environment (due to

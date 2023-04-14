@@ -159,14 +159,14 @@ management, extensions such as advertisement blocker and colorful tabs.")
 (define-public links
   (package
     (name "links")
-    (version "2.28")
+    (version "2.29")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "1d2lyj9k2s6brk38k51qfpddwh2w96w6gh9jq5br9rfy2fdlkm9g"))))
+                "163rmng8zkwy0pv9wxcpc0j3gz27g8ba9myrgs7ny6lfng09dai2"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -468,7 +468,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.5.3")
+    (version "2.5.4")
     (source
      (origin
        (method url-fetch)
@@ -476,7 +476,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "10fpr414nadqba33xgvbpaacc5sn0xnpnnljf5a3n8yh6hjg4pl4"))))
+        (base32 "1c8skkc5vjbvbslz65hzrj9d05v4zbcjbli61ikjmr174lhb4q54"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs))               ; for tests
@@ -711,7 +711,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.15.4")
+    (version "1.15.5")
     (source
      (origin
        (method url-fetch)
@@ -719,7 +719,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "117n1v8vr966lah98g22zn15y3d2va0mf1yj99smn5dizy75akm9"))
+        (base32 "187h42qqddf7595bzf0wb2vc9yd76ad99vbwl9sdhmy8d6qma6gs"))
        (modules '((guix build utils)))
        (snippet
         '(begin

@@ -6,6 +6,7 @@
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,7 +29,8 @@
   #:use-module (guix gexp)
   #:use-module ((guix utils) #:select (source-properties->location))
   #:use-module ((guix diagnostics)
-                #:select (formatted-message location-file &error-location))
+                #:select (formatted-message location-file &error-location
+                          warning))
   #:use-module ((guix modules) #:select (file-name->module-name))
   #:use-module (guix i18n)
   #:autoload   (texinfo) (texi-fragment->stexi)
@@ -37,6 +39,7 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:export (configuration-field
@@ -44,6 +47,7 @@
             configuration-field-type
             configuration-missing-field
             configuration-field-error
+            configuration-field-sanitizer
             configuration-field-serializer
             configuration-field-getter
             configuration-field-default-value-thunk
@@ -116,6 +120,7 @@ does not have a default value" field kind)))
   (type configuration-field-type)
   (getter configuration-field-getter)
   (predicate configuration-field-predicate)
+  (sanitizer configuration-field-sanitizer)
   (serializer configuration-field-serializer)
   (default-value-thunk configuration-field-default-value-thunk)
   (documentation configuration-field-documentation))
@@ -181,11 +186,44 @@ does not have a default value" field kind)))
      (values #'(field-type %unset-value)))))
 
 (define (define-configuration-helper serialize? serializer-prefix syn)
+
+  (define (normalize-extra-args s)
+    "Extract and normalize arguments following @var{doc}."
+    (let loop ((s s)
+               (sanitizer* %unset-value)
+               (serializer* %unset-value))
+      (syntax-case s (sanitizer serializer empty-serializer)
+        (((sanitizer proc) tail ...)
+         (if (maybe-value-set? sanitizer*)
+             (syntax-violation 'sanitizer "duplicate entry"
+                               #'proc)
+             (loop #'(tail ...) #'proc serializer*)))
+        (((serializer proc) tail ...)
+         (if (maybe-value-set? serializer*)
+             (syntax-violation 'serializer "duplicate or conflicting entry"
+                               #'proc)
+             (loop #'(tail ...) sanitizer* #'proc)))
+        ((empty-serializer tail ...)
+         (if (maybe-value-set? serializer*)
+             (syntax-violation 'empty-serializer
+                               "duplicate or conflicting entry" #f)
+             (loop #'(tail ...) sanitizer* #'empty-serializer)))
+        (()  ; stop condition
+         (values (list sanitizer* serializer*)))
+        ((proc)  ; TODO: deprecated, to be removed.
+         (null? (filter-map maybe-value-set? (list sanitizer* serializer*)))
+         (begin
+           (warning #f (G_ "specifying serializers after documentation is \
+deprecated, use (serializer ~a) instead~%") (syntax->datum #'proc))
+           (values (list %unset-value #'proc)))))))
+
   (syntax-case syn ()
-    ((_ stem (field field-type+def doc custom-serializer ...) ...)
+    ((_ stem (field field-type+def doc extra-args ...) ...)
      (with-syntax
          ((((field-type def) ...)
-           (map normalize-field-type+def #'(field-type+def ...))))
+           (map normalize-field-type+def #'(field-type+def ...)))
+          (((sanitizer* serializer*) ...)
+           (map normalize-extra-args #'((extra-args ...) ...))))
        (with-syntax
            (((field-getter ...)
              (map (lambda (field)
@@ -200,21 +238,18 @@ does not have a default value" field kind)))
                     ((field-type default-value)
                      default-value))
                   #'((field-type def) ...)))
+            ((field-sanitizer ...)
+             (map maybe-value #'(sanitizer* ...)))
             ((field-serializer ...)
-             (map (lambda (type custom-serializer)
+             (map (lambda (type proc)
                     (and serialize?
-                         (match custom-serializer
-                           ((serializer)
-                            serializer)
-                           (()
-                            (if serializer-prefix
-                                (id #'stem
-                                    serializer-prefix
-                                    #'serialize- type)
-                                (id #'stem #'serialize- type))))))
+                         (or (maybe-value proc)
+                             (if serializer-prefix
+                                 (id #'stem serializer-prefix #'serialize- type)
+                                 (id #'stem #'serialize- type)))))
                   #'(field-type ...)
-                  #'((custom-serializer ...) ...))))
-         (define (field-sanitizer name pred)
+                  #'(serializer* ...))))
+         (define (default-field-sanitizer name pred)
            ;; Define a macro for use as a record field sanitizer, where NAME
            ;; is the name of the field and PRED is the predicate that tells
            ;; whether a value is valid for this field.
@@ -235,21 +270,29 @@ does not have a default value" field kind)))
 
          #`(begin
              ;; Define field validation macros.
-             #,@(map field-sanitizer
-                     #'(field ...)
-                     #'(field-predicate ...))
+             #,@(filter-map (lambda (name pred sanitizer)
+                              (if sanitizer
+                                  #f
+                                  (default-field-sanitizer name pred)))
+                            #'(field ...)
+                            #'(field-predicate ...)
+                            #'(field-sanitizer ...))
 
              (define-record-type* #,(id #'stem #'< #'stem #'>)
                stem
                #,(id #'stem #'make- #'stem)
                #,(id #'stem #'stem #'?)
-               #,@(map (lambda (name getter def)
-                         #`(#,name #,getter (default #,def)
+               #,@(map (lambda (name getter def sanitizer)
+                         #`(#,name #,getter
+                                   (default #,def)
                                    (sanitize
-                                    #,(id #'stem #'validate- #'stem #'- name))))
+                                    #,(or sanitizer
+                                          (id #'stem
+                                              #'validate- #'stem #'- name)))))
                        #'(field ...)
                        #'(field-getter ...)
-                       #'(field-default ...))
+                       #'(field-default ...)
+                       #'(field-sanitizer ...))
                (%location #,(id #'stem #'stem #'-source-location)
                           (default (and=> (current-source-location)
                                           source-properties->location))
@@ -261,10 +304,12 @@ does not have a default value" field kind)))
                       (type 'field-type)
                       (getter field-getter)
                       (predicate field-predicate)
+                      (sanitizer
+                       (or field-sanitizer
+                           (id #'stem #'validate- #'stem #'- #'field)))
                       (serializer field-serializer)
                       (default-value-thunk
                         (lambda ()
-                          (display '#,(id #'stem #'% #'stem))
                           (if (maybe-value-set? (syntax->datum field-default))
                               field-default
                               (configuration-missing-default-value
@@ -440,10 +485,7 @@ the list result in @code{#t} when applying PRED? on them."
   (list-of string?))
 
 (define alist?
-  (match-lambda
-    (() #t)
-    ((head . tail) (and (pair? head) (alist? tail)))
-    (_ #f)))
+  (list-of pair?))
 
 (define serialize-file-like empty-serializer)
 

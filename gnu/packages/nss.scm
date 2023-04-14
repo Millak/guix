@@ -41,7 +41,7 @@
 (define-public nspr
   (package
     (name "nspr")
-    (version "4.34")
+    (version "4.35")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -49,8 +49,8 @@
                     version "/src/nspr-" version ".tar.gz"))
               (sha256
                (base32
-                "177rxcf3lglabs7sgwcvf72ww4v56qa71lc495wl13sxs4f03vxy"))))
-    (build-system mozilla-build-system)
+                "13xwda56yhp1w7v02qvlxvlqiniw8kr4g3fxlljmv6wnlmz2k8vy"))))
+    (build-system gnu-build-system)
     (inputs
      (list perl                         ;for 'compile-et.pl'
            bash-minimal))               ;for 'nspr-config'
@@ -191,7 +191,7 @@ in the Mozilla clients.")
                     ;; leading to test failures:
                     ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                     ;; work around that, set the time to roughly the release date.
-                    (invoke "faketime" "2022-09-01" "./nss/tests/all.sh"))
+                    (invoke "faketime" "2022-11-01" "./nss/tests/all.sh"))
                   (format #t "test suite not run~%"))))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)

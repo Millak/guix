@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
-;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -1145,6 +1145,54 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
     (home-page "https://microsoft.github.io/mimalloc/")
     (license license:expat)))
 
+;;; The package is named orangeduck-mpc to differentiate it from GNU mpc.
+(define-public orangeduck-mpc
+  ;; The last release lacks an 'install' target.
+  (let ((commit "7c910e9303833c349f7432188ff77f2745254df2")
+        (revision "0"))
+    (package
+      (name "orangeduck-mpc")
+      (version (git-version "0.9.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/orangeduck/mpc")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "01a4vcxdnz0fbn90c9zc3jzklyqqvp9sfjpjwpq0f5r0l2pp37ad"))
+                (patches
+                 (search-patches "orangeduck-mpc-fix-pkg-config.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                  (string-append "PREFIX=" #$output))
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch-Makefile
+                            (lambda _
+                              (substitute* "Makefile"
+                                ;; Do not attempt to alter the permissions,
+                                ;; otherwise 'install' would error with
+                                ;; "cannot stat [...] Permission denied"
+                                ;; errors.
+                                (("\\s\\-m[0-9]{3}\\s")
+                                 " "))))
+                          (delete 'configure))))
+      (home-page "https://github.com/orangeduck/mpc")
+      (synopsis "Parser Combinator library for C ")
+      (description "@code{mpc} is a lightweight Parser Combinator library for C.
+@code{mpc} can help with tasks such as:
+@itemize
+@item Building a new programming language
+@item Building a new data format
+@item Parsing an existing programming language
+@item Parsing an existing data format
+@item Embedding a Domain Specific Language
+@item Implementing Greenspun's Tenth Rule.
+@end itemize")
+      (license license:bsd-2))))
+
 ;;; Factored out of the ck package so that it can be adjusted and called on
 ;;; the host side easily, without impacting the package definition.
 (define (gnu-triplet->ck-machine target)
@@ -1317,20 +1365,21 @@ will take care of dispatching tasks to available cores.")
                   "0x9f7ivww8c7cigf4ck0hfx2bm79qgx6q4ccwzqbzkrmcrl9shfb"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'build)
-           (delete 'configure)
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (with-directory-excursion "test"
-                   (invoke "cmake" ".")
-                   (invoke "make")))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (install-file "utf8.h" (string-append out "/include"))))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'build)
+            (delete 'configure)
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "test"
+                    (invoke "cmake" ".")
+                    (invoke "make")))))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (install-file "utf8.h"
+                              (string-append #$output "/include/utf8")))))))
       (home-page "https://github.com/sheredom/utf8.h")
       (synopsis "Single header UTF-8 string functions for C and C++")
       (description "A simple one header solution to supporting UTF-8 strings in

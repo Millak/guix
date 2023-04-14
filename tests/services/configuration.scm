@@ -2,6 +2,7 @@
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
   #:use-module (gnu services configuration)
   #:use-module (guix diagnostics)
   #:use-module (guix gexp)
+  #:autoload (guix i18n) (G_)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64))
 
@@ -46,14 +48,14 @@
   (port-configuration-port (port-configuration)))
 
 (test-equal "wrong type for a field"
-  '("configuration.scm" 57 11)                    ;error location
+  '("configuration.scm" 59 11)                    ;error location
   (guard (c ((configuration-error? c)
              (let ((loc (error-location c)))
                (list (basename (location-file loc))
                      (location-line loc)
                      (location-column loc)))))
     (port-configuration
-     ;; This is line 56; the test relies on line/column numbers!
+     ;; This is line 58; the test relies on line/column numbers!
      (port "This is not a number!"))))
 
 (define-configuration port-configuration-cs
@@ -80,6 +82,9 @@
   (format #f "~a = ~a;" name value))
 
 (define-configuration serializable-configuration
+  (port (number 80) "The port number." (serializer custom-number-serializer)))
+
+(define-configuration serializable-configuration-deprecated
   (port (number 80) "The port number." custom-number-serializer))
 
 (test-assert "serialize-configuration"
@@ -87,8 +92,14 @@
    (let ((config (serializable-configuration)))
      (serialize-configuration config serializable-configuration-fields))))
 
+(test-assert "serialize-configuration [deprecated]"
+  (gexp?
+   (let ((config (serializable-configuration-deprecated)))
+     (serialize-configuration
+      config serializable-configuration-deprecated-fields))))
+
 (define-configuration serializable-configuration
-  (port (number 80) "The port number." custom-number-serializer)
+  (port (number 80) "The port number." (serializer custom-number-serializer))
   (no-serialization))
 
 (test-assert "serialize-configuration with no-serialization"
@@ -108,6 +119,183 @@
   (gexp?
    (let ((config (configuration-with-prefix)))
      (serialize-configuration config configuration-with-prefix-fields))))
+
+
+;;;
+;;; define-configuration macro, extra-args literals
+;;;
+
+(define (eval-gexp x)
+  "Get serialized config as string."
+  (eval (gexp->approximate-sexp x)
+        (current-module)))
+
+(define (port? value)
+  (or (string? value) (number? value)))
+
+(define (sanitize-port value)
+  (cond ((number? value) value)
+        ((string? value) (string->number value))
+        (else (raise (formatted-message (G_ "Bad value: ~a") value)))))
+
+(test-group "Basic sanitizer literal tests"
+  (define serialize-port serialize-number)
+
+  (define-configuration config-with-sanitizer
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     (sanitizer sanitize-port)))
+
+  (test-equal "default value, sanitizer"
+    80
+    (config-with-sanitizer-port (config-with-sanitizer)))
+
+  (test-equal "string value, sanitized to number"
+    56
+    (config-with-sanitizer-port (config-with-sanitizer
+                                 (port "56"))))
+
+  (define (custom-serialize-port field-name value)
+    (number->string value))
+
+  (define-configuration config-serializer
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     (serializer custom-serialize-port)))
+
+  (test-equal "default value, serializer literal"
+    "80"
+    (eval-gexp
+     (serialize-configuration (config-serializer)
+                              config-serializer-fields))))
+
+(test-group "empty-serializer as literal/procedure tests"
+  (define-configuration config-with-literal
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     empty-serializer))
+
+  (define-configuration config-with-proc
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     (serializer empty-serializer)))
+
+  (test-equal "empty-serializer as literal"
+    ""
+    (eval-gexp
+     (serialize-configuration (config-with-literal)
+                              config-with-literal-fields)))
+
+  (test-equal "empty-serializer as procedure"
+    ""
+    (eval-gexp
+     (serialize-configuration (config-with-proc)
+                              config-with-proc-fields))))
+
+(test-group "permutation tests"
+  (define-configuration config-san+empty-ser
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     (sanitizer sanitize-port)
+     empty-serializer))
+
+  (define-configuration config-san+ser
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     (sanitizer sanitize-port)
+     (serializer (lambda _ "foo"))))
+
+  (test-equal "default value, sanitizer, permutation"
+    80
+    (config-san+empty-ser-port (config-san+empty-ser)))
+
+  (test-equal "default value, serializer, permutation"
+    "foo"
+    (eval-gexp
+     (serialize-configuration (config-san+ser) config-san+ser-fields)))
+
+  (test-equal "string value sanitized to number, permutation"
+    56
+    (config-san+ser-port (config-san+ser
+                          (port "56"))))
+
+  ;; Ordering tests.
+  (define-configuration config-ser+san
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     (sanitizer sanitize-port)
+     (serializer (lambda _ "foo"))))
+
+  (define-configuration config-empty-ser+san
+    (port
+     (port 80)
+     "Lorem Ipsum."
+     empty-serializer
+     (sanitizer sanitize-port)))
+
+  (test-equal "default value, sanitizer, permutation 2"
+    56
+    (config-empty-ser+san-port (config-empty-ser+san
+                                (port "56"))))
+
+  (test-equal "default value, serializer, permutation 2"
+    "foo"
+    (eval-gexp
+     (serialize-configuration (config-ser+san) config-ser+san-fields))))
+
+(test-group "duplicated/conflicting entries"
+  (test-error
+   "duplicate sanitizer" #t
+   (macroexpand '(define-configuration dupe-san
+                   (foo
+                    (list '())
+                    "Lorem Ipsum."
+                    (sanitizer (lambda () #t))
+                    (sanitizer (lambda () #t))))))
+
+  (test-error
+   "duplicate serializer" #t
+   (macroexpand '(define-configuration dupe-ser
+                   (foo
+                    (list '())
+                    "Lorem Ipsum."
+                    (serializer (lambda _ ""))
+                    (serializer (lambda _ ""))))))
+
+  (test-error
+   "conflicting use of serializer + empty-serializer" #t
+   (macroexpand '(define-configuration ser+empty-ser
+                   (foo
+                    (list '())
+                    "Lorem Ipsum."
+                    (serializer (lambda _ "lorem"))
+                    empty-serializer)))))
+
+(test-group "Mix of deprecated and new syntax"
+  (test-error
+   "Mix of bare serializer and new syntax" #t
+   (macroexpand '(define-configuration mixed
+                   (foo
+                    (list '())
+                    "Lorem Ipsum."
+                    (sanitizer (lambda () #t))
+                    (lambda _ "lorem")))))
+
+  (test-error
+   "Mix of bare serializer and new syntax, permutation)" #t
+   (macroexpand '(define-configuration mixed
+                   (foo
+                    (list '())
+                    "Lorem Ipsum."
+                    (lambda _ "lorem")
+                    (sanitizer (lambda () #t)))))))
 
 
 ;;;

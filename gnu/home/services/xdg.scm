@@ -104,11 +104,11 @@ like sockets.")
 Specification, but helps to make implementation of home services more
 consistent.")
   (state-home
-   (path "$HOME/.local/var/lib")
-   "Base directory for programs to store state files, like databases,
-analogus to @file{/var/lib}, but for user.  It is not a part of XDG
-Base Directory Specification, but helps to make implementation of home
-services more consistent."))
+   (path "$HOME/.local/state")
+   "Base directory for programs to store state data that should persist
+between (application) restarts, such as logs, but are not important or
+portable enough to the user to warrant storing them in
+@env{XDG_DATA_HOME}."))
 
 (define (home-xdg-base-directories-environment-variables-service config)
   (map
@@ -158,12 +158,12 @@ are no extensions use configuration instead."
                 (compose identity)
                 (extend last-extension-or-cfg)
                 (description "Configure XDG base directories.  This
-service introduces two additional variables @env{XDG_STATE_HOME},
-@env{XDG_LOG_HOME}.  They are not a part of XDG specification, at
-least yet, but are convenient to have, it improves the consistency
-between different home services.  The services of this service-type is
-instantiated by default, to provide non-default value, extend the
-service-type (using @code{simple-service} for example).")))
+service introduces an additional @env{XDG_LOG_HOME} variable.  It's not
+a part of XDG specification, at least yet, but are convenient to have,
+it improves the consistency between different home services.  The
+services of this service-type is instantiated by default, to provide
+non-default value, extend the service-type (using @code{simple-service}
+for example).")))
 
 (define (generate-home-xdg-base-directories-documentation)
   (generate-documentation

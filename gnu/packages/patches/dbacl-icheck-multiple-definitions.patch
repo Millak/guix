@@ -1,0 +1,33 @@
+From f5df6813e305372e25b8a2124c491293a176e115 Mon Sep 17 00:00:00 2001
+From: Danny O'Brien <danny@spesh.com>
+Date: Fri, 3 Feb 2023 16:48:59 -0800
+Subject: [PATCH] Fix failing build of icheck.
+
+Building icheck fails with a duplicate symbol definition 
+error. This allows the icheck executable to compile.
+
+Submitted upstream[1] but not yet moderated/accepted.
+
+[1] https://sourceforge.net/p/dbacl/discussion/239876/thread/87636b0114/
+
+---
+ src/icheck.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/src/icheck.c b/src/icheck.c
+index efbb6a5..12a3b7a 100644
+--- a/src/icheck.c
++++ b/src/icheck.c
+@@ -39,9 +39,6 @@ extern regex_count_t regex_count;
+ extern empirical_t empirical;
+ 
+ extern int cmd;
+-char *progname = "icheck";
+-char *inputfile = "";
+-long inputline = 0;
+ 
+ extern long system_pagesize;
+ extern void *in_iobuf;
+-- 
+2.39.1
+

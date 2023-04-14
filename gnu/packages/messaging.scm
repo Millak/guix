@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1321,7 +1322,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
@@ -1329,7 +1330,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "115p7mjk0q68nvv8asrm6hsv0dzsz7hy2bnvhwhxmcfbilr8fq68"))))
+        (base32 "1vbyrnivibsn4jzmfb6sfq5fxhb0xh1cnhgcmg1rafq751q55cg1"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -2842,7 +2843,7 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
 (define-public mosquitto
   (package
     (name "mosquitto")
-    (version "1.6.12")
+    (version "2.0.15")
     (source
      (origin
        (method url-fetch)
@@ -2850,10 +2851,10 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1yq7y329baa1ly488rw125c3mvsnsa7kjkik602xv1xpkz8p73al"))))
+         "1ils0ckxz86gvr37k2gfl4q9gs12625dhhb7i6lcg49z5v9v2da7"))))
     (build-system cmake-build-system)
     (inputs
-     (list openssl))
+     (list openssl libxslt))
     (synopsis "Message broker")
     (description "This package provides Eclipse Mosquitto, a message broker
 that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1.  Mosquitto
@@ -3259,14 +3260,14 @@ notifications.")
 (define-public pounce
   (package
     (name "pounce")
-    (version "3.0")
+    (version "3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://git.causal.agency/pounce/snapshot/pounce-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1w4x34bspkqvk9p7bfj0zmvmbzvxb7lxrrr3g6lrfdj9f3qzfxpp"))))
+        (base32 "0kk0jrfiwfaybr0i5xih3b0yd4i6v3bz866a7xal1j8wddalbwlp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests
@@ -3278,7 +3279,7 @@ notifications.")
      (list pkg-config universal-ctags))
     (inputs
      (list libressl))
-    (home-page "https://code.causal.agency/june/pounce")
+    (home-page "https://git.causal.agency/pounce")
     (synopsis "Simple multi-client TLS-only IRC bouncer")
     (description
      "@command{pounce} is a multi-client, TLS-only IRC bouncer.  It maintains

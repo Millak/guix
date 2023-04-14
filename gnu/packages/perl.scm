@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,6 +89,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -549,6 +551,27 @@ users can force the decision of which backend to use by setting the environment
 variable ANY_MOOSE to be Moose or Mouse.")
     (license (package-license perl))))
 
+(define-public perl-app-cpanminus
+  (package
+    (name "perl-app-cpanminus")
+    (version "1.7046")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MI/MIYAGAWA/App-cpanminus-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0qpq1x24dcrm7bm2qj814nkmxg8mzkdn6wcirjd8yd578jdrv31y"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/App-cpanminus")
+    (synopsis "CPAN package manager")
+    (description "App::cpanminus is a script to get, unpack, build and install
+modules from CPAN and does nothing else.  It's dependency free (can bootstrap
+itself), requires zero configuration, and stands alone.  When running, it
+requires only 10MB of RAM.")
+    (license (package-license perl))))
+
 (define-public perl-app-xml-docbook-builder
   (package
     (name "perl-app-xml-docbook-builder")
@@ -818,9 +841,6 @@ error when it would have happened.")
     (synopsis "Disables bareword filehandles")
     (description "This module disables bareword filehandles.")
     (license (package-license perl))))
-
-(define-public perl-base
-  (deprecated-package "perl-base" perl))
 
 (define-public perl-browser-open
   (package
@@ -8650,8 +8670,25 @@ defaults, optional parameters, and extra \"slurpy\" parameters.")
 distributions.")
     (license (package-license perl))))
 
-(define-public perl-parent
-  (deprecated-package "perl-parent" perl))
+(define-public perl-par
+  (package
+    (name "perl-par")
+    (version "1.018")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/R/RS/RSCHUPP/PAR-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0ifyjd1pxbfp8wxa9l8b1irjwln4gwh4nz256mjacjv194mh99bc"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-archive-zip perl-par-dist))
+    (home-page "https://metacpan.org/release/PAR")
+    (synopsis "Perl Archive Toolkit")
+    (description
+     "Perl module for using special zip files (called Perl ARchives) as
+libraries from which Perl modules can be loaded.")
+    (license license:perl-license)))
 
 (define-public perl-path-class
   (package
@@ -11280,7 +11317,7 @@ Tree::Simple::Visitor::* objects.")
 (define-public perl-try-tiny
   (package
     (name "perl-try-tiny")
-    (version "0.30")
+    (version "0.31")
     (source
      (origin
        (method url-fetch)
@@ -11288,7 +11325,7 @@ Tree::Simple::Visitor::* objects.")
                            "Try-Tiny-" version ".tar.gz"))
        (sha256
         (base32
-         "0szgvlz19yz3mq1lbzmwh8w5dh6agg5s16xv22zrnl83r7ax0nys"))))
+         "1ghidhh2wasxbmjsdsyfcy20wgli3m58dkj6ixnv4xa0i8fx601k"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Try-Tiny")
     (synopsis "Minimal try/catch with proper preservation of $@@")
@@ -12300,6 +12337,40 @@ A summary of features for comparison to other file finding modules:
 As a convenience, the PIR module is an empty subclass of this one that is less
 arduous to type for one-liners.")
     (license license:asl2.0)))
+
+(define-public perl-pcsc
+  (package
+    (name "perl-pcsc")
+    (version "1.4.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/W/WH/WHOM/pcsc-perl-" version
+                    ".tar.bz2"))
+              (sha256
+               (base32
+                "17f6i16jv6ci6459vh6y3sz94vgcvykjjszcl4xsykryakjvf8i7"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      ;; The test suite is disabled because it requires access to a card
+      ;; reader with a card inserted.
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-dlopen
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (substitute* "PCSCperl.h"
+                         (("libpcsclite.so.1")
+                          (search-input-file inputs
+                                             "/lib/libpcsclite.so.1"))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list pcsc-lite))
+    (synopsis "Perl library for PC/SC")
+    (description
+     "This library allows communication with a smart card using PC/SC from a Perl
+script.")
+    (home-page "https://pcsc-perl.apdu.fr/")
+    (license license:gpl2+)))
 
 (define-public perl-pod-constants
   (package
