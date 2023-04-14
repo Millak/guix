@@ -7183,7 +7183,7 @@ provides the full grid interface including adaptive mesh refinement.")
 (define-public dune-typetree
   (package
     (name "dune-typetree")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -7193,7 +7193,7 @@ provides the full grid interface including adaptive mesh refinement.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kx9k8i7pdw6l6ny6nq85v5p1nd6yxldzaj8k3nizaz3q1j407pv"))))
+         "1qcnl8giivnn8zprszdwrqw4q29sv3c2pr8dlrz616j10i4r8p18"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
