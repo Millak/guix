@@ -135,6 +135,7 @@
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6421,6 +6422,15 @@ include_dirs = ~:*~a/include~%"
                               ;; x86_64 CPUs such as the Core 2 Duo (see:
                               ;; https://github.com/numpy/numpy/issues/22170).
                               "and not test_rint_big_int "
+                              ;; The huge_array test is too large for 32-bit (see:
+                              ;; https://bugs.gentoo.org/843599 and
+                              ;; https://bugs.gentoo.org/846548).
+                              ;; TestKind.test_all is a Fortran type failure
+                              ;; that may be toolchain or environment related.
+                              #$@(if (or (target-x86?) (target-arm32?))
+                                     `(" and not test_identityless_reduction_huge_array"
+                                       " and not (TestKind and test_all)")
+                                   '())
                               ;; These tests seem to fail on machines without
                               ;; an FPU is still under investigation upstream.
                               ;; https://github.com/numpy/numpy/issues/20635
