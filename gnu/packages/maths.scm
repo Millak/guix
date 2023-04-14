@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020–2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020–2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -6797,7 +6797,7 @@ linear algebra primitives specifically targeting graph analytics.")
 (define-public dune-common
   (package
     (name "dune-common")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -6805,7 +6805,7 @@ linear algebra primitives specifically targeting graph analytics.")
                            version "/dune-common-" version ".tar.gz"))
        (sha256
         (base32
-         "0sidwdkyrrqjkqhpvrlc991pzi5xzlvxk91s2n7qk3widwy7fch2"))))
+         "04pzk8q0bibci8z5xlwndhh3y3vs63mw7kad62lbzfwrr5121hrd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
