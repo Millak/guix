@@ -58,6 +58,7 @@
 ;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2289,7 +2290,9 @@ command.")
                      (display "CONFIG_LIBNL32=y
                                CONFIG_IEEE80211R=y
                                CONFIG_IEEE80211N=y
-                               CONFIG_IEEE80211AC=y\n" port)
+                               CONFIG_IEEE80211AC=y
+                               CONFIG_FULL_DYNAMIC_VLAN=y
+                               CONFIG_ACS=y\n" port)
                      (close-port port))))
                (add-after 'unpack 'patch-pkg-config
                  (lambda _
