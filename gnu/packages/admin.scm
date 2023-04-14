@@ -2941,16 +2941,15 @@ provides the following commands:
 (define-public ansible
   (package
     (name "ansible")
-    (version "4.7.0")
+    (version "7.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible" version))
        (sha256
-        (base32 "0aab9id6dqfw2111r731c7y1p77dpzczynmgl4d989p3a7n54z0b"))))
+        (base32 "142barhwz0wx5kn74xi0bfl21iwq2yq3jp14kxajsg9nggndcr09"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list ansible-core))
+    (propagated-inputs (list ansible-core))
     ;; The Ansible collections are found by ansible-core via the Python search
     ;; path; the following search path ensures that they are found even when
     ;; Python is not present in the profile.
