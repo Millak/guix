@@ -6698,6 +6698,41 @@ functions from LINPACK.")
     ;; Any GPL version.
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-littler
+  (package
+    (name "r-littler")
+    (version "0.3.18")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "littler" version))
+              (sha256
+               (base32
+                "1lp6a62g3yhzr4pv9kynibv7k9pd546w6hifs1aficyxbyg4dgqq"))))
+    (properties `((upstream-name . "littler")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-executable
+            (lambda _
+              (install-file "inst/bin/r"
+                            (string-append #$output "/bin")))))))
+    (inputs (list icu4c zlib))
+    (native-inputs
+     (list r-simplermarkdown pkg-config))
+    (home-page "https://github.com/eddelbuettel/littler")
+    (synopsis "R at the command-line via r")
+    (description
+     "This package provides a scripting and command-line front-end is provided
+by r (aka littler) as a lightweight binary wrapper around the GNU R language
+and environment for statistical computing and graphics.  While R can be used
+in batch mode, the r binary adds full support for both shebang-style scripting
+(i.e. using a hash-mark-exclamation-path expression as the first line in
+scripts) as well as command-line use in standard pipelines.  In other words, r
+provides the R language without the environment.")
+    (license license:gpl2+)))
+
 (define-public r-fitdistrplus
   (package
     (name "r-fitdistrplus")
