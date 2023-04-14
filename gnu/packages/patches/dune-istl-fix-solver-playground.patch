@@ -1,0 +1,61 @@
+From fe929f17e98b577171f58ca520b5145be41730ea Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Christoph=20Gr=C3=BCninger?= <gruenich@dune-project.org>
+Date: Thu, 16 Mar 2023 19:48:40 +0100
+Subject: [PATCH] Adjust sequential and both parallel cases in
+ istl-solver-playground
+
+Do same thing, independent of paralellel, distributed, or
+sequential.
+This fixes the test in the sequential case.
+---
+ src/istl-solver-playground.hh | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/src/istl-solver-playground.hh b/src/istl-solver-playground.hh
+index 0ff3abd5..11693cf5 100644
+--- a/src/istl-solver-playground.hh
++++ b/src/istl-solver-playground.hh
+@@ -66,7 +66,11 @@ std::shared_ptr<OOCOMM> loadSystem(std::shared_ptr<Mat>& m,
+   std::shared_ptr<OOCOMM> oocomm;
+   if(distributed){
+     oocomm = std::make_shared<OOCOMM>(MPI_COMM_WORLD);
+-    loadMatrixMarket(*m, matrixfilename, *oocomm);
++    if(matrixfilename != "laplacian"){
++      loadMatrixMarket(*m, matrixfilename, *oocomm);
++    }else{
++      setupLaplacian(*m, config.get("N", 20));
++    }
+     if(config.get("random_rhs", false)){
+       rhs->resize(m->N());
+       srand(42);
+@@ -98,16 +102,22 @@ template<class Mat, class Vec>
+ void loadSystem(std::shared_ptr<Mat>& m,
+                 std::shared_ptr<Vec>& rhs,
+                 const Dune::ParameterTree& config){
+-  std::string matrixfilename = config.get<std::string>("matrix");
++  // generate Laplacian or load matrix
++  std::string matrixfilename = config.get<std::string>("matrix", "laplacian");
++  if(matrixfilename == "laplacian"){
++    setupLaplacian(*m, config.get("N", 20));
++  }else{
++    loadMatrixMarket(*m, matrixfilename);
++  }
++  // use random values or load right-hand side
+   std::string rhsfilename;
+-  if(!config.get("random_rhs", false))
+-    rhsfilename = config.get<std::string>("rhs");
+-  loadMatrixMarket(*m, matrixfilename);
+   if(config.get("random_rhs", false)){
+     rhs->resize(m->N());
+     fillRandom(*rhs);
+-  }else
++  }else{
++    rhsfilename = config.get<std::string>("rhs");
+     loadMatrixMarket(*rhs, rhsfilename);
++  }
+ }
+ #endif
+ 
+-- 
+2.39.2
+
