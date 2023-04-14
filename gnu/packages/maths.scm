@@ -7134,22 +7134,23 @@ cubes.")
     (license license:gpl2+)))
 
 (define-public dune-subgrid
-  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17.
-  ;; Unfortunately the dune-subgrid repository contains no release tags.
-  (let ((commit "45d1ee9f3f711e209695deee97912f4954f7f280"))
+  ; dune-subgrid does not tag its releases.
+  ; The following commit is a few commits past the releases/2.9 branch
+  ; to include some additional commits fixing compatibility with dune-uggrid.
+  (let ((commit "e83f3f919c2602425467ed767f279bc9c356c436"))
     (package
       (name "dune-subgrid")
-      (version (git-version "2.7.1" "0" commit))
+      (version (git-version "2.9.0" "1" commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-           (url "https://git.imp.fu-berlin.de/agnumpde/dune-subgrid")
+           (url "https://gitlab.dune-project.org/extensions/dune-subgrid")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-            "0xjf7865wil7kzym608kv3nc3ff3m3nlqich4k9wjyvy3lz6panh"))))
+            "1dv4zg5j17bldpgg02ycg9fbfmnc1kffixgzbkkz86f2dmwgh2b6"))))
       (build-system cmake-build-system)
       (arguments
        `(#:phases
