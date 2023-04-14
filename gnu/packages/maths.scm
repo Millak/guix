@@ -6875,7 +6875,7 @@ This package contains the basic DUNE geometry classes.")
 (define-public dune-uggrid
   (package
     (name "dune-uggrid")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -6885,7 +6885,7 @@ This package contains the basic DUNE geometry classes.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11qz52g9d5k96fqik2lyi80xryw174rnny074pj70ardl6zzz83p"))))
+         "1xwmiabb25nydi0yzhd64vq6fm3razix6k87afhq88q0ywzll65x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
