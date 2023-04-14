@@ -1592,7 +1592,6 @@ focused on DXing and being shaped by community of DXers.JTDX")
 
 (define-public js8call
   (package
-    (inherit wsjtx)
     (name "js8call")
     (version "2.2.0")
     (source
