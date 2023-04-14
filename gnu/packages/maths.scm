@@ -7276,12 +7276,12 @@ implemented as callable objects, and bases of finite element spaces.")
     (license (list license:lgpl3+ license:gpl2))))
 
 (define-public dune-pdelab
-  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17,
-  ;; unfortunately there was no tag for any 2.7 release.
-  (let ((commit "09aef74d95661d18a7789d2f517ae77797eec738"))
+  ;; This was the last commit on the releases/2.8 branch as of 2023-04-12,
+  ;; unfortunately there was no tag for any 2.8 release.
+  (let ((commit "d5dddb6b1c21b95e867ff53cca159ad676689f5c"))
     (package
       (name "dune-pdelab")
-      (version (git-version "2.7.1" "0" commit))
+      (version (git-version "2.8.0" "0" commit))
       (source
        (origin
          (method git-fetch)
@@ -7291,7 +7291,7 @@ implemented as callable objects, and bases of finite element spaces.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0nv69ayr4gln9m1s94z9zkrxqi8nzar3z6awnvgqz595nmjf82ac"))))
+           "0l2idjp59a6x46vdd30xhhsnv7chql0z7msdsyra2h6pqm6xiqxk"))))
       (build-system cmake-build-system)
       (arguments '(#:tests? #f)) ; XXX: the tests cannot be compiled
       (inputs
