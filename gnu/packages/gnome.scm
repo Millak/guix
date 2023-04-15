@@ -2693,7 +2693,7 @@ update_desktop_database): true" _ tool)
            libspectre
            djvulibre
            ghostscript
-           poppler-next
+           poppler
            libtiff
            texlive-libkpathsea          ; for DVI support
            gnome-desktop
