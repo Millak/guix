@@ -5073,14 +5073,13 @@ leaf preserving the overall structure.")
 (define-public python-docutils
   (package
     (name "python-docutils")
-    (version "0.17.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "docutils" version))
-       (sha256
-        (base32
-         "09gii36lp1bs26cpxqyfd20xahnpbrbjzcnba2xq08y3wk97frb8"))))
+    (version "0.19")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "docutils" version))
+              (sha256
+               (base32
+                "1rprvir116g5rz2bgzkzgyn6mv0z8582rz7bgxbpy2y3adkmm69k"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -5088,8 +5087,7 @@ leaf preserving the overall structure.")
                     (lambda* (#:key tests? #:allow-other-keys)
                       (if tests?
                           (invoke "python" "test/alltests.py")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+                          (format #t "test suite not run~%")))))))
     (home-page "https://docutils.sourceforge.net/")
     (synopsis "Python Documentation Utilities")
     (description
@@ -5102,18 +5100,6 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
     ;; Most of the source code is public domain, but some source files are
     ;; licensed under the PFSL, BSD 2-clause, and GPLv3+ licenses.
     (license (list license:public-domain license:psfl license:bsd-2 license:gpl3+))))
-
-;; TODO: Make this the default in the next rebuild cycle.
-(define-public python-docutils-0.19
-  (package
-    (inherit python-docutils)
-    (version "0.19")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "docutils" version))
-              (sha256
-               (base32
-                "1rprvir116g5rz2bgzkzgyn6mv0z8582rz7bgxbpy2y3adkmm69k"))))))
 
 ;; awscli refuses to be built with docutils < 0.16.
 (define-public python-docutils-0.15
