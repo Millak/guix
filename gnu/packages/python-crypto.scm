@@ -521,7 +521,7 @@ is used by the Requests library to verify HTTPS requests.")
            python-hypothesis
            python-iso8601
            python-pretend
-           python-pytest-7.1            ;for subtests
+           python-pytest                ;for subtests
            python-pytest-benchmark
            python-pytest-subtests))
     (inputs (list python-cryptography-rust))

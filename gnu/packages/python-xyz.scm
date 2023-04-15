@@ -968,7 +968,7 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
                 "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest-7.1            ;for pytest-subtests
+     (list python-pytest                ;for pytest-subtests
            python-pytest-cov
            python-pytest-mpl
            python-pytest-subtests
@@ -15329,7 +15329,7 @@ with a new public API, and RPython support.")
                          " and not test_macro_require"
                          " and not test_requires_pollutes_core"))))))))
     (native-inputs
-     (list python-pytest-7.1 python-wheel))
+     (list python-pytest python-wheel))
     (propagated-inputs
      (list python-funcparserlib))
     (home-page "https://docs.hylang.org/en/stable/")
@@ -16407,7 +16407,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-iniconfig
            python-moto
            python-msgpack
-           python-pytest-7.1            ;for pytest-subtests
+           python-pytest                ;for pytest-subtests
            python-pytest-celery
            python-pytest-subtests
            python-pytest-timeout
@@ -16501,7 +16501,7 @@ ISO 8859, etc.).")
                  (lambda _
                    (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
-     (list python-pytest-7.1 python-pytest-cov python-pytest-xdist))
+     (list python-pytest python-pytest-cov python-pytest-xdist))
     (inputs
      (list qtbase-5))
     (propagated-inputs

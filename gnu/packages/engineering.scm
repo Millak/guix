@@ -2463,7 +2463,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
                             (substitute* "pyvisa/shell.py"
                               (("from .thirdparty import prettytable")
                                "import prettytable")))))))
-    (native-inputs (list python-pytest-7.1))
+    (native-inputs (list python-pytest))
     (propagated-inputs (list python-dataclasses python-prettytable
                              python-typing-extensions))
     (home-page "https://pyvisa.readthedocs.io/en/latest/")
@@ -2500,7 +2500,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                          python-flake8
                          python-nbval
                          python-networkx
-                         python-pytest-7.1
+                         python-pytest
                          python-pytest-cov
                          python-pyvisa))
     (home-page "https://scikit-rf.org/")

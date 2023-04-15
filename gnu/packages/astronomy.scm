@@ -1196,7 +1196,7 @@ accurately in real time at any rate desired.")
            python-ipython
            python-jplephem
            python-objgraph
-           python-pytest-7.1
+           python-pytest
            python-pytest-astropy
            python-pytest-xdist
            python-setuptools-scm
@@ -2717,7 +2717,7 @@ implementation of the ASDF Standard.")
     (native-inputs (list python-astropy
                          python-jsonschema-next
                          python-pypa-build
-                         python-pytest-7.1
+                         python-pytest
                          python-packaging
                          python-setuptools-scm))
     (propagated-inputs (list python-importlib-resources))

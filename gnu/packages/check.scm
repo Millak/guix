@@ -1305,30 +1305,8 @@ and many external plugins.")
 (define-deprecated python-pytest-6 python-pytest)
 (export python-pytest-6)
 
-;; Astropy started using hard dependencies for Pytest 7+, which might
-;; happen for some other projects. It could be set as default in staging.
-(define-public python-pytest-7.1
-  (package
-    (inherit python-pytest)
-    (version "7.1.3")
-    (name "python-pytest")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest" version))
-       (sha256
-        (base32
-         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-pytest)
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (add-before 'build 'pretend-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-pytest)
-       (replace "python-toml" python-tomli)))))
+(define-deprecated python-pytest-7 python-pytest)
+(export python-pytest-7)
 
 (define-public python-pytest-bootstrap
   (package

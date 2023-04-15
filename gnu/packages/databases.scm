@@ -5173,7 +5173,7 @@ mechanism of @code{dogpile}.")
      (list python-beautifulsoup4
            python-black
            python-cogapp
-           python-pytest-7.1
+           python-pytest
            python-pytest-asyncio
            python-pytest-runner
            python-pytest-timeout
