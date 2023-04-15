@@ -3976,7 +3976,7 @@ with sensible defaults out of the box.")
                 "010j9zz0gd2za5l4hibicypnfw721x0gxp3rr0329bc97vw5maha"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-pillow python-toml python-numpy-next python-attrs))
+     (list python-pillow python-toml python-numpy python-attrs))
     (inputs (list libx11 libpng libxcursor))
     (native-inputs (list python-wheel))
     (home-page "https://github.com/ful1e5/clickgen")
