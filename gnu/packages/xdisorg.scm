@@ -504,12 +504,12 @@ avoiding password prompts when X11 forwarding has already been setup.")
     (name "libxkbcommon")
     (version "1.4.1")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "0fbb2dyjvf71p42y2jmwdcylsvj03w52f5rb23c2d00rwahhfg4l"))))
+              (method url-fetch)
+              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0fbb2dyjvf71p42y2jmwdcylsvj03w52f5rb23c2d00rwahhfg4l"))))
     (build-system meson-build-system)
     (inputs
      (list libx11
@@ -525,11 +525,11 @@ avoiding password prompts when X11 forwarding has already been setup.")
     (arguments
      (list #:configure-flags
            #~(list (string-append "-Dxkb-config-root="
-                                  (search-input-directory %build-inputs
-                                   "share/X11/xkb"))
+                                  (search-input-directory
+                                   %build-inputs "share/X11/xkb"))
                    (string-append "-Dx-locale-root="
-                                  (search-input-directory %build-inputs
-                                   "share/X11/locale")))))
+                                  (search-input-directory
+                                   %build-inputs "share/X11/locale")))))
     (home-page "https://xkbcommon.org/")
     (synopsis "Library to handle keyboard descriptions")
     (description "Xkbcommon is a library to handle keyboard descriptions,
