@@ -7826,7 +7826,6 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
   (package
     (name "python-pillow")
     (version "9.2.0")
-    (replacement python-pillow/security-fixes)
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pillow" version))
@@ -7835,7 +7834,9 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
                 "011wgm1mssjchpva9wsi2a07im9czyjvik137xlp5f0g7vykdrkm"))
               (modules '((guix build utils)))
               (snippet '(begin
-                          (delete-file-recursively "src/thirdparty")))))
+                          (delete-file-recursively "src/thirdparty")))
+              (patches
+               (search-patches "python-pillow-CVE-2022-45199.patch"))))
     (build-system python-build-system)
     (native-inputs (list python-pytest))
     (inputs (list freetype
@@ -7873,10 +7874,6 @@ a general image processing tool.")
     (license (license:x11-style
               "http://www.pythonware.com/products/pil/license.htm"
               "The PIL Software License"))))
-
-(define-public python-pillow/security-fixes
-  (package-with-patches python-pillow
-                        (search-patches "python-pillow-CVE-2022-45199.patch")))
 
 (define-public python-pillow-2.9
   (package
