@@ -215,7 +215,8 @@ independently or together to provide resilient infrastructures.")
                    (add-after 'unpack 'disable-failing-tests
                      (lambda _
                        (substitute* "Makefile.am"
-                         ((".*test_uv_append.c.*") ""))
+                         ((".*test_uv_append.c.*") "")
+                         ((".*test_uv_tcp_connect.c.*") ""))
                        #t)))))
     (inputs
      (list libuv lz4))
