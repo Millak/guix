@@ -501,14 +501,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.22.10")
+    (version "3.23.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "09366v0x10l35bkda6s5ysh64qdf24givn2gxlyidr2kdcpkyg2k"))
+                "1dh7gqhzv03a6j1kbkiaksy9a752k90xwqi5x0hqvn5ilac0l9p4"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -612,17 +612,6 @@ should only be used as part of the Guix cups-pk-helper service.")
                    (string-append "rulessystemdir = " out "/lib/systemd/system"))
                   (("/etc/sane.d")
                    (string-append out "/etc/sane.d"))))))
-          (add-before 'configure 'fix-build-with-python-3.8
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((python (assoc-ref inputs "python")))
-                ;; XXX: The configure script looks for Python headers in the
-                ;; wrong places as of version 3.20.3.  Help it by adding the
-                ;; include directory on C_INCLUDE_PATH.
-                (when python
-                  (setenv "C_INCLUDE_PATH"
-                          (string-append python "/include/python"
-                                         (python:python-version python)
-                                         ":" (getenv "C_INCLUDE_PATH")))))))
           (add-after 'install 'install-models-dat
             (lambda* (#:key outputs #:allow-other-keys)
               (install-file "data/models/models.dat"
