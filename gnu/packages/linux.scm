@@ -2920,11 +2920,7 @@ external rate conversion.")
     (arguments
      (list #:tests? #f             ; no test suite
            #:configure-flags       ; add $libdir to the RUNPATH of executables
-           ;; XXX TODO: Replace with simply #$OUTPUT on core-updates.
-           #~(list (string-append "LDFLAGS=-Wl,-rpath="
-                                  #$(if (%current-target-system)
-                                        #~#$output
-                                        #~%output) "/lib"))))
+           #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))))
     (home-page "https://www.netfilter.org/projects/iptables/index.html")
     (synopsis "Programs to configure Linux IP packet filtering rules")
     (description
