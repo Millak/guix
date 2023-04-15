@@ -639,9 +639,7 @@ for more information.")))
            #:builder
            #~(begin
                (use-modules (guix build utils))
-
-               ;; TODO: Remove 'assoc-ref' uses on next rebuild cycle.
-               (let ((bin (string-append (assoc-ref %outputs "out") "/bin"))
+               (let ((bin (string-append #$output "/bin"))
                      (python (string-append
                               ;; XXX: '%build-inputs' contains the native
                               ;; Python when cross-compiling.
