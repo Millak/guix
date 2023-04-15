@@ -106,45 +106,8 @@ also use Valgrind to build new tools.")
                                        "/valgrind-" version ".tar.bz2")))
              (sha256
               (base32
-               "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))
-             (patches (search-patches
-                       "valgrind-fix-default-debuginfo-path.patch"))))
+               "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))))
    (inputs
     ;; GDB is needed to provide a sane default for `--db-command'.
     (list gdb `(,(canonical-package glibc) "debug")))
-   (arguments
-    (substitute-keyword-arguments (package-arguments valgrind)
-      ((#:phases phases #~%standard-phases)
-       #~(modify-phases #$phases
-           (add-before 'configure 'patch-default-debuginfo-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; This helps Valgrind find the debug symbols of ld.so.
-               ;; Without it, Valgrind does not work in a Guix shell
-               ;; container and cannot be used as-is during packages tests
-               ;; phases.
-               ;; TODO: Remove on the next rebuild cycle, when libc is not
-               ;; longer fully stripped.
-               (define libc-debug
-                 (string-append (ungexp (this-package-input "glibc") "debug")
-                                "/lib/debug"))
-
-               (substitute* '("coregrind/m_debuginfo/readelf.c"
-                              "docs/xml/manual-core-adv.xml"
-                              "docs/xml/manual-core.xml")
-                 (("DEFAULT_DEBUGINFO_PATH")
-                  libc-debug))
-               ;; We also need to account for the bigger path in
-               ;; the malloc-ed variables.
-               (substitute* '("coregrind/m_debuginfo/readelf.c")
-                 (("DEBUGPATH_EXTRA_BYTES_1")
-                  (number->string
-                   (+ (string-length libc-debug)
-                      (string-length "/.build-id//.debug")
-                      1))))
-               (substitute* '("coregrind/m_debuginfo/readelf.c")
-                 (("DEBUGPATH_EXTRA_BYTES_2")
-                  (number->string
-                   (+ (string-length libc-debug)
-                      (string-length "/usr/lib/debug")
-                      1))))))))))
    (properties '())))
