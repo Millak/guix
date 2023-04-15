@@ -501,14 +501,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.22.4")
+    (version "3.22.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "0461pv3hgbmjxrz7y1kplnp1sp97hagzad7gc1qr2h5cqm3ybsbv"))
+                "09366v0x10l35bkda6s5ysh64qdf24givn2gxlyidr2kdcpkyg2k"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -591,6 +591,10 @@ should only be used as part of the Guix cups-pk-helper service.")
                    ;; FIXME: use merged ppds (I think actually only
                    ;; drvs need to be merged).
                    (cupsdir (assoc-ref inputs "cups-minimal")))
+               (substitute* (find-files "." "\\.py$")
+                 ;; Refer to the correct default configuration file name.
+                 (("/etc/hp/hplip.conf")
+                  (string-append out "/etc/hp/hplip.conf")))
                (substitute* "base/g.py"
                  (("'/usr/share;[^']*'")
                   (string-append "'" cupsdir "/share'"))
@@ -670,8 +674,8 @@ should only be used as part of the Guix cups-pk-helper service.")
                                            (getenv "GUIX_PYTHONPATH")
                                            bin target)))
                                (chmod file #o755)))
-                  (find-files "." (lambda (file stat)
-                                    (eq? 'symlink (stat:type stat))))))))))))
+                           (find-files "." (lambda (file stat)
+                                             (eq? 'symlink (stat:type stat))))))))))))
 
     ;; Note that the error messages printed by the tools in the case of
     ;; missing dependencies are often downright misleading.
@@ -692,30 +696,6 @@ should only be used as part of the Guix cups-pk-helper service.")
        ("zlib" ,zlib)))
     (native-inputs
      (list perl pkg-config))))
-
-;;; TODO: Integrate in base hplip package on core-updates.
-(define-public hplip-next
-  (package
-    (inherit hplip)
-    (name "hplip")
-    (version "3.22.10")
-    (source (origin
-              (inherit (package-source hplip))
-              (uri (string-append "mirror://sourceforge/hplip/hplip/" version
-                                  "/hplip-" version ".tar.gz"))
-              (sha256
-               (base32
-                "09366v0x10l35bkda6s5ysh64qdf24givn2gxlyidr2kdcpkyg2k"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments hplip)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'fix-more-hard-coded-file-names
-              (lambda* (#:key outputs #:allow-other-keys)
-                (substitute* (find-files "." "\\.py$")
-                  (("/etc/hp/hplip.conf")
-                   (string-append (assoc-ref outputs "out")
-                                  "/etc/hp/hplip.conf")))))))))))
 
 (define-public hplip-minimal
   (package/inherit hplip
