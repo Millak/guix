@@ -1246,14 +1246,14 @@ standard library.")
 (define-public python-pytest
   (package
     (name "python-pytest")
-    (version "7.1.3")
+    (version "7.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest" version))
        (sha256
         (base32
-         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
+         "1qqmxpcij6b2zqsg52nz9dfx6c3snz90l5nzmp88xmxig3yzljj3"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1281,6 +1281,7 @@ standard library.")
                   (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-attrs-bootstrap
+           python-exceptiongroup
            python-iniconfig
            python-packaging-bootstrap
            python-pluggy
