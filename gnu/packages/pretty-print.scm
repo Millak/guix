@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
-;;; Copyright © 2022 Maxim Cournoyer  <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer  <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -275,13 +275,13 @@ a fast alternative to @code{IOStreams}.")
     (version "3.1.9")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/src-highlite/source-highlight-"
-                          version ".tar.gz"))
-      (patches (search-patches "source-highlight-gcc-compat.patch"))
-      (sha256
-       (base32
-        "148w47k3zswbxvhg83z38ifi85f9dqcpg7icvvw1cm6bg21x4zrs"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/src-highlite/source-highlight-"
+                           version ".tar.gz"))
+       (patches (search-patches "source-highlight-gcc-compat.patch"))
+       (sha256
+        (base32
+         "148w47k3zswbxvhg83z38ifi85f9dqcpg7icvvw1cm6bg21x4zrs"))))
     (build-system gnu-build-system)
     ;; The ctags that comes with emacs does not support the --excmd options,
     ;; so can't be used
@@ -292,38 +292,33 @@ a fast alternative to @code{IOStreams}.")
     (arguments
      (list #:configure-flags
            #~(list (string-append "--with-boost=" (assoc-ref %build-inputs "boost")))
-           #:parallel-tests? #f ;There appear to be race conditions
+           #:parallel-tests? #f         ;There appear to be race conditions
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'rename-lesspipe-to-lesspipe.sh.in
                  (lambda _
                    (substitute* "src/src-hilite-lesspipe.sh.in"
                      (("lesspipe") "lesspipe.sh"))))
-           #$@(if (%current-target-system)
-                  ;; 'doc/Makefile.am' tries to run stuff even when
-                  ;; cross-compiling.  Explicitly skip it.
-                  ;; XXX: Inline this on next rebuild cycle.
-                  #~((add-before 'build 'skip-doc-directory
-                       (lambda _
-                         (substitute* "Makefile"
-                           (("^SUBDIRS = (.*) doc(.*)$" _ before after)
-                            (string-append "SUBDIRS = " before
-                                           " " after "\n"))))))
-                  '())
+               (add-before 'build 'skip-doc-directory
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("^SUBDIRS = (.*) doc(.*)$" _ before after)
+                      (string-append "SUBDIRS = " before
+                                     " " after "\n")))))
                (add-before 'check 'patch-test-files
-                  (lambda _
-                    ;; Unpatch shebangs in test input so that source-highlight
-                    ;; is still able to infer input language
-                    (substitute* '("tests/test.sh"
-                                   "tests/test2.sh"
-                                   "tests/test.tcl")
-                      (((string-append "#! *" (which "sh"))) "#!/bin/sh"))
-                    ;; Initial patching unrecoverably removes whitespace, so
-                    ;; remove it also in the comparison output.
-                    (substitute* '("tests/test.sh.html"
-                                   "tests/test2.sh.html"
-                                   "tests/test.tcl.html")
-                      (("#! */bin/sh") "#!/bin/sh")))))))
+                 (lambda _
+                   ;; Unpatch shebangs in test input so that source-highlight
+                   ;; is still able to infer input language
+                   (substitute* '("tests/test.sh"
+                                  "tests/test2.sh"
+                                  "tests/test.tcl")
+                     (((string-append "#! *" (which "sh"))) "#!/bin/sh"))
+                   ;; Initial patching unrecoverably removes whitespace, so
+                   ;; remove it also in the comparison output.
+                   (substitute* '("tests/test.sh.html"
+                                  "tests/test2.sh.html"
+                                  "tests/test.tcl.html")
+                     (("#! */bin/sh") "#!/bin/sh")))))))
     (home-page "https://www.gnu.org/software/src-highlite/")
     (synopsis "Produce a document with syntax highlighting from a source file")
     (description
