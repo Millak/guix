@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Brian Cully <bjc@spork.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,44 +88,25 @@
     (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
     (native-inputs (list libtool groff bdb-5.3))
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       '("--disable-static"
-         ,@(if (%current-target-system)
-               '("--with-yielding_select=yes"
-                 "ac_cv_func_memcmp_working=yes")
-               '()))
-       ;; Disable install stripping as it breaks cross-compiling.
-       #:make-flags '("STRIP=")
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (%current-target-system)
-               '((add-before 'configure 'fix-cross-gcc
-                   (lambda* (#:key target #:allow-other-keys)
-                     (setenv "CC" (string-append target "-gcc"))
-                     (setenv "STRIP" (string-append target "-strip")))))
-               '())
-         (add-after 'install 'patch-sasl-path
-           ;; Give -L arguments for cyrus-sasl to avoid propagation.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (krb5 (assoc-ref inputs "mit-krb5"))) ;propagated from cyrus-sasl
-
-               ;; The ancient Libtool bundled with OpenLDAP copies the linker flags
-               ;; from Cyrus-SASL and embeds them into its own .la files.  Add an
-               ;; absolute reference to Kerberos so it does not have to be propagated.
-               (substitute* (map (lambda (f) (string-append out "/" f))
-                                 '("lib/libldap.la" "lib/libldap_r.la"))
-                 (("-lkrb5" lib)
-                  (string-append "-L" krb5 "/lib " lib))))))
-         (add-after 'install 'provide-libldap_r
-           (lambda _
-             ;; The re-entrant libldap_r no longer exists since 2.6
-             ;; as it has become the default: provide a linker alias
-             ;; for now.
-             (call-with-output-file (string-append #$output "/lib/libldap_r.so")
-               (lambda (port)
-                 (format port "INPUT ( libldap.so )~%"))))))))
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "--disable-static"
+              #$@(if (%current-target-system)
+                     '("--with-yielding_select=yes"
+                       "ac_cv_func_memcmp_working=yes")
+                     '()))
+      ;; Disable install stripping as it breaks cross-compiling.
+      #:make-flags
+      #~(list "STRIP=")
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 '((add-before 'configure 'fix-cross-gcc
+                     (lambda* (#:key target #:allow-other-keys)
+                       (setenv "CC" (string-append target "-gcc"))
+                       (setenv "STRIP" (string-append target "-strip")))))
+                 '()))))
     (synopsis "Implementation of the Lightweight Directory Access Protocol")
     (description
      "OpenLDAP is a free implementation of the Lightweight Directory Access Protocol.")
