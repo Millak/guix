@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
+# Copyright © 2021, 2022 Lars-Dominik Braun <lars@6xq.net>
 #
 # This file is part of GNU Guix.
 #
@@ -19,9 +19,13 @@
 
 from __future__ import print_function  # Python 2 support.
 import importlib
-import pkg_resources
 import sys
 import traceback
+try:
+    import pkg_resources
+except ImportError:
+    print('Warning: Skipping, because python-setuptools are not available.')
+    sys.exit(0)
 
 try:
     from importlib.machinery import PathFinder

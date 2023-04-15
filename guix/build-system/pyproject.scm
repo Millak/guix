@@ -55,8 +55,7 @@
     (module-ref python 'python-toolchain)))
 
 (define sanity-check.py
-  ;; TODO: Merge with sanity-check.py in the next rebuild cycle.
-  (search-auxiliary-file "python/sanity-check-next.py"))
+  (search-auxiliary-file "python/sanity-check.py"))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
