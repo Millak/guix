@@ -28056,7 +28056,7 @@ tabulated-lists).")
 (define-public emacs-eat
   (package
     (name "emacs-eat")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -28066,7 +28066,7 @@ tabulated-lists).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05wpjqbj0jv1sax788rdj0myfi596rimvfwh4mg0w6kcza291xiq"))
+         "1fb66g7jjc7dhw61323d94mx7gqfp6ylf9a7v5qym1n92mv48bdr"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
