@@ -85,54 +85,43 @@
 
 (define-public freetype
   (package
-   (name "freetype")
-   (version "2.13.0")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (string-append "mirror://savannah/freetype/freetype-"
-                          version ".tar.xz"))
-      (sha256
-       (base32 "0k32jaaz4pfhw34xwr6a38fncrpwr9fn5ij35m5w4dkn0jykmqjy"))))
-   (build-system gnu-build-system)
-   (arguments
-    ;; The use of "freetype-config" is deprecated, but other packages still
-    ;; depend on it.
-    `(#:configure-flags (list "--enable-freetype-config")
-      #:disallowed-references (,pkg-config)
+    (name "freetype")
+    (version "2.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://savannah/freetype/freetype-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "0k32jaaz4pfhw34xwr6a38fncrpwr9fn5ij35m5w4dkn0jykmqjy"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; The use of "freetype-config" is deprecated, but other packages still
+     ;; depend on it.
+     (list
+      #:configure-flags #~(list "--enable-freetype-config")
+      #:disallowed-references (list pkg-config)
       #:phases
-      ;; TODO: Keep only the first variant on the next core rebuild cycle.
-      ,(if (%current-target-system)
-           '(modify-phases %standard-phases
-              (add-after 'install 'remove-reference-to-pkg-config
-                (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (let ((out (assoc-ref outputs "out")))
-                    (substitute* (string-append out "/bin/freetype-config")
-                      (("/([a-zA-Z0-9/\\._-]+)/bin/([a-zA-Z0-9_-]+)pkg-config"
-                        _ store target)
-                       "pkg-config"))))))
-           '(modify-phases %standard-phases
-              (add-after 'install 'remove-reference-to-pkg-config
-                (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (let ((out (assoc-ref outputs "out")))
-                    (substitute* (string-append out "/bin/freetype-config")
-                      (((search-input-file inputs "/bin/pkg-config"))
-                       "pkg-config")))))))))
-   (native-inputs
-    (list pkg-config))
-   (propagated-inputs
-    ;; These are all in the Requires.private field of freetype2.pc.
-    ;; XXX: add harfbuzz.
-    (list libpng zlib))
-   (synopsis "Font rendering library")
-   (description
-    "Freetype is a library that can be used by applications to access the
+      #~(modify-phases %standard-phases
+          (add-after 'install 'remove-reference-to-pkg-config
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* (search-input-file outputs "bin/freetype-config")
+                (("/([a-zA-Z0-9/\\._-]+)/bin/([a-zA-Z0-9_-]+)?pkg-config"
+                  _ store target)
+                 "pkg-config")))))))
+    (native-inputs (list pkg-config))
+    ;; XXX: Not adding harfbuzz here, as it would introduce a dependency
+    ;; cycle.
+    (propagated-inputs (list libpng zlib))
+    (synopsis "Font rendering library")
+    (description
+     "Freetype is a library that can be used by applications to access the
 contents of font files.  It provides a uniform interface to access font files.
 It supports both bitmap and scalable formats, including TrueType, OpenType,
 Type1, CID, CFF, Windows FON/FNT, X11 PCF, and others.  It supports high-speed
 anti-aliased glyph bitmap generation with 256 gray levels.")
-   (license license:freetype)           ; some files have other licenses
-   (home-page "https://freetype.org/")))
+    (license license:freetype)          ; some files have other licenses
+    (home-page "https://freetype.org/")))
 
 (define-public opentype-sanitizer
   (package
