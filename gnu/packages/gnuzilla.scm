@@ -736,7 +736,7 @@ variable defined below.  It requires guile-json to be installed."
            mit-krb5
            hunspell
            libnotify
-           nspr-next
+           nspr
            nss
            shared-mime-info
            sqlite

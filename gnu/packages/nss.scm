@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -32,6 +32,7 @@
   #:use-module (guix build-system mozilla)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -98,19 +99,6 @@ in the Mozilla clients.")
              (sha256
               (base32
                "0v3zds1id71j5a5si42a658fjz8nv2f6zp6w4gqrqmdr6ksz8sxv"))))))
-
-(define-public nspr-next
-  (package
-    (inherit nspr)
-    (version "4.35")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
-                    version "/src/nspr-" version ".tar.gz"))
-              (sha256
-               (base32
-                "13xwda56yhp1w7v02qvlxvlqiniw8kr4g3fxlljmv6wnlmz2k8vy"))))))
 
 (define-public nss
   (package
@@ -214,12 +202,9 @@ in the Mozilla clients.")
                 (copy-recursively "dist/public/nss" inc)
                 (copy-recursively (string-append obj "/bin") bin)
                 (copy-recursively (string-append obj "/lib") lib)))))))
-    (inputs
-     (list sqlite zlib))
-    (propagated-inputs
-     (list nspr-next))                            ;required by nss.pc.
-    (native-inputs
-     (list perl libfaketime))           ;for tests
+    (inputs (list sqlite zlib))
+    (propagated-inputs (list nspr))               ;required by nss.pc.
+    (native-inputs (list perl libfaketime which)) ;for tests
 
     ;; The NSS test suite takes around 48 hours on Loongson 3A (MIPS) when
     ;; another build is happening concurrently on the same machine.
