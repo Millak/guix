@@ -317,13 +317,8 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
                      ;; to a missing font.  Substitute the last observed count.
                      (("(\\$count != )33" _ prefix)
                       (string-append prefix "39"))))))))
-    (native-inputs
-     (append (if (target-riscv64?)
-                 (list config)
-                 '())
-             (list pkg-config)))
-    (inputs
-     (list zlib gnutls))
+    (native-inputs (list config pkg-config))
+    (inputs (list zlib gnutls))
     (home-page "https://openprinting.github.io/cups")
     (synopsis "The Common Unix Printing System")
     (description
