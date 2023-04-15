@@ -15582,27 +15582,6 @@ library as well as on the command line.")
 (define-public python-pluggy
   (package
    (name "python-pluggy")
-   (version "0.13.1")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "pluggy" version))
-     (sha256
-      (base32
-       "1c35qyhvy27q9ih9n899f3h4sdnpgq027dbiilly2qb5cvgarchm"))))
-   (build-system python-build-system)
-   (native-inputs
-    (list python-setuptools-scm))
-   (synopsis "Plugin and hook calling mechanism for Python")
-   (description "Pluggy is an extraction of the plugin manager as used by
-Pytest but stripped of Pytest specific details.")
-   (home-page "https://pypi.org/project/pluggy/")
-   (license license:expat)))
-
-;;; TODO: Make this the default python-pluggy in the next rebuild cycle.
-(define-public python-pluggy-next
-  (package
-   (inherit python-pluggy)
    (version "1.0.0")
    (source
     (origin
@@ -15610,7 +15589,14 @@ Pytest but stripped of Pytest specific details.")
      (uri (pypi-uri "pluggy" version))
      (sha256
       (base32
-       "0n8iadlas2z1b4h0fc73b043c7iwfvx9rgvqm1azjmffmhxkf922"))))))
+       "0n8iadlas2z1b4h0fc73b043c7iwfvx9rgvqm1azjmffmhxkf922"))))
+   (build-system python-build-system)
+   (native-inputs (list python-setuptools-scm))
+   (synopsis "Plugin and hook calling mechanism for Python")
+   (description "Pluggy is an extraction of the plugin manager as used by
+Pytest but stripped of Pytest specific details.")
+   (home-page "https://pypi.org/project/pluggy/")
+   (license license:expat)))
 
 (define-public python-plumbum
   (package

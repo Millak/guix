@@ -5166,7 +5166,7 @@ mechanism of @code{dogpile}.")
            python-jinja2
            python-mergedeep
            python-pint
-           python-pluggy-next
+           python-pluggy
            python-pyyaml
            python-uvicorn))
     (native-inputs

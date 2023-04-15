@@ -1328,7 +1328,6 @@ and many external plugins.")
                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-pytest)
-       (replace "python-pluggy" python-pluggy-next)
        (replace "python-toml" python-tomli)))))
 
 (define-public python-pytest-bootstrap
