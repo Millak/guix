@@ -3709,15 +3709,15 @@ extension to the X11 protocol.  It includes:
 (define-public xkeyboard-config
   (package
     (name "xkeyboard-config")
-    (version "2.36")
+    (version "2.38")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://xorg/individual/data/xkeyboard-config/"
+                    "ftp://ftp.freedesktop.org/pub/xorg//individual/data/xkeyboard-config/"
                     "xkeyboard-config-" version ".tar.xz"))
               (sha256
                (base32
-                "158m7r6ga7w12ry35q6d0z6hilbpj9h7ilw56h55478n58lv26qz"))))
+                "0wn8asnbz111194ksi2mysa6ikn4kqgd9rpfydl8icc6mcdsk406"))))
     (build-system meson-build-system)
     (inputs (list libx11 xkbcomp-intermediate))
     (native-inputs (list gettext-minimal libxslt perl pkg-config python))
