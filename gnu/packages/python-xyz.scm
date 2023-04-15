@@ -4080,37 +4080,6 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
 (define-public python-jsonschema
   (package
     (name "python-jsonschema")
-    (version "3.2.0")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "jsonschema" version))
-             (sha256
-              (base32
-               "0ykr61yiiizgvm3bzipa3l73rvj49wmrybbfwhvpgk3pscl5pa68"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (setenv "JSON_SCHEMA_TEST_SUITE" "json")
-               (invoke "trial" "jsonschema")))))))
-    (native-inputs
-     `(("python-setuptools_scm" ,python-setuptools-scm)
-       ("python-twisted" ,python-twisted)))
-    (propagated-inputs
-     (list python-attrs python-pyrsistent python-six))
-    (home-page "https://github.com/Julian/jsonschema")
-    (synopsis "Implementation of JSON Schema for Python")
-    (description
-     "Jsonschema is an implementation of JSON Schema for Python.")
-    (license license:expat)))
-
-;;; TODO: Make the default python-jsonschema on core-updates
-(define-public python-jsonschema-next
-  (package
-    (inherit python-jsonschema)
     ;; XXX: Update to the latest version requires new build system - Hatch
     ;; https://hatch.pypa.io/
     (version "4.5.1")
@@ -4121,13 +4090,32 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
        (sha256
         (base32 "1z0x22691jva7lwfcfh377jdmlz68zhiawxzl53k631l34k8hvbw"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools-scm python-twisted))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available, the version string is set to
+            ;; '0.0.0'.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "JSON_SCHEMA_TEST_SUITE" "json")
+                (invoke "trial" "jsonschema")))))))
+    (native-inputs (list python-setuptools-scm python-twisted))
     (propagated-inputs
      (list python-attrs
            python-importlib-metadata
            python-pyrsistent
-           python-typing-extensions))))
+           python-typing-extensions))
+    (home-page "https://github.com/Julian/jsonschema")
+    (synopsis "Implementation of JSON Schema for Python")
+    (description
+     "Jsonschema is an implementation of JSON Schema for Python.")
+    (license license:expat)))
 
 (define-public python-schema
   (package
@@ -5496,7 +5484,7 @@ operating_system/path_expansion.robot")))
                 (invoke "xvfb-run" "atest/run.py")))))))
     (native-inputs
      (list python-docutils
-           python-jsonschema-next
+           python-jsonschema
            python-invoke
            python-lxml
            python-pygments

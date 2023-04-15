@@ -2680,7 +2680,7 @@ datetime object.")
            python-importlib-metadata
            python-importlib-resources
            python-jmespath
-           python-jsonschema-next
+           python-jsonschema
            python-lz4
            python-numpy
            python-pyyaml))
@@ -2715,7 +2715,7 @@ implementation of the ASDF Standard.")
                                       (list "tests/test_manifests.py"
                                             "tests/test_integration.py")))))))
     (native-inputs (list python-astropy
-                         python-jsonschema-next
+                         python-jsonschema
                          python-pypa-build
                          python-pytest
                          python-packaging
@@ -2962,7 +2962,7 @@ install an implementation package such as gwcs.")
         (base32 "0v9qcq6zl74d6s882s6xmas144jfalvll6va8rvrxmvpx4vqjzhg"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-jsonschema-next
+     (list python-jsonschema
            python-jmespath
            python-pytest
            python-pytest-doctestplus

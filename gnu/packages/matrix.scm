@@ -218,7 +218,7 @@ homeserver and generally help bootstrap the ecosystem.")
            python-future
            python-h11
            python-h2
-           python-jsonschema-next
+           python-jsonschema
            python-logbook
            python-olm
            python-peewee
