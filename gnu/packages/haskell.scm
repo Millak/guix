@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1325,20 +1326,16 @@ interactive environment for the functional language Haskell.")
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
-             ;; File Common.hs has been moved to src/ in this release.
-             (replace 'fix-cc-reference
-               (lambda _
-                 (substitute* "utils/hsc2hs/src/Common.hs"
-                   (("\"cc\"") "\"gcc\""))))
-             ;; FIXME: Remove i686-specific match on the next rebuild cycle.
-             #$@(match (%current-system)
-                  ("i686-linux"
-                    #~((add-after 'skip-more-tests 'skip-T21694-i686
-                        (lambda _
-                          (substitute* '("testsuite/tests/simplCore/should_compile/all.T")
-                            (("^test\\('T21694', \\[ " all)
-                             (string-append all "when(arch('i386'), skip), ")))))))
-                  (_ #~()))))
+              ;; File Common.hs has been moved to src/ in this release.
+              (replace 'fix-cc-reference
+                (lambda _
+                  (substitute* "utils/hsc2hs/src/Common.hs"
+                    (("\"cc\"") "\"gcc\""))))
+              (add-after 'skip-more-tests 'skip-T21694-i686
+                (lambda _
+                  (substitute* '("testsuite/tests/simplCore/should_compile/all.T")
+                    (("^test\\('T21694', \\[ " all)
+                     (string-append all "when(arch('i386'), skip), ")))))))
          ;; Increase verbosity, so running the test suite does not time out on CI.
          ((#:make-flags make-flags ''())
           #~(cons "VERBOSE=4" #$make-flags))))
@@ -1350,8 +1347,8 @@ interactive environment for the functional language Haskell.")
           ,(origin
              (method url-fetch)
              (uri (string-append
-                    "https://www.haskell.org/ghc/dist/"
-                    version "/ghc-" version "-testsuite.tar.xz"))
+                   "https://www.haskell.org/ghc/dist/"
+                   version "/ghc-" version "-testsuite.tar.xz"))
              (sha256
               (base32
                "19ha0hidrijawy53vm2r0sgml5zkl8126mqy7p0pyacmw3k7913l"))
