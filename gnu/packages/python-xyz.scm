@@ -15082,34 +15082,59 @@ pure Python module that works on virtually all Python versions.")
     (license license:expat)))
 
 (define-public python-execnet
-  (package
-    (name "python-execnet")
-    (version "1.9.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "execnet" version))
-              (sha256
-               (base32
-                "1ia7dvrh0gvzzpi758mx55f9flr16bzdqlmi12swm4ncm4xlyscg"))
-              (patches (search-patches "python-execnet-read-only-fix.patch"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-                      (when tests?
-                        ;; Unset PYTHONDONTWRITEBYTECODE to match the
-                        ;; expectations of a test in
-                        ;; 'testing/test_gateway.py'.
-                        (unsetenv "PYTHONDONTWRITEBYTECODE")
-
-                        (add-installed-pythonpath inputs outputs)
-                        (invoke "pytest" "-vv")))))))
-    (native-inputs
-     (list python-pytest python-setuptools-scm))
-    (synopsis "Rapid multi-Python deployment")
-    (description "Execnet provides a share-nothing model with
+  ;; The latest release (1.9.0) is old and lacks support for Pytest 7.2.
+  (let ((commit "d6aa1a56773c2e887515d63e50b1d08338cb78a7")
+        (revision "1"))
+    (package
+      (name "python-execnet")
+      (version (git-version "1.9.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/pytest-dev/execnet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0s60jggcjiw38b7xsh1q2lnnr4c4kaki7c5zsv7xyj7df8ngbbsm"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; ;; This test hasn't been updated for the latest Pytest yet:
+        ;; #:test-flags #~(list "--ignore" "testing/test_rsync.py")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'adjust-for-pytest-7.2+
+              (lambda _
+                ;; This test fails with an error because @py.test has been
+                ;; deprecated for @pytest in recent Pytest.
+                (substitute* "testing/test_rsync.py"
+                  (("@py.test")
+                   "@pytest"))))
+            (add-before 'build 'pretend-version
+              ;; The version string is usually derived via setuptools-scm, but
+              ;; without the git metadata available this fails.
+              (lambda _
+                ;; hatch-vcs uses setuptools under the hood.
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                        ;; Massage the version string to a PEP-0440 compatible
+                        ;; one.
+                        #$(car (string-split version #\-)))))
+            (add-before 'check 'prepare-for-tests
+              (lambda _
+                ;; Unset PYTHONDONTWRITEBYTECODE to match the
+                ;; expectations of a test in
+                ;; 'testing/test_gateway.py'.
+                (unsetenv "PYTHONDONTWRITEBYTECODE"))))))
+      (native-inputs
+       (list python-hatchling
+             python-hatch-vcs
+             python-py
+             python-pytest
+             python-pytest-timeout
+             python-setuptools-scm))
+      (synopsis "Rapid multi-Python deployment")
+      (description "Execnet provides a share-nothing model with
 channel-send/receive communication for distributing execution across many
 Python interpreters across version, platform and network barriers.  It has a
 minimal and fast API targeting the following uses:
@@ -15118,8 +15143,8 @@ minimal and fast API targeting the following uses:
 @item write and deploy hybrid multi-process applications
 @item write scripts to administer multiple environments
 @end enumerate")
-    (home-page "https://codespeak.net/execnet/")
-    (license license:expat)))
+      (home-page "https://codespeak.net/execnet/")
+      (license license:expat))))
 
 (define-public python-icalendar
   (package
