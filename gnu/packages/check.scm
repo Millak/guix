@@ -1268,7 +1268,8 @@ standard library.")
        (uri (pypi-uri "pytest" version))
        (sha256
         (base32
-         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
+         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))
+       (patches (search-patches "pytest-fix-unstrable-exception-test.patch"))))
     (build-system python-build-system)
     (arguments
      (list
