@@ -7038,8 +7038,7 @@ aware transformations between times in different time zones.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Rakefile"
                (("https://data.iana.org/time-zones/releases")
-                (assoc-ref inputs "tzdata")))
-             #t))
+                (assoc-ref inputs "tzdata")))))
          (add-before 'check 'pre-check
            (lambda _
              (setenv "HOME" (getcwd))
@@ -7049,8 +7048,7 @@ aware transformations between times in different time zones.")
                (("    sh\\(\\\"make -C" text)
                 (string-append "    sh(\"sed -i 's@/bin/sh@sh@' #{tzdb_combined_path}/Makefile \")\n"
                                "    sh(\"sed -i 's@cc=@cc?=@' #{tzdb_combined_path}/Makefile \")\n" text)))
-               (setenv "cc" ,(cc-for-target))
-             #t)))))
+               (setenv "cc" ,(cc-for-target)))))))
     (propagated-inputs
      (list ruby-tzinfo))
     (native-inputs
@@ -7083,14 +7081,7 @@ aware transformations between times in different time zones.")
                  (uri "https://data.iana.org/time-zones/releases/tzcode2021a.tar.gz.asc")
                  (sha256
                   (base32
-                   "1qhlj4lr810s47s1lwcvv1sgvg2sflf98w4sbg1lc8wzv5qxxv7g")))))
-
-           ;; XXX: Explicitly depend on 'guile-final', which was previously
-           ;; implied via the '%guile-for-build' fluid but not explicit.
-           ;; TODO: Remove this argument on the next rebuild cycle.
-           #:guile (module-ref (resolve-interface
-                                '(gnu packages commencement))
-                               'guile-final)))))
+                   "1qhlj4lr810s47s1lwcvv1sgvg2sflf98w4sbg1lc8wzv5qxxv7g")))))))))
     (synopsis "Data from the IANA Time Zone database")
     (description
      "This library provides @code{TZInfo::Data}, which contains data from the
