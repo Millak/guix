@@ -258,6 +258,9 @@ source code editors and IDEs.")
               (base32
                "0d22h8xshmbpl9hba9ch3xj8vb9ybm5akpsbbh7yj07fic4h2hj6"))))))
 
+;;; XXX: This project is abandoned upstream, and included in modern catch2
+;;; releases.  It is still depended by the restinio test suite at this time,
+;;; so keep it (see: https://github.com/Stiffstream/restinio/issues/181).
 (define-public clara
   (package
     (name "clara")
@@ -270,16 +273,28 @@ source code editors and IDEs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08mlm9ax5d7wkmsihm1xnlgp7rfgff0bfl4ly4850xmrdaxmmkl3"))))
+                "08mlm9ax5d7wkmsihm1xnlgp7rfgff0bfl4ly4850xmrdaxmmkl3"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Un-bundle catch2.
+                          (delete-file-recursively "third_party")
+                          (substitute* "CMakeLists.txt"
+                            (("include_directories\\( include third_party )")
+                             "include_directories( include )"))))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
+                             (search-input-directory %build-inputs
+                                                     "include/catch2")))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'install
             (lambda _
               (install-file (string-append #$source "/single_include/clara.hpp")
                             (string-append #$output "/include")))))))
+    (native-inputs (list catch2))
     (home-page "https://github.com/catchorg/Clara")
     (synopsis "Simple command line parser for C++")
     (description "Clara is a simple to use, composable, command line parser
