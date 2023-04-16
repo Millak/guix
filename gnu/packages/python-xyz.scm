@@ -6121,25 +6121,6 @@ and integrated feature-set for programming Python effectively.")
 (define-public python-language-server
   (deprecated-package "python-language-server" python-lsp-server))
 
-(define-public python-pathspec
-  (package
-    (name "python-pathspec")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pathspec" version))
-       (sha256
-        (base32
-         "1cdbdb3s6ldnjpwbi0bgl0xlmw4mbfxk08bbdxc3srx26na4jr75"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/cpburnz/python-path-specification")
-    (synopsis "Utility library for gitignore style pattern matching of file paths")
-    (description
-     "This package provides a utility library for gitignore style pattern
-matching of file paths.")
-    (license license:mpl2.0)))
-
 (define-public python-black
   (package
     (name "python-black")
@@ -15573,25 +15554,6 @@ generation according to PKCS#1 version 1.5.  It can be used as a Python
 library as well as on the command line.")
    (home-page "https://stuvel.eu/rsa")
    (license license:asl2.0)))
-
-(define-public python-pluggy
-  (package
-   (name "python-pluggy")
-   (version "1.0.0")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "pluggy" version))
-     (sha256
-      (base32
-       "0n8iadlas2z1b4h0fc73b043c7iwfvx9rgvqm1azjmffmhxkf922"))))
-   (build-system python-build-system)
-   (native-inputs (list python-setuptools-scm))
-   (synopsis "Plugin and hook calling mechanism for Python")
-   (description "Pluggy is an extraction of the plugin manager as used by
-Pytest but stripped of Pytest specific details.")
-   (home-page "https://pypi.org/project/pluggy/")
-   (license license:expat)))
 
 (define-public python-plumbum
   (package

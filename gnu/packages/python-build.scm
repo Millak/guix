@@ -4,9 +4,9 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -41,109 +41,48 @@
 ;;;
 ;;; Code:
 
-(define-public python-pip
+
+;;; These are dependencies used by the build systems contained herein; they
+;;; feel a bit out of place but are kept here to prevent circular module
+;;; dependencies.
+(define-public python-pathspec
   (package
-    (name "python-pip")
-    (version "22.2.2")
+    (name "python-pathspec")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pip" version))
+       (uri (pypi-uri "pathspec" version))
        (sha256
         (base32
-         "0jwac0bhfp48w4fqibf1ysrs2grksdv92hwqm7bmdw2jn2fr5l9z"))))
+         "1cdbdb3s6ldnjpwbi0bgl0xlmw4mbfxk08bbdxc3srx26na4jr75"))))
     (build-system python-build-system)
-    (arguments
-     '(#:tests? #f))          ; there are no tests in the pypi archive.
-    (home-page "https://pip.pypa.io/")
-    (synopsis "Package manager for Python software")
+    (home-page "https://github.com/cpburnz/python-path-specification")
+    (synopsis "Utility library for gitignore style pattern matching of file paths")
     (description
-     "Pip is a package manager for Python software, that finds packages on the
-Python Package Index (PyPI).")
-    (license license:expat)))
+     "This package provides a utility library for gitignore style pattern
+matching of file paths.")
+    (license license:mpl2.0)))
 
-(define-public python-setuptools
+(define-public python-pluggy
   (package
-    (name "python-setuptools")
-    (version "64.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "setuptools" version))
-       (sha256
-        (base32
-         "1sllqf0bhsl2yilf1w0xnlz0r4yaksmwaj0ap91zdc6kgbigdjiv"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; TODO: setuptools now bundles the following libraries:
-        ;; packaging, pyparsing, six and appdirs. How to unbundle?
-        ;; Remove included binaries which are used to build self-extracting
-        ;; installers for Windows.
-        '(for-each delete-file (find-files "setuptools"
-                                           "^(cli|gui).*\\.exe$")))))
-    (build-system python-build-system)
-    ;; FIXME: Tests require pytest, which itself relies on setuptools.
-    ;; One could bootstrap with an internal untested setuptools.
-    (arguments (list #:tests? #f))
-    (home-page "https://pypi.org/project/setuptools/")
-    (synopsis "Library designed to facilitate packaging Python projects")
-    (description "Setuptools is a fully-featured, stable library designed to
-facilitate packaging Python projects, where packaging includes:
-@itemize
-@item Python package and module definitions
-@item distribution package metadata
-@item test hooks
-@item project installation
-@item platform-specific details.
-@end itemize")
-    (license (list license:psfl         ;setuptools itself
-                   license:expat        ;six, appdirs, pyparsing
-                   license:asl2.0       ;packaging is dual ASL2/BSD-2
-                   license:bsd-2))))
+   (name "python-pluggy")
+   (version "1.0.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (pypi-uri "pluggy" version))
+     (sha256
+      (base32
+       "0n8iadlas2z1b4h0fc73b043c7iwfvx9rgvqm1azjmffmhxkf922"))))
+   (build-system python-build-system)
+   (native-inputs (list python-setuptools-scm))
+   (synopsis "Plugin and hook calling mechanism for Python")
+   (description "Pluggy is an extraction of the plugin manager as used by
+Pytest but stripped of Pytest specific details.")
+   (home-page "https://pypi.org/project/pluggy/")
+   (license license:expat)))
 
-;; This is the last version with use_2to3 support.
-(define-public python-setuptools-57
-  (package
-    (inherit python-setuptools)
-    (version "57.5.0")
-    (source (origin
-              (inherit (package-source python-setuptools))
-              (uri (pypi-uri "setuptools" version))
-              (sha256
-               (base32
-                "091sp8lrin7qllrhhx7y0iiv5gdb1d3l8a1ip5knk77ma1njdlyr"))))))
-
-(define-public python-wheel
-  (package
-    (name "python-wheel")
-    (version "0.37.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "wheel" version))
-        (sha256
-         (base32
-          "1bbga5i49rj1cwi4sjpkvfhl1f8vl9lfky2lblsy768nk4wp5vz2"))))
-    (build-system python-build-system)
-    (arguments
-     ;; FIXME: The test suite runs "python setup.py bdist_wheel", which in turn
-     ;; fails to find the newly-built bdist_wheel library, even though it is
-     ;; available on PYTHONPATH.  What search path is consulted by setup.py?
-     '(#:tests? #f))
-    (home-page "https://bitbucket.org/pypa/wheel/")
-    (synopsis "Format for built Python packages")
-    (description
-     "A wheel is a ZIP-format archive with a specially formatted filename and
-the @code{.whl} extension.  It is designed to contain all the files for a PEP
-376 compatible install in a way that is very close to the on-disk format.  Many
-packages will be properly installed with only the @code{Unpack} step and the
-unpacked archive preserves enough information to @code{Spread} (copy data and
-scripts to their final locations) at any later time.  Wheel files can be
-installed with a newer @code{pip} or with wheel's own command line utility.")
-    (license license:expat)))
-
-;;; XXX: Not really at home, but this seems the best place to prevent circular
-;;; module dependencies.
 (define-public python-toml
   (package
     (name "python-toml")
@@ -272,6 +211,111 @@ Python file, so it can be easily copied into your project.")
     (description "Tomli is a minimal TOML parser that is fully compatible with
 @url{https://toml.io/en/v1.0.0,TOML v1.0.0}.  It is about 2.4 times as fast as
 @code{python-toml}.")
+    (license license:expat)))
+
+
+;;;
+;;; Python builder packages.
+;;;
+(define-public python-pip
+  (package
+    (name "python-pip")
+    (version "22.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pip" version))
+       (sha256
+        (base32
+         "0jwac0bhfp48w4fqibf1ysrs2grksdv92hwqm7bmdw2jn2fr5l9z"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:tests? #f))          ; there are no tests in the pypi archive.
+    (home-page "https://pip.pypa.io/")
+    (synopsis "Package manager for Python software")
+    (description
+     "Pip is a package manager for Python software, that finds packages on the
+Python Package Index (PyPI).")
+    (license license:expat)))
+
+(define-public python-setuptools
+  (package
+    (name "python-setuptools")
+    (version "64.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "setuptools" version))
+       (sha256
+        (base32
+         "1sllqf0bhsl2yilf1w0xnlz0r4yaksmwaj0ap91zdc6kgbigdjiv"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; TODO: setuptools now bundles the following libraries:
+        ;; packaging, pyparsing, six and appdirs. How to unbundle?
+        ;; Remove included binaries which are used to build self-extracting
+        ;; installers for Windows.
+        '(for-each delete-file (find-files "setuptools"
+                                           "^(cli|gui).*\\.exe$")))))
+    (build-system python-build-system)
+    ;; FIXME: Tests require pytest, which itself relies on setuptools.
+    ;; One could bootstrap with an internal untested setuptools.
+    (arguments (list #:tests? #f))
+    (home-page "https://pypi.org/project/setuptools/")
+    (synopsis "Library designed to facilitate packaging Python projects")
+    (description "Setuptools is a fully-featured, stable library designed to
+facilitate packaging Python projects, where packaging includes:
+@itemize
+@item Python package and module definitions
+@item distribution package metadata
+@item test hooks
+@item project installation
+@item platform-specific details.
+@end itemize")
+    (license (list license:psfl         ;setuptools itself
+                   license:expat        ;six, appdirs, pyparsing
+                   license:asl2.0       ;packaging is dual ASL2/BSD-2
+                   license:bsd-2))))
+
+;; This is the last version with use_2to3 support.
+(define-public python-setuptools-57
+  (package
+    (inherit python-setuptools)
+    (version "57.5.0")
+    (source (origin
+              (inherit (package-source python-setuptools))
+              (uri (pypi-uri "setuptools" version))
+              (sha256
+               (base32
+                "091sp8lrin7qllrhhx7y0iiv5gdb1d3l8a1ip5knk77ma1njdlyr"))))))
+
+(define-public python-wheel
+  (package
+    (name "python-wheel")
+    (version "0.37.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "wheel" version))
+        (sha256
+         (base32
+          "1bbga5i49rj1cwi4sjpkvfhl1f8vl9lfky2lblsy768nk4wp5vz2"))))
+    (build-system python-build-system)
+    (arguments
+     ;; FIXME: The test suite runs "python setup.py bdist_wheel", which in turn
+     ;; fails to find the newly-built bdist_wheel library, even though it is
+     ;; available on PYTHONPATH.  What search path is consulted by setup.py?
+     '(#:tests? #f))
+    (home-page "https://bitbucket.org/pypa/wheel/")
+    (synopsis "Format for built Python packages")
+    (description
+     "A wheel is a ZIP-format archive with a specially formatted filename and
+the @code{.whl} extension.  It is designed to contain all the files for a PEP
+376 compatible install in a way that is very close to the on-disk format.  Many
+packages will be properly installed with only the @code{Unpack} step and the
+unpacked archive preserves enough information to @code{Spread} (copy data and
+scripts to their final locations) at any later time.  Wheel files can be
+installed with a newer @code{pip} or with wheel's own command line utility.")
     (license license:expat)))
 
 (define-public python-pep517-bootstrap
