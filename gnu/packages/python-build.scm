@@ -483,13 +483,13 @@ compatible build front-ends to build Poetry managed projects.")
 (define-public python-flit-core-bootstrap
   (package
     (name "python-flit-core-bootstrap")
-    (version "3.5.1")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flit" version))
        (sha256
-        (base32 "04152qj46sqbnlrj7ch9p7svjrrlpzbk0qr39g2yr0s4f5vp6frf"))))
+        (base32 "0dz9sp2zlhkmk6sm5gapbbb30f7xq3n3jn5zxx5pkp25ppsaiwnh"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-toml))
@@ -514,7 +514,7 @@ compatible build front-ends to build Poetry managed projects.")
          ;; The sanity-check phase fails because flit depends on tomli at
          ;; run-time, but this core variant avoids it to avoid a cycle.
          (delete 'sanity-check))))
-    (home-page "https://github.com/takluyver/flit")
+    (home-page "https://github.com/pypa/flit")
     (synopsis "Core package of the Flit Python build system")
     (description "This package provides @code{flit-core}, a PEP 517 build
 backend for packages using Flit.  The only public interface is the API
