@@ -4,7 +4,7 @@
 ;;; Copyright © 2015-2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -465,8 +465,8 @@ features.")
 (define-public cpuinfo
   ;; There's currently no tag on this repo.
   (let ((version "0.0")
-        (revision "1")
-        (commit "866ae6e5ffe93a1f63be738078da94cf3005cce2"))
+        (revision "2")
+        (commit "53298db833c5c5a1598639e9b47cc1a602bbac26"))
     (package
       (name "cpuinfo")
       (version (git-version version revision commit))
@@ -477,10 +477,20 @@ features.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1lmsf4bpkm19a31i40qwcjn46qf7prggziv4pbsi695bkx5as71p"))
+                  "01kfgxya2w32dz9bd3qm3i2d6nffw0qfyql11rxl7d3g830brj5k"))
                 (patches (search-patches "cpuinfo-system-libraries.patch"))))
       (build-system cmake-build-system)
-      (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+      (arguments
+       (list
+        #:configure-flags '(list "-DBUILD_SHARED_LIBS=ON")
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'skip-bad-test
+             (lambda _
+               (substitute* "test/init.cc"
+                 (("TEST\\(CORE, known_uarch\\) \\{" m)
+                  (string-append m "\
+GTEST_SKIP() << \"See https://github.com/pytorch/cpuinfo/issues/132\";"))))))))
       (inputs
        (list googletest googlebenchmark))
       (synopsis "C/C++ library to obtain information about the CPU")
