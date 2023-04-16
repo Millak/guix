@@ -11700,13 +11700,13 @@ The following completions are currently available:
 (define-public emacs-swiper
   (package
     (name "emacs-swiper")
-    (version "0.13.4")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/swiper-" version ".tar"))
        (sha256
-        (base32 "197pq2cvvskib87aky907wv2am55vilr7y5dabmmm07a8vr9py0v"))))
+        (base32 "1p2qil6gj4y8y3ydqs8pbxn8j16q9r42nnc2f61c30hws504pkms"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy))
