@@ -28,6 +28,7 @@
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -212,6 +213,26 @@ Python file, so it can be easily copied into your project.")
 @url{https://toml.io/en/v1.0.0,TOML v1.0.0}.  It is about 2.4 times as fast as
 @code{python-toml}.")
     (license license:expat)))
+
+(define-public python-trove-classifiers
+  (package
+    (name "python-trove-classifiers")
+    (version "2023.3.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "trove-classifiers" version))
+              (sha256
+               (base32
+                "00xvldq94dy0zxz40idbbx40smrkfvq75r26ywszxg6lq7wg4hpf"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:build-backend "setuptools.build_meta"
+                     #:tests? #f))      ;keep dependencies to a minimum
+    (native-inputs (list python-wheel))
+    (home-page "https://github.com/pypa/trove-classifiers")
+    (synopsis "Canonical source for classifiers on PyPI")
+    (description "This package is the canonical source for classifiers use on
+PyPI (pypi.org).")
+    (license license:asl2.0)))
 
 
 ;;;
