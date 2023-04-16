@@ -573,45 +573,21 @@ specified by PEP 517, @code{flit_core.buildapi}.")
 (define-public python-flit-scm
   (package
     (name "python-flit-scm")
-    (version "1.6.2")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "flit_scm" version))
               (sha256
                (base32
-                "0p3lj2g1643m2dm14kihvfb6gn6jviglhm3dzdpn2c8zpqs17svg"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-setuptools-scm-version
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("setuptools_scm~=6.4")
-                 "setuptools_scm>=6.3"))))
-          ;; XXX: PEP 517 manual build/install procedures copied from
-          ;; python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
-    (native-inputs
-     (list python-pypa-build
-           python-flit-core
-           python-setuptools-scm
-           python-tomli))
-    (propagated-inputs
-     (list python-flit-core
-           python-setuptools-scm
-           python-tomli))
+                "1ckbkykfr7f7wzjzgh0gm7h6v3pqzx2l28rw6dsvl6zk4kxxc6wn"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f        ;to avoid extra dependencies
+                     ;; flit-scm wants to use flit-core, which it renames to
+                     ;; 'buildapi', but that isn't found even when adding the
+                     ;; current directory to PYTHONPATH.  Use setuptools'
+                     ;; builder instead.
+                     #:build-backend "setuptools.build_meta"))
+    (propagated-inputs (list python-flit-core python-setuptools-scm python-tomli))
     (home-page "https://gitlab.com/WillDaSilva/flit_scm")
     (synopsis "PEP 518 build backend combining flit_core and setuptools_scm")
     (description "This package provides a PEP 518 build backend that uses
