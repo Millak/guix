@@ -238,18 +238,18 @@ Python Package Index (PyPI).")
 (define-public python-setuptools
   (package
     (name "python-setuptools")
-    (version "64.0.3")
+    (version "67.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "setuptools" version))
        (sha256
         (base32
-         "1sllqf0bhsl2yilf1w0xnlz0r4yaksmwaj0ap91zdc6kgbigdjiv"))
+         "16myxkpa89r045il88zcygdy1zbi2mvvpz5b4a70p9jhklmfjz95"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: setuptools now bundles the following libraries:
-        ;; packaging, pyparsing, six and appdirs. How to unbundle?
+        ;; packaging, pyparsing, six and appdirs.  How to unbundle?
         ;; Remove included binaries which are used to build self-extracting
         ;; installers for Windows.
         '(for-each delete-file (find-files "setuptools"
