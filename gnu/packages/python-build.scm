@@ -114,21 +114,8 @@ Language (TOML) configuration files.")
        (uri (pypi-uri "tomli_w" version))
        (sha256
         (base32 "1fg13bfq5qy1ym4x77815nhxh1xpfs0drhn9r9464cz00m1l6qzl"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;to avoid extra dependencies
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;to avoid extra dependencies
     (native-inputs (list python-pypa-build python-flit-core))
     (home-page "https://github.com/hukkin/tomli-w")
     (synopsis "Minimal TOML writer")
