@@ -622,16 +622,16 @@ system, then @code{flit_core} to build the package.")
 (define-public python-setuptools-scm
   (package
     (name "python-setuptools-scm")
-    (version "6.3.2")
+    (version "7.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "setuptools_scm" version))
               (sha256
-               (base32 "1wm0i27siyy1yqr9rv7lqvb65agay9051yi8jzmi8dgb3q4ai6m4"))))
+               (base32 "09wg4zg30ir1c2cvwqipaz3hwaxz503fgw5zdvaxgakilx2q6l3c"))))
     (build-system python-build-system)
-    (propagated-inputs
-     `(("python-packaging",python-packaging-bootstrap)
-       ("python-tomli" ,python-tomli)))
+    (arguments (list #:tests? #f))    ;avoid extra dependencies such as pytest
+    (propagated-inputs (list python-packaging-bootstrap python-tomli
+                             python-typing-extensions))
     (home-page "https://github.com/pypa/setuptools_scm/")
     (synopsis "Manage Python package versions in SCM metadata")
     (description
