@@ -7,7 +7,7 @@
 ;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 
@@ -636,4 +636,49 @@ them as the version argument or in a SCM managed file.")
 installed, will expose packages in a local directory on @code{sys.path} in
 ``editable mode''.  In other words, changes to the package source will be
 reflected in the package visible to Python, without needing a reinstall.")
+    (license license:expat)))
+
+(define-public python-hatchling
+  (package
+    (name "python-hatchling")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hatchling" version))
+              (sha256
+               (base32
+                "1isk1kqra0sm2sj2yp39sgk62mx0bp1jnbkwdcl3a1vjrji7blpq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-depend-on-hatchling
+            (lambda _
+              ;; We don't use hatchling.
+              (delete-file "pyproject.toml")
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "\
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools']
+")))
+              (call-with-output-file "setup.cfg"
+                (lambda (port)
+                  (format port "\
+[metadata]
+name = hatchling
+version = '~a' " #$version))))))))
+    (propagated-inputs
+     (list python-editables
+           python-importlib-metadata
+           python-packaging
+           python-pathspec
+           python-pluggy
+           python-tomli))
+    (home-page "https://pypi.org/project/hatchling/")
+    (synopsis "Extensible Python build backend")
+    (description "Hatchling is an extensible Python build backend.")
     (license license:expat)))

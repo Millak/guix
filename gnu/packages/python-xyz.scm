@@ -1761,51 +1761,6 @@ compositions like @code{XOR} and @code{NAND} are emulated on top of them.
 Expressions are constructed from parsed strings or directly in Python.")
     (license license:bsd-2)))
 
-(define-public python-hatchling
-  (package
-    (name "python-hatchling")
-    (version "1.13.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hatchling" version))
-              (sha256
-               (base32
-                "1isk1kqra0sm2sj2yp39sgk62mx0bp1jnbkwdcl3a1vjrji7blpq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #false ;there are none
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'do-not-depend-on-hatchling
-            (lambda _
-              ;; We don't use hatchling.
-              (delete-file "pyproject.toml")
-              (call-with-output-file "pyproject.toml"
-                (lambda (port)
-                  (format port "\
-[build-system]
-build-backend = 'setuptools.build_meta'
-requires = ['setuptools']
-")))
-              (call-with-output-file "setup.cfg"
-                (lambda (port)
-                  (format port "\
-[metadata]
-name = hatchling
-version = '~a' " #$version))))))))
-    (propagated-inputs
-     (list python-editables
-           python-importlib-metadata
-           python-packaging
-           python-pathspec
-           python-pluggy
-           python-tomli))
-    (home-page "https://pypi.org/project/hatchling/")
-    (synopsis "Extensible Python build backend")
-    (description "Hatchling is an extensible Python build backend.")
-    (license license:expat)))
-
 (define-public python-hdf4
   (package
    (name "python-hdf4")
