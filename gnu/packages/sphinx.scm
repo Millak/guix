@@ -794,7 +794,15 @@ scientific documentation.")
         (base32
          "0p3abj91c3l72ajj5jwblscsdf1jflrnn0djx2h5y6f2wjbx9ipf"))))
     (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; No tests.
+    (arguments
+     (list
+      #:tests? #f ; No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'allow-newer-docutil
+            (lambda _
+              (substitute* "setup.py"
+                (("docutils<0.18") "docutils<0.20")))))))
     (propagated-inputs (list python-docutils python-sphinx))
     (home-page "https://github.com/snide/sphinx_rtd_theme/")
     (synopsis "ReadTheDocs.org theme for Sphinx")
