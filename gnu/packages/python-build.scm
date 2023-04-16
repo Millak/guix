@@ -641,44 +641,37 @@ reflected in the package visible to Python, without needing a reinstall.")
 (define-public python-hatchling
   (package
     (name "python-hatchling")
-    (version "1.13.0")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "hatchling" version))
               (sha256
                (base32
-                "1isk1kqra0sm2sj2yp39sgk62mx0bp1jnbkwdcl3a1vjrji7blpq"))))
+                "1nn5cyc9fgrbawz38drfkl2s588k2gn3yqdm2cldbx9zy0fsjbj6"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:tests? #false ;there are none
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'do-not-depend-on-hatchling
-            (lambda _
-              ;; We don't use hatchling.
-              (delete-file "pyproject.toml")
-              (call-with-output-file "pyproject.toml"
-                (lambda (port)
-                  (format port "\
-[build-system]
-build-backend = 'setuptools.build_meta'
-requires = ['setuptools']
-")))
-              (call-with-output-file "setup.cfg"
-                (lambda (port)
-                  (format port "\
-[metadata]
-name = hatchling
-version = '~a' " #$version))))))))
-    (propagated-inputs
-     (list python-editables
-           python-importlib-metadata
-           python-packaging
-           python-pathspec
-           python-pluggy
-           python-tomli))
-    (home-page "https://pypi.org/project/hatchling/")
-    (synopsis "Extensible Python build backend")
-    (description "Hatchling is an extensible Python build backend.")
+     (list #:tests? #f                  ;to keep dependencies to a minimum
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'add-src-to-path
+                          ;; Hatchling uses itself to build itself.
+                          (lambda _
+                            (setenv "PYTHONPATH" "src"))))))
+    (propagated-inputs (list python-editables
+                             python-packaging-bootstrap
+                             python-pathspec
+                             python-pluggy
+                             python-tomli
+                             python-trove-classifiers))
+    (home-page "https://hatch.pypa.io/latest/")
+    (synopsis "Modern, extensible Python build backend")
+    (description "Hatch is a modern, extensible Python project manager.  It
+has features such as:
+@itemize
+@item Standardized build system with reproducible builds by default
+@item Robust environment management with support for custom scripts
+@item Easy publishing to PyPI or other indexes
+@item Version management
+@item Configurable project generation with sane defaults
+@item Responsive CLI, ~2-3x faster than equivalent tools.
+@end itemize")
     (license license:expat)))
