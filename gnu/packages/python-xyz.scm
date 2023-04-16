@@ -20116,13 +20116,13 @@ from the header, as well as section details and data available.")
 (define-public python-m2r
   (package
     (name "python-m2r")
-    (version "0.2.1")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "m2r" version))
               (sha256
                (base32
-                "16gdm8i06jjmlpvckpfmlkr4693dh0vs192vgsqn84fsdkbbm45z"))
+                "1asnwazfznbs0r7x03pj5ns4npz18z3kli538sgdicfg97y6gyxa"))
               (modules '((guix build utils)))
               (snippet
                ;; Adjust test regex for Python 3.10 compatibility.
