@@ -1296,14 +1296,14 @@ for the @code{pytest} framework.")
 (define-public python-pytest-benchmark
   (package
     (name "python-pytest-benchmark")
-    (version "3.4.1")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-benchmark" version))
        (sha256
         (base32
-         "0ivvrnhax2xr62grlgw4hlyjmmjp6nc35431j7c82nny2bwn7qj0"))))
+         "1la802m5r49y1zqilmhqh0qvbnz139lw0qb3jmm9lngy7sw8a1zv"))))
     (build-system python-build-system)
     (arguments
      '(#:test-target "check"))
