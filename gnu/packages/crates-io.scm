@@ -21588,14 +21588,14 @@ floats.")
 (define-public rust-fastrand-1
   (package
     (name "rust-fastrand")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fastrand" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16b4z2rig7zmyxw1hsiydv89h9wcshilds13dfpc919kmb7hg957"))))
+        (base32 "1gh12m56265ihdbzh46bhh0jf74i197wm51jg1cw75q7ggi96475"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
