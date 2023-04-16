@@ -315,6 +315,7 @@ scripts to their final locations) at any later time.  Wheel files can be
 installed with a newer @code{pip} or with wheel's own command line utility.")
     (license license:expat)))
 
+;;; TODO: Deprecate with https://github.com/pypa/pyproject-hooks.
 (define-public python-pep517-bootstrap
   (hidden-package
    (package
