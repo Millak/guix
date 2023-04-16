@@ -9708,6 +9708,37 @@ multiplexed single cell datasets.  It is built on a statistical model of tag
 read counts derived from the physical mechanism of tag cross-contamination.")
       (license license:cc0))))
 
+(define-public r-demuxmix
+  (let ((commit "09a7918ca6e0cd23e6bbaed2b97388bc499e248e")
+        (revision "1"))
+    (package
+      (name "r-demuxmix")
+      (version (git-version "1.1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/huklein/demuxmix")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "03kfnns7m2447jsc3xplyv9qx8hvvdjmii7j837g3bb6smyxss96"))))
+      (properties `((upstream-name . "demuxmix")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ggplot2 r-gridextra r-mass r-matrix))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/huklein/demuxmix")
+      (synopsis
+       "Demultiplexing oligo-barcoded scRNA-seq data using regression mixture models")
+      (description
+       "This package is used for demultiplexing single-cell sequencing
+experiments of pooled cells.  These cells are labeled with barcode
+oligonucleotides.  The package implements methods to fit regression mixture
+models for a probabilistic classification of cells, including multiplet
+detection.  Demultiplexing error rates can be estimated, and methods for
+quality control are provided.")
+      (license license:artistic2.0))))
+
 (define-public gdc-client
   (package
     (name "gdc-client")
