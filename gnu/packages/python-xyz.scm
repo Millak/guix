@@ -22655,26 +22655,10 @@ with PEP 484 argument (and return) type annotations.")
               (sha256
                (base32
                 "19n4l57qazwrbvxjrbxw2vvfyd0zbk8ivnwm4zmwfzzl69x6glp6"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f       ;requires Python's test module, not available in Guix
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "src/test_typing_extensions.py"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
-    (native-inputs (list python-pypa-build python-flit-core))
+    (build-system pyproject-build-system)
+    ;; The test suite requires Python's test module, not available in Guix.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-flit-core))
     (home-page "https://github.com/python/typing/typing_extensions")
     (synopsis "Experimental type hints for Python")
     (description
