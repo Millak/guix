@@ -454,14 +454,22 @@ order to make bootstrapping easier.")
 (define-public python-poetry-core
   (package
     (name "python-poetry-core")
-    (version "1.0.7")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "poetry-core" version))
+       (uri (pypi-uri "poetry_core" version))
        (sha256
-        (base32 "01n2rbsvks7snrq3m1d08r3xz9q2715ajb62fdb6rvqnb9sirhcq"))))
-    (build-system python-build-system)
+        (base32 "053c8dw632p7jkhjb51k0wcx6hdw4r3lk97mds76df653qxnqmf6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f                      ;disabled to avoid extra dependencies
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'add-self-to-path
+           (lambda _
+             ;; The build system requires itself.
+             (setenv "PYTHONPATH" "src"))))))
     (home-page "https://github.com/python-poetry/poetry-core")
     (synopsis "Poetry PEP 517 build back-end")
     (description
