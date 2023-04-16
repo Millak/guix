@@ -16004,7 +16004,7 @@ requests.")
 (define-public rust-curl-sys-0.4
   (package
     (name "rust-curl-sys")
-    (version "0.4.59+curl-7.86.0")
+    (version "0.4.61+curl-8.0.1")
     (source
       (origin
         (method url-fetch)
@@ -16012,7 +16012,7 @@ requests.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "01x4njcmggv9c8v2p32flf32wgp21406vnxpan7v0j7l554f7z3c"))
+          "0yfv88w17434s5mbrcphsnvpvx0103127ndkqlxnzbj1yl85rl0l"))
         (modules '((guix build utils)))
         (snippet
          '(begin (delete-file-recursively "curl")))))
