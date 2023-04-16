@@ -3875,7 +3875,7 @@ The user configuration lets you manipulate text using Python string
 operations.  It has zero overhead, as this relies on manual activation and
 there are no background processes.  Dictation is accessed manually with
 @code{nerd-dictation begin} and @code{nerd-dictation end} commands.")
-      (license license:gpl3+))))
+      (license license:gpl2+))))
 
 (define-public nerd-dictation/wayland
   (package
