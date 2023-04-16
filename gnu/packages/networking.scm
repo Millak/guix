@@ -3816,6 +3816,11 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "tests/opendht_unit_tests"))))
+          (add-before 'bootstrap 'delete-autogen.sh
+            (lambda _
+              ;; The autogen.sh script lacks a shebang, cannot be executed
+              ;; directly.  Let the bootstrap phase invoke autoreconf itself.
+              (delete-file "autogen.sh")))
           (add-after 'install 'move-and-wrap-tools
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((tools (assoc-ref outputs "tools"))
