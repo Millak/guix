@@ -217,14 +217,14 @@ PyPI (pypi.org).")
 (define-public python-pip
   (package
     (name "python-pip")
-    (version "22.2.2")
+    (version "23.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pip" version))
        (sha256
         (base32
-         "0jwac0bhfp48w4fqibf1ysrs2grksdv92hwqm7bmdw2jn2fr5l9z"))))
+         "0jnk639v9h7ghslm4jnlic6rj3v29nygflx1hgxxndg5gs4kk1a0"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f))          ; there are no tests in the pypi archive.
