@@ -289,21 +289,21 @@ facilitate packaging Python projects, where packaging includes:
 (define-public python-wheel
   (package
     (name "python-wheel")
-    (version "0.37.0")
+    (version "0.40.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "wheel" version))
         (sha256
          (base32
-          "1bbga5i49rj1cwi4sjpkvfhl1f8vl9lfky2lblsy768nk4wp5vz2"))))
+          "0ww8fgkvwv35ypj4cnngczdwp6agr4qifvk2inb32azfzbrrc4fd"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: The test suite runs "python setup.py bdist_wheel", which in turn
      ;; fails to find the newly-built bdist_wheel library, even though it is
      ;; available on PYTHONPATH.  What search path is consulted by setup.py?
      '(#:tests? #f))
-    (home-page "https://bitbucket.org/pypa/wheel/")
+    (home-page "https://github.com/pypa/wheel")
     (synopsis "Format for built Python packages")
     (description
      "A wheel is a ZIP-format archive with a specially formatted filename and
