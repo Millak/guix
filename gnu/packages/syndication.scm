@@ -224,14 +224,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.30.1")
+    (version "2.31")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "0bv0al3inay6jsggaz2zja4j9jp1ffn8bp4i4jr8wd1c9asgsgs1"))))
+        (base32 "1nn1akjc3l29gcr0n6g7y39qvmbw8vf5sfmnxd794sgmbki7vbsb"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -257,14 +257,14 @@ cards.")
        #:install-source? #f
        #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-bitflags" ,rust-bitflags-2)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-cxx" ,rust-cxx-1)
         ("rust-cxx-build" ,rust-cxx-build-1)
         ("rust-fastrand" ,rust-fastrand-1)
         ("rust-gettext-rs" ,rust-gettext-rs-0.7)
-        ("rust-lexopt" ,rust-lexopt-0.2)
+        ("rust-lexopt" ,rust-lexopt-0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-md5" ,rust-md5-0.7)
         ("rust-natord" ,rust-natord-1)
