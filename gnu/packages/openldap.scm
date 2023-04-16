@@ -67,7 +67,7 @@
 (define-public openldap
   (package
     (name "openldap")
-    (version "2.6.3")
+    (version "2.6.4")
     (source (origin
               (method url-fetch)
               ;; See <http://www.openldap.org/software/download/> for a list of
@@ -83,7 +83,7 @@
                           "openldap-release/openldap-" version ".tgz")))
               (sha256
                (base32
-                "0ihddk8c6hg9lkjv0wk0w13g8kb75r8dfsn1n6b77mzk3pbs38nj"))))
+                "1489li52sjxm1f97v927jxaxzfk6v9sa32ixrw30qhvq07jh85ym"))))
     (build-system gnu-build-system)
     (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
     (native-inputs (list libtool groff bdb-5.3))
@@ -112,21 +112,6 @@
      "OpenLDAP is a free implementation of the Lightweight Directory Access Protocol.")
     (license openldap2.8)
     (home-page "https://www.openldap.org/")))
-
-(define-public openldap-for-linphone
-  (package
-    (inherit openldap)
-    (name "openldap")
-    (version "2.6.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.linphone.org/BC/public/external/openldap/")
-                    (commit "8a885896a3fb88098d970ab96316c0b7f18367b8")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yd3cnngr5z3nymnml8fynspxgdzap7y7glp601nbkdj67wyg0k8"))))))
 
 (define-public nss-pam-ldapd
   (package
