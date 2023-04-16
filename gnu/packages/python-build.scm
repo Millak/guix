@@ -675,3 +675,22 @@ has features such as:
 @item Responsive CLI, ~2-3x faster than equivalent tools.
 @end itemize")
     (license license:expat)))
+
+(define-public python-hatch-vcs
+  (package
+    (name "python-hatch-vcs")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hatch_vcs" version))
+              (sha256
+               (base32
+                "1viz2mdfxfqpsd5f30410q6smj90qfxihvy9idzwd0p4ziy11iff"))))
+    (arguments (list #:tests? #f))      ;avoid extra test dependencies
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-hatchling python-setuptools-scm))
+    (home-page "https://github.com/ofek/hatch-vcs")
+    (synopsis "Hatch plugin for versioning with your preferred VCS")
+    (description "This package is a plugin for Hatch that uses your preferred
+version control system (like Git) to determine project versions.")
+    (license license:expat)))
