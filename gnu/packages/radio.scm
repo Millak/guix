@@ -2591,7 +2591,7 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "1.50")
+    (version "1.62")
     (source
      (origin
        (method git-fetch)
@@ -2600,37 +2600,46 @@ software-defined radio receivers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1djgn1z4hibzci53mrvskz47jfq6hk8lhhqckpa93pvsi9kadl4k"))))
+        (base32 "0rrj6h5k8plq4m6fd2yxargfhqcwkxv6bdp4rmgh6bs4prl4wvwd"))))
     (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; No test suite.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* "wfview.pro"
+                (("\\.\\./wfview/")
+                 "../"))
+              (substitute* '("wfmain.cpp")
+                (("/usr/share")
+                 (string-append #$output "/share")))))
+          (replace 'configure
+            (lambda _
+              (mkdir-p "build")
+              (chdir "build")
+              (invoke "qmake"
+                      (string-append "PREFIX=" #$output)
+                      "../wfview.pro"))))))
+    ;; XXX: During the build it complains on missing git and hostname commands
+    ;; but it successfully finishes the build.
     (inputs
      (list eigen
+           hidapi
            opus
            portaudio
            pulseaudio
            qcustomplot
+           ;; TODO: Needs to be renamed to qtgamepad-5 when version 6 is
+           ;; packed.
+           qtgamepad
            qtbase-5
            qtmultimedia-5
+           ;; TODO: Needs to be renamed to qtserialport-5. when version 6 is
+           ;; packed.
            qtserialport
            rtaudio))
-    (arguments
-     `(#:tests? #f  ; No test suite.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "wfview.pro"
-               (("\\.\\./wfview/")
-                "../"))
-             (substitute* '("wfmain.cpp")
-               (("/usr/share")
-                (string-append (assoc-ref outputs "out") "/share")))))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p "build")
-             (chdir "build")
-             (invoke "qmake"
-                     (string-append "PREFIX=" (assoc-ref outputs "out"))
-                     "../wfview.pro"))))))
     (home-page "https://wfview.org/")
     (synopsis "Software to control Icom radios")
     (description
