@@ -9667,6 +9667,47 @@ includes software to
 ")
       (license license:cc0))))
 
+(define-public r-demultiplex2
+  (let ((commit "e42bc8310c0ea035af100e6ccea59b46ad6385f5")
+        (revision "1"))
+    (package
+      (name "r-demultiplex2")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Gartner-Lab/deMULTIplex2")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15f3kshsdvm97w24ql9b1wjlfbabimdsam0482hg7jivlvpl8j9w"))))
+      (properties `((upstream-name . "deMULTIplex2")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-data-table
+                               r-devtools
+                               r-dplyr
+                               r-ggextra
+                               r-ggplot2
+                               r-gridextra
+                               r-magrittr
+                               r-mass
+                               r-matrix
+                               r-rcolorbrewer
+                               r-shortread
+                               r-stringdist
+                               r-tidyr
+                               r-uwot
+                               r-viridis
+                               r-xvector))
+      (home-page "https://github.com/Gartner-Lab/deMULTIplex2")
+      (synopsis "Robust sample demultiplexing for scRNA-seq")
+      (description
+       "This package implements a bioinformatics algorithm for demultiplexing
+multiplexed single cell datasets.  It is built on a statistical model of tag
+read counts derived from the physical mechanism of tag cross-contamination.")
+      (license license:cc0))))
+
 (define-public gdc-client
   (package
     (name "gdc-client")
