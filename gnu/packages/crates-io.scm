@@ -31614,17 +31614,17 @@ a no_std environment.  This does not depend on any standard library features,
 nor a system allocator.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-lexopt-0.2
+(define-public rust-lexopt-0.3
   (package
     (name "rust-lexopt")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "lexopt" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1s7k6hra9p9xilhl852qi1a7c2gis59qf4yl1ca5pbxf5bkfk3j7"))))
+         (base32 "00dlvik2ygw8z101vf3bfndcvxhp92v25sbzz6bdiwvxgxhlpzxs"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/blyxxyz/lexopt")
     (synopsis "Minimalist pedantic command line parser")
