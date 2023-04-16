@@ -179,34 +179,23 @@ Python file, so it can be easily copied into your project.")
 (define-public python-tomli
   (package
     (name "python-tomli")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tomli" version))
        (sha256
-        (base32 "1q8lrh9ypa6zpgbc5f7z23p7phzblp4vpxdrpfr1wajhb17w74n2"))))
-    (build-system python-build-system)
+        (base32 "0kwazq3i18rphcr8gak4fgzdcj5w5bbn4k4j2l6ma32gj496qlny"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f                      ;disabled to avoid extra dependencies
        #:phases
        (modify-phases %standard-phases
-         (replace 'build
+         (add-before 'build 'add-self-to-path
            (lambda _
-             (setenv "PYTHONPATH" (string-append (getcwd) ":"
-                                                 (getenv "GUIX_PYTHONPATH")))
-             (invoke "python" "-m" "build" "--wheel" "--no-isolation"
-                     "--skip-dependency-check")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (whl (car (find-files "dist" "\\.whl$"))))
-               (invoke "pip" "--no-cache-dir" "--no-input"
-                       "install" "--no-deps" "--prefix" out whl)))))))
-    (native-inputs
-     `(("python-flit-core-bootstrap" ,python-flit-core-bootstrap)
-       ("python-pypa-build" ,python-pypa-build)
-       ("python-six", python-six-bootstrap)))
+             ;; The build system of tomli requires... tomli.
+             (setenv "PYTHONPATH" "src"))))))
+    (native-inputs (list python-flit-core-bootstrap python-six-bootstrap))
     (home-page "https://github.com/hukkin/tomli")
     (synopsis "Small and fast TOML parser")
     (description "Tomli is a minimal TOML parser that is fully compatible with
