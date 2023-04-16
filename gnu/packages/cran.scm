@@ -12635,6 +12635,29 @@ documents.")
 libxlsxwriter.")
     (license license:bsd-2)))
 
+(define-public r-writexls
+  (package
+    (name "r-writexls")
+    (version "6.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "WriteXLS" version))
+              (sha256
+               (base32
+                "1dqr98kx930y6mcvb9b39xiwshhs250gkd2vw2v6iil34sl90jv4"))))
+    (properties `((upstream-name . "WriteXLS")))
+    (build-system r-build-system)
+    (inputs (list perl))
+    (home-page "https://github.com/marcschwartz/WriteXLS")
+    (synopsis "Create Excel 2003 (XLS) and Excel 2007 (XLSX) files")
+    (description
+     "This package provides a cross-platform Perl-based R function to create
+Excel 2003 (XLS) and Excel 2007 (XLSX) files from one or more data frames.
+Each data frame will be written to a separate named worksheet in the Excel
+spreadsheet.  The worksheet name will be the name of the data frame it
+contains or can be specified by the user.")
+    (license license:gpl2+)))
+
 (define-public r-biasedurn
   (package
     (name "r-biasedurn")
