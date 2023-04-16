@@ -7325,8 +7325,41 @@ types.")
      "This crate provides macros to generate bitfield-like struct.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-bitflags-2
+  (package
+    (name "rust-bitflags")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bitflags" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cxcbx6mm1w2d7x9xd2vcqgr69a2ydw9k110ir7rrkmmrdwyn2y7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/bitflags/bitflags")
+    (synopsis "Macro to generate structures which behave like bitflags")
+    (description "This package provides a macro to generate structures which
+behave like a set of bitflags.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-bitflags-1
   (package
+    (inherit rust-bitflags-2)
     (name "rust-bitflags")
     (version "1.3.2")
     (source
@@ -7336,7 +7369,6 @@ types.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "12ki6w8gn1ldq7yz9y680llwk5gmrhrzszaa17g1sbrw2r2qvwxy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ; Tests require rust-1.46 or newer.
        #:cargo-inputs
@@ -7348,13 +7380,7 @@ types.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-trybuild" ,rust-trybuild-1)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/bitflags/bitflags")
-    (synopsis "Macro to generate structures which behave like bitflags")
-    (description "This package provides a macro to generate structures which
-behave like a set of bitflags.")
-    (license (list license:asl2.0
-                   license:expat))))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 ;; XXX: The package below is meant to fix rust-nix-0.22, which has the
 ;; following requirements for bitflags version: ">=1.1.0 <1.3.0", and every
