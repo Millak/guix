@@ -49,16 +49,16 @@
 (define-public python-pathspec
   (package
     (name "python-pathspec")
-    (version "0.9.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pathspec" version))
        (sha256
         (base32
-         "1cdbdb3s6ldnjpwbi0bgl0xlmw4mbfxk08bbdxc3srx26na4jr75"))))
+         "11qnlcanr1mqcpqpq1hmnwrs26csbsa2bafc7biq09x91y0dx617"))))
     (build-system python-build-system)
-    (home-page "https://github.com/cpburnz/python-path-specification")
+    (home-page "https://github.com/cpburnz/python-pathspec")
     (synopsis "Utility library for gitignore style pattern matching of file paths")
     (description
      "This package provides a utility library for gitignore style pattern
