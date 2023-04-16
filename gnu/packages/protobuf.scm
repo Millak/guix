@@ -354,7 +354,7 @@ any memory-restricted system.")
      (list python-grpc-stubs
            python-grpcio-tools
            python-pytest
-           python-typing-extensions-next))
+           python-typing-extensions))
     (propagated-inputs
      (list protobuf
            python-protobuf
