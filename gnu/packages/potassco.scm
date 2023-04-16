@@ -35,6 +35,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz))
 
 (define-public libpotassco

@@ -5,9 +5,12 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -209,6 +212,45 @@ Python file, so it can be easily copied into your project.")
     (description "This package is the canonical source for classifiers use on
 PyPI (pypi.org).")
     (license license:asl2.0)))
+
+(define-public python-typing-extensions
+  (package
+    (name "python-typing-extensions")
+    (version "4.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "typing_extensions" version))
+              (sha256
+               (base32
+                "19n4l57qazwrbvxjrbxw2vvfyd0zbk8ivnwm4zmwfzzl69x6glp6"))))
+    (build-system pyproject-build-system)
+    ;; Disable the test suite to keep the dependencies to a minimum.  Also,
+    ;; the test suite requires Python's test module, not available in Guix.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-flit-core))
+    (home-page "https://github.com/python/typing/typing_extensions")
+    (synopsis "Experimental type hints for Python")
+    (description
+     "The typing_extensions module contains additional @code{typing} hints not
+yet present in the of the @code{typing} standard library.
+Included are implementations of:
+@enumerate
+@item ClassVar
+@item ContextManager
+@item Counter
+@item DefaultDict
+@item Deque
+@item NewType
+@item NoReturn
+@item overload
+@item Protocol
+@item runtime
+@item Text
+@item Type
+@item TYPE_CHECKING
+@item AsyncGenerator
+@end enumerate\n")
+    (license license:psfl)))
 
 
 ;;;

@@ -22645,44 +22645,6 @@ based on the CPython 2.7 and 3.7 parsers.")
 with PEP 484 argument (and return) type annotations.")
     (license license:expat)))
 
-(define-public python-typing-extensions
-  (package
-    (name "python-typing-extensions")
-    (version "4.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "typing_extensions" version))
-              (sha256
-               (base32
-                "19n4l57qazwrbvxjrbxw2vvfyd0zbk8ivnwm4zmwfzzl69x6glp6"))))
-    (build-system pyproject-build-system)
-    ;; The test suite requires Python's test module, not available in Guix.
-    (arguments (list #:tests? #f))
-    (native-inputs (list python-flit-core))
-    (home-page "https://github.com/python/typing/typing_extensions")
-    (synopsis "Experimental type hints for Python")
-    (description
-     "The typing_extensions module contains additional @code{typing} hints not
-yet present in the of the @code{typing} standard library.
-Included are implementations of:
-@enumerate
-@item ClassVar
-@item ContextManager
-@item Counter
-@item DefaultDict
-@item Deque
-@item NewType
-@item NoReturn
-@item overload
-@item Protocol
-@item runtime
-@item Text
-@item Type
-@item TYPE_CHECKING
-@item AsyncGenerator
-@end enumerate\n")
-    (license license:psfl)))
-
 (define-public bpython
   (package
     (name "bpython")
