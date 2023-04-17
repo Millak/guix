@@ -1887,7 +1887,7 @@ native APIs where it makes sense.")))
               (uri (qt-urls name version))
               (sha256
                (base32
-                "0r16qxy0pfpwvna4gpz67jk3qv3qizfd659kc9iwdh8bhz7lpjrw"))))
+                "0mlhhhcxx3gpr9kh04c6fljxcj50c2j21r0wb9f7d7nk4flip7b2"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
@@ -2116,8 +2116,7 @@ coloring, and many more.")))
               (sha256
                (base32
                 "0vgxprgk7lak209wsg2ljzfkpwgjzscpbxmj5fyvvwm2pbnpspvk"))))
-    (native-inputs
-     (list perl pkg-config))
+    (native-inputs (list perl pkg-config))
     (inputs
      (list fontconfig
            freetype
@@ -2201,8 +2200,7 @@ information and perform area based monitoring.")
               (sha256
                (base32
                 "0bjky5ncg9yhz4a63g3jl1r5pa6i09f6g8wgzs591mhybrbmhcw8"))))
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+    (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Purchasing module")
     (description "The Qt Purchasing module provides and in-app API for
 purchasing goods and services.")))
@@ -2250,8 +2248,7 @@ selecting one of the charts themes.")
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
-    (inputs
-     (list qtbase-5 qtdeclarative-5))
+    (inputs (list qtbase-5 qtdeclarative-5))
     (synopsis "Qt Data Visualization module")
     (description "The Qt Data Visualization module provides a way to visualize
 data in 3D as bar, scatter, and surface graphs. It is especially useful for

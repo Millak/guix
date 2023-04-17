@@ -183,6 +183,7 @@
             package-closure
 
             default-guile
+            guile-for-grafts
             default-guile-derivation
             set-guile-for-build
             package-file

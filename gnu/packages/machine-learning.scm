@@ -3364,7 +3364,7 @@ Note: currently this package does not provide GPU support.")
   (package
     (inherit python-pytorch)
     (name "python-pytorch")
-    (version "1.12.1")
+    (version "1.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3374,7 +3374,7 @@ Note: currently this package does not provide GPU support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wimgnmn8kfazc8vhf65b9psdwj80n3chzkd8ic28541ac2zqzpk"))
+                "17yxjzwp4zp75fz7czgz9acijzw7dpyqcza50v8y1x7hfg2gw369"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -3394,7 +3394,10 @@ Note: currently this package does not provide GPU support.")
                               "gloo" "googletest" "ios-cmake" "NNPACK"
                               "onnx" "protobuf" "pthreadpool"
                               "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))))))))
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))))
 
 ;; Keep this in sync with python-pytorch
 (define-public python-torchvision
@@ -3500,7 +3503,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.9.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -3509,7 +3512,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rycs7fgm03fxp8lxj8ljrdwy5whxd4554xzklbcmn4mcwbxgg57"))))
+        (base32 "12480fac9xq7rgw0q5f2cnvmakhakjsnq1gvh2ncjfwxz34n8fl7"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3518,7 +3521,7 @@ of Hidden Markov Models.")
       (let ((python-version (version-major+minor (package-version python))))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'chdir
-              (lambda _ (chdir "lantern")))
+              (lambda _ (chdir "src/lantern")))
             (add-after 'chdir 'do-not-download-binaries
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "CMakeLists.txt"
@@ -3844,8 +3847,8 @@ simple speech recognition.")
                  "lib.")))))))))
 
 (define-public nerd-dictation
-  (let* ((commit "53ab129a5ee0f8b5df284e8cf2229219b732c59e")
-         (revision "0"))
+  (let* ((commit "0eb44b7fd0927d69c92de5566e5807ed2c2e20b7")
+         (revision "1"))
     (package
       (name "nerd-dictation")
       (version (git-version "0" revision commit))
@@ -3857,7 +3860,7 @@ simple speech recognition.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "184qijiva1h1x00dzicik0yzgh78pq2lqr5fkgicgp26mkarlyhc"))))
+          (base32 "0frdpswv6w3cwj3c7wd5w8gj3s1hvpdwd48qhfhfxf7imahz9bqf"))))
       (build-system python-build-system)
       (arguments
        '(#:phases
@@ -3875,7 +3878,7 @@ The user configuration lets you manipulate text using Python string
 operations.  It has zero overhead, as this relies on manual activation and
 there are no background processes.  Dictation is accessed manually with
 @code{nerd-dictation begin} and @code{nerd-dictation end} commands.")
-      (license license:gpl3+))))
+      (license license:gpl2+))))
 
 (define-public nerd-dictation/wayland
   (package

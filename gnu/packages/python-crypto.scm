@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
@@ -1361,14 +1361,13 @@ and Backlog for a list of what is and is not currently supported.")
 (define-public python-secretstorage
   (package
     (name "python-secretstorage")
-    (version "3.3.1")
+    (version "3.3.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "SecretStorage" version))
         (sha256
-         (base32
-          "15ginv4gzxrx77n7517xnvf2jcpqc6ran12s951hc85zlr8nqrpx"))))
+         (base32 "0xxxxr77sgmjm1rqzdd1rkan9xg0qmv8awc1pb9adv39ycz560r4"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; Tests require a running dbus service.
@@ -1443,17 +1442,23 @@ certificates, signing and building trust bundles.")
 (define-public python-jeepney
   (package
     (name "python-jeepney")
-    (version "0.6.0")
+    (version "0.8.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jeepney" version))
         (sha256
-         (base32 "0mw6ch5s4czpmsiwqwhcidgk27858pl8vlvb7acrxjkm4ribcnbx"))))
-    (build-system python-build-system)
+         (base32 "01jqrk7pn94i7bpmj834pjrw7id659gfag6wpbv04fcpap94izjy"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-testpath python-tornado python-trio python-pytest
-           python-pytest-trio))
+     (list python-async-timeout
+           python-testpath
+           python-trio
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-trio
+           ;; For the build backend
+           python-flit-core))
     (home-page "https://gitlab.com/takluyver/jeepney")
     (synopsis "Low-level, pure Python DBus protocol wrapper")
     (description

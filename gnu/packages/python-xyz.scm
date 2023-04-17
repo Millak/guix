@@ -14,7 +14,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2019, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2017, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
@@ -24740,7 +24740,7 @@ make your work easier.")
     (native-inputs
      (list python-pytest python-pytest-cov python-pytest-asyncio))
     (propagated-inputs
-     (list python-async-generator python-attrs))
+     (list python-attrs))
     (home-page "https://github.com/python-trio/outcome")
     (synopsis "Capture the outcome of Python function calls")
     (description

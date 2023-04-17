@@ -12,6 +12,7 @@
 ;;; Copyright © 2022 Sheng Yang <styang@fastmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Ryan Tolboom <ryan@using.tech>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1097,7 +1098,7 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.15.9")
+    (version "2.15.10")
     (source
      (origin
        (method git-fetch)
@@ -1106,7 +1107,7 @@ satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a70lmcidp5ccmpvlvpfk1g7pshyp8xq2k0kgxrplf8za5hns019"))))
+        (base32 "0c1s3y7w0gcav666mnkwkb60cczab0rkwdkaqicq1768fsgyhad3"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -1591,7 +1592,6 @@ focused on DXing and being shaped by community of DXers.JTDX")
 
 (define-public js8call
   (package
-    (inherit wsjtx)
     (name "js8call")
     (version "2.2.0")
     (source
@@ -1603,49 +1603,63 @@ focused on DXing and being shaped by community of DXers.JTDX")
         (base32 "149sjwc4zg6ckgq26af93p4fxappa4k9dh7rdy67g8ajfjad4cd8"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Delete bundled boost to use the shared one.
-           (delete-file-recursively "boost")
-           #t))))
+        #~(begin
+            ;; Delete bundled boost to use the shared one.
+            (delete-file-recursively "boost")))))
     (build-system qt-build-system)
-    (native-inputs
-     (list asciidoc gfortran pkg-config qttools-5 ruby-asciidoctor))
-    (inputs
-     `(("boost" ,boost)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("hamlib" ,wsjtx-hamlib)
-       ("libusb" ,libusb)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtserialport" ,qtserialport)))
     (arguments
-     `(#:tests? #f ; No test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("DESTINATION /usr/share")
-                (string-append "DESTINATION "
-                               (assoc-ref outputs "out")
-                               "/share")))))
-         (add-after 'unpack 'fix-hamlib
-           (lambda _
-             (substitute* "CMake/Modules/Findhamlib.cmake"
-               (("set \\(ENV\\{PKG_CONFIG_PATH\\}.*\\)")
-                "set (__pc_path $ENV{PKG_CONFIG_PATH})
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              ;; XXX: How to get the /tmp/<build-name>.drv-<num> path? Use
+              ;; output path for after install check phase instead.
+              (substitute* "media/tests/test"
+                (("~/js8call-prefix/build/js8")
+                 (string-append #$output "/bin/js8"))
+                (("/opt/js8call/bin/js8")
+                 (string-append #$output "/bin/js8")))
+              (substitute* "CMakeLists.txt"
+                (("DESTINATION /usr/share")
+                 (string-append "DESTINATION " #$output "/share")))))
+          (add-after 'unpack 'fix-hamlib
+            (lambda _
+              (substitute* "CMake/Modules/Findhamlib.cmake"
+                (("set \\(ENV\\{PKG_CONFIG_PATH\\}.*\\)")
+                 "set (__pc_path $ENV{PKG_CONFIG_PATH})
   list (APPEND __pc_path \"${__hamlib_pc_path}\")
   set (ENV{PKG_CONFIG_PATH} \"${__pc_path}\")"))
-             (substitute* "HamlibTransceiver.hpp"
-               (("#ifdef JS8_USE_LEGACY_HAMLIB")
-                "#if 1")))))))
+              (substitute* "HamlibTransceiver.hpp"
+                (("#ifdef JS8_USE_LEGACY_HAMLIB")
+                 "#if 1"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../js8call/media/tests"
+                  (invoke "./test"))))))))
+    (native-inputs
+     (list asciidoc
+           gfortran
+           pkg-config
+           qttools-5
+           ruby-asciidoctor))
+    (inputs
+     (list boost
+           fftw
+           fftwf
+           libusb
+           qtbase-5
+           qtmultimedia-5
+           qtserialport
+           wsjtx-hamlib))
+    (home-page "http://js8call.com/")
     (synopsis "Weak-signal ham radio communication program")
     (description
      "JS8Call is a software using the JS8 digital mode (a derivative of the FT8
 mode) providing weak signal keyboard to keyboard messaging to amateur radio
 operators.")
-    (home-page "http://js8call.com/")
     (license license:gpl3)))
 
 (define-public xnec2c
@@ -2577,7 +2591,7 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "1.50")
+    (version "1.62")
     (source
      (origin
        (method git-fetch)
@@ -2586,37 +2600,46 @@ software-defined radio receivers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1djgn1z4hibzci53mrvskz47jfq6hk8lhhqckpa93pvsi9kadl4k"))))
+        (base32 "0rrj6h5k8plq4m6fd2yxargfhqcwkxv6bdp4rmgh6bs4prl4wvwd"))))
     (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; No test suite.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* "wfview.pro"
+                (("\\.\\./wfview/")
+                 "../"))
+              (substitute* '("wfmain.cpp")
+                (("/usr/share")
+                 (string-append #$output "/share")))))
+          (replace 'configure
+            (lambda _
+              (mkdir-p "build")
+              (chdir "build")
+              (invoke "qmake"
+                      (string-append "PREFIX=" #$output)
+                      "../wfview.pro"))))))
+    ;; XXX: During the build it complains on missing git and hostname commands
+    ;; but it successfully finishes the build.
     (inputs
      (list eigen
+           hidapi
            opus
            portaudio
            pulseaudio
            qcustomplot
+           ;; TODO: Needs to be renamed to qtgamepad-5 when version 6 is
+           ;; packed.
+           qtgamepad
            qtbase-5
            qtmultimedia-5
+           ;; TODO: Needs to be renamed to qtserialport-5. when version 6 is
+           ;; packed.
            qtserialport
            rtaudio))
-    (arguments
-     `(#:tests? #f  ; No test suite.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "wfview.pro"
-               (("\\.\\./wfview/")
-                "../"))
-             (substitute* '("wfmain.cpp")
-               (("/usr/share")
-                (string-append (assoc-ref outputs "out") "/share")))))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p "build")
-             (chdir "build")
-             (invoke "qmake"
-                     (string-append "PREFIX=" (assoc-ref outputs "out"))
-                     "../wfview.pro"))))))
     (home-page "https://wfview.org/")
     (synopsis "Software to control Icom radios")
     (description

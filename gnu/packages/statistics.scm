@@ -1523,13 +1523,13 @@ data derived from /etc/mime.types in UNIX-type systems.")
 (define-public r-markdown
   (package
     (name "r-markdown")
-    (version "1.5")
+    (version "1.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "markdown" version))
               (sha256
                (base32
-                "05lq5r698bk4qs2qklvri3rlbdss9w58n5y91yf3k6x5bzwh6580"))))
+                "1sjrynkg42g7s2czwmx4lzk92fssnd73cqj63djlpbk1h66qn8j6"))))
     (build-system r-build-system)
     ;; Skip check phase because the tests require the r-knitr package to be
     ;; installed. This prevents installation failures. Knitr normally
@@ -2546,13 +2546,13 @@ functions make it easy to control additional request components.")
 (define-public r-git2r
   (package
     (name "r-git2r")
-    (version "0.31.0")
+    (version "0.32.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "git2r" version))
               (sha256
                (base32
-                "0vfn7kkkarha63vv3k8hi9y5snfsdpwdrbmych560126z9w95nzi"))))
+                "0wa6k1g7y0sx6s7map7mn579c1h07n185m163msmcjk81i62ap8v"))))
     (build-system r-build-system)
     (inputs
      (list libgit2 zlib))
@@ -3175,14 +3175,14 @@ statements.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "1.6-3")
+    (version "1.6-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "0x7k5ycbvnfqsygrcyaaxnl0060x6869b345xc697hhr9sfxb4ai"))))
+         "14ci6hd5xlrz22gvnvy2fzpnp50fbds3wpx4mf2fgi5i7sp0hb27"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-nlme))
     (home-page "https://cran.r-project.org/web/packages/segmented")
@@ -5372,14 +5372,14 @@ data for species delimitation, nearest neighbor based noise detection.")
 (define-public r-deoptimr
   (package
     (name "r-deoptimr")
-    (version "1.0-11")
+    (version "1.0-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DEoptimR" version))
        (sha256
         (base32
-         "0nqn12n5qlyk2zsgh57dvizy5z71xgqrhrcqj6lbzybm9c7v6x0q"))))
+         "0y9xc6lkadk3h1j22q7vnykm1xyhlbn24lkjqn8sdsmw660gjdk1"))))
     (properties `((upstream-name . "DEoptimR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
@@ -5703,13 +5703,13 @@ using modular prediction and response module classes.")
 (define-public r-quantreg
   (package
     (name "r-quantreg")
-    (version "5.94")
+    (version "5.95")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantreg" version))
        (sha256
-        (base32 "1h8p3gzaas8gdvyh13ir8xc92hiybmizb0yhnwk7gvbjp768bmaj"))))
+        (base32 "1k4n5armw4lfyy4q8llnrpgvcw7s5n8w9zfff9rr5ggbrqgah1ab"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -7244,13 +7244,13 @@ experiment via several parameterizations")
 (define-public r-simr
   (package
     (name "r-simr")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "simr" version))
        (sha256
-        (base32 "1q8ip54c5pc7pjf8127jpk56nr3f8rmwqdcrr84faj4lfbr27wqb"))))
+        (base32 "1rfnhyqvdazvar7r1ml71lskh1hdk3yfzv5jlcz18wzffscgkgmb"))))
     (properties `((upstream-name . "simr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7276,9 +7276,10 @@ models, using simulation.  It was designed to work with models fit using the
     (license license:gpl2+)))
 
 (define-public r-mixedpower
-  ;; This commit contains fixes for R>=4.2. A newer release does not exist.
-  (let ((commit "6520195481bca3ce01862ef80a28c53b0a35d0f5")
-        (revision "1"))
+  ;; This commit contains fixes for R>=4.2 and contains new features. A
+  ;; newer release does not exist.
+  (let ((commit "b2b87068546327d8f592d141e5482e0478c1b2ee")
+        (revision "2"))
     (package
       (name "r-mixedpower")
       (version (git-version "2.0" revision commit))
@@ -7291,9 +7292,7 @@ models, using simulation.  It was designed to work with models fit using the
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
-            (base32 "114z9pvya2jg10y804ga41gq00r7zcw4a7c7234ybhmv3jqw78q1"))
-          (patches
-            (search-patches "r-mixedpower-r2power.patch"))))
+            (base32 "0pys66a6c1k2fp5qk9grhzg1q1d3q51rggcilmdssimkmcsm234z"))))
       (properties `((upstream-name . "mixedpower")))
       (build-system r-build-system)
       (propagated-inputs

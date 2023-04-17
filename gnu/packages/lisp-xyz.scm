@@ -11717,11 +11717,11 @@ be used with @code{cl-yacc}.")
   (sbcl-package->ecl-package sbcl-cl-lex))
 
 (define-public sbcl-cl-colors2
-  (let ((commit "795aedee593b095fecde574bd999b520dd03ed24")
-        (revision "1"))
+  (let ((commit "d620e7fb504bbec3ed48cc7cd03f60ce2bb3735d")
+        (revision "2"))
     (package
       (name "sbcl-cl-colors2")
-      (version (git-version "0.2.1" revision commit))
+      (version (git-version "0.5.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -11730,7 +11730,7 @@ be used with @code{cl-yacc}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0hlyf4h5chkjdp9armla5w4kw5acikk159sym7y8c4jbjp9x47ih"))))
+          (base32 "14wx006lv4bhf86z68484kphm5jsh86ns60pb4i1bi8kl8lp03r0"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-clunit2))

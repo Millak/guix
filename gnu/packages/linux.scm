@@ -484,7 +484,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.2-version "6.2.10")
+(define-public linux-libre-6.2-version "6.2.11")
 (define-public linux-libre-6.2-gnu-revision "gnu")
 (define deblob-scripts-6.2
   (linux-libre-deblob-scripts
@@ -494,12 +494,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0ir5vvbdh6dly5ld8mfp7285g8k88w5bb32hj4wmgyqsbfqc6rf2")))
 (define-public linux-libre-6.2-pristine-source
   (let ((version linux-libre-6.2-version)
-        (hash (base32 "1zm4xvxdy6sqqwcich46mr4dh3kpmp40bawwahrg4lr7rp1n5iap")))
+        (hash (base32 "0iyx03z58pv1d5nrryjx94k3nxwyvm4b3bim6nawg1qbws26f8qd")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.2)))
 
-(define-public linux-libre-6.1-version "6.1.23")
+(define-public linux-libre-6.1-version "6.1.24")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -509,7 +509,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0cchdhjra74zanyk14brv2l2dvxpg8dn58rn477lgfb44mcnhq33")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "1szblfmm8gx0am017y30ywc60b1gqarplgmcs5zy7bshhwp3fn3l")))
+        (hash (base32 "0135aj8asplpxqr48hwdmwynx8n8hzhdgh55yl8r0n1kivisgrma")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -517,7 +517,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.106")
+(define-public linux-libre-5.15-version "5.15.107")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -527,7 +527,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "03hwhwbcicwyx5i30d6m715kwgrxz4h21xhk55wnawlk8zhx3r35")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1r4g7ipcmj7k9dpwd5p2kd0f3iidnzl6z9g2cq4mfcw0h97r7rl4")))
+        (hash (base32 "1a5gqpxmzls5mp4a0cw10ldrps4pvbn19nzfri91ys25j1v0wdqr")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))

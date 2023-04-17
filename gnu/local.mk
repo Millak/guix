@@ -1828,7 +1828,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/racket-zuo-bin-sh.patch			\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
-  %D%/packages/patches/r-mixedpower-r2power.patch		\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
   %D%/packages/patches/rocm-comgr-3.1.0-dependencies.patch 	\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\

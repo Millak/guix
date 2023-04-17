@@ -124,6 +124,7 @@
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -421,7 +422,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-gptel
   (package
     (name "emacs-gptel")
-    (version "0.3.2")
+    (version "0.3.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -430,7 +431,7 @@ e.g. emacs-geiser-guile for Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g4p0y7bk14ixiz841am2v36fdbwigz77q4zz745m4hviaq3s30y"))))
+                "1ymqx9m6ypxdqcc9y3d90ibs3d2n6lb9dg7fn7q30lz6qa5nsc94"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -3101,6 +3102,30 @@ Selectrum.")
 playback status, artist name and title for Emprise using Marginalia.")
     (license license:gpl3+)))
 
+(define-public emacs-eradio
+  (let ((commit "47769986c79def84307921f0277e9bb2714756c2")
+        (revision "0"))
+    (package
+      (name "emacs-eradio")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/olavfosse/eradio")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0lks2pph44qxc9l34nr55ha667974r8ckxdwmvcp6v9mnm05317s"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/olavfosse/eradio")
+      (synopsis "Simple radio player for GNU Emacs")
+      (description
+       "Eradio is a simple internet radio player for Emacs.  Start, stop or
+toggle custom-defined channels.  An external media player like mpv or VLC is
+required.")
+      (license license:gpl3+))))
+
 
 ;;;
 ;;; Miscellaneous.
@@ -4026,7 +4051,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "0.13")
+    (version "0.14")
     (source
      (origin
        (method git-fetch)
@@ -4035,7 +4060,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nvmqfp9rv2mrisyvwfr285yww22c6wb5by3s25c83ay2ivpi8ya"))))
+        (base32 "0xicfjf49fz8kbh7wqpj9fwhm5f6s6fcb3919icggjsf2465yqls"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -7926,14 +7951,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.2.1")
+    (version "1.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "09a3ggnqsm4lxqhj0z9z3df6qzibvv9lpwqij2gpiifbb4lkvj4b"))))
+                "1xlh4kqa8516rvmzy67pzs0ghk9rc919nq5b2sywd5mvzi5spxnh"))))
     (arguments
      (list
       #:tests? #t
@@ -11643,13 +11668,13 @@ hydras with one column per group of heads.")))
 (define-public emacs-ivy
   (package
     (name "emacs-ivy")
-    (version "0.13.4")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/ivy-" version ".tar"))
        (sha256
-        (base32 "0qpza1c45mr8fcpnm32cck4v22fnzz1yb7kww05rzgq1k9iivx5v"))))
+        (base32 "1fzl7xcmxjg005g4676ac3jcshgmcmdr81ywmxvjcs8wj71v56jv"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-hydra))
@@ -11667,14 +11692,14 @@ expression.")
 (define-public emacs-counsel
   (package
     (name "emacs-counsel")
-    (version "0.13.4")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "counsel-" version ".tar"))
        (sha256
-        (base32 "094zfapfn1l8wjf3djkipk0d9nks0g77sbk107pfsbr3skkzh031"))))
+        (base32 "03n1qk66dcbh9xlnlzpwkb441c2xdpfc7bzx4i2szw0xh4a6g5sj"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-swiper))
@@ -11700,13 +11725,13 @@ The following completions are currently available:
 (define-public emacs-swiper
   (package
     (name "emacs-swiper")
-    (version "0.13.4")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/swiper-" version ".tar"))
        (sha256
-        (base32 "197pq2cvvskib87aky907wv2am55vilr7y5dabmmm07a8vr9py0v"))))
+        (base32 "1p2qil6gj4y8y3ydqs8pbxn8j16q9r42nnc2f61c30hws504pkms"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy))
@@ -15288,7 +15313,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.6.3")
+    (version "9.6.4")
     (source
      (origin
        (method git-fetch)
@@ -15297,7 +15322,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gsvhqn93mlgzhwhy5ynb03fbvl55zdfbbdgzh0y42ffyc643v8p"))))
+        (base32 "0n285p8az9386jdfixv8bzkjx5agdfyfg9a122nnk1km15j53xdj"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -17205,7 +17230,7 @@ constructs.")
 (define-public emacs-cnfonts
   (package
     (name "emacs-cnfonts")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -17214,7 +17239,7 @@ constructs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "156qj5dkipa5a3f3scldf1mcfvmp1g199ds2wyi6jk5gqfv73zsd"))))
+        (base32 "0k0mh653sjwhli6hxdyzvcqdmpxdsx1s0fwzsw69dfr6nxr7f1dv"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/tumashu/cnfonts")
     (synopsis "Emacs Chinese fonts setup tool")
@@ -17522,13 +17547,13 @@ containing words from the Rime project.")
 (define-public emacs-pyim
   (package
     (name "emacs-pyim")
-    (version "5.3.1")
+    (version "5.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/pyim-" version ".tar"))
        (sha256
-        (base32 "0lkshw52xdrcbdrgmjb665bpyga61qlk29rrzrrj7s82n09bq9kv"))))
+        (base32 "13irkmhlfq99glyy0vhj559si5672cqcysjxlxn7lvckxr298vzc"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async emacs-popup emacs-posframe emacs-xr))
@@ -19030,16 +19055,16 @@ multiplexer.")
 (define-public emacs-plz
   (package
     (name "emacs-plz")
-    (version "0.4")
+    (version "0.5.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/alphapapa/plz.el")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sfgbq6nn9prxqg5qs576rlpszbhp70yj3d8r7hqckrd5s0sbk13"))))
+        (base32 "1ccddvbhb3n02s2krgyqapll7kbzxjhldzn8g8gmnqfsmwpg9d2r"))))
     (build-system emacs-build-system)
     (inputs (list curl))
     (arguments
@@ -19061,7 +19086,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
 (define-public emacs-ement
   (package
     (name "emacs-ement")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -19070,7 +19095,7 @@ which avoids some of the issues with using Emacs’s built-in Url library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qzml4hrylvsd25vyyj1pf77kvv8kzjyzap00d4s182gvva4lvks"))))
+        (base32 "17s3sl0dijgmhnaryw08g6vn6za46xz6a709rsfrdis8v1knqd7z"))))
     (build-system emacs-build-system)
     (arguments
      (list #:emacs emacs))              ;need libxml support
@@ -24386,6 +24411,12 @@ It replaces the standard completions buffer with Ido prompt.")
        (sha256
         (base32 "06vbc9ycz1nbjwjkg99y3lj6jwb6lnwnmkqf09yr00jjrrfhfash"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:emacs (if (target-64bit?)
+                  emacs-minimal
+                  ;; Require wide-int support for 32-bit platform.
+                  emacs-wide-int)))
     (home-page "https://github.com/Fanael/wordgen.el")
     (synopsis "Random word generator")
     (description "This package provides functions to generate random words
@@ -24522,14 +24553,14 @@ modes of SLIME.")
 (define-public emacs-sml-mode
   (package
     (name "emacs-sml-mode")
-    (version "6.11")
+    (version "6.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/sml-mode-"
                            version ".tar"))
        (sha256
-        (base32 "05vga709kphbx6jacqh57cq5gyicwrxxf81gask5lbq7vzfzlbfc"))))
+        (base32 "19wyxsnw60lmjbb7ijislpv9vzk9996rh1b0iw7wyrqszfxy2p20"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/sml-mode.html")
     (synopsis "Major mode for editing (Standard) ML")
@@ -28031,7 +28062,7 @@ tabulated-lists).")
 (define-public emacs-eat
   (package
     (name "emacs-eat")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -28041,7 +28072,7 @@ tabulated-lists).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "05wpjqbj0jv1sax788rdj0myfi596rimvfwh4mg0w6kcza291xiq"))
+         "1fb66g7jjc7dhw61323d94mx7gqfp6ylf9a7v5qym1n92mv48bdr"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -35305,7 +35336,7 @@ and preferred services can easily be configured.")
 (define-public emacs-ivy-avy
   (package
     (name "emacs-ivy-avy")
-    (version "0.13.4")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
@@ -35313,7 +35344,7 @@ and preferred services can easily be configured.")
              "https://elpa.gnu.org/packages/"
              "ivy-avy-" version ".tar"))
        (sha256
-        (base32 "1q5caxm4rnh4jy5n88dhkdbx1afsshmfki5dl8xsqbdb3y0zq7yi"))))
+        (base32 "0gjpvjahhkxsakqrcni78v71fsrh3f0jrs55a4kqc5hv6qyn8hk9"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy emacs-avy))
@@ -35397,7 +35428,7 @@ files, providing syntax highlighting and indentation rules.")
 (define-public emacs-ivy-hydra
   (package
     (name "emacs-ivy-hydra")
-    (version "0.13.5")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
@@ -35405,7 +35436,7 @@ files, providing syntax highlighting and indentation rules.")
              "https://elpa.gnu.org/packages/"
              "ivy-hydra-" version ".tar"))
        (sha256
-        (base32 "06rln9bnq5hli5rqlm47fb68b8llpqrmzwqqv4rn7mx3854i9a5x"))))
+        (base32 "1gsjr2yny9qcj56cb4xy47la11z0lszq0f2qws0yzyh02ng30k1n"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy emacs-hydra))
@@ -36734,6 +36765,30 @@ TinTin++ scripting language as possible, organizing commands into functional
 categories and highlighting specific modes that many commands use to
 accomplish different tasks.")
       (license license:asl2.0))))
+
+(define-public emacs-totp
+  (let ((commit "a5e059b8475b32bc7f5ddadda248cf84449ed722") ;no releases
+        (revision "0"))
+    (package
+      (name "emacs-totp")
+      (home-page "https://github.com/juergenhoetzel/emacs-totp")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0b76fxk9r3n9zii75q1957ivb6ap5px5h87kagxz083nl77jky7a"))))
+      (build-system emacs-build-system)
+      (synopsis "Generate Time-based One-time Passwords (TOTP) in Emacs")
+      (description
+       "emacs-TOTP implements @acronym{TOTP, Time-based One-time Passwords} as
+specified in RFC 6238.  It supports reading secrets in HEX and multiple base32
+variations, including non-standard base32 encodings.")
+       (license license:gpl3+))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
