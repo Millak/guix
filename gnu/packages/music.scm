@@ -815,7 +815,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
 (define-public hydrogen
   (package
     (name "hydrogen")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -824,7 +824,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12mwkglyz88hwb16fb3fahn95janim2mrvnxkzp8pcsw3wybi3dn"))))
+        (base32 "0v4ir1my8zndw5rvz6jr42ysprwycgxrlsc53070y3620n699nha"))))
     (build-system cmake-build-system)
     (arguments
      `(#:test-target "tests"
@@ -850,6 +850,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
            lrdf
            pulseaudio
            qtbase-5
+           qtsvg-5
            qtxmlpatterns
            zlib))
     (home-page "http://hydrogen-music.org/")
