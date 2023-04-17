@@ -31933,7 +31933,7 @@ library.")
   (package
     (inherit rust-libgit2-sys-0.14)
     (name "rust-libgit2-sys")
-    (version "0.12.25+1.3.0")
+    (version "0.12.26+1.3.0")
     (source
      (origin
        (method url-fetch)
@@ -31942,7 +31942,7 @@ library.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1axsdyb2i67pn85vh8sb2z037n88fiiwqghkzsr1jrcdy2g1cs4g"))
+         "153l8nvz9p8vyd5840xi6fwblvhpn3c33jwdwsznyq4f4jcwiq8r"))
        (modules '((guix build utils)))
        (snippet
         '(begin (delete-file-recursively "libgit2")))))
