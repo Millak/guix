@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014 Kevin Lemonnier <lemonnierk@ulrar.net>
 ;;; Copyright © 2015, 2017 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -749,7 +749,7 @@ but can also be used independently as a logging bot.")
            gnutls
            libmaxminddb
            mbedtls-apache
-           mysql
+           (list mariadb "dev")
            openldap
            openssl
            `(,pcre "bin")
