@@ -38336,6 +38336,27 @@ combinators library (fork for proposals for v8)")
     (description "This package derives custom nom parsers from structs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nom-derive-impl-0.10
+  (package
+    (name "rust-nom-derive-impl")
+    (version "0.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nom-derive-impl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0qnsvvg74wdpzhbkxrndr7x6vb1kvhrd60hfwz1kw3abm29rl2yd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/rust-bakery/nom-derive")
+    (synopsis "Custom derive nom parsers from struct")
+    (description "This package provides custom derive nom parsers from structs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-noop-proc-macro-0.3
   (package
     (name "rust-noop-proc-macro")
