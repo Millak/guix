@@ -7584,13 +7584,19 @@ high-level way.  This library provides such operators.")
                  (setenv "BB_PYTHON3_DYLIB"
                          (string-append python "/lib/libpython3.so"))
                  #t)))
-           (add-after 'unpack 'adjust-for-python-3.9
+           (add-after 'unpack 'adjust-for-python-3.10
              (lambda _
                ;; These methods are no longer part of the public API.
                (substitute* "ffi-interface.lisp"
                  ((".*PyEval_ReInitThreads.*") "")
                  ((".*\"PyErr_Warn\".*") "")
-                 ((".*\"PyFloat_ClearFreeList\".*") "")))))))
+                 ((".*\"PyFloat_ClearFreeList\".*") "")
+                 ((".*\"PyParser_SimpleParseString\".*") "")
+                 ((".*\"PyParser_SimpleParseStringFlags\".*") "")
+                 ((".*\"PyParser_SimpleParseStringFlagsFilename\".*") "")
+                 ((".*\"PyParser_SimpleParseFile\".*") "")
+                 ((".*\"PyParser_SimpleParseFileFlags\".*") "")
+                 ((".*\"PyLong_FromUnicode\".*") "")))))))
       (native-inputs
        (list sbcl-cl-fad sbcl-lift sbcl-cl-quickcheck))
       (inputs
