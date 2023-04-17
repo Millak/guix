@@ -38,7 +38,7 @@
   #:autoload   (guix scripts pack) (symlink-spec-option-parser)
   #:use-module (guix transformations)
   #:autoload   (ice-9 ftw) (scandir)
-  #:use-module (gnu build install)
+  #:autoload   (gnu build install) (evaluate-populate-directive)
   #:autoload   (gnu build linux-container) (call-with-container %namespaces
                                             user-namespace-supported?
                                             unprivileged-user-namespace-supported?
@@ -271,7 +271,11 @@ use '--preserve' instead~%"))
                    (alist-cons 'file-system-mapping
                                (specification->file-system-mapping arg #f)
                                result)))
-         (option '(#\S "symlink") #t #f symlink-spec-option-parser)
+         (option '(#\S "symlink") #t #f
+                 (lambda (opt name arg result)
+                   ;; Delay call to avoid auto-loading (guix scripts pack)
+                   ;; when unnecessary.
+                   (symlink-spec-option-parser opt name arg result)))
          (option '(#\r "root") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'gc-root arg result)))
