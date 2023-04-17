@@ -577,7 +577,7 @@ STATUS-PORT."
       (or (and (system-error? exception)
                (let ((errno (system-error-errno
                              (cons 'system-error (exception-args exception)))))
-                 (memv errno (list ECONNRESET ECONNABORTED
+                 (memv errno (list ECONNRESET ECONNABORTED ETIMEDOUT
                                    ECONNREFUSED EHOSTUNREACH
                                    ENOENT))))     ;for "file://"
           (and (kind-and-args? exception)
