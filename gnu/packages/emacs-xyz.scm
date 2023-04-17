@@ -24411,6 +24411,12 @@ It replaces the standard completions buffer with Ido prompt.")
        (sha256
         (base32 "06vbc9ycz1nbjwjkg99y3lj6jwb6lnwnmkqf09yr00jjrrfhfash"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:emacs (if (target-64bit?)
+                  emacs-minimal
+                  ;; Require wide-int support for 32-bit platform.
+                  emacs-wide-int)))
     (home-page "https://github.com/Fanael/wordgen.el")
     (synopsis "Random word generator")
     (description "This package provides functions to generate random words
