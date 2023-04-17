@@ -295,8 +295,7 @@ Desktops into Active Directory environments using the winbind daemon.")
 (define-public samba
   (package
     (inherit samba/pinned)
-    (name "samba")
-    (version "4.17.0")
+    (version "4.18.1")
     (source
      ;; For updaters: the current PGP fingerprint is
      ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
@@ -305,7 +304,7 @@ Desktops into Active Directory environments using the winbind daemon.")
        (uri (string-append "https://download.samba.org/pub/samba/stable/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "0fl2y5avmyxjadh6zz0fwz35akd6c4j9lldzp2kyvjrgm36qx1h4"))))
+        (base32 "03ncp49pfpzjla205y3xpb9iy61dz4pryyrvyz26422a4hpsmpnf"))))
     (properties (alist-delete 'hidden? (package-properties samba/pinned)))))
 
 (define-public talloc
