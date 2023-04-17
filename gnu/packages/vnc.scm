@@ -72,7 +72,7 @@
 (define-public remmina
   (package
     (name "remmina")
-    (version "1.4.23")
+    (version "1.4.29")
     (source
      (origin
        (method git-fetch)
@@ -82,7 +82,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j0fiz76z4y08w136vs8igqxxg42hx61r5hf6sylcr0c424sc9rk"))))
+        (base32 "098f33v5qq6p7zjynj1pdllpmbxvqhfvwgvl9fjqyqfflsp7s7gh"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -144,6 +144,7 @@
            openssl
            pango
            pcre2                        ; for exec plugin
+           python-minimal-wrapper       ; for python wrapper plugin
            shared-mime-info
            libsodium
            spice-gtk                    ; for spice plugin
