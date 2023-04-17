@@ -20297,40 +20297,39 @@ builds partial trees by inspecting living objects.")
          "1vbwc4gpffclf6hw08lvvgqlvsgfjlw7gjsm28jfcrln2pixla7j"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (whl (car (find-files "dist" "\\.whl$"))))
-               (invoke "pip" "--no-cache-dir" "--no-input"
-                       "install" "--no-deps" "--prefix" out whl))))
-         (add-after 'install 'install-example-plugins
-           (lambda _
-             (for-each (lambda (source-directory)
-                         (invoke "python" "-m" "build" "--wheel"
-                                 "--no-isolation" "--outdir=dist"
-                                 source-directory))
-                       '("example_isort_formatting_plugin"
-                         "example_isort_sorting_plugin"
-                         "example_shared_isort_profile"))
-             ;; Install them to temporary storage, for the test.
-             (setenv "HOME" (getcwd))
-             (let ((example-whls (find-files "dist" "^example.*\\.whl$")))
-               (apply invoke "pip" "--no-cache-dir" "--no-input"
-                      "install"  "--user" "--no-deps" example-whls))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-                 (setenv "PATH" (string-append (getenv "PATH") ":" bin)))
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv" "tests/unit/"
-                       "-k" "not test_gitignore" ;requires git
-                       "--ignore=tests/unit/test_deprecated_finders.py")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+          (replace 'install
+            (lambda _
+              (let ((whl (car (find-files "dist" "\\.whl$"))))
+                (invoke "pip" "--no-cache-dir" "--no-input"
+                        "install" "--no-deps" "--prefix" #$output whl))))
+          (add-after 'install 'install-example-plugins
+            (lambda _
+              (for-each (lambda (source-directory)
+                          (invoke "python" "-m" "build" "--wheel"
+                                  "--no-isolation" "--outdir=dist"
+                                  source-directory))
+                        '("example_isort_formatting_plugin"
+                          "example_isort_sorting_plugin"
+                          "example_shared_isort_profile"))
+              ;; Install them to temporary storage, for the test.
+              (setenv "HOME" (getcwd))
+              (let ((example-whls (find-files "dist" "^example.*\\.whl$")))
+                (apply invoke "pip" "--no-cache-dir" "--no-input"
+                       "install"  "--user" "--no-deps" example-whls))))
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (let ((bin (string-append #$output "/bin")))
+                  (setenv "PATH" (string-append (getenv "PATH") ":" bin)))
+                (invoke "pytest" "-vv" "tests/unit/"
+                        "-k" "not test_gitignore" ;requires git
+                        "--ignore=tests/unit/test_deprecated_finders.py")))))))
     (native-inputs
      (list python-black
            python-colorama
