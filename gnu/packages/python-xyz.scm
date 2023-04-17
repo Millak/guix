@@ -6900,23 +6900,18 @@ parse and apply unified diffs.  It has features such as:
 (define-public python-numpydoc
   (package
     (name "python-numpydoc")
-    (version "1.2.1")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numpydoc" version))
        (sha256
         (base32
-         "1xjsli2fqks4iv3524v1d329siad7bbsi4kr174zvhsl1pnjds3w"))))
+         "0k2z3g4s3w39h1nd293542hl9qv55j29gcr3bkia0rr3ldsppnxh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("'Jinja2>=2.10,<3.1'")
-                "'Jinja2>=2.10'"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
