@@ -88,6 +88,11 @@ where the OS part is overloaded to denote a specific ABI---into GCC
              (string-prefix? "powerpc-" target))
          '("--with-long-double-128"))
 
+        ;; GCC 11.3.0's <libgcov.h> includes <sys/mman.h>, which MinGW lacks:
+        ;; <https://bugs.gentoo.org/show_bug.cgi?id=843989>.
+        ((target-mingw? target)
+         '("--disable-gcov"))
+
         (else
          ;; TODO: Add `arm.*-gnueabi', etc.
          '())))
