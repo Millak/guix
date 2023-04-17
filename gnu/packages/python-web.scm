@@ -4812,17 +4812,17 @@ supports features like HTTP keep-alive, reget, throttling and more.")
 (define-public python-pycares
   (package
     (name "python-pycares")
-    (version "2.3.0")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycares" version))
        (sha256
         (base32
-         "0h4fxw5drrhfyslzmfpljk0qnnpbhhb20hnnndzahhbwylyw1x1n"))))
+         "0i8d0433wmm7wi8i2l2hjiyhmy35b9s888qrk6fqx5xcdmpnjhn5"))))
     (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                    ;tests require internet access
+    (arguments `(#:tests? #f))          ;tests require internet access
+    (propagated-inputs (list python-cffi))
     (home-page "https://github.com/saghul/pycares")
     (synopsis "Python interface for @code{c-ares}")
     (description "@code{pycares} is a Python module which provides an
