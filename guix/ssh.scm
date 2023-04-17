@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -367,7 +367,15 @@ can be written."
                 (force-output)
 
                 (setvbuf (current-input-port) 'none)
+
+                ;; If 'guix-daemon' is running with '--debug', a lot of
+                ;; debugging info goes to 'current-build-output-port' (stderr
+                ;; by default).  However, since nobody's reading it, this
+                ;; could lead to a deadlock.  Thus, disable debugging output.
+                (set-build-options store #:verbosity 0)
+
                 (import-paths store (current-input-port))
+
                 '(success))))
           (lambda args
             (cons 'error args))))
