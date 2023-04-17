@@ -612,13 +612,6 @@ its features are:
     (arguments
      (list
       #:configure-flags #~(list "--with-pgsql"
-                                ;; Explicitly specify the library directory of
-                                ;; MySQL, otherwise `mysql_config` gets
-                                ;; consulted and adds unnecessary link
-                                ;; directives.
-                                (string-append "--with-mysql-libs="
-                                               #$(this-package-input "mysql")
-                                               "/lib")
                                 "--with-system-luajit"
                                 "--with-system-ck"
                                 ;; If we let the build tool select the most
@@ -659,7 +652,7 @@ its features are:
                          libxslt
                          docbook-xml
                          docbook-xsl))
-    (inputs (list ck libaio luajit mysql postgresql))
+    (inputs (list ck libaio luajit (list mariadb "dev") postgresql))
     (home-page "https://github.com/akopytov/sysbench/")
     (synopsis "Scriptable database and system performance benchmark")
     (description "@command{sysbench} is a scriptable multi-threaded benchmark
