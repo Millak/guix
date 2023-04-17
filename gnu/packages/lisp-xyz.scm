@@ -10809,16 +10809,35 @@ sacrificing much in the way of power.")
       (propagated-inputs
        (list gnuplot)) ;; for gnuplot-interface
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "hdf-cffi/src/library.lisp"
-                 (("libhdf5.so")
-                  (search-input-file inputs "/lib/libhdf5.so")))
-               (substitute* "gsl-cffi/gsl-cffi.lisp"
-                 (("libgsl.so")
-                  (search-input-file inputs "/lib/libgsl.so"))))))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "hdf-cffi/src/library.lisp"
+                       (("libhdf5.so")
+                        (search-input-file inputs "/lib/libhdf5.so")))
+                     (substitute* (list "gsl-cffi/gsl-cffi.lisp"
+                                        "spline/spline.lisp")
+                       (("libgsl.so")
+                        (search-input-file inputs "/lib/libgsl.so")))))
+                 (add-after 'fix-paths 'fix-newer-hdf5-compatibility
+                   (lambda _
+                     (substitute* (list "hdf-cffi/src/h5-grovel.lisp"
+                                        "hdf-cffi/src/h5a-grovel.lisp"
+                                        "hdf-cffi/src/h5d-grovel.lisp"
+                                        "hdf-cffi/src/h5f-grovel.lisp"
+                                        "hdf-cffi/src/h5g-grovel.lisp"
+                                        "hdf-cffi/src/h5i-grovel.lisp"
+                                        "hdf-cffi/src/h5l-grovel.lisp"
+                                        "hdf-cffi/src/h5o-grovel.lisp"
+                                        "hdf-cffi/src/h5p-grovel.lisp"
+                                        "hdf-cffi/src/h5pl-grovel.lisp"
+                                        "hdf-cffi/src/h5r-grovel.lisp"
+                                        "hdf-cffi/src/h5s-grovel.lisp"
+                                        "hdf-cffi/src/h5t-grovel.lisp"
+                                        "hdf-cffi/src/h5z-grovel.lisp")
+                       (("_H5private_H")
+                        "H5private_H")))))))
       (synopsis "Common Lisp data analysis library")
       (description
        "CL-ANA is a data analysis library in Common Lisp providing tabular and
