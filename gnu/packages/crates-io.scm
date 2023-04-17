@@ -43693,10 +43693,10 @@ network packet formats.")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-pledge-0.3
+(define-public rust-pledge-0.4
   (package
     (name "rust-pledge")
-    (version "0.3.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
@@ -43704,7 +43704,7 @@ network packet formats.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rgbnvl97ks25aanxm680687df6li6y8h3f5mvdw3806rwz8xcg2"))))
+        (base32 "1rc1r71hk0qi4ldbwbhbj6l6d1l4n28dfgf6znvl76kxgd0rj995"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
