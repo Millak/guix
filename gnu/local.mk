@@ -1884,6 +1884,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/snappy-add-O2-flag-in-CmakeLists.txt.patch	\
   %D%/packages/patches/snappy-add-inline-for-GCC.patch		\
   %D%/packages/patches/source-highlight-gcc-compat.patch	\
+  %D%/packages/patches/softhsm-fix-openssl3-tests.patch		\
   %D%/packages/patches/spectre-meltdown-checker-externalize-fwdb.patch \
   %D%/packages/patches/spectre-meltdown-checker-find-kernel.patch \
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\

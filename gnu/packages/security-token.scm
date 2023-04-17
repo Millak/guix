@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
+;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -210,7 +211,8 @@ the low-level development kit for the Yubico YubiKey authentication device.")
                     "softhsm-" version ".tar.gz"))
               (sha256
                (base32
-                "1wkmyi6n3z2pak1cj5yk6v6bv9w0m24skycya48iikab0mrr8931"))))
+                "1wkmyi6n3z2pak1cj5yk6v6bv9w0m24skycya48iikab0mrr8931"))
+              (patches (search-patches "softhsm-fix-openssl3-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-gost"))) ; TODO Missing the OpenSSL
