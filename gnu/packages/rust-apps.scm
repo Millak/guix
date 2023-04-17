@@ -1255,7 +1255,7 @@ rebase.")
 (define-public sniffglue
   (package
     (name "sniffglue")
-    (version "0.12.1")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
@@ -1264,7 +1264,7 @@ rebase.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1q1kwkw1hq38qgvc6j4b5l9m85a6lpn1jls4bm27c5kha9cg8l24"))))
+         "038wcjiiay825wc8inmn62flklc1adxskg5fmjhmxqnhwmj1k5gn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1272,29 +1272,30 @@ rebase.")
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-atty" ,rust-atty-0.2)
         ("rust-base64" ,rust-base64-0.13)
+        ("rust-bstr" ,rust-bstr-0.2)
         ("rust-dhcp4r" ,rust-dhcp4r-0.2)
         ("rust-dirs-next" ,rust-dirs-next-2)
         ("rust-dns-parser" ,rust-dns-parser-0.8)
-        ("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.20)
-        ("rust-nom" ,rust-nom-6)
+        ("rust-nix" ,rust-nix-0.23)
+        ("rust-nom" ,rust-nom-7)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-pcap-sys" ,rust-pcap-sys-0.1)
-        ("rust-pktparse" ,rust-pktparse-0.5)
+        ("rust-pktparse" ,rust-pktparse-0.7)
         ("rust-reduce" ,rust-reduce-0.1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-sha2" ,rust-sha2-0.10)
         ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-syscallz" ,rust-syscallz-0.15)
-        ("rust-tls-parser" ,rust-tls-parser-0.10)
+        ("rust-syscallz" ,rust-syscallz-0.16)
+        ("rust-tls-parser" ,rust-tls-parser-0.11)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-users" ,rust-users-0.11))
        #:cargo-development-inputs
-       (("rust-boxxy" ,rust-boxxy-0.11))))
+       (("rust-boxxy" ,rust-boxxy-0.12))))
     (inputs
      (list libpcap libseccomp))
     (native-inputs
