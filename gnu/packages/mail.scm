@@ -3260,7 +3260,7 @@ to esoteric or niche requirements.")
     (inputs
      `(("libressl" ,libressl)
        ("libevent" ,libevent)
-       ("mysql" ,mysql)
+       ("mysql" ,mariadb "dev")
        ("opensmtpd" ,opensmtpd)
        ("postgresql" ,postgresql)
        ("python" ,python-2)
