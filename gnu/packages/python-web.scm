@@ -311,13 +311,13 @@ for adding, removing and dropping callbacks.")
 (define-public python-aiohttp
   (package
     (name "python-aiohttp")
-    (version "3.8.1")
+    (version "3.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiohttp" version))
        (sha256
-        (base32 "0y3m1dzl4h6frg8vys0fc3m83ijd1plfpihv3kvmxqadlphp2m7w"))
+        (base32 "0p5bj6g7ca19gvwk8fz00k579ma9w9kd27ssh2zl3r61ca8ilbmz"))
        (snippet
         #~(begin
             (use-modules ((guix build utils)))
@@ -333,12 +333,14 @@ for adding, removing and dropping callbacks.")
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests
            (lambda _
-             ;; disable brotli tests, because we’re not providing that optional library
+             ;; Disable brotli tests, because we’re not providing that
+             ;; optional library.
              (substitute* "tests/test_http_parser.py"
                (("    async def test_feed_eof_no_err_brotli")
                 "    @pytest.mark.xfail\n    async def test_feed_eof_no_err_brotli"))
-             ;; make sure the timestamp of this file is > 1990, because a few
-             ;; tests like test_static_file_if_modified_since_past_date depend on it
+             ;; Make sure the timestamp of this file is > 1990, because a few
+             ;; tests like test_static_file_if_modified_since_past_date depend
+             ;; on it.
              (let ((late-90s (* 60 60 24 365 30)))
                (utime "tests/data.unknown_mime_type" late-90s late-90s))
 
@@ -378,33 +380,35 @@ for adding, removing and dropping callbacks.")
                        "not test_client_session_timeout_zero and "
                        "not test_empty_body and "
                        "not test_mark_formdata_as_processed[pyloop] and "
-                       "not test_receive_runtime_err[pyloop]")))
+                       "not test_receive_runtime_err[pyloop] "
+                       ;; These tests fail for unknown reasons (see:
+                       ;; https://github.com/aio-libs/aiohttp/issues/7130)
+                       "and not test_no_warnings "
+                       "and not test_default_loop "
+                       "and not test_ctor_global_loop "
+                       "and not test_set_loop_default_loop ")))
                (when tests?
                  ;; This tests requires the 'proxy.py' module, not yet
                  ;; packaged.
                  (delete-file "tests/test_proxy_functional.py")
                  ;; Sometimes tests fail when run in parallel.
-                 (or
-                   (invoke "pytest" "-vv"
-                           ;; Disable loading the aiohttp coverage plugin
-                           ;; to avoid a circular dependency (code coverage
-                           ;; is not very interesting to us anyway).
-                           "-o" "addopts=''" "--ignore=aiohttp"
-                           "-n" (number->string (parallel-job-count))
-                           "-k" skipped-tests)
-                   (invoke "pytest" "-vv"
-                           "-o" "addopts=''" "--ignore=aiohttp"
-                           "-k" skipped-tests)))))))))
+                 (invoke "pytest" "-vv"
+                         "-o" "addopts=''" "--ignore=aiohttp"
+                         ;; These tests cause errors (see:
+                         ;; https://github.com/aio-libs/aiohttp/issues/7130).
+                         "--ignore" "tests/test_web_sendfile_functional.py"
+                         "--ignore" "tests/test_web_urldispatcher.py"
+                         "-k" skipped-tests))))))))
     (propagated-inputs
      (list python-aiodns
            python-aiosignal
            python-attrs
+           python-asynctest
            python-async-timeout
            python-charset-normalizer
            python-frozenlist
            python-idna-ssl
            python-multidict
-           python-typing-extensions
            python-yarl))
     (native-inputs
      (list gunicorn-bootstrap
