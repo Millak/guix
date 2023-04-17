@@ -38309,10 +38309,10 @@ combinators library.")
 combinators library (fork for proposals for v8)")
     (license license:expat)))
 
-(define-public rust-nom-derive-0.7
+(define-public rust-nom-derive-0.10
   (package
     (name "rust-nom-derive")
-    (version "0.7.2")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
@@ -38321,16 +38321,15 @@ combinators library (fork for proposals for v8)")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1xwbbkfhr8zrlcknlj75l50rp2b267qm9sd8vphx6gwzyg24n2zz"))))
+         "19vrbhkn47zw5sks17ril7aryzx0ixg62n0ddrxbil48igb47y8z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
+       (("rust-nom" ,rust-nom-7)
+        ("rust-nom-derive-impl" ,rust-nom-derive-impl-0.10)
+        ("rust-rustversion" ,rust-rustversion-1))
        #:cargo-development-inputs
-       (("rust-nom" ,rust-nom-6)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
         ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/rust-bakery/nom-derive")
     (synopsis "Custom derive nom parsers from struct")
