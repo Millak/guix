@@ -812,8 +812,9 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                       ;; attempt to complete paths they assume exist, such as
                       ;; "/home", "/etc" or "/root" and fail.
                       "tst_qcompleter"
-                      "tst_qfiledialog") "|")
-                    ")")))))
+                      "tst_qfiledialog"
+                      ;; This test is susceptible to the 600 ms timeout used:
+                      "tst_qpauseanimation") "|") ")")))))
             (replace 'patch-mkspecs
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((archdata (search-input-directory outputs "lib/qt6"))
