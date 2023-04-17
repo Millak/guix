@@ -885,7 +885,7 @@ auto-completion and syntax highlighting.")
            libaio
            libtirpc
            ncurses
-           openssl
+           openssl-1.1
            procps
            rpcsvc-proto ; rpcgen
            sed
