@@ -9499,17 +9499,17 @@ Fisher's method), and Sidak correction.")
 (define-public r-quantmod
   (package
     (name "r-quantmod")
-    (version "0.4.21")
+    (version "0.4.22")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantmod" version))
        (sha256
         (base32
-         "1qmpdk91smiqg63h4jsrw4izl4pnbgwlzi16zjvin0fs29kx01jf"))))
+         "0pknwssha01hjsf3c7lgrabk2c3rzq5wa2m7mf8sz7wsrbqrd57j"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-curl r-ttr r-xts r-zoo))
+     (list r-curl r-jsonlite r-ttr r-xts r-zoo))
     (home-page "https://cran.r-project.org/web/packages/quantmod/")
     (synopsis "Quantitative financial modelling framework")
     (description "This package provides a quantitative financial modelling
