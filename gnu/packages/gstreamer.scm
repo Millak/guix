@@ -589,7 +589,6 @@ This package provides the core library and elements.")
            xorg-server-for-tests))
     (arguments
      (list
-      #:meson meson-0.63
       #:phases
       #~(modify-phases %standard-phases
           #$@%common-gstreamer-phases
@@ -655,7 +654,6 @@ for the GStreamer multimedia library.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:meson meson-0.63
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases
       #~(modify-phases %standard-phases
@@ -778,7 +776,6 @@ model to base your own plug-in on, here it is.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:meson meson-0.63
       #:configure-flags #~(list "-Dsctp-internal-usrsctp=disabled")
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases
@@ -957,8 +954,7 @@ par compared to the rest.")
         (base32 "1486x08bwasq6l7kc75nph5az61siq9mbgkgpw4kf1mxn16z8c4g"))))
     (build-system meson-build-system)
     (arguments
-     (list #:meson meson-0.63
-           #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
+     (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
            #:phases
            #~(modify-phases %standard-phases
                #$@%common-gstreamer-phases
@@ -1039,7 +1035,6 @@ decoders, muxers, and demuxers provided by FFmpeg.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:meson meson-0.63
       #:tests? #f                    ; FIXME: 16/23 failing tests.
       #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
       #:phases #~(modify-phases %standard-phases
@@ -1108,7 +1103,6 @@ binary, but none of the actual plugins.")))
     (build-system meson-build-system)
     (arguments
      (list
-      #:meson meson-0.63
       #:modules `((guix build meson-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:prefix python:))
