@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
@@ -25,6 +25,7 @@
 (define-module (gnu packages gdb)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages cross-base)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages readline)
@@ -130,7 +131,7 @@
              ;; When cross-compiling from x86_64-linux, make sure to use a
              ;; 32-bit MiG because we assume target i586-pc-gnu.
              `(("mig" ,(if (%current-target-system)
-                           mig/32-bit
+                           (cross-mig (%current-target-system))
                            mig)))
              '())))
     ;; TODO: Add support for the GDB_DEBUG_FILE_DIRECTORY environment
