@@ -7276,9 +7276,10 @@ models, using simulation.  It was designed to work with models fit using the
     (license license:gpl2+)))
 
 (define-public r-mixedpower
-  ;; This commit contains fixes for R>=4.2. A newer release does not exist.
-  (let ((commit "6520195481bca3ce01862ef80a28c53b0a35d0f5")
-        (revision "1"))
+  ;; This commit contains fixes for R>=4.2 and contains new features. A
+  ;; newer release does not exist.
+  (let ((commit "b2b87068546327d8f592d141e5482e0478c1b2ee")
+        (revision "2"))
     (package
       (name "r-mixedpower")
       (version (git-version "2.0" revision commit))
@@ -7291,9 +7292,7 @@ models, using simulation.  It was designed to work with models fit using the
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
-            (base32 "114z9pvya2jg10y804ga41gq00r7zcw4a7c7234ybhmv3jqw78q1"))
-          (patches
-            (search-patches "r-mixedpower-r2power.patch"))))
+            (base32 "0pys66a6c1k2fp5qk9grhzg1q1d3q51rggcilmdssimkmcsm234z"))))
       (properties `((upstream-name . "mixedpower")))
       (build-system r-build-system)
       (propagated-inputs
