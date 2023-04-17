@@ -31905,7 +31905,7 @@ library.")
   (package
     (inherit rust-libgit2-sys-0.14)
     (name "rust-libgit2-sys")
-    (version "0.13.4+1.4.2")
+    (version "0.13.5+1.4.5")
     (source
      (origin
        (method url-fetch)
@@ -31914,7 +31914,7 @@ library.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1lgm4ssz4aw85k8jaj9xmp9wbhgvd8y80vbzrksjbphy8dinbynh"))
+         "1fkdgfqdkd38hfsyw3znq629gp7wdknzslym5l0g29k9q83fmrai"))
        (modules '((guix build utils)))
        (snippet
         '(begin (delete-file-recursively "libgit2")))))
@@ -31925,7 +31925,9 @@ library.")
         ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
         ("rust-libz-sys" ,rust-libz-sys-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list libgit2-1.4 openssl zlib))))
 
 (define-public rust-libgit2-sys-0.12
   (package
