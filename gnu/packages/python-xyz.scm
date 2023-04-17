@@ -20734,12 +20734,8 @@ while only declaring the test-specific fields.")
                       (if tests?
                           (invoke "pytest" "-vv")
                           (format #t "test suite not run~%")))))))
-    (native-inputs
-     `(("python-pretend" ,python-pretend)
-       ("python-pytest" ,python-pytest)))
-    (propagated-inputs
-     `(("python-pyparsing" ,python-pyparsing)
-       ("python-six" ,python-six)))
+    (native-inputs (list python-pretend python-pytest))
+    (propagated-inputs (list python-pyparsing python-six))
     (home-page "https://github.com/pypa/packaging")
     (synopsis "Core utilities for Python packages")
     (description "Packaging is a Python module for dealing with Python packages.
