@@ -12182,10 +12182,9 @@ them as PNG files.")
          (uri (git-reference
                (url "https://github.com/hdfgroup/hdf5-cffi")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-hdf5-cffi" version))
          (sha256
-          (base32
-           "0vda3075423xz83qky998lpac5b04dwfv7bwgh9jq8cs5v0zrxjf"))))
+          (base32 "0vda3075423xz83qky998lpac5b04dwfv7bwgh9jq8cs5v0zrxjf"))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Common Lisp bindings for the HDF5 library")
       (description
@@ -12196,28 +12195,43 @@ them as PNG files.")
                                commit
                                "/LICENSE")))
       (inputs
-       `(("cffi" ,sbcl-cffi)
-         ("hdf5" ,hdf5-1.10)))
+       (list hdf5-1.10 sbcl-cffi))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "src/library.lisp"
-                 (("libhdf5.so")
-                  (string-append
-                   (assoc-ref inputs "hdf5")
-                   "/lib/libhdf5.so")))))
-           (add-after 'unpack 'fix-dependencies
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "hdf5-cffi.asd"
-                 ((":depends-on \\(:cffi\\)")
-                  ":depends-on (:cffi :cffi-grovel)"))
-               (substitute* "hdf5-cffi.test.asd"
-                 ((":depends-on \\(:cffi :hdf5-cffi")
-                  ":depends-on (:cffi :cffi-grovel :hdf5-cffi"))))))))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/library.lisp"
+                       (("libhdf5.so")
+                        (search-input-file inputs "/lib/libhdf5.so")))))
+                 (add-after 'fix-paths 'fix-newer-hdf5-compatibility
+                   (lambda _
+                     (substitute* (list "src/h5-grovel.lisp"
+                                        "src/h5a-grovel.lisp"
+                                        "src/h5d-grovel.lisp"
+                                        "src/h5f-grovel.lisp"
+                                        "src/h5g-grovel.lisp"
+                                        "src/h5i-grovel.lisp"
+                                        "src/h5l-grovel.lisp"
+                                        "src/h5o-grovel.lisp"
+                                        "src/h5p-grovel.lisp"
+                                        "src/h5pl-grovel.lisp"
+                                        "src/h5r-grovel.lisp"
+                                        "src/h5s-grovel.lisp"
+                                        "src/h5t-grovel.lisp"
+                                        "src/h5z-grovel.lisp")
+                       (("_H5private_H")
+                        "H5private_H"))))
+                 (add-after 'unpack 'fix-dependencies
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "hdf5-cffi.asd"
+                       ((":depends-on \\(:cffi\\)")
+                        ":depends-on (:cffi :cffi-grovel)"))
+                     (substitute* "hdf5-cffi.test.asd"
+                       ((":depends-on \\(:cffi :hdf5-cffi")
+                        ":depends-on (:cffi :cffi-grovel :hdf5-cffi"))))))))))
 
 (define-public cl-hdf5-cffi
   (sbcl-package->cl-source-package sbcl-hdf5-cffi))
