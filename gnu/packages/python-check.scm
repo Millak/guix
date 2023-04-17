@@ -1090,33 +1090,42 @@ simpler.")
 (define-public python-pytest-trio
   (package
     (name "python-pytest-trio")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-trio" version))
        (sha256
-        (base32 "0c8cqf9by2884riksrqymqfp2g1d2d798a2zalcw9hmf34c786y0"))))
+        (base32 "0bmmdyjqj5v4a637i4rzm55crv6v3nj268as6x9nr7m76rixnqw3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("pytest >= 7.2.0")
+                "pytest"))))
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-W" "error" "-ra" "-v" "--pyargs"
-                       "pytest_trio" "--verbose" "--cov" "-k"
-                       (string-append
-                         ;; Needs network
-                         "not test_async_yield_fixture_with_nursery"
-                         " and not test_try"
-                         ;; No keyboard interrupt in our build environment.
-                         " and not test_actual_test"))))))))
+               (invoke
+                "pytest" "-W" "error" "-ra" "-v" "--pyargs"
+                "pytest_trio" "--verbose" "--cov" "-k"
+                (string-append
+                 ;; These tests require network.
+                 "not test_async_yield_fixture_with_nursery "
+                 "and not test_try "
+                 ;; No keyboard interrupt in our build environment.
+                 "and not test_actual_test "
+                 ;; These tests fail due to unclean teardown (see:
+                 ;; https://github.com/python-trio/pytest-trio/issues/122).
+                 "and not crashed_teardown "
+                 "and not test_error_collection "))))))))
     (native-inputs
      (list python-hypothesis python-pytest python-pytest-cov))
     (propagated-inputs
-      (list python-async-generator python-outcome python-pytest python-trio))
+     (list python-async-generator python-outcome python-pytest python-trio))
     (home-page "https://github.com/python-trio/pytest-trio")
     (synopsis "Pytest plugin for trio")
     (description
