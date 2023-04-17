@@ -20281,7 +20281,7 @@ builds partial trees by inspecting living objects.")
 (define-public python-isort
   (package
     (name "python-isort")
-    (version "5.10.1")
+    (version "5.12.0")
     (source
      (origin
        (method git-fetch)
@@ -20294,19 +20294,11 @@ builds partial trees by inspecting living objects.")
        (snippet '(for-each delete-file (find-files "." "\\.whl$")))
        (sha256
         (base32
-         "09spgl2k9xrprr5gbpfc91a8p7mx7a0c64ydgc91b3jhrmnd9jg1"))))
+         "1vbwc4gpffclf6hw08lvvgqlvsgfjlw7gjsm28jfcrln2pixla7j"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             ;; Permit newer versions of black.
-             (substitute* "example_isort_formatting_plugin/pyproject.toml"
-               (("\\^20\\.08b1")
-                ">= 20.08b1"))))
-         ;; A foretaste of what our future python-build-system will need to
-         ;; do.
          (replace 'build
            (lambda _
              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
@@ -20317,29 +20309,19 @@ builds partial trees by inspecting living objects.")
                (invoke "pip" "--no-cache-dir" "--no-input"
                        "install" "--no-deps" "--prefix" out whl))))
          (add-after 'install 'install-example-plugins
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Patch to use the core poetry API.
-               (substitute* '("example_isort_formatting_plugin/pyproject.toml"
-                              "example_isort_sorting_plugin/pyproject.toml"
-                              "example_shared_isort_profile/pyproject.toml")
-                 (("poetry>=0.12")
-                  "poetry-core>=1.0.0")
-                 (("poetry.masonry.api")
-                  "poetry.core.masonry.api"))
-               ;; Build the example plugins.
-               (for-each (lambda (source-directory)
-                           (invoke "python" "-m" "build" "--wheel"
-                                   "--no-isolation" "--outdir=dist"
-                                   source-directory))
-                         '("example_isort_formatting_plugin"
-                           "example_isort_sorting_plugin"
-                           "example_shared_isort_profile"))
-               ;; Install them to temporary storage, for the test.
-               (setenv "HOME" (getcwd))
-               (let ((example-whls (find-files "dist" "^example.*\\.whl$")))
-                 (apply invoke "pip" "--no-cache-dir" "--no-input"
-                        "install"  "--user" "--no-deps" example-whls)))))
+           (lambda _
+             (for-each (lambda (source-directory)
+                         (invoke "python" "-m" "build" "--wheel"
+                                 "--no-isolation" "--outdir=dist"
+                                 source-directory))
+                       '("example_isort_formatting_plugin"
+                         "example_isort_sorting_plugin"
+                         "example_shared_isort_profile"))
+             ;; Install them to temporary storage, for the test.
+             (setenv "HOME" (getcwd))
+             (let ((example-whls (find-files "dist" "^example.*\\.whl$")))
+               (apply invoke "pip" "--no-cache-dir" "--no-input"
+                      "install"  "--user" "--no-deps" example-whls))))
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?
