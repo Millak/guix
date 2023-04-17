@@ -12834,7 +12834,7 @@ an Emacs buffer.")
                 "0a5mmg3cmdi73giblp07ksl06xzl9nb2m3f96ny4r3rv0ar3v1bx"))))
     (build-system emacs-build-system)
     (inputs
-     (list node))
+     (list node-lts))
     (native-inputs
      (list emacs-ert-expectations))
     (arguments
