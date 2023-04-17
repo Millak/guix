@@ -3492,15 +3492,15 @@ bindings (PySide, PySide2, PyQt4 and PyQt5).")
 (define-public qscintilla
   (package
     (name "qscintilla")
-    (version "2.11.6")
+    (version "2.13.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.riverbankcomputing.com/static"
                                   "/Downloads/QScintilla/" version
-                                  "/QScintilla-" version ".tar.gz"))
+                                  "/QScintilla_src-" version ".tar.gz"))
               (sha256
                (base32
-                "19r0vpqb4m9bqwxmjp9w6x0hgahkrg7zryk78hwgplj7vdbn0d77"))))
+                "11lrhybp32nz1dxns4pxxd8rbj2gshva20zan0kg85p164gjc349"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -3508,7 +3508,7 @@ bindings (PySide, PySide2, PyQt4 and PyQt5).")
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (chdir "Qt4Qt5")
+               (chdir "src")
                (substitute* "qscintilla.pro"
                  (("\\$\\$\\[QT_INSTALL_LIBS\\]")
                   (string-append out "/lib"))
