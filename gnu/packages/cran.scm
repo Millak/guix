@@ -23901,18 +23901,18 @@ and model output.")
 (define-public r-enrichr
   (package
     (name "r-enrichr")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "enrichR" version))
        (sha256
         (base32
-         "0ad7jp398prvmm2fym07268qhv40mg67dx55ml4ayqkwxwffr1i9"))))
+         "1g97q6vqwvb2l02y61343sblarqi433gjl3qmlyxjxq2lnjrnak1"))))
     (properties `((upstream-name . "enrichR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-curl r-ggplot2 r-httr r-rjson))
+     (list r-curl r-ggplot2 r-httr r-rjson r-writexls))
     (native-inputs
      (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/enrichR/")
