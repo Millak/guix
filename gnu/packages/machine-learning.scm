@@ -3500,7 +3500,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.9.1")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -3509,7 +3509,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rycs7fgm03fxp8lxj8ljrdwy5whxd4554xzklbcmn4mcwbxgg57"))))
+        (base32 "12480fac9xq7rgw0q5f2cnvmakhakjsnq1gvh2ncjfwxz34n8fl7"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3518,7 +3518,7 @@ of Hidden Markov Models.")
       (let ((python-version (version-major+minor (package-version python))))
         #~(modify-phases %standard-phases
             (add-after 'unpack 'chdir
-              (lambda _ (chdir "lantern")))
+              (lambda _ (chdir "src/lantern")))
             (add-after 'chdir 'do-not-download-binaries
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "CMakeLists.txt"
