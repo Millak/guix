@@ -1501,17 +1501,23 @@ certificates, signing and building trust bundles.")
 (define-public python-jeepney
   (package
     (name "python-jeepney")
-    (version "0.6.0")
+    (version "0.8.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jeepney" version))
         (sha256
-         (base32 "0mw6ch5s4czpmsiwqwhcidgk27858pl8vlvb7acrxjkm4ribcnbx"))))
-    (build-system python-build-system)
+         (base32 "01jqrk7pn94i7bpmj834pjrw7id659gfag6wpbv04fcpap94izjy"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-testpath python-tornado python-trio python-pytest
-           python-pytest-trio))
+     (list python-async-timeout
+           python-testpath
+           python-trio
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-trio
+           ;; For the build backend
+           python-flit-core))
     (home-page "https://gitlab.com/takluyver/jeepney")
     (synopsis "Low-level, pure Python DBus protocol wrapper")
     (description
