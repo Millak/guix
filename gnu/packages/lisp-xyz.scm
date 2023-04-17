@@ -13267,7 +13267,7 @@ interfaces as well as a functional and an object oriented interface.")
     (native-inputs
      `(("rt" ,cl-rt)))
     (inputs
-     (list mysql postgresql sqlite zlib))
+     (list (list mariadb "dev") postgresql sqlite zlib))
     (propagated-inputs
      `(("cffi" ,cl-cffi)
        ("md5" ,cl-md5)
