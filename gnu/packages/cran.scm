@@ -1712,13 +1712,13 @@ proposals for count data.")
 (define-public r-zoo
   (package
     (name "r-zoo")
-    (version "1.8-11")
+    (version "1.8-12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "zoo" version))
               (sha256
                (base32
-                "19cw09bhwj2qyd72765ym1cm2wmhh801ccif889nzq5gfpw513l4"))))
+                "1f1g7f362sidh99n2pcgnj8iwsn7hnjgpdnkrqml5qzrd0k8dhz6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
