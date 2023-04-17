@@ -23497,13 +23497,13 @@ the graph, and propagating graph labels.")
 (define-public r-scs
   (package
     (name "r-scs")
-    (version "3.0-1")
+    (version "3.2.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "scs" version))
               (sha256
                (base32
-                "04srf33zw4dxv22b1h5qwjch5yg7hrvk4iq8yvxqnbr8qzp1x26n"))))
+                "13r944b9ip078hqwdpzn3jv21zm47d9l2b1f5y6glcj5pxs9iwy3"))))
     (properties `((upstream-name . "scs")))
     (build-system r-build-system)
     (home-page "https://github.com/FlorianSchwendinger/scs")
