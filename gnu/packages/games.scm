@@ -4469,6 +4469,11 @@ engine.  When you start it you will be prompted to download a graphics set.")
               ;; Make sure HOME is writable for GIMP.
               (setenv "HOME" (getcwd))
 
+              (mkdir-p ".local/share")
+              (symlink (string-append #$(this-package-native-input "shared-mime-info")
+                                      "/share/mime")
+                       ".local/share/mime")
+
               ;; Redirect stdout, not stderr, to /dev/null. This prevents
               ;; dos2unix from receiving its version information as a flag.
               (substitute* "Makefile"
@@ -4483,6 +4488,7 @@ engine.  When you start it you will be prompted to download a graphics set.")
        #:parallel-build? #f))
     (native-inputs
      (list dos2unix
+           shared-mime-info
            gimp
            grfcodec
            nml
