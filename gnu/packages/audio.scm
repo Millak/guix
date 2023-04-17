@@ -857,7 +857,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.2.4")
+    (version "3.3.0-beta-1")            ;for ffmpeg 6 support
     (source
      (origin
        (method git-fetch)
@@ -866,7 +866,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06kfxbfvvhbhwfzkvar6hir351606g29ij8b4hksxpzq338shgc3"))
+        (base32 "1j1fy8h3vvf3pbyy2vxahf7admcqfmx7m1mxm7g48n54i2f0n1h9"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -886,8 +886,7 @@ engineers, musicians, soundtrack editors and composers.")
               ;; FIXME: we have this library, but it differs in that the Slide
               ;; class does not have a member "getInverseStretchedTime".
               ;; "sbsms"
-              ))
-           #t))))
+              ))))))
     (build-system cmake-build-system)
     (inputs
      (list wxwidgets
@@ -904,14 +903,14 @@ engineers, musicians, soundtrack editors and composers.")
            libsndfile
            mpg123
            soundtouch
-           soxr ;replaces libsamplerate
+           soxr                         ;replaces libsamplerate
            sqlite
            twolame
            vamp
            libvorbis
            lv2
-           lilv ;for lv2
-           suil ;for lv2
+           lilv                         ;for lv2
+           suil                         ;for lv2
            portaudio
            portmidi
            wavpack))
@@ -949,18 +948,6 @@ engineers, musicians, soundtrack editors and composers.")
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-cmake-rpath
            (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("\\$ORIGIN/\\.\\./\\$\\{_PKGLIB\\}")
-                (string-append (assoc-ref outputs "out") "/lib/audacity"))
-               (("CMAKE_BUILD_WITH_INSTALL_RPATH [A-Z]*")
-                "CMAKE_BUILD_WITH_INSTALL_RPATH TRUE")
-               (("CMAKE_INSTALL_RPATH_USE_LINK_PATH [A-Z]*")
-                "CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE"))
-             (substitute* "libraries/image-compiler/CMakeLists.txt"
-               (("PROPERTIES")
-                ;; This scripts needs to run during build, make sure it finds
-                ;; the required libraries.
-                "PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE"))
              (substitute* "src/CMakeLists.txt"
                ;; Despite the name, this script breaks rpath.  Don't run it.
                (("install.*linux/fix_rpath\\.cmake.*")
