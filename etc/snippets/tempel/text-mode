@@ -1,6 +1,6 @@
 -*- mode: lisp-data -*-
 
-text-mode :when (and (fboundp 'git-commit-mode) git-commit-mode)
+text-mode :when (bound-and-true-p git-commit-mode)
 
 (add\ "gnu: Add "
       (p (with-temp-buffer
