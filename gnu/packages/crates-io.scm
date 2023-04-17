@@ -43649,10 +43649,10 @@ used in Cargo build scripts.")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-pktparse-0.5
+(define-public rust-pktparse-0.7
   (package
     (name "rust-pktparse")
-    (version "0.5.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
@@ -43661,11 +43661,11 @@ used in Cargo build scripts.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "17a78c29l070mlwjdr3bdph785c9v5rps0if3v0s21w4nwaybhck"))))
+         "06sy7lwnhwmkyqfdbi4cs11z55rihipxafbdspnd5zg76pnbgbm8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nom" ,rust-nom-5)
+       (("rust-nom" ,rust-nom-7)
         ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/bestouff/pktparse-rs")
     (synopsis "Collection of packet parsers")
