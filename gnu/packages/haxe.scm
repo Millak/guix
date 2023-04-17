@@ -79,7 +79,8 @@
                   gtk+-2
                   libgc
                   mbedtls-apache
-                  mysql
+                  (list mariadb "dev")
+                  (list mariadb "lib")
                   openssl
                   pcre
                   sqlite
