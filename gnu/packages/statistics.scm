@@ -2546,13 +2546,13 @@ functions make it easy to control additional request components.")
 (define-public r-git2r
   (package
     (name "r-git2r")
-    (version "0.31.0")
+    (version "0.32.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "git2r" version))
               (sha256
                (base32
-                "0vfn7kkkarha63vv3k8hi9y5snfsdpwdrbmych560126z9w95nzi"))))
+                "0wa6k1g7y0sx6s7map7mn579c1h07n185m163msmcjk81i62ap8v"))))
     (build-system r-build-system)
     (inputs
      (list libgit2 zlib))
