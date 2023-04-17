@@ -1178,7 +1178,13 @@ to use as the tty.  This is primarily useful for headless systems."
                            #$@(if term
                                   #~(#$term)
                                   #~())))
-                    (const #f))                   ; never start.
+                    #$(if tty
+                          #~(const #f)         ;always fail to start
+                          #~(lambda _          ;succeed, but don't do anything
+                              (format #t "~a: \
+no serial port console requested; doing nothing~%"
+                                      '#$(car provision))
+                              'idle)))
                 args)))))
       (stop #~(make-kill-destructor))))))
 
