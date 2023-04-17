@@ -7244,13 +7244,13 @@ experiment via several parameterizations")
 (define-public r-simr
   (package
     (name "r-simr")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "simr" version))
        (sha256
-        (base32 "1q8ip54c5pc7pjf8127jpk56nr3f8rmwqdcrr84faj4lfbr27wqb"))))
+        (base32 "1rfnhyqvdazvar7r1ml71lskh1hdk3yfzv5jlcz18wzffscgkgmb"))))
     (properties `((upstream-name . "simr")))
     (build-system r-build-system)
     (propagated-inputs
