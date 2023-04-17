@@ -3175,14 +3175,14 @@ statements.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "1.6-3")
+    (version "1.6-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "0x7k5ycbvnfqsygrcyaaxnl0060x6869b345xc697hhr9sfxb4ai"))))
+         "14ci6hd5xlrz22gvnvy2fzpnp50fbds3wpx4mf2fgi5i7sp0hb27"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass r-nlme))
     (home-page "https://cran.r-project.org/web/packages/segmented")
