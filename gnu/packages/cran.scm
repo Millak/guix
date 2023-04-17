@@ -18037,14 +18037,14 @@ and manipulating sets of ontological terms.")
 (define-public r-gargle
   (package
     (name "r-gargle")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gargle" version))
        (sha256
         (base32
-         "02ldshm8phs1ls0djqfprv5yy8i50ijh16y7smkb61wrwd4zr3s2"))))
+         "12s980jfw98czzrxdn83b2blj4qcrkqqmycjplkzvm4mapgiw3wf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -18056,7 +18056,6 @@ and manipulating sets of ontological terms.")
            r-openssl
            r-rappdirs
            r-rlang
-           r-rstudioapi
            r-withr))
     (native-inputs
      (list r-knitr))
