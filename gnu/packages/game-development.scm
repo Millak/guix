@@ -280,47 +280,60 @@ DeuTex has functions such as merging wads, etc.")
    (license license:gpl2+)))
 
 (define-public grfcodec
-  (package
-    (name "grfcodec")
-    (version "6.0.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://binaries.openttd.org/extra/"
-                           name "/" version "/" name "-" version
-                           "-source.tar.xz"))
-       (patches (search-patches "grfcodec-gcc-compat.patch"))
-       (sha256
-        (base32 "08admgnpqcsifpicbm56apgv360fxapqpbbsp10qyk8i22w1ivsk"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f                      ;no check target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configure script
-         (replace 'install              ;no install target
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc"))
-                    (man (string-append out "/share/man/man1")))
-               (for-each (lambda (file)
-                           (install-file file bin))
-                         '("grfcodec" "grfid" "grfstrip" "nforenum"))
-               (install-file "COPYING" doc)
-               (with-directory-excursion "docs"
+  ;; Latest release 6.0.6 requires an older boost and does not build with our
+  ;; newer GCC.
+  (let ((commit "7ded8ebd1447bd2e7c0f4b587be0c0510397bdd0")
+        (revision "0"))
+    (package
+      (name "grfcodec")
+      (version (git-version "6.0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/OpenTTD/grfcodec")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12bf5y7d83plrlssdlcj83w4yxmg5jp1w2p8570l92hy9mkcfmb9"))
+         (modules '((guix build utils)))
+         (snippet
+           `(begin
+              ;; The sources are not a git repository
+              (substitute* "generate_version.cmake"
+                (("\\$\\{GIT.*describe.*") (string-append "echo \"" ,version "\"\n"))
+                (("\\$\\{GIT.*show.*") "echo \"Not shown for reproducibility.\"\n"))
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(Git REQUIRED\\)") ""))))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:tests? #f                      ;no check target
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'install              ;no install target
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin"))
+                      (doc (string-append out "/share/doc"))
+                      (man (string-append out "/share/man/man1")))
                  (for-each (lambda (file)
-                             (install-file (string-append file ".txt") doc))
-                           '("auto_correct" "commands" "grf" "grfcodec" "grftut"
-                             "readme" "readme.rpn"))
-                 (for-each (lambda (file)
-                             (install-file file man))
-                           (find-files "." "\\.1")))))))))
-    (inputs
-     (list boost libpng zlib))
-    (synopsis "GRF development tools")
-    (description
-     "The @dfn{Graphics Resource File} (GRF) development tools are a set of
+                             (install-file file bin))
+                           '("grfcodec" "grfid" "grfstrip" "nforenum"))
+                 (with-directory-excursion "../source"
+                   (install-file "COPYING" doc)
+                   (with-directory-excursion "docs"
+                     (for-each (lambda (file)
+                                 (install-file (string-append file ".txt") doc))
+                               '("auto_correct" "commands" "grf" "grfcodec" "grftut"
+                                 "readme" "readme.rpn"))
+                     (for-each (lambda (file)
+                                 (install-file file man))
+                               (find-files "." "\\.1"))))))))))
+      (inputs
+       (list boost libpng zlib))
+      (synopsis "GRF development tools")
+      (description
+       "The @dfn{Graphics Resource File} (GRF) development tools are a set of
 tools for developing (New)GRFs. It includes a number of smaller programs, each
 with a specific task:
 @enumerate
@@ -330,11 +343,11 @@ with a specific task:
 @item @code{nforenum} checks NFO code for errors, making corrections when
 necessary.
 @end enumerate")
-    (home-page "https://dev.openttdcoop.org/projects/grfcodec")
-    ;; GRFCodec, GRFID, and GRFStrip are exclusively under the GPL2.
-    ;; NFORenum is under the GPL2+.
-    ;; The MD5 implementation contained in GRFID is under the zlib license.
-    (license (list license:gpl2 license:gpl2+ license:zlib))))
+      (home-page "https://dev.openttdcoop.org/projects/grfcodec")
+      ;; GRFCodec, GRFID, and GRFStrip are exclusively under the GPL2.
+      ;; NFORenum is under the GPL2+.
+      ;; The MD5 implementation contained in GRFID is under the zlib license.
+      (license (list license:gpl2 license:gpl2+ license:zlib)))))
 
 (define-public catcodec
   (package
