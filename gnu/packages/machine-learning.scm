@@ -3364,7 +3364,7 @@ Note: currently this package does not provide GPU support.")
   (package
     (inherit python-pytorch)
     (name "python-pytorch")
-    (version "1.12.1")
+    (version "1.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3374,7 +3374,7 @@ Note: currently this package does not provide GPU support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wimgnmn8kfazc8vhf65b9psdwj80n3chzkd8ic28541ac2zqzpk"))
+                "17yxjzwp4zp75fz7czgz9acijzw7dpyqcza50v8y1x7hfg2gw369"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -3394,7 +3394,10 @@ Note: currently this package does not provide GPU support.")
                               "gloo" "googletest" "ios-cmake" "NNPACK"
                               "onnx" "protobuf" "pthreadpool"
                               "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))))))))
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))))
 
 ;; Keep this in sync with python-pytorch
 (define-public python-torchvision
