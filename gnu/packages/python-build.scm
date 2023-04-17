@@ -216,19 +216,19 @@ PyPI (pypi.org).")
 (define-public python-typing-extensions
   (package
     (name "python-typing-extensions")
-    (version "4.3.0")
+    (version "4.5.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "typing_extensions" version))
               (sha256
                (base32
-                "19n4l57qazwrbvxjrbxw2vvfyd0zbk8ivnwm4zmwfzzl69x6glp6"))))
+                "1jx7ki3sji60v7h2805b2phq9ynsvshj5xiygdh9kmirj6kz9daw"))))
     (build-system pyproject-build-system)
     ;; Disable the test suite to keep the dependencies to a minimum.  Also,
     ;; the test suite requires Python's test module, not available in Guix.
     (arguments (list #:tests? #f))
     (native-inputs (list python-flit-core))
-    (home-page "https://github.com/python/typing/typing_extensions")
+    (home-page "https://github.com/python/typing_extensions")
     (synopsis "Experimental type hints for Python")
     (description
      "The typing_extensions module contains additional @code{typing} hints not
