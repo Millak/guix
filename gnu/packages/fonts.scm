@@ -814,7 +814,7 @@ OpenType variant of these fonts.")
 (define-public font-amiri
   (package
     (name "font-amiri")
-    (version "0.117")
+    (version "1.000")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -823,7 +823,7 @@ OpenType variant of these fonts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z2hdmny52bapakf96y5xfr29f8ax7q6nj651zrihnnhfdriqfx1"))))
+                "0c4yg1b03aihdqvz6w5ak8wapni3l8p18mw6bkqhblmm75jb5kif"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -832,6 +832,10 @@ OpenType variant of these fonts.")
       #:modules `(,@%gnu-build-system-modules
                   ((guix build font-build-system) #:prefix font:))
       #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-source
+                     (lambda _
+                       (substitute* "Makefile"
+                         (("^TAG=.*") (string-append "TAG=" #$version "\n")))))
                    (delete 'configure)
                    (replace 'install
                      (assoc-ref font:%standard-phases 'install)))))
