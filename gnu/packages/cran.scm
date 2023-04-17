@@ -30122,14 +30122,14 @@ need to derive the partial derivatives.")
 (define-public r-rstanarm
   (package
     (name "r-rstanarm")
-    (version "2.21.3")
+    (version "2.21.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstanarm" version))
        (sha256
         (base32
-         "19rj396q84maxnd9d2xcd5rblg3310xn7sqbd6k18kwf3dvd7wp9"))))
+         "11diz486ak31zx5402kra3s6nd76cvnla8frfn0kc7dzwhiwcspc"))))
     (properties `((upstream-name . "rstanarm")))
     (build-system r-build-system)
     (inputs
