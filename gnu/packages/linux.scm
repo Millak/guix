@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
@@ -8070,7 +8070,7 @@ receiving to-be-logged packets from the kernel nfnetlink_log subsystem
                   libpcap
                   jansson
                   postgresql
-                  mysql
+                  (list mariadb "dev")
                   zlib
                   openssl))
     (arguments
@@ -8078,7 +8078,7 @@ receiving to-be-logged packets from the kernel nfnetlink_log subsystem
            #~(list (string-append "--with-pgsql="
                                   (assoc-ref %build-inputs "postgresql"))
                    (string-append "--with-mysql="
-                                  (assoc-ref %build-inputs "mysql")))
+                                  (assoc-ref %build-inputs "mariadb")))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'install-doc
