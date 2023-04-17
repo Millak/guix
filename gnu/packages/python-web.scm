@@ -458,17 +458,16 @@ aiohttp.  It supports SOCKS4(a) and SOCKS5.")
 (define-public python-aiodns
   (package
     (name "python-aiodns")
-    (version "1.1.1")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiodns" version))
        (sha256
         (base32
-         "1snr5paql8dgvc676n8xq460wypjsb1xj53cf3px1s4wczf7lryq"))))
+         "1mlcw14hxyzd2yg89gj1l84gfi8nbl7h32iw17myxz23wymxyswl"))))
     (build-system python-build-system)
-    (propagated-inputs
-     (list python-pycares))
+    (propagated-inputs (list python-pycares))
     (arguments
      `(#:tests? #f))                    ;tests require internet access
     (home-page "https://github.com/saghul/aiodns")
