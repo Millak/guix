@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
@@ -3533,40 +3533,35 @@ indicators, code completion and call tips.")
 (define-public python-qscintilla
   (package/inherit qscintilla
     (name "python-qscintilla")
+    (build-system pyproject-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--pyqt=PyQt5"
-             (string-append "--pyqt-sipdir="
-                            (assoc-ref %build-inputs "python-pyqt")
-                            "/share/sip")
-             (string-append "--qsci-incdir="
-                            (assoc-ref %build-inputs "qscintilla")
-                            "/include")
-             (string-append "--qsci-libdir="
-                            (assoc-ref %build-inputs "qscintilla")
-                            "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
-             (let ((out    (assoc-ref outputs "out"))
-                   (python (assoc-ref inputs "python")))
-               (chdir "Python")
-               (apply invoke "python3" "configure.py"
-                      configure-flags)
-               ;; Install to the right directory
-               (substitute* '("Makefile"
-                              "Qsci/Makefile")
-                 (("\\$\\(INSTALL_ROOT\\)/gnu/store/[^/]+") out)
-                 (((string-append python "/lib"))
-                  (string-append out "/lib")))
-               ;; And fix the installed.txt file
-               (substitute* "installed.txt"
-                 (("/gnu/store/[^/]+") out))))))))
+     (list #:tests? #f
+           #:configure-flags
+           #~`(@ ("--qsci-include-dir" . ,(string-append
+                                           #$(this-package-input "qscintilla")
+                                           "/include"))
+                 ("--qsci-library-dir" . ,(string-append
+                                           #$(this-package-input "qscintilla")
+                                           "/lib")))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'prepare-build
+                 (lambda _
+                   (chdir "Python")
+                   (symlink "pyproject-qt5.toml" "pyproject.toml")))
+               (add-after 'unpack 'set-include-dirs
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((python (assoc-ref inputs "python"))
+                          (python-pyqt (assoc-ref inputs "python-pyqt"))
+                          (sip-include-dirs (string-append
+                                             python-pyqt "/lib/python"
+                                             (python-version python)
+                                             "/site-packages/PyQt5/bindings")))
+                     (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
+    (native-inputs
+     (list python-pyqt-builder qtbase-5))
     (inputs
-     `(("qscintilla" ,qscintilla)
-       ("python" ,python)
-       ("python-pyqt" ,python-pyqt)))
+     (list python-pyqt python-sip qscintilla))
     (description "QScintilla is a port to Qt of Neil Hodgson's Scintilla C++
 editor control.  QScintilla includes features especially useful when editing
 and debugging source code.  These include support for syntax styling, error
