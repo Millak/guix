@@ -2031,7 +2031,7 @@ executed.")
 (define-public python-pytest-asyncio
   (package
     (name "python-pytest-asyncio")
-    (version "0.17.2")
+    (version "0.21.0")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -2040,24 +2040,18 @@ executed.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sl0ckc23m40q6r2xcidsizrgqbbsfa7rwmr80fss359xsydf073"))))
-    (build-system python-build-system)
+        (base32 "03wljn0gdwyfr5s1795w3h2mfvvi23bn42nwjv5568rgphqyldqq"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:tests? #f          ;XXX: to avoid a cycle with python-pytest-trio
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'pretend-version
                  (lambda _
                    (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                           #$(package-version this-package))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (invoke "pytest" "-vv" "tests"))))))
-    (native-inputs
-     (list python-async-generator
-           python-flaky
-           python-hypothesis
-           python-pytest
-           python-setuptools-scm))
+                           #$(package-version this-package)))))))
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs (list python-pytest))
     (home-page "https://github.com/pytest-dev/pytest-asyncio")
     (synopsis "Pytest support for asyncio")
     (description "Python asyncio code is usually written in the form of
