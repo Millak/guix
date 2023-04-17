@@ -32,6 +32,7 @@
 ;;; Copyright © 2022, 2023 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5256,6 +5257,36 @@ with processes on remote servers, via SSH2.")
     (description "@code{Net::SCP} is a pure-Ruby implementation of the SCP
 client protocol.")
     (home-page "https://github.com/net-ssh/net-scp")
+    (license license:expat)))
+
+(define-public ruby-minima
+  (package
+    (name "ruby-minima")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minima" version))
+              (sha256
+               (base32
+                "1gk7jmriiswda1ykjzpsw9cpiya4m9n0yrh0h6xnrc8zcfy543jj"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "jekyll" "build"))
+                            ;; Without the following, an attempt to remove
+                            ;; minima-<version>.gem is made during installation,
+                            ;; which will fail.
+                            (delete-file #$(string-append "_site/minima-"
+                                                          version ".gem")))))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list jekyll ruby-jekyll-feed ruby-jekyll-seo-tag))
+    (synopsis "Beautiful, minimal theme for Jekyll")
+    (description
+     "Minima is a one-size-fits-all Jekyll theme for writers.  It's Jekyll's
+default (and first) theme.  It's what you get when you run @code{jekyll new}.")
+    (home-page "https://github.com/jekyll/minima")
     (license license:expat)))
 
 (define-public ruby-minitest
