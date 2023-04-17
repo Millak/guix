@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -534,7 +535,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
 (define-public gfeeds
   (package
     (name "gfeeds")
-    (version "1.0.3")
+    (version "2.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -543,7 +544,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lkvhff7pl1y4brqsix6sar5yl8flyhfp3w96fx0klhk3586bvhg"))))
+                "0p2hyjif9yhpc6r3ig7fdxpb2q8s9g42mz38svsc38gq7hb13b2w"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -555,12 +556,12 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
                 (("mpv") (search-input-file inputs "/bin/mpv")))))
           (add-after 'unpack 'skip-icon-cache
             (lambda _
-              (substitute* "meson_post_install.py"
-                (("gtk-update-icon-cache") "true"))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
           (add-after 'install 'wrap-gfeeds
             (lambda* (#:key outputs #:allow-other-keys)
-              (wrap-program (string-append
-                             (assoc-ref outputs "out") "/bin/gfeeds")
+              (wrap-program (search-input-file outputs "/bin/gfeeds")
                 `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
                 `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS")))))))))
