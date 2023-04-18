@@ -36133,11 +36133,10 @@ hacker.")
   (package
     (name "emacs-osm")
     (version "0.11")
-    (home-page "https://github.com/minad/osm")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url home-page)
+                    (url "https://github.com/minad/osm")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
@@ -36168,6 +36167,7 @@ hacker.")
     (inputs (list curl))
     (native-inputs (list texinfo))
     (propagated-inputs (list emacs-compat))
+    (home-page "https://github.com/minad/osm")
     (synopsis "OpenStreetMap viewer for Emacs")
     (description
      "This package provides an OpenStreetMap viewer for Emacs, featuring
