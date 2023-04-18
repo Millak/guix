@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3402,14 +3403,14 @@ addon for removing tracking fields from URLs.")
 (define-public python-urllib3
   (package
     (name "python-urllib3")
-    (version "1.26.9")
+    (version "1.26.15")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urllib3" version))
         (sha256
          (base32
-          "13j4mkk6vgix4bixfqk3fhydsl3r5f61z94ss4fmwsl0fxjg3fma"))))
+          "01dkqv0rsjqyw4wrp6yj8h3bcnl7c678qkj845596vs7p4bqff4a"))))
     (build-system python-build-system)
     (arguments `(#:tests? #f))
     (propagated-inputs
