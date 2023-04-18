@@ -168,7 +168,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   gdb-11)
 
 (define-public gdb-minimal
-  (package/inherit gdb
+  (package/inherit gdb-12
     (name "gdb-minimal")
     (inputs (fold alist-delete (package-inputs gdb)
                   '("libxml2" "ncurses" "python-wrapper" "source-highlight")))))
