@@ -72,12 +72,6 @@
                                        "gdbsupport/pathstuff.cc")
                           (("\"/bin/sh\"")
                            (format #f "~s" sh))))))
-                  ,@(if (hurd-target?)
-                        '((add-after 'unpack 'patch-gdb/hurd
-                            (lambda* (#:key inputs #:allow-other-keys)
-                              (let ((patch (assoc-ref inputs "hurd-build.patch")))
-                                (invoke "patch" "-p1" "--force" "-i" patch)))))
-                        '())
                   (add-after 'configure 'post-configure
                     (lambda _
                       (for-each patch-makefile-SHELL
@@ -119,9 +113,7 @@
 
        ;; The Hurd needs -lshouldbeinlibc.
        ,@(if (hurd-target?)
-             `(("hurd" ,hurd)
-               ("hurd-build.patch"
-                ,(search-patch "gdb-fix-gnu-nat-build.patch")))
+             `(("hurd" ,hurd))
              '())))
     (native-inputs
      `(("texinfo" ,texinfo)
@@ -148,7 +140,11 @@ doing while it runs or what it was doing just before a crash.  It allows you
 to specify the runtime conditions, to define breakpoints, and to change how
 the program is running to try to fix bugs.  It can be used to debug programs
 written in C, C++, Ada, Objective-C, Pascal and more.")
-    (license gpl3+)))
+    (license gpl3+)
+
+    ;; GDB 11 now fails to build on GNU/Hurd (undefined references to process
+    ;; RPC stubs).
+    (supported-systems (fold delete %supported-systems %hurd-systems))))
 
 (define-public gdb-12
   (package
@@ -160,7 +156,10 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))))
+                "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))
+
+    ;; GDB 12 builds fine on GNU/Hurd.
+    (supported-systems %supported-systems)))
 
 (define-public gdb
   ;; This is the fixed version that packages depend on.  Update it rarely

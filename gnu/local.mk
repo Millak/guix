@@ -1191,7 +1191,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/gd-fix-tests-on-i686.patch		\
   %D%/packages/patches/gd-brect-bounds.patch			\
   %D%/packages/patches/gd-Revert-fix-303-gdlib.pc.patch		\
-  %D%/packages/patches/gdb-fix-gnu-nat-build.patch		\
   %D%/packages/patches/gdm-default-session.patch		\
   %D%/packages/patches/gdm-elogind-support.patch		\
   %D%/packages/patches/gdm-remove-hardcoded-xwayland-path.patch	\
