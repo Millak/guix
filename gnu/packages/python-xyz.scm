@@ -28621,13 +28621,13 @@ and frame grabber interface.")
 (define-public python-scikit-build
   (package
     (name "python-scikit-build")
-    (version "0.14.0")
+    (version "0.17.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "scikit-build" version))
+       (uri (pypi-uri "scikit_build" version))
        (sha256
-        (base32 "1wx1m9vnxnnz59lyaisgyxldp313kciyd4af8lf112vb8vbjy9yk"))))
+        (base32 "0v1qcn3nsjxqdl6fa07b7acq6xndqbvvic5dvsgbjgldkjr1drqp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -28645,7 +28645,9 @@ and frame grabber interface.")
                 ;; These tests attempt to pull dependencies from the Internet.
                 (delete-file "tests/test_distribution.py")
                 (delete-file "tests/test_pep518.py")
-                (invoke "pytest" "-vv"
+                ;; The tests marked as "isolate" are tests that require access
+                ;; to the network.
+                (invoke "pytest" "-vv" "-m" "not isolated"
                         "-n" (number->string (parallel-job-count))
                         "-k" (string-append
                               ;; These tests attempt to write to read-only
@@ -28664,14 +28666,21 @@ and frame grabber interface.")
                               ;; nondeterministically (see:
                               ;; https://github.com/scikit-build/scikit-build/issues/711).
                               "and not test_generator_cleanup "
-                              "and not test_generator_selection "))))))))
+                              "and not test_generator_selection "
+                              ;; The compiler test fails with a
+                              ;; SKBuildGeneratorNotFoundError error (see:
+                              ;; https://github.com/scikit-build/scikit-build/issues/945).
+                              "and not test_cxx_compiler "))))))))
     (native-inputs
      (list cmake-minimal
            gfortran
-           git-minimal/pinned                      ;for tests
+           git-minimal/pinned           ;for tests
            ninja
            python-coverage
            python-cython
+           python-hatchling
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
            python-mock
            python-packaging
            python-path
@@ -28683,7 +28692,7 @@ and frame grabber interface.")
            python-requests
            python-setuptools-scm))
     (propagated-inputs
-     (list python-distro python-packaging python-wheel))
+     (list python-distro python-packaging python-tomli python-wheel))
     (home-page "https://github.com/scikit-build/scikit-build")
     (synopsis "Build system generator for Python C/C++/Fortran/Cython extensions")
     (description "Scikit-build is an improved build system generator for
