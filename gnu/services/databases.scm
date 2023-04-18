@@ -596,6 +596,8 @@ port=" (number->string port) "
          (provision '(mysql))
          (requirement '(user-processes))
          (documentation "Run the MySQL server.")
+         (actions (list (shepherd-configuration-action
+                         (mysql-configuration-file config))))
          (start (let ((mysql (mysql-configuration-mysql config))
                       (extra-env (mysql-configuration-extra-environment config))
                       (my.cnf (mysql-configuration-file config)))
