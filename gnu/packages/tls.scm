@@ -5,7 +5,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
@@ -284,6 +284,13 @@ living in the same process.")
                       (substitute* "tests/fastopen.sh"
                         (("^unset RETCODE")
                          "exit 77\n")))) ;skip
+                  ,@(if (target-ppc32?)
+                      ;; https://gitlab.com/gnutls/gnutls/-/issues/1354
+                      ;; Extend the test timeout from the default of 20 * 1000
+                      `((add-after 'unpack 'increase-test-timeout
+                          (lambda _
+                            (setenv "GNUTLS_TEST_TIMEOUT" "60000"))))
+                      '())
                   (add-after 'install 'move-doc
                    (lambda* (#:key outputs #:allow-other-keys)
                      ;; Copy the 4.1 MiB of section 3 man pages to "doc".
