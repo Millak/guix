@@ -1194,7 +1194,22 @@ KDE Frameworks components.")
                 (system "Xvfb :1 &")
                 (sleep 5)
                 (invoke "ctest" "-E"
-                        "(kwayland-testXdgDecoration|kwin-testLockScreen|kwin-testPointerInput|kwin-testXdgShellWindow|kwin-testXdgShellWindow-waylandonly|kwin-testSceneOpenGLES|kwin-testSceneOpenGLES-waylandonly|kwin-testInputMethod|kwin-testInputMethod-waylandonly|kwin-testNightColor|kwin-testNightColor-waylandonly|kwin-testPlasmaWindow|kwin-testSceneQPainter|kwin-testLibinputDevice)")))))))
+                        (string-join
+                          (list "kwayland-testXdgDecoration"
+                                "kwin-testLockScreen"
+                                "kwin-testPointerInput"
+                                "kwin-testXdgShellWindow"
+                                "kwin-testXdgShellWindow-waylandonly"
+                                "kwin-testSceneOpenGLES"
+                                "kwin-testSceneOpenGLES-waylandonly"
+                                "kwin-testInputMethod"
+                                "kwin-testInputMethod-waylandonly"
+                                "kwin-testNightColor"
+                                "kwin-testNightColor-waylandonly"
+                                "kwin-testPlasmaWindow"
+                                "kwin-testSceneQPainter"
+                                "kwin-testLibinputDevice")
+                          "|"))))))))
     (native-inputs (list extra-cmake-modules
                          dbus
                          kdoctools
