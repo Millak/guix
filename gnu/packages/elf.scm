@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -103,9 +103,15 @@
          ,@(if (target-riscv64?)
              `((add-after 'unpack 'disable-failing-riscv64-test
                  (lambda _
-                   ;; dwfl_thread_getframes: No DWARF information found
                    (substitute* "tests/Makefile.in"
-                     (("run-backtrace-dwarf.sh") "")))))
+                     ;; dwfl_thread_getframes: No DWARF information found
+                     (("run-backtrace-dwarf.sh") "")
+                     ;; These tests have several errors:
+                     ;; unknown program header entry type 0x70000003
+                     ;; '.riscv.attributes' has unsupported type 1879048195
+                     (("run-reverse-sections-self.sh") "")
+                     (("run-strip-strmerge.sh") "")
+                     (("run-elflint-self.sh") "")))))
              '()))))
 
     (native-inputs (list m4))
