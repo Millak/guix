@@ -1774,6 +1774,9 @@
     ;; exponential behavior.
     (let ((set1 duplicates1 (list->set* from-cache))
           (set2 duplicates2 (list->set* no-cache)))
+      ;; For easier debugging.
+      (pk 'from-cache-duplicates: duplicates1)
+      (pk 'no-cache-duplicates: duplicates2)
       (and (null? duplicates1) (null? duplicates2)
            (every (cut set-contains? set1 <>) no-cache)
            (every (cut set-contains? set2 <>) from-cache)))))
