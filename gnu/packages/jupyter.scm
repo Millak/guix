@@ -611,8 +611,10 @@ nix-shell-wrapper|repo2docker-entrypoint)")
            python-requests
            python-json-logger
            python-jinja2
+           python-iso8601
            python-escapism
-           python-docker))
+           python-docker
+           python-chardet))
     (native-inputs
      (list python-sphinx python-entrypoints python-recommonmark
            python-sphinxcontrib-autoprogram python-pydata-sphinx-theme))
