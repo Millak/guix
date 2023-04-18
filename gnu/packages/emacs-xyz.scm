@@ -125,6 +125,7 @@
 ;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36028,6 +36029,22 @@ audio volume via amixer.")
        "Fennel mode provides font-lock, indentation, navigation, and REPL for
 Fennel code within Emacs.")
       (license license:gpl3+))))
+
+(define-public emacs-gerbil-mode
+  (package
+    (inherit gerbil)
+    (name "emacs-gerbil-mode")
+    (version "1.0")
+    (build-system emacs-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'install 'change-directory
+                          (lambda _
+                            (chdir "etc"))))))
+    (synopsis "Emacs major-mode for editing Gerbil code")
+    (description
+     "Gerbil mode provides font-lock, indentation, navigation, and REPL for
+Gerbil code within Emacs.")))
 
 (define-public emacs-org-modern
   (package
