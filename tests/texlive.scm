@@ -191,9 +191,9 @@ completely compatible with Plain TeX.")
                        'texlive-knuth-lib
                        'texlive-plain
                        'texlive-tex))
-               ('home-page "https://www.tug.org/texlive/")
-               ('synopsis "Plain TeX macros for Physicists")
-               ('description (? string? description))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
                ('license 'lppl))
              #true)
             (_
