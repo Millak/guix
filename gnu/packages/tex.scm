@@ -12714,6 +12714,48 @@ changed, the recorded value will usually be the maximum value.")
 
 (define-deprecated-package texlive-latex-totcount texlive-totcount)
 
+(define-public texlive-totpages
+  (let ((template (simple-texlive-package
+                   "texlive-totpages"
+                   (list "doc/latex/totpages/"
+                         "source/latex/totpages/"
+                         "tex/latex/totpages/")
+                   (base32
+                    "1mmya2fqdskyavw3hvdiygfyp9cll7bl4lpi7pl2jf9s7ds49j5a"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (build-system texlive-build-system)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "latex/totpages")
+         ((#:tex-format _ #t) "latex")
+         ((#:build-targets _ '()) '(list "totpages.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/totpages/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (native-inputs
+       (list (texlive-updmap.cfg)))
+      (propagated-inputs
+       (list texlive-everyshi texlive-latex-graphics))
+      (home-page "https://ctan.org/pkg/totpages")
+      (synopsis "Count pages in a document, and report last page number")
+      (description
+       "The package counts the actual pages in the document (as opposed to
+reporting the number of the last page, as does @code{lastpage}).  The counter
+itself may be shipped out to the DVI file.")
+      (license license:lppl))))
+
 (define-public texlive-xetex
   (package
     (inherit (simple-texlive-package
