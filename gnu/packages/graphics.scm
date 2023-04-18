@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2018, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
@@ -1473,6 +1473,7 @@ in Julia).")
      (package
        (inherit openscenegraph)
        (version (git-version "3.6" "1" commit))
+       (outputs (list "out"))
        (source
         (origin
           (method git-fetch)
@@ -1498,7 +1499,10 @@ in Julia).")
                 "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0"
                 ;; The jpeg plugin requires conversion between integers and booleans
                 "-DCMAKE_CXX_FLAGS=-fpermissive")
-              #$flags))))))))
+              #$flags))
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (delete 'copy-plugins)))))))))
 
 (define-public povray
   (package
