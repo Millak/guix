@@ -7298,13 +7298,13 @@ of the CRC32C hashing algorithm.")
 (define-public python-google-auth
   (package
     (name "python-google-auth")
-    (version "2.6.6")
+    (version "2.17.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "google-auth" version))
        (sha256
-        (base32 "04ikassansqkkw4pa98in7q9r4z001m6bi2r3ssxwwrb0f79790v"))))
+        (base32 "1z2f0vj374rscvlivhvf9xxjlg4lng4mgpqnygfhy4wbqlmiwcff"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -7322,6 +7322,7 @@ of the CRC32C hashing algorithm.")
     (native-inputs
      (list python-flask
            python-freezegun
+           python-mock
            python-oauth2client
            python-pyopenssl
            python-pytest
