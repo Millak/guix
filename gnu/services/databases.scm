@@ -308,7 +308,7 @@ host	all	all	::1/128 	md5"))
                              (call-with-input-file #$pid-file read))
                             (_ #t))))))
        (list (shepherd-service
-              (provision '(postgres))
+              (provision '(postgres postgresql))
               (documentation "Run the PostgreSQL daemon.")
               (requirement '(user-processes loopback syslogd))
               (modules `((ice-9 match)
