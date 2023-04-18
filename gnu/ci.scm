@@ -46,6 +46,7 @@
   #:use-module (gnu image)
   #:use-module (gnu packages)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages guile)
@@ -137,7 +138,7 @@ SYSTEM."
   ;; Note: Don't put the '-final' package variants because (1) that's
   ;; implicit, and (2) they cannot be cross-built (due to the explicit input
   ;; chain.)
-  (list gcc-10 gcc-11 gcc-12 glibc binutils
+  (list gcc-10 gcc-11 gcc-12 glibc binutils gdb-minimal
         gmp mpfr mpc coreutils findutils diffutils patch sed grep
         gawk gnu-gettext hello guile-2.2 guile-3.0 zlib gzip xz guix
         %bootstrap-binaries-tarball
