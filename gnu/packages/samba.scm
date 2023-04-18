@@ -172,6 +172,7 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
+    (replacement samba/security-fixes)
     (version "4.16.8")
     (source
      ;; For updaters: the current PGP fingerprint is
@@ -294,7 +295,7 @@ Desktops into Active Directory environments using the winbind daemon.")
   (hidden-package
    (package
      (inherit samba)
-     (replacement samba/fixed)
+     (replacement samba/security-fixes)
      (version "4.15.3")
      (source
       (origin
@@ -329,7 +330,7 @@ Desktops into Active Directory environments using the winbind daemon.")
              libxml2))))))              ;for XML_CATALOG_FILES
 
 
-(define-public samba/fixed
+(define samba/security-fixes
   (package
     (inherit samba/pinned)
     ;; This is 4.15.13, but we need to trim the store file name to have
