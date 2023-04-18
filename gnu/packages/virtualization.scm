@@ -160,7 +160,7 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "7.2.0")
+    (version "7.2.1")
     (source
      (origin
        (method url-fetch)
@@ -168,7 +168,7 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "0mr1xd78bgp1l61281sdx0338ji0aa68j2p9994sskblhwkcwjav"))
+         "0fypm8blv0la17vvlx6h38nhq2rpavflr9i9zsjl6ylxryd6k1cc"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-aarch64-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"))
