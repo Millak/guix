@@ -1045,7 +1045,7 @@ over a different origin than that of the web application.")
 (define-public python-httplib2
   (package
     (name "python-httplib2")
-    (version "0.15.0")
+    (version "0.22.0")
     (source
      (origin
        ;; Tests not included in the release tarball.
@@ -1056,8 +1056,8 @@ over a different origin than that of the web application.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11bis23xqbl6aa5m5yswwcf6zn4j24lyi7bfskd31h4zb368ggsj"))))
-    (build-system python-build-system)
+         "1zkp3glv0iha7p68p5m0sb8mrrammkdc0mx32517xry52s4iva7g"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
        #:phases
@@ -1067,7 +1067,8 @@ over a different origin than that of the web application.")
                (substitute* "requirements-test.txt"
                  (("==") ">=")))))))
     (native-inputs
-     (list python-flake8
+     (list python-cryptography
+           python-flake8
            python-future
            python-mock
            python-pytest
