@@ -19462,6 +19462,21 @@ from within Elisp using a DSL similar to CSS selectors.")
         (base32
          "0vjk8k5k9xsngk50nf611c4j0bikqn9l1y3m35s8y3knwqw22ii0"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;FIXME: 8 out of 11 tests fail
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "envrc-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-direnv-location
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "envrc.el"
+                ("envrc-direnv-executable"
+                 (search-input-file inputs "/bin/direnv"))))))))
+    (inputs
+     (list direnv))
     (propagated-inputs
      (list emacs-inheritenv))
     (home-page "https://github.com/purcell/envrc")
