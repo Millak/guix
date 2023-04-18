@@ -4141,7 +4141,7 @@ modes available for improved Amiga ProTracker 2/3 compatibility.")
 (define-public schismtracker
   (package
     (name "schismtracker")
-    (version "20190805")
+    (version "20221201")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4150,26 +4150,27 @@ modes available for improved Amiga ProTracker 2/3 compatibility.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qqps20vvn3rgpg8174bjrrm38gqcci2z5z4c1r1vhbccclahgsd"))
+                "11yy5zrdfvnwzwdwmc3s3lx1ymwiyp1si5mmv4h9qxipd9j96ijp"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove use of __DATE__ and __TIME__ for reproducibility.
-               `(begin
-                  (substitute* "schism/version.c"
-                    (("Schism Tracker built %s %s.*$")
-                     (string-append "Schism Tracker version " ,version "\") ;")))
-              #t))))
+               #~(substitute* "schism/version.c"
+                   (("Schism Tracker built %s %s.*$")
+                    (string-append
+                     "Schism Tracker version " #$version "\") ;"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'link-libm
-           (lambda _ (setenv "LIBS" "-lm") #t)))))
+     (list #:configure-flags #~(list "--with-flac=yes" "--with-x11=no")
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'configure 'link-libm
+                          (lambda _
+                            (setenv "LIBS" "-lm"))))))
     (native-inputs
      (list autoconf automake python))
     (inputs
      (list alsa-lib ; for asound dependency
-           libx11 libxext sdl))
+           flac
+           sdl2))
     (home-page "https://schismtracker.org")
     (synopsis "Oldschool sample-based music composition tool")
     (description
