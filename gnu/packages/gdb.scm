@@ -161,9 +161,13 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
     ;; GDB 12 builds fine on GNU/Hurd.
     (supported-systems %supported-systems)))
 
-(define-public gdb
+(define-public gdb/pinned
   ;; This is the fixed version that packages depend on.  Update it rarely
   ;; enough to avoid massive rebuilds.
+  gdb-11)
+
+(define-public gdb
+  ;; The "default" version.
   gdb-11)
 
 (define-public gdb-minimal

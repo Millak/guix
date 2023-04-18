@@ -788,7 +788,7 @@ safety and thread safety guarantees.")
                     (format #f "prefix = ~s" (assoc-ref outputs "rustfmt"))))
                  (invoke "./x.py" "install" "rustfmt")))))))
       ;; Add test inputs.
-      (native-inputs (cons* `("gdb" ,gdb)
+      (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
                             (package-native-inputs base-rust))))))
 
