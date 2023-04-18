@@ -3760,6 +3760,12 @@ or XEmacs.")
         (base32
          "13lj0igrsdycsr8ldv2hilj2x79c888g4lx2ixqn7w29lw6cb44g"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "tests/autothemer-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
      (list emacs-dash))
     (home-page "https://github.com/sebastiansturm/autothemer")
