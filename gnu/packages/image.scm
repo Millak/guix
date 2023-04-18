@@ -1934,7 +1934,7 @@ Features:
      (list pkg-config scdoc
            `(,glib "bin"))) ; for 'glib-compile-resources'
     (inputs
-     (list gtk+ libnotify))
+     (list gtk+ libnotify gettext-minimal))
     (propagated-inputs
      ;; Needed to properly render the icons.
      (list font-awesome))
