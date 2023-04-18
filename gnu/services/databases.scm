@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2016, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
@@ -313,6 +313,7 @@ host	all	all	::1/128 	md5"))
               (requirement '(user-processes loopback syslogd))
               (modules `((ice-9 match)
                          ,@%default-modules))
+              (actions (list (shepherd-configuration-action config-file)))
               (start (action "start"))
               (stop (action "stop"))))))))
 
