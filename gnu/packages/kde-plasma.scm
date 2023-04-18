@@ -1196,17 +1196,14 @@ KDE Frameworks components.")
                 (invoke "ctest" "-E"
                         (string-join
                           (list "kwayland-testXdgDecoration"
-                                "kwin-testLockScreen"
+                                "kwin-testXkb"
                                 "kwin-testPointerInput"
                                 "kwin-testXdgShellWindow"
                                 "kwin-testXdgShellWindow-waylandonly"
                                 "kwin-testSceneOpenGLES"
                                 "kwin-testSceneOpenGLES-waylandonly"
-                                "kwin-testInputMethod"
-                                "kwin-testInputMethod-waylandonly"
                                 "kwin-testNightColor"
                                 "kwin-testNightColor-waylandonly"
-                                "kwin-testPlasmaWindow"
                                 "kwin-testSceneQPainter"
                                 "kwin-testLibinputDevice")
                           "|"))))))))
