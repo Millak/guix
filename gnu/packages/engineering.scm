@@ -713,58 +713,55 @@ multipole-accelerated algorithm.")
   (package
     (name "fritzing")
     (version "0.9.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fritzing/fritzing-app")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fritzing/fritzing-app")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "fritzing-parts-db")
-                               "parts")
-             ;; Use system libgit2 and boost.
-             (substitute* "phoenix.pro"
-               (("^LIBGIT_STATIC.*")
-                (string-append "LIBGIT2INCLUDE=" (assoc-ref inputs "libgit2") "/include\n"
-                               "LIBGIT2LIB=" (assoc-ref inputs "libgit2") "/lib\n"
-                               "INCLUDEPATH += $$LIBGIT2INCLUDE\n"
-                               "LIBS += -L$$LIBGIT2LIB -lgit2\n"))
-               (("^.*pri/libgit2detect.pri.") ""))
-             ;; Trick the internal mechanism to load the parts
-             (substitute* "src/version/partschecker.cpp"
-               ((".*git_libgit2_init.*")
-                "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
-
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "qmake"
-                       (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," out "/lib")
-                       (string-append "PREFIX=" out)
-                       "phoenix.pro")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Integrate parts library
+              (copy-recursively
+               (string-append #$(this-package-native-input "fritzing-parts")
+                              "/share/library")
+               "parts")
+              ;; Use system libgit2 and boost.
+              (substitute* "phoenix.pro"
+                (("^LIBGIT_STATIC.*")
+                 (string-append
+                  "LIBGIT2INCLUDE=" #$(this-package-input "libgit2") "/include\n"
+                  "LIBGIT2LIB=" #$(this-package-input "libgit2") "/lib\n"
+                  "INCLUDEPATH += $$LIBGIT2INCLUDE\n"
+                  "LIBS += -L$$LIBGIT2LIB -lgit2\n"))
+                (("^.*pri/libgit2detect.pri.") ""))
+              ;; Trick the internal mechanism to load the parts
+              (substitute* "src/version/partschecker.cpp"
+                ((".*git_libgit2_init.*")
+                 "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
+              (invoke "qmake"
+                      (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," #$output "/lib")
+                      (string-append "PREFIX=" #$output)
+                      "phoenix.pro"))))))
+    (native-inputs
+     (list fritzing-parts))
     (inputs
-     `(("qtbase" ,qtbase-5)
-       ("qtserialport" ,qtserialport)
-       ("qtsvg-5" ,qtsvg-5)
-       ("libgit2" ,libgit2)
-       ("boost" ,boost)
-       ("zlib" ,zlib)
-       ("fritzing-parts-db"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/fritzing/fritzing-parts")
-                 (commit (string-append "release_" version))))
-           (file-name (git-file-name "fritzing-parts" version))
-           (sha256
-            (base32
-             "0wsvn57v6n0ygnhk2my94rrfzb962z1cj4d1xmp1farwck3811h6"))))))
+     (list boost
+           libgit2
+           qtbase-5
+           ;; TODO: Needs to be renamed to qtserialport-5. when version 6 is
+           ;; packed.
+           qtserialport
+           qtsvg-5
+           zlib))
     (home-page "https://fritzing.org")
     (synopsis "Electronic circuit design")
     (description
