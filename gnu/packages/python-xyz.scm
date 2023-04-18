@@ -7871,7 +7871,7 @@ a general image processing tool.")
               "http://www.pythonware.com/products/pil/license.htm"
               "The PIL Software License"))))
 
-(define-public python-pillow/security-fixes
+(define python-pillow/security-fixes
   (package-with-patches python-pillow
                         (search-patches "python-pillow-CVE-2022-45199.patch")))
 
