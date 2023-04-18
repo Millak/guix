@@ -5,7 +5,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
@@ -401,6 +401,9 @@ OpenSSL for TARGET."
       (let ((kernel
              (cond ((target-hurd? target)
                     "hurd")
+                   ((and (target-linux? target)
+                         (target-riscv64? target))
+                    "linux64")
                    ((target-linux? target)
                     "linux")
                    (else
@@ -424,8 +427,9 @@ OpenSSL for TARGET."
               ((and (target-powerpc? target)
                     (target-64bit? target))
                "ppc64")
+              ((target-riscv64? target)
+               "riscv64")
               ((target-64bit? target)
-               ;; linux64-riscv64 isn't recognized until 3.0.0.
                "generic64")
               (else
                (error "unsupported openssl target architecture")))))
