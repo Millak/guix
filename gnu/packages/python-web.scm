@@ -4284,7 +4284,11 @@ users' sessions over extended periods of time.")
     (arguments
      `(#:tests? #f))
     (propagated-inputs
-     (list python-httplib2 python-pyasn1 python-pyasn1-modules python-rsa
+     (list python-httplib2
+           python-pyasn1
+           python-pyasn1-modules
+           python-pyparsing
+           python-rsa
            python-six))
     (home-page "https://github.com/google/oauth2client/")
     (synopsis "OAuth 2.0 client library")
