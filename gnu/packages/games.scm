@@ -19,7 +19,7 @@
 ;;; Copyright © 2016 Albin Söderqvist <albin@fripost.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
@@ -11215,7 +11215,7 @@ and unsafe rides.  Which path will you take?")
                                                   "/share/fonts/truetype/"))
                    (("=DejaVu/") (string-append "=" #$font-dejavu
                                                 "/share/fonts/truetype/"))))))))
-      (inputs (list ffmpeg
+      (inputs (list ffmpeg-5
                     font-dejavu
                     font-google-noto
                     ; Not needed, since we don’t have freesans.
