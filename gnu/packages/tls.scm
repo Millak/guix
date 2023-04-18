@@ -252,7 +252,14 @@ living in the same process.")
                  (lambda _
                    (substitute* "tests/fastopen.sh"
                      (("^unset RETCODE")
-                      "exit 77\n"))))      ;skip
+                      "exit 77\n"))     ;skip
+                   #$@(if (target-ppc32?)
+                          ;; https://gitlab.com/gnutls/gnutls/-/issues/1354
+                          ;; Extend the test timeout from the default of 20 * 1000
+                          #~((add-after 'unpack 'increase-test-timeout
+                               (lambda _
+                                 (setenv "GNUTLS_TEST_TIMEOUT" "60000"))))
+                          #~())))
                (add-after 'install 'move-doc
                  (lambda* (#:key outputs #:allow-other-keys)
                    ;; Copy the 4.1 MiB of section 3 man pages to "doc".
@@ -263,18 +270,18 @@ living in the same process.")
                      (mkdir-p mandir)
                      (copy-recursively oldman mandir)
                      (delete-file-recursively oldman)))))))
-    (outputs '("out"                              ;4.4 MiB
+    (outputs '("out"                    ;4.4 MiB
                "debug"
-               "doc"))                            ;4.1 MiB of man pages
+               "doc"))                  ;4.1 MiB of man pages
     (native-inputs
      (append (list pkg-config texinfo which
-                   util-linux)                    ;one test needs 'setsid'
+                   util-linux)          ;one test needs 'setsid'
              (if (hurd-target?)
                  '()
                  (list net-tools
-                       iproute                    ;for 'ss'
-                       socat                      ;several tests rely on it
-                       datefudge))))              ;tests rely on 'datefudge'
+                       iproute          ;for 'ss'
+                       socat            ;several tests rely on it
+                       datefudge))))    ;tests rely on 'datefudge'
     (inputs (list libunistring))
     (propagated-inputs
      ;; These are all in the 'Requires.private' field of gnutls.pc.
