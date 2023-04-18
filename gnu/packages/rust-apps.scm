@@ -924,6 +924,8 @@ browsers.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
+       ;; error[E0463]: can't find crate for `cargo_test_macro`
+       #:tests? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
@@ -954,11 +956,17 @@ browsers.")
         ("rust-predicates" ,rust-predicates-2)
         ("rust-snapbox" ,rust-snapbox-0.2)
         ("rust-trycmd" ,rust-trycmd-0.13)
-        ("rust-url" ,rust-url-2))))
+        ("rust-url" ,rust-url-2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'dont-default-to-vendored-libgit2
+           (lambda _
+             (substitute* "Cargo.toml"
+               ((".*\"vendored-libgit2\".*") "")))))))
     (native-inputs
-     (list pkg-config))
+     (list perl pkg-config))
     (inputs
-     (list libgit2
+     (list libgit2-1.4
            libssh2
            openssl
            zlib))
