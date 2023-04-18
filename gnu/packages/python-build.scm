@@ -676,6 +676,27 @@ has features such as:
 @end itemize")
     (license license:expat)))
 
+(define-public python-hatch-fancy-pypi-readme
+  (package
+    (name "python-hatch-fancy-pypi-readme")
+    (version "22.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hatch_fancy_pypi_readme" version))
+              (sha256
+               (base32
+                "0sn2wsfbpsbf2mqhjvw62h1cfy5mz3d7iqyqvs5c20cnl0n2i4fs"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;avoid extra test dependencies
+    (propagated-inputs (list python-hatchling python-tomli
+                             python-typing-extensions))
+    (home-page "https://github.com/hynek/hatch-fancy-pypi-readme")
+    (synopsis "Fancy PyPI READMEs with Hatch")
+    (description "This hatch plugin allows defining a project description in
+terms of concatenated fragments that are based on static strings, files and
+parts of files defined using cut-off points or regular expressions.")
+    (license license:expat)))
+
 (define-public python-hatch-vcs
   (package
     (name "python-hatch-vcs")
