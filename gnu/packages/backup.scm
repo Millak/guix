@@ -1245,13 +1245,13 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "1.7.9")
+    (version "1.7.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgmatic" version))
        (sha256
-        (base32 "1scfh90qgv8xhafnnpl3pa9d8m4rg9xgvf21yybvmsnm5v1k2x5z"))))
+        (base32 "0720wvs3h2w8h28d7mpvjfp0q37dnrwf1y2ik3y4yr9csih7fmgh"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
