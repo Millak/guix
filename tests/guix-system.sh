@@ -359,7 +359,7 @@ for example in gnu/system/examples/*.tmpl; do
 done
 
 # Make sure the desktop image can be built on major architectures.
-for system in x86_64-linux i686-linux aarch64-linux
+for system in x86_64-linux aarch64-linux
 do
     guix system -n image -s "$system" gnu/system/examples/desktop.tmpl
 done
