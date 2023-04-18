@@ -66,6 +66,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -776,6 +777,43 @@ ready for production.")
     ;; Documentation and parts are released under CC-BY-SA 3.0; source code is
     ;; released under GPLv3+.
     (license (list license:gpl3+ license:cc-by-sa3.0))))
+
+(define-public fritzing-parts
+  ;; XXX: Release of the parts stopped in 2016 and it looks like develop
+  ;; branch has latest changes comparing to other branches.
+  (let ((commit "d61d63de9294343b1b6e86f149e78e4b1d3a0009")
+        (revision "0"))
+    (package
+      (name "fritzing-parts")
+      (version (git-version "0.9.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fritzing/fritzing-parts")
+               (commit commit)))
+         (file-name (git-file-name "fritzing-parts" version))
+         (sha256
+          (base32 "0g39ja1aqw5qx8alf61m6zcy6y78j9ky556x6x1cnd6g7kkzd861"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("." "share/library/"
+             #:exclude-regexp (".github.*"
+                               ".gitignore"
+                               "CONTRIBUTING.md"
+                               "LICENSE.txt"
+                               "README.md")))
+        #:modules '(((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build copy-build-system)
+                    (guix build utils)
+                    (ice-9 match))))
+      (home-page "https://fritzing.org")
+      (synopsis "Electronic components (parts library) for use in the Fritzing app")
+      (description "This package contains all part definitions that are
+required for Fritzing app.")
+      (license license:cc-by-sa3.0))))
 
 (define-public qelectrotech
   (package
