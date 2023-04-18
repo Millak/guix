@@ -168,7 +168,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
 
 (define-public gdb
   ;; The "default" version.
-  gdb-11)
+  gdb-12)
 
 (define-public gdb-minimal
   (package/inherit gdb-12
