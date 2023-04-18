@@ -12653,14 +12653,14 @@ data.")
 (define-public r-enrichplot
   (package
     (name "r-enrichplot")
-    (version "1.18.3")
+    (version "1.18.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "enrichplot" version))
        (sha256
         (base32
-         "0nzcr23m58z3h0n0frxf26z14j7ilcl4fjy7rqm7f2i1wyld70zl"))))
+         "1642yc2rw2c023bkz26y3kvmvg8badrc4vfx890mvsa70in2mi89"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aplot
