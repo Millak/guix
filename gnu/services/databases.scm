@@ -755,6 +755,7 @@ port=" (number->string port) "
               (provision '(redis))
               (documentation "Run the Redis daemon.")
               (requirement '(user-processes syslogd))
+              (actions (list (shepherd-configuration-action config-file)))
               (start #~(make-forkexec-constructor
                         '(#$(file-append redis "/bin/redis-server")
                           #$config-file)
