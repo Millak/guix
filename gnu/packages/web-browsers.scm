@@ -213,7 +213,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
 (define-public luakit
   (package
     (name "luakit")
-    (version "2.3")
+    (version "2.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -222,7 +222,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1khbn7dpizkznnwkw7rcfhf72dnd1nazk7dwb4rkh9i97b53mf1y"))))
+                "19z6idmjz6y7xmjpqgw65mdfi65lyvy06819dj5bb7rad63v5542"))))
     (inputs
      `(("lua-5.1" ,lua-5.1)
        ("gtk+" ,gtk+)
