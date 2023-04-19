@@ -679,7 +679,8 @@ allows for launching applications or shutting down the system.")
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0rjw3rw6kpaa3csrga005qg5bxmdxfgrnn1qngs2nrny35v97ckl"))))
+        (base32 "0rjw3rw6kpaa3csrga005qg5bxmdxfgrnn1qngs2nrny35v97ckl"))
+       (patches (search-patches "lxqt-session-procps-4.patch"))))
     (build-system cmake-build-system)
     (inputs
      (list eudev
