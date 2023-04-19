@@ -341,7 +341,7 @@ Graphviz and LaTeX.")
                     (assoc-ref inputs "gtk+") "/lib/girepository-1.0"
                     ":" (assoc-ref inputs "pango") "/lib/girepository-1.0"
                     ":" (assoc-ref inputs "gdk-pixbuf") "/lib/girepository-1.0"
-                    ":" (assoc-ref inputs "atk") "/lib/girepository-1.0"
+                    ":" (assoc-ref inputs "at-spi2-core") "/lib/girepository-1.0"
                     ":" (assoc-ref inputs "harfbuzz") "/lib/girepository-1.0")))
                `("PATH" ":" prefix
                  (,(dirname (search-input-file inputs "bin/dot"))))))))))
