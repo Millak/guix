@@ -5901,7 +5901,8 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
              (sha256
               (base32
                "1y6nfxcjhqg9bb81hs0wijg7kcwk5kff81rgd8bsv5ps7ia9nj6b"))
-             (patches (search-patches "laby-make-install.patch"))))
+             (patches (search-patches "laby-make-install.patch"
+                                      "laby-use-tmpdir-from-runtime.patch"))))
     (build-system glib-or-gtk-build-system)
     (inputs
      (list gdk-pixbuf

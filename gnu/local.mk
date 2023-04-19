@@ -57,6 +57,7 @@
 # Copyright © 2022 ( <paren@disroot.org>
 # Copyright © 2022 jgart <jgart@dismail.de>
 # Copyright © 2023 Zheng Junjie <873216071@qq.com>
+# Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -1432,6 +1433,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kodi-mesa-eglchromium.patch		\
   %D%/packages/patches/kwayland-skip-flaky-test.patch		\
   %D%/packages/patches/laby-make-install.patch			\
+  %D%/packages/patches/laby-use-tmpdir-from-runtime.patch	\
   %D%/packages/patches/ldns-drill-examples.patch		\
   %D%/packages/patches/leela-zero-gtest.patch			\
   %D%/packages/patches/less-hurd-path-max.patch			\

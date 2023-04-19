@@ -1,0 +1,39 @@
+Reported as <https://github.com/sgimenez/laby/pull/68>
+
+diff --git a/build b/build
+index 992a9e3..0df74d9 100755
+--- a/build
++++ b/build
+@@ -7,7 +7,6 @@ source build.conf || exit 1
+ 
+ export PREFIX=${PREFIX-/usr}
+ export DATADIR=${DATADIR-${PREFIX}/share}
+-export TMPDIR=${TMPDIR-/tmp}
+ 
+ export PROJECT_NAME=${PROJECT_NAME-unknown}
+ export PROJECT_VERSION=${PROJECT_VERSION-unknown}
+diff --git a/src/config.sh b/src/config.sh
+index 19d4160..9338aad 100644
+--- a/src/config.sh
++++ b/src/config.sh
+@@ -29,5 +29,4 @@ let build_ocaml = "${OCAML_VERSION}"
+ let build_lablgtk = "${BUILD_LABLGTK}"
+ let build_lablgtk_sourceview = "${BUILD_LABLGTKSV}"
+ let _ = Res.sys_data_dir := "${DATADIR}"
+-let _ = Res.sys_tmp_dir := "${TMPDIR}"
+ EOF
+diff --git a/src/laby.ml b/src/laby.ml
+index b77f2b2..e17acb9 100644
+--- a/src/laby.ml
++++ b/src/laby.ml
+@@ -48,6 +48,7 @@ let opts =
+ 
+ let _ =
+   Printexc.record_backtrace true;
++  Res.sys_tmp_dir := Filename.get_temp_dir_name ();
+   Run.init
+     ~name:Config.project_name
+     ~conf:(conf, ["conf"])
+-- 
+2.34.1
+
