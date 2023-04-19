@@ -1053,6 +1053,33 @@ with the Linux kernel.")
 
 ;; Below are old libc versions, which we use mostly to build locale data in
 ;; the old format (which the new libc cannot cope with.)
+
+(define-public glibc-2.33
+  (package
+    (inherit glibc)
+    (name "glibc")
+    (version "2.33")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1zvp0qdfbdyqrzydz18d9zg3n5ygy8ps7cmny1bvsp8h1q05c99f"))
+              (patches
+               ;; Remove a patch that's become irrelevant and that does not
+               ;; apply to this version.
+               (remove (lambda (patch)
+                         (string=? (basename patch)
+                                   "glibc-hurd-clock_gettime_monotonic.patch"))
+                       (origin-patches (package-source glibc))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments glibc)
+       ((#:configure-flags flags ''())
+        ;; There are undefined references to pthread symbols while linking
+        ;; 'support/links-dso-program.cc'.  Since this isn't needed here, turn
+        ;; off C++ tests.
+        `(cons "libc_cv_cxx_link_ok=no" ,flags))))))
+
 (define-public glibc-2.32
   (package
     (inherit glibc)
