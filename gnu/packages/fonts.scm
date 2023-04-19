@@ -47,7 +47,7 @@
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
@@ -2466,19 +2466,18 @@ It comes in seven weights and Roman, Italic and Oblique styles.")
          "1x5mhrpx24imh0r4l83mkaiszxgwi1q4ppyyvq63h3ddwk20cwdg"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("fontforge" ,fontforge)
-       ("harfbuzz" ,harfbuzz "bin")
-       ("python" ,python-minimal)
-       ("python-fonttools-minimal" ,python-fonttools-minimal)
-       ("python-brotli" ,python-brotli)))
+     (list fontforge
+           `(,harfbuzz "bin")
+           python-brotli
+           python-fonttools-minimal
+           python-minimal))
     (arguments
-     `(#:make-flags (list "PY=python3"
-                          (string-append "DESTDIR=" %output)
-                          "fontpath=/share/fonts/truetype")
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags #~(list "PY=python3"
+                                (string-append "DESTDIR=" #$output)
+                                "fontpath=/share/fonts/truetype")
+           #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
     (home-page "https://gitlab.com/smc/meera-inimai")
     (synopsis "Meera Inimai Tamil font")
     (description "Meera Inimai is a Unicode font for the Tamil Script.  Meera
