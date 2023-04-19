@@ -1887,7 +1887,7 @@ native APIs where it makes sense.")))
               (uri (qt-urls name version))
               (sha256
                (base32
-                "0mlhhhcxx3gpr9kh04c6fljxcj50c2j21r0wb9f7d7nk4flip7b2"))))
+                "0r16qxy0pfpwvna4gpz67jk3qv3qizfd659kc9iwdh8bhz7lpjrw"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:tests? _ #f) #f)             ; TODO: Enable the tests
