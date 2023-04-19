@@ -219,6 +219,7 @@
   #:use-module (gnu packages xml)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
@@ -5901,9 +5902,15 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
               (base32
                "1y6nfxcjhqg9bb81hs0wijg7kcwk5kff81rgd8bsv5ps7ia9nj6b"))
              (patches (search-patches "laby-make-install.patch"))))
-    (build-system gnu-build-system)
+    (build-system glib-or-gtk-build-system)
     (inputs
-     (list lablgtk3 ocaml-lablgtk3-sourceview3 ocaml ocaml-findlib ocamlbuild))
+     (list gdk-pixbuf
+           lablgtk3
+           (librsvg-for-system)
+           ocaml-lablgtk3-sourceview3
+           ocaml
+           ocaml-findlib
+           ocamlbuild))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -5912,7 +5919,15 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let ((lablgtk #$(this-package-input "lablgtk")))
                      (setenv "LD_LIBRARY_PATH"
-                             (string-append lablgtk "/lib/ocaml/stublibs"))))))
+                             (string-append lablgtk "/lib/ocaml/stublibs")))))
+               (add-after 'glib-or-gtk-wrap 'wrap-pixbuf
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (let ((laby (string-append #$output "/bin/laby")))
+                      (wrap-program laby
+                        ;; Wrapping GDK_PIXBUF_MODULE_FILE allows laby to
+                        ;; function in pure environments.
+                        `("GDK_PIXBUF_MODULE_FILE" =
+                          (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))
            #:tests? #f ; no 'check' target
            #:make-flags
            #~(list (string-append "PREFIX=" #$output) "all")))
