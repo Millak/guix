@@ -76,6 +76,8 @@
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5903,17 +5905,17 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
     (inputs
      (list lablgtk3 ocaml-lablgtk3-sourceview3 ocaml ocaml-findlib ocamlbuild))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'set-library-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lablgtk (assoc-ref inputs "lablgtk")))
-               (setenv "LD_LIBRARY_PATH"
-                       (string-append lablgtk "/lib/ocaml/stublibs"))))))
-       #:tests? #f ; no 'check' target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")) "all")))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-before 'build 'set-library-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((lablgtk #$(this-package-input "lablgtk")))
+                     (setenv "LD_LIBRARY_PATH"
+                             (string-append lablgtk "/lib/ocaml/stublibs"))))))
+           #:tests? #f ; no 'check' target
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output) "all")))
     (home-page "https://sgimenez.github.io/laby/")
     (synopsis "Programming game")
     (description "Learn programming, playing with ants and spider webs ;-)
