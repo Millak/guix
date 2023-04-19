@@ -5154,7 +5154,14 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            sqlite
            zlib))
     (inputs
-     (list mit-krb5 samba/pinned))     ; For ntlm_auth support
+     (append (list mit-krb5)
+
+             ;; Samba is an optional dependency that depends on Rust, which is
+             ;; missing on some systems such as i686-linux.
+             (if (and (not (%current-target-system))
+                      (supported-package? samba/pinned))
+                 (list samba/pinned)              ;for ntlm_auth support
+                 '())))
     (home-page "https://wiki.gnome.org/Projects/libsoup")
     (synopsis "GLib-based HTTP Library")
     (description
