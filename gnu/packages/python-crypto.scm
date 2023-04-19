@@ -1317,6 +1317,7 @@ Password-Authenticated Key Exchange algorithm.")
      (list python-automat
            python-idna
            python-incremental
+           python-pyopenssl
            python-service-identity
            python-twisted
            python-zope-interface))
