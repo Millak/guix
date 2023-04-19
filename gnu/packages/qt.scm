@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2015, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
@@ -3921,7 +3921,8 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0pbbdypwkn3vrgy8ww207fl8pqq4jv80bck9qz5v9dfyr0166hr3"))))
+                "0pbbdypwkn3vrgy8ww207fl8pqq4jv80bck9qz5v9dfyr0166hr3"))
+              (patches (search-patches "python-shiboken-2-compat.patch"))))
     (build-system cmake-build-system)
     (inputs
      (list clang-toolchain

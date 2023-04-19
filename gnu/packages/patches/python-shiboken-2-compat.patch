@@ -1,0 +1,16 @@
+Provide a declaration that's missing in Python 3.10.
+
+--- pyside-setup-opensource-src-5.15.8/sources/shiboken2/libshiboken/sbkpython.h	2023-04-19 23:14:11.415337435 +0200
++++ pyside-setup-opensource-src-5.15.8/sources/shiboken2/libshiboken/sbkpython.h	2023-04-19 23:18:09.055605606 +0200
+@@ -108,6 +108,11 @@ extern "C" {
+ #if PY_MAJOR_VERSION >= 3
+     #define IS_PY3K
+ 
++extern "C" {
++  /* In Python 3.10 this declaration is not provided by <Python.h>.  */
++  extern PyObject* _Py_Mangle(PyObject *p, PyObject *name);
++}
++
+     #define PyInt_Type PyLong_Type
+     #define PyInt_Check PyLong_Check
+     #define PyInt_CheckExact PyLong_CheckExact
