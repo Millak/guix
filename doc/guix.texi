@@ -42960,9 +42960,11 @@ stateless: it can be replicated elsewhere or at another point in time.
 Preparing this list can be relatively tedious though, which is why
 @code{*unspecified*} is kept as a default.
 
-@item @code{authorized-keys} (default: @code{'()})
-This must be a list of file-like objects, each of which containing an
-SSH public key that should be authorized to connect to this machine.
+@item @code{authorized-keys} (default: @code{#false})
+The default @code{#false} value means: Leave any
+@file{~/.ssh/authorized_keys} file alone.  Otherwise, this must be a
+list of file-like objects, each of which containing an SSH public key
+that should be authorized to connect to this machine.
 
 Concretely, these files are concatenated and made available as
 @file{~/.ssh/authorized_keys}.  If an OpenSSH server, @command{sshd}, is

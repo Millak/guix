@@ -249,7 +249,7 @@ through before connecting to the server.")
   home-openssh-configuration make-home-openssh-configuration
   home-openssh-configuration?
   (authorized-keys home-openssh-configuration-authorized-keys ;list of file-like
-                   (default '()))
+                   (default #f))
   (known-hosts     home-openssh-configuration-known-hosts ;unspec | list of file-like
                    (default *unspecified*))
   (hosts           home-openssh-configuration-hosts   ;list of <openssh-host>
@@ -285,19 +285,21 @@ inserted after each of them."
                                      '#$files)))))))
 
 (define (openssh-configuration-files config)
-  (let ((config (plain-file "ssh.conf"
-                            (openssh-configuration->string config)))
-        (known-hosts (home-openssh-configuration-known-hosts config))
-        (authorized-keys (file-join
-                          "authorized_keys"
-                          (home-openssh-configuration-authorized-keys config)
-                          "\n")))
-    `((".ssh/authorized_keys" ,authorized-keys)
+  (let* ((ssh-config (plain-file "ssh.conf"
+                                 (openssh-configuration->string config)))
+         (known-hosts (home-openssh-configuration-known-hosts config))
+         (authorized-keys (home-openssh-configuration-authorized-keys config))
+         (authorized-keys (and
+                           authorized-keys
+                           (file-join "authorized_keys" authorized-keys "\n"))))
+    `(,@(if authorized-keys
+            `((".ssh/authorized_keys" ,authorized-keys))
+            '())
       ,@(if (unspecified? known-hosts)
             '()
             `((".ssh/known_hosts"
                ,(file-join "known_hosts" known-hosts "\n"))))
-      (".ssh/config" ,config))))
+      (".ssh/config" ,ssh-config))))
 
 (define openssh-activation
   (with-imported-modules (source-module-closure
