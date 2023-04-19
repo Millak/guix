@@ -1688,8 +1688,9 @@ is hereby granted."))))
      (list #:configure-flags
            #~'("-DCMAKE_INSTALL_LIBDIR:PATH=lib"
                "-DENABLE_STATIC=0"
-               ;; djpeg-shared-3x2-float-prog-cmp fails on 32-bit PPC.
-               #$@(if (string=? "powerpc-linux" (%current-system))
+               ;; djpeg-shared-3x2-float-prog-cmp fails on some systems.
+               #$@(if (or (target-ppc32?)
+                          (target-riscv64?))
                       '("-DFLOATTEST=NO")
                       '())
                ;; The build system probes for the current CPU, but
