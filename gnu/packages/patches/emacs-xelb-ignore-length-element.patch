@@ -1,0 +1,19 @@
+Work around build failure due to XCB "length" element.
+Patch from <https://sources.debian.org/patches/xelb/0.18-4/>.
+
+Author: Martin <debacle@debian.org>
+Bug: https://github.com/ch11ng/xelb/issues/28
+Bug-Debian: https://bugs.debian.org/1017294
+
+---
+--- a/el_client.el
++++ b/el_client.el
+@@ -519,7 +519,7 @@
+     (`list (xelb-parse-list node))
+     (`exprfield (xelb-parse-exprfield node))
+     (`switch (xelb-parse-switch node))
+-    ((or `comment `doc))                ;simply ignored
++    ((or `comment `doc `length))                ;simply ignored
+     (x (error "Unsupported structure content: <%s>" x))))
+ 
+ ;; The car of the result shall be renamed to prevent duplication of slot names
