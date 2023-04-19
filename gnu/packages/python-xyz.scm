@@ -12192,13 +12192,13 @@ number of lines in the contained files easily.")
   (hidden-package
    (package
      (name "python-fonttools")
-     (version "4.37.1")
+     (version "4.39.3")
      (source (origin
                (method url-fetch)
                (uri (pypi-uri "fonttools" version ".zip"))
                (sha256
                 (base32
-                 "1ryc1wca2v92wn24baryj5fr32lspl8rbsig32fnkxp1islf21j6"))))
+                 "1msibi5cmi5znykkg66dq7xshl07lkqjxhrz5hcipqvlggsvjd4j"))))
      (build-system python-build-system)
      (native-inputs
       (list unzip))
