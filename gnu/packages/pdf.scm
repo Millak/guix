@@ -1615,7 +1615,7 @@ manipulating PDF documents from the command line.  It supports
            python-cairosvg
            python-cffi
            python-cssselect2
-           python-fonttools-full
+           python-fonttools
            python-html5lib
            python-pillow
            python-pydyf

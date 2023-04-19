@@ -379,7 +379,7 @@ but also provides many useful font conversion and analysis facilities.
                 (invoke "pytest" "-vv")))))))
     (native-inputs (list python-pytest python-setuptools-scm python-wheel))
     (inputs (list python-afdko))
-    (propagated-inputs (list python-fonttools))
+    (propagated-inputs (list python-fonttools-minimal))
     (home-page "https://github.com/adobe-type-tools/cffsubr")
     (synopsis "Compact Font Format (CFF) subroutinizer")
     (description "This package provides the @command{cffsubr} command, a
@@ -409,7 +409,7 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
                 ((", \"setuptools_git_ls_files\"") "")))))))
     (native-inputs (list python-pytest python-pytest-runner
                          python-setuptools-scm))
-    (propagated-inputs (list python-fonttools))
+    (propagated-inputs (list python-fonttools-minimal))
     (home-page "https://github.com/googlefonts/compreffor")
     (synopsis "Compact Font Format (CFF) subroutinizer for fontTools")
     (description "This package provides a Compact Font Format (CFF)
@@ -427,7 +427,7 @@ subroutinizer for fontTools.")
        (sha256
         (base32 "1x762r7bf39g6aivfvrmq00h6f07abvs9x1xm0fz8l81vq8jz64c"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-fonttools-full))
+    (propagated-inputs (list python-fonttools))
     (native-inputs
      (list python-cython
            python-defcon
@@ -484,7 +484,7 @@ to generate OpenType font binaries from Unified Font Objects (UFOs).")
        (sha256
         (base32 "070v1jz5f18g15if459ppwswq4w5hzffwp1gvdc5j47bgz5qflva"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-fonttools))
+    (propagated-inputs (list python-fonttools-minimal))
     (native-inputs
      (list python-setuptools-scm
            python-pytest
@@ -510,7 +510,7 @@ font, glyph, etc. mathematical operations on font data.")
         (base32 "1za15dzsnymq6d9x7xdfqwgw4a3003wj75fn2crhyidkfd2s3nd6"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))
-    (propagated-inputs (list python-fonttools))
+    (propagated-inputs (list python-fonttools-minimal))
     (native-inputs (list unzip))
     (home-page "https://github.com/robofab-developers/fontPens")
     (synopsis "Python classes implementing the pen protocol")
@@ -561,7 +561,7 @@ implementing the pen protocol for manipulating glyphs.")
       (list python-booleanoperations
             python-defcon-bootstrap
             python-fontmath
-            python-fonttools))
+            python-fonttools-minimal))
      (native-inputs (list python-setuptools-scm unzip))
      (home-page "https://github.com/robotools/fontParts")
      (synopsis "Library for interacting with font parts")
@@ -645,7 +645,7 @@ to UFOs and DesignSpace files via @code{defcon} and @code{designspaceLib}.")
                    (invoke "pytest" "-vv" "tests/testusage.py")))))))
   (native-inputs (list python-pytest python-setuptools-scm))
   (propagated-inputs
-   (list python-defcon python-fonttools python-glyphslib))
+   (list python-defcon python-fonttools-minimal python-glyphslib))
   (home-page "https://github.com/googlefonts/glyphsets/")
   (synopsis "Evaluate coverage of glyph sets")
   (description
@@ -701,7 +701,8 @@ different scripts and languages.")
        (sha256
         (base32 "0r1qq45np49x14zz1zwkaayqrn7m8dn2jlipjldg2ihnmpzw29w1"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-defcon python-fontmath python-fonttools))
+    (propagated-inputs (list python-defcon python-fontmath
+                             python-fonttools-minimal))
     (native-inputs (list unzip))
     (home-page "https://github.com/LettError/MutatorMath")
     (synopsis "Piecewise linear interpolation Python library")
@@ -869,7 +870,7 @@ paths (intersection, union, difference, xor).")
      (list python-defcon
            python-fontmath
            python-fontparts
-           python-fonttools
+           python-fonttools-minimal
            python-mutatormath))
     (native-inputs (list python-setuptools-scm unzip))
     (home-page "https://github.com/LettError/ufoProcessor")
@@ -1331,7 +1332,7 @@ applications should be.")
          "01jzhwnj1c3d68dmw15jdxly0hwkmd8ja4kw755rbkykn1ly2qyx"))))
    (build-system cmake-build-system)
    (native-inputs
-    (list python python-fonttools))
+    (list python python-fonttools-minimal))
    (inputs
     (list freetype))
    (synopsis "Reimplementation of the SIL Graphite text processing engine")
@@ -1611,7 +1612,7 @@ with @samp{nameIDs}.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools-scm))
-    (propagated-inputs (list python-attrs python-fonttools-full))
+    (propagated-inputs (list python-attrs python-fonttools))
     (home-page "https://github.com/fonttools/ufoLib2")
     (synopsis "Unified Font Object (UFO) font processing library")
     (description "The ufoLib2 Python library is meant to be a thin
@@ -1635,7 +1636,7 @@ API-compatible with defcon.")
        (sha256
         (base32 "0i1a306b8c42dpbplwxj6ili2aac5lwq2ir6r1jswicysvk9dqxf"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-fontpens-bootstrap python-fonttools-full))
+    (propagated-inputs (list python-fontpens-bootstrap python-fonttools))
     (native-inputs
      (list python-pytest
            python-pytest-runner

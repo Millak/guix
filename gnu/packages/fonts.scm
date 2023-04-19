@@ -2469,7 +2469,7 @@ It comes in seven weights and Roman, Italic and Oblique styles.")
      `(("fontforge" ,fontforge)
        ("harfbuzz" ,harfbuzz "bin")
        ("python" ,python-minimal)
-       ("python-fonttools" ,python-fonttools)
+       ("python-fonttools-minimal" ,python-fonttools-minimal)
        ("python-brotli" ,python-brotli)))
     (arguments
      `(#:make-flags (list "PY=python3"

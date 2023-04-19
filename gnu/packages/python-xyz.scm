@@ -7149,7 +7149,7 @@ tests = True~%" (assoc-ref inputs "tcl") (assoc-ref inputs "tk"))))))
            python-certifi
            python-cycler
            python-dateutil
-           python-fonttools
+           python-fonttools-minimal
            python-kiwisolver
            python-numpy
            python-packaging
@@ -12188,10 +12188,10 @@ number of lines in the contained files easily.")
     (license license:expat)))
 
 ;;; Tests are left out in the main package to avoid cycles.
-(define-public python-fonttools
+(define-public python-fonttools-minimal
   (hidden-package
    (package
-     (name "python-fonttools")
+     (name "python-fonttools-minimal")
      (version "4.39.3")
      (source (origin
                (method url-fetch)
@@ -12213,48 +12213,48 @@ also contains a tool called “TTX” which converts TrueType/OpenType fonts to 
 from an XML-based format.")
      (license license:expat))))
 
-;;; Rename 'python-fonttools' in next cycle, renaming the current
-;;; 'python-fonttools' to 'python-fonttools-minimal'.
-(define-public python-fonttools-full
-  (package/inherit python-fonttools
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-fonttools)
-       ((#:tests? _ #f)
-        (not (%current-target-system)))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "pytest" "-vv"
-                         "-k"
-                         ;; XXX: These tests need .trm files that are
-                         ;; not shipped with the PyPI release.
-                         (format #f "not ~a"
-                                 (string-join
-                                  '("test_read_fontdimens_mathsy"
-                                    "test_read_fontdimens_mathex"
-                                    "test_read_fontdimens_vanilla"
-                                    "test_read_boundary_char"
-                                    "fontTools.tfmLib"
-                                    ;; The MtiTest tests fail for unknown
-                                    ;; reasons (see:
-                                    ;; https://github.com/fonttools/
-                                    ;; fonttools/issues/3078)
-                                    "MtiTest")
-                                  " and not "))))))))))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-fonttools)
-       (append python-pytest)))
-    (propagated-inputs
-     (list python-brotli
-           python-fs
-           python-lxml
-           python-lz4
-           python-scipy
-           python-unicodedata2
-           python-zopfli))
-    (properties (alist-delete 'hidden? (package-properties python-fonttools)))))
+(define-public python-fonttools
+  (let ((base python-fonttools-minimal))
+    (package/inherit base
+      (name "python-fonttools")
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:tests? _ #f)
+          (not (%current-target-system)))
+         ((#:phases phases '%standard-phases)
+          `(modify-phases ,phases
+             (replace 'check
+               (lambda* (#:key tests? #:allow-other-keys)
+                 (when tests?
+                   (invoke "pytest" "-vv"
+                           "-k"
+                           ;; XXX: These tests need .trm files that are
+                           ;; not shipped with the PyPI release.
+                           (format #f "not ~a"
+                                   (string-join
+                                    '("test_read_fontdimens_mathsy"
+                                      "test_read_fontdimens_mathex"
+                                      "test_read_fontdimens_vanilla"
+                                      "test_read_boundary_char"
+                                      "fontTools.tfmLib"
+                                      ;; The MtiTest tests fail for unknown
+                                      ;; reasons (see:
+                                      ;; https://github.com/fonttools/
+                                      ;; fonttools/issues/3078)
+                                      "MtiTest")
+                                    " and not "))))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (append python-pytest)))
+      (propagated-inputs
+       (list python-brotli
+             python-fs
+             python-lxml
+             python-lz4
+             python-scipy
+             python-unicodedata2
+             python-zopfli))
+      (properties (alist-delete 'hidden? (package-properties base))))))
 
 (define-public python-ly
   (package

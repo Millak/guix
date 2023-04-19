@@ -938,7 +938,7 @@ basic geometries.")
        (sha256
         (base32 "1f41lb19m8azchl1aqz6j5ycbspb8jsf1cnn42hlydxd68f85ylc"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-fonttools python-pyclipper))
+    (propagated-inputs (list python-fonttools-minimal python-pyclipper))
     (native-inputs
      (list python-defcon-bootstrap
            python-fontpens-bootstrap
