@@ -1428,7 +1428,11 @@ the tty to run, among other things."
     (list (shepherd-service
            (documentation "Run libc's name service cache daemon (nscd).")
            (provision '(nscd))
-           (requirement '(user-processes))
+
+           ;; Logs are written with syslog(3), which writes to /dev/console
+           ;; when nobody's listening--ugly.  Thus, wait for syslogd.
+           (requirement '(user-processes syslogd))
+
            (start #~(make-forkexec-constructor
                      (list #$nscd "-f" #$nscd.conf "--foreground")
 
