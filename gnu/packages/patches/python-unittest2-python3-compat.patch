@@ -32,3 +32,15 @@ index 683f662..347eea5 100644
      def test_loadTestsFromNames__relative_malformed_name(self):
          loader = unittest.TestLoader()
  
+diff --git a/unittest2/compatibility.py b/unittest2/compatibility.py
+index 9e5f1a5..2d20c19 100644
+--- a/unittest2/compatibility.py
++++ b/unittest2/compatibility.py
+@@ -140,6 +140,6 @@ except ImportError:
+ ###  ChainMap (helper for configparser and string.Template)
+ ########################################################################
+ 
+-class ChainMap(collections.MutableMapping):
++class ChainMap(collections.abc.MutableMapping):
+     ''' A ChainMap groups multiple dicts (or other mappings) together
+     to create a single, updateable view.
