@@ -2962,13 +2962,6 @@ database is translated at Transifex.")
               (substitute* "Makefile.am"
                 (("/bin/bash") (which "bash")))
               (delete-file "configure")))
-          (add-after 'unpack 'patch-docbook-xml
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Modify the man XML otherwise xmlto tries to access the network
-              (substitute* "man/system-config-printer.xml"
-                (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                 (string-append (assoc-ref inputs "docbook-xml")
-                                "/xml/dtd/docbook/")))))
           (add-after 'install 'add-install-to-pythonpath
             (@@ (guix build python-build-system) add-install-to-pythonpath))
           (add-after 'add-install-to-pythonpath 'wrap-for-python
