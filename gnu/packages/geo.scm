@@ -19,7 +19,7 @@
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -245,44 +245,31 @@ than 600 operators available.")
     (outputs '("out" "doc"))
     (arguments
      `(#:configure-flags
-       (list
-        "--disable-static"
-        "--enable-gtk-doc"
-        "--enable-vala"
-        (string-append "--with-html-dir="
-                       (assoc-ref %outputs "doc")
-                       "/share/gtk-doc/html"))
+       (list "--disable-static"
+             "--enable-gtk-doc"
+             "--enable-vala"
+             (string-append "--with-html-dir=" #$output "/share/gtk-doc/html"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-autogen
            (lambda _
              (substitute* "autogen.sh"
                (("\\./configure \"\\$@\"")
-                ""))
-             #t))
-         (add-after 'patch-autogen 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "docs/reference"
-               (substitute* "libmemphis-docs.sgml"
-                 (("http://www.oasis-open.org/docbook/xml/4.3/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t)))))
+                "")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("seed" ,seed)
-       ("vala" ,vala)))
-    (inputs
-     (list expat glib))
-    (propagated-inputs
-     (list cairo))
+     (list autoconf
+           automake
+           docbook-xml-4.3
+           gobject-introspection
+           gtk-doc/stable
+           libtool
+           libxml2                      ;for XML_CATALOG_FILES
+           pkg-config
+           python-wrapper
+           seed
+           vala))
+    (inputs (list expat glib))
+    (propagated-inputs (list cairo))
     (synopsis "Map-rendering for OpenSteetMap")
     (description "Memphis is a map-rendering application and a library for
 OpenStreetMap written in C using eXpat, Cairo and GLib.")
