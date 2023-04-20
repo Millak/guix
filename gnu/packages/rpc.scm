@@ -108,7 +108,7 @@
                    (find-files "." "\\.a$"))))
              #t)))))
     (inputs
-     (list abseil-cpp c-ares/cmake openssl re2 zlib))
+     (list abseil-cpp-cxxstd11 c-ares/cmake openssl re2 zlib))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("protobuf" ,protobuf)
