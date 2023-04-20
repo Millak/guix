@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -443,13 +443,13 @@ functions for strings and common data structures.")
     (properties (alist-delete 'hidden? (package-properties glib)))
     (outputs (cons "doc" (package-outputs glib))) ; 20 MiB of GTK-Doc reference
     (native-inputs
-     `(("docbook-xml-4.2" ,docbook-xml-4.2)
-       ("docbook-xml-4.5" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gtk-doc" ,gtk-doc)
-       ("libxml2" ,libxml2)
-       ("xsltproc" ,libxslt)
-       ,@(package-native-inputs glib)))
+     (modify-inputs (package-native-inputs glib)
+       (prepend docbook-xml-4.2
+                docbook-xml
+                docbook-xsl
+                gtk-doc
+                libxml2
+                libxslt)))
     (arguments
      (substitute-keyword-arguments (package-arguments glib)
        ((#:configure-flags flags ''())
@@ -457,16 +457,6 @@ functions for strings and common data structures.")
                 (delete "-Dman=false" #$flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
-            (add-after 'unpack 'patch-docbook-xml
-              (lambda* (#:key inputs #:allow-other-keys)
-                (with-directory-excursion "docs"
-                  (substitute* (find-files "." "\\.xml$")
-                    (("http://www.oasis-open.org/docbook/xml/4\\.5/")
-                     (string-append (assoc-ref inputs "docbook-xml-4.5")
-                                    "/xml/dtd/docbook/"))
-                    (("http://www.oasis-open.org/docbook/xml/4\\.2/")
-                     (string-append (assoc-ref inputs "docbook-xml-4.2")
-                                    "/xml/dtd/docbook/"))))))
             (add-after 'install 'move-doc
               (lambda _
                 (let ((html "/share/gtk-doc"))
