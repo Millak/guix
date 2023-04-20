@@ -460,6 +460,12 @@ powerful, standard and open protocol.")
                            version ".tar.gz"))
        (sha256
         (base32 "1x8rliydhbibmzwdbyr7pd7n87m2jmxnqkpvaalnf4154hj1hfwb"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Add missing #include that causes a build failure with glibc 2.35.
+        #~(substitute* "tests/regression/client/client.c"
+            (("_GNU_SOURCE" all)
+             (string-append all "\n#include <sys/socket.h>\n"))))
        (patches
         (search-patches "libotr-test-auth-fix.patch"))))
     (build-system gnu-build-system)
