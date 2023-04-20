@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
-;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022, 2023 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2021, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
@@ -1176,47 +1176,32 @@ Python.")
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:parallel-tests? #f
-        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (with-directory-excursion "doc"
-               (substitute* (find-files "." "\\.xml$")
-                 (("http://www.oasis-open.org/docbook/xml/4\\.5/")
-                  (string-append (assoc-ref (or native-inputs inputs)
-                                            "docbook-xml")
-                                 "/xml/dtd/docbook/"))
-                 (("http://www.oasis-open.org/docbook/xml/4\\.2/")
-                  (string-append (assoc-ref (or native-inputs inputs)
-                                            "docbook-xml-4.2")
-                                 "/xml/dtd/docbook/"))))))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))))))))
+     (list #:parallel-tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'move-doc
+                 (lambda _
+                   (mkdir-p (string-append #$output:doc "/share"))
+                   (rename-file
+                    (string-append #$output "/share/doc")
+                    (string-append #$output:doc "/share/doc")))))))
     (native-inputs
-     `(("docbook-xml-4.2" ,docbook-xml-4.2)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("xmlto" ,xmlto)
-       ("xsltproc" ,libxslt)
-       ,@(if (%current-target-system)
-             `(("pkg-config-for-build" ,pkg-config-for-build)
-               ("wayland" ,this-package)) ; for wayland-scanner
-             '())))
-    (inputs
-     (list expat libxml2))           ; for XML_CATALOG_FILES
-    (propagated-inputs
-     (list libffi))
+     (append
+      (list docbook-xml-4.2
+            docbook-xml
+            docbook-xsl
+            graphviz
+            doxygen
+            pkg-config
+            python
+            xmlto
+            libxslt)
+      (if (%current-target-system)
+          (list pkg-config-for-build
+                this-package)           ;for wayland-scanner
+          '())))
+    (inputs (list expat libxml2))       ;for XML_CATALOG_FILES
+    (propagated-inputs (list libffi))
     (home-page "https://wayland.freedesktop.org/")
     (synopsis "Core Wayland window system code and protocol")
     (description "Wayland is a project to define a protocol for a compositor to
