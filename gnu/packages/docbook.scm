@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Andrew Whatson <whatson@gmail.com>
@@ -53,14 +53,14 @@
 (define-public docbook-xml-5
   (package
     (name "docbook-xml")
-    (version "5.0.1")
+    (version "5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://docbook.org/xml/" version
-                                  "/docbook-" version ".zip"))
+                                  "/docbook-v" version "-os.zip"))
               (sha256
                (base32
-                "1iz3hq1lqgnshvlz4j9gvh4jy1ml74qf90vqf2ikbq0h4i2xzybs"))))
+                "0zqy9prj9wam9dn7v3mgr7ld1axqxdhgrmv06dviwg00ahv43wxk"))))
     (build-system copy-build-system)
     (arguments
      (list
