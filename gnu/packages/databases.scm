@@ -1223,7 +1223,7 @@ and high-availability (HA).")
                 (invoke "make" "postgres.info")
                 (install-file "postgres.info"
                               (string-append #$output "/share/info"))))))))
-    (native-inputs (list docbook-xml docbook2x libxml2 perl texinfo))
+    (native-inputs (list docbook-xml-4.5 docbook2x libxml2 perl texinfo))
     (inputs (list readline `(,util-linux "lib") openssl zlib))
     (home-page "https://www.postgresql.org/")
     (synopsis "Powerful object-relational database system")

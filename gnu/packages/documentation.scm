@@ -166,7 +166,7 @@ release/xsl/current")
     (native-inputs
      (list autoconf))
     (inputs
-     (list python docbook-xml docbook-xsl libxml2 libxslt))
+     (list python docbook-xml-4.5 docbook-xsl libxml2 libxslt))
     (home-page "https://asciidoc.org/")
     (synopsis "Text-based document generation system")
     (description

@@ -760,7 +760,7 @@ the freedesktop.org XDG Base Directory specification.")
              (substitute* "src/login/elogind.c"
                (("\"/run/elogind.pid\"") "\"/run/systemd/elogind.pid\"")))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml)
+     `(("docbook-xml" ,docbook-xml-4.5)
        ("docbook-xml-4.2" ,docbook-xml-4.2)
        ("docbook-xsl" ,docbook-xsl)
        ("gettext" ,gettext-minimal)
@@ -1188,7 +1188,7 @@ Python.")
     (native-inputs
      (append
       (list docbook-xml-4.2
-            docbook-xml
+            docbook-xml-4.5
             docbook-xsl
             graphviz
             doxygen

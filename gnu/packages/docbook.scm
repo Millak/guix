@@ -50,7 +50,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system python))
 
-(define-public docbook-xml-5
+(define-public docbook-xml
   (package
     (name "docbook-xml")
     (version "5.1")
@@ -97,10 +97,9 @@ suited to books and papers about computer hardware and software (though it is
 by no means limited to these applications.)  This package provides XML DTDs.")
     (license (license:x11-style "" "See file headers."))))
 
-(define-public docbook-xml
+(define-public docbook-xml-4.5
   (package
-    (inherit docbook-xml-5)
-    (name "docbook-xml")
+    (inherit docbook-xml)
     (version "4.5")
     (source (origin
               (method url-fetch/zipbomb)
@@ -709,7 +708,7 @@ Detect the differences in markup between two SGML files.
     (build-system gnu-build-system)
     (inputs
      `(("bash-minimal" ,bash-minimal)
-       ("docbook-xml" ,docbook-xml)
+       ("docbook-xml" ,docbook-xml-4.5)
        ("perl" ,perl)
        ("perl-xml-namespacesupport" ,perl-xml-namespacesupport)
        ("perl-xml-parser" ,perl-xml-parser)

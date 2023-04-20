@@ -1609,7 +1609,7 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)
        ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml-5)
+       ("docbook-xml" ,docbook-xml)
        ("libxml2" ,libxml2)          ;for XML_CATALOG_FILES
        ("xsltproc" ,libxslt)))
     (inputs
