@@ -1748,23 +1748,16 @@ client devices can handle.")
     (arguments
      ;; GTK 4.x depends on Rust (indirectly) so pull it only on platforms
      ;; where it is supported.
-     `(#:configure-flags ,(if (supported-package? gtk)
-                              `(list "-Dlibnma_gtk4=true")
-                              `(list "-Dlibnma_gtk4=false"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "libnma-docs.xml"
-               (("http://.*/docbookx\\.dtd")
-                (search-input-file
-                 inputs "xml/dtd/docbook/docbookx.dtd"))))))))
+     (list #:configure-flags (if (supported-package? gtk)
+                                 #~(list "-Dlibnma_gtk4=true")
+                                 #~(list "-Dlibnma_gtk4=false"))))
     (native-inputs
      (list docbook-xml-4.3
            gettext-minimal
            `(,glib "bin")
            gtk-doc/stable
            gobject-introspection
+           libxml2                      ;for XML_CATALOG_FILES
            pkg-config
            vala))
     (inputs
