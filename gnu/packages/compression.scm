@@ -840,11 +840,7 @@ decompression of some loosely related file formats used by Microsoft.")
     (build-system gnu-build-system)
     (outputs (list "out" "static"))
     (native-inputs
-     (append
-       (list python)    ;; For tests.
-       (if (member (%current-system) (package-supported-systems valgrind))
-         (list valgrind)
-         '())))
+     (list python)) ;; For tests.
     (arguments
      `(;; Not designed for parallel testing.
        ;; See https://github.com/lz4/lz4/issues/957#issuecomment-737419821
@@ -860,16 +856,14 @@ decompression of some loosely related file formats used by Microsoft.")
              (substitute* "tests/Makefile"
                ;; This fails when $prefix is not a single top-level directory.
                (("^test: (.*) test-install" _ targets)
-                (string-append "test: " targets)))
-             #t))
+                (string-append "test: " targets)))))
          (add-after 'install 'move-static-library
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
                    (static (assoc-ref outputs "static")))
                (mkdir-p (string-append static "/lib"))
                (rename-file (string-append out "/lib/liblz4.a")
-                            (string-append static "/lib/liblz4.a"))
-               #t))))))
+                            (string-append static "/lib/liblz4.a"))))))))
     (home-page "https://www.lz4.org")
     (synopsis "Compression algorithm focused on speed")
     (description "LZ4 is a lossless compression algorithm, providing
