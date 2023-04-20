@@ -31,6 +31,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
@@ -207,6 +208,8 @@ type information of gRPC.")
        (modules '((guix build utils) (ice-9 ftw)))
        (snippet
         '(begin
+           ;; Delete this generated file.
+           (delete-file "src/python/grpcio/grpc/_cython/cygrpc.cpp")
            (with-directory-excursion "third_party"
              ;; Delete the bundled source code of libraries that are possible
              ;; to provide as inputs.
@@ -218,18 +221,23 @@ type information of gRPC.")
                                                  "address_sorting"
                                                  "upb"
                                                  "xxhash")))))))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'use-system-libraries
             (lambda _
+              (substitute* "setup.py"
+                (("EXTENSION_INCLUDE_DIRECTORIES = \\(" m)
+                 (string-append m " ('" #$(this-package-input "grpc")
+                                "/include/grpc/impl/codegen/',) + ")))
               (setenv "GRPC_PYTHON_BUILD_SYSTEM_CARES" "1")
               (setenv "GRPC_PYTHON_BUILD_SYSTEM_OPENSSL" "1")
               (setenv "GRPC_PYTHON_BUILD_SYSTEM_ZLIB" "1")
               (setenv "GRPC_PYTHON_BUILD_SYSTEM_RE2" "1")
               (setenv "GRPC_PYTHON_BUILD_SYSTEM_ABSL" "1")
+              (setenv "GRPC_PYTHON_BUILD_WITH_CYTHON" "1")
               ;; Fix the linker options to link with abseil-cpp, which is
               ;; looked under /usr/lib.
               (substitute* "setup.py"
@@ -241,7 +249,9 @@ type information of gRPC.")
               (substitute* '("setup.py" "src/python/grpcio/commands.py")
                 (("'cc'") "'gcc'")))))))
     (inputs
-     (list abseil-cpp c-ares openssl re2 zlib))
+     (list abseil-cpp-20211102.0 c-ares grpc-for-python-grpcio openssl re2 zlib))
+    (native-inputs
+     (list python-cython))
     (propagated-inputs
      (list python-six))
     (home-page "https://grpc.io")
