@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Milran <milranmike@protonmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,6 +67,7 @@
   #:use-module (guix build-system qt)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils))
 
@@ -88,115 +90,100 @@
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "gtk" "qt" "doc"))
     (arguments
-     `(#:imported-modules
-       (,@%glib-or-gtk-build-system-modules
-        (guix build cmake-build-system)
-        (guix build qt-build-system)
-        (guix build qt-utils))
-       #:modules
-       ((guix build glib-or-gtk-build-system)
-        ((guix build qt-build-system)
-         #:prefix qt:)
-        (guix build utils))
-       #:configure-flags
-       (list
-        "--with-im-config-data"
-        "--with-imsettings-data"
-        (string-append "--with-html-dir="
-                       (assoc-ref %outputs "doc")
-                       "/share/gtk-doc/html"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-qt4
-           (lambda _
-             (substitute* '("configure.ac" "modules/clients/Makefile.am")
-               (("\\[QtGui\\]")
-                "[Qt5Gui]")
-               ((" qt4")
-                ""))
-             #t))
-         (add-after 'disable-qt4 'patch-flags
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "configure.ac"
-               (("-Werror")
-                "-Wno-error"))
-             #t))
-         (add-after 'patch-flags 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "docs"
-               (substitute* "nimf-docs.xml"
-                 (("http://www.oasis-open.org/docbook/xml/4.3/")
-                  (string-append (assoc-ref inputs "docbook-xml-4.3")
-                                 "/xml/dtd/docbook/"))))
-             #t))
-         (add-after 'patch-docbook-xml 'patch-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "configure.ac"
-               (("/usr/share/anthy/anthy.dic")
-                (search-input-file inputs "/share/anthy/anthy.dic")))
-             (substitute* "configure.ac"
-               (("/usr/bin:\\$GTK3_LIBDIR/libgtk-3-0")
-                (string-append (assoc-ref inputs "gtk+:bin")
-                               "/bin:$GTK3_LIBDIR/libgtk-3-0"))
-               (("/usr/bin:\\$GTK2_LIBDIR/libgtk2.0-0")
-                (string-append (assoc-ref inputs "gtk+-2:bin")
-                               "/bin:$GTK2_LIBDIR/libgtk2.0-0")))
-             (substitute* "modules/clients/gtk/Makefile.am"
-               (("\\$\\(GTK3_LIBDIR\\)")
-                (string-append (assoc-ref outputs "gtk")
-                               "/lib"))
-               (("\\$\\(GTK2_LIBDIR\\)")
-                (string-append (assoc-ref outputs "gtk")
-                               "/lib")))
-             (substitute* "modules/clients/qt5/Makefile.am"
-               (("\\$\\(QT5_IM_MODULE_DIR\\)")
-                (string-append (assoc-ref outputs "qt")
-                               "/lib/qt5/plugins/inputmethods")))
-             (substitute* '("bin/nimf-settings/Makefile.am"
-                            "data/apparmor-abstractions/Makefile.am"
-                            "data/Makefile.am" "data/im-config/Makefile.am"
-                            "data/imsettings/Makefile.am")
-               (("/etc")
-                (string-append (assoc-ref outputs "out")
-                               "/etc"))
-               (("/usr/share")
-                (string-append (assoc-ref outputs "out")
-                               "/share")))
-             #t))
-         (add-after 'install 'qt-wrap
-           (assoc-ref qt:%standard-phases 'qt-wrap)))))
+     (list
+      #:imported-modules `(,@%glib-or-gtk-build-system-modules
+                           (guix build cmake-build-system)
+                           (guix build qt-build-system)
+                           (guix build qt-utils))
+      #:modules '((guix build glib-or-gtk-build-system)
+                  ((guix build qt-build-system)
+                   #:prefix qt:)
+                  (guix build utils))
+      #:configure-flags
+      #~(list "--with-im-config-data"
+              "--with-imsettings-data"
+              (string-append "--with-html-dir=" #$output:doc
+                             "/share/gtk-doc/html"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-qt4
+            (lambda _
+              (substitute* '("configure.ac" "modules/clients/Makefile.am")
+                (("\\[QtGui\\]")
+                 "[Qt5Gui]")
+                ((" qt4")
+                 ""))))
+          (add-after 'disable-qt4 'patch-flags
+            (lambda _
+              (substitute* "configure.ac"
+                (("-Werror")
+                 "-Wno-error"))))
+          (add-after 'patch-flags 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "configure.ac"
+                (("/usr/share/anthy/anthy.dic")
+                 (search-input-file inputs "/share/anthy/anthy.dic")))
+              (substitute* "configure.ac"
+                ;; Do not provide the PATH argument to AC_PATH_PROG; so that
+                ;; the needed binaries are looked from PATH (the default
+                ;; behavior).
+                (("\\[/usr/bin:\\$GTK3_LIBDIR/libgtk-3-0]")
+                 "")
+                (("\\[/usr/bin:\\$GTK2_LIBDIR/libgtk2.0-0]")
+                 "")
+                (("\\[/usr/bin:\\$GTK3_LIBDIR/libgtk-3-0:\
+\\$GTK2_LIBDIR/libgtk2.0-0]")
+                 ""))
+              (substitute* "modules/clients/gtk/Makefile.am"
+                (("\\$\\(GTK3_LIBDIR\\)")
+                 (string-append #$output:gtk "/lib"))
+                (("\\$\\(GTK2_LIBDIR\\)")
+                 (string-append #$output:gtk "/lib")))
+              (substitute* "modules/clients/qt5/Makefile.am"
+                (("\\$\\(QT5_IM_MODULE_DIR\\)")
+                 (string-append #$output:qt
+                                "/lib/qt5/plugins/inputmethods")))
+              (substitute* '("bin/nimf-settings/Makefile.am"
+                             "data/apparmor-abstractions/Makefile.am"
+                             "data/Makefile.am" "data/im-config/Makefile.am"
+                             "data/imsettings/Makefile.am")
+                (("/etc")
+                 (string-append #$output "/etc"))
+                (("/usr/share")
+                 (string-append #$output "/share")))))
+          (add-after 'install 'qt-wrap
+            (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("docbook-xml-4.3" ,docbook-xml-4.3)
-       ("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+-2:bin" ,gtk+-2 "bin")
-       ("gtk+:bin" ,gtk+ "bin")
-       ("gtk-doc" ,gtk-doc/stable)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list autoconf
+           automake
+           docbook-xml-4.3
+           gettext-minimal
+           gobject-introspection
+           `(,gtk+-2 "bin")
+           `(,gtk+ "bin")
+           gtk-doc/stable
+           intltool
+           libtool
+           perl
+           pkg-config
+           which))
     (inputs
-     `(("anthy" ,anthy)
-       ("appindicator" ,libappindicator)
-       ("gtk+-2" ,gtk+-2)
-       ("gtk+" ,gtk+)
-       ("hangul" ,libhangul)
-       ("m17n-db" ,m17n-db)
-       ("m17n-lib" ,m17n-lib)
-       ("qtbase" ,qtbase-5)
-       ("rime" ,librime)
-       ("rsvg" ,librsvg)
-       ("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)
-       ("x11" ,libx11)
-       ("xkbcommon" ,libxkbcommon)
-       ("xklavier" ,libxklavier)))
-    (propagated-inputs
-     (list glib))
+     (list anthy
+           libappindicator
+           gtk+-2
+           gtk+
+           libhangul
+           m17n-db
+           m17n-lib
+           qtbase-5
+           librime
+           librsvg
+           wayland
+           wayland-protocols
+           libx11
+           libxkbcommon
+           libxklavier))
+    (propagated-inputs (list glib))
     (synopsis "Lightweight input method framework")
     (description "Nimf is a lightweight, fast and extensible input method
 framework.  This package provides a fork of the original nimf project, that
