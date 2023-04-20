@@ -260,14 +260,6 @@
       #:configure-flags #~(list "-Dgtk_doc=true")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-docbook-xml
-            (lambda* (#:key inputs #:allow-other-keys)
-              (with-directory-excursion "doc"
-                (substitute* "gupnp-igd-docs.xml"
-                  (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                   (string-append #$(this-package-native-input
-                                     "docbook-xml")
-                                  "/xml/dtd/docbook/"))))))
           (add-before 'check 'set-home
             (lambda _
               ;; A test using GIO expects ~/.config/glib-2.0/settings to be
@@ -286,6 +278,7 @@
            gobject-introspection
            gsettings-desktop-schemas
            gtk-doc/stable
+           libxml2                      ;for XML_CATALOG_FILES
            pkg-config))
     (propagated-inputs
      ;; These libraries are required by the .pc file.
