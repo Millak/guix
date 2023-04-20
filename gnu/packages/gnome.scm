@@ -8301,11 +8301,6 @@ users.")
                 ((".*test-lldp.*") "")
                 ((".*test-route-linux.*") "")
                 ((".*test-tc-linux.*") ""))))
-          (add-after 'unpack 'patch-docbook-xml
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* (find-files "." ".*\\.(xsl|xml)")
-                (("http://.*/docbookx\\.dtd")
-                 (search-input-file inputs "xml/dtd/docbook/docbookx.dtd")))))
           (add-before 'check 'pre-check
             (lambda _
               ;; For the missing /etc/machine-id.
