@@ -2015,7 +2015,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/unzip-32bit-zipbomb-fix.patch    \
   %D%/packages/patches/ustr-fix-build-with-gcc-5.patch		\
   %D%/packages/patches/util-linux-tests.patch			\
-  %D%/packages/patches/valgrind-enable-arm.patch			\
   %D%/packages/patches/vboot-utils-fix-format-load-address.patch	\
   %D%/packages/patches/vboot-utils-fix-tests-show-contents.patch	\
   %D%/packages/patches/vboot-utils-skip-test-workbuf.patch	\

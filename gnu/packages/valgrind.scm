@@ -38,9 +38,7 @@
 (define-public valgrind
   (package
     (name "valgrind")
-    ;; Note: check "guix refresh -l -e '(@ (gnu packages valgrind) valgrind)'"
-    ;; when updating this package to find which branch it should go to.
-    (version "3.17.0")
+    (version "3.20.0")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/pub/valgrind"
@@ -49,8 +47,7 @@
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "18l5jbk301j3462gipqn9bkfx44mdmwn0pwr73r40gl1irkfqfmd"))
-              (patches (search-patches "valgrind-enable-arm.patch"))))
+                "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))))
     (build-system gnu-build-system)
     (outputs '("doc"                              ;16 MB
                "out"))
@@ -69,15 +66,13 @@
                (substitute* (find-files dir "\\.supp$")
                  (("obj:/lib") "obj:*/lib")
                  (("obj:/usr/X11R6/lib") "obj:*/lib")
-                 (("obj:/usr/lib") "obj:*/lib"))
-               #t)))
+                 (("obj:/usr/lib") "obj:*/lib")))))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((orig (format #f "~a/share/doc" (assoc-ref outputs "out")))
                    (dest (format #f "~a/share" (assoc-ref outputs "doc"))))
                (mkdir-p dest)
-               (rename-file orig dest)
-               #t))))))
+               (rename-file orig dest)))))))
     (native-inputs
      (list perl))
     (home-page "https://www.valgrind.org/")
@@ -97,16 +92,6 @@ also use Valgrind to build new tools.")
 (define-public valgrind/interactive
   (package/inherit
    valgrind
-   (version "3.20.0")
-   (source (origin
-             (method url-fetch)
-             (uri (list (string-append "https://sourceware.org/pub/valgrind"
-                                       "/valgrind-" version ".tar.bz2")
-                        (string-append "ftp://sourceware.org/pub/valgrind"
-                                       "/valgrind-" version ".tar.bz2")))
-             (sha256
-              (base32
-               "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))))
    (inputs
     ;; GDB is needed to provide a sane default for `--db-command'.
     (list gdb `(,(canonical-package glibc) "debug")))
