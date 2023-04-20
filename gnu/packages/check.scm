@@ -2564,13 +2564,13 @@ each of the environments.")
 (define-public python-pytest-flakes
   (package
     (name "python-pytest-flakes")
-    (version "4.0.1")
+    (version "4.0.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-flakes" version))
               (sha256
                (base32
-                "0045h3hnrkn2jwr42jgy2j98npx4amwr6wxzi9j0nppaqz33l49p"))))
+                "0959qfxb4ayvfxvmpargvh4zfhwdq5l77gczhzv33bhmfblk8ccm"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2583,8 +2583,7 @@ each of the environments.")
              (add-installed-pythonpath inputs outputs)
              (invoke "py.test" "-vv" "-k" "not test_syntax_error"))))))
     (native-inputs
-     (list python-coverage python-pytest python-pytest-cache
-           python-pytest-pep8))
+     (list python-coverage python-pytest python-pytest-pep8))
     (propagated-inputs
      (list python-pyflakes))
     (home-page "https://github.com/fschulze/pytest-flakes")
