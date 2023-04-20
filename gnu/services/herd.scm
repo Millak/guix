@@ -282,14 +282,10 @@ returns a shepherd <service> object."
                          `(primitive-load ,file))
                        files))))
 
-(define (load-services/safe files)
-  "This is like 'load-services', but make sure only the subset of FILES that
-can be safely reloaded is actually reloaded."
-  (eval-there `(let ((services (map primitive-load ',files)))
-                 ;; Since version 0.5.0 of the Shepherd, registering a service
-                 ;; that has the same name as an already-registered service
-                 ;; makes it a "replacement" of that previous service.
-                 (apply register-services services))))
+(define load-services/safe
+  ;; Deprecated.  It used to behave differently before service replacements
+  ;; were a thing.
+  load-services)
 
 (define* (start-service name #:optional (arguments '()))
   (invoke-action name 'start arguments
