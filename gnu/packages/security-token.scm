@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -582,30 +583,19 @@ Notable features:
                 "0vrivl1dwql6nfi48z6dy56fwy2z13d7abgahgrs2mcmqng7hra2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-gtk-doc"
-             (string-append "--with-udevrulesdir="
-                            (assoc-ref %outputs "out")
-                            "/lib/udev/rules.d"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Avoid a network connection attempt during the build.
-             (substitute* "gtk-doc/u2f-host-docs.xml"
-               (("http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/docbookx.dtd")))
-             #t)))))
-    (inputs
-     (list json-c-0.13 hidapi))
+     (list #:configure-flags
+           #~(list "--enable-gtk-doc"
+                   (string-append "--with-udevrulesdir=" #$output
+                                  "/lib/udev/rules.d"))))
+    (inputs (list json-c-0.13 hidapi))
     (native-inputs
      (list help2man
            gengetopt
            pkg-config
            gtk-doc
            docbook-xml-4.3
-           eudev))
+           eudev
+           libxml2))                    ;for XML_CATALOG_FILES
     (home-page "https://developers.yubico.com/libu2f-host/")
     ;; TRANSLATORS: The U2F protocol has a "server side" and a "host side".
     (synopsis "U2F host-side C library and tool")
