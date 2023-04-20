@@ -3425,34 +3425,24 @@ XML/CSS rendering engine.")
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
-     (list
-      #:configure-flags
-      #~(list
-         "--disable-static"
-         "--enable-introspection"
-         (string-append "--with-gir-dir=" #$output
-                        "/share/gir-"
-                        #$(version-major
-                           (package-version gobject-introspection))
-                        ".0")
-         (string-append "--with-typelib-dir=" #$output
-                        "/lib/girepository-"
-                        #$(version-major
-                           (package-version gobject-introspection))
-                        ".0")
-         (string-append "--with-html-dir=" #$output
-                        "/share/gtk-doc/html")
-         "--with-zlib"
-         "--with-bz2")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-docbook-xml
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (with-directory-excursion "doc"
-                (substitute* "gsf-docs.xml"
-                  (("http://www.oasis-open.org/docbook/xml/4.5/")
-                   (search-input-directory (or native-inputs inputs)
-                                           "xml/dtd/docbook")))))))))
+     (list #:configure-flags
+           #~(list
+              "--disable-static"
+              "--enable-introspection"
+              (string-append "--with-gir-dir=" #$output
+                             "/share/gir-"
+                             #$(version-major
+                                (package-version gobject-introspection))
+                             ".0")
+              (string-append "--with-typelib-dir=" #$output
+                             "/lib/girepository-"
+                             #$(version-major
+                                (package-version gobject-introspection))
+                             ".0")
+              (string-append "--with-html-dir=" #$output
+                             "/share/gtk-doc/html")
+              "--with-zlib"
+              "--with-bz2")))
     (native-inputs
      (list docbook-xml
            gettext-minimal
