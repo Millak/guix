@@ -125,13 +125,6 @@
                 (substitute* '("ibus-share.c" "ibus-compose.c"
                                "ibus-keypress.c")
                   (("[ \t]*return g_test_run \\(\\);") "")))))
-          (add-after 'unpack 'patch-docbook-xml
-            (lambda* (#:key inputs #:allow-other-keys)
-              (with-directory-excursion "docs/reference/ibus"
-                (substitute* "ibus-docs.sgml.in"
-                  (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                   (string-append #$(this-package-native-input "docbook-xml")
-                                  "/xml/dtd/docbook/"))))))
           (add-after 'unpack 'patch-python-target-directories
             (lambda _
               (let ((root (string-append #$output
