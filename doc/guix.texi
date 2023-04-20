@@ -42601,10 +42601,10 @@ Name of this host declaration.
 @item @code{host-name} (type: maybe-string)
 Host name---e.g., @code{"foo.example.org"} or @code{"192.168.1.2"}.
 
-@item @code{address-family} (type: address-family)
+@item @code{address-family} (type: maybe-address-family)
 Address family to use when connecting to this host: one of
-@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only), or
-@code{*unspecified*} (allowing any address family).
+@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only).
+Additionally, the field can be left unset to allow any address family.
 
 @item @code{identity-file} (type: maybe-string)
 The identity file to use---e.g., @code{"/home/charlie/.ssh/id_ed25519"}.
