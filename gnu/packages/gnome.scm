@@ -480,65 +480,52 @@ bindings.")
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:configure-flags
-       (list
-        "--disable-static"
-        "--enable-xorg-module"
-        (string-append "--with-html-dir="
-                       (assoc-ref %outputs "doc")
-                       "/share/gtk-doc/html")
-        "--with-webkit=4.0")
-       #:phases
-       (modify-phases %standard-phases
-         ;; The seed-webkit.patch patches configure.ac.
-         ;; So the source files need to be re-bootstrapped.
-         (add-after 'unpack 'trigger-bootstrap
-           (lambda _
-             (for-each delete-file
-                       (list
-                        "configure"
-                        "Makefile.in"))
-             #t))
-         (add-after 'unpack 'patch-tests
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (find-files "." "\\.js$")
-              (("#!/usr/bin/env seed")
-               (string-append "#!" (getcwd) "/src/seed")))
-             #t))
-         (add-before 'build 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc"
-               (substitute* '("reference/seed-docs.sgml" "modules/book.xml")
-                 (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t)))))
+     (list #:configure-flags
+           #~(list "--disable-static"
+                   "--enable-xorg-module"
+                   (string-append "--with-html-dir=" #$output:doc
+                                  "/share/gtk-doc/html")
+                   "--with-webkit=4.0")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; The seed-webkit.patch patches configure.ac.
+               ;; So the source files need to be re-bootstrapped.
+               (add-after 'unpack 'trigger-bootstrap
+                 (lambda _
+                   (for-each delete-file
+                             (list "configure"
+                                   "Makefile.in"))))
+               (add-after 'unpack 'patch-tests
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* (find-files "." "\\.js$")
+                     (("#!/usr/bin/env seed")
+                      (string-append "#!" (getcwd) "/src/seed"))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("docbook-xml" ,docbook-xml-4.1.2)
-       ("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           docbook-xml-4.1.2
+           gettext-minimal
+           gobject-introspection
+           gtk-doc/stable
+           intltool
+           libtool
+           pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("dbus" ,dbus)
-       ("dbus-glib" ,dbus-glib)
-       ("gnome-js-common" ,gnome-js-common)
-       ("gtk+" ,gtk+)
-       ("gtk+-2" ,gtk+-2)
-       ("libffi" ,libffi)
-       ("libxml2" ,libxml2)
-       ("mpfr" ,mpfr)
-       ("readline" ,readline)
-       ("sqlite" ,sqlite)
-       ("xscrnsaver" ,libxscrnsaver)))
+     (list cairo
+           dbus
+           dbus-glib
+           gnome-js-common
+           gtk+
+           gtk+-2
+           libffi
+           libxml2
+           mpfr
+           readline
+           sqlite
+           libxscrnsaver))
     (propagated-inputs
-     `(("glib" ,glib)
-       ("webkit" ,webkitgtk-with-libsoup2)))
+     (list glib
+           webkitgtk-with-libsoup2))
     (synopsis "GObject JavaScriptCore bridge")
     (description "Seed is a library and interpreter, dynamically bridging
 (through GObjectIntrospection) the WebKit JavaScriptCore engine, with the
