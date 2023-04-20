@@ -263,15 +263,7 @@ application-centers for distributions.")
                 ;; This test timeouts despite changing the value of
                 ;; 'CK_DEFAULT_TIMEOUT' to 600 (see:
                 ;; https://gitlab.freedesktop.org/farstream/farstream/-/issues/20).
-                (("^\ttransmitter/nice.*") ""))))
-          (add-after 'unpack 'patch-docbook-xml
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (with-directory-excursion "docs"
-                (substitute* '("libs/farstream-libs-docs.sgml"
-                               "plugins/farstream-plugins-docs.sgml")
-                  (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                   (search-input-directory (or native-inputs inputs)
-                                           "xml/dtd/docbook/")))))))))
+                (("^\ttransmitter/nice.*") "")))))))
     (native-inputs
      (list autoconf
            automake
@@ -280,6 +272,7 @@ application-centers for distributions.")
            gobject-introspection
            gtk-doc/stable
            libtool
+           libxml2                      ;for XML_CATALOG_FILES
            libxslt
            perl
            pkg-config
