@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
-;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020, 2022 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
@@ -1091,14 +1091,22 @@ Google's C++ code base.")
           `(cons* "-DABSL_BUILD_TESTING=ON"
                   (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
-(define-public abseil-cpp-cxxstd17
+(define (abseil-cpp-for-c++-standard version)
   (let ((base abseil-cpp))
     (hidden-package
      (package/inherit base
        (arguments
         (substitute-keyword-arguments (package-arguments base)
           ((#:configure-flags flags)
-           #~(cons* "-DCMAKE_CXX_STANDARD=17" #$flags))))))))
+           #~(cons* #$(string-append "-DCMAKE_CXX_STANDARD="
+                                     (number->string version))
+                    #$flags))))))))
+
+(define-public abseil-cpp-cxxstd17
+  (abseil-cpp-for-c++-standard 17))             ;XXX: the default with GCC 11?
+
+(define-public abseil-cpp-cxxstd11
+  (abseil-cpp-for-c++-standard 11))
 
 (define-public pegtl
   (package
