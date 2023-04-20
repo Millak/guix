@@ -1624,15 +1624,6 @@ message bus.")
          "-Dsystemdsystemunitdir=/tmp/empty")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-references
-           ;; Having XML_CATALOG_FILES set is not enough; xmlto does not seem
-           ;; to honor it.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "." "\\.xml(\\.in)?$")
-               (("http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd")
-                (search-input-file inputs "share/xml/dbus-1/introspect.dtd"))
-               (("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd")
-                (search-input-file inputs "xml/dtd/docbook/docbookx.dtd")))))
          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "meson_post_install.py"
