@@ -805,51 +805,35 @@ credentials and service-specific settings.")
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:configure-flags
-       (list
-        "-Dbuild-documentation=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "docs"
-               (substitute* (find-files "." "\\.xml$")
-                 (("http://www.oasis-open.org/docbook/xml/4\\.1\\.2/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))
-               #t))))))
+     (list #:configure-flags #~(list "-Dbuild-documentation=true")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'move-doc
+                          (lambda _
+                            (mkdir-p (string-append #$output:doc "/share"))
+                            (rename-file
+                             (string-append #$output "/share/doc")
+                             (string-append #$output:doc "/share/doc")))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.1.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("m4" ,m4)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)
-       ("xsltproc" ,libxslt)))
-    (inputs
-     (list boost))
+     (list docbook-xml-4.1.2
+           docbook-xsl
+           graphviz
+           doxygen
+           m4
+           mm-common
+           perl
+           pkg-config
+           libxml2
+           libxslt))
+    (inputs (list boost))
     (home-page "https://libsigcplusplus.github.io/libsigcplusplus/")
     (synopsis "Type-safe callback system for standard C++")
     (description
      "Libsigc++ implements a type-safe callback system for standard C++.  It
-     allows you to define signals and to connect those signals to any callback
-     function, either global or a member function, regardless of whether it is
-     static or virtual.
-
-     It also contains adaptor classes for connection of dissimilar callbacks and
-     has an ease of use unmatched by other C++ callback libraries.")
+allows you to define signals and to connect those signals to any callback
+function, either global or a member function, regardless of whether it is
+static or virtual.  It also contains adaptor classes for connection of
+dissimilar callbacks and has an ease of use unmatched by other C++ callback
+libraries.")
     (license license:lgpl3+)))
 
  (define-public libsigc++-2
