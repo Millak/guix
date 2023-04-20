@@ -53,6 +53,7 @@
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -205,14 +206,14 @@
 (define-public audacious
   (package
     (name "audacious")
-    (version "4.2")
+    (version "4.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://distfiles.audacious-media-player.org/"
                            "audacious-" version ".tar.bz2"))
        (sha256
-        (base32 "1cq4brifp992dhg0sbf180jjdv137g5wk8ac7hmzx0d4f3j09czy"))))
+        (base32 "14chrsh1dacw5r2qpzw0rhg2lchpbya90y96r6w0vry78p44sn17"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -256,7 +257,7 @@
            (uri (string-append "https://distfiles.audacious-media-player.org/"
                                "audacious-plugins-" version ".tar.bz2"))
            (sha256
-            (base32 "0zs1k91z272ql49qr7kxlxb0lajamc9ra41pgj3ynh8h7afgd83g"))))
+            (base32 "1ilzz2fv0mirlfhzhrcbccv996slj65z1ifibzrx0w5xqk4gcbk6"))))
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for gdbus-codegen
        ("pkg-config" ,pkg-config)))
@@ -290,6 +291,7 @@
            mesa
            mpg123
            neon
+           opusfile
            pulseaudio
            sdl2
            soxr
