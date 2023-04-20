@@ -20,6 +20,7 @@
 (define-module (gnu home services ssh)
   #:use-module (guix gexp)
   #:use-module (guix records)
+  #:use-module (guix deprecation)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (gnu services)
@@ -32,6 +33,8 @@
   #:autoload   (gnu packages base) (glibc-utf8-locales)
   #:use-module (gnu packages ssh)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
@@ -55,6 +58,12 @@
             openssh-host-host-key-algorithms
             openssh-host-accepted-key-types
             openssh-host-extra-content
+            proxy-jump
+            proxy-jump-host-name
+            proxy-jump-port
+            proxy-jump-user
+            proxy-command
+            proxy-command->string
 
             home-openssh-service-type
             home-ssh-agent-service-type))
@@ -114,6 +123,54 @@
 
 (define-maybe string-list)
 
+(define-record-type <proxy-command>
+  (proxy-command command)
+  proxy-command?
+  (command proxy-command->string))
+
+(set-record-type-printer! <proxy-command>
+  (lambda (obj port)
+    (format port "#<proxy-command ~s>" (proxy-command->string obj))))
+
+(define-configuration/no-serialization proxy-jump
+  (user
+   maybe-string
+   "User name on the remote host.")
+  (host-name
+   (string)
+   "Host name---e.g., @code{foo.example.org} or @code{192.168.1.2}.")
+  (port
+   maybe-natural-number
+   "TCP port number to connect to."))
+
+(define (proxy-jump->string proxy-jump)
+  (match-record proxy-jump <proxy-jump>
+    (host-name user port)
+    (string-append
+      (if (maybe-value-set? user) (string-append user "@") "")
+      host-name
+      (if (maybe-value-set? port) (string-append ":" (number->string port)) ""))))
+
+(define (proxy-command-or-jump-list? x)
+  (or (proxy-command? x)
+      (and (list? x)
+           (every proxy-jump? x))))
+
+(define (serialize-proxy-command-or-jump-list field value)
+  (if (proxy-command? value)
+    (serialize-string 'proxy-command (proxy-command->string value))
+    (serialize-string-list 'proxy-jump (map proxy-jump->string value))))
+
+(define-maybe proxy-command-or-jump-list)
+
+(define (sanitize-proxy-command properties)
+  (lambda (value)
+  (when (maybe-value-set? value)
+    (warn-about-deprecation 'proxy-command properties #:replacement 'proxy))
+  (unless (maybe-string? value)
+    (configuration-field-error (source-properties->location properties) 'proxy-command value))
+  value))
+
 (define-configuration openssh-host
   (name
    (string)
@@ -155,7 +212,13 @@ machine.")
    maybe-string
    "The command to use to connect to the server.  As an example, a command
 to connect via an HTTP proxy at 192.0.2.0 would be: @code{\"nc -X
-connect -x 192.0.2.0:8080 %h %p\"}.")
+connect -x 192.0.2.0:8080 %h %p\"}.  Using 'proxy-command' is deprecated, use
+'proxy' instead."
+   (sanitizer (sanitize-proxy-command (current-source-location))))
+  (proxy
+   maybe-proxy-command-or-jump-list
+   "The command to use to connect to the server or a list of SSH hosts to jump
+through before connecting to the server.")
   (host-key-algorithms
    maybe-string-list
    "The list of accepted host key algorithms---e.g.,

@@ -42630,10 +42630,31 @@ machine.
 @item @code{compression?} (default: @code{#f}) (type: boolean)
 Whether to compress data in transit.
 
-@item @code{proxy-command} (type: maybe-string)
-The command to use to connect to the server.  As an example, a command
-to connect via an HTTP proxy at 192.0.2.0 would be: @code{"nc -X connect
--x 192.0.2.0:8080 %h %p"}.
+@item @code{proxy} (type: maybe-proxy-command-or-jump-list)
+The command to use to connect to the server or a list of SSH hosts to
+jump through before connecting to the server.  The field may be set to either a
+@code{proxy-command} or a list of @code{proxy-jump} records.
+
+As an example, a @code{proxy-command} to connect via an HTTP proxy at 192.0.2.0
+would be constructed with: @code{(proxy-command "nc -X connect -x
+192.0.2.0:8080 %h %p")}.
+
+@deftp {Data Type} proxy-jump
+Available @code{proxy-jump} fields are:
+
+@table @asis
+@item @code{user} (type: maybe-string)
+User name on the remote host.
+
+@item @code{host-name} (type: string)
+Host name---e.g., @code{foo.example.org} or @code{192.168.1.2}.
+
+@item @code{port} (type: maybe-natural-number)
+TCP port number to connect to.
+
+@end table
+
+@end deftp
 
 @item @code{host-key-algorithms} (type: maybe-string-list)
 The list of accepted host key algorithms---e.g.,
