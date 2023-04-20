@@ -11819,30 +11819,20 @@ tabs, and it supports drag and drop re-ordering of terminals.")
         (base32 "1z8sbx7g19c1p8dy0sn0l25qfvrd2j28h269lsqm1y98r818h2k1"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       '("-Dglade_catalog=enabled"
-         ;; XXX: Generating the documentation fails because the
-         ;; libhandy.devhelp2 document cannot be created. This seems to be
-         ;; caused by a problem during the XSL transformation.
-         "-Dgtk_doc=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (for-each
-              (lambda (file)
-                (substitute* file
-                  (("http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd")
-                   (search-input-file inputs
-                                      "/xml/dtd/docbook/docbookx.dtd"))))
-              (find-files "doc" "\\.xml"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1"))))))
-    (inputs
-     (list gtk+ glade3))
+     (list #:configure-flags
+           #~(list "-Dglade_catalog=enabled"
+                   ;; XXX: Generating the documentation fails because the
+                   ;; libhandy.devhelp2 document cannot be created. This seems
+                   ;; to be caused by a problem during the XSL transformation.
+                   "-Dgtk_doc=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pre-check
+                 (lambda _
+                   ;; Tests require a running X server.
+                   (system "Xvfb :1 &")
+                   (setenv "DISPLAY" ":1"))))))
+    (inputs (list gtk+ glade3))
     (native-inputs
      (list gobject-introspection        ; for g-ir-scanner
            `(,glib "bin")
