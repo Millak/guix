@@ -6928,14 +6928,14 @@ parse and apply unified diffs.  It has features such as:
 (define-public python-numexpr
   (package
     (name "python-numexpr")
-    (version "2.7.3")
+    (version "2.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numexpr" version))
        (sha256
         (base32
-         "09d8yfsx33ddwfkpn8805w2mxnn4cvf47yc66g4azldpz4lnaqa3"))))
+         "0iv1h1lvry5vmzqyvwxfbckyhzm1vbb1bmhmj4dnj64d84vjahym"))))
     (build-system python-build-system)
     (arguments `(#:tests? #f))          ; no tests included
     (propagated-inputs
