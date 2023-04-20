@@ -141,12 +141,6 @@ the <tz.h> library for handling time zones and leap seconds.")
                                 "-DICAL_GLIB_VAPI=true")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-docbook-reference
-            (lambda _
-              (substitute* "doc/reference/libical-glib/libical-glib-docs.sgml.in"
-                (("http://www.oasis-open.org/docbook/xml/4.3/")
-                 (string-append #$(this-package-native-input "docbook-xml")
-                                "/xml/dtd/docbook/")))))
           (add-before 'configure 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (define zoneinfo (search-input-directory inputs "share/zoneinfo"))
