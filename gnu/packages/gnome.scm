@@ -4430,12 +4430,6 @@ passwords in the GNOME keyring.")
               (substitute* "codegen/valaccodecompiler.c"
                 (("cc_command = \"cc\"")
                  "cc_command = \"gcc\""))))
-          (add-after 'unpack 'patch-docbook-xml
-            (lambda* (#:key inputs #:allow-other-keys)
-              (with-directory-excursion "doc/manual"
-                (substitute* '("manual.xml" "version.xml.in")
-                  (("http://www.oasis-open.org/docbook/xml/4.4/")
-                   (search-input-directory inputs "xml/dtd/docbook"))))))
           (add-before 'check 'pre-check
             (lambda _
               (substitute* "valadoc/tests/libvaladoc/tests-extra-environment.sh"
