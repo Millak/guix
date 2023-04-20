@@ -421,27 +421,13 @@ services.")
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:configure-flags
-       (list
-        "--enable-gtk-doc"
-        (string-append "--with-html-dir="
-                       (assoc-ref %outputs "doc")
-                       "/share/gtk-doc/html"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc/reference"
-               (substitute* "libgrss-docs.sgml"
-                 (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t)))))
-    (native-inputs
-     (list docbook-xml-4.1.2 gobject-introspection gtk-doc/stable
-           pkg-config))
-    (propagated-inputs
-     (list glib libsoup-minimal-2 libxml2))
+     (list #:configure-flags
+           #~(list "--enable-gtk-doc" (string-append "--with-html-dir="
+                                                     #$output
+                                                     "/share/gtk-doc/html"))))
+    (native-inputs (list docbook-xml-4.1.2 gobject-introspection gtk-doc/stable
+                         pkg-config))
+    (propagated-inputs (list glib libsoup-minimal-2 libxml2))
     (synopsis "Glib library for feeds")
     (description "LibGRSS is a Glib abstraction to handle feeds in RSS, Atom,
 and other formats.")
