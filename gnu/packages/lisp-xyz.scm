@@ -6349,7 +6349,7 @@ addition, removal, and random selection.")
 (define-public sbcl-quri
   (package
     (name "sbcl-quri")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -6358,7 +6358,7 @@ addition, removal, and random selection.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wrrhbj3r4lph5y3hhfbv4g2pvg24hbgl06irq9lyiycy3bgai4w"))))
+        (base32 "0l1jnvvkyaxbf08lnqfdbv6lrkq02iqr3y3rwvqxm4fvnzp7mnpz"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs (list sbcl-prove))
     (inputs (list sbcl-babel sbcl-split-sequence sbcl-cl-utilities

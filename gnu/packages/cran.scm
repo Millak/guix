@@ -14594,6 +14594,34 @@ Make (2015, ISBN:978-9881443519) and drake (2018,
 <doi:10.21105/joss.00550>).")
     (license license:expat)))
 
+(define-public r-tidygeocoder
+  (package
+    (name "r-tidygeocoder")
+    (version "1.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "tidygeocoder" version))
+              (sha256
+               (base32
+                "1ffj8ka5miv3jnds7fdrkcqdc3m2w1ab724z9m10biky213skqka"))))
+    (properties `((upstream-name . "tidygeocoder")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-httr
+                             r-jsonlite
+                             r-lifecycle
+                             r-progress
+                             r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://jessecambon.github.io/tidygeocoder/")
+    (synopsis
+     "Intuitive interface for getting data from geocoding services")
+    (description
+     "Tidygeocoder makes getting data from geocoding services easy.
+A unified high-level interface is provided for a selection of supported
+geocoding services and results are returned in tibble format.")
+    (license license:expat)))
+
 (define-public r-dvmisc
   (package
     (name "r-dvmisc")
