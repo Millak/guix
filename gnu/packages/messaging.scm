@@ -35,7 +35,7 @@
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -210,43 +210,29 @@ XMPP-based sessions.")
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-ncurses-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "meson.build"
-               (("'/usr'")
-                (string-append "'"
-                               (assoc-ref inputs "ncurses")
-                               "'")))))
-         (add-before 'configure 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc"
-               (substitute* "libgnt-docs.xml"
-                 (("http://www.oasis-open.org/docbook/xml/4.1.2/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))))
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/gtk-doc")
-                (string-append doc "/share/gtk-doc"))))))))
+     (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-ncurses-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "meson.build"
+                     (("'/usr'")
+                      (string-append "'" #$(this-package-input "ncurses")
+                                     "'")))))
+               (add-after 'install 'move-doc
+                 (lambda _
+                   (mkdir-p (string-append #$output:doc "/share"))
+                   (rename-file
+                    (string-append #$output "/share/gtk-doc")
+                    (string-append #$output:doc "/share/gtk-doc")))))))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.1.2)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list ncurses))
-    (propagated-inputs
-     `(("glib" ,glib)
-       ("libxml" ,libxml2)
-       ("python" ,python-2)))
+     (list docbook-xml-4.1.2
+           `(,glib "bin")
+           gobject-introspection
+           gtk-doc
+           pkg-config))
+    (inputs (list ncurses))
+    (propagated-inputs (list glib libxml2 python-2))
     (synopsis "GLib Ncurses Toolkit")
     (description "GNT is an ncurses toolkit for creating text-mode graphical
 user interfaces in a fast and easy way.  It is based on GLib and ncurses.")
