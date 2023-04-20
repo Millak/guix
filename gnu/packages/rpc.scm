@@ -171,10 +171,12 @@ browsers to backend services.")
                               "src/core/lib/iomgr/ev_epollex_linux.cc")
                  (("gettid\\(")
                   "sys_gettid("))))))))
+    (inputs
+     (modify-inputs (package-inputs grpc)
+       (replace "abseil-cpp" abseil-cpp-20200923.3)))
     (native-inputs
      (modify-inputs (package-native-inputs grpc)
-       (delete "abseil-cpp" "protobuf")
-       (prepend abseil-cpp-20200923.3 protobuf-3.6)))))
+       (replace "protobuf" protobuf-3.6)))))
 
 (define-public python-grpc-stubs
   (package
