@@ -37,7 +37,7 @@ rm -f "$profile" "$tmpfile"
 trap 'rm -f "$profile" "$profile.lock" "$profile-"[0-9]* "$tmpfile"; rm -rf "$module_dir" t-home-'"$$" EXIT
 
 # Use `-e' with a non-package expression.
-! guix package --bootstrap -e +
+guix package --bootstrap -e + && false
 
 # Install a store item and make sure the version and output in the manifest
 # are correct.
@@ -57,23 +57,23 @@ guix gc --list-live | grep "`readlink "$profile-1-link"`"
 # Installing the same package a second time does nothing.
 guix package --bootstrap -p "$profile" -i guile-bootstrap
 test -L "$profile" && test -L "$profile-1-link"
-! test -f "$profile-2-link"
+test ! -f "$profile-2-link"
 test -f "$profile/bin/guile"
 
 # Unsupported packages cannot be installed.
-! guix package -e '(begin (use-modules (guix) (gnu packages base)) (package (inherit sed) (supported-systems (list))))' -n
+guix package -e '(begin (use-modules (guix) (gnu packages base)) (package (inherit sed) (supported-systems (list))))' -n && false
 case $(uname -m) in
     x86_64|i[3456]86)
-	! guix package -i novena-eeprom -n
+	guix package -i novena-eeprom -n && false
 	break;;
     *)
-	! guix package -i intelmetool -n
+	guix package -i intelmetool -n && false
 	break;;
 esac
 
 # Collisions are properly flagged (in this case, 'g-wrap' propagates
 # guile@2.2, which conflicts with guile@2.0.)
-! guix package --bootstrap -n -p "$profile" -i g-wrap guile@2.0
+guix package --bootstrap -n -p "$profile" -i g-wrap guile@2.0 && false
 
 guix package --bootstrap -n -p "$profile" -i g-wrap guile@2.0 \
      --allow-collisions
@@ -88,7 +88,7 @@ test "`guix package -p "$profile" --search-paths | wc -l`" = 1  # $PATH
   type -P rm )
 
 # Exit with 1 when a generation does not exist.
-! guix package -p "$profile" --delete-generations=42
+guix package -p "$profile" --delete-generations=42 && false
 
 # Exit with 0 when trying to delete the zeroth generation.
 guix package -p "$profile" --delete-generations=0
@@ -101,12 +101,12 @@ guix package --bootstrap -i "glibc:debug" -p "$profile" -n
 
 # Make sure nonexistent outputs are reported.
 guix package --bootstrap -i "guile-bootstrap:out" -p "$profile" -n
-! guix package --bootstrap -i "guile-bootstrap:does-not-exist" -p "$profile" -n
-! guix package --bootstrap -i "guile-bootstrap:does-not-exist" -p "$profile"
+guix package --bootstrap -i "guile-bootstrap:does-not-exist" -p "$profile" -n && false
+guix package --bootstrap -i "guile-bootstrap:does-not-exist" -p "$profile" && false
 
 # Make sure we get an error when trying to remove something that's not
 # installed.
-! guix package --bootstrap -r something-not-installed -p "$profile"
+guix package --bootstrap -r something-not-installed -p "$profile" && false
 
 # Check whether `--list-available' returns something sensible.
 guix package -p "$profile" -A 'gui.*e' | grep guile
@@ -118,8 +118,8 @@ guix package --show=guile | grep "^name: guile"
 guix package --show=texlive
 
 # Fail for non-existent packages or package/version pairs.
-! guix package --show=does-not-exist
-! guix package --show=emacs@42
+guix package --show=does-not-exist && false
+guix package --show=emacs@42 && false
 
 # Search.
 LC_MESSAGES=C
@@ -163,19 +163,19 @@ guix package --search="" > /dev/null
 # There's no generation older than 12 months, so the following command should
 # have no effect.
 generation="`readlink_base "$profile"`"
-! guix package -p "$profile" --delete-generations=12m
+guix package -p "$profile" --delete-generations=12m && false
 test "`readlink_base "$profile"`" = "$generation"
 
 # The following command should not delete the current generation, even though
 # it matches the given pattern (see <http://bugs.gnu.org/19978>.)  And since
 # there's nothing else to delete, it should just fail.
 guix package --list-generations -p "$profile"
-! guix package --bootstrap -p "$profile" --delete-generations=1..
+guix package --bootstrap -p "$profile" --delete-generations=1.. && false
 test "`readlink_base "$profile"`" = "$generation"
 
 # Make sure $profile is a GC root at this point.
 real_profile="`readlink -f "$profile"`"
-! guix gc -d "$real_profile"
+guix gc -d "$real_profile" && false
 test -d "$real_profile"
 
 # Now, let's remove all the symlinks to $real_profile, and make sure
@@ -278,22 +278,22 @@ do
     guix gc --list-live | grep "`readlink "$profile_link"`"
 
     guix package --bootstrap --roll-back
-    ! test -f "$HOME/.guix-profile/bin"
-    ! test -f "$HOME/.guix-profile/lib"
+    test ! -f "$HOME/.guix-profile/bin"
+    test ! -f "$HOME/.guix-profile/lib"
     test "`readlink "$default_profile"`" = "`basename $default_profile-0-link`"
 done
 
 # Check whether '-p ~/.guix-profile' makes any difference.
 # See <http://bugs.gnu.org/17939>.
-! test -e "$HOME/.guix-profile-0-link"
-! test -e "$HOME/.guix-profile-1-link"
+test ! -e "$HOME/.guix-profile-0-link"
+test ! -e "$HOME/.guix-profile-1-link"
 guix package --bootstrap -p "$HOME/.guix-profile" -i guile-bootstrap
-! test -e "$HOME/.guix-profile-1-link"
+test ! -e "$HOME/.guix-profile-1-link"
 guix package --bootstrap --roll-back -p "$HOME/.guix-profile"
-! test -e "$HOME/.guix-profile-0-link"
+test ! -e "$HOME/.guix-profile-0-link"
 
 # Extraneous argument.
-! guix package install foo-bar
+guix package install foo-bar && false
 
 # Make sure the "broken pipe" doesn't yield an error.
 # Note: 'pipefail' is a Bash-specific option.
@@ -382,7 +382,7 @@ cat > "$module_dir/package.scm"<<EOF
 
 (define my-package coreutils)   ;returns *unspecified*
 EOF
-! guix package --bootstrap --install-from-file="$module_dir/package.scm"
+guix package --bootstrap --install-from-file="$module_dir/package.scm" && false
 
 rm "$module_dir/package.scm"
 

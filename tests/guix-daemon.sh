@@ -224,7 +224,7 @@ daemon_pid=$!
 GUIX_DAEMON_SOCKET="guix://$tcp_socket"
 export GUIX_DAEMON_SOCKET
 
-! guix gc
+guix gc && false
 
 unset GUIX_DAEMON_SOCKET
 kill "$daemon_pid"

@@ -109,7 +109,7 @@ EOF
     guix home extension-graph "home.scm" | grep 'label = "home"'
 
     # There are no Shepherd services so the one below must fail.
-    ! guix home shepherd-graph "home.scm"
+    guix home shepherd-graph "home.scm" && false
 
     if container_supported
     then
@@ -118,17 +118,17 @@ EOF
         # TODO: Make container independent from external environment variables.
         SHELL=bash
 	guix home container home.scm -- true
-	! guix home container home.scm -- false
+	guix home container home.scm -- false && false
 	test "$(guix home container home.scm -- echo '$HOME')" = "$HOME"
 	guix home container home.scm -- cat '~/.config/test.conf' | \
 	    grep "the content of"
 	guix home container home.scm -- test -h '~/.bashrc'
 	test "$(guix home container home.scm -- id -u)" = 1000
-	! guix home container home.scm -- test -f '$HOME/sample/home.scm'
+	guix home container home.scm -- test -f '$HOME/sample/home.scm' && false
 	guix home container home.scm --expose="$PWD=$HOME/sample" -- \
 	     test -f '$HOME/sample/home.scm'
-	! guix home container home.scm --expose="$PWD=$HOME/sample" -- \
-	     rm -v '$HOME/sample/home.scm'
+	guix home container home.scm --expose="$PWD=$HOME/sample" -- \
+	     rm -v '$HOME/sample/home.scm' && false
     else
 	echo "'guix home container' test SKIPPED" >&2
     fi
@@ -206,8 +206,8 @@ EOF
 # the NEW content of bashrc-test-config.sh"
 
     # This file must have been removed and not backed up.
-    ! test -e "$HOME/.config/test.conf"
-    ! test -e "$HOME"/*guix-home*backup/.config/test.conf
+    test ! -e "$HOME/.config/test.conf"
+    test ! -e "$HOME"/*guix-home*backup/.config/test.conf
 
     test "$(cat "$(configuration_file)")" == "$(cat home.scm)"
     test "$(canonical_file_name)" == "$(readlink "${HOME}/.guix-home")"

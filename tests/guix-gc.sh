@@ -36,11 +36,11 @@ unset out
 # For some operations, passing extra arguments is an error.
 for option in "" "-C 500M" "--verify" "--optimize" "--list-roots"
 do
-    ! guix gc $option whatever
+    guix gc $option whatever && false
 done
 
 # This should fail.
-! guix gc --verify=foo
+guix gc --verify=foo && false
 
 # Check the references of a .drv.
 drv="`guix build guile-bootstrap -d`"
@@ -51,7 +51,7 @@ guix gc --references "$drv" | grep -e -bash
 guix gc --references "$out"
 guix gc --references "$out/bin/guile"
 
-! guix gc --references /dev/null;
+guix gc --references /dev/null && false
 
 # Check derivers.
 guix gc --derivers "$out" | grep "$drv"
@@ -62,7 +62,7 @@ test -f "$drv"
 
 guix gc --list-dead | grep "$drv"
 guix gc --delete "$drv"
-! test -f "$drv"
+test ! -f "$drv"
 
 # Add a .drv, register it as a root.
 drv="`guix build --root=guix-gc-root lsh -d`"
@@ -71,18 +71,18 @@ test -f "$drv" && test -L guix-gc-root
 guix gc --list-roots | grep "$PWD/guix-gc-root"
 
 guix gc --list-live | grep "$drv"
-! guix gc --delete "$drv";
+guix gc --delete "$drv" && false
 
 rm guix-gc-root
 guix gc --list-dead | grep "$drv"
 guix gc --delete "$drv"
-! test -f "$drv"
+test ! -f "$drv"
 
 # Try a random collection.
 guix gc -C 1KiB
 
 # Check trivial error cases.
-! guix gc --delete /dev/null;
+guix gc --delete /dev/null && false
 
 # Bug #19757
 out="`guix build guile-bootstrap`"
@@ -90,14 +90,14 @@ test -d "$out"
 
 guix gc --delete "$out"
 
-! test -d "$out"
+test ! -d "$out"
 
 out="`guix build guile-bootstrap`"
 test -d "$out"
 
 guix gc --delete "$out/"
 
-! test -d "$out"
+test ! -d "$out"
 
 out="`guix build guile-bootstrap`"
 test -d "$out"

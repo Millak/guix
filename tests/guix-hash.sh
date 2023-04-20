@@ -38,12 +38,12 @@ test `guix hash -H sha1 -f base64 /dev/null` = "2jmj7l5rSw0yVb/vlWAYkK/YBwk="
 test "`guix hash /dev/null "$abs_top_srcdir/README"`" = "`guix hash /dev/null ; guix hash "$abs_top_srcdir/README"`"
 
 # Zero files.
-! guix hash
+guix hash && false
 
 # idem as `cat /dev/null | git hash-object --stdin`
 test `guix hash -S git -H sha1 -f hex  /dev/null` = e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 
-! guix hash -H abcd1234 /dev/null
+guix hash -H abcd1234 /dev/null && false
 
 mkdir "$tmpdir"
 echo -n executable > "$tmpdir/exe"
@@ -61,11 +61,11 @@ test `guix hash -r "$tmpdir" 2>/dev/null` = 10k1lw41wyrjf9mxydi0is5nkpynlsvgslin
 test `guix hash -r "$tmpdir" -H sha512 2>/dev/null` = 301ra58c2vahczzxiyfin41mpyb0ljh4dh9zn3ijvwviaw1j40sfzw5skh9x945da88n3785ggifzig7acd6k72h0mpsc20m1f66m9n
 
 # Without '-r', this should fail.
-! guix hash "$tmpdir"
+guix hash "$tmpdir" && false
 
 # This should fail because /dev/null is a character device, which
 # the archive format doesn't support.
-! guix hash -S nar /dev/null
+guix hash -S nar /dev/null && false
 
 # Adding a .git directory
 mkdir "$tmpdir/.git"
@@ -80,5 +80,6 @@ test `guix hash -S nar $tmpdir -x` = 10k1lw41wyrjf9mxydi0is5nkpynlsvgslinics4ppi
 test `guix hash -S git $tmpdir -x` = 1m9yxz99g7askm88h6hzyv4g2bfv57rp5wvwp3iq5ypsplq1xkkk
 
 # Without '-r', this should fail.
-! guix hash "$tmpdir"
+guix hash "$tmpdir" && false
 
+exit 0

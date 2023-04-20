@@ -318,7 +318,7 @@ cat > "$tmpdir/config.scm" <<EOF
 
 (bad-local-file "whatever.scm")
 EOF
-! guix system build "$tmpdir/config.scm" -n
+guix system build "$tmpdir/config.scm" -n && false
 guix system build "$tmpdir/config.scm" -n 2>&1 | \
     grep "config\.scm:4:2: warning:.*whatever.*relative to current directory"
 

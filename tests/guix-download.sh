@@ -23,11 +23,11 @@
 guix download --version
 
 # Make sure it fails here.
-! guix download http://does.not/exist
+guix download http://does.not/exist && false
 
-! guix download unknown://some/where;
+guix download unknown://some/where && false
 
-! guix download /does-not-exist
+guix download /does-not-exist && false
 
 # This one should succeed.
 guix download "file://$abs_top_srcdir/README"
@@ -43,4 +43,6 @@ GUIX_DAEMON_SOCKET="/nowhere" guix download -o "$output" \
 cmp "$output" "$abs_top_srcdir/README"
 
 # This one should fail.
-! guix download "file:///does-not-exist" "file://$abs_top_srcdir/README"
+guix download "file:///does-not-exist" "file://$abs_top_srcdir/README" && false
+
+exit 0

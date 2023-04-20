@@ -58,7 +58,7 @@ trap 'rm -f "$profile" "$profile_alt" "$profile.lock" "$profile_alt.lock" "$prof
 
 guix package --bootstrap -p "$profile" -i guile-bootstrap
 test -L "$profile" && test -L "$profile-1-link"
-! test -f "$profile-2-link"
+test ! -f "$profile-2-link"
 test -f "$profile/bin/guile"
 
 boot_make="(@ (guix tests) gnu-make-for-tests)"
@@ -98,13 +98,13 @@ test "`guix package -p "$profile" -l | cut -f1 | grep guile | head -n1`" \
      = "  guile-bootstrap"
 
 # Exit with 1 when a generation does not exist.
-! guix package -p "$profile" --list-generations=42
-! guix package -p "$profile" --switch-generation=99
+guix package -p "$profile" --list-generations=42 && false
+guix package -p "$profile" --switch-generation=99 && false
 
 # Remove a package.
 guix package --bootstrap -p "$profile" -r "guile-bootstrap"
 test -L "$profile-3-link"
-test -f "$profile/bin/make" && ! test -f "$profile/bin/guile"
+test -f "$profile/bin/make" && test ! -f "$profile/bin/guile"
 
 # Roll back.
 guix package --roll-back -p "$profile"
@@ -112,7 +112,7 @@ test "`readlink_base "$profile"`" = "$profile-2-link"
 test -x "$profile/bin/guile" && test -x "$profile/bin/make"
 guix package --roll-back -p "$profile"
 test "`readlink_base "$profile"`" = "$profile-1-link"
-test -x "$profile/bin/guile" && ! test -x "$profile/bin/make"
+test -x "$profile/bin/guile" && test ! -x "$profile/bin/make"
 
 # Switch to the rolled generation and switch back.
 guix package -p "$profile" --switch-generation=2
@@ -124,8 +124,8 @@ test "`readlink_base "$profile"`" = "$profile-1-link"
 for i in `seq 1 3`
 do
     guix package --bootstrap --roll-back -p "$profile"
-    ! test -f "$profile/bin"
-    ! test -f "$profile/lib"
+    test ! -f "$profile/bin"
+    test ! -f "$profile/lib"
     test "`readlink_base "$profile"`" = "$profile-0-link"
 done
 
@@ -135,7 +135,7 @@ test -z "`guix package -p "$profile" -l 0`"
 # Reinstall after roll-back to the empty profile.
 guix package --bootstrap -p "$profile" -e "$boot_make"
 test "`readlink_base "$profile"`" = "$profile-1-link"
-test -x "$profile/bin/guile" && ! test -x "$profile/bin/make"
+test -x "$profile/bin/guile" && test ! -x "$profile/bin/make"
 
 # Check that the first generation is the current one.
 test "`guix package -p "$profile" -l 1 | cut -f3 | head -n1`" = "(current)"
@@ -143,7 +143,7 @@ test "`guix package -p "$profile" -l 1 | cut -f3 | head -n1`" = "(current)"
 # Roll-back to generation 0, and install---all at once.
 guix package --bootstrap -p "$profile" --roll-back -i guile-bootstrap
 test "`readlink_base "$profile"`" = "$profile-1-link"
-test -x "$profile/bin/guile" && ! test -x "$profile/bin/make"
+test -x "$profile/bin/guile" && test ! -x "$profile/bin/make"
 
 # Install Make.
 guix package --bootstrap -p "$profile" -e "$boot_make"
@@ -175,7 +175,7 @@ test -z "`guix package -p "$profile" -l 3`"
 rm "$profile"
 guix package --bootstrap -p "$profile" -i guile-bootstrap
 guix package --bootstrap -p "$profile_alt" -i gcc-bootstrap
-! guix package -p "$profile" --search-paths | grep LIBRARY_PATH
+guix package -p "$profile" --search-paths | grep LIBRARY_PATH && false
 guix package -p "$profile" -p "$profile_alt" --search-paths \
      | grep "LIBRARY_PATH.*$profile/lib.$profile_alt/lib"
 
@@ -234,4 +234,4 @@ guix package --bootstrap -e "$boot_make"
 test -f "$HOME/.guix-profile/bin/make"
 
 guix package --bootstrap --roll-back
-! test -f "$HOME/.guix-profile/bin/make"
+test ! -f "$HOME/.guix-profile/bin/make"

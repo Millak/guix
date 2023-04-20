@@ -25,7 +25,7 @@
 guix build --version
 
 # Should fail.
-! guix build -e +
+guix build -e + && false
 
 # Source-less packages are accepted; they just return nothing.
 guix build -e '(@ (gnu packages bootstrap) %bootstrap-glibc)' -S
@@ -92,7 +92,7 @@ cat > "$module_dir/foo.scm" <<EOF
 (use-modules (guix))
 ) ;extra closing paren
 EOF
-! guix build -f "$module_dir/foo.scm" 2> "$module_dir/stderr"
+guix build -f "$module_dir/foo.scm" 2> "$module_dir/stderr" && false
 grep "read error" "$module_dir/stderr"
 rm "$module_dir/stderr" "$module_dir/foo.scm"
 
@@ -199,7 +199,7 @@ cat > "$module_dir/foo.scm" <<EOF
     (inputs (quasiquote (("sed" ,sed))))))  ;unbound variable
 EOF
 
-! guix build package-with-something-wrong -n
+guix build package-with-something-wrong -n && false
 guix build package-with-something-wrong -n 2> "$module_dir/err" || true
 grep "unbound" "$module_dir/err"		     # actual error
 grep "forget.*(gnu packages base)" "$module_dir/err" # hint
@@ -240,7 +240,7 @@ cat > "$module_dir/cc-user.scm" <<EOF
 (define-module (cc-user))
 (make-thing 42)
 EOF
-! guix build -f "$module_dir/cc-user.scm" -n 2> "$module_dir/err"
+guix build -f "$module_dir/cc-user.scm" -n 2> "$module_dir/err" && false
 cat "$module_dir/err"
 grep "make-thing.*unbound" "$module_dir/err"		 # actual error
 grep "forget.*(bb-public)" "$module_dir/err"		 # hint
@@ -270,7 +270,7 @@ test "`guix build --log-file guile-bootstrap`" = "$log"
 test "`guix build --log-file $out`" = "$log"
 
 # Should fail because the name/version combination could not be found.
-! guix build hello-0.0.1 -n
+guix build hello-0.0.1 -n && false
 
 # Keep a symlink to the result, registered as a root.
 result="t-result-$$"
@@ -279,7 +279,7 @@ guix build -r "$result"					\
 test -x "$result/bin/guile"
 
 # Should fail, because $result already exists.
-! guix build -r "$result" -e '(@@ (gnu packages bootstrap) %bootstrap-guile)'
+guix build -r "$result" -e '(@@ (gnu packages bootstrap) %bootstrap-guile)' && false
 
 rm -f "$result"
 
@@ -323,7 +323,7 @@ drv2=`guix build hello -d --with-input=gcc=gcc-toolchain`
 test "$drv1" != "$drv2"
 guix gc -R "$drv2" | grep `guix build -d gcc-toolchain`
 
-! guix build guile --with-input=libunistring=something-really-silly
+guix build guile --with-input=libunistring=something-really-silly && false
 
 # Deprecated/superseded packages.
 test "`guix build superseded -d`" = "`guix build bar -d`"
@@ -331,8 +331,8 @@ test "`guix build superseded -d`" = "`guix build bar -d`"
 # Parsing package names and versions.
 guix build -n time		# PASS
 guix build -n time@1.9		# PASS, version found
-! guix build -n time@3.2	# FAIL, version not found
-! guix build -n something-that-will-never-exist # FAIL
+guix build -n time@3.2 && false	# FAIL, version not found
+guix build -n something-that-will-never-exist && false	# FAIL
 
 # Invoking a monadic procedure.
 guix build -e "(begin
@@ -404,4 +404,6 @@ export GUIX_BUILD_OPTIONS
 guix build emacs
 
 GUIX_BUILD_OPTIONS="--something-completely-crazy"
-! guix build emacs
+guix build emacs && false
+
+exit 0

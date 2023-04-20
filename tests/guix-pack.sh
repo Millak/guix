@@ -37,7 +37,7 @@ test_directory="`mktemp -d`"
 trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
 
 # Reject unsuppoted packages.
-! guix pack intelmetool -s armhf-linux -n
+guix pack intelmetool -s armhf-linux -n && false
 
 # Compute the derivation of a pack.
 drv="`guix pack coreutils -d --no-grafts`"
@@ -48,7 +48,7 @@ guix gc -R "$drv" | grep "`guix build coreutils -d --no-grafts`"
 drv="`guix pack idutils -d --no-grafts --target=arm-linux-gnueabihf`"
 guix gc -R "$drv" | \
     grep "`guix build idutils --target=arm-linux-gnueabihf -d --no-grafts`"
-! guix gc -R "$drv" | grep "`guix build idutils -d --no-grafts`"
+guix gc -R "$drv" | grep "`guix build idutils -d --no-grafts`" && false
 
 # Build a tarball with no compression.
 guix pack --compression=none --bootstrap guile-bootstrap

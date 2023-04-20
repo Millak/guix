@@ -33,13 +33,13 @@ export XDG_CONFIG_HOME
 guix shell --bootstrap --pure guile-bootstrap -- guile --version
 
 # '--symlink' can only be used with --container.
-! guix shell --bootstrap guile-bootstrap -S /dummy=bin/guile
+guix shell --bootstrap guile-bootstrap -S /dummy=bin/guile && false
 
 # '--ad-hoc' is a thing of the past.
-! guix shell --ad-hoc guile-bootstrap
+guix shell --ad-hoc guile-bootstrap && false
 
 # Rejecting unsupported packages.
-! guix shell -s armhf-linux intelmetool -n
+guix shell -s armhf-linux intelmetool -n && false
 
 # Test approximately that the child process does not inherit extra file
 # descriptors.  Ideally we'd check there's nothing more than 0, 1, and 2, but
@@ -55,7 +55,7 @@ test "$(echo $fd_list | wc -w)" -le "$(echo $initial_fd_list | wc -w)"
 cat > "$tmpdir/guix.scm" <<EOF
 This is a broken guix.scm file.
 EOF
-! (cd "$tmpdir"; SHELL="$(type -P true)" guix shell --bootstrap 2> "stderr")
+(cd "$tmpdir"; SHELL="$(type -P true)" guix shell --bootstrap 2> "stderr") && false
 grep "not authorized" "$tmpdir/stderr"
 rm "$tmpdir/stderr"
 
@@ -122,7 +122,7 @@ then
     done
 
     # 'make-boot0' itself must not be listed.
-    ! guix gc --references "$profile" | grep make-boot0
+    guix gc --references "$profile" | grep make-boot0 && false
 
     # Honoring the local 'guix.scm' file.
     echo '(@ (guix tests) gnu-make-for-tests)' > "$tmpdir/guix.scm"

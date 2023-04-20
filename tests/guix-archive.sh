@@ -44,7 +44,7 @@ cmp "$archive" "$archive_alt"
 # Check the exit value upon import.
 guix archive --import < "$archive"
 
-! guix archive something-that-does-not-exist
+guix archive --export something-that-does-not-exist && false
 
 # This one must not be listed as missing.
 guix build guile-bootstrap > "$archive"
@@ -61,7 +61,7 @@ cmp "$archive" "$archive_alt"
 
 # This is not a valid store file name, so an error.
 echo something invalid > "$archive"
-! guix archive --missing < "$archive"
+guix archive --missing < "$archive" && false
 
 # Check '--extract'.
 guile -c "(use-modules (guix serialization))
@@ -77,4 +77,6 @@ guix archive -t < "$archive" | grep "^D /share/guile"
 guix archive -t < "$archive" | grep "^x /bin/guile"
 guix archive -t < "$archive" | grep "^r /share/guile.*/boot-9\.scm"
 
-! echo foo | guix archive --authorize
+echo foo | guix archive --authorize && false
+
+exit 0
