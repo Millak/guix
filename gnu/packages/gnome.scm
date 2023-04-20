@@ -697,31 +697,23 @@ of known objects without needing a central registrar.")
         (base32 "07b1ahj3vd3m8srwkrh7dl3ymr7d55xiiszny44q13g06pq4svch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        "--enable-explain-queries"
-        "--enable-fts"
-        "--enable-docs")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "doc/libzeitgeist"
-               (substitute* "zeitgeist-gtkdoc-index.sgml"
-                 (("http://www.oasis-open.org/docbook/xml/4.3/")
-                  (search-input-directory inputs "/xml/dtd/docbook/"))))))
-         (add-after 'patch-docbook-xml 'disable-failing-tests
-           (lambda _
-             (substitute* "test/direct/Makefile.am"
-               (("	log-test ")
-                ""))
-             (substitute* "test/c/Makefile.am"
-               (("	test-log ")
-                ""))))
-         (add-before 'bootstrap 'remove-autogen-script
-           (lambda _
-             ;; To honor `autoreconf -vif` by build-system.
-             (delete-file "autogen.sh"))))))
+     (list #:configure-flags #~(list "--enable-explain-queries"
+                                     "--enable-fts"
+                                     "--enable-docs")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-failing-tests
+                 (lambda _
+                   (substitute* "test/direct/Makefile.am"
+                     (("	log-test ")
+                      ""))
+                   (substitute* "test/c/Makefile.am"
+                     (("	test-log ")
+                      ""))))
+               (add-before 'bootstrap 'remove-autogen-script
+                 (lambda _
+                   ;; To honor `autoreconf -vif` by build-system.
+                   (delete-file "autogen.sh"))))))
     (native-inputs
      (list autoconf
            automake
@@ -730,6 +722,7 @@ of known objects without needing a central registrar.")
            gobject-introspection
            gtk-doc/stable
            libtool
+           libxml2                      ;for XML_CATALOG_FILES
            pkg-config
            vala
            xorg-server-for-tests))
@@ -742,8 +735,7 @@ of known objects without needing a central registrar.")
            python-wrapper
            python-rdflib
            xapian))
-    (propagated-inputs
-     (list glib))
+    (propagated-inputs (list glib))
     (synopsis "Desktop Activity Logging")
     (description "Zeitgeist is a service which logs the users’s activities and
 events, anywhere from files opened to websites visited and conversations.  It
