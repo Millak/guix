@@ -114,7 +114,7 @@
 ;;; Copyright © 2021 ZmnSCPxj <ZmnSCPxj@protonmail.com>
 ;;; Copyright © 2021 Filip Lajszczak <filip@lajszczak.dev>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
@@ -10924,17 +10924,18 @@ low-level X clients.  It is written entirely in Python.")
 (define-public python-singledispatch
   (package
     (name "python-singledispatch")
-    (version "3.4.0.3")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "singledispatch" version))
        (sha256
         (base32
-         "171b7ip0hsq5qm83np40h3phlr36ym18w0lay0a8v08kvy3sy1jv"))))
-    (build-system python-build-system)
+         "1z5qbbvvjvh3cwcjv57p7vzhayx0j1ysnvjq0d5py6k5d2ljghzk"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-six)) ; required for conversion, not at run-time
+     (list python-pytest
+           python-six)) ; required for conversion, not at run-time
     (home-page
      "https://docs.python.org/3/library/functools.html#functools.singledispatch")
     (synopsis "Backport of singledispatch feature from Python 3.4")
