@@ -135,6 +135,7 @@
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20840,6 +20841,30 @@ while only declaring the test-specific fields.")
      several utilities, as well as an API for building localization tools.")
     (license license:gpl2+)))
 
+(define-public python-gtts
+  (package
+    (name "python-gtts")
+    (version "2.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "gTTS" version))
+              (sha256
+               (base32
+                "1jsg1prpzr7gj5sn385mkv2v1i8xfc83ycm87hvsi2j0y366plps"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Disable tests that require internet.
+     (list #:test-flags '(list "-k" "not net")))
+    (native-inputs
+     (list python-pytest python-testfixtures python-click python-requests))
+    (home-page "https://github.com/pndurette/gTTS")
+    (synopsis "Google Translate text-to-speech interface")
+    (description
+     "Google Text-to-Speech (gTTS) is a Python library and CLI tool to
+interface with the Google Translate text-to-speech API.  It lets you write
+spoken MP3 data to a file, a file-like object (bytestring) for further audio
+manipulation, or @code{stdout}.")
+    (license license:expat)))
 
 (define-public python-packaging
   (package/inherit python-packaging-bootstrap
