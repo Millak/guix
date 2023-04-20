@@ -4715,53 +4715,38 @@ GLib and GObject, and integrates JSON with GLib data types.")
     (arguments
      (substitute-keyword-arguments (package-arguments json-glib-minimal)
        ((#:configure-flags _)
-        `(list "-Ddocs=true"
-               "-Dman=true"
-               ,@(if (%current-target-system)
-                     ;; If enabled, gtkdoc-scangobj will try to execute a
-                     ;; cross-compiled binary.
-                     '("-Dgtk_doc=disabled"
-                       ;; Trying to build introspection data when cross-compiling
-                       ;; causes errors during linking.
-                       "-Dintrospection=disabled")
-                     '())))
+        #~(list "-Ddocs=true"
+                "-Dman=true"
+                #$@(if (%current-target-system)
+                       ;; If enabled, gtkdoc-scangobj will try to execute a
+                       ;; cross-compiled binary.
+                       #~("-Dgtk_doc=disabled"
+                          ;; Trying to build introspection data when cross-compiling
+                          ;; causes errors during linking.
+                          "-Dintrospection=disabled")
+                       #~())))
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'patch-docbook
-             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-               (with-directory-excursion "doc"
-                 (substitute* (find-files "." "\\.xml$")
-                   (("http://www.oasis-open.org/docbook/xml/4\\.3/")
-                    (string-append (assoc-ref (or native-inputs inputs)
-                                              "docbook-xml")
-                                   "/xml/dtd/docbook/")))
-                 (substitute* "meson.build"
-                   (("http://docbook.sourceforge.net/release/xsl/current/")
-                    (string-append (assoc-ref (or native-inputs inputs)
-                                              "docbook-xsl")
-                                   "/xml/xsl/docbook-xsl-1.79.2/"))))))
-           ;; When cross-compiling, there are no docs to move.
-           ,(if (%current-target-system)
-                '(add-after 'install 'stub-docs
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     ;; The daemon doesn't like empty output paths.
-                     (mkdir (assoc-ref outputs "doc"))))
-                '(add-after 'install 'move-docs
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let* ((out (assoc-ref outputs "out"))
-                            (doc (assoc-ref outputs "doc")))
-                       (mkdir-p (string-append doc "/share"))
-                       (rename-file
-                        (string-append out "/share/gtk-doc")
-                        (string-append doc "/share/gtk-doc"))))))))))
+        #~(modify-phases #$phases
+            ;; When cross-compiling, there are no docs to move.
+            #$@(if (%current-target-system)
+                   #~((add-after 'install 'stub-docs
+                        (lambda _
+                          ;; The daemon doesn't like empty output paths.
+                          (mkdir #$output:doc))))
+                   #~((add-after 'install 'move-docs
+                        (lambda _
+                          (mkdir-p (string-append #$output:doc "/share"))
+                          (rename-file
+                           (string-append #$output "/share/gtk-doc")
+                           (string-append #$output:doc
+                                          "/share/gtk-doc"))))))))))
     (native-inputs
-     (append
-         `(("docbook-xml" ,docbook-xml-4.3)
-           ("docbook-xsl" ,docbook-xsl)
-           ("gobject-introspection" ,gobject-introspection)
-           ("gtk-doc" ,gtk-doc)
-           ("xsltproc" ,libxslt))
-         (package-native-inputs json-glib-minimal)))))
+     (modify-inputs (package-native-inputs json-glib-minimal)
+       (prepend docbook-xml-4.3
+                docbook-xsl
+                gobject-introspection
+                gtk-doc
+                libxslt)))))
 
 (define-public libxklavier
   (package
