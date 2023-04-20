@@ -27,7 +27,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -1741,60 +1741,46 @@ modular implementation of XML-RPC for C and C++.")
     (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.1.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxml2" ,libxml2)             ;for XML_CATALOG_DIR
-       ("xmlto" ,xmlto)
-       ;; Dependencies to regenerate the 'configure' script.
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)))
+     (list docbook-xml-4.1.2
+           docbook-xsl
+           libxml2                      ;for XML_CATALOG_DIR
+           xmlto
+           ;; Dependencies to regenerate the 'configure' script.
+           autoconf
+           automake
+           gettext-minimal
+           libtool))
     (arguments
-     `( ;; Note: we cannot use '--enable-full-doc-build' as this would require
-       ;; Openjade, which in turn requires this package.
+     (list
+      ;; Note: we cannot use '--enable-full-doc-build' as this would require
+      ;; Openjade, which in turn requires this package.
 
-       ;; Skip the tests that are known to fail (see:
-       ;; https://sourceforge.net/p/openjade/mailman/message/6182316/)
-       #:make-flags '("TESTS_THAT_FAIL=")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-docbook-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook"))
-                   (xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
-               (substitute* (find-files "docsrc" "\\.xml$")
-                 (("/usr/share/sgml/docbook/xml-dtd-4.1.2") xmldoc)
-                 (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd")))
-               #t)))
-         (add-after 'patch-docbook-paths 'delete-configure
-           ;; The configure script in the release was made with an older
-           ;; Autoconf and lacks support for the `--docdir' option.
-           (lambda _
-             (delete-file "configure")
-             #t))
-         (add-after 'delete-configure 'honor-docdir
-           ;; docdir is not honored due to being hardcoded in the various
-           ;; Makefile.am (see: https://sourceforge.net/p/openjade/bugs/147/).
-           (lambda _
-             (substitute* '("Makefile.am" "doc/Makefile.am" "docsrc/Makefile.am")
-               (("^docdir = .*") "docdir = @docdir@\n"))
-             #t))
-         (add-after 'delete-configure 'fix-tests-makefile.am
-           ;; Remove the trailing $(SHELL) from the TESTS_ENVIRONMENT variable
-           ;; definition. Otherwise, when targets are built using
-           ;; "$(am__check_pre) $(LOG_DRIVER) [...]", there would be two
-           ;; $(SHELL) expansion which fails the build.
-           (lambda _
-             (substitute* "tests/Makefile.am"
-               (("^\tOSGMLNORM=`echo osgmlnorm\\|sed '\\$\\(transform\\)'`\\\\")
-                "\tOSGMLNORM=`echo osgmlnorm|sed '$(transform)'`")
-               (("^\t\\$\\(SHELL\\)\n") ""))
-             #t)))))
+      ;; Skip the tests that are known to fail (see:
+      ;; https://sourceforge.net/p/openjade/mailman/message/6182316/)
+      #:make-flags '("TESTS_THAT_FAIL=")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-configure
+            ;; The configure script in the release was made with an older
+            ;; Autoconf and lacks support for the `--docdir' option.
+            (lambda _
+              (delete-file "configure")))
+          (add-after 'delete-configure 'honor-docdir
+            ;; docdir is not honored due to being hardcoded in the various
+            ;; Makefile.am (see: https://sourceforge.net/p/openjade/bugs/147/).
+            (lambda _
+              (substitute* '("Makefile.am" "doc/Makefile.am" "docsrc/Makefile.am")
+                (("^docdir = .*") "docdir = @docdir@\n"))))
+          (add-after 'delete-configure 'fix-tests-makefile.am
+            ;; Remove the trailing $(SHELL) from the TESTS_ENVIRONMENT variable
+            ;; definition. Otherwise, when targets are built using
+            ;; "$(am__check_pre) $(LOG_DRIVER) [...]", there would be two
+            ;; $(SHELL) expansion which fails the build.
+            (lambda _
+              (substitute* "tests/Makefile.am"
+                (("^\tOSGMLNORM=`echo osgmlnorm\\|sed '\\$\\(transform\\)'`\\\\")
+                 "\tOSGMLNORM=`echo osgmlnorm|sed '$(transform)'`")
+                (("^\t\\$\\(SHELL\\)\n") "")))))))
     ;; $SGML_CATALOG_FILES lists 'catalog' or 'CATALOG' or '*.cat' files found
     ;; under the 'sgml' sub-directory of any given package.
     (native-search-paths (list (search-path-specification
