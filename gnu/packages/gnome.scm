@@ -8674,30 +8674,6 @@ the available networks and allows users to easily switch between them.")
        (sha256
         (base32 "13jlhz57yjxapplflm8aarczxv6ll3d336y1446mr5n4ylkcc1xz"))))
     (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-documentation
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (let* ((xsl-version #$(package-version docbook-xsl))
-                     (xsldoc (string-append "xml/xsl/docbook-xsl-"
-                                            xsl-version)))
-                (substitute* '("examples/dom_xpath/example.xml"
-                               "docs/manual/libxml++_without_code.xml")
-                  (("http://.*/docbookx\\.dtd")
-                   (search-input-file (or native-inputs inputs)
-                                      "xml/dtd/docbook/docbookx.dtd")))
-                (setenv "SGML_CATALOG_FILES"
-                        (search-input-file (or native-inputs inputs)
-                                           (string-append
-                                            xsldoc "/catalog.xml")))
-                (substitute* "docs/manual/docbook-customisation.xsl"
-                  (("http://docbook.sourceforge.net/release/xsl\
-/current/html/chunk.xsl")
-                   (search-input-file (or native-inputs inputs)
-                                      (string-append xsldoc
-                                                     "/html/chunk.xsl"))))))))))
     (propagated-inputs
      (list libxml2))                    ;required by .pc file
     (native-inputs
