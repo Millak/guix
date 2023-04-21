@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Daniel Pimentel <d4n1@d4n1.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
@@ -469,8 +469,19 @@ structured data.")
        (sha256
         (base32
          "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))
-    (arguments '())                            ;no "--cpp_implementation" here
-    (inputs (list python-six))))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* '("google/protobuf/internal/containers.py"
+                            "google/protobuf/internal/well_known_types.py")
+               (("collections.Mutable")
+                "collections.abc.Mutable")))))))
+    (inputs (list python-six))
+    (native-inputs
+     (list python-setuptools-for-tensorflow))))
 
 (define-public python-proto-plus
   (package
