@@ -2308,37 +2308,27 @@ library provides population genetics-related modules.")
       (license license:cecill-c))))
 
 (define-public bpp-seq
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "6cfa07965ce152e5598a89df2fa80a75973bfa33"))
-    (package
-      (name "bpp-seq")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bpp-seq")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1nys5jq7jqvdg40d91wsmj3q2yzy4276cp7sp44n67p468f27zf2"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f
-         ;; If out-of-source, test data is not copied into the build directory
-         ;; so the tests fail.
-         #:out-of-source? #f))
-      (inputs
-       (list bpp-core))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "Bio++ sequence library")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bpp-seq")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bpp-seq")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1mc09g8jswzsa4wgrfv59jxn15ys3q8s0227p1j838wkphlwn2qk"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list bpp-core))
+    (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-seq/html/")
+    (synopsis "Bio++ sequence library")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  This
 library provides sequence-related modules.")
-      (license license:cecill-c))))
+    (license license:cecill-c)))
 
 (define-public bppsuite
   ;; The last release was in 2014 and the recommended way to install from source
