@@ -3035,22 +3035,25 @@ default) to world coordinates.")
 (define-public python-astroalign
   (package
     (name "python-astroalign")
-    (version "2.3.1")
+    (version "2.4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "astroalign" version))
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quatrope/astroalign")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19qzv3552lgrd9qmj0rxs51wmx485hw04cbf76ds5pin85kfaiy1"))))
-    (build-system python-build-system)
-    (arguments
-     ;; TODO: (Sharlatan-20210213T162940+0000): I could not make tests run
-     `(#:tests? #f))
-    (inputs
-     `(("numpy" ,python-numpy)
-       ("scikit-image" ,python-scikit-image)
-       ("scipy" ,python-scipy)
-       ("sep" ,python-sep)))
+        (base32 "0hly20a65540hr3l1lsd1i4d90a0vdrbwnn6zx3z8s89ha9lq3pb"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-astropy python-ccdproc python-pillow))
+    (propagated-inputs
+     (list python-bottleneck
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sep))
     (home-page "https://astroalign.readthedocs.io/")
     (synopsis "Astrometric Alignment of Images")
     (description
