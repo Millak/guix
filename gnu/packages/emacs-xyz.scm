@@ -350,6 +350,29 @@
        "This package allows using Ace jump to a candidate in Helm window.")
       (license license:gpl3+))))
 
+(define-public emacs-bookmark-plus
+  (package
+    (name "emacs-bookmark-plus")
+    (version "2022.11.05")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+	     (url "https://github.com/emacsmirror/bookmark-plus")
+	     (commit "3db369056a722c42b3eafd10a91831f87d056dfa")))
+       (sha256
+        (base32
+	 "0fnq24f597zfr8jj5h3vr87kdil5lhy11m81q6ayqc03qm0jymrf"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/emacsmirror/bookmark-plus")
+    (synopsis "Extensions to the Bookmark library in Emacs")
+    (description
+     "Bookmarks are a powerful Emacs feature.  This package makes them even
+more versatile. You can bookmark many more kinds of data.  You can add tags.
+There are many more ways to organize and display your bookmarks.  I recommend
+reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
+    (license license:gpl3+)))
+
 (define-public emacs-cfrs
   (package
     (name "emacs-cfrs")
