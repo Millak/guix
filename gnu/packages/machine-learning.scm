@@ -2176,7 +2176,7 @@ Python.")
            ;; SOURCE_DATE_EPOCH is respected, which we set to some time in
            ;; 1980.
            (lambda _ (setenv "SOURCE_DATE_EPOCH" "315532800") #t))
-         (add-after 'unpack 'python3.9-compatibility
+         (add-after 'unpack 'python3.10-compatibility
            (lambda _
              ;; See https://github.com/tensorflow/tensorflow/issues/20517#issuecomment-406373913
              (substitute* '("tensorflow/python/eager/pywrap_tfe_src.cc"
@@ -2198,6 +2198,33 @@ Python.")
                (("(nullptr,)(\\ +/. tp_print)" _ _ tp_print)
                 (string-append "NULL,   " tp_print)))
 
+             ;; Many collections classes have been moved to collections.abc
+             (substitute* '("tensorflow/python/framework/ops.py"
+                            "tensorflow/python/ops/clip_ops.py"
+                            "tensorflow/python/ops/data_flow_ops.py"
+                            "tensorflow/python/ops/gradients_impl.py"
+                            "tensorflow/python/training/input.py"
+                            "tensorflow/python/training/checkpointable/data_structures.py"
+                            "tensorflow/python/util/nest.py"
+                            "tensorflow/python/util/protobuf/compare.py")
+               (("collections.Mapping") "collections.abc.Mapping")
+               (("collections.Sequence") "collections.abc.Sequence"))
+             (substitute* "tensorflow/python/feature_column/feature_column.py"
+               (("collections.Iterator") "collections.abc.Iterator"))
+             (substitute* "tensorflow/python/ops/sparse_ops.py"
+               (("collections.Iterable") "collections.abc.Iterable"))
+             (substitute* "tensorflow/python/keras/callbacks.py"
+               (("from collections import Iterable")
+                "from collections.abc import Iterable"))
+
+             ;; XXX: it is not clear if this is a good idea, but the build
+             ;; system tries to overwrite the __or__ and __ror__ methods of
+             ;; the Tensor class.
+             (substitute* "tensorflow/python/framework/ops.py"
+               (("if not isinstance\\(existing, type\\(object.__lt__\\)\\)" m)
+                (string-append m
+                               " and not isinstance(existing, type(object.__or__))")))
+
              ;; Fix the build with numpy >= 1.19.
              ;; Suggested in https://github.com/tensorflow/tensorflow/issues/41086#issuecomment-656833081
              (substitute* "tensorflow/python/lib/core/bfloat16.cc"
@@ -2205,7 +2232,7 @@ Python.")
                 "void BinaryUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,")
                (("void CompareUFunc\\(char\\*\\* args, npy_intp\\* dimensions, npy_intp\\* steps,")
                 "void CompareUFunc(char** args, npy_intp const* dimensions, npy_intp const* steps,"))))
-         (add-after 'python3.9-compatibility 'chdir
+         (add-after 'python3.10-compatibility 'chdir
            (lambda _ (chdir "tensorflow/contrib/cmake")))
          (add-after 'chdir 'disable-downloads
            (lambda* (#:key inputs #:allow-other-keys)
@@ -2336,6 +2363,12 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
                     "nsync"
                     "re2"))
 
+             ;; https://github.com/google/farmhash/issues/24
+             (substitute* "../build/farmhash/src/farmhash/src/farmhash.cc"
+               (("using namespace std;") "")
+               (("make_pair") "std::make_pair")
+               (("pair<") "std::pair<"))
+
              (rename-file "../build/cub/src/cub/cub-1.8.0/"
                           "../build/cub/src/cub/cub/")
 
@@ -2349,6 +2382,12 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
                      "-C" "protobuf-src" "--strip-components=1")
              (mkdir-p "eigen-src")
              (copy-recursively (assoc-ref inputs "eigen:src") "eigen-src")
+
+             ;; distutils.sysconfig is deprecated and prints a deprecation
+             ;; warning that breaks the generated CXX_INCLUDES line.
+             (substitute* "tensorflow/contrib/cmake/tf_python.cmake"
+               (("import distutils.sysconfig; print\\(distutils.sysconfig.get_python_inc\\(\\)\\)")
+                "import sysconfig; print(sysconfig.get_path('include'))"))
 
              (substitute* "tensorflow/contrib/cmake/tf_python.cmake"
                ;; Take protobuf source files from our source package.
