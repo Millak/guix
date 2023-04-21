@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021, 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -1344,6 +1344,37 @@ arrays), based on Pieter van Dokkum's L.A.Cosmic algorithm.  Much of this was
 originally adapted from cosmics.py written by Malte Tewes.  This is designed to
 be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
+    (license license:bsd-3)))
+
+(define-public python-ccdproc
+  (package
+    (name "python-ccdproc")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ccdproc" version))
+       (sha256
+        (base32 "0fy1sni87cr05dkljd8wb7vgh7z9agh8wv5kiagxcpbcf8l06jv1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; FIXME: Test failed a lot with: DeprecationWarning: distutils Version
+     ;; classes are deprecated. Use packaging.version instead (see:
+     ;; https://github.com/astropy/ccdproc/issues/805).
+     (list #:tests? #f))
+    (native-inputs (list python-memory-profiler python-pytest-astropy))
+    (propagated-inputs
+     (list python-astropy
+           python-astroscrappy
+           python-numpy
+           python-reproject
+           python-scikit-image
+           python-scipy))
+    (home-page "http://ccdproc.readthedocs.io/")
+    (synopsis "Basic data reductions of CCD images")
+    (description "The ccdproc package provides many of the necessary tools for
+processing of CCD images built on a framework to provide error propagation and
+bad pixel tracking throughout the reduction process.")
     (license license:bsd-3)))
 
 (define-public python-cdflib
