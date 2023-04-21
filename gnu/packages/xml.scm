@@ -1757,7 +1757,7 @@ modular implementation of XML-RPC for C and C++.")
 
       ;; Skip the tests that are known to fail (see:
       ;; https://sourceforge.net/p/openjade/mailman/message/6182316/)
-      #:make-flags '("TESTS_THAT_FAIL=")
+      #:make-flags #~(list "TESTS_THAT_FAIL=")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'delete-configure
