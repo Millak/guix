@@ -1302,6 +1302,50 @@ astronomy and astrophysics.")
 to access online Astronomical data.  Each web service has its own sub-package.")
     (license license:bsd-3)))
 
+(define-public python-astroscrappy
+  (package
+    (name "python-astroscrappy")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astroscrappy" version))
+       (sha256
+        (base32 "0shmfilvzpmlwz4fh0bx4kqmzr0y39fgga6vipxb5d1rx1y6q6by"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "astroscrappy")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "astroscrappy/_compiler.c")))
+          (add-before 'check 'tests-preparation
+            (lambda _
+              (make-file-writable "astroscrappy/_compiler.c")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-h5py
+           python-pandas
+           python-pytest-astropy
+           python-scikit-image
+           python-scipy
+           python-setuptools-scm))
+    (propagated-inputs (list python-astropy python-numpy))
+    (home-page "https://github.com/astropy/astroscrappy")
+    (synopsis "Speedy Cosmic Ray Annihilation Package in Python")
+    (description
+     "Astro-SCRAPPY is designed to detect cosmic rays in images (numpy
+arrays), based on Pieter van Dokkum's L.A.Cosmic algorithm.  Much of this was
+originally adapted from cosmics.py written by Malte Tewes.  This is designed to
+be as fast as possible so some of the readability has been sacrificed,
+specifically in the C code.")
+    (license license:bsd-3)))
+
 (define-public python-cdflib
   (package
     (name "python-cdflib")
