@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -413,3 +414,39 @@ curl, curlie is what you are searching for.  Curlie is a frontend to
 on features and performance.  All @code{curl} options are exposed with syntax
 sugar and output formatting inspired from @code{httpie}.")
     (license license:expat)))
+
+(define-public trurl
+  (package
+    (name "trurl")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/curl/trurl")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mvkpjs6wnz5hzmp2iglik85zljrzglsa6fm839l78fhw89dg3w6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (native-inputs (list python))
+    ;; Tests failed on older curl version
+    ;; (see https://github.com/curl/trurl/pull/165)
+    (inputs (list curl-7.84.0))
+    (home-page "https://curl.se/trurl/")
+    (synopsis "Command line tool for URL parsing and manipulatio")
+    (description "@code{trurl} is a tool in a similar spirit of @code{tr} but
+for URLs.  Here, @code{tr} stands for translate or transpose.
+
+@code{trurl} is a command line tool that parses and manipulates URLs, designed
+to help shell script authors everywhere.")
+   (license (license:non-copyleft "file://COPYING"
+                                  "See COPYING in the distribution."))))
