@@ -6046,6 +6046,43 @@ resolution of binding sites through combining the information of both
 sequencing tag position and orientation.")
     (license license:bsd-3)))
 
+(define-public maffilter
+  (package
+    (name "maffilter")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jydu/maffilter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "196c16qw82niqqyzi7j1ga1n0zmir73bm26kg04m0i5aq2cpa0ml"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (inputs
+     (list boost
+           bpp-core
+           bpp-phyl
+           bpp-phyl-omics
+           bpp-seq
+           bpp-seq-omics
+           zlib))
+    (home-page "https://jydu.github.io/maffilter/")
+    (synopsis "Multiple alignment format file processor")
+    (description
+     "MafFilter is a program dedicated to the analysis of genome alignments.
+It parses and manipulates @acronym{MAF, multiple alignment format} files as
+well as more simple fasta files.  This package can be used to design a
+pipeline as a series of consecutive filters, each performing a dedicated
+analysis.  Many of the filters are available, from alignment cleaning to
+phylogeny reconstruction and population genetics analysis.  Despite various
+filtering options and format conversion tools, MafFilter can compute a wide
+range of statistics (phylogenetic trees, nucleotide diversity, inferrence of
+selection, etc.).")
+    (license license:gpl3+)))
+
 (define-public mafft
   (package
     (name "mafft")
