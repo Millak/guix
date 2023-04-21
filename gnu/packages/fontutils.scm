@@ -414,7 +414,11 @@ but also provides many useful font conversion and analysis facilities.
               (when tests?
                 (invoke "pytest" "-vv")))))))
     (native-inputs (list python-pytest python-setuptools-scm python-wheel))
-    (inputs (list python-afdko))
+
+    ;; Use version 3.6.1, which matches the bundled version and does not
+    ;; depend on Java.
+    (inputs (list python-afdko-3.6.1))
+
     (propagated-inputs (list python-fonttools-minimal))
     (home-page "https://github.com/adobe-type-tools/cffsubr")
     (synopsis "Compact Font Format (CFF) subroutinizer")
