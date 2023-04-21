@@ -2407,13 +2407,18 @@ language.  It aims to be fast.")
 (define-public python-aenum
   (package
     (name "python-aenum")
-    (version "2.2.4")
+    (version "3.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aenum" version))
        (sha256
-        (base32 "0r1812bjm72x73pl7y4yhffr4zbdjgxa08avsy4b3di0pqgqv0l1"))))
+        (base32 "1w1ffkcxgnimi5w8802qk6w2qxz9k8hpvsg6yy2zi08ahs8iqlry"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete the Python 2 specific files which won't compile
+        ;; in Python 3.
+        '(for-each delete-file (find-files "." "_py2.py$")))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
