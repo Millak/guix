@@ -37,6 +37,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -93,7 +94,7 @@
            libxslt
            util-linux                   ;For `rev` command used in tests.
            xmlto))
-    (inputs (list cyrus-sasl mit-krb5 samba openldap))
+    (inputs (list cyrus-sasl mit-krb5 samba openldap zlib))
     (home-page "https://gitlab.freedesktop.org/realmd/adcli/")
     (synopsis "Helper library and tools for Active Directory client operations")
     (description "@command{adcli} is a command‐line tool to join a computer to
