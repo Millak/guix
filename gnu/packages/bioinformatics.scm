@@ -2267,6 +2267,34 @@ analysis, phylogenetics, molecular evolution and population genetics.  This
 library provides phylogenetics-related modules.")
     (license license:cecill-c)))
 
+(define-public bpp-phyl-omics
+  (package
+    (name "bpp-phyl-omics")
+    (version "2.4.1")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+            (url "https://github.com/BioPP/bpp-phyl-omics")
+            (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "172psb8njkjwg3cd6gdy5w0mq8f0817v635yw4bk7146aggjzl1h"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ; No test provided.
+    (inputs
+     (list bpp-core
+           bpp-phyl
+           bpp-seq
+           bpp-seq-omics))
+    (home-page "https://github.com/BioPP/bpp-phyl-omics")
+    (synopsis "Bio++ phylogenetic library genomics components")
+    (description
+     "This library contains the genomics components of the Bio++ phylogenetics
+library.  It is part of the Bio++ project.")
+    (license license:cecill)))
+
 (define-public bpp-popgen
   ;; The last release was in 2014 and the recommended way to install from source
   ;; is to clone the git repository, so we do this.
