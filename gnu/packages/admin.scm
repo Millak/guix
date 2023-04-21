@@ -2,7 +2,7 @@
 ;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021, 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015, 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Alex Sassmannshausen <alex.sassmannshausen@gmail.com>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
@@ -4092,20 +4092,20 @@ everyone's screenshots nowadays.")
     (license license:gpl3)))
 
 (define-public ufetch
-  (let ((commit "98b622023e03fe24dbc137e9a68104dfe1fbd04a")
-        (revision "1"))
+  (let ((commit "12b68fa35510a063582d626ccd1abc48f301b6b1")
+        (revision "0"))
     (package
       (name "ufetch")
-      (version (git-version "0.2" revision commit))
+      (version "0.3")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://gitlab.com/jschx/ufetch.git")
-                      (commit commit)))
+                      (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "09c4zmikza16xpydinnqbi3hmcibfrrn10wij7j0j1wv1pj2sl2l"))))
+                  "0sv17zmvhp0vfdscs8yras7am10ah7rpfyfia608sx74k845bfyl"))))
       (build-system trivial-build-system)
       (inputs
        `(("bash" ,bash)
@@ -4138,7 +4138,7 @@ everyone's screenshots nowadays.")
       (home-page "https://gitlab.com/jschx/ufetch")
       (synopsis "Tiny system info")
       (description "This package provides a tiny system info utility.")
-      (license license:isc))))
+      (license license:expat))))
 
 (define-public pfetch
   (let ((commit "e18a0959ab98b963744755ec4687e59dc11db3c5")
