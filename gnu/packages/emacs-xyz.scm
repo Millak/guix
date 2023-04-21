@@ -13162,6 +13162,18 @@ with Elfeed.")
        (sha256
         (base32 "0slbmmcsf5pqbiq3nmna7wx9jvfgdgjp272qdqvmrv99jdj92cq6"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;FIXME: How to run tests properly?
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'make-info
+            (lambda _
+              (with-directory-excursion "doc"
+                (invoke "makeinfo" "--no-split"
+                        "-o" "elfeed-score.info" "elfeed-score.texi")))))))
+    (native-inputs
+     (list texinfo))
     (propagated-inputs
      (list emacs-elfeed))
     (home-page "https://github.com/sp1ff/elfeed-score")
