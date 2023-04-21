@@ -2321,6 +2321,28 @@ analysis, phylogenetics, molecular evolution and population genetics.  This
 library provides sequence-related modules.")
     (license license:cecill-c)))
 
+(define-public bpp-seq-omics
+  (package
+    (name "bpp-seq-omics")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bpp-seq-omics")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1sc2xdfnfp5a6qihplp49rgrqmj89898avfy9bqaq1g2fajppgjj"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list bpp-core bpp-seq))
+    (home-page "https://github.com/BioPP/bpp-seq-omics")
+    (synopsis "Bio++ sequence library genomics components")
+    (description
+     "This library contains the genomics components of the Bio++ sequence library.
+It is part of the Bio++ project.")
+    (license license:cecill)))
+
 (define-public bppsuite
   ;; The last release was in 2014 and the recommended way to install from source
   ;; is to clone the git repository, so we do this.
