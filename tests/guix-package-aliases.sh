@@ -48,7 +48,7 @@ grep "libreoffice=inkscape" "$profile/manifest"
 guix upgrade --version
 guix upgrade -n
 guix upgrade gui.e -n
-guix upgrade foo bar -n && false
+guix upgrade foo bar -n
 
 guix remove --version
 guix remove --bootstrap guile-bootstrap -p "$profile"
