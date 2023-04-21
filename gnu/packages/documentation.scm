@@ -140,8 +140,7 @@ pages in HTML.")
                            (("XMLLINT = 'xmllint'")
                             (string-append "XMLLINT = '" xmllint "'"))
                            (("XSLTPROC = 'xsltproc'")
-                            (string-append "XSLTPROC = '" xsltproc "'")))
-                         #t)))
+                            (string-append "XSLTPROC = '" xsltproc "'"))))))
          ;; Make asciidoc use the local docbook-xsl package instead of fetching
          ;; it from the internet at run-time.
          (add-before 'install 'make-local-docbook-xsl
@@ -153,20 +152,16 @@ release/xsl/current")
                            "xsl:import href=\""
                            (string-append (assoc-ref inputs "docbook-xsl")
                                           "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl)))))
-                       #t))
+                                          ,(package-version docbook-xsl)))))))
          ;; Do the same for docbook-xml.
          (add-before 'install 'make-local-docbook-xml
                      (lambda* (#:key inputs #:allow-other-keys)
                        (substitute* "docbook45.conf"
                          (("http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd")
                           (string-append (assoc-ref inputs "docbook-xml")
-                                         "/xml/dtd/docbook/docbookx.dtd")))
-                       #t)))))
-    (native-inputs
-     (list autoconf))
-    (inputs
-     (list python docbook-xml-4.5 docbook-xsl libxml2 libxslt))
+                                         "/xml/dtd/docbook/docbookx.dtd"))))))))
+    (native-inputs (list autoconf))
+    (inputs (list python docbook-xml-4.5 docbook-xsl libxml2 libxslt))
     (home-page "https://asciidoc.org/")
     (synopsis "Text-based document generation system")
     (description
