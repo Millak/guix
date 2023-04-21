@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,7 +26,9 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages compression)
@@ -79,16 +82,16 @@ to remotely control a user's Windows desktop.")
 (define-public freerdp
   (package
     (name "freerdp")
-    (version "2.2.0")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "git://github.com/FreeRDP/FreeRDP")
+             (url "https://github.com/FreeRDP/FreeRDP")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02zlg5r704zbryx09a5rjjf7q137kj16i9qh25dw9q1y69ri619n"))))
+        (base32 "0j5waq4h7l5f0vrh7wmrv6r27p537qwbg7ab8j0n0ia5p4nvgjp2"))))
     (build-system cmake-build-system)
     (native-inputs
      (list docbook-xml
@@ -118,21 +121,15 @@ to remotely control a user's Windows desktop.")
            zlib))
     (propagated-inputs (list libxkbcommon openssl wayland))
     (arguments
-     `(#:build-type "RELEASE"
-       #:configure-flags
-       (list "-DWITH_JPEG=ON"
-             ,@(if (string-prefix? "x86_64"
-                                   (or (%current-target-system)
-                                       (%current-system)))
-                   '("-DWITH_SSE2=ON")
-                   '())
-             (string-append "-DDOCBOOKXSL_DIR="
-                            (assoc-ref %build-inputs "docbook-xsl")
-                            "/xml/xsl/docbook-xsl-"
-                            ,(package-version docbook-xsl))
-             "-DWITH_PULSE=ON"
-             "-DWITH_CUPS=ON"
-             "-DBUILD_TESTING=ON")))
+     (list #:build-type "RELEASE"
+           #:configure-flags
+           #~(list "-DWITH_JPEG=ON"
+                   #$@(if (target-x86-64?)
+                          #~("-DWITH_SSE2=ON")
+                          #~())
+                   "-DWITH_PULSE=ON"
+                   "-DWITH_CUPS=ON"
+                   "-DBUILD_TESTING=ON")))
     (home-page "https://www.freerdp.com")
     (synopsis "Remote Desktop Protocol implementation")
     (description "FreeRDP implements Microsoft's Remote Desktop Protocol.
