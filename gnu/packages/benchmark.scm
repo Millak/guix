@@ -634,7 +634,12 @@ its features are:
                          ;; Do not attempt to invoke the cram command via
                          ;; Python, as on Guix it is a shell script (wrapper).
                          (("\\$\\(command -v cram\\)")
-                          "-m cram"))))
+                          "-m cram"))
+                       (substitute* "tests/t/opt_report_checkpoints.t"
+                         ;; egrep outputs a deprecation warning, which breaks
+                         ;; the test.
+                         (("egrep")
+                          "grep -E"))))
                    (add-after 'unpack 'disable-test-installation
                      (lambda _
                        (substitute* "tests/Makefile.am"
