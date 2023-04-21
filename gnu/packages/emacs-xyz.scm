@@ -10714,10 +10714,10 @@ them easier to distinguish from other, less important buffers.")
     (license license:expat)))
 
 (define-public emacs-embark
-  (let ((commit "63013c2d3ef4dccc95167218ccbf4f401e489c3e")) ;version bump
+  (let ((commit "c914efe881df2bc6a2bd35cc7ee975d3e9d4a418")) ;version bump
     (package
       (name "emacs-embark")
-      (version "0.21.1")
+      (version "0.22.1")
       (source
        (origin
          (method git-fetch)
@@ -10725,7 +10725,7 @@ them easier to distinguish from other, less important buffers.")
                (url "https://github.com/oantolin/embark")
                (commit commit)))
          (sha256
-          (base32 "14qp46wa1xgmb09jyk9cadj0b3m7bwspqnprk3zbfc6gw1r53235"))
+          (base32 "1l288w27wav0r71hprqi74r77042d1fx3p1zmi05vl6z6230h48b"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
