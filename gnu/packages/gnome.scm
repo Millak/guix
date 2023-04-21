@@ -3049,36 +3049,32 @@ configuring CUPS.")
          "0qa7cx6ra5hwqnxw95b9svgjg5q6ynm8y843iqjszxvds5z53h36"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Don't attempt to download XSL schema.
-             (substitute* "meson.build"
-               (("http://docbook.sourceforge.net/release/xsl-ns/current\
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-docbook
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Don't attempt to download XSL schema.
+              (substitute* "meson.build"
+                (("http://docbook.sourceforge.net/release/xsl-ns/current\
 /manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             #t)))))
-    (propagated-inputs
-     (list ;; In Requires of libnotify.pc.
-           gdk-pixbuf glib))
-    (inputs
-     (list gtk+ libpng))
+                 (string-append #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/docbook-xsl-"
+                                #$(package-version docbook-xsl)
+                                "/manpages/docbook.xsl"))))))))
+    (propagated-inputs (list gdk-pixbuf glib)) ;in Requires of libnotify.pc.
+    (inputs (list gtk+ libpng))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
+     (list pkg-config
+           `(,glib "bin")
+           gobject-introspection
 
-       ;; For the documentation.
-       ("gtk-doc" ,gtk-doc/stable)
-       ("xsltproc" ,libxslt)
-       ("docbook-xsl" ,docbook-xsl)))
+           ;; For the documentation.
+           gtk-doc/stable
+           libxslt
+           docbook-xsl))
     (home-page "https://developer-next.gnome.org/libnotify/")
-    (synopsis
-     "GNOME desktop notification library")
+    (synopsis "GNOME desktop notification library")
     (description
      "Libnotify is a library that sends desktop notifications to a
 notification daemon, as defined in the Desktop Notifications spec.  These
