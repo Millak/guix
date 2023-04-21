@@ -1891,38 +1891,18 @@ requirements according to version 1.1 of the OpenCL specification.")
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
-    (version "0.38.0")
+    (version "0.39.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "llvmlite" version))
        (sha256
         (base32
-         "0p4nyic9rm7s2fm3m3wpkh568594p9q9nfyjkqxny49vrxn1d7d9"))))
+         "0wnm0l0301sj8xp6skg3ci1gii56x5dk6l2x88f2c1g8h9ybsfml"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-reference-to-llvmlite.so
-           ;; ctypes.CDLL uses dlopen to load libllvmlite.so, which
-           ;; fails, so locate it by its absolute path.  Change it in
-           ;; ffi.py, not utils.py, because setup.py relies on the
-           ;; output of get_library_name for proper installation.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (libllvmlite.so (string-append out "/lib/python"
-                                                   ,(version-major+minor
-                                                     (package-version python))
-                                                   "/site-packages/llvmlite/"
-                                                   "binding/libllvmlite.so")))
-               (substitute* "llvmlite/binding/ffi.py"
-                 (("_lib_name = get_library_name\\(\\)")
-                  (format #f "_lib_name = ~s" libllvmlite.so))))))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             (substitute* "llvmlite/tests/test_binding.py"
-               (("    def test_libm\\(self\\).*" all)
-                (string-append "    @unittest.skip('Fails on Guix')\n" all)))))
          (add-before 'build 'set-compiler/linker-flags
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((llvm (assoc-ref inputs "llvm")))
