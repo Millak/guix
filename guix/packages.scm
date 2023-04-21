@@ -1234,11 +1234,14 @@ input list."
   "Return all source origins associated with PACKAGE; including origins in
 PACKAGE's inputs and patches."
   (define (expand source)
-    (cons
-     source
-     (filter origin? (origin-patches source))))
+    (cons source
+          (filter origin? (origin-patches source))))
 
-  `(,@(or (and=> (package-source package) expand) '())
+  `(,@(match (package-source package)
+        ((? origin? origin)
+         (expand origin))
+        (_
+         '()))
     ,@(filter-map (match-lambda
                    ((_ (? origin? orig) _ ...)
                     orig)
