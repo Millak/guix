@@ -99,25 +99,24 @@ to remotely control a user's Windows desktop.")
            pkg-config
            xmlto))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("cups" ,cups)
-       ("ffmpeg" ,ffmpeg-4)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libusb" ,libusb)
-       ("libx11" ,libx11)
-       ("libxkbfile" ,libxkbfile)
-       ("libxcursor" ,libxcursor)
-       ("libxext" ,libxext)
-       ("libxi" ,libxi)
-       ("libxv" ,libxv)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxinerama" ,libxinerama)
-       ("libxshmfence" ,libxshmfence)
-       ("pulseaudio" ,pulseaudio)
-       ("zlib" ,zlib)))
-    (propagated-inputs
-     (list libxkbcommon openssl wayland))
+     (list alsa-lib
+           cups
+           ffmpeg-4
+           libjpeg-turbo
+           libusb
+           libx11
+           libxkbfile
+           libxcursor
+           libxext
+           libxi
+           libxv
+           libxrandr
+           libxrender
+           libxinerama
+           libxshmfence
+           pulseaudio
+           zlib))
+    (propagated-inputs (list libxkbcommon openssl wayland))
     (arguments
      `(#:build-type "RELEASE"
        #:configure-flags
