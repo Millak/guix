@@ -33722,7 +33722,7 @@ launching other commands/applications from within Emacs, similar to the
 (define-public emacs-no-littering
   (package
     (name "emacs-no-littering")
-    (version "1.2.7")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -33731,8 +33731,10 @@ launching other commands/applications from within Emacs, similar to the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1grc5fk7ng4d6i8fwfpm3cb2b19s9sbdjbdn8ybchk7cj45kkl24"))))
+        (base32 "1vkypj2mm428kmawxnyaqg3v5xpcs5hkbmyvjkib8ib02psshxd7"))))
     (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://github.com/emacscollective/no-littering")
     (synopsis "Help keep @file{~/.emacs.d/} clean")
     (description "The default paths used to store configuration files and
