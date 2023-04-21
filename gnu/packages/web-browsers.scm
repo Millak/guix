@@ -246,7 +246,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
               (setenv "VERSION_FROM_GIT" #$version)))
           (delete 'configure)
           (add-after 'install 'wrap
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (wrap-program (string-append #$output "/bin/luakit")
                 `("LUA_CPATH" prefix
                   (,(string-append #$(this-package-input "lua5.1-filesystem")
@@ -256,14 +256,14 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list lua-5.1
-           gtk+
+     (list glib-networking
            gsettings-desktop-schemas
-           glib-networking
+           gtk+
+           lua-5.1
            lua5.1-filesystem
            luajit
-           webkitgtk-with-libsoup2
-           sqlite))
+           sqlite
+           webkitgtk-with-libsoup2))
     (synopsis "Fast, lightweight, and simple browser based on WebKit")
     (description "Luakit is a fast, lightweight, and simple to use
 micro-browser framework extensible by Lua using the WebKit web content engine
