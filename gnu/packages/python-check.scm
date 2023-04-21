@@ -1758,6 +1758,57 @@ the implementation of that name.")
     (license (list license:asl2.0
                    license:lgpl3))))    ; only for setup_helpers.py
 
+(define-public python-memory-profiler
+  (package
+    (name "python-memory-profiler")
+    (version "0.61")
+    (source
+     (origin
+       ;; PyPi tarball lacks tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pythonprofilers/memory_profiler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n6g47qqmnn7abh3v25535hd8bmfvhf9bnp72m7bkd89f715m7xh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: @profile is not loaded in some test files and there are 3
+          ;; tests fail, disable them for now.
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (with-directory-excursion "test"
+                (for-each delete-file
+                          '("test_as.py"
+                            "test_func.py"
+                            "test_gen.py"
+                            "test_loop.py"
+                            "test_loop_decorated.py"
+                            "test_mprofile.py"
+                            "test_nested.py"
+                            "test_precision_command_line.py"
+                            "test_unicode.py")))
+              (substitute* "test/test_attributes.py"
+                (("def test_with_profile") "def __off_test_with_profile"))
+              (substitute* "test/test_stream_unicode.py"
+                (("def test_unicode") "def __off_test_unicode"))
+              (substitute* "test/test_tracemalloc.py"
+                (("def test_memory_profiler")
+                 "def __off_test_memory_profiler")))))))
+    (native-inputs
+     (list python-pytest python-pytest-fixture-config python-safety))
+    (propagated-inputs (list python-psutil))
+    (home-page "https://github.com/pythonprofilers/memory_profiler")
+    (synopsis "Memory profiler for Python")
+    (description
+     "This package provides a module for monitoring the memory usage of a
+Python program.")
+    (license license:bsd-3)))
+
 (define-public python-mockito
   (package
     (name "python-mockito")
