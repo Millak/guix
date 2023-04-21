@@ -159,7 +159,8 @@ to a minimal test case.")
         (base32 "1kfs4fpr1525sv2ny10hlfppy8c075vjm8m649wr2b9411pkgfzx"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                  ;skip in the bootstrap
+     `(#:disallowed-references (,tzdata-for-tests)
+       #:tests? #f                  ;skip in the bootstrap
        #:build-type "Release"
        #:configure-flags
         (list "-GNinja")
@@ -187,7 +188,6 @@ to a minimal test case.")
     (inputs
      `(("libconfig" ,libconfig)
        ("libedit" ,libedit)
-       ("tzdata" ,tzdata)
        ("zlib" ,zlib)))
     (native-inputs
      `(("lld-wrapper" ,(make-lld-wrapper lld-14 #:lld-as-ld? #t))
@@ -195,6 +195,7 @@ to a minimal test case.")
        ("ldc" ,gdmd)
        ("ninja" ,ninja)
        ("python-wrapper" ,python-wrapper)
+       ("tzdata" ,tzdata-for-tests)
        ("unzip" ,unzip)))
     (home-page "http://wiki.dlang.org/LDC")
     (synopsis "LLVM-based compiler for the D programming language")
