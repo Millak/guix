@@ -646,32 +646,7 @@ its features are:
                          (("install-data-local")
                           "do-not-install-data-local")
                          (("^test_SCRIPTS.*")
-                          ""))))
-                   (add-after 'unpack 'fix-docbook
-                     (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                       (substitute* "m4/ax_check_docbook.m4"
-                         (("DOCBOOK_ROOT=.*" all)
-                          (string-append
-                           all "XML_CATALOG="
-                           (search-input-file (or native-inputs inputs)
-                                              "xml/dtd/docbook/catalog.xml")
-                           "\n")))
-                       (substitute* "doc/xsl/xhtml.xsl"
-                         (("http://docbook.sourceforge.net/release/xsl\
-/current/xhtml/docbook.xsl")
-                          (search-input-file
-                           (or native-inputs inputs)
-                           (string-append "xml/xsl/docbook-xsl-"
-                                          #$(package-version docbook-xsl)
-                                          "/xhtml/docbook.xsl"))))
-                       (substitute* "doc/xsl/xhtml-chunk.xsl"
-                         (("http://docbook.sourceforge.net/release/xsl\
-/current/xhtml/chunk.xsl")
-                          (search-input-file
-                           (or native-inputs inputs)
-                           (string-append "xml/xsl/docbook-xsl-"
-                                          #$(package-version docbook-xsl)
-                                          "/xhtml/chunk.xsl")))))))))
+                          "")))))))
     (native-inputs (list autoconf
                          automake
                          libtool
