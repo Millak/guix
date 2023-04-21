@@ -336,6 +336,42 @@ but also provides many useful font conversion and analysis facilities.
 @end table")
     (license license:asl2.0)))
 
+(define-public python-afdko-3.6.1
+  ;; This older version does not depend on Java and Antlr4.
+  (package
+    (inherit python-afdko)
+    (version "3.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "afdko" version))
+       (sha256
+        (base32 "0187xhgw6spzaji93fs1mnhqnq30pxhdj1p2m88673szvzpf10av"))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-CC
+                 (lambda _
+                   (setenv "CC" "gcc"))))))
+    (native-inputs
+     (list pkg-config
+           python-pytest
+           python-setuptools-scm
+           python-wheel))
+    (inputs
+     (list bash-minimal
+           libxml2))
+    (propagated-inputs
+     (list psautohint
+           python-booleanoperations
+           python-defcon
+           python-fontmath
+           python-fonttools
+           python-lxml
+           python-tqdm
+           python-ufonormalizer
+           python-ufoprocessor))))
+
 (define-public python-cffsubr
   (package
     (name "python-cffsubr")
