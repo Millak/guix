@@ -1294,7 +1294,14 @@ interactive environment for the functional language Haskell.")
                   version "/ghc-" version "-testsuite.tar.xz"))
            (sha256
             (base32
-             "1m5fzhr4gjn9ni8gxx7ag3fkbw1rspjzgv39mnfb0nkm5mw70v3s"))))
+             "1m5fzhr4gjn9ni8gxx7ag3fkbw1rspjzgv39mnfb0nkm5mw70v3s"))
+           (patches (search-patches "ghc-9.2-grep-warnings.patch"))
+           (modules '((guix build utils)))
+           (snippet
+            ;; collections.Iterable was moved to collections.abc in Python 3.10.
+            '(substitute* "testsuite/driver/testlib.py"
+               (("collections\\.Iterable")
+                "collections.abc.Iterable")))))
        ,@(filter (match-lambda
                    (("ghc-bootstrap" . _) #f)
                    (("ghc-testsuite" . _) #f)
