@@ -2516,23 +2516,13 @@ Its features include:
           (add-after 'unpack 'make-reproducible
             (lambda _
               (substitute* "src/main.c"
-                (("__DATE__") "\"guix\""))))
-          (add-before 'configure 'fix-docbook
-            (lambda _
-              (substitute* "docs/Makefile.in"
-                (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                 (string-append #$(this-package-native-input "docbook-xsl")
-                                "/xml/xsl/docbook-xsl-"
-                                #$(package-version (this-package-native-input "docbook-xsl"))
-                                "/manpages/docbook.xsl")))
-              (setenv "XML_CATALOG_FILES"
-                      (string-append #$(this-package-native-input "docbook-xml")
-                                     "/xml/dtd/docbook/catalog.xml")))))))
+                (("__DATE__") "\"guix\"")))))))
     (inputs
      (list glib pango libdrm libpng eudev))
     (native-inputs
      (list gettext-minimal
            pkg-config
+           libxml2                      ;for XML_CATALOG_FILES
            libxslt
            docbook-xsl
            docbook-xml))
