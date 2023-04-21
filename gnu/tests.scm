@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2020, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -88,6 +88,61 @@
     (with-extensions extensions
       gexp)))
 
+(define (marionette-program device imported-modules extensions)
+  "Return the program that runs the marionette REPL on DEVICE.  Ensure
+IMPORTED-MODULES and EXTENSIONS are accessible from the REPL."
+  (define code
+    (with-imported-modules-and-extensions
+        `((guix build utils)
+          (guix build syscalls)
+          ,@imported-modules)
+        extensions
+      #~(begin
+          (use-modules (ice-9 match)
+                       (ice-9 binary-ports))
+
+          (define (self-quoting? x)
+            (letrec-syntax ((one-of (syntax-rules ()
+                                      ((_) #f)
+                                      ((_ pred rest ...)
+                                       (or (pred x)
+                                           (one-of rest ...))))))
+              (one-of symbol? string? keyword? pair? null? array?
+                      number? boolean? char?)))
+
+          (let ((repl    (open-file #$device "r+0"))
+                (console (open-file "/dev/console" "r+0")))
+            ;; Redirect output to the console.
+            (close-fdes 1)
+            (close-fdes 2)
+            (dup2 (fileno console) 1)
+            (dup2 (fileno console) 2)
+            (close-port console)
+
+            (display 'ready repl)
+            (let loop ()
+              (newline repl)
+
+              (match (read repl)
+                ((? eof-object?)
+                 (primitive-exit 0))
+                (expr
+                 (catch #t
+                   (lambda ()
+                     (let ((result (primitive-eval expr)))
+                       (write (if (self-quoting? result)
+                                  result
+                                  (object->string result))
+                              repl)))
+                   (lambda (key . args)
+                     (print-exception (current-error-port)
+                                      (stack-ref (make-stack #t) 1)
+                                      key args)
+                     (write #f repl)))))
+              (loop))))))
+
+  (program-file "marionette-repl.scm" code))
+
 (define (marionette-shepherd-service config)
   "Return the Shepherd service for the marionette REPL"
   (match config
@@ -101,57 +156,10 @@
 
             (modules '((ice-9 match)
                        (srfi srfi-9 gnu)))
-            (start
-             (with-imported-modules-and-extensions imported-modules extensions
-               #~(lambda ()
-                   (define (self-quoting? x)
-                     (letrec-syntax ((one-of (syntax-rules ()
-                                               ((_) #f)
-                                               ((_ pred rest ...)
-                                                (or (pred x)
-                                                    (one-of rest ...))))))
-                       (one-of symbol? string? keyword? pair? null? array?
-                               number? boolean? char?)))
-
-                   (match (primitive-fork)
-                     (0
-                      (dynamic-wind
-                        (const #t)
-                        (lambda ()
-                          (let ((repl    (open-file #$device "r+0"))
-                                (console (open-file "/dev/console" "r+0")))
-                            ;; Redirect output to the console.
-                            (close-fdes 1)
-                            (close-fdes 2)
-                            (dup2 (fileno console) 1)
-                            (dup2 (fileno console) 2)
-                            (close-port console)
-
-                            (display 'ready repl)
-                            (let loop ()
-                              (newline repl)
-
-                              (match (read repl)
-                                ((? eof-object?)
-                                 (primitive-exit 0))
-                                (expr
-                                 (catch #t
-                                   (lambda ()
-                                     (let ((result (primitive-eval expr)))
-                                       (write (if (self-quoting? result)
-                                                  result
-                                                  (object->string result))
-                                              repl)))
-                                   (lambda (key . args)
-                                     (print-exception (current-error-port)
-                                                      (stack-ref (make-stack #t) 1)
-                                                      key args)
-                                     (write #f repl)))))
-                              (loop))))
-                        (lambda ()
-                          (primitive-exit 1))))
-                     (pid
-                      pid)))))
+            (start #~(make-forkexec-constructor
+                      (list #$(marionette-program device
+                                                  imported-modules
+                                                  extensions))))
             (stop #~(make-kill-destructor)))))))
 
 (define marionette-service-type
