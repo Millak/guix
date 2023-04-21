@@ -105,14 +105,6 @@ applying deltarpms, compatible with the original deltarpm packages.")
                  (format #f "glib_docpath = '~a'~%"
                          (search-input-directory (or native-inputs inputs)
                                                  "share/gtk-doc/html"))))))
-          (add-after 'unpack 'fix-docbook-references
-            ;; gtk-doc doesn't seem to honor DocBook 4.1.2's docbook.cat's
-            ;; catalog file, even when adding it to XML_CATALOG_FILES.  Work
-            ;; around it by adjusting the DocBook references directly.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "modulemd/modulemd-docs.xml"
-                (("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd")
-                 (search-input-file inputs "xml/dtd/docbook/docbookx.dtd")))))
           (add-after 'install 'move-documentation
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((dst (string-append #$output:doc "/share/gtk-doc")))
@@ -126,6 +118,7 @@ applying deltarpms, compatible with the original deltarpm packages.")
            gobject-introspection        ;for g-ir-scanner
            gtk-doc
            help2man
+           libxml2                      ;for XML_CATALOG_FILES
            pkg-config
            python))                     ;for 'site-packages' call
     (inputs
