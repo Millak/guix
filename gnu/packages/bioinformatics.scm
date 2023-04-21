@@ -2367,40 +2367,32 @@ It is part of the Bio++ project.")
     (license license:cecill)))
 
 (define-public bppsuite
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "c516147f57aa50961121cd505bed52cd7603698b"))
-    (package
-      (name "bppsuite")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bppsuite")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1y87pxvw0jxjizhq2dr9g2r91md45k1p9ih2sl1yy1y3p934l2kb"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f
-         #:tests? #f)) ; There are no tests.
-      (native-inputs
-       (list groff man-db texinfo))
-      (inputs
-       `(("bpp-core" ,bpp-core)
-         ("bpp-seq" ,bpp-seq)
-         ("bpp-phyl" ,bpp-phyl)
-         ("bpp-phyl" ,bpp-popgen)))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "Bioinformatics tools written with the Bio++ libraries")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bppsuite")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bppsuite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wdwcgczqbc3m116vakvi0129wm3acln3cfc7ivqnalwvi6lrpds"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ; There are no tests.
+    (native-inputs
+     (list groff man-db texinfo))
+    (inputs
+     (list bpp-core bpp-seq bpp-phyl bpp-popgen))
+    (home-page "https://github.com/BioPP")
+    (synopsis "Bioinformatics tools written with the Bio++ libraries")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  This
 package provides command line tools using the Bio++ library.")
-      (license license:cecill-c))))
+    (license license:cecill-c)))
 
 (define-public blast+
   (package
