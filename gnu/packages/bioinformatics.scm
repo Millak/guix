@@ -2220,34 +2220,28 @@ easy-to-perform steps.")
     (license license:gpl3+)))
 
 (define-public bpp-core
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "7d8bced0d1a87291ea8dd7046b7fb5ff9c35c582"))
-    (package
-      (name "bpp-core")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bpp-core")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "10djsq5vlnkilv436gnmh4irpk49v29pa69r6xiryg32xmvn909j"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "C++ libraries for Bioinformatics")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bpp-core")
+    (version "2.4.1")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BioPP/bpp-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ma2cl677l7s0n5sffh66cy9lxp5wycm50f121g8rx85p95vkgwv"))))
+    (build-system cmake-build-system)
+    (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-core/html/index.html")
+    (synopsis "C++ libraries for Bioinformatics")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  It is
 Object Oriented and is designed to be both easy to use and computer efficient.
 Bio++ intends to help programmers to write computer expensive programs, by
 providing them a set of re-usable tools.")
-      (license license:cecill-c))))
+      (license license:cecill-c)))
 
 (define-public bpp-phyl
   ;; The last release was in 2014 and the recommended way to install from source
