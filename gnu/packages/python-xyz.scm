@@ -2311,8 +2311,20 @@ other machines, such as over the network.")
               (substitute* "setuptools/py33compat.py"
                 (("html_parser.HTMLParser\\(\\).unescape")
                  "html.unescape"))
+              ;; collections classes have moved in Python 3.10
+              (substitute* "pkg_resources/_vendor/pyparsing.py"
+                (("collections.MutableMapping")
+                 "collections.abc.MutableMapping")
+                (("collections.Iterable")
+                 "collections.abc.Iterable"))
               ;; This needs distutils.msvc9compiler
-              (delete-file "setuptools/tests/test_msvc.py"))))))
+              (delete-file "setuptools/tests/test_msvc.py")
+              ;; See https://github.com/pypa/setuptools/issues/2558
+              (delete-file "setuptools/command/bdist_wininst.py")
+              (substitute* "setuptools/command/install_scripts.py"
+                (("bw_cmd =.*") "\n")
+                (("is_wininst =.*")
+                 "is_wininst = False\n")))))))
      (native-inputs
       (list python-pytest python-mock python-six)))))
 
