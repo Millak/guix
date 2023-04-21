@@ -2296,35 +2296,30 @@ library.  It is part of the Bio++ project.")
     (license license:cecill)))
 
 (define-public bpp-popgen
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "e472bac9b1a148803895d747cd6d0c5904f85d9f"))
-    (package
-      (name "bpp-popgen")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bpp-popgen")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "0yn82dzn1n5629nzja68xfrhi655709rjanyryb36vzkmymy6dw5"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f
-         #:tests? #f)) ; There are no tests.
-      (inputs
-       (list bpp-core bpp-seq))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "Bio++ population genetics library")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bpp-popgen")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bpp-popgen")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bz0fhrq3dri6a0hvfc3zlvrns8mrzzlnicw5pyfa812gc1qwfvh"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ; There are no tests.
+    (inputs
+     (list bpp-core bpp-seq))
+    (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-popgen/html/")
+    (synopsis "Bio++ population genetics library")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  This
 library provides population genetics-related modules.")
-      (license license:cecill-c))))
+    (license license:cecill-c)))
 
 (define-public bpp-seq
   (package
