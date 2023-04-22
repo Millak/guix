@@ -3096,6 +3096,38 @@ videos, datasets, and graphics with text pointers inside Git, while storing the
 file contents on a remote server.")
     (license license:expat)))
 
+(define-public lfs-s3
+  (package
+    (name "lfs-s3")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~ngraves/lfs-s3")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nkxivb356f1zjlj34px601zy86w4398db9s2ivd178jp4v69raw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~ngraves/lfs-s3"))
+    (inputs (list git-lfs))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-spf13-cobra))
+    (home-page "https://git.sr.ht/~ngraves/lfs-s3/")
+    (synopsis "Git extension for versioning large files in S3")
+    (description
+     "This package provides a custom transfer agent for Git LFS, allowing
+plain S3 bucket usage as remote storage for media files. This package uses a
+standalone agent instead of a server.")
+    (license license:expat)))
+
 (define-public git-open
   (package
     (name "git-open")
