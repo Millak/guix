@@ -1364,13 +1364,13 @@ features:
 (define-public python-stdnum
   (package
     (name "python-stdnum")
-    (version "1.17")
+    (version "1.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-stdnum" version))
        (sha256
-        (base32 "0h4369b7gws5w5s2vhq590bk219y5k53zcmha2zwsb4i2dg2nkip"))))
+        (base32 "1h5y4qx75b6i2051ch8k0pcwkvhxzpaqd9mpsajkvqlsqkcn7ixw"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
