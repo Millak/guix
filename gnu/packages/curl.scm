@@ -401,8 +401,10 @@ asynchronously via cURL in C++.")
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/rs/curlie"))
-    (inputs
-     (list curl go-golang-org-x-crypto go-golang-org-x-sys))
+    (inputs (list curl
+                  go-golang-org-x-crypto
+                  go-golang-org-x-sys
+                  go-golang-org-x-term))
     (home-page "https://curlie.io")
     (synopsis "The power of curl, the ease of use of httpie")
     (description "If you like the interface of HTTPie but miss the features of
