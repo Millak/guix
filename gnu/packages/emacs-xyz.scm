@@ -6813,7 +6813,7 @@ hash of the tag names.")
 (define-public emacs-org-rich-yank
   (package
     (name "emacs-org-rich-yank")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -6822,7 +6822,7 @@ hash of the tag names.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gxb0fnh5gxjmld0hnk5hli0cvdd8gjd27m30bk2b80kwldxlq1z"))))
+        (base32 "0cajgkfcwqgqdqyqf01hxji28n27jmj9nf0w3rbyw6l5dffgch0n"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/unhammer/org-rich-yank")
     (synopsis "Automatically surround source code pasted into Org with
