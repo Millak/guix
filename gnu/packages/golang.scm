@@ -11280,6 +11280,31 @@ encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
      "Package smithy provides the core components for a Smithy SDK.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-aws-sdk-go-v2
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2")
+    (version "1.17.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aws/aws-sdk-go-v2")
+                    (commit "v1.17.3")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a07xab1cn96iff7zvp5a82fzhqwl0i4bhplkm2h1qbkxgldn6x0"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs (list go-github-com-jmespath-go-jmespath
+                             go-github-com-google-go-cmp-cmp
+                             go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2")
+    (description
+     "Package sdk is the official AWS SDK v2 for the Go programming language.")
+    (license license:asl2.0)))
+
 (define-public aws-vault
   (package
     (name "aws-vault")
