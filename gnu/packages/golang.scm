@@ -36,7 +36,7 @@
 ;;; Copyright © 2022 Pier-Hugues Pellerin <phpellerin@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
-;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
@@ -3220,37 +3220,35 @@ Go programming language.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-crypto
-  (let ((commit "2aa609cf4a9d7d1126360de73b55b6002f9e052a")
-        (revision "5"))
-    (package
-      (name "go-golang-org-x-crypto")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://go.googlesource.com/crypto")
-                      (commit commit)))
-                (file-name (string-append "go.googlesource.com-crypto-"
-                                          version "-checkout"))
-                (sha256
-                 (base32
-                  "1yvis6fqbsd7f356aqyi18f76vnwj3bry6mxqnkvshq4cwrf92il"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "golang.org/x/crypto"
+  (package
+    (name "go-golang-org-x-crypto")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/crypto")
+                    (commit (string-append "v" version))))
+              (file-name (string-append "go.googlesource.com-crypto-"
+                                        version "-checkout"))
+              (sha256
+               (base32
+                "13i0yz4hvc4qdr438nmzilvl5ns73v3910bakcddny3jbzq72i2m"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "golang.org/x/crypto"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
          ;; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
-      (propagated-inputs
-       (list go-golang-org-x-sys))
-      (synopsis "Supplementary cryptographic libraries in Go")
-      (description "This package provides supplementary cryptographic libraries
+         (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (synopsis "Supplementary cryptographic libraries in Go")
+    (description "This package provides supplementary cryptographic libraries
 for the Go language.")
-      (home-page "https://go.googlesource.com/crypto/")
-      (license license:bsd-3))))
+    (home-page "https://go.googlesource.com/crypto/")
+    (license license:bsd-3)))
 
 (define-public govulncheck
   (package
