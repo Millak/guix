@@ -350,6 +350,29 @@
        "This package allows using Ace jump to a candidate in Helm window.")
       (license license:gpl3+))))
 
+(define-public emacs-bookmark-plus
+  (package
+    (name "emacs-bookmark-plus")
+    (version "2022.11.05")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+	     (url "https://github.com/emacsmirror/bookmark-plus")
+	     (commit "3db369056a722c42b3eafd10a91831f87d056dfa")))
+       (sha256
+        (base32
+	 "0fnq24f597zfr8jj5h3vr87kdil5lhy11m81q6ayqc03qm0jymrf"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/emacsmirror/bookmark-plus")
+    (synopsis "Extensions to the Bookmark library in Emacs")
+    (description
+     "Bookmarks are a powerful Emacs feature.  This package makes them even
+more versatile. You can bookmark many more kinds of data.  You can add tags.
+There are many more ways to organize and display your bookmarks.  I recommend
+reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
+    (license license:gpl3+)))
+
 (define-public emacs-cfrs
   (package
     (name "emacs-cfrs")
@@ -6813,7 +6836,7 @@ hash of the tag names.")
 (define-public emacs-org-rich-yank
   (package
     (name "emacs-org-rich-yank")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -6822,7 +6845,7 @@ hash of the tag names.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gxb0fnh5gxjmld0hnk5hli0cvdd8gjd27m30bk2b80kwldxlq1z"))))
+        (base32 "0cajgkfcwqgqdqyqf01hxji28n27jmj9nf0w3rbyw6l5dffgch0n"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/unhammer/org-rich-yank")
     (synopsis "Automatically surround source code pasted into Org with
@@ -10851,7 +10874,7 @@ style, or as multiple word prefixes.")
 (define-public emacs-consult
   (package
     (name "emacs-consult")
-    (version "0.33")
+    (version "0.34")
     (source
      (origin
        (method git-fetch)
@@ -10859,7 +10882,7 @@ style, or as multiple word prefixes.")
              (url "https://github.com/minad/consult")
              (commit version)))
        (sha256
-        (base32 "116b1fi5wp48wbh0srfl999f08bcz10nxgrb7sliy9r4igqqmvd6"))
+        (base32 "1ggbvc5ylsw430w05fjl4vk1hmim45mwah7cyr94g03rwjhng1sc"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments

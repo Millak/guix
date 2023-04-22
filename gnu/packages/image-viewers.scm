@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2022, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019, 2020, 2022 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Peng Mei Yu <pengmeiyu@riseup.net>
@@ -666,6 +666,31 @@ including CBZ, CB7, CBT, LHA.
 
 For PDF support, install the @emph{mupdf} package.")
     (license license:gpl2+)))
+
+(define-public qpageview
+  (package
+    (name "qpageview")
+    (version "0.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/frescobaldi/qpageview")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xdhiglzqxyp05blp66l52nbzbpn10hmdm2idhncz6pf7qw16lsw"))))
+    (build-system python-build-system)
+    (home-page "https://qpageview.org/")
+    (synopsis "Page based document viewer widget for Qt5/PyQt5")
+    (inputs
+     (list python-pyqt qtbase-5))
+    (description
+     "@code{qpageview} provides a page based document viewer widget for Qt5
+and PyQt5.  It has a flexible architecture potentionally supporting many
+formats.  Currently, it supports SVG documents, images, and, using the
+Poppler-Qt5 binding, PDF documents.")
+    (license license:gpl3+)))
 
 (define-public qview
   (package

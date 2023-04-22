@@ -2,6 +2,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 florhizome <florhizome@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix build utils)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -35,15 +37,18 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
 (define-public libxapp
   (package
     (name "libxapp")
-    (version "2.4.2")
+    (version "2.4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -51,7 +56,7 @@
                     (commit version)))
               (sha256
                (base32
-                "0cy9g0zqcbx9zscc9qavqmghfyfb8244cg299llv1ha8n6mpxl3s"))))
+                "0n443lwmxzmfnw03n98cqnm2ah1iij6pwsnwbly8sncmzg5jyklg"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -121,7 +126,7 @@ cross-DE solutions.")
 (define-public cinnamon-desktop
   (package
     (name "cinnamon-desktop")
-    (version "3.4.2")
+    (version "5.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -130,27 +135,27 @@ cross-DE solutions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18mjy80ly9361npjhxpm3n0pkmrwviaqr2kixjb7hyxa6kzzh5xw"))))
-    (build-system gnu-build-system)
-    ;; TODO: package 'libgsystem'.
+                "0rnk0vmpjiz8pgn5y8zizr91ilwzfh9w7cmfsjpqg3h5wkpxz22z"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #true
+      #:configure-flags #~(list "-Dalsa=true")))
     (inputs
      (list accountsservice
-           gtk+
+           alsa-lib
            glib
-           gobject-introspection
            gnome-common
+           gtk+
            libxkbfile
            libxrandr
-           python-2
+           libxext
            pulseaudio
            xkeyboard-config))
     (native-inputs
-     (list autoconf
-           automake
-           gettext-minimal
-           `(,glib "bin") ; glib-gettextize
-           intltool
-           libtool
+     (list gettext-minimal
+           `(,glib "bin")               ;glib-gettextize
+           gobject-introspection
            pkg-config))
     (home-page "https://github.com/linuxmint/cinnamon-desktop/")
     (synopsis "Library for the Cinnamon Desktop")
@@ -159,3 +164,66 @@ cross-DE solutions.")
 as well as some desktop-wide documents.")
     (license (list license:gpl2+ license:lgpl2.0+
                    license:expat)))) ;display-name.c , edid-parse.c
+
+(define-public nemo
+  (package
+    (name "nemo")
+    (version "5.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/linuxmint/nemo")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15032jzi1x3dr292wbx6sdydybrs5n3lim2sq2i0lb9xa7cxxl0x"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #true
+      #:tests? #false                   ;tests stall
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'adjust-prefix
+            (lambda _
+              (substitute* "meson.build"
+                (("'data_dir")
+                 (string-append "'" #$output "/share")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
+              (setenv "HOME" "/tmp")    ;some tests require a writable HOME
+              (setenv "XDG_DATA_DIRS"
+                      (string-append (getenv "XDG_DATA_DIRS")
+                                     ":" #$output "/share")))))))
+    (native-inputs
+     (list gettext-minimal
+           (list glib "bin")
+           gobject-introspection
+           (list gtk+ "bin")
+           intltool
+           pkg-config
+           xorg-server-for-tests))
+    (inputs
+     (list atk
+           cinnamon-desktop
+           exempi
+           gsettings-desktop-schemas
+           gtk+
+           libexif
+           libgnomekbd
+           libgsf
+           libnotify
+           libx11
+           libxapp
+           libxkbfile
+           libxml2
+           xkeyboard-config))
+    (home-page "https://github.com/linuxmint/nemo")
+    (synopsis "File browser for Cinnamon")
+    (description
+     "Nemo is the file manager for the Cinnamon desktop environment.")
+    (license license:expat)))

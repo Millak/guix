@@ -142,6 +142,7 @@
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-viewers)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde-frameworks)
@@ -814,7 +815,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
 (define-public hydrogen
   (package
     (name "hydrogen")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -823,7 +824,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12mwkglyz88hwb16fb3fahn95janim2mrvnxkzp8pcsw3wybi3dn"))))
+        (base32 "0v4ir1my8zndw5rvz6jr42ysprwycgxrlsc53070y3620n699nha"))))
     (build-system cmake-build-system)
     (arguments
      `(#:test-target "tests"
@@ -849,6 +850,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
            lrdf
            pulseaudio
            qtbase-5
+           qtsvg-5
            qtxmlpatterns
            zlib))
     (home-page "http://hydrogen-music.org/")
@@ -3034,7 +3036,7 @@ using a system-independent interface.")
 (define-public frescobaldi
   (package
     (name "frescobaldi")
-    (version "3.1.3")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
@@ -3042,10 +3044,19 @@ using a system-independent interface.")
              "https://github.com/wbsoft/frescobaldi/releases/download/v"
              version "/frescobaldi-" version ".tar.gz"))
        (sha256
-        (base32 "1hg9yc8kj445fjsby92g3qf50crcl1pb079zfma18sb7ycv50zww"))))
+        (base32 "1n60gfnf6x0l1bac088g9adzx0lskbl9knd4y1ynr3y0zcs0kfcz"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f))                    ;no tests included
+     (list
+      #:tests? #f                       ;no tests included
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'generate-translations
+            (lambda _
+              (invoke "make" "-C" "i18n")))
+          (add-before 'build 'generate-metadata
+            (lambda _
+              (invoke "make" "-C" "linux"))))))
     (inputs
      (list lilypond
            poppler
@@ -3054,7 +3065,8 @@ using a system-independent interface.")
            python-poppler-qt5
            python-pyportmidi
            python-pyqt
-           python-sip))
+           python-sip
+           qpageview))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
     (description
