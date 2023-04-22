@@ -850,8 +850,8 @@ is not available for Guile 2.0.")
     (license license:lgpl3+)))
 
 (define-public guile-fibers-next
-  (let ((commit "0fa712ecd85c65d7d11ce0c897f068fba4e6ef3f")
-        (revision "0"))
+  (let ((commit "36a6cc707921f4ab503965fefd096d80afee72f0")
+        (revision "1"))
     (package
       (inherit guile-fibers-1.1)
       (name "guile-fibers-next")
@@ -866,7 +866,7 @@ is not available for Guile 2.0.")
                 (file-name (git-file-name "guile-fibers" version))
                 (sha256
                  (base32
-                  "0vfq4dkdq2szi5f99ywm856vll397c1x42a55rpxya61rrws8s9r")))))))
+                  "0vcb1xck7wv1z9d7i9gzs1k2vav73yf6as5cbjgjjfz8dzm0rq7q")))))))
 
 (define-public guile-fibers
   (package
