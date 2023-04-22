@@ -15015,26 +15015,22 @@ explicit subcommand name.")
 (define-public python-structlog
   (package
     (name "python-structlog")
-    (version "20.2.0")
+    (version "23.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "structlog" version))
         (sha256
          (base32
-          "0x1i21vn3xjfa3j9ijbblia5z0jlzc9aqvpqc26sy16i8yjxyydg"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest"))
-             #t)))))
+          "0swh5wxghpzdkncsl3zhiq5bblkj4i5r3g00lldw2qyiswfnh397"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage
+     (list ;; For the build
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
+           ;; For the tests
+           python-coverage
            python-freezegun
            python-pretend
            python-pytest
