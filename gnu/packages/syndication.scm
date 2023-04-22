@@ -511,10 +511,10 @@ a simple interface that makes it easy to organize and browse feeds.")
 
 (define-public syndication-domination
   (let ((revision "1")
-        (commit "f64caabd6f46be14fdb92085971a7f2d6fa5e61e"))
+        (commit "75920321062d682437f3fb0319dad227d8b18f6c"))
     (package
       (name "syndication-domination")
-      (version (git-version "0.0" revision commit))
+      (version (git-version "1.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -522,7 +522,7 @@ a simple interface that makes it easy to organize and browse feeds.")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
-                 (base32 "1i0llzzm3lc2kw7rjhb46c7wlknsb6r9bdrf61chi2pk6hpjyscv"))))
+                 (base32 "1fl362920n6nz4x9wihyzbr82d9cy60sknhmajj62whd5gs49sbw"))))
       (build-system meson-build-system)
       (inputs (list fmt tidy-html pybind11 python pugixml))
       (native-inputs (list cmake pkg-config)) ; need cmake to find pybind11
