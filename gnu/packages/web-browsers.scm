@@ -213,65 +213,57 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
 (define-public luakit
   (package
     (name "luakit")
-    (version "2.3")
+    (version "2.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/luakit/luakit")
-                     (commit version)))
+                    (url "https://github.com/luakit/luakit")
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1khbn7dpizkznnwkw7rcfhf72dnd1nazk7dwb4rkh9i97b53mf1y"))))
-    (inputs
-     `(("lua-5.1" ,lua-5.1)
-       ("gtk+" ,gtk+)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("glib-networking" ,glib-networking)
-       ("lua5.1-filesystem" ,lua5.1-filesystem)
-       ("luajit" ,luajit)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)
-       ("sqlite" ,sqlite)))
-    (native-inputs
-     (list pkg-config))
+                "19z6idmjz6y7xmjpqgw65mdfi65lyvy06819dj5bb7rad63v5542"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list
-          "CC=gcc"
-          "LUA_BIN_NAME=lua"
-          "DEVELOPMENT_PATHS=0"
-          (string-append "PREFIX=" out)
-          (string-append "XDGPREFIX=" out "/etc/xdg")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'lfs-workaround
-           (lambda _
-             (setenv "LUA_CPATH"
-                     (string-append
-                      (assoc-ref %build-inputs "lua5.1-filesystem")
-                      "/lib/lua/5.1/?.so;;"))
-             #t))
-         (add-before 'build 'set-version
-           (lambda _
-             (setenv "VERSION_FROM_GIT" ,(package-version this-package))
-             #t))
-         (delete 'configure)
-         (delete 'check)
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((luakit (assoc-ref outputs "out"))
-                    (lua5.1-filesystem (assoc-ref inputs "lua5.1-filesystem") )
-                    (gtk (assoc-ref inputs "gtk+"))
-                    (gtk-share (string-append gtk "/share")))
-               (wrap-program (string-append luakit "/bin/luakit")
-                 `("LUA_CPATH" prefix
-                   (,(string-append lua5.1-filesystem
-                                    "/lib/lua/5.1/?.so;;")))
-                 `("XDG_CONFIG_DIRS" prefix
-                   (,(string-append luakit "/etc/xdg/"))))
-               #t))))))
+     (list
+      #:tests? #false                   ;require un-packaged "luassert"
+      #:test-target "run-tests"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "LUA_BIN_NAME=lua"
+              "DEVELOPMENT_PATHS=0"
+              (string-append "PREFIX=" #$output)
+              (string-append "XDGPREFIX=" #$output "/etc/xdg"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'lfs-workaround
+            (lambda _
+              (setenv "LUA_CPATH"
+                      (string-append #$(this-package-input "lua5.1-filesystem")
+                                     "/lib/lua/5.1/?.so;;"))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "VERSION_FROM_GIT" #$version)))
+          (delete 'configure)
+          (add-after 'install 'wrap
+            (lambda _
+              (wrap-program (string-append #$output "/bin/luakit")
+                `("LUA_CPATH" prefix
+                  (,(string-append #$(this-package-input "lua5.1-filesystem")
+                                   "/lib/lua/5.1/?.so;;")))
+                `("XDG_CONFIG_DIRS" prefix
+                  (,(string-append #$output "/etc/xdg/")))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib-networking
+           gsettings-desktop-schemas
+           gtk+
+           lua-5.1
+           lua5.1-filesystem
+           luajit
+           sqlite
+           webkitgtk-with-libsoup2))
     (synopsis "Fast, lightweight, and simple browser based on WebKit")
     (description "Luakit is a fast, lightweight, and simple to use
 micro-browser framework extensible by Lua using the WebKit web content engine

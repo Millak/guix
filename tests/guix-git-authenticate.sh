@@ -35,9 +35,9 @@ intro_signer="BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"
 cache_key="test-$$"
 
 # This must fail because the end commit is not a descendant of $intro_commit.
-! guix git authenticate "$intro_commit" "$intro_signer"	\
+guix git authenticate "$intro_commit" "$intro_signer"	\
      --cache-key="$cache_key" --stats			\
-     --end=9549f0283a78fe36f2d4ff2a04ef8ad6b0c02604
+     --end=9549f0283a78fe36f2d4ff2a04ef8ad6b0c02604 && false
 
 # The v1.2.0 commit is a descendant of $intro_commit and it satisfies the
 # authorization invariant.
@@ -59,8 +59,8 @@ guix git authenticate "$intro_commit" "$intro_signer"	\
      --end="$v1_0_0_commit"
 
 # This should fail because these commits lack '.guix-authorizations'.
-! guix git authenticate "$v1_0_0_commit" "$v1_0_0_signer" \
-       --cache-key="$cache_key" --end="$v1_0_1_commit"
+guix git authenticate "$v1_0_0_commit" "$v1_0_0_signer" \
+       --cache-key="$cache_key" --end="$v1_0_1_commit" && false
 
 # This should work thanks to '--historical-authorizations'.
 guix git authenticate "$v1_0_0_commit" "$v1_0_0_signer" 	\

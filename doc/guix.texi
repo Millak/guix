@@ -18582,6 +18582,18 @@ Type of the service that runs the syslog daemon, whose value is a
 @code{<syslog-configuration>} object.
 @end defvar
 
+To have a modified @code{syslog-configuration} come into effect after
+reconfiguring your system, the @samp{reload} action should be preferred
+to restarting the service, as many services such as the login manager
+depend on it and would be restarted as well:
+
+@example
+# herd reload syslog
+@end example
+
+which will cause the running @command{syslogd} process to reload its
+configuration.
+
 @deftp {Data Type} syslog-configuration
 Data type representing the configuration of the syslog daemon.
 
@@ -42565,10 +42577,10 @@ Name of this host declaration.
 @item @code{host-name} (type: maybe-string)
 Host name---e.g., @code{"foo.example.org"} or @code{"192.168.1.2"}.
 
-@item @code{address-family} (type: address-family)
+@item @code{address-family} (type: maybe-address-family)
 Address family to use when connecting to this host: one of
-@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only), or
-@code{*unspecified*} (allowing any address family).
+@code{AF_INET} (for IPv4 only), @code{AF_INET6} (for IPv6 only).
+Additionally, the field can be left unset to allow any address family.
 
 @item @code{identity-file} (type: maybe-string)
 The identity file to use---e.g., @code{"/home/charlie/.ssh/id_ed25519"}.
@@ -42594,10 +42606,31 @@ machine.
 @item @code{compression?} (default: @code{#f}) (type: boolean)
 Whether to compress data in transit.
 
-@item @code{proxy-command} (type: maybe-string)
-The command to use to connect to the server.  As an example, a command
-to connect via an HTTP proxy at 192.0.2.0 would be: @code{"nc -X connect
--x 192.0.2.0:8080 %h %p"}.
+@item @code{proxy} (type: maybe-proxy-command-or-jump-list)
+The command to use to connect to the server or a list of SSH hosts to
+jump through before connecting to the server.  The field may be set to either a
+@code{proxy-command} or a list of @code{proxy-jump} records.
+
+As an example, a @code{proxy-command} to connect via an HTTP proxy at 192.0.2.0
+would be constructed with: @code{(proxy-command "nc -X connect -x
+192.0.2.0:8080 %h %p")}.
+
+@deftp {Data Type} proxy-jump
+Available @code{proxy-jump} fields are:
+
+@table @asis
+@item @code{user} (type: maybe-string)
+User name on the remote host.
+
+@item @code{host-name} (type: string)
+Host name---e.g., @code{foo.example.org} or @code{192.168.1.2}.
+
+@item @code{port} (type: maybe-natural-number)
+TCP port number to connect to.
+
+@end table
+
+@end deftp
 
 @item @code{host-key-algorithms} (type: maybe-string-list)
 The list of accepted host key algorithms---e.g.,

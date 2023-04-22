@@ -60,7 +60,7 @@ guix environment --bootstrap --ad-hoc guile-bootstrap --pure	\
 grep '^PATH=' "$tmpdir/a"
 grep '^GUIX_TEST_ABC=' "$tmpdir/a"
 grep '^GUIX_TEST_DEF=' "$tmpdir/a"
-! grep '^GUIX_TEST_XYZ=' "$tmpdir/a"
+grep '^GUIX_TEST_XYZ=' "$tmpdir/a" && false
 
 # Make sure the exit value is preserved.
 if guix environment --bootstrap --ad-hoc guile-bootstrap --pure \
@@ -207,7 +207,7 @@ then
     done
 
     # 'make-boot0' itself must not be listed.
-    ! guix gc --references "$profile" | grep make-boot0
+    guix gc --references "$profile" | grep make-boot0 && false
 
     # Make sure that the shell spawned with '--exec' sees the same environment
     # as returned by '--search-paths'.
@@ -224,7 +224,7 @@ then
     test "x$make_boot0_debug" != "x"
 
     # Make sure the "debug" output is not listed.
-    ! guix gc --references "$profile" | grep "$make_boot0_debug"
+    guix gc --references "$profile" | grep "$make_boot0_debug" && false
 
     # Compute the build environment for the initial GNU Make, but add in the
     # bootstrap Guile as an ad-hoc addition.

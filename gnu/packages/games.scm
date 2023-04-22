@@ -3706,6 +3706,57 @@ enemies in different game modes such as space ball, death match, team death
 match, cannon keep, and grave-itation pit.")
       (license license:gpl3+))))
 
+(define-public alienblaster
+  (package
+    (name "alienblaster")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.schwardtnet.de/alienblaster/archives/"
+                           "alienblaster-" version ".tgz"))
+       (sha256
+        (base32
+         "104rfsfsv446n4y52p5zw9h8mhgjyrbca8fpyhnxkkasq141a264"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-sdl-paths
+            (lambda _
+              (let ((share (string-append #$output "/share")))
+                ;; Fix name and append path to "SDL_mixer.h"
+                (substitute* "src/Makefile"
+                  (("GAME_NAME=alienBlaster") "GAME_NAME=alienblaster")
+                  (("SDL_FLAGS=\\$\\(shell sdl-config --cflags\\)" line)
+                   (string-append line " -I"
+                                  #$(this-package-input "sdl-mixer")
+                                  "/include/SDL")))
+                ;; Substitute relative paths in ".cfg" and source/header files
+                (substitute* (find-files "./cfg")
+                  (("(\\./)?images") (string-append share "/images")))
+                (substitute* (list "src/global.h" "src/global.cc")
+                  (("./images") (string-append share "/images"))
+                  (("./sound") (string-append share "/sound"))
+                  (("./cfg") (string-append share "/cfg"))))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "alienblaster" (string-append #$output "/bin"))
+              (for-each
+               (lambda (dir)
+                 (copy-recursively dir (string-append #$output "/share/" dir)))
+               '("images" "sound" "cfg")))))))
+    (inputs (list sdl sdl-mixer))
+    (home-page "http://www.schwardtnet.de/alienblaster/")
+    (synopsis "Action-loaded 2D arcade shooter game")
+    (description "Alien Blaster is an action-loaded 2D arcade shooter
+game.  Your mission in the game is simple: stop the invasion of the aliens by
+blasting them.  Simultaneous two-player mode is available.")
+    (license license:gpl2)))
+
 (define glkterm
   (package
    (name "glkterm")

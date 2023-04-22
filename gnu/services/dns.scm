@@ -622,6 +622,7 @@
             (documentation "Run the Knot DNS daemon.")
             (provision '(knot dns))
             (requirement '(networking))
+            (actions (list (shepherd-configuration-action config-file)))
             (start #~(make-forkexec-constructor
                        (list (string-append #$knot "/sbin/knotd")
                              "-c" #$config-file)))

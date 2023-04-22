@@ -125,6 +125,7 @@
 ;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2935,14 +2936,14 @@ incrementally confined in Isearch manner.")
 (define emacs-emms-print-metadata
   (package
     (name "emacs-emms-print-metadata")
-    (version "14")
+    (version "15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "emms-" version ".tar"))
        (sha256
-        (base32 "0525vmi397q604z8i35zld3c4fkwbvxwir5lf4f1ji1bbvkzqavc"))))
+        (base32 "0kd9qx93cgcxyqsnbp95xx414s08rd5bb35aif3c7qyab5w05yi6"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -10714,10 +10715,10 @@ them easier to distinguish from other, less important buffers.")
     (license license:expat)))
 
 (define-public emacs-embark
-  (let ((commit "63013c2d3ef4dccc95167218ccbf4f401e489c3e")) ;version bump
+  (let ((commit "c914efe881df2bc6a2bd35cc7ee975d3e9d4a418")) ;version bump
     (package
       (name "emacs-embark")
-      (version "0.21.1")
+      (version "0.22.1")
       (source
        (origin
          (method git-fetch)
@@ -10725,7 +10726,7 @@ them easier to distinguish from other, less important buffers.")
                (url "https://github.com/oantolin/embark")
                (commit commit)))
          (sha256
-          (base32 "14qp46wa1xgmb09jyk9cadj0b3m7bwspqnprk3zbfc6gw1r53235"))
+          (base32 "1l288w27wav0r71hprqi74r77042d1fx3p1zmi05vl6z6230h48b"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
@@ -13151,7 +13152,7 @@ with Elfeed.")
 (define-public emacs-elfeed-score
   (package
     (name "emacs-elfeed-score")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
      (origin
        (method git-fetch)
@@ -13160,8 +13161,20 @@ with Elfeed.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d1yh4wv81n5mnrzdi88z0vbs94m7j3q20r5fc1wk35r4hrl3xqw"))))
+        (base32 "0slbmmcsf5pqbiq3nmna7wx9jvfgdgjp272qdqvmrv99jdj92cq6"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;FIXME: How to run tests properly?
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'make-info
+            (lambda _
+              (with-directory-excursion "doc"
+                (invoke "makeinfo" "--no-split"
+                        "-o" "elfeed-score.info" "elfeed-score.texi")))))))
+    (native-inputs
+     (list texinfo))
     (propagated-inputs
      (list emacs-elfeed))
     (home-page "https://github.com/sp1ff/elfeed-score")
@@ -27423,7 +27436,7 @@ targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
 (define-public emacs-buttercup
   (package
     (name "emacs-buttercup")
-    (version "1.30")
+    (version "1.31")
     (source
      (origin
        (method git-fetch)
@@ -27433,7 +27446,7 @@ targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zr1jlfwr8yp9168yvkrhif1mr1r40fr1j1v1iv11ryn2zjcm9yn"))))
+         "1rvc9r6swb74lhzd877jidkkf2cxl5v4zz302j2imqhsbk844qzh"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -32599,7 +32612,7 @@ contributed packages to Telega.")))
 (define-public emacs-doom-modeline
   (package
     (name "emacs-doom-modeline")
-    (version "3.3.2")
+    (version "3.4.0")
     (source
      (origin
        (method git-fetch)
@@ -32607,7 +32620,7 @@ contributed packages to Telega.")))
              (url "https://github.com/seagle0128/doom-modeline")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1v24hiqs4zbq613vanixgng9cx697di63jpafpmjlsripjfvk1qp"))
+        (base32 "1z5cqn33v7sjihs05ycz1yzi5wcg90yn3cy09qj9g5g8pjs8qdki"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -33712,7 +33725,7 @@ launching other commands/applications from within Emacs, similar to the
 (define-public emacs-no-littering
   (package
     (name "emacs-no-littering")
-    (version "1.2.7")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -33721,8 +33734,10 @@ launching other commands/applications from within Emacs, similar to the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1grc5fk7ng4d6i8fwfpm3cb2b19s9sbdjbdn8ybchk7cj45kkl24"))))
+        (base32 "1vkypj2mm428kmawxnyaqg3v5xpcs5hkbmyvjkib8ib02psshxd7"))))
     (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://github.com/emacscollective/no-littering")
     (synopsis "Help keep @file{~/.emacs.d/} clean")
     (description "The default paths used to store configuration files and
@@ -36016,6 +36031,22 @@ audio volume via amixer.")
        "Fennel mode provides font-lock, indentation, navigation, and REPL for
 Fennel code within Emacs.")
       (license license:gpl3+))))
+
+(define-public emacs-gerbil-mode
+  (package
+    (inherit gerbil)
+    (name "emacs-gerbil-mode")
+    (version "1.0")
+    (build-system emacs-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'install 'change-directory
+                          (lambda _
+                            (chdir "etc"))))))
+    (synopsis "Emacs major-mode for editing Gerbil code")
+    (description
+     "Gerbil mode provides font-lock, indentation, navigation, and REPL for
+Gerbil code within Emacs.")))
 
 (define-public emacs-org-modern
   (package

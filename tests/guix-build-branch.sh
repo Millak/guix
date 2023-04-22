@@ -58,4 +58,6 @@ guix gc -R "$v0_1_0_drv" | grep guile-gcrypt-9e3eacd
 test "$v0_1_0_drv" != "$latest_drv"
 test "$v0_1_0_drv" != "$orig_drv"
 
-! guix build guix --with-commit=guile-gcrypt=000 -d
+guix build guix --with-commit=guile-gcrypt=000 -d && false
+
+exit 0

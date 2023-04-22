@@ -148,7 +148,7 @@ Otherwise assume that there is no password for root."
             (marionette-eval
              `(begin
                 (use-modules (gnu services herd))
-                (start 'user-processes)
+                (start-service 'user-processes)
                 ((@@ (gnu services herd) eval-there)
                  '(let ((result (read (current-input-port))))
                     (if (eof-object? result)

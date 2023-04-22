@@ -11706,7 +11706,7 @@ advanced image management tool")
 (define-public terminator
   (package
     (name "terminator")
-    (version "2.1.2")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
@@ -11714,7 +11714,7 @@ advanced image management tool")
                            "releases/download/v" version "/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "10shpn8id7z43d4dpx16x76mgxnk4mr976j5cg28icjiiaidyfc2"))))
+        (base32 "1rbarn9pq3g8k13clxiy0d62g0fxhkg5bcxw2h626wkb7lzr9s8a"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -12984,7 +12984,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.15.0")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -12994,7 +12994,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0yd4274qxpv0wg1lm6daip2nd135qq07pfl5wrm2rqlzs5mvqs3n"))))
+         "0snb6vdgb3l2mw0kr0yb4zjpq46w56rpi554vqn5ks6qwywvs58g"))))
     (build-system meson-build-system)
     (arguments
      (list

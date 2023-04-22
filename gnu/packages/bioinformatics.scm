@@ -2220,167 +2220,179 @@ easy-to-perform steps.")
     (license license:gpl3+)))
 
 (define-public bpp-core
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "7d8bced0d1a87291ea8dd7046b7fb5ff9c35c582"))
-    (package
-      (name "bpp-core")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bpp-core")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "10djsq5vlnkilv436gnmh4irpk49v29pa69r6xiryg32xmvn909j"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "C++ libraries for Bioinformatics")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bpp-core")
+    (version "2.4.1")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BioPP/bpp-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ma2cl677l7s0n5sffh66cy9lxp5wycm50f121g8rx85p95vkgwv"))))
+    (build-system cmake-build-system)
+    (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-core/html/index.html")
+    (synopsis "C++ libraries for Bioinformatics")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  It is
 Object Oriented and is designed to be both easy to use and computer efficient.
 Bio++ intends to help programmers to write computer expensive programs, by
 providing them a set of re-usable tools.")
-      (license license:cecill-c))))
+      (license license:cecill-c)))
 
 (define-public bpp-phyl
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "0c07167b629f68b569bf274d1ad0c4af83276ae2"))
-    (package
-      (name "bpp-phyl")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bpp-phyl")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1ssjgchzwj3iai26kyly7gwkdv8sk59nqhkb1wpap3sf5m6kyllh"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f
-         ;; If out-of-source, test data is not copied into the build directory
-         ;; so the tests fail.
-         #:out-of-source? #f))
-      (inputs
-       (list bpp-core bpp-seq))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "Bio++ phylogenetic Library")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bpp-phyl")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bpp-phyl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "192zks6wyk903n06c2lbsscdhkjnfwms8p7jblsmk3lvjhdipb20"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list bpp-core bpp-seq))
+    (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-phyl/html/")
+    (synopsis "Bio++ phylogenetic library")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  This
 library provides phylogenetics-related modules.")
-      (license license:cecill-c))))
+    (license license:cecill-c)))
+
+(define-public bpp-phyl-omics
+  (package
+    (name "bpp-phyl-omics")
+    (version "2.4.1")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+            (url "https://github.com/BioPP/bpp-phyl-omics")
+            (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "172psb8njkjwg3cd6gdy5w0mq8f0817v635yw4bk7146aggjzl1h"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ; No test provided.
+    (inputs
+     (list bpp-core
+           bpp-phyl
+           bpp-seq
+           bpp-seq-omics))
+    (home-page "https://github.com/BioPP/bpp-phyl-omics")
+    (synopsis "Bio++ phylogenetic library genomics components")
+    (description
+     "This library contains the genomics components of the Bio++ phylogenetics
+library.  It is part of the Bio++ project.")
+    (license license:cecill)))
 
 (define-public bpp-popgen
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "e472bac9b1a148803895d747cd6d0c5904f85d9f"))
-    (package
-      (name "bpp-popgen")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bpp-popgen")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "0yn82dzn1n5629nzja68xfrhi655709rjanyryb36vzkmymy6dw5"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f
-         #:tests? #f)) ; There are no tests.
-      (inputs
-       (list bpp-core bpp-seq))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "Bio++ population genetics library")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bpp-popgen")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bpp-popgen")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bz0fhrq3dri6a0hvfc3zlvrns8mrzzlnicw5pyfa812gc1qwfvh"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ; There are no tests.
+    (inputs
+     (list bpp-core bpp-seq))
+    (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-popgen/html/")
+    (synopsis "Bio++ population genetics library")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  This
 library provides population genetics-related modules.")
-      (license license:cecill-c))))
+    (license license:cecill-c)))
 
 (define-public bpp-seq
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "6cfa07965ce152e5598a89df2fa80a75973bfa33"))
-    (package
-      (name "bpp-seq")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bpp-seq")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1nys5jq7jqvdg40d91wsmj3q2yzy4276cp7sp44n67p468f27zf2"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f
-         ;; If out-of-source, test data is not copied into the build directory
-         ;; so the tests fail.
-         #:out-of-source? #f))
-      (inputs
-       (list bpp-core))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "Bio++ sequence library")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bpp-seq")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bpp-seq")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1mc09g8jswzsa4wgrfv59jxn15ys3q8s0227p1j838wkphlwn2qk"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list bpp-core))
+    (home-page "https://pbil.univ-lyon1.fr/bpp-doc/bpp-seq/html/")
+    (synopsis "Bio++ sequence library")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  This
 library provides sequence-related modules.")
-      (license license:cecill-c))))
+    (license license:cecill-c)))
+
+(define-public bpp-seq-omics
+  (package
+    (name "bpp-seq-omics")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bpp-seq-omics")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1sc2xdfnfp5a6qihplp49rgrqmj89898avfy9bqaq1g2fajppgjj"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list bpp-core bpp-seq))
+    (home-page "https://github.com/BioPP/bpp-seq-omics")
+    (synopsis "Bio++ sequence library genomics components")
+    (description
+     "This library contains the genomics components of the Bio++ sequence library.
+It is part of the Bio++ project.")
+    (license license:cecill)))
 
 (define-public bppsuite
-  ;; The last release was in 2014 and the recommended way to install from source
-  ;; is to clone the git repository, so we do this.
-  ;; http://biopp.univ-montp2.fr/wiki/index.php/Main_Page
-  (let ((commit "c516147f57aa50961121cd505bed52cd7603698b"))
-    (package
-      (name "bppsuite")
-      (version (string-append "2.2.0-1." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "http://biopp.univ-montp2.fr/git/bppsuite")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1y87pxvw0jxjizhq2dr9g2r91md45k1p9ih2sl1yy1y3p934l2kb"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:parallel-build? #f
-         #:tests? #f)) ; There are no tests.
-      (native-inputs
-       (list groff man-db texinfo))
-      (inputs
-       `(("bpp-core" ,bpp-core)
-         ("bpp-seq" ,bpp-seq)
-         ("bpp-phyl" ,bpp-phyl)
-         ("bpp-phyl" ,bpp-popgen)))
-      (home-page "http://biopp.univ-montp2.fr")
-      (synopsis "Bioinformatics tools written with the Bio++ libraries")
-      (description
-       "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
+  (package
+    (name "bppsuite")
+    (version "2.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BioPP/bppsuite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wdwcgczqbc3m116vakvi0129wm3acln3cfc7ivqnalwvi6lrpds"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ; There are no tests.
+    (native-inputs
+     (list groff man-db texinfo))
+    (inputs
+     (list bpp-core bpp-seq bpp-phyl bpp-popgen))
+    (home-page "https://github.com/BioPP")
+    (synopsis "Bioinformatics tools written with the Bio++ libraries")
+    (description
+     "Bio++ is a set of C++ libraries for Bioinformatics, including sequence
 analysis, phylogenetics, molecular evolution and population genetics.  This
 package provides command line tools using the Bio++ library.")
-      (license license:cecill-c))))
+    (license license:cecill-c)))
 
 (define-public blast+
   (package
@@ -6020,6 +6032,43 @@ the significance of enriched ChIP regions and it improves the spatial
 resolution of binding sites through combining the information of both
 sequencing tag position and orientation.")
     (license license:bsd-3)))
+
+(define-public maffilter
+  (package
+    (name "maffilter")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jydu/maffilter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "196c16qw82niqqyzi7j1ga1n0zmir73bm26kg04m0i5aq2cpa0ml"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (inputs
+     (list boost
+           bpp-core
+           bpp-phyl
+           bpp-phyl-omics
+           bpp-seq
+           bpp-seq-omics
+           zlib))
+    (home-page "https://jydu.github.io/maffilter/")
+    (synopsis "Multiple alignment format file processor")
+    (description
+     "MafFilter is a program dedicated to the analysis of genome alignments.
+It parses and manipulates @acronym{MAF, multiple alignment format} files as
+well as more simple fasta files.  This package can be used to design a
+pipeline as a series of consecutive filters, each performing a dedicated
+analysis.  Many of the filters are available, from alignment cleaning to
+phylogeny reconstruction and population genetics analysis.  Despite various
+filtering options and format conversion tools, MafFilter can compute a wide
+range of statistics (phylogenetic trees, nucleotide diversity, inferrence of
+selection, etc.).")
+    (license license:gpl3+)))
 
 (define-public mafft
   (package

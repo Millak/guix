@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
@@ -1428,7 +1428,11 @@ the tty to run, among other things."
     (list (shepherd-service
            (documentation "Run libc's name service cache daemon (nscd).")
            (provision '(nscd))
-           (requirement '(user-processes))
+
+           ;; Logs are written with syslog(3), which writes to /dev/console
+           ;; when nobody's listening--ugly.  Thus, wait for syslogd.
+           (requirement '(user-processes syslogd))
+
            (start #~(make-forkexec-constructor
                      (list #$nscd "-f" #$nscd.conf "--foreground")
 
@@ -1497,31 +1501,36 @@ given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example."
   (service nscd-service-type config))
 
-;; Snippet adapted from the GNU inetutils manual.
+;;; Snippet adapted from the GNU inetutils manual.
 (define %default-syslog.conf
-  (plain-file "syslog.conf" "
-     # Log all error messages, authentication messages of
-     # level notice or higher and anything of level err or
-     # higher to the console.
-     # Don't log private authentication messages!
-     *.alert;auth.notice;authpriv.none      -/dev/console
+  (plain-file "syslog.conf" "\
+# See info '(inetutils) syslogd invocation' for the documentation
+# of the syslogd configuration syntax.
 
-     # Log anything (except mail) of level info or higher.
-     # Don't log private authentication messages!
-     *.info;mail.none;authpriv.none         -/var/log/messages
+# Log all error messages, authentication messages of
+# level notice or higher and anything of level err or
+# higher to the console.
+# Don't log private authentication messages!
+*.alert;auth.notice;authpriv.none      -/dev/console
 
-     # Log \"debug\"-level entries and nothing else.
-     *.=debug                               -/var/log/debug
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none         -/var/log/messages
 
-     # Same, in a different place.
-     *.info;mail.none;authpriv.none         -/dev/tty12
+# Log \"debug\"-level entries and nothing else.
+*.=debug                               -/var/log/debug
 
-     # The authpriv file has restricted access.
-     # 'fsync' the file after each line (hence the lack of a leading dash).
-     authpriv.*                              /var/log/secure
+# Same, in a different place.
+*.info;mail.none;authpriv.none         -/dev/tty12
 
-     # Log all the mail messages in one place.
-     mail.*                                 -/var/log/maillog
+# The authpriv file has restricted access.
+# 'fsync' the file after each line (hence the lack of a leading dash).
+# Also include unprivileged auth logs of info or higher level
+# to conveniently gather the authentication data at the same place.
+authpriv.*;auth.info                    /var/log/secure
+
+# Log all the mail messages in one place.
+mail.*                                 -/var/log/maillog
 "))
 
 (define-record-type* <syslog-configuration>
@@ -1532,30 +1541,57 @@ Service Switch}, for an example."
   (config-file          syslog-configuration-config-file
                         (default %default-syslog.conf)))
 
-(define syslog-service-type
-  (shepherd-service-type
-   'syslog
-   (lambda (config)
-     (define config-file
-       (syslog-configuration-config-file config))
+;;; Note: a static file name is used for syslog.conf so that the reload action
+;;; work as intended.
+(define syslog.conf "/etc/syslog.conf")
 
-     (shepherd-service
-      (documentation "Run the syslog daemon (syslogd).")
-      (provision '(syslogd))
-      (requirement '(user-processes))
-      (actions (list (shepherd-configuration-action config-file)))
-      (start #~(let ((spawn (make-forkexec-constructor
-                             (list #$(syslog-configuration-syslogd config)
-                                   "--rcfile" #$config-file)
-                             #:pid-file "/var/run/syslog.pid")))
-                 (lambda ()
-                   ;; Set the umask such that file permissions are #o640.
-                   (let ((mask (umask #o137))
-                         (pid  (spawn)))
-                     (umask mask)
-                     pid))))
-      (stop #~(make-kill-destructor))))
-   (syslog-configuration)
+(define (syslog-etc configuration)
+  (match-record configuration <syslog-configuration>
+    (config-file)
+    (list `(,(basename syslog.conf) ,config-file))))
+
+(define (syslog-shepherd-service config)
+  (define config-file
+    (syslog-configuration-config-file config))
+
+  (shepherd-service
+   (documentation "Run the syslog daemon (syslogd).")
+   (provision '(syslogd))
+   (requirement '(user-processes))
+   (actions
+    (list (shepherd-configuration-action syslog.conf)
+          (shepherd-action
+           (name 'reload)
+           (documentation "Reload the configuration file from disk.")
+           (procedure
+            #~(lambda (pid)
+                (if pid
+                    (begin
+                      (kill pid SIGHUP)
+                      (display #$(G_ "Service syslog has been asked to \
+reload its settings file.")))
+                    (display #$(G_ "Service syslog is not running."))))))))
+   ;; Note: a static file name is used for syslog.conf so that the reload
+   ;; action work as intended.
+   (start #~(let ((spawn (make-forkexec-constructor
+                          (list #$(syslog-configuration-syslogd config)
+                                #$(string-append "--rcfile=" syslog.conf))
+                          #:pid-file "/var/run/syslog.pid")))
+              (lambda ()
+                ;; Set the umask such that file permissions are #o640.
+                (let ((mask (umask #o137))
+                      (pid  (spawn)))
+                  (umask mask)
+                  pid))))
+   (stop #~(make-kill-destructor))))
+
+(define syslog-service-type
+  (service-type
+   (name 'syslog)
+   (default-value (syslog-configuration))
+   (extensions (list (service-extension shepherd-root-service-type
+                                        (compose list syslog-shepherd-service))
+                     (service-extension etc-service-type syslog-etc)))
    (description "Run the syslog daemon, @command{syslogd}, which is
 responsible for logging system messages.")))
 

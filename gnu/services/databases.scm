@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2016, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
@@ -167,7 +167,8 @@ host	all	all	::1/128 	md5"))
 (define-record-type* <postgresql-configuration>
   postgresql-configuration make-postgresql-configuration
   postgresql-configuration?
-  (postgresql         postgresql-configuration-postgresql) ;file-like
+  (postgresql         postgresql-configuration-postgresql ;file-like
+                      (default postgresql-10))
   (port               postgresql-configuration-port
                       (default 5432))
   (locale             postgresql-configuration-locale
@@ -308,11 +309,12 @@ host	all	all	::1/128 	md5"))
                              (call-with-input-file #$pid-file read))
                             (_ #t))))))
        (list (shepherd-service
-              (provision '(postgres))
+              (provision '(postgres postgresql))
               (documentation "Run the PostgreSQL daemon.")
               (requirement '(user-processes loopback syslogd))
               (modules `((ice-9 match)
                          ,@%default-modules))
+              (actions (list (shepherd-configuration-action config-file)))
               (start (action "start"))
               (stop (action "stop"))))))))
 
@@ -329,8 +331,7 @@ host	all	all	::1/128 	md5"))
           (service-extension
            profile-service-type
            (compose list postgresql-configuration-postgresql))))
-   (default-value (postgresql-configuration
-                   (postgresql postgresql-10)))
+   (default-value (postgresql-configuration))
    (description "Run the PostgreSQL database server.")))
 
 (define-deprecated (postgresql-service #:key (postgresql postgresql)
@@ -595,6 +596,8 @@ port=" (number->string port) "
          (provision '(mysql))
          (requirement '(user-processes))
          (documentation "Run the MySQL server.")
+         (actions (list (shepherd-configuration-action
+                         (mysql-configuration-file config))))
          (start (let ((mysql (mysql-configuration-mysql config))
                       (extra-env (mysql-configuration-extra-environment config))
                       (my.cnf (mysql-configuration-file config)))
@@ -752,6 +755,7 @@ port=" (number->string port) "
               (provision '(redis))
               (documentation "Run the Redis daemon.")
               (requirement '(user-processes syslogd))
+              (actions (list (shepherd-configuration-action config-file)))
               (start #~(make-forkexec-constructor
                         '(#$(file-append redis "/bin/redis-server")
                           #$config-file)

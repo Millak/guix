@@ -65,7 +65,7 @@ cp "$tmpfile" "$tmpfile.bak"
 initial_hash="$(guix hash "$tmpfile")"
 
 guix style -f "$tmpfile"
-if ! test "$initial_hash" = "$(guix hash "$tmpfile")"
+if test "$initial_hash" != "$(guix hash "$tmpfile")"
 then
     cat "$tmpfile"
     diff -u "$tmpfile.bak" "$tmpfile"
@@ -73,8 +73,8 @@ then
 fi
 
 # Introduce random changes and try again.
-sed -i "$tmpfile" -e's/ +/ /g'
-! test "$initial_hash" = "$(guix hash "$tmpfile")"
+sed -i "$tmpfile" -e's/ \+/ /g'
+test "$initial_hash" != "$(guix hash "$tmpfile")"
 
 guix style -f "$tmpfile"
 test "$initial_hash" = "$(guix hash "$tmpfile")"

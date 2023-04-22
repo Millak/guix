@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -225,13 +225,15 @@ please use 'modules' instead~%")))
          (pid-file    (rsync-configuration-pid-file config))
          (port-number (rsync-configuration-port-number config))
          (user        (rsync-configuration-user config))
-         (group       (rsync-configuration-group config)))
+         (group       (rsync-configuration-group config))
+         (config-file (rsync-config-file config)))
     (list (shepherd-service
            (provision '(rsync))
            (documentation "Run rsync daemon.")
+           (actions (list (shepherd-configuration-action config-file)))
            (start #~(make-forkexec-constructor
                      (list (string-append #$rsync "/bin/rsync")
-                           "--config" #$(rsync-config-file config)
+                           "--config" #$config-file
                            "--daemon")
                      #:pid-file #$pid-file
                      #:user #$user

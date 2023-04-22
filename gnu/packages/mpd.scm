@@ -561,7 +561,7 @@ album-experience.")
 (define-public mpdevil
   (package
     (name "mpdevil")
-    (version "1.10.0")
+    (version "1.10.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -569,7 +569,7 @@ album-experience.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "04dzxyv176w5sm4j85j7fbh42nk9wsyz5s005kj9cjwsrzrnxlbk"))))
+               (base32 "0ghmw3xiz567qd1iv1ggkv6zl1jb5d40mz27npk2zvlpikmqpc6c"))))
     (build-system meson-build-system)
     (arguments
      (list

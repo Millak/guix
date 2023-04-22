@@ -748,7 +748,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.3.2")
+    (version "3.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -756,7 +756,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "1mp1xl64sin3d4nkh19qmnic1c9qcwf9v7mkzji76pg3mzd823jg"))))
+                "0wyg7lk65kf03brhzrbk158sr8d5cqny5qcyrwypnzpp0chcff71"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
@@ -1884,7 +1884,7 @@ core/thread.")
 (define-public wlr-randr
   (package
     (name "wlr-randr")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1893,7 +1893,7 @@ core/thread.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d44r4schknfc3g09y0kjbhl62zkynv6hi1z4zqc9ic5fhav3r15"))))
+        (base32 "0cj24fb6s7n8nphvhrp8ldrivjdcrjw64i5v9rsfb6z80q4qg548"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config))
