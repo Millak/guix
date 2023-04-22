@@ -2473,26 +2473,17 @@ growing set of geoscientific methods.")
          ;; Configure correct path to PyQt5 SIP directory
          (add-after 'unpack 'configure-pyqt5-sip-path
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cmake/FindPyQt5.py"
-               (("sip_dir = cfg.default_sip_dir")
-                (string-append "sip_dir = \""
-                               (assoc-ref inputs "python-pyqt+qscintilla")
-                               "/share/sip\"")))
-               ;; Fix building with python-sip@5.
-               ;;
-               ;; The reason for this is that python-sip@5 introduces some
-               ;; changes such as a new build system 'sip-build' as well as the
-               ;; use of the path "/lib/pythonX.X/site-packages/*/bindings/"
-               ;; instead of "/share/sip/" for .sip files. However, we do not
-               ;; actually use that those yet. QGIS detects SIP5 and assumes we
-               ;; are, messing up the build. The long term solution is to fully
-               ;; upgrade SIP, use sip-build and fix all failing packages, but
-               ;; for now I just want to get the build working.
-             (substitute* "cmake/FindPyQt5.cmake"
-               (("SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
-                (string-append "SET(PYQT5_SIP_DIR \""
-                               (assoc-ref inputs "python-pyqt+qscintilla")
-                               "/share/sip\")")))
+             (let ((sip-dir (string-append
+                             (assoc-ref inputs "python-pyqt+qscintilla")
+                             "/lib/python"
+                             (python:python-version (assoc-ref inputs "python"))
+                             "/site-packages/PyQt5/bindings")))
+               (substitute* "cmake/FindPyQt5.py"
+                 (("sip_dir = cfg.default_sip_dir")
+                  (string-append "sip_dir = \"" sip-dir "\"")))
+               (substitute* "cmake/FindPyQt5.cmake"
+                 (("SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
+                  (string-append "SET(PYQT5_SIP_DIR \"" sip-dir "\")"))))
              (substitute* (list "tests/code_layout/test_qt_imports.sh"
                                 "tests/code_layout/test_qgsscrollarea.sh")
                (("\\$\\(git rev-parse --show-toplevel\\)")
@@ -2560,24 +2551,29 @@ growing set of geoscientific methods.")
                              "test_core_compositionconverter"
                              "test_core_expression"
                              "test_core_gdalutils"
+                             "test_core_labelingengine"
                              "test_core_layoutpicture"
+                             "test_core_layouttable"
                              "test_core_pointcloudlayerexporter"
                              "test_core_projectstorage"
                              "test_core_coordinatereferencesystem"
                              "test_gui_queryresultwidget"
                              "test_provider_copcprovider"
+                             "test_provider_eptprovider"
                              "test_analysis_processingalgspt1"
                              "test_analysis_processingalgspt2"
                              "test_analysis_processing"
                              "test_app_gpsintegration"
                              "PyQgsAnnotation"
                              "PyQgsAuthenticationSystem"
+                             "PyQgsConnectionRegistry"
                              "PyQgsDatumTransform"
                              "PyQgsFileUtils"
                              "PyQgsGeometryTest"
                              "PyQgsGoogleMapsGeocoder"
                              "PyQgsGroupLayer"
                              "PyQgsHashLineSymbolLayer"
+                             "PyQgsLayerMetadataProviderPython"
                              "PyQgsLayoutHtml"
                              "PyQgsLineSymbolLayers"
                              "PyQgsMapLayer"
@@ -2587,6 +2583,8 @@ growing set of geoscientific methods.")
                              "PyQgsProviderConnectionGpkg"
                              "PyQgsProviderConnectionSpatialite"
                              "PyQgsOGRProvider"
+                             "PyQgsSettingsTreeNode"
+                             "PyQgsTextRenderer"
                              "PyQgsVectorFileWriter"
                              "PyQgsVectorLayerEditBuffer"
                              "PyQgsVirtualLayerProvider"
