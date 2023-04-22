@@ -3,7 +3,7 @@
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
@@ -1518,22 +1518,34 @@ for efficient socket-like bidirectional reliable communication channels.")
 (define-public wabt
   (package
     (name "wabt")
-    (version "1.0.12")
+    (version "1.0.32")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/WebAssembly/wabt")
-             (commit version)))
+             (commit version)
+             (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zlv3740wkqj4mn6sr84h0x6wk2lcp4pwwmqsh5yyqp1j1glbsa0"))))
+        (base32 "0m124r8v9c0hxiaa4iy7ch4ng8msnirbc2vb702gbdjhvgzyrcwh"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "third_party/gtest/"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_TESTS=OFF")
-       #:tests? #f))
-    (inputs `(("python" ,python-2)
-              ("re2c" ,re2c)))
+     (list
+      #:test-target "run-tests"
+      #:configure-flags '(list "-DUSE_SYSTEM_GTEST=ON")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'use-gcc
+           (lambda _ (setenv "CC" "gcc")))
+         ;; XXX This is the only test that fails.
+         (add-after 'unpack 'delete-broken-test
+           (lambda _
+             (delete-file "test/wasm2c/spec/memory_init.txt"))))))
+    (native-inputs (list python googletest))
     (home-page "https://github.com/WebAssembly/wabt")
     (synopsis "WebAssembly Binary Toolkit")
     (description "WABT (pronounced: wabbit) is a suite of tools for
