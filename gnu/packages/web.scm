@@ -7952,6 +7952,40 @@ update an existing mirrored site, and resume interrupted downloads.
 HTTrack is fully configurable, and has an integrated help system.")
     (license license:gpl3+)))
 
+(define-public binaryen
+  (package
+    (name "binaryen")
+    (version "112")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/WebAssembly/binaryen")
+             (commit (string-append "version_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0970iz22yjxgi27d67kwmrx4zq7hig3i6b92vmlp4c4bd1bacny5"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'use-system-googletest
+           (lambda _
+             (substitute* "third_party/CMakeLists.txt"
+               (("  googletest/.*") "")
+               (("add_library\\(gtest.*") ""))
+             (substitute* "CMakeLists.txt"
+               (("add_subdirectory\\(test/gtest\\)")
+                "find_package(GTest REQUIRED)")))))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/WebAssembly/binaryen")
+    (synopsis "Optimizer and compiler/toolchain library for WebAssembly")
+    (description "Binaryen is a compiler and toolchain infrastructure library
+for WebAssembly, written in C++.  It aims to make compiling to WebAssembly
+easy, fast, and effective.")
+    (license license:asl2.0)))
+
 (define-public buku
   (package
     (name "buku")
