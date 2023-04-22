@@ -126,6 +126,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
+;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31366,6 +31367,28 @@ directories, direct visualisation of image files, jumping directly to links by
 name (with autocompletion), a simple bookmark management system and
 connections using TLS encryption.")
     (license license:gpl3+)))
+
+(define-public emacs-gemini
+  (package
+    (name "emacs-gemini")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.carcosa.net/jmcbray/gemini.el")
+                    (commit "a7dd7c6ea4e036d0d5ecc4a5d284874c400f10ba")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1pvlk56mhh4xh4gwzqldfk79jsjbcpivv5scd9811pv3afc30gsx"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.carcosa.net/jmcbray/gemini.el")
+    (synopsis "Syntax highlighting for text/gemini")
+    (description
+     "This is a very simple syntax-highlighting mode for text/gemini documents.
+Currently, support is not complete, but it should be enough to help with basic
+documents.")
+    (license license:agpl3+)))
 
 (define-public emacs-zerodark-theme
   (package
