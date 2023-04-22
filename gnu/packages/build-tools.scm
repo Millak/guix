@@ -185,27 +185,28 @@ generate such a compilation database.")
     (native-inputs
      (list coreutils))
     (arguments
-     `(#:tests? #f                      ; test during build
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'fix-test ; fix from nixpkgs
-           (lambda _
-             (substitute* "unit-tests/unexport-env.mk"
-               (("PATH=\t/bin:/usr/bin:/sbin:/usr/sbin")
-                "PATH := ${PATH}"))))
-         (add-after 'configure 'remove-fail-tests
-           (lambda _
-             (substitute* "unit-tests/Makefile"
-               (("cmd-interrupt") "")
-               (("varmod-localtime") "")))))
-       #:configure-flags
-       (list
-        (string-append
-         "--with-defshell=" (assoc-ref %build-inputs "bash") "/bin/bash")
-        (string-append
-         "--with-default-sys-path=" (assoc-ref %outputs "out") "/share/mk"))
-       #:make-flags
-       (list "INSTALL=install"))) ;; use coreutils install
+     (list
+      #:tests? #f                       ; test during build
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'fix-test ; fix from nixpkgs
+            (lambda _
+              (substitute* "unit-tests/unexport-env.mk"
+                (("PATH=\t/bin:/usr/bin:/sbin:/usr/sbin")
+                 "PATH := ${PATH}"))))
+          (add-after 'configure 'remove-fail-tests
+            (lambda _
+              (substitute* "unit-tests/Makefile"
+                (("cmd-interrupt") "")
+                (("varmod-localtime") "")))))
+      #:configure-flags
+      #~(list
+         (string-append
+          "--with-defshell=" #$(this-package-input "bash-minimal") "/bin/bash")
+         (string-append
+          "--with-default-sys-path=" #$output "/share/mk"))
+      #:make-flags
+      #~(list "INSTALL=install"))) ;; use coreutils install
     (home-page "http://www.crufty.net/help/sjg/bmake.htm")
     (synopsis "BSD's make")
     (description
