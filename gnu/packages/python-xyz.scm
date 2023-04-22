@@ -17715,13 +17715,13 @@ implementation has been adapted, improved, and fixed from Molten.")
 (define-public python-shellingham
   (package
     (name "python-shellingham")
-    (version "1.4.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "shellingham" version))
        (sha256
-        (base32 "07hpndvcv9mf9hp54b4apzpwzmzfzl8ryaacsfdq4139im2w4ma8"))))
+        (base32 "0iawv24xx6vhwbhqlxyyg901f8pf6abqyfg0711v1bvlipx83g21"))))
     (build-system python-build-system)
     (home-page "https://github.com/sarugaku/shellingham")
     (synopsis "Tool to detect surrounding shell")
