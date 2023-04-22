@@ -21,6 +21,7 @@
 
 (define-module (gnu packages zig)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
@@ -40,7 +41,8 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))))
+        (base32 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))
+       (patches (search-patches "zig-do-not-link-against-librt.patch"))))
     (build-system cmake-build-system)
     (inputs
      (list clang-15 ; Clang propagates llvm.
@@ -57,14 +59,18 @@
                                    (%current-target-system))
                    '())
              (string-append "-DZIG_TARGET_MCPU=baseline")
+             "-DZIG_SHARED_LLVM=ON"
              (string-append "-DZIG_LIB_DIR=" (assoc-ref %outputs "out")
                             "/lib/zig"))
        #:validate-runpath? #f       ; TODO: zig binary can't find ld-linux.
        #:out-of-source? #f ; for tests
        #:phases
        (modify-phases %standard-phases
-         (add-after 'configure 'set-cache-dir
-           (lambda _
+         (add-after 'unpack 'set-env-variables
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             ;; Set CC, since the stage 2 zig relies on it to find the libc
+             ;; installation, and otherwise silently links against its own.
+             (setenv "CC" ,(cc-for-target))
              ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
              (setenv "ZIG_GLOBAL_CACHE_DIR"
                      (string-append (getcwd) "/zig-cache"))))
@@ -130,7 +136,8 @@ toolchain.  Among other features it provides
        (file-name (git-file-name name version))
        (sha256
         (base32 "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
-       (patches (search-patches "zig-use-system-paths.patch"))))
+       (patches (search-patches "zig-use-system-paths.patch"
+                                "zig-do-not-link-against-librt.patch"))))
     (inputs
      (list clang-13 ; Clang propagates llvm.
            lld-13))
