@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
@@ -986,7 +986,7 @@ useful for C++.")
 (define-public perl-glib
   (package
     (name "perl-glib")
-    (version "1.3292")
+    (version "1.3293")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -994,7 +994,7 @@ useful for C++.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1q5075d6v2g5sm675hyzrcpxsrh09z83crfci8b0wl3jwmnz0frg"))))
+                "005m3inz12xcsd5sr056cm1kbhmxsx2ly88ifbdv6p6cwz0s05kk"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-extutils-depends perl-extutils-pkgconfig))
