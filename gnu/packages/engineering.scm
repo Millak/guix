@@ -3454,6 +3454,7 @@ perform various useful functions such as:
        ("gmp" ,gmp)
        ("mesa" ,mesa)
        ("mpfr" ,mpfr)
+       ("tbb" ,tbb)
        ("tinyxml2" ,tinyxml2)
        ;; When updating this package, update commit fields below according to
        ;; the hashes listed in "cmake/LibiglDownloadExternal.cmake".
