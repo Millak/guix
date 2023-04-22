@@ -171,14 +171,14 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20211212")
+    (version "20230321")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "17lywks7fy5538vwyyvbvxcq5mgnd5si7f2qgw85sgqj7mdr4xdd"))))
+        (base32 "0ml2z9ij674bd4227566n0547pcpxpmimp4xw4hj52kl1265czgd"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal))
@@ -190,14 +190,19 @@ generate such a compilation database.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'configure 'fix-test ; fix from nixpkgs
-            (lambda _
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (substitute* "unit-tests/unexport-env.mk"
                 (("PATH=\t/bin:/usr/bin:/sbin:/usr/sbin")
-                 "PATH := ${PATH}"))))
+                 "PATH := ${PATH}"))
+              (substitute* '("unit-tests/opt-keep-going-indirect.mk"
+                             "unit-tests/opt-keep-going-indirect.exp")
+                (("false")
+                 (search-input-file (or native-inputs inputs) "/bin/false")))))
           (add-after 'configure 'remove-fail-tests
             (lambda _
               (substitute* "unit-tests/Makefile"
                 (("cmd-interrupt") "")
+                (("deptgt-interrupt") "")
                 (("varmod-localtime") "")))))
       #:configure-flags
       #~(list
