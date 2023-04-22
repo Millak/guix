@@ -1089,8 +1089,11 @@ then
   export `cat /etc/environment | cut -d= -f1`
 fi
 
-# Arrange so that ~/.config/guix/current comes first.
-for profile in \"$HOME/.guix-profile\" \"$HOME/.config/guix/current\"
+# Arrange so that ~/.config/guix/current comes first,
+# and guix-home comes before guix-profile.
+for profile in \"$HOME/.guix-profile\"        \\
+               \"$HOME/.guix-home/profile\"   \\
+               \"$HOME/.config/guix/current\"
 do
   if [ -f \"$profile/etc/profile\" ]
   then
