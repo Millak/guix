@@ -2,6 +2,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 florhizome <florhizome@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix build utils)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -35,7 +37,9 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages xorg))
@@ -121,7 +125,7 @@ cross-DE solutions.")
 (define-public cinnamon-desktop
   (package
     (name "cinnamon-desktop")
-    (version "3.4.2")
+    (version "5.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -130,27 +134,27 @@ cross-DE solutions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18mjy80ly9361npjhxpm3n0pkmrwviaqr2kixjb7hyxa6kzzh5xw"))))
-    (build-system gnu-build-system)
-    ;; TODO: package 'libgsystem'.
+                "0rnk0vmpjiz8pgn5y8zizr91ilwzfh9w7cmfsjpqg3h5wkpxz22z"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #true
+      #:configure-flags #~(list "-Dalsa=true")))
     (inputs
      (list accountsservice
-           gtk+
+           alsa-lib
            glib
-           gobject-introspection
            gnome-common
+           gtk+
            libxkbfile
            libxrandr
-           python-2
+           libxext
            pulseaudio
            xkeyboard-config))
     (native-inputs
-     (list autoconf
-           automake
-           gettext-minimal
-           `(,glib "bin") ; glib-gettextize
-           intltool
-           libtool
+     (list gettext-minimal
+           `(,glib "bin")               ;glib-gettextize
+           gobject-introspection
            pkg-config))
     (home-page "https://github.com/linuxmint/cinnamon-desktop/")
     (synopsis "Library for the Cinnamon Desktop")
