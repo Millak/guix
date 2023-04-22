@@ -3249,7 +3249,7 @@ protocol, both client and server for Python asyncio module.
 (define-public python-msal
   (package
     (name "python-msal")
-    (version "1.18.0")
+    (version "1.22.0")
     (home-page
      "https://github.com/AzureAD/microsoft-authentication-library-for-python")
     (source (origin
@@ -3259,7 +3259,7 @@ protocol, both client and server for Python asyncio module.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02d9vlvp08q1yffgn7a0y19451py1jly67q5ld6m2d9xidbrvac1"))))
+                "1pgpf8fa0mdga69hr6i66mq2a2vyn8dlcf4fdzqmbgw2il9b37q6"))))
     (build-system python-build-system)
     (arguments
      ;; Tests (all?) rely on network access and only some can be disabled by
