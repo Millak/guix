@@ -3508,7 +3508,7 @@ visualization, matrix manipulation.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.5.0")
+    (version "2.5.2")
     (source
      (origin
        (method git-fetch)
@@ -3517,7 +3517,10 @@ visualization, matrix manipulation.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "17ic92ww2ny0frxyv7ajwdwa0fq70ygq562ik8sh94jx67jvxdy0"))
+       (sha256 (base32 "02qcrw3fa0d8ldbp73hp14l1qxbp3f4608j4csc07ny00ra42151"))
+       (patches (search-patches "prusa-slicer-boost-fixes.patch"
+                                "prusa-slicer-fix-tests.patch"
+                                "prusa-slicer-with-cereal-1.3.1.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3553,7 +3556,7 @@ visualization, matrix manipulation.")
      (list pkg-config))
     (inputs
      (list boost
-           cereal-1.3.0
+           cereal
            cgal
            curl
            dbus
