@@ -11362,7 +11362,7 @@ aware of your profiles and configuration in ~/.aws/config.")
 (define-public go-github-com-99designs-go-keyring
   (package
     (name "go-github-com-99designs-go-keyring")
-    (version "1.1.6")
+    (version "1.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11371,11 +11371,11 @@ aware of your profiles and configuration in ~/.aws/config.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08rcdqpxaa9n348q10fw40q4gxpjajkyrighykk71i7mxzwkcgwn"))))
+                "0mkvy7scyq07rkqhabfmkd8imcm4h9y7zj9palj04znpihpixa5m"))))
     (build-system go-build-system)
     (native-inputs
-     (list go-golang-org-x-crypto
-           go-golang-org-x-sys
+     (list go-golang-org-x-sys
+           go-golang-org-x-term
            go-github-com-mtibben-percent
            go-github-com-mitchellh-go-homedir
            go-github-com-dvsekhvalnov-jose2go
