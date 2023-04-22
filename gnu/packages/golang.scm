@@ -11778,6 +11778,16 @@ encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
        #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs (list go-github-com-aws-smithy-go))))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
+  (package
+    (inherit go-github-com-aws-aws-sdk-go-v2)
+    (name "go-github-com-aws-aws-sdk-go-v2-feature-s3-manager")
+    (version "1.11.44")
+    (arguments
+     '(#:import-path "github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs (list go-github-com-aws-smithy-go))))
+
 (define-public aws-vault
   (package
     (name "aws-vault")
