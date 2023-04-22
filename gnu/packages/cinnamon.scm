@@ -48,7 +48,7 @@
 (define-public libxapp
   (package
     (name "libxapp")
-    (version "2.4.2")
+    (version "2.4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -56,7 +56,7 @@
                     (commit version)))
               (sha256
                (base32
-                "0cy9g0zqcbx9zscc9qavqmghfyfb8244cg299llv1ha8n6mpxl3s"))))
+                "0n443lwmxzmfnw03n98cqnm2ah1iij6pwsnwbly8sncmzg5jyklg"))))
     (build-system meson-build-system)
     (arguments
      (list
