@@ -453,7 +453,7 @@ without requiring the source code to be rewritten.")
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
-          #~(modify-phases ,phases
+          #~(modify-phases #$phases
               (add-before 'bootstrap 'set-version
                 (lambda _
                   ;; Tell 'git-version-gen' what version this is, or it will
