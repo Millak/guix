@@ -11359,7 +11359,7 @@ encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
 (define-public aws-vault
   (package
     (name "aws-vault")
-    (version "6.3.1")
+    (version "6.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11368,25 +11368,31 @@ encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02zw0kl77yr56mw1fbvr51c4mz2265c9al2nzvnqqzdx5aha7nf8"))))
+                "0fjdslg7nhlm9hl7bg69j1izrjx6sspbhwk973d0m8ig9nkdja06"))))
     (build-system go-build-system)
     (native-inputs
      (list go-github-com-99designs-go-keyring
            go-github-com-mtibben-androiddnsfix
            go-github-com-mtibben-percent
            go-github-com-jmespath-go-jmespath
-           go-github-com-aws-aws-sdk-go
            go-github-com-dvsekhvalnov-jose2go
            go-github-com-godbus-dbus
            go-github-com-gsterjov-go-libsecret
            go-github-com-mitchellh-go-homedir
            go-golang-org-x-crypto
            go-golang-org-x-sys
+           go-golang-org-x-term
            go-gopkg-in-ini
            go-github-com-skratchdot-open-golang
            go-github-com-alecthomas-kingpin
            go-github-com-alecthomas-template
-           go-github-com-alecthomas-units))
+           go-github-com-alecthomas-units
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-service-iam
+           go-github-com-aws-aws-sdk-go-v2-service-sso
+           go-github-com-aws-aws-sdk-go-v2-service-ssooidc
+           go-github-com-aws-aws-sdk-go-v2-service-sts))
     (arguments
      `(#:import-path "github.com/99designs/aws-vault"
        #:install-source? #f
