@@ -2752,15 +2752,19 @@ properly display animated cursors.")
 (define-public rust-wayland-egl-0.29
   (package
     (name "rust-wayland-egl")
-    (version "0.29.4")
+    (version "0.29.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-egl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0flslbp8q4nv3hcw941vapn3jh6y7glqaqv63h1mjaqnxrlisa43"))))
+        (base32 "0z8hwixv5kj201p2pnbdwxbl4s9hz5cxd8i1v0k2j08sz14yjba0"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-wayland-client" ,rust-wayland-client-0.29)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.29))))
     (inputs
      (list rust-wayland-client-0.29 rust-wayland-sys-0.29))
     ;; For the PKG_CONFIG_PATH environment variable.
