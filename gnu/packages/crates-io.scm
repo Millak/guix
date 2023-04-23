@@ -2485,6 +2485,29 @@ using AES-NI for high performance.")
         ("rust-rand" ,rust-rand-0.3)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
 
+(define-public rust-alacritty-config-0.1
+  (package
+    (name "rust-alacritty-config")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alacritty-config" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0imj95kqnpb6mlgdn4bs11lm472x8j5vf58wz14hbcfw2kag4fw6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+        ("rust-winit" ,rust-winit-0.28))))
+    (home-page "https://github.com/alacritty/alacritty")
+    (synopsis "Alacritty configuration abstractions")
+    (description "This package provides configuration abstractions for the
+Alacritty terminal emulator.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-alacritty-config-derive-0.2
   (package
     (name "rust-alacritty-config-derive")
