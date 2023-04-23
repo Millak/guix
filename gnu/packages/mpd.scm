@@ -246,7 +246,7 @@ player daemon.")
 (define-public ncmpc
   (package
     (name "ncmpc")
-    (version "0.47")
+    (version "0.48")
     (source (origin
               (method url-fetch)
               (uri
@@ -255,7 +255,7 @@ player daemon.")
                               "/ncmpc-" version ".tar.xz"))
               (sha256
                (base32
-                "1714saz8m6y2chby0c1qh3vgqc3srlr1jq98vhzmjykcpjqj7nk1"))))
+                "035rd64a70qiv334bgs9z2hqnvzldkwdvxay2hmdx5l0a5zd5cml"))))
     (build-system meson-build-system)
     (inputs (list boost pcre libmpdclient ncurses))
     (native-inputs
