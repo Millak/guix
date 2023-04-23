@@ -6573,6 +6573,33 @@ fast and distributable command line applications in an expressive way.")
 the purpose of building man pages.")
     (license license:expat)))
 
+(define-public go-github-com-git-lfs-go-netrc
+  (let ((commit "f0c862dd687a9d9a7e15b3cd7cb3fd3e81cdd5ef")
+        (revision "0"))
+    (package
+      (name "go-github-com-git-lfs-go-netrc")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/git-lfs/go-netrc")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xvnjyg54gm3m3qszkfp12id0jmpg3583nqvv2llza1nr18w1sqi"))))
+      (build-system go-build-system)
+      (arguments `(#:import-path "github.com/git-lfs/go-netrc/netrc"
+                   #:unpack-path "github.com/git-lfs/go-netrc"))
+      (home-page "https://github.com/git-lfs/go-netrc")
+      (synopsis "Netrc file parser for Go")
+      (description "This package is for reading and writing netrc files.  This
+package can parse netrc files, make changes to them, and then serialize them
+back to netrc format, while preserving any whitespace that was present in the
+source file.")
+      (license license:expat))))
+
 (define-public go-github-com-russross-blackfriday
   (package
     (name "go-github-com-russross-blackfriday")
