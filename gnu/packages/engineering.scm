@@ -271,14 +271,14 @@ plans and designs.")
                                pcb "/share/pcb/pcblib-newlib:"
                                pcb "/share/pcb/newlib")))))
     (inputs
-     `(("gamin" ,gamin)
-       ("glib" ,glib)
-       ("gtk" ,gtk+-2)
-       ("guile" ,guile-2.0)
-       ("shared-mime-info" ,shared-mime-info)
-       ("m4" ,m4)
-       ("pcb" ,pcb)
-       ("python" ,python-2))) ; for xorn
+     (list gamin
+           glib
+           gtk+-2
+           guile-2.0
+           shared-mime-info
+           m4
+           pcb
+           python-2)) ; for xorn
     (native-inputs
      (list groff pkg-config desktop-file-utils perl)) ; for tests
     (home-page "http://geda-project.org/")
