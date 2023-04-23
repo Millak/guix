@@ -12919,6 +12919,32 @@ when comparing complex types like structures and maps.")
 programming language.")
       (license license:asl2.0))))
 
+(define-public go-github-com-xeipuuv-gojsonreference
+  (let ((commit "bd5ef7bd5415a7ac448318e64f11a24cd21e594b")
+        (revision "0"))
+    (package
+      (name "go-github-com-xeipuuv-gojsonreference")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/xeipuuv/gojsonreference")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xby79padc7bmyb8rfbad8wfnfdzpnh51b1n8c0kibch0kwc1db5"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/xeipuuv/gojsonreference"))
+      (propagated-inputs (list go-github-com-xeipuuv-gojsonpointer))
+      (home-page "https://github.com/xeipuuv/gojsonreference")
+      (synopsis "Implementation of JSON Reference for Go")
+      (description
+       "This package provides an implementation of JSON Reference for the Go
+programming language.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-niemeyer-pretty
   (package
     (name "go-github-com-niemeyer-pretty")
