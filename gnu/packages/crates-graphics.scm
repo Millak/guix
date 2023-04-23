@@ -3632,6 +3632,29 @@ the platform-specific getters provided by winit, or another library.")
          ("rust-winapi" ,rust-winapi-0.3)
          ("rust-winapi-wsapoll" ,rust-winapi-wsapoll-0.1))))))
 
+(define-public rust-x11rb-protocol-0.10
+  (package
+    (name "rust-x11rb-protocol")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "x11rb-protocol" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rxcpsmgrziwqy9ml81h8r1lwy422h1i5j3d007dpj8a3islbcjn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.24)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/psychon/x11rb")
+    (synopsis "Rust bindings to X11")
+    (description "Rust bindings to X11")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x11-clipboard-0.7
   (package
     (name "rust-x11-clipboard")
