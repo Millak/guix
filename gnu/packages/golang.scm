@@ -1979,6 +1979,34 @@ standardized in RFC 7539.")
     (description "Monolith-Go is a Go library for working with byte sequences.")
     (license license:expat)))
 
+(define-public go-github-com-dpotapov-go-spnego
+  (let ((commit "298b63a544303a239753d04314aada5bdbad7e4a")
+        (revision "0"))
+    (package
+      (name "go-github-com-dpotapov-go-spnego")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/dpotapov/go-spnego")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0d3b0kazm0jskfml0pkhjn2v49m8dvqj4zymm49ldgvkhl9hcf6w"))))
+      (build-system go-build-system)
+      (arguments `(#:import-path "github.com/dpotapov/go-spnego"))
+      (propagated-inputs (list go-github-com-stretchr-testify
+                               go-github-com-jcmturner-gokrb5-v8
+                               go-golang-org-x-net))
+      (home-page "https://github.com/dpotapov/go-spnego")
+      (synopsis "Simple golang library for retry mechanism")
+      (description "This package is a simple Go library that provides retry
+functionality for functions that may fail.  It includes various customizable
+retry strategies, such as fixed delay, backoff delay, and random delay.")
+      (license license:expat))))
+
 (define-public go-github-com-deckarep-golang-set
   (package
     (name "go-github-com-deckarep-golang-set")
