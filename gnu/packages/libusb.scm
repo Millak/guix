@@ -233,14 +233,14 @@ implementing @code{javax.usb} (JSR-80).")
 (define-public python-libusb1
   (package
     (name "python-libusb1")
-    (version "2.0.1")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "libusb1" version))
        (sha256
         (base32
-         "0ikc7z7mdyr8pm0mk3ibab1hqrq4cpi9frmc3p94hsmbyzn85fnk"))))
+         "0f45rjgkq4wgyav6dz57ggj34p2l00c9n3d4639ia3z4zvgak4jp"))))
     (build-system python-build-system)
     (arguments
      '(#:modules ((srfi srfi-1)
