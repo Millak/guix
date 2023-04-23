@@ -2800,20 +2800,24 @@ initializing an OpenGL or Vulkan context.")
 (define-public rust-wayland-protocols-0.29
   (package
     (name "rust-wayland-protocols")
-    (version "0.29.4")
+    (version "0.29.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-protocols" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hap8vky2fwsq05c98c8xs00gb9m5kxp8kq3zr0jwh036gi7l530"))))
+        (base32 "1ihbjyd0w460gd7w22g9qabbwd4v8x74f8vsh7p25csljcgn4l5r"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1.2))))
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-wayland-client" ,rust-wayland-client-0.29)
+        ("rust-wayland-commons" ,rust-wayland-commons-0.29)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.29)
+        ("rust-wayland-server" ,rust-wayland-server-0.29))))
     (inputs
-     (list rust-bitflags-1.2 rust-wayland-client-0.29
+     (list rust-bitflags-1 rust-wayland-client-0.29
            rust-wayland-commons-0.29 rust-wayland-scanner-0.29
            rust-wayland-server-0.29))
     (home-page "https://github.com/smithay/wayland-rs")
