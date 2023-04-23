@@ -800,7 +800,7 @@ device.")
            libnotify
            libxml2
            mediastreamer2
-           openldap
+           openldap-for-linphone
            ortp
            soci
            sqlite
