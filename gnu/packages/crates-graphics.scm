@@ -2481,14 +2481,14 @@ applications.")
 (define-public rust-wayland-client-0.29
   (package
     (name "rust-wayland-client")
-    (version "0.29.4")
+    (version "0.29.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13s5sj9344izk2g48yizk81kcg8jg4940gg2v6bzcmrjwxh388li"))))
+        (base32 "05b7qikqj22rjy17kqw5ar7j2chpy18dr0gqapvwjfd00n60cfrz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false               ;circular dependency on wayland-protocols
@@ -2496,17 +2496,18 @@ applications.")
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-downcast-rs" ,rust-downcast-rs-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-nix" ,rust-nix-0.22)
+        ("rust-nix" ,rust-nix-0.24)
         ("rust-scoped-tls" ,rust-scoped-tls-1)
         ("rust-wayland-commons" ,rust-wayland-commons-0.29)
-        ("rust-wayland-scanner" ,rust-wayland-scanner-0.29))
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.29)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.29))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))
     (inputs
      (list rust-bitflags-1
            rust-downcast-rs-1
            rust-libc-0.2
-           rust-nix-0.22
+           rust-nix-0.24
            rust-scoped-tls-1
            rust-wayland-commons-0.29
            rust-wayland-scanner-0.29
