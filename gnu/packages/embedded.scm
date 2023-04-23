@@ -98,12 +98,14 @@
           (base32
            "113r98kygy8rrjfv2pd3z6zlfzbj543pq7xyq8bgh72c608mmsbr"))
 
-         ;; Remove the one patch that doesn't apply to this 4.9 snapshot (the
-         ;; patch is for 4.9.4 and later but this svn snapshot is older).
-         (patches (remove (lambda (patch)
-                            (string=? (basename patch)
-                                      "gcc-arm-bug-71399.patch"))
-                          (origin-patches (package-source xgcc))))))
+         (patches (cons (search-patch "gcc-4.9-inline.patch")
+                        ;; Remove the one patch that doesn't apply to this 4.9
+                        ;; snapshot (the patch is for 4.9.4 and later but this
+                        ;; svn snapshot is older).
+                        (remove (lambda (patch)
+                                  (string=? (basename patch)
+                                            "gcc-arm-bug-71399.patch"))
+                                (origin-patches (package-source xgcc)))))))
       (native-inputs
        `(("flex" ,flex)
          ("gcc@5" ,gcc-5)
