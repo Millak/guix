@@ -1,5 +1,21 @@
+[commit]
+        gpgsign = true
+
 [diff "scheme"]
 	xfuncname = "^(\\(define.*)$"
 
 [diff "texinfo"]
 	xfuncname = "^@node[[:space:]]+([^,]+).*$"
+
+[format]
+        forceinbodyfrom = true  # help preserve commit authorship
+        thread = shallow
+        useAutoBase = true
+
+[pull]
+        rebase = true
+
+[sendemail]
+        to = guix-patches@gnu.org
+        headerCmd = etc/teams.scm cc-members-header-cmd
+        thread = no
