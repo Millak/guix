@@ -2898,15 +2898,20 @@ extensions.")
 (define-public rust-wayland-scanner-0.29
   (package
     (name "rust-wayland-scanner")
-    (version "0.29.4")
+    (version "0.29.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-scanner" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1q7r764z8k922xf51fj56b1xm29ffi9ap8jnf4c478gp8cqyv89r"))))
+        (base32 "0lxx3i2kxnmsk421qx87lqqc9kd2y1ksjxcyg0pqbar2zbc06hwg"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-xml-rs" ,rust-xml-rs-0.8))))
     (inputs
      (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))
     (home-page "https://github.com/smithay/wayland-rs")
