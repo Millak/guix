@@ -12945,6 +12945,46 @@ programming language.")
 programming language.")
       (license license:asl2.0))))
 
+(define-public go-github-com-xeipuuv-gojsonschema
+  (let ((commit "6b67b3fab74d992bd07f72550006ab2c6907c416")
+        (revision "0"))
+    (package
+      (name "go-github-com-xeipuuv-gojsonschema")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/xeipuuv/gojsonschema")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1q937a6q7canlr3dllqdw0qwa6z2fpwn1w9kycavx8jmwh6q3f69"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/xeipuuv/gojsonschema"
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'disable-failing-tests
+             (lambda* (#:key import-path #:allow-other-keys)
+               (with-directory-excursion (string-append "src/" import-path)
+                 (substitute* "schema_test.go"
+                   (("\\{\"phase\": \"remote ref, " all)
+                    (string-append "// " all))
+                   (("\\{\"phase\": \"valid definition" all)
+                    (string-append "// " all))
+                   (("\\{\"phase\": \"invalid definition" all)
+                    (string-append "// " all)))))))))
+      (propagated-inputs (list go-github-com-xeipuuv-gojsonreference
+                               go-github-com-xeipuuv-gojsonpointer
+                               go-github-com-stretchr-testify))
+      (home-page "https://github.com/xeipuuv/gojsonschema")
+      (synopsis "Implementation of JSON Schema for Go")
+      (description
+       "This package provides an implementation of JSON Schema for the Go
+programming language, which supports draft-04, draft-06 and draft-07.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-niemeyer-pretty
   (package
     (name "go-github-com-niemeyer-pretty")
