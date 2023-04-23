@@ -1458,6 +1458,30 @@ selection based on their relative weighting.  This package is useful for
 network applications that require accessing services using SRV records.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jcmturner-goidentity-v6
+  (package
+    (name "go-github-com-jcmturner-goidentity-v6")
+    (version "6.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jcmturner/goidentity")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "064ysvxvrvij843s7qj1nkzl5qc6j1qbrsb3s0zmwd1sa7vq8q1n"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jcmturner/goidentity/v6"))
+    (propagated-inputs
+     (list go-github-com-stretchr-testify go-github-com-hashicorp-go-uuid))
+    (home-page "https://github.com/jcmturner/goidentity")
+    (synopsis "Hold authenticated identities and their attributes")
+    (description "This package provides a standard interface for holding
+authenticated identities and their attributes.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jcmturner-gofork
   (package
     (name "go-github-com-jcmturner-gofork")
