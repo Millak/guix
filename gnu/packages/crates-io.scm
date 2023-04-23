@@ -39811,6 +39811,26 @@ Foundation framework.")
      "This package provides utilities for testing Objective-C interop.")
     (license license:expat)))
 
+(define-public rust-objc2-encode-2
+  (package
+    (name "rust-objc2-encode")
+    (version "2.0.0-pre.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "objc2-encode" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04h5wns3hxmc9g652hr9xqzrijs4ij9sdnlgc0ha202v050srz5b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.2))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Objective-C type-encoding representation and parsing")
+    (description "This package provides objective-C type-encoding
+representation and parsing.")
+    (license license:expat)))
+
 (define-public rust-objc2-proc-macros-0.1
   (package
     (name "rust-objc2-proc-macros")
