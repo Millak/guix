@@ -3148,14 +3148,14 @@ crate @code{rust-wayland-client} for usable bindings.")
   (package
     (inherit rust-wayland-sys-0.30)
     (name "rust-wayland-sys")
-    (version "0.29.4")
+    (version "0.29.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m2jwk5q36jidwbdmdicmi27r9dzi4wanzg3i28nfxc9kbvisd6r"))))
+        (base32 "1m79qqmr1hx7jlyrvnrxjma5s6dk5js9fjsr4nx7vv1r7hdcw4my"))))
     (arguments
      `(#:cargo-inputs
        (("rust-dlib" ,rust-dlib-0.5)
