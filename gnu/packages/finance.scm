@@ -1068,6 +1068,8 @@ of Bitcoin BIP-0039.")
           (base32
             "0nbfa5i9ww7jsfc8cgy0r229pq2a1vj4xvn8mz0nxl7mx1wykqm4"))))
     (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
     (propagated-inputs
      (list python-ecpy
            python-future
