@@ -524,7 +524,8 @@ It supports JPEG, PNG and GIF formats.")
     (inputs (list go-github-com-disintegration-imaging
                   go-github-com-lucasb-eyer-go-colorful
                   go-golang-org-x-crypto
-                  go-golang-org-x-image))
+                  go-golang-org-x-image
+                  go-golang-org-x-term))
     (home-page "https://github.com/eliukblau/pixterm")
     (synopsis "Draw images in your ANSI terminal with true color")
     (description "PIXterm shows images directly in your terminal, recreating

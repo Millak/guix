@@ -64,14 +64,14 @@
   ;; directory.
   (package
     (name "gnucash")
-    (version "4.11")
+    (version "5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                            version "/gnucash-" version ".tar.bz2"))
        (sha256
-        (base32 "069b216dkpjs9hp32s4bhi6f76lbc81qvbmjmz0dxq3v1piys57q"))))
+        (base32 "09482f1w4yawrdw5c2wi0jb8hwlp1x9mdvq552bf9n5f66mkphfg"))))
     (outputs '("out" "doc" "debug" "python"))
     (build-system cmake-build-system)
     (arguments
@@ -87,6 +87,13 @@
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-unsupported-test
+               ;; test test-gnc-quotes neeeds perl JSON::Parse
+               ;; not packaged in Guix yet
+            (lambda _
+              (substitute* "libgnucash/app-utils/test/CMakeLists.txt"
+                    (("gnc_add_test\\(test-gnc-quotes")
+                     "#gnc_add_test\\(test-gnc-quotes"))))
           (add-after 'unpack 'set-env-vars
             (lambda* (#:key inputs #:allow-other-keys)
               ;; At least one test is time-related and requires this
@@ -95,12 +102,6 @@
               (substitute* "CMakeLists.txt"
                 (("set\\(SHELL /bin/bash\\)")
                  (string-append "set(SHELL " (which "bash") ")")))))
-          ;; After wrapping gnc-fq-check and gnc-fq-helper we can no longer
-          ;; execute them with perl, so execute them directly instead.
-          (add-after 'unpack 'fix-finance-quote-check
-            (lambda _
-              (substitute* "gnucash/price-quotes.scm"
-                (("\"perl\" \"-w\" ") ""))))
           ;; The qof test requires the en_US, en_GB, and fr_FR locales.
           (add-before 'check 'install-locales
             (lambda _
@@ -155,9 +156,7 @@
                                            (assoc l (package-inputs this-package)))
                                          '("perl-finance-quote")))))))))
                '("gnucash"
-                 "gnc-fq-check"
-                 "gnc-fq-helper"
-                 "gnc-fq-dump"))))
+                 "gnc-fq-update"))))
           (add-after 'install 'glib-or-gtk-compile-schemas
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
           (add-after 'install 'glib-or-gtk-wrap
@@ -217,7 +216,7 @@ installed as well as Yelp, the Gnome help browser.")
                "mirror://sourceforge/gnucash/gnucash%20%28stable%29/"
                version "/gnucash-docs-" version revision ".tar.gz"))
          (sha256
-          (base32 "162qq8p76grczdnsd4qbpxn1d8ap6l2n1a00a601v5hij7rqwfx8"))))
+          (base32 "1cgdb5qrwrx6yf6dsc8zlhi67lbyjs1g82i0n53sw6n6v38dd882"))))
       (build-system cmake-build-system)
       ;; These are native-inputs because they are only required for building the
       ;; documentation.

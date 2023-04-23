@@ -47,6 +47,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -125,6 +126,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages admin)
@@ -2938,10 +2940,90 @@ the smallest possible conflicts and to allow a merge to be saved, tested,
 interrupted, published, and collaborated on while in progress.")
     (license license:gpl2+)))
 
+(define-public go-github-com-git-lfs-pktline
+  (let ((commit "06e9096e28253ba5c7825cbba43f469e4efd10f0")
+        (revision "0"))
+    (package
+      (name "go-github-com-git-lfs-pktline")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/git-lfs/pktline")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02sn3v8vrl7qjnagbnrbrjnyjvzq8cwkxmc922zyc9b2hg187kpz"))))
+      (build-system go-build-system)
+      (arguments `(#:import-path "github.com/git-lfs/pktline"))
+      (propagated-inputs (list go-github-com-stretchr-testify
+                               go-github-com-pmezard-go-difflib
+                               go-github-com-davecgh-go-spew))
+      (home-page "https://github.com/git-lfs/pktline")
+      (synopsis "Git pkt-line Go toolkit")
+      (description "This package is a Go language toolkit for reading and
+writing files using the Git pkt-line format used in various Git operations.")
+(license license:expat))))
+
+(define-public go-github-com-git-lfs-wildmatch-v2
+  (package
+    (name "go-github-com-git-lfs-wildmatch-v2")
+    (version "2.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/git-lfs/wildmatch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yg6d77d5l6v7cd8vr00y68z9aqb8qs4lidv0hkqh4fvz0ggvpln"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/git-lfs/wildmatch/v2"))
+    (home-page "https://github.com/git-lfs/wildmatch")
+    (synopsis "Go implementation of Git's wildmatch")
+    (description
+     "This package is an implementation of Git's wildmatch.c-style pattern
+matching.")
+    (license license:expat)))
+
+(define-public go-github-com-git-lfs-gitobj-v2
+  (package
+    (name "go-github-com-git-lfs-gitobj-v2")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/git-lfs/gitobj")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sd7y4xbx00js1g2az4nq8g5lvsm4d7nqr3v4kxy8fxrfzdm63j9"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/git-lfs/gitobj/v2"))
+    (propagated-inputs (list go-github-com-stretchr-testify
+                             go-github-com-pmezard-go-difflib
+                             go-github-com-davecgh-go-spew))
+    (home-page "https://github.com/git-lfs/gitobj")
+    (synopsis "Read and write git objects")
+    (description
+     "This package reads and writes loose and packed (objects found in git
+packfiles) Git objects.  It uses the pack package to search pack index files
+and locate the corresponding delta-base chain in the appropriate pack file.
+If gitobj can't find a loose object with the appropriate SHA-1, it will search
+the repository's packfile(s) instead.  If it finds an object in a packfile, it
+will reconstruct the object along its delta-base chain and return it.")
+    (license license:expat)))
+
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "2.13.3")
+    (version "3.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2950,41 +3032,98 @@ interrupted, published, and collaborated on while in progress.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r7dmqhkhz91d3n7qfpny483x8f1n88yya22j2fvx75rgg33z2sg"))))
+                "1g268pplld04b9myhlrwc4fd8r1hvfyya5ja8wr558rar3pgsp5g"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/git-lfs/git-lfs"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'man-gen
-           ;; Without this, the binary generated in 'build
-           ;; phase won't have any embedded usage-text.
-           (lambda _
-             (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-               (invoke "make" "mangen"))))
-         (add-after 'build 'build-man-pages
-           (lambda _
-             (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-               (invoke "make" "man"))
-             #t))
-         (add-after 'install 'install-man-pages
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
-               (let ((out (assoc-ref outputs "out")))
-                 (for-each
-                   (lambda (manpage)
-                     (install-file manpage (string-append out "/share/man/man1")))
-                   (find-files "." "^git-lfs.*\\.1$"))))
-             #t)))))
+     (list
+      #:import-path "github.com/git-lfs/git-lfs"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-embed-x-net
+            (lambda _
+              (delete-file-recursively "src/golang.org/x/net/publicsuffix/data")
+              (copy-recursively
+               #$(file-append (this-package-input "go-golang-org-x-net")
+                              "/src/golang.org/x/net/publicsuffix/data")
+               "src/golang.org/x/net/publicsuffix/data")))
+          (add-before 'build 'man-gen
+            ;; Without this, the binary generated in 'build
+            ;; phase won't have any embedded usage-text.
+            (lambda _
+              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                (invoke "make" "mangen"))))
+          (add-after 'build 'build-man-pages
+            (lambda _
+              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                (invoke "make" "man"))))
+          (add-after 'install 'install-man-pages
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
+                (for-each
+                 (lambda (manpage)
+                   (install-file manpage
+                                 (string-append #$output "/share/man/man1")))
+                 (find-files "." "^git-lfs.*\\.1$"))))))))
     ;; make `ronn` available during build for man page generation
-    (native-inputs (list ronn-ng))
+    (native-inputs (list ronn-ng git-minimal ruby-asciidoctor))
+    (propagated-inputs
+     (list go-github-com-xeipuuv-gojsonschema
+           go-github-com-xeipuuv-gojsonreference
+           go-github-com-xeipuuv-gojsonpointer
+           go-golang-org-x-net
+           go-golang.org-x-sync-semaphore
+           go-github-com-ssgelm-cookiejarparser
+           go-github-com-rubyist-tracerx
+           go-github-com-olekukonko-ts
+           go-github-com-leonelquinteros-gotext
+           go-github-com-git-lfs-wildmatch-v2
+           go-github-com-git-lfs-pktline
+           go-github-com-git-lfs-go-netrc
+           go-github-com-git-lfs-gitobj-v2
+           go-github-com-dpotapov-go-spnego
+           go-github-com-avast-retry-go
+           go-github-com-mattn-go-isatty
+           go-github-com-pkg-errors
+           go-github-com-spf13-cobra))
     (home-page "https://git-lfs.github.com/")
     (synopsis "Git extension for versioning large files")
     (description
      "Git Large File Storage (LFS) replaces large files such as audio samples,
 videos, datasets, and graphics with text pointers inside Git, while storing the
 file contents on a remote server.")
+    (license license:expat)))
+
+(define-public lfs-s3
+  (package
+    (name "lfs-s3")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~ngraves/lfs-s3")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nkxivb356f1zjlj34px601zy86w4398db9s2ivd178jp4v69raw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~ngraves/lfs-s3"))
+    (inputs (list git-lfs))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-spf13-cobra))
+    (home-page "https://git.sr.ht/~ngraves/lfs-s3/")
+    (synopsis "Git extension for versioning large files in S3")
+    (description
+     "This package provides a custom transfer agent for Git LFS, allowing
+plain S3 bucket usage as remote storage for media files. This package uses a
+standalone agent instead of a server.")
     (license license:expat)))
 
 (define-public git-open

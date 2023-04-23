@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Feng Shu <tumashu@163.com>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1017,6 +1018,53 @@ take the storage of the actual increment.  Even more, duplicate data should be
 de-duplicated before it is actually written to the storage back end to save
 precious backup space.
 @end itemize")
+    (license license:bsd-2)))
+
+(define-public restic-rest-server
+  (package
+    (name "restic-rest-server")
+    (version "0.11.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/restic/rest-server")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nvmxc9x0mlks6yfn66fmwn50k5q83ip4g9vvb0kndzd7hwcyacy"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/restic/rest-server/cmd/rest-server"
+       #:unpack-path "github.com/restic/rest-server"
+       #:install-source? #f ;all we need is the binary
+       #:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys . args)
+                      (when tests?
+                        ;; Unit tests seems to break with Guix' non-standard TMPDIR.
+                        (setenv "TMPDIR" "/tmp")
+                        (apply (assoc-ref %standard-phases
+                                          'check) args))))
+                  (add-after 'install 'rename-binary
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (with-directory-excursion (assoc-ref outputs "out")
+                        ;; "rest-server" is a bit too generic.
+                        (rename-file "bin/rest-server"
+                                     "bin/restic-rest-server")))))))
+    (propagated-inputs (list go-golang-org-x-crypto
+                             go-github-com-spf13-cobra
+                             go-github-com-prometheus-client-golang
+                             go-github-com-miolini-datacounter
+                             go-github-com-minio-sha256-simd
+                             go-github-com-gorilla-handlers
+                             go-github-com-coreos-go-systemd-activation))
+    (home-page "https://github.com/restic/rest-server")
+    (synopsis "Restic REST server")
+    (description
+     "The Restic REST server is a high performance HTTP server that implements
+restic's REST backend API.  It provides a secure and efficient way to backup
+data remotely, using the restic backup client and a @code{rest:} URL.")
     (license license:bsd-2)))
 
 (define-public zbackup

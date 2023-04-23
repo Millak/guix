@@ -177,13 +177,13 @@ data units.")
 (define-public khal
   (package
     (name "khal")
-    (version "0.10.5")
+    (version "0.11.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "khal" version))
               (sha256
                (base32
-                "0xhcrx7lcjk126i2xgqmgb199vd4hxsq34mkdmhdh9ia62nbgvsf"))))
+                "07k0cfbfkx9fhfk4gf73vh34c05i1cb72gc15a1lmx9knxy4h503"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; The test suite is unreliable. See <https://bugs.gnu.org/44197>
@@ -202,8 +202,7 @@ data units.")
            ;; Required to build manpage
            python-sphinxcontrib-newsfeed python-sphinx))
     (inputs
-     (list sqlite
-           python-configobj
+     (list python-configobj
            python-dateutil
            python-icalendar
            python-tzlocal
@@ -216,7 +215,9 @@ data units.")
            python-pyxdg))
     (synopsis "Console calendar program")
     (description "Khal is a standards based console calendar program,
-able to synchronize with CalDAV servers through vdirsyncer.")
+able to synchronize with CalDAV servers through vdirsyncer.  It includes
+both a @acronym{CLI, command-line interface} and a @acronym{TUI, textual user
+interface} named 'ikhal'.")
     (home-page "https://lostpackets.de/khal/")
     (license license:expat)))
 
