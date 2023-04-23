@@ -273,14 +273,14 @@
 (define-public httpd
   (package
     (name "httpd")
-    (version "2.4.52")
+    (version "2.4.57")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/httpd/httpd-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1"))))
+               "0ajdz5f2w9nbmqydip2mv9m4xlnc4swmw7mqzgnrbq4mxr5bik6v"))))
     (build-system gnu-build-system)
     (native-inputs (list `(,pcre "bin")))       ;for 'pcre-config'
     (inputs (list apr apr-util openssl perl)) ; needed to run bin/apxs
@@ -304,6 +304,21 @@ using the Internet and the Web to communicate, plan, and develop the server
 and its related documentation.")
     (license license:asl2.0)
     (home-page "https://httpd.apache.org/")))
+
+;; A package variant that may be out of date and vulnerable. Only for use in
+;; test suites and should never be referred to by a built package.
+(define-public httpd/pinned
+  (hidden-package
+    (package
+      (inherit httpd)
+      (version "2.4.52")
+      (source (origin
+               (method url-fetch)
+               (uri (string-append "mirror://apache/httpd/httpd-"
+                                   version ".tar.bz2"))
+               (sha256
+                (base32
+                 "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1")))))))
 
 (define-public mod-wsgi
   (package

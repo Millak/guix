@@ -5027,7 +5027,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            vala
            curl
            gnutls ;for 'certtool'
-           httpd))
+           httpd/pinned))
     (propagated-inputs
      ;; libsoup-3.0.pc refers to all of these (except where otherwise noted)
      (list brotli
