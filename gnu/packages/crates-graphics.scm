@@ -2615,23 +2615,23 @@ the wayland protocol, client side.")
 (define-public rust-wayland-commons-0.29
   (package
     (name "rust-wayland-commons")
-    (version "0.29.4")
+    (version "0.29.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-commons" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gnk4a771i3g1k4fbzx54xnganpc9j68jrx8xj839hfp83iybxll"))))
+        (base32 "00m90bnxqy0d6lzqlyazc1jh18jgbjwigmyr0rk3m8w4slsg34c6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.22)
+       (("rust-nix" ,rust-nix-0.24)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-wayland-sys" ,rust-wayland-sys-0.29))))
     (inputs
-     (list rust-nix-0.22 rust-once-cell-1 rust-smallvec-1
+     (list rust-nix-0.24 rust-once-cell-1 rust-smallvec-1
            rust-wayland-sys-0.29))
     (home-page "https://github.com/smithay/wayland-rs")
     (synopsis "Types and structures used by wayland-client and wayland-server")
