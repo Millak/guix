@@ -3582,8 +3582,36 @@ the platform-specific getters provided by winit, or another library.")
     (description "This crate provides X11 library bindings for Rust.")
     (license license:expat)))
 
+(define-public rust-x11rb-0.10
+  (package
+    (name "rust-x11rb")
+    (version "0.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "x11rb" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01ympxagdl0qs35k1ww712shpnpbahkcc29j5dqmwd4z461lhasr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-gethostname" ,rust-gethostname-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-nix" ,rust-nix-0.24)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-winapi-wsapoll" ,rust-winapi-wsapoll-0.1)
+        ("rust-x11rb-protocol" ,rust-x11rb-protocol-0.10))))
+    (home-page "https://github.com/psychon/x11rb")
+    (synopsis "Rust bindings to X11")
+    (description "This package provides Rust bindings to X11")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x11rb-0.8
   (package
+    (inherit rust-x11rb-0.10)
     (name "rust-x11rb")
     (version "0.8.1")
     (source
@@ -3593,7 +3621,6 @@ the platform-specific getters provided by winit, or another library.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
           (base32 "068g5ll4l5f35c2v098hj0kj2c9ma0r7v3pbli164q9g7w5hiyvg"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
@@ -3603,11 +3630,7 @@ the platform-specific getters provided by winit, or another library.")
          ("rust-nix" ,rust-nix-0.20)
          ("rust-once-cell" ,rust-once-cell-1)
          ("rust-winapi" ,rust-winapi-0.3)
-         ("rust-winapi-wsapoll" ,rust-winapi-wsapoll-0.1))))
-    (home-page "https://github.com/psychon/x11rb")
-    (synopsis "Rust bindings to X11")
-    (description "This package provides Rust bindings to X11")
-    (license (list license:expat license:asl2.0))))
+         ("rust-winapi-wsapoll" ,rust-winapi-wsapoll-0.1))))))
 
 (define-public rust-x11-clipboard-0.7
   (package
