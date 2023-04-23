@@ -47,6 +47,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -125,6 +126,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages admin)
@@ -3023,7 +3025,7 @@ will reconstruct the object along its delta-base chain and return it.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "2.13.3")
+    (version "3.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3032,35 +3034,60 @@ will reconstruct the object along its delta-base chain and return it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r7dmqhkhz91d3n7qfpny483x8f1n88yya22j2fvx75rgg33z2sg"))))
+                "1g268pplld04b9myhlrwc4fd8r1hvfyya5ja8wr558rar3pgsp5g"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/git-lfs/git-lfs"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'man-gen
-           ;; Without this, the binary generated in 'build
-           ;; phase won't have any embedded usage-text.
-           (lambda _
-             (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-               (invoke "make" "mangen"))))
-         (add-after 'build 'build-man-pages
-           (lambda _
-             (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-               (invoke "make" "man"))
-             #t))
-         (add-after 'install 'install-man-pages
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
-               (let ((out (assoc-ref outputs "out")))
-                 (for-each
-                   (lambda (manpage)
-                     (install-file manpage (string-append out "/share/man/man1")))
-                   (find-files "." "^git-lfs.*\\.1$"))))
-             #t)))))
+     (list
+      #:import-path "github.com/git-lfs/git-lfs"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-embed-x-net
+            (lambda _
+              (delete-file-recursively "src/golang.org/x/net/publicsuffix/data")
+              (copy-recursively
+               #$(file-append (this-package-input "go-golang-org-x-net")
+                              "/src/golang.org/x/net/publicsuffix/data")
+               "src/golang.org/x/net/publicsuffix/data")))
+          (add-before 'build 'man-gen
+            ;; Without this, the binary generated in 'build
+            ;; phase won't have any embedded usage-text.
+            (lambda _
+              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                (invoke "make" "mangen"))))
+          (add-after 'build 'build-man-pages
+            (lambda _
+              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                (invoke "make" "man"))))
+          (add-after 'install 'install-man-pages
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
+                (for-each
+                 (lambda (manpage)
+                   (install-file manpage
+                                 (string-append #$output "/share/man/man1")))
+                 (find-files "." "^git-lfs.*\\.1$"))))))))
     ;; make `ronn` available during build for man page generation
-    (native-inputs (list ronn-ng))
+    (native-inputs (list ronn-ng git-minimal ruby-asciidoctor))
+    (propagated-inputs
+     (list go-github-com-xeipuuv-gojsonschema
+           go-github-com-xeipuuv-gojsonreference
+           go-github-com-xeipuuv-gojsonpointer
+           go-golang-org-x-net
+           go-golang.org-x-sync-semaphore
+           go-github-com-ssgelm-cookiejarparser
+           go-github-com-rubyist-tracerx
+           go-github-com-olekukonko-ts
+           go-github-com-leonelquinteros-gotext
+           go-github-com-git-lfs-wildmatch-v2
+           go-github-com-git-lfs-pktline
+           go-github-com-git-lfs-go-netrc
+           go-github-com-git-lfs-gitobj-v2
+           go-github-com-dpotapov-go-spnego
+           go-github-com-avast-retry-go
+           go-github-com-mattn-go-isatty
+           go-github-com-pkg-errors
+           go-github-com-spf13-cobra))
     (home-page "https://git-lfs.github.com/")
     (synopsis "Git extension for versioning large files")
     (description
