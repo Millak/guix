@@ -2070,7 +2070,7 @@ watch your CPU playing while enjoying a cup of tea!")
 (define-public nethack
   (package
     (name "nethack")
-    (version "3.6.6")
+    (version "3.6.7")
     (source
       (origin
         (method url-fetch)
@@ -2078,7 +2078,7 @@ watch your CPU playing while enjoying a cup of tea!")
          (string-append "https://www.nethack.org/download/" version "/nethack-"
                         (string-join (string-split version #\.) "") "-src.tgz"))
         (sha256
-          (base32 "1liyckjp34j354qnxc1zn9730lh1p2dabrg1hap24z6xnqx0rpng"))))
+          (base32 "1cmc596x8maixi2bkx9kblp3daxw156ahnklc656dygbdpgngkwq"))))
     (native-inputs
       (list bison flex))
     (inputs
