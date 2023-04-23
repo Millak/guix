@@ -1015,8 +1015,43 @@ EUI-64, also known as MAC-48 media access control addresses.")
      "Generated OpenGL bindings and wrapper for Servo.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-glutin-0.30
+  (package
+    (name "rust-glutin")
+    (version "0.30.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glutin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05gzw9icj4s0p9db9srnwrd3m3plcs7260jlblyy2pbiqygap6zq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
+        ("rust-cgl" ,rust-cgl-0.3)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-dispatch" ,rust-dispatch-0.2)
+        ("rust-glutin-egl-sys" ,rust-glutin-egl-sys-0.4)
+        ("rust-glutin-glx-sys" ,rust-glutin-glx-sys-0.4)
+        ("rust-glutin-wgl-sys" ,rust-glutin-wgl-sys-0.4)
+        ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-objc2" ,rust-objc2-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.30)
+        ("rust-windows-sys" ,rust-windows-sys-0.45)
+        ("rust-x11-dl" ,rust-x11-dl-2))))
+    (home-page "https://github.com/tomaka/glutin")
+    (synopsis "Cross-platform OpenGL context provider")
+    (description "This package provides an OpenGL context provider.")
+    (license license:asl2.0)))
+
 (define-public rust-glutin-0.28
   (package
+    (inherit rust-glutin-0.30)
     (name "rust-glutin")
     (version "0.28.0")
     (source
@@ -1026,7 +1061,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1lpnf61x4jbm55bpdr10k1a1pl3cs719i9y4qibsdj2bajz9vsh0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-android-glue" ,rust-android-glue-0.2)
@@ -1048,11 +1082,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winit" ,rust-winit-0.26))))
     (inputs
-     (list rust-wayland-client-0.29 rust-wayland-egl-0.29))
-    (home-page "https://github.com/tomaka/glutin")
-    (synopsis "Cross-platform OpenGL context provider")
-    (description "This package provides an OpenGL context provider.")
-    (license license:asl2.0)))
+     (list rust-wayland-client-0.29 rust-wayland-egl-0.29))))
 
 (define-public rust-glutin-0.26
   (package
