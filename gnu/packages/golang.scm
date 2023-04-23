@@ -1546,6 +1546,14 @@ Call}.")
      `(#:import-path "github.com/jcmturner/rpc/v2/ndr"
        #:unpack-path "github.com/jcmturner/rpc"))))
 
+(define-public go-github-com-jcmturner-rpc-v2-mstypes
+  (package
+    (inherit go-github-com-jcmturner-rpc)
+    (name "go-github-com-jcmturner-rpc-v2-mstypes")
+    (arguments
+     `(#:import-path "github.com/jcmturner/rpc/v2/mstypes"
+       #:unpack-path "github.com/jcmturner/rpc"))))
+
 (define-public go-github-com-kataras-golog
   (package
     (name "go-github-com-kataras-golog")
