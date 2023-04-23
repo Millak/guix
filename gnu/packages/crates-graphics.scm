@@ -2157,8 +2157,28 @@ AVIF format (powers the `cavif` tool).")
      (list nasm))                 ;for building rav1e
     (inputs '())))
 
+(define-public rust-raw-window-handle-0.5
+  (package
+    (name "rust-raw-window-handle")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "raw-window-handle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1f9k10fgda464ia1b2hni8f0sa8i0bphdsbs3di032x80qgrmzzj"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-windowing/raw-window-handle")
+    (synopsis "Interoperability library for Rust Windowing applications")
+    (description
+     "Interoperability library for Rust Windowing applications.")
+    (license license:expat)))
+
 (define-public rust-raw-window-handle-0.4
   (package
+    (inherit rust-raw-window-handle-0.5)
     (name "rust-raw-window-handle")
     (version "0.4.3")
     (source
@@ -2169,15 +2189,9 @@ AVIF format (powers the `cavif` tool).")
        (sha256
         (base32
          "0hgvrqbr2b62zhq4ryv08h92mwis9v8f7j9pwcgxzlp7nswvw05q"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cty" ,rust-cty-0.2))))
-    (home-page "https://github.com/rust-windowing/raw-window-handle")
-    (synopsis "Interoperability library for Rust Windowing applications")
-    (description
-     "Interoperability library for Rust Windowing applications.")
-    (license license:expat)))
+       (("rust-cty" ,rust-cty-0.2))))))
 
 (define-public rust-raw-window-handle-0.3
   (package
