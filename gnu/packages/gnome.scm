@@ -7471,7 +7471,8 @@ metadata in photo and video files of various formats.")
            `(,glib "bin")
            itstool
            pkg-config
-           python))
+           python
+           vala))
     (inputs
      (list gcr
            gexiv2
