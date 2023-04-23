@@ -2485,24 +2485,28 @@ using AES-NI for high performance.")
         ("rust-rand" ,rust-rand-0.3)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
 
-(define-public rust-alacritty-config-derive-0.1
+(define-public rust-alacritty-config-derive-0.2
   (package
     (name "rust-alacritty-config-derive")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "alacritty_config_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0dn3cg233jyi06xz8q1vfgjikdpcjdid36kqnl0yawdqpm2lq13p"))))
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alacritty-config-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1vasc1fagkih5zcdyi9lwc9bprmr0zq0zyyakfqsm9pnr9x60lyp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-alacritty-config" ,rust-alacritty-config-0.1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8))))
     (home-page "https://github.com/alacritty/alacritty")
     (synopsis "Failure resistant deserialization derive")
     (description
