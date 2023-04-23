@@ -262,6 +262,7 @@ of external libraries that provide additional functionality.")
        (uri (git-reference
              (url "https://github.com/AcademySoftwareFoundation/OpenColorIO")
              (commit (string-append "v" version))))
+       (patches (search-patches "opencolorio-fix-build-with-gcc11.patch"))
        (sha256
         (base32 "12srvxca51czpfjl0gabpidj9n84mw78ivxy5w75qhq2mmc798sb"))
        (file-name (git-file-name name version))
