@@ -249,13 +249,13 @@ plans and designs.")
                 "19688b0671imy2i3jphcnq1120b8ymhr4wz2psiqylr82ljanqp8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          ;; tests require a writable HOME
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getenv "TMPDIR"))
-             #t))
+             (setenv "HOME" (getenv "TMPDIR"))))
          (add-after 'unpack 'disable-failing-tests
            (lambda _
              (substitute* "xorn/tests/Makefile.in"
@@ -263,14 +263,13 @@ plans and designs.")
              ;; This test returns its correct result in an unexpected order.
              (substitute* "libgeda/scheme/unit-tests/t0402-config.scm"
                (("\\(begin-config-test 'config-keys" m)
-                (string-append "#;" m)))
-             #t)))
-       #:configure-flags
-       (let ((pcb (assoc-ref %build-inputs "pcb")))
-         (list (string-append "--with-pcb-datadir=" pcb "/share")
-               (string-append "--with-pcb-lib-path="
-                              pcb "/share/pcb/pcblib-newlib:"
-                              pcb "/share/pcb/newlib")))))
+                (string-append "#;" m))))))
+      #:configure-flags
+      #~(let ((pcb #$(this-package-input "pcb")))
+          (list (string-append "--with-pcb-datadir=" pcb "/share")
+                (string-append "--with-pcb-lib-path="
+                               pcb "/share/pcb/pcblib-newlib:"
+                               pcb "/share/pcb/newlib")))))
     (inputs
      `(("gamin" ,gamin)
        ("glib" ,glib)
