@@ -3286,8 +3286,70 @@ crate @code{rust-wayland-client} for usable bindings.")
     (description "This package procides a WebP conversion library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-winit-0.28
+  (package
+    (name "rust-winit")
+    (version "0.28.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x1q4nxlr5sg0sf0fhdwg6jgb0a7rmc8skvp33v1b43v2664wl2g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-android-activity" ,rust-android-activity-0.4)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.22)
+        ("rust-dispatch" ,rust-dispatch-0.2)
+        ("rust-instant" ,rust-instant-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-mio" ,rust-mio-0.8)
+        ("rust-ndk" ,rust-ndk-0.7)
+        ("rust-objc2" ,rust-objc2-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-orbclient" ,rust-orbclient-0.3)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.3)
+        ("rust-sctk-adwaita" ,rust-sctk-adwaita-0.5)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wayland-client" ,rust-wayland-client-0.29)
+        ("rust-wayland-commons" ,rust-wayland-commons-0.29)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.29)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-windows-sys" ,rust-windows-sys-0.45)
+        ("rust-x11-dl" ,rust-x11-dl-2))
+       #:cargo-development-inputs
+       (("rust-console-log" ,rust-console-log-0.2)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-simple-logger" ,rust-simple-logger-2)
+        ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/rust-windowing/winit")
+    (synopsis "Window creation library")
+    (description
+     "Winit is a window creation and management library. It can create
+windows and lets you handle events (for example: the window being
+resized, a key being pressed, a mouse movement, etc.) produced by
+window.
+
+Winit is designed to be a low-level brick in a hierarchy of libraries.
+Consequently, in order to show something on the window you need to use
+the platform-specific getters provided by winit, or another library.")
+    (license license:asl2.0)))
+
 (define-public rust-winit-0.26
   (package
+    (inherit rust-winit-0.28)
     (name "rust-winit")
     (version "0.26.1")
     (source
@@ -3297,7 +3359,6 @@ crate @code{rust-wayland-client} for usable bindings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0fp7cdh7llbqmm6ga8f6bzk9785jmkbyy1w631hr9faq3n9wqhwv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -3330,19 +3391,7 @@ crate @code{rust-wayland-client} for usable bindings.")
        (("rust-console-log" ,rust-console-log-0.2)
         ("rust-simple-logger" ,rust-simple-logger-1))))
     (inputs
-     (list rust-wayland-client-0.29 rust-wayland-protocols-0.29))
-    (home-page "https://github.com/rust-windowing/winit")
-    (synopsis "Window creation library")
-    (description
-     "Winit is a window creation and management library. It can create
-windows and lets you handle events (for example: the window being
-resized, a key being pressed, a mouse movement, etc.) produced by
-window.
-
-Winit is designed to be a low-level brick in a hierarchy of libraries.
-Consequently, in order to show something on the window you need to use
-the platform-specific getters provided by winit, or another library.")
-    (license license:asl2.0)))
+     (list rust-wayland-client-0.29 rust-wayland-protocols-0.29))))
 
 (define-public rust-winit-0.24
   (package
