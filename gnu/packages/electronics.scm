@@ -427,3 +427,61 @@ from ALSA, ESD, and COMEDI sources.  This package currently does not include
 support for ESD sources.")
     (home-page "https://xoscope.sourceforge.net/")
     (license license:gpl2+)))
+
+(define-public minipro
+  ;; Information needed to fix Makefile
+   (let* ((commit "c181c2cf1619d00a520627d475e3fadb1eea5dac")
+         (commit-short (substring commit 0 8))
+         (date "2022-09-10 21:44:06 -0700"))
+    (package
+      (name "minipro")
+      (version "0.6")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/DavidGriffith/minipro.git")
+                      (commit version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "03xgmvvsxmqrz7blg7cqk0pb9ynhlq6v6jfl532zmjdzp5p3h10d"))))
+      (native-inputs (list pkg-config which))
+      (inputs (list libusb))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ; no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure) ; No ./configure script
+            (add-before 'build 'fix-makefile
+              (lambda _
+                ;; Fix some git related variables that minipro expects
+                (substitute* "Makefile"
+                  (("GIT_BRANCH = .*")
+                   (string-append "GIT_BRANCH = \"master\"\n"))
+                  (("GIT_HASH = .*")
+                   (string-append "GIT_HASH = \"" #$commit "\"\n"))
+                  (("GIT_HASH_SHORT = .*")
+                   (string-append "GIT_HASH_SHORT = \"" #$commit-short "\"\n"))
+                  (("GIT_DATE = .*")
+                   (string-append "GIT_DATE = \"" #$date "\"\n"))))))
+        #:make-flags
+        #~(list (string-append "VERSION=" #$version)
+                (string-append "PREFIX=" #$output)
+                (string-append "UDEV_DIR=" #$output "/lib/udev")
+                (string-append "COMPLETIONS_DIR=" #$output
+                               "/share/bash-completion/completions"))))
+      (synopsis "Controls the TL866xx series of chip programmers")
+      (description
+       "minipro is designed to program or read the contents of
+chips supported by the TL866xx series of programmers.  This includes many
+microcontrollers, ROMs, EEPROMs and PLDs.
+
+To use this program without root privileges you must install the necessary udev
+rules.  This can be done by extending @code{udev-service-type} in your
+@code{operating-system} configuration with this package.  E.g.:
+@code{(udev-rules-service 'minipro minipro #:groups '(\"plugdev\")}.
+Additionally your user must be member of the @code{plugdev} group.")
+      (home-page "https://gitlab.com/DavidGriffith/minipro")
+      (license license:gpl3+))))
