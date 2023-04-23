@@ -473,14 +473,14 @@ for computer graphics.")
 (define-public rust-core-graphics-0.22
   (package
     (name "rust-core-graphics")
-    (version "0.22.2")
+    (version "0.22.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-graphics" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11lx6xw8nc9fpd552g60qa0cxh0maah8j2m26vkq0aslkgv3b7r6"))))
+        (base32 "1yz4xzbz36vbmlra0viazzlicp8kap1ldgshsp5nzz4g7fmvp095"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
