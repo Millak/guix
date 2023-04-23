@@ -1505,6 +1505,39 @@ authenticated identities and their attributes.")
 arounds until issues are addressed in the official distribution.")
     (license license:bsd-3)))
 
+(define-public go-github-com-jcmturner-rpc
+  (package
+    (name "go-github-com-jcmturner-rpc")
+    (version "2.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jcmturner/rpc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nm4j2nwcszghldw39rwdx2hr56i1lybfpv33y4gd67w6qcqbpsi"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jcmturner/rpc"
+       ;; Source-only package.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; Source-only package.
+         (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-net go-github-com-stretchr-testify))
+    (home-page "https://github.com/jcmturner/rpc")
+    (synopsis "Remote Procedure Call libraries")
+    (description
+     "This package provides a partial Go implementation of the Remote Call
+Procedure libraries, presented in
+@@url{http://pubs.opengroup.org/onlinepubs/9629399/,CDE 1.1: Remote Procedure
+Call}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-kataras-golog
   (package
     (name "go-github-com-kataras-golog")
