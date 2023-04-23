@@ -16857,17 +16857,16 @@ for Python inspired by modern web development.")
 (define-public python-magic
   (package
     (name "python-magic")
-    (version "0.4.24")
+    (version "0.4.27")
     (home-page "https://github.com/ahupp/python-magic")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference (url home-page) (commit version)))
        (file-name (git-file-name name version))
-       (patches (search-patches "python-magic-python-bytecode.patch"))
        (sha256
         (base32
-         "17jalhjbfd600lzfz296m0nvgp6c7vx1mgz82jbzn8hgdzknf4w0"))))
+         "1x11kfn4g244fia9a7y4ly8dqv5zsxfg3l5azc54dl6gkp2bk7vx"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -16889,7 +16888,6 @@ for Python inspired by modern web development.")
                       (setenv "LC_ALL" "en_US.UTF-8")
                       (if tests?
                           (with-directory-excursion "test"
-                            (invoke "python" "./test.py")
                             (invoke "python" "./libmagic_test.py"))
                           (format #t "test suite not run~%")))))))
     (native-inputs
