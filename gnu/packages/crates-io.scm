@@ -39770,6 +39770,23 @@ Foundation framework.")
      "This package provides raw bindings to the Objective-C runtime and ABI.")
     (license license:expat)))
 
+(define-public rust-objc-sys-0.2
+  (package
+    (inherit rust-objc-sys-0.3)
+    (name "rust-objc-sys")
+    (version "0.2.0-beta.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "objc-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1msm1bwv69k12ikxm71mi1ifrbx2bzsmk2w2bah98mp9q4s9hfyz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t         ; Needs gcc-objc
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))))
+
 (define-public rust-objc-test-utils-0.0
   (package
     (name "rust-objc-test-utils")
