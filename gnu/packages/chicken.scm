@@ -77,6 +77,24 @@ produces portable and efficient C, supports almost all of the R5RS Scheme
 language standard, and includes many enhancements and extensions.")
     (license license:bsd-3)))
 
+(define-public chicken-compile-file
+  (package
+    (name "chicken-compile-file")
+    (version "1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (egg-uri "compile-file" version))
+              (sha256
+               (base32
+                "1029i5ifr48vb3clvl8n50iq23rzc42szdcsl9320qmj1ksg9y93"))))
+    (build-system chicken-build-system)
+    (arguments `(#:egg-name "compile-file"))
+    (home-page "https://wiki.call-cc.org/egg/compile-file")
+    (synopsis "Programmatic compiler invocation")
+    (description "This egg provides a way to do on-the-fly compilation of
+source code and load it into the running process.")
+    (license license:bsd-3)))
+
 (define-public chicken-srfi-1
   (package
     (name "chicken-srfi-1")
