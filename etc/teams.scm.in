@@ -719,6 +719,9 @@ and REV-END, two git revision strings."
                  (list-members (find-team team-name) (current-output-port)
                                "X-Debbugs-Cc: "))
                (patch->teams patch-file)))
+    (("cc-mentors-header-cmd" patch-file)
+     (list-members (find-team "mentors") (current-output-port)
+                   "X-Debbugs-Cc: "))
     (("get-maintainer" patch-file)
      (apply main "list-members" (patch->teams patch-file)))
     (("list-teams" . args)
@@ -735,10 +738,12 @@ and REV-END, two git revision strings."
 Commands:
   cc <team-name>
       get git send-email flags for cc-ing <team-name>
-  cc-members <start> <end> | patch
+  cc-members <start> <end> | <patch>
       cc teams related to files changed between revisions or in a patch file
   cc-members-header-cmd <patch>
       cc-members variant for use with 'git send-email --header-cmd'
+  cc-mentors-header-cmd <patch>
+      command to use with 'git send-email --header-cmd' to notify mentors
   list-teams
       list teams and their members
   list-members <team-name>
