@@ -234,7 +234,8 @@ Python 3.3 and later, rather than on Python 2.")
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1mpjvhyw8mv2q941xny4d0gw3mb6b4bqaqbh73jd8b1v6zqpaps7"))))
+              "1mpjvhyw8mv2q941xny4d0gw3mb6b4bqaqbh73jd8b1v6zqpaps7"))
+            (patches (search-patches "git-header-cmd.patch"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
