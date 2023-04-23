@@ -69,7 +69,6 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
@@ -1401,7 +1400,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.9.0")
+    (version "0.12.0")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1412,57 +1411,62 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "068y0b1a0m33r7a3j2xf6k602sc8062gm4d5568ynfx6w5n481lj"))))
+        (base32 "00ksvn0k451wmppqxkzzsb5gdjllqxqrnxw81gam00k9wsq8bj6q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
        #:cargo-test-flags '("--release" "--" "--skip=config_read_eof")
        #:cargo-inputs
-       (("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.1)
-        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.15)
-        ("rust-clap" ,rust-clap-2)
+       (("rust-alacritty-config" ,rust-alacritty-config-0.1)
+        ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
+        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.18)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-clap" ,rust-clap-3)
         ("rust-cocoa" ,rust-cocoa-0.24)
-        ("rust-copypasta" ,rust-copypasta-0.7)
-        ("rust-crossfont" ,rust-crossfont-0.3)
+        ("rust-copypasta" ,rust-copypasta-0.8)
+        ("rust-crossfont" ,rust-crossfont-0.5)
+        ("rust-dirs" ,rust-dirs-4)
         ("rust-embed-resource" ,rust-embed-resource-1)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
         ;; XXX: Adjust `add-absolute-library-references' phase when updating
         ;; glutin input.
-        ("rust-glutin" ,rust-glutin-0.26)
+        ("rust-glutin" ,rust-glutin-0.30)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-notify" ,rust-notify-4)
+        ("rust-notify" ,rust-notify-5)
         ("rust-objc" ,rust-objc-0.2)
-        ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-png" ,rust-png-0.16)
-        ("rust-raw-window-handle" ,rust-raw-window-handle-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-png" ,rust-png-0.17)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-        ("rust-time" ,rust-time-0.1)
-        ("rust-urlocator" ,rust-urlocator-0.1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-wayland-client" ,rust-wayland-client-0.29)
+        ("rust-windows-sys" ,rust-windows-sys-0.36)
+        ("rust-winit" ,rust-winit-0.28)
         ("rust-x11-dl" ,rust-x11-dl-2)
         ("rust-xdg" ,rust-xdg-2))
+       #:cargo-development-inputs
+       (("rust-clap-complete" ,rust-clap-complete-3))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'use-new-nix
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "alacritty_terminal/Cargo.toml"
-               (("0.22.0") "^0.23.0"))))
          (add-after 'unpack 'patch-xdg-open
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "alacritty/src/config/ui_config.rs"
                (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
          (add-after 'configure 'add-absolute-library-references
            (lambda* (#:key inputs cargo-inputs vendor-dir #:allow-other-keys)
-             (let* ((glutin-name ,(package-name rust-glutin-0.26))
-                    (glutin-version ,(package-version rust-glutin-0.26))
+             (let* ((glutin-name ,(package-name rust-glutin-0.30))
+                    (glutin-version ,(package-version rust-glutin-0.30))
                     (glutin-api (string-append glutin-name "-" glutin-version
                                                ".tar.gz/src/api/"))
                     (smithay-client-toolkit-name
-                     ,(package-name rust-smithay-client-toolkit-0.12))
+                     ,(package-name rust-smithay-client-toolkit-0.16))
                     (smithay-client-toolkit-version
-                     ,(package-version rust-smithay-client-toolkit-0.12))
+                     ,(package-version rust-smithay-client-toolkit-0.16))
                     (smithay-client-toolkit-src
                      (string-append smithay-client-toolkit-name "-"
                                     smithay-client-toolkit-version ".tar.gz/src"))
@@ -1486,8 +1490,7 @@ basic input/output.")
                  (("libGL.so") (string-append mesa "/lib/libGL.so")))
                (substitute*
                    (string-append vendor-dir "/" glutin-api "egl/mod.rs")
-                 (("libEGL.so") (string-append mesa "/lib/libEGL.so")))
-               #t)))
+                 (("libEGL.so") (string-append mesa "/lib/libEGL.so"))))))
          (replace 'install
            ;; Upstream install script only takes care of executable.
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -1525,11 +1528,9 @@ basic input/output.")
                (install-file "extra/completions/_alacritty"
                              (string-append share "/zsh/site-functions"))
                (install-file "extra/completions/alacritty.fish"
-                             (string-append share "/fish/vendor_completions.d"))
-               #t))))))
+                             (string-append share "/fish/vendor_completions.d"))))))))
     (native-inputs
-     `(("cmake" ,cmake)
-       ("ncurses" ,ncurses)
+     `(("ncurses" ,ncurses)
        ("pkg-config" ,pkg-config)
        ("python3" ,python)))
     (inputs
@@ -1544,12 +1545,6 @@ basic input/output.")
        ("libxrandr" ,libxrandr)
        ("libxxf86vm" ,libxxf86vm)
        ("mesa" ,mesa)
-       ("rust-bitflags" ,rust-bitflags-1)
-       ("rust-dirs" ,rust-dirs-3)
-       ("rust-libc" ,rust-libc-0.2)
-       ("rust-unicode-width" ,rust-unicode-width-0.1)
-       ("rust-wayland-client" ,rust-wayland-client-0.28)
-       ("rust-winapi" ,rust-winapi-0.3)
        ("xdg-utils" ,xdg-utils)
        ("wayland" ,wayland)))
     (native-search-paths
