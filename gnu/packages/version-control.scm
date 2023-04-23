@@ -2967,6 +2967,29 @@ interrupted, published, and collaborated on while in progress.")
 writing files using the Git pkt-line format used in various Git operations.")
 (license license:expat))))
 
+(define-public go-github-com-git-lfs-wildmatch-v2
+  (package
+    (name "go-github-com-git-lfs-wildmatch-v2")
+    (version "2.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/git-lfs/wildmatch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yg6d77d5l6v7cd8vr00y68z9aqb8qs4lidv0hkqh4fvz0ggvpln"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/git-lfs/wildmatch/v2"))
+    (home-page "https://github.com/git-lfs/wildmatch")
+    (synopsis "Go implementation of Git's wildmatch")
+    (description
+     "This package is an implementation of Git's wildmatch.c-style pattern
+matching.")
+    (license license:expat)))
+
 (define-public go-github-com-git-lfs-gitobj-v2
   (package
     (name "go-github-com-git-lfs-gitobj-v2")
