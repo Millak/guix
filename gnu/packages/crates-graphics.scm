@@ -2977,14 +2977,14 @@ wayland-client crate for usable bindings.")
 (define-public rust-wayland-server-0.29
   (package
     (name "rust-wayland-server")
-    (version "0.29.4")
+    (version "0.29.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-server" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wj8gf28dbjwb824i29wf3wr5r6wp6ssknjm9b5dnb1fah47mk66"))))
+        (base32 "11ickjbqpfs19wakf56l3j9asjcfw00d7wj48s3i99yvv1nq8q2k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2992,15 +2992,18 @@ wayland-client crate for usable bindings.")
         ("rust-downcast-rs" ,rust-downcast-rs-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-nix" ,rust-nix-0.22)
+        ("rust-nix" ,rust-nix-0.24)
         ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-scoped-tls" ,rust-scoped-tls-1))))
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-wayland-commons" ,rust-wayland-commons-0.29)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.29)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.29))))
     (inputs
      (list rust-bitflags-1
            rust-downcast-rs-1
            rust-lazy-static-1
            rust-libc-0.2
-           rust-nix-0.22
+           rust-nix-0.24
            rust-parking-lot-0.11
            rust-scoped-tls-1
            rust-wayland-commons-0.29
