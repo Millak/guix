@@ -39749,6 +39749,27 @@ Foundation framework.")
      "This package provides Rust smart pointers for Objective-C reference counting.")
     (license license:expat)))
 
+(define-public rust-objc-sys-0.3
+  (package
+    (name "rust-objc-sys")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "objc-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18qqjf2qwlhzzzlf8d5zisn0m92607kyp17kqk31v07njc5gyc6s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t         ; Needs gcc-objc
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Raw bindings to the Objective-C runtime and ABI")
+    (description
+     "This package provides raw bindings to the Objective-C runtime and ABI.")
+    (license license:expat)))
+
 (define-public rust-objc-test-utils-0.0
   (package
     (name "rust-objc-test-utils")
