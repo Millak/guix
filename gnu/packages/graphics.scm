@@ -1270,7 +1270,7 @@ with strong support for multi-part, multi-channel use cases.")
 (define-public openimageio
   (package
     (name "openimageio")
-    (version "2.2.11.1")
+    (version "2.2.21.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1279,7 +1279,7 @@ with strong support for multi-part, multi-channel use cases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i9r6vgz15aj1yzbf5a9lqhlyakjs793yrw5gw720l84lcyigad7"))))
+                "1i9rpvgz15aj1yzbf5a9lqhlyakjs793yrw5gw720l84lcyigad7"))))
     (build-system cmake-build-system)
     ;; FIXME: To run all tests successfully, test image sets from multiple
     ;; third party sources have to be present.  For details see
