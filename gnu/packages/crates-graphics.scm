@@ -3556,7 +3556,7 @@ the platform-specific getters provided by winit, or another library.")
 (define-public rust-x11-dl-2
   (package
     (name "rust-x11-dl")
-    (version "2.18.5")
+    (version "2.21.0")
     (source
      (origin
        (method url-fetch)
@@ -3564,18 +3564,17 @@ the platform-specific getters provided by winit, or another library.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y7yq4sfvv56shk4v3s7gvlrwk9d0migj622fl4i4c5klpiq3y9b"))))
+        (base32 "0vsiq62xpcfm0kn9zjw5c9iycvccxl22jya8wnk18lyxzqj5jwrq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-maybe-uninit" ,rust-maybe-uninit-2)
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
     (home-page "https://github.com/erlepereira/x11-rs.git")
     (synopsis "X11 library bindings for Rust")
     (description "This package provides X11 library bindings for Rust.")
-    (license license:cc0)))
+    (license license:expat)))
 
 (define-public rust-y4m-0.7
   (package
