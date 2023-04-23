@@ -34795,20 +34795,21 @@ file IO.")
 (define-public rust-memmap2-0.5
   (package
     (name "rust-memmap2")
-    (version "0.5.5")
+    (version "0.5.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "memmap2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1irzc4skrr8a2i0x9kdisq59w6rzyigkp8prx9za59d7jffb6y9s"))))
+        (base32 "09xk415fxyl4a9pgby4im1v2gqlb5lixpm99dczkk30718na9yl3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-owning-ref" ,rust-owning-ref-0.4)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
+       #:cargo-development-inputs
+       (("rust-owning-ref" ,rust-owning-ref-0.4)
         ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/RazrFalcon/memmap2-rs")
     (synopsis "Cross-platform Rust API for memory-mapped file IO")
