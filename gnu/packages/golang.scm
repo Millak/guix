@@ -1505,6 +1505,54 @@ authenticated identities and their attributes.")
 arounds until issues are addressed in the official distribution.")
     (license license:bsd-3)))
 
+(define-public go-github-com-jcmturner-gokrb5-v8
+  (package
+    (name "go-github-com-jcmturner-gokrb5-v8")
+    (version "8.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jcmturner/gokrb5")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0w9d1pa3r6qmdblk25bghf78ncs03l15l1sxnh4n536c356rzq4b"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jcmturner/gokrb5/v8"
+       #:unpack-path "github.com/jcmturner/gokrb5"))
+    (propagated-inputs (list go-golang-org-x-net
+                             go-golang-org-x-crypto
+                             go-github-com-stretchr-testify
+                             go-github-com-jcmturner-rpc-v2-ndr
+                             go-github-com-jcmturner-rpc-v2-mstypes
+                             go-github-com-jcmturner-goidentity-v6
+                             go-github-com-jcmturner-gofork
+                             go-github-com-jcmturner-dnsutils-v2
+                             go-github-com-jcmturner-aescts-v2
+                             go-github-com-hashicorp-go-uuid
+                             go-github-com-gorilla-sessions))
+    (home-page "https://github.com/jcmturner/gokrb5")
+    (synopsis "Pure Go Kerberos library for clients and services")
+    (description "This package provides a pure Go Kerberos library.  It
+features:
+@itemize
+@item Kerberos libraries for custom integration
+@item Parsing Keytab files
+@item Parsing krb5.conf files
+@item Parsing client credentials cache files such as /tmp/krb5cc_$(id -u $(whoami))
+@end itemize
+
+On the client side, it provides a client that can authenticate to an SPNEGO
+Kerberos authenticated web service, and the ability to change client's
+password.
+
+On the server side, the library provides a HTTP handler wrapper implements
+SPNEGO Kerberos authentication, as well as a HTTP handler wrapper decodes
+Microsoft AD PAC authorization data.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jcmturner-rpc
   (package
     (name "go-github-com-jcmturner-rpc")
