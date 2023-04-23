@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
@@ -10743,6 +10744,32 @@ or capture raw audio.")
      "This package provides traditional getopt processing for implementing
 programs that use traditional command lines.")
     (license license:bsd-3)))
+
+(define-public go-git-sr-ht-adnano-go-gemini
+  (package
+    (name "go-git-sr-ht-adnano-go-gemini")
+    (version "0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~adnano/go-gemini")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mv4x4cfwyhh77wfb3r221bhr84x4nmjpgysnvvjgmbnnafsgfns"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~adnano/go-gemini"))
+    (propagated-inputs
+     (list go-golang-org-x-net go-golang-org-x-text))
+    (home-page "https://git.sr.ht/~adnano/go-gemini")
+    (synopsis "Gemini protocol in Go")
+    (description
+     "The @code{gemini} package implements the Gemini protocol in Go.  It
+provides an API similar to that of NET/HTTP to facilitate the development of
+Gemini clients and servers.")
+    (license license:expat)))
 
 (define-public go-git-sr-ht-sircmpwn-getopt
   (package
