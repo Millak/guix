@@ -9238,6 +9238,31 @@ which produce colorized output using github.com/fatih/color.")
 @end itemize\n")
     (license license:expat)))
 
+(define-public go-github-com-olekukonko-ts
+  (let ((commit "78ecb04241c0121483589a30b0814836a746187d")
+        (revision "0"))
+    (package
+      (name "go-github-com-olekukonko-ts")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/olekukonko/ts")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0k88n5rvs5k5zalbfa7c71jkjb8dhpk83s425z728qn6aq49c978"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "github.com/olekukonko/ts"
+         #:tests? #f)) ; inappropriate ioctl for device.
+      (home-page "https://github.com/olekukonko/ts/")
+      (synopsis "Simple Go application to get the size of the terminal")
+      (description "This package provides a simple Go application to get the
+size of the terminal.")
+      (license license:expat))))
+
 (define-public go-github-com-yuin-goldmark
   (package
     (name "go-github-com-yuin-goldmark")
