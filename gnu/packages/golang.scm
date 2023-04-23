@@ -12894,6 +12894,31 @@ reflect.DeepEqual but returns a list of differences.  This is helpful
 when comparing complex types like structures and maps.")
     (license license:expat)))
 
+(define-public go-github-com-xeipuuv-gojsonpointer
+  (let ((commit "4e3ac2762d5f479393488629ee9370b50873b3a6")
+        (revision "0"))
+    (package
+      (name "go-github-com-xeipuuv-gojsonpointer")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/xeipuuv/gojsonpointer")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "13y6iq2nzf9z4ls66bfgnnamj2m3438absmbpqry64bpwjfbsi9q"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/xeipuuv/gojsonpointer"))
+      (home-page "https://github.com/xeipuuv/gojsonpointer")
+      (synopsis "Implementation of JSON Pointer for Go")
+      (description
+       "This package provides an implementation of JSON Pointer for the Go
+programming language.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-niemeyer-pretty
   (package
     (name "go-github-com-niemeyer-pretty")
