@@ -5,7 +5,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -696,6 +696,12 @@ and REV-END, two git revision strings."
          (rev-start (string-append rev-end "^")))
     (list rev-start rev-end)))
 
+(define (patch->teams patch-file)
+  "Return the name of the teams in scope for the changes in PATCH-FILE."
+  (map (compose symbol->string team-id)
+       (find-team-by-scope (apply diff-revisions
+                                  (git-patch->revisions patch-file)))))
+
 
 (define (main . args)
   (match args
@@ -708,11 +714,13 @@ and REV-END, two git revision strings."
     (("cc-members" rev-start rev-end)
      (apply cc (find-team-by-scope
                 (diff-revisions rev-start rev-end))))
+    (("cc-members-header-cmd" patch-file)
+     (for-each (lambda (team-name)
+                 (list-members (find-team team-name) (current-output-port)
+                               "X-Debbugs-Cc: "))
+               (patch->teams patch-file)))
     (("get-maintainer" patch-file)
-     (apply main "list-members"
-            (map (compose symbol->string team-id)
-                 (find-team-by-scope (apply diff-revisions
-                                            (git-patch->revisions patch-file))))))
+     (apply main "list-members" (patch->teams patch-file)))
     (("list-teams" . args)
      (list-teams))
     (("list-members" . team-names)
@@ -729,6 +737,8 @@ Commands:
       get git send-email flags for cc-ing <team-name>
   cc-members <start> <end> | patch
       cc teams related to files changed between revisions or in a patch file
+  cc-members-header-cmd <patch>
+      cc-members variant for use with 'git send-email --header-cmd'
   list-teams
       list teams and their members
   list-members <team-name>
