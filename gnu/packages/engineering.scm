@@ -272,6 +272,7 @@ plans and designs.")
                                pcb "/share/pcb/newlib")))))
     (inputs
      (list gamin
+           gdk-pixbuf
            glib
            gtk+-2
            guile-2.0
