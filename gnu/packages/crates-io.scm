@@ -57750,6 +57750,33 @@ crate.")
 functions.")
     (license license:expat)))
 
+(define-public rust-slotmap-1
+  (package
+    (name "rust-slotmap")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "slotmap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0hhkvsc3x79c7fh97b3padjhssd19hzdyyiv291mr3qf3lk8xq71"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs
+       (("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/orlp/slotmap")
+    (synopsis "Slotmap data structure")
+    (description "Slotmap data structure")
+    (license license:zlib)))
+
 (define-public rust-slug-0.1
   (package
     (name "rust-slug")
