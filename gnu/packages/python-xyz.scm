@@ -16816,6 +16816,29 @@ is made as zipfile like as possible.")
 syntax highlighting, markdown and more to the terminal.")
     (license license:expat)))
 
+(define-public python-rich-click
+  (package
+    (name "python-rich-click")
+    (version "1.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rich-click" version))
+              (sha256
+               (base32
+                "0zkp2sn0vz1hhjbv9bf8fifyzi8ib2d7v7sfak8n3qn67rlrdzzq"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-click python-importlib-metadata python-rich))
+    (native-inputs (list python-pre-commit))
+    (home-page "https://github.com/ewels/rich-click")
+    (synopsis "Format click help output nicely with rich")
+    (description "Click is a \"Python package for creating beautiful command
+line interfaces\".  Rich is a \"Python library for rich text and beautiful
+formatting in the terminal\".  The intention of rich-click is to provide
+attractive help output from click, formatted with rich, with minimal
+customization required.")
+    (license license:expat)))
+
 (define-public python-textual
   (package
     (name "python-textual")
