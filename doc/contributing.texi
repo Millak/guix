@@ -130,7 +130,7 @@ more information.
 Then, run:
 
 @example
-./configure --localstatedir=/var
+./configure --localstatedir=/var --sysconfdir=/etc
 @end example
 
 @noindent
