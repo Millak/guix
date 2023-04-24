@@ -6032,7 +6032,10 @@ experiments.")
                           (when (file-exists? generated-file)
                             (delete-file generated-file))))
                       (find-files "." "\\.pyx$"))
-            (delete-file "MACS2/IO/CallPeakUnitPrecompiled.c")))))
+            (delete-file "MACS2/IO/CallPeakUnitPrecompiled.c")
+            ;; Python 3.10 is in fact more recent than 3.6.
+            (substitute* "setup.py"
+              (("float\\(sys.version\\[:3\\]\\)<3.6") "False"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
