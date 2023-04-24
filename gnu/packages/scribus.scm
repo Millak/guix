@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
@@ -57,12 +57,19 @@
        (uri (string-append "mirror://sourceforge/scribus/scribus-devel/"
                            version "/scribus-" version ".tar.xz"))
        (sha256
-        (base32 "0x3bw58v920akca8jxvsfwf468pzjyglk93ay67ph1bdry7nx0a7"))))
+        (base32 "0x3bw58v920akca8jxvsfwf468pzjyglk93ay67ph1bdry7nx0a7"))
+       (patches
+        (search-patches "scribus-1.5.8-poppler-22.2.0-1.patch"
+                        "scribus-1.5.8-poppler-22.2.0-2.patch"
+                        "scribus-1.5.8-poppler-22.03.0.patch"
+                        "scribus-1.5.8-poppler-22.04.0.patch"
+                        "scribus-1.5.8-poppler-22.09.0.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test target
        #:configure-flags
-       '("-DWANT_GRAPHICSMAGICK=1")))
+       '("-DWANT_GRAPHICSMAGICK=1"
+         "-DWANT_CPP17=ON")))
     (inputs
      (list boost
            cairo

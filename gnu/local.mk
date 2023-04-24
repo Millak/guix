@@ -1679,6 +1679,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-telingo-fix-comparison.patch	\
   %D%/packages/patches/python-typeguard-python3.10.patch	\
   %D%/packages/patches/python-w3lib-fix-test-failure.patch	\
+  %D%/packages/patches/scribus-1.5.8-poppler-22.03.0.patch	\
+  %D%/packages/patches/scribus-1.5.8-poppler-22.04.0.patch	\
+  %D%/packages/patches/scribus-1.5.8-poppler-22.09.0.patch	\
+  %D%/packages/patches/scribus-1.5.8-poppler-22.2.0-1.patch	\
+  %D%/packages/patches/scribus-1.5.8-poppler-22.2.0-2.patch	\
   %D%/packages/patches/sdcc-disable-non-free-code.patch		\
   %D%/packages/patches/sdl-pango-api_additions.patch		\
   %D%/packages/patches/sdl-pango-blit_overflow.patch		\
