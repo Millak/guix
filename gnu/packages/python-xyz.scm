@@ -20807,19 +20807,19 @@ while only declaring the test-specific fields.")
 (define-public python-sure
   (package
     (name "python-sure")
-    (version "1.4.11")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sure" version))
        (sha256
         (base32
-         "1and0drq8w9iplsic22n2h7hkpyq03a1mbqk4sgcdqhqzdqm539w"))))
+         "1jmrskj399idw1czx6dvy2zfaijnwi02b55vx979ixp7q2mnzz68"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-mock python-six))
     (native-inputs
-     (list python-nose))
+     (list python-nose python-rednose))
     (home-page "https://github.com/gabrielfalcao/sure")
     (synopsis "Automated testing library in python for python")
     (description
