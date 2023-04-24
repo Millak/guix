@@ -30789,17 +30789,17 @@ strings and byte slices for sets of ASCII characters or bytes.")
         (base32 "1sq6d6c9vi44gkr566w2f1d4n6mmrjx8gjdwgnhkgcsg051j391j"))))
     (arguments `(#:skip-build? #t))))
 
-(define-public rust-jni-0.18
+(define-public rust-jni-0.19
   (package
     (name "rust-jni")
-    (version "0.18.0")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "jni" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1brglk3kfia9wkr6rkm6p297b8qk6rv3k8rf6jjiqc74l49735i4"))))
+        (base32 "1v0pn0i1wb8zp4wns4l8hz9689hqsplv7iba7hylaznvwg11ipy6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -30819,6 +30819,29 @@ implements native Java methods for JVM and Android in Rust, call Java
 code from Rust, embed JVM in Rust applications and use any Java
 libraries.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-jni-0.18
+  (package
+    (inherit rust-jni-0.19)
+    (name "rust-jni")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jni" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1brglk3kfia9wkr6rkm6p297b8qk6rv3k8rf6jjiqc74l49735i4"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cesu8" ,rust-cesu8-1)
+        ("rust-combine" ,rust-combine-4)
+        ("rust-jni-sys" ,rust-jni-sys-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1))))))
 
 (define-public rust-jni-0.14
   (package
