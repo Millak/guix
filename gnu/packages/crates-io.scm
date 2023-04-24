@@ -70027,7 +70027,7 @@ write operations.")
 (define-public rust-vcpkg-0.2
   (package
     (name "rust-vcpkg")
-    (version "0.2.11")
+    (version "0.2.15")
     (source
       (origin
         (method url-fetch)
@@ -70035,7 +70035,7 @@ write operations.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1yvrd2b97j4hv5bfhcj3al0dpkbzkdsr6dclxqz3zqm50rhwl2xh"))))
+          "09i4nf5y8lig6xgj3f7fyrvzd3nlaw4znrihw8psidvv5yk4xkdc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests want mysql, harfbuzz, graphite2.
