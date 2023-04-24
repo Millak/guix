@@ -1322,13 +1322,13 @@ It is compatible with @code{scikit-learn}.")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.6")
+    (version "0.5.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "0p3jsdcprjfzz7qf5674dsqfpvdn6p4wgqikg7b6ki5abf433yv1"))))
+        (base32 "1bc8aa6jfw28y6sb0nvfdrfgh66a42bqb4znvpimzx9yq21wcpax"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
