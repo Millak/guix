@@ -975,16 +975,17 @@ language.")
                     (("2\\.2") "3.0 2.2")))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-libfive-guile-location
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "inspekt3d/library.scm"
-                 (("\"libfive-guile")
-                  (string-append "\""
-                                 (assoc-ref inputs "libfive")
-                                 "/lib/libfive-guile")))
-               #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-libfive-guile-location
+              (lambda _
+                (substitute* "inspekt3d/library.scm"
+                  (("\\(load-extension \"libfive-guile\" \"scm_init_libfive_modules\"\\)") "#t")
+                  (("\"libfive-guile")
+                   (string-append "\""
+                                  #$(this-package-input "libfive")
+                                  "/lib/libfive-stdlib"))))))))
       (native-inputs
        (list autoconf automake pkg-config))
       (inputs
