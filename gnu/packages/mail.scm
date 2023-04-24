@@ -4123,7 +4123,8 @@ It is a replacement for the @command{urlview} program.")
                     `("GUILE_LOAD_COMPILED_PATH" ":" prefix
                       (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
       (inputs
-       (list guile-email
+       (list bash-minimal
+             guile-email
              guile-fibers
              guile-gcrypt
              guile-json-4
