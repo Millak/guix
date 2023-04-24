@@ -4085,7 +4085,7 @@ It is a replacement for the @command{urlview} program.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.elephly.net/software/mumi.git")
+                      (url "https://git.savannah.gnu.org/git/guix/mumi.git/")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
@@ -4145,7 +4145,7 @@ It is a replacement for the @command{urlview} program.")
                (sha256
                 (base32
                  "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
-      (home-page "https://git.elephly.net/software/mumi.git")
+      (home-page "https://git.savannah.gnu.org/cgit/guix/mumi.git/")
       (synopsis "Debbugs web interface")
       (description "Mumi is a Debbugs web interface.")
       (license license:agpl3+))))
