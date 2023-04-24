@@ -13628,8 +13628,36 @@ similar to the nom parser combinators library.")
 the standard library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-copypasta-0.8
+  (package
+    (name "rust-copypasta")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "copypasta" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0wmidz38581b1xzpzf466pdaw3xam7nlsn0klndfr973brkwhgqk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clipboard-win" ,rust-clipboard-win-3)
+        ("rust-objc" ,rust-objc-0.2)
+        ("rust-objc-foundation" ,rust-objc-foundation-0.1)
+        ("rust-objc-id" ,rust-objc-id-0.1)
+        ("rust-smithay-clipboard" ,rust-smithay-clipboard-0.6)
+        ("rust-x11-clipboard" ,rust-x11-clipboard-0.7))))
+    (home-page "https://github.com/alacritty/copypasta")
+    (synopsis "Get and set the contents of the OS-level clipboard")
+    (description
+     "Copypasta is a cross-platform library for getting and setting the
+contents of the OS-level clipboard.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-copypasta-0.7
   (package
+    (inherit rust-copypasta-0.8)
     (name "rust-copypasta")
     (version "0.7.1")
     (source
@@ -13639,7 +13667,6 @@ the standard library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "02zz6yndszmzr5yjhn11g1hsj0232jbzl8gch6mxksw3xngxf8s4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -13648,13 +13675,7 @@ the standard library.")
         ("rust-objc-foundation" ,rust-objc-foundation-0.1)
         ("rust-objc-id" ,rust-objc-id-0.1)
         ("rust-smithay-clipboard" ,rust-smithay-clipboard-0.6)
-        ("rust-x11-clipboard" ,rust-x11-clipboard-0.5))))
-    (home-page "https://github.com/alacritty/copypasta")
-    (synopsis "Get and set the contents of the OS-level clipboard")
-    (description
-     "Copypasta is a cross-platform library for getting and setting the
-contents of the OS-level clipboard.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-x11-clipboard" ,rust-x11-clipboard-0.5))))))
 
 (define-public rust-cordic-0.1
   (package
