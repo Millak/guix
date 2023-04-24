@@ -26828,14 +26828,14 @@ library.")
 (define-public python-boltons
   (package
     (name "python-boltons")
-    (version "20.0.0")
+    (version "23.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "boltons" version))
        (sha256
         (base32
-         "0lrr40qqj3ch8xarvyzbnbjs79pz5aywklllq53l347h1b8xnkg4"))))
+         "1c5lpqi74i55li0wvpyxnircj40na797x7447k53an2j54cafl4c"))))
     (build-system python-build-system)
     (home-page "https://github.com/mahmoud/boltons")
     (synopsis "Extensions to the Python standard library")
