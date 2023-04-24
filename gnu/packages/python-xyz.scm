@@ -26019,14 +26019,14 @@ also be usable with other GSSAPI mechanisms.")
 (define-public python-check-manifest
   (package
     (name "python-check-manifest")
-    (version "0.48")
+    (version "0.49")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "check-manifest" version))
         (sha256
          (base32
-          "0my6ammldi8mddrbq798qxbl90qr8nlk7gzliq3v7gp7mlfmymrv"))))
+          "05plc1835zz1w1k7wpf2n6jir71ds1w7nz3535lj5ks2am2419k4"))))
     (build-system pyproject-build-system)
     (arguments
      '(;; This test requires setting up a venv which does not work
@@ -26045,7 +26045,7 @@ also be usable with other GSSAPI mechanisms.")
     (native-inputs
      (list git-minimal/pinned python-pytest))
     (propagated-inputs
-     (list python-pypa-build python-setuptools python-tomli))
+     (list python-pypa-build python-setuptools))
     (home-page "https://github.com/mgedmin/check-manifest")
     (synopsis "Check MANIFEST.in in a Python source package for completeness")
     (description "Python package can include a MANIFEST.in file to help with
