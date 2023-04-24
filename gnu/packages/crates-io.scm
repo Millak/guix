@@ -19985,7 +19985,7 @@ and authentication, easy email builders, and async support.")
 (define-public rust-embed-resource-1
   (package
     (name "rust-embed-resource")
-    (version "1.6.2")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
@@ -19993,12 +19993,15 @@ and authentication, easy email builders, and async support.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0w6l2zh82sx8rqjpr2a0y56m6hjb6zrqbp3l8b984a96y7mnvsnh"))))
+        (base32 "0piayd947h4dswbpwqs02zq42y4kfzxcl52wmr7pbr07dj3vnap6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-vswhom" ,rust-vswhom-0.1)
-        ("rust-winreg" ,rust-winreg-0.8))))
+       (("rust-cc" ,rust-cc-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-vswhom" ,rust-vswhom-0.1)
+        ("rust-winreg" ,rust-winreg-0.10))))
     (home-page "https://github.com/nabijaczleweli/rust-embed-resource")
     (synopsis
      "Cargo library to handle compilation and inclusion of Windows resources")
