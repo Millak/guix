@@ -133,18 +133,17 @@ rasterizing OpenType font glyphs.")
 (define-public rust-ab-glyph-rasterizer-0.1
   (package
     (name "rust-ab-glyph-rasterizer")
-    (version "0.1.4")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ab_glyph_rasterizer" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zzz78231w849xslz9s0pwjj6gp02wfbbxdpysqhwwq1vqr5xznr"))))
+        (base32 "0ikhgzig59q8b1a1iw83sxfnvylg5gx6w2y8ynbnf231xs9if6y7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libm" ,rust-libm-0.2))))
     (home-page "https://github.com/alexheretic/ab-glyph")
     (synopsis "Coverage rasterization for lines, quadratic & cubic beziers")
