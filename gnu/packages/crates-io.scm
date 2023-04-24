@@ -54769,7 +54769,7 @@ fragment of code.")
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.158")
+    (version "1.0.160")
     (source
      (origin
        (method url-fetch)
@@ -54777,7 +54777,7 @@ fragment of code.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1jfr4na9isxr3g5h61dyx15z9r35sc6p2b710n417vk386f4s7bp"))))
+         "0v11q6pjdjivw24cv98zv9dkdx50d6h9748lgvdbrqxwr1q3fbxv"))))
     (build-system cargo-build-system)
     (arguments
      ;; XXX: three test failures, e.g.:
