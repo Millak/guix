@@ -4095,6 +4095,24 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
      "Jsonschema is an implementation of JSON Schema for Python.")
     (license license:expat)))
 
+(define-public python-jsonschema-3
+  (package
+    (inherit python-jsonschema)
+    (version "3.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jsonschema" version))
+              (sha256
+               (base32
+                "0ykr61yiiizgvm3bzipa3l73rvj49wmrybbfwhvpgk3pscl5pa68"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-jsonschema)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'pretend-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))))
+
 (define-public python-schema
   (package
     (name "python-schema")
