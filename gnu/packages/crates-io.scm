@@ -55786,11 +55786,15 @@ functionality and without weak references.")
         (base32 "125k4hydb4w08568rgazh95n6haxhf5c78axz50glbc9p6fqfsz3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-build-flags '("--features" "force_system_lib")
        #:cargo-inputs
        (("rust-expat-sys" ,rust-expat-sys-2)
         ("rust-freetype-sys" ,rust-freetype-sys-0.13)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list expat fontconfig))
+    (native-inputs
+     (list pkg-config))
     (home-page "https://crates.io/crates/servo-fontconfig-sys")
     (synopsis "Rust wrapper around Fontconfig")
     (description
