@@ -226,15 +226,12 @@ Python interface around SSH networking concepts.")
                       "pytest"
                       "-vv"
                       "-k"
-                      "not test_multithreading_with_interrupts"
-                      ;; The following test fails and will be fixed in the
-                      ;; next release after v0.18.  See
-                      ;; <https://github.com/tlsfuzzer/python-ecdsa/issues/307>.
-                      "-k"
-                      "not test_add_different_scale_points"
-                      ;; The following test needs a KeyboardInterrupt to occur.
-                      "-k"
-                      "not test_multithreading_with_interrupts"))))))
+                      (string-append
+                       "not test_multithreading_with_interrupts "
+                       ;; The following test fails and will be fixed in the
+                       ;; next release after v0.18.  See
+                       ;; <https://github.com/tlsfuzzer/python-ecdsa/issues/307>.
+                       "and not test_add_different_scale_points")))))))
     (propagated-inputs
      (list python-six))
     (native-inputs
