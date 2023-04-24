@@ -9585,6 +9585,26 @@ exposed as Reader/Writer streams.")
 NULL-terminated C linked lists.")
     (license (list license:expat license:bsd-3))))
 
+(define-public rust-c-vec-2
+  (package
+    (name "rust-c-vec")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "c-vec" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1s765fviy10q27b0wmkyk4q728z9v8v5pdlxv5k564y0mlks9mzx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/GuillaumeGomez/c_vec-rs.git")
+    (synopsis "Structures to wrap C arrays")
+    (description "This package procides structures to wrap C arrays in Rust.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-c2-chacha-0.2
   (package
     (name "rust-c2-chacha")
