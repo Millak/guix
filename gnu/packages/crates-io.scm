@@ -68871,8 +68871,28 @@ to Unicode Standard Annex #31.")
         (base32
          "1p5l9h3n3i53cp95fb65p8q3vbwib79ryd9z5z5h5kr9gl6qc7wc"))))))
 
+(define-public rust-unindent-0.2
+  (package
+    (name "rust-unindent")
+    (version "0.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "unindent" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0kw1yivkklw1f5mpcwakxznwzn6br2g3yvbwg7yfvxqzlmg0z8ss"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/dtolnay/indoc")
+    (synopsis "Remove a column of leading whitespace from a string")
+    (description "This crate allows you to remove a column of leading
+whitespace from a string.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-unindent-0.1
   (package
+    (inherit rust-unindent-0.2)
     (name "rust-unindent")
     (version "0.1.7")
     (source
@@ -68881,14 +68901,7 @@ to Unicode Standard Annex #31.")
         (uri (crate-uri "unindent" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1is1gmx1l89z426rn3xsi0mii4vhy2imhqmhx8x2pd8mji6y0kpi"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/dtolnay/indoc")
-    (synopsis "Remove a column of leading whitespace from a string")
-    (description "This crate allows you to remove a column of leading
-whitespace from a string.")
-    (license (list license:asl2.0
-                   license:expat))))
+         (base32 "1is1gmx1l89z426rn3xsi0mii4vhy2imhqmhx8x2pd8mji6y0kpi"))))))
 
 (define-public rust-uniquote-3
   (package
