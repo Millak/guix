@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
@@ -508,6 +508,34 @@ a simple interface that makes it easy to organize and browse feeds.")
      "Tuir provides a simple terminal viewer for Reddit (Terminal UI for Reddit).")
     (license (list license:expat
                    license:gpl3+))))    ; tuir/packages/praw
+
+(define-public morss
+  (package
+    (name "morss")
+    (version "20221213.2216")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "morss" version))
+              (sha256
+               (base32
+                "1mvxxhzmraxjnw0vz60zkl4d8xp7lw0fs0z537zfhmj1lj9ap4cp"))))
+    (build-system python-build-system)
+    (arguments
+     ;; Tests are not available in the PyPI release and the Git release
+     ;; is lagging behind.  Additionally, tests use the network.
+     (list #:tests? #f
+           ;; Sanity check fails to find the module 'bs4', but it's available
+           ;; in the python-beautifulsoup4 dependency.
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'sanity-check))))
+    (propagated-inputs (list python-beautifulsoup4 python-chardet
+                             python-dateutil python-lxml))
+    (home-page "https://morss.it/")
+    (synopsis "Get full-text RSS feeds")
+    (description "Morss' goal is to get full-text RSS feeds out of striped
+RSS feeds, commonly available on the internet.  It also makes it possible
+to create RSS feeds for websites that don't provide any.")
+    (license license:agpl3+)))
 
 (define-public syndication-domination
   (let ((revision "1")
