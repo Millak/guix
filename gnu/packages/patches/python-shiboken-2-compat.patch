@@ -1,16 +1,15 @@
-Provide a declaration that's missing in Python 3.10.
+Backport a fix from 5.15.9, mentioned in [1].
 
---- pyside-setup-opensource-src-5.15.8/sources/shiboken2/libshiboken/sbkpython.h	2023-04-19 23:14:11.415337435 +0200
-+++ pyside-setup-opensource-src-5.15.8/sources/shiboken2/libshiboken/sbkpython.h	2023-04-19 23:18:09.055605606 +0200
-@@ -108,6 +108,11 @@ extern "C" {
- #if PY_MAJOR_VERSION >= 3
-     #define IS_PY3K
- 
-+extern "C" {
-+  /* In Python 3.10 this declaration is not provided by <Python.h>.  */
-+  extern PyObject* _Py_Mangle(PyObject *p, PyObject *name);
-+}
-+
-     #define PyInt_Type PyLong_Type
-     #define PyInt_Check PyLong_Check
-     #define PyInt_CheckExact PyLong_CheckExact
+[1] https://bugreports.qt.io/browse/PYSIDE-2176
+
+--- pyside-setup-opensource-src-5.15.8/sources/shiboken2/libshiboken/pep384impl.cpp	2023-04-24 11:05:48.770934499 +0200
++++ pyside-setup-opensource-src-5.15.8/sources/shiboken2/libshiboken/pep384impl.cpp	2023-04-24 11:04:51.566943936 +0200
+@@ -751,7 +751,7 @@
+ #endif // IS_PY2
+     Shiboken::AutoDecRef privateobj(PyObject_GetAttr(
+         reinterpret_cast<PyObject *>(Py_TYPE(self)), Shiboken::PyMagicName::name()));
+-#ifndef Py_LIMITED_API
++#ifdef IS_PY2
+     return _Py_Mangle(privateobj, name);
+ #else
+     // PYSIDE-1436: _Py_Mangle is no longer exposed; implement it always.
