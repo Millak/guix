@@ -55253,14 +55253,14 @@ data.  This crate provides a wrapper that works with any existing Serde
 (define-public rust-serde-json-1
   (package
     (name "rust-serde-json")
-    (version "1.0.91")
+    (version "1.0.96")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde-json" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10v8vb4959ayycw1zmqvxxi758djqkskchj6qal0fjbi6daj6z47"))))
+        (base32 "1waj3qwpa610vmksnzcmkll6vaw7nf7v3ckj4v0wlfs0a153jz85"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -55270,7 +55270,7 @@ data.  This crate provides a wrapper that works with any existing Serde
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-automod" ,rust-automod-1)
-        ("rust-indoc" ,rust-indoc-1)
+        ("rust-indoc" ,rust-indoc-2)
         ("rust-ref-cast" ,rust-ref-cast-1)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
