@@ -12020,7 +12020,7 @@ The following file formats are supported:
 (define-public salmon
   (package
     (name "salmon")
-    (version "1.9.0")
+    (version "1.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12029,7 +12029,7 @@ The following file formats are supported:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1370ry3jpj05gplzyny44mqg77a29a6gp8ijmjz135d2igf956r8"))
+                "0grpcajxf2bch4b74zb66pdssda8yc7jvxj5ckaw0xvw1605rpcj"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled headers for eigen3.
@@ -12124,9 +12124,10 @@ The following file formats are supported:
     (inputs
      (list boost
            bzip2
-           cereal-1.3.0
+           cereal
            curl
            eigen
+           htscodecs
            jemalloc
            libgff
            tbb
@@ -12143,7 +12144,7 @@ The following file formats are supported:
                         (file-name (git-file-name "pufferfish" version))
                         (sha256
                          (base32
-                          "048a006mc2d0h78ym58mv67hl1pj480ilc5ifq0rlzfdyyfs1b8i"))))))
+                          "0fcv5rd2k4fabsg489sjfxgjisivhwk1w26gfc88rgpszdkcla36"))))))
     (home-page "https://github.com/COMBINE-lab/salmon")
     (synopsis "Quantification from RNA-seq reads using lightweight alignments")
     (description "Salmon is a program to produce highly-accurate,
