@@ -59860,6 +59860,25 @@ this library enables this optimization for divisors that are only known at
 runtime.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-strict-num-0.1
+  (package
+    (name "rust-strict-num")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "strict-num" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1l9b7d0qrdg3nvqim1xvkcis37jmdf565qyxxx2x5vlad4h5zxlx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-float-cmp" ,rust-float-cmp-0.9))))
+    (home-page "https://github.com/RazrFalcon/strict-num")
+    (synopsis "Collection of bounded numeric types")
+    (description "This package provides a collection of bounded numeric types.")
+    (license license:expat)))
+
 (define-public rust-string-0.2
   (package
     (name "rust-string")
