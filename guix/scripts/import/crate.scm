@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,15 +91,16 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
        (define-values (name version)
          (package-name->name+version spec))
 
-       (if (assoc-ref opts 'recursive)
-           (crate-recursive-import name #:version version)
-           (let ((sexp (crate->guix-package name #:version version #:include-dev-deps? #t)))
-             (unless sexp
-               (leave (G_ "failed to download meta-data for package '~a'~%")
-                      (if version
-                          (string-append name "@" version)
-                          name)))
-             (list sexp))))
+       (match (if (assoc-ref opts 'recursive)
+                  (crate-recursive-import name #:version version)
+                  (crate->guix-package name #:version version #:include-dev-deps? #t))
+         ((or #f '())
+          (leave (G_ "failed to download meta-data for package '~a'~%")
+                 (if version
+                     (string-append name "@" version)
+                     name)))
+         ((? list? sexps) sexps)
+         (sexp (list sexp))))
       (()
        (leave (G_ "too few arguments~%")))
       ((many ...)
