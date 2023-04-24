@@ -891,8 +891,8 @@ fonts to gEDA.")
       (license license:gpl2+))))
 
 (define-public libfive
-  (let ((commit "8ca1b8685ef3fac7b64e66b10459b8421a3020c6")
-        (revision "4"))
+  (let ((commit "b1ea998d8adb3884ab52798f7388f4354145f452")
+        (revision "5"))
     (package
       (name "libfive")
       (version (git-version "0" revision commit))
@@ -903,17 +903,38 @@ fonts to gEDA.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1c762cd70iv2b9av0l9lq0py9138y98wk3dirhdmil7jncdhvq98"))
+                  "0j91qq9d7949d2zs5wxyqd0ly644nb5690s8xnr6pchjl9z6pqxv"))
                 (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
-       `(#:test-target "libfive-test"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'remove-native-compilation
-             (lambda _
-               (substitute* "CMakeLists.txt" (("-march=native") ""))
-               #t)))))
+       (list
+        #:test-target "libfive-test"
+        #:configure-flags
+        #~(list (string-append "-DGUILE_CCACHE_DIR="
+                               #$output "/lib/guile/3.0/site-ccache"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-autocompilation
+              (lambda _ (setenv "HOME" "/tmp")))
+            (add-after 'unpack 'remove-native-compilation
+              (lambda _
+                (substitute* "CMakeLists.txt" (("-march=native") ""))))
+            (add-after 'unpack 'fix-library-location
+              (lambda _
+                (substitute* "libfive/bind/guile/libfive/lib.scm"
+                  (("\\(get-environment-variable \"LIBFIVE_FRAMEWORK_DIR\"\\)" m)
+                   (string-append m "\n\"" #$output "/lib/\""))
+                  (("\\(get-environment-variable \"LIBFIVE_STDLIB_DIR\"\\)" m)
+                   (string-append m "\n\"" #$output "/lib/\"")))))
+            (add-after 'install 'install-scm-files
+              (lambda _
+                (for-each
+                 (lambda (file)
+                   (install-file file
+                                 (string-append #$output
+                                                "/share/guile/site/3.0/libfive")))
+                 (find-files "../source/libfive/bind/guile/libfive"
+                             "\\.scm$")))))))
       (native-inputs
        (list pkg-config))
       (inputs
