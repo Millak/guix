@@ -4183,6 +4183,13 @@ practically any type of media.")
          (add-after 'unpack 'change-to-build-dir
            (lambda _
              (chdir "Project/GNU/Library")
+             ;; XXX Add a shebang to the script to avoid an error like:
+             ;; "In execvp of ./autogen.sh: Exec format error"
+             ;; The string replaced is just a code comment.
+             ;; See the similar substitution made in mediainfo.
+             (substitute* "autogen.sh"
+               (("#libtoolize")
+                "#!/bin/sh"))
              #t)))))
     (home-page "https://mediaarea.net/en/MediaInfo")
     (synopsis "Library for retrieving media metadata")
@@ -4238,6 +4245,13 @@ MPEG-2, MPEG-4, DVD (VOB)...
          (add-after 'unpack 'change-to-build-dir
            (lambda _
              (chdir "Project/GNU/CLI")
+             ;; XXX Add a shebang to the script to avoid an error like:
+             ;; "In execvp of ./autogen.sh: Exec format error"
+             ;; The string replaced is just a code comment.
+             ;; See the similar substitution made in libmediainfo.
+             (substitute* "autogen.sh"
+               (("#libtoolize")
+                "#!/bin/sh"))
              #t)))))
     (home-page "https://mediaarea.net/en/MediaInfo")
     (synopsis "Utility for reading media metadata")
