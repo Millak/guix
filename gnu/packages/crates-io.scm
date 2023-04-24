@@ -2878,6 +2878,23 @@ it outputs messages to Android's logcat.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4))))))
 
+(define-public rust-android-properties-0.2
+  (package
+    (name "rust-android-properties")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "android-properties" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "016slvg269c0y120p9qd8vdfqa2jbw4j0g18gfw6p3ain44v4zpw"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/miklelappo/android-properties")
+    (synopsis "Rust-based Android properties wrapper")
+    (description
+     "This package provides a Rust-based Android properties wrapper.")
+    (license license:expat)))
+
 (define-public rust-android-system-properties-0.1
   (package
     (name "rust-android-system-properties")
