@@ -253,23 +253,28 @@ against the last run.")
   (sbcl-package->ecl-package sbcl-checkl))
 
 (define-public sbcl-cl-mock
-  ;; .asd version only got updated recently, despired the old GitHug "1.0.1" release.
-  (let ((commit "7988dca2093358911b67597a2cd1570c785dfe76"))
+  (let ((commit "01762fda96718fefd3745ce4a20a4013a865b109")
+        (revision "0"))
     (package
       (name "sbcl-cl-mock")
-      (version (git-version "1.0.1" "1" commit))
+      (version (git-version "1.1.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Ferada/cl-mock/")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-mock" version))
          (sha256
-          (base32 "0f40wikcf783jx26ip0nnhwjjfjvjiw7njqsqrb6kaphc8bgw0i1"))))
+          (base32 "19641sm3klx9yfk8lr376rfkd26vy72yp1hkpkqcw3q3m1xrf9xp"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("cl-mock" "cl-mock-basic")))
       (inputs
-       (list sbcl-alexandria sbcl-closer-mop sbcl-trivia))
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-closer-mop
+             sbcl-trivia))
       (native-inputs
        (list sbcl-fiveam))
       (home-page "https://github.com/Ferada/cl-mock")
