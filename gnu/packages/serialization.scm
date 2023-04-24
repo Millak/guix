@@ -161,7 +161,7 @@ implement RPC protocols.")
                 (mkdir-p doc)
                 (copy-recursively "doc/html" doc)))))))
     (native-inputs
-     (list doxygen))
+     (list doxygen gcc-10))
     (home-page "https://uscilab.github.io/cereal/")
     (synopsis "C++11 library for serialization")
     (description
