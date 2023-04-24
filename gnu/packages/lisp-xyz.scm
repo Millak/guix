@@ -7050,7 +7050,7 @@ mostly Common Lisp implementation.")
 (define-public sbcl-cl-fast-ecs
   (package
     (name "sbcl-cl-fast-ecs")
-    (version "0.1.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -7059,10 +7059,10 @@ mostly Common Lisp implementation.")
              (commit version)))
        (file-name (git-file-name "cl-fast-ecs" version))
        (sha256
-        (base32 "06cnhm8zpyqyjr17mji5wvj4gh2glpdw8gqy1vwrq3vgphfmg560"))))
+        (base32 "00nw5nwzcz8x1x1lycmjik8pcqzxrl896j0xjjl33rjljsmj45sx"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
-     (list sbcl-parachute))
+     (list sbcl-chlorophyll sbcl-cl-mock sbcl-parachute))
     (inputs
      (list sbcl-alexandria sbcl-trivial-garbage))
     (home-page "https://lockie.gitlab.io/cl-fast-ecs/")
