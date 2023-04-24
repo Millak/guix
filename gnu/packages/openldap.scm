@@ -113,20 +113,23 @@
     (license openldap2.8)
     (home-page "https://www.openldap.org/")))
 
+;; This is an incompatible fork of openldap that adds types needed for
+;; liblinphone.
 (define-public openldap-for-linphone
-  (package
-    (inherit openldap)
-    (name "openldap")
-    (version "2.6.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.linphone.org/BC/public/external/openldap/")
-                    (commit "8a885896a3fb88098d970ab96316c0b7f18367b8")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yd3cnngr5z3nymnml8fynspxgdzap7y7glp601nbkdj67wyg0k8"))))))
+  (hidden-package
+   (package
+     (inherit openldap)
+     (name "openldap")
+     (version "2.6.4")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://gitlab.linphone.org/BC/public/external/openldap/")
+                     (commit "8a885896a3fb88098d970ab96316c0b7f18367b8")))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "1yd3cnngr5z3nymnml8fynspxgdzap7y7glp601nbkdj67wyg0k8")))))))
 
 (define-public nss-pam-ldapd
   (package
