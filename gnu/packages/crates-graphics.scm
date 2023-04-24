@@ -2239,6 +2239,37 @@ implements standard Rust traits to make `RGB`/`RGBA` pixels and slices
 first-class Rust objects.")
     (license license:expat)))
 
+(define-public rust-sdl2-sys-0.35
+  (package
+    (name "rust-sdl2-sys")
+    (version "0.35.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sdl2-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1w7ranfpmbvsnviq0y8d1cz9pajp8c4b84lslycq02kcrzi6nn73"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (delete-file-recursively "SDL")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Building requires several SDL2 inputs.
+       #:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.53)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cmake" ,rust-cmake-0.1)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2)
+        ("rust-version-compare" ,rust-version-compare-0.1))))
+    (home-page "https://github.com/rust-sdl2/rust-sdl2")
+    (synopsis "Raw SDL2 bindings for Rust, used internally rust-sdl2")
+    (description "This package provides raw SDL2 bindings for Rust, used
+internally rust-sdl2.")
+    (license license:expat)))
+
 (define-public rust-smithay-client-toolkit-0.16
   (package
     (name "rust-smithay-client-toolkit")
