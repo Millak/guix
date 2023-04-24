@@ -4779,13 +4779,13 @@ bookmarks using a declarative input in the form of a markdown file.")
 (define-public python-joblib
   (package
     (name "python-joblib")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "joblib" version))
               (sha256
                (base32
-                "0d8ypyhsw1bjr96zan9ms8wbvnzbjqxniq4vcszghcrps7ngqn21"))))
+                "0019p280s2k941mihl67l7y6amwx86639xp3zvpsg1lmyish67rh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
