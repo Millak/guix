@@ -4077,8 +4077,8 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "b2a8280f158957e18d714dea78637f6504dd7613")
-        (revision "1"))
+  (let ((commit "85d5efb4367b9178eb7093e3ebca760745de0753")
+        (revision "2"))
     (package
       (name "mumi")
       (version (git-version "0.0.5" revision commit))
@@ -4090,7 +4090,7 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ygcbrnwvqa4zi93mbry5afw6dr4fbm7pgkn1gbsydp6qjfsm88q"))))
+                  "0yn8dfj3krqwfsdn888vbv903kfa7clmbj2xxin263zqcyzc3alq"))))
       (build-system gnu-build-system)
       (arguments
        (list
