@@ -1279,7 +1279,7 @@ with strong support for multi-part, multi-channel use cases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i9rpvgz15aj1yzbf5a9lqhlyakjs793yrw5gw720l84lcyigad7"))))
+                "0aicxbshzv1g9d8d08vsj1a9klaycxaifvvp565qjv70wyma2vkr"))))
     (build-system cmake-build-system)
     ;; FIXME: To run all tests successfully, test image sets from multiple
     ;; third party sources have to be present.  For details see
