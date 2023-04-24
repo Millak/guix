@@ -9,7 +9,7 @@
 # Copyright © 2020 Daniel Brooks <db48x@db48x.net>
 # Copyright © 2021 Jakub Kądziołka <kuba@kadziolka.net>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
-# Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2022 Prafulla Giri <prafulla.giri@protonmail.com>
 # Copyright © 2023 Andrew Tropin <andrew@trop.in>
 #
@@ -353,10 +353,12 @@ sys_create_store()
 
     _debug "--- [ ${FUNCNAME[0]} ] ---"
 
-    if [[ -z $GUIX_ALLOW_OVERWRITE && (-e /var/guix || -e /gnu) ]]; then
-        die "A previous Guix installation was found.  Refusing to overwrite."
-    else
-        _msg "${WAR}Overwriting existing installation!"
+    if [[ -e /var/guix && -e /gnu ]]; then
+        if [ -n "$GUIX_ALLOW_OVERWRITE" ]; then
+            _msg "${WAR}Overwriting existing installation!"
+        else
+            die "A previous Guix installation was found.  Refusing to overwrite."
+        fi
     fi
 
     cd "$tmp_path"
