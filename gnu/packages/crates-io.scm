@@ -37883,6 +37883,28 @@ The goal is to not provide a 100% unified interface, but to unify what can be
 while still providing platform specific APIs.")
     (license license:expat)))
 
+(define-public rust-nix-0.25
+  (package
+    (inherit rust-nix-0.26)
+    (name "rust-nix")
+    (version "0.25.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nix" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1r4vyp5g1lxzpig31bkrhxdf2bggb4nvk405x5gngzfvwxqgyipk"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.6)
+        ("rust-pin-utils" ,rust-pin-utils-0.1))))))
+
 (define-public rust-nix-0.24
   (package
     (inherit rust-nix-0.26)
