@@ -36,7 +36,7 @@
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
-;;; Copyright © 2022 Artyom Bologov <mail@aartaka.me>
+;;; Copyright © 2022, 2023 Artyom Bologov <mail@aartaka.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25641,7 +25641,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -25651,7 +25651,7 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "0djs16v77ng14d26wpxf5qby2d3l1pfsd2c1qkg4wv6mnk16imnq"))
+         "0g34xm32h0bc0zcyrkr2637jdb8mgb2zymqp6zfjc912sisgcs0l"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -25664,10 +25664,10 @@ desktop files to the right directories.
      (list sbcl-lisp-unit2
            sbcl-nasdf))
     (home-page "https://github.com/atlas-engineer/nclasses")
-    (synopsis "Simplify class and condition definitions.")
+    (synopsis "Simplify class, condition, and generic function definitions.")
     (description
-     "NClasses provides helper macros to help write classes and conditions
-with less boilerplate.
+     "NClasses provides helper macros to help write classes, conditions,
+generic functions, and CLOS code in general with less boilerplate.
 
 It's a fork of @code{hu.dwim.defclass-star}.  It inclues some bug fixes and
 extra features like type inference.")
