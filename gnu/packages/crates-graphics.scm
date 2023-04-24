@@ -1272,8 +1272,30 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (description "This package provides gles2 bindings for glutin.")
     (license license:asl2.0)))
 
+(define-public rust-glutin-glx-sys-0.4
+  (package
+    (name "rust-glutin-glx-sys")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glutin_glx_sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "150l397l64p4r46wshh8zdlwifpcqpm93fm3csh4m5k8wmgwnlqv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-gl-generator" ,rust-gl-generator-0.14)
+        ("rust-x11-dl" ,rust-x11-dl-2))))
+    (home-page "https://github.com/tomaka/glutin")
+    (synopsis "Glx bindings for glutin")
+    (description "This package provides glx bindings for glutin.")
+    (license license:asl2.0)))
+
 (define-public rust-glutin-glx-sys-0.1
   (package
+    (inherit rust-glutin-glx-sys-0.4)
     (name "rust-glutin-glx-sys")
     (version "0.1.7")
     (source
@@ -1283,16 +1305,11 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0l8kk60kq5v6hl1qr6ym2arzvbsgkh71aa8485cp901bq27kqfby"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-gl-generator" ,rust-gl-generator-0.14)
-        ("rust-x11-dl" ,rust-x11-dl-2))))
-    (home-page "https://github.com/tomaka/glutin")
-    (synopsis "Glx bindings for glutin")
-    (description "This package provides glx bindings for glutin.")
-    (license license:asl2.0)))
+        ("rust-x11-dl" ,rust-x11-dl-2))))))
 
 (define-public rust-glutin-wgl-sys-0.4
   (package
