@@ -420,11 +420,18 @@ particular newlines, is left as is."
 
 (define (printed-string str context)
   "Return the read syntax for STR depending on CONTEXT."
+  (define (preserve-newlines? str)
+    (and (> (string-length str) 40)
+         (string-index str #\newline)))
+
   (match context
     (()
-     (object->string str))
+     (if (preserve-newlines? str)
+         (escaped-string str)
+         (object->string str)))
     ((head . _)
-     (if (memq head %natural-whitespace-string-forms)
+     (if (or (memq head %natural-whitespace-string-forms)
+             (preserve-newlines? str))
          (escaped-string str)
          (object->string str)))))
 
