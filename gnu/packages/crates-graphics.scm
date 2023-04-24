@@ -2239,6 +2239,31 @@ implements standard Rust traits to make `RGB`/`RGBA` pixels and slices
 first-class Rust objects.")
     (license license:expat)))
 
+(define-public rust-sdl2-0.35
+  (package
+    (name "rust-sdl2")
+    (version "0.35.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sdl2" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "06ivcavxhc7zyhbfmy2544dz0lnaqf33d9xf0jggpw93nrvr55gp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Building requires several SDL2 inputs.
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-c-vec" ,rust-c-vec-2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
+        ("rust-sdl2-sys" ,rust-sdl2-sys-0.35))))
+    (home-page "https://github.com/Rust-SDL2/rust-sdl2")
+    (synopsis "SDL2 bindings for Rust")
+    (description "This package provides SDL2 bindings for Rust.")
+    (license license:expat)))
+
 (define-public rust-sdl2-sys-0.35
   (package
     (name "rust-sdl2-sys")
