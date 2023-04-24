@@ -14793,28 +14793,16 @@ consistent API regardless of how the configuration was created.")
 (define-public python-configargparse
   (package
     (name "python-configargparse")
-    (version "1.2.3")
+    (version "1.5.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ConfigArgParse" version))
               (sha256
                (base32
-                "1p1pzpf5qpf80bfxsx1mbw9blyhhypjvhl3i60pbmhfmhvlpplgd"))))
-    (build-system python-build-system)
+                "17vky4ihicbf7nggg30xs7h3g5rxzwgch8vilnnrvdaacszkq2qv"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pyyaml))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; Bypass setuptools-shim because one test relies on "setup.py"
-             ;; being the first argument passed to the python call.
-             ;;
-             ;; NOTE: Many tests do not run because they rely on Python's
-             ;; built-in test.test_argparse, but we remove the unit tests from
-             ;; our Python installation.
-             (invoke "python" "setup.py" "test"))))))
+     (list python-mock python-pytest))
     (synopsis "Replacement for argparse")
     (description "A drop-in replacement for argparse that allows options to also
 be set via config files and/or environment variables.")
