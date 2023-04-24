@@ -4077,20 +4077,20 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "b2a8280f158957e18d714dea78637f6504dd7613")
-        (revision "1"))
+  (let ((commit "85d5efb4367b9178eb7093e3ebca760745de0753")
+        (revision "2"))
     (package
       (name "mumi")
       (version (git-version "0.0.5" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.elephly.net/software/mumi.git")
+                      (url "https://git.savannah.gnu.org/git/guix/mumi.git/")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ygcbrnwvqa4zi93mbry5afw6dr4fbm7pgkn1gbsydp6qjfsm88q"))))
+                  "0yn8dfj3krqwfsdn888vbv903kfa7clmbj2xxin263zqcyzc3alq"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -4123,7 +4123,8 @@ It is a replacement for the @command{urlview} program.")
                     `("GUILE_LOAD_COMPILED_PATH" ":" prefix
                       (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
       (inputs
-       (list guile-email
+       (list bash-minimal
+             guile-email
              guile-fibers
              guile-gcrypt
              guile-json-4
@@ -4145,7 +4146,7 @@ It is a replacement for the @command{urlview} program.")
                (sha256
                 (base32
                  "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
-      (home-page "https://git.elephly.net/software/mumi.git")
+      (home-page "https://git.savannah.gnu.org/cgit/guix/mumi.git/")
       (synopsis "Debbugs web interface")
       (description "Mumi is a Debbugs web interface.")
       (license license:agpl3+))))

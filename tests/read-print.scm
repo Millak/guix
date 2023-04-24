@@ -195,6 +195,11 @@ expressions."
 (string-append \"a\\tb\" \"\\n\")")
 
 (test-pretty-print "\
+(display \"This is a very long string.
+It contains line breaks, which are preserved,
+because it's a long string.\")")
+
+(test-pretty-print "\
 (description \"abcdefghijkl
 mnopqrstuvwxyz.\")"
                    #:max-width 30)

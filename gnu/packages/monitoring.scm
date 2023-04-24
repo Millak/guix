@@ -681,7 +681,7 @@ the recorded data over time.")
 (define-public fatrace
   (package
     (name "fatrace")
-    (version "0.16.3")
+    (version "0.17.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -690,7 +690,7 @@ the recorded data over time.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bxz6v1z0icp716jnv3knjyqp8bv6xnkz8gqd8z3g2b6yxj5xff3"))))
+                "067pj0z4np4mmhlin9411zpwwbfmn38ykvmxw35fnidf3kxcq49i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

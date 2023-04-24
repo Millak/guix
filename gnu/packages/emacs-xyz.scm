@@ -25,7 +25,7 @@
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 George Clemmer <myglc2@gmail.com>
 ;;; Copyright © 2017, 2018 Feng Shu <tumashu@163.com>
-;;; Copyright © 2017, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017, 2020, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
@@ -5812,25 +5812,28 @@ saving won't move point back to the beginning of the buffer.")
     (license license:gpl3+)))
 
 (define-public emacs-git-timemachine
-  (package
-    (name "emacs-git-timemachine")
-    (version "4.11")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/pidu/git-timemachine.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1pz4l1xnq6s67w5yq9107vm8dg7rqf8n9dmbn90jys97c722g70n"))))
-    (build-system emacs-build-system)
-    (home-page "https://gitlab.com/pidu/git-timemachine")
-    (synopsis "Step through historic versions of Git-controlled files")
-    (description "This package enables you to step through historic versions
+  (let ((version "4.11")
+        (revision "0")
+        (commit "13769fb603ae88c64566529eae4525ce88026e86"))
+    (package
+      (name "emacs-git-timemachine")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/pidu/git-timemachine.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0d1aj9xhcyksg115xl2yw0rd62hp53ig06y54jvii1l8vavb94jy"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.com/pidu/git-timemachine")
+      (synopsis "Step through historic versions of Git-controlled files")
+      (description "This package enables you to step through historic versions
 of files under Git version control from within Emacs.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-minitest
   (package
