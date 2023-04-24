@@ -1,0 +1,3 @@
+((debbugs-host . "debbugs.gnu.org")
+ (patch-email-address . "guix-patches@gnu.org")
+ (mumi-host . "issues.guix.gnu.org"))

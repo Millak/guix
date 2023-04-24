@@ -159,3 +159,4 @@ tmp
 /gnu/packages/aux-files/guile-guile-launcher.o
 /guile
 .DS_Store
+.mumi/current-issue
