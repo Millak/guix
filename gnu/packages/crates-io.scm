@@ -68053,8 +68053,30 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-toml-edit" ,rust-toml-edit-0.14))))))
 
+(define-public rust-ttf-parser-0.19
+  (package
+    (name "rust-ttf-parser")
+    (version "0.19.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ttf-parser" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0iipdkmj1zyg2gl7rsyigj9c7gmsqllg2v8d80jwscivmq1g1p24"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))   ; Cut the dependency graph.
+    (home-page "https://github.com/RazrFalcon/ttf-parser")
+    (synopsis "High-level, safe, zero-allocation TrueType font parser")
+    (description
+     "This package provides a high-level, safe, zero-allocation TrueType font
+parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ttf-parser-0.12
   (package
+    (inherit rust-ttf-parser-0.19)
     (name "rust-ttf-parser")
     (version "0.12.3")
     (source
@@ -68064,14 +68086,7 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1rkj90w4k21y88i69rlwb8pyfvv5lnb7x2b8yvdan21gha5gbqks"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/RazrFalcon/ttf-parser")
-    (synopsis "High-level, safe, zero-allocation TrueType font parser")
-    (description
-     "This package provides a high-level, safe, zero-allocation TrueType font
-parser.")
-    (license (list license:expat license:asl2.0))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-ttf-parser-0.6
   (package
