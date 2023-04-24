@@ -20962,50 +20962,50 @@ close, copy, cut, paste, undo, redo.")
     (license license:gpl3+)))
 
 (define-public emacs-password-store
-  (let ((commit "918992c19231b33b3d4a3288a7288a620e608cb4")
-        (revision "1"))
-    (package
-      (name "emacs-password-store")
-      ;; The emacs package version does not match the password-store version,
-      ;; even though it is part of the same repository.  When updating, look
-      ;; at the version declared in password-store.el.
-      (version (git-version "2.1.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "git://git.zx2c4.com/password-store")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0ni62f4pq96g0i0q66bch1dl9k4zqwhg7xaf746k3gbbqxcdh3vi"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'extract-el-file
-                   (lambda _
-                     (copy-file "contrib/emacs/password-store.el"
-                                "password-store.el")
-                     (delete-file-recursively "contrib")
-                     (delete-file-recursively "man")
-                     (delete-file-recursively "src")
-                     (delete-file-recursively "tests")))
-                 (add-after 'extract-el-file 'patch-executables
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (emacs-substitute-variables "password-store.el"
-                       ("password-store-executable"
-                        (search-input-file inputs "/bin/pass"))))))))
-      (inputs
-       (list password-store))
-      (propagated-inputs
-       (list emacs-auth-source-pass emacs-s emacs-with-editor))
-      (home-page "https://git.zx2c4.com/password-store/tree/contrib/emacs")
-      (synopsis "Password store (pass) support for Emacs")
-      (description
-       "This package provides functions for working with pass (\"the
-standard Unix password manager\").")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-password-store")
+    ;; The emacs package version does not match the password-store version,
+    ;; even though it is part of the same repository.  When updating, look at
+    ;; the version declared in password-store.el.
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "git://git.zx2c4.com/password-store")
+             (commit "26d2dae04bb76a87be6960861c10432820cd5d55")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1pkx6pgkkpddxrshzq3x8ilfwqjw9gawnbbskcbssxc88wrpbcjb"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'extract-el-file
+            (lambda _
+              (copy-file "contrib/emacs/password-store.el"
+                         "password-store.el")
+              (delete-file-recursively "contrib")
+              (delete-file-recursively "man")
+              (delete-file-recursively "src")
+              (delete-file-recursively "tests")))
+          (add-after 'extract-el-file 'patch-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "password-store.el"
+                ("password-store-executable"
+                 (search-input-file inputs "/bin/pass"))))))))
+    (inputs
+     (list password-store))
+    (propagated-inputs
+     (list emacs-s emacs-with-editor))
+    (home-page "https://git.zx2c4.com/password-store/tree/contrib/emacs")
+    (synopsis "Password store (pass) support for Emacs")
+    (description
+     "This package provides functions for working with pass (\"the
+    standard Unix password manager\").")
+    (license license:gpl3+)))
 
 (define-public emacs-password-store-otp
   (package
