@@ -65983,23 +65983,23 @@ serializing Rust structures.")
 (define-public rust-toml-edit-0.19
   (package
     (name "rust-toml-edit")
-    (version "0.19.3")
+    (version "0.19.8")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "toml_edit" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1r9pgw72wkvhf7g4sh4byhvr4aavcgk8v6bvkbxpa5wynh97fsjy"))))
+          (base32 "04ywrxn4c7q4ph1vir310nsgvcd3cdqp1ri7d52jb0cyc3411513"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-indexmap" ,rust-indexmap-1)
         ("rust-kstring" ,rust-kstring-2)
-        ("rust-nom8" ,rust-nom8-0.2)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-spanned" ,rust-serde-spanned-0.6)
-        ("rust-toml-datetime" ,rust-toml-datetime-0.6))
+        ("rust-toml-datetime" ,rust-toml-datetime-0.6)
+        ("rust-winnow" ,rust-winnow-0.4))
        #:cargo-development-inputs
        (("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
         ("rust-serde-json" ,rust-serde-json-1)
