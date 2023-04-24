@@ -23084,14 +23084,21 @@ values to other threads.")
        (uri (crate-uri "freetype-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06kkds31s6b1i39dyanwmzbnic7laia1kk3gfvx8sqncq08l0zd3"))))
+        (base32 "06kkds31s6b1i39dyanwmzbnic7laia1kk3gfvx8sqncq08l0zd3"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "freetype2")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cmake" ,rust-cmake-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list freetype))
+    (native-inputs
+     (list pkg-config))
     (home-page "https://github.com/PistonDevelopers/freetype-sys")
     (synopsis "Low level binding for FreeType font library")
     (description
