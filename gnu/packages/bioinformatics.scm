@@ -10651,33 +10651,26 @@ replacement for strverscmp.")
 (define-public multiqc
   (package
     (name "multiqc")
-    (version "1.10.1")
+    (version "1.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multiqc" version))
        (sha256
         (base32
-         "0y9sgjca3bp0kk3ngry4zf4q2diyzp5bvzsx5l23nsysfbfkigm4"))))
-    (build-system python-build-system)
+         "0qlk2h0765hxp1w9hqf925rh8hq642lzgs6ppg91wln9y02s9fyw"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key inputs tests? #:allow-other-keys)
              (when tests?
                (setenv "HOME" "/tmp")
                (let ((here (getcwd)))
                  (copy-recursively (assoc-ref inputs "tests") "/tmp/tests")
-                 ;; ModuleNotFoundError: No module named 'multiqc.modules.ccs'
-                 (delete-file "/tmp/tests/unit_tests/test_ccs.py")
                  (with-directory-excursion "/tmp/tests"
-                   (setenv "GUIX_PYTHONPATH"
-                           (string-append here ":" (getenv "GUIX_PYTHONPATH")))
-                   (invoke "python" "-munittest" "discover"))))))
-         ;; TODO: importing the picard and gatk modules fails for unknown
-         ;; reasons.
-         (delete 'sanity-check))))
+                   (invoke "multiqc" "data" "--ignore" "data/modules")))))))))
     (propagated-inputs
      (list python-click
            python-coloredlogs
@@ -10691,12 +10684,13 @@ replacement for strverscmp.")
            python-pyyaml
            python-requests
            python-rich
+           python-rich-click
            python-simplejson
            python-spectra))
     (native-inputs
      `(("python-pytest" ,python-pytest)
        ("tests"
-        ,(let ((commit "02272d48a382beb27489fcf9e6308a0407dc3c2e"))
+        ,(let ((commit "c3e7400affe3f3ca996973805797af61b93070ba"))
            (origin
              (method git-fetch)
              (uri (git-reference
@@ -10705,7 +10699,7 @@ replacement for strverscmp.")
              (file-name (git-file-name "multiqc-test-data" commit))
              (sha256
               (base32
-               "1bha64wanrigczw4yn81din56396n61j5gqdrkslhslmskcafi91")))))))
+               "0wwqbkbfnqj5ax6l0da4csbmv1sw7ya7mwvdwryckaiqmkxy80va")))))))
     (home-page "https://multiqc.info")
     (synopsis "Aggregate bioinformatics analysis reports")
     (description
