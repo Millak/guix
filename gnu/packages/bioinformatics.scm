@@ -5629,6 +5629,32 @@ FastQ files.  This tool has multi-threading support to afford high
 performance.")
     (license license:expat)))
 
+(define-public htscodecs
+  (package
+    (name "htscodecs")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/samtools/htscodecs/"
+                                  "releases/download/v"
+                                  version "/htscodecs-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1cys6hp438m1rfmgq6xig3q0md7nh0m03jb17mc798q13lsggpil"))))
+    (build-system gnu-build-system)
+    (inputs (list bzip2 zlib))
+    (home-page "https://github.com/samtools/htscodecs")
+    (synopsis "Custom compression for CRAM and others")
+    (description
+     "This package implements the custom CRAM codecs used for \"EXTERNAL\"
+block types.  These consist of two variants of the rANS codec (8-bit and
+16-bit renormalisation, with run-length encoding and bit-packing also
+supported in the latter), a dynamic arithmetic coder, and custom codecs for
+name/ID compression and quality score compression derived from fqzcomp.")
+    (license
+     (list license:public-domain ;c_range_coder.h, rANS_byte.h, and rANS_word.h
+           license:bsd-3))))     ;all the rest
+
 (define-public htslib
   (package
     (name "htslib")
