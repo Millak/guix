@@ -3013,7 +3013,12 @@ standard.")
                 "-v" "tests/"
                 "-I" "greendns_test.py"
                 "-I" "socket_test.py"
-                "-e" "test_018b_http_10_keepalive_framing")))))))
+                "-e" "test_018b_http_10_keepalive_framing"
+                ;; The following two tests fail with Python 3.10.  See
+                ;; <https://github.com/eventlet/eventlet/issues/730>.
+                "-e" "test_patcher_existing_locks_locked"
+                ;; And see <https://github.com/eventlet/eventlet/issues/739>.
+                "-e" "test_017_ssl_zeroreturnerror")))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
