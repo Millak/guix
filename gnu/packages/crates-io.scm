@@ -2753,6 +2753,36 @@ be used with the stdlib.")
 applications.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-android-activity-0.4
+  (package
+    (name "rust-android-activity")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "android-activity" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "19imf29l08n7qlkqk3ri3m3nzfhm0lmkqizafs68i2ysbq2a0xvw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Only supports compiling for Android.
+       #:cargo-inputs
+       (("rust-android-properties" ,rust-android-properties-0.2)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-jni-sys" ,rust-jni-sys-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-ndk" ,rust-ndk-0.7)
+        ("rust-ndk-context" ,rust-ndk-context-0.1)
+        ("rust-ndk-sys" ,rust-ndk-sys-0.4)
+        ("rust-num-enum" ,rust-num-enum-0.5))))
+    (home-page "https://github.com/rust-mobile/android-activity")
+    (synopsis "Glue for building Rust applications on Android")
+    (description "This package provides the glue needed for building Rust
+applications on Android with NativeActivity or GameActivity.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-android-glue-0.2
   (package
     (name "rust-android-glue")
