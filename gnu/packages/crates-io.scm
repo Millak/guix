@@ -37468,8 +37468,29 @@ general elements and for numerics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-ndk-sys-0.4
+  (package
+    (name "rust-ndk-sys")
+    (version "0.4.1+23.1.7779620")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndk-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18z5xsnrnpq65aspavb8cg925m3scs8hb1b9a2n2q8xxb3lsmwiw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-jni-sys" ,rust-jni-sys-0.3))))
+    (home-page "https://github.com/rust-windowing/android-ndk-rs")
+    (synopsis "FFI bindings for the Android NDK")
+    (description "This package provides FFI bindings for the Android NDK.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndk-sys-0.2
   (package
+    (inherit rust-ndk-sys-0.4)
     (name "rust-ndk-sys")
     (version "0.2.2")
     (source
@@ -37479,12 +37500,7 @@ general elements and for numerics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "08915adplysmvx0ha12if1v7zxzx82xgj3nnmiddkm8aq9sdvg71"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/rust-windowing/android-ndk-rs")
-    (synopsis "FFI bindings for the Android NDK")
-    (description "This package provides FFI bindings for the Android NDK.")
-    (license (list license:expat license:asl2.0))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-needletail-0.4
   (package
