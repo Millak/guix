@@ -32344,7 +32344,7 @@ library.")
 (define-public rust-libloading-0.7
   (package
     (name "rust-libloading")
-    (version "0.7.0")
+    (version "0.7.4")
     (source
      (origin
        (method url-fetch)
@@ -32353,7 +32353,7 @@ library.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0sidr67nsa693mqrqgk2np3bkqni0778yk147xncspy171jdk13g"))
+         "17wbccnjvhjd9ibh019xcd8kjvqws8lqgq86lqkpbgig7gyq0wxn"))
        (modules '((guix build utils)))
        (snippet
         '(begin (for-each delete-file
