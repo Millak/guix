@@ -291,8 +291,16 @@ subplots, multiple-axes, polar charts, and bubble charts.")
           python-pytz
           python-requests
           python-six))
-    (arguments
-     '(#:tests? #f)))) ; The tests are not distributed in the release
+   (arguments
+    (list
+     #:tests? #false ;The tests are not distributed in the release
+     #:phases
+     '(modify-phases %standard-phases
+        (add-after 'unpack 'python-compatibility
+          (lambda _
+            (substitute* "plotly/grid_objs/grid_objs.py"
+              (("from collections import MutableSequence")
+               "from collections.abc import MutableSequence")))))))))
 
 (define-public python-louvain
   (package
