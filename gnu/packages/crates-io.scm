@@ -6527,11 +6527,13 @@ bindings to C and C++ libraries.")
        (sha256
         (base32 "1f4fpycxmbrqk8r2x9brhfgjh86mzc6bngn4a9631x78b2jaklib"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f  ; Only the build phase, to make sure we have the right inputs.
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cexpr" ,rust-cexpr-0.6)
         ("rust-clang-sys" ,rust-clang-sys-1)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-lazycell" ,rust-lazycell-1)
         ("rust-log" ,rust-log-0.4)
