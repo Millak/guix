@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2023 Andrew Whatson <whatson@tailcall.au>
 ;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,6 +50,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system asdf)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
@@ -608,7 +610,7 @@ threads.")
 
 (define-public sicp
   (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
-        (revision "2"))
+        (revision "3"))
     (package
       (name "sicp")
       (version (git-version "20180718" revision commit))
@@ -621,30 +623,23 @@ threads.")
                  (base32
                   "0mng7qrj2dvssyffr9ycnf4a5k0kadp4dslq7mc5bhzq1qxyjs2w"))
                 (file-name (git-file-name name version))))
-      (build-system trivial-build-system)
-      (native-inputs `(("gzip" ,gzip)
-                       ("source" ,source)
-                       ("texinfo" ,texinfo)))
+      (build-system copy-build-system)
+      (native-inputs (list gzip texinfo))
       (arguments
-       `(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils)
-                        (srfi srfi-26))
-           (let ((gzip (assoc-ref %build-inputs "gzip"))
-                 (source (assoc-ref %build-inputs "source"))
-                 (texinfo (assoc-ref %build-inputs "texinfo"))
-                 (html-dir (string-append %output "/share/doc/" ,name "/html"))
-                 (info-dir (string-append %output "/share/info")))
-             (copy-recursively (string-append source "/html") html-dir)
-             (setenv "PATH" (string-append gzip "/bin"
-                                           ":" texinfo "/bin"))
-             (mkdir-p info-dir)
-             (invoke "makeinfo" "--output"
-                     (string-append info-dir "/sicp.info")
-                     (string-append source "/sicp-pocket.texi"))
-             (for-each (cut invoke "gzip" "-9n" <>)
-                       (find-files info-dir))))))
+       (list #:install-plan ''(("html" "share/doc/sicp/")
+                               ("sicp.info" "share/info/"))
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'remove-obsolete-commands
+                            (lambda _
+                              ;; Reported upstream:
+                              ;; https://github.com/sarabander/sicp/issues/46.
+                              (substitute* "sicp-pocket.texi"
+                                (("@setshortcontentsaftertitlepage")
+                                 ""))))
+                          (add-before 'install 'build
+                            (lambda _
+                              (invoke "makeinfo" "--output=sicp.info"
+                                      "sicp-pocket.texi"))))))
       (home-page "https://sarabander.github.io/sicp")
       (synopsis "Structure and Interpretation of Computer Programs")
       (description "Structure and Interpretation of Computer Programs (SICP) is
