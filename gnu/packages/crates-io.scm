@@ -68027,7 +68027,7 @@ the Trust-DNS client to use rustls for TLS.")
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.10))))
     (native-inputs
-     (list pkg-config))
+     (list perl pkg-config))
     (inputs
      (list openssl))))
 
