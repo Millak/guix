@@ -34251,6 +34251,16 @@ The following example shows how one might run @code{mpd} as user
           (port "6666")))
 @end lisp
 
+Most MPD clients will trigger a database update upon connecting, but you
+can also use the @code{update} action do to so:
+
+@example
+herd update mpd
+@end example
+
+All the MPD configuration fields are documented below, and a more
+complex example follows.
+
 @defvar mpd-service-type
 The service type for @command{mpd}
 @end defvar
