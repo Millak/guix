@@ -17814,7 +17814,7 @@ compute communities on graphs weighted or unweighted.")
 (define-public ivar
   (package
     (name "ivar")
-    (version "1.3.1")
+    (version "1.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17823,9 +17823,18 @@ compute communities on graphs weighted or unweighted.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "044xa0hm3b8fga64csrdx05ih8w7kwmvcdrdrhkg8j11ml4bi4xv"))))
+                "0v3rsak84ilg4iaynwpmmkj507vham5rjk2pfsmylpaqylgc69yx"))))
     (build-system gnu-build-system)
-    (arguments `(#:parallel-tests? #false)) ; not supported
+    (arguments
+     (list
+      #:parallel-tests? #false          ;not supported
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-CXXFLAGS
+           (lambda _
+             (substitute* '("src/Makefile.am"
+                            "tests/Makefile.am")
+               (("-Werror") "")))))))
     (inputs
      (list htslib zlib))
     (native-inputs
