@@ -1450,6 +1450,10 @@ basic input/output.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "alacritty_terminal/Cargo.toml"
                (("0.22.0") "^0.23.0"))))
+         (add-after 'unpack 'patch-xdg-open
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "alacritty/src/config/ui_config.rs"
+               (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
          (add-after 'configure 'add-absolute-library-references
            (lambda* (#:key inputs cargo-inputs vendor-dir #:allow-other-keys)
              (let* ((glutin-name ,(package-name rust-glutin-0.26))
@@ -1547,6 +1551,7 @@ basic input/output.")
        ("rust-unicode-width" ,rust-unicode-width-0.1)
        ("rust-wayland-client" ,rust-wayland-client-0.28)
        ("rust-winapi" ,rust-winapi-0.3)
+       ("xdg-utils" ,xdg-utils)
        ("wayland" ,wayland)))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
