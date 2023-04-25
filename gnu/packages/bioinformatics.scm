@@ -16232,7 +16232,7 @@ tools which build on STAR, Arriba does not require to reduce the
 (define-public adapterremoval
   (package
     (name "adapterremoval")
-    (version "2.3.0")
+    (version "2.3.3")
     (source
      (origin
        (method git-fetch)
@@ -16242,18 +16242,18 @@ tools which build on STAR, Arriba does not require to reduce the
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1nf3ki5pfzalhrx2fr1y6pfqfi133yj2m7q4fj9irf5fb94bapwr"))))
+         "0wyr182667wqdmzhwwa6f7dddr8kk0scgzb8lsm23wim544mvn6i"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       ,#~(list "COLOR_BUILD=no"
-                (string-append "PREFIX=" #$output))
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:make-flags
+      #~(list "COLOR_BUILD=no"
+              (string-append "PREFIX=" #$output))
+      #:test-target "test"
+      #:phases
+      '(modify-phases %standard-phases
          (delete 'configure))))
-    (inputs
-     (list zlib))
+    (inputs (list zlib))
     (home-page "https://adapterremoval.readthedocs.io/")
     (synopsis "Rapid sequence adapter trimming, identification, and read merging")
     (description
