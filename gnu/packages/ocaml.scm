@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018-2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -2998,7 +2998,25 @@ OCaml with fibers.")
 make it easy to run normally-blocking I/O operations concurrently in a single
 process.  Also, in many cases, Lwt threads can interact without the need for
 locks or other synchronization primitives.")
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-lwt))))
     (license license:lgpl2.1)))
+
+(define-public ocaml4.07-lwt
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-lwt)
+     (name "ocaml-lwt")
+     (version "5.5.0")
+     (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ocsigen/lwt")
+                (commit version)))
+         (file-name (git-file-name name version))
+         (sha256 (base32
+                  "1jbjz2rsz3j56k8vh5qlmm87hhkr250bs2m3dvpy9vsri8rkzj9z"))))
+     (properties '()))))
 
 ;; TODO this alias is not ideal but ocaml-lwt already explicitly specifies a
 ;; package argument and at least this way the importer doesn't try to
