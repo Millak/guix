@@ -52428,6 +52428,7 @@ rustc compiler.")
         ("rust-log" ,rust-log-0.4)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-webpki-roots" ,rust-webpki-roots-0.22))))
+    (native-inputs (list perl))
     (home-page "https://github.com/rustls/rustls")
     (synopsis "Modern TLS library written in Rust")
     (description
