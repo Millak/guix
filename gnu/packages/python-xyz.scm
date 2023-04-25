@@ -13490,32 +13490,22 @@ $ rm -rf /tmp/env
        (file-name (git-file-name name version))
        (sha256
         (base32 "1gb5j73nw3nmx030rf8pm75rns5syxhv44zxr6i74kjicyly1i9w"))))
-    (build-system cmake-build-system)
+    (build-system python-build-system)
     (arguments
-     (list #:out-of-source? #f
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
-               (replace 'install
+               (add-before 'build 'configure
                  (lambda _
-                   ;; Build and install the Python bindings.  The underlying
-                   ;; C++ library is apparently not meant to be installed.
-                   (with-directory-excursion "py_ext"
-                     (and (system* "python" "setup.py" "build")
-                          (system* "python" "setup.py" "install"
-                                   (string-append "--prefix=" #$output))))))
-               ;; Delay tests until the phase above has run.
-               (delete 'check)
-               (add-after 'install 'check
+                   (invoke "cmake" ".")))      ;to generate tlsh_version.h
+               (add-after 'configure 'chdir
+                 (lambda _
+                   (chdir "py_ext")))
+               (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
-                   (substitute* "Testing/python_test.sh"
-                     ;; The script sets up a working PYTHONPATH, but does not
-                     ;; export it for all subsequent test commands.  Fix that.
-                     (("^PYTHONPATH=\".*" all)
-                      (string-append all "\nexport PYTHONPATH\n")))
                    (when tests?
-                     (with-directory-excursion "Testing"
+                     (with-directory-excursion "../Testing"
                        (invoke "./python_test.sh"))))))))
-    (inputs (list python-wrapper))      ;for the bindings
+    (native-inputs (list cmake-minimal))
     (synopsis "Fuzzy matching library for Python")
     (description
      "Trend Micro Locality Sensitive Hash (TLSH) is a fuzzy matching library.
