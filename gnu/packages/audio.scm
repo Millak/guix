@@ -43,6 +43,7 @@
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,6 +120,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
@@ -3485,7 +3487,7 @@ link REQUIRED)"))))))
                            "-DSC_QT=ON"
                            "-DCMAKE_BUILD_TYPE=Release"
                            "-DFORTIFY=ON"
-                           ;; "-DLIBSCSYNTH=ON"   ; TODO: Re-enable?
+                           "-DLIBSCSYNTH=ON"
                            "-DSC_EL=OFF") ;scel is packaged individually as emacs-scel
        #:phases
        (modify-phases %standard-phases
@@ -3506,6 +3508,12 @@ link REQUIRED)"))))))
                     "SC_Filesystem::instance\\(\\)\\.getDirectory"
                     "\\(DirName::Resource\\) / CLASS_LIB_DIR_NAME"))
                   (string-append "Path(\"" scclass-dir "\")"))))))
+         (add-after 'patch-scclass-dir 'fix-struct-SOUNDFILE-tag
+           (lambda* _
+             (display (getcwd)) (newline)
+             (substitute* "include/plugin_interface/SC_SndBuf.h"
+               (("SNDFILE_tag")
+                "sf_private_tag"))))
          (add-before 'build 'prepare-x
            (lambda _
              (system "Xvfb &")
@@ -3532,6 +3540,8 @@ link REQUIRED)"))))))
                   boost
                   boost-sync
                   yaml-cpp
+                  python-wrapper        ;there were warnings in the build process
+                  ruby                  ;there were warnings in the build process
                   qtbase-5
                   qtdeclarative-5
                   qtsvg-5
