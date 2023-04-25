@@ -1152,6 +1152,83 @@ cows can think too: all you have to do is run @command{cowthink}.  If you're
 tired of cows, a variety of other ASCII-art messengers are available.")
     (license license:gpl3+)))
 
+(define-public deal
+  (package
+    (name "deal")
+    (version "3.1.11")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gtwilliams/deal")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wcrx3yq5ycnkdnygcq80ljpgc9iwyrr8zayprzvbibvj77hdm0c"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(let* ((tcl #$(this-package-input "tcl"))
+               (tcl-version #$(version-major+minor (package-version tcl))))
+          (list "CPPFLAGS += -O3"
+                (string-append "CC=" #$(cc-for-target))
+                (string-append "TCL_INCL=" tcl "/include")
+                (string-append "LDFLAGS=-L" tcl "/lib"
+                               " -ltcl" tcl-version
+                               " -lm")
+                (string-append "DATA_DIR=" #$output "/share/deal/")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-pod2man
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("/usr/bin/pod2man")
+                 (search-input-file inputs "/bin/pod2man")))))
+          (delete 'configure)           ;no configure script
+          ;; Prevent the error: "Makefile:248: Make.dep: No such file
+          ;; or directory".
+          (add-before 'build 'create-Make.dep
+            (lambda _
+              (call-with-output-file "Make.dep" (const #t))))
+          ;; There is no install target.  Do everything manually.
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man6"))
+                    (data (string-append #$output "/share/deal")))
+                (install-file "deal" bin)
+                (install-file "deal.6" man)
+                (install-file "deal.tcl" data)
+                (for-each (lambda (d)
+                            (let ((target (string-append data "/" d)))
+                              (mkdir-p target)
+                              (copy-recursively d target)))
+                          '("ex" "format" "input" "lib")))))
+          ;; Tests need to happen once the data is properly installed
+          ;; because the "deal.tcl" script file location is hard-coded
+          ;; in the "deal" binary.
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check)))))
+    (native-inputs
+     (list perl))
+    (inputs
+     (list tcl))
+    (home-page "https://bridge.thomasoandrews.com/deal/")
+    (synopsis "Bridge hand generator")
+    (description
+     "This program generates bridge hands.  It can be told to generate only
+hands satisfying conditions like being balanced, having a range of
+High Cards Points (HCP), controls, or other user-definable properties.
+Hands can be output in various formats, like PBN for feeding to other
+bridge programs, Deal itself, or split up into a file per player for
+practise.")
+    (license (list license:gpl2+
+                   license:gpl1+        ;ansidecl.h
+                   license:bsd-3))))    ;random.c
+
 (define-public falltergeist
   (package
     (name "falltergeist")
@@ -1167,7 +1244,7 @@ tired of cows, a variety of other ASCII-art messengers are available.")
                 "05cg58i2g32wbmrvmdsicic8xs83gld3qr1p7r4lnlckcl1l7dy4"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f)) ; no tests provided
+     `(#:tests? #f))                    ; no tests provided
     (native-inputs (list pkg-config))
     (inputs `(("sdl" ,(sdl-union (list sdl2
                                        sdl2-image
@@ -1993,7 +2070,7 @@ watch your CPU playing while enjoying a cup of tea!")
 (define-public nethack
   (package
     (name "nethack")
-    (version "3.6.6")
+    (version "3.6.7")
     (source
       (origin
         (method url-fetch)
@@ -2001,7 +2078,7 @@ watch your CPU playing while enjoying a cup of tea!")
          (string-append "https://www.nethack.org/download/" version "/nethack-"
                         (string-join (string-split version #\.) "") "-src.tgz"))
         (sha256
-          (base32 "1liyckjp34j354qnxc1zn9730lh1p2dabrg1hap24z6xnqx0rpng"))))
+          (base32 "1cmc596x8maixi2bkx9kblp3daxw156ahnklc656dygbdpgngkwq"))))
     (native-inputs
       (list bison flex))
     (inputs
@@ -8646,7 +8723,8 @@ and cooperative.")
        ;; missing from command line".
        #:configure-flags (list "-DCMAKE_EXE_LINKER_FLAGS=-lm")))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     `(("gcc-7" ,gcc-7)
+       ("gettext" ,gettext-minimal)))
     (inputs
      `(("sdl" ,(sdl-union (list sdl sdl-image sdl-net sdl-ttf)))))
     (home-page "https://slime.tuxfamily.org/")

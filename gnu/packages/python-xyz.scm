@@ -136,6 +136,7 @@
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20800,6 +20801,30 @@ while only declaring the test-specific fields.")
      several utilities, as well as an API for building localization tools.")
     (license license:gpl2+)))
 
+(define-public python-gtts
+  (package
+    (name "python-gtts")
+    (version "2.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "gTTS" version))
+              (sha256
+               (base32
+                "1jsg1prpzr7gj5sn385mkv2v1i8xfc83ycm87hvsi2j0y366plps"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Disable tests that require internet.
+     (list #:test-flags '(list "-k" "not net")))
+    (native-inputs
+     (list python-pytest python-testfixtures python-click python-requests))
+    (home-page "https://github.com/pndurette/gTTS")
+    (synopsis "Google Translate text-to-speech interface")
+    (description
+     "Google Text-to-Speech (gTTS) is a Python library and CLI tool to
+interface with the Google Translate text-to-speech API.  It lets you write
+spoken MP3 data to a file, a file-like object (bytestring) for further audio
+manipulation, or @code{stdout}.")
+    (license license:expat)))
 
 (define-public python-packaging
   (package/inherit python-packaging-bootstrap
@@ -24698,13 +24723,13 @@ project.")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.22.0")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trio" version))
        (sha256
-        (base32 "1kxa9v0cds0xnklvzppv4ix4xg81r73p5pm4qlvv2iqa832z2s6f"))))
+        (base32 "04qwzy4295ajxpns0hrmn3asma80sjpimzpb3i877vwynsvkjgsj"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -24737,6 +24762,8 @@ _cyclic_garbage"
                          " and not test_locals_destroyed_promptly_on_cancel"
                          " and not test_ipython_exc_handler"
                          " and not test_for_leaking_fds"
+                         ;; Signals don’t work in the build sandbox.
+                         " and not test_open_signal_receiver"
                          ;; These try to raise KeyboardInterrupt which does not work
                          ;; in the build environment.
                          " and not test_ki_self"

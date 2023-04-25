@@ -421,14 +421,14 @@ Search Engine.  It is written in C and based on GTK3.")
 (define-public recoll
   (package
     (name "recoll")
-    (version "1.32.7")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.lesbonscomptes.com/recoll/"
                            "recoll-" version ".tar.gz"))
        (sha256
-        (base32 "1fkx6dk8s808ay4hf7ycfcs38kywmavsjqm02pwrnl8bpgsac26a"))))
+        (base32 "0s26b737brxp5hpqcwfxg19z40w6acnnr63ghrnzzjwxqz1ambkv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -436,6 +436,7 @@ Search Engine.  It is written in C and based on GTK3.")
              "--disable-python-module"
              "--without-systemd"
              "--with-inotify"
+             "--enable-recollq"
              (string-append "QMAKEPATH=" (assoc-ref %build-inputs "qtbase")
                             "/bin/qmake"))
        #:phases

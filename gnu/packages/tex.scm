@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2023 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8971,6 +8972,36 @@ PDF documents.")
     (description "Texmaker is a program that integrates many tools needed to
 develop documents with LaTeX, in a single application.")
     (license license:gpl2+)))
+
+(define-public texstudio
+  (package
+    (name "texstudio")
+    (version "4.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/texstudio-org/texstudio")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bzdcsc0273809hx04zqd2famq05q9rpvqcbqhkjqnqp9vxbisig"))))
+    (build-system qt-build-system)
+    (arguments
+     `(#:tests? #f))                    ;tests work only with debug build
+    (native-inputs
+     (list pkg-config
+           poppler-qt5
+           qtdeclarative-5
+           qtsvg-5
+           qttools-5))
+    (home-page "https://www.texstudio.org/")
+    (synopsis "Feature-packed LaTeX editor")
+    (description
+     "TeXstudio is an integrated writing environment for creating LaTeX
+documents.  It makes writing LaTeX comfortable by providing features such as
+syntax-highlighting, an integrated viewer and reference checking.")
+    (license license:gpl3)))
 
 (define-public dvisvgm
   (package

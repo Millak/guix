@@ -22,6 +22,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages guile)
@@ -37,6 +38,7 @@
        (method url-fetch)
        (uri (string-append "https://dezyne.org/download/dezyne/"
                            name "-" version ".tar.gz"))
+       (patches (search-patches "dezyne-add-missing-shebangs.patch"))
        (sha256
         (base32 "1v0anwr0iic26ck796b29dfyj1dxkjf935g134z98s95hvzzrhm3"))))
     (inputs (list bash-minimal
