@@ -514,6 +514,11 @@ To use a Unix domain socket, an absolute path can be specified here."
    (serializer (lambda (_ x)
                  (mpd-serialize-list-of-mpd-plugin "archive_plugin" x))))
 
+  (auto-update?
+   maybe-boolean
+   "Whether to automatically update the music database when files are changed
+in the @var{music-directory}.")
+
   (input-cache-size
    maybe-string
    "MPD input cache size."

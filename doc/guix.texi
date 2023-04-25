@@ -34255,22 +34255,22 @@ The following example shows how one might run @code{mpd} as user
 The service type for @command{mpd}
 @end defvar
 
+@c %start of fragment
 @deftp {Data Type} mpd-configuration
-Data type representing the configuration of @command{mpd}.
+Available @code{mpd-configuration} fields are:
 
 @table @asis
 @item @code{package} (default: @code{mpd}) (type: file-like)
 The MPD package.
 
-@item @code{user} (default: @code{%mpd-user}) (type: user-account)
+@item @code{user} (type: user-account)
 The user to run mpd as.
 
-The default @code{%mpd-user} is a system user with the name ``mpd'',
-who is a part of the group @var{group} (see below).
-@item @code{group} (default: @code{%mpd-group}) (type: user-group)
+@item @code{group} (type: user-group)
 The group to run mpd as.
 
 The default @code{%mpd-group} is a system group with name ``mpd''.
+
 @item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
 A list of symbols naming Shepherd services that this service
 will depend on.
@@ -34291,7 +34291,13 @@ Suppress any messages below this threshold.  Available values:
 @item @code{music-directory} (type: maybe-string)
 The directory to scan for music files.
 
+@item @code{music-dir} (type: maybe-string)
+The directory to scan for music files.
+
 @item @code{playlist-directory} (type: maybe-string)
+The directory to store playlists.
+
+@item @code{playlist-dir} (type: maybe-string)
 The directory to store playlists.
 
 @item @code{db-file} (type: maybe-string)
@@ -34303,15 +34309,19 @@ The location of the file that stores current MPD's state.
 @item @code{sticker-file} (type: maybe-string)
 The location of the sticker database.
 
-@item @code{default-port} (default: @code{6600}) (type: maybe-integer)
+@item @code{default-port} (default: @code{6600}) (type: maybe-port)
 The default port to run mpd on.
 
 @item @code{endpoints} (type: maybe-list-of-strings)
-The addresses that mpd will bind to.  A port different from @var{default-port}
-may be specified, e.g. @code{localhost:6602} and IPv6 addresses must be
-enclosed in square brackets when a different port is used.
-To use a Unix domain socket, an absolute path or a path starting with @code{~}
-can be specified here.
+The addresses that mpd will bind to.  A port different from
+@var{default-port} may be specified, e.g.  @code{localhost:6602} and
+IPv6 addresses must be enclosed in square brackets when a different port
+is used.  To use a Unix domain socket, an absolute path or a path
+starting with @code{~} can be specified here.
+
+@item @code{address} (type: maybe-string)
+The address that mpd will bind to.  To use a Unix domain socket, an
+absolute path can be specified here.
 
 @item @code{database} (type: maybe-mpd-plugin)
 MPD database plugin configuration.
@@ -34327,6 +34337,10 @@ List of MPD input plugin configurations.
 
 @item @code{archive-plugins} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD archive plugin configurations.
+
+@item @code{auto-update?} (type: maybe-boolean)
+Whether to automatically update the music database when files are
+changed in the @var{music-directory}.
 
 @item @code{input-cache-size} (type: maybe-string)
 MPD input cache size.
@@ -34353,6 +34367,7 @@ appended to the configuration.
 
 @end table
 @end deftp
+@c %end of fragment
 
 @deftp {Data Type} mpd-plugin
 Data type representing a @command{mpd} plugin.
