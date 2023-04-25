@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
@@ -4604,10 +4604,20 @@ undelete email messages from Outlook Express .dbx files.")
         (base32
          "0hhbbb8ddsgjhv9y1xd8s9ixlhdnjmhw12v06jwx4j6vpgp1na9x"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-python-detection
+             (lambda _
+               (delete-file "configure")
+               (substitute* "m4/ax_python.m4"
+                 (("python3\\.9")
+                  "python3.12 python3.11 python3.10 python3.9")))))))
     (inputs
      (list boost libgsf python zlib))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake gettext-minimal libtool pkg-config))
     (home-page "https://www.five-ten-sg.com/libpst/")
     (synopsis "Tools to process Outlook email archives")
     (description "The Libpst utilities include @code{readpst} which can
