@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Christopher Lam <christopher.lck@gmail.com>
@@ -115,8 +115,8 @@
               (mkdir-p (string-append #$output:doc "/share"))
               (symlink (string-append
                         #$(this-package-native-input "gnucash-docs")
-                        "/share/gnome")
-                       (string-append #$output:doc "/share/gnome"))))
+                        "/share/help")
+                       (string-append #$output:doc "/share/help"))))
           (add-after 'install 'split-python-bindings
             (lambda _
               (let ((python-bindings (string-append
