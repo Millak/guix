@@ -17761,7 +17761,17 @@ genomes known to contain a given k-mer.")
     (build-system gnu-build-system)
     (arguments
      '(#:test-target "bug-tests"
-       #:tests? #false)) ; test data are not included
+       #:tests? #false ;test data are not included
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-source-file-times-to-1980
+           (lambda _
+             (let ((circa-1980 (* 10 366 24 60 60)))
+               (for-each (lambda (file)
+                           (let ((s (lstat file)))
+                             (unless (eq? (stat:type s) 'symlink)
+                               (utime file circa-1980 circa-1980))))
+                         (find-files "." #:directories? #t))))))))
     (inputs
      (list htslib python-wrapper zlib))
     (native-inputs
