@@ -52648,6 +52648,8 @@ rustc compiler.")
         ("rust-webpki" ,rust-webpki-0.22))
         #:cargo-development-inputs
         (("rust-cbindgen" ,rust-cbindgen-0.19))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/rustls/rustls-ffi")
     (synopsis "Rustls bindings for non-Rust languages")
     (description "Rustls bindings for non-Rust languages")
