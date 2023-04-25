@@ -3797,7 +3797,7 @@ doublets in single-cell RNA-seq data.")
               (sha256
                (base32
                 "1jmrm0qrqgka79avc1kq63fgh20gx6g07fc8p3iih4k85vhdyl3f"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
