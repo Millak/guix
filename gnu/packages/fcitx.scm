@@ -117,8 +117,8 @@
     (arguments
      `(#:configure-flags
        (list
-        "CFLAGS=-Wno-narrowing"
-        "CXXFLAGS=-Wno-narrowing")
+        "CFLAGS=-Wno-narrowing -std=c++14"
+        "CXXFLAGS=-Wno-narrowing -std=c++14")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'move-doc
