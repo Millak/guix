@@ -25738,14 +25738,14 @@ standard error channel (stderr) in your program.")
 (define-public python-anyio
   (package
     (name "python-anyio")
-    (version "3.5.0")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "anyio" version))
        (sha256
         (base32
-         "19m58805wir4i2s45dd5ynwlzb7ky1218isbir53gpqzzgigzbm0"))))
+         "08bljjq5xq0l9id36q3vvjgygirq7g7q2bs41hdg82p379khvsi5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
