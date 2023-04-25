@@ -57,6 +57,7 @@
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages notcurses)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages readline)
@@ -93,7 +95,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1))
 
 (define-public cl-asdf
   (package
@@ -1478,3 +1481,100 @@ includes a compiler as well as an interpreter.")
                    license:expat ;; cii/LICENSE
                    license:gpl2+ ;; nana/gdb/test.c and others under nana/
                    license:bsd-3)))) ;; bench/*
+
+(define-public s7-bootstrap
+  ;; Need s7-bootstrap to build libc_s7.so (for the REPL) and run tests
+  (let ((commit "a5b4bb49f8bcd7c33ae2366065fc8c254b734460") ;no releases
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "s7-bootstrap")
+       (version (git-version "23.3" revision commit))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://cm-gitlab.stanford.edu/bil/s7.git")
+                       (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "03n1axdlypzmbgzrhlwfqwa1xiw36hi25j2hwc7vw77mz90cd9f8"))))
+       (build-system gnu-build-system)
+       (arguments
+        (list #:tests? #f ;no tests in bootstrap
+              #:phases #~(modify-phases %standard-phases
+                           (delete 'configure) ;no configure
+                           (replace 'build
+                             (lambda _
+                               ;; using build commands from s7 home page
+                               (display "[BUILD] repl\n")
+                               (invoke #$(cc-for-target) "s7.c" "-o" "repl"
+                                       "-I." "-O2" "-g"
+                                       "-DWITH_MAIN"
+                                       (string-append
+                                        "-DS7_LOAD_PATH=\""
+                                        #$output "/share/s7/scm\"")
+                                       "-ldl" "-lm"
+                                       "-Wl,-export-dynamic")
+                               (display "[BUILD] nrepl\n")
+                               (invoke #$(cc-for-target) "s7.c" "-o" "nrepl"
+                                       "-I." "-O2" "-g"
+                                       "-DWITH_MAIN" "-DWITH_NOTCURSES"
+                                       (string-append
+                                        "-DS7_LOAD_PATH=\""
+                                        #$output "/share/s7/scm\"")
+                                       "-ldl" "-lm" "-lnotcurses-core"
+                                       "-Wl,-export-dynamic")
+                               (display "[BUILD] libarb_s7.so\n")
+                               (invoke #$(cc-for-target) "libarb_s7.c"
+                                       "-I." "-O2" "-g"
+                                       "-shared" "-o" "libarb_s7.so"
+                                       "-larb" "-lflint" "-lmpc" "-fPIC")
+                               (display "[BUILD] libnotcurses_s7.so\n")
+                               (invoke #$(cc-for-target) "notcurses_s7.c"
+                                       "-I." "-O2" "-g"
+                                       "-shared" "-o" "libnotcurses_s7.so"
+                                       "-lnotcurses-core" "-fPIC")
+                               ;; Need s7.o and ffitest for tests
+                               (display "[BUILD] s7.o\n")
+                               (invoke #$(cc-for-target) "-c" "s7.c" "-o"
+                                       "s7.o" "-I." "-O2"  "-ldl" "-lm")
+                               (display "[BUILD] ffitest\n")
+                               (invoke #$(cc-for-target) "-o" "ffitest"
+                                       "ffitest.c" "-g2" "s7.o" "-lm" "-I."
+                                       "-ldl" "-Wl,-export-dynamic")))
+                           (add-before 'check 'install-scm
+                             ;; scm files need to be installed before testing
+                             (lambda _
+                               (for-each (lambda (x)
+                                           (install-file
+                                            x (string-append
+                                               #$output "/share/s7/scm/")))
+                                         (find-files "." "\\.scm"))))
+                           (replace 'install
+                             (lambda _
+                               (let ((bin (string-append #$output "/bin"))
+                                     (share (string-append #$output
+                                                           "/share/s7/"))
+                                     (doc (string-append #$output
+                                                         "/share/doc/s7/"))
+                                     (lib (string-append #$output "/lib"))
+                                     (inc (string-append #$output "/include/")))
+                                 (install-file "repl" bin)
+                                 (install-file "nrepl" bin)
+                                 (install-file "ffitest" bin)
+                                 (install-file "libarb_s7.so" lib)
+                                 (install-file "libnotcurses_s7.so" lib)
+                                 (install-file "s7.c" share)
+                                 (install-file "s7.h" inc)
+                                 (install-file "s7.html" doc)))))))
+       (inputs (list arb flint mpc notcurses))
+       (home-page "https://ccrma.stanford.edu/software/snd/snd/s7.html")
+       (synopsis "Scheme interpreter intended as an extension language")
+       (description
+        "s7 is a Scheme interpreter intended as an extension language for
+other applications.  It exists as just two files, @code{s7.c} and @code{s7.h},
+that may be copied into the source tree of another application.  There are no
+libraries, no run-time init files, and no configuration scripts.  It can also
+be built as a stand-alone REPL interpreter.")
+       (license license:bsd-0)))))
