@@ -5909,21 +5909,6 @@ built on the Actix ecosystem.")
 trace (backtrace) at runtime in a Rust program.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-backtrace-0.3.35
-  (package
-    (inherit rust-backtrace-0.3)
-    (name "rust-backtrace")
-    (version "0.3.35")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "backtrace" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0mfwbb6832rh1za304w8x37bvs9fjbybpmmz0iksqfzsaf108w8k"))))))
-
 (define-public rust-bare-metal-1
   (package
     (name "rust-bare-metal")
@@ -25738,7 +25723,12 @@ path simultaneously, and returning all of the globs that matched.")
        (uri (crate-uri "globwalk" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1k6xwkydr7igvwjn3xkwjywk4213lcs53f576ilqz1h84jaazqwk"))))
+        (base32 "1k6xwkydr7igvwjn3xkwjywk4213lcs53f576ilqz1h84jaazqwk"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -25746,7 +25736,7 @@ path simultaneously, and returning all of the globs that matched.")
         ("rust-ignore" ,rust-ignore-0.4)
         ("rust-walkdir" ,rust-walkdir-2))
        #:cargo-development-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3.35)
+       (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-docmatic" ,rust-docmatic-0.1)
         ("rust-tempdir" ,rust-tempdir-0.3))))
     (home-page "https://github.com/gilnaa/globwalk")
