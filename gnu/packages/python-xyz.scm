@@ -6801,36 +6801,47 @@ debugger, with which it shares the same interface.")
     (license license:bsd-3)))
 
 (define-public python-pdbpp
-  (package
-    (name "python-pdbpp")
-    (version "0.10.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pdbpp" version))
-       (sha256
-        (base32
-         "1xb9yvi30rb1cdpvfdk2kg79vh3anvkz91r8bwvfp3iqv97kzr6r"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"
-                       "-k"
-                       (string-append
-                        ;; These tests seem to require a real TTY.
-                        "not interaction_restores_previous_sigint_handler "
-                        "and not python_m_pdb_uses_pdbpp"))))))))
-    (propagated-inputs
-     (list python-fancycompleter python-pygments python-wmctrl))
-    (native-inputs
-     (list python-pytest python-setuptools-scm))
-    (home-page "https://github.com/pdbpp/pdbpp")
-    (synopsis "Drop-in replacement for pdb")
-    (description "Pdb++ is a drop-in replacement for @code{pdb}.  It
+  ;; The latest release lacks support for Python 3.10; use the latest commit
+  ;; of the master branch (see: https://github.com/pdbpp/pdbpp/issues/503).
+  (let ((commit "e1c2e347cc55a6dd89e058e56a1366ada68884bc")
+        (revision "0"))
+    (package
+      (name "python-pdbpp")
+      (version (git-version "0.10.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/pdbpp/pdbpp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1hql1ldwa9czml7zrnv6qdzgpywwav3a282dbvqypf108zvjsdiw"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'pretend-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                        #$(package-version this-package))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "pytest"
+                          "-k"
+                          (string-append
+                           ;; These tests seem to require a real TTY.
+                           "not interaction_restores_previous_sigint_handler "
+                           "and not python_m_pdb_uses_pdbpp"))))))))
+      (propagated-inputs
+       (list python-fancycompleter python-pygments python-wmctrl))
+      (native-inputs
+       (list python-pytest python-setuptools-scm))
+      (home-page "https://github.com/pdbpp/pdbpp")
+      (synopsis "Drop-in replacement for pdb")
+      (description "Pdb++ is a drop-in replacement for @code{pdb}.  It
 includes the following improvements compared to @code{pdb}:
 @itemize
 @item auto-completion
@@ -6840,7 +6851,7 @@ includes the following improvements compared to @code{pdb}:
 @item smart command parsing
 @item additional convenience functions in the @code{pdb} module.
 @end itemize")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public python-pdftotext
   (package
