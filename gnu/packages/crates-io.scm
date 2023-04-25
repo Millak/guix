@@ -65341,6 +65341,8 @@ futures.")
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-webpki-roots" ,rust-webpki-roots-0.22))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/tokio-rs/tls")
     (synopsis "Asynchronous TLS/SSL streams for Tokio")
     (description
