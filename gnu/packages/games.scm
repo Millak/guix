@@ -8717,7 +8717,8 @@ and cooperative.")
        ;; missing from command line".
        #:configure-flags (list "-DCMAKE_EXE_LINKER_FLAGS=-lm")))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     `(("gcc-7" ,gcc-7)
+       ("gettext" ,gettext-minimal)))
     (inputs
      `(("sdl" ,(sdl-union (list sdl sdl-image sdl-net sdl-ttf)))))
     (home-page "https://slime.tuxfamily.org/")
