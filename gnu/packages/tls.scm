@@ -848,7 +848,7 @@ servers or clients for more complicated applications.")
 (define-public perl-crypt-openssl-rsa
  (package
   (name "perl-crypt-openssl-rsa")
-  (version "0.31")
+  (version "0.33")
   (source
     (origin
       (method url-fetch)
@@ -858,7 +858,7 @@ servers or clients for more complicated applications.")
              ".tar.gz"))
       (sha256
         (base32
-          "0djl5i6kibl7862b6ih29q8dhg5zpwzq77q9j8hp6xngshx40ws1"))))
+          "0r6qxx2nyvdsv859zl8vz17ndj1a4xvrknbafhjh6m3gdl7n7gmx"))))
   (build-system perl-build-system)
   (native-inputs
    (list perl-crypt-openssl-guess))
