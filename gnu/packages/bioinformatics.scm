@@ -11766,7 +11766,7 @@ output of segemehl is a SAM or BAM formatted alignment file.")
 (define-public kallisto
   (package
     (name "kallisto")
-    (version "0.46.2")
+    (version "0.48.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11775,7 +11775,7 @@ output of segemehl is a SAM or BAM formatted alignment file.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ij5n7v3m90jdfi7sn8nvglfyf58abp1f5xq42r4k73l0lfds6xi"))
+                "0wx1ndmhndsd60952piaa925lk8bjr59d2yr1m2hcsqcb6cdjwpn"))
               (modules '((guix build utils)))
               (snippet
                '(delete-file-recursively "ext/htslib/"))))
@@ -11797,8 +11797,7 @@ output of segemehl is a SAM or BAM formatted alignment file.")
                (("target_link_libraries\\(kallisto kallisto_core pthread \
 \\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/../ext/htslib/libhts.a\\)")
                 "target_link_libraries(kallisto kallisto_core pthread hts)")
-               (("include_directories\\(\\.\\./ext/htslib\\)") ""))
-             #t)))))
+               (("include_directories\\(\\.\\./ext/htslib\\)") "")))))))
     (inputs
      (list hdf5 htslib-1.9 zlib))
     (home-page "https://pachterlab.github.io/kallisto/")
