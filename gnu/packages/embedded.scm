@@ -742,8 +742,8 @@ with a layered architecture of JTAG interface and TAP support.")
              (add-after 'unpack 'chdir
                (lambda _ (chdir "gcc")))))))
       (native-inputs
-       `(("gcc-4" ,gcc-4.9)
-         ,@(package-native-inputs propeller-gcc-6)))
+       (modify-inputs (package-native-inputs propeller-gcc-6)
+         (prepend gcc-4.9)))
       (home-page "https://github.com/parallaxinc/propgcc")
       (supported-systems (delete "aarch64-linux" %supported-systems)))))
 
