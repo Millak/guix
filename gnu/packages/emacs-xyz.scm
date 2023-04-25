@@ -127,6 +127,7 @@
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -259,6 +260,7 @@
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages wget)
   #:use-module (guix utils)
@@ -35887,6 +35889,40 @@ current region or entire buffer.")
 It includes syntax highlighting, automatic indentation, and imenu integration.
 Unlike Emacs' generic ASM mode, it understands NASM-specific syntax.")
     (license license:unlicense)))
+
+(define-public emacs-riscv-mode
+  (let ((commit "8e335b9c93de93ed8dd063d702b0f5ad48eef6d7")
+        (revision "1"))
+    (package
+      (name "emacs-riscv-mode")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/AdamNiederer/riscv-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "06jlf84mx49scw3zm1wjj25zinr2yr9abiyh83rli78wb1hdc0l4"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'hardcode-spike
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "riscv-mode.el"
+                  ("riscv-interpreter"
+                   (search-input-file inputs "/bin/spike"))))))))
+      (inputs (list spike))
+      (home-page "https://github.com/AdamNiederer/riscv-mode")
+      (synopsis "Emacs major mode for RISC-V assembly")
+      (description
+       "RISC-V mode is a major mode for editing RISC-V assembly programs.
+It includes syntax highlighting, syntactic indentation and code evaluation
+with spike.")
+      (license license:gpl3+))))
 
 (define-public emacs-validate-html
   ;; XXX: Upstream did not tag commits yet.  However, commit below matches the
