@@ -102,6 +102,8 @@ pseudo-terminal (PTY) allocated to a Docker container using the Python
 client.")
     (license license:asl2.0)))
 
+;;; TODO: This package needs to be updated to its 2.x series, now authored in
+;;; Go.
 (define-public docker-compose
   (package
     (name "docker-compose")
@@ -123,7 +125,7 @@ client.")
            python-dockerpty
            python-docopt
            python-dotenv
-           python-jsonschema
+           python-jsonschema-3
            python-pyyaml-5
            python-requests
            python-six
