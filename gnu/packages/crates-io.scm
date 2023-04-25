@@ -71508,7 +71508,7 @@ Verification.")
 
 (define-public rust-webpki-0.18
   (package
-    (inherit rust-webpki-0.21)
+    (inherit rust-webpki-0.19)
     (name "rust-webpki")
     (version "0.18.1")
     (source
@@ -71524,7 +71524,16 @@ Verification.")
        (("rust-ring" ,rust-ring-0.13)
         ("rust-untrusted" ,rust-untrusted-0.6))
        #:cargo-development-inputs
-       (("rust-base64" ,rust-base64-0.9))))))
+       (("rust-base64" ,rust-base64-0.9))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'build-curve25519-tables
+           (lambda* (#:key vendor-dir #:allow-other-keys)
+             (with-directory-excursion
+               (dirname (car (find-files vendor-dir "make_curve25519_tables.py")))
+               (with-output-to-file "curve25519_tables.h"
+                 (lambda _
+                   (invoke "python" "make_curve25519_tables.py")))))))))))
 
 (define-public rust-webpki-roots-0.22
   (package
