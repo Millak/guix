@@ -252,14 +252,14 @@ living in the same process.")
                  (lambda _
                    (substitute* "tests/fastopen.sh"
                      (("^unset RETCODE")
-                      "exit 77\n"))     ;skip
-                   #$@(if (target-ppc32?)
-                          ;; https://gitlab.com/gnutls/gnutls/-/issues/1354
-                          ;; Extend the test timeout from the default of 20 * 1000
-                          #~((add-after 'unpack 'increase-test-timeout
-                               (lambda _
-                                 (setenv "GNUTLS_TEST_TIMEOUT" "60000"))))
-                          #~())))
+                      "exit 77\n"))))   ;skip
+               #$@(if (target-ppc32?)
+                      ;; https://gitlab.com/gnutls/gnutls/-/issues/1354
+                      ;; Extend the test timeout from the default of 20 * 1000
+                      #~((add-after 'unpack 'increase-test-timeout
+                           (lambda _
+                             (setenv "GNUTLS_TEST_TIMEOUT" "60000"))))
+                      #~())
                (add-after 'install 'move-doc
                  (lambda* (#:key outputs #:allow-other-keys)
                    ;; Copy the 4.1 MiB of section 3 man pages to "doc".
