@@ -54220,7 +54220,18 @@ Pwrite traits from the scroll crate.")
     (arguments
      `(#:cargo-inputs
        (("rust-ring" ,rust-ring-0.14)
-        ("rust-untrusted" ,rust-untrusted-0.6))))))
+        ("rust-untrusted" ,rust-untrusted-0.6))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'build-curve25519-tables
+           (lambda* (#:key vendor-dir #:allow-other-keys)
+             (with-directory-excursion
+               (dirname (car (find-files vendor-dir "make_curve25519_tables.py")))
+               (with-output-to-file "curve25519_tables.h"
+                 (lambda _
+                   (invoke "python" "make_curve25519_tables.py")))))))))
+    (native-inputs
+     (list clang perl python-2))))
 
 (define-public rust-sct-0.4
   (package
