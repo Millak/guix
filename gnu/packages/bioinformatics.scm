@@ -4954,7 +4954,7 @@ genome-wide association studies}.")
                           "hisat(-(build|align|inspect)(-(s|l)(-debug)*)*)*$")))))
          (delete 'configure))))
     (native-inputs
-     (list unzip))
+     (list gcc-10 unzip))
     (inputs
      (list perl python zlib))
     ;; Non-portable SSE instructions are used so building fails on platforms
