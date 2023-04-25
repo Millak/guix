@@ -42499,9 +42499,8 @@ Format (MCF).")
        (sha256
         (base32 "1n7ig9j5x2q0fk12nny40faggrs0ra5bbxp6gz5yghfwlqw1ay8x"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-base64ct" ,rust-base64ct-1)
+     `(#:cargo-inputs
+       (("rust-base64ct" ,rust-base64ct-1.0.1)
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-subtle" ,rust-subtle-2))))))
 
