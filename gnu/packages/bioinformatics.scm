@@ -17763,9 +17763,7 @@ genomes known to contain a given k-mer.")
      '(#:test-target "bug-tests"
        #:tests? #false)) ; test data are not included
     (inputs
-     `(("htslib" ,htslib)
-       ("python" ,python-wrapper)
-       ("zlib" ,zlib)))
+     (list htslib python-wrapper zlib))
     (native-inputs
      (list autoconf automake which))
     (home-page "https://csb5.github.io/lofreq/")
