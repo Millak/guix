@@ -71516,6 +71516,8 @@ Verification.")
     (arguments
      `(#:cargo-inputs
        (("rust-webpki" ,rust-webpki-0.22))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/rustls/webpki-roots")
     (synopsis "Mozilla's CA root certificates for use with webpki")
     (description "This package provides Mozilla's CA root certificates for use
