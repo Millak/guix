@@ -16051,6 +16051,7 @@ data structures that can be easily serialized to and deserialized from disk.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-sct" ,rust-sct-0.6))))
+    (native-inputs (list perl))
     (home-page "https://github.com/ctz/ct-logs")
     (synopsis "Google's list of Certificate Transparency logs")
     (description
