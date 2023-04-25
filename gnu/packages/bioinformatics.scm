@@ -498,7 +498,11 @@ BED, GFF/GTF, VCF.")
                  "static constexpr float PERCENTAGE"))
               (substitute* "src/utils/general/DualQueue.h"
                 (("template <class T, template<class T> class CompareFunc>")
-                 "template <class T, template<class U> class CompareFunc>"))))
+                 "template <class T, template<class U> class CompareFunc>"))
+              (substitute* '("src/utils/BamTools/src/api/algorithms/Sort.h"
+                             "src/utils/BamTools/src/api/internal/bam/BamMultiMerger_p.h")
+                (("(bool operator\\(\\).*) \\{" m pre)
+                 (string-append pre " const {")))))
           (delete 'configure)
           (replace 'install
             (lambda _
