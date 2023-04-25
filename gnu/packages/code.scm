@@ -546,7 +546,7 @@ stack traces.")
 (define-public lcov
   (package
     (name "lcov")
-    (version "1.15")
+    (version "1.16")
     (source
      (origin
        (method url-fetch)
@@ -554,7 +554,7 @@ stack traces.")
                            "/releases/download/v" version
                            "/lcov-" version ".tar.gz"))
        (sha256
-        (base32 "0fh5z0q5wg2jxr2nn5w7321y0zg9rwk75j3k5hnamjdy6gxa5kf1"))))
+        (base32 "02r4wdl5d694aaxc5fgjw4nl3zmzq45khaxmsi3agj18annk2w4q"))))
     (build-system gnu-build-system)
     (arguments
      '(#:test-target "test"
