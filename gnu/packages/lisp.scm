@@ -1578,3 +1578,32 @@ that may be copied into the source tree of another application.  There are no
 libraries, no run-time init files, and no configuration scripts.  It can also
 be built as a stand-alone REPL interpreter.")
        (license license:bsd-0)))))
+
+(define-public s7
+  (package
+    (inherit s7-bootstrap)
+    (name "s7")
+    (arguments
+     (substitute-keyword-arguments (package-arguments s7-bootstrap)
+       ((#:tests? _) #t)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch
+              (lambda _
+                (substitute* "s7.c"
+                  (("libc_s7.so")
+                   (string-append #$output "/lib/libc_s7.so")))))
+            (add-after 'build 'build-full
+              (lambda _
+                (invoke "repl" "./libc.scm")))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "repl" "./s7test.scm"))))
+            (add-after 'install 'install-full
+              (lambda _
+                (install-file "libc_s7.so"
+                              (string-append #$output "/lib/"))
+                (delete-file (string-append #$output "/bin/ffitest"))))))))
+    (native-inputs (list s7-bootstrap))
+    (properties (alist-delete 'hidden? (package-properties s7-bootstrap)))))
