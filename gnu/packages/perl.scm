@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2019, 2020, 2021 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -2790,7 +2790,7 @@ code that, when \"eval\"ed, produces a deep copy of the original arguments.")
 (define-public perl-data-dumper
   (package
     (name "perl-data-dumper")
-    (version "2.180")
+    (version "2.183")
     (source
      (origin
        (method url-fetch)
@@ -2798,7 +2798,7 @@ code that, when \"eval\"ed, produces a deep copy of the original arguments.")
                            "Data-Dumper-" version ".tar.gz"))
        (sha256
         (base32
-         "029vfvj81dhyv01zrd94lak8qnkbik2h5d1mvj19hxdp67jnwqc6"))))
+         "1lssmgag36w1lhrnli2gq3g55p0z3zx5x74dh4vipbkx1f4kc9z4"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Data-Dumper")
     (synopsis "Convert data structures to strings")
