@@ -35136,6 +35136,31 @@ the TypeScript implementation.")
 service.")
       (license license:expat))))
 
+(define-public emacs-xonsh-mode
+  ;; There is no tagged release yet.
+  (let ((commit "7fa581524533a9b6b770426e4445e571a69e469d")
+        (revision "0"))
+    (package
+      (name "emacs-xonsh-mode")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/seanfarley/xonsh-mode")
+               (commit commit)))
+         (sha256
+          (base32 "0lfi2372clkkzi4a940fwparsfhxxzb7bmysfd50n1myakgldri5"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/seanfarley/xonsh-mode")
+      (synopsis "Emacs major mode for editing Xonsh files")
+      (description
+       "This package implements a major mode for Xonsh scripts.  The basic
+functionality includes syntax highlight for Xonsh operators.  Files with the
+@file{.xonshrc} or @file{.xsh} extension are automatically opened with this
+mode.")
+      (license license:gpl3+))))
+
 (define-public emacs-monokai-theme
   (package
     (name "emacs-monokai-theme")
