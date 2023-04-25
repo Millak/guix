@@ -87,7 +87,7 @@ guix graph --path emacs vim && false
 path="\
 emacs
 gnutls
-guile
+p11-kit
 libffi"
 test "`guix graph --path emacs libffi | cut -d '@' -f1`" = "$path"
 
