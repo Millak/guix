@@ -17145,6 +17145,29 @@ which would benefit from directly reading subsequences from FASTA files.  The
 library automatically handles index file generation and use.")
     (license (list license:expat license:gpl2))))
 
+(define-public wfa2-lib
+  (package
+    (name "wfa2-lib")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smarco/WFA2-lib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "110s1s79z8ndjs4qdgmrj708iiaqyagia3gi2fxak101lg263diw"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/smarco/WFA2-lib")
+    (synopsis "Wavefront alignment algorithm library")
+    (description "The wavefront alignment (WFA) algorithm is an exact
+gap-affine algorithm that takes advantage of homologous regions between the
+sequences to accelerate the alignment process.")
+    (license license:expat)))
+
 (define-public vcflib
   (package
     (name "vcflib")
