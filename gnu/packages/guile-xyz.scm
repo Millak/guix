@@ -2974,56 +2974,52 @@ is no support for parsing block and inline level HTML.")
     (inputs (list guile-2.0))))
 
 (define-public mcron
-  ;; Use the latest commits, as interesting changes haven't been released yet,
-  ;; such as improved logging.
-  (let ((revision "0")
-        (commit "5fd0ccde5a4cff70299999f988e6b5166584814d"))
-    (package
-      (name "mcron")
-      (version (git-version "1.2.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/mcron.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0jl2w67a5hkphzssdzq3q4jcwv2b174b11d3w5i3khxq2vhzd6kk"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:phases #~(modify-phases %standard-phases
-                     (add-before 'check 'adjust-tests
-                       (lambda _
-                         (substitute* "tests/job-specifier.scm"
-                           ;; (getpw) fails with "entry not found" in the build
-                           ;; environment, so pass an argument.
-                           (("\\(getpw\\)")
-                            "(getpwnam (getuid))")
-                           ;; The build environment lacks an entry for root in
-                           ;; /etc/passwd.
-                           (("\\(getpw 0\\)")
-                            "(getpwnam \"nobody\")")
-                           ;; FIXME: Skip the 4 faulty tests (see above).
-                           (("\\(test-equal \"next-year\"" all)
-                            (string-append "(test-skip 4)\n" all))))))))
-      (native-inputs (list autoconf
-                           automake
-                           guile-3.0    ;for 'guild compile'
-                           help2man
-                           pkg-config
-                           tzdata-for-tests
-                           texinfo))
-      (inputs (list guile-3.0))
-      (home-page "https://www.gnu.org/software/mcron/")
-      (synopsis "Run jobs at scheduled times")
-      (description
-       "GNU Mcron is a complete replacement for Vixie cron.  It is used to run
+  (package
+    (name "mcron")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/mcron.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07gqwbjfsgf16ff624hkav0qhl10dv579y10fxas2kbjavqm4yx5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'adjust-tests
+                     (lambda _
+                       (substitute* "tests/job-specifier.scm"
+                         ;; (getpw) fails with "entry not found" in the build
+                         ;; environment, so pass an argument.
+                         (("\\(getpw\\)")
+                          "(getpwnam (getuid))")
+                         ;; The build environment lacks an entry for root in
+                         ;; /etc/passwd.
+                         (("\\(getpw 0\\)")
+                          "(getpwnam \"nobody\")")
+                         ;; FIXME: Skip the 4 faulty tests (see above).
+                         (("\\(test-equal \"next-year\"" all)
+                          (string-append "(test-skip 4)\n" all))))))))
+    (native-inputs (list autoconf
+                         automake
+                         guile-3.0    ;for 'guild compile'
+                         help2man
+                         pkg-config
+                         tzdata-for-tests
+                         texinfo))
+    (inputs (list guile-3.0))
+    (home-page "https://www.gnu.org/software/mcron/")
+    (synopsis "Run jobs at scheduled times")
+    (description
+     "GNU Mcron is a complete replacement for Vixie cron.  It is used to run
 tasks on a schedule, such as every hour or every Monday.  Mcron is written in
 Guile, so its configuration can be written in Scheme; the original cron
 format is also supported.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public guile-picture-language
   (let ((commit "a1322bf11945465241ca5b742a70893f24156d12")
