@@ -14615,7 +14615,7 @@ http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
   (package
     (inherit rust-criterion-0.4)
     (name "rust-criterion")
-    (version "0.3.5")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
@@ -14623,12 +14623,12 @@ http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "044d2x7cxfvw2g558lzyllcv7jcdkw9xmacmb0nzx8pv4pyxl10n"))))
+        (base32 "13yd64ah93gkbdv7qq4cr6rhgl9979jjcjk3gkhnav1b7glns7dh"))))
     (arguments
      `(#:cargo-inputs
        (("rust-async-std" ,rust-async-std-1)
         ("rust-atty" ,rust-atty-0.2)
-        ("rust-cast" ,rust-cast-0.2)
+        ("rust-cast" ,rust-cast-0.3)
         ("rust-clap" ,rust-clap-2)
         ("rust-criterion-plot" ,rust-criterion-plot-0.4)
         ("rust-csv" ,rust-csv-1)
