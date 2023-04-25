@@ -77,7 +77,6 @@
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
-  #:use-module (gnu packages m4)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
@@ -25787,19 +25786,26 @@ timers.")
         (uri (crate-uri "gmp-mpfr-sys" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1ysvdf352vcnb5ygmbwf5pkndqb0p6clmz0nqkf3nmz9ghssfim1"))))
+         (base32 "1ysvdf352vcnb5ygmbwf5pkndqb0p6clmz0nqkf3nmz9ghssfim1"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            (delete-file-recursively "gmp-6.2.1-c")
+            (delete-file-recursively "mpc-1.2.1-c")
+            (delete-file-recursively "mpfr-4.1.0-p13-c")
+            (substitute* "Cargo.toml"
+              ;; Default to using system libraries.
+              (("^default.*") "default = [\"use-system-libs\"]\n")
+              ;; Also use the system library for each of the libraries.
+              (("^mpc.*") "mpc = [\"use-system-libs\"]\n")
+              (("^mpfr.*") "mpfr = [\"use-system-libs\"]\n"))))))
     (build-system cargo-build-system)
     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'set-shell-for-configure-script
-            (lambda _
-              (setenv "CONFIG_SHELL" (which "sh")))))
-       #:cargo-inputs
-        (("rust-libc" ,rust-libc-0.2)
-         ("rust-winapi" ,rust-winapi-0.3))))
-    (native-inputs
-     (list bash-minimal m4))
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (inputs
+     (list gmp mpc mpfr))
     (home-page "https://gitlab.com/tspiteri/gmp-mpfr-sys")
     (synopsis "Rust FFI bindings for GMP, MPFR, and MPC")
     (description "This package provides Rust FFI bindings for the numeric
@@ -51088,12 +51094,7 @@ scenario you want to test.")
           (base32 "1iw52gyw0hshymqa04g76m7qnrds5vkgc5s8svqx5nv1jz1wrdgm"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (add-after 'unpack 'set-shell-for-configure-script
-            (lambda _
-              (setenv "CONFIG_SHELL" (which "sh")))))
-        #:cargo-inputs
+      `(#:cargo-inputs
         (("rust-az" ,rust-az-1)
          ("rust-gmp-mpfr-sys" ,rust-gmp-mpfr-sys-1)
          ("rust-libc" ,rust-libc-0.2)
@@ -51103,8 +51104,8 @@ scenario you want to test.")
          ("rust-byteorder" ,rust-byteorder-1)
          ("rust-serde-json" ,rust-serde-json-1)
          ("rust-serde-test" ,rust-serde-test-1))))
-    (native-inputs
-     (list bash-minimal m4))
+    (inputs
+     (list gmp mpc mpfr))
     (home-page "https://gitlab.com/tspiteri/rug")
     (synopsis
       "Arbitrary-precision integers, rational, floating-point and complex numbers")
