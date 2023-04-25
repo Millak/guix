@@ -318,10 +318,10 @@ drv2=`guix build inkscape -d --no-grafts --with-graft=glib=glib-networking`
 test "$drv1" = "$drv2"
 
 # Rewriting implicit inputs.
-drv1=`guix build hello -d`
-drv2=`guix build hello -d --with-input=gcc=gcc-toolchain`
+drv1=`guix build grep -d`
+drv2=`guix build grep -d --with-input=coreutils=hello`
 test "$drv1" != "$drv2"
-guix gc -R "$drv2" | grep `guix build -d gcc-toolchain`
+guix gc -R "$drv2" | grep `guix build -d hello`
 
 guix build guile --with-input=libunistring=something-really-silly && false
 
