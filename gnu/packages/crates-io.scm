@@ -26572,18 +26572,23 @@ hash map.")
   (package
     (inherit rust-hashbrown-0.9)
     (name "rust-hashbrown")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hashbrown" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09y86zmf59n6ys9yf2bvg9ckwwa1ijv2i3flkz45iqkwfmh7i6xb"))))
+        (base32 "09cckr5l71ypvfdbvv1qsag4222blixwn9300hpbr831j3vn46z9"))
+    (modules '((guix build utils)))
+    (snippet
+     '(begin (substitute* "Cargo.toml"
+               (("=1\\.0") "^1.0"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ahash" ,rust-ahash-0.3)
+        ("rust-autocfg" ,rust-autocfg-1)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
