@@ -54725,7 +54725,19 @@ macOS and iOS.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "11icfj8ix8fqjsnw3dqw83bmhd5qdhxzq2klb486akyypq0b31hv"))))))
+         "11icfj8ix8fqjsnw3dqw83bmhd5qdhxzq2klb486akyypq0b31hv"))))
+   (arguments
+    `(#:cargo-inputs
+      (("rust-bitflags" ,rust-bitflags-1)
+       ("rust-cssparser" ,rust-cssparser-0.25)
+       ("rust-fxhash" ,rust-fxhash-0.2)
+       ("rust-log" ,rust-log-0.4)
+       ("rust-matches" ,rust-matches-0.1)
+       ("rust-phf" ,rust-phf-0.7)
+       ("rust-precomputed-hash" ,rust-precomputed-hash-0.1)
+       ("rust-servo-arc" ,rust-servo-arc-0.1)
+       ("rust-smallvec" ,rust-smallvec-0.6)
+       ("rust-thin-slice" ,rust-thin-slice-0.1))))))
 
 (define-public rust-semver-1
   (package
