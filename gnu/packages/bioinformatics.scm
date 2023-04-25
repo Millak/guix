@@ -17170,16 +17170,16 @@ sequences to accelerate the alignment process.")
 (define-public vcflib
   (package
     (name "vcflib")
-    (version "1.0.3")
+    (version "1.0.9")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/vcflib/vcflib")
-              (commit (string-append "v" version))))
+             (url "https://github.com/vcflib/vcflib")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r7pnajg997zdjkf1b38m14v0zqnfx52w7nbldwh1xpbpahb1hjh"))
+        (base32 "0cmznzq7hl5vr504ww262rwz5lfdfrca5ksbcvwh3cgp44fiwykv"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -17199,19 +17199,20 @@ sequences to accelerate the alignment process.")
               (("\"SmithWatermanGotoh.h\"") "<smithwaterman/SmithWatermanGotoh.h>")
               (("\"convert.h\"") "<smithwaterman/convert.h>")
               (("\"disorder.h\"") "<smithwaterman/disorder.h>")
-              (("Fasta.h") "fastahack/Fasta.h"))
-            (for-each delete-file-recursively
-                      '("fastahack" "filevercmp" "fsom" "googletest" "intervaltree"
-                        "libVCFH" "multichoose" "smithwaterman"))))))
+              (("\"wavefront/wfa.hpp\"") "<wavefront/wfa.hpp>")
+              (("Fasta.h") "fastahack/Fasta.h"))))))
     (build-system cmake-build-system)
     (inputs
      (list bzip2
+           curl
            htslib
            fastahack
            perl
            python
+           pybind11
            smithwaterman
            tabixpp
+           wfa2-lib
            xz
            zlib))
     (native-inputs
@@ -17223,58 +17224,68 @@ sequences to accelerate the alignment process.")
        ("intervaltree-src" ,(package-source intervaltree))
        ("multichoose-src" ,(package-source multichoose))))
     (arguments
-     (list #:configure-flags
-           #~(list (string-append
-                    "-DPKG_CONFIG_EXECUTABLE="
-                    (search-input-file
-                     %build-inputs (string-append
-                                    "/bin/" #$(pkg-config-for-target)))))
-           #:tests? #f ; no tests
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'build-shared-library
-                 (lambda _
-                   (substitute* "CMakeLists.txt"
-                     (("vcflib STATIC") "vcflib SHARED"))
-                   (substitute* "test/Makefile"
-                     (("libvcflib.a") "libvcflib.so"))))
-               (add-after 'unpack 'unpack-submodule-sources
-                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                   (let ((unpack (lambda (source target)
-                                   (mkdir target)
-                                   (with-directory-excursion target
-                                     (let ((source (or (assoc-ref inputs source)
-                                                       (assoc-ref native-inputs source))))
-                                       (if (file-is-directory? source)
-                                           (copy-recursively source ".")
-                                           (invoke "tar" "xvf"
-                                                   source
-                                                   "--strip-components=1")))))))
-                     (and
-                      (unpack "filevercmp-src" "filevercmp")
-                      (unpack "fsom-src" "fsom")
-                      (unpack "intervaltree-src" "intervaltree")
-                      (unpack "multichoose-src" "multichoose")))))
-               ;; This pkg-config file is provided by other distributions.
-               (add-after 'install 'install-pkg-config-file
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (pkgconfig (string-append out "/lib/pkgconfig")))
-                     (mkdir-p pkgconfig)
-                     (with-output-to-file (string-append pkgconfig "/vcflib.pc")
-                       (lambda _
-                         (format #t "prefix=~a~@
-                           exec_prefix=${prefix}~@
-                           libdir=${exec_prefix}/lib~@
-                           includedir=${prefix}/include~@
-                           ~@
-                           Name: vcflib~@
-                           Version: ~a~@
-                           Requires: smithwaterman, fastahack, tabixpp~@
-                           Description: C++ library for parsing and manipulating VCF files~@
-                           Libs: -L${libdir} -lvcflib~@
-                           Cflags: -I${includedir}~%"
-                                 out #$version)))))))))
+     (list
+      #:configure-flags
+      #~(list "-DZIG=OFF"
+              "-DTABIXPP_LOCAL=OFF"
+              "-DTABIX_FOUND=ON"
+              "-DWFA_GITMODULE=OFF"
+              "-DWFA_LINK_LIBRARIES=-lwfa2cpp"
+              (string-append "-DPKG_CONFIG_EXECUTABLE="
+                             (search-input-file
+                              %build-inputs (string-append
+                                             "/bin/" #$(pkg-config-for-target)))))
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-wf2lib-headers
+            (lambda _
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       #$(this-package-input "wfa2-lib")
+                       "/include/wfa2lib:"
+                       (or (getenv "CPLUS_INCLUDE_PATH") "")))))
+          (add-after 'unpack 'build-shared-library
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("vcflib STATIC") "vcflib SHARED"))))
+          (add-after 'unpack 'unpack-submodule-sources
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((unpack (lambda (source target)
+                              (mkdir-p target)
+                              (with-directory-excursion target
+                                (let ((source (or (assoc-ref inputs source)
+                                                  (assoc-ref native-inputs source))))
+                                  (if (file-is-directory? source)
+                                      (copy-recursively source ".")
+                                      (invoke "tar" "xvf"
+                                              source
+                                              "--strip-components=1")))))))
+                (and
+                 (unpack "filevercmp-src" "contrib/filevercmp")
+                 (unpack "fsom-src" "contrib/fsom")
+                 (unpack "intervaltree-src" "contrib/intervaltree")
+                 (unpack "multichoose-src" "contrib/multichoose")))))
+          ;; This pkg-config file is provided by other distributions.
+          (add-after 'install 'install-pkg-config-file
+            (lambda _
+              (let ((pkgconfig (string-append #$output "/lib/pkgconfig")))
+                (mkdir-p pkgconfig)
+                (with-output-to-file (string-append pkgconfig "/vcflib.pc")
+                  (lambda _
+                    (format #t "\
+prefix=~a~@
+exec_prefix=${prefix}~@
+libdir=${exec_prefix}/lib~@
+includedir=${prefix}/include~@
+~@
+Name: vcflib~@
+Version: ~a~@
+Requires: smithwaterman, fastahack, tabixpp~@
+Description: C++ library for parsing and manipulating VCF files~@
+Libs: -L${libdir} -lvcflib~@
+Cflags: -I${includedir}~%"
+                            #$output #$version)))))))))
     (home-page "https://github.com/vcflib/vcflib/")
     (synopsis "Library for parsing and manipulating VCF files")
     (description "Vcflib provides methods to manipulate and interpret
