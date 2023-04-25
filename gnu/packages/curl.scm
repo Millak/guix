@@ -406,9 +406,7 @@ sugar and output formatting inspired from @code{httpie}.")
       #~(modify-phases %standard-phases
           (delete 'configure))))
     (native-inputs (list python))
-    ;; Tests failed on older curl version
-    ;; (see https://github.com/curl/trurl/pull/165)
-    (inputs (list curl-7.84.0))
+    (inputs (list curl))
     (home-page "https://curl.se/trurl/")
     (synopsis "Command line tool for URL parsing and manipulatio")
     (description "@code{trurl} is a tool in a similar spirit of @code{tr} but
