@@ -1261,7 +1261,24 @@ interactive environment for the functional language Haskell.")
                ;;    quasiquotation/T14028.run  T14028 [bad stderr] (dyn)
                (substitute* '("testsuite/tests/quasiquotation/all.T")
                  (("unless\\(config.have_ext_interp, skip\\),")
-                  "unless(config.have_ext_interp, skip), when(arch('i386'), skip),"))))))))
+                  "unless(config.have_ext_interp, skip), when(arch('i386'), skip),"))))
+           ;; i686 fails on CI, but (sometimes and with generous timeouts) completes
+           ;; locally. The issue seems to be that the testsuite tries to run some very
+           ;; broad regular expressions on output files of several megabytes in size,
+           ;; which takes a long time. Since the expressions never match anything on
+           ;; our builds anyways, remove them.
+           ;; TODO: Merge with 'skip-failing-tests-i686 or move into snippets on
+           ;; next rebuild. Note that they are required for GHC 8.10 and 9.2.
+           #$@(if (string-prefix? "i686" (or (%current-target-system)
+                                             (%current-system)))
+               #~((add-after 'skip-failing-tests-i686 'skip-failing-tests-i686-cuirass
+                    (lambda _
+                      (substitute* '("testsuite/driver/testlib.py")
+                        ((".*changes being made to the file will invalidate the code signature.*")
+                         "")
+                        ((".*warning: argument unused during compilation:.*")
+                         "")))))
+               #~())))))
     (native-search-paths (list (search-path-specification
                                 (variable "GHC_PACKAGE_PATH")
                                 (files (list
