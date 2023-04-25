@@ -8832,7 +8832,8 @@ values (strings, macros, or numbers) pasted together.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0586q8y1f2k23mvb02ccm3qsb35cwskafksixsjaih7a7xcf5gxx"))))
+                "0586q8y1f2k23mvb02ccm3qsb35cwskafksixsjaih7a7xcf5gxx"))
+              (patches (search-patches "biber-adapt-perl-5.36.patch"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases
