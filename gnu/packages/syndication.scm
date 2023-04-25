@@ -569,6 +569,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
      (list `(,glib "bin")
            blueprint-compiler
            gobject-introspection
+           gettext-minimal
            pkg-config))
     (inputs
      (list bash-minimal
