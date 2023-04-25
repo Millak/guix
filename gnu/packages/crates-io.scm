@@ -6481,6 +6481,8 @@ that uses Serde for transforming structs into bytes and vice versa!")
         ("rust-shlex" ,rust-shlex-1)
         ("rust-syn" ,rust-syn-1)
         ("rust-which" ,rust-which-4))))
+    (inputs
+     (list clang))
     (home-page "https://rust-lang.github.io/rust-bindgen/")
     (synopsis "Generate Rust FFI bindings to C and C++ libraries")
     (description "This package can be used to automatically generate Rust FFI
