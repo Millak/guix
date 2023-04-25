@@ -12919,6 +12919,35 @@ guix build coreutils --with-patch=glibc=./glibc-frob.patch
 In this example, glibc itself as well as everything that leads to
 Coreutils in the dependency graph is rebuilt.
 
+@cindex configure flags, changing them
+@item --with-configure-flag=@var{package}=@var{flag}
+Append @var{flag} to the configure flags of @var{package}, where
+@var{package} is a spec such as @code{guile@@3.0} or @code{glibc}.  The
+build system of @var{package} must support the @code{#:configure-flags}
+argument.
+
+For example, the command below builds GNU@tie{}Hello with the
+configure flag @code{--disable-nls}:
+
+@example
+guix build hello --with-configure-flag=hello=--disable-nls
+@end example
+
+The following command passes an extra flag to @command{cmake} as it
+builds @code{lapack}:
+
+@example
+guix build lapack \
+  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+@end example
+
+@quotation Note
+Under the hood, this option works by passing the
+@samp{#:configure-flags} argument to the build system of the package of
+interest (@pxref{Build Systems}).  Most build systems support that
+option but some do not.  In that case, an error is raised.
+@end quotation
+
 @cindex upstream, latest version
 @item --with-latest=@var{package}
 @itemx --with-version=@var{package}=@var{version}

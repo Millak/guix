@@ -33,7 +33,7 @@
   #:use-module ((guix gexp)
                 #:select (local-file? local-file-file
                           computed-file? computed-file-gexp
-                          gexp-input-thing))
+                          gexp-input-thing gexp->approximate-sexp))
   #:use-module (guix ui)
   #:use-module (guix utils)
   #:use-module (guix git)
@@ -407,6 +407,17 @@
          (and (string=? (package-full-name dep1)
                         (package-full-name grep))
               (package-arguments (package-replacement dep0))))))))
+
+(test-equal "options->transformation, with-configure-flag"
+  '(append '() '("--flag=42"))
+  (let* ((p   (dummy-package "foo"
+                (build-system gnu-build-system)))
+         (t   (options->transformation
+               '((with-configure-flag . "foo=--flag=42")))))
+    (let ((new (t p)))
+      (match (package-arguments new)
+        ((#:configure-flags flags)
+         (gexp->approximate-sexp flags))))))
 
 (test-assert "options->transformation, without-tests"
   (let* ((dep (dummy-package "dep"))
