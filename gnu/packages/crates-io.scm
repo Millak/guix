@@ -52501,7 +52501,8 @@ rustc compiler.")
         (base32
          "1q8m835viqrf4bbd2fa8rnmaj48fkd984saxf0238hb8blgs7m60"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f          ; Not all files included.
+       #:cargo-inputs
        (("rust-base64" ,rust-base64-0.11)
         ("rust-log" ,rust-log-0.4)
         ("rust-ring" ,rust-ring-0.16)
