@@ -16832,7 +16832,7 @@ mutations from scRNA-Seq data.")
 (define-public tabixpp
   (package
    (name "tabixpp")
-   (version "1.1.0")
+   (version "1.1.2")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -16840,14 +16840,13 @@ mutations from scRNA-Seq data.")
                    (commit (string-append "v" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "1k2a3vbq96ic4lw72iwp5s3mwwc4xhdffjj584yn6l9637q9j1yd"))
+              (base32 "00aqs147yn8zcvxims5njwxqsbnlbjv7lnmiwqy80bfdcbhljkqf"))
              (modules '((guix build utils)))
              (snippet
-              #~(begin
-                  (delete-file-recursively "htslib")))))
+              '(delete-file-recursively "htslib"))))
    (build-system gnu-build-system)
    (inputs
-    (list bzip2 htslib xz zlib))
+    (list bzip2 curl htslib xz zlib))
    (arguments
     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                                (string-append "CXX=" #$(cxx-for-target))
@@ -16867,29 +16866,29 @@ mutations from scRNA-Seq data.")
                           "-shared" "-o" "libtabixpp.so" "tabix.o" "-lhts")
                   (invoke #$(ar-for-target) "rcs" "libtabixpp.a" "tabix.o")))
               (replace 'install
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (let* ((out (assoc-ref outputs "out"))
-                         (lib (string-append out "/lib"))
-                         (bin (string-append out "/bin")))
+                (lambda _
+                  (let ((lib (string-append #$output "/lib"))
+                        (bin (string-append #$output "/bin")))
                     (install-file "tabix++" bin)
                     (install-file "libtabixpp.so" lib)
                     (install-file "libtabixpp.a" lib)
-                    (install-file "tabix.hpp" (string-append out "/include"))
+                    (install-file "tabix.hpp" (string-append #$output "/include"))
                     (mkdir-p (string-append lib "/pkgconfig"))
                     (with-output-to-file (string-append lib "/pkgconfig/tabixpp.pc")
                       (lambda _
-                        (format #t "prefix=~a~@
-                          exec_prefix=${prefix}~@
-                          libdir=${exec_prefix}/lib~@
-                          includedir=${prefix}/include~@
-                          ~@
-                          ~@
-                          Name: libtabixpp~@
-                          Version: ~a~@
-                          Description: C++ wrapper around tabix project~@
-                          Libs: -L${libdir} -ltabixpp~@
-                          Cflags: -I${includedir}~%"
-                                out #$version)))))))))
+                        (format #t "\
+prefix=~a~@
+exec_prefix=${prefix}~@
+libdir=${exec_prefix}/lib~@
+includedir=${prefix}/include~@
+~@
+~@
+Name: libtabixpp~@
+Version: ~a~@
+Description: C++ wrapper around tabix project~@
+Libs: -L${libdir} -ltabixpp~@
+Cflags: -I${includedir}~%"
+                                #$output #$version)))))))))
    (home-page "https://github.com/ekg/tabixpp")
    (synopsis "C++ wrapper around tabix project")
    (description "This is a C++ wrapper around the Tabix project which abstracts
