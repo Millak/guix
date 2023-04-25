@@ -71431,6 +71431,8 @@ available on a platform.")
         ("rust-untrusted" ,rust-untrusted-0.7))
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.9))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/briansmith/webpki")
     (synopsis "Web PKI X.509 Certificate Verification")
     (description "This package provides Web PKI X.509 Certificate
