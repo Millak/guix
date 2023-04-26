@@ -1025,7 +1025,7 @@ Mathematics (GLM) library to Python.")
          "009jrlk7kmazrd3nkl217cl3x5ddg7kw9mqdgq1z9knv5h1rm8qv"))
        ;; Delete bundled copy of python-versioneer.
        (snippet '(delete-file "versioneer.py"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1056,6 +1056,11 @@ Mathematics (GLM) library to Python.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
+               (substitute* "setup.cfg"
+                 (("ignore:There is no current event loop:DeprecationWarning" m)
+                  (string-append m "
+    ignore:clear_current is deprecated:DeprecationWarning
+    ignore:make_current is deprecated.*:DeprecationWarning")))
                (setenv "DISABLE_IPV6" "1")
                ;; The integration tests are all problematic to some
                ;; degree.  They either require network access or some
@@ -1173,6 +1178,12 @@ Mathematics (GLM) library to Python.")
                         ;; '2022.05.2' == '2022.5.2'
                         " and not test_version"
                         " and not test_git_revision"
+
+                        ;; These fail because the exception text format
+                        ;; appears to have changed.
+                        " and not test_exception_text"
+                        " and not test_worker_bad_args"
+                        " and not test_run_spec_deserialize_fail"
 
                         ;; Recursion stack failure.  No idea what they
                         ;; expected to happen.
