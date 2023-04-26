@@ -9661,17 +9661,26 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
        (uri (pypi-uri "ipykernel" version))
        (sha256
         (base32 "0q5yni8h08nadsn53f957p0pjsjhwl2b2lp1hqz3jn0854z2fa0f"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%python-build-system-modules
+      #:imported-modules `(,@%pyproject-build-system-modules
                            (guix build syscalls))
-      #:modules '((guix build python-build-system)
+      #:modules '((guix build pyproject-build-system)
                   (guix build syscalls)
                   (guix build utils)
                   (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
+          ;; The deprecation warnings break the tests.
+           (add-after 'unpack 'hide-zmq-deprecation-warnings
+             (lambda _
+               (substitute* "pyproject.toml"
+                 (("\"ignore:There is no current event loop:DeprecationWarning\"" m)
+                  (string-append m ",
+\"ignore:make_current is deprecated.*:DeprecationWarning\",
+\"ignore:zmq.eventloop.ioloop.*:DeprecationWarning\",
+\"ignore:zmq.tests.BaseZMQTestCase.*:DeprecationWarning\"")))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
