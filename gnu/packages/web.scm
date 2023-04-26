@@ -1428,39 +1428,41 @@ current version of any major web browser.")
    (license license:bsd-3)))
 
 (define-public rapidjson
-  (package
-    (name "rapidjson")
-    (version "1.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Tencent/rapidjson")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jixgb8w97l9gdh3inihz7avz7i770gy2j2irvvlyrq3wi41f5ab"))
-              (patches (search-patches "rapidjson-gcc-compat.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Remove code using the problematic JSON license (see
-                  ;; <https://www.gnu.org/licenses/license-list.html#JSON>).
-                  (delete-file-recursively "bin/jsonchecker")))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-march=native
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("-m[^-]*=native") "")))))))
-    (home-page "https://github.com/Tencent/rapidjson")
-    (synopsis "JSON parser/generator for C++ with both SAX/DOM style API")
-    (description
-     "RapidJSON is a fast JSON parser/generator for C++ with both SAX/DOM
+  ;; Last release was in 2016, but this commit is from 2023.
+  (let ((commit "949c771b03de448bdedea80c44a4a5f65284bfeb")
+        (revision "1"))
+    (package
+      (name "rapidjson")
+      (version (git-version "1.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Tencent/rapidjson")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xlj0cj88ls3avwmlhd2gf5757fjpfbqx6qf49z1mzi381gcl72m"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin
+                    ;; Remove code using the problematic JSON license (see
+                    ;; <https://www.gnu.org/licenses/license-list.html#JSON>).
+                    (delete-file-recursively "bin/jsonchecker")))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-march=native
+             (lambda _
+               (substitute* "CMakeLists.txt"
+                 (("-m[^-]*=native") "")))))))
+      (home-page "https://github.com/Tencent/rapidjson")
+      (synopsis "JSON parser/generator for C++ with both SAX/DOM style API")
+      (description
+       "RapidJSON is a fast JSON parser/generator for C++ with both SAX/DOM
 style API.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public yajl
   (package
