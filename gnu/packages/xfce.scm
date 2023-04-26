@@ -1710,7 +1710,7 @@ performance (bytes transferred per second).")
 (define-public xfce4-fsguard-plugin
   (package
    (name "xfce4-fsguard-plugin")
-   (version "1.1.2")
+   (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1719,7 +1719,7 @@ performance (bytes transferred per second).")
                                   "/xfce4-fsguard-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "01a1an5z4kpgi68lk98q7wga7sx676fcbnrsd5cpq4d736ifdn37"))))
+                "0n62dsc25ynv8kk5va50py88fi0lgggvl0gi1r6dd4i2fns8pvw4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
