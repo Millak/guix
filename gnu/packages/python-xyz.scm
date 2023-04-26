@@ -9589,6 +9589,14 @@ without using the configuration machinery.")
        #:tests? #f
        #:phases
        #~(modify-phases %standard-phases
+           ;; The deprecation warnings break the tests.
+           (add-after 'unpack 'hide-zmq-deprecation-warnings
+             (lambda _
+               (substitute* "pyproject.toml"
+                 (("\"ignore:There is no current event loop:DeprecationWarning:zmq\"," m)
+                  (string-append m "
+\"ignore:zmq.eventloop.ioloop.*:DeprecationWarning\",
+\"ignore:zmq.tests.BaseZMQTestCase.*:DeprecationWarning\"")))))
            (add-after 'unpack 'set-tool-file-names
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "jupyter_client/localinterfaces.py"
