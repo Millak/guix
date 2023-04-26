@@ -184,13 +184,15 @@
 
 (define %mpd-user
   (user-account
-      (name "mpd")
-      (group %lazy-group)
-      (system? #t)
-      (comment "Music Player Daemon (MPD) user")
-      ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data
-      (home-directory "/var/lib/mpd")
-      (shell (file-append shadow "/sbin/nologin"))))
+   (name "mpd")
+   ;; XXX: This is a place-holder to be lazily substituted in (…-accounts)
+   ;; with the value from the 'group' field of <mpd-configuration>.
+   (group %lazy-group)
+   (system? #t)
+   (comment "Music Player Daemon (MPD) user")
+   ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data.
+   (home-directory "/var/lib/mpd")
+   (shell (file-append shadow "/sbin/nologin"))))
 
 (define %mpd-group
   (user-group
@@ -235,10 +237,7 @@
 user-account instead~%"))
          (user-account
           (inherit %mpd-user)
-          (name value)
-          ;; XXX: This is to be lazily substituted in (…-accounts)
-          ;; with the value from 'group'.
-          (group %lazy-group)))
+          (name value)))
         (else
          (configuration-field-error #f 'user value))))
 
@@ -676,12 +675,14 @@ MPD (PID ~a)." pid))
 
 (define %mympd-user
   (user-account
-      (name "mympd")
-      (group %lazy-group)
-      (system? #t)
-      (comment "myMPD user")
-      (home-directory "/var/empty")
-      (shell (file-append shadow "/sbin/nologin"))))
+   (name "mympd")
+   ;; XXX: This is a place-holder to be lazily substituted in 'mympd-accounts'
+   ;; with the value from the 'group' field of <mympd-configuration>.
+   (group %lazy-group)
+   (system? #t)
+   (comment "myMPD user")
+   (home-directory "/var/empty")
+   (shell (file-append shadow "/sbin/nologin"))))
 
 (define %mympd-group
   (user-group
@@ -696,10 +697,7 @@ MPD (PID ~a)." pid))
 user-account instead~%"))
          (user-account
           (inherit %mympd-user)
-          (name value)
-          ;; XXX: this is to be lazily substituted in (…-accounts)
-          ;; with the value from 'group'.
-          (group %lazy-group)))
+          (name value)))
         (else
          (configuration-field-error #f 'user value))))
 
