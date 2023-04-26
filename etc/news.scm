@@ -29,6 +29,7 @@
  (entry (commit "c919bfefd98bf2e29549539b4e28e6dc2a8a6f32")
         (title
          (en "Core packages updated")
+         (de "Kern-Pakete aktualisiert")
          (fr "Mise à jour des logiciels importants"))
         (body
          (en "Core packages have been updated, following months of hard work
@@ -48,6 +49,25 @@ stage0, which is then used to build a higher-level interpreter, a basic Scheme
 interpreter and C compiler (GNU Mes), and so on, until @acronym{GCC, the GNU
 Compiler Collection} is finally built.  This is a premiere and a huge step
 forward in terms of transparency of auditability.")
+         (de "Die Pakete, die den Kern der Distribution ausmachen, haben eine
+Aktualisierung bekommen.  Dies ist das Ergebnis monatelanger harter Arbeit
+unserer Mitwirkenden.  Zu den wichtigen Paketaktualisierungen gehören:
+
+@itemize
+@item glibc 2.35,
+@item Python 3.10,
+@item Perl 5.36,
+@item Mesa 22,
+@item GCC 11 wird jetzt standardmäßig als Compiler benutzt.
+@end itemize
+
+Eine große Neuigkeit ist, dass Guix jetzt auf „Bootstrapping aus dem Quellcode
+allein“ basiert: Grundlage der Pakete ist ein 500 Byte großes Programm namens
+stage0, womit ein weiter abstrahierter Interpretierer kompiliert wird, dann ein
+grundlegender Scheme-Interpretierer und C-Compiler (GNU Mes), und so geht es
+weiter, bis endlich @acronym{GCC, die GNU Compiler Collection} erstellt wird. Es
+ist eine Premiere und ein großer Schritt nach vorne, was Transparenz und
+Auditierbarkeit angeht.")
          (fr "Les logiciels de base ont été mis à jour, après des mois de dur
 labeur par les contributeur·rices du projet.  Parmi les mises à jour notables,
 il y a :
