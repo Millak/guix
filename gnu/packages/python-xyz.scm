@@ -23954,22 +23954,22 @@ object-oriented library such as @code{scikit-learn}.")
 (define-public python-dill
   (package
     (name "python-dill")
-    (version "0.3.5.1")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dill" version))
        (sha256
-        (base32 "11lc40x37cx2i8qqbc5qklifm65dyjl6prrqsycybvpixzrl2pnp"))))
-    (build-system python-build-system)
+        (base32 "0wr37zwyiprrv29jcc1hl5cla72faiwfs0mhvbxxhmkqd3rmbnz5"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (with-directory-excursion "/tmp"
-               (invoke "nosetests" "-v"))
-             #t)))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "/tmp"
+                 (invoke "nosetests" "-v"))))))))
     (native-inputs
      (list python-nose))
     (home-page "https://pypi.org/project/dill/")
