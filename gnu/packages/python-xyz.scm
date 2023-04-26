@@ -26251,7 +26251,7 @@ but portable.")
 (define-public python-watchgod
   (package
     (name "python-watchgod")
-    (version "0.7")
+    (version "0.8.1")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -26261,18 +26261,15 @@ but portable.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w2xsidwp9n4giqhja0bzw7rwrh01db0kdxf2n54mv3dkx545jpq"))))
-    (build-system python-build-system)
+        (base32 "0zm9xd2qf3d74l67yv8j3zhhhvi0vp25vhkg46l9d7flh9m04qrp"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"  "-vv"
-                       "-o" "asyncio_mode=auto")))))))
+     (list #:test-flags '(list "-o" "asyncio_mode=auto"
+                               ;; PytestUnraisableExceptionWarning
+                               "-k" "not test_watch_log and not test_awatch")))
     (native-inputs
-     (list python-coverage
+     (list python-anyio
+           python-coverage
            python-pygments
            python-pytest
            python-pytest-asyncio
