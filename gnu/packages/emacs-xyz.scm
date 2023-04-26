@@ -35141,6 +35141,32 @@ the TypeScript implementation.")
 service.")
       (license license:expat))))
 
+(define-public emacs-lojban
+  (let ((commit "d80bccd72cd46a3a6eeb57b765ec54081da55431")) ;initial commit
+    (package
+      (name "emacs-lojban")
+      ;; XXX: Repository contains two Elisp files: "lojban.el" and
+      ;; "lojban-mode.el". The former has version set to 0.23 and the latter
+      ;; to 0.7. Choosing the higher one.
+      (version "0.23")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rev22/lojban-mode.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1jm47kl6xqyymwy3dw6zgngf58xwm3mz0q2iiy9br6z66b3r5l5z"))))
+      (build-system emacs-build-system)
+      (home-page "https://www.emacswiki.org/emacs/LojbanMode")
+      (synopsis "Emacs utilities for operating on Lojban text")
+      (description
+       "Lojban is an Emacs library of functions, variables, regexps and
+interactive commands for handling Lojban text.")
+      (license license:gpl2+))))
+
 (define-public emacs-xonsh-mode
   ;; There is no tagged release yet.
   (let ((commit "7fa581524533a9b6b770426e4445e571a69e469d")
