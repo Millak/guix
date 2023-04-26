@@ -13998,34 +13998,27 @@ significantly better performance.")
     (name "python-fastjsonschema")
     (version "2.15.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fastjsonschema" version))
-        (sha256
-          (base32 "1ln2j60jzyn6p8i8ljygfgrji58hc23452g7nllkcjdk4p93c7v7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; Fail with a strange backtrace ending in importlib.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-            (when tests?
-              (invoke "pytest" "-vv" "-m" "not benchmark")))))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastjsonschema" version))
+       (sha256
+        (base32 "1ln2j60jzyn6p8i8ljygfgrji58hc23452g7nllkcjdk4p93c7v7"))))
+    (build-system pyproject-build-system)
+    (arguments `(#:tests? #f))          ;no tests included
     (native-inputs
-      (list python-colorama
-            python-json-spec
-            python-jsonschema
-            python-pylint
-            python-pytest
-            python-pytest-benchmark
-            python-pytest-cache))
+     (list python-colorama
+           python-json-spec
+           python-jsonschema
+           python-pylint
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cache))
     (home-page
-      "https://github.com/horejsek/python-fastjsonschema")
+     "https://github.com/horejsek/python-fastjsonschema")
     (synopsis
-      "Fast Python implementation of JSON schema")
+     "Fast Python implementation of JSON schema")
     (description
-      "This library implements validation of JSON documents by JSON schema for
+     "This library implements validation of JSON documents by JSON schema for
 drafts 04, 06 and 07.")
     (license license:bsd-3)))
 
