@@ -3131,6 +3131,18 @@ These include a barrier, broadcast, and allreduce.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'numpy-compatibility
+            (lambda _
+              (substitute* "umap/tests/test_umap_metrics.py"
+                ;; See commit a714b59bd9e2ca2e63312bc3491b2b037a42f2f2
+                (("sparse_binary_data.todense\\(\\),")
+                 "np.asarray(sparse_binary_data.todense()),")
+                ;; See commit c7d05683325589ad432a55e109cacb9d631cfaa9
+                (("sparse_spatial_data.todense\\(\\),")
+                 "np.asarray(sparse_spatial_data.todense()),"))
+              ;; See commit 949abd082524fce8c45dfb147bcd8e8ef49eade3
+              (substitute* "umap/tests/test_umap_ops.py"
+                (("np.random,") "None,"))))
           ;; Numba needs a writable dir to cache functions.
           (add-before 'check 'set-numba-cache-dir
             (lambda _
