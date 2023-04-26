@@ -26,6 +26,49 @@
 (channel-news
  (version 0)
 
+ (entry (commit "c919bfefd98bf2e29549539b4e28e6dc2a8a6f32")
+        (title
+         (en "Core packages updated")
+         (fr "Mise à jour des logiciels importants"))
+        (body
+         (en "Core packages have been updated, following months of hard work
+by contributors.  Noteworthy package upgrades include:
+
+@itemize
+@item glibc 2.35;
+@item Python 3.10;
+@item Perl 5.36;
+@item Mesa 22;
+@item GCC 11 is now used as the default compiler.
+@end itemize
+
+A major highlight is the introduction of the so-called @dfn{full-source
+bootstrap}: packages are all built starting from a 500-byte program called
+stage0, which is then used to build a higher-level interpreter, a basic Scheme
+interpreter and C compiler (GNU Mes), and so on, until @acronym{GCC, the GNU
+Compiler Collection} is finally built.  This is a premiere and a huge step
+forward in terms of transparency of auditability.")
+         (fr "Les logiciels de base ont été mis à jour, après des mois de dur
+labeur par les contributeur·rices du projet.  Parmi les mises à jour notables,
+il y a :
+
+@itemize
+@item glibc 2.35 ;
+@item Python 3.10 ;
+@item Perl 5.36 ;
+@item Mesa 22 ;
+@item GCC 11 est dorénavant le compilateur par défaut.
+@end itemize
+
+Une autre nouveauté importante est l'introduction de @dfn{l'amorçage intégral
+depuis le source} (@i{full-source bootstrap} en anglais) : les logiciels sont
+compilés en partant d'un programme de 500 octets appelé stage0, à partir
+duquel on compile un interprète de plus haut niveau, un interprète Scheme et
+un compilateur C de base (GNU Mes), et ainsi de suite, jusqu'à ce que
+@acronym{GCC, the GNU Compiler Collection} soit enfin compilé.  C'est une
+première et un grand pas en avant en termes de transparence et
+d'auditabilité.")))
+
  (entry (commit "21564fada141bfba25d471518b293b6004244c3a")
         (title
          (en "Linux-libre LTS kernel updated to 6.1")
