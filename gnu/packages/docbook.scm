@@ -687,45 +687,40 @@ DB2LaTeX.")
                                   version ".orig.tar.gz"))
               (sha256
                (base32
-                "1scj5vgw1xz872pq54a89blcxqqm11p90yzv8a9mqq57x27apyj8"))))
+                "1scj5vgw1xz872pq54a89blcxqqm11p90yzv8a9mqq57x27apyj8"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; Patch build system.
+                   (substitute* (find-files "." "\\.in$")
+                     ;; Do not hard-code SGML_CATALOG_FILES.
+                     ((".*SGML_CATALOG_FILES=/etc/sgml/catalog.*") "")
+                     ;; Use OpenSP and OpenJade.
+                     (("\\bjade\\b")
+                      "openjade")
+                     (("\\bnsgmls\\b")
+                      "onsgmls"))
+
+                   ;; Do not override the SGML_CATALOG_FILES environment
+                   ;; variable.
+                   (substitute* "bin/jw.in"
+                     ((".*SGML_CATALOG_FILES=`find.*")
+                      "")
+                     (("SGML_CATALOG_FILES=`echo.*")
+                      ":\n")
+                     (("SGML_CATALOG_FILES=\"\"")
+                      ":")
+                     (("\\bwhich\\b")
+                      "command -v"))
+
+                   ;; Locate lynx, links or w3m from the PATH, not from
+                   ;; /usr/bin.
+                   (substitute* "backends/txt"
+                     (("CONVERT=/usr/bin/")
+                      "CONVERT=")
+                     (("\\[ -x /usr/bin/([^ ]+) \\]" _ command)
+                      (format #f "command -v ~a > /dev/null" command)))))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-build-system
-                    (lambda _
-                      (substitute* (find-files "." "\\.in$")
-                        ;; Do not hard-code SGML_CATALOG_FILES.
-                        ((".*SGML_CATALOG_FILES=/etc/sgml/catalog.*") "")
-                        ;; Use OpenSP and OpenJade.
-                        (("\\bjade\\b")
-                         "openjade")
-                        (("\\bnsgmls\\b")
-                         "onsgmls"))
-                      #t))
-                  (add-after 'unpack 'patch-jw.in
-                    ;; Do not override the SGML_CATALOG_FILES environment
-                    ;; variable.
-                    (lambda _
-                      (substitute* "bin/jw.in"
-                        ((".*SGML_CATALOG_FILES=`find.*")
-                         "")
-                        (("SGML_CATALOG_FILES=`echo.*")
-                         ":\n")
-                        (("SGML_CATALOG_FILES=\"\"")
-                         ":")
-                        (("\\bwhich\\b")
-                         "command -v"))
-                      #t))
-                  (add-after 'unpack 'patch-txt-backend
-                    (lambda _
-                      ;; Locate lynx, links or w3m from the PATH, not from
-                      ;; /usr/bin.
-                      (substitute* "backends/txt"
-                        (("CONVERT=/usr/bin/")
-                         "CONVERT=")
-                        (("\\[ -x /usr/bin/([^ ]+) \\]" dummy command)
-                         (string-append "command -v " command " > /dev/null")))
-                      #t)))))
     ;; Propagated for convenience.  All these tools are used at run time to
     ;; provide the complete functionality of the docbook-utils commands.
     (propagated-inputs
@@ -746,15 +741,22 @@ Convert a SGML DocBook file to other formats such as Hyper Text Markup
 Language (HTML), Rich Text Format (RTF), PostScript (PS), man, Portable
 Document Format (PDF), TeX, Texinfo or plain text (txt).  It can be used
 more conveniently via the following wrappers:
-@itemx docbook2dvi Convert a SGML DocBook file to the DVI format.
-@itemx docbook2html Convert a SGML DocBook file to an HTML document.
-@itemx docbook2man Convert a SGML DocBook file a man page.
-@itemx docbook2pdf Convert a SGML DocBook file to a PDF document.
-@itemx docbook2ps Convert a SGML DocBook file to a PS document.
-@itemx docbook2rtf Convert a SGML DocBook file to a RTF document.
-@itemx docbook2tex Convert a SGML DocBook file to a TeX document.
-@itemx docbook2texi Convert a SGML DocBook file to a Texinfo document.
-@itemx docbook2txt Convert a SGML DocBook file to a plain text document.
+@table @command
+@item docbook2dvi
+Convert a SGML DocBook file to the DVI format.
+@item docbook2html
+Convert a SGML DocBook file to an HTML document.
+@item docbook2man
+Convert a SGML DocBook file a man page.
+@item docbook2pdf
+@itemx docbook2ps
+@itemx docbook2rtf
+@itemx docbook2tex
+@itemx docbook2texi
+Convert a SGML DocBook file to a PDF/PS/RTF/TeX document.
+@item docbook2txt
+Convert a SGML DocBook file to a plain text document.
+@end table
 @item sgmldiff
 Detect the differences in markup between two SGML files.
 @end table")
