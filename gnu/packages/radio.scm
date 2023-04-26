@@ -1278,7 +1278,7 @@ for emergency communications data transfers (like ICS213 forms).")
 (define-public flwrap
   (package
     (name "flwrap")
-    (version "1.3.5")
+    (version "1.3.6")
     (source
      (origin
        (method git-fetch)
@@ -1287,7 +1287,7 @@ for emergency communications data transfers (like ICS213 forms).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xkhr82smfr7wpb9xl05wf7bz3vi2mr4xkcr2s8v6mblhgsdhqwg"))))
+        (base32 "0kd8jpgqyff3ck103i2nfvlxv2vqwn9ks02s8yddk7scww8raziy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
