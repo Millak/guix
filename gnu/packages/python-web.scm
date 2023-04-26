@@ -2246,17 +2246,33 @@ data.")
          "02clqk2116jbnq8lnaqmdw3p52nqrd9ib59r4xz2ll43fpcmhlaf"))))
     (build-system python-build-system)
     (arguments
-     '(;; FIXME: Two tests error out with:
-       ;; AssertionError: b'Error in atexit._run_exitfuncs:\nFileNotF[44 chars]ry\n' != b''
-       ;; #:phases
-       ;; (modify-phases %standard-phases
-       ;;   (replace 'check
-       ;;     (lambda _
-       ;;       ;; 'setup.py test' hits an AssertionError on BSD-specific
-       ;;       ;; "tornado/platform/kqueue.py". This is the supported method:
-       ;;       (invoke "python" "-m" "tornado.test.runtests")
-       ;;       #t)))
-       #:tests? #f))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-collections
+           (lambda _
+             (substitute* "tornado/httputil.py"
+               (("collections.MutableMapping")
+                "collections.abc.MutableMapping"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (substitute* "tornado/test/runtests.py"
+                 (("\"error\", category=DeprecationWarning")
+                  "\"ignore\", category=DeprecationWarning")
+                 ;; Disable tests that use SSL.
+                 (("'tornado.test.simple_httpclient_test',") "")
+                 (("'tornado.test.iostream_test',") "")
+                 (("'tornado.test.httpserver_test',") "")
+                 ;; Some timeouts are triggered in these two modules
+                 (("'tornado.test.queues_test',") "")
+                 (("'tornado.test.locks_test',") ""))
+               ;; Skip all network tests
+               (setenv "NO_NETWORK" "1")
+               ;; Skip timing-relevant tests
+               (setenv "TRAVIS" "1")
+               (invoke "python" "-m" "tornado.test.runtests"
+                       "--verbose=yes")))))))
     (native-inputs
      (list python-certifi))
     (home-page "https://www.tornadoweb.org/")
