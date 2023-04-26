@@ -9583,7 +9583,7 @@ without using the configuration machinery.")
         (sha256
          (base32
           "12pbp177bfb3710y1a5598mwn8ffhyzmpll67m0nmalb98savnwg"))))
-     (build-system python-build-system)
+     (build-system pyproject-build-system)
      (arguments
       (list
        #:tests? #f
