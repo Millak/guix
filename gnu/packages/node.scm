@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -737,23 +738,28 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "14.19.3")
+    (version "18.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
-                                  "/node-v" version ".tar.xz"))
+                                  "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "15691j5zhiikyamiwwd7f282g6d9acfhq91nrwx54xya38gmpx2w"))
+                "0vcc132z7lkxnw5clmiz6sp6ccmw35pyb69hczphrig5frfmqkva"))
               (modules '((guix build utils)))
               (snippet
                `(begin
+                  ;; openssl.cnf is required for build.
+                  (for-each delete-file-recursively
+                            (find-files "deps/openssl"
+                                        (lambda (file stat)
+                                          (if (string-contains file "nodejs-openssl.cnf")
+                                              #f #t))))
                   ;; Remove bundled software, where possible
                   (for-each delete-file-recursively
                             '("deps/cares"
                               "deps/icu-small"
                               "deps/nghttp2"
-                              "deps/openssl"
                               "deps/zlib"))
                   (substitute* "Makefile"
                     ;; Remove references to bundled software.
@@ -769,7 +775,9 @@ source files.")
            "--shared-openssl"
            "--shared-zlib"
            "--shared-brotli"
-           "--with-intl=system-icu"))
+           "--with-intl=system-icu"
+           ;;Needed for correct snapshot checksums
+           "--v8-enable-snapshot-compression"))
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'set-bootstrap-host-rpath
@@ -802,23 +810,31 @@ source files.")
                                    libuv "/lib:"
                                    zlib "/lib"
                                    "'],"))))))
+           (add-after 'patch-hardcoded-program-references
+                      'patch-additional-hardcoded-program-references
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "test/parallel/test-stdin-from-file-spawn.js"
+                 (("'/bin/sh'") (string-append
+                                 "'" (search-input-file inputs "/bin/sh")
+                                 "'")))))
            (replace 'delete-problematic-tests
              (lambda* (#:key inputs #:allow-other-keys)
                ;; FIXME: These tests fail in the build container, but they don't
                ;; seem to be indicative of real problems in practice.
                (for-each delete-file
-                         '("test/parallel/test-cluster-master-error.js"
-                           "test/parallel/test-cluster-master-kill.js"))
+                         '("test/parallel/test-cluster-primary-error.js"
+                           "test/parallel/test-cluster-primary-kill.js"))
 
                ;; These require a DNS resolver.
                (for-each delete-file
                          '("test/parallel/test-dns.js"
-                           "test/parallel/test-dns-lookupService-promises.js"))
+                           "test/parallel/test-dns-lookupService-promises.js"
+                           "test/parallel/test-net-socket-connect-without-cb.js"
+                           "test/parallel/test-tcp-wrap-listen.js"))
 
                ;; These tests require networking.
                (for-each delete-file
-                         '("test/parallel/test-https-agent-unref-socket.js"
-                           "test/parallel/test-corepack-yarn-install.js"))
+                         '("test/parallel/test-https-agent-unref-socket.js"))
 
                ;; This test is timing-sensitive, and fails sporadically on
                ;; slow, busy, or even very fast machines.
@@ -866,9 +882,9 @@ source files.")
            c-ares-for-node
            brotli
            icu4c
-           libuv-for-node
-           `(,nghttp2-for-node "lib")
-           openssl-1.1
+           libuv
+           `(,nghttp2 "lib")
+           openssl
            zlib
            ;; Regular build-time dependencies.
            perl
@@ -881,11 +897,11 @@ source files.")
            coreutils
            c-ares-for-node
            icu4c
-           libuv-for-node
+           libuv
            llhttp-bootstrap
            brotli
-           `(,nghttp2-for-node "lib")
-           openssl-1.1
+           `(,nghttp2 "lib")
+           openssl
            zlib))))
 
 (define-public libnode
