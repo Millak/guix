@@ -134,7 +134,7 @@ Xfce Desktop Environment.")
 (define-public xfconf
   (package
     (name "xfconf")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -142,7 +142,7 @@ Xfce Desktop Environment.")
                                   "xfconf-" version ".tar.bz2"))
               (sha256
                (base32
-                "01i9bn2v9mcfa03ndd9dyihz7yc1mnfzr550mq3sh07q1cb5131f"))))
+                "0mr20250mp4pgy82v5kvb0hp5060vy6yz9hd6icmmp6gpd8lfwfr"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
