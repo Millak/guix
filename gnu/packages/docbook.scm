@@ -205,9 +205,16 @@ by no means limited to these applications.)  This package provides XML DTDs.")
                       (url "https://github.com/docbook/xslt10-stylesheets")
                       (commit commit)))
                 (file-name (git-file-name name version))
-                ;; Multiple .jar files are bundled with the sources.
                 (modules '((guix build utils)))
-                (snippet '(for-each delete-file (find-files "." "\\.jar$")))
+                (snippet
+                 #~(begin
+                     ;; Multiple .jar files are bundled with the sources.
+                     (for-each delete-file
+                               (find-files "." "\\.jar$"))
+                     ;; Do not build webhelp files, as they require a Saxon from
+                     ;; 2005, which is not packaged in Guix.
+                     (substitute* "xsl/Makefile"
+                       ((" webhelp") ""))))
                 (sha256
                  (base32
                   "1bl8dwrcy7skrlh80fpsmiw045bv2j0aym231ikcv3hvm2pi98dj"))))
@@ -215,67 +222,106 @@ by no means limited to these applications.)  This package provides XML DTDs.")
       (arguments
        (list
         #:make-flags #~(list "XSLTENGINE=xsltproc")
+        #:modules '((guix build gnu-build-system)
+                    (guix build utils)
+                    (sxml simple))
         #:phases
-        #~(modify-phases %standard-phases
-            (replace 'configure
-              (lambda _
-                ;; The build systems insist on a ~/.xmlc, and it is simpler to
-                ;; create a dummy config file than to patch it into
-                ;; submission.
-                (setenv "HOME" "/tmp")
-                (call-with-output-file "/tmp/.xmlc"
-                  (lambda (port)
-                    (format port "\
-<?xml version='1.0' encoding='utf-8'?> <!-- -*- nxml -*- -->
-<config>
-  <java xml:id=\"bigmem\">
-    <java-option name=\"Xmx512m\"/>
-  </java>
-  <xsltproc xml:id=\"xsltproc\" exec=\"xsltproc\"></xsltproc>
-  <xmllint xml:id=\"xmllint\" exec=\"xmllint\"></xmllint>
-</config>\n")))
-                (substitute* "xsl/Makefile"
-                  ;; Do not build webhelp files, as they require a Saxon from
-                  ;; 2005, which is not packaged in Guix.
-                  ((" webhelp") ""))))
-            (add-before 'install 'generate-catalog.xml
-              (lambda* (#:key make-flags #:allow-other-keys)
-                (apply invoke "make" "-C" "xsl" "catalog.xml" make-flags)))
+        #~(let ((dest-path (format #f "~a/xml/xsl/~a-~a"
+                                   #$output #$name #$version)))
+            (modify-phases %standard-phases
+              (replace 'configure
+                (lambda _
+                  ;; The build systems insist on a ~/.xmlc, and it is simpler to
+                  ;; create a dummy config file than to patch it into
+                  ;; submission.
+                  (setenv "HOME" "/tmp")
+                  (call-with-output-file "/tmp/.xmlc"
+                    (lambda (port)
+                      (sxml->xml
+                       '(*TOP*
+                         (*PI* xml "version='1.0'")
+                         (config
+                          (java (@ (xml:id "bigmem"))
+                                (java-options (@ (name "Xmx512m"))))
+                          (xsltproc (@ (xml:id "xsltproc")
+                                       (exec "xsltproc")))
+                          (xmllint (@ (xml:id "xmllint")
+                                      (exec "xmllint")))))
+                       port)))))
+              (add-before 'install 'generate-catalog.xml
+                (lambda* (#:key make-flags #:allow-other-keys)
+                  (apply invoke "make" "-C" "xsl" "catalog.xml" make-flags)))
+              (add-before 'install 'patch-catalog-xml
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((xmlcatalog (search-input-file inputs
+                                                       "/bin/xmlcatalog"))
+                        (catalog-files (find-files "." "catalog\\.xml$"))
+                        (store-uri (string-append "file://" dest-path "/")))
+                    (for-each
+                     (lambda (catalog)
+                       ;; Replace /snapshot/ reference with one based on
+                       ;; BASE-VERSION.
+                       (let ((versioned-uri
+                              (format
+                               #f "https://cdn.docbook.org/release/xsl/~a/"
+                               #$base-version)))
+                         (invoke xmlcatalog "--noout"
+                                 "--del"
+                                 "https://cdn.docbook.org/release/xsl/snapshot/"
+                                 catalog)
+                         (for-each
+                          (lambda (type)
+                            (invoke xmlcatalog "--noout"
+                                    "--add" type
+                                    versioned-uri
+                                    store-uri
+                                    catalog))
+                          (list "rewriteSystem" "rewriteURI")))
+
+                       ;; Patch /current/ references to point to /gnu/store/….
+                       (for-each
+                        (lambda (type)
+                          (invoke xmlcatalog "--noout"
+                                  "--add" type
+                                  "https://cdn.docbook.org/release/xsl/current/"
+                                  store-uri
+                                  catalog))
+                        (list "rewriteSystem" "rewriteURI"))
+
+                       ;; Re-add the no longer present compatibility entries for
+                       ;; v.1.79.1 or earlier URIs.
+                       (for-each
+                        (lambda (type)
+                          (invoke xmlcatalog "--noout"
+                                  "--add" type
+                                  "http://docbook.sourceforge.net/release/xsl/current/"
+                                  store-uri
+                                  catalog))
+                        (list "rewriteSystem" "rewriteURI")))
+                     catalog-files))))
             (replace 'install
               (lambda _
-                (let ((xml (string-append #$output "/xml/xsl/"
-                                          #$name "-" #$version))
-                      (select-rx (make-regexp
+                (let ((select-rx (make-regexp
                                   "(\\.xml$|\\.xsl$|\\.dtd$|\\.ent$)")))
                   ;; Install catalog.
                   (chdir "xsl")
-                  (install-file "catalog.xml" xml)
-                  (install-file "VERSION.xsl" xml)
-                  (substitute* (string-append xml "/catalog.xml")
-                    ;; Re-add the no longer present compatibility entries.
-                    ((".*</catalog>.*" anchor)
-                     (string-append "\
-  <!-- Also support old URI of v1.79.1 or earlier -->
-  <rewriteURI uriStartString=\"http://docbook.sourceforge.net\
-/release/xsl/current/\" rewritePrefix=\"./\"/>
-  <rewriteSystem systemIdStartString=\"http://docbook.sourceforge.net\
-/release/xsl/current/\" rewritePrefix=\"./\"/>\n" anchor))
-                    (("/snapshot/")
-                     (string-append "/" #$base-version "/"))
-                    (("rewritePrefix=\"./")
-                     (string-append "rewritePrefix=\"file://" xml "/")))
+                  (install-file "catalog.xml" dest-path)
+                  (install-file "VERSION.xsl" dest-path)
                   ;; Install style sheets.
-                  (for-each (lambda (dir)
-                              (for-each (lambda (f)
-                                          (install-file
-                                           f (string-append xml "/" (dirname f))))
-                                        (find-files dir select-rx)))
-                            '("assembly" "common" "eclipse" "epub" "epub3" "fo"
-                              "highlighting" "html" "htmlhelp" "javahelp" "lib"
-                              "manpages" "params" "profiling" "roundtrip"
-                              "template" "website"
-                              "xhtml" "xhtml-1_1" "xhtml5"))))))))
-      (native-inputs (list libxml2
+                  (for-each
+                   (lambda (dir)
+                     (for-each (lambda (f)
+                                 (install-file
+                                  f
+                                  (string-append dest-path "/" (dirname f))))
+                               (find-files dir select-rx)))
+                   '("assembly" "common" "eclipse" "epub" "epub3" "fo"
+                     "highlighting" "html" "htmlhelp" "javahelp" "lib"
+                     "manpages" "params" "profiling" "roundtrip"
+                     "template" "website"
+                     "xhtml" "xhtml-1_1" "xhtml5")))))))))
+      (native-inputs (list docbook-xml-4.4  ; for tests
+                           libxml2
                            libxslt
                            perl
                            perl-xml-xpath))
