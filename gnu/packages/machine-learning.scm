@@ -18,6 +18,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4303,3 +4304,23 @@ easily extensible.")
 Brian 2 simulator.")
     (license license:cecill)))
 
+(define-public oneapi-dnnl
+  (package
+    (name "oneapi-dnnl")
+    (version "3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oneapi-src/oneDNN")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jgmb5kl0bf4a2zfn94zlb117672r9lvvkkmwl86ihlyr1mpr3d0"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/oneapi-src/oneDNN")
+    (synopsis "Deep Neural Network Library")
+    (description
+     "OneAPI Deep Neural Network Library (oneDNN) is a cross-platform
+performance library of basic building blocks for deep learning applications.")
+    (license license:asl2.0)))
