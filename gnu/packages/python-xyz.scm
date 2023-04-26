@@ -22998,13 +22998,13 @@ user's @file{~/Trash} directory.")
 (define-public python-yamllint
   (package
     (name "python-yamllint")
-    (version "1.26.1")
+    (version "1.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yamllint" version))
        (sha256
-        (base32 "090krlxj7az0d9yl8i20vjrqi66dfxx7y5xakjhxzsfp7qmldnc7"))))
+        (base32 "0rbs7xq7y7bp3k75z7jamrdrrfyp95hifsz0hwm1cgkk5z8z30rd"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pathspec python-pyyaml python-setuptools))
