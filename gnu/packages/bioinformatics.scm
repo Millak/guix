@@ -3897,26 +3897,29 @@ CWL descriptions.")
        (sha256
         (base32
          "0lrfzjqzbpk1rrra9vd7z2j7q09jy9w1ss7wn2rd85i4k5y3xz8l"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-broken-tests
-           (lambda _
-             ;; These tests fail because we have no "paup" executable.
-             (substitute* "tests/test_datamodel_split_bitmasks.py"
-               (((format #false "(~{~a~^|~})"
-                         '("test_group1"
-                           "test_basic_split_counting_under_different_rootings"
-                           "test_basic_split_count_with_incorrect_weight_treatment_raises_error"
-                           "test_basic_split_count_with_incorrect_rootings_raises_error")) m)
-                (string-append "_skip_" m)))
-             (delete-file "tests/test_paup.py")
-             (delete-file "tests/test_dataio_nexml_reader_tree_list.py")
-             ;; Assert error for unknown reasons
-             (substitute* "tests/test_protractedspeciation.py"
-               (("test_by_num_lineages" m)
-                (string-append "_skip_" m))))))))
+     (list
+       #:test-flags
+       '(list "-k"
+              (string-join
+               ;; These tests fail because we have no "paup" executable.
+               (list "not test_group1"
+                     "test_basic_split_counting_under_different_rootings"
+                     "test_basic_split_count_with_incorrect_weight_treatment_raises_error"
+                     "test_basic_split_count_with_incorrect_rootings_raises_error"
+
+                     ;; Assert error for unknown reasons
+                     "test_by_num_lineages")
+               " and not "))
+       #:phases
+       '(modify-phases %standard-phases
+          (add-after 'unpack 'python-compatibility
+            (lambda _
+              (substitute* "tests/test_datamodel_taxon.py"
+                (("collections.Iterable")
+                 "collections.abc.Iterable")))))))
+    (native-inputs (list python-pytest))
     (home-page "https://dendropy.org/")
     (synopsis "Library for phylogenetics and phylogenetic computing")
     (description
