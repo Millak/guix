@@ -43,7 +43,6 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages glib)
@@ -51,7 +50,6 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -59,7 +57,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
-  #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -126,51 +123,6 @@ interfaces for other technical domains.")
     (properties
      '((release-monitoring-url . "https://graphviz.org/download/source/")))
     (license license:epl1.0)))
-
-;; Older Graphviz needed for pygraphviz.  See
-;; https://github.com/pygraphviz/pygraphviz/issues/175
-(define-public graphviz-2.38
-  ;; This commit corresponds to the changelog change for version 2.38.0.
-  ;; There are no tags.
-  (let ((commit "f54ac2c9313ae80ccf76ef4ac6aa9be820a23126")
-        (revision "1"))
-    (package (inherit graphviz)
-      (name "graphviz")
-      (version (git-version "2.38.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/graphviz/graphviz.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1vjg308gflmi1khgjmcj431cnkrlv12bg4cqah39mwhny92jy92x"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments graphviz)
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'prepare-bootstrap
-                (lambda _
-                  (substitute* "autogen.sh"
-                    (("/bin/sh") (which "sh"))
-                    (("\\$GRAPHVIZ_VERSION_DATE") "0"))
-                  (setenv "CONFIG_SHELL" (which "sh"))
-                  (setenv "SHELL" (which "sh"))
-
-                  (map make-file-writable (find-files "." ".*"))
-                  #t))
-              (replace 'bootstrap
-                (lambda _
-                  (invoke (which "sh") "autogen.sh" "NOCONFIG") #t))))))
-      (native-inputs
-       (modify-inputs (package-native-inputs graphviz)
-         (prepend autoconf
-                  automake
-                  libtool
-                  flex
-                  perl
-                  tcl))))))
 
 (define-public python-graphviz
   (package
