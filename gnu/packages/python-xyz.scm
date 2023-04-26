@@ -15874,6 +15874,7 @@ enhancements to optimization and data fitting problems.")
      (list python-beautifulsoup4
            python-dateutil
            python-flaky
+           python-mock
            python-nbconvert
            python-pandas
            python-pytest
