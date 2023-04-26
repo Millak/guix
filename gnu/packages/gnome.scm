@@ -11888,7 +11888,8 @@ higher level porcelain stuff.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0aa6djcf7rjw0q688mfy47k67bbjpnx6aw1xs94abfhgn6gipdkz"))))
+                "0aa6djcf7rjw0q688mfy47k67bbjpnx6aw1xs94abfhgn6gipdkz"))
+              (patches (search-patches "gitg-fix-positional-argument.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
