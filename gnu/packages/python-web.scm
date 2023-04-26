@@ -6162,17 +6162,17 @@ major web browsers.")
 (define-public python-rapidjson
   (package
     (name "python-rapidjson")
-    (version "0.9.1")
+    (version "1.10")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "python-rapidjson" version))
         (sha256
          (base32
-          "18cl2dhx3gds5vg52jxmh9wjlbiy8dx06c3n482rfpdi9dzbv05d"))
+          "0h1m9m4a5rlf5hw6ak7z3qbgdhmqarzxw9d140mcf7mrxpswpzmc"))
         (modules '((guix build utils)))
         (snippet
-         '(begin (delete-file-recursively "rapidjson") #t))))
+         '(delete-file-recursively "rapidjson"))))
     (build-system python-build-system)
     (arguments
      `(#:configure-flags
@@ -6188,12 +6188,9 @@ major web browsers.")
                                     (assoc-ref %build-inputs "rapidjson")
                                     "/include/rapidjson"))))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             ;; Some tests are broken.
-             (delete-file "tests/test_base_types.py")
-             (delete-file "tests/test_validator.py")
-             (invoke "python" "-m" "pytest" "tests"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "pytest" "tests")))))))
     (native-inputs
      (list rapidjson python-pytest python-pytz))
     (home-page "https://github.com/python-rapidjson/python-rapidjson")
