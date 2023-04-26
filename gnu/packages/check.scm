@@ -737,7 +737,7 @@ format.")
 (define-public cppcheck
   (package
     (name "cppcheck")
-    (version "2.10")
+    (version "2.10.3")
     (source (origin
       (method git-fetch)
       (uri (git-reference
@@ -745,12 +745,12 @@ format.")
              (commit version)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0riq7jlv21v2p77r01i36ll3klbgnkpsfk1wx4q8p1v5h5zgkkaa"))
+       (base32 "1xfxcg00rxjrb9m2k78yd3jjlldkciv67fsbmjb6n3l43hgfxb9k"))
       (patches (search-patches "cppcheck-disable-char-signedness-test.patch"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_TESTS=ON")))
-    (home-page "http://cppcheck.sourceforge.net")
+    (home-page "https://cppcheck.sourceforge.io")
     (synopsis "Static C/C++ code analyzer")
     (description "Cppcheck is a static code analyzer for C and C++.  Unlike
 C/C++ compilers and many other analysis tools it does not detect syntax errors
