@@ -23988,35 +23988,39 @@ the saved state of the original interpreter session.")
 (define-public python-multiprocess
   (package
     (name "python-multiprocess")
-    (version "0.70.9")
+    (version "0.70.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multiprocess" version))
        (sha256
         (base32
-         "1r882nvd44xqwbrclwqx5rhs80l6809rcvpc7pkpgnij06cvvmcz"))))
-    (build-system python-build-system)
+         "0splzd9w9yi42vl7b6mm99vb82jp2adhdrizw1xd4q125z0szp9y"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'disable-broken-tests
            (lambda _
-             ;; This test is broken as there is no keyboard interrupt.
-             (substitute* "py3.7/multiprocess/tests/__init__.py"
-               (("^(.*)def test_wait_result"
-                 line indent)
+             ;; The "wait_result" and "shared_memory..." tests are broken as
+             ;; there is no keyboard interrupt.
+             ;;
+             ;; The "preload_resources" test fails as it cannot find
+             ;; mp_preload.py.
+             (substitute* "py3.10/multiprocess/tests/__init__.py"
+               (("^(.*)def test_(\
+wait_result|\
+shared_memory_SharedMemoryServer_ignores_sigint|\
+preload_resources\
+)" line indent)
                 (string-append indent
                                "@unittest.skip(\"Disabled by Guix\")\n"
-                               line)))
-             #t))
-         ;; Tests must be run after installation.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-m" "multiprocess.tests")
-             #t)))))
+                               line)))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "multiprocess.tests")))))))
     (propagated-inputs
      (list python-dill))
     (home-page "https://pypi.org/project/multiprocess/")
