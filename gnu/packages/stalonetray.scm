@@ -18,28 +18,48 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages stalonetray)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
-  #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:select (gpl2+))
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages docbook)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
 (define-public stalonetray
   (package
     (name "stalonetray")
-    (version "0.8.3")
+    (version "0.8.5")
     (source
      (origin
-       (method url-fetch)
+       (method git-fetch)
        (uri
-        (string-append "mirror://sourceforge/stalonetray/stalonetray/stalonetray-"
-                       version "/stalonetray-" version ".tar.bz2"))
+	(git-reference
+	 (url "https://github.com/kolbusa/stalonetray")
+	 (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0k7xnpdb6dvx25d67v0crlr32cdnzykdsi9j889njiididc8lm1n"))))
-    (inputs (list libx11))
+	(base32
+	 "074wy1xppfycillbxq6fwrq87ik9glc95083df5vgm20mhzni7pz"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+	  (add-after 'unpack 'fix-docbook-root
+	    (lambda _
+	      (substitute* "configure.ac"
+		(("AC_SUBST\\(DOCBOOK_ROOT\\)" all)
+		 (string-append "DOCBOOK_ROOT="
+				#$(this-package-native-input "docbook-xsl")
+				"/xml/xsl/docbook-xsl-"
+				#$(package-version (this-package-native-input "docbook-xsl"))
+				"; " all))))))))
+    (inputs (list libx11 libxpm))
+    (native-inputs (list autoconf automake libxslt docbook-xsl))
     (build-system gnu-build-system)
-    (home-page "https://stalonetray.sourceforge.net")
+    (home-page "https://kolbusa.github.io/stalonetray")
     (synopsis "Standalone freedesktop.org and KDE systray implementation")
     (description
      "Stalonetray is a stand-alone freedesktop.org and KDE system
