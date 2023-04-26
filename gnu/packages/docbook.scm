@@ -37,6 +37,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages base)
   #:use-module (gnu packages web-browsers)
+  #:use-module (gnu packages xfig)
   #:use-module (gnu packages xml)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -44,7 +45,6 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -600,9 +600,33 @@ the in DocBook SGML DTDs.")
                (base32
                 "0yd09nypswy3q4scri1dg7dr99d7gd6r2dwx0xm81l9f4y32gs0n"))))
     (build-system python-build-system)
-    ;; TODO: Add fig2dev for fig2dev utility.
+    (arguments
+     (list
+      ;; Using setuptools causes an invalid "package_base" path in
+      ;; out/bin/.dblatex-real due to a missing leading '/'.  This is caused
+      ;; by dblatex's setup.py stripping the root path when creating the
+      ;; script.  (dblatex's setup.py still uses distutils and thus has to
+      ;; create the script by itself. The feature for creating scripts is one
+      ;; of setuptools' features.)
+      ;; See this thread for details:
+      ;; https://lists.gnu.org/archive/html/guix-devel/2016-12/msg00030.html
+      #:use-setuptools? #f
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'set-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((path (map (lambda (x)
+                                 (string-append (assoc-ref inputs x)
+                                                "/bin"))
+                               (list "libxslt"
+                                     "imagemagick" "inkscape"
+                                     "texlive-updmap.cfg"))))
+                ;; dblatex executes helper programs at runtime.
+                (wrap-program (string-append #$output "/bin/dblatex")
+                  `("PATH" ":" prefix ,path))))))))
     (inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-anysize
+     (list (texlive-updmap.cfg (list texlive-anysize
                                              texlive-appendix
                                              texlive-changebar
                                              texlive-fancybox
@@ -619,35 +643,13 @@ the in DocBook SGML DTDs.")
                                              texlive-stmaryrd
                                              texlive-subfigure
                                              texlive-titlesec
-                                             texlive-wasysym)))
-       ("imagemagick" ,imagemagick)     ;for convert
-       ("inkscape" ,inkscape/stable)    ;for svg conversion
-       ("docbook" ,docbook-xml)
-       ("libxslt" ,libxslt)))           ;for xsltproc
-    (arguments
-     `( ;; Using setuptools causes an invalid "package_base" path in
-       ;; out/bin/.dblatex-real due to a missing leading '/'.  This is caused
-       ;; by dblatex's setup.py stripping the root path when creating the
-       ;; script.  (dblatex's setup.py still uses distutils and thus has to
-       ;; create the script by itself. The feature for creating scripts is one
-       ;; of setuptools' features.)
-       ;; See this thread for details:
-       ;; https://lists.gnu.org/archive/html/guix-devel/2016-12/msg00030.html
-       #:use-setuptools? #f
-       #:tests? #f                      ;no 'test' command
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'wrap 'set-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; dblatex executes helper programs at runtime.
-               (wrap-program (string-append out "/bin/dblatex")
-                 `("PATH" ":" prefix
-                   ,(map (lambda (input)
-                           (string-append (assoc-ref inputs input)
-                                          "/bin"))
-                         '("libxslt" "texlive"
-                           "imagemagick" "inkscape"))))))))))
+                                             texlive-wasysym))
+           ;; FIXME: transfig causes the build to fail.
+           ;;transfig                   ;for fig2dev
+           imagemagick                  ;for convert
+           inkscape/stable              ;for svg conversion
+           docbook-xml
+           libxslt))                    ;for xsltproc
     (home-page "https://dblatex.sourceforge.net")
     (synopsis "DocBook to LaTeX Publishing")
     (description
@@ -666,8 +668,8 @@ DB2LaTeX.")
 (define-public dblatex/stable
   (hidden-package
    (package/inherit dblatex
-     (inputs (alist-replace "imagemagick" `(,imagemagick/stable)
-                            (package-inputs dblatex))))))
+     (inputs (modify-inputs (package-inputs dblatex)
+               (replace "imagemagick" imagemagick/stable))))))
 
 (define-public docbook-utils
   (package
