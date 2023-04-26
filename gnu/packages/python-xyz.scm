@@ -536,8 +536,6 @@ workspaces.
         (base32
          "0qka44n88y3qcj7xz0k0f3qb4phcg4z0wvd4jcii9lcr6rvbiqn5"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -547,6 +545,8 @@ workspaces.
                (invoke "pytest")))))))
     (inputs
      (list python-six python-termcolor))
+    (native-inputs
+     (list python-mock python-pytest))
     (synopsis "Library for automatically generating command line interfaces")
     (description
      "Fire is a library for automatically generating command line interfaces
