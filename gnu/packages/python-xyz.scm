@@ -12880,47 +12880,60 @@ tasks, sockets, files, locks, and queues.")
            (for-each delete-file-recursively
                      (find-files "." "__pycache__" #:directories? #t))
            (for-each delete-file (find-files "." "\\.pyc$"))
-           #t))))
+           (for-each delete-file
+                     (list "tables/_comp_bzip2.c"
+                           "tables/_comp_lzo.c"
+                           "tables/hdf5extension.c"
+                           "tables/indexesextension.c"
+                           "tables/linkextension.c"
+                           "tables/lrucacheextension.c"
+                           "tables/tableextension.c"
+                           "tables/utilsextension.c"))))))
     (build-system python-build-system)
     (arguments
-     `(;; FIXME: python-build-system does not pass configure-flags to "build"
-       ;; or "check", so we must override the build and check phases.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-gcc
-           (lambda _
-             (substitute* "setup.py"
-               (("^( +)compiler = new_compiler\\(\\)" line indent)
-                (string-append line
-                               "\n"
-                               indent
-                               "compiler.set_executables(compiler='gcc',"
-                               "compiler_so='gcc',"
-                               "linker_exe='gcc',"
-                               "linker_so='gcc -shared')")))
-             #t))
-         (add-after 'unpack 'disable-tuning
-           (lambda _
-             (substitute* "setup.py"
-               (("cpu_flags = .*")
-                "cpu_flags = ['sse2']\n"))
-             #t))
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "python" "setup.py" "build"
-                     (string-append "--hdf5="
-                                    (assoc-ref inputs "hdf5")))))
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "python" "setup.py" "check"
-                     (string-append "--hdf5="
-                                    (assoc-ref inputs "hdf5"))))))))
+     (list
+      #:phases
+      ;; FIXME: python-build-system does not pass configure-flags to "build"
+      ;; or "check", so we must override the build and check phases.
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-gcc
+            (lambda _
+              (substitute* "setup.py"
+                (("lib_dirs = \\[\\]")
+                 (string-append "lib_dirs = ["
+                                "'" #$(this-package-input "hdf5") "/lib',"
+                                "'" #$(this-package-input "bzip2") "/lib',"
+                                "'" #$(this-package-input "c-blosc") "/lib',"
+                                "]"))
+                (("^( +)compiler = new_compiler\\(\\)" line indent)
+                 (string-append line
+                                "\n"
+                                indent
+                                "compiler.set_executables(compiler='gcc',"
+                                "compiler_so='gcc',"
+                                "linker_exe='gcc',"
+                                "linker_so='gcc -shared')")))))
+          (add-after 'unpack 'disable-tuning
+            (lambda _
+              (substitute* "setup.py"
+                (("cpu_flags = .*")
+                 "cpu_flags = ['sse2']\n"))))
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "python" "setup.py" "build"
+                      (string-append "--hdf5="
+                                     (assoc-ref inputs "hdf5")))))
+          (replace 'check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "python" "setup.py" "check"
+                      (string-append "--hdf5="
+                                     (assoc-ref inputs "hdf5"))))))))
     (propagated-inputs
      (list python-numexpr python-numpy))
     (native-inputs
      (list python-cython pkg-config))
     (inputs
-     (list hdf5-1.10 bzip2 zlib))
+     (list c-blosc hdf5-1.10 bzip2 lzo zlib))
     (home-page "https://www.pytables.org/")
     (synopsis "Hierarchical datasets for Python")
     (description "PyTables is a package for managing hierarchical datasets and
