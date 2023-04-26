@@ -1767,7 +1767,7 @@ button and a personalized tooltip.")
 (define-public xfce4-mailwatch-plugin
   (package
    (name "xfce4-mailwatch-plugin")
-   (version "1.3.0")
+   (version "1.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1776,7 +1776,7 @@ button and a personalized tooltip.")
                                   "/xfce4-mailwatch-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0bmykjhd3gs1737fl3zn5gg6f3vlncak2xqz89zv5018znz1xy90"))))
+                "0sh402c7v3sa9nqz8dd2gfn7ml01xbhir680ci46i9jczvln8j85"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
