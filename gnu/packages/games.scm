@@ -1835,7 +1835,9 @@ destroying an ancient book using a special wand.")
                                   "gnome-2048-" version ".tar.xz"))
               (sha256
                (base32
-                "0s5fg4z5in1h39fcr69j1qc5ynmg7a8mfprk3mc3c0csq3snfwz2"))))
+                "0s5fg4z5in1h39fcr69j1qc5ynmg7a8mfprk3mc3c0csq3snfwz2"))
+              (patches
+               (search-patches "gnome-2048-fix-positional-argument.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
