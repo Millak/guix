@@ -1808,7 +1808,7 @@ and other data, for distribution on the web.")
 (define-public tinyproxy
   (package
     (name "tinyproxy")
-    (version "1.11.0")
+    (version "1.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/tinyproxy/tinyproxy/"
@@ -1816,7 +1816,7 @@ and other data, for distribution on the web.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0cizm8pbh5p557birdirkayj71xdxapaa9q29v1d4lf5qk7q3v61"))))
+                "0z0gnk74y68fv34vlgn2mf0zp1h3s27dbz8a1nwsxl0mh928hqyn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"             ; ‘make check’ silently does nothing
