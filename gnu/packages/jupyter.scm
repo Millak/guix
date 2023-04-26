@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -27,6 +27,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
@@ -392,15 +393,15 @@ endpoints—to Jupyter web applications.")
 (define-public python-jupyterlab-widgets
   (package
     (name "python-jupyterlab-widgets")
-    (version "1.0.0")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyterlab_widgets" version))
        (sha256
         (base32
-         "0y7vhhas3qndiypcpcfnhrj9n92v2w4hdc86nn620s9h9nl2j6jw"))))
-    (build-system python-build-system)
+         "0kdib439i9pbv90cscq5c7w4nvv8214k9ik4dnbd152yf897cvpa"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-jupyter-packaging python-setuptools))
     (home-page "https://github.com/jupyter-widgets/ipywidgets")
