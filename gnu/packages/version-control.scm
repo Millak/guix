@@ -227,14 +227,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.39.2")
+   (version "2.40.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1mpjvhyw8mv2q941xny4d0gw3mb6b4bqaqbh73jd8b1v6zqpaps7"))
+              "1li1xwgiwccy88bkshsah2kzl1006jg29jp7n32gvjggiswvi4s8"))
             (patches (search-patches "git-header-cmd.patch"))))
    (build-system gnu-build-system)
    (native-inputs
@@ -255,7 +255,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "09cva868qb4705s884dzvbwkm78jlw4q8m6xj7nd7cwxy2i2ff8b"))))
+            "04yy5za8963q6xzrirflvxbi1216jzqj8ssvgd9nkld3ifa9q1gy"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook2x" ,docbook2x)
@@ -617,46 +617,53 @@ everything from small to very large projects with speed and efficiency.")
     (arguments
      (substitute-keyword-arguments (package-arguments git)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'patch-makefiles
-             (lambda _
-               (substitute* "Makefile"
-                 (("/usr/bin/perl") (which "perl")))))
-           (delete 'build-subtree)
-           (delete 'split)
-           (delete 'install-man-pages)
-           (delete 'install-info-manual)
-           (delete 'install-subtree)
-           (delete 'install-credential-netrc)
-           (delete 'install-credential-libsecret)
-           (add-after 'install 'remove-unusable-perl-commands
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out     (assoc-ref outputs "out"))
-                      (bin     (string-append out "/bin"))
-                      (libexec (string-append out "/libexec")))
-                 (for-each (lambda (file)
-                             (delete-file (string-append libexec
-                                                         "/git-core/" file)))
-                           '("git-svn" "git-cvsimport" "git-archimport"
-                             "git-cvsserver" "git-request-pull"
-                             "git-add--interactive" "git-cvsexportcommit"
-                             "git-instaweb" "git-send-email"))
-                 (delete-file (string-append bin "/git-cvsserver"))
+        #~(modify-phases #$phases
+            (replace 'patch-makefiles
+              (lambda _
+                (substitute* "Makefile"
+                  (("/usr/bin/perl") (which "perl")))))
+            (delete 'build-subtree)
+            (delete 'split)
+            (delete 'install-man-pages)
+            (delete 'install-info-manual)
+            (delete 'install-subtree)
+            (delete 'install-credential-netrc)
+            (delete 'install-credential-libsecret)
+            (add-after 'install 'remove-unusable-perl-commands
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out     (assoc-ref outputs "out"))
+                       (bin     (string-append out "/bin"))
+                       (libexec (string-append out "/libexec")))
+                  (for-each (lambda (file)
+                              (delete-file (string-append libexec
+                                                          "/git-core/" file)))
+                            '("git-svn" "git-cvsimport" "git-archimport"
+                              "git-cvsserver" "git-request-pull"
 
-                 ;; These templates typically depend on Perl.  Remove them.
-                 (delete-file-recursively
-                  (string-append out "/share/git-core/templates/hooks"))
+                              ;; git-add--interactive was removed in Git 2.40 but
+                              ;; this phase is inherited by older versions.
+                              #$@(if (version>=? (package-version this-package)
+                                                 "2.40.1")
+                                     #~()
+                                     #~("git-add--interactive"))
 
-                 ;; Gitweb depends on Perl as well.
-                 (delete-file-recursively
-                  (string-append out "/share/gitweb")))))))
+                              "git-cvsexportcommit"
+                              "git-instaweb" "git-send-email"))
+                  (delete-file (string-append bin "/git-cvsserver"))
+
+                  ;; These templates typically depend on Perl.  Remove them.
+                  (delete-file-recursively
+                   (string-append out "/share/git-core/templates/hooks"))
+
+                  ;; Gitweb depends on Perl as well.
+                  (delete-file-recursively
+                   (string-append out "/share/gitweb")))))))
        ((#:make-flags flags)
-        `(delete "USE_LIBPCRE2=yes" ,flags))
+        #~(delete "USE_LIBPCRE2=yes" #$flags))
        ((#:configure-flags flags)
-        `(list
-          ,@(if (%current-target-system)
-                git-cross-configure-flags
-                '())))
+        #~(list #$@(if (%current-target-system)
+                       git-cross-configure-flags
+                       '())))
        ((#:disallowed-references lst '())
         `(,perl ,@lst))))
     (outputs '("out"))
