@@ -30413,6 +30413,7 @@ to:
             python-pyrss2gen
             python-requests
             python-ruamel.yaml   ;; for YAML metadata
+            python-toml
             python-unidecode
             python-yapsy))
     (native-inputs
