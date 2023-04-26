@@ -500,35 +500,39 @@ for DocBook.")
     (name "docbook-sgml")
     (version "4.2")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append
                     "https://www.oasis-open.org/docbook/sgml/4.2/docbook-"
                     version ".zip"))
               (sha256
                (base32
                 "1hrm4qmmzi285bkxkc74lxvjvw2gbl7ycbaxhv31h9rl9g4x5sv7"))))
-    (build-system trivial-build-system)
+    (build-system copy-build-system)
     (arguments
-     '(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((source (assoc-ref %build-inputs "source"))
-               (iso-entities-dir (string-append
-                                  (assoc-ref %build-inputs "iso-8879-entities")))
-               (unzip  (string-append (assoc-ref %build-inputs "unzip")
-                                      "/bin/unzip"))
-               (dtd    (string-append (assoc-ref %outputs "out")
-                                      "/sgml/dtd/docbook")))
-           ;; Extract the sources.
-           (mkdir-p dtd)
-           (chdir dtd)
-           (invoke unzip source)
-           ;; Reference the ISO 8879 character entities.
-           ;; e.g. "iso-lat1.gml" --> "<iso-entities-dir>/ISOlat1"
-           (substitute* "docbook.cat"
-             (("\"iso-(.*)\\.gml\"" _ name)
-              (string-append "\"" iso-entities-dir "/ISO" name "\"")))))))
+     (list
+      #:modules '((guix build copy-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:install-plan
+      #~`(("./" "sgml/dtd/docbook"
+           #:exclude-regexp ("catalog\\.xml$"
+                             "ChangeLog$"
+                             "README$"
+                             "\\.txt$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-permissions
+            (lambda _
+              (for-each (cut chmod <> #o644) (find-files "."))))
+          (add-before 'install 'patch-iso-entities
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Reference the ISO 8879 character entities.
+              ;; e.g. "iso-lat1.gml" --> "<iso-entities-dir>/ISOlat1"
+              (let ((iso-entities-dir
+                     (assoc-ref %build-inputs "iso-8879-entities")))
+                (substitute* "docbook.cat"
+                  (("\"iso-(.*)\\.gml\"" _ name)
+                   (string-append "\"" iso-entities-dir "/ISO" name "\"")))))))))
     (native-inputs
      (list unzip))
     (inputs
@@ -543,7 +547,7 @@ for DocBook.")
     (inherit docbook-sgml-4.2)
     (version "4.1")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append "https://www.oasis-open.org/docbook/sgml/"
                                   version "/docbk41.zip"))
               (sha256
@@ -557,7 +561,7 @@ for DocBook.")
     (inherit docbook-sgml)
     (version "3.1")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri (string-append "https://www.oasis-open.org/docbook/sgml/"
                                   version "/docbk31.zip"))
               (sha256
@@ -570,23 +574,13 @@ for DocBook.")
     (name "iso-8879-entities")
     (version "0.0")                     ;no proper version
     (source (origin
-              (method url-fetch)
-              (uri "http://www.oasis-open.org/cover/ISOEnts.zip")
+              (method url-fetch/zipbomb)
+              (uri "https://www.oasis-open.org/cover/ISOEnts.zip")
               (sha256
                (base32
                 "1clrkaqnvc1ja4lj8blr0rdlphngkcda3snm7b9jzvcn76d3br6w"))))
-    (build-system trivial-build-system)
-    (arguments
-     '(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((source (assoc-ref %build-inputs "source"))
-               (unzip  (string-append (assoc-ref %build-inputs "unzip")
-                                      "/bin/unzip"))
-               (out (string-append (assoc-ref %outputs "out"))))
-           (invoke unzip source "-d" out)))))
-    (native-inputs `(("unzip" ,unzip)))
+    (build-system copy-build-system)
+    (native-inputs (list unzip))
     (home-page "https://www.oasis-open.org/")
     (synopsis "ISO 8879 character entities")
     (description "ISO 8879 character entities that are typically used in
