@@ -745,7 +745,8 @@ format.")
              (commit version)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0riq7jlv21v2p77r01i36ll3klbgnkpsfk1wx4q8p1v5h5zgkkaa"))))
+       (base32 "0riq7jlv21v2p77r01i36ll3klbgnkpsfk1wx4q8p1v5h5zgkkaa"))
+      (patches (search-patches "cppcheck-disable-char-signedness-test.patch"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_TESTS=ON")))
