@@ -345,44 +345,72 @@ by no means limited to these applications.)  This package provides XML DTDs.")
                                   name "-ns-" version ".tar.bz2"))
               (sha256
                (base32
-                "170ggf5dgjar65kkn5n33kvjr3pdinpj66nnxfx8b2avw0k91jin"))))
+                "170ggf5dgjar65kkn5n33kvjr3pdinpj66nnxfx8b2avw0k91jin"))
+              (modules '((guix build utils)))
+              ;; Bundled binary files.
+              (snippet
+               #~(delete-file-recursively "tools"))))
     (build-system copy-build-system)
     (outputs '("out" "doc"))
     (arguments
      (list
+      #:install-plan
+      (let ((target (format #f "xml/xsl/~a-~a/" name version))
+            (select-rx '("\\.xml$" "\\.xsl$" "\\.dtd$" "\\.ent$")))
+        #~`(#$@(map
+                (lambda (directory)
+                  ;; XXX: When filters are used, the source basename
+                  ;; isn't kept under the target path, append it again.
+                  (let ((target* (string-append target directory)))
+                    (list directory target* #:include-regexp select-rx)))
+                (list "assembly" "common" "eclipse" "epub" "epub3" "fo"
+                      "highlighting" "html" "htmlhelp" "javahelp" "lib"
+                      "manpages" "params" "profiling" "roundtrip"
+                      "template" "website"
+                      "xhtml" "xhtml-1_1" "xhtml5"))
+            ("catalog.xml" #$target)
+            ("VERSION.xsl" #$target)))
       #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: The copy-build-system doesn't seem to allow installing to a
-          ;; different output.
-          (replace 'install
-            (lambda _
-              (let ((xml (string-append #$output "/xml/xsl/" #$name "-" #$version))
-                    (doc (string-append #$output:doc
-                                        "/share/doc/" #$name "-" #$version))
-                    (select-rx (make-regexp
-                                "(\\.xml$|\\.xsl$|\\.dtd$|\\.ent$)")))
-                ;; Install catalog.
-                (install-file "catalog.xml" xml)
-                (install-file "VERSION.xsl" xml)
-                (substitute* (string-append xml "/catalog.xml")
-                  (("rewritePrefix=\"./")
-                   (string-append "rewritePrefix=\"file://" xml "/")))
-                ;; Install style sheets.
-                (for-each (lambda (dir)
-                            (for-each (lambda (f)
-                                        (install-file
-                                         f (string-append xml "/" (dirname f))))
-                                      (find-files dir select-rx)))
-                          '("assembly" "common" "eclipse" "epub" "epub3" "fo"
-                            "highlighting" "html" "htmlhelp" "javahelp" "lib"
-                            "manpages" "params" "profiling" "roundtrip"
-                            "template" "website"
-                            "xhtml" "xhtml-1_1" "xhtml5"))
-                ;; Install documentation.
-                (install-file "NEWS" doc)
-                (install-file "RELEASE-NOTES.html" doc)
-                (copy-recursively "slides" doc)
-                (copy-recursively "webhelp" doc)))))))
+      #~(let ((dest-path (format #f "~a/xml/xsl/~a-~a"
+                                 #$output #$name #$version)))
+          (modify-phases %standard-phases
+            (add-before 'install 'patch-catalog-xml
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((xmlcatalog (search-input-file inputs
+                                                     "/bin/xmlcatalog"))
+                      (catalog-files (find-files "." "catalog\\.xml$"))
+                      (store-uri (string-append "file://" dest-path "/")))
+                  (for-each
+                   (lambda (catalog)
+                     (for-each
+                      (lambda (type)
+                        ;; Patch /current/ references to point to /gnu/store/….
+                        (invoke xmlcatalog "--noout"
+                                "--add" type
+                                "http://docbook.sourceforge.net/release/xsl-ns/current/"
+                                store-uri
+                                catalog)
+                        ;; Patch versioned references to point to /gnu/store/….
+                        (invoke xmlcatalog "--noout"
+                                "--add" type
+                                (format
+                                 #f "http://docbook.sourceforge.net/release/xsl-ns/~a/"
+                                 #$version)
+                                store-uri
+                                catalog))
+                      (list "rewriteSystem" "rewriteURI")))
+                   catalog-files))))
+            ;; XXX: The copy-build-system doesn't seem to allow installing to a
+            ;; different output.
+            (add-after 'install 'install-doc
+              (lambda _
+                (let ((doc (format #f "~a/share/doc/~a-~a"
+                                   #$output:doc #$name #$version)))
+                  (install-file "NEWS" doc)
+                  (install-file "RELEASE-NOTES.html" doc)
+                  (copy-recursively "slides" doc)
+                  (copy-recursively "webhelp" doc))))))))
+    (native-inputs (list libxml2))
     (home-page "https://docbook.org")
     (synopsis "DocBook XSL namespaced style sheets for document authoring")
     (description "This package provides the @emph{namespaced} XSL style sheets
