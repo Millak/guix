@@ -2804,8 +2804,8 @@ much more.")
 
 (define-public recastnavigation
   ;; We follow master since there hasn't been a release since 1.5.1 in 2016.
-  (let ((commit "c5cbd53024c8a9d8d097a4371215e3342d2fdc87")
-        (revision "1"))
+  (let ((commit "6d1f9711b3b71f28c2c1c0742d76e0ef8766cf91")
+        (revision "2"))
     (package
       (name "recastnavigation")
       (version (git-version "1.5.1" revision commit))
@@ -2817,7 +2817,7 @@ much more.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "034bm47gc3r285w1pnvkhmm74zz99d204b1r865gisaiq4qfbza0"))))
+                  "0cqp0sbm0ixqnxqz6gf2gybh5l4az91mdsd8b5bgxs1wpl2jmnga"))))
       (build-system cmake-build-system)
       (arguments
        `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
