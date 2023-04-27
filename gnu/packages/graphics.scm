@@ -1464,11 +1464,11 @@ in Julia).")
 (define-public openmw-openscenegraph
   ;; OpenMW prefers its own fork of openscenegraph:
   ;; https://wiki.openmw.org/index.php?title=Development_Environment_Setup#OpenSceneGraph.
-  (let ((commit "36a962845a2c87a6671fd822157e0729d164e940"))
+  (let ((commit "69cfecebfb6dc703b42e8de39eed750a84a87489"))
     (hidden-package
      (package
        (inherit openscenegraph)
-       (version (git-version "3.6" "1" commit))
+       (version (git-version "3.6" "2" commit))
        (outputs (list "out"))
        (source
         (origin
@@ -1479,7 +1479,7 @@ in Julia).")
           (file-name (git-file-name (package-name openscenegraph) version))
           (sha256
            (base32
-            "05yhgq3qm5q277y32n5sf36vx5nv5qd3zlhz4csgd3a6190jrnia"))))
+            "1qayk2gklm8zvss90dcjfxv6717rvcmwmgmgyy1qzkli67a0zbw2"))))
        (arguments
         (substitute-keyword-arguments (package-arguments openscenegraph)
           ((#:configure-flags flags)
@@ -1487,14 +1487,14 @@ in Julia).")
            #~(append
               '("-DBUILD_OSG_PLUGINS_BY_DEFAULT=0"
                 "-DBUILD_OSG_PLUGIN_OSG=1"
+                "-DBUILD_OSG_PLUGIN_DAE=1"
                 "-DBUILD_OSG_PLUGIN_DDS=1"
                 "-DBUILD_OSG_PLUGIN_TGA=1"
                 "-DBUILD_OSG_PLUGIN_BMP=1"
                 "-DBUILD_OSG_PLUGIN_JPEG=1"
                 "-DBUILD_OSG_PLUGIN_PNG=1"
-                "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0"
-                ;; The jpeg plugin requires conversion between integers and booleans
-                "-DCMAKE_CXX_FLAGS=-fpermissive")
+                "-DBUILD_OSG_PLUGIN_FREETYPE=1"
+                "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0")
               #$flags))
           ((#:phases phases)
            #~(modify-phases #$phases
@@ -2612,4 +2612,3 @@ environment.  It supports drawing freehand as well as basic shapes and text.
 It features cut-and-paste for irregular regions or polygons.")
     (home-page "https://www.gnu.org/software/gpaint/")
     (license license:gpl3+)))
-
