@@ -1498,7 +1498,7 @@ style API.")
 (define-public libwebsockets
   (package
     (name "libwebsockets")
-    (version "4.1.6")
+    (version "4.3.2")
     (source (origin
               ;; The project does not publish tarballs, so we have to take
               ;; things from Git.
@@ -1508,15 +1508,9 @@ style API.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0x56v4hsx92vm1zibfmnqb5g3v23kzciffn3fjlsc3sly2pknhsg"))
-              (file-name (string-append name "-" version))))
-
+                "0rxgb05f6jignb0y367rs88cla2s1ndd9jfl4ms77q8w0wnbq762"))
+              (file-name (git-file-name name version))))
     (build-system cmake-build-system)
-    (arguments
-     ;; XXX: The thing lacks a 'make test' target, because CMakeLists.txt
-     ;; doesn't use 'add_test', and it's unclear how to run the test suite.
-     '(#:tests? #f))
-
     (native-inputs (list perl))             ; to build the HTML doc
     (inputs (list zlib openssl))
     (synopsis "WebSockets library written in C")
