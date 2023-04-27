@@ -100,7 +100,7 @@ to statistics about the system on which it's run.")
 (define-public lxqt-build-tools
   (package
     (name "lxqt-build-tools")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
@@ -108,7 +108,7 @@ to statistics about the system on which it's run.")
                            "/download/" version
                            "/lxqt-build-tools-" version ".tar.xz"))
        (sha256
-        (base32 "0c4mm167hk0yihryi46d80ghxx2lwzkpivs4yj5wsfvdpbv5q1qh"))))
+        (base32 "1kjrxc1aj7yfn3v72lwryn58hkwsribsspm480qg4qbw1nfijg7x"))))
     (build-system cmake-build-system)
     (arguments
      (list
