@@ -541,22 +541,22 @@ astropy related packages.")
 (define-public python-pytest-arraydiff
   (package
     (name "python-pytest-arraydiff")
-    (version "0.3")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-arraydiff" version))
        (sha256
-        (base32 "05bcvhh2ycxa35znl8b3l9vkcmx7vwm5c3fpakbpw46c7vsn4bfy"))))
+        (base32 "1livzfbi7ag17hskd5845dh1kdir24f7jrbw8y2s1pyhzyz4jhbi"))))
     (build-system python-build-system)
     (arguments
      ;; Tests require python-astropy, which itself requires this package.
      ;; Disable tests to avoid the circular dependency problem.
      '(#:tests? #f))
     (native-inputs
-     (list python-pytest)) ; for sanity-check
+     (list python-pytest python-setuptools-scm)) ; for sanity-check
     (propagated-inputs
-     (list python-numpy python-six))
+     (list python-numpy))
     (home-page "https://github.com/astropy/pytest-arraydiff")
     (synopsis "Pytest plugin to help with comparing array output from tests")
     (description
