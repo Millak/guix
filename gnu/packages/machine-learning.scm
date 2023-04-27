@@ -1520,23 +1520,20 @@ and a few related numerical optimization tools.")
 (define-public python-cmaes
   (package
     (name "python-cmaes")
-    (version "0.8.2")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch) ;no tests in PyPI
        (uri (git-reference
-             (url "https://github.com/CyberAgent/cmaes")
+             (url "https://github.com/CyberAgentAILab/cmaes")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1jyckaifir528dz6m95nvky8hvqmz5gz6dlp65baahhbca0danzb"))
+        (base32 "1f3143w8ii6i93bdh65iazrq1lryccd805ndnqww5l8h7qnnzpkm"))
        (file-name (git-file-name name version))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-setuptools ;build fails without this
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/CyberAgent/cmaes")
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hypothesis))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/CyberAgentAILab/cmaes")
     (synopsis "CMA-ES implementation for Python")
     (description "This package provides provides an implementation of the
 Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
