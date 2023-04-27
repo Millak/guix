@@ -538,14 +538,14 @@ of other programs.")
 (define-public lxqt-policykit
   (package
     (name "lxqt-policykit")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "01wyqhrapim0pzkghr54g0z8drhlmcszwpb6p8qfqds90k1vq6gc"))))
+        (base32 "051lb4kx29rx3ls3whlrbi83r9z9pdiqwyb1wbni56aqilv0svh0"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
