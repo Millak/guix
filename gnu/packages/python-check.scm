@@ -633,27 +633,19 @@ for interactively selecting and running Pytest tests.")
 (define-public python-pytest-filter-subpackage
   (package
     (name "python-pytest-filter-subpackage")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-filter-subpackage" version))
        (sha256
-        (base32 "1s4s2kd31yc65rfvl4xhy8xx806xhy59kc7668h6b6wq88xgrn5p"))))
-    (build-system python-build-system)
-    (arguments
-     '(;; One test is failing. There's an issue reported upstream. See
-       ;; https://github.com/astropy/pytest-filter-subpackage/issues/3.
-       ;; Disable it for now.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k" "not test_with_rst"))))))
+        (base32 "10hpl3f7g2bm29lakmp8492b7lr0dp90khfni12m4gl02xks7bhz"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-doctestplus))
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-setuptools-scm))
     (home-page "https://github.com/astropy/pytest-filter-subpackage")
     (synopsis "Pytest plugin for filtering based on sub-packages")
     (description
