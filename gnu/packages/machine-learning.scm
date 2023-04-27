@@ -3088,7 +3088,7 @@ that:
       (native-inputs
        (list googletest))
       (inputs
-       (append (list openssl)
+       (append (list openssl-1.1)
                (if (supported-package? rdma-core)
                    (list rdma-core)
                    '())))
