@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Raphaël Mélotte <raphael.melotte@mind.be>
@@ -389,16 +389,17 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
 (define-public yubico-piv-tool
   (package
     (name "yubico-piv-tool")
-    (version "1.6.1")
+    (version "2.3.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://developers.yubico.com/yubico-piv-tool/Releases/"
-                    name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Yubico/yubico-piv-tool/")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "10xgdc51xvszkxmsvqnbjs8ixxz7rfnfahh3wn8glllynmszbhwi"))))
-    (build-system gnu-build-system)
+                "0gxrn2yzs907h22233s2337j5zb8mvygvk0z2macl4rf8w6qf4vk"))))
+    (build-system cmake-build-system)
     (inputs
      (list gengetopt perl pcsc-lite openssl))
     (native-inputs
