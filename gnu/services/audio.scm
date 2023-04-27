@@ -362,15 +362,18 @@ open. This may be useful for streaming servers, when you don’t want to
 disconnect all listeners even when playback is accidentally stopped.")
 
   (mixer-type
-   (string "none")
-   "This field accepts a string that specifies which mixer should be used
-for this audio output: the @code{hardware} mixer, the @code{software}
-mixer, the @code{null} mixer (allows setting the volume, but with no
-effect; this can be used as a trick to implement an external mixer
-External Mixer) or no mixer (@code{none})."
+   maybe-string
+   "This field accepts a string that specifies which mixer should be used for
+this audio output: the @code{hardware} mixer, the @code{software} mixer, the
+@code{null} mixer (allows setting the volume, but with no effect; this can be
+used as a trick to implement an external mixer External Mixer) or no
+mixer (@code{none}).  When left unspecified, a @code{hardware} mixer is used
+for devices that support it."
    (sanitizer
     (lambda (x)  ; TODO: deprecated, remove me later.
       (cond
+       ((eq? %unset-value x)
+        x)
        ((symbol? x)
         (warning (G_ "symbol value for 'mixer-type' is deprecated, \
 use string instead~%"))
