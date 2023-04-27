@@ -5291,31 +5291,7 @@ modules:
        (file-name (git-file-name name version))
        (sha256
         (base32 "0zyc48vbmczpqj7f3f0d7zb3bz29fyj50dg0m6bbwbr5i88kq3sq"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             ;; A ZIP archive should be generated, but it fails with "ZIP does
-             ;; not support timestamps before 1980".  Luckily,
-             ;; SOURCE_DATE_EPOCH is respected, which we set to some time in
-             ;; 1980.
-             (setenv "SOURCE_DATE_EPOCH" "315532800")
-             (invoke "flit" "build")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (wheel)
-                           (format #true wheel)
-                           (invoke "python" "-m" "pip" "install"
-                                   wheel (string-append "--prefix=" out)))
-                         (find-files "dist" "\\.whl$")))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv"))))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-webencodings))
     (native-inputs
