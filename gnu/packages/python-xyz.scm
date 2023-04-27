@@ -5098,7 +5098,9 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
                (base32
                 "0ja8q6mdj6xv62jjw3phv8j5nfqi5x8hnfy4pqfcjcgz4b34k8sl"))))
     ;; tests contain Python 2 syntax.
-    (arguments '(#:tests? #false))))
+    (arguments '(#:tests? #false))
+    (native-inputs
+     (list python-setuptools-57))))
 
 (define-public python-docx
   (package
