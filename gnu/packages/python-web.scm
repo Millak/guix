@@ -708,7 +708,7 @@ Model} (SAM) templates into AWS CloudFormation templates.")
 (define-public python-aws-xray-sdk
   (package
     (name "python-aws-xray-sdk")
-    (version "2.9.0")
+    (version "2.12.0")
     (home-page "https://github.com/aws/aws-xray-sdk-python")
     (source (origin
               (method git-fetch)
@@ -716,54 +716,48 @@ Model} (SAM) templates into AWS CloudFormation templates.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04fyik5axbilj2g9fzhhw8ch8xfn7iai3j6myk7z4g26m1mrhxsi"))))
-    (build-system python-build-system)
+                "0082q89dq5ww0a7q7rnyhywqvy4i8h3c0mnj7ilv3b0indhkasl8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-tests
-                    (lambda _
-                      (for-each delete-file
-                                '(;; These tests require packages not yet in Guix.
-                                  "tests/ext/aiobotocore/test_aiobotocore.py"
-                                  "tests/ext/aiohttp/test_middleware.py"
-                                  "tests/ext/pg8000/test_pg8000.py"
-                                  "tests/ext/psycopg2/test_psycopg2.py"
-                                  "tests/ext/pymysql/test_pymysql.py"
-                                  "tests/ext/pynamodb/test_pynamodb.py"
-                                  "tests/ext/sqlalchemy_core/test_postgres.py"
-                                  "tests/test_async_recorder.py"
-
-                                  ;; FIXME: Why is this failing?
-                                  "tests/test_patcher.py"
-
-                                  ;; TODO: How to configure Django for these tests.
-                                  "tests/ext/django/test_db.py"
-                                  "tests/ext/django/test_middleware.py"
-                                  "tests/ext/django/test_settings.py"
-
-                                  ;; These tests want to access httpbin.org.
-                                  "tests/ext/requests/test_requests.py"
-                                  "tests/ext/httplib/test_httplib.py"
-                                  "tests/ext/aiohttp/test_client.py"))))
-                  (replace 'check
-                    (lambda _
-                      ;; Allow "import tests.utils" to work as expected.
-                      (setenv "PYTHONPATH" (getcwd))
-                      (invoke "pytest" "-vv" "tests"
-                              "-k"
-                              ;; These tests fail because "fixture 'benchmark'
-                              ;; not found"
-                              (string-append
-                               "not test_pkgutil_static_read"
-                               " and not test_pkg_resources_static_read")))))))
+     (list
+      #:test-flags
+      '(list ;; Tries to connect to external network resources
+             "--ignore=tests/ext/httpx"
+             ;; TODO: How to configure Django for these tests?
+             "--ignore=tests/ext/django"
+             ;; These tests require packages not yet in Guix.
+             "--ignore=tests/ext/aiobotocore/test_aiobotocore.py"
+             "--ignore=tests/ext/aiohttp/test_middleware.py"
+             "--ignore=tests/ext/pg8000/test_pg8000.py"
+             "--ignore=tests/ext/psycopg2/test_psycopg2.py"
+             "--ignore=tests/ext/pymysql/test_pymysql.py"
+             "--ignore=tests/ext/pynamodb/test_pynamodb.py"
+             "--ignore=tests/ext/sqlalchemy_core/test_postgres.py"
+             "--ignore=tests/test_async_recorder.py"
+             ;; FIXME: Why is this failing?
+             "--ignore=tests/test_patcher.py"
+             ;; These tests want to access httpbin.org.
+             "--ignore=tests/ext/requests/test_requests.py"
+             "--ignore=tests/ext/httplib/test_httplib.py"
+             "--ignore=tests/ext/aiohttp/test_client.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Allow "import tests.utils" to work as expected.
+             (setenv "PYTHONPATH" (getcwd)))))))
     (native-inputs
      (list ;; These are required for the test suite.
            python-bottle
            python-flask
            python-flask-sqlalchemy
+           python-httpx
+           python-mock
            python-pymysql
            python-pytest
            python-pytest-aiohttp
+           python-pytest-asyncio
+           python-pytest-benchmark
            python-requests
            python-sqlalchemy
            python-webtest))
