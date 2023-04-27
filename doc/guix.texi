@@ -34294,9 +34294,9 @@ syslog daemon or @code{%unset-value} to omit this directive from the
 configuration file.
 
 @item @code{log-level} (type: maybe-string)
-Suppress any messages below this threshold.  Available values:
-@code{notice}, @code{info}, @code{verbose}, @code{warning} and
-@code{error}.
+Supress any messages below this threshold.  The available values, in
+decreasing order of verbosity, are: @code{verbose}, @code{info},
+@code{notice}, @code{warning} and @code{error}.
 
 @item @code{music-directory} (type: maybe-string)
 The directory to scan for music files.

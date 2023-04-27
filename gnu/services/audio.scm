@@ -432,8 +432,8 @@ from the configuration file.")
   (log-level
    maybe-string
    "Supress any messages below this threshold.
-Available values: @code{notice}, @code{info}, @code{verbose},
-@code{warning} and @code{error}.")
+The available values, in decreasing order of verbosity, are: @code{verbose},
+@code{info}, @code{notice}, @code{warning} and @code{error}.")
 
   (music-directory
    maybe-string
