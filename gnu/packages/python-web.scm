@@ -2131,21 +2131,14 @@ set out in RFC 7540 Section 5.3 (Stream Priority).")
 (define-public python-wsproto
   (package
     (name "python-wsproto")
-    (version "0.15.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wsproto" version))
        (sha256
-        (base32 "17gsxlli4w8am1wwwl3k90hpdfa213ax40ycbbvb7hjx1v1rhiv1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "test"))))))
+        (base32 "0rahm1j9danv1l6i6as80acwv16ycihxkhrvwjiqh9drxhk5ymmd"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest))
     (propagated-inputs
