@@ -393,7 +393,7 @@ bindings and many of the powerful features of GNU Emacs.")
            clang-11               ;XXX: must be the same version as Mesas LLVM
            gtkmm-3
            gtksourceviewmm
-           json-modern-cxx
+           nlohmann-json
            libgit2
            universal-ctags))
     (synopsis "Lightweight C++ IDE")

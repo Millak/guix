@@ -2325,7 +2325,7 @@ QMatrixClient project.")
      (list boost
            coeurl
            curl
-           json-modern-cxx
+           nlohmann-json
            libevent
            libsodium
            olm
@@ -2408,7 +2408,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            gst-plugins-base
            gst-plugins-bad              ; sdp & webrtc for voip
            gst-plugins-good-qt          ; rtpmanager for voip
-           json-modern-cxx
+           nlohmann-json
            libevent
            libnice                      ; for voip
            olm

@@ -2535,7 +2535,7 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
     (native-inputs
      (list cxxopts
            help2man
-           json-modern-cxx))
+           nlohmann-json))
     (inputs
      (list alembic
            assimp

@@ -1059,7 +1059,7 @@ technology, such as head mounted displays with built in head tracking.")
                   (string-append #$(this-package-input "hueplusplus")
                                  "/include/hueplusplus"))
                  (("dependencies/json")
-                  (string-append #$(this-package-input "json-modern-cxx")
+                  (string-append #$(this-package-input "nlohmann-json")
                                  "/include/nlohmann")))))
            ;; Call qmake instead of configure to create a Makefile.
            (replace 'configure
@@ -1067,7 +1067,7 @@ technology, such as head mounted displays with built in head tracking.")
     (inputs
      (list hidapi
            hueplusplus
-           json-modern-cxx
+           nlohmann-json
            libusb
            mbedtls-apache
            qtbase-5))

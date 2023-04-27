@@ -5013,7 +5013,7 @@ a Gtk.Grid Widget.")
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
-           ;; TODO: Unbundle json (json-modern-cxx).
+           ;; TODO: Unbundle json (nlohmann-json).
            #~(list (string-append "-DQSCINTILLA_INCLUDE_DIR="
                                   #$(this-package-input "qscintilla")
                                   "/include/Qsci")

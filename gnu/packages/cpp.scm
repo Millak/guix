@@ -596,9 +596,9 @@ converting data between JSON representation and C++ structs.  DTO stands for
 data transfer object.")
     (license license:bsd-3)))
 
-(define-public json-modern-cxx
+(define-public nlohmann-json
   (package
-    (name "json-modern-cxx")
+    (name "nlohmann-json")
     (version "3.10.5")
     (home-page "https://github.com/nlohmann/json")
     (source
@@ -662,9 +662,12 @@ data transfer object.")
     (inputs
      (list doctest fifo-map))
     (synopsis "JSON parser and printer library for C++")
-    (description "JSON for Modern C++ is a C++ JSON library that provides
+    (description "@code{nlohmann::json} is a C++ JSON library that provides
 intuitive syntax and trivial integration.")
     (license license:expat)))
+
+(define-public json-modern-cxx
+  (deprecated-package "json-modern-cxx" nlohmann-json))
 
 (define-public xtl
   (package
@@ -681,7 +684,7 @@ intuitive syntax and trivial integration.")
                 "134pgvmf9cx5dxs0m0m3qhp3m3r1gl86ic3xax21zc4sdj8sdq46"))
               (file-name (git-file-name name version))))
     (native-inputs
-     (list doctest googletest json-modern-cxx))
+     (list doctest googletest nlohmann-json))
     (arguments
      '(#:configure-flags
        '("-DBUILD_TESTS=ON")
@@ -1860,7 +1863,7 @@ of reading and writing XML.")
     (native-inputs
      (list googletest pkg-config))
     (inputs
-     (list json-modern-cxx))
+     (list nlohmann-json))
     (home-page "https://jsonnet.org/")
     (synopsis "Data templating language")
     (description "Jsonnet is a templating language extending JSON
