@@ -1584,7 +1584,7 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.16.1")
+    (version "0.16.2")
     (source
      (origin
        (method git-fetch)
@@ -1593,7 +1593,7 @@ functionality to display information about the most commonly used services.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11kcica9waj1a1xgbi12gif9z5z0b4xzycbcgawbgdmj77pws8sk"))))
+        (base32 "1m12nv6avgnz626h3giqp6gcx44w1wq6z0jy780mx8z255ic7q15"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -1628,7 +1628,7 @@ functionality to display information about the most commonly used services.")
      (list
        `(,hwdata "pnp")
        pkg-config))
-    (home-page "https://github.com/swaywm/wlroots")
+    (home-page "https://gitlab.freedesktop.org/wlroots/wlroots/")
     (synopsis "Pluggable, composable, unopinionated modules for building a
 Wayland compositor")
     (description "wlroots is a set of pluggable, composable, unopinionated
