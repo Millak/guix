@@ -14,7 +14,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
@@ -226,6 +226,30 @@ operators to manipulate and analyse climate and NWP model data.  Supported
 data formats are GRIB 1/2, netCDF 3/4, SERVICE, EXTRA and IEG.  There are more
 than 600 operators available.")
     (license license:bsd-3)))
+
+(define-public h3
+  (package
+    (name "h3")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber/h3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x764xzna8ka6yhgv2y4hb158a61y3g9a6835qckqp7wfkpqvb7f"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://h3geo.org/")
+    (synopsis "Hexagonal hierarchical geospatial indexing system")
+    (description "H3 is a geospatial indexing system using a hexagonal grid
+that can be (approximately) subdivided into finer and finer hexagonal grids,
+combining the benefits of a hexagonal grid with S2's hierarchical
+subdivisions.")
+    (license license:asl2.0)))
 
 (define-public memphis
   (package
