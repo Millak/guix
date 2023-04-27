@@ -2233,7 +2233,10 @@ hashing scheme (such as scrypt) plug-in for @code{Dovecot}.")
        (uri (string-append "mirror://sourceforge/isync/isync/"
                            version "/isync-" version ".tar.gz"))
        (sha256 (base32
-                "1zq0wwvmqsl9y71546dr0aygzn9gjjfiw19hlcq87s929y4p6ckw"))))
+                "1zq0wwvmqsl9y71546dr0aygzn9gjjfiw19hlcq87s929y4p6ckw"))
+       (patches
+        ;; Likely to be included in next version
+        (search-patches "isync-openssl3-fix.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl))
