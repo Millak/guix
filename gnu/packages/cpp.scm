@@ -1363,7 +1363,7 @@ services including database, analytic, and machine learning technologies.")
 (define-public libexpected
   (package
     (name "libexpected")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1374,18 +1374,10 @@ services including database, analytic, and machine learning technologies.")
              ;; repository. Should not affect reproducibility.
              (recursive? #t)))
        (file-name (git-file-name name version))
-       ;; NOTE: This patch will be unnecessary on subsequent tags.
-       (patches (search-patches "libexpected-nofetch.patch"))
        (sha256
-        (base32 "1ckzfrljzzdw9wf8hvdfjz4wjx5na57iwxc48mbv9rf5067m21a5"))))
+        (base32 "17akrv80h0n4cfmxwvlvbb8ycqza7y3qqygjyphv95rrabqm9r02"))
+       (patches (search-patches "libexpected-use-provided-catch2.patch"))))
     (build-system cmake-build-system)
-    ;; TODO: Clean up install phase.
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "./tests"))))))
     (native-inputs
      (list catch2))
     (synopsis "C++11/14/17 std::expected with functional-style extensions")

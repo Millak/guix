@@ -1,0 +1,43 @@
+From 8f03ca270d1aa5dcafa945c941cf52ff14cb47da Mon Sep 17 00:00:00 2001
+Message-Id: <8f03ca270d1aa5dcafa945c941cf52ff14cb47da.1682600200.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Thu, 27 Apr 2023 14:51:51 +0200
+Subject: [PATCH] Use provided catch2
+
+From: Josselin Poiret <dev@jpoiret.xyz>
+
+---
+ CMakeLists.txt | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ddab64e..2d5eac8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,7 +8,6 @@ project(tl-expected
+ include(CMakePackageConfigHelpers)
+ include(CMakeDependentOption)
+ include(GNUInstallDirs)
+-include(FetchContent)
+ include(CTest)
+ 
+ if (NOT DEFINED CMAKE_CXX_STANDARD)
+@@ -63,14 +62,7 @@ install(FILES
+ install(DIRECTORY "include/" TYPE INCLUDE)
+ 
+ if(EXPECTED_BUILD_TESTS)
+-  set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+-  set(CATCH_INSTALL_HELPERS OFF)
+-  set(CATCH_BUILD_TESTING OFF)
+-  set(CATCH_INSTALL_DOCS OFF)
+-  FetchContent_Declare(Catch2 URL
+-    https://github.com/catchorg/Catch2/archive/v2.13.10.zip) 
+-  FetchContent_MakeAvailable(Catch2)
+-
++  find_package(Catch2 CONFIG)
+   file(GLOB test-sources CONFIGURE_DEPENDS tests/*.cpp)
+   list(FILTER test-sources EXCLUDE REGEX "tests/test.cpp")
+   add_executable(${PROJECT_NAME}-tests "${test-sources}")
+-- 
+2.39.2
+
