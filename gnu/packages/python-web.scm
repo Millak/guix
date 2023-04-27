@@ -7570,7 +7570,7 @@ classes) used by all of the @code{google-cloud-*} packages.")
                           "tests/conformance/"))
                (invoke "pytest")))))))
     (native-inputs
-     (list python-pytest python-test-utils))
+     (list python-mock python-pytest python-test-utils))
     (propagated-inputs
      (list python-google-api-core
            python-google-auth
