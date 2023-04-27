@@ -17220,11 +17220,13 @@ sequences to accelerate the alignment process.")
               ((".*smithwaterman.*") "")
               (("(pkg_check_modules\\(TABIXPP)" text)
                (string-append
+                "pkg_check_modules(WFA2 REQUIRED libwfa2)\n"
                 "pkg_check_modules(FASTAHACK REQUIRED fastahack)\n"
                 "pkg_check_modules(SMITHWATERMAN REQUIRED smithwaterman)\n"
                 text))
               (("\\$\\{TABIXPP_LIBRARIES\\}" text)
                (string-append "${FASTAHACK_LIBRARIES} "
+                              "${WFA2_LIBRARIES} "
                               "${SMITHWATERMAN_LIBRARIES} "
                               text)))
             (substitute* (find-files "." "\\.(h|c)(pp)?$")
@@ -17244,9 +17246,10 @@ sequences to accelerate the alignment process.")
            pybind11
            smithwaterman
            tabixpp
-           wfa2-lib
            xz
            zlib))
+    (propagated-inputs
+     (list wfa2-lib))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ;; Submodules.
@@ -17262,7 +17265,6 @@ sequences to accelerate the alignment process.")
               "-DTABIXPP_LOCAL=OFF"
               "-DTABIX_FOUND=ON"
               "-DWFA_GITMODULE=OFF"
-              "-DWFA_LINK_LIBRARIES=-lwfa2cpp"
               (string-append "-DPKG_CONFIG_EXECUTABLE="
                              (search-input-file
                               %build-inputs (string-append
@@ -17270,7 +17272,7 @@ sequences to accelerate the alignment process.")
       #:tests? #f                       ; no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'find-wf2lib-headers
+          (add-after 'unpack 'find-wfa2lib-headers
             (lambda _
               (setenv "CPLUS_INCLUDE_PATH"
                       (string-append
@@ -17297,7 +17299,14 @@ sequences to accelerate the alignment process.")
                  (unpack "filevercmp-src" "contrib/filevercmp")
                  (unpack "fsom-src" "contrib/fsom")
                  (unpack "intervaltree-src" "contrib/intervaltree")
-                 (unpack "multichoose-src" "contrib/multichoose")))))
+                 (unpack "multichoose-src" "contrib/multichoose"))
+
+                ;; This is needed for downstream packages to allow building
+                ;; with GCC 11+.
+                (substitute* "contrib/intervaltree/IntervalTree.h"
+                  (("#include <vector>" m)
+                   (string-append m "
+#include <limits> /* std::numeric_limits */"))))))
           ;; This pkg-config file is provided by other distributions.
           (add-after 'install 'install-pkg-config-file
             (lambda _
@@ -17313,7 +17322,7 @@ includedir=${prefix}/include~@
 ~@
 Name: vcflib~@
 Version: ~a~@
-Requires: smithwaterman, fastahack, tabixpp~@
+Requires: libwfa2, smithwaterman, fastahack, tabixpp~@
 Description: C++ library for parsing and manipulating VCF files~@
 Libs: -L${libdir} -lvcflib~@
 Cflags: -I${includedir}~%"
