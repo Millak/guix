@@ -199,7 +199,7 @@ driver.")
 (define-public fwupd
   (package
     (name "fwupd")
-    (version "1.8.3")
+    (version "1.8.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -208,7 +208,7 @@ driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02jf052qj1nl47ppqrgz3s9qapq4pajgkf6lbj5rxr5sshlrw44n"))))
+                "179yc0nbbyrdya5q16ncf7lkslrhr3i90rgb9vdmv751ikilkby6"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -236,6 +236,15 @@ driver.")
               (substitute* "src/fu-self-test.c"
                 (("/bin/sh")
                  (which "sh")))))
+          ;; These two files are zipped by Python, so need a newer timestamp.
+          (add-after 'unpack 'newer-timestamps-for-python-zip
+            (lambda _
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (for-each (lambda (file)
+                            (make-file-writable file)
+                            (utime file circa-1980 circa-1980))
+                          '("./libfwupdplugin/tests/colorhug/firmware.bin"
+                            "./libfwupdplugin/tests/colorhug/firmware.bin.asc")))))
           (add-before 'build 'setup-home
             (lambda _
               (setenv "HOME" "/tmp")))
