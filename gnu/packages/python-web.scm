@@ -1384,21 +1384,14 @@ for use in Python programs that implement HTTP/2.")
 (define-public python-h11
   (package
     (name "python-h11")
-    (version "0.12.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "h11" version))
        (sha256
-        (base32 "0hk0nll6qazsambp3kl8cxxsbl4gv5y9252qadyk0jky0sv2q8j7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+        (base32 "17b97c56y31hi0n0x0cb5a87x4xr9jijf2y06pzj0977k6zgn6cg"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/python-hyper/h11")
