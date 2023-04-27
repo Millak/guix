@@ -253,6 +253,18 @@ user-group instead~%"))
         (else
          (configuration-field-error #f 'group value))))
 
+(define (mpd-log-file-sanitizer value)
+  (match value
+    (%unset-value
+     ;; XXX: While leaving the 'sys_log' option out of the mpd.conf file is
+     ;; supposed to cause logging to happen via systemd (elogind provides a
+     ;; compatible interface), this doesn't work (nothing gets logged); use
+     ;; syslog instead.
+     "syslog")
+    ((? string?)
+     value)
+    (_ (configuration-field-error #f 'log-file value))))
+
 ;;;
 
 ;; Generic MPD plugin record, lists only the most prevalent fields.
@@ -425,10 +437,11 @@ will depend on."
    empty-serializer)
 
   (log-file
-   (maybe-string "/var/log/mpd/log")
-   "The location of the log file. Set to @code{syslog} to use the
-local syslog daemon or @code{%unset-value} to omit this directive
-from the configuration file.")
+   maybe-string
+   "The location of the log file.  Unless specified, logs are sent to the
+local syslog daemon.  Alternatively, a log file name can be specified, for
+example @file{/var/log/mpd.log}."
+   (sanitizer mpd-log-file-sanitizer))
 
   (log-level
    maybe-string
@@ -585,7 +598,11 @@ appended to the configuration.")
           (username (user-account-name user)))
       (shepherd-service
        (documentation "Run the MPD (Music Player Daemon)")
-       (requirement `(user-processes loopback ,@shepherd-requirement))
+       (requirement `(user-processes loopback
+                                     ,@(if (string=? "syslog" log-file)
+                                           '(syslogd)
+                                           '())
+                                     ,@shepherd-requirement))
        (provision '(mpd))
        (start
         (with-imported-modules (source-module-closure
@@ -721,8 +738,15 @@ user-group instead~%"))
           (name value)))
         (else
          (configuration-field-error #f 'group value))))
-;;;
 
+(define (mympd-log-to-sanitizer value)
+  (match value
+    ('syslog
+     (warning (G_ "syslog symbol value for 'log-to' is deprecated~%"))
+     %unset-value)
+    ((or %unset-value (? string?))
+     value)
+    (_ (configuration-field-error #f 'log-to value))))
 
 ;; XXX: The serialization procedures are insufficient since we require
 ;; access to multiple fields at once.
@@ -787,10 +811,11 @@ will depend on."
    "How much detail to include in logs, possible values: @code{0} to @code{7}.")
 
   (log-to
-   (string-or-symbol "/var/log/mympd/log")
-   "Where to send logs. By default, the service logs to
-@file{/var/log/mympd.log}. The alternative is @code{'syslog}, which
-sends output to the running syslog service under the @samp{daemon} facility."
+   maybe-string
+   "Where to send logs.  Unless specified, the service logs to the local
+syslog service under the @samp{daemon} facility.  Alternatively, a log file
+name can be specified, for example @file{/var/log/mympd.log}."
+   (sanitizer mympd-log-to-sanitizer)
    empty-serializer)
 
   (lualibs
@@ -887,9 +912,9 @@ prompting a pin from the user.")
     (shepherd-service
      (documentation "Run the myMPD daemon.")
      (requirement `(loopback user-processes
-                             ,@(if (eq? log-to 'syslog)
-                                   '(syslog)
-                                   '())
+                             ,@(if (maybe-value-set? log-to)
+                                   '()
+                                   '(syslogd))
                              ,@shepherd-requirement))
      (provision '(mympd))
      (start
@@ -905,16 +930,12 @@ prompting a pin from the user.")
                   (unless (file-exists? directory)
                     (mkdir-p/perms directory user #o755)))
 
-                (for-each
-                 init-directory
-                 '#$(map dirname
-                         ;; XXX: Delete the potential 'syslog log-file value,
-                         ;; which is not a directory.
-                         (delete 'syslog
-                                 (filter-map maybe-value
-                                             (list log-to
-                                                   work-directory
-                                                   cache-directory))))))
+                (for-each init-directory
+                          '#$(map dirname (filter-map maybe-value
+                                                      (list log-to
+                                                            work-directory
+                                                            cache-directory)))))
+
               (make-forkexec-constructor
                `(#$(file-append package "/bin/mympd")
                  "--user" #$username
@@ -923,7 +944,7 @@ prompting a pin from the user.")
                  "--cachedir" #$cache-directory)
                #:environment-variables
                (list #$(format #f "MYMPD_LOGLEVEL=~a" log-level))
-               #:log-file #$(if (string? log-to) log-to #f)))))))))
+               #:log-file #$(maybe-value log-to)))))))))
 
 (define (mympd-accounts config)
   (match-record config <mympd-configuration> (user group)
@@ -934,8 +955,9 @@ prompting a pin from the user.")
       (list user group))))
 
 (define (mympd-log-rotation config)
-  (match-record config <mympd-configuration> (log-to)
-    (if (string? log-to)
+  (match-record config <mympd-configuration>
+    (log-to)
+    (if (maybe-value-set? log-to)
         (list (log-rotation
                (files (list log-to))))
         '())))

@@ -34288,10 +34288,10 @@ will depend on.
 @item @code{environment-variables} (default: @code{'("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")}) (type: list-of-strings)
 A list of strings specifying environment variables.
 
-@item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
-The location of the log file.  Set to @code{syslog} to use the local
-syslog daemon or @code{%unset-value} to omit this directive from the
-configuration file.
+@item @code{log-file} (type: maybe-string)
+The location of the log file.  Unless specified, logs are sent to the
+local syslog daemon.  Alternatively, a log file name can be specified,
+for example @file{/var/log/mpd.log}.
 
 @item @code{log-level} (type: maybe-string)
 Supress any messages below this threshold.  The available values, in
@@ -34565,11 +34565,10 @@ HTTP port to listen on.
 How much detail to include in logs, possible values: @code{0} to
 @code{7}.
 
-@item @code{log-to} (default: @code{"/var/log/mympd/log"}) (type: string-or-symbol)
-Where to send logs.  By default, the service logs to
-@file{/var/log/mympd.log}.  The alternative is @code{'syslog}, which
-sends output to the running syslog service under the @samp{daemon}
-facility.
+@item @code{log-to} (type: maybe-string)
+Where to send logs.  Unless specified, the service logs to the local
+syslog service under the @samp{daemon} facility.  Alternatively, a log
+file name can be specified, for example @file{/var/log/mympd.log}.
 
 @item @code{lualibs} (default: @code{"all"}) (type: maybe-string)
 See
