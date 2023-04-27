@@ -831,24 +831,25 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
 (define-public python-pytest-mpl
   (package
     (name "python-pytest-mpl")
-    (version "0.11")
+    (version "0.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mpl" version))
        (sha256
-        (base32 "1km202c1s5kcn52fx0266p06qb34va3warcby594dh6vixxa9i96"))))
-    (build-system python-build-system)
+        (base32 "0sa4229xkkah3fdg9wnqnvb9j13xsd3x1h5rwbsgb3sf2a0icmrd"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+     (list
+      #:test-flags #~(list "-m" "mpl_image_compare")))
     (native-inputs
      (list python-pytest))
     (propagated-inputs
-     (list python-matplotlib python-nose python-pillow))
+     (list python-jinja2
+           python-matplotlib
+           python-nose
+           python-packaging
+           python-pillow))
     (home-page "https://github.com/matplotlib/pytest-mpl")
     (synopsis "Pytest plugin to help with testing figures output from Matplotlib")
     (description
