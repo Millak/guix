@@ -7396,6 +7396,7 @@ server-to-server authentication mechanisms to access Google APIs.")
     (propagated-inputs (list python-google-crc32c))
     (native-inputs
      (list python-google-auth
+           python-mock
            python-pytest
            python-requests
            python-test-utils))
