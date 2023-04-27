@@ -17167,6 +17167,29 @@ library automatically handles index file generation and use.")
        (sha256
         (base32 "110s1s79z8ndjs4qdgmrj708iiaqyagia3gi2fxak101lg263diw"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This pkg-config file is provided by other distributions.
+          (add-after 'install 'install-pkg-config-file
+            (lambda _
+              (let ((pkgconfig (string-append #$output "/lib/pkgconfig")))
+                (mkdir-p pkgconfig)
+                (with-output-to-file (string-append pkgconfig "/libwfa2.pc")
+                  (lambda _
+                    (format #t "\
+prefix=~a~@
+exec_prefix=${prefix}~@
+libdir=${exec_prefix}/lib~@
+includedir=${prefix}/include/wfa2lib~@
+~@
+Name: libwfa2~@
+Version: ~a~@
+Description: Wavefront alignment algorithm library~@
+Libs: -L${libdir} -lwfa2 -lwfa2cpp~@
+Cflags: -I${includedir}~%"
+                            #$output #$version)))))))))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/smarco/WFA2-lib")
