@@ -735,30 +735,23 @@ were inadvertently left open at the end of a unit test.")
 (define-public python-pytest-remotedata
   (package
     (name "python-pytest-remotedata")
-    (version "0.3.2")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-remotedata" version))
        (sha256
-        (base32 "1h6g6shib6z07azf12rnsa053470ggbd7hy3bnbw8nf3nza5h372"))))
-    (build-system python-build-system)
+        (base32 "1j5106j331cfdyfcwzrbs3yby84mq1b0kddfysq12z2dwdcca8dy"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k"
-                     (string-append
-                      ;; These tests require internet access. Disable them.
-                      "not test_default_behavior"
-                      " and not test_strict_with_decorator")))))))
+     (list
+      #:test-flags #~(list "-k" (string-append
+                                 "not test_default_behavior"
+                                 " and not test_strict_with_decorator"))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs
-     (list python-six))
+     (list python-packaging))
     (home-page "https://github.com/astropy/pytest-remotedata")
     (synopsis "Pytest plugin for controlling remote data access")
     (description
