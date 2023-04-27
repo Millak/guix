@@ -17339,7 +17339,7 @@ manipulations on VCF files.")
 (define-public freebayes
   (package
     (name "freebayes")
-    (version "1.3.5")
+    (version "1.3.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17347,12 +17347,7 @@ manipulations on VCF files.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1l0z88gq57kva677a6xri5g9k2d9h9lk5yk1q2xmq64wqhv7dvc3"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively "contrib/htslib")
-                  #t))))
+               (base32 "163nd1xkq547za80khlys4qkgal64f3sgl6ap3yvik68r0rgyisv"))))
     (build-system meson-build-system)
     (inputs
      (list fastahack htslib smithwaterman tabixpp vcflib))
@@ -17392,25 +17387,27 @@ manipulations on VCF files.")
                (substitute* '("src/BedReader.cpp"
                               "src/BedReader.h")
                  (("../intervaltree/IntervalTree.h") "IntervalTree.h"))
+               ;; We don't have Perl support in grep -E.
+               (substitute* '("test/t/01_call_variants.t"
+                              "test/t/01b_call_variants.t")
+                 (("grep -P") "grep -E")
+                 (("\\\\t") "	"))
                (substitute* "meson.build"
                  ;; Our pkg-config file is vcflib.pc
                  (("libvcflib") "vcflib")
-                 (("vcflib_inc,") ""))
-               #t)))
+                 (("vcflib_inc,") "")))))
          (add-after 'unpack 'unpack-submodule-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "test/test-simple-bash")
              (copy-recursively (assoc-ref inputs "test-simple-bash-src")
-                               "test/test-simple-bash")
-             #t))
+                               "test/test-simple-bash")))
         ;; The slow tests take longer than the specified timeout.
         ,@(if (any (cute string=? <> (%current-system))
                    '("armhf-linux" "aarch64-linux"))
             '((replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "meson" "test" "--timeout-multiplier" "5"))
-                #t)))
+                (lambda* (#:key tests? #:allow-other-keys)
+                  (when tests?
+                    (invoke "meson" "test" "--timeout-multiplier" "5")))))
             '()))))
     (home-page "https://github.com/freebayes/freebayes")
     (synopsis "Haplotype-based variant detector")
