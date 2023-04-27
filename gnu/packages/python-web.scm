@@ -1848,25 +1848,22 @@ compliance with the specification.")
        (sha256
         (base32
          "1npsibyf8zx6z230yl19kyap8g25kqvgm7z1w6rm6jxv58yqsp7r"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
- (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests/unit"
-                        ;; Ignore Pytest configuration in setup.cfg that adds
-                        ;; unwanted flake8 and coverage options.
-                        "-c" "/dev/null"
-                        ;; This tests fails due to changes in Pytest; fixed
-                        ;; but not yet released upstream
-                        ;; (https://github.com/p1c2u/openapi-core/issues/158).
-                        "-k" "not test_string_format_invalid_value")))))))
+      #:test-flags
+      '(list "tests/unit"
+             ;; Ignore Pytest configuration in setup.cfg that adds
+             ;; unwanted flake8 and coverage options.
+             "-c" "/dev/null"
+             ;; This tests fails due to changes in Pytest; fixed
+             ;; but not yet released upstream
+             ;; (https://github.com/p1c2u/openapi-core/issues/158).
+             "-k" "not test_string_format_invalid_value")))
     (native-inputs (list python-django
                          python-falcon
                          python-flask
+                         python-mock
                          python-poetry-core
                          python-pypa-build
                          python-pytest
