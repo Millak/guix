@@ -19426,6 +19426,11 @@ module capable of computing base-level alignments for very large sequences.")
                              "|TestAnonymizer4"
                              "|TestPrinter1"
                              "|TestEcho"
+                             ;; The scanner tests depend on TestWriter output
+                             "|TestStrictScanner1"
+                             "|TestStrictScanner2_1"
+                             "|TestStrictScanner2"
+                             "|TestStrictScanner2_2"
                              "|TestFind'")
               "-DGDCM_DOCUMENTATION:BOOL=ON"
               "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
