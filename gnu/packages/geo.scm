@@ -251,6 +251,23 @@ combining the benefits of a hexagonal grid with S2's hierarchical
 subdivisions.")
     (license license:asl2.0)))
 
+;; For python-timezonefinder, remove it when it starts supporting newer
+;; version.
+(define-public h3-3
+  (package
+    (inherit h3)
+    (name "h3")
+    (version "3.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber/h3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bvsljfxmjvl23v9gxykc4aynjzh5xfy3wg02bxad7cknr1amx9j"))))))
+
 (define-public python-h3
   (package
     (name "python-h3")
@@ -304,6 +321,26 @@ subdivisions.")
     (description "This package provides a Python bindings for H3, a
 hierarchical hexagonal geospatial indexing system")
     (license license:asl2.0)))
+
+;; For python-timezonefinder, remove it when it starts supporting newer
+;; version.
+(define-public python-h3-3
+  (package
+    (inherit python-h3)
+    (name "python-h3")
+    (version "3.7.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber/h3-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16gxa1sivghxw179rik87r918mjasars2qkzidlwq83qfa4axn20"))))
+    (inputs
+     (modify-inputs (package-inputs python-h3)
+       (replace "h3" h3-3)))))
 
 (define-public memphis
   (package
