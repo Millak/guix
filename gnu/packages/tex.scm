@@ -4386,6 +4386,8 @@ loading fonts by their proper names instead of file names.")
                  (delete-file-recursively
                   (string-append (assoc-ref outputs "out")
                                  "/share/texmf-dist/source/latex/amsmath/build"))))))))
+      (propagated-inputs
+       (list texlive-amsfonts))
       (home-page "https://www.ctan.org/pkg/amsmath")
       (synopsis "AMS mathematical facilities for LaTeX")
       (description
