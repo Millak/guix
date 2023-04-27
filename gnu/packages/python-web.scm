@@ -5916,7 +5916,7 @@ Some things HTTP Core does do:
 (define-public python-httpx
   (package
     (name "python-httpx")
-    (version "0.23.0")
+    (version "0.24.0")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5926,32 +5926,29 @@ Some things HTTP Core does do:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bihm7ylq9ajxz8qyba0xp9qkwm7n06hk01ywkq2vpz65ix5hpdk"))))
-    (build-system python-build-system)
+        (base32 "1b35ywrbdk8kcsfvr39gvfp7bvx00scqfigi8b19a1czhacsmc3q"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "-o" "asyncio_mode=auto"
-                       "-k"
-                       ;; These tests try to open an outgoing connection.
-                       (string-append
-                        "not test_connect_timeout"
-                        " and not test_that_send_cause_async_client_to_be_not_"
-                        "closed"
-                        " and not test_that_async_client_caused_warning_when_"
-                        "being_deleted"
-                        " and not test_that_send_cause_client_to_be_not_closed"
-                        " and not test_async_proxy_close"
-                        " and not test_sync_proxy_close"
-                        ;; This test is apparently incompatible with
-                        ;; python-click 8, fails with " AttributeError:
-                        ;; 'function' object has no attribute 'name'".
-                        " and not test_main"))))))))
+     (list
+      #:test-flags
+      '(list "-vv" "-o" "asyncio_mode=auto"
+             "-k"
+             ;; These tests try to open an outgoing connection.
+             (string-append
+              "not test_connect_timeout"
+              " and not test_that_send_cause_async_client_to_be_not_closed"
+              " and not test_that_async_client_caused_warning_when_being_deleted"
+              " and not test_that_send_cause_client_to_be_not_closed"
+              " and not test_async_proxy_close"
+              " and not test_sync_proxy_close"
+              ;; This test is apparently incompatible with
+              ;; python-click 8, fails with " AttributeError:
+              ;; 'function' object has no attribute 'name'".
+              " and not test_main"))))
     (native-inputs
      (list python-cryptography
+           python-hatchling
+           python-hatch-fancy-pypi-readme
            python-pytest
            python-pytest-asyncio
            python-pytest-trio
@@ -6013,7 +6010,9 @@ Plus all the standard features of requests:
    (package/inherit python-httpx
      (name "python-httpx-bootstrap")
      (arguments (list #:tests? #f))
-     (native-inputs '())
+     (native-inputs
+      (list python-hatchling
+            python-hatch-fancy-pypi-readme))
      (propagated-inputs
       (modify-inputs (package-propagated-inputs python-httpx)
         (replace "python-httpcore"  python-httpcore-bootstrap))))))
