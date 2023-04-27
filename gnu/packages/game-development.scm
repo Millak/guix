@@ -1776,7 +1776,8 @@ of use.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "19mcbnjl4279qalb97msf965bjax48mx1r1qczyvwhn28h6n3bsy"))))
+         "19mcbnjl4279qalb97msf965bjax48mx1r1qczyvwhn28h6n3bsy"))
+       (patches (search-patches "openmw-assume-nonconst-SIGSTKSZ.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No test target
