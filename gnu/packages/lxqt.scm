@@ -668,15 +668,14 @@ allows for launching applications or shutting down the system.")
 (define-public lxqt-session
   (package
     (name "lxqt-session")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0rjw3rw6kpaa3csrga005qg5bxmdxfgrnn1qngs2nrny35v97ckl"))
-       (patches (search-patches "lxqt-session-procps-4.patch"))))
+        (base32 "0xa5nqiq9mxwfynnw91i4c2cgpmpapl4nxys084nbs7yd88kbm2l"))))
     (build-system cmake-build-system)
     (inputs
      (list eudev
