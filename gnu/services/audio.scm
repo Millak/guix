@@ -143,7 +143,7 @@
 ;; Helpers for deprecated field types, to be removed later.
 (define %lazy-group (make-symbol "%lazy-group"))
 
-(define (%set-user-group user group)
+(define (set-user-group user group)
   (user-account
    (inherit user)
    (group (user-group-name group))))
@@ -636,7 +636,7 @@ MPD (PID ~a)." pid))
   (match-record config <mpd-configuration> (user group)
     ;; TODO: Deprecation code, to be removed.
     (let ((user (if (eq? (user-account-group user) %lazy-group)
-                    (%set-user-group user group)
+                    (set-user-group user group)
                     user)))
       (list user group))))
 
@@ -907,7 +907,7 @@ prompting a pin from the user.")
   (match-record config <mympd-configuration> (user group)
     ;; TODO: Deprecation code, to be removed.
     (let ((user (if (eq? (user-account-group user) %lazy-group)
-                    (%set-user-group user group)
+                    (set-user-group user group)
                     user)))
       (list user group))))
 
