@@ -4584,27 +4584,27 @@ dynamic programming or a variety of heuristics.")
                 "18nb22n7x820fzjngf4qgyb3mspqkw7xyk7v7s5ps6wfrd8qwscb"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-shared-boost-libs-and-set-bamtools-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("set\\(Boost_USE_STATIC_LIBS ON\\)")
-                "set(Boost_USE_STATIC_LIBS OFF)")
-               (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/bamtools/include")
-                (string-append (assoc-ref inputs "bamtools") "/include/bamtools")))
-             (substitute* "src/CMakeLists.txt"
-               (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/\\.\\./bamtools/lib")
-                (string-append (assoc-ref inputs "bamtools") "/lib"))
-               (("libprotobuf.a") "libprotobuf.so"))
-             #t))
-         (add-after 'unpack 'remove-update-check
-           (lambda _
-             (substitute* "src/main.cpp"
-               (("#include \"update_check.h\"") "")
-               (("check_version\\(PACKAGE_VERSION\\);") ""))
-             #t)))))
+     (list
+      #:tests? #f                     ;no "check" target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-shared-boost-libs-and-set-bamtools-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("set\\(Boost_USE_STATIC_LIBS ON\\)")
+                 "set(Boost_USE_STATIC_LIBS OFF)")
+                (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/bamtools/include")
+                 (search-input-directory inputs "/include/bamtools"))
+                (("\\$\\{PROJECT_SOURCE_DIR\\}/bamtools/lib/libbamtools.a")
+                 (search-input-file inputs "/lib/libbamtools.so"))
+                (("libbamtools.a") "libbamtools.so"))
+              (substitute* "src/CMakeLists.txt"
+                (("libprotobuf.a") "libprotobuf.so"))))
+          (add-after 'unpack 'remove-update-check
+            (lambda _
+              (substitute* "src/main.cpp"
+                (("#include \"update_check.h\"") "")
+                (("check_version\\(PACKAGE_VERSION\\);") "")))))))
     (inputs
      (list boost bamtools protobuf zlib))
     (home-page "http://bio.math.berkeley.edu/eXpress")
