@@ -518,16 +518,7 @@ Astropy project, but is optimized for use with astropy-related projects.")
        (sha256
         (base32 "04g2rh261s3s6ym8mwi4iv2a6anbgwvwzcvkyilfck6yxrncdqw5"))))
     (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; There is a bug somewhere that makes pytest-filter-subpackage appear
-         ;; as version 0.0.0 to setup.py.  Remove it from the requirements.
-         (add-after 'unpack 'remove-requirement
-           (lambda _
-             (substitute* "setup.cfg"
-               ((".*pytest-filter-subpackage.*") "")))))))
+    (arguments (list #:tests? #f)) ; there are no tests
     (native-inputs
      (list python-attrs python-pytest-mock python-setuptools-scm))
     (propagated-inputs
