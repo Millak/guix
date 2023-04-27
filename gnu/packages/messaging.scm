@@ -3383,7 +3383,7 @@ Weechat communicate over the Matrix protocol.")
              (when tests?
                (invoke "pytest")))))))
     (inputs
-     (list python-websocket-client))
+     (list python-mock python-websocket-client))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/wee-slack/wee-slack")
