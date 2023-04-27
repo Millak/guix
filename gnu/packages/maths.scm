@@ -5,7 +5,7 @@
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2014 Mathieu Lirzin <mathieu.lirzin@openmailbox.org>
-;;; Copyright © 2015–2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015–2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
@@ -735,23 +735,14 @@ numbers.")
         (base32 "1jybqrl2dvjxzg30xrhh847s375n2jr1pix644wi6hb5wh5mx3f7"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags (list "-DCMAKE_BUILD_TYPE=Release"
-                               (string-append "-DCMAKE_INSTALL_LIBDIR="
-                                              (assoc-ref %outputs "out")
-                                              "/lib")
-                               (string-append "-DCMAKE_INSTALL_PREFIX="
-                                              (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; SLEEF generates a header library during the build process and writes
-         ;; to it via shell redirection.  Make the checkout writable so the
-         ;; build can succeed.
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "-DCMAKE_BUILD_TYPE=Release"
+              (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output))))
+    ;; XXX: Removed mpfr because of https://github.com/shibatch/sleef/issues/458
     (inputs
-     (list fftw gmp mpfr openssl))
+     (list fftw gmp openssl-1.1))
     (home-page "https://sleef.org/")
     (synopsis "SIMD library for evaluating elementary functions and DFT")
     (description
