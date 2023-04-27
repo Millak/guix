@@ -930,14 +930,14 @@ window manager OpenBox.")
 (define-public pavucontrol-qt
   (package
     (name "pavucontrol-qt")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "19r3wgs18mc0m4l8znwhycf137xcd53119ribwb069g4j6hiyvz3"))))
+        (base32 "0alxsz9q1lw3jc9qv18w9rc1ggib8x85mk3d7c17nbsvld5wfwmc"))))
     (build-system cmake-build-system)
     (inputs
      (list glib pcre pulseaudio qtbase-5 qtx11extras))
