@@ -5838,7 +5838,7 @@ and serve updated contents upon changes to the directory.")
 (define-public python-httpcore
   (package
     (name "python-httpcore")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -5848,16 +5848,28 @@ and serve updated contents upon changes to the directory.")
              (commit  version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0skj8f85l52gl6x449wzaixcwsyayvn59iwn0df4b7ixlz6xhp8l"))))
-    (build-system python-build-system)
+        (base32 "0qf2w6sgn51jd41a4k230jincrk6rchgc0k1bclxhyyzv44q4q8c"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "tests"
-                       "--override-ini=asyncio_mode=auto")))))))
+     (list
+      #:test-flags
+      '(list "--override-ini=asyncio_mode=auto"
+             "-k"
+             (string-join '("not test_ssl_request"
+                            ;; PytestUnraisableExceptionWarning
+                            "test_authenticated_socks5_request"
+                            "test_socks5_request"
+                            "test_socks5_request_connect_failed"
+                            "test_socks5_request_failed_to_provide_auth"
+                            "test_socks5_request_incorrect_auth"
+                            ;; marked with @pytest.mark.asyncio but it is not an async function
+                            "test_connection_pool_concurrency"
+                            "test_connection_pool_concurrency_same_domain_keepalive"
+                            "test_response_async_read"
+                            "test_response_async_streaming"
+                            ;; SSL connection has been closed
+                            "test_extra_info")
+                          " and not "))))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
