@@ -715,3 +715,31 @@ parts of files defined using cut-off points or regular expressions.")
     (description "This package is a plugin for Hatch that uses your preferred
 version control system (like Git) to determine project versions.")
     (license license:expat)))
+
+(define-public python-pdm-backend
+  (package
+    (name "python-pdm-backend")
+    (version "2.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pdm_backend" version))
+              (sha256
+               (base32
+                "06bq846yy33alxbljgcf4lx9g2mx4b2sv04i59rrn9rxapcg2651"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; Depends on pytest, which we cannot import into this module.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-pythonpath
+            (lambda _
+              (setenv "PYTHONPATH" (string-append (getcwd) "/src")))))))
+    (home-page "https://pdm-backend.fming.dev/")
+    (synopsis
+     "PEP 517 build backend for PDM")
+    (description
+     "PDM-Backend is a build backend that supports the latest packaging
+standards, which includes PEP 517, PEP 621 and PEP 660.")
+    (license license:expat)))
+
