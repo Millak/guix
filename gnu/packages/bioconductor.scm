@@ -9129,13 +9129,13 @@ scRNA-seq data computationally.")
 (define-public r-slingshot
   (package
    (name "r-slingshot")
-   (version "2.6.0")
+   (version "2.8.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "slingshot" version))
             (sha256
              (base32
-              "00h9iid2z9r55l4hlaa1q0nkbcfq0f7k2afkw4ymjwhm1b8yqj33"))))
+              "1xr17rg8nfpcvdwa19qrcaqffkz048l5lkqlm6gw0abm8bg2k8x7"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-igraph
