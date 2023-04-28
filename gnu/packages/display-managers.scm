@@ -475,7 +475,11 @@ GTK+, lets you select a desktop session and log in to it.")
                ;; The build system's logic here is: if "Linux", then
                 ;; "systemd".  Strip that.
                 ""))
-             #t)))
+             #t))
+         (add-before 'configure 'fix-0-pointer-comparison
+           (lambda _
+             (substitute* "panel.cpp"
+               (("WinGC < 0") "WinGC == NULL")))))
        #:configure-flags '("-DUSE_PAM=yes"
                            "-DUSE_CONSOLEKIT=no")
        #:tests? #f))
