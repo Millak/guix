@@ -3892,13 +3892,13 @@ can be used for further down-stream analyses such as gene set enrichment.")
 (define-public r-badregionfinder
   (package
     (name "r-badregionfinder")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BadRegionFinder" version))
               (sha256
                (base32
-                "0bsgdjchwsfc8aiwiacr454kw97dbymq6v450m1fx7hxmmpqz1sm"))))
+                "04bzb3i461gwkq9ygkjljpjk32c3arqr08hfzxyig1sarrryzl3q"))))
     (properties `((upstream-name . "BadRegionFinder")))
     (build-system r-build-system)
     (propagated-inputs
