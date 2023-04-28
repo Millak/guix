@@ -335,14 +335,16 @@ and its related documentation.")
                 "1savh6h3qds20mwn1nqasmqzcp57pdhfc9v4b4k78d6q28y0r17s"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                 ; TODO: can't figure out if there are tests
+     `(#:disallowed-references (,httpd)
+       #:tests? #f                 ; TODO: can't figure out if there are tests
        #:make-flags (list
                      (string-append "DESTDIR="
                                     (assoc-ref %outputs "out"))
                      "LIBEXECDIR=/modules")))
+    (native-inputs
+     `(("httpd" ,httpd)))
     (inputs
-     `(("httpd" ,httpd)
-       ("python" ,python-wrapper)))
+     `(("python" ,python-wrapper)))
     (synopsis "Apache HTTPD module for Python WSGI applications")
     (description
      "The mod_wsgi module for the Apache HTTPD Server adds support for running
