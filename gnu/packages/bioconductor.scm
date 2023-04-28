@@ -5739,18 +5739,19 @@ paired-end data.")
 (define-public r-biobase
   (package
     (name "r-biobase")
-    (version "2.58.0")
+    (version "2.60.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Biobase" version))
               (sha256
                (base32
-                "0rp541nphbcya6kbk1nzrrb05g5m6pxb3yqz5cj873di9vsqlyfv"))))
+                "1xjs5nxr3dffllp599hf0cx71a2czqmhf7zj2sp6rz06kcxib905"))))
     (properties
      `((upstream-name . "Biobase")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/Biobase")
     (synopsis "Base functions for Bioconductor")
     (description
