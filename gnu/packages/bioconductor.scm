@@ -16853,14 +16853,14 @@ results.")
 (define-public r-bifet
   (package
     (name "r-bifet")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiFET" version))
        (sha256
         (base32
-         "0awzq3i7ga6jsh7xgmrpzz8klx69p8cxj73p6h7ya43bgcr0iff0"))))
+         "05lwz2pw2vnhmlhp5vv9j45jrc5ssdw4lx6mkxnsvds8zl3y9294"))))
     (properties `((upstream-name . "BiFET")))
     (build-system r-build-system)
     (propagated-inputs
