@@ -17423,14 +17423,14 @@ also known as views, in a controlled vocabulary.")
 (define-public r-experimenthub
   (package
     (name "r-experimenthub")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ExperimentHub" version))
        (sha256
         (base32
-         "1j71zmxwiz82gg6kii2bmynzwll1r6fmsq972kmvxvm6crpvi15s"))))
+         "0n55p4n2aadxh182lxxms3bk4bpajamivvqj06v09q2n9xnhjs7k"))))
     (properties `((upstream-name . "ExperimentHub")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17438,7 +17438,6 @@ also known as views, in a controlled vocabulary.")
            r-biocfilecache
            r-biocgenerics
            r-biocmanager
-           r-curl
            r-rappdirs
            r-s4vectors))
     (native-inputs
