@@ -7007,13 +7007,13 @@ regions identified.")
 (define-public r-globaltest
   (package
     (name "r-globaltest")
-    (version "5.52.1")
+    (version "5.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "globaltest" version))
               (sha256
                (base32
-                "1g5dv3bw0fj8sq0hsr8c7nh6n1rzvx1bisqlyqjqq3f8lsyb51kb"))))
+                "0jjhhg4vi44xqlvmcd80m30m93qyd4c79i7m9jn5hz3mw211xaig"))))
     (properties `((upstream-name . "globaltest")))
     (build-system r-build-system)
     (propagated-inputs
