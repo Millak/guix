@@ -20036,14 +20036,14 @@ Bioconductor-friendly.")
 (define-public r-biocdockermanager
   (package
     (name "r-biocdockermanager")
-    (version "1.10.0")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocDockerManager" version))
        (sha256
         (base32
-         "13l5shmiiv4wl9m5xnwzagjxqrchjg9znvcgf7hv8f263l2yc8qm"))))
+         "0w393f14i253pnk0jzf2ci4g5cnxshwdjmix2r8arlnadh7spjyk"))))
     (properties
      `((upstream-name . "BiocDockerManager")))
     (build-system r-build-system)
