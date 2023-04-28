@@ -4239,13 +4239,13 @@ used visualizations.")
 (define-public r-dama
   (package
     (name "r-dama")
-    (version "1.70.0")
+    (version "1.72.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "daMA" version))
               (sha256
                (base32
-                "062nxfry9w674ja3q9zs4df2hvf4wws9jdqpy84g6nb0309vbhqf"))))
+                "0z4y57hna312pkhkchair8calm7wl40rx8lcm8i6h1789hba063d"))))
     (properties `((upstream-name . "daMA")))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
