@@ -6140,14 +6140,14 @@ annotation, distance to TSS, and overlap of peaks or genes.")
 (define-public r-chipseq
   (package
     (name "r-chipseq")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chipseq" version))
        (sha256
         (base32
-         "1gmspbf5bmlqgbq280lnh4m9bmhzv6d0aj15dmggizsgb9d34vp5"))))
+         "0q83c4dm9qbdxlh4cbdzp357fn4sa16d7dqb4s65650pcnjg3a48"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
@@ -6156,6 +6156,7 @@ annotation, distance to TSS, and overlap of peaks or genes.")
            r-lattice
            r-s4vectors
            r-shortread))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/chipseq")
     (synopsis "Package for analyzing ChIPseq data")
     (description
