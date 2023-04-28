@@ -25,7 +25,7 @@
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (guix modules)
-  #:use-module (gnu services)
+  #:use-module ((gnu services) #:hide (delete))
   #:use-module (gnu services admin)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
