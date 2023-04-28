@@ -10125,16 +10125,17 @@ expressed genes in DNA microarray experiments.")
 (define-public r-graph
   (package
     (name "r-graph")
-    (version "1.76.0")
+    (version "1.78.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "graph" version))
               (sha256
                (base32
-                "1hdbxjvgkxb9m341i9qbskb41g2z8qifkhgkpj2xb20s2dnxn3cc"))))
+                "184izzxc8bpagcac8wqinjp8kmf9zpvjibl0g32nnr64kp9f4rsn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/graph")
     (synopsis "Handle graph data structures in R")
     (description
