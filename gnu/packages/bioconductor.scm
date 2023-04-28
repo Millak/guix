@@ -11437,14 +11437,14 @@ coordinates.")
 (define-public r-lpsymphony
   (package
     (name "r-lpsymphony")
-    (version "1.26.3")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lpsymphony" version))
        (sha256
         (base32
-         "0iqc6km4pw50li2q35km8jpa0p3i6a6way910wcz56yd2jjbjyz5"))))
+         "096d0dql1cg85mmxba3dy2a7ba3sxqphsviqqvx1n35xiidsnpyp"))))
     (build-system r-build-system)
     (arguments
      (list
