@@ -436,6 +436,7 @@ empty list when the FIELD cannot be found."
     ("udunits-2" "udunits")
     ("whoami" "coreutils")
     ("x11" "libx11")
+    ("xml2" "libxml2")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
