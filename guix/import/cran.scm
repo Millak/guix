@@ -399,6 +399,7 @@ empty list when the FIELD cannot be found."
         "posix.1-2001"
         "linux"
         "none"
+        "unix"
         "windows"
         "xcode"
         "xquartz"))
