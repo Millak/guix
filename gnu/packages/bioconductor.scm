@@ -14820,14 +14820,14 @@ Markov-Chain-Monte-Carlo is applied to sample the activity states.")
 (define-public r-multidataset
   (package
     (name "r-multidataset")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MultiDataSet" version))
        (sha256
         (base32
-         "1qja5xd42wh8qbcil4hhnmh9zlby2gfglax2qbf5bzg3h6yzpy4g"))))
+         "1qyvwhmdv27xsyljyzyh52pn6x0wqx8rslvr2j7vqcjyywv270x6"))))
     (properties `((upstream-name . "MultiDataSet")))
     (build-system r-build-system)
     (propagated-inputs
