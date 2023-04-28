@@ -5064,13 +5064,13 @@ possible.")
 (define-public r-isoformswitchanalyzer
   (package
     (name "r-isoformswitchanalyzer")
-    (version "1.20.0")
+    (version "1.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IsoformSwitchAnalyzeR" version))
        (sha256
-        (base32 "06kcx0a7xxzqhf4y8l69my5chh06sfahsaz6anhana7shym3yif5"))))
+        (base32 "1vzzsqjnkaffyxgvw6bsbxhgg1102cap2hsmzkhwzh6bvh02bwkx"))))
     (properties `((upstream-name . "IsoformSwitchAnalyzeR")))
     (build-system r-build-system)
     (propagated-inputs
