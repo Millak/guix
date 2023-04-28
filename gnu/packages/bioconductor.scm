@@ -8099,13 +8099,13 @@ the fact that each of these packages implements a select methods.")
 (define-public r-oscope
   (package
     (name "r-oscope")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Oscope" version))
               (sha256
                (base32
-                "0454f9yc0jmg3mcq9264wb5v2n8n0kaf801hlvsiy1xa3baj3h29"))))
+                "055j7y1icikqivc795hzl1l5v5ga2bfcqk2x0kivawbrqvj4yq5v"))))
     (properties `((upstream-name . "Oscope")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocparallel r-cluster r-ebseq r-testthat))
