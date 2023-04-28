@@ -6727,19 +6727,19 @@ analysis using other methods.")
 (define-public r-genefilter
   (package
     (name "r-genefilter")
-    (version "1.80.3")
+    (version "1.82.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "genefilter" version))
        (sha256
         (base32
-         "047p84qxfqqm0d0ik7fxcs37fmg0yazsn9rz7h4g24cksb45p689"))))
+         "1xl23qxkzrssa7mr1iz78s70d0bzzdrcip161zx9ixlgkm0j2si7"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
     (propagated-inputs
-     (list r-annotate r-annotationdbi r-biobase r-biocgenerics
+     (list r-annotate r-annotationdbi r-biobase r-matrixgenerics
            r-survival))
     (home-page "https://bioconductor.org/packages/genefilter")
     (synopsis "Filter genes from high-throughput experiments")
