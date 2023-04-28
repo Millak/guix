@@ -18175,16 +18175,15 @@ objects from the @code{graph} package.")
 (define-public r-fishpond
   (package
     (name "r-fishpond")
-    (version "2.4.1")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "fishpond" version))
               (sha256
                (base32
-                "0kc1xzq03kz548rfinxhc7gxm6021502b6v7bg2har0aq4vx79ml"))))
+                "0lpafc1770kh4j151509d9lrpfj9jgla14km4vsfrqjmyhf2prss"))))
     (properties `((upstream-name . "fishpond")))
     (build-system r-build-system)
-    (inputs (list zlib))
     (propagated-inputs
      (list r-abind
            r-genomicranges
