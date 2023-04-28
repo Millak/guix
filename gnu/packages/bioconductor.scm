@@ -7140,14 +7140,14 @@ the Human Protein Atlas project.")
 (define-public r-rhtslib
   (package
     (name "r-rhtslib")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhtslib" version))
        (sha256
         (base32
-         "1ri76wwv44hgxji2bmlqi6v8gbvhr72q0d6nlgpfgfwb9sgvz62h"))))
+         "1p8imns26knh21r254n7i9xvy8xzz3zizx0kq4si7cdaf2b4xayi"))))
     (properties `((upstream-name . "Rhtslib")))
     (build-system r-build-system)
     ;; Without this a temporary directory ends up in the Rhtslib.so binary,
