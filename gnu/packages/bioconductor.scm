@@ -11999,14 +11999,14 @@ the bridge between GEO and BioConductor.")
 (define-public r-illuminaio
   (package
     (name "r-illuminaio")
-    (version "0.40.0")
+    (version "0.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "illuminaio" version))
        (sha256
         (base32
-         "1cw526mbhh0czkwk99qnr6hfwi4k4xi2bm5p14kw9sr00if59x12"))))
+         "190i3b9qmh26bic1lzi54mw4p1nrg57qijl1pg6b29w3i6srq692"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64))
