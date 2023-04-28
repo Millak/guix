@@ -10386,12 +10386,12 @@ the @code{arrayCGH} packages.")
 (define-public r-qdnaseq
   (package
     (name "r-qdnaseq")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "QDNAseq" version))
               (sha256
-               (base32 "1qv3vmc6i7r35pqhi45hmvg8h7v3bl82lv7yifs59k250zsdls59"))))
+               (base32 "0lcf5zkv44s7xsa2svxia7inv6iz2k1kilfj5zcq80r339pj3vx4"))))
     (properties `((upstream-name . "QDNAseq")))
     (build-system r-build-system)
     (propagated-inputs
