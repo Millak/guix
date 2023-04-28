@@ -11964,14 +11964,14 @@ high-throughput analyses.")
 (define-public r-geoquery
   (package
     (name "r-geoquery")
-    (version "2.66.0")
+    (version "2.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GEOquery" version))
        (sha256
         (base32
-         "0ck2aml1kxdahwcszi3j7hcikwi8fdnzphlrsn3h2q4dkk5x00kn"))))
+         "1xyrfj8b7j2wdjlbmwhx1c0hfbvr7l7jxyw2v64fbw8604zprv4s"))))
     (properties `((upstream-name . "GEOquery")))
     (build-system r-build-system)
     (propagated-inputs
