@@ -16831,18 +16831,18 @@ algorithm which is more efficient for larger data sets.")
 (define-public r-bicare
   (package
     (name "r-bicare")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BicARE" version))
        (sha256
         (base32
-         "1z7x30705a4ww9vdam2668pk064na5ispigqnaqy8zqvlfvp3c8d"))))
+         "1q7dsvj6nvczs76jcxyy77298vgk4zk083bldmbbgnwparrgjii9"))))
     (properties `((upstream-name . "BicARE")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biobase r-gseabase r-multtest))
+     (list r-biobase r-go-db r-gseabase r-multtest))
     (home-page "http://bioinfo.curie.fr")
     (synopsis "Biclustering analysis and results exploration")
     (description
