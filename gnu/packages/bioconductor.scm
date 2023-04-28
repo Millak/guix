@@ -20593,13 +20593,13 @@ interest on transformed methylation proportions.")
 (define-public r-omnipathr
   (package
     (name "r-omnipathr")
-    (version "3.5.25")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "OmnipathR" version))
        (sha256
-        (base32 "1a0d4vf8i45h1fifswx9lhk6fk0z8sxfnav35psz9kvmxxab9698"))))
+        (base32 "0r2nv3nbadnvqby7p5bdpl9fxjb30h0c8kjv1dkqqnhk5rbfl4hf"))))
     (properties `((upstream-name . "OmnipathR")))
     (build-system r-build-system)
     (arguments
