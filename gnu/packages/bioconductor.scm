@@ -6092,18 +6092,19 @@ regions and to highlight copy number alterations.")
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
-    (version "1.34.1")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChIPseeker" version))
               (sha256
                (base32
-                "0jr9mc79di0r3xrc7m27vwk85qa4fpcwp4nb77pr9s6jbv23773r"))))
+                "0nngygci1g8bb3rsica348zi59hskr6hf8319csia6cman89gvqm"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
     (propagated-inputs
      (list r-annotationdbi
+           r-aplot
            r-biocgenerics
            r-boot
            r-enrichplot
@@ -6112,17 +6113,17 @@ regions and to highlight copy number alterations.")
            r-genomicranges
            r-genomicfeatures
            r-ggplot2
-           r-ggvenndiagram
            r-gplots
            r-gtools
            r-dplyr
            r-plotrix
            r-dplyr
            r-magrittr
-           r-rcolorbrewer
            r-rtracklayer
            r-s4vectors
-           r-txdb-hsapiens-ucsc-hg19-knowngene))
+           r-tibble
+           r-txdb-hsapiens-ucsc-hg19-knowngene
+           r-yulab-utils))
     (home-page "https://www.bioconductor.org/packages/ChIPseeker/")
     (synopsis "ChIPseeker for ChIP peak annotation, comparison, and visualization")
     (description "This package implements functions to retrieve the nearest
