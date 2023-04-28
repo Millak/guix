@@ -6921,14 +6921,14 @@ extracting the desired features in a convenient format.")
 (define-public r-genomicfiles
   (package
     (name "r-genomicfiles")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicFiles" version))
        (sha256
         (base32
-         "0k64m9f5y88p90wd87hy0ixj5ly5yi413al9p2bn10b1fjx2c451"))))
+         "0nxz8lvpmyllgs1ksgbha8qqs4fhppkg5casppnas9x47dj4bxph"))))
     (properties `((upstream-name . "GenomicFiles")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6944,6 +6944,7 @@ extracting the desired features in a convenient format.")
            r-s4vectors
            r-summarizedexperiment
            r-variantannotation))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/GenomicFiles")
     (synopsis "Distributed computing by file or by range")
     (description
