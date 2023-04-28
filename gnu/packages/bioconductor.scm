@@ -9101,13 +9101,13 @@ structures to hold pseudotime inference results.")
 (define-public r-scds
   (package
     (name "r-scds")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "scds" version))
               (sha256
                (base32
-                "0zdf9yf5s0l8ma7d8yhi7bjd964yj84f5h6aq2p0sypjlnc515hd"))))
+                "059gahl679if8xsfgpxmi3h9fiagb6v08rd6rs7yv96s3pb8qywn"))))
     (properties `((upstream-name . "scds")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
