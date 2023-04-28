@@ -5918,7 +5918,7 @@ in LaTeX documents; a jiffy to create slashed characters for physicists.")
            texlive-latex-l3packages
            texlive-listings
            texlive-pgf
-           texlive-latex-tools
+           texlive-tools
            texlive-xstring))
     (home-page "https://www.ctan.org/pkg/ddphonism")
     (synopsis "Dodecaphonic diagrams for LaTeX")
