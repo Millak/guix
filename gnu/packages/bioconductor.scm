@@ -19753,14 +19753,14 @@ regions or annotations of your choice from BigWig files.")
 (define-public r-beclear
   (package
     (name "r-beclear")
-    (version "2.14.0")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BEclear" version))
        (sha256
         (base32
-         "05znaj2fialxi937mhj2dlrm3v4j2wgqafcy78qrkz7xxn13pr01"))))
+         "1sdw69dhrzkcpc7flvp1gkixvpsbrckyg756rlm17hjjwfxlz5lb"))))
     (properties `((upstream-name . "BEclear")))
     (build-system r-build-system)
     (propagated-inputs
