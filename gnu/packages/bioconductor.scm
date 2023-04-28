@@ -59,7 +59,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (srfi srfi-1))
+  #:use-module ((srfi srfi-1) #:hide (zip)))
 
 
 ;;; Annotations
@@ -4341,16 +4341,53 @@ set analyses, and can deal with repeated or longitudinal data.")
 (define-public r-debcam
   (package
     (name "r-debcam")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "debCAM" version))
               (sha256
                (base32
-                "09dm861adbxdy3ncfdxq46wjr4hpn56c66n64xm9gwzkzsrxyc2a"))))
+                "11vqfkyd3fklc8fhn850kklph8x4pmwclb9xbqji4i21222m89hh"))
+              (snippet
+               '(for-each delete-file
+                          '("inst/java/CornerDetect.jar"
+                            "inst/java/lib/pj20150107.jar")))))
     (properties `((upstream-name . "debCAM")))
     (build-system r-build-system)
-    (inputs (list openjdk))
+    (arguments
+     (list
+      ;; XXX: since the upgrade to R 4.3.0 this package takes too long to be
+      ;; loaded.
+      #:tests? #false
+      #:configure-flags '(list "--fake")
+      #:modules
+      '((guix build r-build-system)
+        ((guix build ant-build-system) #:prefix ant:)
+        (guix build utils))
+      #:imported-modules
+      `((guix build ant-build-system)
+        ,@%r-build-system-modules)
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'build-jar
+           (lambda* (#:key inputs #:allow-other-keys)
+             (install-file
+              (search-input-file inputs "/share/java/pj20150107.jar")
+              "inst/java/lib")
+             (with-directory-excursion "java"
+               (mkdir "build")
+               (invoke "javac" "-d" "./build"
+                       "-cp" "../inst/java/lib/pj20150107.jar"
+                       "CornerDetectTopN.java"
+                       "FixSizedPriorityQueue.java")
+               (with-directory-excursion "build"
+                 (apply invoke "jar" "cvf" "../../inst/java/CornerDetect.jar"
+                        (find-files "."))))))
+         (add-after 'install 'strip-jar-timestamps
+           (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
+    (inputs
+     (list (list icedtea "jdk")
+           java-pj))
     (propagated-inputs
      (list r-apcluster
            r-biobase
@@ -4363,7 +4400,8 @@ set analyses, and can deal with repeated or longitudinal data.")
            r-pcapp
            r-rjava
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs
+     (list r-knitr zip))
     (home-page "https://bioconductor.org/packages/debCAM")
     (synopsis "Deconvolution by convex analysis of mixtures")
     (description
