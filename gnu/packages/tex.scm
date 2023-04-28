@@ -13489,7 +13489,7 @@ changed, the recorded value will usually be the maximum value.")
       (native-inputs
        (list (texlive-updmap.cfg)))
       (propagated-inputs
-       (list texlive-everyshi texlive-latex-graphics))
+       (list texlive-everyshi texlive-graphics))
       (home-page "https://ctan.org/pkg/totpages")
       (synopsis "Count pages in a document, and report last page number")
       (description
