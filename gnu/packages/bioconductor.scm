@@ -4182,13 +4182,13 @@ stochastic dropout events as well as systematic allelic imbalance is used.")
 (define-public r-coverageview
   (package
     (name "r-coverageview")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "CoverageView" version))
               (sha256
                (base32
-                "0cqvwp0ybxgnk9kif3ly780v23pwv4cyh46kk47gxcxqqkjv36ld"))))
+                "1ci07y75nvvv1mxy23v6jp5xb6n023fvlqh9il5lsdqwyfl5nz9s"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-s4vectors
