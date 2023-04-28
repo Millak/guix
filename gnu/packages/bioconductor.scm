@@ -18069,18 +18069,19 @@ routines.")
 (define-public r-s4vectors
   (package
     (name "r-s4vectors")
-    (version "0.36.2")
+    (version "0.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Vectors" version))
               (sha256
                (base32
-                "131cg5fzrqgyp4kv260yn8hpr0zv5mxjhdnpl50ydgc2k0l43d38"))))
+                "0dy976i36j5lvsznls8yrik4spi1wbr0dz9rdfsj45yha9866xns"))))
     (properties
      `((upstream-name . "S4Vectors")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/S4Vectors")
     (synopsis "S4 implementation of vectors and lists")
     (description
