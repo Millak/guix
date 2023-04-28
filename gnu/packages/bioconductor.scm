@@ -19367,13 +19367,13 @@ EMBL-EBI GWAS catalog.")
 (define-public r-kegggraph
   (package
     (name "r-kegggraph")
-    (version "1.58.3")
+    (version "1.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "KEGGgraph" version))
        (sha256
-        (base32 "1s5j7zdp8ck4vhca81i4b6qclhwi56gmz8brawrxj3szvwmxf3y6"))))
+        (base32 "0bgigkmnz5zvsygcifk2fc7i8rahmqr4brk65qa3104clqqvdfkl"))))
     (properties `((upstream-name . "KEGGgraph")))
     (build-system r-build-system)
     (propagated-inputs
