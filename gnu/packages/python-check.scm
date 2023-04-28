@@ -1736,27 +1736,18 @@ Python software under test, when they make an HTTP query.")
 (define-public python-atpublic
   (package
     (name "python-atpublic")
-    (version "1.0")
+    (version "3.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "atpublic" version))
         (sha256
          (base32
-          "0i3sbxkdlbb4560rrlmwwd5y4ps7k73lp4d8wnmd7ag9k426gjkx"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'enable-c-implementation
-           (lambda _
-             (setenv "ATPUBLIC_BUILD_EXTENSION" "yes")
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "python" "-m" "nose2" "-v"))))))
+          "060v2b5jfn7p99j09amxlb6w9ynwbq7fix31kl0caz0hs09fx61h"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:build-backend "pdm.backend"))
     (native-inputs
-     (list python-nose2))
+     (list python-pytest python-pdm-backend python-sybil python-pytest-cov))
     (home-page "https://public.readthedocs.io/")
     (synopsis "@code{@@public} decorator for populating @code{__all__}")
     (description
