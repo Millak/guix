@@ -7031,14 +7031,14 @@ facilitate the use of this test for gene set testing of GO and KEGG terms.")
 (define-public r-gostats
   (package
     (name "r-gostats")
-    (version "2.64.0")
+    (version "2.66.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GOstats" version))
        (sha256
         (base32
-         "07chyfkq8nwxjgnlrrwza8jw996dq0ki4bzdfalj9yl1iac1pnys"))))
+         "1jjcjc1zp42l3gw36rr84al07ghih0cjx4p8gn8rlmv1jsz6kp1h"))))
     (properties `((upstream-name . "GOstats")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7051,6 +7051,7 @@ facilitate the use of this test for gene set testing of GO and KEGG terms.")
            r-graph
            r-rgraphviz
            r-rbgl))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/GOstats")
     (synopsis "Tools for manipulating GO and microarrays")
     (description
