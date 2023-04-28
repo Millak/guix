@@ -13511,8 +13511,8 @@ itself may be shipped out to the DVI file.")
                "1gmgagvsv2qknrjzjk840ca3wging8wfc20rgq7bnhphm9n87m6q")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-generic-atbegshi
-           texlive-latex-atveryend
+     (list texlive-atbegshi
+           texlive-atveryend
            texlive-babel
            texlive-cm
            texlive-dvipdfmx
