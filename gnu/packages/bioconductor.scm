@@ -8529,13 +8529,13 @@ HDF5 datasets.")
 (define-public r-rsamtools
   (package
     (name "r-rsamtools")
-    (version "2.14.0")
+    (version "2.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Rsamtools" version))
               (sha256
                (base32
-                "0wd4hsn19msz0fkwfq7gvi97vlfpsbzzw3rjj4b6z7s5a83zir2z"))))
+                "18kh6vmyjmv7zklqr5ifpfixjwldxgwj550c69mqfkk7m0zk52cl"))))
     (properties
      `((upstream-name . "Rsamtools")))
     (build-system r-build-system)
@@ -8559,6 +8559,7 @@ HDF5 datasets.")
            r-rhtslib
            r-s4vectors
            r-xvector))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/release/bioc/html/Rsamtools.html")
     (synopsis "Interface to samtools, bcftools, and tabix")
     (description
