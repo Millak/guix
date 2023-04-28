@@ -599,7 +599,7 @@ data transfer object.")
 (define-public nlohmann-json
   (package
     (name "nlohmann-json")
-    (version "3.10.5")
+    (version "3.11.2")
     (home-page "https://github.com/nlohmann/json")
     (source
      (origin
@@ -607,23 +607,22 @@ data transfer object.")
        (uri (git-reference (url home-page)
                            (commit (string-append "v" version))))
        (sha256
-        (base32 "1f9mi45ilwjc2w92grjc53sw038840bjpn8yjf6wc6bxs2nijfqd"))
+        (base32 "0g6rfsbkvrxmacchz4kbr741yybj7mls3r4hgyfdd3pdbqhn2is9"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Delete bundled software.  Preserve doctest_compatibility.h, which
            ;; is a wrapper library added by this package.
-           (install-file "./test/thirdparty/doctest/doctest_compatibility.h" "/tmp")
-           (for-each delete-file-recursively
-                     '("./third_party" "./test/thirdparty"))
-           (install-file "/tmp/doctest_compatibility.h" "./test/thirdparty/doctest")
+           (install-file "./tests/thirdparty/doctest/doctest_compatibility.h" "/tmp")
+           (delete-file-recursively "./tests/thirdparty")
+           (install-file "/tmp/doctest_compatibility.h" "./tests/thirdparty/doctest")
 
            ;; Adjust for the unbundled fifo_map and doctest.
-           (substitute* "./test/thirdparty/doctest/doctest_compatibility.h"
-             (("#include \"doctest\\.h\"")
-              "#include <doctest/doctest.h>"))
-           (with-directory-excursion "test/src"
+           (substitute* (find-files "./tests/" "\\.h(pp)?")
+             (("#include \"doctest\\.h\"") "#include <doctest/doctest.h>")
+             (("#include <doctest\\.h>") "#include <doctest/doctest.h>"))
+           (with-directory-excursion "tests/src"
              (let ((files (find-files "." "\\.cpp$")))
                (substitute* files
                  (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
@@ -649,7 +648,7 @@ data transfer object.")
                           (format #t "test suite not run~%")))))))
     (native-inputs
      (list amalgamate
-           (let ((version "3.0.0"))
+           (let ((version "3.1.0"))
              (origin
                (method git-fetch)
                (uri (git-reference
@@ -658,7 +657,7 @@ data transfer object.")
                (file-name (git-file-name "json_test_data" version))
                (sha256
                 (base32
-                 "0nzsjzlvk14dazwh7k2jb1dinb0pv9jbx5jsyn264wvva0y7daiv"))))))
+                 "0nbirc428qx0lpi940p7y24fzdjbwl6xig3h5rdbihyymmdzhvbc"))))))
     (inputs
      (list doctest fifo-map))
     (synopsis "JSON parser and printer library for C++")
