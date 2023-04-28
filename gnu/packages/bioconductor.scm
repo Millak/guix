@@ -12784,14 +12784,14 @@ to multiple hypothesis correction.")
 (define-public r-dose
   (package
     (name "r-dose")
-    (version "3.24.2")
+    (version "3.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DOSE" version))
        (sha256
         (base32
-         "0scp6sgb1iwwfh7gdak4dxf1hb870745km9nc9hga8pnsnqi5v3g"))))
+         "0bkvb6w4nrak1qa77mf3srs4j9rfwk635kmnvm61k3s0l83cgkj7"))))
     (properties `((upstream-name . "DOSE")))
     (build-system r-build-system)
     (propagated-inputs
