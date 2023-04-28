@@ -20207,14 +20207,14 @@ using aCGH or sequencing.")
 (define-public r-bionero
   (package
     (name "r-bionero")
-    (version "1.6.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNERO" version))
        (sha256
         (base32
-         "0ijdnl43cgzywgsz80jd6q0irixh6367qm1ll5ww1rcr4xas2nsl"))))
+         "0733v4mijf94gn0sbkhiinb3hxlsfqw2l89gx94k88sp3qy2qzvc"))))
     (properties `((upstream-name . "BioNERO")))
     (build-system r-build-system)
     (propagated-inputs
