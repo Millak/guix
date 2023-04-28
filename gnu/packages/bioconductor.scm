@@ -12751,14 +12751,14 @@ presence of additional sites within the allowed window size.")
 (define-public r-fgsea
   (package
     (name "r-fgsea")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fgsea" version))
        (sha256
         (base32
-         "1frl5mchbrgqyxxdlw76qqq5i8vv2fdmy8xl8h8c8cvvmlz393qk"))))
+         "0chnrwiwk31crrx4am1yrbxjdqd3jycgjgczqzj7lxaa9v7lvm7z"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh
@@ -12768,7 +12768,8 @@ presence of additional sites within the allowed window size.")
            r-fastmatch
            r-ggplot2
            r-matrix
-           r-rcpp))
+           r-rcpp
+           r-scales))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/ctlab/fgsea/")
