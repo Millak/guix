@@ -8066,14 +8066,14 @@ functionality of the @code{TxDb} packages (e.g.,
 (define-public r-organismdbi
   (package
     (name "r-organismdbi")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "OrganismDbi" version))
        (sha256
         (base32
-         "11l1xqwbqs129vxd6lxdaizpp6j08spyh6799rv5wqmlymap1ykw"))))
+         "1pw3qd6n0xf7vq3x73612bndcqhwrqkpi29f6crazdzjcy3fivlb"))))
     (properties `((upstream-name . "OrganismDbi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8088,6 +8088,7 @@ functionality of the @code{TxDb} packages (e.g.,
            r-iranges
            r-rbgl
            r-s4vectors))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/OrganismDbi")
     (synopsis "Software to enable the smooth interfacing of database packages")
     (description "The package enables a simple unified interface to several
