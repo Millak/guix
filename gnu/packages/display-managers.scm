@@ -485,7 +485,7 @@ GTK+, lets you select a desktop session and log in to it.")
        #:tests? #f))
 
     ;; This used to be at <http://slim.berlios.de/>.
-    (home-page "https://sourceforge.net/projects/slim.berlios/")
+    (home-page "https://github.com/iwamatsu/slim")
     (synopsis "Desktop-independent graphical login manager for X11")
     (description
      "SLiM is a Desktop-independent graphical login manager for X11, derived
