@@ -8483,22 +8483,42 @@ the available RAM.")
 (define-public r-rhdf5filters
   (package
     (name "r-rhdf5filters")
-    (version "1.10.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rhdf5filters" version))
        (sha256
         (base32
-         "14rkr0fisy7qrvjikpnwxwag79205hdxy6nkpwz501li4fr1rbnp"))))
+         "1spiva2l9mg34kbgb2kgif8ckv3vyrg1gmzx26ibzr7klyjqvrqk"))))
     (properties `((upstream-name . "rhdf5filters")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-libraries
+            (lambda _
+              (substitute* "src/blosc/Makefile.in"
+                (("libblosc.a: blosc") "libwhatever.a:")
+                (("libblosc.a")
+                 (string-append #$(this-package-input "c-blosc")
+                                "/lib/libblosc.so"))
+                (("../zstd/libzstd.a") "-lzstd"))
+              (substitute* "src/bzip2/Makefile"
+                (("libH5Zbz2.so: bzip2-1.0.8/libbz2.a") "libH5Zbz2.so:")
+                (("./bzip2-1.0.8/libbz2.a") "-lbz2"))
+              (substitute* "src/zstd/Makefile"
+                (("libH5Zzstd.so: libzstd.a") "libH5Zzstd.so:")
+                (("libzstd.a") "-lzstd"))
+              (substitute* "src/vbz/Makefile"
+                (("../zstd/libzstd.a") "-lzstd")))))))
     (propagated-inputs
      (list r-rhdf5lib))
     (inputs
-     (list zlib))
+     (list bzip2 c-blosc zlib (list zstd "lib")))
     (native-inputs
-     (list r-knitr))
+     (list r-biocstyle r-knitr r-rmarkdown))
     (home-page "https://github.com/grimbough/rhdf5filters")
     (synopsis "HDF5 compression filters")
     (description
