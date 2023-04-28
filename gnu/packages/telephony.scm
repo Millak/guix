@@ -564,7 +564,7 @@ address of one of the participants.")
 (define-public mumble
   (package
     (name "mumble")
-    (version "1.4.274")
+    (version "1.4.287")
     (source (origin
               (method url-fetch)
               (uri
@@ -573,7 +573,7 @@ address of one of the participants.")
                 version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "12rv61mmpgvcc1svq2y66r29sl47y9lfi9if0r09x4nqrkf7vj3y"))
+                "0iq54011jgrc5ipk16x05n3sj54j8mzhcidnzcdsb2x5pzan33ip"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -649,7 +649,7 @@ address of one of the participants.")
            libsndfile
            libxi
            mesa ; avoid bundled
-           openssl
+           openssl-1.1 ; 1.5.x works with openssl-3.x
            opus ; avoid bundled
            poco
            protobuf
