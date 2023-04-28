@@ -66,7 +66,8 @@
         (base32 "1xgw646pghsjjbzd8qlaq17vq96swlrazpivrvyrhdj36vb3sci3"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:disallowed-references (list httpd)
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'prefix
                  (lambda _
@@ -76,7 +77,6 @@
     (inputs (list apr
                   apr-util
                   gtk+-2
-                  httpd
                   libgc
                   mbedtls-apache
                   mysql
@@ -84,7 +84,9 @@
                   pcre
                   sqlite
                   zlib))
-    (native-inputs (list git pkg-config)) ; git for source_archive and applying patch
+    (native-inputs (list httpd
+                         git ; git for source_archive and applying patch
+                         pkg-config))
     (home-page "https://nekovm.org/")
     (synopsis "High-level dynamically typed programming language and virtual
 machine")
