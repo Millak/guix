@@ -472,7 +472,8 @@ The available values, in decreasing order of verbosity, are: @code{verbose},
 
   (db-file
    maybe-string
-   "The location of the music database.")
+   "The location of the music database.  When left unspecified,
+@file{~/.cache/db} is used.")
 
   (state-file
    maybe-string
@@ -616,28 +617,38 @@ appended to the configuration.")
           #~(begin
               (use-modules (gnu build activation))
 
-              (let ((user (getpw #$username)))
+              (let ((home #$(user-account-home-directory user)))
+                (let ((user (getpw #$username))
+                      (default-cache-dir (string-append home "/.cache")))
 
-                (define (init-directory directory)
-                  (unless (file-exists? directory)
-                    (mkdir-p/perms directory user #o755)))
+                  (define (init-directory directory)
+                    (unless (file-exists? directory)
+                      (mkdir-p/perms directory user #o755)))
 
-                (for-each
-                 init-directory
-                 '#$(map dirname
-                         ;; XXX: Delete the potential "syslog"
-                         ;; log-file value, which is not a directory.
-                         (delete "syslog"
-                                 (filter-map maybe-value
-                                             (list db-file
-                                                   log-file
-                                                   state-file
-                                                   sticker-file))))))
+                  ;; Define a cache location that can be automatically used
+                  ;; for the database file, in case it hasn't been explicitly
+                  ;; specified.
+                  (for-each
+                   init-directory
+                   (cons default-cache-dir
+                         '#$(map dirname
+                                 ;; XXX: Delete the potential "syslog"
+                                 ;; log-file value, which is not a directory.
+                                 (delete "syslog"
+                                         (filter-map maybe-value
+                                                     (list db-file
+                                                           log-file
+                                                           state-file
+                                                           sticker-file)))))))
 
-              (make-forkexec-constructor
-               (list #$(file-append package "/bin/mpd") "--no-daemon"
-                     #$config-file)
-               #:environment-variables '#$environment-variables))))
+                (make-forkexec-constructor
+                 (list #$(file-append package "/bin/mpd") "--no-daemon"
+                       #$config-file)
+                 #:environment-variables
+                 ;; Set HOME so MPD can infer default paths, such as
+                 ;; for the database file.
+                 (cons (string-append "HOME=" home)
+                       '#$environment-variables))))))
        (stop  #~(make-kill-destructor))
        (actions
         (list (shepherd-configuration-action config-file)

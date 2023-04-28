@@ -34311,7 +34311,8 @@ The directory to store playlists.
 The directory to store playlists.
 
 @item @code{db-file} (type: maybe-string)
-The location of the music database.
+The location of the music database.  When left unspecified,
+@file{~/.cache/db} is used.
 
 @item @code{state-file} (type: maybe-string)
 The location of the file that stores current MPD's state.
