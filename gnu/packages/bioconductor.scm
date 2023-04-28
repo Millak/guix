@@ -8912,19 +8912,20 @@ reference point and sorted by a user defined feature.")
 (define-public r-shinymethyl
   (package
     (name "r-shinymethyl")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "shinyMethyl" version))
               (sha256
                (base32
-                "1xbadc4xszcqh211r8z0wp417f17aczz834icli17mcsl996ln3a"))))
+                "1rqwwglj0475gr14bxazfmcvsy7rq6nlw2zcswa684751wy15w0r"))))
     (properties `((upstream-name . "shinyMethyl")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics
-           r-illuminahumanmethylation450kmanifest
-           r-matrixstats
+     (list r-biobase
+           r-biocgenerics
+           r-htmltools
+           r-matrixgenerics
            r-minfi
            r-rcolorbrewer
            r-shiny))
