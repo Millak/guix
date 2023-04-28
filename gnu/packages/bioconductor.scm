@@ -8027,14 +8027,14 @@ Gao et al in Nature Biotechnology 2022}.")
 (define-public r-organism-dplyr
   (package
     (name "r-organism-dplyr")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Organism.dplyr" version))
        (sha256
         (base32
-         "1hawn8pp63kal5ml0sm3h1j1wnkq02z64sliyaf6apv7vl60ja9g"))))
+         "0yrd7a7c0n6c987gyy76jidpvsdwrv2097f9wkvh4y5dd1w0mk7p"))))
     (properties `((upstream-name . "Organism.dplyr")))
     (build-system r-build-system)
     (propagated-inputs
