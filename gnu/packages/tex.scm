@@ -13445,7 +13445,7 @@ are provided to:
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-latex-graphics))
+       (list texlive-graphics))
       (home-page "https://ctan.org/pkg/totcount")
       (synopsis "Find the last value of a counter")
       (description
