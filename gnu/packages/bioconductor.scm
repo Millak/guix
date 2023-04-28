@@ -17274,13 +17274,13 @@ microarray data.")
 (define-public r-biocbaseutils
   (package
     (name "r-biocbaseutils")
-    (version "1.0.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocBaseUtils" version))
               (sha256
                (base32
-                "0p6siidrx8q6qr36fc67hzi091m2zwik3zngj27yllbfz6sn5k69"))))
+                "143fmjbi8spaj3njvc1xvsjszfxs7bv3vxik8pisw5y8lqzx7hqm"))))
     (properties `((upstream-name . "BiocBaseUtils")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
