@@ -561,4 +561,33 @@ Description: 1st line,
             (make-fresh-user-module)))
     (lambda (key . args) key)))
 
+(test-equal "match-record, delayed field"
+  "foo bar bar foo"
+  (begin
+    (define-record-type* <with-delayed> with-delayed make-with-delayed
+      with-delayed?
+      (delayed  with-delayed-delayed
+                (delayed)))
+
+    (let ((rec (with-delayed
+                (delayed "foo bar bar foo"))))
+      (match-record rec <with-delayed> (delayed)
+        delayed))))
+
+(test-equal "match-record, thunked field"
+  '("foo" "foobar")
+  (begin
+    (define-record-type* <with-thunked> with-thunked make-with-thunked
+      with-thunked?
+      (normal   with-thunked-normal)
+      (thunked  with-thunked-thunked
+                (thunked)))
+
+    (let ((rec (with-thunked
+                (normal  "foo")
+                (thunked (string-append (with-thunked-normal this-record)
+                                        "bar")))))
+      (match-record rec <with-thunked> (normal thunked)
+        (list normal thunked)))))
+
 (test-end)
