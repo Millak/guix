@@ -10810,14 +10810,14 @@ in omics data.")
 (define-public r-plgem
   (package
     (name "r-plgem")
-    (version "1.70.0")
+    (version "1.72.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "plgem" version))
        (sha256
         (base32
-         "0hnhfdrlg4907dc4s17cy4kgmq5nr616f1wi7jn72acxwqfl4bk8"))))
+         "1kzrscaqsrsvdq2c9g93l7bjmv1s5p1l3cbrz6skkqls9h4gsw08"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-mass))
