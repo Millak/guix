@@ -4070,14 +4070,14 @@ retrieval analyses, or similar technologies.")
 (define-public r-biocversion
   (package
     (name "r-biocversion")
-    (version "3.16.0")
+    (version "3.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocVersion" version))
        (sha256
         (base32
-         "1djp23y131dyx4g22f9r7an177bq0mky94bvpqvc8b14166g0ynw"))))
+         "0n29adnb62agp9li8rmn68z653d2m41iy9zjz75h43a05drlgp33"))))
     (properties `((upstream-name . "BiocVersion")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/BiocVersion/")
