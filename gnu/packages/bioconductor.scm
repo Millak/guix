@@ -13300,12 +13300,12 @@ distributions, modules and filter motifs.")
 (define-public r-motifdb
   (package
    (name "r-motifdb")
-   (version "1.40.0")
+   (version "1.42.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "MotifDb" version))
             (sha256
-             (base32 "122ifxmbi0v3192cd9chq265i3dyw3hzwsndq3w97f4d68vll7gl"))))
+             (base32 "18d0qj9sn4bhfjy2mwsz2nnm41xlsqjslsv69nkhv19w9zd842pw"))))
    (properties `((upstream-name . "MotifDb")))
    (build-system r-build-system)
    (propagated-inputs
@@ -13317,7 +13317,7 @@ distributions, modules and filter motifs.")
           r-s4vectors
           r-splitstackshape))
    (native-inputs
-     (list r-knitr))
+     (list r-formatr r-knitr r-markdown r-rmarkdown))
    (home-page "https://www.bioconductor.org/packages/MotifDb/")
    (synopsis "Annotated collection of protein-DNA binding sequence motifs")
    (description "This package provides more than 2000 annotated position
