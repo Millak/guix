@@ -31,7 +31,8 @@
             alist->record
             object->fields
             recutils->alist
-            match-record))
+            match-record
+            match-record-lambda))
 
 ;;; Commentary:
 ;;;
@@ -639,5 +640,16 @@ an unknown field is queried."
      (if (eq? (struct-vtable record) type)
          (match-record-inner record type (fields ...) body ...)
          (throw 'wrong-type-arg record)))))
+
+(define-syntax match-record-lambda
+  (syntax-rules ()
+    "Return a procedure accepting a single record of the given TYPE for which each
+FIELD will be bound to its FIELD name within the returned procedure.  A syntax error
+is raised if an unknown field is queried."
+    ((_ type (field ...) body ...)
+     (lambda (record)
+       (if (eq? (struct-vtable record) type)
+           (match-record-inner record type (field ...) body ...)
+           (throw 'wrong-type-arg record))))))
 
 ;;; records.scm ends here

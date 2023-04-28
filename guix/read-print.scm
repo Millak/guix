@@ -319,6 +319,7 @@ expressions and blanks that were read."
    ('letrec* 2)
    ('match 2)
    ('match-record 3)
+   ('match-record-lambda 2)
    ('when 2)
    ('unless 2)
    ('package 1)

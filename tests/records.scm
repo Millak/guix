@@ -590,4 +590,16 @@ Description: 1st line,
       (match-record rec <with-thunked> (normal thunked)
         (list normal thunked)))))
 
+(test-equal "match-record-lambda"
+  '("thing: foo" "thing: bar")
+  (begin
+    (define-record-type* <with-text> with-text make-with-text
+      with-text?
+      (text with-text-text))
+
+    (map (match-record-lambda <with-text> (text)
+           (string-append "thing: " text))
+         (list (with-text (text "foo"))
+               (with-text (text "bar"))))))
+
 (test-end)

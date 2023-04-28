@@ -71,6 +71,7 @@
    (eval . (put 'lambda* 'scheme-indent-function 1))
    (eval . (put 'substitute* 'scheme-indent-function 1))
    (eval . (put 'match-record 'scheme-indent-function 3))
+   (eval . (put 'match-record-lambda 'scheme-indent-function 2))
 
    ;; TODO: Contribute these to Emacs' scheme-mode.
    (eval . (put 'let-keywords 'scheme-indent-function 3))
