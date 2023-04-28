@@ -18421,13 +18421,13 @@ performs copy number calculations and reports.")
 (define-public r-cner
   (package
     (name "r-cner")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CNEr" version))
        (sha256
-        (base32 "15y27ca14fdhn2prqgkyikff7p7490xn0bp2c7cnwhw173mm1syw"))))
+        (base32 "04arfcr2ay71hyy0xsh6jzappmcnnzfr1nyj1l7dqhhhk81ksjfd"))))
     (properties `((upstream-name . "CNEr")))
     (build-system r-build-system)
     (inputs (list zlib))
