@@ -6672,14 +6672,14 @@ chromosome region or transcript models of lincRNA genes.")
 (define-public r-fastseg
   (package
     (name "r-fastseg")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fastseg" version))
        (sha256
         (base32
-         "1m1x7xmbxwa15vzd45h16pnib944f20pwinx1pyhba5hcngkikfi"))))
+         "0gygyf1xq1z6vzand43n965p366zh0k3rv58gnyqa81whj4dvcq3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-biocgenerics r-genomicranges r-iranges
