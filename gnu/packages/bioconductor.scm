@@ -11090,14 +11090,14 @@ data.")
 (define-public r-metapod
   (package
     (name "r-metapod")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "metapod" version))
        (sha256
         (base32
-         "06ala1qz9bfq7nnj92m0c5r85kk7h4zrljjh0hgrap5sjlsm09bb"))))
+         "0lr2sgbgdbqq626nsm3vyhghs8nalg5cxycr4cwsqh9nqrmip3wa"))))
     (properties `((upstream-name . "metapod")))
     (build-system r-build-system)
     (propagated-inputs
