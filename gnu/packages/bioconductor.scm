@@ -3625,13 +3625,13 @@ variant.")
 (define-public r-atena
   (package
     (name "r-atena")
-    (version "1.4.1")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "atena" version))
               (sha256
                (base32
-                "0j6jq1cll8440i2srmy4lbvvyqawailk9byl9bnnzln1mdgys8r7"))))
+                "1057mkxrjfnqhb1mydhd7vlb1s8h7n4zc4cl063gw4sgj6mw99ij"))))
     (properties `((upstream-name . "atena")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3646,7 +3646,6 @@ variant.")
            r-matrixstats
            r-rsamtools
            r-s4vectors
-           r-scales
            r-sparsematrixstats
            r-squarem
            r-summarizedexperiment))
