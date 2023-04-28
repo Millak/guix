@@ -5502,14 +5502,14 @@ CDF file formats.")
 (define-public r-affxparser
   (package
     (name "r-affxparser")
-    (version "1.70.0")
+    (version "1.72.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affxparser" version))
        (sha256
         (base32
-         "0p42rpyh96aph9jr8kiyjvv860jn7m7ji2nrib2vr2nl0jyaxqjs"))))
+         "0n86my3bzy3g7xn60kizs5ym5m016zrkg7dv96kx246mrnv0ax8y"))))
     (properties `((upstream-name . "affxparser")))
     (build-system r-build-system)
     (home-page "https://github.com/HenrikBengtsson/affxparser")
