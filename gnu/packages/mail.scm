@@ -2007,7 +2007,9 @@ facilities for checking incoming mail.")
                            (version-major+minor version) "/"
                            "dovecot-" version ".tar.gz"))
        (sha256
-        (base32 "0ll546dldhxqk8yr2jnfq0rag7vp9d9hz7gf6pgsnj41jvmk5a6a"))))
+        (base32 "0ll546dldhxqk8yr2jnfq0rag7vp9d9hz7gf6pgsnj41jvmk5a6a"))
+       (patches
+        (search-patches "dovecot-opensslv3.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
