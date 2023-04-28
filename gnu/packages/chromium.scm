@@ -90,11 +90,8 @@
     "net/third_party/uri_template" ;ASL2.0
     "third_party/abseil-cpp" ;ASL2.0
     "third_party/angle" ;BSD-3
-    "third_party/angle/src/common/third_party/base" ;BSD-3
-    "third_party/angle/src/common/third_party/smhasher" ;Public domain
     "third_party/angle/src/common/third_party/xxhash" ;BSD-2
     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
-    "third_party/angle/src/third_party/trace_event" ;BSD-3
     "third_party/angle/src/third_party/volk" ;Expat
     "third_party/apple_apsl" ;APSL2.0
     "third_party/axe-core" ;MPL2.0
@@ -145,13 +142,14 @@
     "third_party/devtools-frontend/src/front_end/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/lighthouse" ;ASL2.0
-    "third_party/devtools-frontend/src/front_end/third_party/lit-html" ;BSD-3
+    "third_party/devtools-frontend/src/front_end/third_party/lit" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/lodash-isequal" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/marked" ;Expat, BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer\
 /package/lib/esm/third_party/mitt" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/wasmparser" ;ASL2.0
+    "third_party/devtools-frontend/src/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/typescript" ;ASL2.0
     "third_party/distributed_point_functions" ;ASL2.0
@@ -185,7 +183,6 @@
     "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
-    "third_party/libjxl" ;ASL2.0
     "third_party/libgav1" ;ASL2.0
     "third_party/libjingle_xmpp" ;BSD-3
     "third_party/libphonenumber" ;ASL2.0
@@ -273,9 +270,7 @@
     "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
     "third_party/vulkan_memory_allocator" ;Expat
-    "third_party/wayland/src/protocol" ;Expat
-    "third_party/wayland/stubs" ;BSD-3, Expat
-    "third_party/wayland/wayland_scanner_wrapper.py" ;BSD-3
+    "third_party/wayland" ;BSD-3, Expat
     "third_party/wayland-protocols" ;Expat
     "third_party/web-animations-js" ;ASL2.0
     "third_party/webdriver" ;ASL2.0
@@ -308,6 +303,7 @@
     "v8/src/third_party/siphash" ;Public domain
     "v8/src/third_party/utf8-decoder" ;Expat
     "v8/src/third_party/valgrind" ;BSD-4
+    "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64" ;LGPL2.1+
     "v8/third_party/inspector_protocol" ;BSD-3
     "v8/third_party/v8/builtins")) ;PSFL
 
@@ -317,11 +313,9 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "109.0.5414.119")
+(define %chromium-version "110.0.5481.177")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/103.0.5060.53-1")
-  ;; This is the first release supporting openjpeg@2.5 in openjpeg.patch;
-  ;; it still includes jsoncpp.patch, which also appears to be needed.
+(define %debian-revision "debian/110.0.5481.177-1")
 (define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
 
 (define %ungoogled-origin
@@ -332,7 +326,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1nb0099gwkhxv3zc184jyvpl5jrrq194pv6yq95nbc27vw6zz7qv"))))
+      "0rsvkbsrnfkdp3iw4s54kddw8r771h14hf1ivgahmn42yjafkk3n"))))
 
 (define %debian-origin
   (origin
@@ -345,7 +339,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "0bmbp1y0cykcbjhvsk330d11f7qnwmapcwxv76vdbl8cjfb6h60w"))))
+      "02cvdrr3s3v7v107284n8w9zpdmdl42rgjjvqjdjxb1gyk546kvg"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -359,9 +353,30 @@
 (define %debian-patches
   (map debian-patch
        '("fixes/clang-and-gcc11.patch"
-         "system/jsoncpp.patch"
          "system/zlib.patch"
          "system/openjpeg.patch")))
+
+(define %chromium-gcc-patchset
+  (let ((commit "chromium-110-patchset-4"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/stha09/chromium-patches")
+            (commit commit)))
+      (file-name (git-file-name "chromium-gcc-patches"
+                                (string-drop commit 9)))
+      (sha256
+       (base32
+        "1q36zgazw50rn2vgjdllw20hp400kvknfhp0ibc515r64hdzfdgy")))))
+
+(define (gcc-patch name)
+  (origin-file %chromium-gcc-patchset name))
+
+(define %gcc-patches
+  (map gcc-patch
+       '("chromium-110-NativeThemeBase-fabs.patch"
+         "chromium-110-CredentialUIEntry-const.patch"
+         "chromium-110-DarkModeLABColorSpace-pow.patch")))
 
 (define (arch-patch revision name hash)
   (origin
@@ -403,7 +418,7 @@
           (search-patch "ungoogled-chromium-system-nspr.patch")))))
 
 (define %patches
-  (append %debian-patches %arch-patches %guix-patches))
+  (append %debian-patches %arch-patches %gcc-patches %guix-patches))
 
 ;; This is a source 'snippet' that does the following:
 ;; *) Applies various patches for unbundling purposes and libstdc++ compatibility.
@@ -467,10 +482,10 @@
             (("#if defined\\(OFFICIAL_BUILD\\)")
              "#if 0"))
           (invoke "python" "build/linux/unbundle/replace_gn_files.py"
-                  "--system-libraries" "ffmpeg" "flac" "fontconfig"
-                  "freetype" "harfbuzz-ng" "icu" "libdrm" "libevent"
-                  "libjpeg" "libpng" "libwebp" "libxml" "libxslt"
-                  "openh264" "opus" "re2" "zlib")))))
+                  "--system-libraries" "ffmpeg" "flac" "fontconfig" "freetype"
+                  "harfbuzz-ng" "icu" "jsoncpp" "libdrm" "libevent" "libjpeg"
+                  "libpng" "libwebp" "libxml" "libxslt" "openh264" "opus" "re2"
+                  "zlib")))))
 
 (define opus+custom
   (package/inherit opus
@@ -496,7 +511,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0bdyb14v12izxkldq27jx532p0bid3wdwfpd1mwm7jqswxgfzkfb"))
+                "1dy9l61r3fpl40ff790dbqqvw9l1svcgd7saz4whl9wm256labvv"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -559,15 +574,10 @@
               "use_system_harfbuzz=true"
               "use_system_lcms2=true"
               "use_system_libdrm=true"
+              "use_system_libffi=true"
               "use_system_libjpeg=true"
               "use_system_libopenjpeg2=true"
               "use_system_libpng=true"
-              "use_system_libwayland=true"
-              "use_system_wayland_scanner=true"
-              (string-append "system_wayland_scanner_path=\""
-                             (search-input-file %build-inputs
-                                                "/bin/wayland-scanner")
-                             "\"")
 
               "use_system_zlib=true"
               "use_gnome_keyring=false" ;deprecated by libsecret
