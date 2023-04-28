@@ -10619,16 +10619,68 @@ defined categories which are over/under represented in RNA-seq data.")
 (define-public r-glimma
   (package
     (name "r-glimma")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Glimma" version))
        (sha256
         (base32
-         "1fskabpd3xlrbhqvzam9ibpxmbdys7y1b265np8hz4k704ww1g22"))))
+         "0171wizl516chzzwnbc2z2bf5sk4a491fcs4yhq5ycqaqpjmbg35"))
+       (modules '((guix build utils)))
+       (snippet
+        '(with-directory-excursion "inst/htmlwidgets/lib/"
+           (for-each delete-file
+                     ;; XXX: we keep inst/v1/js/glimma.min.js because
+                     ;; it's not clear how to build it.
+                     (cons "vega/vega.min.js"
+                           (find-files "datatables"
+                                       "\\.min\\.js$")))))))
     (properties `((upstream-name . "Glimma")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/"
+               (let ((files (list "datatables/Buttons-1.6.1/js/buttons.bootstrap.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.bootstrap4.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.colVis.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.flash.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.foundation.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.html5.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.jqueryui.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.print.js"
+                                  "datatables/Buttons-1.6.1/js/buttons.semanticui.js"
+                                  "datatables/Buttons-1.6.1/js/dataTables.buttons.js"
+                                  "datatables/DataTables-1.10.20/js/dataTables.bootstrap.js"
+                                  "datatables/DataTables-1.10.20/js/dataTables.bootstrap4.js"
+                                  "datatables/DataTables-1.10.20/js/dataTables.foundation.js"
+                                  "datatables/DataTables-1.10.20/js/dataTables.jqueryui.js"
+                                  "datatables/DataTables-1.10.20/js/dataTables.semanticui.js"
+                                  "datatables/DataTables-1.10.20/js/jquery.dataTables.js"
+                                  "datatables/JSZip-2.5.0/jszip.js"
+                                  "datatables/Scroller-2.0.1/js/dataTables.scroller.js"
+                                  "datatables/Scroller-2.0.1/js/scroller.bootstrap.js"
+                                  "datatables/Scroller-2.0.1/js/scroller.bootstrap4.js"
+                                  "datatables/Scroller-2.0.1/js/scroller.foundation.js"
+                                  "datatables/Scroller-2.0.1/js/scroller.jqueryui.js"
+                                  "datatables/Scroller-2.0.1/js/scroller.semanticui.js"
+                                  "datatables/datatables.js"
+                                  "datatables/jQuery-1.12.4/jquery-1.12.4.js"
+                                  "vega/vega.js")))
+                 (for-each (lambda (source)
+                             (let ((target (string-append (basename source ".js") ".min.js")))
+                               (format #true "Processing ~a --> ~a~%"
+                                       source target)
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target))))
+                           files))))))))
     (propagated-inputs
      (list r-deseq2
            r-edger
@@ -10638,7 +10690,7 @@ defined categories which are over/under represented in RNA-seq data.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list esbuild r-knitr))
     (home-page "https://github.com/Shians/Glimma")
     (synopsis "Interactive HTML graphics")
     (description
