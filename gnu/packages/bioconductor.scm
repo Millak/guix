@@ -18398,13 +18398,13 @@ matrices.")
 (define-public r-beadarraysnp
   (package
     (name "r-beadarraysnp")
-    (version "1.64.0")
+    (version "1.66.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "beadarraySNP" version))
        (sha256
-        (base32 "06hy89pclbyxjw5yf5i9bc3wr789b9pmhd9sdchgljlijs9vcj6g"))))
+        (base32 "1pymsm4j3wiyjvgsjb3vhjwdvhfmh91pxdhg4ihrj71pqpif3w9m"))))
     (properties `((upstream-name . "beadarraySNP")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-quantsmooth))
