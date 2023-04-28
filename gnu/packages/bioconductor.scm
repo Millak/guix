@@ -17778,14 +17778,14 @@ Rmarkdown and LaTeX documents when authoring a Bioconductor Workflow.")
 (define-public r-biodist
   (package
     (name "r-biodist")
-    (version "1.70.0")
+    (version "1.72.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bioDist" version))
        (sha256
         (base32
-         "1fnx3q5arsilrvnhndplap8h4ydi9bvmlpfllj1li124hn5n2w3d"))))
+         "1mx4abv7p76qsa0yzj0b4d03xklx09im01bx02lwa1w527gdmfc3"))))
     (properties `((upstream-name . "bioDist")))
     (build-system r-build-system)
     (propagated-inputs
