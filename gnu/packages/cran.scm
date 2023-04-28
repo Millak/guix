@@ -373,6 +373,16 @@ queues, stacks, deques, dicts and ordered dicts.")
         (base32 "0mqjk10265hq9bc5ihmgbx1l8fzay1gpdlvx3pirqmvr3w1kwlxk"))))
     (properties `((upstream-name . "cplm")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; GET_SLOT is only found in Rdefines.h
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "src/common.h"
+               (("#include <Rinternals.h>" m)
+                (string-append m "\n#include <Rdefines.h>"))))))))
     (propagated-inputs
      (list r-biglm
            r-coda
