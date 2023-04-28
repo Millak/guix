@@ -3132,13 +3132,13 @@ plants.  The method has been specifically designed to:
 (define-public r-alpine
   (package
     (name "r-alpine")
-    (version "1.24.0")
+    (version "1.25.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "alpine" version))
               (sha256
                (base32
-                "0rjnwljh4c2f7ml0m14pllns4pvyjwwf23qsn6zjygm5x04bapf0"))))
+                "01y467qcjl40fq0m9vq6fpyi5f243v4g67dnn5ddqwrzrkyb0j2r"))))
     (properties `((upstream-name . "alpine")))
     (build-system r-build-system)
     (propagated-inputs
