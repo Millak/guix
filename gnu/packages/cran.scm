@@ -3981,7 +3981,7 @@ previewing themes in real time.")
 (define-public r-shiny
   (package
     (name "r-shiny")
-    (version "1.7.1")
+    (version "1.7.4")
     (source
      (origin
        (method git-fetch)
@@ -3991,7 +3991,7 @@ previewing themes in real time.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wvc6jlgs41p05wbk8gahnl7sfnc4hpliyh9dbi5w52ngsg6wcr7"))
+         "0297sbrc7wfj0qfn63yrgs4xkxaxp95ppipdp9pqjg5qhm9k5wbi"))
        (snippet
         '(for-each delete-file
                    '("inst/www/shared/bootstrap/js/bootstrap.min.js"
