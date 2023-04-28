@@ -16643,13 +16643,13 @@ on whole-genome tiling array experiments quite easily with enough memory.")
 (define-public r-acde
   (package
     (name "r-acde")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "acde" version))
               (sha256
                (base32
-                "1d47hbna68qm517afk1wb0w9gb8j52p7nqh5axcc6h76zppsc1sp"))))
+                "088dq6mc9m1bx0dprcz8cdpfp447lnxq7420r139mhcik0z21vky"))))
     (properties `((upstream-name . "acde")))
     (build-system r-build-system)
     (propagated-inputs (list r-boot))
