@@ -12718,13 +12718,13 @@ phenotype of interest.")
 (define-public r-fcscan
   (package
     (name "r-fcscan")
-    (version "1.12.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fcScan" version))
        (sha256
-        (base32 "0z83ncjxw9x8nvc6pncrvpf6lmamvgrv56j96s1f0x9jydk18chy"))))
+        (base32 "071sylwwj27bk39pkn5a29r7bmfpmyaixkkg7dqcdq230c1dsrps"))))
     (properties `((upstream-name . "fcScan")))
     (build-system r-build-system)
     (propagated-inputs
