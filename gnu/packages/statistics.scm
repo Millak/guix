@@ -210,7 +210,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.2.3")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -218,7 +218,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0x702sargcw27gy3nc0bwpfayi2lzak6c0ixq3i19qrvsjkakr2m"))))
+                "02d6lrb0008wr9ikcas0h5xrk7i074ddwzzp4083czgjdj5w9p25"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -327,10 +327,11 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
           ;; Set default pager to "cat", because otherwise it is "false",
           ;; making "help()" print nothing at all.
           (lambda _ (setenv "PAGER" "cat")))
-         (add-before 'check 'set-timezone
+         (add-before 'configure 'set-timezone
            ;; Some tests require the timezone to be set.  However, the
            ;; timezone may not just be "UTC", or else a brittle regression
            ;; test in reg-tests-1d will fail.
+           ;; We also need TZ during the configure step.
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "TZ" "UTC+1")
              (setenv "TZDIR"
