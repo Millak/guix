@@ -7119,15 +7119,16 @@ matrix to solve the memory problem.")
 (define-public r-hpar
   (package
     (name "r-hpar")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "hpar" version))
        (sha256
         (base32
-         "1dls59d2ysk8ngk5c6nx7xqgc2iygbdlzf88gccf2wm8zhy8m3f4"))))
+         "1sg0mjada72a13xh3k6xsiaff7xj4mp76r6i8iab8nfkvng07p4i"))))
     (build-system r-build-system)
+    (propagated-inputs (list r-experimenthub))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/hpar/")
