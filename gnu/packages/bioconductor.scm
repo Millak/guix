@@ -8866,14 +8866,14 @@ single-cell RNA-seq.")
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
-    (version "1.64.0")
+    (version "1.66.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "seqLogo" version))
        (sha256
         (base32
-         "1xlxi1iaqj7iabzbx15j6pk4551dyj6pa6a6qf5ffr3v7k2pmznp"))))
+         "0727yrmm194gskrcpmq4fh0qmi6dnp70gx627psrpvzlk6vlcl8k"))))
     (properties `((upstream-name . "seqLogo")))
     (build-system r-build-system)
     (native-inputs
