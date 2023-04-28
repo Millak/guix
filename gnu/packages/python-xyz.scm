@@ -26168,14 +26168,14 @@ Notation (CSON).")
 (define-public python-k5test
   (package
     (name "python-k5test")
-    (version "0.9.2")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "k5test" version))
        (sha256
         (base32
-         "1lqp3jgfngyhaxjgj3n230hn90wsylwilh120yjf62h7b1s02mh8"))))
+         "07sp9hc6nkbgzywvr2ivcik03wibs6gmxm1k33l1b8v3mnyfx7cw"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-six
