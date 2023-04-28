@@ -9844,13 +9844,13 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
 (define-public r-quantsmooth
   (package
     (name "r-quantsmooth")
-    (version "1.64.0")
+    (version "1.66.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "quantsmooth" version))
        (sha256
-        (base32 "1adwws3brb01d4g6yidipnd8akkiyc3gpdr876hy57qnmcq8xipp"))))
+        (base32 "05lja0viz5jgc7g3b8qfhd1x596vczid0dz8278qpl4zwv9i17vx"))))
     (properties `((upstream-name . "quantsmooth")))
     (build-system r-build-system)
     (propagated-inputs (list r-quantreg))
