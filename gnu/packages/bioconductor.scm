@@ -4896,13 +4896,13 @@ results.")
 (define-public r-dss
   (package
     (name "r-dss")
-    (version "2.46.0")
+    (version "2.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DSS" version))
               (sha256
                (base32
-                "1qm0pq6495fn2zrbddaadb1w01ry76rg8mmbmxf3zws9pww48jgf"))))
+                "1aslbzwqfp609ym98k6cjjf6r1ns9hxcpx4igfjhqf2v0pazz2q8"))))
     (properties `((upstream-name . "DSS")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-biocparallel r-bsseq))
