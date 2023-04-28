@@ -3754,13 +3754,13 @@ meta-pattern.")
 (define-public r-awst
   (package
     (name "r-awst")
-    (version "1.6.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "awst" version))
               (sha256
                (base32
-                "0dvzkqpjv7whns9q8zj6n2nyvnaw2ib7i53vf049n94x52vh9x15"))))
+                "0nwpfxfrx9rw4vl02vr311ivmmk96ajlwyhwms642hjv74j2yiji"))))
     (properties `((upstream-name . "awst")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
