@@ -3387,20 +3387,22 @@ tumor samples from healthy controls.")
 (define-public r-arrayexpress
   (package
     (name "r-arrayexpress")
-    (version "1.57.0")
+    (version "1.60.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ArrayExpress" version))
               (sha256
                (base32
-                "1fzi951mjc4kbkkvlfvwlfrpfnjckkmw4xz4m5dapy1z2jkgp8w6"))))
+                "1ib33fw379sakk084csa3pwcc3wvba38ily6mmv2ax1wh16i0pfz"))))
     (properties `((upstream-name . "ArrayExpress")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
+           r-httr
+           r-jsonlite
            r-limma
            r-oligo
-           r-xml))
+           r-rlang))
     (home-page "https://bioconductor.org/packages/ArrayExpress")
     (synopsis "Building R objects from ArrayExpress datasets")
     (description
