@@ -4724,6 +4724,37 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
 @code{Matrix} objects, and ordinary arrays and data frames.")
     (license license:artistic2.0)))
 
+(define-public r-densvis
+  (package
+    (name "r-densvis")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "densvis" version))
+              (sha256
+               (base32
+                "0dwdlz2mvlkfa9x0x58lymfcaq00z35sliiac24l0kdg5chm35a8"))))
+    (properties `((upstream-name . "densvis")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-assertthat r-basilisk r-irlba r-rcpp
+                             r-reticulate))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/densvis")
+    (synopsis
+     "Density-preserving data visualization via non-linear dimensionality reduction")
+    (description
+     "This package implements the density-preserving modification to t-SNE and
+UMAP described by Narayan et al. (2020) <doi:10.1101/2020.05.12.077776>.
+den-SNE and densMAP aim to enable more accurate visual interpretation of
+high-dimensional datasets by producing lower-dimensional embeddings that
+accurately represent the heterogeneity of the original high-dimensional space,
+enabling the identification of homogeneous and heterogeneous cell states.
+This accuracy is accomplished by including in the optimisation process a term
+which considers the local density of points in the original high-dimensional
+space.  This can help to create visualisations that are more representative of
+heterogeneity in the original high-dimensional space.")
+    (license license:expat)))
+
 (define-public r-derfinderhelper
   (package
     (name "r-derfinderhelper")
