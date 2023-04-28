@@ -3299,13 +3299,13 @@ sequencing data.")
 (define-public r-anf
   (package
     (name "r-anf")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANF" version))
               (sha256
                (base32
-                "0yfwvgx7144r894fr13sx4gyyq6ljh7y734wx74sb7q80cl2gs1j"))))
+                "08vkkfccfq8j4hanxsmjx5657kkw4qcp46qfhqvp1sd6wym69wzw"))))
     (properties `((upstream-name . "ANF")))
     (build-system r-build-system)
     (propagated-inputs
