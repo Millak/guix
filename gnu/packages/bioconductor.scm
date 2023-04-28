@@ -3414,13 +3414,13 @@ structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
 (define-public r-asafe
   (package
     (name "r-asafe")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASAFE" version))
               (sha256
                (base32
-                "1q4i33rw1qb8bnvkl06izl4nyl9lzgwy8rwrmvbrz1c384pmy8yj"))))
+                "05xw42552x7by63psb05hvjraax66flg94i331ca61zx107q7fai"))))
     (properties `((upstream-name . "ASAFE")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
