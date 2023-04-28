@@ -12943,14 +12943,14 @@ expression data sets.")
 (define-public r-mlinterfaces
   (package
     (name "r-mlinterfaces")
-    (version "1.78.0")
+    (version "1.80.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MLInterfaces" version))
        (sha256
         (base32
-         "0xnaghm65ydk01gzx5g38jyq7vfdw206c2w59k0qg8lhy9fqky9x"))))
+         "1s5b27n01crfzrpshhiv6g0q0qf0dip1gw4nkrkg5sh5x9dsikq6"))))
     (properties `((upstream-name . "MLInterfaces")))
     (build-system r-build-system)
     (propagated-inputs
@@ -12975,6 +12975,7 @@ expression data sets.")
            r-shiny
            r-summarizedexperiment
            r-threejs))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/MLInterfaces/")
     (synopsis "Interfaces to R machine learning procedures")
     (description
