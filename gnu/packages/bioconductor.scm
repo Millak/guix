@@ -7092,13 +7092,13 @@ Enrichment Analysis} (GSEA).")
 (define-public r-harshlight
   (package
     (name "r-harshlight")
-    (version "1.70.0")
+    (version "1.72.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Harshlight" version))
               (sha256
                (base32
-                "0asjgcnwawg8x7ql0srhb2011rvb4kr2cpsa1cy28nfmjfvdf0qm"))))
+                "1rg3gx42a68jqbdmbqx7lh97y0rird1lci7146hnxa4svj827d5p"))))
     (properties `((upstream-name . "Harshlight")))
     (build-system r-build-system)
     (propagated-inputs
