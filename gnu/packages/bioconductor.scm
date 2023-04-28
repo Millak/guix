@@ -11614,14 +11614,14 @@ the numbers of cells across batches.")
 (define-public r-mast
   (package
     (name "r-mast")
-    (version "1.24.1")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MAST" version))
        (sha256
         (base32
-         "1c0lc4abnb859x481ky6d3kc9zzxwvf4kqgwxyqapc4g72b4vh65"))
+         "0vm7v2anbrci6mcans9y9svd6xjm4waf2kny3rz0cjgsasw60ycx"))
        (snippet
         '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "MAST")))
@@ -11642,6 +11642,7 @@ the numbers of cells across batches.")
            r-biocgenerics
            r-data-table
            r-ggplot2
+           r-matrix
            r-plyr
            r-progress
            r-reshape2
