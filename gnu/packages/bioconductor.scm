@@ -9201,13 +9201,13 @@ tools either included in speaq or available elsewhere on CRAN.")
 (define-public r-stager
   (package
     (name "r-stager")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "stageR" version))
        (sha256
-        (base32 "1layvv9akzijw2br9jzw6cwxn2rimha4m48fm8wn465n1nqcns0m"))))
+        (base32 "0advih0g2g5w8bx9f21chz8a66f4v84qn3p5skxi084pp142v5ms"))))
     (properties `((upstream-name . "stageR")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
