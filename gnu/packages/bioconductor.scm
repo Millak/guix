@@ -12409,14 +12409,14 @@ evaluation of DEG analysis methods.")
 (define-public r-ioniser
   (package
     (name "r-ioniser")
-    (version "2.22.0")
+    (version "2.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IONiseR" version))
        (sha256
         (base32
-         "1xkxqavhcw22lhij87cpd5ps1ldkzzi0pp93d38pxbbhj15gc3d3"))))
+         "1yrsd5n9zam6wslc6savfn122v3wzzcc46w20mb849qq2np4frf0"))))
     (properties `((upstream-name . "IONiseR")))
     (build-system r-build-system)
     (propagated-inputs
