@@ -105,7 +105,12 @@ error-reporting purposes."
 
 (define-syntax map-fields
   (lambda (x)
-    (syntax-violation 'map-fields "bad use of syntactic keyword" x x)))
+    (syntax-case x ()
+      ((_ type within)
+       (syntax-violation (syntax->datum #'within)
+                         "undefined guix record-type"
+                         #'type))
+      (_ (syntax-violation 'map-fields "bad use of syntactic keyword" x x)))))
 
 (define-syntax-parameter this-record
   (lambda (s)
@@ -459,7 +464,7 @@ inherited."
                    "This macro lets us query record type info at
 macro-expansion time."
                    (syntax-case s (map-fields)
-                     ((_ map-fields macro)
+                     ((_ (map-fields _ _) macro)
                       #'(macro (field ...)))
                      (id
                       (identifier? #'id)
@@ -595,7 +600,7 @@ found."
        #'(let-syntax ((field-offset (syntax-rules ()
 			              ((_ f)
                                        (lookup-field field 0 f)))))
-           (let* ((offset (type map-fields field-offset))
+           (let* ((offset (type (map-fields type match-record) field-offset))
                   (variable (struct-ref record offset)))
              (match-record-inner record type (rest ...) body ...))))
       ((_ record type (field rest ...) body ...)
