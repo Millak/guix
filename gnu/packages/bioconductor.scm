@@ -3821,13 +3821,13 @@ alleles, a known phenotypical feature of cancer samples.")
 (define-public r-basespacer
   (package
     (name "r-basespacer")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BaseSpaceR" version))
               (sha256
                (base32
-                "07pqs0jkwcbxavc65sanvhvzc9spkk46bqnwz162f3pvrz15b5h7"))))
+                "15aqf2s51gl6gcnv24170v9hlq1vgya58qh1f5vjmark7j2k8vvm"))))
     (properties `((upstream-name . "BaseSpaceR")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcurl r-rjsonio))
