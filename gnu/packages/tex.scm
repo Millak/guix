@@ -9372,7 +9372,7 @@ typeset the table of contents in multiple columns.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-amsmath texlive-latex-graphics))
+       (list texlive-amsmath texlive-graphics))
       (home-page "https://ctan.org/pkg/ncctools")
       (synopsis "Collection of general packages for LaTeX")
       (description
