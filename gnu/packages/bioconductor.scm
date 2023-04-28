@@ -17707,14 +17707,14 @@ analytics on packages.")
 (define-public r-biocset
   (package
     (name "r-biocset")
-    (version "1.12.1")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocSet" version))
        (sha256
         (base32
-         "1cqp5m6yic5vsp8k05r50sx2cmi9cwzxfmlswcjw28nascq3gpv0"))))
+         "1q5794gsinpy9hv5n1vx79bkqxi1jxzxjl95jlw9pqjmlnki07i5"))))
     (properties `((upstream-name . "BiocSet")))
     (build-system r-build-system)
     (propagated-inputs
