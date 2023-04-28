@@ -11542,14 +11542,14 @@ interactive exploration of results.")
 (define-public r-residualmatrix
   (package
     (name "r-residualmatrix")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ResidualMatrix" version))
        (sha256
         (base32
-         "0zqifr1zhsfhrkjlp0ajqiqc9f96yz8zr13yhl19lvw30pwg9rj9"))))
+         "1yay0i0nh2ax35ayqlpnmq0839syl5991hacyrbv3li3gqjc9qqv"))))
     (properties
      `((upstream-name . "ResidualMatrix")))
     (build-system r-build-system)
