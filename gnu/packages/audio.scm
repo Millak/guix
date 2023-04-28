@@ -3462,70 +3462,70 @@ background file post-processing.")
         ;; The build system doesn't allow us to unbundle the following
         ;; libraries.  hidapi is also heavily patched and upstream not
         ;; actively maintained.
-        '(let ((keep-dirs '("nova-simd" "nova-tt" "hidapi"
-                            "TLSF-2.4.6" "oscpack_1_1_0" "." "..")))
-           (with-directory-excursion "./external_libraries"
-             (for-each
-              delete-file-recursively
-              (scandir "."
-                       (lambda (x)
-                         (and (eq? (stat:type (stat x)) 'directory)
-                              (not (member (basename x) keep-dirs)))))))
-           ;; To find the Guix provided ableton-link library.
-           (substitute* "lang/CMakeLists.txt"
-             (("include\\(\\.\\./external_libraries/link/\
+        #~(let ((keep-dirs '("nova-simd" "nova-tt" "hidapi"
+                             "TLSF-2.4.6" "oscpack_1_1_0" "." "..")))
+            (with-directory-excursion "./external_libraries"
+              (for-each
+               delete-file-recursively
+               (scandir "."
+                        (lambda (x)
+                          (and (eq? (stat:type (stat x)) 'directory)
+                               (not (member (basename x) keep-dirs)))))))
+            ;; To find the Guix provided ableton-link library.
+            (substitute* "lang/CMakeLists.txt"
+              (("include\\(\\.\\./external_libraries/link/\
 AbletonLinkConfig\\.cmake\\)")
-              "find_package(AbletonLink NAMES AbletonLink ableton-link \
+               "find_package(AbletonLink NAMES AbletonLink ableton-link \
 link REQUIRED)"))))))
     (build-system cmake-build-system)
     (outputs
      '("out"                            ;core language
        "ide"))                          ;qt ide
     (arguments
-     `(#:configure-flags '("-DSYSTEM_BOOST=ON"
-                           "-DSYSTEM_YAMLCPP=ON"
-                           "-DSC_QT=ON"
-                           "-DCMAKE_BUILD_TYPE=Release"
-                           "-DFORTIFY=ON"
-                           "-DLIBSCSYNTH=ON"
-                           "-DSC_EL=OFF") ;scel is packaged individually as emacs-scel
-       #:phases
-       (modify-phases %standard-phases
-         ;; HOME must be defined otherwise supercollider throws a "ERROR:
-         ;; Primitive '_FileMkDir' failed." error when generating the doc.
-         ;; The graphical tests also hang without it.
-         (add-after 'unpack 'set-home-directory
-           (lambda _
-             (setenv "HOME" (getcwd))))
-         (add-after 'unpack 'patch-scclass-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (scclass-dir
-                     (string-append out
-                                    "/share/SuperCollider/SCClassLibrary")))
-               (substitute* "lang/LangSource/SC_LanguageConfig.cpp"
-                 (((string-append
-                    "SC_Filesystem::instance\\(\\)\\.getDirectory"
-                    "\\(DirName::Resource\\) / CLASS_LIB_DIR_NAME"))
-                  (string-append "Path(\"" scclass-dir "\")"))))))
-         (add-after 'patch-scclass-dir 'fix-struct-SOUNDFILE-tag
-           (lambda* _
-             (display (getcwd)) (newline)
-             (substitute* "include/plugin_interface/SC_SndBuf.h"
-               (("SNDFILE_tag")
-                "sf_private_tag"))))
-         (add-before 'build 'prepare-x
-           (lambda _
-             (system "Xvfb &")
-             (setenv "DISPLAY" ":0")))
-         (add-before 'install 'install-ide
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (ide (assoc-ref outputs "ide"))
-                    (scide "editors/sc-ide/scide"))
-               (install-file scide
-                             (string-append ide "/bin"))
-               (delete-file scide)))))))
+     (list
+      #:configure-flags
+      #~(list "-DSYSTEM_BOOST=ON"
+              "-DSYSTEM_YAMLCPP=ON"
+              "-DSC_QT=ON"
+              "-DCMAKE_BUILD_TYPE=Release"
+              "-DFORTIFY=ON"
+              "-DLIBSCSYNTH=ON"
+              "-DSC_EL=OFF")      ;scel is packaged individually as emacs-scel
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; HOME must be defined otherwise supercollider throws a "ERROR:
+          ;; Primitive '_FileMkDir' failed." error when generating the doc.
+          ;; The graphical tests also hang without it.
+          (add-after 'unpack 'set-home-directory
+            (lambda _
+              (setenv "HOME" (getcwd))))
+          (add-after 'unpack 'patch-scclass-dir
+            (lambda _
+              (let* ((scclass-dir
+                      (string-append #$output
+                                     "/share/SuperCollider/SCClassLibrary")))
+                (substitute* "lang/LangSource/SC_LanguageConfig.cpp"
+                  (((string-append
+                     "SC_Filesystem::instance\\(\\)\\.getDirectory"
+                     "\\(DirName::Resource\\) / CLASS_LIB_DIR_NAME"))
+                   (string-append "Path(\"" scclass-dir "\")"))))))
+          (add-after 'patch-scclass-dir 'fix-struct-SOUNDFILE-tag
+            (lambda _
+              (display (getcwd)) (newline)
+              (substitute* "include/plugin_interface/SC_SndBuf.h"
+                (("SNDFILE_tag")
+                 "sf_private_tag"))))
+          (add-before 'build 'prepare-x
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0")))
+          (add-before 'install 'install-ide
+            (lambda _
+              (let* ((ide #$output:ide)
+                     (scide "editors/sc-ide/scide"))
+                (install-file scide
+                              (string-append ide "/bin"))
+                (delete-file scide)))))))
     (native-inputs
      (list ableton-link pkg-config qttools-5 xorg-server-for-tests))
     (inputs (list jack-1
