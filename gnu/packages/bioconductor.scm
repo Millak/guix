@@ -12078,13 +12078,13 @@ studies.")
 (define-public r-mia
   (package
     (name "r-mia")
-    (version "1.6.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "mia" version))
               (sha256
                (base32
-                "0yz88ggv6d5rccdwzixwg9y1bc4xysazlmv1ph88wxs8r6fcmync"))))
+                "1p78yacx0cgihva7m2n3vnll5w4b47vl98hy12pq9rnmhk6r591z"))))
     (properties `((upstream-name . "mia")))
     (build-system r-build-system)
     (propagated-inputs
