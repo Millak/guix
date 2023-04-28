@@ -2493,13 +2493,13 @@ bulk RNA-seq tools.")
 (define-public r-agilp
   (package
     (name "r-agilp")
-    (version "3.30.0")
+    (version "3.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "agilp" version))
               (sha256
                (base32
-                "15cw004g1vxfwvf939018vmlv9gym4r473jissamkygqdv78hcr0"))))
+                "0rm646iqc8hf8vfk0pdg064hm9k4k371bp1q4k7z2l16zhs8a07r"))))
     (properties `((upstream-name . "agilp")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/agilp")
