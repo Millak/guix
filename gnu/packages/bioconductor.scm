@@ -9294,13 +9294,13 @@ involving two separate genomic loci encoded as GRanges objects.")
 (define-public r-summarizedexperiment
   (package
     (name "r-summarizedexperiment")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SummarizedExperiment" version))
               (sha256
                (base32
-                "0897v6x1ki4m7kajnd60yv5qj6xa1293sj572b4dhcnfjvsf9rcn"))))
+                "1zfd7c86xjcmy4nm9mlix9hndgml6llpwdg47fsrr6ji6jm2s1qz"))))
     (properties
      `((upstream-name . "SummarizedExperiment")))
     (build-system r-build-system)
