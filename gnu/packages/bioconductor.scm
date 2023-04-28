@@ -4922,13 +4922,13 @@ Beta-Binomial distributions.")
 (define-public r-bluster
   (package
    (name "r-bluster")
-   (version "1.8.0")
+   (version "1.10.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "bluster" version))
             (sha256
              (base32
-              "1xi9vl09nm95l35kb9n3pn3j9qxw8976lss3cx0ppwnxd2mjr6vy"))))
+              "15f103lpl686730vl8g69fhki9iq2ncgr5dm6qm2xc9bq9vh65s9"))))
    (properties `((upstream-name . "bluster")))
    (build-system r-build-system)
    (propagated-inputs
