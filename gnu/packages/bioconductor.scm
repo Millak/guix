@@ -16736,16 +16736,27 @@ cellular organization in health and disease.")
 (define-public r-bgmix
   (package
     (name "r-bgmix")
-    (version "1.58.0")
+    (version "1.59.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BGmix" version))
        (sha256
         (base32
-         "0r4cxrjvf3qr5514lsw1s53h4by3djb9ipkz7bi979w343dn9xfx"))))
+         "16fzgxcy4sk0kd67vzdxqz81s84dvh4bqss9cbl9bn6vhpfsnfyf"))))
     (properties `((upstream-name . "BGmix")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; GCC's c++/bits/specfun.h (included by cmath) provides a std::beta
+         ;; procedure.
+         (add-after 'unpack 'avoid-naming-conflict
+           (lambda _
+             (substitute* "src/BGmix_main.cpp"
+               (("\\bbeta\\b") "::beta")
+               (("\\*\\*::beta,") "**beta,")))))))
     (propagated-inputs
      (list r-kernsmooth))
     (home-page "https://bioconductor.org/packages/BGmix/")
