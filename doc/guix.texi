@@ -34241,15 +34241,26 @@ The Music Player Daemon (MPD) is a service that can play music while
 being controlled from the local machine or over the network by a variety
 of clients.
 
-The following example shows how one might run @code{mpd} as user
-@code{"bob"} on port @code{6666}.  It uses pulseaudio for output.
+The following example shows the simplest configuration to locally
+expose, via PulseAudio, a music collection kept at @file{/srv/music},
+with @command{mpd} running as the default @samp{mpd} user.  This user
+will spawn its own PulseAudio daemon, which may compete for the sound
+card access with that of your own user.  In this configuration, you may
+have to stop the playback of your user audio applications to hear MPD's
+output and vice-versa.
 
 @lisp
 (service mpd-service-type
          (mpd-configuration
-          (user "bob")
-          (port "6666")))
+          (music-directory "/srv/music")))
 @end lisp
+
+@quotation Important
+The music directory must be readable to the MPD user, by default,
+@samp{mpd}.  Permission problems will be reported via @samp{Permission
+denied} errors in the MPD logs, which appear in @file{/var/log/messages}
+by default.
+@end quotation
 
 Most MPD clients will trigger a database update upon connecting, but you
 can also use the @code{update} action do to so:
