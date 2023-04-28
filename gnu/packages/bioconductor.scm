@@ -18720,13 +18720,13 @@ of other packages.")
 (define-public r-scater
   (package
     (name "r-scater")
-    (version "1.26.1")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "scater" version))
               (sha256
                (base32
-                "1mjnf2y41lvni77g9hyw8qlvlsi5nxv5ha0fnch1kmw9814nycq3"))))
+                "0v6qaflv7b504yxxv6bmnlikg36bhfahgqxigpq6qcfrhqapmqck"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beachmat
@@ -18736,11 +18736,11 @@ of other packages.")
            r-biocsingular
            r-delayedarray
            r-delayedmatrixstats
+           r-densvis
            r-ggbeeswarm
            r-ggplot2
            r-ggrepel
            r-ggrastr
-           r-gridextra
            r-matrix
            r-pheatmap
            r-rcolorbrewer
