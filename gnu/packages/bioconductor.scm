@@ -5847,13 +5847,13 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.32.6")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "1aq3b5fjs8j0d6nf3992a6gnzvmmaxbbkrj1im0k6ppsqac6dlj0"))))
+                "18j0bmxxlvxlij4szb6gp4xq54dkr2awqqzlb8sf0ldfmmn1b1in"))))
     (properties
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
