@@ -3258,13 +3258,13 @@ create an alternative mapping from sequences.")
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AneuFinder" version))
               (sha256
                (base32
-                "154cg63n7h9h5jkj00aqf0hzbmmjg16bzvvk50fyixwq0a4q1j00"))))
+                "1l33yb20pynkvlla1dmgbwjhnhxh067fci0ciryxmbzqwq2sn1kc"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -3287,7 +3287,6 @@ create an alternative mapping from sequences.")
            r-reshape2
            r-ggdendro
            r-ggrepel
-           r-reordercluster
            r-mclust
            r-cowplot))
     (home-page "https://bioconductor.org/packages/AneuFinder/")
