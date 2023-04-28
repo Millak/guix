@@ -2661,13 +2661,13 @@ datasets.")
 (define-public r-amountain
   (package
     (name "r-amountain")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AMOUNTAIN" version))
               (sha256
                (base32
-                "0zzl5dv64yhdivsm2pgsfjikygib9pkfiv34h1lnmqrj6yivvvw8"))))
+                "12ml67882lscv05np4m80fg9d48dwkaa6kx5cga6x19kdx6xs2cj"))))
     (properties `((upstream-name . "AMOUNTAIN")))
     (build-system r-build-system)
     (inputs (list gsl))
