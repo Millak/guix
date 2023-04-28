@@ -12262,14 +12262,14 @@ methylation arrays.")
 (define-public r-methylumi
   (package
     (name "r-methylumi")
-    (version "2.44.0")
+    (version "2.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "methylumi" version))
        (sha256
         (base32
-         "07kfyv3kkayzh0akxfl3p9gckw8qiplkxbyxw8npc7cb03ihgmc4"))))
+         "1aa0pwjyp2p9a4mx4n4qw88ndgrj56p669yzdkd7hxhc3x55nzlf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotate
