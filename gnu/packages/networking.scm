@@ -2874,13 +2874,13 @@ IPFIX, RSPAN, CLI, LACP, 802.1ag).")
 (define-public python-ipy
   (package
     (name "python-ipy")
-    (version "1.00")
+    (version "1.01")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "IPy" version))
               (sha256
                (base32
-                "08d6kcacj67mvh0b6y765ipccy6gi4w2ndd4v1l3im2qm1cgcarg"))))
+                "06nclwafzsbi8ls019ry1xnfhgwc5103g8lgav54mmd2vr0sgv7d"))))
     (build-system python-build-system)
     (home-page "https://github.com/autocracy/python-ipy/")
     (synopsis "Python class and tools for handling IP addresses and networks")
