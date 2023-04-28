@@ -8125,14 +8125,14 @@ insertion module to recover the base cycle order for each oscillator group.")
 (define-public r-pcaexplorer
   (package
     (name "r-pcaexplorer")
-    (version "2.24.0")
+    (version "2.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pcaExplorer" version))
        (sha256
         (base32
-         "0gs4az4h5mwnr3s8fq7im5p3mm4mhc0x5amjr2badqkw1fih3jp7"))))
+         "1l7ipvnfv7s4faa7wyji17n7r3a8qb2pis3xm2c1b2mqzn62k8xx"))))
     (properties `((upstream-name . "pcaExplorer")))
     (build-system r-build-system)
     (propagated-inputs
