@@ -20300,16 +20300,29 @@ scoring subnetwork.")
 (define-public r-bionetstat
   (package
     (name "r-bionetstat")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNetStat" version))
        (sha256
         (base32
-         "1h99d6gnqw5v9ha2169zfhw9cvxhyjgkf4zm8qj1i03h2cywapgv"))))
+         "0bvfgppsdih6s70iizd7zh3zkb0hg4s4h1728xmyjqbvkl8fsdf4"))
+       (snippet
+        '(delete-file "inst/datatables/js/jquery.dataTables.min.js"))))
     (properties `((upstream-name . "BioNetStat")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda _
+             (with-directory-excursion "inst/datatables/js/"
+               (invoke "esbuild"
+                       "jquery.dataTables.js"
+                       "--minify"
+                       "--outfile=jquery.dataTables.min.js")))))))
     (propagated-inputs
      (list r-biocparallel
            r-dt
@@ -20330,7 +20343,7 @@ scoring subnetwork.")
            r-whisker
            r-yaml))
     (native-inputs
-     (list r-knitr))
+     (list esbuild r-knitr r-rmarkdown))
     (home-page "https://github.com/jardimViniciusC/BioNetStat")
     (synopsis "Biological network analysis")
     (description
