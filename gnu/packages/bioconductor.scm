@@ -19633,14 +19633,14 @@ analyses.")
 (define-public r-guitar
   (package
     (name "r-guitar")
-    (version "2.14.0")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Guitar" version))
        (sha256
         (base32
-         "0lrw1v82amr54bkfh98953b16fhlgd1i6kz1g7zy8gj0hd417ms1"))))
+         "1v1yw90waq0ccj6pxdipipy5bnk0k762m5kadl4h3jgpcrkf2fvc"))))
     (properties `((upstream-name . "Guitar")))
     (build-system r-build-system)
     (propagated-inputs
