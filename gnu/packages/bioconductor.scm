@@ -3868,13 +3868,13 @@ you will have to normalize your data beforehand.")
 (define-public r-bader
   (package
     (name "r-bader")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BADER" version))
               (sha256
                (base32
-                "1hkvmfik4m2yw5xg4k2g551l27i64blbsdvp1kmvvyix66p53hsr"))))
+                "0g3yvgrarpdcxpvjrxg0gbdcagknh80cr0xyzinzpmiiz0rywmzc"))))
     (properties `((upstream-name . "BADER")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/BADER")
