@@ -18211,13 +18211,13 @@ working with Salmon and Alevin quantification files.")
 (define-public r-fithic
   (package
     (name "r-fithic")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "FitHiC" version))
               (sha256
                (base32
-                "1c7jscl82knbh5ha1i1hlm46nnhz6aw5h0j5xnl4hlgx8mnn05fl"))))
+                "0mqrzh1rcwyqlhq9wxcy4gp47hsb70qrsissm9nj0cb9j6ihi407"))))
     (properties `((upstream-name . "FitHiC")))
     (build-system r-build-system)
     (propagated-inputs
