@@ -9926,13 +9926,13 @@ problems in genomics, brain imaging, astrophysics, and data mining.")
 (define-public r-apeglm
   (package
    (name "r-apeglm")
-   (version "1.20.0")
+   (version "1.22.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "apeglm" version))
             (sha256
              (base32
-              "1hk2y7r734wdd56f18l03kyq9p35kv653a5f7z2cjkq37gvcqrd1"))))
+              "1k02w2jk0s65x1l2axi80fk60nxyx8jbgkax5pxwrsbv7l84n3bl"))))
    (properties `((upstream-name . "apeglm")))
    (build-system r-build-system)
    (propagated-inputs
@@ -9942,7 +9942,7 @@ problems in genomics, brain imaging, astrophysics, and data mining.")
           r-rcppeigen
           r-rcppnumerical
           r-summarizedexperiment))
-   (native-inputs (list r-knitr))
+   (native-inputs (list r-knitr r-rmarkdown))
    (home-page "https://bioconductor.org/packages/apeglm")
    (synopsis "Approximate posterior estimation for GLM coefficients")
    (description "This package provides Bayesian shrinkage estimators for
