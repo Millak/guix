@@ -14007,14 +14007,14 @@ chips with the MAQC reference datasets.")
 (define-public r-quantro
   (package
     (name "r-quantro")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "quantro" version))
        (sha256
         (base32
-         "0f274wh0w6nyipac05y6s2m2p60vkls5j4fwa5bc419j68h4znnz"))))
+         "08m94q65c11isbkx9xljm2bx2aq2rml1bqh5i1cg81xg2ilm9h6a"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
