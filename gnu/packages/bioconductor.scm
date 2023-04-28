@@ -7554,13 +7554,13 @@ TAB-Seq.")
 (define-public r-mmuphin
   (package
     (name "r-mmuphin")
-    (version "1.12.1")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MMUPHin" version))
        (sha256
-        (base32 "0vpap3avmrjy187s3dva6f008al6d935kpdf816xzl5gxl7zvf62"))
+        (base32 "14cn1mg9ffhzy1vgschl2h0wzah3c1g67q367f2m050a3z2i2ndy"))
        ;; Delete generated files.
        (snippet
         '(for-each delete-file
@@ -7597,7 +7597,6 @@ TAB-Seq.")
     ;; not seem to reference the library directly.
     (propagated-inputs
      (list r-cowplot
-           r-biocstyle
            r-dplyr
            r-fpc
            r-ggplot2
