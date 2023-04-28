@@ -8595,13 +8595,13 @@ tab-delimited (tabix) files.")
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
-    (version "1.58.0")
+    (version "1.60.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rtracklayer" version))
               (sha256
                (base32
-                "1qxr0ffmmkbfkbijz7pbks3kvms9k4a5rmma4j9p7ar477fxvlmk"))))
+                "0gy8df0ndq6nyly4b5h3kby8k77rc4j9n7zhnliryvirpr6alm9m"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
