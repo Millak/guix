@@ -233,6 +233,7 @@ servers from Python programs.")
                   (guix build utils))
       #:imported-modules `((guix build python-build-system)
                            ,@%gnu-build-system-modules)
+      #:disallowed-references (list httpd)
       #:configure-flags
       #~(list "--enable-cmocka"
               (string-append "--with-db="
@@ -322,7 +323,6 @@ servers from Python programs.")
            cracklib
            cyrus-sasl
            gnutls
-           httpd
            icu4c
            iproute
            json-c
@@ -353,6 +353,7 @@ servers from Python programs.")
            cmocka
            doxygen
            gettext-minimal
+           httpd
            libtool
            rsync
            pkg-config))
