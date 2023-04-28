@@ -8348,17 +8348,44 @@ region sets and other genomic features.")
 (define-public r-reportingtools
   (package
     (name "r-reportingtools")
-    (version "2.38.0")
+    (version "2.39.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ReportingTools" version))
        (sha256
         (base32
-         "1nrgnb002qv0yzmrvg59i9b5wzxda0fdkrmdi6vr15g0g7j3yry0"))))
+         "15h7vqdxfv7y0f82ff7a8brqnscs324x22izlkgjk2wqahnmr2l1"))
+       (snippet
+        '(for-each delete-file
+                   (list "inst/doc/jslib/jquery-1.8.0.min.js"
+                         "inst/extdata/jslib/jquery-1.8.0.min.js")))))
     (properties
      `((upstream-name . "ReportingTools")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (call-with-values
+                 (lambda ()
+                   (unzip2
+                    `((,(assoc-ref inputs "_")
+                       "inst/doc/jslib/jquery-1.8.0.min.js"))))
+               (lambda (sources targets)
+                 (for-each (lambda (source target)
+                             (format #true "Processing ~a --> ~a~%"
+                                     source target)
+                             (invoke "esbuild" source "--minify"
+                                     (string-append "--outfile=" target)))
+                           sources targets)))
+             (copy-file "inst/doc/jslib/jquery-1.8.0.min.js"
+                        "inst/extdata/jslib/jquery-1.8.0.min.js"))))))
     (propagated-inputs
      (list r-annotate
            r-annotationdbi
@@ -8380,7 +8407,13 @@ region sets and other genomic features.")
            r-r-utils
            r-xml))
     (native-inputs
-     (list r-knitr))
+     (list esbuild r-knitr
+           (origin
+             (method url-fetch)
+             (uri "https://code.jquery.com/jquery-1.8.0.js")
+             (sha256
+              (base32
+               "02vnwfxrrfsqm6qbmxyv9rdg32qyzs81d1snk62fy08gv7r62hfk")))))
     (home-page "https://bioconductor.org/packages/ReportingTools/")
     (synopsis "Tools for making reports in various formats")
     (description
