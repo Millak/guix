@@ -6329,21 +6329,20 @@ distribution.")
 (define-public r-deseq2
   (package
     (name "r-deseq2")
-    (version "1.38.3")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DESeq2" version))
        (sha256
         (base32
-         "0kryg9jb6zl4zj1wx09rmljqlhr5vdbcmdnri4q91jpggsaj9nxm"))))
+         "12hmfj5zqs0i8qbijq5r0vlb7v95hpn1b938nkivd2kc63l25m09"))))
     (properties `((upstream-name . "DESeq2")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
            r-biocparallel
-           r-geneplotter
            r-genomicranges
            r-ggplot2
            r-iranges
@@ -6354,7 +6353,7 @@ distribution.")
            r-s4vectors
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-rmarkdown))
     (home-page "https://bioconductor.org/packages/DESeq2")
     (synopsis "Differential gene expression analysis")
     (description
