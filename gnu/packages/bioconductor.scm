@@ -13837,14 +13837,14 @@ genomic categories and to add self-defined graphics in the plot.")
 (define-public r-somaticsignatures
   (package
     (name "r-somaticsignatures")
-    (version "2.34.0")
+    (version "2.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SomaticSignatures" version))
        (sha256
         (base32
-         "0xyh4pwwbpa1bmamqdhp84qhjdc2qsxc43xgknjrrja24d06ji2j"))))
+         "075w88x7lv2fkp2ipqgxp4pzh6kbjw3nmp0qra2p4fss4j3g8d6s"))))
     (properties
      `((upstream-name . "SomaticSignatures")))
     (build-system r-build-system)
