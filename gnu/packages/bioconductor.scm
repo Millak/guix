@@ -19571,14 +19571,14 @@ segmented data for individual and multiple arrays.")
 (define-public r-snpstats
   (package
     (name "r-snpstats")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "snpStats" version))
        (sha256
         (base32
-         "14rkrav4iydc85194skdy33sk365pjmmvxxvzaxxh0k9ds009qwx"))))
+         "1v2j2943apphs8i68ap9c8sxd4j5a04qda5scq4dqqkzqd0c5b6i"))))
     (properties `((upstream-name . "snpStats")))
     (build-system r-build-system)
     (inputs (list zlib))
