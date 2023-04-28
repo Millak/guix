@@ -12163,13 +12163,13 @@ standardization of the analyses and the development of best practices.")
 (define-public r-milor
   (package
     (name "r-milor")
-    (version "1.6.0")
+    (version "1.8.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "miloR" version))
               (sha256
                (base32
-                "07p9rs1jmgxqaahjbrnvvs94c142n2qfw8ip3qqkr6mhzwr19ly3"))))
+                "073s239aqkixsrarqxfv4nmpcj025k32nhql63qaxrkrvvdd34di"))))
     (properties `((upstream-name . "miloR")))
     (build-system r-build-system)
     (propagated-inputs
