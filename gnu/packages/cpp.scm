@@ -611,41 +611,45 @@ data transfer object.")
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Delete bundled software.  Preserve doctest_compatibility.h, which
-           ;; is a wrapper library added by this package.
-           (install-file "./tests/thirdparty/doctest/doctest_compatibility.h" "/tmp")
-           (delete-file-recursively "./tests/thirdparty")
-           (install-file "/tmp/doctest_compatibility.h" "./tests/thirdparty/doctest")
+        #~(begin
+            ;; Delete bundled software.  Preserve doctest_compatibility.h, which
+            ;; is a wrapper library added by this package.
+            (install-file "./tests/thirdparty/doctest/doctest_compatibility.h"
+                          "/tmp")
+            (delete-file-recursively "./tests/thirdparty")
+            (install-file "/tmp/doctest_compatibility.h"
+                          "./tests/thirdparty/doctest")
 
-           ;; Adjust for the unbundled fifo_map and doctest.
-           (substitute* (find-files "./tests/" "\\.h(pp)?")
-             (("#include \"doctest\\.h\"") "#include <doctest/doctest.h>")
-             (("#include <doctest\\.h>") "#include <doctest/doctest.h>"))
-           (with-directory-excursion "tests/src"
-             (let ((files (find-files "." "\\.cpp$")))
-               (substitute* files
-                 (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
-                  (string-append
-                   "#include <fifo_map/" fifo-map-hpp ">")))))))))
+            ;; Adjust for the unbundled fifo_map and doctest.
+            (substitute* (find-files "./tests/" "\\.h(pp)?")
+              (("#include \"doctest\\.h\"") "#include <doctest/doctest.h>")
+              (("#include <doctest\\.h>") "#include <doctest/doctest.h>"))
+            (with-directory-excursion "tests/src"
+              (let ((files (find-files "." "\\.cpp$")))
+                (substitute* files
+                  (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
+                   (string-append
+                    "#include <fifo_map/" fifo-map-hpp ">")))))))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DJSON_MultipleHeaders=ON" ; For json_fwd.hpp.
-             (string-append "-DJSON_TestDataDirectory="
-                            (dirname
-                             (search-input-directory %build-inputs
-                                                     "json_nlohmann_tests"))))
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-                      (if tests?
-                          ;; Some tests need git and a full checkout, skip those.
-                          (invoke "ctest" "-LE" "git_required"
-                                  "-j" (if parallel-tests?
-                                           (number->string (parallel-job-count))
-                                           "1"))
-                          (format #t "test suite not run~%")))))))
+     (list
+      #:configure-flags
+      #~(list "-DJSON_MultipleHeaders=ON" ; For json_fwd.hpp.
+              (string-append "-DJSON_TestDataDirectory="
+                             (dirname
+                              (search-input-directory %build-inputs
+                                                      "json_nlohmann_tests"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (if tests?
+                  ;; Some tests need git and a full checkout, skip those.
+                  (invoke "ctest" "-LE" "git_required"
+                          "-j" (if parallel-tests?
+                                   (number->string (parallel-job-count))
+                                   "1"))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
      (list amalgamate
            (let ((version "3.1.0"))
