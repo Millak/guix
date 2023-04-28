@@ -13358,8 +13358,8 @@ syllable.  The package itself does not support UTF-8 input in ordinary
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-generic-etexcmds
-             texlive-generic-infwarerr
+       (list texlive-etexcmds
+             texlive-infwarerr
              texlive-soul))
       (home-page "https://ctan.org/pkg/soulutf8")
       (synopsis "Permit use of UTF-8 characters in @code{soul}")
