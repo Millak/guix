@@ -10620,14 +10620,14 @@ information and producing various plots and statistics.")
 (define-public r-ctc
   (package
     (name "r-ctc")
-    (version "1.72.0")
+    (version "1.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ctc" version))
        (sha256
         (base32
-         "098a65fk9la639sqihhsghhgb3hyzv35j6akph908zwq5grsv0c5"))))
+         "0ph22v1an2havnh9sm7hms0q2pq4fjad2cm4dffiy3344cv70sn1"))))
     (build-system r-build-system)
     (propagated-inputs (list r-amap))
     (home-page "https://bioconductor.org/packages/ctc/")
