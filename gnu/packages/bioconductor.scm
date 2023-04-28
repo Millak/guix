@@ -10751,13 +10751,13 @@ information.")
 (define-public r-glmgampoi
   (package
     (name "r-glmgampoi")
-    (version "1.10.2")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "glmGamPoi" version))
               (sha256
                (base32
-                "1ihjqzdhx6k99gdd4556xxn9822sblg6vmblcmbzml01bhv6xzar"))))
+                "194v3hgngraacx126axsy4gaarcwf5wfhpjsr33wb7n4p3kss2g9"))))
     (properties `((upstream-name . "glmGamPoi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -10772,7 +10772,8 @@ information.")
            r-rcpparmadillo
            r-rlang
            r-singlecellexperiment
-           r-summarizedexperiment))
+           r-summarizedexperiment
+           r-vctrs))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/const-ae/glmGamPoi")
     (synopsis "Fit a Gamma-Poisson Generalized Linear Model")
