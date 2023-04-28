@@ -5319,14 +5319,14 @@ performing parallel computations on multicore machines.")
 (define-public r-affy
   (package
     (name "r-affy")
-    (version "1.76.0")
+    (version "1.78.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affy" version))
        (sha256
         (base32
-         "1iix9mq4aph6avs2qr64a7hip461cif56k6npvs5g69nj3rn50gj"))))
+         "15hpxflygpy1sid0c4hlzmsc13nqyzs6j74md0ri478qysiqjnpf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-affyio
