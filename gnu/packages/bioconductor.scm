@@ -7507,13 +7507,13 @@ profiles than cells of different types.")
 (define-public r-methylkit
   (package
     (name "r-methylkit")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "methylKit" version))
               (sha256
                (base32
-                "0w6wv8x1jggbvymb07b2z47myf239mwpwbgz5p5yi60qb0k7p2q9"))))
+                "1qi4gwlxsxr4cgs8s12qybrs89vr79xwd7n9in1af3hyn0swikn1"))))
     (properties `((upstream-name . "methylKit")))
     (build-system r-build-system)
     (propagated-inputs
