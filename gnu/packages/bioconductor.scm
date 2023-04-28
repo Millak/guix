@@ -15001,13 +15001,13 @@ and to both short and long sequence reads.")
 (define-public r-flowai
   (package
     (name "r-flowai")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "flowAI" version))
               (sha256
                (base32
-                "18zrlnjw89iglxhw65ys8x4r44pdzp5chrgwx7w44sh7yd8576g9"))))
+                "0ydy98qsiqpw0b6fvmlv09kza94qjcl40ma9pknzgbq21ac4z25g"))))
     (properties `((upstream-name . "flowAI")))
     (build-system r-build-system)
     (propagated-inputs
