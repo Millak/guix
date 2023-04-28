@@ -4028,13 +4028,13 @@ estimates for each correlation element.")
 (define-public r-barcodetrackr
   (package
     (name "r-barcodetrackr")
-    (version "1.6.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "barcodetrackR" version))
               (sha256
                (base32
-                "1b3z83nkl8csxs88rcbmkkfjps71mwnylvpy3kjzyi02xw0kh0c1"))))
+                "155lxqqq2mgrz9i04xvv8y7gh2iacw6qd3mzijzbvrbm605qb3p8"))))
     (properties `((upstream-name . "barcodetrackR")))
     (build-system r-build-system)
     (propagated-inputs
