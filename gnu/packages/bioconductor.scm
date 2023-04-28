@@ -9636,13 +9636,13 @@ molecular functions, respectively, and produces intuitive graphical outputs.")
 (define-public r-xmapbridge
   (package
     (name "r-xmapbridge")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "xmapbridge" version))
        (sha256
-        (base32 "0wxr3db2daj4xlr9df6iqwm00m71kln7rhqnq2ckdsricblanhs7"))))
+        (base32 "09pskmhjymqvhk26mk5yy1k195v536a2qp4k6xdd67xhf5ag260i"))))
     (properties `((upstream-name . "xmapbridge")))
     (build-system r-build-system)
     (home-page "https://git.bioconductor.org/packages/xmapbridge")
