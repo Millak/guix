@@ -19543,13 +19543,13 @@ large-scale and fully automated analysis.")
 (define-public r-snapcgh
   (package
     (name "r-snapcgh")
-    (version "1.68.0")
+    (version "1.70.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "snapCGH" version))
               (sha256
                (base32
-                "1zxvl8mkby7yb5kppddag6k9w78d1fm6adx52h4cgrfckn28w64q"))))
+                "0yz5q7w3lqv8ac6a764xlbm4hq3ncnngqng879qbpmzhgb4r155g"))))
     (properties `((upstream-name . "snapCGH")))
     (build-system r-build-system)
     (propagated-inputs
