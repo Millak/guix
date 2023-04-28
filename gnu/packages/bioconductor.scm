@@ -17483,14 +17483,14 @@ access.")
 (define-public r-multiassayexperiment
   (package
     (name "r-multiassayexperiment")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MultiAssayExperiment" version))
        (sha256
         (base32
-         "00lhnqa4yz3lm5kl79bghad93iijihnassy2caf87czc540why09"))))
+         "00xgca1q9ai5x730bvx73f25lpwkr3dn2sia3msa49fpl4nrzr20"))))
     (properties
      `((upstream-name . "MultiAssayExperiment")))
     (build-system r-build-system)
@@ -17505,7 +17505,7 @@ access.")
            r-summarizedexperiment
            r-tidyr))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-r-rsp))
     (home-page "https://waldronlab.io/MultiAssayExperiment/")
     (synopsis "Integration of multi-omics experiments in Bioconductor")
     (description
