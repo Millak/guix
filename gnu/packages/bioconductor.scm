@@ -9663,13 +9663,13 @@ describing each of the graphs.")
 (define-public r-xvector
   (package
     (name "r-xvector")
-    (version "0.38.0")
+    (version "0.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "XVector" version))
               (sha256
                (base32
-                "0ygdyh3s4qsaay930a5lbnmgh6a4gqp5ck9ww466yk0jyk1hxfp9"))))
+                "1v10hfz658gnb6p7pzdl28jbyypv91wx70i0dvi384nfgznhvmj2"))))
     (properties
      `((upstream-name . "XVector")))
     (build-system r-build-system)
