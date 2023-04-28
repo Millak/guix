@@ -17593,14 +17593,14 @@ gene selection, testing relationships, and so on.")
 (define-public r-biocpkgtools
   (package
     (name "r-biocpkgtools")
-    (version "1.16.1")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocPkgTools" version))
        (sha256
         (base32
-         "0cl88adkbxv7sz07b8h5qpwwkwg85jx6xjinkd0yjac4xm7s4lyf"))
+         "0s51dd9kjlh5vckwmynvahvg1pzl2ddvfn3s2kz77m0l0nbh7zfx"))
        (snippet
         '(for-each delete-file
                    '("inst/htmlwidgets/lib/bioc_explore/bootstrap.min.js"
