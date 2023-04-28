@@ -13377,16 +13377,40 @@ Bioconductor.")
 (define-public r-motifstack
   (package
     (name "r-motifstack")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifStack" version))
        (sha256
         (base32
-         "18gfx5dq83s2ny39a7cgg4r3b05gg9l0kfg83brwrm1cby08jdhm"))))
+         "1ymcsfcgzmqmdwjfgkwmnz23lb2gclj6g9297ap99p9ndg2i7hjb"))
+       (snippet
+        '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "motifStack")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/d3"
+               (call-with-values
+                   (lambda ()
+                     (unzip2
+                      `((,(assoc-ref inputs "_")
+                         "d3.v4.min.js"))))
+                 (lambda (sources targets)
+                   (for-each (lambda (source target)
+                               (format #true "Processing ~a --> ~a~%"
+                                       source target)
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target)))
+                             sources targets)))))))))
     (propagated-inputs
      (list r-ade4
            r-biostrings
@@ -13395,7 +13419,14 @@ Bioconductor.")
            r-tfbstools
            r-xml))
     (native-inputs
-     (list r-knitr))
+     (list esbuild r-knitr
+           (origin
+             (method url-fetch)
+             (uri "https://web.archive.org/web/20230428092426id_/\
+https://d3js.org/d3.v4.js")
+             (sha256
+              (base32
+               "0y7byf6kcinfz9ac59jxc4v6kppdazmnyqfav0dm4h550fzfqqlg")))))
     (home-page "https://bioconductor.org/packages/motifStack/")
     (synopsis "Plot stacked logos for DNA, RNA and amino acid sequences")
     (description
