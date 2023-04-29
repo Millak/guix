@@ -1579,16 +1579,15 @@ climatograms, etc.).")
 (define-public r-climatol
   (package
     (name "r-climatol")
-    (version "3.1.2")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "climatol" version))
               (sha256
                (base32
-                "0p3nk4n7izj0cmmqd9apa1gix5lfdzp08ydy0n7rkl5kbkmrkb6n"))))
+                "0hz5j9wg3c2bd2v4q0mv01v7wwd6v650fbcvrl4zqxd9w55kmggs"))))
     (properties `((upstream-name . "climatol")))
     (build-system r-build-system)
-    (propagated-inputs (list r-mapdata r-maps))
     (home-page "http://www.climatol.eu/")
     (synopsis "Climate tools")
     (description
