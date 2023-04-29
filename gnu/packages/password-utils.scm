@@ -965,46 +965,37 @@ from password-store and gopass files.")
         (base32 "1if72k526sqqxnw250qwxvzwvh1w0k8ag4p4xq3442b22hywx72i"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/browserpass/browserpass-native"
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-makefile
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; This doesn't go in #:make-flags because the Makefile itself
-               ;; gets installed.
-               (substitute*
-                   "src/github.com/browserpass/browserpass-native/Makefile"
-                 (("PREFIX \\?= /usr")
-                  (string-append "PREFIX ?= " out)))
-               #t)))
-         (add-before 'build 'configure
-           (lambda _
-               (with-directory-excursion
-                   "src/github.com/browserpass/browserpass-native"
-                 (invoke "make" "configure"))
-             #t))
-         (replace 'build
-           (lambda _
-               (with-directory-excursion
-                   "src/github.com/browserpass/browserpass-native"
-                 (invoke "make"))
-             #t))
-         (replace 'install
-           (lambda _
-             (with-directory-excursion
-                 "src/github.com/browserpass/browserpass-native"
-               (invoke "make" "install"))
-             #t))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gnupg (assoc-ref inputs "gnupg")))
-               (wrap-program (string-append out "/bin/browserpass")
-                 `("PATH" ":" prefix
-                   (,(string-append gnupg "/bin"))))
-               #t))))))
+     (list #:import-path "github.com/browserpass/browserpass-native"
+           #:install-source? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch-makefile
+                 (lambda _
+                   ;; This doesn't go in #:make-flags because the Makefile
+                   ;; itself gets installed.
+                   (substitute* "src/github.com/browserpass/browserpass-native/Makefile"
+                     (("PREFIX \\?= /usr")
+                      (string-append "PREFIX ?= " #$output)))))
+               (add-before 'build 'configure
+                 (lambda _
+                   (with-directory-excursion
+                       "src/github.com/browserpass/browserpass-native"
+                     (invoke "make" "configure"))))
+               (replace 'build
+                 (lambda _
+                   (with-directory-excursion
+                       "src/github.com/browserpass/browserpass-native"
+                     (invoke "make"))))
+               (replace 'install
+                 (lambda _
+                   (with-directory-excursion
+                       "src/github.com/browserpass/browserpass-native"
+                     (invoke "make" "install"))))
+               (add-after 'install 'wrap-executable
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/browserpass")
+                     `("PATH" ":" prefix
+                       (,(string-append #$(this-package-input "gnupg") "/bin")))))))))
     (native-inputs
      (list which))
     (inputs
