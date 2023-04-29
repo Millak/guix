@@ -105,6 +105,7 @@
            python-pyqt
            python-pyserial
            python-rtf-tokenize
+           python-wcwidth
            python-xlib
            qtsvg-5))
     (home-page "https://www.openstenoproject.org/plover/")
