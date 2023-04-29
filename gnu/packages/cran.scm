@@ -38636,13 +38636,13 @@ non-contiguous area cartograms.")
 (define-public r-measurements
   (package
     (name "r-measurements")
-    (version "1.5.0")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "measurements" version))
               (sha256
                (base32
-                "1hwrc3qb12zbk0kjhfq6nnmz0ba0hcfz4vjj7f5w3wwi3d33xqnl"))))
+                "061xjwsacsk8vblva4s09xdrvd7kfgxydnpgr7imigyny01c5bh9"))))
     (properties `((upstream-name . "measurements")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/measurements/")
