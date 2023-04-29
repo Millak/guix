@@ -259,13 +259,13 @@ automatically pruning objects to maintain the constraints.")
 (define-public r-castor
   (package
     (name "r-castor")
-    (version "1.7.8")
+    (version "1.7.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "castor" version))
               (sha256
                (base32
-                "1csni17xbwg8mk7iib2rlvgkx9zs50whmb1l4f54j5v5smr6cd8k"))))
+                "0bn2m855nv9fik5krwn14fahdprs61g5zl5fpp6hax7c3krchbwr"))))
     (properties `((upstream-name . "castor")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-naturalsort r-rcpp r-rspectra))
