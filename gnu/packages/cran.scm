@@ -18181,19 +18181,20 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-bigrquery
   (package
     (name "r-bigrquery")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigrquery" version))
        (sha256
         (base32
-         "1rcz1zq0azrrchhxz4b0g4m9c3ymp4pasi7ji1nvx25w5x41sdmv"))))
+         "1rw0w4bmqs1v8xjg787n6dsk5dmizgvjg9wrky38s7a7zsvlryri"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
            r-bit64
            r-brio
+           r-cli
            r-curl
            r-dbi
            r-gargle
@@ -18206,7 +18207,8 @@ preparing, executing, and processing HTTP requests.")
            r-rapidjsonr
            r-rcpp
            r-rlang
-           r-tibble))
+           r-tibble
+           r-withr))
     (home-page "https://github.com/rstats-db/bigrquery")
     (synopsis "R interface to Google's BigQuery API")
     (description
