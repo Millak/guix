@@ -14949,14 +14949,14 @@ cross-sectional, time series, clustered, panel, and longitudinal data.")
 (define-public r-th-data
   (package
     (name "r-th-data")
-    (version "1.1-1")
+    (version "1.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TH.data" version))
        (sha256
         (base32
-         "0ynxacnz002bjsp2ybql7rdqw4zd14af8r7w44nwbx22n4bapwzd"))))
+         "0wyyvm6l6yvqvfnd1c4l9ff5445zaq9lr0ihz8pg9kkggfslxya7"))))
     (properties `((upstream-name . "TH.data")))
     (build-system r-build-system)
     (propagated-inputs
