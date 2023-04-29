@@ -51,6 +51,12 @@
                       (url "https://github.com/potassco/libpotassco")
                       (commit commit)))
                 (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 #~(begin
+                     (delete-file "tests/catch.hpp")
+                     (substitute* (find-files "tests" "\\.cpp")
+                       (("\"catch.hpp\"") "<catch/catch.hpp>"))))
                 (sha256
                  (base32
                   "1c32f9gqclf7qx07lpx8wd720vfhkjqhzc6nyy8mjmgwpmb3iyyn"))))
@@ -72,6 +78,7 @@
                (rename-file "cmake/PotasscoConfig.cmake.in"
                             "cmake/potassco-config.cmake.in"))))))
       (build-system cmake-build-system)
+      (native-inputs (list catch2-1))
       (home-page "https://potassco.org/")
       (synopsis "Utility library for Potassco's projects")
       (description "@code{libpotassco} is a utility library providing functions
