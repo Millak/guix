@@ -29100,14 +29100,14 @@ processing} (NLP) library @code{spaCy}, from @url{http://spacy.io}.")
 (define-public r-snowballc
   (package
     (name "r-snowballc")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SnowballC" version))
        (sha256
         (base32
-         "1wwm71mp4b2mjb5985x782p6xj519dfrpd40qli7lmig6afyw3xi"))))
+         "0d60h5qpk0vahcxm1y6ryqj00s4yrsdz671vq1i1cx8668zz2g3m"))))
     (properties `((upstream-name . "SnowballC")))
     (build-system r-build-system)
     (home-page "https://r-forge.r-project.org/projects/r-temis/")
