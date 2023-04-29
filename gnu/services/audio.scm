@@ -24,6 +24,7 @@
   #:use-module (guix deprecation)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:use-module (guix modules)
   #:use-module (gnu services)
   #:use-module (gnu services admin)
   #:use-module (gnu services configuration)
@@ -575,36 +576,45 @@ appended to the configuration.")
                       (with-shepherd-action 'mpd ('reopen) #f))))))
 
 (define (mpd-shepherd-service config)
-  (match-record config <mpd-configuration> (user package shepherd-requirement
-                                            log-file playlist-directory
-                                            db-file state-file sticker-file
-                                            environment-variables)
+  (match-record config <mpd-configuration>
+    (user package shepherd-requirement
+          log-file playlist-directory
+          db-file state-file sticker-file
+          environment-variables)
     (let ((config-file (mpd-serialize-configuration config))
           (username (user-account-name user)))
       (shepherd-service
        (documentation "Run the MPD (Music Player Daemon)")
        (requirement `(user-processes loopback ,@shepherd-requirement))
        (provision '(mpd))
-       (start #~(begin
-                  (and=> #$(maybe-value log-file)
-                         (compose mkdir-p dirname))
+       (start
+        (with-imported-modules (source-module-closure
+                                '((gnu build activation)))
+          #~(begin
+              (use-modules (gnu build activation))
 
-                  (let ((user (getpw #$username)))
-                    (for-each
-                     (lambda (x)
-                       (when (and x (not (file-exists? x)))
-                         (mkdir-p x)
-                         (chown x (passwd:uid user) (passwd:gid user))))
-                     (list #$(maybe-value playlist-directory)
-                           (and=> #$(maybe-value db-file) dirname)
-                           (and=> #$(maybe-value state-file) dirname)
-                           (and=> #$(maybe-value sticker-file) dirname))))
+              (let ((user (getpw #$username)))
 
-                  (make-forkexec-constructor
-                   (list #$(file-append package "/bin/mpd")
-                         "--no-daemon"
-                         #$config-file)
-                   #:environment-variables '#$environment-variables)))
+                (define (init-directory directory)
+                  (unless (file-exists? directory)
+                    (mkdir-p/perms directory user #o755)))
+
+                (for-each
+                 init-directory
+                 '#$(map dirname
+                         ;; XXX: Delete the potential "syslog"
+                         ;; log-file value, which is not a directory.
+                         (delete "syslog"
+                                 (filter-map maybe-value
+                                             (list db-file
+                                                   log-file
+                                                   state-file
+                                                   sticker-file))))))
+
+              (make-forkexec-constructor
+               (list #$(file-append package "/bin/mpd") "--no-daemon"
+                     #$config-file)
+               #:environment-variables '#$environment-variables))))
        (stop  #~(make-kill-destructor))
        (actions
         (list (shepherd-configuration-action config-file)
@@ -871,37 +881,49 @@ prompting a pin from the user.")
                                        filename-to-field)))))
 
 (define (mympd-shepherd-service config)
-  (match-record config <mympd-configuration> (package shepherd-requirement
-                                              user work-directory
-                                              cache-directory log-level log-to)
-    (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level))
-          (username (user-account-name user)))
-      (shepherd-service
-       (documentation "Run the myMPD daemon.")
-       (requirement `(loopback user-processes
-                               ,@(if (eq? log-to 'syslog)
-                                     '(syslog)
-                                     '())
-                               ,@shepherd-requirement))
-       (provision '(mympd))
-       (start #~(begin
-                  (let* ((pw (getpwnam #$username))
-                         (uid (passwd:uid pw))
-                         (gid (passwd:gid pw)))
-                    (for-each (lambda (dir)
-                                (mkdir-p dir)
-                                (chown dir uid gid))
-                              (list #$work-directory #$cache-directory)))
+  (match-record config <mympd-configuration>
+    (package shepherd-requirement user work-directory cache-directory
+             log-level log-to)
+    (shepherd-service
+     (documentation "Run the myMPD daemon.")
+     (requirement `(loopback user-processes
+                             ,@(if (eq? log-to 'syslog)
+                                   '(syslog)
+                                   '())
+                             ,@shepherd-requirement))
+     (provision '(mympd))
+     (start
+      (let ((username (user-account-name user)))
+        (with-imported-modules (source-module-closure
+                                '((gnu build activation)))
+          #~(begin
+              (use-modules (gnu build activation))
 
-                  (make-forkexec-constructor
-                   `(#$(file-append package "/bin/mympd")
-                     "--user" #$username
-                     #$@(if (eq? log-to 'syslog) '("--syslog") '())
-                     "--workdir" #$work-directory
-                     "--cachedir" #$cache-directory)
-                   #:environment-variables (list #$log-level*)
-                   #:log-file #$(if (string? log-to) log-to #f))))
-       (stop #~(make-kill-destructor))))))
+              (let ((user (getpw #$username)))
+
+                (define (init-directory directory)
+                  (unless (file-exists? directory)
+                    (mkdir-p/perms directory user #o755)))
+
+                (for-each
+                 init-directory
+                 '#$(map dirname
+                         ;; XXX: Delete the potential 'syslog log-file value,
+                         ;; which is not a directory.
+                         (delete 'syslog
+                                 (filter-map maybe-value
+                                             (list log-to
+                                                   work-directory
+                                                   cache-directory))))))
+              (make-forkexec-constructor
+               `(#$(file-append package "/bin/mympd")
+                 "--user" #$username
+                 #$@(if (eq? log-to 'syslog) '("--syslog") '())
+                 "--workdir" #$work-directory
+                 "--cachedir" #$cache-directory)
+               #:environment-variables
+               (list #$(format #f "MYMPD_LOGLEVEL=~a" log-level))
+               #:log-file #$(if (string? log-to) log-to #f)))))))))
 
 (define (mympd-accounts config)
   (match-record config <mympd-configuration> (user group)
