@@ -75,6 +75,7 @@
   #:use-module (gnu packages authentication)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
@@ -952,7 +953,7 @@ from password-store and gopass files.")
 (define-public browserpass-native
   (package
     (name "browserpass-native")
-    (version "3.0.7")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -961,8 +962,7 @@ from password-store and gopass files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1jkjslbbac49xjyjkc2b07phdm3i64z40kh6h55cl22dxjmpp1nb"))))
+        (base32 "1if72k526sqqxnw250qwxvzwvh1w0k8ag4p4xq3442b22hywx72i"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/browserpass/browserpass-native"
@@ -1008,7 +1008,7 @@ from password-store and gopass files.")
     (native-inputs
      (list which))
     (inputs
-     (list gnupg go-github-com-mattn-go-zglob
+     (list bash-minimal gnupg go-github-com-mattn-go-zglob
            go-github-com-rifflock-lfshook go-github-com-sirupsen-logrus
            go-golang-org-x-sys))
     (home-page "https://github.com/browserpass/browserpass-native")
