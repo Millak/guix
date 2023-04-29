@@ -698,8 +698,6 @@
                     (libvulkan.so.1 (search-input-file inputs
                                                        "/lib/libvulkan.so.1"))
                     (icd.d (search-input-directory inputs "share/vulkan/icd.d"))
-                    (mesa-lib (dirname (search-input-file inputs
-                                                          "/lib/libGL.so.1")))
                     (gtk-libs '("libgio-2.0.so.0"
                                 "libgdk_pixbuf-2.0.so.0"
                                 "libgdk-3.so.0"
@@ -717,20 +715,6 @@
                 (substitute* "device/udev_linux/udev1_loader.cc"
                   (("libudev\\.so\\.1") libudev.so.1))
 
-                ;; Patch libvulkan.so everywhere.
-                (substitute*
-                    '("third_party/swiftshader/include/vulkan/vulkan.hpp"
-                      "third_party/vulkan-deps/vulkan-tools\
-/src/vulkaninfo/vulkaninfo.h"
-                      "third_party/vulkan-deps/vulkan-headers\
-/src/include/vulkan/vulkan.hpp"
-                      "content/gpu/gpu_sandbox_hook_linux.cc"
-                      "ui/ozone/platform/wayland/gpu/vulkan_implementation_wayland.cc"
-                      "ui/ozone/platform/drm/gpu/vulkan_implementation_gbm.cc"
-                      "ui/ozone/platform/x11/vulkan_implementation_x11.cc"
-                      "third_party/skia/tools/sk_app/unix\
-/DawnVulkanWindowContext_unix.cpp")
-                  (("libvulkan\\.so\\.1") libvulkan.so.1))
                 (substitute* "content/gpu/gpu_sandbox_hook_linux.cc"
                   (("/usr/share/vulkan/icd\\.d") icd.d))
 
@@ -739,19 +723,7 @@
                   (("^([[:blank:]]+)mRuntimeSearchPaths\\.push_back\\(\"\"\\);"
                     all indent)
                    (string-append indent "mRuntimeSearchPaths.push_back(\""
-                                  (dirname libvulkan.so.1) "/\");\n" all)))
-
-                (substitute*
-                    '("ui/ozone/platform/x11/gl_ozone_glx.cc"
-                      "ui/ozone/common/egl_util.cc"
-                      "third_party/angle/src/libANGLE/renderer/gl/glx\
-/FunctionsGLX.cpp")
-                  (("libGL\\.so\\.1")
-                   (string-append mesa-lib "/libGL.so.1"))
-                  (("libEGL\\.so\\.1")
-                   (string-append mesa-lib "/libEGL.so.1"))
-                  (("libGLESv2\\.so\\.2")
-                   (string-append mesa-lib "/libGLESv2.so.2"))))))
+                                  (dirname libvulkan.so.1) "/\");\n" all))))))
           (add-before 'configure 'prepare-build-environment
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (let ((node (search-input-file (or native-inputs inputs)
@@ -833,6 +805,8 @@
                           "chromium/master-preferences.json")))
                      (gtk (dirname (dirname
                                     (search-input-file inputs "lib/libgtk-3.so"))))
+                     (mesa (dirname (search-input-file inputs "lib/libGL.so")))
+                     (vulkan (dirname (search-input-file inputs "lib/libvulkan.so")))
                      (xdg-utils (dirname (search-input-file inputs "bin/xdg-open"))))
 
                 (substitute* '("chrome/app/resources/manpage.1.in"
@@ -870,6 +844,11 @@
                   (wrap-program exe
                     ;; Avoid file manager crash.  See <https://bugs.gnu.org/26593>.
                     `("XDG_DATA_DIRS" ":" prefix (,(string-append gtk "/share")))
+                    ;; Provide libGL and libvulkan without patching all references.
+                    ;; XXX: How to add on RUNPATH instead of this hack?
+                    `("LD_LIBRARY_PATH" ":" prefix
+                      (,(string-append mesa ":" vulkan)))
+                    ;; Ensure xdg-open et al. is found.
                     `("PATH" ":" prefix (,xdg-utils))))
 
                 (with-directory-excursion "chrome/app/theme/chromium"
