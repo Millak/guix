@@ -37,6 +37,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -420,38 +421,48 @@ as 6502A, 6504, 6507, 6510, 7501, 8500, 8501, 8502 ...),
     (license license:gpl2)))
 
 (define-public armips
-  (package
-    (name "armips")
-    (version "0.11.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Kingcom/armips")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1c4dhjkvynqn9xm2vcvwzymk7yg8h25alnawkz4z1dnn1z1k3r9g"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "./armipstests" "../source/Tests")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "armips" (string-append (assoc-ref outputs "out")
-                                                   "/bin"))
-             #t)))))
-    (home-page "https://github.com/Kingcom/armips")
-    (synopsis "Assembler for various ARM and MIPS platforms")
-    (description
-     "armips is an assembler with full support for the MIPS R3000, MIPS R4000,
+  (let ((commit "6719edebaae03330ee5441d9b28280672edf00d5")
+        (revision "1"))
+    (package
+      (name "armips")
+      (version "0.11.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Kingcom/armips")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1a85h2b3r3hy9hm07v8drvkklp4qfdq3i3zwb3cgk011s0njdfvz"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              (substitute* "Core/Types.h"
+                (("#include <string>" all)
+                 (string-append all "\n"
+                                "#include <string_view>")))))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:configure-flags '("-DARMIPS_USE_STD_FILESYSTEM=ON")
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs #:allow-other-keys)
+               (invoke "./armipstests" "../source/Tests")))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (install-file "armips" (string-append (assoc-ref outputs "out")
+                                                     "/bin"))
+               #t)))))
+      (home-page "https://github.com/Kingcom/armips")
+      (synopsis "Assembler for various ARM and MIPS platforms")
+      (description
+       "armips is an assembler with full support for the MIPS R3000, MIPS R4000,
 Allegrex and RSP instruction sets, partial support for the EmotionEngine
 instruction set, as well as complete support for the ARM7 and ARM9 instruction
 sets, both THUMB and ARM mode.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public intel-xed
   (package
