@@ -1735,7 +1735,7 @@ client devices can handle.")
 (define-public libnma
   (package
     (name "libnma")
-    (version "1.10.2")
+    (version "1.10.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1743,14 +1743,26 @@ client devices can handle.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0h095a26w3sgbspsf7wzz8ddg62j3jb9ckrrv41k7cdp0k2dkhsg"))))
+                "1avdsw1l61gwr29lzvlr4dh3qz6ypsc3xvfahrcprlqa34mzp9jk"))))
     (build-system meson-build-system)
     (arguments
      ;; GTK 4.x depends on Rust (indirectly) so pull it only on platforms
      ;; where it is supported.
-     (list #:configure-flags (if (supported-package? gtk)
-                                 #~(list "-Dlibnma_gtk4=true")
-                                 #~(list "-Dlibnma_gtk4=false"))))
+     (list
+      #:configure-flags
+      (if (supported-package? gtk)
+          #~(list "-Dlibnma_gtk4=true")
+          #~(list "-Dlibnma_gtk4=false"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; We follow upstream's recommendation at
+          ;; https://gitlab.gnome.org/GNOME/libnma/-/commit/9166164387b0367becbe3400af696f925fef0ab1
+          (add-after 'install 'delete-org.gnome.nm-applet.gschema
+            (lambda _
+              (delete-file
+               (string-append
+                #$output
+                "/share/glib-2.0/schemas/org.gnome.nm-applet.gschema.xml")))))))
     (native-inputs
      (list docbook-xml-4.3
            gettext-minimal
