@@ -6745,14 +6745,14 @@ provides the R language without the environment.")
 (define-public r-fitdistrplus
   (package
     (name "r-fitdistrplus")
-    (version "1.1-8")
+    (version "1.1-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fitdistrplus" version))
        (sha256
         (base32
-         "0nhgjvwya95v6b9khbsgp44lw10xg35w61lmka1v6wq7yh827izk"))))
+         "0gdm06anjmihfj1d0yiqy36d887kmc0d8553pjl1f90bf4mly9r6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-survival))
