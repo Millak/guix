@@ -1819,13 +1819,13 @@ and printing capabilities than traditional data frames.")
 (define-public r-dplyr
   (package
     (name "r-dplyr")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "dplyr" version))
               (sha256
                (base32
-                "1xxvspk1nyns39dp2fqvxbvvnkkz4rcgmhrcrznr3h1qpayj9p6z"))))
+                "1qwn00ai7k6km0z9kl6aa1qjkfz8j3prlgdfxr1pr5s47a5c6862"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
