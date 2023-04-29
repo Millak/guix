@@ -15063,6 +15063,14 @@ and permutation inference in the framework of Strasser and Weber (1999).")
         (base32
          "1cpv7jx840inzg98bkhrb5yscx0gpag6br237r5qpnc2gbrd2ikm"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This test fails because the file has an invalid encoding
+         (add-after 'unpack 'remove-test-file-with-latin-encoding
+           (lambda _
+             (delete-file "tests/regtest_size.R"))))))
     (propagated-inputs
      (list r-libcoin
            r-matrixstats
