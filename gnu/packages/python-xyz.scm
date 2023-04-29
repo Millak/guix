@@ -9698,6 +9698,37 @@ module with a few extra procedures.")
 releases.")
     (license license:expat)))
 
+(define-public python-jaraco-test
+  (package
+    (name "python-jaraco-test")
+    (version "5.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jaraco.test" version))
+              (sha256
+               (base32
+                "0h0x8qmvfkfqvwdx2m7kwhn53sg26k8gkaas7s1730ak772zqrvz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda _
+                       (invoke "pytest" "-vv" "-k" "http"))))))
+    (propagated-inputs (list python-jaraco-context python-jaraco-functools))
+    (native-inputs (list python-flake8
+                         python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-flake8
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/jaraco.test")
+    (synopsis "Testing support by jaraco")
+    (description "This package provides testing support by jaraco.")
+    (license license:expat)))
+
 (define-public python-simplegeneric
   (package
     (name "python-simplegeneric")
