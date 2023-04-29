@@ -7128,6 +7128,20 @@ matrix to solve the memory problem.")
         (base32
          "1sg0mjada72a13xh3k6xsiaff7xj4mp76r6i8iab8nfkvng07p4i"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _
+             (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'avoid-internet-access
+           (lambda _
+             (setenv "GUIX_BUILD" "yes")
+             (substitute* "R/zzz.R"
+               (("ExperimentHub::createHubAccessors.*" m)
+                (string-append
+                 "if (Sys.getenv(\"GUIX_BUILD\") == \"\") {" m "}"))))))))
     (propagated-inputs (list r-experimenthub))
     (native-inputs
      (list r-knitr))
