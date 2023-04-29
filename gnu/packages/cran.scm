@@ -7528,14 +7528,14 @@ provides a one-row summary of model-level statistics.")
 (define-public r-recipes
   (package
     (name "r-recipes")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "recipes" version))
        (sha256
         (base32
-         "1cngsfyzjh5bm8s0aa59kym3qy0q0nd3qm2k72yvb47lh910v2zx"))))
+         "13zwnavg5gbdplxwnd5ppjw1zqj6khdfaj1kzfwswsnxgh99fphh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
