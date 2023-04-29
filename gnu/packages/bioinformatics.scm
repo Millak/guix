@@ -9267,13 +9267,13 @@ single cell ATAC-seq sequencing data.")
 (define-public r-tictoc
   (package
     (name "r-tictoc")
-    (version "1.1")
+    (version "1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tictoc" version))
               (sha256
                (base32
-                "0ka7zd857xfqb5afn0psn0yzfv2qjb0ddxfyiq6aggbnla5qc3qj"))))
+                "037jbwb58mj5asf3kr6hpf3fy9c6fkinnd8hbpfb141a2jsa8pph"))))
     (properties `((upstream-name . "tictoc")))
     (build-system r-build-system)
     (home-page "https://github.com/jabiru/tictoc")
