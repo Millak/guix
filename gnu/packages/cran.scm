@@ -5679,13 +5679,13 @@ multi-dimensional data.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.12.1")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "1m12vjwvzrwwb4d513vk171r25ww92qqv7rd2c3srmwzfi9ngy74"))))
+                "1h6bagpv3b7b3a8z6c3l7if0k5ji1zzgppdfyng2h7q1314mijn2"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (propagated-inputs
