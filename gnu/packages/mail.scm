@@ -4129,6 +4129,7 @@ It is a replacement for the @command{urlview} program.")
              guile-email
              guile-fibers
              guile-gcrypt
+             guile-gnutls
              guile-json-4
              guile-kolam
              guile-redis
