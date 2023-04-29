@@ -364,13 +364,13 @@ queues, stacks, deques, dicts and ordered dicts.")
 (define-public r-cplm
   (package
     (name "r-cplm")
-    (version "0.7-10")
+    (version "0.7-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cplm" version))
        (sha256
-        (base32 "0mqjk10265hq9bc5ihmgbx1l8fzay1gpdlvx3pirqmvr3w1kwlxk"))))
+        (base32 "0pcq5ska1v6kvp8ipw9clczk4w0p10lbxw2xnkhps0wqdrspsqwm"))))
     (properties `((upstream-name . "cplm")))
     (build-system r-build-system)
     (arguments
