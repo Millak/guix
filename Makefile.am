@@ -329,6 +329,7 @@ MODULES =					\
   guix/scripts/lint.scm				\
   guix/scripts/challenge.scm			\
   guix/scripts/import/crate.scm			\
+  guix/scripts/import/cpan.scm			\
   guix/scripts/import/cran.scm			\
   guix/scripts/import/egg.scm   		\
   guix/scripts/import/elm.scm			\
