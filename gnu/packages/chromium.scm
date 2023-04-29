@@ -91,7 +91,9 @@
     "third_party/abseil-cpp" ;ASL2.0
     "third_party/angle" ;BSD-3
     "third_party/angle/src/common/third_party/xxhash" ;BSD-2
+    "third_party/angle/src/third_party/ceval" ;Expat
     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
+    "third_party/angle/src/third_party/systeminfo" ;BSD-2
     "third_party/angle/src/third_party/volk" ;Expat
     "third_party/apple_apsl" ;APSL2.0
     "third_party/axe-core" ;MPL2.0
@@ -148,6 +150,8 @@
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer\
 /package/lib/esm/third_party/mitt" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party\
+/vscode.web-custom-data" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/wasmparser" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
@@ -205,6 +209,7 @@
     "third_party/lss" ;BSD-3
     "third_party/mako" ;Expat
     "third_party/markupsafe" ;BSD-3
+    "third_party/material_color_utilities" ;ASL2.0
     "third_party/mesa_headers" ;Expat, SGI
     "third_party/metrics_proto" ;BSD-3
     "third_party/minigbm" ;BSD-3
@@ -233,7 +238,6 @@
     "third_party/private_membership" ;ASL2.0
     "third_party/private-join-and-compute" ;ASL2.0
     "third_party/protobuf" ;BSD-3
-    "third_party/protobuf/third_party/six" ;Expat
     "third_party/pthreadpool" ;BSD-2
     "third_party/pyjson5" ;ASL2.0
     "third_party/qcms" ;Expat
@@ -313,7 +317,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "110.0.5481.177")
+(define %chromium-version "111.0.5563.146")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/110.0.5481.177-1")
 (define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
@@ -326,7 +330,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0rsvkbsrnfkdp3iw4s54kddw8r771h14hf1ivgahmn42yjafkk3n"))))
+      "14mlyygbqcys71y8dv2c9zszbrkfkmhk79y1synqzfd25biixd6m"))))
 
 (define %debian-origin
   (origin
@@ -356,28 +360,6 @@
          "system/zlib.patch"
          "system/openjpeg.patch")))
 
-(define %chromium-gcc-patchset
-  (let ((commit "chromium-110-patchset-4"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/stha09/chromium-patches")
-            (commit commit)))
-      (file-name (git-file-name "chromium-gcc-patches"
-                                (string-drop commit 9)))
-      (sha256
-       (base32
-        "1q36zgazw50rn2vgjdllw20hp400kvknfhp0ibc515r64hdzfdgy")))))
-
-(define (gcc-patch name)
-  (origin-file %chromium-gcc-patchset name))
-
-(define %gcc-patches
-  (map gcc-patch
-       '("chromium-110-NativeThemeBase-fabs.patch"
-         "chromium-110-CredentialUIEntry-const.patch"
-         "chromium-110-DarkModeLABColorSpace-pow.patch")))
-
 (define (arch-patch revision name hash)
   (origin
     (method url-fetch)
@@ -396,9 +378,7 @@
 (define %arch-patches
   (list
    (arch-patch %arch-revision "disable-GlobalMediaControlsCastStartStop.patch"
-               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")
-   (arch-patch %arch-revision "fix-the-way-to-handle-codecs-in-the-system-icu.patch"
-               "1qy7ldw7lnfbg0dl49m7myrflw0ps80adaisq5dqjndhn0rcbmd5")))
+               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")))
 
 (define %guix-patches
   (list (local-file
@@ -418,7 +398,7 @@
           (search-patch "ungoogled-chromium-system-nspr.patch")))))
 
 (define %patches
-  (append %debian-patches %arch-patches %gcc-patches %guix-patches))
+  (append %debian-patches %arch-patches %guix-patches))
 
 ;; This is a source 'snippet' that does the following:
 ;; *) Applies various patches for unbundling purposes and libstdc++ compatibility.
@@ -511,7 +491,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "1dy9l61r3fpl40ff790dbqqvw9l1svcgd7saz4whl9wm256labvv"))
+                "1zmm926fsifqaw60ilfav017xxnvnhvqbbq7qcrhdyjm3fiiyw0y"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
