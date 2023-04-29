@@ -24654,21 +24654,26 @@ multiple plots.")
          "16dzwwcpw6n78pxlc5w3kraigki35ix7zhd2cbx5f3y60bbkhlmx"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (delete-file "inst/java/ModularityOptimizer.jar")
-           #t))))
+        '(delete-file "inst/java/ModularityOptimizer.jar"))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:modules '((guix build r-build-system)
+                  ((guix build ant-build-system) #:prefix ant:)
+                  (guix build utils))
+      #:imported-modules `((guix build ant-build-system)
+                           ,@%r-build-system-modules)
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'build-java-part
            (lambda* (#:key inputs #:allow-other-keys)
              (invoke "unzip" (assoc-ref inputs "optimizer-src"))
              (for-each (lambda (file) (invoke "javac" file))
                        (find-files "." "\\.java$"))
              (apply invoke "jar" "cf" "inst/java/ModularityOptimizer.jar"
-                    (find-files "." "\\.class$"))
-             #t)))))
+                    (find-files "." "\\.class$"))))
+         (add-after 'install 'strip-jar-timestamps
+           (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (propagated-inputs
      (list r-cowplot
            r-dosnow
@@ -24702,7 +24707,8 @@ multiple plots.")
             (base32
              "01hmm6sapcmldvayknqx2w4cav3qv71mwwkdkwj4qgq6dss09g18"))))
        ("unzip" ,unzip)
-       ("r-knitr" ,r-knitr))) ; for vignettes
+       ("zip" ,zip)
+       ("r-knitr" ,r-knitr)))           ; for vignettes
     (home-page "https://github.com/MacoskoLab/liger")
     (synopsis "Integrate and analyze multiple single-cell datasets")
     (description
