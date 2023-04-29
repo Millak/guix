@@ -346,7 +346,9 @@ safety and thread safety guarantees.")
     ;; therefore the build process needs 8GB of RAM while building.
     ;; It may support i686 soon:
     ;; <https://github.com/thepowersgang/mrustc/issues/78>.
-    (supported-systems '("x86_64-linux" "aarch64-linux" "riscv64-linux"))
+    ;; XXX: The rust bootstrap is currently broken on aarch64 and riscv64,
+    ;; remove them until this is fixed.
+    (supported-systems '("x86_64-linux"))
 
     ;; Dual licensed.
     (license (list license:asl2.0 license:expat))))
