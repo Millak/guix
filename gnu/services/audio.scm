@@ -581,12 +581,15 @@ appended to the configuration.")
    (serialize-configuration configuration mpd-configuration-fields)))
 
 (define (mpd-log-rotation config)
-  (match-record config <mpd-configuration> (log-file)
-    (log-rotation
-     (files (list log-file))
-     (post-rotate #~(begin
-                      (use-modules (gnu services herd))
-                      (with-shepherd-action 'mpd ('reopen) #f))))))
+  (match-record config <mpd-configuration>
+    (log-file)
+    (if (string=? "syslog" log-file)
+        '()                             ;nothing to do
+        (list (log-rotation
+               (files (list log-file))
+               (post-rotate #~(begin
+                                (use-modules (gnu services herd))
+                                (with-shepherd-action 'mpd ('reopen) #f))))))))
 
 (define (mpd-shepherd-service config)
   (match-record config <mpd-configuration>
@@ -674,10 +677,8 @@ MPD (PID ~a)." pid))
    (extensions
     (list (service-extension shepherd-root-service-type
                              (compose list mpd-shepherd-service))
-          (service-extension account-service-type
-                             mpd-accounts)
-          (service-extension rottlog-service-type
-                             (compose list mpd-log-rotation))))
+          (service-extension account-service-type mpd-accounts)
+          (service-extension rottlog-service-type mpd-log-rotation)))
    (default-value (mpd-configuration))))
 
 
