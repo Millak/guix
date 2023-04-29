@@ -1,0 +1,28 @@
+From 3dc3c0856906d25bb697a4480a8457a69637cd51 Mon Sep 17 00:00:00 2001
+Message-Id: <3dc3c0856906d25bb697a4480a8457a69637cd51.1682798848.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Sat, 29 Apr 2023 22:06:55 +0200
+Subject: [PATCH] Makefile: use runhaskell instead of cabal
+
+From: Josselin Poiret <dev@jpoiret.xyz>
+
+---
+ GNUmakefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/GNUmakefile b/GNUmakefile
+index c5d886e03..f3cb2a1e7 100644
+--- a/GNUmakefile
++++ b/GNUmakefile
+@@ -21,7 +21,7 @@ Everything.agda:
+ # command `cabal install` is needed by cabal-install <= 2.4.*. I did
+ # not found any problem running both commands with different versions
+ # of cabal-install. See Issue #1001.
+-	cabal run GenerateEverything
++	runhaskell GenerateEverything
+ 
+ .PHONY: listings
+ listings: Everything.agda
+-- 
+2.39.2
+

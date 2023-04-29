@@ -31,6 +31,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
+  #:use-module (guix build-system agda)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
@@ -194,3 +195,40 @@ of theorems for booleans, natural numbers, and lists.  It also has
 trees, tries, vectors, and rudimentary IO.  A number of good ideas
 come from Agda's standard library.")
     (license license:expat)))
+
+(define-public agda-stdlib
+  (package
+    (name "agda-stdlib")
+    (version "1.7.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agda/agda-stdlib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "065hf24xjpciwdrvk4isslgcgi01q0k93ql0y1sjqqvy5ryg5xmy"))))
+    (build-system agda-build-system)
+    (arguments
+     (list
+      #:plan '(("^\\./README.agda$" "-i."))
+      #:gnu-and-haskell? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'generate-everything
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (invoke
+               (search-input-file (or native-inputs inputs) "/bin/runhaskell")
+               "GenerateEverything.hs"))))))
+    (native-inputs (list ghc-filemanip))
+    (synopsis "The Agda Standard Library")
+    (description
+     "The standard library aims to contain all the tools needed to write
+both programs and proofs easily.  While we always try and write efficient
+code, we prioritize ease of proof over type-checking and normalization
+performance.  If computational performance is important to you, then perhaps
+try agda-prelude instead.")
+    (home-page "https://wiki.portal.chalmers.se/agda/pmwiki.php")
+    (license license:expat)))
+
