@@ -738,7 +738,7 @@ purposes developed at Queen Mary, University of London.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "7.3")
+    (version "7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -755,7 +755,7 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "0bkhrgswhc9y1ly8nfg8hpwad77cgbr663dgj86h3aisljc4cdkw"))
+                "0v66h9fghjyjinldw9yfhhlfi3my235x6n4dpxx432z35lka2h89"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -799,7 +799,6 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
      (list alsa-lib
            atkmm
            aubio
-           boost
            cairomm
            curl
            dbus
@@ -844,7 +843,8 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            taglib
            vamp))
     (native-inputs
-     (list cppunit
+     (list boost
+           cppunit
            gettext-minimal
            itstool
            perl
