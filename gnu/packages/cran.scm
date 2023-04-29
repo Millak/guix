@@ -10276,22 +10276,44 @@ local smoothers and many more.")
 (define-public r-radiant-data
   (package
     (name "r-radiant-data")
-    (version "1.5.1")
+    (version "1.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "radiant.data" version))
        (sha256
         (base32
-         "1q6v7pkqk8rbxrmbnyj9drqb0p2rk8v4d3fxw1gqmqhzd6qp4yab"))
+         "1dd18brwgcpkqbnxg6jqk4r7aw1i2d7lg9mnfw59q95n6jk86lr5"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Delete files that are under CC-NC-SA.
            (delete-file-recursively "inst/app/tools/help")
-           #t))))
+           (delete-file "inst/assets/html2canvas/html2canvas.min.js")))))
     (properties `((upstream-name . "radiant.data")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/assets/html2canvas/"
+               (call-with-values
+                   (lambda ()
+                     (unzip2
+                      `((,(assoc-ref inputs "_")
+                         "html2canvas.min.js"))))
+                 (lambda (sources targets)
+                   (for-each (lambda (source target)
+                               (format #true "Processing ~a --> ~a~%"
+                                       source target)
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target)))
+                             sources targets)))))))))
     (propagated-inputs
      (list r-base64enc
            r-broom
@@ -10327,6 +10349,15 @@ local smoothers and many more.")
            r-tibble
            r-tidyr
            r-writexl))
+    (native-inputs
+     (list esbuild
+           (origin
+             (method url-fetch)
+             (uri "https://web.archive.org/web/20230428182027id_/\
+https://html2canvas.hertzen.com/dist/html2canvas.js")
+             (sha256
+              (base32
+               "0svkfnzzsydbsrwi7ky91rjqj97x5rfic69hbr9pwhm0zxlb9i81")))))
     (home-page "https://github.com/radiant-rstats/radiant.data")
     (synopsis "Data menu for Radiant: business analytics using R and Shiny")
     (description
