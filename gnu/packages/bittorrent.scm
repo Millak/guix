@@ -2,7 +2,7 @@
 ;;; Copyright © 2014 Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
@@ -525,9 +525,7 @@ features.")
            python-zope-interface))
     (native-inputs
      (list intltool python-wheel
-           (if (string-prefix? "x86_64-" (%current-system))
-               librsvg
-               librsvg-2.40)))
+           (librsvg-for-system)))
     ;; TODO: Enable tests.
     ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
     ;; started, some of the tests still fail.  There are likely some tests
