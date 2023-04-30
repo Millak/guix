@@ -459,6 +459,19 @@ languages.")
     (description "This Emacs build implements graphical UI purely in terms
 of GTK and supports tree-sitter.")))
 
+(define-public emacs-next-pgtk-xwidgets
+  (package
+    (inherit emacs-next-pgtk)
+    (name "emacs-next-pgtk-xwidgets")
+    (synopsis "Emacs text editor with @code{xwidgets} and @code{pgtk} support")
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next-pgtk)
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-xwidgets" #$flags))))
+    (inputs
+     (modify-inputs (package-inputs emacs-next-pgtk)
+       (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
+
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just
   ;; need to byte-compile .el files.
