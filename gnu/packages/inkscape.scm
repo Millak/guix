@@ -7,6 +7,7 @@
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Boris A. Dekshteyn <boris.dekshteyn@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -192,6 +193,23 @@ endif()~%~%"
                 (("text-glyphs-combining") "")
                 (("text-glyphs-vertical") "")
                 (("test-rtl-vertical") ""))))
+          ,@(if (or (target-aarch64?)
+                    (target-ppc64le?))
+              `((add-after 'unpack 'disable-more-tests
+                  (lambda _
+                    ;; https://gitlab.com/inkscape/inkscape/-/issues/3554#note_1035680690
+                    (substitute* "testfiles/CMakeLists.txt"
+                      (("lpe64-test") "#lpe64-test"))
+                    ;; https://gitlab.com/inkscape/inkscape/-/issues/3554#note_1035539888
+                    ;; According to upstream, this is a false positive.
+                    (substitute* "testfiles/rendering_tests/CMakeLists.txt"
+                      (("test-use") "#test-use"))
+                    ;; https://gitlab.com/inkscape/inkscape/-/issues/3554#note_1035539888
+                    ;; Allegedly a precision error in the gamma.
+                    (substitute* "testfiles/cli_tests/CMakeLists.txt"
+                      (("add_cli_test\\(export-png-color-mode-gray-8_png" all)
+                       (string-append "#" all))))))
+              '())
           (add-after 'unpack 'set-home
             ;; Mute Inkscape warnings during tests.
             (lambda _
