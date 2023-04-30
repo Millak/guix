@@ -5963,6 +5963,16 @@ in main memory.")
         (base32
          "1dp6lblfq2j7r1b4b8ls47jlx8j27n88d5vp8w116lb8pa01zxmk"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; R 4.3.0 removed the typedef for Sint, which used to be just int.
+         (add-after 'unpack 'r-compatibility
+           (lambda _
+             (substitute* '("src/grouprunningcumsum.c"
+                            "src/grouprunningcumsumindex.c")
+               (("\\bSint ") "int ")))))))
     (propagated-inputs
      (list r-bit r-fastmatch r-ff))
     (home-page "https://github.com/edwindj/ffbase")
