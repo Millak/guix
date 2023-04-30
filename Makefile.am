@@ -141,6 +141,7 @@ MODULES =					\
   guix/platforms/riscv.scm                      \
   guix/platforms/x86.scm                        \
   guix/build-system.scm				\
+  guix/build-system/agda.scm                    \
   guix/build-system/android-ndk.scm		\
   guix/build-system/ant.scm			\
   guix/build-system/cargo.scm			\
@@ -196,6 +197,7 @@ MODULES =					\
   guix/diagnostics.scm				\
   guix/ui.scm					\
   guix/status.scm				\
+  guix/build/agda-build-system.scm              \
   guix/build/android-ndk-build-system.scm	\
   guix/build/ant-build-system.scm		\
   guix/build/download.scm			\

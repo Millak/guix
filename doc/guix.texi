@@ -8963,6 +8963,27 @@ of @code{gnu-build-system}, and differ mainly in the set of inputs
 implicitly added to the build process, and in the list of phases
 executed.  Some of these build systems are listed below.
 
+@defvar agda-build-system
+This variable is exported by @code{(guix build-system agda)}.  It
+implements a build procedure for Agda libraries.
+
+It adds @code{agda} to the set of inputs.  A different Agda can be
+specified with the @code{#:agda} key.
+
+The @code{#:plan} key is a list of cons cells @code{(@var{regexp}
+. @var{parameters})}, where @var{regexp} is a regexp that should match
+the @code{.agda} files to build, and @var{parameters} is an optional
+list of parameters that will be passed to @code{agda} when type-checking
+it.
+
+When the library uses Haskell to generate a file containing all imports,
+the convenience @code{#:gnu-and-haskell?} can be set to @code{#t} to add
+@code{ghc} and the standard inputs of @code{gnu-build-system} to the
+input list.  You will still need to manually add a phase or tweak the
+@code{'build} phase, as in the definition of @code{agda-stdlib}.
+
+@end defvar
+
 @defvar ant-build-system
 This variable is exported by @code{(guix build-system ant)}.  It
 implements the build procedure for Java packages that can be built with
