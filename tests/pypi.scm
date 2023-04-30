@@ -255,7 +255,7 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
                                 ('sha256
                                  ('base32
                                   (? string? hash)))))
-                     ('build-system 'python-build-system)
+                     ('build-system 'pyproject-build-system)
                      ('propagated-inputs ('list 'python-bar 'python-foo))
                      ('native-inputs ('list 'python-pytest))
                      ('home-page "http://example.com")
@@ -323,7 +323,7 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
                               ('sha256
                                ('base32
                                 (? string? hash)))))
-                   ('build-system 'python-build-system)
+                   ('build-system 'pyproject-build-system)
                    ('propagated-inputs ('list 'python-bar 'python-baz))
                    ('native-inputs ('list 'python-pytest))
                    ('home-page "http://example.com")
@@ -371,7 +371,7 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
                               ('sha256
                                ('base32
                                 (? string? hash)))))
-                   ('build-system 'python-build-system)
+                   ('build-system 'pyproject-build-system)
                    ('home-page "http://example.com")
                    ('synopsis "summary")
                    ('description "summary")
@@ -420,7 +420,7 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
                                ('base32
                                 (? string? hash)))))
                    ('properties ('quote (("upstream-name" . "foo-99"))))
-                   ('build-system 'python-build-system)
+                   ('build-system 'pyproject-build-system)
                    ('propagated-inputs ('list 'python-bar 'python-foo))
                    ('native-inputs ('list 'python-pytest))
                    ('home-page "http://example.com")
