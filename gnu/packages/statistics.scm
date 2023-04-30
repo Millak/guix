@@ -5011,16 +5011,16 @@ representation of R code.")
 (define-public r-ggbeeswarm
   (package
     (name "r-ggbeeswarm")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggbeeswarm" version))
               (sha256
                (base32
-                "14mc00i107rww3al5q3rrqmd1v0ck06jipfhzqi23g29a4rm05gl"))))
+                "1rcw54isai05np4fj19vcxx2vcxq7y2nm3az9m8xwbc9pdjs4z7x"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-beeswarm r-ggplot2 r-lifecycle r-vipor))
+     (list r-beeswarm r-cli r-ggplot2 r-lifecycle r-vipor))
     (home-page "https://github.com/eclarke/ggbeeswarm")
     (synopsis "Categorical scatter (violin point) plots")
     (description
