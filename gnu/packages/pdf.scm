@@ -824,14 +824,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.21.1")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "0876sn5nd8vyw9d3d3bmripm119jy6734rs0ywppqzvccy839936"))
+        (base32 "0ghwam1c1izks1n2zq2pr8z67nvrx4njk5rla86b75l4pw58mmxy"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
