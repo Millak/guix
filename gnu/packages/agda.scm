@@ -232,3 +232,33 @@ try agda-prelude instead.")
     (home-page "https://wiki.portal.chalmers.se/agda/pmwiki.php")
     (license license:expat)))
 
+(define-public agda-categories
+  (package
+    (name "agda-categories")
+    (version "0.1.7.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/agda/agda-categories.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xwgm2mfl2pxipsv31bin8p14y1yhd9n27lv3clvsxd4z9yc034m"))
+              (patches (search-patches "agda-categories-remove-incompatible-flags.patch"
+                                       "agda-categories-use-find.patch"))))
+    (build-system agda-build-system)
+    (arguments
+     (list
+      #:gnu-and-haskell? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (invoke "make"))))))
+    (propagated-inputs
+     (list agda-stdlib))
+    (synopsis "New Categories library for Agda")
+    (description "A new Categories library for Agda")
+    (home-page "https://github.com/agda/agda-categories")
+    (license license:expat)))

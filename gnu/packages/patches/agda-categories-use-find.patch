@@ -1,0 +1,31 @@
+From 53922aedd81d5111d9007b41235aa12eaa2a863d Mon Sep 17 00:00:00 2001
+Message-Id: <53922aedd81d5111d9007b41235aa12eaa2a863d.1682840933.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Sun, 30 Apr 2023 09:48:21 +0200
+Subject: [PATCH] Use find instead of git ls-tree in Makefile
+
+From: Josselin Poiret <dev@jpoiret.xyz>
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 158802d1..68846579 100644
+--- a/Makefile
++++ b/Makefile
+@@ -11,7 +11,7 @@ html: Everything.agda
+ 	agda ${RTSARGS} --html -i. Everything.agda
+ 
+ Everything.agda:
+-	git ls-tree --full-tree -r --name-only HEAD | grep '^src/[^\.]*.agda' | sed -e 's|^src/[/]*|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | LC_COLLATE='C' sort > Everything.agda
++	find src -iname '*.agda' | sed -e 's|^src/[/]*|import |' -e 's|/|.|g' -e 's/.agda//' -e '/import Everything/d' | LC_COLLATE='C' sort > Everything.agda
+ 
+ clean:
+ 	find . -name '*.agdai' -exec rm \{\} \;
+
+base-commit: 20397e93a60ed1439ed57ee76ae377c66a5eb8d9
+prerequisite-patch-id: da10df58fa86d08b31174a01db7b9a02377aba55
+-- 
+2.39.2
+

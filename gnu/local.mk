@@ -885,6 +885,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/aegisub-icu59-include-unistr.patch	\
   %D%/packages/patches/aegisub-boost68.patch			\
   %D%/packages/patches/aegisub-make43.patch			\
+  %D%/packages/patches/agda-categories-remove-incompatible-flags.patch	\
+  %D%/packages/patches/agda-categories-use-find.patch	\
   %D%/packages/patches/agda-libdirs-env-variable.patch	\
   %D%/packages/patches/agda-stdlib-use-runhaskell.patch	\
   %D%/packages/patches/agg-am_c_prototype.patch			\

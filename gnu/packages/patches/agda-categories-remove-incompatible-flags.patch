@@ -1,0 +1,31 @@
+From 3d73d59617281c6ae9c19032eae381ff77fd2e65 Mon Sep 17 00:00:00 2001
+Message-Id: <3d73d59617281c6ae9c19032eae381ff77fd2e65.1682841188.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Sun, 30 Apr 2023 09:51:12 +0200
+Subject: [PATCH] Remove stdlib-incompatible flags
+
+From: Josselin Poiret <dev@jpoiret.xyz>
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 68846579..ba5923a2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,6 @@
+ .PHONY: test Everything.agda clean
+ 
+-OTHEROPTS = --auto-inline -Werror
++OTHEROPTS =
+ 
+ RTSARGS = +RTS -M6G -A128M -RTS ${OTHEROPTS}
+ 
+
+base-commit: 20397e93a60ed1439ed57ee76ae377c66a5eb8d9
+prerequisite-patch-id: da10df58fa86d08b31174a01db7b9a02377aba55
+prerequisite-patch-id: 508dabd923ba9ac1ee4d8dab6697432b4bd8ba18
+-- 
+2.39.2
+
