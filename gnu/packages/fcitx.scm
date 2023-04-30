@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system qt)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages enchant)
@@ -128,10 +130,18 @@
                (mkdir-p (string-append doc "/share/presage"))
                (rename-file
                 (string-append out "/share/presage/html")
-                (string-append doc "/share/presage/html"))
-               #t))))))
+                (string-append doc "/share/presage/html")))))
+         (add-after 'unpack 'update-config-scripts
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (for-each (lambda (file)
+                         (install-file
+                          (search-input-file
+                           (or native-inputs inputs)
+                           (string-append "/bin/" file)) "."))
+                       '("config.guess" "config.sub")))))))
     (native-inputs
-     `(("dot" ,graphviz)
+     `(("config" ,config)
+       ("dot" ,graphviz)
        ("doxygen" ,doxygen)
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
