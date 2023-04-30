@@ -1,0 +1,90 @@
+Fix ordering of Arbitrary definitions for GHC 9 compatibility.
+
+Taken from upstream:
+
+  https://github.com/ganeti/ganeti/commit/feab8faa8fe055c89205497e4f277ae4c7b8caad
+
+diff --git a/test/hs/Test/Ganeti/Objects.hs b/test/hs/Test/Ganeti/Objects.hs
+index 97ceb36dca..8d80be9e80 100644
+--- a/test/hs/Test/Ganeti/Objects.hs
++++ b/test/hs/Test/Ganeti/Objects.hs
+@@ -93,8 +93,14 @@ instance Arbitrary (Container DataCollectorConfig) where
+ instance Arbitrary BS.ByteString where
+   arbitrary = genPrintableByteString
+ 
++instance Arbitrary a => Arbitrary (Private a) where
++  arbitrary = Private <$> arbitrary
++
+ $(genArbitrary ''PartialNDParams)
+ 
++instance Arbitrary (Container J.JSValue) where
++  arbitrary = return $ GenericContainer Map.empty
++
+ instance Arbitrary Node where
+   arbitrary = Node <$> genFQDN <*> genFQDN <*> genFQDN
+               <*> arbitrary <*> arbitrary <*> arbitrary <*> genFQDN
+@@ -297,10 +303,6 @@ genDisk = genDiskWithChildren 3
+ -- validation rules.
+ $(genArbitrary ''PartialISpecParams)
+ 
+--- | FIXME: This generates completely random data, without normal
+--- validation rules.
+-$(genArbitrary ''PartialIPolicy)
+-
+ $(genArbitrary ''FilledISpecParams)
+ $(genArbitrary ''MinMaxISpecs)
+ $(genArbitrary ''FilledIPolicy)
+@@ -309,6 +311,10 @@ $(genArbitrary ''FilledNDParams)
+ $(genArbitrary ''FilledNicParams)
+ $(genArbitrary ''FilledBeParams)
+ 
++-- | FIXME: This generates completely random data, without normal
++-- validation rules.
++$(genArbitrary ''PartialIPolicy)
++
+ -- | No real arbitrary instance for 'ClusterHvParams' yet.
+ instance Arbitrary ClusterHvParams where
+   arbitrary = return $ GenericContainer Map.empty
+@@ -331,18 +337,12 @@ instance Arbitrary OsParams where
+ instance Arbitrary Objects.ClusterOsParamsPrivate where
+   arbitrary = (GenericContainer . Map.fromList) <$> arbitrary
+ 
+-instance Arbitrary a => Arbitrary (Private a) where
+-  arbitrary = Private <$> arbitrary
+-
+ instance Arbitrary ClusterOsParams where
+   arbitrary = (GenericContainer . Map.fromList) <$> arbitrary
+ 
+ instance Arbitrary ClusterBeParams where
+   arbitrary = (GenericContainer . Map.fromList) <$> arbitrary
+ 
+-instance Arbitrary IAllocatorParams where
+-  arbitrary = return $ GenericContainer Map.empty
+-
+ $(genArbitrary ''Cluster)
+ 
+ instance Arbitrary ConfigData where
+diff --git a/test/hs/Test/Ganeti/Query/Language.hs b/test/hs/Test/Ganeti/Query/Language.hs
+index 04fb8c3898..fa50196f00 100644
+--- a/test/hs/Test/Ganeti/Query/Language.hs
++++ b/test/hs/Test/Ganeti/Query/Language.hs
+@@ -59,6 +59,9 @@ import Ganeti.Query.Language
+ instance Arbitrary (Filter FilterField) where
+   arbitrary = genFilter
+ 
++instance Arbitrary FilterRegex where
++  arbitrary = genName >>= mkRegex -- a name should be a good regex
++
+ -- | Custom 'Filter' generator (top-level), which enforces a
+ -- (sane) limit on the depth of the generated filters.
+ genFilter :: Gen (Filter FilterField)
+@@ -97,9 +100,6 @@ $(genArbitrary ''QueryTypeLuxi)
+ 
+ $(genArbitrary ''ItemType)
+ 
+-instance Arbitrary FilterRegex where
+-  arbitrary = genName >>= mkRegex -- a name should be a good regex
+-
+ $(genArbitrary ''ResultStatus)
+ 
+ $(genArbitrary ''FieldType)

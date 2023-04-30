@@ -668,7 +668,13 @@ firmware blobs.  You can
                                        "ganeti-shepherd-master-failover.patch"
                                        "ganeti-haskell-pythondir.patch"
                                        "ganeti-pyyaml-compat.patch"
-                                       "ganeti-disable-version-symlinks.patch"))))
+                                       "ganeti-procps-compat.patch"
+                                       "ganeti-disable-version-symlinks.patch"
+                                       "ganeti-lens-compat.patch"
+                                       "ganeti-template-haskell-2.17.patch"
+                                       "ganeti-template-haskell-2.18.patch"
+                                       "ganeti-reorder-arbitrary-definitions.patch"
+                                       "ganeti-relax-dependencies.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules (,@%gnu-build-system-modules

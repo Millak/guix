@@ -1,0 +1,40 @@
+Fix building against Lens 5 by commenting out type signatures(!).
+
+Taken from upstream:
+
+  https://github.com/ganeti/ganeti/commit/5e30bad1bba63c9f6c782003ef2560f107a0ba24
+
+diff --git a/src/Ganeti/Network.hs b/src/Ganeti/Network.hs
+index 1cb6aa1ec..696c1cd1b 100644
+--- a/src/Ganeti/Network.hs
++++ b/src/Ganeti/Network.hs
+@@ -87,11 +87,11 @@ data PoolPart = PoolInstances | PoolExt
+ addressPoolIso :: Iso' AddressPool BA.BitArray
+ addressPoolIso = iso apReservations AddressPool
+ 
+-poolLens :: PoolPart -> Lens' Network (Maybe AddressPool)
++--poolLens :: PoolPart -> Lens' Network (Maybe AddressPool)
+ poolLens PoolInstances = networkReservationsL
+ poolLens PoolExt = networkExtReservationsL
+ 
+-poolArrayLens :: PoolPart -> Lens' Network (Maybe BA.BitArray)
++--poolArrayLens :: PoolPart -> Lens' Network (Maybe BA.BitArray)
+ poolArrayLens part = poolLens part . mapping addressPoolIso
+ 
+ netIpv4NumHosts :: Network -> Integer
+diff --git a/src/Ganeti/Utils/MultiMap.hs b/src/Ganeti/Utils/MultiMap.hs
+index d54da3ab0..279e9335a 100644
+--- a/src/Ganeti/Utils/MultiMap.hs
++++ b/src/Ganeti/Utils/MultiMap.hs
+@@ -91,7 +91,7 @@ multiMap :: (Ord k, Ord v) => M.Map k (S.Set v) -> MultiMap k v
+ multiMap = MultiMap . M.filter (not . S.null)
+ 
+ -- | A 'Lens' that allows to access a set under a given key in a multi-map.
+-multiMapL :: (Ord k, Ord v) => k -> Lens' (MultiMap k v) (S.Set v)
++--multiMapL :: (Ord k, Ord v) => k -> Lens' (MultiMap k v) (S.Set v)
+ multiMapL k f = fmap MultiMap
+                  . at k (fmap (mfilter (not . S.null) . Just)
+                          . f . fromMaybe S.empty)
+-- 
+2.41.0
+
