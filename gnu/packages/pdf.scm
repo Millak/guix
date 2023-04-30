@@ -832,20 +832,17 @@ and based on PDF specification 1.7.")
                            "mupdf-" version "-source.tar.lz"))
        (sha256
         (base32 "0ghwam1c1izks1n2zq2pr8z67nvrx4njk5rla86b75l4pw58mmxy"))
-       (modules '((guix build utils)))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-1)))
        (snippet
-        #~(begin
-            ;; Remove bundled software.  Keep patched variants.
-            (let* ((keep (list "extract" "freeglut" "lcms2"))
-                   (from "thirdparty")
-                   (kept (string-append from "~temp")))
-              (mkdir-p kept)
-              (for-each (lambda (file)
-                          (rename-file (string-append from "/" file)
-                                       (string-append kept "/" file)))
-                        keep)
-              (delete-file-recursively from)
-              (rename-file kept from))))))
+        ;; Remove bundled software.  Keep patched variants.
+        #~(with-directory-excursion "thirdparty"
+            (let ((keep '("README" "extract" "freeglut" "lcms2")))
+              (for-each delete-file-recursively
+                        (lset-difference string=?
+                                         (scandir ".")
+                                         (cons* "." ".." keep))))))))
     (build-system gnu-build-system)
     (inputs
      (list curl
