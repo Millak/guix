@@ -295,3 +295,32 @@ try agda-prelude instead.")
 agda-stdlib but using cubical methods.")
       (home-page "https://github.com/agda/cubical")
       (license license:expat))))
+
+(define-public agda-1lab
+  ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.3,
+  ;; since they use Agda HEAD.
+  (let* ((revision "1")
+         (commit "47ca1d23640a6f49a3abe3c2fe27738bcc10c9c6"))
+    (package
+      (name "agda-1lab")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/plt-amy/1lab.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0j7mp6c0xd0849skdxzncklkxynxnyfrbpcjv4qp5p1xfn0dnfqx"))))
+      (build-system agda-build-system)
+      (arguments
+       (list #:plan '(("src/index\\.lagda\\.md$"))))
+      (synopsis "Reference resource for mathematics done in Homotopy Type Theory")
+      (description "A formalised, cross-linked reference resource for
+mathematics done in Homotopy Type Theory.  Unlike the HoTT book, the 1lab is
+not a “linear” resource: Concepts are presented as a directed graph, with
+links indicating dependencies.")
+      (home-page "https://1lab.dev")
+      (license license:agpl3))))
