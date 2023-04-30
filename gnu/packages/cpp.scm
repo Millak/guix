@@ -2433,7 +2433,7 @@ queues, resource pools, strings, etc.
 (define-public ftxui
   (package
     (name "ftxui")
-    (version "3.0.0")
+    (version "4.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2441,7 +2441,7 @@ queues, resource pools, strings, etc.
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "10a4yw2h29kixxyhll6cvrwyscsvz9asxry857a9l8nqvbhs946s"))
+                "01h59ln8amsj6ymxmsxhmslld2yp003n82fg3mphgkrh6lf22h6y"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs (list googletest))
@@ -2459,9 +2459,8 @@ queues, resource pools, strings, etc.
                    ;; Disable benchmarks for a while as they require bundled Google
                    ;; benchmark and when the 'googlebenchmark' is unbundled, there's
                    ;; a CMake configuration error.
-                   (substitute* "cmake/ftxui_benchmark.cmake"
-                     (("NOT WIN32")
-                      "FALSE")))) )))
+                   ;; TODO: fetch googlebenchmark then renable test
+                   (truncate-file "cmake/ftxui_benchmark.cmake" 0))))))
     (home-page "https://github.com/ArthurSonzogni/FTXUI")
     (synopsis "C++ Functional Terminal User Interface")
     (description
