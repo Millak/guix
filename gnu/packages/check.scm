@@ -310,6 +310,7 @@ for C++ 11 and beyond implemented as a single-header library.")
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
+              (patches (search-patches "clitest-grep-compat.patch"))
               (sha256
                (base32
                 "1p745mxiq3hgi3ywfljs5sa1psi06awwjxzw0j9c2xx1b09yqv4a"))))
@@ -325,13 +326,6 @@ for C++ 11 and beyond implemented as a single-header library.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (substitute* "test.md"
-                  ;; One test looks for an error from grep in the form "grep: foo",
-                  ;; but our grep returns the absolute file name on errors.  Adjust
-                  ;; the test to cope with that.
-                  (("sed 's/\\^e\\*grep: \\.\\*/")
-                   "sed 's/.*e*grep: .*/"))
-
                 (setenv "HOME" "/tmp")
                 (invoke "./clitest" "test.md"))))
           (replace 'install
