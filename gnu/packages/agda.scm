@@ -23,6 +23,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages agda)
+  #:use-module (gnu packages)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
@@ -51,7 +52,8 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s7zd01i8pmvi90ywx497kc07z50nah7h0fc2dn6jzb132k5sh1q"))))
+        (base32 "1s7zd01i8pmvi90ywx497kc07z50nah7h0fc2dn6jzb132k5sh1q"))
+       (patches (search-patches "agda-libdirs-env-variable.patch"))))
     (build-system haskell-build-system)
     (inputs
      (list ghc-aeson
@@ -109,6 +111,12 @@
                        (setenv "infodir" (string-append #$output
                                                         "/share/info"))
                        (invoke "make" "install-info"))))))))
+    (search-paths
+     (list (search-path-specification
+            (variable "AGDA_LIBDIRS")
+            (files (list "lib/agda")))))
+    (native-search-paths
+     search-paths)
     (home-page "https://wiki.portal.chalmers.se/agda/")
     (synopsis
      "Dependently typed functional programming language and proof assistant")

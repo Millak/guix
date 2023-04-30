@@ -885,6 +885,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/aegisub-icu59-include-unistr.patch	\
   %D%/packages/patches/aegisub-boost68.patch			\
   %D%/packages/patches/aegisub-make43.patch			\
+  %D%/packages/patches/agda-libdirs-env-variable.patch	\
   %D%/packages/patches/agg-am_c_prototype.patch			\
   %D%/packages/patches/agg-2.5-gcc8.patch			\
   %D%/packages/patches/akonadi-paths.patch		\
