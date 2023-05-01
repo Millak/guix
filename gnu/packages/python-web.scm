@@ -3404,12 +3404,19 @@ addon for removing tracking fields from URLs.")
     (build-system python-build-system)
     (arguments `(#:tests? #f))
     (propagated-inputs
-     (list ;; These 5 inputs are used to build urrlib3[secure]
-           python-certifi
-           python-cryptography
-           python-idna
-           python-pyopenssl
-           python-pysocks))
+     (append
+       ;; These 5 inputs are used to build urrlib3[secure]
+       (list python-certifi)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems python-cryptography))
+         (list python-cryptography)
+         '())
+       (list python-idna)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems python-pyopenssl))
+         (list python-pyopenssl)
+         '())
+       (list python-pysocks)))
     (home-page "https://urllib3.readthedocs.io/")
     (synopsis "HTTP library with thread-safe connection pooling")
     (description
