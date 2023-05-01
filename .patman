@@ -5,7 +5,6 @@
 project: guix-patches
 patchwork_url: https://patches.guix-patches.cbaines.net
 add_signoff: False
-get_maintainer_script: etc/teams.scm get-maintainer
 # TODO: enable check_patch
 check_patch: False
 ignore_bad_tags: True
