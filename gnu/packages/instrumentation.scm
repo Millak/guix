@@ -391,7 +391,10 @@ to ring buffers shared with a consumer daemon.")
          (add-after 'unpack 'patch-default-man-path
            (lambda _
              (substitute* "src/common/defaults.h"
-               (("/usr/bin/man") "man")))))))
+               (("/usr/bin/man") "man"))))
+         (add-before 'configure 'autoreconf
+           (lambda _
+             (invoke "autoreconf" "-vfi"))))))
     ;; NOTE - Users have to install python-3 in their profile to use the
     ;; bindings.  We don't put it in the inputs, because the rest of the tools
     ;; can work without it.
@@ -399,19 +402,31 @@ to ring buffers shared with a consumer daemon.")
      (list liburcu popt numactl))
     (propagated-inputs
      (list kmod module-init-tools))
+    ;; NOTE - LTTng 2.13.9 is distributed with a aclocal.m4 that does not
+    ;; support Python3.10.  We can either disable Python's bindings or we can
+    ;; reconfigure the project with our autoconf.  This is because the
+    ;; distribution tarballs are generated on Ubuntu LTS 18.04.
+    ;;
+    ;; `paredit-raise-sexp' on the first list of native inputs and remove the
+    ;; 'autoreconf build step whenever we bump to the next version that is
+    ;; goind to be generated on Ubuntu LTS 22.04.
     (native-inputs
-     (list pkg-config
-           perl
-           libpfm4
-           python-3
-           swig
-           procps
-           which
-           flex
-           bison
-           asciidoc
-           libxml2
-           lttng-ust))
+     (append
+      (list pkg-config
+            perl
+            libpfm4
+            python-3
+            swig
+            procps
+            which
+            flex
+            bison
+            asciidoc
+            libxml2
+            lttng-ust)
+      (list autoconf
+            automake
+            libtool)))
     (home-page "https://lttng.org/")
     (synopsis "LTTng userspace tracer libraries")
     (description "The lttng-tools project provides a session
