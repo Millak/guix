@@ -1493,7 +1493,8 @@ blacklisted.certs.pem"
                 "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"
    (source (origin
              (inherit (package-source base))
-             (patches (search-patches "openjdk-10-setsignalhandler.patch"))))))
+             (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"
+                                      "openjdk-10-setsignalhandler.patch"))))))
 
 (define-public openjdk17
   (make-openjdk
@@ -1501,7 +1502,7 @@ blacklisted.certs.pem"
    "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
    (source (origin
              (inherit (package-source base))
-             (patches '())))
+             (patches (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk16)
       ((#:phases phases)
