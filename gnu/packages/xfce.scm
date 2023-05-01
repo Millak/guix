@@ -243,6 +243,8 @@ to share commonly used Xfce widgets among the Xfce applications.")
              (invoke "python" "setup.py" "install"
                      (string-append "--prefix=" (assoc-ref outputs "out"))
                      "--root=/")))
+         ;; The check failed to spawn a message bus without /etc/machine-id.
+         (delete 'sanity-check)
          (add-after 'install 'wrap-program
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
