@@ -937,6 +937,10 @@ write native speed custom Git applications in any language with bindings.")
              #t))
          (replace 'build
            (lambda _
+             ;; Add flag to work around OpenSSL 3 incompatibility.
+             ;; See <https://github.com/AGWA/git-crypt/issues/232>.
+             (setenv "CXXFLAGS" "-DOPENSSL_API_COMPAT=0x30000000L")
+
              (invoke "make" "ENABLE_MAN=yes")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
