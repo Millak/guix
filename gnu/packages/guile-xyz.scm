@@ -5344,7 +5344,15 @@ GitLab instance.")
                    (,(string-append out go)
                     ,(string-append guile-lib go))))))))))
     (native-inputs
-     (list autoconf automake pkg-config texinfo help2man which))
+     (list autoconf
+           automake
+           pkg-config
+           texinfo
+           help2man
+           which
+           ;; needed when cross-compiling.
+           guile-3.0
+           guile-lib))
     (inputs
      (list bash-minimal guile-3.0 guile-lib inetutils))
     (home-page "https://github.com/artyom-poptsov/guile-smc")
