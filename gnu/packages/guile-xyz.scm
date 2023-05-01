@@ -5398,7 +5398,14 @@ with a FSM is being built (for example, from a Makefile.)")
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
        #:phases (modify-phases %standard-phases
                   (delete 'strip))))
-    (native-inputs (list autoconf automake pkg-config texinfo))
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         ;; needed when cross-compiling.
+                         guile-3.0
+                         guile-lib
+                         guile-smc))
     (inputs (list bash-minimal guile-3.0 guile-lib))
     (propagated-inputs (list guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-ini")
