@@ -43200,7 +43200,7 @@ This is the multicast address used by default by the two services above.
 
 @cindex znc
 The @uref{https://znc.in, ZNC bouncer} can be run as a daemon to manage
-your IRC presence.  With the @code{(gnu home services znc)} service, you
+your IRC presence.  With the @code{(gnu home services messaging)} service, you
 can configure ZNC to run upon login.
 
 You will have to provide a @file{~/.znc/configs/znc.conf} seperately.
