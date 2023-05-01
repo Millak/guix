@@ -1869,7 +1869,7 @@ mounted or when unmounting fails.")
 (define-public xfce4-netload-plugin
   (package
    (name "xfce4-netload-plugin")
-   (version "1.4.0")
+   (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1878,7 +1878,7 @@ mounted or when unmounting fails.")
                                   "/xfce4-netload-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "036pvhfv1iynvj75va0xl8hpvnfckabyqm9jv56pb40p2072cxkc"))))
+                "0kmlrh29gn6yby8l1lgxp4211pjn3mrd2z0jzd5mh61fslx3mb4z"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
