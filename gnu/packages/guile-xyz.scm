@@ -3843,7 +3843,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3852,7 +3852,7 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1lv2cjzgrr0yshqng96l6bnn8pjmljv8qcn4w3wldh97ns7qigds"))))
+                "0x5wynd5q3prhzic1s9vys80vga5dnqzyk7d7q6kx9hvyyi551qr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
