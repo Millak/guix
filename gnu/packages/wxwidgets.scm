@@ -276,8 +276,8 @@ and many other languages.")
        (snippet
         '(begin
            ;; Remove bundled wxwidgets
-           (delete-file-recursively "ext/wxWidgets")
-           #t))))
+           (delete-file-recursively "ext/wxWidgets")))
+       (patches (search-patches "python-wxwidgets-type-errors.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -300,8 +300,7 @@ and many other languages.")
              (chmod "demo/version.py" #o644)
              ;; Build only the python bindings, not wxwidgets also.
              (substitute* "setup.py"
-               (("'build']") "'build_py', '--use_syswx']"))
-             #t)))))
+               (("'build']") "'build_py', '--use_syswx']")))))))
     (inputs
      (list gtk+ wxwidgets))
     (native-inputs
