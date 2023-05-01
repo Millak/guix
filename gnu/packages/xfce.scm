@@ -1801,7 +1801,7 @@ multi-mailbox mail watcher.  Currently, the protocols supported are:
 (define-public xfce4-mpc-plugin
   (package
    (name "xfce4-mpc-plugin")
-   (version "0.5.2")
+   (version "0.5.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1810,7 +1810,7 @@ multi-mailbox mail watcher.  Currently, the protocols supported are:
                                   "/xfce4-mpc-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0q3pysdp85b3c7g3b59y3c69g4nw6bvbf518lnri4lxrnsvpizpf"))))
+                "0kb6nz3md3cacl7ys6gz4h2qailr050wp28b7qy2v66d396znrq4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
