@@ -5383,7 +5383,7 @@ with a FSM is being built (for example, from a Makefile.)")
 (define-public guile-ini
   (package
     (name "guile-ini")
-    (version "0.5.2")
+    (version "0.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5392,7 +5392,7 @@ with a FSM is being built (for example, from a Makefile.)")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "17fbys3gsfyx4f77a2fswirx76dlr57il2z27z77wljaz777jk36"))))
+                "03pdbas7f6r2q3jbcn68xpm57hika3byb4rhsf0544kw6yk3bm8q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
