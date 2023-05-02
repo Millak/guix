@@ -111,14 +111,14 @@ listing the files modified by a patch.")
 (define-public quilt
   (package
     (name "quilt")
-    (version "0.66")
+    (version "0.67")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/quilt/"
                            "quilt-" version ".tar.gz"))
        (sha256
-        (base32 "01vfvk4pqigahx82fhaaffg921ivd3k7rylz1yfvy4zbdyd32jri"))
+        (base32 "1hiw05aqysbnnl15zg2n5cr11k0z7rz85fvq8qv6qap7hw4vxqrv"))
        (patches (search-patches "quilt-grep-compat.patch"))))
     (build-system gnu-build-system)
     (native-inputs
