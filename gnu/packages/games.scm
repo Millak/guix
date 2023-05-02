@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -3739,11 +3739,11 @@ for common mesh file formats, and collision detection.")
   ;; The latest release on SourceForge relies on an unreleased version of SFML
   ;; with a different API, so we take the latest version from the official
   ;; repository on Github.
-  (let ((commit   "c855d044094a1d92317e38935d81ba938946132e")
-        (revision "1"))
+  (let ((commit   "84664cda094efe6e49d9b1550e4f4f98c33eefa2")
+        (revision "2"))
     (package
       (name "mars")
-      (version (string-append "0.7.5." revision "." (string-take commit 7) ))
+      (version (git-version "0.7.5" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3752,31 +3752,24 @@ for common mesh file formats, and collision detection.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1r4c5gap1z2zsv4yjd34qriqkxaq4lb4rykapyzkkdf4g36lc3nh"))
-                (patches (search-patches "mars-sfml-2.3.patch"
-                                         "mars-install.patch"))))
+                  "0bdi4ja39rark742qvqixm8khai5k8qd84z5kzim9jcjdvvwyqj9"))))
       (build-system cmake-build-system)
       (arguments
        `(#:tests? #f        ; There are no tests
+         #:configure-flags (list (string-append "-Dmars_EXE_DEST_DIR="
+                                                %output "/bin"))
          #:phases
          (modify-phases %standard-phases
-           (add-after 'unpack 'fix-install-path
-            (lambda _
-              (substitute* "src/CMakeLists.txt"
-                (("\\$\\{CMAKE_INSTALL_PREFIX\\}/games")
-                 "${CMAKE_INSTALL_PREFIX}/bin"))
-              #t))
            (add-after 'unpack 'fix-data-path
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* "src/System/settings.cpp"
                 (("C_dataPath = \"./data/\";")
                  (string-append "C_dataPath = \""
                                 (assoc-ref outputs "out")
-                                "/share/games/marsshooter/\";")))
-              #t)))))
+                                "/share/games/marsshooter/\";"))))))))
       (inputs
        (list mesa fribidi taglib sfml))
-      (home-page "http://mars-game.sourceforge.net/")
+      (home-page "https://mars-game.sourceforge.net/")
       (synopsis "2D space shooter")
       (description
        "M.A.R.S. is a 2D space shooter with pretty visual effects and
