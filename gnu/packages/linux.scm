@@ -5621,7 +5621,20 @@ Linux Device Mapper multipathing driver:
            #:test-target "partcheck"    ; need root for a full 'check'
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))))   ; no configure script
+               (delete 'configure)      ; no configure script
+               #$@(if (target-riscv64?)
+                    #~((add-after 'unpack 'patch-test
+                         (lambda* (#:key build-inputs #:allow-other-keys)
+                           (invoke "patch" "-p1" "-i"
+                                   #$(local-file
+                                       (search-patch
+                                         "libaio-riscv-test5.patch"))))))
+                    #~()))))
+    (native-inputs
+     (if (target-riscv64?)
+       (list (search-patch "libaio-riscv-test5.patch")
+             patch)
+       '()))
     (home-page "https://pagure.io/libaio")
     (synopsis "Linux-native asynchronous I/O access library")
     (description
