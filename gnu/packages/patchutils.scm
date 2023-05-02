@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,7 +118,8 @@ listing the files modified by a patch.")
        (uri (string-append "mirror://savannah/quilt/"
                            "quilt-" version ".tar.gz"))
        (sha256
-        (base32 "01vfvk4pqigahx82fhaaffg921ivd3k7rylz1yfvy4zbdyd32jri"))))
+        (base32 "01vfvk4pqigahx82fhaaffg921ivd3k7rylz1yfvy4zbdyd32jri"))
+       (patches (search-patches "quilt-grep-compat.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)))

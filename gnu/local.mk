@@ -1828,6 +1828,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtscript-disable-tests.patch		\
   %D%/packages/patches/quagga-reproducible-build.patch          \
   %D%/packages/patches/quickswitch-fix-dmenu-check.patch	\
+  %D%/packages/patches/quilt-grep-compat.patch 			\
   %D%/packages/patches/qtwayland-gcc-11.patch			\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
   %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
