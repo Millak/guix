@@ -693,7 +693,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.8.3")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -702,7 +702,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zff73yxbnxym6sn43xk6r0zc2ncingsib81v9g39ibrcinpwaa9"))))
+                "0xsvhm191cy5ivcw0c8dnpzbpcvvn5hsnkzkipr2aabgrsgqj628"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules
@@ -751,8 +751,8 @@ are detected, the user is notified.")))
                  (lambda _
                    ;; nvim remembers its build options, including the compiler with
                    ;; its complete path.  This adds gcc to the closure of nvim, which
-                   ;; doubles its size.  We remove the refirence here.
-                   (substitute* "cmake/GetCompileFlags.cmake"
+                   ;; doubles its size.  We remove the reference here.
+                   (substitute* "cmake.config/versiondef.h.in"
                      (("\\$\\{CMAKE_C_COMPILER\\}") "/gnu/store/.../bin/gcc"))
                    #t)))))
     (inputs (list libuv-for-luv
