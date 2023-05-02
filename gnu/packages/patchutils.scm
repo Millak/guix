@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2014, 2018, 2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
@@ -39,6 +39,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages freedesktop)
@@ -122,43 +123,64 @@ listing the files modified by a patch.")
        (patches (search-patches "quilt-grep-compat.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (inputs (list perl less file ed diffstat))
+     (list gettext-minimal))
+    (inputs
+     (list bash-minimal perl less file gzip ed
+           diffutils diffstat findutils tar))
     (arguments
      '(#:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute*
-                 '("test/run"
-                   "test/edit.test")
-               (("/bin/sh") (which "sh")))
-             #t))
+         (delete 'check)
          (add-after 'install 'wrap-program
            ;; quilt's configure checks for the absolute path to the utilities it
            ;; needs, but uses only the name when invoking them, so we need to
            ;; make sure the quilt script can find those utilities when run.
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (diffutils (assoc-ref inputs "diffutils"))
-                    (findutils (assoc-ref inputs "findutils"))
-                    (diffstat  (assoc-ref inputs "diffstat"))
-                    (less      (assoc-ref inputs "less"))
-                    (file      (assoc-ref inputs "file"))
-                    (ed        (assoc-ref inputs "ed"))
-                    (sed       (assoc-ref inputs "sed"))
-                    (bash      (assoc-ref inputs "bash"))
-                    (grep      (assoc-ref inputs "grep")))
+             (let ((cmd-path (lambda (cmd) (dirname (which cmd))))
+                   (out      (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/quilt")
                  `("PATH" ":" prefix
-                   ,(map (lambda (dir)
-                           (string-append dir "/bin"))
-                         (list coreutils diffutils findutils
-                               less file ed sed bash grep
-                               diffstat)))))
-             #t)))))
+                   ,(map cmd-path
+                         (list "bash" "diff" "diffstat" "ed" "file" "find" "grep"
+                               "gzip" "less" "patch" "perl" "rm" "sed" "tar"))))
+               (wrap-program (string-append out "/share/quilt/scripts/backup-files")
+                 `("PATH" ":" prefix
+                   ,(map cmd-path
+                         (list "find" "grep" "mkdir")))))))
+         (add-after 'compress-documentation 'check
+           (lambda _
+             (substitute* '("test/run" "test/edit.test")
+               (("/bin/sh") (which "sh"))
+               (("rm -rf") (string-append (which "rm") " -rf")))
+             (substitute* "Makefile"
+               (("^(PATH|QUILT_DIR).*" &)
+                (string-append "#" &)) ; Test the installed 'quilt'
+               (("export QUILT_DIR") "export")
+               (("\\| sort") (string-append "| " (which "sort")))
+               (("\\| sed") (string-append "| " (which "sed")))
+               (("(chmod|touch)" &) (which &)))
+             ;; Tests are scripts interpreted by `test/run` and may specify
+             ;; the execution of several tools.  But PATH will be empty, so
+             ;; rewrite with the full file name:
+             (setenv "PATH" (string-append %output "/bin" ":" (getenv "PATH")))
+             (substitute* (find-files "test" "\\.test$")
+               (("([\\$\\|] )([[:graph:]]+)([[:blank:]\n]+)"
+                 & > cmd <)
+                (if (string=? cmd "zcat")
+                    ;; The `zcat` program is a script, and it will not be able
+                    ;; to invoke its `gzip` with PATH unset.  It's a simple
+                    ;; script though, so just translate here:
+                    (string-append > (which "gzip") " -cd " <)
+                    (or (and=> (which cmd)
+                               (lambda (p) (string-append > p <)))
+                        &))))
+             (let ((make (which "make")))
+               ;; Assert the installed 'quilt' can find utilities it needs.
+               (unsetenv "PATH")
+               ;; Used by some tests for access to internal "scripts"
+               (setenv "QUILT_DIR" (string-append %output "/share/quilt"))
+               (invoke make "check")))))))
     (home-page "https://savannah.nongnu.org/projects/quilt/")
     (synopsis "Script for managing patches to software")
     (description
