@@ -194,7 +194,8 @@ endif()~%~%"
                 (("text-glyphs-vertical") "")
                 (("test-rtl-vertical") ""))))
           ,@(if (or (target-aarch64?)
-                    (target-ppc64le?))
+                    (target-ppc64le?)
+                    (target-riscv64?))
               `((add-after 'unpack 'disable-more-tests
                   (lambda _
                     ;; https://gitlab.com/inkscape/inkscape/-/issues/3554#note_1035680690
