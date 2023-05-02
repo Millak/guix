@@ -5756,12 +5756,14 @@ set.")
            python-breathe
            python-sphinx
            (texlive-updmap.cfg (list texlive-adjustbox
+                                     texlive-alphalph
                                      texlive-amsfonts
                                      texlive-bibtex
                                      texlive-capt-of
                                      texlive-caption
                                      texlive-cm
                                      texlive-courier
+                                     texlive-enumitem
                                      texlive-etoolbox
                                      texlive-fancyhdr
                                      texlive-fancyvrb
