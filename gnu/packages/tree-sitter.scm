@@ -38,7 +38,7 @@
 (define-public tree-sitter
   (package
     (name "tree-sitter")
-    (version "0.20.7")
+    (version "0.20.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -47,7 +47,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nv2a2hr22w8ix71b6rkkxv9rfvhvwlmyql0g6lva9qzj4vy50p4"))
+                "10w17lfn9asqrk612xivkx26lc620s3nnm30hhlyqd4bj19k7gyv"))
               (modules '((guix build utils)))
               (snippet #~(begin
                            ;; Remove bundled ICU parts
