@@ -12174,6 +12174,40 @@ format and expands the available toolkit in order to facilitate the
 standardization of the analyses and the development of best practices.")
     (license license:bsd-2)))
 
+;; This is a CRAN package but it depends on phyloseq, which is from
+;; Bioconductor.
+(define-public r-microbiomestat
+  (package
+    (name "r-microbiomestat")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "MicrobiomeStat" version))
+              (sha256
+               (base32
+                "1j5sar85a1gksc83pc4ypxwb0c7whxglx069zarphrgqfazcr1m4"))))
+    (properties `((upstream-name . "MicrobiomeStat")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-foreach
+                             r-ggplot2
+                             r-ggrepel
+                             r-lmertest
+                             r-mass
+                             r-matrix
+                             r-matrixstats
+                             r-modeest
+                             r-phyloseq
+                             r-statmod))
+    (home-page "https://cran.r-project.org/package=MicrobiomeStat")
+    (synopsis "Statistical methods for microbiome compositional data")
+    (description
+     "This package provides a suite of methods for powerful and robust
+microbiome data analysis addressing zero-inflation, phylogenetic structure and
+compositional effects.  The methods can be applied to the analysis of
+other (high-dimensional) compositional data arising from sequencing
+experiments.")
+    (license license:gpl3)))
+
 (define-public r-milor
   (package
     (name "r-milor")
