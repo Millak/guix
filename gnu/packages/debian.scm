@@ -47,7 +47,7 @@
 (define-public debian-archive-keyring
   (package
     (name "debian-archive-keyring")
-    (version "2021.1.1")
+    (version "2023.3")
     (source
       (origin
         (method git-fetch)
@@ -57,7 +57,7 @@
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0dcmv7y1k6j3a646kr0rkd2a0c4j2wrz868bh8j9zjx1npzns73q"))))
+          "1x0hsgfq08c53ws5llkhr1jqwr6yr0sccy5w9pz3p1dzbgfv2wd5"))))
     (build-system gnu-build-system)
     (arguments
      '(#:test-target "verify-results"
