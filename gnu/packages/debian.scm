@@ -271,7 +271,7 @@ unpacking them into a directory which can eventually be chrooted into.")
 (define-public debianutils
   (package
     (name "debianutils")
-    (version "5.5-1")
+    (version "5.7-0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -280,7 +280,7 @@ unpacking them into a directory which can eventually be chrooted into.")
               (file-name (git-file-name "debianutils" version))
               (sha256
                (base32
-                "1sbdjcb44g2s1zxjf9kxrp9drf9mmh6b49a9z3k428gmc6zsci4r"))))
+                "0hw407fm5ylsf28b0vrwz7rm2r2rsgfwzajbkbn6n2b6kqhdjyy9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gettext-minimal po4a))
