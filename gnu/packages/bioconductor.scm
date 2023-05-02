@@ -12320,6 +12320,29 @@ background correction, and quality control features for GoldenGate, Infinium,
 and Infinium HD arrays are also included.")
     (license license:gpl2)))
 
+(define-public r-lefser
+  (package
+    (name "r-lefser")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "lefser" version))
+              (sha256
+               (base32
+                "0wi70b4k7s0xj7bh46s0x0fckqc5qspzq8k4k913vg6cnhqgw2dd"))))
+    (properties `((upstream-name . "lefser")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-coin r-ggplot2 r-mass r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/waldronlab/lefser")
+    (synopsis "LEfSE method for microbiome biomarker discovery")
+    (description
+     "Lefser is an implementation in R of the popular \"LDA Effect
+Size\" (LEfSe) method for microbiome biomarker discovery.  It uses the
+Kruskal-Wallis test, Wilcoxon-Rank Sum test, and Linear Discriminant Analysis
+to find biomarkers of groups and sub-groups.")
+    (license license:artistic2.0)))
+
 (define-public r-lumi
   (package
     (name "r-lumi")
