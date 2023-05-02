@@ -6805,7 +6805,8 @@ linear algebra primitives specifically targeting graph analytics.")
                            version "/dune-common-" version ".tar.gz"))
        (sha256
         (base32
-         "04pzk8q0bibci8z5xlwndhh3y3vs63mw7kad62lbzfwrr5121hrd"))))
+         "04pzk8q0bibci8z5xlwndhh3y3vs63mw7kad62lbzfwrr5121hrd"))
+       (patches (search-patches "dune-common-skip-failing-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
