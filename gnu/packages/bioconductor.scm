@@ -10179,6 +10179,50 @@ expressed genes in DNA microarray experiments.")
 fitting of some classes of graphical Markov models.")
     (license license:gpl2+)))
 
+;; This is a CRAN package, but it depends on a bunch of Bioconductor packages.
+(define-public r-ggpicrust2
+  (package
+    (name "r-ggpicrust2")
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggpicrust2" version))
+              (sha256
+               (base32
+                "1ghzwhd2jmdz18klyzyia84w1s9j3ccszldvfy3vpndppyg7cyh1"))))
+    (properties `((upstream-name . "ggpicrust2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-aldex2
+                             r-aplot
+                             r-deseq2
+                             r-dplyr
+                             r-edger
+                             r-ggally
+                             r-ggplot2
+                             r-ggprism
+                             r-lefser
+                             r-limma
+                             r-maaslin2
+                             r-metagenomeseq
+                             r-microbiomestat
+                             r-patchwork
+                             r-phyloseq
+                             r-readr
+                             r-summarizedexperiment
+                             r-tibble
+                             r-tidyr))
+    (home-page "https://github.com/cafferychen777/ggpicrust2")
+    (synopsis "Make PICRUSt2 output analysis and visualization easier")
+    (description
+     "This package provides a convenient way to analyze and visualize PICRUSt2
+output with pre-defined plots and functions.  It allows for generating
+statistical plots about microbiome functional predictions and offers
+customization options.  It features a one-click option for creating
+publication-level plots, saving time and effort in producing
+professional-grade figures.  It streamlines the PICRUSt2 analysis and
+visualization process.")
+    (license license:expat)))
+
 ;; This is a CRAN package, but it depends on a Bioconductor package, r-graph.
 (define-public r-perfmeas
   (package
