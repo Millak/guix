@@ -83,7 +83,8 @@
      `(#:configure-flags
        (list
         "-Dlog=true"
-        "-Dtest=true")))
+        "-Dtest=true"
+        "-Dcpp_std=gnu++17")))
     (native-inputs
      (list googletest pkg-config))
     (synopsis "Lottie Animation Library")
