@@ -27720,10 +27720,11 @@ leader key in vim), and much more.")
       (license license:gpl3+))))
 
 (define-public emacs-tldr
-  (let ((commit "7203d1be3dcbf12131846ffe06601933fa874d74"))
+  (let ((commit "1b09d2032491d3904bd7ee9bf5ba7c7503db6593")
+        (revision "2"))
     (package
       (name "emacs-tldr")
-      (version (git-version "0" "1" commit))
+      (version (git-version "0" revision commit))
       (home-page "https://github.com/kuanyui/tldr.el")
       (source (origin
                 (method git-fetch)
@@ -27732,7 +27733,7 @@ leader key in vim), and much more.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1bw6la463l2yfm7rp76ga4makfy4kpxgwi7ni5gxk31w11g26ryk"))
+                  "0qdv5yhvs4mnb4lszglhli80pv1436mknbap9qrm9riixfg6zlvv"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
