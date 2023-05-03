@@ -94,6 +94,7 @@
                                                            preserved-3rdparty))))))
              (with-directory-excursion "src"
                (for-each delete-file-recursively bundled-src)))))))
+    (outputs '("out" "debug"))
     (build-system glib-or-gtk-build-system)
     (inputs
      (list catch-framework
@@ -124,6 +125,7 @@
       #:configure-flags #~'("--with-libmspack"
                             "--with-regex"
                             "--with-sdl"
+                            "--enable-debug_info"
                             "--enable-gui"
                             "--enable-mediactrl"
                             "--enable-webview")
