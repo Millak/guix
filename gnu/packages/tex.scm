@@ -15,6 +15,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
@@ -108,16 +109,21 @@
 downloading from a list of LOCATIONS in the TeX Live repository, and expecting
 the provided output HASH.  If TRIVIAL? is provided, all files will simply be
 copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
+  (set! locations
+        ;; Some locations may be manually inserted, so be tolerant with
+        ;; leading slashes.  Ignore them consistently.
+        (map (lambda (location)
+               (if (string-prefix? "/" location)
+                   (string-drop location 1)
+                   location))
+             locations))
   (define with-documentation?
-    (and trivial?
-         (any (lambda (location)
-                (string-prefix? "/doc" location))
-              locations)))
+    (any (lambda (l) (string-prefix? "doc/" l))
+         locations))
   (package
     (name name)
     (version (number->string %texlive-revision))
-    (source (texlive-origin name version
-                            locations hash))
+    (source (texlive-origin name version locations hash))
     (outputs (if with-documentation?
                  '("out" "doc")
                  '("out")))
@@ -126,25 +132,31 @@ copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
                       texlive-build-system))
     (arguments
      (let ((copy-files
-            `(lambda* (#:key outputs inputs #:allow-other-keys)
+            `(lambda* (#:key outputs inputs tex-directory #:allow-other-keys)
                (let (,@(if with-documentation?
                            `((doc (string-append (assoc-ref outputs "doc")
-                                                 "/share/texmf-dist/")))
+                                                 "/share/texmf-dist")))
                            '())
+                     (source (assoc-ref inputs "source"))
                      (out (string-append (assoc-ref outputs "out")
-                                         "/share/texmf-dist/")))
+                                         "/share/texmf-dist")))
                  ,@(if with-documentation?
                        '((mkdir-p doc)
                          (copy-recursively
-                          (string-append (assoc-ref inputs "source") "/doc")
+                          (string-append source "/doc")
                           (string-append doc "/doc")))
                        '())
                  (mkdir-p out)
                  (copy-recursively "." out)
-                 ,@(if with-documentation?
-                       '((delete-file-recursively (string-append out "/doc")))
-                       '())
-                 #t))))
+                 ;; In any case, if documentation exists, it is already in the
+                 ;; "doc" output, so remove it from regular one.
+                 (let ((doc (string-append out "/doc")))
+                   (when (file-exists? doc)
+                     (delete-file-recursively doc)))
+                 ;; Also remove all source files.
+                 (let ((srcfiles (string-append out "/source")))
+                   (when (file-exists? srcfiles)
+                     (delete-file-recursively srcfiles)))))))
        (if trivial?
            `(#:tests? #f
              #:phases
@@ -152,9 +164,7 @@ copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
                (delete 'configure)
                (replace 'build (const #t))
                (replace 'install ,copy-files)))
-           `(#:phases
-             (modify-phases %standard-phases
-               (add-after 'install 'copy-files ,copy-files))))))
+           `())))
     (home-page #f)
     (synopsis #f)
     (description #f)
@@ -628,20 +638,6 @@ This package contains the binaries.")
                 "09nfvsjfnms3pclyd2rcivyb5qvzw48b934i3bcl83hv69ix2ks7"))))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list
-      #:tex-directory "xelatex/bidi"
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'chdir
-                     (lambda _
-                       (chdir "source/xelatex/bidi")))
-                   (add-after 'install 'install-doc
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let ((doc (string-append (assoc-ref outputs "doc")
-                                                 "/share/texmf-dist/doc")))
-                         (mkdir-p doc)
-                         (copy-recursively (string-append #$source "/doc")
-                                           doc)))))))
     (propagated-inputs (list texlive-iftex
                              texlive-ltxcmds
                              texlive-hyperref
@@ -706,24 +702,8 @@ executables.  It is maintained as a part of TeX Live.")))
       (outputs '("out" "doc"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/alphalph")
          ((#:build-targets _ '())
-          #~(list "alphalph.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/alphalph")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "alphalph.dtx"))))
       (propagated-inputs
        (list texlive-intcalc texlive-infwarerr))
       (home-page "https://ctan.org/pkg/alphalph")
@@ -1503,57 +1483,6 @@ symbol fonts.")
                     "1vb4mg7fh4k54g7nqwiw3qm4iir8whpfnspis76l4sddzar1amh7"))))
     (package
       (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:modules _ '())
-          '((guix build texlive-build-system)
-            (guix build utils)
-            (srfi srfi-1)
-            (srfi srfi-26)))
-         ((#:tex-directory _ #t)
-          "latex/mflogo")
-         ((#:phases phases '())
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/latex/mflogo") #t))
-             (add-after 'build 'build-font-metrics
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((root "../../..")
-                       (mf (assoc-ref inputs "texlive-metafont"))
-                       (kl (assoc-ref inputs "texlive-knuth-lib")))
-                   ;; Tell mf where to find mf.base
-                   (setenv "MFBASES"
-                           (string-append mf "/share/texmf-dist/web2c"))
-                   ;; Tell mf where to look for source files
-                   (setenv "MFINPUTS"
-                           (string-append root ":"
-                                          mf "/share/texmf-dist/metafont/base:"
-                                          kl "/share/texmf-dist/fonts/source/public/knuth-lib:"
-                                          root "/fonts/source/public/mflogo/"))
-                   (for-each (lambda (font)
-                               (format #t "building font ~a\n" font)
-                               (invoke "mf" "-progname=mf"
-                                       "-output-directory=build"
-                                       (string-append "\\"
-                                                      "mode:=ljfour; "
-                                                      "mag:=1; "
-                                                      "scrollmode; "
-                                                      "input " (basename font))))
-                             (find-files (string-append root
-                                                        "/fonts/source/public/mflogo/")
-                                         "\\.mf$")))
-                 #t))
-             (add-before 'install 'install-fonts
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (tfm (string-append
-                              out "/share/texmf-dist/fonts/tfm/public/mflogo")))
-                   (for-each (lambda (file)
-                               (install-file file tfm)
-                               (delete-file file))
-                             (find-files "build" "\\.tfm"))
-                   #t)))))))
       (native-inputs
        (list texlive-bin texlive-metafont texlive-knuth-lib))
       (home-page "http://www.ctan.org/pkg/mflogo")
@@ -1607,20 +1536,7 @@ Taco Hoekwater.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:build-targets _ #t)
-          '(list "amsfonts.ins"))
-         ((#:tex-directory _ #t)
-          "latex/amsfonts")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/amsfonts")))
-             (add-before 'copy-files 'unchdir
-               (lambda _ (chdir "../../..")))
-             (add-after 'copy-files 'remove-extra-files
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (delete-file-recursively
-                  (string-append (assoc-ref outputs "out")
-                                 "/share/texmf-dist/source/latex/amsfonts/build/"))))))))
+          '(list "amsfonts.ins"))))
       (home-page "https://www.ctan.org/pkg/amsfonts")
       (synopsis "TeX fonts from the American Mathematical Society")
       (description
@@ -1751,26 +1667,15 @@ discussed in the book).")
          ((#:build-targets _ '()) '(list "halloweenmath.ins"))
          ((#:phases phases)
           #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/halloweenmath/")))
               (add-after 'chdir 'non-interactive-build
                 ;; When it realizes it cannot employ the usedir directive, the
                 ;; build process stops and waits for an input before inserting
                 ;; generated files in the working directory.  Do not ask for
                 ;; an input.
                 (lambda _
-                  (substitute* "halloweenmath.ins"
+                  (substitute* "source/latex/halloweenmath/halloweenmath.ins"
                     (("\\Ask.*") "")
-                    (("\\(your .*? will be ignored\\).*") ""))))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+                    (("\\(your .*? will be ignored\\).*") ""))))))))
       (native-inputs
        (list texlive-bin
              texlive-kpathsea
@@ -3244,29 +3149,8 @@ contain.")
       (outputs '("out" "doc"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/atveryend")
          ((#:build-targets _ #t)
-          #~(list "atveryend.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/atveryend/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))
-              (add-after 'copy-files 'remove-generated-file
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (with-directory-excursion #$output
-                    (for-each delete-file
-                              (find-files "." "\\.(drv|ins)$")))))))))
+          #~(list "atveryend.dtx"))))
       (home-page "https://ctan.org/macros/latex/contrib/atveryend")
       (synopsis "Hooks at the very end of a document")
       (description
@@ -3293,24 +3177,8 @@ the @file{.aux} file.")
       (outputs '("out" "doc"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/auxhook")
          ((#:build-targets _ '())
-          #~(list "auxhook.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/auxhook")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "auxhook.dtx"))))
       (home-page "https://www.ctan.org/pkg/auxhook")
       (synopsis "Hooks for auxiliary files")
       (description
@@ -3335,21 +3203,7 @@ the @file{.aux} file.")
         ((#:tex-directory _ '())
          "latex/epstopdf-pkg")
         ((#:build-targets _ '())
-         #~(list "epstopdf.ins"))
-        ((#:phases phases)
-         #~(modify-phases #$phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/latex/epstopdf-pkg")))
-             (replace 'copy-files
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((origin (assoc-ref inputs "source"))
-                       (source (string-append #$output
-                                              "/share/texmf-dist/source"))
-                       (doc (string-append #$output:doc
-                                           "/share/texmf-dist/doc")))
-                   (copy-recursively (string-append origin "/source") source)
-                   (copy-recursively (string-append origin "/doc") doc))))))))
+         #~(list "epstopdf.ins"))))
      (propagated-inputs
       (list texlive-grfext
             texlive-infwarerr
@@ -3377,12 +3231,7 @@ a process to convert the EPS to PDF, using the script @command{epstopdf}.")
       (inherit template)
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '()) "latex/filecontents")
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/filecontents")))))))
+         ((#:tex-directory _ '()) "latex/filecontents")))
       (home-page "https://ctan.org/pkg/filecontents")
       (synopsis "Create an external file from within a LaTeX document")
       (description
@@ -3509,29 +3358,7 @@ set default \"driver\" options for the color and graphics packages.")
          ((#:tex-directory _ '())
           "latex/graphics")
          ((#:build-targets _ '())
-          #~(list "graphics-drivers.ins" "graphics.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/graphics")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc)
-                    ;; This file is not generated from the sources.
-                    (install-file
-                     (string-append
-                      origin
-                      "/tex/latex/graphics/graphics-2017-06-25.sty")
-                     (string-append
-                      #$output
-                      "/share/texmf-dist/tex/latex/graphics")))))))))
+          #~(list "graphics-drivers.ins" "graphics.ins"))))
       (propagated-inputs (list texlive-graphics-def texlive-graphics-cfg))
       (home-page "https://ctan.org/macros/latex/required/graphics")
       (synopsis "The LaTeX standard graphics bundle")
@@ -3577,21 +3404,7 @@ for Greek text font encodings for use with fontenc.")
          ((#:tex-directory _ '())
           "latex/hycolor")
          ((#:build-targets _ '())
-          #~(list "hycolor.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/hycolor")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "hycolor.dtx"))))
       (home-page "https://www.ctan.org/pkg/latex-graphics")
       (synopsis "Color for hyperref and bookmark")
       (description
@@ -3618,26 +3431,7 @@ used by @code{hyperref} and @code{bookmark}.")
          ((#:tex-directory _ '())
           "latex/xcolor")
          ((#:build-targets _ '())
-          #~(list "xcolor.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/xcolor")))
-              (replace 'copy-files
-                (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc)
-                    (let ((share (string-append #$output
-                                                "/share/texmf-dist")))
-                      (mkdir-p (string-append share "/dvips/xcolor"))
-                      (rename-file
-                       (string-append share "/tex/latex/xcolor/xcolor.pro")
-                       (string-append share "/dvips/xcolor/xcolor.pro"))))))))))
+          #~(list "xcolor.ins"))))
       ;; TODO: Propagate texlive-hyperref and many others in the next rebuild
       ;; cycle.  Grep for '\usepackage' to see what packages it requires.
       ;; (propagated-inputs (list texlive-hyperref ...))
@@ -3737,32 +3531,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
          ((#:tex-directory _ '())
           "latex/hyperref")
          ((#:build-targets _ '())
-          #~(list "hyperref.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/hyperref")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc)
-                    ;; XXX: These files are not auto-generated from the
-                    ;; sources.
-                    (for-each (lambda (f)
-                                (install-file
-                                 (string-append origin "/tex/latex/hyperref/" f)
-                                 (string-append
-                                  #$output
-                                  "/share/texmf-dist/tex/latex/hyperref")))
-                              '("minitoc-hyper.sty"
-                                "ntheorem-hyper.sty"
-                                "xr-hyper.sty")))))))))
+          #~(list "hyperref.ins"))))
       (propagated-inputs
        (list texlive-atbegshi
              texlive-auxhook
@@ -3816,37 +3585,7 @@ pdf and HTML backends.  The package is distributed with the @code{backref} and
          ((#:tex-directory _ '())
           "latex/oberdiek")
          ((#:build-targets _ '())
-          #~(list "oberdiek.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/oberdiek")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc)
-                    ;; XXX: `#:tex-directory' is limited to one location, but
-                    ;; the package needs to install files elsewhere, so we do
-                    ;; that manually here.
-                    (with-directory-excursion origin
-                      (let ((extra '("bibtex/bib/oberdiek"
-                                     "tex/generic/oberdiek")))
-                        (for-each
-                         (lambda (d)
-                           (for-each (lambda (f)
-                                       (install-file
-                                        f
-                                        (string-append #$output
-                                                       "/share/texmf-dist/"
-                                                       d)))
-                                     (find-files d)))
-                         extra))))))))))
+          #~(list "oberdiek.ins"))))
       (propagated-inputs
        (list texlive-auxhook
              texlive-grfext
@@ -3881,21 +3620,7 @@ arrows; record information about document class(es) used; and many more.")
          ((#:tex-directory _ '())
           "latex/rerunfilecheck")
          ((#:build-targets _ '())
-          #~(list "rerunfilecheck.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/rerunfilecheck")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "rerunfilecheck.dtx"))))
       (propagated-inputs
        (list texlive-atveryend
              texlive-infwarerr
@@ -3925,24 +3650,7 @@ files have changed.  It is based on MD5 checksum, provided by pdfTeX.")
       (outputs '("doc" "out"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/onedown")
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/onedown/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (texmf (string-append #$output "/share/texmf-dist"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (for-each
-                     (lambda (directory)
-                       (copy-recursively (string-append origin directory)
-                                         (string-append texmf directory)))
-                     '("/source" "/tex/latex/onedown"))
-                    (copy-recursively (string-append origin "/doc")
-                                      doc))))))))
+         ((#:tex-directory _ #t) "latex/onedown")))
       (home-page "https://ctan.org/pkg/onedown")
       (synopsis "Typeset bridge diagrams")
       (description
@@ -3971,33 +3679,7 @@ output of bridge terms.")
          ((#:tex-directory _ '())
           "latex/tools")
          ((#:build-targets _ '())
-          #~(list "tools.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/tools")))
-              (replace 'copy-files
-                (lambda _
-                  (let ((origin #$(package-source this-package))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc)
-                    ;; These files are not generated.
-                    (let ((directory "/tex/latex/tools"))
-                      (with-directory-excursion (string-append origin directory)
-                        (for-each
-                         (lambda (f)
-                           (install-file f (string-append #$output
-                                                          "/share/texmf-dist"
-                                                          directory)))
-                         '("array-2016-10-06.sty"
-                           "array-2020-02-10.sty"
-                           "multicol-2017-04-11.sty"
-                           "varioref-2016-02-16.sty")))))))))))
+          #~(list "tools.ins"))))
       (home-page "https://www.ctan.org/tex-archive/macros/latex/required/tools/")
       (synopsis "LaTeX standard tools bundle")
       (description "This package provides a collection of simple tools that
@@ -4214,11 +3896,7 @@ here are defined for the dvips engine only.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
-          "latex/fontspec")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/fontspec/") #t))))))
+          "latex/fontspec")))
       (propagated-inputs
        (list texlive-cm texlive-latex-l3packages texlive-lm))
       (home-page "https://www.ctan.org/pkg/fontspec")
@@ -4275,23 +3953,7 @@ is a stub that just loads @code{graphicx}.")
          ((#:tex-directory _ #t)
           "generic/stringenc")
          ((#:build-targets _ #t)
-          '(list "stringenc.dtx"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/stringenc/")))
-             (add-after 'copy-files 'clean-up
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (delete-file-recursively
-                  (string-append (assoc-ref outputs "out") "/share/texmf-dist/build"))
-                 (delete-file
-                  (string-append (assoc-ref outputs "out") "/share/texmf-dist/stringenc.dtx"))
-                 (install-file
-                  (string-append (assoc-ref inputs "source") "/source/latex/stringenc/stringenc.dtx")
-                  (string-append (assoc-ref outputs "out") "/share/texmf-dist/source/latex/stringenc/"))
-                 (install-file
-                  (string-append (assoc-ref inputs "source") "/doc/latex/stringenc/README.md")
-                  (string-append (assoc-ref outputs "doc") "/doc/latex/stringenc/"))))))))
+          '(list "stringenc.dtx"))))
       (home-page "https://www.ctan.org/pkg/stringenc")
       (synopsis "Converting a string between different encodings")
       (description
@@ -4433,19 +4095,7 @@ loading fonts by their proper names instead of file names.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
-          "latex/amsmath")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/amsmath/")))
-             (add-before 'copy-files 'unchdir
-               (lambda _
-                 (chdir "../../..")))
-             (add-after 'copy-files 'delete-extra-files
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (delete-file-recursively
-                  (string-append (assoc-ref outputs "out")
-                                 "/share/texmf-dist/source/latex/amsmath/build"))))))))
+          "latex/amsmath")))
       (propagated-inputs
        (list texlive-amsfonts))
       (home-page "https://www.ctan.org/pkg/amsmath")
@@ -4482,21 +4132,7 @@ definitions.")
          ((#:tex-directory _ '())
           "generic/mathdots")
          ((#:build-targets _ '())
-          '(list "mathdots.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/generic/mathdots")))
-              (replace 'copy-files
-                (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append (assoc-ref outputs "out")
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append (assoc-ref outputs "doc")
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          '(list "mathdots.ins"))))
       (home-page "https://ctan.org/macros/generic/mathdots")
       (synopsis "Commands to produce dots in math that respect font size")
       (description
@@ -4520,11 +4156,7 @@ commands.  The commands may also be used in plain TeX.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
-          "latex/amscls")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/amscls/") #t))))))
+          "latex/amscls")))
       (home-page "https://www.ctan.org/pkg/amscls")
       (synopsis "AMS document classes for LaTeX")
       (description
@@ -4553,28 +4185,12 @@ distribution.")
           "generic/babel")
          ((#:phases phases)
           `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/babel/")))
              ;; This package tries to produce babel.aux twice but refuses to
              ;; overwrite the first one.
              (add-before 'build 'fix-ins
                (lambda _
-                 (substitute* "babel.ins"
+                 (substitute* "source/latex/babel/babel.ins"
                    (("askonceonly") "askforoverwritefalse"))))
-           (add-before 'copy-files 'unchdir
-             (lambda _
-               (chdir "../../..")))
-           (add-after 'copy-files 'delete-extra-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (delete-file-recursively
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/source/latex/babel/build"))
-               (delete-file
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/tex/generic/babel/bbind.ist"))
-               (delete-file
-                (string-append (assoc-ref outputs "out")
-                               "/share/texmf-dist/tex/generic/babel/bbglo.ist"))))
              (add-after 'install 'install-locales
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((locale-directory
@@ -4697,20 +4313,7 @@ for Canadian and USA text.")
           "generic/babel-french")
          ((#:build-targets _ '())
           ;; TODO: use dtx and build documentation.
-          '(list "frenchb.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/generic/babel-french")))
-             (replace 'copy-files
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let ((origin (assoc-ref inputs "source"))
-                       (source (string-append (assoc-ref outputs "out")
-                                              "/share/texmf-dist/source"))
-                       (doc (string-append (assoc-ref outputs "doc")
-                                           "/share/texmf-dist/doc")))
-                   (copy-recursively (string-append origin "/source") source)
-                   (copy-recursively (string-append origin "/doc") doc))))))))
+          '(list "frenchb.ins"))))
       (home-page "https://ctan.org/macros/latex/contrib/babel-contrib/french")
       (synopsis "Babel contributed support for French")
       (description
@@ -4757,11 +4360,7 @@ Swiss varieties of German.")
          ((#:tex-directory _ '())
           "generic/babel-swedish")
          ((#:build-targets _ '())
-          ''("swedish.ins")) ; TODO: use dtx and build documentation
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/generic/babel-swedish")))))))
+          ''("swedish.ins"))))
       (home-page "https://www.ctan.org/pkg/babel-swedish")
       (synopsis "Babel support for Swedish")
       (description "This package provides the language definition file for
@@ -4808,8 +4407,6 @@ language that is written in a Cyrillic alphabet.")
          ((#:build-targets _ '()) '(list "pict2e.ins"))
          ((#:phases phases)
           #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/pict2e/")))
               (add-after 'build 'build-doc
                 (lambda _
                   (copy-file "p2e-drivers.dtx" "build/p2e-drivers.dtx")
@@ -4818,16 +4415,7 @@ language that is written in a Cyrillic alphabet.")
                     (delete-file "p2e-drivers.dtx")
                     ;; texlive.tlpbd expects a "pict2e.cfg" configuration file
                     ;; instead of "pict2e-example.cfg".  Please it.
-                    (rename-file "pict2e-example.cfg" "pict2e.cfg"))))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+                    (rename-file "pict2e-example.cfg" "pict2e.cfg"))))))))
       (home-page "https://ctan.org/pkg/pict2e")
       (native-inputs
        (list (texlive-updmap.cfg)))
@@ -4943,40 +4531,7 @@ with the LaTeX @code{picture} environment.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
-          "latex/psnfss")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/latex/psnfss")))
-             (add-after 'install 'chdir-back
-               (lambda _
-                 (chdir "../../..")))
-             (add-after 'chdir-back 'clean-installed-files
-               (lambda _
-                 ;; Remove the generated .sty files from the build area as
-                 ;; these were already copied to the default output in the
-                 ;; "install" phase.
-                 (delete-file-recursively "source/latex/psnfss/build")))
-             (add-after 'clean-installed-files 'move-doc-files
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((doc (assoc-ref outputs "doc"))
-                        (doc-root (string-append doc "/share/texmf-dist"))
-                        (doc-path "doc/latex/psnfss")
-                        (source-path "source/latex/psnfss"))
-                   ;; Move the PDF documentation to the "doc" output.
-                   (let* ((file-name "psnfss2e.pdf")
-                          (source (string-append doc-path "/" file-name))
-                          (target-dir (string-append doc-root "/" doc-path)))
-                     (mkdir-p target-dir)
-                     (copy-file source
-                                (string-append target-dir "/" file-name))
-                     (delete-file source))
-
-                   ;; Keep the remaining files together with the package's
-                   ;; source, as per the installation instructions.
-                   (copy-recursively doc-path source-path)
-                   (delete-file-recursively "doc"))))))))
+          "latex/psnfss")))
       (native-inputs
        (list texlive-cm))
       (home-page "https://www.ctan.org/pkg/psnfss")
@@ -5202,20 +4757,9 @@ conjunction with BibTeX or as a replacement for BibTeX.")
          ((#:build-targets _ '()) '(list "bigfoot.ins"))
          ((#:phases phases)
           #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/bigfoot/")))
               (add-after 'chdir 'delete-drv-files
                 (lambda _
-                  (for-each delete-file (find-files "." "\\.drv$"))))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+                  (for-each delete-file (find-files "." "\\.drv$"))))))))
       (propagated-inputs
        (list texlive-etex texlive-ncctools))
       (home-page "https://ctan.org/pkg/bigfoot")
@@ -5514,20 +5058,7 @@ corresponding italics: light, regular, medium, bold, ...")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "tex/latex/firstaid")
-         ((#:build-targets _ '()) '(list "firstaid.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/firstaid/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "firstaid.ins"))))
       (home-page "https://ctan.org/macros/latex/required/firstaid")
       (synopsis
        "First aid for external LaTeX files and packages that need updating")
@@ -5638,21 +5169,7 @@ Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
          ((#:tex-directory _ '())
           "generic/pdftexcmds")
          ((#:build-targets _ '())
-          #~(list "pdftexcmds.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/generic/pdftexcmds")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "pdftexcmds.dtx"))))
       (propagated-inputs
        (list texlive-iftex texlive-infwarerr texlive-ltxcmds))
       (home-page "https://www.ctan.org/pkg/pdftexcmds")
@@ -5736,21 +5253,7 @@ re-processing.")
          ((#:tex-directory _ '())
           "latex/refcount")
          ((#:build-targets _ '())
-          #~(list "refcount.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/refcount")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "refcount.dtx"))))
       (home-page "https://www.ctan.org/pkg/refcount")
       (synopsis "Counter operations with label references")
       (description
@@ -5903,21 +5406,7 @@ space-stripped macros.")
          ((#:tex-directory _ '())
           "latex/capt-of")
          ((#:build-targets _ '())
-          '(list "capt-of.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/latex/capt-of")))
-             (replace 'copy-files
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let ((origin (assoc-ref inputs "source"))
-                       (source (string-append (assoc-ref outputs "out")
-                                              "/share/texmf-dist/source"))
-                       (doc (string-append (assoc-ref outputs "doc")
-                                           "/share/texmf-dist/doc")))
-                   (copy-recursively (string-append origin "/source") source)
-                   (copy-recursively (string-append origin "/doc") doc))))))))
+          '(list "capt-of.ins"))))
       (home-page "https://www.ctan.org/pkg/capt-of")
       (synopsis "Captions on more than floats")
       (description
@@ -6248,28 +5737,7 @@ array environments; verbatim handling; and syntax diagrams.")
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:tex-directory "latex/makecmds"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'chdir
-            (lambda _
-              (setenv "ROOT_DIR" (getcwd))
-              (chdir "source/latex/makecmds")))
-          (add-after 'build 'build-doc
-            (lambda _
-              (copy-file "makecmds.dtx" "build/makecmds.dtx")
-              (chdir "build")
-              (invoke "pdflatex" "makecmds.dtx"))) ;generate makecmds.pdf
-          (replace 'install
-            (lambda* (#:key outputs tex-directory #:allow-other-keys)
-              (let ((doc (string-append (assoc-ref outputs "doc")
-                                        "/share/doc/" tex-directory))
-                    (out (string-append #$output "/share/texmf-dist/tex/"
-                                        tex-directory)))
-                (install-file "makecmds.pdf" doc)
-                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
-                              doc)
-                (install-file "makecmds.sty" out)))))))
+      #:tex-directory "latex/makecmds"))
     (native-inputs (list (texlive-updmap.cfg
                           (list texlive-amsfonts
                                 texlive-cm))))
@@ -6318,13 +5786,9 @@ routine.")
       #:tex-directory "latex/metalogo"
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'chdir
+          (add-after 'unpack 'patch-metalogo.dtx
             (lambda _
-              (setenv "ROOT_DIR" (getcwd))
-              (chdir "source/latex/metalogo")))
-          (add-after 'chdir 'patch-metalogo.dtx
-            (lambda _
-              (substitute* "metalogo.dtx"
+              (substitute* "source/latex/metalogo/metalogo.dtx"
                 ;; Prevent embedding a build time date, for reproducibility.
                 (("^% \\\\date.*") "")
                 ;; These fonts are not free.
@@ -6337,30 +5801,8 @@ routine.")
                 ;; The 'stix' texlive font package has been obsoleted by
                 ;; stix2.
                 (("^\\\\newfontfamily\\\\stixgeneral\\{STIXGeneral}")
-                 "\\newfontfamily\\stixgeneral{STIX Two Text}"))))
-          (add-after 'build 'build-doc
-            (lambda* (#:key outputs tex-directory #:allow-other-keys)
-              (define doc-sources (string-append (getenv "ROOT_DIR")
-                                                 "/doc/latex/metalogo"))
-              (copy-file "metalogo.dtx" "build/metalogo.dtx")
-              (mkdir "build/graphics")
-              (copy-file (string-append doc-sources "/TeXoutline.pdf")
-                         "build/graphics/TeXoutline.pdf")
-              (copy-file (string-append doc-sources "/eLaToutline.pdf")
-                         "build/graphics/eLaToutline.pdf")
-              (chdir "build")
-              (invoke "xelatex" "metalogo.dtx"))) ;generate metalogo.pdf
-          (replace 'install
-            (lambda* (#:key outputs tex-directory #:allow-other-keys)
-              (let ((doc (string-append (assoc-ref outputs "doc")
-                                        "/share/doc/" tex-directory))
-                    (out (string-append #$output "/share/texmf-dist/tex/"
-                                        tex-directory)))
-                (install-file "metalogo.pdf" doc)
-                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
-                              doc)
-                (install-file "metalogo.sty" out)))))))
-    (native-inputs (list fontconfig     ;for XDG_DATA_DIRS, to locate OTF fonts
+                 "\\newfontfamily\\stixgeneral{STIX Two Text}")))))))
+    (native-inputs (list fontconfig    ;for XDG_DATA_DIRS, to locate OTF fonts
                          texlive-booktabs
                          texlive-cm
                          texlive-fontspec
@@ -6391,28 +5833,7 @@ written especially for XeLaTeX users.")
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:tex-directory "latex/paralist"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'chdir
-            (lambda _
-              (setenv "ROOT_DIR" (getcwd))
-              (chdir "source/latex/paralist")))
-          (add-after 'build 'build-doc
-            (lambda* (#:key outputs tex-directory #:allow-other-keys)
-              (copy-file "paralist.dtx" "build/paralist.dtx")
-              (chdir "build")
-              (invoke "pdflatex" "paralist.dtx")))
-          (replace 'install
-            (lambda* (#:key outputs tex-directory #:allow-other-keys)
-              (let ((doc (string-append (assoc-ref outputs "doc")
-                                        "/share/doc/" tex-directory))
-                    (out (string-append #$output "/share/texmf-dist/tex/"
-                                        tex-directory)))
-                (install-file "paralist.pdf" doc)
-                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
-                              doc)
-                (install-file "paralist.sty" out)))))))
+      #:tex-directory "latex/paralist"))
     (native-inputs (list texlive-latex-base
                          (texlive-updmap.cfg
                           (list texlive-cm
@@ -6458,8 +5879,7 @@ also provides compacted versions of enumerate and itemize.")
             (lambda _
               ;; This is so the build can find the files not part of the .dtx.
               (setenv "TEXINPUTS" (string-append (getcwd)
-                                                 "/tex/latex/polyglossia:"))
-              (chdir "source/latex/polyglossia")))
+                                                 "/tex/latex/polyglossia:"))))
           (add-after 'chdir 'substitute-nonfree-fonts
             (lambda _
               (substitute* "polyglossia.dtx"
@@ -6467,13 +5887,7 @@ also provides compacted versions of enumerate and itemize.")
                  "{FreeSans}"))))
           (add-after 'substitute-nonfree-fonts 'extract-dtx
             (lambda* (#:key tex-format #:allow-other-keys)
-              (invoke tex-format "polyglossia.dtx")))
-          (add-after 'install 'install-doc
-            (lambda* (#:key outputs tex-directory #:allow-other-keys)
-              (let ((doc (string-append (assoc-ref outputs "doc")
-                                        "/share/texmf-dist/doc" tex-directory)))
-                (install-file "README.md" doc)
-                (install-file "polyglossia.pdf" doc)))))))
+              (invoke tex-format "polyglossia.dtx"))))))
     (native-inputs (list fontconfig     ;for XDG_DATA_DIRS (to locate fonts)
                          font-amiri
                          font-dejavu
@@ -6872,20 +6286,7 @@ floats, center, flushleft, and flushright, lists, and pages.")
          ((#:tex-directory _ '())
           "latex/fancyhdr")
          ((#:build-targets _ '())
-          #~(list "fancyhdr.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/fancyhdr")))
-              (replace 'copy-files
-                (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "fancyhdr.ins"))))
       (home-page "https://www.ctan.org/pkg/fancyhdr")
       (synopsis "Extensive control of page headers and footers in LaTeX2e")
       (description
@@ -6960,21 +6361,7 @@ footnotes with symbols rather than numbers.")
          ((#:tex-directory _ '())
           "latex/letltxmacro")
          ((#:build-targets _ '())
-          #~(list "letltxmacro.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/letltxmacro")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "letltxmacro.dtx"))))
       (home-page "https://www.ctan.org/pkg/letltxmacro")
       (synopsis "Let assignment for macros")
       (description
@@ -7041,21 +6428,7 @@ BibTeX bibliography style.  The individual packages are: @code{abbrevs},
          ((#:tex-directory _ '())
           "latex/listings")
          ((#:build-targets _ '())
-          #~(list "listings.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/listings")))
-              (replace 'copy-files
-                (lambda* (#:key inputs outputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "listings.ins"))))
       (home-page "https://www.ctan.org/pkg/listings")
       (synopsis "Typeset source code listings using LaTeX")
       (description
@@ -7122,21 +6495,7 @@ in SGML; use maths minus in text as appropriate; simple Young tableaux.")
          ((#:tex-directory _ '())
           "latex/kvoptions")
          ((#:build-targets _ '())
-          #~(list "kvoptions.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/kvoptions")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "kvoptions.dtx"))))
       (propagated-inputs
        (list texlive-kvsetkeys texlive-ltxcmds))
       (home-page "https://www.ctan.org/pkg/kvoptions")
@@ -7389,20 +6748,7 @@ format under XeTeX.")
     (arguments
      (list
       #:build-targets #~(list "zref.dtx")
-      #:tex-directory "latex/zref"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (setenv "ROOT_DIR" (getcwd))
-              (chdir "source/latex/zref")))
-          (add-after 'install 'install-doc
-            (lambda* (#:key outputs #:allow-other-keys)
-              (define doc (string-append (assoc-ref outputs "doc")
-                                         "/share/texmf-dist/doc"))
-              (mkdir-p doc)
-              (copy-recursively (string-append (getenv "ROOT_DIR") "/doc")
-                                doc))))))
+      #:tex-directory "latex/zref"))
     (propagated-inputs (list texlive-atbegshi
                              texlive-gettitlestring
                              texlive-iftex
@@ -7539,28 +6885,7 @@ one of the packages @code{calrsfs} and @code{mathrsfs}.")
          ((#:tex-directory _ '())
           "latex/eso-pic")
          ((#:build-targets _ '())
-          #~(list "eso-pic.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/eso-pic")))
-              (replace 'copy-files
-                (lambda _
-                  (let ((origin #$(package-source this-package))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc)
-                    ;; This file is not generated.
-                    (install-file
-                     (string-append origin
-                                    "/tex/latex/eso-pic/showframe.sty")
-                     (string-append
-                      #$output
-                      "/share/texmf-dist/tex/latex/eso-pic")))))))))
+          #~(list "eso-pic.ins"))))
       (home-page "https://ctan.org/macros/latex/contrib/eso-pic")
       (synopsis "Add picture commands (or backgrounds) to every page")
       (description
@@ -7785,21 +7110,7 @@ package also defines some associated length commands.")
          ((#:tex-directory _ '())
           "latex/pdfpages")
          ((#:build-targets _ '())
-          #~(list "pdfpages.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/pdfpages")))
-              (replace 'copy-files
-                (lambda _
-                  (let ((origin #$(package-source this-package))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "pdfpages.ins"))))
       (propagated-inputs
        (list texlive-tools texlive-oberdiek texlive-graphics texlive-eso-pic))
       (home-page "https://ctan.org/macros/latex/contrib/pdfpages")
@@ -7887,25 +7198,12 @@ captions sideways.  Options include @code{outercaption}, @code{innercaption},
                     "latex/stmaryrd")
                    ((#:phases phases)
                     `(modify-phases ,phases
-                       (add-after 'unpack 'chdir
+                       (add-after 'unpack 'patch-ins
                          (lambda _
-                           (chdir "source/fonts/stmaryrd")
-                           #t))
-                       (add-after 'chdir 'patch-ins
-                         (lambda _
-                           (substitute* "stmaryrd.ins"
+                           (substitute* "source/fonts/stmaryrd/stmaryrd.ins"
                              (("^%% LaTeX2e.*") "\\input docstrip\n")
                              (("fontdef\\}\\}" line)
-                              (string-append line "\n\\endbatchfile")))
-                           #t))
-                       (add-before 'copy-files 'unchdir
-                         (lambda _
-                           (chdir "../../..")))
-                       (add-after 'copy-files 'delete-extra-files
-                         (lambda* (#:key outputs #:allow-other-keys)
-                           (delete-file-recursively
-                            (string-append (assoc-ref outputs "out")
-                                           "/share/texmf-dist/source/fonts/stmaryrd/build"))))))))
+                              (string-append line "\n\\endbatchfile")))))))))
       (home-page "https://www.ctan.org/pkg/stmaryrd")
       (synopsis "St Mary Road symbols for theoretical computer science")
       (description
@@ -7934,21 +7232,7 @@ the whole font.")
          ((#:tex-directory _ '())
           "latex/subfigure")
          ((#:build-targets _ '())
-          #~(list "subfigure.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/subfigure")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "subfigure.ins"))))
       (home-page "https://www.ctan.org/pkg/subfigure")
       (synopsis "Figures divided into subfigures")
       (description
@@ -8361,26 +7645,7 @@ now contains a package @code{fix-cm},f which performs the task of
          ((#:tex-directory _ #t)
           "latex/lh")
          ((#:build-targets _ '())
-          ''("nfssfox.ins" "lcyfonts.ins" "ot2fonts.ins" "t2ccfonts.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/lh")))
-             (replace 'copy-files
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((source (assoc-ref inputs "source"))
-                        (doc (string-append (assoc-ref outputs "doc")
-                                           "/share/texmf-dist/doc"))
-                        (target (string-append (assoc-ref outputs "out")
-                                               "/share/texmf-dist"))
-                        (tex (string-append target "/tex/latex/lh/")))
-                   (copy-recursively "build/" tex)
-                   (copy-recursively (string-append source "/fonts/source/lh")
-                                     (string-append target "/fonts/source/lh"))
-                   (copy-recursively (string-append source "/tex/plain/lh")
-                                     (string-append target "/tex/plain/lh"))
-                   (copy-recursively (string-append source "/doc")
-                                     doc))))))))
+          ''("nfssfox.ins" "lcyfonts.ins" "ot2fonts.ins" "t2ccfonts.ins"))))
       (home-page "https://www.ctan.org/pkg/lh")
       (synopsis "Cyrillic fonts that support LaTeX standard encodings")
       (description
@@ -8672,20 +7937,7 @@ files.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "latex/acronym")
-         ((#:build-targets _ '()) '(list "acronym.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/acronym/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "acronym.ins"))))
       (propagated-inputs
        (list texlive-bigfoot texlive-relsize texlive-xstring))
       (home-page "https://ctan.org/pkg/acronym")
@@ -9380,21 +8632,7 @@ It also ensures compatibility with the @code{media9} and @code{animate} packages
           "latex/ms")
          ((#:tex-format _ "latex") "latex")
          ((#:build-targets _ '())
-          #~(list "count1to.ins" "multitoc.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/ms")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "count1to.ins" "multitoc.ins"))))
       (home-page "https://ctan.org/macros/latex/contrib/ms")
       (synopsis "Various LaTeX packages by Martin Schroder")
       (description
@@ -9419,20 +8657,7 @@ typeset the table of contents in multiple columns.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "latex/ncctools")
-         ((#:build-targets _ '()) '(list "ncctools.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/ncctools/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "ncctools.ins"))))
       (propagated-inputs
        (list texlive-amsmath texlive-graphics))
       (home-page "https://ctan.org/pkg/ncctools")
@@ -9485,21 +8710,7 @@ toc-entries;
          ((#:tex-directory _ '())
           "latex/numprint")
          ((#:build-targets _ '())
-          '(list "numprint.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/latex/numprint")))
-             (replace 'copy-files
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let ((origin (assoc-ref inputs "source"))
-                       (source (string-append (assoc-ref outputs "out")
-                                              "/share/texmf-dist/source"))
-                       (doc (string-append (assoc-ref outputs "doc")
-                                           "/share/texmf-dist/doc")))
-                   (copy-recursively (string-append origin "/source") source)
-                   (copy-recursively (string-append origin "/doc") doc))))))))
+          '(list "numprint.ins"))))
       (home-page "https://www.ctan.org/pkg/numprint")
       (synopsis "Print numbers with separators and exponent if necessary")
       (description
@@ -9756,21 +8967,7 @@ typearea (which are the main parts of the bundle).")
          ((#:tex-directory _ '())
           "generic/atbegshi")
          ((#:build-targets _ '())
-          #~(list "atbegshi.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/atbegshi")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "atbegshi.dtx"))))
       (home-page "https://www.ctan.org/pkg/atbegshi")
       (synopsis "Execute commands at @code{\\shipout} time")
       (description
@@ -9798,21 +8995,7 @@ be used either with LaTeX or with plain TeX.")
          ((#:tex-directory _ '())
           "generic/bigintcalc")
          ((#:build-targets _ '())
-          #~(list "bigintcalc.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/bigintcalc")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "bigintcalc.dtx"))))
       (propagated-inputs
        (list texlive-pdftexcmds))
       (home-page "https://www.ctan.org/pkg/bigintcalc")
@@ -9840,21 +9023,7 @@ integers that can exceed TeX's number limits.")
          ((#:tex-directory _ '())
           "generic/bitset")
          ((#:build-targets _ '())
-          #~(list "bitset.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/bitset")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "bitset.dtx"))))
       (propagated-inputs
        (list texlive-bigintcalc texlive-infwarerr texlive-intcalc))
       (home-page "https://www.ctan.org/pkg/bitset")
@@ -9883,21 +9052,7 @@ can be manipulated.")
          ((#:tex-directory _ '())
           "generic/etexcmds")
          ((#:build-targets _ '())
-          #~(list "etexcmds.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/etexcmds")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "etexcmds.dtx"))))
       (propagated-inputs
        (list texlive-iftex texlive-infwarerr))
       (home-page "https://www.ctan.org/pkg/etexcmds")
@@ -9927,21 +9082,7 @@ adding a prefix to e-TeX’s commands.  For example, ε-TeX’s
          ((#:tex-directory _ '())
           "generic/gettitlestring")
          ((#:build-targets _ '())
-          #~(list "gettitlestring.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/gettitlestring")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "gettitlestring.dtx"))))
       (home-page "https://www.ctan.org/pkg/gettitlestring")
       (synopsis "Clean up title references")
       (description
@@ -9968,21 +9109,7 @@ strings.")
          ((#:tex-directory _ '())
           "generic/infwarerr")
          ((#:build-targets _ '())
-          #~(list "infwarerr.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/infwarerr")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "infwarerr.dtx"))))
       (home-page "https://www.ctan.org/pkg/infwarerr")
       (synopsis "Information/warning/error macros")
       (description
@@ -10010,21 +9137,7 @@ complete implementations.")
          ((#:tex-directory _ '())
           "generic/intcalc")
          ((#:build-targets _ '())
-          #~(list "intcalc.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/intcalc")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "intcalc.dtx"))))
       (home-page "https://www.ctan.org/pkg/intcalc")
       (synopsis "Expandable arithmetic operations with integers")
       (description
@@ -10050,21 +9163,7 @@ using the e-TeX extension @code{\\numexpr} if it is available.")
          ((#:tex-directory _ '())
           "generic/kvdefinekeys")
          ((#:build-targets _ '())
-          #~(list "kvdefinekeys.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/kvdefinekeys")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "kvdefinekeys.dtx"))))
       (home-page "https://www.ctan.org/pkg/kvdefinekeys")
       (synopsis "Define keys for use in the @code{kvsetkeys} package")
       (description
@@ -10090,21 +9189,7 @@ keyval’s @code{\\define@@key}, to define keys for use by @code{kvsetkeys}.")
          ((#:tex-directory _ '())
           "generic/kvsetkeys")
          ((#:build-targets _ '())
-          #~(list "kvsetkeys.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/kvsetkeys")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "kvsetkeys.dtx"))))
       (home-page "https://www.ctan.org/pkg/kvsetkeys")
       (synopsis "Key value parser with default handler support")
       (description
@@ -10166,21 +9251,7 @@ these items with a simple syntax.")
          ((#:tex-directory _ '())
           "generic/ltxcmds")
          ((#:build-targets _ '())
-          #~(list "ltxcmds.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/generic/ltxcmds")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "ltxcmds.dtx"))))
       (home-page "https://www.ctan.org/pkg/ltxcmds")
       (synopsis "LaTeX kernel commands extracted for general use")
       (description
@@ -10207,21 +9278,7 @@ as plain TeX.")
          ((#:tex-directory _ '())
           "generic/pdfescape")
          ((#:build-targets _ '())
-          #~(list "pdfescape.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/pdfescape")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "pdfescape.dtx"))))
       (home-page "https://www.ctan.org/pkg/pdfescape")
       (synopsis "pdfTeX's escape features for plain TeX")
       (description
@@ -10248,21 +9305,7 @@ using TeX or e-TeX.")
          ((#:tex-directory _ '())
           "generic/uniquecounter")
          ((#:build-targets _ '())
-          #~(list "uniquecounter.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/uniquecounter")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+          #~(list "uniquecounter.dtx"))))
       (propagated-inputs
        (list texlive-bigintcalc texlive-infwarerr))
       (home-page "https://www.ctan.org/pkg/uniquecounter")
@@ -10676,18 +9719,10 @@ the file to which it applies.")
           "latex/pdfx")
          ((#:phases phases)
           `(modify-phases ,phases
-             (add-after 'unpack 'delete-generated-file
+             (add-after 'unpack 'fix-encoding
                (lambda _
-                 ;; Generate this file from sources
-                 (delete-file "tex/latex/pdfx/pdfx.sty")
-                 #t))
-             (add-after 'delete-generated-file 'chdir
-               (lambda _ (chdir "source/latex/pdfx") #t))
-             (add-after 'chdir 'fix-encoding
-               (lambda _
-                 (substitute* "pdfx.dtx"
-                   (("    .+umaczy") "umaczy"))
-                 #t))))))
+                 (substitute* "source/latex/pdfx/pdfx.dtx"
+                   (("    .+umaczy") "umaczy"))))))))
       (propagated-inputs
        (list texlive-pdftex))
       (home-page "https://www.ctan.org/pkg/pdfx")
@@ -10800,11 +9835,7 @@ of the old package @code{pst-char}.")
          ((#:tex-directory _ '())
           "latex/marginnote")
          ((#:build-targets _ '())
-          ''("marginnote.dtx"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/marginnote") #t))))))
+          ''("marginnote.dtx"))))
       (synopsis "Notes in the margin")
       (description "This package provides the command @code{\\marginnote} that
 may be used instead of @code{\\marginpar} at almost every place where
@@ -10852,20 +9883,7 @@ LuaTeX (respectively) is not the engine in use.")
          ((#:tex-directory _ '())
           "latex/tabu")
          ((#:build-targets _ '())
-          '(list "tabu.dtx"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/tabu")))
-             (replace 'copy-files
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let ((origin (assoc-ref inputs "source"))
-                       (source (string-append (assoc-ref outputs "out")
-                                              "/share/texmf-dist/source"))
-                       (doc (string-append (assoc-ref outputs "doc")
-                                           "/share/texmf-dist/doc")))
-                   (copy-recursively (string-append origin "/source") source)
-                   (copy-recursively (string-append origin "/doc") doc))))))))
+          '(list "tabu.dtx"))))
       (propagated-inputs (list texlive-varwidth))
       (home-page "https://ctan.org/macros/latex/contrib/tabu")
       (synopsis "Flexible LaTeX tabulars")
@@ -11002,11 +10020,7 @@ The behaviour in standalone mode may adjusted using a configuration file
     (build-system texlive-build-system)
     (arguments
      '(#:tex-directory "latex/siunitx"
-       #:build-targets '("siunitx.dtx")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "source/latex/siunitx") #t)))))
+       #:build-targets '("siunitx.dtx")))
     (propagated-inputs
      (list texlive-latex-l3kernel texlive-latex-l3packages))
     (home-page "http://www.ctan.org/pkg/siunitx")
@@ -11683,11 +10697,7 @@ LY1 encoding.")
           "latex/sectsty")
          ((#:build-targets _ '())
           ''("sectsty.ins"))
-         ((#:tex-format _ "latex") "latex")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/sectsty")))))))
+         ((#:tex-format _ "latex") "latex")))
       (home-page "https://www.ctan.org/pkg/sectsty")
       (synopsis "Control sectional headers")
       (description "This is a LaTeX2ε package to help change the style of any or
@@ -11709,11 +10719,7 @@ Examples include the addition of rules above or below a section title.")
          ((#:tex-directory _ '())
           "latex/morefloats")
          ((#:build-targets _ '())
-          ''("morefloats.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/morefloats")))))))
+          ''("morefloats.ins"))))
       (home-page "https://www.ctan.org/pkg/morefloats")
       (synopsis "Increase the number of simultaneous LaTeX floats")
       (description "LaTeX can, by default, only cope with 18 outstanding floats;
@@ -11740,11 +10746,7 @@ floats merely delays the arrival of the inevitable error message.")
           "latex/ifmtarg")
          ((#:build-targets _ '())
           ''("ifmtarg.ins"))
-         ((#:tex-format _ "latex") "latex")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/ifmtarg")))))))
+         ((#:tex-format _ "latex") "latex")))
       (inputs
        (list texlive-filecontents))
       (home-page "https://www.ctan.org/pkg/ifmtarg")
@@ -11767,11 +10769,7 @@ testing whether an argument is empty.")
          ((#:tex-directory _ '())
           "latex/pagenote")
          ((#:build-targets _ '())
-          ''("pagenote.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/pagenote")))))))
+          ''("pagenote.ins"))))
       (propagated-inputs
        (list texlive-ifmtarg))
       (home-page "https://www.ctan.org/pkg/pagenote")
@@ -11795,11 +10793,7 @@ page (also known as ‘end notes’).")
           "latex/titling")
          ((#:build-targets _ '())
           ''("titling.ins"))
-         ((#:tex-format _ "latex") "latex")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/titling")))))))
+         ((#:tex-format _ "latex") "latex")))
       (native-inputs
        (list texlive-cm))
       (home-page "https://www.ctan.org/pkg/titling")
@@ -11825,11 +10819,7 @@ a physical page.")
          ((#:tex-directory _ '())
           "latex/ifoddpage")
          ((#:build-targets _ '())
-          ''("ifoddpage.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/ifoddpage")))))))
+          ''("ifoddpage.ins"))))
       (native-inputs
        (list texlive-ydoc))
       (home-page "https://www.ctan.org/pkg/ifoddpage")
@@ -11855,11 +10845,7 @@ the conditional @code{\\ifoddpageoronside} is provided which is also true in
          ((#:tex-directory _ '())
           "latex/storebox")
          ((#:build-targets _ '())
-          ''("storebox.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/storebox")))))))
+          ''("storebox.ins"))))
       (native-inputs
        (list texlive-ydoc))
       (home-page "https://www.ctan.org/pkg/storebox")
@@ -11884,11 +10870,7 @@ DVI is output, store boxes behave the same as save boxes.")
          ((#:tex-directory _ '())
           "latex/collectbox")
          ((#:build-targets _ '())
-          ''("collectbox.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/collectbox")))))))
+          ''("collectbox.ins"))))
       (native-inputs
        (list texlive-ydoc))
       (home-page "https://www.ctan.org/pkg/collectbox")
@@ -11920,26 +10902,7 @@ The macros were designed for use within other macros.")
          ((#:tex-directory _ #t)
           "latex/grfext")
          ((#:build-targets _ #t)
-          #~(list "grfext.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _
-                  (chdir "source/latex/grfext")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))
-              (add-after 'copy-files 'remove-generated-file
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (with-directory-excursion #$output
-                    (for-each delete-file
-                              (find-files "." "\\.(drv|ins)$")))))))))
+          #~(list "grfext.dtx"))))
       (home-page "https://github.com/ho-tex/grfext")
       (synopsis "Manipulate the graphics package's list of extensions")
       (description "This package provides macros for adding to, and reordering
@@ -11960,11 +10923,7 @@ the list of graphics file extensions recognised by package graphics.")
          ((#:tex-directory _ '())
           "latex/adjustbox")
          ((#:build-targets _ '())
-          ''("adjustbox.ins"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/adjustbox")))))))
+          ''("adjustbox.ins"))))
       (native-inputs
        (list texlive-ydoc))
       (propagated-inputs
@@ -11999,29 +10958,7 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:tex-directory "latex/qrcode"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'chdir
-            (lambda _
-              (setenv "ROOT_DIR" (getcwd))
-              (chdir "source/latex/qrcode")))
-          (add-after 'build 'build-doc
-            (lambda _
-              (copy-file "qrcode.dtx" "build/qrcode.dtx")
-              (chdir "build")
-              (invoke "xelatex" "qrcode.dtx")
-              (invoke "xelatex" "qrcode.dtx"))) ;generate qrcode.pdf
-          (replace 'install
-            (lambda* (#:key tex-directory #:allow-other-keys)
-              (let ((doc (string-append #$output:doc "/share/doc/"
-                                        tex-directory))
-                    (out (string-append #$output "/share/texmf-dist/tex/"
-                                        tex-directory)))
-                (install-file "qrcode.pdf" doc)
-                (install-file (car (find-files (getenv "ROOT_DIR") "README"))
-                              doc)
-                (install-file "qrcode.sty" out)))))))
+      #:tex-directory "latex/qrcode"))
     (propagated-inputs
      (list texlive-lm
            texlive-latex-xkeyval
@@ -12266,10 +11203,7 @@ accompanied by various configuration commands.")
                 ;; Install unicode-math-table.tex, which is not
                 ;; built.
                 (install-file "tex/latex/unicode-math/unicode-math-table.tex"
-                              tex))))
-          (add-after 'copy-files 'chdir
-            (lambda* (#:key tex-directory #:allow-other-keys)
-              (chdir (string-append "source/" tex-directory)))))))
+                              tex)))))))
     (home-page "https://ctan.org/pkg/unicode-math")
     (synopsis "Unicode mathematics support for XeTeX and LuaTeX")
     (description "This package will provide a complete implementation of
@@ -12663,12 +11597,7 @@ fnlineno package.")
          ((#:tex-directory _ '())
           "generic/babel-czech")
          ((#:build-targets _ '())
-          ''("czech.ins")) ; TODO: use dtx and build documentation
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/generic/babel-czech")))))))
+          ''("czech.ins"))))
       (home-page "https://www.ctan.org/pkg/babel-czech")
       (synopsis "Babel support for Czech")
       (description
@@ -12690,11 +11619,7 @@ Czech of standard ``LaTeX names''.")
          ((#:tex-directory _ '())
           "generic/babel-dutch")
          ((#:build-targets _ '())
-          ''("dutch.ins")) ; TODO: use dtx and build documentation
-         ((#:phases phases) `(modify-phases ,phases
-                               (add-after 'unpack 'chdir
-                                 (lambda _
-                                   (chdir "source/generic/babel-dutch")))))))
+          ''("dutch.ins"))))
       (home-page "https://www.ctan.org/pkg/babel-dutch")
       (synopsis "Babel support for Dutch")
       (description
@@ -12716,12 +11641,7 @@ settings to typeset Dutch documents.")
          ((#:tex-directory _ '())
           "generic/babel-finnish")
          ((#:build-targets _ '())
-          ''("finnish.ins")) ; TODO: use dtx and build documentation
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/generic/babel-finnish")))))))
+          ''("finnish.ins"))))
       (home-page "https://www.ctan.org/pkg/babel-finnish")
       (synopsis "Babel support for Finnish")
       (description
@@ -12764,12 +11684,7 @@ to Norsk of standard “LaTeX names”.")
          ((#:tex-directory _ '())
           "generic/babel-danish")
          ((#:build-targets _ '())
-          ''("danish.ins")) ; TODO: use dtx and build documentation
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/generic/babel-danish")))))))
+          ''("danish.ins"))))
       (home-page "https://www.ctan.org/pkg/babel-danish")
       (synopsis "Babel support for Danish")
       (description
@@ -12791,12 +11706,7 @@ settings to typeset Danish documents.")
          ((#:tex-directory _ '())
           "generic/babel-polish")
          ((#:build-targets _ '())
-          ''("polish.ins")) ; TODO: use dtx and build documentation
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _
-                 (chdir "source/generic/babel-polish")))))))
+          ''("polish.ins"))))
       (home-page "https://www.ctan.org/pkg/babel-polish")
       (synopsis "Babel support for Polish")
       (description
@@ -13050,21 +11960,7 @@ loading @code{everyshi-2001-05-15}.")
          ((#:tex-directory _ #f)
           "latex/abstract")
          ((#:build-targets _ #t)
-          #~(list "abstract.ins"))
-         ((#:phases std-phases)
-          #~(modify-phases #$std-phases
-              (add-after 'unpack 'chdir
-                (lambda args
-                  (chdir "source/latex/abstract")))
-              (add-before 'copy-files 'unchdir
-                (lambda args
-                  (chdir "../../..")))
-              (add-after 'copy-files 'remove-extra-files
-                (lambda args
-                  (delete-file-recursively
-                   (string-append #$output
-                                  "/share/texmf-dist"
-                                  "/source/latex/abstract/build"))))))))
+          #~(list "abstract.ins"))))
       (home-page "https://ctan.org/pkg/abstract")
       (synopsis "Control the typesetting of the abstract environment")
       (description "The abstract package gives you control over the typesetting
@@ -13086,21 +11982,7 @@ abstract in a two column paper.")
          ((#:tex-directory _ #f)
           "latex/breqn")
          ((#:build-targets _ #t)
-          #~(list "breqnbundle.ins"))
-         ((#:phases std-phases)
-          #~(modify-phases #$std-phases
-              (add-after 'unpack 'chdir
-                (lambda args
-                  (chdir "source/latex/breqn")))
-              (add-before 'copy-files 'unchdir
-                (lambda args
-                  (chdir "../../..")))
-              (add-after 'copy-files 'remove-extra-files
-                (lambda args
-                  (delete-file-recursively
-                   (string-append #$output
-                                  "/share/texmf-dist"
-                                  "/source/latex/breqn/build"))))))))
+          #~(list "breqnbundle.ins"))))
       (home-page "https://wspr.io/breqn/")
       (synopsis "Automatic line breaking of displayed equations")
       (description "This package provides solutions to a number of common
@@ -13144,21 +12026,7 @@ controlled comment versions.")
          ((#:tex-directory _ #f)
           "latex/datatool")
          ((#:build-targets _ #t)
-          #~(list "datatool.ins"))
-         ((#:phases std-phases)
-          #~(modify-phases #$std-phases
-              (add-after 'unpack 'chdir
-                (lambda args
-                  (chdir "source/latex/datatool")))
-              (add-before 'copy-files 'unchdir
-                (lambda args
-                  (chdir "../../..")))
-              (add-after 'copy-files 'remove-extra-files
-                (lambda args
-                  (delete-file-recursively
-                   (string-append #$output
-                                  "/share/texmf-dist"
-                                  "/source/latex/datatool/build"))))))))
+          #~(list "datatool.ins"))))
       (home-page "https://ctan.org/pkg/datatool")
       (synopsis "Tools to load and manipulate data")
       (description "This package provides tools to create databases using LaTeX
@@ -13291,20 +12159,7 @@ fonts.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "latex/lastpage")
-         ((#:build-targets _ '()) '(list "lastpage.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/lastpage/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "lastpage.ins"))))
       (home-page "https://ctan.org/pkg/lastpage")
       (synopsis "Reference last page for Page N of M type footers")
       (description
@@ -13368,20 +12223,7 @@ defined ``tab stop''.")
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "generic/soul")
-         ((#:build-targets _ '()) '(list "soul.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/generic/soul/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "soul.ins"))))
       (home-page "http://www.ctan.org/pkg/soul")
       (synopsis "Hyphenation for letterspacing, underlining, and more")
       (description
@@ -13409,20 +12251,7 @@ syllable.  The package itself does not support UTF-8 input in ordinary
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "generic/soulutf8")
-         ((#:build-targets _ '()) '(list "soulutf8.dtx"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/soulutf8/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "soulutf8.dtx"))))
       (propagated-inputs
        (list texlive-etexcmds
              texlive-infwarerr
@@ -13496,20 +12325,7 @@ are provided to:
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "latex/totcount")
          ((#:tex-format _ #t) "latex")
-         ((#:build-targets _ '()) '(list "totcount.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/totcount/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "totcount.ins"))))
       (propagated-inputs
        (list texlive-graphics))
       (home-page "https://ctan.org/pkg/totcount")
@@ -13538,20 +12354,7 @@ changed, the recorded value will usually be the maximum value.")
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t) "latex/totpages")
          ((#:tex-format _ #t) "latex")
-         ((#:build-targets _ '()) '(list "totpages.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'chdir
-                (lambda _ (chdir "source/latex/totpages/")))
-              (replace 'copy-files
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (let ((origin (assoc-ref inputs "source"))
-                        (source (string-append #$output
-                                               "/share/texmf-dist/source"))
-                        (doc (string-append #$output:doc
-                                            "/share/texmf-dist/doc")))
-                    (copy-recursively (string-append origin "/source") source)
-                    (copy-recursively (string-append origin "/doc") doc))))))))
+         ((#:build-targets _ '()) '(list "totpages.ins"))))
       (native-inputs
        (list (texlive-updmap.cfg)))
       (propagated-inputs
