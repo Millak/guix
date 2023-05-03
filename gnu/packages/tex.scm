@@ -3294,9 +3294,9 @@ the @file{.aux} file.")
 
 (define-deprecated-package texlive-latex-auxhook texlive-auxhook)
 
-(define-public texlive-latex-epstopdf-pkg
+(define-public texlive-epstopdf-pkg
   (let ((template (simple-texlive-package
-                   "texlive-latex-epstopdf-pkg"
+                   "texlive-epstopdf-pkg"
                    (list "doc/latex/epstopdf-pkg/"
                          "source/latex/epstopdf-pkg/"
                          "tex/latex/epstopdf-pkg/")
@@ -3336,6 +3336,8 @@ the @file{.aux} file.")
 when running under pdfTeX.  If an EPS graphic is detected, the package spawns
 a process to convert the EPS to PDF, using the script @command{epstopdf}.")
      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-epstopdf-pkg texlive-epstopdf-pkg)
 
 (define-public texlive-latex-filecontents
   (package
@@ -3432,7 +3434,7 @@ Unicode points; it is maintained by Adobe.  The additional
                "0b66fy06safyrd717rfr476g1gz6nqfv1vqvam7ac2yy0g0djb17")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-latex-epstopdf-pkg))
+     (list texlive-epstopdf-pkg))
     (home-page "https://www.ctan.org/pkg/latex-graphics")
     (synopsis "Color and graphics option files")
     (description
