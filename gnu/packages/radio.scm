@@ -2515,53 +2515,56 @@ various hardware.")
     (license license:gpl3+)))
 
 (define-public sdr++
-  (package
-    (name "sdr++")
-    (version "1.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AlexandreRouma/SDRPlusPlus")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xwbz6yyca6wmzad5ykxw6i0r8jzc7i3jbzq7mhp8caiymd6knw3"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("airspyhf" ,airspyhf)
-       ("alsa-lib" ,alsa-lib)
-       ("codec2" ,codec2)
-       ("fftwf" ,fftwf)
-       ("glew" ,glew)
-       ("glfw" ,glfw)
-       ("hackrf" ,hackrf)
-       ("jack" ,jack-2)
-       ("libusb" ,libusb)
-       ("pulseaudio" ,pulseaudio)
-       ("rtaudio" ,rtaudio)
-       ("rtl-sdr" ,rtl-sdr)
-       ("soapysdr" ,soapysdr)
-       ("volk" ,volk)))
-    (arguments
-     `(#:tests? #f ; No test suite.
-       #:configure-flags '("-DOPT_BUILD_AIRSPY_SOURCE=OFF"
-                           "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
-                           "-DOPT_BUILD_M17_DECODER=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("/usr")
-                (assoc-ref outputs "out"))))))))
-    (home-page "https://github.com/AlexandreRouma/SDRPlusPlus")
-    (synopsis "Software defined radio software")
-    (description
-     "SDR++ is a software defined radio software for various hardware.")
-    (license license:gpl3+)))
+  (let ((commit "b89fdba433cf6aa0dab424a06974a0b45abf6c4a")
+        (revision "1"))
+    (package
+      (name "sdr++")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/AlexandreRouma/SDRPlusPlus")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11l1ja3dwxa67rp09x4rr5pd6rh6amn48z5vv6dygspq64w63hp2"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list airspyhf
+             alsa-lib
+             codec2
+             fftwf
+             glew
+             glfw
+             hackrf
+             jack-2
+             libusb
+             pulseaudio
+             rtaudio
+             rtl-sdr
+             soapysdr
+             volk
+             (list zstd "lib")))
+      (arguments
+       (list #:tests? #f ; No test suite.
+             #:configure-flags #~(list "-DOPT_BUILD_AIRSPY_SOURCE=OFF"
+                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+                                       "-DOPT_BUILD_M17_DECODER=ON")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda _
+                     (substitute* "CMakeLists.txt"
+                       (("/usr")
+                        #$output)))))))
+      (home-page "https://github.com/AlexandreRouma/SDRPlusPlus")
+      (synopsis "Software defined radio software")
+      (description
+       "SDR++ is a software defined radio software for various hardware.")
+      (license license:gpl3+))))
 
 (define-public inspectrum
   (package
