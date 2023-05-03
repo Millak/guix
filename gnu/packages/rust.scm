@@ -197,6 +197,9 @@
        ;; Rust's own .so library files are not found in any RUNPATH, but
        ;; that doesn't seem to cause issues.
        #:validate-runpath? #f
+       ;; Most of the build is single-threaded. This also improves the
+       ;; build time on machines with "only" 8GB of RAM.
+       #:parallel-build? ,(target-x86-64?)
        #:make-flags
        (list ,(string-append "RUSTC_TARGET="
                              (or (%current-target-system)
@@ -204,6 +207,10 @@
              ,(string-append "RUSTC_VERSION=" version)
              ,(string-append "MRUSTC_TARGET_VER="
                              (version-major+minor version))
+             ;; mrustc expects a C11 compatible compiler. Use the default
+             ;; C language dialect from the GCC-10 compiler.
+             ;; This is necessary for some architectures.
+             "CFLAGS=-std=gnu11"
              "OUTDIR_SUF=")           ;do not add version suffix to output dir
        #:phases
        (modify-phases %standard-phases
@@ -302,7 +309,6 @@
                ;; Use PARLEVEL since both minicargo and mrustc use it
                ;; to set the level of parallelism.
                (setenv "PARLEVEL" (number->string job-count))
-               (setenv "CARGO_BUILD_JOBS" (number->string job-count))
                (display "Building mrustc...\n")
                (apply invoke "make" make-flags)
 
@@ -354,9 +360,9 @@ safety and thread safety guarantees.")
     ;; therefore the build process needs 8GB of RAM while building.
     ;; It may support i686 soon:
     ;; <https://github.com/thepowersgang/mrustc/issues/78>.
-    ;; XXX: The rust bootstrap is currently broken on aarch64 and riscv64,
-    ;; remove them until this is fixed.
-    (supported-systems '("x86_64-linux"))
+    ;; XXX: The rust bootstrap is currently broken on riscv64,
+    ;; remove it until this is fixed.
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
 
     ;; Dual licensed.
     (license (list license:asl2.0 license:expat))))
