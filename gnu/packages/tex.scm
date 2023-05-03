@@ -3339,9 +3339,9 @@ a process to convert the EPS to PDF, using the script @command{epstopdf}.")
 
 (define-deprecated-package texlive-latex-epstopdf-pkg texlive-epstopdf-pkg)
 
-(define-public texlive-latex-filecontents
+(define-public texlive-filecontents
   (let ((template (simple-texlive-package
-                   "texlive-latex-filecontents"
+                   "texlive-filecontents"
                    (list "doc/latex/filecontents/"
                          "source/latex/filecontents/"
                          "tex/latex/filecontents/")
@@ -3368,6 +3368,8 @@ a document.  The filecontents package removes these limitations, letting you
 overwrite existing files and letting you use @code{filecontents}
 @code{filecontents*} anywhere.")
       (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-filecontents texlive-filecontents)
 
 (define-public texlive-epsf
   (package
@@ -5836,7 +5838,7 @@ be changed.")
                (("pstool.tex") "trimspaces.tex"))
              #t)))))
     (inputs
-     (list texlive-latex-filecontents))
+     (list texlive-filecontents))
     (home-page "https://www.ctan.org/pkg/trimspaces")
     (synopsis "Trim spaces around an argument or within a macro")
     (description
@@ -9512,7 +9514,7 @@ and after the formatted number.")
      '(#:tex-directory "latex/needspace"
        #:tex-format "latex"))
     (inputs
-     (list texlive-latex-filecontents))
+     (list texlive-filecontents))
     (home-page "https://www.ctan.org/pkg/needspace")
     (synopsis "Insert pagebreak if not enough space")
     (description
@@ -9538,7 +9540,7 @@ page, a new page will be started.")
      '(#:tex-directory "latex/changepage"
        #:tex-format "latex"))
     (inputs
-     (list texlive-latex-filecontents))
+     (list texlive-filecontents))
     (home-page "https://www.ctan.org/pkg/changepage")
     (synopsis "Margin adjustment and detection of odd/even pages")
     (description
@@ -11718,7 +11720,7 @@ floats merely delays the arrival of the inevitable error message.")
              (add-after 'unpack 'chdir
                (lambda _ (chdir "source/latex/ifmtarg")))))))
       (inputs
-       (list texlive-latex-filecontents))
+       (list texlive-filecontents))
       (home-page "https://www.ctan.org/pkg/ifmtarg")
       (synopsis "If-then-else command for processing potentially empty arguments")
       (description "This package provides a command for the LaTeX programmer for
