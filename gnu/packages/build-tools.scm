@@ -154,7 +154,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
        ("re2" ,re2)
        ("spdlog" ,spdlog-1.10)))
     (native-inputs
-     `(("abseil-cpp" ,abseil-cpp)
+     `(("abseil-cpp" ,abseil-cpp-cxxstd11)
        ("googletest" ,googletest)
        ("openssl" ,openssl)
        ("pkg-config" ,pkg-config)
