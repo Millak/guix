@@ -27725,11 +27725,10 @@ leader key in vim), and much more.")
     (package
       (name "emacs-tldr")
       (version (git-version "0" revision commit))
-      (home-page "https://github.com/kuanyui/tldr.el")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url (string-append home-page ".git"))
+                      (url "https://github.com/kuanyui/tldr.el")
                       (commit commit)))
                 (sha256
                  (base32
@@ -27750,10 +27749,11 @@ leader key in vim), and much more.")
        (list unzip))
       (propagated-inputs
        (list emacs-request))
+      (home-page "https://github.com/kuanyui/tldr.el")
       (synopsis "Simplified and community-driven man pages for Emacs")
-      (description "@code{emacs-tldr} allows the user to access tldr pages
-from within emacs.  The @code{tldr} pages are a community effort to simplify
-the man pages with practical examples.")
+      (description "Tldr allows the user to access @code{tldr} pages from
+within Emacs.  The @code{tldr} pages are a community effort to simplify the
+man pages with practical examples.")
       (license license:wtfpl2))))
 
 (define-public emacs-window-layout
