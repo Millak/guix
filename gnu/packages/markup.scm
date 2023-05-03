@@ -310,19 +310,25 @@ GitHub cmark fork (@code{cmark-gfm}).")
 (define-public python-markdownify
   (package
     (name "python-markdownify")
-    (version "0.10.1")
+    (version "0.11.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "markdownify" version))
        (sha256
         (base32
-         "0msvrsgq9jigbgg7r7iq7ql5bgslmbxd8sq0nmpbxrjwqypgs7w2"))))
+         "1zlvwiapcvzaz7nmviffz3q147h1skf2amh83npqwk4z1h7296q0"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests? (invoke "pytest" "-v" "tests")))))))
     (native-inputs
      (list python-pytest))
     (propagated-inputs
-     (list python-flake8 python-beautifulsoup4 python-six))
+     (list python-beautifulsoup4 python-six))
     (home-page
      "https://github.com/matthewwithanm/python-markdownify")
     (synopsis "Converts HTML to Markdown")
