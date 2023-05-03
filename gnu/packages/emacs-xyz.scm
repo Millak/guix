@@ -27735,6 +27735,18 @@ leader key in vim), and much more.")
                   "1bw6la463l2yfm7rp76ga4makfy4kpxgwi7ni5gxk31w11g26ryk"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-unzip-location
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "tldr.el"
+                  (("\"unzip")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/unzip")))))))))
+      (inputs
+       (list unzip))
       (propagated-inputs
        (list emacs-request))
       (synopsis "Simplified and community-driven man pages for Emacs")
