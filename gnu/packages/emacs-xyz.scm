@@ -734,10 +734,10 @@ configuration language which makes it trivial to write your own themes.")
     (license license:gpl3+)))
 
 (define-public emacs-inspector
-  (let ((commit "0b2cf2f00a827f06bda717da8250eafec4108fb3")) ;version bump
+  (let ((commit "c328475aa433a39dd08702ff7daf5941a3a3efde")) ;version bump
     (package
       (name "emacs-inspector")
-      (version "0.28")
+      (version "0.29")
       (source
        (origin
          (uri (git-reference
@@ -745,7 +745,7 @@ configuration language which makes it trivial to write your own themes.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "1l5dwcacz9y3qrsg8xjycr835vjjfssbzzx2nns91hyssb10hmkx"))
+          (base32 "0c9r8gk3ivrd9lpzjnf254ymmfnh4jnr1dcsbr0zmxrrpfsq3mym"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
