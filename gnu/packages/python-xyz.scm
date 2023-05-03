@@ -27807,19 +27807,19 @@ placement and scaling of SVG figures and adding markers, such as labels.")
 (define-public python-blessed
   (package
     (name "python-blessed")
-    (version "1.17.8")
+    (version "1.17.9")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "blessed" version))
         (sha256
          (base32
-          "1wdj342sk22hfrg0n91x2qnqsbzbiyq9y009v3pxnvfzn9bx0wbn"))
+          "1fx9lyzyaxd44jwpp9k3c0gx37xsww1q7gq01hqbf258x1dplj8d"))
         (modules '((guix build utils)))
         (snippet
          '(begin
             ;; Don't get hung up on Windows test failures.
-            (delete-file "blessed/win_terminal.py") #t))))
+            (delete-file "blessed/win_terminal.py")))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-jinxed python-six python-wcwidth))
