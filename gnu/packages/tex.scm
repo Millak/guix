@@ -3295,22 +3295,47 @@ the @file{.aux} file.")
 (define-deprecated-package texlive-latex-auxhook texlive-auxhook)
 
 (define-public texlive-latex-epstopdf-pkg
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-epstopdf-pkg"
-              '("/doc/latex/epstopdf-pkg/"
-                "/tex/latex/epstopdf-pkg/")
-              (base32
-               "0zl6jiyp2cvvyqx3lwxdkcvvnkqgbwj4issq07cagf61gljq6fns")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/epstopdf-pkg")
-    (synopsis "Call @command{epstopdf} \"on the fly\"")
-    (description
-     "The package adds support for EPS files in the @code{graphicx} package
-when running under pdfTeX.  If an EPS graphic is detected, the package
-spawns a process to convert the EPS to PDF, using the script
-@command{epstopdf}.")
-    (license license:lppl1.3c+)))
+  (let ((template (simple-texlive-package
+                   "texlive-latex-epstopdf-pkg"
+                   (list "doc/latex/epstopdf-pkg/"
+                         "source/latex/epstopdf-pkg/"
+                         "tex/latex/epstopdf-pkg/")
+                   (base32
+                    "1ajyc5pkn1niifz5asyf09vbdqvmy05xwl0vxcdl7ik0ll0jcaxp"))))
+    (package
+     (inherit template)
+     (arguments
+      (substitute-keyword-arguments (package-arguments template)
+        ((#:tex-directory _ '())
+         "latex/epstopdf-pkg")
+        ((#:build-targets _ '())
+         #~(list "epstopdf.ins"))
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "source/latex/epstopdf-pkg")))
+             (replace 'copy-files
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((origin (assoc-ref inputs "source"))
+                       (source (string-append #$output
+                                              "/share/texmf-dist/source"))
+                       (doc (string-append #$output:doc
+                                           "/share/texmf-dist/doc")))
+                   (copy-recursively (string-append origin "/source") source)
+                   (copy-recursively (string-append origin "/doc") doc))))))))
+     (propagated-inputs
+      (list texlive-grfext
+            texlive-infwarerr
+            texlive-kvoptions
+            texlive-pdftexcmds))
+     (home-page "https://www.ctan.org/pkg/epstopdf-pkg")
+     (synopsis "Call @command{epstopdf} on the fly")
+     (description
+      "The package adds support for EPS files in the @code{graphicx} package
+when running under pdfTeX.  If an EPS graphic is detected, the package spawns
+a process to convert the EPS to PDF, using the script @command{epstopdf}.")
+     (license license:lppl1.3c+))))
 
 (define-public texlive-latex-filecontents
   (package
