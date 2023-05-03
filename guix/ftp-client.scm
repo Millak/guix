@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2017, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,7 +86,8 @@
     (lambda ()
       body ...)
     (lambda args
-      (unless (= (system-error-errno args) EINPROGRESS)
+      (unless (memv (system-error-errno args)
+                    (list EINPROGRESS EALREADY))
         (apply throw args)))))
 
 ;; XXX: For lack of a better place.
@@ -100,23 +101,28 @@ seconds to wait for the connection to succeed."
            (list errno)))
 
   (if timeout
-      (let ((flags (fcntl s F_GETFL)))
+      (let ((end   (+ (current-time) timeout))
+            (flags (fcntl s F_GETFL)))
         (fcntl s F_SETFL (logior flags O_NONBLOCK))
-        (catch-EINPROGRESS (connect s sockaddr))
-        (match (select '() (list s) (list s) timeout)
-          ((() () ())
-           ;; Time is up!
-           (raise-error ETIMEDOUT))
-          ((() (write) ())
-           ;; Check for ECONNREFUSED and the likes.
-           (fcntl s F_SETFL flags)
-           (let ((errno (getsockopt s SOL_SOCKET SO_ERROR)))
-             (unless (zero? errno)
-               (raise-error errno))))
-          ((() () (except))
-           ;; Seems like this cannot really happen, but who knows.
-           (let ((errno (getsockopt s SOL_SOCKET SO_ERROR)))
-             (raise-error errno)))))
+        (let loop ((timeout timeout))
+          (catch-EINPROGRESS (connect s sockaddr))
+          (match (select '() (list s) (list s) timeout)
+            ((() () ())
+             ;; Check whether 'select' returned early.
+             (let ((now (current-time)))
+               (if (>= now end)
+                   (raise-error ETIMEDOUT)        ;time is up!
+                   (loop (- end now)))))
+            ((() (write) ())
+             ;; Check for ECONNREFUSED and the likes.
+             (fcntl s F_SETFL flags)
+             (let ((errno (getsockopt s SOL_SOCKET SO_ERROR)))
+               (unless (zero? errno)
+                 (raise-error errno))))
+            ((() () (except))
+             ;; Seems like this cannot really happen, but who knows.
+             (let ((errno (getsockopt s SOL_SOCKET SO_ERROR)))
+               (raise-error errno))))))
       (connect s sockaddr)))
 
 (define* (ftp-open host #:optional (port "ftp")
