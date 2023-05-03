@@ -21762,16 +21762,18 @@ timestamps by providing a @code{ts} struct.")
      (list
       #:tests? #t
       #:test-command
-      #~(list "emacs" "--batch"
+      #~(list "emacs" "-Q" "--batch"
               "-l" "test.el"
               "--eval" "(ert-run-tests-batch-and-exit test-order)")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'skip-failing-test
-            ;; XXX: Skip known (to upstream) failing test.
+            ;; XXX: Skip known (to upstream) failing tests.
             (lambda _
               (substitute* "test.el"
                 (("\\(ert-deftest test-circadian-sunrise-sunset .*" all)
+                 (string-append all " (skip-unless nil)"))
+                (("\\(ert-deftest test-circadian-setup-benchmark .*" all)
                  (string-append all " (skip-unless nil)"))))))))
     (native-inputs
      (list emacs-el-mock))
