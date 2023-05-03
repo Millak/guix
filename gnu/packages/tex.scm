@@ -3121,7 +3121,7 @@ formats.")
              texlive-unicode-data
              texlive-ukrhyph
              texlive-ruhyphen
-             texlive-latex-l3kernel
+             texlive-l3kernel
              texlive-latex-l3backend
              ;; TODO: This dependency isn't needed for LaTeX version 2021-06-01
              ;; and later. See:
@@ -3736,34 +3736,39 @@ the now obsolete teTeX distributions but are still used at the core of the TeX
 Live distribution.")
     (license license:public-domain)))
 
-(define-public texlive-latex-l3kernel
+(define-public texlive-l3kernel
   (package
-    (name "texlive-latex-l3kernel")
+    (name "texlive-l3kernel")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "l3kernel"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "068xkinrkl6qjf8r6a9i0msvnzp4y7a3gnd2h12ws0km1dv19r20"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l3kernel/"
+                   "source/latex/l3kernel/"
+                   "tex/latex/l3kernel/")
+             (base32
+              "1y7wcb2643cfwda86f5zpbbw3hj01rji7r143ln77k8nr1919jj1")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/l3kernel"
-       #:tex-engine "tex"
-       #:tex-format #f
-       #:texlive-latex-base #f))
+     (list
+      #:tex-engine "tex"
+      #:tex-format #f
+      #:texlive-latex-base #f))
     (native-inputs
      (list texlive-docstrip))
-    (home-page "https://www.ctan.org/pkg/l3kernel")
-    (synopsis "LaTeX3 programmers’ interface")
+    (propagated-inputs
+     (list texlive-l3backend))
+    (home-page "https://ctan.org/pkg/l3kernel")
+    (synopsis "LaTeX3 programming conventions")
     (description
-     "The l3kernel bundle provides an implementation of the LaTeX3
-programmers’ interface, as a set of packages that run under LaTeX 2e.  The
-interface provides the foundation on which the LaTeX3 kernel and other future
-code are built: it is an API for TeX programmers.  The packages are set up so
-that the LaTeX3 conventions can be used with regular LaTeX 2e packages.")
+     "The l3kernel bundle provides an implementation of the LaTeX3 programmers
+interface, as a set of packages that run under LaTeX2e.  The interface
+provides the foundation on which the LaTeX3 kernel and other future code are
+built: it is an API for TeX programmers.  The packages are set up so that the
+LaTeX3 conventions can be used with regular LaTeX2e packages.")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-latex-l3kernel texlive-l3kernel)
 
 (define-public texlive-latex-l3backend
   (package
@@ -3847,7 +3852,7 @@ an independent schedule.")
     (native-inputs
      (list texlive-docstrip))
     (propagated-inputs
-     (list texlive-latex-l3kernel))
+     (list texlive-l3kernel))
     (home-page "https://www.ctan.org/pkg/l3packages")
     (synopsis "High-level LaTeX3 concepts")
     (description
@@ -5220,7 +5225,7 @@ rotated.")
            texlive-filemod
            texlive-graphics
            texlive-latex-ifplatform
-           texlive-latex-l3kernel ; for expl3
+           texlive-l3kernel ; for expl3
            texlive-oberdiek
            texlive-latex-psfrag
            texlive-tools ; for shellesc
@@ -10022,7 +10027,7 @@ The behaviour in standalone mode may adjusted using a configuration file
      '(#:tex-directory "latex/siunitx"
        #:build-targets '("siunitx.dtx")))
     (propagated-inputs
-     (list texlive-latex-l3kernel texlive-latex-l3packages))
+     (list texlive-l3kernel texlive-latex-l3packages))
     (home-page "http://www.ctan.org/pkg/siunitx")
     (synopsis "Comprehensive SI units package")
     (description
@@ -11017,7 +11022,7 @@ parts.")
     (build-system texlive-build-system)
     (arguments '(#:tex-directory "latex/ebproof"))
     (propagated-inputs
-     (list texlive-latex-l3kernel))
+     (list texlive-l3kernel))
     (home-page "http://www.ctan.org/pkg/ebproof")
     (synopsis
      "Formal proofs in the style of sequent calculus")
@@ -12392,7 +12397,7 @@ itself may be shipped out to the DVI file.")
            texlive-latex-base
            texlive-fonts-latex
            texlive-latex-l3backend
-           texlive-latex-l3kernel
+           texlive-l3kernel
            texlive-latex-l3packages
            texlive-lm
            texlive-tex-ini-files
