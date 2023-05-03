@@ -23045,20 +23045,32 @@ expansions for debugging with Edebug as normal.")
     (license license:gpl3+)))
 
 (define-public emacs-lacarte
-  (package
-    (name "emacs-lacarte")
-    (version "0.1")
-    (source (origin
-              (method url-fetch)
-              (uri "https://www.emacswiki.org/emacs/download/lacarte.el")
-              (sha256
-               (base32
-                "1sbmk37ljq5j7dsw5c37sbxvlfgdqswh7bi4dknyjzfxlq50f4am"))))
-    (build-system emacs-build-system)
-    (home-page "https://www.emacswiki.org/emacs/lacarte.el")
-    (synopsis "Execute menu items as commands, with completion")
-    (description "Execute menu items as commands, with completion.")
-    (license license:gpl3)))
+  (let ((commit "79afc5d2406dae5aabc1c12089e8e2e1990abd85")
+        (revision "1"))
+    (package
+      (name "emacs-lacarte")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsmirror/lacarte")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0g9r7cp1y6b7ldcls8fdblwf79hharcf2lfgz737pff68qhv9c3l"))))
+      (build-system emacs-build-system)
+      (home-page "https://www.emacswiki.org/emacs/lacarte.el")
+      (synopsis "Execute menu items as commands, with completion")
+      (description "La Carte lets you execute menu-bar menu commands from the
+keyboard, with completion.
+
+Use the keyboard to access any menu item, without knowing where it is or what
+its full name is.  Type part of its name and use completion to get the rest:
+the complete path and item name.  When you choose a menu-item candidate, the
+corresponding command is executed.")
+      (license license:gpl3+))))
 
 (define-public emacs-latex-preview-pane
   (let ((commit "5297668a89996b50b2b62f99cba01cc544dbed2e")
