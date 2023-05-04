@@ -12287,6 +12287,8 @@ It has a flexible system of @samp{authorizers} able to manage both
     (build-system python-build-system)
     (arguments
      (list
+      #:tests? (and (not (%current-target-system))
+                    (->bool (this-package-native-input "python-pytest")))
       #:phases #~(modify-phases %standard-phases
                    (replace 'check
                      (lambda* (#:key tests? #:allow-other-keys)
@@ -12296,7 +12298,14 @@ It has a flexible system of @samp{authorizers} able to manage both
     (propagated-inputs
      (list python-appdirs python-pytz python-six))
     (native-inputs
-     (list python-mock python-parameterized python-pyftpdlib python-pytest))
+     ;; 'python-pyftpdlib' is needed for tests but it indirectly depends Rust,
+     ;; which is currently unavailable on aarch64-linux.  Remove all the test
+     ;; dependencies in that case.
+     (if (and (not (%current-target-system))
+              (supported-package? python-pyftpdlib))
+         (list python-mock python-parameterized python-pyftpdlib
+               python-pytest)
+         '()))
     (home-page "https://github.com/PyFilesystem/pyfilesystem2/")
     (synopsis "File system abstraction layer for Python")
     (description "PyFilesystem's @code{FS} object is a file system abstraction
