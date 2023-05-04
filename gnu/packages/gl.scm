@@ -315,8 +315,10 @@ also known as DXTn or DXTC) for Mesa.")
            (@ (gnu packages base) which)))
     (outputs '("out" "bin"))
     (arguments
-     `(#:configure-flags
-       '(,@(match (%current-system)
+     (list
+      #:configure-flags
+      #~(list
+         #$@(match (%current-system)
              ("aarch64-linux"
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
@@ -345,7 +347,7 @@ svga,swrast,virgl")))
          "-Dshared-glapi=enabled"
 
          ;; Explicitly enable Vulkan on some architectures.
-         ,@(match (%current-system)
+         #$@(match (%current-system)
              ((or "i686-linux" "x86_64-linux")
               '("-Dvulkan-drivers=intel,amd"))
              ((or "powerpc64le-linux" "powerpc-linux")
@@ -373,12 +375,12 @@ svga,swrast,virgl")))
        ;; documentation recommends using 'release' for performance anyway.
        #:build-type "release"
 
-       #:modules ((ice-9 match)
-                  (srfi srfi-1)
-                  (guix build utils)
-                  (guix build meson-build-system))
+       #:modules '((ice-9 match)
+                   (srfi srfi-1)
+                   (guix build utils)
+                   (guix build meson-build-system))
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-test
            (lambda _
              ;; Disable the intel vulkan (anv_state_pool) tests, as they may
@@ -387,7 +389,7 @@ svga,swrast,virgl")))
              (substitute* "src/intel/vulkan/meson.build"
                (("if with_tests")
                 "if false"))
-             ,@(match (%current-system)
+             #$@(match (%current-system)
                  ("riscv64-linux"
                   ;; According to the test logs the llvm JIT is not designed
                   ;; for this architecture and the llvmpipe tests all segfault.
@@ -432,8 +434,8 @@ svga,swrast,virgl")))
                  (_
                   '((display "No tests to disable on this architecture.\n"))))))
          (add-before 'configure 'fix-dlopen-libnames
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
+           (lambda _
+             (let ((out #$output))
                ;; Remain agnostic to .so.X.Y.Z versions while doing
                ;; the substitutions so we're future-safe.
                (substitute* "src/glx/meson.build"
@@ -450,9 +452,9 @@ svga,swrast,virgl")))
                  (("\"gbm_dri\\.so")
                   (string-append "\"" out "/lib/dri/gbm_dri.so"))))))
          (add-after 'install 'split-outputs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (bin (assoc-ref outputs "bin")))
+           (lambda _
+             (let ((out #$output)
+                   (bin #$output:bin))
                ;; Not all architectures have the Vulkan overlay control script.
                (mkdir-p (string-append out "/bin"))
                (call-with-output-file (string-append out "/bin/.empty")
@@ -461,13 +463,13 @@ svga,swrast,virgl")))
                                  (string-append bin "/bin"))
                (delete-file-recursively (string-append out "/bin")))))
          (add-after 'install 'symlinks-instead-of-hard-links
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              ;; All the drivers and gallium targets create hard links upon
              ;; installation (search for "hardlink each megadriver instance"
              ;; in the makefiles).  This is no good for us since we'd produce
              ;; nars that contain several copies of these files.  Thus, turn
              ;; them into symlinks, which saves ~124 MiB.
-             (let* ((out    (assoc-ref outputs "out"))
+             (let* ((out    #$output)
                     (lib    (string-append out "/lib"))
                     (files  (find-files lib
                                         (lambda (file stat)
@@ -495,8 +497,8 @@ svga,swrast,virgl")))
                                         others))))
                          (delete-duplicates inodes)))))
          (add-after 'install 'set-layer-path-in-manifests
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
+           (lambda _
+             (let* ((out #$output)
                     (implicit-path (string-append
                                     out
                                     "/share/vulkan/implicit_layer.d/"))
@@ -538,7 +540,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
     (arguments
      (substitute-keyword-arguments (package-arguments mesa)
        ((#:configure-flags flags)
-        `(cons "-Dgallium-opencl=standalone" ,flags))))
+        #~(cons "-Dgallium-opencl=standalone" #$flags))))
     (inputs
      (modify-inputs (package-inputs mesa)
        (prepend libclc)))
@@ -552,10 +554,10 @@ from software emulation to complete hardware acceleration for modern GPUs.")
     (arguments
       (substitute-keyword-arguments (package-arguments mesa)
         ((#:configure-flags flags)
-         `(cons "-Dgallium-opencl=icd"
-                ,(delete "-Dgallium-opencl=standalone" flags)))
+         #~(cons "-Dgallium-opencl=icd"
+                (delete "-Dgallium-opencl=standalone" #$flags)))
         ((#:phases phases)
-         `(modify-phases ,phases
+         #~(modify-phases #$phases
             (add-after 'install 'mesa-icd-absolute-path
               (lambda _
                 ;; Use absolute path for OpenCL platform library.
@@ -563,7 +565,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
                 ;; for ICD in our applications to find OpenCL platform.
                 (use-modules (guix build utils)
                              (ice-9 textual-ports))
-                (let* ((out (assoc-ref %outputs "out"))
+                (let* ((out #$output)
                        (mesa-icd (string-append out "/etc/OpenCL/vendors/mesa.icd"))
                        (old-path (call-with-input-file mesa-icd get-string-all))
                        (new-path (string-append out "/lib/" (string-trim-both old-path))))
