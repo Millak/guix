@@ -268,7 +268,7 @@ the package named PACKAGE-NAME."
     ('gitlab (git-repository->origin recipe (gitlab-repo->url (assq-ref recipe ':repo))))
     ('git    (git-repository->origin recipe (assq-ref recipe ':url)))
     (#f #f)   ; if we're not using melpa then this stops us printing a warning
-    (_ (warning (G_ "Unsupported MELPA fetcher: ~a, falling back to unstable MELPA source.~%")
+    (_ (warning (G_ "unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%")
                 (assq-ref recipe ':fetcher))
        #f)))
 
