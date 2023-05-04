@@ -267,7 +267,7 @@ fundamental object types for C.")
            pcre2
            popt
            python
-           samba
+           samba/pinned
            talloc
            tdb
            tevent))
