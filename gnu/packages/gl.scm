@@ -360,6 +360,10 @@ svga,swrast,virgl")))
          ;; Enable the Vulkan overlay layer on all architectures.
          "-Dvulkan-layers=device-select,overlay"
 
+         ;; Enable the codecs that were built by default as part of the
+         ;; 21.3.x releases to avoid functionality regressions.
+         "-Dvideo-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc"
+
          ;; Also enable the tests.
          "-Dbuild-tests=true"
 
@@ -511,6 +515,11 @@ svga,swrast,virgl")))
                              (string-append "\"" out "/lib/lib" layer-name ".so\"")))))))
                (for-each fix-layer-path '("VkLayer_MESA_device_select"
                                           "VkLayer_MESA_overlay"))))))))
+    (native-search-paths
+     (list (search-path-specification
+            ;; Ensure the Mesa VDPAU drivers can be found.
+            (variable "VDPAU_DRIVER_PATH")
+            (files '("lib/vdpau")))))
     (home-page "https://mesa3d.org/")
     (synopsis "OpenGL and Vulkan implementations")
     (description "Mesa is a free implementation of the OpenGL and Vulkan
