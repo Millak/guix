@@ -12337,6 +12337,48 @@ selection of file types and formats for handling genomic region data---all
 using the same syntax.")
     (license license:expat)))
 
+(define-public python-goatools
+  (package
+    (name "python-goatools")
+    (version "1.3.1")
+    ;; Pypi tarball doesn't include test files.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tanghaibao/goatools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0a295zk9jc8kny5vnka63q3gbksins42kcmgvskf8xy7hkca7cmq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Almost all tests require access to the internet.
+      #:tests? #false
+      #:test-flags
+      ;; These have syntax errors.
+      '(list "--ignore=tests/test_i195_sgd_gaf.py"
+             "--ignore=tests/test_i206.py"
+             "--ignore=tests/test_setup_dirs.py")))
+    (propagated-inputs (list python-docopt
+                             python-numpy
+                             python-openpyxl
+                             python-pandas
+                             python-pydot
+                             python-requests
+                             python-scipy
+                             python-statsmodels
+                             python-xlsxwriter))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/tanghaibao/goatools")
+    (synopsis "Python scripts to find enrichment of GO terms")
+    (description "Python scripts to find enrichment of GO terms.  In addition,
+this package is used for processing the obo-formatted file from Gene Ontology
+website.  The data structure is a directed acyclic graph that allows easy
+traversal from leaf to root.")
+    (license license:bsd-2)))
+
 (define-public python-loompy
   (package
     (name "python-loompy")
