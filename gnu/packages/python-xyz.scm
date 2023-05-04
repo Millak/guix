@@ -31125,6 +31125,28 @@ sources.  For example, it allows you to have all your casting and
 parsing rules in a single place.")
     (license license:bsd-3)))
 
+(define-public python-iteround
+  (package
+    (name "python-iteround")
+    (version "1.0.4")
+    ;; PyPI only has wheels.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cgdeboer/iteround")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1irw4sqrsgpc0ibxdv1hlx0d0jr1fqs48bj6mpfylzqkag9ywlfj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/cgdeboer/iteround")
+    (synopsis "Sum-safe rounding for Iterables")
+    (description "Iteround is a standard library sum-safe rounding library for
+Python iterables (lists, tuples, dicts).")
+    (license license:expat)))
+
 (define-public python-hypy-utils
   (package
     (name "python-hypy-utils")
