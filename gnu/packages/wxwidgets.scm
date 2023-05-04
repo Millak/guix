@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -282,27 +283,27 @@ and many other languages.")
        (patches (search-patches "python-wxwidgets-type-errors.patch"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "WXWIN" (assoc-ref inputs "wxwidgets"))
-             ;; Copy the waf executable to the source directory since it needs
-             ;; to be in a writable directory.
-             (copy-file (search-input-file inputs "/bin/waf")
-                        "bin/waf")
-             (setenv "WAF" "bin/waf")
-             ;; The build script tries to copy license files from the
-             ;; wxwidgets source tree. Prevent it.
-             (substitute* "wscript"
-               (("updateLicenseFiles\\(cfg\\)" all)
-                (string-append "#" all)))
-             ;; The build script tries to write to demo/version.py. So, we set
-             ;; correct write permissions.
-             (chmod "demo/version.py" #o644)
-             ;; Build only the python bindings, not wxwidgets also.
-             (substitute* "setup.py"
-               (("'build']") "'build_py', '--use_syswx']")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Configure the build options provided to the 'build.py' build
+              ;; script.
+              (setenv "WXPYTHON_BUILD_ARGS" "--use_syswx") ;use system wxwidgets
+              (setenv "WXWIN" #$(this-package-input "wxwidgets"))
+              ;; Copy the waf executable to the source directory since it needs
+              ;; to be in a writable directory.
+              (copy-file (search-input-file inputs "/bin/waf") "bin/waf")
+              (setenv "WAF" "bin/waf")
+              ;; The build script tries to copy license files from the
+              ;; wxwidgets source tree. Prevent it.
+              (substitute* "wscript"
+                (("updateLicenseFiles\\(cfg\\)" all)
+                 (string-append "#" all)))
+              ;; The build script tries to write to demo/version.py. So, we set
+              ;; correct write permissions.
+              (chmod "demo/version.py" #o644))))))
     (inputs
      (list gtk+ wxwidgets))
     (native-inputs
