@@ -4007,6 +4007,13 @@ message passing.")
      (list r-bh r-bigmemory-sri r-rcpp r-uuid))
     (inputs
      (list `(,util-linux "lib"))) ;for -luuid
+    (supported-systems
+     (fold delete
+           %supported-systems
+           ;; Build fails on these systems
+           '("armhf-linux"
+             "aarch64-linux"
+             "powerpc64le-linux")))
     (home-page "http://www.bigmemory.org")
     (synopsis "Manage large matrices with shared memory or memory-mapped files")
     (description "This package provides methods to create, store, access, and
