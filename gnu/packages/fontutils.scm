@@ -808,10 +808,8 @@ suite of the @code{psautohint} package.")
     (inputs (list python-fonttools))
     (native-inputs
      (list psautohint-font-data
-           python-fs
            python-pytest
            python-pytest-cov
-           python-pytest-randomly
            python-pytest-xdist
            python-setuptools-scm
            python-wheel))
