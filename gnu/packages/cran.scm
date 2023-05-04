@@ -5676,6 +5676,28 @@ freedom to design figures for better understanding complex patterns behind
 multi-dimensional data.")
     (license license:gpl2+)))
 
+(define-public r-rcircos
+  (package
+    (name "r-rcircos")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "RCircos" version))
+              (sha256
+               (base32
+                "1z0aam60p1b6q7csn50rrwdilm07myr05bw54s9ah8idzyxc7gav"))))
+    (properties `((upstream-name . "RCircos")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/RCircos/")
+    (synopsis "Circos 2D track plot")
+    (description
+     "This package provides a simple and flexible way to generate Circos 2D
+track plot images.  The types of plots include: heatmap, histogram, lines,
+scatterplot, tiles and plot items for further decorations include connector,
+link (lines and ribbons), and text (gene) label.  All functions require only R
+graphics packages that comes with the base installation.")
+    (license license:gpl2+)))
+
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
