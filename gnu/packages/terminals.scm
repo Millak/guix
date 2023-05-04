@@ -1379,7 +1379,7 @@ terminal are replicated to the others.
 (define-public tio
   (package
     (name "tio")
-    (version "1.36")
+    (version "2.5")
     (source
      (origin
        (method url-fetch)
@@ -1387,7 +1387,7 @@ terminal are replicated to the others.
              "https://github.com/tio/tio/releases/download/v"
              version "/tio-" version ".tar.xz"))
        (sha256
-        (base32 "0z27ghxjiw7y587l49jsb0anylm08m7imqjiwr21k1frxvydswsa"))))
+        (base32 "19s41i8f3kxchlaibp7wkq8gqgbpfdn0srkf1wcfx357j3p54f86"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libinih))
