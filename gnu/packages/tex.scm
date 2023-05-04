@@ -4812,34 +4812,32 @@ ipsum\" text, see the @code{lipsum} package).")
 
 (define-deprecated-package texlive-latex-blindtext texlive-blindtext)
 
-(define-public texlive-latex-dinbrief
+(define-public texlive-dinbrief
   (package
-    (name "texlive-latex-dinbrief")
+    (name "texlive-dinbrief")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "dinbrief"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0lb0kiy8fxzl6cnhcw1sggy6jrjvcd6kj1kkw3k9lkimm388yjz6"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dinbrief/"
+                   "source/latex/dinbrief/"
+                   "tex/latex/dinbrief/")
+             (base32
+              "0l6mmn3y07xglmh3h5f7pnpmyacqb2g6nqgq3q1p6k97kf708c5s")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/dinbrief"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-generated-file
-           (lambda _
-             (delete-file "dinbrief.drv")
-             #t))
-         (add-after 'unpack 'fix-encoding-error
-           (lambda _
-             (with-fluids ((%default-port-encoding "ISO-8859-1"))
-               (substitute* "dinbrief.dtx"
-                 (("zur Verf.+ung. In der Pr\"aambel")
-                  "zur Verf\"ung. In der Pr\"aambel")))
-             #t)))))
-    (home-page "https://www.ctan.org/pkg/dinbrief")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            (lambda _
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (with-directory-excursion "source/latex/dinbrief"
+                  (delete-file "dinbrief.drv")
+                  (substitute* "dinbrief.dtx"
+                    (("zur Verf.+ung. In der Pr\"aambel")
+                     "zur Verf\"ung. In der Pr\"aambel")))))))))
+    (home-page "https://ctan.org/pkg/dinbrief")
     (synopsis "German letter DIN style")
     (description
      "This package implements a document layout for writing letters according
@@ -4851,6 +4849,8 @@ English names from which the user can recognize what they are used for.  In
 addition there are example files showing how letters may be created with the
 package.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-dinbrief texlive-dinbrief)
 
 (define-public texlive-latex-draftwatermark
   (package
