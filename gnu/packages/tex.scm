@@ -11909,6 +11909,29 @@ a number of @code{\\magsteps} to change size; from this are defined commands
 @code{\\larger}, @code{\\smaller}, @code{\\textlarger}, etc.")
     (license license:public-domain)))
 
+(define-public texlive-everypage
+  (package
+    (name "texlive-everypage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/everypage/"
+                   "source/latex/everypage/"
+                   "tex/latex/everypage/")
+             (base32
+              "1kw7n7az823sc8gjrd4gjkkak1780yn76zswlnwapxmvl62pv9xk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/everypage")
+    (synopsis "Provide hooks to be run on every page of a document")
+    (description
+     "The package provides hooks to perform actions on every page, or on the
+current page.  Specifically, actions are performed after the page is composed,
+but before it is shipped, so they can be used to prepare the output page in
+tasks like putting watermarks in the background, or in setting the next page
+layout, etc.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-everysel
   (package
     (inherit
