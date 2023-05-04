@@ -24,7 +24,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2015, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
@@ -2463,6 +2463,30 @@ by the test.")
     (description "@code{pytest-mypi} is a static type checker plugin for
 Pytest that runs the mypy static type checker on your source files as part of
 a Pytest test execution.")
+    (license license:expat)))
+
+(define-public python-pytest-mypy-plugins
+  (package
+    (name "python-pytest-mypy-plugins")
+    (version "1.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-mypy-plugins" version))
+              (sha256
+               (base32
+                "05ng29b05gasqj195i9hyyhx5shmwypyvajb7plxwha3g36qq98z"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (propagated-inputs (list python-chevron
+                             python-decorator
+                             python-mypy
+                             python-pytest
+                             python-pyyaml
+                             python-regex))
+    (home-page "https://github.com/TypedDjango/pytest-mypy-plugins")
+    (synopsis "Pytest plugin for writing tests for mypy plugins")
+    (description "This package provides a pytest plugin for writing tests for
+mypy plugins.")
     (license license:expat)))
 
 (define-public python-pytest-pep8
