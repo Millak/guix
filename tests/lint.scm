@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
@@ -43,7 +43,8 @@
   #:use-module (guix lint)
   #:use-module (guix ui)
   #:use-module (guix swh)
-  #:use-module ((guix gexp) #:select (gexp local-file gexp?))
+  #:use-module ((guix gexp)
+                #:select (gexp local-file computed-file gexp?))
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module ((guix import hackage) #:select (%hackage-url))
   #:use-module ((guix import stackage) #:select (%stackage-url))
@@ -1297,6 +1298,12 @@
 (test-equal "formatting: alright"
   '()
   (check-formatting (dummy-package "x")))
+
+(test-assert "archival: not an origin"
+  (warning-contains? "not an origin"
+                     (check-archival
+                      (dummy-package
+                       "x" (source (computed-file "x-src" #t))))))
 
 (test-assert "archival: missing content"
   (let* ((origin   (origin
