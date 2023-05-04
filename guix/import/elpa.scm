@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2018, 2020-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -456,8 +456,11 @@ type '<elpa-package>'."
 
 (define* (elpa-recursive-import package-name #:optional (repo 'gnu))
   (recursive-import package-name
-                    #:repo repo
-                    #:repo->guix-package elpa->guix-package
+                    #:repo->guix-package
+                    (lambda (name . rest)
+                      (apply elpa->guix-package name
+                             #:repo repo
+                             rest))
                     #:guix-name elpa-guix-name))
 
 ;;; elpa.scm ends here
