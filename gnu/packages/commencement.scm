@@ -3561,6 +3561,13 @@ COREUTILS-FINAL vs. COREUTILS, etc."
                        (union-build (assoc-ref %outputs "static")
                                     (list (assoc-ref %build-inputs
                                                      "libc-static")))
+                       ;; XXX Remove once an empty librt.a is added to
+                       ;; libc:out.
+                       (copy-file
+                        (string-append (assoc-ref %outputs "out")
+                                       "/lib/libpthread.a")
+                        (string-append (assoc-ref %outputs "out")
+                                       "/lib/librt.a"))
                        #t))))
 
       (native-search-paths
