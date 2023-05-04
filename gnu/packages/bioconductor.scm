@@ -10101,6 +10101,36 @@ processing to visualization and annotation.")
 large datasets, including support for on-disk data representation.")
     (license license:expat)))
 
+(define-public r-multibac
+  (package
+    (name "r-multibac")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MultiBaC" version))
+       (sha256
+        (base32 "1qwf1mvw81hb929xpnx5x910f7qnax9lkylhwzcdw1814s4zj25i"))))
+    (properties `((upstream-name . "MultiBaC")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2
+           r-matrix
+           r-multiassayexperiment
+           r-pcamethods
+           r-plotrix
+           r-ropls))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/MultiBaC")
+    (synopsis "Multiomic batch effect correction")
+    (description
+     "MultiBaC is a strategy to correct batch effects from multiomic datasets
+distributed across different labs or data acquisition events.  MultiBaC is
+able to remove batch effects across different omics generated within separate
+batches provided that at least one common omic data type is included in all
+the batches considered.")
+    (license license:gpl3)))
+
 (define-public r-multtest
   (package
     (name "r-multtest")
