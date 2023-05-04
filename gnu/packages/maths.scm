@@ -4510,9 +4510,7 @@ full text searching.")
     (build-system cmake-build-system)
     (arguments `(#:tests? #f))          ; no test target
     (inputs
-     `(("openblas" ,openblas)
-       ("lapack" ,lapack)
-       ("arpack" ,arpack-ng)))
+     (list openblas lapack arpack-ng))
     (home-page "https://arma.sourceforge.net/")
     (synopsis "C++ linear algebra library")
     (description
