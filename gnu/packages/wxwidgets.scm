@@ -282,6 +282,7 @@ and many other languages.")
            (delete-file-recursively "ext/wxWidgets")))
        (patches (search-patches "python-wxwidgets-type-errors.patch"))))
     (build-system python-build-system)
+    (outputs '("out" "debug"))
     (arguments
      (list
       #:phases
@@ -290,7 +291,9 @@ and many other languages.")
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Configure the build options provided to the 'build.py' build
               ;; script.
-              (setenv "WXPYTHON_BUILD_ARGS" "--use_syswx") ;use system wxwidgets
+              (setenv "WXPYTHON_BUILD_ARGS"
+                      (string-join '("--debug"        ;include debug symbols
+                                     "--use_syswx"))) ;use system wxwidgets
               (setenv "WXWIN" #$(this-package-input "wxwidgets"))
               ;; Copy the waf executable to the source directory since it needs
               ;; to be in a writable directory.
