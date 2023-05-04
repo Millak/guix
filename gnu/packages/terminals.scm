@@ -922,9 +922,8 @@ a server/client mode.")
     (arguments
      '(#:tests? #f))                    ; no check phase
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)                   ; for pod2man
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal perl ; for pod2man
+           pkg-config))
     (inputs
      (list libxft vte))
     (home-page "https://launchpad.net/sakura")
