@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2020 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2015, 2020, 2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016, 2017, 2021, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -480,19 +480,19 @@ errors.")
 (define-public rdiff-backup
   (package
     (name "rdiff-backup")
-    (version "2.0.5")
+    (version "2.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/rdiff-backup/rdiff-backup/releases/"
                            "download/v" version "/rdiff-backup-" version ".tar.gz"))
        (sha256
-        (base32 "11rvjcp77zwgkphz1kyf5yqgr3rlss7dm9xzmvpvc4lp99xq7drb"))))
+        (base32 "1xfvy1xql8zl7rprnaxwya8bp9g7rg8v5pwhr93svhj2594m30cl"))))
     (build-system python-build-system)
     (native-inputs
      (list python-setuptools-scm))
     (inputs
-     (list python librsync))
+     (list python python-pyaml librsync))
     (arguments
      `(#:tests? #f))                    ; Tests require root/sudo
     (home-page "https://rdiff-backup.net/")
