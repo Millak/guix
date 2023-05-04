@@ -4783,20 +4783,22 @@ packages.")
 
 (define-deprecated-package texlive-latex-bigfoot texlive-bigfoot)
 
-(define-public texlive-latex-blindtext
+(define-public texlive-blindtext
   (package
-    (name "texlive-latex-blindtext")
+    (name "texlive-blindtext")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "blindtext"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1jrja9b1pzdh9zgv1jh807w4xijqja58n2mqny6dkwicv8qfgbfg"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/blindtext/"
+                   "source/latex/blindtext/"
+                   "tex/latex/blindtext/")
+             (base32
+              "1gakawih3mzm5jh01kb44sjpsa4r8c3zwzig5bac37g4ha2vqska")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/blindtext"))
-    (home-page "https://www.ctan.org/pkg/blindtext")
+    (propagated-inputs
+     (list texlive-tools))
+    (home-page "https://ctan.org/pkg/blindtext")
     (synopsis "Producing 'blind' text for testing")
     (description
      "The package provides the commands @code{\\blindtext} and
@@ -4807,6 +4809,8 @@ supports three languages, @code{english}, @code{(n)german} and @code{latin};
 the @code{latin} option provides a short \"lorem ipsum\" (for a fuller \"lorem
 ipsum\" text, see the @code{lipsum} package).")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-blindtext texlive-blindtext)
 
 (define-public texlive-latex-dinbrief
   (package
