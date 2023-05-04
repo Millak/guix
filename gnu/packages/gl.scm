@@ -267,21 +267,17 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "22.2.4")
+    (version "23.0.3")
     (source
       (origin
         (method url-fetch)
-        (uri (list (string-append "https://mesa.freedesktop.org/archive/"
+        (uri (list (string-append "https://archive.mesa3d.org/"
                                   "mesa-" version ".tar.xz")
                    (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
-                                  "mesa-" version ".tar.xz")
-                   (string-append "ftp://ftp.freedesktop.org/pub/mesa/"
-                                  version "/mesa-" version ".tar.xz")))
+                                  "mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "1azpr68pdg63yq3igmzwsgn2ypg49m0mp3hfkq0lcyswr99npmv5"))
-        (patches
-         (list (search-patch "mesa-fix-sporadic-test-failures.patch")))))
+          "1mcjf41x2bhxs6yxars7nh2vfryfw50g6rvbcfbb1wqdv2jn4qrq"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -330,7 +326,7 @@ r300,r600,swrast,tegra,v3d,vc4,virgl"))
              ((or "powerpc64le-linux" "powerpc-linux" "riscv64-linux")
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
              (_
-              '("-Dgallium-drivers=iris,nouveau,r300,r600,radeonsi,\
+              '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
 svga,swrast,virgl")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio

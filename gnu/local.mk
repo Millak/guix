@@ -1558,7 +1558,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/mercurial-hg-extension-path.patch	\
   %D%/packages/patches/mercurial-openssl-compat.patch		\
   %D%/packages/patches/mesa-opencl-all-targets.patch		\
-  %D%/packages/patches/mesa-fix-sporadic-test-failures.patch	\
   %D%/packages/patches/mhash-keygen-test-segfault.patch		\
   %D%/packages/patches/mia-fix-boost-headers.patch		\
   %D%/packages/patches/mia-vtk9.patch				\
