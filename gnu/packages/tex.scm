@@ -4972,36 +4972,30 @@ contents.")
 
 (define-deprecated-package texlive-latex-etoc texlive-etoc)
 
-(define-public texlive-latex-expdlist
+(define-public texlive-expdlist
   (package
-    (name "texlive-latex-expdlist")
+    (name "texlive-expdlist")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "expdlist"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1x7byk6x10njir3y9rm56glhdzrxwqag7gsnw2sqn1czlq525w7r"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/expdlist/"
+                   "source/latex/expdlist/"
+                   "tex/latex/expdlist/")
+             (base32
+              "1kylmj615hmbmjbynn5bfzhfz0wk1drxmg0kjqljnglffkb6irv6")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/expdlist"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-generated-file
-           (lambda _
-             (for-each delete-file
-                       (find-files "." "\\.drv$"))
-             #t)))))
-    (home-page "https://www.ctan.org/pkg/expdlist")
+    (home-page "https://ctan.org/pkg/expdlist")
     (synopsis "Expanded description environments")
     (description
-     "The package provides additional features for the LaTeX
-@code{description} environment, including adjustable left margin.  The package
-also allows the user to \"break\" a list (for example, to interpose a comment)
-without affecting the structure of the list (this works for @code{itemize} and
-@code{enumerate} lists, and numbered lists remain in sequence).")
+     "The package provides additional features for the LaTeX @code{description} environment,
+including adjustable left margin.  The package also allows the user to break
+a list (for example, to interpose a comment) without affecting the structure
+of the list (this works for itemize and eumerate lists and numbered lists
+remain in sequence).")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-expdlist texlive-expdlist)
 
 (define-public texlive-filemod
   (package

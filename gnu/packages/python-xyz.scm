@@ -7250,8 +7250,8 @@ capabilities.")
            texlive-bin
            texlive-cbfonts
            texlive-cm-super
+           texlive-expdlist
            texlive-greek-fontenc
-           texlive-latex-expdlist
            texlive-polyglossia
            texlive-xindy))
     (inputs '())
@@ -8044,10 +8044,10 @@ toolkits.")
            texlive-amsfonts
            texlive-amsmath
            texlive-babel
+           texlive-expdlist
            texlive-fontspec
            texlive-unicode-math
            texlive-etoolbox
-           texlive-latex-expdlist
            texlive-underscore
            texlive-latex-type1cm
            texlive-times
