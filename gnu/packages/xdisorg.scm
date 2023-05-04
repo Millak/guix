@@ -920,15 +920,15 @@ selection's dimensions to stdout.")
     (arguments
      '(#:tests? #f))            ; no "check" target
     (inputs
-     `(("glm" ,glm)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libxcomposite" ,libxcomposite)
-       ("libxfixes" ,libxfixes)
-       ("libxrandr" ,libxrandr)
-       ("mesa" ,mesa)
-       ("slop" ,slop)
-       ("zlib" ,zlib)))
+     (list glm
+           libjpeg-turbo
+           libpng
+           libxcomposite
+           libxfixes
+           libxrandr
+           mesa
+           slop
+           zlib))
     (home-page "https://github.com/naelstrof/maim")
     (synopsis "Screenshot utility for X Window System")
     (description
