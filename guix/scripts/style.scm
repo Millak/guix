@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -242,6 +242,17 @@ doing it."
             (location-line loc)
             (location-column loc)))
 
+(define (trivial-package-arguments? package)
+  "Return true if PACKAGE has zero arguments or only \"trivial\" arguments
+guaranteed not to refer to input labels."
+  (let loop ((arguments (package-arguments package)))
+    (match arguments
+      (()
+       #t)
+      (((? keyword?) value rest ...)
+       (and (or (boolean? value) (number? value) (string? value))
+            (loop rest))))))
+
 (define* (simplify-package-inputs package
                                   #:key (policy 'silent)
                                   (edit-expression edit-expression))
@@ -276,7 +287,7 @@ PACKAGE."
                             ;; If PACKAGE has no arguments, labels are known
                             ;; to have no effect: this is a "safe" change, but
                             ;; it may change the derivation.
-                            (if (null? (package-arguments package))
+                            (if (trivial-package-arguments? package)
                                 (const #t)
                                 label-matches?))
                            ('always
