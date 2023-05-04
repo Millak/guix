@@ -376,7 +376,8 @@ type '<elpa-package>'."
       (license ,license))
    dependencies-names))
 
-(define* (elpa->guix-package name #:key (repo 'gnu) version)
+(define* (elpa->guix-package name #:key (repo 'gnu) version
+                             #:allow-other-keys)
   "Fetch the package NAME from REPO and produce a Guix package S-expression."
   (match (fetch-elpa-package name repo)
     (#false
