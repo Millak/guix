@@ -27,6 +27,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix modules)
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
@@ -151,6 +152,8 @@ fundamental object types for C.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:imported-modules (source-module-closure
+                          '((guix build python-build-system)))
       #:make-flags
       #~(list (string-append "CFLAGS=-DRENEWAL_PROG_PATH=\\\""
                              #$(this-package-input "adcli") "/sbin/adcli"
@@ -184,6 +187,8 @@ fundamental object types for C.")
                              "/xml/dtd/docbook/catalog.xml"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'ensure-no-mtimes-pre-1980
+            (@@ (guix build python-build-system) ensure-no-mtimes-pre-1980))
           (add-after 'patch-source-shebangs 'patch-more-shebangs
             (lambda _
               (substitute* '("src/tools/analyzer/sss_analyze"
@@ -266,7 +271,7 @@ fundamental object types for C.")
            p11-kit ; for PKCS#11 support
            pcre2
            popt
-           python
+           python ; for wrap-program phase
            samba/pinned
            talloc
            tdb
@@ -286,6 +291,7 @@ fundamental object types for C.")
            libxslt
            openssh ; for tests
            pkg-config
+           python-toolchain
            po4a
            softhsm ; for tests
            `(,util-linux "lib"))) ; for uuid.h, reqired for KCM
