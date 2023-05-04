@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
@@ -1787,6 +1787,8 @@ MANIFEST."
            (cons (gexp-input thing output)
                  (append-map entry->texlive-input deps))
            '()))))
+  (define texlive-inputs
+    (append-map entry->texlive-input (manifest-entries manifest)))
   (define texlive-bin
     (module-ref (resolve-interface '(gnu packages tex)) 'texlive-bin))
   (define coreutils
@@ -1810,8 +1812,7 @@ MANIFEST."
           ;; that TeX live can resolve the parent and grandparent directories
           ;; correctly.  There might be a more elegant way to accomplish this.
           (union-build "/tmp/texlive"
-                       '#$(append-map entry->texlive-input
-                                      (manifest-entries manifest))
+                       '#$texlive-inputs
                        #:create-all-directories? #t
                        #:log-port (%make-void-port "w"))
 
@@ -1868,7 +1869,7 @@ MANIFEST."
               (install-file (string-append b "/ls-R") a))))))
 
   (mlet %store-monad ((texlive-base (manifest-lookup-package manifest "texlive-base")))
-    (if texlive-base
+    (if (and texlive-base (pair? texlive-inputs))
         (gexp->derivation "texlive-font-maps" build
                           #:substitutable? #f
                           #:local-build? #t
