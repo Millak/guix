@@ -1115,7 +1115,7 @@ cuirass-jobs: $(GOBJECTS)
 
 # Git auto-configuration.
 .git/hooks/pre-push: etc/git/pre-push
-	cp etc/git/pre-push .git/hooks/pre-push
+	-cp etc/git/pre-push .git/hooks/pre-push
 
 .git/config: etc/git/gitconfig
 	-git config include.path ../etc/git/gitconfig
