@@ -715,22 +715,26 @@ It also includes runtime support libraries for these languages.")
             (snippet gcc-canadian-cross-objdump-snippet)))
    (arguments
     (substitute-keyword-arguments (package-arguments gcc-8)
-      ((#:phases phases #~%standard-phases)
+      ((#:phases phases '%standard-phases)
        (if (target-hurd?)
-           #~(modify-phases #$phases
-               (add-after 'unpack 'patch-hurd-libpthread
-                 (lambda _
-                   (define patch
-                     #$(local-file
-                        (search-patch "gcc-11-libstdc++-hurd-libpthread.patch")))
-                   (invoke "patch" "--force" "-p1" "-i" patch))))
+           `(modify-phases ,phases
+              (add-after 'unpack 'patch-hurd-libpthread
+                (lambda (#:key inputs)
+                  (invoke "patch" "--force" "-p1" "-i"
+                          (assoc-ref inputs "hurd-patch")
+                          patch))))
            phases))))
    (properties
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-11-aarch64-micro-architectures)
        ("armhf" ,@%gcc-11-armhf-micro-architectures)
        ("x86_64" ,@%gcc-11-x86_64-micro-architectures))
-      ,@(package-properties gcc-8)))))
+      ,@(package-properties gcc-8)))
+   (native-inputs
+    `(,@(if (target-hurd?)
+            `(("hurd-patch" ,(search-patch "gcc-11-libstdc++-hurd-libpthread.patch")))
+            '())
+      ,@(package-native-inputs gcc-8)))))
 
 (define-public gcc-12
   (package
