@@ -19824,6 +19824,24 @@ from the header, as well as section details and data available.")
      @end enumerate")
     (license (license:x11-style "file://LICENSE"))))
 
+(define-public python-chevron
+  (package
+    (name "python-chevron")
+    (version "0.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "chevron" version))
+              (sha256
+               (base32
+                "1gqfh00ics2k1sm5g46l3bi8cl5fc5d1cwzh1ylvcxvdvypklqc7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (home-page "https://github.com/noahmorrison/chevron")
+    (synopsis "Mustache templating language renderer")
+    (description "This package provides a Python implementation of the
+Mustache templating language renderer.")
+    (license license:expat)))
+
 (define-public python-dulwich
   (package
     (name "python-dulwich")
