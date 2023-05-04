@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -488,7 +489,28 @@ svga,swrast,virgl")))
                                                        file)
                                               (symlink reference file)))
                                         others))))
-                         (delete-duplicates inodes))))))))
+                         (delete-duplicates inodes)))))
+         (add-after 'install 'set-layer-path-in-manifests
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (implicit-path (string-append
+                                    out
+                                    "/share/vulkan/implicit_layer.d/"))
+                    (explicit-path (string-append
+                                    out
+                                    "/share/vulkan/explicit_layer.d/"))
+                    (fix-layer-path
+                     (lambda (layer-name)
+                       (let* ((explicit (string-append explicit-path layer-name ".json"))
+                              (implicit (string-append implicit-path layer-name ".json"))
+                              (manifest (if (file-exists? explicit)
+                                            explicit
+                                            implicit)))
+                         (substitute* manifest
+                           (((string-append "\"lib" layer-name ".so\""))
+                             (string-append "\"" out "/lib/lib" layer-name ".so\"")))))))
+               (for-each fix-layer-path '("VkLayer_MESA_device_select"
+                                          "VkLayer_MESA_overlay"))))))))
     (home-page "https://mesa3d.org/")
     (synopsis "OpenGL and Vulkan implementations")
     (description "Mesa is a free implementation of the OpenGL and Vulkan
