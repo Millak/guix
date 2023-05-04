@@ -5421,15 +5421,14 @@ for cases where libaom (the reference encoder) is too slow.")
     (build-system meson-build-system)
     (arguments '(#:glib-or-gtk? #t))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("python" ,python-wrapper)))
+     (list gtk+ python-wrapper))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")         ; for glib-compile-resources
-       ("gtk+-bin" ,gtk+ "bin")         ; For gtk-update-icon-cache
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list desktop-file-utils ; for update-desktop-database
+           gettext-minimal
+           `(,glib "bin") ; for glib-compile-resources
+           `(,gtk+ "bin") ; For gtk-update-icon-cache
+           pkg-config
+           vala))
     (home-page "https://github.com/phw/peek")
     (synopsis "Simple animated GIF screen recorder")
     (description
