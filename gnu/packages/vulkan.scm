@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
@@ -27,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -227,6 +228,8 @@ interpretation of the specifications for these languages.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? (not (or (%current-target-system)
+                        (target-riscv64?)))
       #:configure-flags
       #~(list (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
                              (dirname (dirname
