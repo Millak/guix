@@ -832,7 +832,7 @@ and support for fonts with ligatures.")
 (define-public vifm
   (package
     (name "vifm")
-    (version "0.12.1")
+    (version "0.13")
     (source
       (origin
         (method url-fetch)
@@ -843,7 +843,7 @@ and support for fonts with ligatures.")
                               "vifm-" version ".tar.bz2")))
         (sha256
          (base32
-          "122ncp319xisxjxcy33bshjib6905bb0aaz0xjdfkkycplz83qlg"))))
+          "0xahsjdimpqv75jlfnbh0d2mxn21s53xrv37x6npch3rk9s974hd"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-build-timestamp")
@@ -851,14 +851,14 @@ and support for fonts with ligatures.")
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'patch-test-shebangs
            (lambda _
-             (substitute* (cons* "src/background.c"
+             (substitute* (cons* "data/vim/plugin/vifm.vim"
                                  "src/cfg/config.c"
                                  (find-files "tests" "\\.c$"))
                (("/bin/sh") (which "sh"))
                (("/bin/bash") (which "bash")))
              ;; This test segfaults
              (substitute* "tests/Makefile"
-               (("misc") ""))))
+               ((" menus misc") ""))))
           (add-after 'install 'install-vim-plugin-files
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
