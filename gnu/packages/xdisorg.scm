@@ -1967,8 +1967,7 @@ natural language input and provide results.")
            libxrandr
            startup-notification))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (home-page "https://gitlab.com/o9000/tint2")
     (synopsis "Lightweight task bar")
     (description
