@@ -1118,7 +1118,7 @@ cuirass-jobs: $(GOBJECTS)
 	cp etc/git/pre-push .git/hooks/pre-push
 
 .git/config: etc/git/gitconfig
-	git config include.path ../etc/git/gitconfig
+	-git config include.path ../etc/git/gitconfig
 
 nodist_noinst_DATA = .git/hooks/pre-push .git/config
 
