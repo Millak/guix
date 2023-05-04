@@ -7686,19 +7686,17 @@ complexity samples.")
 (define-public python-screed
   (package
     (name "python-screed")
-    (version "1.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "screed" version))
        (sha256
-        (base32
-         "148vcb7w2wr6a4w6vs2bsxanbqibxfk490zbcbg4m61s8669zdjx"))))
-    (build-system python-build-system)
+        (base32 "0slva743xn93h4sl5zg2as4ricnnj5pp6nw9dm4qclk4i9xglkvk"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-runner))
-    (inputs
-     (list python-bz2file))
+     (list python-pytest-cov
+           python-pytest-runner))
     (home-page "https://github.com/dib-lab/screed/")
     (synopsis "Short read sequence database utilities")
     (description "Screed parses FASTA and FASTQ files and generates databases.
