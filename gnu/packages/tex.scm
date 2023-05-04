@@ -4852,28 +4852,30 @@ package.")
 
 (define-deprecated-package texlive-latex-dinbrief texlive-dinbrief)
 
-(define-public texlive-latex-draftwatermark
+(define-public texlive-draftwatermark
   (package
-    (name "texlive-latex-draftwatermark")
+    (name "texlive-draftwatermark")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "draftwatermark"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0rhn74ywv000b89w8qjf1i0qsk6kd1mjapfwis14jwjvbjqgvj95"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/draftwatermark/"
+                   "source/latex/draftwatermark/"
+                   "tex/latex/draftwatermark/")
+             (base32
+              "04l3gqiq0bhzbz8zxr7428fap2x1skkaq5ppbambc4lk8c7iw6da")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/draftwatermark"))
-    (home-page "https://www.ctan.org/pkg/draftwatermark")
+    (propagated-inputs
+     (list texlive-everypage texlive-graphics texlive-kvoptions))
+    (home-page "https://ctan.org/pkg/draftwatermark")
     (synopsis "Put a grey textual watermark on document pages")
     (description
-     "This package provides a means to add a textual, light grey watermark on
-every page or on the first page of a document.  Typical usage may consist in
-writing words such as DRAFT or CONFIDENTIAL across document pages.  The
+     "This package provides a means to add a textual, light grey watermark
+on every page or on the first page of a document.  Typical usage may consist
+in writing words such as DRAFT or CONFIDENTIAL across document pages.  The
 package performs a similar function to that of @code{draftcopy}, but its
 implementation is output device independent, and made very simple by relying
-on everypage.")
+on @code{everypage}.")
     (license license:lppl1.3+)))
 
 (define-public texlive-latex-environ
@@ -11456,12 +11458,12 @@ and selecting references used in a publication.")
     (propagated-inputs (list texlive-apacite
                              texlive-babel
                              texlive-booktabs
+                             texlive-draftwatermark
                              texlive-endnotes
                              texlive-etoolbox
                              texlive-fancyhdr
                              texlive-xstring
                              texlive-graphics
-                             texlive-latex-draftwatermark
                              texlive-latex-float
                              texlive-lm
                              texlive-substr
