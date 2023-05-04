@@ -4951,7 +4951,7 @@ logging, so games can be viewed again.")
 (define-public pinball
   (package
     (name "pinball")
-    (version "0.3.20201218")
+    (version "0.3.20230219")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -4960,7 +4960,7 @@ logging, so games can be viewed again.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "056jk98v6zlkrj9vjm06p0pmpnav1x658n6qw10v5klg5gr6ldf7"))
+               "02by4df9hgda5zhl9p3rwg0s4mlxdr0v8f8dk152vjp43p1wqvfp"))
              (patches (search-patches "pinball-system-ltdl.patch"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -4969,27 +4969,23 @@ logging, so games can be viewed again.")
      (list glu
            libltdl
            mesa
-           sdl
-           sdl-image
-           sdl-mixer))
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer))))
     (arguments
-     '(#:configure-flags
-       ;; Configure tries to use pkg-config, but falls short, so:
-       (list (string-append "CPPFLAGS=-I"
-                            (assoc-ref %build-inputs "sdl-image")
-                            "/include/SDL -I"
-                            (assoc-ref %build-inputs "sdl-mixer")
-                            "/include/SDL"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           ;; The `bootstrap` script tries to call a script with
-           ;; `/usr/bin/make` in the shebang, but ultimately does the same as
-           ;; autoreconf would do, so just use that.
-           (lambda _
-             (symlink "README.md" "README")
-             (display (which "autoreconf")) (newline)
-             (invoke "autoreconf" "-vif"))))))
+     (list
+      #:configure-flags
+      ;; Configure tries to use pkg-config, but falls short, so:
+      #~(list (string-append "CPPFLAGS=-I"
+                             #$(this-package-input "sdl-union")
+                             "/include/SDL2"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            ;; The `bootstrap` script tries to call a script with
+            ;; `/usr/bin/make` in the shebang, but ultimately does the same as
+            ;; autoreconf would do, so just use that.
+            (lambda _
+              (symlink "README.md" "README")
+              (invoke "autoreconf" "-vif"))))))
     (home-page "https://pinball.sourceforge.net")
     (synopsis "Pinball simulator")
     (description "The Emilia Pinball Project is a pinball simulator.  There
