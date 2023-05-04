@@ -5786,6 +5786,7 @@ set.")
                                      texlive-cm
                                      texlive-courier
                                      texlive-enumitem
+                                     texlive-etoc
                                      texlive-etoolbox
                                      texlive-fancyhdr
                                      texlive-fancyvrb
@@ -5799,7 +5800,6 @@ set.")
                                      texlive-generic-listofitems
                                      texlive-latex-cmap
                                      texlive-latex-colortbl
-                                     texlive-latex-etoc
                                      texlive-latex-float
                                      texlive-latex-fncychap
                                      texlive-latex-framed

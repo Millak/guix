@@ -4935,36 +4935,42 @@ also provided.")
 
 (define-deprecated-package texlive-latex-eqparbox texlive-eqparbox)
 
-(define-public texlive-latex-etoc
+(define-public texlive-etoc
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-etoc"
-              '("/doc/latex/etoc/README.md"
-                "/doc/latex/etoc/etoc.pdf"
-                "/tex/latex/etoc/")
-              (base32
-               "0198cn75m1y8ggbfv1qlnif0d9275f6mxqsansyqw4np0rv6q9sv")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/etoc")
-    (synopsis "Completely customisable TOCs")
+    (name "texlive-etoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etoc/"
+                   "source/latex/etoc/"
+                   "tex/latex/etoc/")
+             (base32
+              "04vjfn4jadxbc38r08r9pwvpj7szvk88hiav35iqhl3p78xri7z4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/etoc")
+    (synopsis "Customisable table of contents")
     (description
-     "This package gives the user complete control of how the entries of
-the table of contents should be constituted from the name, number, and page
-number of each sectioning unit.  The layout is controlled by the definition
-of ‘line styles’ for each sectioning level used in the document.
+     "This package gives the user complete control of how the entries of the
+table of contents should be constituted from the name, number, and page number
+of each sectioning unit.  The layout is controlled by the definition of line
+styles for each sectioning level used in the document.
 
 The package provides its own custom line styles (which may be used as
-examples), and continues to support the standard formatting inherited from
-the LaTeX document classes, but the package can also allow the user to
-delegate the details to packages dealing with list making environments (such
-as enumitem).  The package’s default global style typesets tables of contents
-in a multi-column format, with either a standard heading, or a ruled title
+examples), and continues to support the standard formatting inherited from the
+LaTeX document classes, but the package can also allow the user to delegate
+the details to packages dealing with list making environments (such as
+@code{enumitem}).  The package's default global style typesets tables of
+contents in a multi-column format, with either a standard heading, or a ruled
+title
 (optionally with a frame around the table).
 
-The @code{\\tableofcontents} command may be used arbitrarily many times in
-the same document, while @code{\\localtableofcontents} provides a ‘local’
-table of contents.")
-    (license license:lppl1.3c+)))
+The @code{\\tableofcontents} command may be used arbitrarily many times in the
+same document, while @code{\\localtableofcontents} provides a local table of
+contents.")
+    (license license:lppl1.3c)))
+
+(define-deprecated-package texlive-latex-etoc texlive-etoc)
 
 (define-public texlive-latex-expdlist
   (package
