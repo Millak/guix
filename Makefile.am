@@ -1115,10 +1115,14 @@ cuirass-jobs: $(GOBJECTS)
 
 # Git auto-configuration.
 .git/hooks/pre-push: etc/git/pre-push
-	-cp etc/git/pre-push .git/hooks/pre-push
+	$(AM_V_at)if test -d .git; then \
+	cp etc/git/pre-push .git/hooks/pre-push; \
+	fi
 
 .git/config: etc/git/gitconfig
-	-git config include.path ../etc/git/gitconfig
+	$(AM_V_at)if command -v git >/dev/null && test -d .git; then \
+	git config include.path ../etc/git/gitconfig; \
+	fi
 
 nodist_noinst_DATA = .git/hooks/pre-push .git/config
 
