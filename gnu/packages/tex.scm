@@ -4903,20 +4903,22 @@ define a new author interface to creating new environments.")
 
 (define-deprecated-package texlive-latex-environ texlive-environ)
 
-(define-public texlive-latex-eqparbox
+(define-public texlive-eqparbox
   (package
-    (name "texlive-latex-eqparbox")
+    (name "texlive-eqparbox")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "eqparbox"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1ib5xdwcj5wk23wgk41m2hdcjr1dzrs4l3wwnpink9mlapz12wjs"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eqparbox/"
+                   "source/latex/eqparbox/"
+                   "tex/latex/eqparbox/")
+             (base32
+              "16c5dyd4bz45a2c1ppbq05h9ixg15srk5az5pld5gpv4j0zwzrqw")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/eqparbox"))
-    (home-page "https://www.ctan.org/pkg/eqparbox")
+    (propagated-inputs
+     (list texlive-environ texlive-tools))
+    (home-page "https://ctan.org/pkg/eqparbox")
     (synopsis "Create equal-widthed parboxes")
     (description
      "LaTeX users sometimes need to ensure that two or more blocks of text
@@ -4929,7 +4931,9 @@ where they are in the document---will stretch to fit the widest
 for a variety of alignment purposes, as is evidenced by the examples in
 @code{eqparbox}'s documentation.  Various derivatives of @code{\\eqparbox} are
 also provided.")
-    (license license:lppl1.3+)))
+    (license license:lppl1.3c)))
+
+(define-deprecated-package texlive-latex-eqparbox texlive-eqparbox)
 
 (define-public texlive-latex-etoc
   (package
