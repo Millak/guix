@@ -26,6 +26,50 @@
 (channel-news
  (version 0)
 
+ (entry (commit "ba5da5125a81307500982517e2f458d57b024668")
+        (title
+         (en "New @code{arguments} rule for @command{guix style}")
+         (de "Neue Stilregel @code{arguments} für @command{guix style}")
+         (fr "Nouvelle règle @code{arguments} pour @command{guix style}"))
+        (body
+         (en "The @command{guix style} command has a new @dfn{styling rule}
+for package definitions.  Package writers may now run the following command:
+
+@example
+guix style -L /path/to/channel -S arguments @var{package}
+@end example
+
+This command rewrites the @code{arguments} field of @var{package} so that it
+uses G-expressions instead of classical quasiquotation.
+
+Run @command{info \"(guix) Invoking guix style\"} for more info.")
+         (de "Der Befehl @command{guix style} verfügt über eine neue @dfn{Stilregel}
+für Paketdefinitionen.  Paketautoren können jetzt folgenden Befehl benutzen:
+
+@example
+guix style -L /pfad/zum/kanal -S arguments @var{Paket}
+@end example
+
+Dadurch wird das Feld @code{arguments} in @var{Paket} so umgeschrieben, dass
+G-Ausdrücke (gexps) anstelle von klassischer Quasiquotierung verwendet
+werden.
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix style\"} aus, um
+mehr Informationen zu erhalten.")
+         (fr "La commande @command{guix style} a une nouvelle @dfn{règle de
+style} pour les définitions de paquets.  Les auteurices de paquets peuvent
+maintenant lancer la commande suivante :
+
+@example
+guix style -L /chemin/vers/canal -S arguments @var{paquet}
+@end example
+
+Cette commande réécrit le champ @code{arguments} de @var{paquet} pour qu'il
+utilise des G-expressions plutôt que des quasicitations classiques.
+
+Lancer @command{info \"(guix.fr) Invoquer guix style\"} pour plus
+d'informations.")))
+
  (entry (commit "ae11fcb84ac478dfa56d322ef08890645183a087")
         (title
          (en "New @option{--with-configure-flag} transformation option")
