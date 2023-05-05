@@ -179,9 +179,11 @@ BLANK-LINE? is true, assume PORT is at the beginning of a new line."
       (match lst
         (() result)
         (((? dot?) . rest)
-         (let ((dotted (reverse rest)))
-           (set-cdr! (last-pair dotted) (car result))
-           dotted))
+         (if (pair? rest)
+             (let ((dotted (reverse rest)))
+               (set-cdr! (last-pair dotted) (car result))
+               dotted)
+             (car result)))
         ((x . rest) (loop (cons x result) rest)))))
 
   (let loop ((blank-line? blank-line?)
