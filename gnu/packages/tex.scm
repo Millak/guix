@@ -10264,6 +10264,30 @@ various fonts are provided.  An alternative package
 the bundle.")
       (license license:lppl1.3c))))
 
+(define-public texlive-minitoc
+  (package
+    (name "texlive-minitoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minitoc/"
+                   "tex/latex/minitoc/")
+             (base32
+              "0yd1na5b9m7z1j87a5fjwjqddfpiblfbpzcv0vlvql6lwh38mii7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minitoc")
+    (synopsis "Produce a table of contents for each chapter, part or section")
+    (description
+     "The @code{minitoc} package allows you to add
+mini-tables-of-contents (minitocs) at the beginning of every chapter, part or
+section.  There is also provision for mini-lists of figures and of tables.  At
+the part level, they are parttocs, partlofs and partlots.  If the type of
+document does not use chapters, the basic provision is section level secttocs,
+sectlofs and sectlots.  The package has provision for language-specific
+configuration of its own fixed names, using @file{.mld} files.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-minted
   (let ((template (simple-texlive-package
                    "texlive-minted"
