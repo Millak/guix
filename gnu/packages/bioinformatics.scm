@@ -86,6 +86,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
@@ -5289,6 +5290,81 @@ way to download and use genomic data.  This includes
 @end enumerate
 
 All with sensible, yet controllable defaults.")
+    (license license:expat)))
+
+(define-public python-gimmemotifs
+  (package
+    (name "python-gimmemotifs")
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vanheeringen-lab/gimmemotifs/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jxr8884k7lic88vhr35l59q5qlpm64p4sv3xfq3l4y41ansh2z0"))
+              (modules '((guix build utils)))
+              ;; Delete included third-party binaries
+              (snippet
+               '(delete-file-recursively "src"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; A lot of the tests depend on a wide range of external tools.
+      '(list "--ignore=test/test_02_config.py"
+             "--ignore=test/test_06_moap.py"
+             "--ignore=test/test_06_stats.py"
+             "--ignore=test/test_08_denovo.py"
+             "--ignore=test/test_08_maelstrom.py"
+             "--ignore=test/test_08_prediction.py"
+             "--ignore=test/test_09_cli.py"
+             "-k"
+             (string-append "not test_tool"
+                            ;; not needed
+                            " and not test_black_formatting"
+                            " and not test_flake8_formatting"
+                            " and not test_isort_formatting"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'do-not-copy-binaries
+           (lambda _
+             (substitute* "setup.py"
+               (("^cmdclass\\[\"build_py.*") ""))))
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp")))
+         ;; This fails because there is no configuration file to load.
+         (delete 'sanity-check))))
+    (propagated-inputs (list python-biofluff
+                             python-configparser
+                             python-diskcache
+                             python-feather-format
+                             python-genomepy
+                             python-iteround
+                             python-jinja2
+                             python-logomaker
+                             python-loguru
+                             python-matplotlib
+                             python-numpy
+                             python-pandas
+                             python-pybedtools
+                             python-pysam
+                             python-qnorm
+                             python-scikit-learn
+                             python-scipy
+                             python-seaborn
+                             python-setuptools
+                             python-statsmodels
+                             python-tqdm
+                             python-xdg
+                             python-xxhash))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/vanheeringen-lab/gimmemotifs/")
+    (synopsis "GimmeMotifs is a motif prediction pipeline.")
+    (description "GimmeMotifs is a suite of motif tools, including a motif
+prediction pipeline for ChIP-seq experiments.")
     (license license:expat)))
 
 (define-public java-htsjdk
