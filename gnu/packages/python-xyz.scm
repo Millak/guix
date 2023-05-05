@@ -7044,6 +7044,23 @@ flexible plugin systems in Python.")
 semantic version parser for Node.js.")
     (license license:expat)))
 
+(define-public python-norns
+  (package
+    (name "python-norns")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "norns" version))
+              (sha256
+               (base32
+                "1r1lcq59v6l75wkbp7mypanr69a6fv6m58v6dw3v6b4vwz5nqg0z"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-appdirs python-nose python-pyyaml))
+    (home-page "https://github.com/simonvh/norns")
+    (synopsis "Simple YAML-based config module")
+    (description "This package provides a simple YAML-based config module.")
+    (license license:expat)))
+
 (define-public python-patch-ng
   (package
     (name "python-patch-ng")
