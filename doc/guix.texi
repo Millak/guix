@@ -7785,6 +7785,24 @@ The exact set of supported keywords depends on the build system
 @code{#:phases}.  The @code{#:phases} keyword in particular lets you
 modify the set of build phases for your package (@pxref{Build Phases}).
 
+@quotation Compatibility Note
+Until version 1.3.0, the @code{arguments} field would typically use
+@code{quote} (@code{'}) or @code{quasiquote} (@code{`}) and no
+G-expressions, like so:
+
+@lisp
+(package
+  ;; several fields omitted
+  (arguments   ;old-style quoted arguments
+   '(#:tests? #f
+     #:configure-flags '("--enable-frobbing"))))
+@end lisp
+
+To convert from that style to the one shown above, you can run
+@code{guix style -S arguments @var{package}} (@pxref{Invoking guix
+style}).
+@end quotation
+
 @item @code{inputs} (default: @code{'()})
 @itemx @code{native-inputs} (default: @code{'()})
 @itemx @code{propagated-inputs} (default: @code{'()})
@@ -14709,6 +14727,39 @@ Rewriting is done in a conservative way: preserving comments and bailing
 out if it cannot make sense of the code that appears in an inputs field.
 The @option{--input-simplification} option described below provides
 fine-grain control over when inputs should be simplified.
+
+@item arguments
+Rewrite package arguments to use G-expressions (@pxref{G-Expressions}).
+For example, consider this package definition:
+
+@lisp
+(define-public my-package
+  (package
+    ;; @dots{}
+    (arguments      ;old-style quoted arguments
+     '(#:make-flags '("V=1")
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))))
+@end lisp
+
+@noindent
+Running @command{guix style -S arguments} on this package would rewrite
+its @code{arguments} field like to:
+
+@lisp
+(define-public my-package
+  (package
+    ;; @dots{}
+    (arguments
+      (list #:make-flags #~'("V=1")
+            #:phases #~(modify-phases %standard-phases
+                         (delete 'build))))))
+@end lisp
+
+Note that changes made by the @code{arguments} rule do not entail a
+rebuild of the affected packages.  Furthermore, if a package definition
+happens to be using G-expressions already, @command{guix style} leaves
+it unchanged.
 @end table
 
 @item --list-stylings

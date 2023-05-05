@@ -41,6 +41,7 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-37)
   #:export (guix-style))
@@ -304,6 +305,174 @@ PACKAGE."
 
 
 ;;;
+;;; Gexpifying package arguments.
+;;;
+
+(define (unquote->ungexp value)
+  "Replace 'unquote' and 'unquote-splicing' in VALUE with their gexp
+counterpart."
+  ;; Replace 'unquote only on the first quasiquotation level.
+  (let loop ((value value)
+             (quotation 1))
+    (match value
+      (('unquote x)
+       (if (= quotation 1)
+           `(ungexp ,x)
+           value))
+      (('unquote-splicing x)
+       (if (= quotation 1)
+           `(ungexp-splicing x)
+           value))
+      (('quasiquote x)
+       (list 'quasiquote (loop x (+ quotation 1))))
+      (('quote x)
+       (list 'quote (loop x (+ quotation 1))))
+      ((lst ...)
+       (map (cut loop <> quotation) lst))
+      (x x))))
+
+(define (gexpify-argument-value value quotation)
+  "Turn VALUE, an sexp, into its gexp equivalent.  QUOTATION is a symbol that
+indicates in what quotation context VALUE is to be interpreted: 'quasiquote,
+'quote, or 'none."
+  (match quotation
+    ('none
+     (match value
+       (('quasiquote value)
+        (gexpify-argument-value value 'quasiquote))
+       (('quote value)
+        (gexpify-argument-value value 'quote))
+       (value value)))
+    ('quote
+     `(gexp ,value))
+    ('quasiquote
+     `(gexp ,(unquote->ungexp value)))))
+
+(define (quote-argument-value value quotation)
+  "Quote VALUE, an sexp.  QUOTATION is a symbol that indicates in what
+quotation context VALUE is to be interpreted: 'quasiquote, 'quote, or 'none."
+  (define (self-quoting? x)
+    (or (boolean? x) (number? x) (string? x) (char? x)
+        (keyword? x)))
+
+  (match quotation
+    ('none
+     (match value
+       (('quasiquote value)
+        (quote-argument-value value 'quasiquote))
+       (('quote value)
+        (quote-argument-value value 'quote))
+       (value value)))
+    ('quote
+     (if (self-quoting? value)
+         value
+         (list 'quote value)))
+    ('quasiquote
+     (match value
+       (('unquote x) x)
+       ((? self-quoting? x) x)
+       (_ (list 'quasiquote value))))))
+
+(define %gexp-keywords
+  ;; Package argument keywords that must be followed by a gexp.
+  '(#:phases #:configure-flags #:make-flags #:strip-flags))
+
+(define (gexpify-argument-tail sexp)
+  "Gexpify SEXP, an unquoted argument tail."
+  (match sexp
+    (('substitute-keyword-arguments lst clauses ...)
+     `(substitute-keyword-arguments ,lst
+        ,@(map (match-lambda
+                 ((((? keyword? keyword) identifier) body)
+                  `((,keyword ,identifier)
+                    ,(if (memq keyword %gexp-keywords)
+                         (gexpify-argument-value body 'none)
+                         (quote-argument-value body 'none))))
+                 ((((? keyword? keyword) identifier default) body)
+                  `((,keyword ,identifier
+                              ,(if (memq keyword %gexp-keywords)
+                                   (gexpify-argument-value default 'none)
+                                   (quote-argument-value default 'none)))
+                    ,(if (memq keyword %gexp-keywords)
+                         (gexpify-argument-value body 'none)
+                         (quote-argument-value body 'none))))
+                 (clause clause))
+               clauses)))
+    (_ sexp)))
+
+(define* (gexpify-package-arguments package
+                                    #:key
+                                    (policy 'none)
+                                    (edit-expression edit-expression))
+  "Rewrite the 'arguments' field of PACKAGE to use gexps where applicable."
+  (define (gexpify location str)
+    (match (call-with-input-string str read-with-comments)
+      ((rest ...)
+       (let ((blanks (take-while blank? rest))
+             (value  (drop-while blank? rest)))
+         (define-values (quotation arguments tail)
+           (match value
+             (('quote (arguments ...)) (values 'quote arguments '()))
+             (('quasiquote (arguments ... ('unquote-splicing tail)))
+              (values 'quasiquote arguments tail))
+             (('quasiquote (arguments ...)) (values 'quasiquote arguments '()))
+             (('list arguments ...) (values 'none arguments '()))
+             (arguments (values 'none '()  arguments))))
+
+         (define (append-tail sexp)
+           (if (null? tail)
+               sexp
+               (let ((tail (gexpify-argument-tail tail)))
+                 (if (null? arguments)
+                     tail
+                     `(append ,sexp ,tail)))))
+
+         (let/ec return
+           (object->string*
+            (append-tail
+             `(list ,@(let loop ((arguments arguments)
+                                 (result '()))
+                        (match arguments
+                          (() (reverse result))
+                          (((? keyword? keyword) value rest ...)
+                           (when (eq? quotation 'none)
+                             (match value
+                               (('gexp _)         ;already gexpified
+                                (return str))
+                               (_ #f)))
+
+                           (loop rest
+                                 (cons* (if (memq keyword %gexp-keywords)
+                                            (gexpify-argument-value value
+                                                                    quotation)
+                                            (quote-argument-value value quotation))
+                                        keyword result)))
+                          (((? blank? blank) rest ...)
+                           (loop rest (cons blank result)))
+                          (_
+                           ;; Something like: ,@(package-arguments xyz).
+                           (warning location
+                                    (G_ "unsupported argument style; \
+bailing out~%"))
+                           (return str))))))
+            (location-column location)))))
+      (_
+       (warning location
+                (G_ "unsupported argument field; bailing out~%"))
+       str)))
+
+  (unless (null? (package-arguments package))
+    (match (package-field-location package 'arguments)
+      (#f
+       #f)
+      (location
+       (edit-expression
+        (location->source-properties (absolute-location location))
+        (lambda (str)
+          (gexpify location str)))))))
+
+
+;;;
 ;;; Formatting package definitions.
 ;;;
 
@@ -379,6 +548,7 @@ PACKAGE."
                   (alist-cons 'styling-procedure
                               (match arg
                                 ("inputs" simplify-package-inputs)
+                                ("arguments" gexpify-package-arguments)
                                 ("format" format-package-definition)
                                 (_ (leave (G_ "~a: unknown styling~%")
                                           arg)))
@@ -407,7 +577,8 @@ PACKAGE."
 (define (show-stylings)
   (display (G_ "Available styling rules:\n"))
   (display (G_ "- format: Format the given package definition(s)\n"))
-  (display (G_ "- inputs: Rewrite package inputs to the “new style”\n")))
+  (display (G_ "- inputs: Rewrite package inputs to the “new style”\n"))
+  (display (G_ "- arguments: Rewrite package arguments to G-expressions\n")))
 
 (define (show-help)
   (display (G_ "Usage: guix style [OPTION]... [PACKAGE]...
