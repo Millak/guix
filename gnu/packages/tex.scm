@@ -1337,6 +1337,38 @@ family of fonts, in OpenType format.  For use with LuaLaTeX or XeLaTeX,
 support is available from the @code{unicode-math} package.")
     (license license:gfl1.0)))
 
+(define-public texlive-lwarp
+  (package
+    (name "texlive-lwarp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lwarp/"
+                   "scripts/lwarp/"
+                   "source/latex/lwarp/"
+                   "tex/latex/lwarp/")
+             (base32
+              "0pv3gvy01zkhk39ybjix5lh3x6q4r9pvabrx1wvqr96ma8gyzr5n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-minitoc))
+    (home-page "https://ctan.org/pkg/lwarp")
+    (synopsis "Converts LaTeX to HTML")
+    (description
+     "This package converts LaTeX to HTML by using LaTeX to process the user's
+document and generate HTML tags.  External utility programs are only used for
+the final conversion of text and images.  Math may be represented by SVG files
+or MathJax.  Hundreds of LaTeX packages are supported, and their load order is
+automatically verified.  Documents may be produced by LaTeX, LuaLaTeX,
+XeLaTeX, and by several CJK engines, classes, and packages.  A texlua script
+automates compilation, index, glossary, and batch image processing, and also
+supports latexmk.  Configuration is semi-automatic at the first manual
+compile.  Support files are self-generated.  Print and HTML versions of each
+document may coexist.  Assistance is provided for HTML import into EPUB
+conversion software and word processors.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-knuth-lib
   (let ((template (simple-texlive-package
                    "texlive-knuth-lib"
