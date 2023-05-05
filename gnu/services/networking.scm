@@ -122,7 +122,19 @@
             openntpd-service-type
 
             inetd-configuration
+            inetd-configuration?
+            inetd-configuration-program
+            inetd-configuration-entries
             inetd-entry
+            inetd-entry?
+            inetd-entry-node
+            inetd-entry-name
+            inetd-entry-socket-type
+            inetd-entry-protocol
+            inetd-entry-wait?
+            inetd-entry-user
+            inetd-entry-program
+            inetd-entry-arguments
             inetd-service-type
 
             opendht-configuration
