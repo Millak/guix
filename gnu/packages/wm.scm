@@ -1436,7 +1436,7 @@ project derived from the original Calm Window Manager.")
 (define-public dwl
   (package
     (name "dwl")
-    (version "0.3.1")
+    (version "0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1445,7 +1445,7 @@ project derived from the original Calm Window Manager.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0952kajc60ijy6qz14y6s5n7dyyf14ndzrhs4ynxj97k76742z2l"))))
+                "0pj0h3zd2f60hxpavpmgzid1sj7hf9m5cgclbackljqq4gpwlvir"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
