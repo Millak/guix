@@ -28718,6 +28718,243 @@ Extra options to pass to the Prometheus node exporter.
 @end table
 @end deftp
 
+@anchor{vnstat}
+@subsubheading vnStat Network Traffic Monitor
+@cindex vnstat
+
+vnStat is a network traffic monitor that uses interface statistics provided
+by the kernel rather than traffic sniffing.  This makes it a light resource
+monitor, regardless of network traffic rate.
+
+@defvar vnstat-service-type
+This is the service type for the @uref{https://humdi.net/vnstat/,vnStat} daemon
+and accepts a @code{vnstat-configuration} value.
+
+The following example will configure the service with default values:
+
+@lisp
+(service vnstat-service-type)
+@end lisp
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} vnstat-configuration
+Available @code{vnstat-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{vnstat}) (type: file-like)
+The vnstat package.
+
+@item @code{database-directory} (default: @code{"/var/lib/vnstat"}) (type: string)
+Specifies the directory where the database is to be stored.  A full path
+must be given and a leading '/' isn't required.
+
+@item @code{5-minute-hours} (default: @code{48}) (type: maybe-integer)
+Data retention duration for the 5 minute resolution entries.  The
+configuration defines for how many past hours entries will be stored.
+Set to @code{-1} for unlimited entries or to @code{0} to disable the
+data collection of this resolution.
+
+@item @code{64bit-interface-counters} (default: @code{-2}) (type: maybe-integer)
+Select interface counter handling.  Set to @code{1} for defining that
+all interfaces use 64-bit counters on the kernel side and @code{0} for
+defining 32-bit counter.  Set to @code{-1} for using the old style logic
+used in earlier versions where counter values within 32-bits are assumed
+to be 32-bit and anything larger is assumed to be a 64-bit counter.  This
+may produce false results if a 64-bit counter is reset within the
+32-bits.  Set to @code{-2} for using automatic detection based on
+available kernel datastructures.
+
+@item @code{always-add-new-interfaces?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable automatic creation of new database entries for
+interfaces not currently in the database even if the database file
+already exists when the daemon is started.  New database entries will
+also get created for new interfaces seen while the daemon is running.
+Pseudo interfaces @samp{lo}, @samp{lo0} and @samp{sit0} are always excluded from getting
+added.
+
+@item @code{bandwidth-detection?} (default: @code{#t}) (type: maybe-boolean)
+Try to automatically detect @var{max-bandwidth} value for each monitored
+interface.  Mostly only ethernet interfaces support this feature.
+@var{max-bandwidth} will be used as fallback value if detection fails.
+Any interface specific @var{max-BW} configuration will disable the
+detection for the specified interface.  In Linux, the detection is
+disabled for tun interfaces due to the Linux kernel always reporting 10
+Mbit regardless of the used real interface.
+
+@item @code{bandwidth-detection-interval} (default: @code{5}) (type: maybe-integer)
+How often in minutes interface specific detection of @var{max-bandwidth}
+is done for detecting possible changes when @var{bandwidth-detection} is
+enabled.  Can be disabled by setting to @code{0}.  Value range:
+@samp{0}..@samp{30}
+
+@item @code{boot-variation} (default: @code{15}) (type: maybe-integer)
+Time in seconds how much the boot time reported by system kernel can
+variate between updates.  Value range: @samp{0}..@samp{300}
+
+@item @code{check-disk-space?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the availability check of at least some free disk
+space before a database write.
+
+@item @code{create-directories?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the creation of directories when a configured path
+doesn't exist.  This includes @var{database-directory}.
+
+@item @code{daemon-group} (type: maybe-user-group)
+Specify the group to which the daemon process should switch during
+startup.  Set to @code{%unset-value} to disable group switching.
+
+@item @code{daemon-user} (type: maybe-user-account)
+Specify the user to which the daemon process should switch during
+startup.  Set to @code{%unset-value} to disable user switching.
+
+@item @code{daily-days} (default: @code{62}) (type: maybe-integer)
+Data retention duration for the one day resolution entries.  The
+configuration defines for how many past days entries will be stored.  Set
+to @code{-1} for unlimited entries or to @code{0} to disable the data
+collection of this resolution.
+
+@item @code{database-synchronous} (default: @code{-1}) (type: maybe-integer)
+Change the setting of the SQLite "synchronous" flag which controls how
+much care is taken to ensure disk writes have fully completed when
+writing data to the database before continuing other actions.  Higher
+values take extra steps to ensure data safety at the cost of slower
+performance.  A value of @code{0} will result in all handling being left
+to the filesystem itself.  Set to @code{-1} to select the default value
+according to database mode controlled by
+@var{database-write-ahead-logging} setting.  See SQLite documentation
+for more details regarding values from @code{1} to @code{3}.  Value
+range: @samp{-1}..@samp{3}
+
+@item @code{database-write-ahead-logging?} (default: @code{#f}) (type: maybe-boolean)
+Enable or disable SQLite Write-Ahead Logging mode for the database.  See
+SQLite documentation for more details and note that support for
+read-only operations isn't available in older SQLite versions.
+
+@item @code{hourly-days} (default: @code{4}) (type: maybe-integer)
+Data retention duration for the one hour resolution entries.  The
+configuration defines for how many past days entries will be stored.  Set
+to @code{-1} for unlimited entries or to @code{0} to disable the data
+collection of this resolution.
+
+@item @code{log-file} (type: maybe-string)
+Specify log file path and name to be used if @var{use-logging} is set to
+@code{1}.
+
+@item @code{max-bandwidth} (type: maybe-integer)
+Maximum bandwidth for all interfaces.  If the interface specific traffic
+exceeds the given value then the data is assumed to be invalid and
+rejected.  Set to 0 in order to disable the feature.  Value range:
+@samp{0}..@samp{50000}
+
+@item @code{max-bw} (type: maybe-alist)
+Same as @var{max-bandwidth} but can be used for setting individual
+limits for selected interfaces.  This is an association list of
+interfaces as strings to integer values.  For example,
+@lisp
+(max-bw `(("eth0" .  15000)
+          ("ppp0" .  10000)))
+@end lisp
+@var{bandwidth-detection} is disabled on an interface specific level for
+each @var{max-bw} configuration.  Value range: @samp{0}..@samp{50000}
+
+@item @code{monthly-months} (default: @code{25}) (type: maybe-integer)
+Data retention duration for the one month resolution entries.  The
+configuration defines for how many past months entries will be stored.
+Set to @code{-1} for unlimited entries or to @code{0} to disable the
+data collection of this resolution.
+
+@item @code{month-rotate} (default: @code{1}) (type: maybe-integer)
+Day of month that months are expected to change.  Usually set to 1 but
+can be set to alternative values for example for tracking monthly billed
+traffic where the billing period doesn't start on the first day.  For
+example, if set to 7, days of February up to and including the 6th will
+count for January.  Changing this option will not cause existing data to
+be recalculated.  Value range: @samp{1}..@samp{28}
+
+@item @code{month-rotate-affects-years?} (default: @code{#f}) (type: maybe-boolean)
+Enable or disable @var{month-rotate} also affecting yearly data.
+Applicable only when @var{month-rotate} has a value greater than one.
+
+@item @code{offline-save-interval} (default: @code{30}) (type: maybe-integer)
+How often in minutes cached interface data is saved to file when all
+monitored interfaces are offline.  Value range:
+@var{save-interval}..@samp{60}
+
+@item @code{pid-file} (default: @code{"/var/run/vnstatd.pid"}) (type: maybe-string)
+Specify pid file path and name to be used.
+
+@item @code{poll-interval} (default: @code{5}) (type: maybe-integer)
+How often in seconds interfaces are checked for status changes.  Value
+range: @samp{2}..@samp{60}
+
+@item @code{rescan-database-on-save?} (type: maybe-boolean)
+Automatically discover added interfaces from the database and start
+monitoring.  The rescan is done every @var{save-interval} or
+@var{offline-save-interval} minutes depending on the current activity
+state.
+
+@item @code{save-interval} (default: @code{5}) (type: maybe-integer)
+How often in minutes cached interface data is saved to file.  Value
+range: ( @var{update-interval} / 60 )..@samp{60}
+
+@item @code{save-on-status-change?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the additional saving to file of cached interface data
+when the availability of an interface changes, i.e., when an interface
+goes offline or comes online.
+
+@item @code{time-sync-wait} (default: @code{5}) (type: maybe-integer)
+How many minutes to wait during daemon startup for system clock to sync
+if most recent database update appears to be in the future.  This may be
+needed in systems without a real-time clock (RTC) which require some
+time after boot to query and set the correct time.  @code{0} = wait
+disabled.  Value range: @samp{0}..@samp{60}
+
+@item @code{top-day-entries} (default: @code{20}) (type: maybe-integer)
+Data retention duration for the top day entries.  The configuration
+defines how many of the past top day entries will be stored.  Set to
+@code{-1} for unlimited entries or to @code{0} to disable the data
+collection of this resolution.
+
+@item @code{trafficless-entries?} (default: @code{#t}) (type: maybe-boolean)
+Create database entries even when there is no traffic during the entry's
+time period.
+
+@item @code{update-file-owner?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the update of file ownership during daemon process
+startup.  During daemon startup, only database, log and pid files will
+be modified if the user or group change feature ( @var{daemon-user} or
+@var{daemon-group} ) is enabled and the files don't match the requested
+user or group.  During manual database creation, this option will cause
+file ownership to be inherited from the database directory if the
+directory already exists.  This option only has effect when the process
+is started as root or via sudo.
+
+@item @code{update-interval} (default: @code{20}) (type: maybe-integer)
+How often in seconds the interface data is updated.  Value range:
+@var{poll-interval}..@samp{300}
+
+@item @code{use-logging} (default: @code{2}) (type: maybe-integer)
+Enable or disable logging.  Accepted values are: @code{0} = disabled,
+@code{1} = logfile and @code{2} = syslog.
+
+@item @code{use-utc?} (type: maybe-boolean)
+Enable or disable using UTC as timezone in the database for all entries.
+When enabled, all entries added to the database will use UTC regardless
+of the configured system timezone.  When disabled, the configured system
+timezone will be used.  Changing this setting will not result in already
+existing data to be modified.
+
+@item @code{yearly-years} (default: @code{-1}) (type: maybe-integer)
+Data retention duration for the one year resolution entries.  The
+configuration defines for how many past years entries will be stored.
+Set to @code{-1} for unlimited entries or to @code{0} to disable the
+data collection of this resolution.
+
+@end table
+@end deftp
+@c %end of fragment
+
 @subsubheading Zabbix server
 @cindex zabbix zabbix-server
 Zabbix is a high performance monitoring system that can collect data from a
