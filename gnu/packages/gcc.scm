@@ -719,10 +719,9 @@ It also includes runtime support libraries for these languages.")
        (if (target-hurd?)
            `(modify-phases ,phases
               (add-after 'unpack 'patch-hurd-libpthread
-                (lambda (#:key inputs)
+                (lambda _
                   (invoke "patch" "--force" "-p1" "-i"
-                          (assoc-ref inputs "hurd-patch")
-                          patch))))
+                          (assoc-ref %build-inputs "hurd-patch")))))
            phases))))
    (properties
     `((compiler-cpu-architectures

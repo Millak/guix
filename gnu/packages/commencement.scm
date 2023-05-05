@@ -2452,7 +2452,10 @@ exec " gcc "/bin/" program
               ,@(alist-delete "libc" (%boot0-inputs))))
 
     ;; No need for the native-inputs to build the documentation at this stage.
-    (native-inputs `())))
+    (native-inputs
+     (if (target-hurd?)
+         `(("hurd-patch" ,(search-patch "gcc-11-libstdc++-hurd-libpthread.patch")))
+         '()))))
 
 (define perl-boot0
   (package
