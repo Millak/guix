@@ -7154,6 +7154,8 @@ streaming audio server.")
              (url "https://github.com/quodlibet/quodlibet")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "quodlibet-fix-invalid-glob.patch"
+                                "quodlibet-fix-mtime-tests.patch"))
        (sha256
         (base32 "1i5k93k3bfp7hpcwkbr865mbj9jam3jv2a5k1bazcyp4f5vdrb0v"))))
     (build-system python-build-system)
@@ -7177,9 +7179,7 @@ streaming audio server.")
                           "--ignore=tests/test_browsers_iradio.py"
                           ;; broken upstream
                           "--disable-warnings"
-                          "--ignore=tests/quality"
-                          ;; missing legacy icons in adwaita-icon-theme
-                          "--ignore=tests/plugin/test_trayicon.py")
+                          "--ignore=tests/quality/test_flake8.py")
                   (format #t "test suite not run~%"))))
           (add-after 'install 'glib-or-gtk-wrap ; ensure icons loaded
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))

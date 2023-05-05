@@ -1,0 +1,39 @@
+From 06a32b319f065550efe0d2a9ff10ca6bdc32b893 Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <reiter.christoph@gmail.com>
+Date: Sat, 23 Jul 2022 20:15:18 +0200
+Subject: [PATCH] operon: hopefully better fix for flaky mtime tests
+
+copy the mtime after we write everything, so there is no chance of
+it changing before we note the initial value.
+---
+ quodlibet/operon/commands.py | 8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/quodlibet/operon/commands.py b/quodlibet/operon/commands.py
+index e0a5ef33a..af2dcfa8b 100644
+--- a/quodlibet/operon/commands.py
++++ b/quodlibet/operon/commands.py
+@@ -227,16 +227,16 @@ class EditCommand(Command):
+         # write to tmp file
+         fd, path = tempfile.mkstemp(suffix=".txt")
+ 
+-        # XXX: copy mtime here so we can test for changes in tests by
+-        # setting a out of date mtime on the source song file
+-        copy_mtime(args[0], path)
+-
+         try:
+             try:
+                 os.write(fd, dump)
+             finally:
+                 os.close(fd)
+ 
++            # XXX: copy mtime here so we can test for changes in tests by
++            # setting a out of date mtime on the source song file
++            copy_mtime(args[0], path)
++
+             # only parse the result if the editor returns 0 and the mtime has
+             # changed
+             old_mtime = mtime(path)
+-- 
+2.39.2
+

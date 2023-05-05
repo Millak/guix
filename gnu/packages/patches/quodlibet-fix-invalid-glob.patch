@@ -1,0 +1,89 @@
+From 5f55431a28509fd4f4f7b40dc246f3d34fa8549e Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <reiter.christoph@gmail.com>
+Date: Sun, 26 Jun 2022 23:14:28 +0200
+Subject: [PATCH] builtin cover: fix handling of invalid glob ranges with
+ Python 3.10.5+ (#4027)
+
+Previously Python would raise if an invalid range was given
+to glob, but with 3.10.5 they fixed it to not match anything.
+https://github.com/python/cpython/issues/89973
+
+Our tests depended on the previous logic and treating the glob pattern
+as a literal file name in that case.
+
+One could argue that this is wrong since a range that doesn't contain anything
+should also not match anything, so wrap glob() to make it not match for all
+Python versions in that case and adjust the tests accordingly.
+
+This should fix the Windows CI, which is currently the only job using 3.10.5
+---
+ quodlibet/util/cover/built_in.py | 22 +++++++++++-----------
+ tests/test_util_cover.py         | 12 +++---------
+ 2 files changed, 14 insertions(+), 20 deletions(-)
+
+diff --git a/quodlibet/util/cover/built_in.py b/quodlibet/util/cover/built_in.py
+index f2a8791a2..01474c9b6 100644
+--- a/quodlibet/util/cover/built_in.py
++++ b/quodlibet/util/cover/built_in.py
+@@ -100,6 +100,15 @@ class FilesystemCover(CoverSourcePlugin):
+         base = self.song('~dirname')
+         images = []
+ 
++        def safe_glob(*args, **kwargs):
++            try:
++                return glob.glob(*args, **kwargs)
++            except sre_constants.error:
++                # https://github.com/python/cpython/issues/89973
++                # old glob would fail with invalid ranges, newer one
++                # handles it correctly.
++                return []
++
+         if config.getboolean("albumart", "force_filename"):
+             score = 100
+             for filename in config.get("albumart", "filename").split(","):
+@@ -107,17 +116,8 @@ class FilesystemCover(CoverSourcePlugin):
+                 filename = filename.strip()
+ 
+                 escaped_path = os.path.join(glob.escape(base), filename)
+-                try:
+-                    for path in glob.glob(escaped_path):
+-                        images.append((score, path))
+-                except sre_constants.error:
+-                    # Use literal filename if globbing causes errors
+-                    path = os.path.join(base, filename)
+-
+-                    # We check this here, so we can search for alternative
+-                    # files in case no preferred file was found.
+-                    if os.path.isfile(path):
+-                        images.append((score, path))
++                for path in safe_glob(escaped_path):
++                    images.append((score, path))
+ 
+                 # So names and patterns at the start are preferred
+                 score -= 1
+diff --git a/tests/test_util_cover.py b/tests/test_util_cover.py
+index db81e4d1f..71a48ad9a 100644
+--- a/tests/test_util_cover.py
++++ b/tests/test_util_cover.py
+@@ -105,15 +105,9 @@ class TCoverManager(TestCase):
+         config.set("albumart", "force_filename", str(True))
+         config.set("albumart", "filename", "[a-2].jpg")
+ 
+-        # Should match
+-        f = self.add_file("[a-2].jpg")
+-        assert path_equal(
+-            os.path.abspath(self._find_cover(self.song).name), f)
+-
+-        # Should not crash
+-        f = self.add_file("test.jpg")
+-        assert not path_equal(
+-            os.path.abspath(self._find_cover(self.song).name), f)
++        # Invalid glob range, should not match anything
++        self.add_file("a.jpg")
++        assert self._find_cover(self.song) is None
+ 
+     def test_invalid_glob_path(self):
+         config.set("albumart", "force_filename", str(True))
+-- 
+2.39.2
+
