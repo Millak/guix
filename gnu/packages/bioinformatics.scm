@@ -1251,6 +1251,54 @@ Format (GFF) with Biopython integration.")
      (modify-inputs (package-propagated-inputs python-bcbio-gff)
        (replace "python-biopython" python-biopython-1.73)))))
 
+;; Note: the name on PyPi is "biofluff".
+(define-public python-biofluff
+  (package
+    (name "python-biofluff")
+    (version "3.0.4")
+    ;; PyPi tarball does not contain test data.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simonvh/fluff")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12yvhgp72s2ygf3h07rrc852zd6q8swc41hm28mcczpsyprggxyz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Theses tests require internet access
+      '(list "--ignore=tests/test_mirror.py"
+             "-k" "not test_plots_big")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'matplotlib-compatibility
+           (lambda _
+             (substitute* "fluff/plot.py"
+               (("beginarrow=False, endarrow=True,") "")))))))
+    (propagated-inputs
+     (list htseq
+           python-matplotlib
+           python-numpy
+           python-palettable
+           python-pybedtools
+           python-pybigwig
+           python-pysam
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/simonvh/fluff/")
+    (synopsis "Analysis and visualization of high-throughput sequencing data")
+    (description
+     "Fluff is a Python package that contains several scripts to produce
+pretty, publication-quality figures for next-generation sequencing
+experiments.")
+    (license license:expat)))
+
 (define-public python-cellbender
   (package
     (name "python-cellbender")
