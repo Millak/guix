@@ -3204,3 +3204,27 @@ Spleen also has support for Powerline symbols out of the box.")
 minor tweaks to improve readability (a matter of taste of course).
 Most characters are just 4px wide, which is brilliant for low dpi(90-120) displays.")
     (license license:silofl1.1)))
+
+(define-public font-recursive
+  (package
+    (name "font-recursive")
+    (version "1.085")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/arrowtype/recursive/"
+                                  "releases/download/v"
+                                  version
+                                  "/ArrowType-Recursive-"
+                                  version
+                                  ".zip"))
+              (sha256
+               (base32
+                "00ns6zwizp0wyxyrf7fxqmxm4gl7ygarxq1mj952h78q1rxdzjyb"))))
+    (build-system font-build-system)
+    (home-page "https://www.recursive.design/")
+    (synopsis "Variable font family for code & UI")
+    (description "Recursive Sans & Mono is a variable type family built for
+better code & UI.  It is inspired by casual script signpainting, but designed
+primarily to meet the needs of programming environments and application
+interfaces.")
+    (license license:silofl1.1)))
