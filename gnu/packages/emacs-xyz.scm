@@ -128,6 +128,7 @@
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2022-2023 Simon Josefsson <simon@josefsson.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3358,6 +3359,69 @@ mode, Rmail, Gnus, MH-E, and VM).  BBDB is fully customizable.")
 defined in RFC 2425 and RFC 2426 to/from The Insidious Big Brother Database
 (BBDB).  Version 2.1 vCards are converted into version 3.0 on import.")
       (license license:gpl2+))))
+
+(define-public emacs-eweouz
+  (package
+    (name "emacs-eweouz")
+    (version "0.12")
+    (source
+     (origin
+       (method url-fetch)
+       ;; README's git://git.err.no/eweouz is gone
+       (uri (string-append "mirror://debian/pool/main/e/eweouz/"
+                           "eweouz_" version ".tar.xz"))
+       (file-name (string-append name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "192zl3dyphhvcrvn65bqsrc4h6zks8b747lp6pqbpbmsqy4g4mr8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  (guix build utils)
+                  (guix build emacs-utils))
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build emacs-build-system)
+                           (guix build emacs-utils))
+      #:configure-flags
+      #~(list (string-append "--with-lispdir="
+                             (emacs:elpa-directory #$output)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _ (invoke "autoreconf" "-vif")))
+          (add-after 'compress-documentation 'enter-lisp-dir
+            (lambda _ (chdir "lisp/")))
+          (add-after 'enter-lisp-dir 'emacs-patch-variables
+            (lambda _
+              (emacs-substitute-sexps "eweouz.el"
+                ("eweouz-helper-dirs"
+                 `(list ,(string-append #$output "/libexec/eweouz"))))))
+          (add-after 'emacs-patch-variables 'emacs-expand-load-path
+            (assoc-ref emacs:%standard-phases 'expand-load-path))
+          (add-after 'emacs-expand-load-path 'emacs-add-install-to-native-load-path
+            (assoc-ref emacs:%standard-phases 'add-install-to-native-load-path))
+          (add-after 'emacs-add-install-to-native-load-path 'emacs-install
+            (assoc-ref emacs:%standard-phases 'install))
+          (add-after 'emacs-install 'emacs-build
+            (assoc-ref emacs:%standard-phases 'build))
+          (add-after 'emacs-install 'emacs-make-autoloads
+            (assoc-ref emacs:%standard-phases 'make-autoloads)))))
+    (native-inputs
+     (list autoconf
+           automake
+           emacs-minimal
+           pkg-config))
+    (inputs
+     (list evolution-data-server))
+    (home-page "https://tracker.debian.org/pkg/eweouz")
+    (synopsis "Emacs interface to Evolution Data Server")
+    (description
+     "Eweouz is an tool for looking up contacts from Evolution Data Server
+from Emacs.  It is similar to BBDB, except much, much simpler.")
+    ;; Most things are GPLv2-only although lisp/vcard.el is GPLv2+.
+    (license (list license:gpl2 license:gpl2+))))
 
 (define-public emacs-beacon
   (package
