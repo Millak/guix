@@ -5190,6 +5190,59 @@ HMMs).")
 high-throughput sequencing (HTS) assays")
     (license license:gpl3+)))
 
+(define-public python-genomepy
+  (package
+    (name "python-genomepy")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "genomepy" version))
+              (sha256
+               (base32
+                "0jmyvnsn6w0djjmxh4fjspy1346337jzihxb276v3s275r6zjmln"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; The tests require internet access.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed by tests
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-appdirs
+                             python-biopython
+                             python-click
+                             python-colorama
+                             python-diskcache
+                             ;; We cannot use an older filelock, because the
+                             ;; @lock annotation is used here.
+                             python-filelock-3.5
+                             python-loguru
+                             python-mygene
+                             python-mysql-connector-python
+                             python-norns
+                             python-numpy
+                             python-pandas
+                             python-pyfaidx
+                             python-requests
+                             python-tqdm))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page "https://vanheeringen-lab.github.io/genomepy/")
+    (synopsis "Genes and genomes at your fingertips")
+    (description "genomepy is designed to provide a simple and straightforward
+way to download and use genomic data.  This includes
+
+@enumerate
+@item searching available data,
+@item showing the available metadata,
+@item automatically downloading, preprocessing and matching data, and
+@item generating optional aligner indexes.
+@end enumerate
+
+All with sensible, yet controllable defaults.")
+    (license license:expat)))
+
 (define-public java-htsjdk
   (package
     (name "java-htsjdk")
