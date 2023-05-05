@@ -3374,6 +3374,26 @@ system is highly configurable via command line options and embedded
 commands.")
     (license license:lgpl2.1+)))
 
+(define-public python-palettable
+  (package
+    (name "python-palettable")
+    (version "3.3.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "palettable" version))
+              (sha256
+               (base32
+                "1a4h0jpsr3wjciqg9a5kslxv65d3qqgmqgkpai4cl77wlpcxfk89"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://jiffyclub.github.io/palettable/")
+    (synopsis "Color palettes for Python")
+    (description "Palettable (formerly brewer2mpl) is a library of color
+palettes for Python.  It’s written in pure Python with no dependencies, but it
+can supply color maps for matplotlib.  You can use Palettable to customize
+matplotlib plots or supply colors for a web application.")
+    (license license:expat)))
+
 (define-public python-parse-type
   (package
     (name "python-parse-type")
