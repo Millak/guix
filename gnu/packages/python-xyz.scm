@@ -16169,6 +16169,28 @@ interface to the Amazon Web Services (AWS) API.")
 in pure Python.")
     (license license:expat)))
 
+(define-public python-xdg
+  (package
+    (name "python-xdg")
+    (version "6.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "xdg" version))
+              (sha256
+               (base32
+                "14hwk9j5zjc8rvirw95mrb07zdnpjaxjx2mj3rnq8pnlyaa809r4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core))
+    (home-page "https://github.com/srstevenson/xdg-base-dirs")
+    (synopsis "Variables defined by the XDG Base Directory Specification")
+    (description "xdg-base-dirs is a Python module that provides functions to
+return paths to the directories defined by the XDG Base Directory
+Specification, to save you from duplicating the same snippet of logic in every
+Python utility you write that deals with user cache, configuration, or data
+files.")
+    (license license:isc)))
+
 (define-public python-xdo
   (package
     (name "python-xdo")
