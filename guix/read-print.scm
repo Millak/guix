@@ -335,6 +335,8 @@ expressions and blanks that were read."
    ('with-output-to-file 2)
    ('with-input-from-file 2)
    ('with-directory-excursion 2)
+   ('wrap-program 2)
+   ('wrap-script 2)
 
    ;; (gnu system) and (gnu services).
    ('operating-system 1)
