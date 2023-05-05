@@ -14972,17 +14972,32 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
 (define-public python-pyfaidx
   (package
     (name "python-pyfaidx")
-    (version "0.5.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyfaidx" version))
-       (sha256
-        (base32
-         "038xi3a6zvrxbyyfpp64ka8pcjgsdq4fgw9cl5lpxbvmm1bzzw2q"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
+    (version "0.7.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyfaidx" version))
+              (sha256
+               (base32
+                "182ia2zg026lgphv68agxm9imw7649z9pdhfn8zkalrxkq5d5w1h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require the download of large fasta.gz files.
+      '(list "--ignore=tests/test_Fasta_bgzip.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))))))))
+    (native-inputs
+     (list python-fsspec
+           python-mock
+           python-numpy
+           python-pytest
+           python-pytest-cov))
     (home-page "http://mattshirley.com")
     (synopsis "Random access to fasta subsequences")
     (description
