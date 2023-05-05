@@ -1447,6 +1447,29 @@ protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
 
+(define-public python-logomaker
+  (package
+    (name "python-logomaker")
+    (version "0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "logomaker" version))
+              (sha256
+               (base32
+                "0v9z3ml1s7imk28hqyhrqjqg3sq0j29lx975d36n2ybdgld51iyq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pandas))
+    (home-page "https://logomaker.readthedocs.io")
+    (synopsis "Package for making Sequence Logos")
+    (description "Logomaker is a Python package for generating
+publication-quality sequence logos.  Logomaker can generate both standard and
+highly customized logos illustrating the properties of DNA, RNA, or protein
+sequences.  Logos are rendered as vector graphics embedded within native
+matplotlib Axes objects, making them easy to style and incorporate into
+multi-panel figures.")
+    (license license:expat)))
+
 (define-public python-pegasusio
   (package
     (name "python-pegasusio")
