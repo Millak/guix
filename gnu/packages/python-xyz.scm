@@ -917,6 +917,87 @@ template")
 variables into the markdown template")
     (license license:expat)))
 
+(define-public python-mysql-connector-python
+  (package
+    (name "python-mysql-connector-python")
+    (version "8.0.33")
+    ;; The archive on PyPi does not contain a build system
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://cdn.mysql.com/Downloads/"
+                                  "Connector-Python/mysql-connector-python-"
+                                  version "-src.tar.gz"))
+              (sha256
+               (base32
+                "00j9xgd43yzx5yiijnlmpaqpa58m5lscjglsgzg48dibhr69br0l"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-mysql-capi="
+                             #$(this-package-input "mysql"))
+              (string-append "--with-protobuf-include-dir="
+                             #$(this-package-input "protobuf")
+                             "/include/google/protobuf")
+              (string-append "--with-protobuf-lib-dir="
+                             #$(this-package-input "protobuf")
+                             "/lib")
+              (string-append "--with-protoc="
+                             #$(this-package-input "protobuf")
+                             "/bin/protoc"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'compatibility
+            (lambda _
+              (substitute* "src/mysql_capi.c"
+                (("res = mysql_options\\(&self->session, MYSQL_OPT_LOAD_DATA_LOCAL_DIR.*")
+                 "res = 0;")
+                (("mysql_options\\(&self->session, MYSQL_OPT_LOAD_DATA_LOCAL_DIR.*")
+                 "")
+                (("mysql_options\\(&self->session, MYSQL_OPT_TLS_CIPHERSUITES.*")
+                 "")
+                ;; The C API does not have mysql_bind_param, so we produce an
+                ;; error here.
+                (("status = mysql_bind_param.*") "status = 1;"))
+              ;; See https://github.com/protocolbuffers/protobuf/issues/9943
+              (substitute* "src/mysqlxpb/mysqlxpb.cc"
+                (("google::protobuf::string") "std::string"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Some of these tests might be failing due to the build
+                ;; container's restrictions, others are due to the version
+                ;; mismatch.
+                (substitute* "tests/cext/test_cext_api.py"
+                  (("def test_change_user") "def _do_not_test_change_user")
+                  (("def test_get_character_set_info")
+                   "def _do_not_test_get_character_set_info"))
+                (substitute* "tests/test_bugs.py"
+                  (("def test_change_user") "def _do_not_test_change_user")
+                  (("def test_lost_connection") "def _do_not_test_lost_connection")
+                  (("def test_kill_query") "def _do_not_test_kill_query"))
+                (substitute* "tests/test_connection.py"
+                  (("def test_allow_local_infile_in_path")
+                   "def _do_not_test_allow_local_infile_in_path"))
+                (substitute* "tests/test_constants.py"
+                  (("def test_deprecated")
+                   "def _do_not_test_deprecated"))
+                (mkdir-p "/tmp/datadir")
+                (invoke "python3" "unittests.py"
+                        "--verbosity=3"
+                        (string-append "--with-mysql=" #$(this-package-input "mysql"))
+                        "--keep"
+                        "--mysql-topdir=/tmp/datadir"
+                        "--unix-socket=/tmp/datadir")))))))
+    (propagated-inputs (list python-protobuf))
+    (inputs (list mysql protobuf-3.20 openssl-1.1 zlib))
+    (home-page "https://dev.mysql.com/doc/connector-python/en/index.html")
+    (synopsis "MySQL driver written in Python")
+    (description "MySQL Connector/Python enables Python programs to access
+MySQL databases, using an API that is compliant with the Python Database API
+Specification v2.0 (PEP 249).")
+    (license license:gpl2)))
+
 (define-public python-py4j
   (package
     (name "python-py4j")
