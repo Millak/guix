@@ -375,25 +375,6 @@ interface and is based on GNU Guile.")
     (native-inputs (list pkg-config guile-2.2))
     (inputs (list guile-2.2 guile2.2-fibers))))
 
-(define-public guile2.0-shepherd
-  (package
-    (inherit shepherd)
-    (name "guile2.0-shepherd")
-    (native-inputs
-     (list help2man pkg-config guile-2.0))
-    (inputs
-     (list guile-2.0))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             ;; (ice-9 threads) isn't available in guile-2.0
-             (substitute* "modules/shepherd.scm"
-               ((".*\\(ice-9 threads\\).*") ""))
-             #t)))
-       ,@(package-arguments shepherd)))))
-
 (define-public cfm
   (package
     (name "cfm")
