@@ -1952,8 +1952,8 @@ and system administrators.")
   ;; recent versions of the build tools.  The latest activity on the
   ;; pre-GNOME version has been in 2014, while GNOME has continued applying
   ;; fixes since.
-  (let ((commit "0997887d97f01be28bf3886dfd3e2002de437930")
-        (revision "3"))
+  (let ((commit "b903dd83aa5aab1b41c7864dd5027d1b6a0a190c")
+        (revision "4"))
     (package
       (name "dia")
       (version (git-version "0.97.3" revision commit))
@@ -1965,7 +1965,7 @@ and system administrators.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "199b4n1jydg1g9lnz0r8xx67h7s2ac2lfj89zp015lbs0qqfkmsh"))))
+                  "0j5q7whwpzzfsinjryp3g0xh3cyy88drwyr0w8x0666mj6h70h6a"))))
       (build-system meson-build-system)
       ;; XXX: Parallel builds may cause: [74/566] [...]
       ;; fatal error: dia-lib-enums.h: No such file or directory
