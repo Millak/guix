@@ -275,33 +275,37 @@ of those files are returned that are unexpectedly installed."
                         store ref (string-append name "-svn-multi-checkout")))))
     (values
      `(package
-        (inherit (simple-texlive-package
-                  ,name
-                  (list ,@dirs)
-                  (base32
-                   ,(bytevector->nix-base32-string
-                     (let-values (((port get-hash) (open-sha256-port)))
-                       (write-file source port)
-                       (force-output port)
-                       (get-hash))))
-                  ,@(if (assoc-ref data 'srcfiles) '() '(#:trivial? #true))))
-        ;; package->definition in (guix import utils) expects to see a
-        ;; version field.
-        (version ,version)
+        (name ,name)
+        (version (number->string %texlive-revision))
+        (source (texlive-origin
+                 name version
+                 (list ,@(sort locs string<))
+                 (base32
+                  ,(bytevector->nix-base32-string
+                    (let-values (((port get-hash) (open-sha256-port)))
+                      (write-file source port)
+                      (force-output port)
+                      (get-hash))))))
+        ,@(if (assoc-ref data 'docfiles)
+              '((outputs '("out" "doc")))
+              '())
+        (build-system texlive-build-system)
         ,@(match filtered-depends
             (() '())
             (inputs
              `((propagated-inputs
-                (list ,@(map
+                (list ,@(map-in-order
                          (lambda (tex-name)
                            (let ((name (guix-name tex-name)))
                              (string->symbol name)))
-                         inputs))))))
-        ,@(or (and=> (assoc-ref data 'name)
+                         ;; Sort inputs alphabetically.
+                         (reverse inputs)))))))
+        (home-page
+         ,(or (and=> (or (assoc-ref data 'catalogue)
+                         (assoc-ref data 'name))
                      (lambda (name)
-                       `((home-page ,(string-append "https://ctan.org/pkg/"
-                                                    name)))))
-              '((home-page "https://www.tug.org/texlive/")))
+                       (string-append "https://ctan.org/pkg/" name)))
+              "https://www.tug.org/texlive/"))
         (synopsis ,(assoc-ref data 'shortdesc))
         (description ,(and=> (assoc-ref data 'longdesc) beautify-description))
         (license ,(and=> (assoc-ref data 'catalogue-license)

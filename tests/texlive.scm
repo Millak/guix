@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,7 +32,15 @@
 (test-begin "texlive")
 
 (define %fake-tlpdb
-  '(("stricttex"
+  '(("example"
+     . ((name . "example")
+        (shortdesc . "Typeset examples...")
+        (longdesc . "The package makes it easier...")
+        (runfiles
+         .
+         ("texmf-dist/tex/latex/example/example.sty"))
+        (catalogue-license . "gpl")))
+    ("stricttex"
      . ((name
          . "stricttex")
         (shortdesc
@@ -69,7 +78,7 @@ theorems and proofs, centered or non-justified text, and listing computer
 code; Specialized macros for easily constructing ruled tables. TeXsis was
 originally developed for physicists, but others may also find it useful. It is
 completely compatible with Plain TeX.")
-        (depend . ("cm" "hyphen-base" "knuth-lib" "plain" "tex"))
+        (depend . ("tex" "plain" "knuth-lib" "hyphen-base" "cm"))
         (docfiles
          . ("texmf-dist/doc/man/man1/texsis.1"
             "texmf-dist/doc/man/man1/texsis.man1.pdf"
@@ -158,6 +167,40 @@ completely compatible with Plain TeX.")
             "texmf-dist/tex/texsis/config/texsis.ini"))
         (catalogue-license . "lppl")))))
 
+(test-assert "texlive->guix-package, no docfiles"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "example"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-example")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "tex/latex/example/")
+                         ('base32 (? string? hash))))
+               ('build-system 'texlive-build-system)
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
 (test-assert "texlive->guix-package"
   ;; Replace network resources with sample data.
   (mock ((guix build svn) svn-fetch
@@ -174,27 +217,30 @@ completely compatible with Plain TeX.")
                                              #:package-database
                                              (lambda _ %fake-tlpdb))))
           (match result
-            (`(package
-                (inherit (simple-texlive-package
-                          "texlive-texsis"
-                          (list "bibtex/bst/texsis/"
-                                "doc/man/man1/"
+            (('package
+               ('name "texlive-texsis")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "bibtex/bst/texsis/"
+                                "doc/man/man1/texsis.1"
+                                "doc/man/man1/texsis.man1.pdf"
                                 "doc/otherformats/texsis/base/"
                                 "tex/texsis/base/"
                                 "tex/texsis/config/")
-                          (base32 ,(? string? hash))
-                          #:trivial? #t))
-                (version ,_)
-                (propagated-inputs
-                 (list texlive-cm
-                       texlive-hyphen-base
-                       texlive-knuth-lib
-                       texlive-plain
-                       texlive-tex))
-                (home-page ,(? string?))
-                (synopsis ,(? string?))
-                (description ,(? string?))
-                (license lppl))
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('propagated-inputs
+                ('list 'texlive-cm
+                       'texlive-hyphen-base
+                       'texlive-knuth-lib
+                       'texlive-plain
+                       'texlive-tex))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license 'lppl))
              #true)
             (_
              (begin
