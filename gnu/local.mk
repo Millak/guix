@@ -796,6 +796,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/version-control.scm			\
   %D%/tests/virtualization.scm			\
   %D%/tests/vnc.scm				\
+  %D%/tests/vnstat.scm				\
   %D%/tests/web.scm
 
 INSTALLER_MODULES =                             \
