@@ -16955,13 +16955,13 @@ ISO 8859, etc.).")
 (define-public python-anyqt
   (package
     (name "python-anyqt")
-    (version "0.0.13")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "AnyQt" version))
        (sha256
-        (base32 "0z7myf0mp1qx4gza6ncqyq9whk67vblmh9n3klk19dv4aakjml2f"))))
+        (base32 "0fvnhdk0nzhlm1xydisvdq1w7lwaakdkbwb1rkyz4vd232wji4jb"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
