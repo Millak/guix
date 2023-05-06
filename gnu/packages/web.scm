@@ -323,7 +323,7 @@ and its related documentation.")
 (define-public mod-wsgi
   (package
     (name "mod-wsgi")
-    (version "4.7.1")
+    (version "4.9.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -332,7 +332,7 @@ and its related documentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1savh6h3qds20mwn1nqasmqzcp57pdhfc9v4b4k78d6q28y0r17s"))))
+                "1zf921nd9xxdvvc8awzzfrljr0n29vi28mlam0jdwvsk0xv4gd7a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,httpd)
