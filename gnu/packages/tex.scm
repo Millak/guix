@@ -929,6 +929,34 @@ build fonts using the Metafont system.")
 
 (define-deprecated-package texlive-metafont-base texlive-metafont)
 
+(define-public texlive-mfirstuc
+  (package
+    (name "texlive-mfirstuc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mfirstuc/"
+                   "scripts/mfirstuc/"
+                   "source/latex/mfirstuc/"
+                   "tex/latex/mfirstuc/")
+             (base32
+              "033ymwwc6q0v6saq0x2jc20vc94d38hna0vb8cymj3d8irqy97x2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox))
+    (home-page "https://ctan.org/pkg/mfirstuc")
+    (synopsis "Uppercase the first letter of a word")
+    (description
+     "The package provides commands @code{\\makefirstuc} that uppercases the
+first letter in its argument (with a check for a semantic markup command at
+the start of the argument), and @code{\\xmakefirstuc} which expands the
+argument before uppercasing.  It also provides
+@code{\\capitalisewords@{phrase@}} which applies @code{\\makefirstuc} to each
+word in the phrase, where the words are separated by regular
+spaces.  (Exceptions can be made for words that shouldn't be converted.)")
+    (license license:lppl1.3+)))
+
 (define-public texlive-fontinst
   (let ((template (simple-texlive-package
                    "texlive-fontinst"
