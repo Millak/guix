@@ -294,13 +294,7 @@
 
          (simple-format #t "starting the guix-build-coordinator:\n  ~A\n"
                         (current-filename))
-         (let* ((metrics-registry (make-metrics-registry
-                                   #:namespace
-                                   "guixbuildcoordinator"))
-                (datastore (database-uri->datastore
-                            #$database-uri-string
-                            #:metrics-registry metrics-registry))
-                (hooks
+         (let* ((hooks
                  (list #$@(map (match-lambda
                                  ((name . hook-gexp)
                                   #~(cons '#$name #$hook-gexp)))
@@ -311,9 +305,8 @@
                                ((name . _) (assq-ref hooks name)))
                              %default-hooks)))
                 (build-coordinator (make-build-coordinator
-                                    #:datastore datastore
+                                    #:database-uri-string #$database-uri-string
                                     #:hooks hooks-with-defaults
-                                    #:metrics-registry metrics-registry
                                     #:allocation-strategy #$allocation-strategy)))
 
            (run-coordinator-service
