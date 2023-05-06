@@ -4993,6 +4993,26 @@ implementation is output device independent, and made very simple by relying
 on @code{everypage}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-enctex
+  (package
+    (name "texlive-enctex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/enctex/"
+                   "tex/generic/enctex/")
+             (base32
+              "1j8ji1ka8vhskm5kn0iwmkhjfp88ly6rva30pr1c9llsmsac5sf2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/enctex")
+    (synopsis "TeX extension that translates input on its way into TeX")
+    (description
+     "EncTeX is (another) TeX extension, written at the change-file level.  It
+provides means of translating input on the way into TeX.  It allows, for
+example, translation of multibyte sequences, such as utf-8 encoding.")
+    (license license:gpl3+)))
+
 (define-public texlive-environ
   (package
     (name "texlive-environ")
