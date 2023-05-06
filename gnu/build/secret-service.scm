@@ -62,7 +62,7 @@ bindings available within the lexical scope of BODY."
 (define (wait-for-readable-fd port timeout)
   "Wait until PORT has data available for reading or TIMEOUT has expired.
 Return #t in the former case and #f in the latter case."
-  (match (resolve-module '(fibers) #f)            ;using Fibers?
+  (match (resolve-module '(fibers) #f #:ensure #f) ;using Fibers?
     (#f
      (log "blocking on socket...~%")
      (match (select (list port) '() '() timeout)

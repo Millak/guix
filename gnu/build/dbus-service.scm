@@ -64,10 +64,10 @@
 ;;; which is required at least for the Jami service.
 (define sleep*
   (lambda ()                            ;delay execution
-    (if (resolve-module '(fibers) #f)
+    (if (resolve-module '(fibers) #f #:ensure #f)
         (module-ref (resolve-interface '(fibers)) 'sleep)
         (begin
-          (format #f "fibers not available -- blocking 'sleep' in use")
+          (format #t "Fibers not available -- blocking 'sleep' in use~%")
           sleep))))
 
 ;;;
