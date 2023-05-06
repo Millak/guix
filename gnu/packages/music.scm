@@ -5122,7 +5122,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "4.5.0")
+    (version "5.5.0")
     (source
      (origin
        (method git-fetch)
@@ -5131,7 +5131,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j66b8y1pyka2im5hbwz6yh3hip0wsw7fa3kwl2212wq1y2a4ys1"))))
+        (base32 "0dl3gsmpc7b4hi97qri5d5rc3ikx639r3l1dy204p6dx8pwpv2ry"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -5159,6 +5159,7 @@ studio.")
            gstreamer
            gtk
            jack-1
+           json-glib
            ladspa
            libinstpatch
            libsamplerate
