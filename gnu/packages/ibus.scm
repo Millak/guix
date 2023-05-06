@@ -316,7 +316,7 @@ ZhuYin (Bopomofo) input method based on libpinyin for IBus.")
 (define-public libpinyin
   (package
     (name "libpinyin")
-    (version "2.6.0")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/libpinyin/libpinyin/"
@@ -324,7 +324,7 @@ ZhuYin (Bopomofo) input method based on libpinyin for IBus.")
                                   "/libpinyin-" version ".tar.gz"))
               (sha256
                (base32
-                "10h5mjgv4ibhispvr3s1k36a4aclx4dcvcc2knd4sg1xibw0dp4w"))))
+                "0l4h1q2l5fql0fy9bmncyw0dpbfwn1yb5p3xnwvhgpbidpq58c9m"))))
     (build-system gnu-build-system)
     (inputs
      (list glib bdb))
