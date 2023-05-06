@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
@@ -1396,6 +1398,38 @@ code will be mixed in with the actual programming logic.  This implementation
 provides a number of utilities to make coding with expected cleaner.")
     (home-page "https://tl.tartanllama.xyz/")
     (license license:cc0)))
+
+(define-public immer
+  (package
+   (name "immer")
+   (version "0.8.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/arximboldi/immer")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "11km3l5h3rgsbj8yfyzk3fnx9na55l6zs2sxpx922yvlvs2blh27"))
+            (modules '((guix build utils)))
+            (snippet #~(begin
+                         (delete-file "tools/include/doctest.h")
+                         (delete-file "tools/include/catch.hpp")
+                         (substitute* (find-files "test" "\\.[cih]pp")
+                           (("<catch.hpp>") "<catch2/catch.hpp>")
+                           (("<doctest.h>") "<doctest/doctest.h>"))
+                         (substitute* (find-files "test/oss-fuzz" "\\.cpp")
+                           ;; someone used the wrong header :)
+                           (("<fmt/printf.h>") "<fmt/ostream.h>"))))))
+   (build-system cmake-build-system)
+   (arguments (list #:test-target "check"))
+   (inputs (list boost libgc c-rrb))
+   (native-inputs (list catch2 doctest fmt pkg-config))
+   (home-page "https://sinusoid.es/immer")
+   (synopsis "Immutable data structures")
+   (description "Immer is a library of persistent and immutable data structures
+written in C++.")
+   (license license:boost1.0)))
 
 (define-public atomic-queue
   (package
