@@ -48,6 +48,7 @@
   #:use-module (guix store)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
@@ -109,6 +110,30 @@ Compiler Collection (GCC) on the GNU/Linux system and other systems.  We refer
 to this dialect as GNU C.  If you already know C, you can use this as a
 reference manual.")
       (license license:fdl1.3+))))
+
+(define-public c-rrb
+  (let ((commit "d908617ff84515af90c454ff4d0f98675ae6b456")
+        (revision "0"))
+    (package
+     (name "c-rrb")
+     (version (git-version "0.1.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hypirion/c-rrb")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0zmha3xi80vgdcwzb4vwdllf97dvggjpjfgahrpsb5f5qi3yshxa"))))
+     (build-system gnu-build-system)
+     (inputs (list libgc))
+     (native-inputs (list autoconf automake libtool))
+     (home-page "https://github.com/hypirion/c-rrb")
+     (synopsis "Relaxed Radix Balanced Trees")
+     (description "Relaxed Radix Balanced Trees are an immutable vector-like
+data structure with good performance characteristics for concatenation and
+slicing.")
+     (license license:boost1.0))))
 
 (define-public cproc
   (let ((commit "70fe9ef1810cc6c05bde9eb0970363c35fa7e802")
