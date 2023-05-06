@@ -138,7 +138,9 @@ jami account used as part of the jami configuration are left *unspecified*."
                       %jami-os-provisioning)
                   %jami-os)
               #:imported-modules '((gnu services herd)
-                                   (guix combinators))))
+                                   (guix combinators)
+                                   (gnu build jami-service)
+                                   (gnu build dbus-service))))
   (define vm (virtual-machine
               (operating-system os)
               (memory-size 512)))
@@ -147,212 +149,228 @@ jami account used as part of the jami configuration are left *unspecified*."
                               "Account.username"))
 
   (define test
-    (with-extensions (list guile-packrat ;used by guile-ac-d-bus
-                           guile-ac-d-bus
-                           ;; Fibers is needed to provide the non-blocking
-                           ;; variant of the 'sleep' procedure.
-                           guile-fibers)
-      (with-imported-modules (source-module-closure
-                              '((gnu build marionette)
-                                (gnu build dbus-service)
-                                (gnu build jami-service)))
-        #~(begin
-            (use-modules (rnrs base)
-                         (srfi srfi-11)
-                         (srfi srfi-64)
-                         (gnu build marionette)
-                         (gnu build dbus-service)
-                         (gnu build jami-service))
+    (with-imported-modules (source-module-closure
+                            '((gnu build marionette)))
+      #~(begin
+          (use-modules (rnrs base)
+                       (srfi srfi-11)
+                       (srfi srfi-64)
+                       (gnu build marionette))
 
-            (setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=/var/run/jami/bus")
+          (setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=/var/run/jami/bus")
 
-            (define marionette
-              (make-marionette (list #$vm)))
+          (define marionette
+            (make-marionette (list #$vm)))
 
-            (test-runner-current (system-test-runner #$output))
-            (test-begin "jami")
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "jami")
 
-            (test-assert "service is running"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu build jami-service))
-                  (jami-service-available?))
-               marionette))
+          (test-assert "d-bus tooling loaded"
+            ;; Add Guile-AC-D-Bus and related libraries to the marionette's
+            ;; search path.
+            (marionette-eval
+             '(let ((libraries '(#$guile-ac-d-bus
+                                 #$guile-packrat))) ;used by ac-d-bus
+                (set! %load-path
+                      (append %load-path
+                              (map (lambda (directory)
+                                     (string-append directory
+                                                    "/share/guile/site/"
+                                                    (effective-version)))
+                                   libraries)))
+                (set! %load-compiled-path
+                      (append %load-compiled-path
+                              (map (lambda (directory)
+                                     (string-append directory
+                                                    "/lib/guile/3.0/site-ccache"))
+                                   libraries)))
+                %load-path)
+             marionette))
 
-            (test-assert "service can be stopped"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu build jami-service)
-                               (gnu services herd)
-                               (rnrs base))
-                  (assert (jami-service-available?))
+          (test-assert "service is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu build jami-service)
+                             (gnu services herd))
 
-                  (stop-service 'jami)
+                (wait-for-service 'jami)
+                (jami-service-available?))
+             marionette))
 
-                  (with-retries 20 1 (not (jami-service-available?))))
-               marionette))
+          (test-assert "service can be stopped"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu build jami-service)
+                             (gnu services herd)
+                             (rnrs base))
+                (assert (jami-service-available?))
 
-            (test-assert "service can be restarted"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu build dbus-service)
-                               (gnu build jami-service)
-                               (gnu services herd)
-                               (rnrs base)                               )
-                  ;; Start the service.
-                  (start-service 'jami)
-                  (with-retries 20 1 (jami-service-available?))
-                  ;; Restart the service.
-                  (restart-service 'jami)
-                  (with-retries 20 1 (jami-service-available?)))
-               marionette))
+                (stop-service 'jami)
 
-            (unless #$provisioning? (test-skip 1))
-            (test-assert "jami accounts provisioning, account present"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu build dbus-service)
-                               (gnu services herd)
-                               (rnrs base))
-                  ;; Accounts take some time to appear after being added.
-                  (with-retries 20 1
-                    (with-shepherd-action 'jami ('list-accounts) results
-                      (let ((account (assoc-ref (car results) #$username)))
-                        (assert (string=? #$username
-                                          (assoc-ref account
-                                                     "Account.username")))))))
-               marionette))
+                (with-retries 20 1 (not (jami-service-available?))))
+             marionette))
 
-            (unless #$(and provisioning? (not partial?)) (test-skip 1))
-            (test-assert "jami accounts provisioning, allowed-contacts"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu services herd)
-                               (rnrs base)
-                               (srfi srfi-1))
+          (test-assert "service can be restarted"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu build dbus-service)
+                             (gnu build jami-service)
+                             (gnu services herd)
+                             (rnrs base)                               )
+                ;; Start the service.
+                (start-service 'jami)
+                (with-retries 20 1 (jami-service-available?))
+                ;; Restart the service.
+                (restart-service 'jami)
+                (with-retries 20 1 (jami-service-available?)))
+             marionette))
 
-                  ;; Public mode is disabled.
-                  (with-shepherd-action 'jami ('list-account-details)
-                                        results
+          (unless #$provisioning? (test-skip 1))
+          (test-assert "jami accounts provisioning, account present"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu build dbus-service)
+                             (gnu services herd)
+                             (rnrs base))
+                ;; Accounts take some time to appear after being added.
+                (with-retries 20 1
+                              (with-shepherd-action 'jami ('list-accounts) results
+                                (let ((account (assoc-ref (car results) #$username)))
+                                  (assert (string=? #$username
+                                                    (assoc-ref account
+                                                               "Account.username")))))))
+             marionette))
+
+          (unless #$(and provisioning? (not partial?)) (test-skip 1))
+          (test-assert "jami accounts provisioning, allowed-contacts"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd)
+                             (rnrs base)
+                             (srfi srfi-1))
+
+                ;; Public mode is disabled.
+                (with-shepherd-action 'jami ('list-account-details)
+                                      results
+                  (let ((account (assoc-ref (car results) #$username)))
+                    (assert (string=? "false"
+                                      (assoc-ref account
+                                                 "DHT.PublicInCalls")))))
+
+                ;; Allowed contacts match those declared in the configuration.
+                (with-shepherd-action 'jami ('list-contacts) results
+                  (let ((contacts (assoc-ref (car results) #$username)))
+                    (assert (lset= string-ci=? contacts '#$%allowed-contacts)))))
+             marionette))
+
+          (unless #$(and provisioning? (not partial?)) (test-skip 1))
+          (test-assert "jami accounts provisioning, moderators"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd)
+                             (rnrs base)
+                             (srfi srfi-1))
+
+                ;; Moderators match those declared in the configuration.
+                (with-shepherd-action 'jami ('list-moderators) results
+                  (let ((moderators (assoc-ref (car results) #$username)))
+                    (assert (lset= string-ci=? moderators '#$%moderators))))
+
+                ;; Moderators can be added via the Shepherd action.
+                (with-shepherd-action 'jami
+                    ('add-moderator "cccccccccccccccccccccccccccccccccccccccc"
+                                    #$username) results
+                  (let ((moderators (car results)))
+                    (assert (lset= string-ci=? moderators
+                                   (cons "cccccccccccccccccccccccccccccccccccccccc"
+                                         '#$%moderators))))))
+             marionette))
+
+          (unless #$provisioning? (test-skip 1))
+          (test-assert "jami service actions, ban/unban contacts"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd)
+                             (ice-9 match)
+                             (rnrs base)
+                             (srfi srfi-1))
+
+                ;; Globally ban a contact.
+                (with-shepherd-action 'jami
+                    ('ban-contact "1dbcb0f5f37324228235564b79f2b9737e9a008f") _
+                  (with-shepherd-action 'jami ('list-banned-contacts) results
+                    (every (match-lambda
+                             ((username . banned-contacts)
+                              (member "1dbcb0f5f37324228235564b79f2b9737e9a008f"
+                                      banned-contacts)))
+                           (car results))))
+
+                ;; Ban a contact for a single account.
+                (with-shepherd-action 'jami
+                    ('ban-contact "dddddddddddddddddddddddddddddddddddddddd"
+                                  #$username) _
+                  (with-shepherd-action 'jami ('list-banned-contacts) results
+                    (every (match-lambda
+                             ((username . banned-contacts)
+                              (let ((found? (member "dddddddddddddddddddddddddddddddddddddddd"
+                                                    banned-contacts)))
+                                (if (string=? #$username username)
+                                    found?
+                                    (not found?)))))
+                           (car results)))))
+             marionette))
+
+          (unless #$provisioning? (test-skip 1))
+          (test-assert "jami service actions, enable/disable accounts"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd)
+                             (rnrs base))
+
+                (with-shepherd-action 'jami
+                    ('disable-account #$username) _
+                  (with-shepherd-action 'jami ('list-accounts) results
                     (let ((account (assoc-ref (car results) #$username)))
-                      (assert (string=? "false"
-                                        (assoc-ref account
-                                                   "DHT.PublicInCalls")))))
+                      (assert (string= "false"
+                                       (assoc-ref account "Account.enable"))))))
 
-                  ;; Allowed contacts match those declared in the configuration.
-                  (with-shepherd-action 'jami ('list-contacts) results
-                    (let ((contacts (assoc-ref (car results) #$username)))
-                      (assert (lset= string-ci=? contacts '#$%allowed-contacts)))))
-               marionette))
+                (with-shepherd-action 'jami
+                    ('enable-account #$username) _
+                  (with-shepherd-action 'jami ('list-accounts) results
+                    (let ((account (assoc-ref (car results) #$username)))
+                      (assert (string= "true"
+                                       (assoc-ref account "Account.enable")))))))
+             marionette))
 
-            (unless #$(and provisioning? (not partial?)) (test-skip 1))
-            (test-assert "jami accounts provisioning, moderators"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu services herd)
-                               (rnrs base)
-                               (srfi srfi-1))
+          (unless #$provisioning? (test-skip 1))
+          (test-assert "jami account parameters"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd)
+                             (rnrs base)
+                             (srfi srfi-1))
 
-                  ;; Moderators match those declared in the configuration.
-                  (with-shepherd-action 'jami ('list-moderators) results
-                    (let ((moderators (assoc-ref (car results) #$username)))
-                      (assert (lset= string-ci=? moderators '#$%moderators))))
+                (with-shepherd-action 'jami ('list-account-details) results
+                  (let ((account-details (assoc-ref (car results)
+                                                    #$username)))
+                    (assert (lset<=
+                             equal?
+                             '(("Account.hostname" .
+                                "bootstrap.me;fallback.another.host")
+                               ("Account.peerDiscovery" . "false")
+                               ("Account.rendezVous" . "true")
+                               ("RingNS.uri" . "https://my.name.server"))
+                             account-details)))))
+             marionette))
 
-                  ;; Moderators can be added via the Shepherd action.
-                  (with-shepherd-action 'jami
-                      ('add-moderator "cccccccccccccccccccccccccccccccccccccccc"
-                                      #$username) results
-                    (let ((moderators (car results)))
-                      (assert (lset= string-ci=? moderators
-                                     (cons "cccccccccccccccccccccccccccccccccccccccc"
-                                           '#$%moderators))))))
-               marionette))
-
-            (unless #$provisioning? (test-skip 1))
-            (test-assert "jami service actions, ban/unban contacts"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu services herd)
-                               (ice-9 match)
-                               (rnrs base)
-                               (srfi srfi-1))
-
-                  ;; Globally ban a contact.
-                  (with-shepherd-action 'jami
-                      ('ban-contact "1dbcb0f5f37324228235564b79f2b9737e9a008f") _
-                    (with-shepherd-action 'jami ('list-banned-contacts) results
-                      (every (match-lambda
-                               ((username . banned-contacts)
-                                (member "1dbcb0f5f37324228235564b79f2b9737e9a008f"
-                                        banned-contacts)))
-                             (car results))))
-
-                  ;; Ban a contact for a single account.
-                  (with-shepherd-action 'jami
-                      ('ban-contact "dddddddddddddddddddddddddddddddddddddddd"
-                                    #$username) _
-                    (with-shepherd-action 'jami ('list-banned-contacts) results
-                      (every (match-lambda
-                               ((username . banned-contacts)
-                                (let ((found? (member "dddddddddddddddddddddddddddddddddddddddd"
-                                                      banned-contacts)))
-                                  (if (string=? #$username username)
-                                      found?
-                                      (not found?)))))
-                             (car results)))))
-               marionette))
-
-            (unless #$provisioning? (test-skip 1))
-            (test-assert "jami service actions, enable/disable accounts"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu services herd)
-                               (rnrs base))
-
-                  (with-shepherd-action 'jami
-                      ('disable-account #$username) _
-                    (with-shepherd-action 'jami ('list-accounts) results
-                      (let ((account (assoc-ref (car results) #$username)))
-                        (assert (string= "false"
-                                         (assoc-ref account "Account.enable"))))))
-
-                  (with-shepherd-action 'jami
-                      ('enable-account #$username) _
-                    (with-shepherd-action 'jami ('list-accounts) results
-                      (let ((account (assoc-ref (car results) #$username)))
-                        (assert (string= "true"
-                                         (assoc-ref account "Account.enable")))))))
-               marionette))
-
-            (unless #$provisioning? (test-skip 1))
-            (test-assert "jami account parameters"
-              (marionette-eval
-               '(begin
-                  (use-modules (gnu services herd)
-                               (rnrs base)
-                               (srfi srfi-1))
-
-                  (with-shepherd-action 'jami ('list-account-details) results
-                    (let ((account-details (assoc-ref (car results)
-                                                      #$username)))
-                      (assert (lset<=
-                               equal?
-                               '(("Account.hostname" .
-                                  "bootstrap.me;fallback.another.host")
-                                 ("Account.peerDiscovery" . "false")
-                                 ("Account.rendezVous" . "true")
-                                 ("RingNS.uri" . "https://my.name.server"))
-                               account-details)))))
-               marionette))
-
-            (test-end)))))
+          (test-end))))
 
   (gexp->derivation (if provisioning?
                         (if partial?
                             "jami-provisioning-partial-test"
                             "jami-provisioning-test")
                         "jami-test")
-    test))
+                    test))
 
 (define %test-jami
   (system-test

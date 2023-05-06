@@ -104,10 +104,11 @@ generation of the system profile."
 
             (test-assert "script activated user accounts"
               (marionette-eval
-               '(string-contains (call-with-input-file "/etc/passwd"
-                                   (lambda (port)
-                                     (get-string-all port)))
-                                 "jakob")
+               '(begin
+                  (use-modules (rnrs io ports))
+                  (string-contains (call-with-input-file "/etc/passwd"
+                                     get-string-all)
+                                   "jakob"))
                marionette)))
 
           (test-end))))
@@ -208,9 +209,9 @@ bootloader's configuration file."
           (define (generations-in-grub-cfg marionette)
             (let ((grub-cfg (marionette-eval
                              '(begin
+                                (use-modules (rnrs io ports))
                                 (call-with-input-file "/boot/grub/grub.cfg"
-                                  (lambda (port)
-                                    (get-string-all port))))
+                                  get-string-all))
                              marionette)))
               (map (lambda (parameter)
                      (second (string-split (match:substring parameter) #\=)))

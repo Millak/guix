@@ -208,11 +208,15 @@ postgres|Superuser, Create role, Create DB, Replication, Bypass RLS|{}
 zabbix||{}
 "
             (marionette-eval
-             '(begin (let* ((port (open-pipe #$%psql-db-zabbix-create-script
-                                             OPEN_READ))
-                            (output (read-string port))
-                            (status (close-pipe port)))
-                       output))
+             '(begin
+                (use-modules (ice-9 popen)
+                             (ice-9 rdelim))
+
+                (let* ((port (open-pipe #$%psql-db-zabbix-create-script
+                                        OPEN_READ))
+                       (output (read-string port))
+                       (status (close-pipe port)))
+                  output))
              marionette))
 
           (test-eq "postgres create zabbix db"

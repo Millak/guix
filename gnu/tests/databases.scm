@@ -196,7 +196,9 @@
             (marionette-eval
              '(begin
                 (use-modules (ice-9 ftw)
-                             (ice-9 match))
+                             (ice-9 match)
+                             (rnrs io ports))
+
                 (current-output-port
                  (open-file "/dev/console" "w0"))
                 (let ((server-log-file
@@ -317,6 +319,8 @@
             (begin
               (marionette-eval
                '(begin
+                  (use-modules (rnrs io ports))
+
                   (let loop ((i 10))
                     (unless (or (zero? i)
                                 (and (file-exists? #$%role-log-file)
@@ -331,8 +335,9 @@
           (test-assert "database creation"
             (marionette-eval
              '(begin
-                (current-output-port
-                 (open-file "/dev/console" "w0"))
+                (use-modules (guix build utils))
+
+                (current-output-port (open-file "/dev/console" "w0"))
                 (invoke #$(file-append postgresql "/bin/psql")
                         "-tA" "-c" "CREATE DATABASE test"))
              marionette))
@@ -466,7 +471,9 @@ data double PRECISION NULL
             "awesome\n"
             (marionette-eval
              '(begin
-                (use-modules (ice-9 popen))
+                (use-modules (ice-9 popen)
+                             (rnrs io ports))
+
                 (let* ((port (open-pipe*
                               OPEN_READ
                               #$(file-append mariadb "/bin/mysql") "guix"
