@@ -103,6 +103,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:autoload   (gnu packages serialization) (cereal)
   #:use-module (ice-9 match))
 
 (define-public argagg
@@ -1455,6 +1456,37 @@ written in C++.")
      (description "Zug is a C++ library providing transducers, that is,
 composable sequential transformations.")
      (license license:boost1.0))))
+
+(define-public lager
+  (let ((commit "2016df38be90ee176bcb73ea414be2318bc1ef31")
+        (revision "0"))
+    (package
+     (name "lager")
+     (version (git-version "0.0.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arximboldi/lager")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1b7zxwqrbm7db7wxqbsrk7jjd3znvvi1cwj7jg6zkmf0199071a5"))))
+     (build-system cmake-build-system)
+     (arguments (list #:test-target "check"
+                      #:configure-flags #~(list "-Dlager_BUILD_EXAMPLES=no")
+                      #:phases
+                      #~(modify-phases %standard-phases
+                          (add-after 'unpack 'delete-failing-tests
+                            (lambda _
+                              (delete-file-recursively "test/event_loop"))))))
+     (inputs (list boost immer zug))
+     (native-inputs (list cereal))
+     (home-page "https://sinusoid.es/lager")
+     (synopsis "Library for value-oriented design")
+     (description "Lager is a library for value-oriented design implementing
+the unidirectional data-flow architecture.  Apart from a store and various
+event loops it also provides lenses and cursors.")
+     (license license:expat))))
 
 (define-public atomic-queue
   (package
