@@ -800,14 +800,14 @@ entries, photos, book chapters, or anything else.")
 (define-public python-django-pipeline
   (package
     (name "python-django-pipeline")
-    (version "2.0.5")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "django-pipeline" version))
        (sha256
         (base32
-         "19vrbd5s12qw4qlg5n8ldv7zz2rs5y2sdid1i7lvgp92m71dayvc"))))
+         "194j8xihx5yr1yfrssdy6nxmx8yc999pz2ai9lg83l7izmbcx9in"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -823,8 +823,10 @@ entries, photos, book chapters, or anything else.")
                (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
                (invoke "django-admin" "test" "tests"
                        "--pythonpath=.")))))))
-    (propagated-inputs
-     (list python-css-html-js-minify python-django python-slimit
+    (native-inputs
+     (list python-django
+           python-setuptools-scm
+           python-css-html-js-minify
            python-jsmin))
     (home-page
      "https://github.com/jazzband/django-pipeline")
