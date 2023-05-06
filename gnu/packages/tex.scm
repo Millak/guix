@@ -4124,6 +4124,28 @@ releases.  The bundle consists of a Lua script to run the tasks and a
 @code{.tex} file which provides the testing environment.")
       (license license:lppl1.3c+))))
 
+(define-public texlive-luabidi
+  (package
+    (name "texlive-luabidi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luabidi/"
+                   "tex/lualatex/luabidi/")
+             (base32
+              "1dwdiwsdfhgwpx8r2271i5kqphcpkh69y3rx1wxfr9hl17lzw2cp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-bigfoot              ;for "perpage.sty"
+           texlive-etoolbox))
+    (home-page "https://ctan.org/pkg/luabidi")
+    (synopsis "Bidi functions for LuaTeX")
+    (description
+     "The package attempts to emulate the XeTeX @code{bidi} package, in the
+context of LuaTeX.")
+    (license (list license:lppl1.3c license:expat))))
+
 (define-public texlive-lualatex-math
   (package
     (name "texlive-lualatex-math")
