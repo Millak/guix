@@ -864,62 +864,63 @@ using compilers other than GCC."
     (inherit gcc)
     (name "libstdc++")
     (arguments
-     `(#:out-of-source? #t
-       #:modules ((srfi srfi-1)
+     (list
+      #:out-of-source? #t
+      #:modules `((srfi srfi-1)
                   (srfi srfi-26)
                   ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (version>=? (package-version gcc) "11")
-               `((add-after 'unpack 'hide-gcc-headers
-                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     (let ((gcc (assoc-ref (or native-inputs inputs)
-                                           ,(if (%current-target-system)
-                                                "cross-gcc"
-                                                "gcc"))))
-                       ;; Fix a regression in GCC 11 where the GCC headers
-                       ;; shadows glibc headers when building libstdc++.  An
-                       ;; upstream fix was added in GCC 11.3.0, but it only
-                       ;; hides system include directories, not those on
-                       ;; CPLUS_INCLUDE_PATH.  See discussion at
-                       ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>
-                       ;; and the similar adjustment in GCC-FINAL.
-                       (substitute* "libstdc++-v3/src/c++17/Makefile.in"
-                         (("AM_CXXFLAGS = ")
-                          (string-append ,(if (%current-target-system)
-                                              "CROSS_CPLUS_INCLUDE_PATH = "
-                                              "CPLUS_INCLUDE_PATH = ")
-                                         (string-join
-                                          (remove (cut string-prefix? gcc <>)
-                                                  (string-split
-                                                   (getenv
-                                                    ,(if (%current-target-system)
-                                                         "CROSS_CPLUS_INCLUDE_PATH"
-                                                         "CPLUS_INCLUDE_PATH"))
-                                                   #\:))
-                                          ":")
-                                         "\nAM_CXXFLAGS = ")))))))
-               '())
-         ,@(let ((version (package-version gcc)))
-                (if (and (target-ppc64le?)
-                    (version>=? version "11")
-                    (not (version>=? version "12")))
-               `((add-after 'unpack 'patch-powerpc
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (invoke "patch" "--force" "-p1" "-i"
-                             (assoc-ref inputs "powerpc64le-patch")))))
-               '()))
-         ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
-         (add-before 'chdir 'fix-rs6000-libdir
-           (lambda _
-             (when (file-exists? "gcc/config/rs6000")
-               (substitute* (find-files "gcc/config/rs6000")
-                 (("/lib64") "/lib")))))
-         (add-before 'configure 'chdir
-           (lambda _
-             (chdir "libstdc++-v3"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (version>=? (package-version gcc) "11")
+                 #~((add-after 'unpack 'hide-gcc-headers
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (let ((gcc (assoc-ref (or native-inputs inputs)
+                                              #$(if (%current-target-system)
+                                                    "cross-gcc"
+                                                    "gcc"))))
+                          ;; Fix a regression in GCC 11 where the GCC headers
+                          ;; shadows glibc headers when building libstdc++.  An
+                          ;; upstream fix was added in GCC 11.3.0, but it only
+                          ;; hides system include directories, not those on
+                          ;; CPLUS_INCLUDE_PATH.  See discussion at
+                          ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>
+                          ;; and the similar adjustment in GCC-FINAL.
+                          (substitute* "libstdc++-v3/src/c++17/Makefile.in"
+                            (("AM_CXXFLAGS = ")
+                             (string-append #$(if (%current-target-system)
+                                                  "CROSS_CPLUS_INCLUDE_PATH = "
+                                                  "CPLUS_INCLUDE_PATH = ")
+                                            (string-join
+                                             (remove (cut string-prefix? gcc <>)
+                                                     (string-split
+                                                      (getenv
+                                                       #$(if (%current-target-system)
+                                                             "CROSS_CPLUS_INCLUDE_PATH"
+                                                             "CPLUS_INCLUDE_PATH"))
+                                                      #\:))
+                                             ":")
+                                            "\nAM_CXXFLAGS = ")))))))
+                 '())
+          #$@(let ((version (package-version gcc)))
+               (if (and (target-ppc64le?)
+                       (version>=? version "11")
+                       (not (version>=? version "12")))
+                   #~((add-after 'unpack 'patch-powerpc
+                        (lambda* (#:key inputs #:allow-other-keys)
+                          (invoke "patch" "--force" "-p1" "-i"
+                                  (assoc-ref inputs "powerpc64le-patch")))))
+                   '()))
+          ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
+          (add-before 'chdir 'fix-rs6000-libdir
+            (lambda _
+              (when (file-exists? "gcc/config/rs6000")
+                (substitute* (find-files "gcc/config/rs6000")
+                  (("/lib64") "/lib")))))
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "libstdc++-v3"))))
 
-       #:configure-flags `("--disable-libstdcxx-pch"
+      #:configure-flags '`("--disable-libstdcxx-pch"
                            ,(string-append "--with-gxx-include-dir="
                                            (assoc-ref %outputs "out")
                                            "/include"))))
