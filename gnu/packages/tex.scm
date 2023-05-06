@@ -2769,6 +2769,29 @@ converters, will completely supplant the older patterns.")
 
 (define-deprecated-package texlive-generic-hyph-utf8 texlive-hyph-utf8)
 
+(define-public texlive-dehyph
+  (package
+    (name "texlive-dehyph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/dehyph/")
+             (base32
+              "0fkqlsknrlxk8zazcqy4q3nisxr3a4x21aiwqhz8s237rdf3w39g")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dehyph")
+    (synopsis "German hyphenation patterns for traditional orthography")
+    (description
+     "The package provides older hyphenation patterns for the German language.
+Please note that by default only pdfLaTeX uses these patterns (mainly for
+backwards compatibility).  The older packages ghyphen and gnhyph are now
+bundled together with dehyph, and are no longer be updated.  Both XeLaTeX and
+LuaLaTeX use the current German hyphenation patterns taken from Hyphenation
+patterns in UTF-8, and using the Experimental hyphenation patterns for the
+German language package it is possible to make pdfLaTeX use the new German
+patterns as well.")
+    (license license:lppl1.0+)))
+
 (define-public texlive-dehyph-exptl
   (package
     (inherit (simple-texlive-package
