@@ -52,7 +52,7 @@
   home-shepherd-configuration make-home-shepherd-configuration
   home-shepherd-configuration?
   (shepherd home-shepherd-configuration-shepherd
-            (default shepherd-0.9)) ; package
+            (default shepherd-0.10)) ; package
   (auto-start? home-shepherd-configuration-auto-start?
                (default #t))
   (daemonize? home-shepherd-configuration-daemonize?
