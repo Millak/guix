@@ -4534,6 +4534,35 @@ T2* and X2 encodings. These encodings cover (between them) pretty much every
 language that is written in a Cyrillic alphabet.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-passivetex
+  (package
+    (name "texlive-passivetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/xmltex/passivetex/")
+             (base32
+              "1h49v6sqbm27isfwwcql9dzxn4vmcn2algkqh7f1pzj860xw3ygn")))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-graphics
+           texlive-hyperref
+           texlive-marvosym
+           texlive-psnfss
+           texlive-tipa
+           texlive-times
+           texlive-tools
+           texlive-ulem
+           texlive-url))
+    (home-page "https://ctan.org/pkg/passivetex")
+    (synopsis "Support package for XML/SGML typesetting")
+    (description
+     "This is a set of packages providing XML parsing, UTF-8 parsing,
+Unicode entities, and common formatting object definitions for JadeTeX.")
+    ;; License given in "tex/xmltex/passivetex/mlnames.sty".
+    (license license:lppl1.0+)))
+
 (define-public texlive-pict2e
   (let ((template (simple-texlive-package
                    "texlive-pict2e"
