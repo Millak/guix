@@ -1505,7 +1505,7 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
                    glibc))
          (exec-server-command
           ;; XXX: Run the statically-linked 'exec' to work around
-          ;; <https://issues.guix.gnu.org/58631>, which manifests on some
+          ;; <https://issues.guix.gnu.org/58320>, which manifests on some
           ;; machines.
 
           ;; (list (file-append libc "/lib/ld.so.1") "exec"
