@@ -105,7 +105,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
 
   (define gnutls
-    (module-ref (resolve-interface '(gnu packages tls)) 'gnutls))
+    (module-ref (resolve-interface '(gnu packages tls)) 'guile-gnutls))
 
   (define glibc-locales
     ;; Note: pick the '-final' variant to avoid circular dependency on
