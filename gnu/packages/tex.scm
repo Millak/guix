@@ -3306,6 +3306,35 @@ overwrite existing files and letting you use @code{filecontents}
 
 (define-deprecated-package texlive-latex-filecontents texlive-filecontents)
 
+(define-public texlive-filehook
+  (package
+    (name "texlive-filehook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/filehook/"
+                   "source/latex/filehook/"
+                   "tex/latex/filehook/")
+             (base32
+              "03dsnv8fn111kn8h2fa281w2jvcdrqag1im6mkkfahvjgl1apk6k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list texlive-ydoc))
+    (propagated-inputs
+     (list texlive-kvoptions
+           texlive-pgf))
+    (home-page "https://ctan.org/pkg/filehook")
+    (synopsis "Hooks for input files")
+    (description
+     "The package provides several file hooks (@code{AtBegin}, @code{AtEnd},
+...) for files read by @code{\\input}, @code{\\include} and
+@code{\\InputIfFileExists}.  General hooks for all such files (e.g., all
+@code{\\included} ones) and file specific hooks only used for named files are
+provided; two hooks are provided for the end of @code{\\included} files ---
+one before, and one after the final @code{\\clearpage}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-epsf
   (package
     (inherit (simple-texlive-package
