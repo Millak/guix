@@ -1624,6 +1624,11 @@ control to Git repositories.")
        #:make-flags (list "GUILE_AUTO_COMPILE=0")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             ;; The 'bootstrap' script lacks a shebang, leading to "Exec
+             ;; format error" with glibc 2.35.
+             (invoke "autoreconf" "-vfi")))
          (add-after 'install-bin 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (use-modules (guix build guile-build-system))
@@ -1663,7 +1668,7 @@ control to Git repositories.")
            guile-gcrypt
            guile-git
            guile-syntax-highlight-for-gitile
-           gnutls))
+           guile-gnutls))
     (home-page "https://git.lepiller.eu/gitile")
     (synopsis "Simple Git forge written in Guile")
     (description "Gitile is a Git forge written in Guile that lets you
