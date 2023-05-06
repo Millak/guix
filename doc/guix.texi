@@ -10001,17 +10001,16 @@ used to build TeX packages in batch mode with a specified engine.  The
 build system sets the @env{TEXINPUTS} variable to find all TeX source
 files in the inputs.
 
-By default it runs @code{luatex} on all files ending on @code{ins}.  A
-different engine and format can be specified with the
-@code{#:tex-format} argument.  Different build targets can be specified
-with the @code{#:build-targets} argument, which expects a list of file
-names.  The build system adds only @code{texlive-bin} and
+By default it tries to run @code{luatex} on all @file{.ins} files, and
+if it fails to find any, on all @file{.dtx} files.  A different engine
+and format can be specified with the @code{#:tex-format} argument.
+Different build targets can be specified with the @code{#:build-targets}
+argument, which expects a list of file names.
+
+The build system adds only @code{texlive-bin} and
 @code{texlive-latex-base} (both from @code{(gnu packages tex}) to the
 inputs.  Both can be overridden with the arguments @code{#:texlive-bin}
 and @code{#:texlive-latex-base}, respectively.
-
-The @code{#:tex-directory} parameter tells the build system where to
-install the built files under the texmf tree.
 @end defvar
 
 @defvar ruby-build-system

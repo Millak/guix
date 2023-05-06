@@ -130,7 +130,6 @@ level package ID."
                         #:key
                         source
                         (tests? #f)
-                        tex-directory
                         (build-targets #f)
                         (tex-engine #f)
 
@@ -161,7 +160,6 @@ level package ID."
           #$(with-build-variables inputs outputs
               #~(texlive-build #:name #$name
                                #:source #+source
-                               #:tex-directory #$tex-directory
                                #:build-targets #$build-targets
                                #:tex-engine #$(if tex-engine
                                                   tex-engine
