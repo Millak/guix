@@ -628,30 +628,25 @@ The @code{use-modules} expression tells which of the modules we need in the file
 Modules are a collection of values and procedures.  They are commonly called
 ``libraries'' or ``packages'' in other programming languages.
 
-@node @samp{GUIX_PACKAGE_PATH}
-@subsubsection @samp{GUIX_PACKAGE_PATH}
+@node Channels
+@subsubsection Channels
 
-@emph{Note: Starting from Guix 0.16, the more flexible Guix @dfn{channels} are the
-preferred way and supersede @samp{GUIX_PACKAGE_PATH}.  See next section.}
+@cindex channel
+Guix and its package collection can be extended through @dfn{channels}.
+A channel is a Git repository, public or not, containing @file{.scm}
+files that provide packages (@pxref{Defining Packages,,, guix, GNU Guix
+Reference Manual}) or services (@pxref{Defining Services,,, guix, GNU
+Guix Reference Manual}).
 
-It can be tedious to specify the file from the command line instead of simply
-calling @code{guix package --install my-hello} as you would do with the official
-packages.
-
-Guix makes it possible to streamline the process by adding as many ``package
-declaration directories'' as you want.
-
-Create a directory, say @file{~/guix-packages} and add it to the @samp{GUIX_PACKAGE_PATH}
-environment variable:
+How would you go about creating a channel?  First, create a directory
+that will contain your @file{.scm} files, say @file{~/my-channel}:
 
 @example
-$ mkdir ~/guix-packages
-$ export GUIX_PACKAGE_PATH=~/guix-packages
+mkdir ~/my-channel
 @end example
 
-To add several directories, separate them with a colon (@code{:}).
-
-Our previous @samp{my-hello} needs some adjustments though:
+Suppose you want to add the @samp{my-hello} package we saw previously;
+it first needs some adjustments:
 
 @lisp
 (define-module (my-hello)
@@ -692,9 +687,9 @@ package.  If you want to use @code{define-public} in this use-case nonetheless, 
 sure the file ends with an evaluation of @code{my-hello}:
 
 @lisp
-; ...
+;; ...
 (define-public my-hello
-  ; ...
+  ;; ...
   )
 
 my-hello
@@ -702,22 +697,50 @@ my-hello
 
 This last example is not very typical.
 
-Now @samp{my-hello} should be part of the package collection like all other official
-packages.  You can verify this with:
+Now how do you make that package visible to @command{guix} commands so
+you can test your packages?  You need to add the directory to the search
+path using the @option{-L} command-line option, as in these examples:
 
 @example
-$ guix package --show=my-hello
+guix show -L ~/my-channel my-hello
+guix build -L ~/my-channel my-hello
 @end example
 
-@node Guix channels
-@subsubsection Guix channels
+The final step is to turn @file{~/my-channel} into an actual channel,
+making your package collection seamlessly available @i{via} any
+@command{guix} command.  To do that, you first need to make it a Git
+repository:
 
-Guix 0.16 features channels, which is very similar to @samp{GUIX_PACKAGE_PATH} but
-provides better integration and provenance tracking.  Channels are not
-necessarily local, they can be maintained as a public Git repository for
-instance.  Of course, several channels can be used at the same time.
+@example
+cd ~/my-channel
+git init
+git add my-hello.scm
+git commit -m "First commit of my channel."
+@end example
 
-@xref{Channels,,, guix, GNU Guix Reference Manual} for setup details.
+And that's it, you have a channel!  From there on, you can add this
+channel to your channel configuration in
+@file{~/.config/guix/channels.scm} (@pxref{Specifying Additional
+Channels,,, guix, GNU Guix Reference Manual}); assuming you keep your
+channel local for now, the @file{channels.scm} would look something like
+this:
+
+@lisp
+(append (list (channel
+                (name 'my-channel)
+                (url (string-append "file://" (getenv "HOME")
+                                    "/my-channel"))))
+        %default-channels)
+@end lisp
+
+Next time you run @command{guix pull}, your channel will be picked up
+and the packages it defines will be readily available to all the
+@command{guix} commands, even if you do not pass @option{-L}.  The
+@command{guix describe} command will show that Guix is, indeed, using
+both the @code{my-channel} and the @code{guix} channels.
+
+@xref{Creating a Channel,,, guix, GNU Guix Reference Manual}, for
+details.
 
 @node Direct checkout hacking
 @subsubsection Direct checkout hacking
