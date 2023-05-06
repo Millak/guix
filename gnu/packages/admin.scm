@@ -367,11 +367,23 @@ interface and is based on GNU Guile.")
                          guile-fibers-1.1))       ;for cross-compilation
     (inputs (list guile-3.0-latest guile-fibers-1.1))))
 
+(define-public shepherd-0.10
+  (package
+    (inherit shepherd-0.9)
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://alpha.gnu.org/gnu/shepherd/shepherd-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0dpbcq4jhqfv39jzc675ccidiyv8ziw5x9qv9kwxv132a5qf8phf"))))))
+
 (define-public shepherd shepherd-0.9)
 
 (define-public guile2.2-shepherd
   (package
-    (inherit shepherd-0.9)
+    (inherit shepherd-0.10)
     (name "guile2.2-shepherd")
     (native-inputs (list pkg-config guile-2.2))
     (inputs (list guile-2.2 guile2.2-fibers))))
