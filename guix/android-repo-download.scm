@@ -82,7 +82,7 @@ generic name if unset."
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-lzlib))
 
   (define gnutls
-    (module-ref (resolve-interface '(gnu packages tls)) 'guile-gnutls))
+    (module-ref (resolve-interface '(gnu packages tls)) 'gnutls))
 
   (define config.scm
     (scheme-file "config.scm"
