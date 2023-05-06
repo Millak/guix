@@ -1361,7 +1361,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "0.6.1")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI release
@@ -1370,27 +1370,23 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "124nid27lfq1ipfjd2gkynqcmb4khisjb4r05jv42ckfkk4dbsxs"))))
+        (base32 "12wp98mh67v6v683yi7wbv8zhpafrfz21z349bww4wgi2q7bl3il"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          ;; Benchmarks require the 'macosko2015' data files.
          (add-after 'unpack 'delete-benchmark
-           (lambda _
-             (delete-file-recursively "benchmarks")))
+           (lambda _ (delete-file-recursively "benchmarks")))
          (add-after 'unpack 'skip-test
            (lambda _ ;; TODO: figure out why this test fails.
              (substitute* "tests/test_correctness.py"
                (("def test_iris\\(self\\)") "def _test_iris(self)"))))
          ;; Numba needs a writable dir to cache functions.
          (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (native-inputs
-     (list python-cython))
-    (inputs
-     (list fftw))
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs (list python-cython))
+    (inputs (list fftw))
     (propagated-inputs
      (list python-numpy python-pynndescent python-scikit-learn
            python-scipy))
