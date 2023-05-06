@@ -5486,6 +5486,37 @@ definition, or to define space-stripped macros.")
 
 (define-deprecated-package texlive-latex-trimspaces texlive-trimspaces)
 
+(define-public texlive-currfile
+  (package
+    (name "texlive-currfile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/currfile/" "source/latex/currfile/"
+                   "tex/latex/currfile/")
+             (base32
+              "1l9win5msf80yzgzfx580d1hw8lza1advhqkhpz83i080020asji")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list texlive-ydoc))
+    (propagated-inputs
+     (list texlive-filehook
+           texlive-kvoptions))
+    (home-page "https://ctan.org/pkg/currfile")
+    (synopsis "Provide file name and path of input files")
+    (description
+     "The package provides macros holding file name information (directory,
+base name, extension, full name and full path) for files read by LaTeX
+@code{\\input} and @code{\\include} macros; it uses the file hooks provided by
+the author's @code{filehook}.  In particular, it restores the parent file name
+after the trailing @code{\\clearpage} of an @code{\\included} file; as
+a result, the macros may be usefully employed in the page header and footer of
+the last printed page of such a file.  The depth of inclusion is made
+available, together with the parent (including file) and parents (all
+including files to the root of the tree).  The package supersedes FiNK.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-calrsfs
   (package
     (inherit
