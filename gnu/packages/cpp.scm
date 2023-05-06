@@ -1431,6 +1431,31 @@ provides a number of utilities to make coding with expected cleaner.")
 written in C++.")
    (license license:boost1.0)))
 
+(define-public zug
+  (let ((commit "d7e814b45fceceee3cb1442997d8b46cee4764ec")
+        (revision "0"))
+    (package
+     (name "zug")
+     (version (git-version "0.0.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arximboldi/zug")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1ww4prh763n81kzzijak8z495varlvqml4ip7i09klqnw6ya72fc"))
+              (modules '((guix build utils)))
+              (snippet #~(delete-file-recursively "tools"))))
+     (build-system cmake-build-system)
+     (arguments (list #:test-target "check"))
+     (native-inputs (list boost catch2))
+     (home-page "https://sinusoid.es/zug")
+     (synopsis "Higher-order sequence transformers")
+     (description "Zug is a C++ library providing transducers, that is,
+composable sequential transformations.")
+     (license license:boost1.0))))
+
 (define-public atomic-queue
   (package
     (name "atomic-queue")
