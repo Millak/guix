@@ -292,7 +292,8 @@ may also simplify input method development.")
                    ,(string-append #$(this-package-input "gtk+")
                                    "/lib/girepository-1.0")
                    ,(string-append #$output
-                                   "/share/ibus-libpinyin/setup/")))))))))
+                                   "/share/ibus-libpinyin/setup/")
+                   ,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs
      (list ibus
            libpinyin
