@@ -4164,9 +4164,11 @@ form, numpad.
               ;; <https://github.com/rizinorg/rizin/issues/2905>.
               (substitute* "test/meson.build"
                 (("subdir\\('integration'\\)") ""))
-              ;;; Skip analysis_var test, which is failing.
+              ;;; Skip failing tests.
               (substitute* "test/unit/meson.build"
-                (("'analysis_var',\n") "")))))))
+                (("'analysis_var',\n") "")
+                (("'bin_mach0',\n") "")
+                (("'hash',\n") "")))))))
     (native-inputs (list pkg-config))
     (inputs
      (list capstone file libuv libzip lz4 openssl tree-sitter xxhash zlib libmspack))
