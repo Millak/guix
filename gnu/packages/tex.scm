@@ -12510,6 +12510,29 @@ computers).  XeTeX's immediate output is an extended variant of DVI format,
 which is ordinarily processed by a tightly bound processor (called
 @code{xdvipdfmx}), that produces PDF.")
     (license license:x11)))
+
+(define-public texlive-xfor
+  (package
+    (name "texlive-xfor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xfor/"
+                   "source/latex/xfor/"
+                   "tex/latex/xfor/")
+             (base32
+              "1j241j8sixqkaj2xmcvmrfwm1sdw6xdssnzml1bjs54rqzyh768a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xfor")
+    (synopsis "Reimplementation of the LaTeX @code{for-loop} macro")
+    (description
+     "The package redefines the LaTeX internal @code{\\@@for} macro so that
+the loop may be prematurely terminated.  The action is akin to the C/Java
+break statement, except that the loop does not terminate until the end of the
+current iteration.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
