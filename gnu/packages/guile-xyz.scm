@@ -4520,11 +4520,17 @@ according to Bitorrent BEP003.")
                   "1jx8704200l29ndg9bfyamgxrzknya0f0vwb2sxhd0k3b8r94avw"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:configure-flags '("--enable-gnutls=yes")))
+       `(#:configure-flags '("--enable-gnutls=yes")
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'bootstrap 'fix-autogen.sh
+             (lambda _
+               (substitute* "autogen.sh"
+                 ((" #!") "#!")))))))
       (native-inputs
        (list autoconf automake texinfo pkg-config))
       (inputs
-       (list gnutls guile-3.0))
+       (list gnutls guile-gnutls guile-3.0))
       (home-page "https://github.com/rekado/guile-irc")
       (synopsis "IRC library for Guile")
       (description "This package provides a Guile library for @dfn{Internet
