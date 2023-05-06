@@ -4101,6 +4101,32 @@ releases.  The bundle consists of a Lua script to run the tasks and a
 @code{.tex} file which provides the testing environment.")
       (license license:lppl1.3c+))))
 
+(define-public texlive-lualatex-math
+  (package
+    (name "texlive-lualatex-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lualatex-math/"
+                   "source/lualatex/lualatex-math/"
+                   "tex/lualatex/lualatex-math/")
+             (base32
+              "1xfr31rwr7zc6d5bsc3v5lwvcfrg109rzfgvvs69w4xs61j06jcg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox texlive-filehook))
+    (home-page "https://ctan.org/pkg/lualatex-math")
+    (synopsis "Fixes for mathematics-related LuaLaTeX issues")
+    (description
+     "The package patches a few commands of the LaTeX2e kernel and the
+@code{amsmath} and @code{mathtools} packages to be more compatible with the
+LuaTeX engine.  It is only meaningful for LuaLaTeX documents containing
+mathematical formulas, and does not exhibit any new functionality.  The fixes
+are mostly moved from the @code{unicode-math} package to this package since
+they are not directly related to Unicode mathematics typesetting.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lualibs
   (package
     (inherit
