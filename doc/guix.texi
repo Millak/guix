@@ -10140,23 +10140,31 @@ phase before the @code{build} phase, called
     ;; other fields omitted
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-before 'build 'set-prefix-in-makefile
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Modify the makefile so that its
-                      ;; 'PREFIX' variable points to "out".
-                      (let ((out (assoc-ref outputs "out")))
-                        (substitute* "Makefile"
-                          (("PREFIX =.*")
-                           (string-append "PREFIX = "
-                                          out "\n")))))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'set-prefix-in-makefile
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Modify the makefile so that its
+              ;; 'PREFIX' variable points to #$output and
+              ;; 'XMLLINT' points to the correct path.
+              (substitute* "Makefile"
+                (("PREFIX =.*")
+                 (string-append "PREFIX = " #$output "\n"))
+                (("XMLLINT =.*")
+                 (string-append "XMLLINT = "
+                                (search-input-file inputs "/bin/xmllint")
+                                "\n"))))))))))
 @end lisp
 
 The new phase that is inserted is written as an anonymous procedure,
-introduced with @code{lambda*}; it honors the @code{outputs} parameter
-we have seen before.  @xref{Build Utilities}, for more about the helpers
-used by this phase, and for more examples of @code{modify-phases}.
+introduced with @code{lambda*}; it looks for the @file{xmllint}
+executable under a @file{/bin} directory among the package's inputs
+(@pxref{package Reference}).  It also honors the @code{outputs} parameter
+we have seen before.  @xref{Build Utilities}, for more about
+the helpers used by this phase, and for more examples of
+@code{modify-phases}.
 
 @cindex code staging
 @cindex staging, of code
