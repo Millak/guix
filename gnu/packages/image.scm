@@ -37,6 +37,7 @@
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -321,6 +322,62 @@ APNG patch provides APNG support to libpng.")
    (description "Pngcrush optimizes @acronym{PNG, Portable Network Graphics}
 images.  It can further losslessly compress them by as much as 40%.")
    (license license:zlib)))
+
+(define-public pngcheck
+  (package
+    (name "pngcheck")
+    (version "3.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://www.libpng.org/pub/png/src/pngcheck-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1rny14v57d2zvnqcqbh3m87mkya22qr2394fg7vm3xsacf8l8sn3"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ;no check target
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (invoke "make" "-f" "Makefile.unx")))
+                  (add-after 'build 'compress-man-pages
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (invoke "gzip" "pngcheck.1")
+                      (invoke "gzip" "gpl/pngsplit.1")
+                      (invoke "gzip" "gpl/png-fix-IDAT-windowsize.1")))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin/"))
+                             (man (string-append out "/share/man/man1/")))
+                        (install-file "pngcheck" bin)
+                        (install-file "pngcheck.1.gz" man)
+                        (install-file "pngsplit" bin)
+                        (install-file "gpl/pngsplit.1.gz" man)
+                        (install-file "png-fix-IDAT-windowsize" bin)
+                        (install-file "gpl/png-fix-IDAT-windowsize.1.gz" man)))))))
+    (inputs (list zlib))
+    (home-page "http://www.libpng.org/pub/png/apps/pngcheck.html")
+    (synopsis "Print info and check PNG, JNG and MNG files")
+    (description
+     "@code{pngcheck} verifies the integrity of PNG, JNG and MNG files (by
+checking the internal 32-bit CRCs, a.k.a. checksums, and decompressing the image
+data); it can optionally dump almost all of the chunk-level information in the image
+in human-readable form.  For example, it can be used to print the basic statistics
+about an image (dimensions, bit depth, etc.); to list the color and transparency info
+in its palette (assuming it has one); or to extract the embedded text annotations.
+This is a command-line program with batch capabilities (e.g. @code{pngcheck
+*.png}.)
+
+Also includes @code{pngsplit} which can split a PNG, MNG or JNG file into individual,
+numbered chunks, and @code{png-fix-IDAT-windowsize} that allow to reset first IDAT's
+zlib window-size bytes and fix up CRC to match.")
+    ;; "pngsplit" and "png-fix-IDAT-windowsize" are licensed under the terms of
+    ;; GNU GPL2+.  See "gpl/COPYING" in the repository."
+    (license (list license:x11 license:gpl2+))))
 
 (define-public pnglite
   (let ((commit "11695c56f7d7db806920bd9229b69f230e6ffb38")
