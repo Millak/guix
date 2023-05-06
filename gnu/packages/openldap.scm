@@ -178,14 +178,14 @@ an LDAP server.")
 (define-public python-ldap
   (package
     (name "python-ldap")
-    (version "3.4.0")
+    (version "3.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-ldap" version))
        (sha256
         (base32
-         "04hd7rdm59i7wrykx0nggzxx1p42wkm296j483yy0wayqa7lqik0"))))
+         "1872bvrakypb96wrsf932f3xflnbqniiyf8h58x48apgl0cwa9mb"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
