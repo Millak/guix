@@ -148,22 +148,16 @@ them as it goes.")
 (define-public python-afdko
   (package
     (name "python-afdko")
-    (version "3.9.4")
+    (version "3.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "afdko" version))
        (sha256
-        (base32 "1d3b1590gxlindh1sjhwvxnryn5zil98hgdwbgsr76fd657r3f99"))
+        (base32 "02c1rjx7ggbd1m9vqgsc2r28yiw66cjgvs5cq1a2fz0lkadbvrnb"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            (substitute*
-                "tests/buildcff2vf_data/expected_output/SHSansJPVFTest.ttx"
-              ;; Adjust expected output to match newer fonttools.  Taken from:
-              ;; https://github.com/adobe-type-tools/afdko/commit/7c526390a10e
-              (("FDSelect format=\"3\"")
-               "FDSelect format=\"0\""))
             (with-directory-excursion "c/makeotf/lib/hotconv"
               ;; Delete ANTLR-generated code.
               (for-each delete-file
@@ -223,17 +217,7 @@ them as it goes.")
               (when tests?
                 (setenv "HOME" "/tmp")
                 (invoke "pytest" "-vv" "--dist" "loadfile" "-n"
-                        (number->string (parallel-job-count))
-                        ;; This test is known to fail on multiple architectures.
-                        ;; https://github.com/adobe-type-tools/afdko/issues/1163
-                        "-k"
-                        (string-append
-                         "not test_type1mm_inputs "
-                         ;; These tests fail for unknown reasons (see:
-                         ;; https://github.com/adobe-type-tools/afdko/issues/1635).
-                         "and not test_rvrn_vf "
-                         "and not test_cjk_vf "
-                         "and not test_sparse_cjk_vf")))))
+                        (number->string (parallel-job-count))))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
