@@ -246,7 +246,8 @@ inside %DOCKER-OS."
             (marionette-eval
              `(begin
                 (use-modules (ice-9 popen)
-                             (ice-9 rdelim))
+                             (ice-9 rdelim)
+                             (guix build utils))
 
                 (define (slurp command . args)
                   ;; Return the output from COMMAND.
