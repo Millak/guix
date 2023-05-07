@@ -1574,7 +1574,7 @@ standards (MPEG-2, MPEG-4 ASP/H.263, MPEG-4 AVC/H.264, and VC-1/VMW3).")
      (list pkg-config))
     (inputs
      (list libdrm libva libx11 mesa wayland))
-    (home-page "https://01.org/linuxmedia/vaapi")
+    (home-page "https://github.com/intel/libva-utils")
     (synopsis "Collection of testing utilities for VA-API")
     (description
      "This is a collection of utilities  to query and test the @acronym{VA-API,
