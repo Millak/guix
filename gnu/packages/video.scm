@@ -1557,14 +1557,14 @@ standards (MPEG-2, MPEG-4 ASP/H.263, MPEG-4 AVC/H.264, and VC-1/VMW3).")
 (define-public libva-utils
   (package
     (name "libva-utils")
-    (version "2.5.0")
+    (version "2.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/intel/libva-utils/releases/download/"
                            version "/libva-utils-" version ".tar.bz2"))
        (sha256
-        (base32 "05rasyqnsg522zqxak1q8rrm1hys7wwbi41kd0szjq0d27awjf4j"))))
+        (base32 "06n123kvzk51bx5cbhf34i3cfxc8vxmksgh5azycz9fwwcz3n7rm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
