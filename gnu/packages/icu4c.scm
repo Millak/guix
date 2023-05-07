@@ -124,15 +124,15 @@ C/C++ part.")
      (if (target-riscv64?)
        (substitute-keyword-arguments (package-arguments icu4c)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (replace 'disable-failing-test
-               ;; It is unknown why these tests are failing.
-               (lambda _
-                 (substitute* "source/test/cintltst/ucptrietest.c"
-                   ((".*addTest.*") ""))
-                 (substitute* "source/test/intltest/numbertest_api.cpp"
-                   (("(TESTCASE_AUTO\\(unitUsage\\));" all)
-                    (string-append "//" all))))))))
+          #~(modify-phases #$phases
+              (replace 'disable-failing-test
+                ;; It is unknown why these tests are failing.
+                (lambda _
+                  (substitute* "source/test/cintltst/ucptrietest.c"
+                    ((".*addTest.*") ""))
+                  (substitute* "source/test/intltest/numbertest_api.cpp"
+                    (("(TESTCASE_AUTO\\(unitUsage\\));" all)
+                     (string-append "//" all))))))))
        (package-arguments icu4c)))))
 
 (define-public icu4c-69
