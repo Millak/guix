@@ -27821,6 +27821,16 @@ placement and scaling of SVG figures and adding markers, such as labels.")
             ;; Don't get hung up on Windows test failures.
             (delete-file "blessed/win_terminal.py")))))
     (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+               (when tests?
+                 (add-installed-pythonpath inputs outputs)
+                 (delete-file "tox.ini")
+                 (invoke "python" "-m" "pytest" "tests")))))))
     (propagated-inputs
      (list python-jinxed python-six python-wcwidth))
     (native-inputs
