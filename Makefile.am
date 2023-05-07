@@ -1121,7 +1121,7 @@ cuirass-jobs: $(GOBJECTS)
 
 .git/config: etc/git/gitconfig
 	$(AM_V_at)if command -v git >/dev/null && test -d .git; then \
-	git config include.path ../etc/git/gitconfig; \
+	git config --add include.path ../etc/git/gitconfig; \
 	fi
 
 nodist_noinst_DATA = .git/hooks/pre-push .git/config
