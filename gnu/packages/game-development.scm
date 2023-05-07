@@ -2868,14 +2868,22 @@ progresses the level, or you may regenerate tiles as the world changes.")
     (arguments
      (list #:tests? #f  ;no test
            #:configure-flags
-           #~(list "-DBUILD_SHARED_LIBS=ON" )))
-    (inputs (list alsa-lib
-                  libx11
-                  libxrandr
-                  libxi
-                  libxinerama
-                  libxcursor
-                  mesa))
+           #~(list "-DBUILD_SHARED_LIBS=ON"
+                   "-DUSE_EXTERNAL_GLFW=ON"
+                   "-DCMAKE_C_FLAGS=-lpulse")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'configure-miniaudio
+                 ;; Use PulseAudio as raudio backend.
+                 (lambda _
+                   (substitute* "src/raudio.c"
+                     (("^#include \"external/miniaudio\\.h\"") "
+#define MA_NO_RUNTIME_LINKING
+#define MA_ENABLE_ONLY_SPECIFIC_BACKENDS
+#define MA_ENABLE_PULSEAUDIO
+#include \"external/miniaudio.h\"
+")))))))
+    (inputs (list glfw pulseaudio))
     (native-inputs (list pkg-config))
     (synopsis "C library for videogame programming")
     (description
