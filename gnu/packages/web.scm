@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
@@ -1784,8 +1784,12 @@ UTS#46.")
              (when tests?
                ;; The "Go Race Detector" is only supported on 64-bit
                ;; platforms, this variable disables it.
-               (unless ,(target-64bit?)
-                 (setenv "ESBUILD_RACE" ""))
+               ;; TODO: Causes too many rebuilds, rewrite to limit to x86_64,
+               ;; aarch64 and ppc64le.
+               ,(if (target-riscv64?)
+                  `(setenv "ESBUILD_RACE" "")
+                  `(unless ,(target-64bit?)
+                     (setenv "ESBUILD_RACE" "")))
                (with-directory-excursion (string-append "src/" unpack-path)
                  (invoke "make" "test-go")))
              #t)))))
