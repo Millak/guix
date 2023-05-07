@@ -3624,7 +3624,7 @@ present in modern GPUs.")
 (define-public vdpauinfo
   (package
     (name "vdpauinfo")
-    (version "1.4")
+    (version "1.5")
     (source
       (origin
         (method git-fetch)
@@ -3633,7 +3633,7 @@ present in modern GPUs.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0s84bavxr39w0r7zfaac7kpbfsg88hgymqyzcr0yvbj1yry3liz2"))))
+         (base32 "01nkk8rixzvicrg0cr90mbxyd4vdyd0739ipywn0mx56xddambmx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
