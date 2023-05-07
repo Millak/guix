@@ -71399,8 +71399,38 @@ applications.")
      "Bindings for all Web APIs, a procedurally generated crate from WebIDL.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-webbrowser-0.8
+  (package
+    (name "rust-webbrowser")
+    (version "0.8.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webbrowser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       ;; Explicitely remove dependencies for unsupported operating systems,
+       ;; to avoid pulling many dependencies and causing rust world rebuilds.
+       (patches (search-patches "rust-webbrowser-remove-unsupported-os.patch"))
+       (patch-flags '("-p0"))
+       (sha256
+        (base32 "0zk1qidyksspa8pgvq8bh2lyqmmrs0fr5r1qsyhbzrawpn2w972p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-dirs" ,rust-dirs-4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/amodm/webbrowser-rs")
+    (synopsis "Open URLs in web browsers available on a platform")
+    (description
+     "Webbrowser-rs is a Rust library to open URLs in the web browsers
+available on a platform.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-webbrowser-0.5
   (package
+    (inherit rust-webbrowser-0.8)
     (name "rust-webbrowser")
     (version "0.5.5")
     (source
@@ -71416,14 +71446,7 @@ applications.")
        #:cargo-inputs
        (("rust-web-sys" ,rust-web-sys-0.3)
         ("rust-widestring" ,rust-widestring-0.4)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page
-     "https://github.com/amodm/webbrowser-rs")
-    (synopsis "Open URLs in web browsers available on a platform")
-    (description
-     "Webbrowser-rs is a Rust library to open URLs in the web browsers
-available on a platform.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-webpki-0.22
   (package
