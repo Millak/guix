@@ -1705,9 +1705,7 @@ modules for building a Wayland compositor.")
        (sha256
         (base32 "03jrjwlwxkcyd6m9a1bbwapasnz7b7aws7h0y6jigjm4m478phv6"))))
     (build-system meson-build-system)
-    (inputs (list cairo gdk-pixbuf libxkbcommon
-                  ;("linux-pam" ,linux-pam) ; FIXME: Doesn't work.
-                  wayland))
+    (inputs (list cairo gdk-pixbuf libxkbcommon linux-pam wayland))
     (native-inputs (list pango pkg-config scdoc wayland-protocols))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Screen locking utility for Wayland compositors")
