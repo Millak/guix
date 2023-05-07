@@ -64208,26 +64208,28 @@ closures after a delay or at a given timestamp.")
 manipulation in Rust.")
     (license license:expat)))
 
-(define-public rust-tiny-http-0.8
+(define-public rust-tiny-http-0.12
   (package
     (name "rust-tiny-http")
-    (version "0.8.2")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tiny-http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fcdwpb2ghk671qjjrk6048hs3yp7f681hxpr68gamk00181prcw"))))
+        (base32 "10nw9kk2i2aq4l4csy0825qkq0l66f9mz2c1n57yg8hkckgib69q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ascii" ,rust-ascii-1)
-        ("rust-chrono" ,rust-chrono-0.4)
         ("rust-chunked-transfer" ,rust-chunked-transfer-1)
+        ("rust-httparse" ,rust-httparse-1)
+        ("rust-httpdate" ,rust-httpdate-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-openssl" ,rust-openssl-0.10)
-        ("rust-url" ,rust-url-2))
+        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2))
        #:cargo-development-inputs
        (("rust-fdlimit" ,rust-fdlimit-0.1)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
@@ -64239,7 +64241,7 @@ manipulation in Rust.")
 
 (define-public rust-tiny-http-0.6
   (package
-    (inherit rust-tiny-http-0.8)
+    (inherit rust-tiny-http-0.12)
     (name "rust-tiny-http")
     (version "0.6.2")
     (source
