@@ -103,8 +103,9 @@ in the Mozilla clients.")
 (define-public nss
   (package
     (name "nss")
-    ;; Also update and test the nss-certs package, which duplicates version and
-    ;; source to avoid a top-level variable reference & module cycle.
+    ;; IMPORTANT: Also update and test the nss-certs package, which duplicates
+    ;; version and source to avoid a top-level variable reference & module
+    ;; cycle.
     (version "3.88.1")
     (source (origin
               (method url-fetch)
