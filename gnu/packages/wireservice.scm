@@ -65,7 +65,7 @@
 (define-public python-leather
   (wireservice-package
    (name "python-leather")
-   (version "0.3.3")
+   (version "0.3.4")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -74,7 +74,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1ck3dplni99sv4s117cbm07ydwwjsrxkhdy19rnk0iglia1d4s5i"))))
+               "00cg4cidl15q1xv2pmxdkia5brig7x0xy9hwf2mlf9cq39bpj1w6"))))
    (native-inputs
     `(("python-nose" ,python-nose)
       ("python-sphinx" ,python-sphinx)
