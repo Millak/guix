@@ -67,6 +67,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
@@ -2444,23 +2445,11 @@ queues, resource pools, strings, etc.
                 "01h59ln8amsj6ymxmsxhmslld2yp003n82fg3mphgkrh6lf22h6y"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
-    (native-inputs (list googletest))
+    (native-inputs (list googletest benchmark))
     (arguments
      (list #:configure-flags
            #~(list "-DFTXUI_BUILD_TESTS:BOOL=ON"
-                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-cmake-tests
-                 (lambda _
-                   (substitute* "cmake/ftxui_test.cmake"
-                     (("NOT googletest_POPULATED")
-                      "FALSE"))
-                   ;; Disable benchmarks for a while as they require bundled Google
-                   ;; benchmark and when the 'googlebenchmark' is unbundled, there's
-                   ;; a CMake configuration error.
-                   ;; TODO: fetch googlebenchmark then renable test
-                   (truncate-file "cmake/ftxui_benchmark.cmake" 0))))))
+                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF")))
     (home-page "https://github.com/ArthurSonzogni/FTXUI")
     (synopsis "C++ Functional Terminal User Interface")
     (description
