@@ -605,24 +605,32 @@ of file names as string."
 (define (cc . teams)
   "Return arguments for `git send-email' to notify the members of the given
 TEAMS when a patch is received by Debbugs."
-  (format #true
-          "~{--add-header=\"X-Debbugs-Cc: ~a\"~^ ~}"
-          (map person-email
-               (delete-duplicates (append-map team-members teams) equal?))))
+  (let ((members (append-map team-members teams)))
+    (unless (null? members)
+      (format #true "--add-header=\"X-Debbugs-Cc: ~{~a~^, ~}\""
+              (map person-email (sort-members members))))))
+
+(define (sort-members members)
+  "Deduplicate and sort MEMBERS alphabetically by their name."
+  (sort (delete-duplicates members equal?)
+        (lambda (m1 m2)
+          (string<? (person-name m1) (person-name m2)))))
+
+(define (member->string member)
+  "Return the 'email <name>' string representation of MEMBER."
+  (let* ((name (person-name member))
+         (quoted-name/maybe (if (string-contains name ",")
+                                (string-append "\"" name "\"")
+                                name)))
+    (format #false "~a <~a>" quoted-name/maybe (person-email member))))
 
 (define* (list-members team #:optional port (prefix ""))
   "Print the members of the given TEAM."
   (define port* (or port (current-output-port)))
   (for-each
    (lambda (member)
-     (format port*
-             "~a~a <~a>~%"
-             prefix
-             (person-name member)
-             (person-email member)))
-   (sort
-    (team-members team)
-    (lambda (m1 m2) (string<? (person-name m1) (person-name m2))))))
+     (format port* "~a~a~%" prefix (member->string member)))
+   (sort-members (team-members team))))
 
 (define (list-teams)
   "Print all teams, their scope and their members."
@@ -716,13 +724,15 @@ and REV-END, two git revision strings."
      (apply cc (find-team-by-scope
                 (diff-revisions rev-start rev-end))))
     (("cc-members-header-cmd" patch-file)
-     (for-each (lambda (team-name)
-                 (list-members (find-team team-name) (current-output-port)
-                               "X-Debbugs-Cc: "))
-               (patch->teams patch-file)))
+     (let* ((teams (map find-team (patch->teams patch-file)))
+            (members (sort-members (append-map team-members teams))))
+       (unless (null? members)
+         (format #true "X-Debbugs-Cc: ~{~a~^, ~}"
+                 (map member->string members)))))
     (("cc-mentors-header-cmd" patch-file)
-     (list-members (find-team "mentors") (current-output-port)
-                   "X-Debbugs-Cc: "))
+     (format #true "X-Debbugs-Cc: ~{~a~^, ~}"
+             (map member->string
+                  (sort-members (team-members (find-team "mentors"))))))
     (("get-maintainer" patch-file)
      (apply main "list-members" (patch->teams patch-file)))
     (("list-teams" . args)
