@@ -14282,9 +14282,15 @@ systems, as a command line tool, and as a Python library.")
        (method url-fetch)
        (uri (pypi-uri "bleach" version))
        (sha256
-        (base32 "0p089853pkwzf1j2zjlmw67pwbkk0whpzfx9dbrd56zb8xf2a0qd"))))
+        (base32 "0p089853pkwzf1j2zjlmw67pwbkk0whpzfx9dbrd56zb8xf2a0qd"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (substitute* (find-files "." "\\.py$")
+              (("bleach\\._vendor\\.html5lib") "html5lib"))
+            (delete-file-recursively "bleach/_vendor/html5lib")))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-tinycss2 python-webencodings))
+    (propagated-inputs (list python-html5lib python-tinycss2 python-webencodings))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/mozilla/bleach")
     (synopsis "Whitelist-based HTML-sanitizing tool")
