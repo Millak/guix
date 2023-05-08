@@ -862,6 +862,12 @@ eye-candy, customizable, and reasonably lightweight.")
     (native-inputs
      (list ncurses ;for 'tic'
            pkg-config scdoc wayland-protocols))
+    (native-search-paths
+     ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
+     ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
+     (list (search-path-specification
+            (variable "TERMINFO_DIRS")
+            (files '("share/terminfo")))))
     (inputs
      (list fcft libxkbcommon wayland))
     (synopsis "Wayland-native terminal emulator")
