@@ -180,7 +180,7 @@ Weblate} (@pxref{Translating Guix}).
 * Introduction::                What is Guix about?
 * Installation::                Installing Guix.
 * System Installation::         Installing the whole operating system.
-* System Troubleshooting Tips:: When things don't go as planned.
+* System Troubleshooting Tips::  When things don't go as planned.
 * Getting Started::             Your first steps.
 * Package Management::          Package installation, upgrade, etc.
 * Channels::                    Customizing the package collection.
@@ -210,8 +210,8 @@ Weblate} (@pxref{Translating Guix}).
 
 Introduction
 
-* Managing Software the Guix Way::      What's special.
-* GNU Distribution::                    The packages and tools.
+* Managing Software the Guix Way::  What's special.
+* GNU Distribution::            The packages and tools.
 
 Installation
 
@@ -241,14 +241,14 @@ System Installation
 * Installing Guix in a VM::     Guix System playground.
 * Building the Installation Image::  How this comes to be.
 
-System Troubleshooting Tips
-
-* Chrooting into an existing system::  Fixing things from a chroot
-
 Manual Installation
 
-* Keyboard Layout and Networking and Partitioning:: Initial setup.
+* Keyboard Layout and Networking and Partitioning::  Initial setup.
 * Proceeding with the Installation::  Installing.
+
+System Troubleshooting Tips
+
+* Chrooting into an existing system::
 
 Package Management
 
@@ -293,7 +293,7 @@ Development
 * Invoking guix environment::   Setting up development environments.
 * Invoking guix pack::          Creating software bundles.
 * The GCC toolchain::           Working with languages supported by GCC.
-* Invoking guix git authenticate:: Authenticating Git repositories.
+* Invoking guix git authenticate::  Authenticating Git repositories.
 
 Programming Interface
 
@@ -309,7 +309,7 @@ Programming Interface
 * Derivations::                 Low-level interface to package derivations.
 * The Store Monad::             Purely functional interface to the store.
 * G-Expressions::               Manipulating build expressions.
-* Invoking guix repl::          Programming Guix in Guile.
+* Invoking guix repl::          Programming Guix in Guile
 * Using Guix Interactively::    Fine-grain interaction at the REPL.
 
 Defining Packages
@@ -344,8 +344,9 @@ Invoking @command{guix build}
 * Debugging Build Failures::    Real life packaging experience.
 
 Foreign Architectures
-* Cross-Compilation::   Cross-compiling for another architecture.
-* Native Builds::       Targeting another architecture through native builds.
+
+* Cross-Compilation::           Cross-compiling for another architecture.
+* Native Builds::               Targeting another architecture through native builds.
 
 System Configuration
 
@@ -368,9 +369,9 @@ System Configuration
 * Running Guix in a VM::        How to run Guix System in a virtual machine.
 * Defining Services::           Adding new service definitions.
 
-Home Environment Configuration
+File Systems
 
-* Invoking guix home::          Instantiating a home environment configuration.
+* Btrfs file system::
 
 Services
 
@@ -388,12 +389,14 @@ Services
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
 * Telephony Services::          Telephony services.
+* File-Sharing Services::       File-sharing services.
 * Monitoring Services::         Monitoring services.
 * Kerberos Services::           Kerberos services.
 * LDAP Services::               LDAP services.
 * Web Services::                Web servers.
 * Certificate Services::        TLS certificates via Let's Encrypt.
 * DNS Services::                DNS daemons.
+* VNC Services::                VNC daemons.
 * VPN Services::                VPN daemons.
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
@@ -417,17 +420,44 @@ Defining Services
 * Shepherd Services::           A particular type of service.
 * Complex Configurations::      Defining bindings for complex configurations.
 
+Home Configuration
+
+* Declaring the Home Environment::  Customizing your Home.
+* Configuring the Shell::       Enabling home environment.
+* Home Services::               Specifying home services.
+* Invoking guix home::          Instantiating a home configuration.
+
+Home Services
+
+* Essential Home Services::     Environment variables, packages, on-* scripts.
+* Shells: Shells Home Services.  POSIX shells, Bash, Zsh.
+* Mcron: Mcron Home Service.    Scheduled User's Job Execution.
+* Power Management: Power Management Home Services.  Services for battery power.
+* Shepherd: Shepherd Home Service.  Managing User's Daemons.
+* SSH: Secure Shell.            Setting up the secure shell client.
+* GPG: GNU Privacy Guard.       Setting up GPG and related tools.
+* Desktop: Desktop Home Services.  Services for graphical environments.
+* Guix: Guix Home Services.     Services for Guix.
+* Fonts: Fonts Home Services.   Services for managing User's fonts.
+* Sound: Sound Home Services.   Dealing with audio.
+* Messaging: Messaging Home Services.  Services for managing messaging.
+* Media: Media Home Services.   Services for managing media.
+
 Platforms
 
 * platform Reference::          Detail of platform declarations.
 * Supported Platforms::         Description of the supported platforms.
 
-System Images
+Creating System Images
 
 * image Reference::             Detail of image declarations.
 * Instantiate an Image::        How to instantiate an image record.
 * image-type Reference::        Detail of image types declaration.
 * Image Modules::               Definition of image modules.
+
+@code{image} Reference
+
+* partition Reference::
 
 Installing Debugging Files
 
@@ -437,7 +467,7 @@ Installing Debugging Files
 Bootstrapping
 
 * Full-Source Bootstrap::       A Bootstrap worthy of GNU.
-* Preparing to Use the Bootstrap Binaries:: Building that what matters most.
+* Preparing to Use the Bootstrap Binaries::  Building that what matters most.
 
 @end detailmenu
 @end menu
@@ -468,8 +498,8 @@ readily available through the @command{guix system} command, even if you're
 using a different distro underneath!}.  @xref{GNU Distribution}.
 
 @menu
-* Managing Software the Guix Way::      What's special.
-* GNU Distribution::                    The packages and tools.
+* Managing Software the Guix Way::  What's special.
+* GNU Distribution::            The packages and tools.
 @end menu
 
 @node Managing Software the Guix Way
@@ -2414,7 +2444,7 @@ Guix System.  This means that you can install additional packages, should you
 need it, using @command{guix package} (@pxref{Invoking guix package}).
 
 @menu
-* Keyboard Layout and Networking and Partitioning:: Initial setup.
+* Keyboard Layout and Networking and Partitioning::  Initial setup.
 * Proceeding with the Installation::  Installing.
 @end menu
 
@@ -2912,6 +2942,10 @@ from there.  Such technique is explained below.
 @cindex chroot, guix system
 @cindex chrooting, guix system
 @cindex repairing GRUB, via chroot
+@menu
+* Chrooting into an existing system::
+@end menu
+
 @node Chrooting into an existing system
 @section Chrooting into an existing system
 
@@ -5929,7 +5963,7 @@ easily distributed to users who do not run Guix.
 * Invoking guix environment::   Setting up development environments.
 * Invoking guix pack::          Creating software bundles.
 * The GCC toolchain::           Working with languages supported by GCC.
-* Invoking guix git authenticate:: Authenticating Git repositories.
+* Invoking guix git authenticate::  Authenticating Git repositories.
 @end menu
 
 @node Invoking guix shell
@@ -16163,8 +16197,8 @@ requires emulation, using the QEMU program for instance.
 @end enumerate
 
 @menu
-* Cross-Compilation::   Cross-compiling for another architecture.
-* Native Builds::       Targeting another architecture through native builds.
+* Cross-Compilation::           Cross-compiling for another architecture.
+* Native Builds::               Targeting another architecture through native builds.
 @end menu
 
 @node Cross-Compilation
@@ -17077,6 +17111,10 @@ UUIDs are another way to unambiguously refer to file systems in
 operating system configuration.  See the examples above.
 @end defun
 
+
+@menu
+* Btrfs file system::
+@end menu
 
 @node Btrfs file system
 @subsection Btrfs file system
@@ -41753,9 +41791,9 @@ still in an experimental stage, though.
 
 @menu
 * Declaring the Home Environment::  Customizing your Home.
-* Configuring the Shell::     Enabling home environment.
-* Home Services::             Specifying home services.
-* Invoking guix home::        Instantiating a home configuration.
+* Configuring the Shell::       Enabling home environment.
+* Home Services::               Specifying home services.
+* Invoking guix home::          Instantiating a home configuration.
 @end menu
 
 @node Declaring the Home Environment
@@ -43771,10 +43809,10 @@ This chapter explains how to define customized system images and how to
 turn them into actual bootable images.
 
 @menu
-* image Reference::        Detail of image declarations.
-* Instantiate an Image::   How to instantiate an image record.
-* image-type Reference::   Detail of image types declaration.
-* Image Modules::          Definition of image modules.
+* image Reference::             Detail of image declarations.
+* Instantiate an Image::        How to instantiate an image record.
+* image-type Reference::        Detail of image types declaration.
+* Image Modules::               Definition of image modules.
 @end menu
 
 @node image Reference
@@ -43864,6 +43902,10 @@ defaults to @code{true}.
 
 @end table
 @end deftp
+
+@menu
+* partition Reference::
+@end menu
 
 @node partition Reference
 @subsection @code{partition} Reference
@@ -44709,7 +44751,7 @@ Binaries}).
 
 @menu
 * Full-Source Bootstrap::       A Bootstrap worthy of GNU.
-* Preparing to Use the Bootstrap Binaries:: Building that what matters most.
+* Preparing to Use the Bootstrap Binaries::  Building that what matters most.
 @end menu
 
 @node Full-Source Bootstrap
