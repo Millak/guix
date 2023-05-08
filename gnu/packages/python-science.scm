@@ -580,8 +580,9 @@ Python module with the same interface, but (hopefully) faster.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "python" "setup.py" "pytest"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "setup.py" "pytest")))))))
     (native-inputs
      (list python-hypothesis python-pytest python-pytest-runner))
     (propagated-inputs
