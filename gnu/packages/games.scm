@@ -203,6 +203,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages squirrel)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -11305,6 +11306,54 @@ disassembly of the DOS version, extended with new features.")
     (description "@code{fheroes2} is an implementation of Heroes of Might and
 Magic II (aka HOMM2) game engine.  It requires assets and game resources to
 play; it will look for them at @file{~/.local/share/fheroes2} folder.")
+    (license license:gpl2)))
+
+(define-public vcmi
+  (package
+    (name "vcmi")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vcmi/vcmi")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f3fk1fc2wb7f2j4pxz89dzr8zjnrdh435mijia483a3bq59w7pk"))
+              (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DFORCE_BUNDLED_FL=OFF")
+           ;; Test suites do not seem well supported upstream and are disabled by default.
+           ;; Pass -DENABLE_TEST to configure to enable.
+           #:tests? #f))
+    (native-inputs
+     (list boost
+           ffmpeg
+           fuzzylite
+           ;; googletest ; needed for tests, but tests are disabled
+           libxkbcommon
+           luajit
+           minizip
+           pkg-config
+           python
+           ;; XXX: Build currently fails with qtbase-6 and qttools-6
+           qtbase-5
+           qttools-5
+           sdl2
+           sdl2-mixer
+           sdl2-image
+           sdl2-ttf
+           tbb
+           vulkan-headers
+           zlib))
+    (home-page "https://vcmi.eu/")
+    (synopsis "Turn-based strategy game engine")
+    (description
+     "@code{vcmi} is an implementation of the Heroes of Might and
+Magic III game engine.  It requires assets and game resources to
+play; it will look for them at @file{~/.local/share/vcmi} folder.")
     (license license:gpl2)))
 
 (define-public apricots

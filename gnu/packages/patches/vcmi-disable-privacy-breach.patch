@@ -1,0 +1,21 @@
+Origin: https://salsa.debian.org/games-team/vcmi/-/blob/debian/1.1.0+dfsg-1/debian/patches/disable-privacy-breach
+From: Johannes Schauer <josch@debian.org>
+Subject: do not check remote repositories on startup by default
+Forwarded: not-needed
+
+--- a/config/schemas/settings.json
++++ b/config/schemas/settings.json
+@@ -401,11 +401,11 @@
+ 				},
+ 				"autoCheckRepositories" : {
+ 					"type" : "boolean",
+-					"default" : true
++					"default" : false
+ 				},
+ 				"updateOnStartup" : {
+ 					"type" : "boolean",
+-					"default" : true
++					"default" : false
+ 				},
+ 				"updateConfigUrl" : {
+ 					"type" : "string",

@@ -2053,6 +2053,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/vboot-utils-fix-format-load-address.patch	\
   %D%/packages/patches/vboot-utils-fix-tests-show-contents.patch	\
   %D%/packages/patches/vboot-utils-skip-test-workbuf.patch	\
+  %D%/packages/patches/vcmi-disable-privacy-breach.patch	\
   %D%/packages/patches/vinagre-newer-freerdp.patch             \
   %D%/packages/patches/vinagre-newer-rdp-parameters.patch      \
   %D%/packages/patches/virtuoso-ose-remove-pre-built-jar-files.patch	\
