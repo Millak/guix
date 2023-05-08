@@ -311,8 +311,8 @@ currently does not do much, but it might in the future.")
     (license license:gpl3+)))
 
 (define-public guile-openai
-  (let ((commit "252f2d5660bb546015d18c60be96d3cf60c4dcfa")
-        (revision "1"))
+  (let ((commit "9265b641dea0246609b7bd5031f3f6780ef6a167")
+        (revision "2"))
     (package
       (name "guile-openai")
       (version (git-version "0.1" revision commit))
@@ -324,7 +324,7 @@ currently does not do much, but it might in the future.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1qv0kr30d1x7ap1b0h03gl5pzp20xw4qd6b3l5v4iz4ka8qna9gi"))))
+                  "0sydjsgdr6xxk1w5f8pf14wgimfy4fb1hpi8yml0nv83p7bfr1w3"))))
       (build-system guile-build-system)
       (arguments
        (list
