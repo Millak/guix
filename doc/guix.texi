@@ -1016,14 +1016,21 @@ C++11 standard.
 @end itemize
 
 @cindex state directory
+@cindex localstatedir
+@cindex system configuration directory
+@cindex sysconfdir
 When configuring Guix on a system that already has a Guix installation,
 be sure to specify the same state directory as the existing installation
 using the @option{--localstatedir} option of the @command{configure}
 script (@pxref{Directory Variables, @code{localstatedir},, standards,
-GNU Coding Standards}).  Usually, this @var{localstatedir} option is
-set to the value @file{/var}.  The @command{configure} script protects
+GNU Coding Standards}).  Usually, this @var{localstatedir} option is set
+to the value @file{/var}.  The @command{configure} script protects
 against unintended misconfiguration of @var{localstatedir} so you do not
-inadvertently corrupt your store (@pxref{The Store}).
+inadvertently corrupt your store (@pxref{The Store}).  The configuration
+directory should also be configured by setting the @option{--sysconfdir}
+option to the @file{/etc} value, which is the location used by Guix to
+store for example the access control list of authorized machines and the
+definition of offload machines.
 
 @node Running the Test Suite
 @section Running the Test Suite
