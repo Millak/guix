@@ -415,7 +415,7 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
            ffmpeg-4
            flac
            flatbuffers
-           fmt-6
+           fmt
            fontconfig
            freetype
            fribidi
@@ -456,7 +456,7 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
            python
            rapidjson
            samba
-           spdlog-for-kodi
+           spdlog
            sqlite
            taglib
            tinyxml
