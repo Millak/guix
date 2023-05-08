@@ -5169,6 +5169,63 @@ indexing scheme is called a @dfn{Hierarchical Graph FM index} (HGFM).")
     ;; GPLv3 or later.
     (license license:gpl3+)))
 
+(define-public homer
+  (package
+    (name "homer")
+    (version "4.11.1")
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "http://homer.ucsd.edu/homer/data/software/homer.v"
+                           version ".zip"))
+       (sha256
+        (base32
+         "0ay802swzq6ix9d8fkinpplcvyc1xyi3cjmj2x08jab7c40cvlc0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (let ((share (string-append #$output "/share/homer")))
+                (mkdir-p share)
+                (substitute* "configureHomer.pl"
+                  (("my \\$homeDir = \\$1;")
+                   (string-append "my $homeDir = \"" share "\";"))))))
+          (replace 'build
+            (lambda _
+              (let ((share (string-append #$output "/share/homer")))
+                (copy-recursively "." share))
+              (invoke "perl" "configureHomer.pl" "-local")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke (string-append #$output "/share/homer/bin/homer2")))))
+          (replace 'install
+            (lambda _
+              (mkdir-p (string-append #$output "/bin"))
+              (symlink (string-append #$output "/share/homer/bin/homer2")
+                       (string-append #$output "/bin/homer2"))
+              (for-each patch-shebang
+                        (find-files (string-append #$output "/share/homer/bin")
+                                    "\\.pl$")))))))
+    (inputs
+     (list perl))
+    (native-inputs
+     (list perl unzip))
+    (home-page "http://homer.ucsd.edu/homer")
+    (synopsis "Motif discovery and next generation sequencing analysis")
+    (description
+     "HOMER (Hypergeometric Optimization of Motif EnRichment) is a suite of
+tools for Motif Discovery and next-gen sequencing analysis.  It is a
+collection of command line programs written in Perl and C++.  HOMER was
+primarily written as a de novo motif discovery algorithm and is well suited
+for finding 8-20 bp motifs in large scale genomics data.  HOMER contains many
+useful tools for analyzing ChIP-Seq, GRO-Seq, RNA-Seq, DNase-Seq, Hi-C and
+numerous other types of functional genomics sequencing data sets.")
+    (license license:gpl3+)))
+
 (define-public hmmer
   (package
     (name "hmmer")
