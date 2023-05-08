@@ -54,6 +54,7 @@
 ;;; Copyright © 2022 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1809,6 +1810,25 @@ programming.  Iosevka is completely generated from its source code.")
                            "/ttc-iosevka-ss09-" version ".zip"))
        (sha256
         (base32 "1h5jfrpply7ypc4h6ivxs30qkrbni51zkj78xz6nz4zbnp923yi0"))))))
+
+(define-public font-iosevka-comfy
+  (package
+    (inherit font-iosevka)
+    (name "font-iosevka-comfy")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/iosevka-comfy")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1gccv28avxlkicl6rcsn6i23pdn0nrk91zhcyzwwc3nyzm2w8w40"))))
+    (home-page "https://git.sr.ht/~protesilaos/iosevka-comfy")
+    (description
+     "Iosevka Comfy is a TTF font derived from Iosevka.  It is a slightly tweaked
+     version of the original, designed for enhanced readability.")
+    (license license:silofl1.1)))
 
 (define-public font-sarasa-gothic
   (package
