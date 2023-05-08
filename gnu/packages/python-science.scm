@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -568,13 +568,13 @@ Python module with the same interface, but (hopefully) faster.")
 (define-public python-bottleneck
   (package
     (name "python-bottleneck")
-    (version "1.3.2")
+    (version "1.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Bottleneck" version))
        (sha256
-        (base32 "0wz5320jx3n4q2nsvwvc7cpi66b46qbals9v53m955rmcq5ry5r0"))))
+        (base32 "1y410r3scfhs6s1j1jpxig01qlyn2hr2izyh1qsdlsfl78vpwip1"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1762,7 +1762,7 @@ NeuroML2 models.")
      "This package provides a Python library for working with NeuroML descriptions of
 neuronal models")
     (license license:bsd-3)))
-    
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
