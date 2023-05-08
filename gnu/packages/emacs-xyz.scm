@@ -16132,8 +16132,7 @@ structure, or any other pattern.")
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((ffplay (search-input-file inputs "/bin/ffplay")))
                 (substitute* "tmr.el"
-                  (("\"ffplay ")
-                   (string-append "\"" ffplay " "))))
+                  (("\"ffplay") (string-append "\"" ffplay))))
               (emacs-substitute-variables "tmr.el"
                 ("tmr-sound-file"
                  (search-input-file
