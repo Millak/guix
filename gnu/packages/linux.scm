@@ -9175,7 +9175,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.3.63")
+    (version "0.3.70")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9184,18 +9184,20 @@ types and interfaces and translates so that the X server can use them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pkngynvhxc6iyv75gsyqjy18ky4si9dhvpavb9xwq5xj71nj0hr"))))
+                "1n74rrbwymm89ri4daa4v092f4b81wrak4vg685xfz2wl89p64n6"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
-              "-Dsystemd=disabled"
+              "-Dman=enabled"
+              "-Drlimits-install=false"
               "-Dsession-managers=[]"
               "-Dsysconfdir=/etc"
-              "-Dman=enabled")))
+              "-Dsystemd=disabled")))
     (native-inputs
-     (list pkg-config
+     (list `(,glib "bin")
+           pkg-config
            python-docutils))
     (inputs (list alsa-lib
                   avahi
