@@ -845,10 +845,12 @@ used to manage logs from @acronym{VM, virtual machine} consoles.")))
    (magic (bv "\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x02\x01"))
    (mask (bv "\xff\xff\xff\xff\xff\xff\xff\xfc\x00\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff"))))
 
+;; binfmt_misc: register: failed to install interpreter file /gnu/store/...
+;; i486 and aarch64be aren't supported by the qemu-binfmt service.
 (define %qemu-platforms
-  (list %i386 %i486 %x86_64 %alpha %arm %sparc32plus %sparc64 %ppc %ppc64
+  (list %i386 %x86_64 %alpha %arm %sparc32plus %sparc64 %ppc %ppc64
         %ppc64le %m68k %mips %mipsel %mipsn32 %mipsn32el %mips64 %mips64el %sh4
-        %sh4eb %s390x %aarch64 %aarch64be %hppa %riscv32 %riscv64 %xtensa
+        %sh4eb %s390x %aarch64 %hppa %riscv32 %riscv64 %xtensa
         %xtensaeb %microblaze %microblazeel %or1k %hexagon %loongarch64))
 
 (define (lookup-qemu-platforms . names)
