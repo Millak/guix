@@ -32955,9 +32955,22 @@ The port on which to listen for incoming connections.
 @item @code{dns} (default: @code{#f})
 The DNS server(s) to announce to VPN clients via DHCP.
 
+@item @code{monitor-ips?} (default: @code{#f})
+@cindex Dynamic IP, with Wireguard
+@cindex dyndns, usage with Wireguard
+Whether to monitor the resolved Internet addresses (IPs) of the
+endpoints of the configured peers, resetting the peer endpoints using an
+IP address that no longer correspond to their freshly resolved host
+name.  Set this to @code{#t} if one or more endpoints use host names
+provided by a dynamic DNS service to keep the sessions alive.
+
+@item @code{monitor-ips-internal} (default: @code{'(next-minute (range 0 60 5))})
+The time interval at which the IP monitoring job should run, provided as
+an mcron time specification (@pxref{Guile Syntax,,,mcron}).
+
 @item @code{private-key} (default: @code{"/etc/wireguard/private.key"})
-The private key file for the interface.  It is automatically generated if
-the file does not exist.
+The private key file for the interface.  It is automatically generated
+if the file does not exist.
 
 @item @code{peers} (default: @code{'()})
 The authorized peers on this interface.  This is a list of

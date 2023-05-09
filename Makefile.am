@@ -558,6 +558,7 @@ SCM_TESTS =					\
   tests/services/lightdm.scm			\
   tests/services/linux.scm			\
   tests/services/telephony.scm			\
+  tests/services/vpn.scm			\
   tests/sets.scm				\
   tests/size.scm				\
   tests/status.scm				\
