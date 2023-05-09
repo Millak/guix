@@ -4364,20 +4364,20 @@ the SQL language using a syntax that reflects the resulting query.")
                ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
                "-DARROW_BUILD_STATIC=OFF")))
     (inputs
-     `(("boost" ,boost)
-       ("brotli" ,brotli)
-       ("bzip2" ,bzip2)
-       ("double-conversion" ,double-conversion)
-       ("gflags" ,gflags)
-       ("glog" ,glog)
-       ("grpc" ,grpc)
-       ("protobuf" ,protobuf)
-       ("python-3" ,python)
-       ("python-numpy" ,python-numpy)
-       ("rapidjson" ,rapidjson)
-       ("re2" ,re2)
-       ("snappy" ,snappy)
-       ("xsimd" ,xsimd)))
+     (list boost
+           brotli
+           bzip2
+           double-conversion
+           gflags
+           glog
+           grpc
+           protobuf
+           python
+           python-numpy
+           rapidjson
+           re2
+           snappy
+           xsimd))
     ;; These are all listed under Requires.private in arrow.pc
     (propagated-inputs
      (list `(,apache-thrift "lib") lz4 utf8proc zlib
