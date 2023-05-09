@@ -2748,7 +2748,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "2.0.1")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2757,16 +2757,21 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fxfmxl7p63l07lqb83q5lx16hm0rixcidghx00gp08x2yrgr4x9"))))
+                "09ky8wili3ym8qi4dasckdcdcvn4g6ak08dg0yccnwmnlwxiyps6"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dxwayland=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-data-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "meson.build"
-               (("/etc/") (string-append (assoc-ref outputs "out") "/etc"))))))))
+     (list
+      #:configure-flags #~(list "-Dxwayland=true")
+      ;; XXX: Running cagebreak tests need more tools, such as: clang-format,
+      ;; shellcheck, git, gnupg ...
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-data-dir
+            (lambda _
+              (substitute* '("cagebreak.c" "meson.build")
+                (("/etc/") (string-append #$output "/etc/"))
+                (("/usr/share/") (string-append #$output "/usr/share/"))))))))
     (native-inputs (list pandoc pkg-config))
     (inputs (list libevdev pango wlroots))
     (home-page "https://github.com/project-repo/cagebreak")
