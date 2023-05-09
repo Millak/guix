@@ -8811,13 +8811,13 @@ method applicable to massive single-cell datasets (>10,000 cells).")
 (define-public r-scmap
   (package
     (name "r-scmap")
-    (version "1.22.0")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scmap" version))
        (sha256
-        (base32 "0mc1d2mw3fvd8vfiayifm9yrswdsp0syzjdsx4fivfxcxmjy22qp"))))
+        (base32 "184dp319967ba9wx2g1v4rivwy3csr44s7in1jk91d5hwj28nk09"))))
     (properties `((upstream-name . "scmap")))
     (build-system r-build-system)
     (propagated-inputs
