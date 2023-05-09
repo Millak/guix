@@ -21417,13 +21417,13 @@ lspec, polyclass, and polymars.")
 (define-public r-rms
   (package
     (name "r-rms")
-    (version "6.6-0")
+    (version "6.7-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rms" version))
        (sha256
-        (base32 "0p32nqb4pj8dddi4dwjbr59wp6q6vvmarq97vpdaxwrr8fwsvazk"))))
+        (base32 "1zxv7njzaxh6ivrxcszcn128pfxqyh5ga1q8kx6v5brfgv218flb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster
@@ -21433,7 +21433,6 @@ lspec, polyclass, and polymars.")
            r-hmisc
            r-htmltable
            r-htmltools
-           r-kableextra
            r-knitr
            r-mass
            r-multcomp
