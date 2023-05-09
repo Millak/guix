@@ -3835,14 +3835,14 @@ path-wise fashion.")
 (define-public r-pkgmaker
   (package
     (name "r-pkgmaker")
-    (version "0.32.8")
+    (version "0.32.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgmaker" version))
        (sha256
         (base32
-         "0i8prn63miajx7wlil5dchasqnjp054gwp0h7x6586q55j6mgwqg"))))
+         "0cr95vmsb4gkl917wg4wwq8jihvwasdg18qzhk2cq224lrrh8awp"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
