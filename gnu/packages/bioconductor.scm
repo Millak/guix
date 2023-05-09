@@ -4735,19 +4735,23 @@ bases such as COSMIC.")
 (define-public r-delayedarray
   (package
     (name "r-delayedarray")
-    (version "0.25.0")
+    (version "0.26.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DelayedArray" version))
               (sha256
                (base32
-                "0c9kasijy85n84nkzl93jas6xb2gc4bh5zw6l61if055adq0affa"))))
+                "0zp49ksqcgy5bzlf63s8zc7flv2x66qkn02h49wmyj5ix20al0a7"))))
     (properties
      `((upstream-name . "DelayedArray")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics r-s4vectors r-iranges r-matrix
-           r-matrixgenerics))
+     (list r-biocgenerics
+           r-iranges
+           r-matrix
+           r-matrixgenerics
+           r-s4arrays
+           r-s4vectors))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/DelayedArray")
