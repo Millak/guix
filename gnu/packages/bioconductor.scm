@@ -18211,6 +18211,38 @@ generated.")
 routines.")
     (license license:lgpl2.0+)))
 
+(define-public r-s4arrays
+  (package
+    (name "r-s4arrays")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "S4Arrays" version))
+              (sha256
+               (base32
+                "05nbdz8c2qfkbflbn5acf4bvdb20rj83nb4aii0c5v4zvxxrs3js"))))
+    (properties `((upstream-name . "S4Arrays")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics r-crayon r-iranges r-matrix r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/S4Arrays")
+    (synopsis "Foundation of array-like containers in Bioconductor")
+    (description
+     "The S4Arrays package defines the @code{Array} virtual class to be
+extended by other S4 classes that wish to implement a container with an
+array-like semantic.  It also provides:
+
+@enumerate
+@item low-level functionality meant to help the developer of such container to
+  implement basic operations like display, subsetting, or coercion of their
+  array-like objects to an ordinary matrix or array, and
+@item a framework that facilitates block processing of array-like
+  objects (typically on-disk objects).
+@end enumerate
+")
+    (license license:artistic2.0)))
+
 (define-public r-s4vectors
   (package
     (name "r-s4vectors")
