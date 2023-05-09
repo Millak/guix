@@ -31645,6 +31645,34 @@ development but it can be used for all sorts of general purpose parsing.")
 object, which can be useful if you want to force your objects into a table.")
     (license license:expat)))
 
+(define-public python-deepdiff
+  (package
+    (name "python-deepdiff")
+    (version "6.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "deepdiff" version))
+              (sha256
+               (base32
+                "0i5nnb3nppi2vgbhiakpxiagyhx7l1f50hzcl8fcgica4bkz2fva"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-ordered-set))
+    (native-inputs
+     (list python-click
+           python-dateutil
+           python-jsonpickle
+           python-mock
+           python-numpy
+           python-pytest
+           python-pyyaml))
+    (home-page "https://github.com/seperman/deepdiff")
+    (synopsis "Deep difference and search of any Python object/data")
+    (description
+     "This package provides tools for computing deep differences and searching
+of any Python object/data.  Recreate objects by adding adding deltas to each
+other.")
+    (license license:expat)))
+
 (define-public python-deepmerge
   (package
     (name "python-deepmerge")
