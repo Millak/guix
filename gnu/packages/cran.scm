@@ -34996,13 +34996,13 @@ implemented as @code{R6} classes.")
 (define-public r-mlr3
   (package
     (name "r-mlr3")
-    (version "0.15.0")
+    (version "0.16.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3" version))
               (sha256
                (base32
-                "1g01sgq8ddf5k2vjkqchhbzw55shhpq355s5dh988vj5ac2ikqy0"))))
+                "1nzj73qsbb02fcim9826zkxzzpar32pq2r0yfkis1nxaxky4cclr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-r6
