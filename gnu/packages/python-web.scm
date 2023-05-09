@@ -8287,32 +8287,16 @@ Interface) framework/toolkit for building async web services in Python.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'drop-orjson
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("\"orjson.*\",") ""))))
-          (add-after 'unpack 'delete-failing-tests
-            (lambda _
-              (for-each
-               delete-file
-               (append
-                '("docs_src/app_testing/app_b_py310/test_main.py"
-                  "tests/test_tutorial/test_templates/test_tutorial001.py")
-                (find-files "docs_src/sql_databases/"
-                            "test_sql_app\\.py$")
-                (find-files "tests"
-                            "test_(default|orjson)_response_class\\.py$")
-                (find-files "tests/test_tutorial"
-                            "test_tutorial00(1b|9c)\\.py$")
-                (find-files "tests/test_tutorial"
-                            "test_testing_databases.*\\.py$"))))))))
+      #:test-flags
+      ;; The test_create_user tests fail with a 400 error: "Email already registered".
+      '(list "--ignore=docs_src/sql_databases/sql_app_py310/tests/test_sql_app.py"
+             "--ignore=docs_src/sql_databases/sql_app_py39/tests/test_sql_app.py")))
     (propagated-inputs (list python-email-validator
                              python-httpx
                              python-itsdangerous
                              python-jinja2
                              python-multipart
+                             python-orjson
                              python-starlette
                              python-pydantic
                              python-pyyaml
