@@ -141,18 +141,19 @@ This package includes the @code{libtree-sitter} runtime library.")
         ("rust-semver" ,rust-semver-1)
         ("rust-smallbitvec" ,rust-smallbitvec-2)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tiny-http" ,rust-tiny-http-0.8)
+        ("rust-tiny-http" ,rust-tiny-http-0.12)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-webbrowser" ,rust-webbrowser-0.5)
+        ("rust-webbrowser" ,rust-webbrowser-0.8)
         ("rust-which" ,rust-which-4))
       #:cargo-development-inputs
-      `(("rust-pretty-assertions" ,rust-pretty-assertions-0.7))
+      `(("rust-ctor" ,rust-ctor-0.1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-unindent" ,rust-unindent-0.2))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'delete-cargo-lock
-            (lambda _
-              (delete-file "Cargo.lock")))
           (add-after 'unpack 'patch-node
             (lambda _
               (substitute* "cli/src/generate/mod.rs"

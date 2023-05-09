@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Nikolai Merinov <nikolai.merinov@member.fsf.org>
-;;; Copyright © 2017, 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
@@ -162,7 +162,15 @@
        (snippet
         '(begin
            (for-each delete-file-recursively
-                     '("src/llvm-project"))))
+                     '("src/llvm-project"))
+           ;; Remove vendored dynamically linked libraries.
+           ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+           (delete-file "vendor/vte/vim10m_match")
+           (delete-file "vendor/vte/vim10m_table")
+           ;; Also remove the bundled (mostly Windows) libraries.
+           ;; find vendor -not -type d -exec file {} \+ | grep PE32
+           (for-each delete-file
+                     (find-files "vendor" ".*\\.(a|dll|exe|lib)$"))))
        (patches (search-patches "rustc-1.54.0-src.patch"))
        (patch-flags '("-p0"))))         ;default is -p1
     (outputs '("out" "cargo"))
@@ -171,7 +179,7 @@
     (build-system gnu-build-system)
     (inputs
      `(("libcurl" ,curl)
-       ("llvm" ,llvm)
+       ("llvm" ,llvm-13)
        ("openssl" ,openssl-1.1)
        ("zlib" ,zlib)))
     (native-inputs
@@ -189,6 +197,9 @@
        ;; Rust's own .so library files are not found in any RUNPATH, but
        ;; that doesn't seem to cause issues.
        #:validate-runpath? #f
+       ;; Most of the build is single-threaded. This also improves the
+       ;; build time on machines with "only" 8GB of RAM.
+       #:parallel-build? ,(target-x86-64?)
        #:make-flags
        (list ,(string-append "RUSTC_TARGET="
                              (or (%current-target-system)
@@ -196,6 +207,10 @@
              ,(string-append "RUSTC_VERSION=" version)
              ,(string-append "MRUSTC_TARGET_VER="
                              (version-major+minor version))
+             ;; mrustc expects a C11 compatible compiler. Use the default
+             ;; C language dialect from the GCC-10 compiler.
+             ;; This is necessary for some architectures.
+             "CFLAGS=-std=gnu11"
              "OUTDIR_SUF=")           ;do not add version suffix to output dir
        #:phases
        (modify-phases %standard-phases
@@ -294,7 +309,6 @@
                ;; Use PARLEVEL since both minicargo and mrustc use it
                ;; to set the level of parallelism.
                (setenv "PARLEVEL" (number->string job-count))
-               (setenv "CARGO_BUILD_JOBS" (number->string job-count))
                (display "Building mrustc...\n")
                (apply invoke "make" make-flags)
 
@@ -346,8 +360,8 @@ safety and thread safety guarantees.")
     ;; therefore the build process needs 8GB of RAM while building.
     ;; It may support i686 soon:
     ;; <https://github.com/thepowersgang/mrustc/issues/78>.
-    ;; XXX: The rust bootstrap is currently broken on aarch64 and riscv64,
-    ;; remove them until this is fixed.
+    ;; XXX: The rust bootstrap is currently broken on riscv64 and fails to
+    ;; build on CI for aarch64, remove them until this is fixed.
     (supported-systems '("x86_64-linux"))
 
     ;; Dual licensed.
@@ -368,6 +382,14 @@ safety and thread safety guarantees.")
            (for-each delete-file-recursively
                      '("src/llvm-project"
                        "vendor/tikv-jemalloc-sys/jemalloc"))
+           ;; Remove vendored dynamically linked libraries.
+           ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+           (delete-file "vendor/vte/vim10m_match")
+           (delete-file "vendor/vte/vim10m_table")
+           ;; Also remove the bundled (mostly Windows) libraries.
+           ;; find vendor -not -type d -exec file {} \+ | grep PE32
+           (for-each delete-file
+                     (find-files "vendor" ".*\\.(a|dll|exe|lib)$"))
            ;; Add support for riscv64-linux.
            (substitute* "vendor/tikv-jemallocator/src/lib.rs"
              (("    target_arch = \"s390x\"," all)
@@ -505,7 +527,7 @@ ar = \"" binutils "/bin/ar" "\"
        ("which" ,which)))
     (inputs
      `(("jemalloc" ,jemalloc)
-       ("llvm" ,llvm)
+       ("llvm" ,llvm-13)
        ("openssl" ,openssl)
        ("libssh2" ,libssh2)             ; For "cargo"
        ("libcurl" ,curl)))              ; For "cargo"
@@ -601,8 +623,26 @@ safety and thread safety guarantees.")
    rust-1.59 "1.60.0" "1drqr0a26x1rb2w3kj0i6abhgbs3jx5qqkrcwbwdlx7n3inq5ji0"))
 
 (define rust-1.61
-  (rust-bootstrapped-package
-   rust-1.60 "1.61.0" "1vfs05hkf9ilk19b2vahqn8l6k17pl9nc1ky9kgspaascx8l62xd"))
+  (let ((base-rust
+          (rust-bootstrapped-package
+           rust-1.60 "1.61.0" "1vfs05hkf9ilk19b2vahqn8l6k17pl9nc1ky9kgspaascx8l62xd")))
+    (package
+      (inherit base-rust)
+      (source
+        (origin
+          (inherit (package-source base-rust))
+          (snippet
+           '(begin
+              (for-each delete-file-recursively
+                        '("src/llvm-project"
+                          "vendor/tikv-jemalloc-sys/jemalloc"))
+              ;; Remove vendored dynamically linked libraries.
+              ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+              (delete-file "vendor/vte/vim10m_match")
+              (delete-file "vendor/vte/vim10m_table")
+              ;; Also remove the bundled (mostly Windows) libraries.
+              (for-each delete-file
+                        (find-files "vendor" ".*\\.(a|dll|exe|lib)$")))))))))
 
 (define rust-1.62
   (rust-bootstrapped-package
@@ -628,9 +668,10 @@ safety and thread safety guarantees.")
          ((#:phases phases)
           `(modify-phases ,phases
              (replace 'patch-cargo-checksums
-               (lambda* _
+               (lambda _
                  (substitute* '("Cargo.lock"
-                                "src/bootstrap/Cargo.lock")
+                                "src/bootstrap/Cargo.lock"
+                                "src/tools/rust-analyzer/Cargo.lock")
                    (("(checksum = )\".*\"" all name)
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor"))))))))))
@@ -647,6 +688,23 @@ safety and thread safety guarantees.")
          (patches '())
          (patch-flags '("-p1")))))))
 
+(define rust-1.66
+  (rust-bootstrapped-package
+   rust-1.65 "1.66.1" "1fjr94gsicsxd2ypz4zm8aad1zdbiccr7qjfbmq8f8f7jhx96g2v"))
+
+(define rust-1.67
+  (let ((base-rust
+          (rust-bootstrapped-package
+           rust-1.66 "1.67.1" "0vpzv6rm3w1wbni17ryvcw83k5klhghklylfdza3nnp8blz3sj26")))
+    (package
+      (inherit base-rust)
+      (inputs (modify-inputs (package-inputs base-rust)
+                             (replace "llvm" llvm-15))))))
+
+(define rust-1.68
+  (rust-bootstrapped-package
+   rust-1.67 "1.68.2" "15ifyd5jj8rd979dkakp887hgmhndr68pqaqvd2hqkfdywirqcwk"))
+
 ;;; Note: Only the latest versions of Rust are supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
@@ -655,7 +713,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.60))
+  (let ((base-rust rust-1.67))
     (package
       (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
@@ -697,6 +755,34 @@ safety and thread safety guarantees.")
                     "#[ignore]\nfn finds_author_git")
                    (("fn finds_local_author_git")
                     "#[ignore]\nfn finds_local_author_git"))))
+             (add-after 'unpack 'disable-tests-requiring-mercurial
+               (lambda _
+                 (substitute*
+                   "src/tools/cargo/tests/testsuite/init/simple_hg_ignore_exists/mod.rs"
+                   (("fn simple_hg_ignore_exists")
+                    "#[ignore]\nfn simple_hg_ignore_exists"))
+                 (substitute*
+                   "src/tools/cargo/tests/testsuite/init/mercurial_autodetect/mod.rs"
+                   (("fn mercurial_autodetect")
+                    "#[ignore]\nfn mercurial_autodetect"))))
+             (add-after 'unpack 'disable-tests-broken-on-aarch64
+               (lambda _
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite/"
+                   (substitute* "build_script_extra_link_arg.rs"
+                     (("^fn build_script_extra_link_arg_bin_single" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "build_script.rs"
+                     (("^fn env_test" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "collisions.rs"
+                     (("^fn collision_doc_profile_split" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "concurrent.rs"
+                     (("^fn no_deadlock_with_git_dependencies" m)
+                      (string-append "#[ignore]\n" m)))
+                   (substitute* "features2.rs"
+                     (("^fn dep_with_optional_host_deps_activated" m)
+                      (string-append "#[ignore]\n" m))))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
@@ -728,11 +814,11 @@ safety and thread safety guarantees.")
                    (substitute* "library/std/src/process/tests.rs"
                      (("\"/bin/sh\"")
                       (string-append "\"" bash "/bin/sh\"")))
+                   ;; The three tests which are known to fail upstream on QEMU
+                   ;; emulation on aarch64 and riscv64 also fail on x86_64 in Guix's
+                   ;; build system. Skip them on all builds.
                    (substitute* "library/std/src/sys/unix/process/process_common/tests.rs"
-                     (("fn test_process_mask")
-                      "#[allow(unused_attributes)]
-    #[ignore]
-    fn test_process_mask")))))
+                     (("target_arch = \"arm\",") "target_os = \"linux\",")))))
              (add-after 'unpack 'disable-interrupt-tests
                (lambda _
                  ;; This test hangs in the build container; disable it.

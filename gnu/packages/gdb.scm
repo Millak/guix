@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -45,17 +45,19 @@
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (srfi srfi-1))
 
-(define-public gdb-11
+(define-public gdb/pinned
+  ;; This is the fixed version that packages depend on.  Update it rarely
+  ;; enough to avoid massive rebuilds.
   (package
     (name "gdb")
-    (version "11.1")
+    (version "12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "151z6d0265hv9cgx9zqqa4bd6vbp20hrljhd6bxl7lr0gd0crkyc"))))
+                "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -140,15 +142,12 @@ doing while it runs or what it was doing just before a crash.  It allows you
 to specify the runtime conditions, to define breakpoints, and to change how
 the program is running to try to fix bugs.  It can be used to debug programs
 written in C, C++, Ada, Objective-C, Pascal and more.")
-    (license gpl3+)
-
-    ;; GDB 11 now fails to build on GNU/Hurd (undefined references to process
-    ;; RPC stubs).
-    (supported-systems (fold delete %supported-systems %hurd-systems))))
+    (properties `((hidden? . #t)))
+    (license gpl3+)))
 
 (define-public gdb-12
   (package
-    (inherit gdb-11)
+    (inherit gdb/pinned)
     (version "12.1")
     (source (origin
               (method url-fetch)
@@ -157,14 +156,7 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
               (sha256
                (base32
                 "1vczsqcbh5y0gx7qrclpna0qzx26sk7lra6y8qzxam1biyzr65qf"))))
-
-    ;; GDB 12 builds fine on GNU/Hurd.
-    (supported-systems %supported-systems)))
-
-(define-public gdb/pinned
-  ;; This is the fixed version that packages depend on.  Update it rarely
-  ;; enough to avoid massive rebuilds.
-  gdb-11)
+    (properties '())))
 
 (define-public gdb
   ;; The "default" version.

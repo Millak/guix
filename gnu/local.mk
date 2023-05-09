@@ -1862,7 +1862,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
-  %D%/packages/patches/rust-adblock-ignore-live-tests.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
@@ -1870,6 +1869,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
   %D%/packages/patches/rust-nettle-sys-disable-vendor.patch	 \
   %D%/packages/patches/rust-openssl-sys-no-vendor.patch	\
+  %D%/packages/patches/rust-webbrowser-remove-unsupported-os.patch	\
   %D%/packages/patches/rust-wl-clipboard-rs-newer-wl.patch      \
   %D%/packages/patches/rw-igraph-0.10.patch			\
   %D%/packages/patches/sbc-fix-build-non-x86.patch		\
