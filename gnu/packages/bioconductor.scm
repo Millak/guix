@@ -18446,14 +18446,14 @@ provided.")
 (define-public r-hdf5array
   (package
     (name "r-hdf5array")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HDF5Array" version))
        (sha256
         (base32
-         "1fv0kfdcrz4brdzv5pwdcmkf31p10c08gj4455q57987zrg9s71p"))))
+         "1riwxxnbi4z0lf42psh3m3ivxlgmmlnqhgsih6911c754r6s39qg"))))
     (properties `((upstream-name . "HDF5Array")))
     (build-system r-build-system)
     (inputs
@@ -18466,6 +18466,7 @@ provided.")
            r-rhdf5
            r-rhdf5filters
            r-rhdf5lib
+           r-s4arrays
            r-s4vectors))
     (home-page "https://bioconductor.org/packages/HDF5Array")
     (synopsis "HDF5 back end for DelayedArray objects")
