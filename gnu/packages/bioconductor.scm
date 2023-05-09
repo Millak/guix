@@ -11053,14 +11053,14 @@ achieved for all methods using the BiocParallel framework.")
 (define-public r-scaledmatrix
   (package
     (name "r-scaledmatrix")
-    (version "1.7.1")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ScaledMatrix" version))
        (sha256
         (base32
-         "1l43qyvgfr4ys02ws843g25882c7wl3kcgjwav3msc9hhs2si0mg"))))
+         "0xhw77w28r3agv0hw7fjpn1fp2p9bz7kdzwzx7gsa8411nffmd4d"))))
     (properties `((upstream-name . "ScaledMatrix")))
     (build-system r-build-system)
     (propagated-inputs
