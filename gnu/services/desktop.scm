@@ -1192,7 +1192,8 @@ seats.)"
           (lambda (pam)
             (pam-service
              (inherit pam)
-             (session (cons pam-elogind (pam-service-session pam)))))))))
+             (session (cons pam-elogind (pam-service-session pam))))))
+         (shepherd-requirements '(elogind)))))
 
 (define (elogind-shepherd-service config)
   "Return a Shepherd service to start elogind according to @var{config}."
