@@ -9596,17 +9596,17 @@ financial trading strategies.")
 (define-public r-tseries
   (package
     (name "r-tseries")
-    (version "0.10-53")
+    (version "0.10-54")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tseries" version))
        (sha256
         (base32
-         "0mnazjzi9pldzlzjwgrfk0s3f7ykjgbj5gzcpfz2nx92s3k8wf7c"))))
+         "0a6hnkx1wpw29q5rqq7hi2fal720dx5f62rvc6gxs8lanmik5jn3"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-quadprog r-quantmod r-zoo))
+     (list r-jsonlite r-quadprog r-quantmod r-zoo))
     (native-inputs
      (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/tseries/")
