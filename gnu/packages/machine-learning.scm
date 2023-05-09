@@ -3271,7 +3271,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.12.0")
+    (version "1.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3281,7 +3281,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pdqi91qzgyx947zv4pw2fdj9vpqvdhfzw1ydjd4mpqm8g5njgnz"))
+                "17yxjzwp4zp75fz7czgz9acijzw7dpyqcza50v8y1x7hfg2gw369"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -3301,7 +3301,10 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                               "gloo" "googletest" "ios-cmake" "NNPACK"
                               "onnx" "protobuf" "pthreadpool"
                               "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))))))
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
