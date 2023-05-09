@@ -36259,22 +36259,6 @@ audio volume via amixer.")
 Fennel code within Emacs.")
       (license license:gpl3+))))
 
-(define-public emacs-gerbil-mode
-  (package
-    (inherit gerbil)
-    (name "emacs-gerbil-mode")
-    (version "1.0")
-    (build-system emacs-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'install 'change-directory
-                          (lambda _
-                            (chdir "etc"))))))
-    (synopsis "Emacs major-mode for editing Gerbil code")
-    (description
-     "Gerbil mode provides font-lock, indentation, navigation, and REPL for
-Gerbil code within Emacs.")))
-
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
