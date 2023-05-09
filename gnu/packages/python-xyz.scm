@@ -30975,6 +30975,22 @@ static types.")
 Python, with static types.")
     (license license:asl2.0)))
 
+(define-public python-types-setuptools
+  (package
+    (name "python-types-setuptools")
+    (version "67.6.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-setuptools" version))
+              (sha256
+               (base32
+                "0qlrxgl4mz6hs8z4qnl91hsa8mqcfm6397s3s3j21imxqxk8ww1s"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for setuptools")
+    (description "This package provides typing stubs for setuptools.")
+    (license license:asl2.0)))
+
 (define-public python-psycopg2-binary
   (package
     (name "python-psycopg2-binary")
