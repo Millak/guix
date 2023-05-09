@@ -48,6 +48,7 @@
             guix-build-coordinator-configuration-hooks
             guix-build-coordinator-configuration-parallel-hooks
             guix-build-coordinator-configuration-guile
+            guix-build-coordinator-configuration-extra-environment-variables
 
             guix-build-coordinator-service-type
 
@@ -171,7 +172,10 @@
   (parallel-hooks                  guix-build-coordinator-configuration-parallel-hooks
                                    (default '()))
   (guile                           guix-build-coordinator-configuration-guile
-                                   (default guile-3.0-latest)))
+                                   (default guile-3.0-latest))
+  (extra-environment-variables
+   guix-build-coordinator-configuration-extra-environment-variables
+   (default '())))
 
 (define-record-type* <guix-build-coordinator-agent-configuration>
   guix-build-coordinator-agent-configuration
@@ -331,7 +335,8 @@
              allocation-strategy
              hooks
              parallel-hooks
-             guile)
+             guile
+             extra-environment-variables)
     (list
      (shepherd-service
       (documentation "Guix Build Coordinator")
@@ -362,7 +367,8 @@
                      `(,(string-append
                          "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
                        "LC_ALL=en_US.utf8"
-                       "PATH=/run/current-system/profile/bin") ; for hooks
+                       "PATH=/run/current-system/profile/bin" ; for hooks
+                       #$@extra-environment-variables)
                      #:log-file "/var/log/guix-build-coordinator/coordinator.log")
                     args))))
       (stop #~(make-kill-destructor))

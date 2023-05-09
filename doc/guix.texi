@@ -37222,6 +37222,9 @@ for the hook and the value is the number of threads to run.
 @item @code{guile} (default: @code{guile-3.0-latest})
 The Guile package with which to run the Guix Build Coordinator.
 
+@item @code{extra-environment-variables} (default: @var{'()})
+Extra environment variables to set via the shepherd service.
+
 @end table
 @end deftp
 
