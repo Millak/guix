@@ -59,6 +59,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
   #:use-module (gnu packages)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -2891,4 +2892,75 @@ progresses the level, or you may regenerate tiles as the world changes.")
   abstract away platform and graphics details, allowing you to focus on
   writing your game.")
     (home-page "https://www.raylib.com/")
+    (license license:zlib)))
+
+(define-public bbcsdl
+  (package
+    (name "bbcsdl")
+    (version "1.35a")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rtrussell/BBCSDL/")
+                    (commit "b9b2a3eb438cb799edb2766055b3c38e9518e3e3")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d03xmhrl6ba6w0vwfk46mpyc9d0w3bixxj2d4irx7wl7bh3bfic"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; XXX: tests not automated
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (replace 'build
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; 'makefile' expects the source directory to be named 'BBCSDL'.
+              (symlink "source" "../BBCSDL")
+              ;; 'bbcsdl' finds 'libstb.so' in its RPATH.
+              (substitute* "bin/linux/makefile"
+                (("-Wl,-R,'\\$\\$ORIGIN'")
+                 (string-append "-Wl,-rpath="
+                                (assoc-ref outputs "out") "/opt/bbcsdl")))
+              ;; Build 'bbcbasic' and 'bbcsdl'.
+              (invoke "make" "-C" "console/linux")
+              (invoke "make" "-C" "bin/linux")))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (opt (string-append out "/opt/bbcsdl"))
+                     (bin (string-append out "/bin")))
+                (for-each
+                 (lambda (f)
+                   (copy-recursively f (string-append opt "/" f)))
+                 ;; Those files need to be installed into the same difertory.
+                 '("lib" "examples" "bbcsdl.bbc"
+                   "libstb.so" "bbcsdl" "bbcbasic"))
+                ;; Replace bundled fonts.
+                (for-each
+                 (lambda (font)
+                   (delete-file (string-append opt "/lib/" font))
+                   (symlink
+                    (search-input-file
+                     inputs (string-append "share/fonts/truetype/" font))
+                    (string-append opt "/lib/" font)))
+                 '("DejaVuSans.ttf" "DejaVuSansMono.ttf"
+                   "FreeSans.ttf" "FreeMono.ttf" "FreeSerif.ttf"))
+                (mkdir bin)
+                (symlink (string-append opt "/bbcsdl")
+                         (string-append bin "/bbcsdl"))
+                (symlink (string-append opt "/bbcbasic")
+                         (string-append bin "/bbcbasic"))))))))
+    (native-inputs (list nasm))
+    (inputs (list sdl2 sdl2-ttf sdl2-net font-dejavu font-gnu-freefont))
+    (synopsis "BBC BASIC for SDL 2.0")
+    (home-page "https://www.bbcbasic.co.uk/bbcsdl/")
+    (description
+     "BBC BASIC is the programming language originally specified and adopted
+by the British Broadcasting Corporation for its groundbreaking Computer
+Literacy Project of the early 1980s.  BBC BASIC for SDL 2.0 combines the
+simplicity of BASIC with the sophistication of a modern structured language,
+allowing you to write utilities and games, use sound and graphics, perform
+calculations and create complete applications.")
     (license license:zlib)))
