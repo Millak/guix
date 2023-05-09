@@ -8412,14 +8412,14 @@ statistics, etc.")
 (define-public r-scatterplot3d
   (package
     (name "r-scatterplot3d")
-    (version "0.3-43")
+    (version "0.3-44")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scatterplot3d" version))
        (sha256
         (base32
-         "198n5x9bdpdnkasvpsingzhf0j7vml4r5sh6hdv0hq5p6nsvzmwh"))))
+         "1hkfislhzx05y5qqa7pvrils3qf9rhxbf37lkpsjbn9yihs0i70w"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/scatterplot3d/")
     (synopsis "3D scatter plot")
