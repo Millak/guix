@@ -25674,7 +25674,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -25684,7 +25684,7 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "0g34xm32h0bc0zcyrkr2637jdb8mgb2zymqp6zfjc912sisgcs0l"))
+         "0aym0m12s5px139ragna0pr8jan8bx3akhjgamj6h0y28xksziji"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -25702,7 +25702,7 @@ desktop files to the right directories.
      "NClasses provides helper macros to help write classes, conditions,
 generic functions, and CLOS code in general with less boilerplate.
 
-It's a fork of @code{hu.dwim.defclass-star}.  It inclues some bug fixes and
+It's a fork of @code{hu.dwim.defclass-star}.  It includes some bug fixes and
 extra features like type inference.")
     (license license:public-domain)))
 
