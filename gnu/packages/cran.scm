@@ -19077,20 +19077,20 @@ library.")
 (define-public r-profvis
   (package
     (name "r-profvis")
-    (version "0.3.7")
+    (version "0.3.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "profvis" version))
               (sha256
                (base32
-                "1f86m426pcf90l29hf4hkirzf8f38dihk52bxbdq2gvrrdili5s3"))
+                "1cmlcp91q8v0550iay9vsw5wllb6w2ldy6k99rb76ylhr5dwf0pc"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib"
                   (for-each delete-file
                             (list "highlight/highlight.js" ;from rmarkdown
-                                  "jquery/jquery.min.js" ;version 1.12.4
-                                  "d3/d3.min.js")))))) ;version 3.5.6
+                                  "jquery/jquery.min.js"   ;version 1.12.4
+                                  "d3/d3.min.js"))))))     ;version 3.5.6
     (properties `((upstream-name . "profvis")))
     (build-system r-build-system)
     (arguments
@@ -19132,7 +19132,8 @@ library.")
            (sha256
             (base32
              "0x9mrc1668icvhpwzvgafm8xm11x9lfai9nwr66aw6pjnpwkc3s3"))))))
-    (propagated-inputs (list r-htmlwidgets r-stringr))
+    (propagated-inputs
+     (list r-htmlwidgets r-purrr r-rlang r-stringr r-vctrs))
     (home-page "https://rstudio.github.io/profvis/")
     (synopsis "Interactive visualizations for profiling R code")
     (description "This package provides interactive visualizations for
