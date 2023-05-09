@@ -11339,6 +11339,35 @@ styles of inference rules, placement of labels, etc.")
 sequent calculus and related systems.")
       (license license:lppl1.3+))))
 
+(define-public texlive-euenc
+  (package
+    (name "texlive-euenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/euenc/" "source/latex/euenc/"
+                   "tex/latex/euenc/")
+             (base32
+              "0vhqxhj1v68rhi08xivps8icxmlcq9mv8slqmsmf2qhvzj6x6qx3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     ;; Sole ".dtx" file bundled only generates documentation.
+     (list #:build-targets #~(list)))
+    (home-page "https://ctan.org/pkg/euenc")
+    (synopsis "Unicode font encoding definitions for XeTeX")
+    (description
+     "The package provides font encoding definitions for unicode fonts loaded
+by LaTeX in XeTeX or LuaTeX.  The package provides two encodings: EU1,
+designed for use with XeTeX, which the fontspec uses for unicode fonts which
+require no macro-level processing for accents, and EU2, which provides the
+same facilities for use with LuaTeX.  Neither encoding places any restriction
+on the glyphs provided by a font; use of EU2 causes the package
+@code{euxunicode} to be loaded (the package is part of this distribution).
+The package includes font definition files for use with the Latin Modern
+OpenType fonts.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-eurosym
   (let ((template (simple-texlive-package
                    "texlive-eurosym"
