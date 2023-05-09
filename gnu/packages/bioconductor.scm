@@ -2685,20 +2685,20 @@ in multi-layer WGCN using a continuous optimization approach.")
 (define-public r-amplican
   (package
     (name "r-amplican")
-    (version "1.21.0")
+    (version "1.22.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "amplican" version))
               (sha256
                (base32
-                "0y8x3vfsa2330zabd2y3f6ipi1f5zlfn9pp0cg2rks0pfnx2qqha"))))
+                "1bws4awpjvswzj53zwn9x5ra76ngpqn2h8hlr6y0x7j9wwwqldc7"))))
     (properties `((upstream-name . "amplican")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
            r-biocparallel
            r-biostrings
-           r-clustercrit
+           r-cluster
            r-data-table
            r-dplyr
            r-genomeinfodb
