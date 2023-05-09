@@ -38157,14 +38157,14 @@ backed by the @url{https://bokeh.pydata.org/, Bokeh visualization library}.")
 (define-public r-fauxpas
   (package
     (name "r-fauxpas")
-    (version "0.5.0")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fauxpas" version))
        (sha256
         (base32
-         "129fzqb7wsskbn50s8x0marr4wm8jrns6hiycqcsk166k3dnyyy8"))))
+         "1xhyws6nr9ayir4sykvhyaf1aprx9rjm2xyb3p5ikd26l5hp7l44"))))
     (properties `((upstream-name . "fauxpas")))
     (build-system r-build-system)
     (propagated-inputs
