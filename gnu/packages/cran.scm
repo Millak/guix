@@ -38288,13 +38288,13 @@ for testing and developing your own models.")
 (define-public r-misctools
   (package
     (name "r-misctools")
-    (version "0.6-26")
+    (version "0.6-28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "miscTools" version))
        (sha256
-        (base32 "16pwfxpyl0zv3hjxx2kjchkg7p6kbj0s2rrpskj7rkhjr9imlg5y"))))
+        (base32 "089vb57ynqzqa9ppalqfgn0n5wazfjng2kc7z4wgb2ll40hjyk5x"))))
     (properties `((upstream-name . "miscTools")))
     (build-system r-build-system)
     (propagated-inputs (list r-digest))
