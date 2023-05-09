@@ -34266,18 +34266,19 @@ as allowing spectra with different resolutions.")
 (define-public r-scattermore
   (package
     (name "r-scattermore")
-    (version "0.8")
+    (version "1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scattermore" version))
        (sha256
         (base32
-         "1rgqm7r1k7j3h2y4i6d1a2y8fzivfcbmr7dj9d367c0w4vc77pfv"))))
+         "14dgrd9fml0syg30qjn2ah3rgkm528y3waa6lkcvgikbw0d5s7d7"))))
     (properties `((upstream-name . "scattermore")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-scales))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/exaexa/scattermore")
     (synopsis "Scatterplots with more points")
     (description
