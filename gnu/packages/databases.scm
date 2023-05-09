@@ -3417,7 +3417,7 @@ on localhost.")
       (uri (pypi-uri "SQLAlchemy" version))
       (sha256
        (base32 "0qzkxy47y06fqh1m7a0p7q2r9h48x9k5kl3znzhx2vj79j8l2zhp"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-cython ; for C extensions
            python-pytest python-mock python-pytest-xdist)) ; for tests
@@ -3425,16 +3425,10 @@ on localhost.")
      (list python-greenlet))
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        "-n" (number->string (parallel-job-count))
-                        ;; The memory usage tests are very expensive and run in
-                        ;; sequence; skip them.
-                        "-k" "not test_memusage.py")))))))
+      #:test-flags
+      '(list ;; The memory usage tests are very expensive and run in sequence;
+             ;; skip them.
+             "-k" "not test_memusage.py")))
     (home-page "https://www.sqlalchemy.org")
     (synopsis "Database abstraction library")
     (description
