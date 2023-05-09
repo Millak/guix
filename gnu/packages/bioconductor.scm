@@ -4769,13 +4769,13 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
 (define-public r-densvis
   (package
     (name "r-densvis")
-    (version "1.10.0")
+    (version "1.10.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "densvis" version))
               (sha256
                (base32
-                "0dwdlz2mvlkfa9x0x58lymfcaq00z35sliiac24l0kdg5chm35a8"))))
+                "1291gp5wj9c47y291c1hqb12dj2zh6xrf0g38kllspqg9885cs54"))))
     (properties `((upstream-name . "densvis")))
     (build-system r-build-system)
     (propagated-inputs (list r-assertthat r-basilisk r-irlba r-rcpp
