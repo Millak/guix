@@ -4818,14 +4818,14 @@ tests for whether a value is missing, empty or contains only @code{NA} and
 (define-public r-gdata
   (package
     (name "r-gdata")
-    (version "2.18.0.1")
+    (version "2.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdata" version))
        (sha256
         (base32
-         "1n9jw136kk5ld27qvny7cx2s8l34jdgmzlx40x62mmcqjddksbsy"))))
+         "1lv3cz990f7m2bfcf62fjm6wz6zd2ycrci06b7mfd0xmcn3bwifi"))))
     (build-system r-build-system)
     (inputs
      (list perl))
