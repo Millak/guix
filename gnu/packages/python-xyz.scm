@@ -3877,6 +3877,27 @@ matching them against a list of media-ranges.")
 server.")
     (license license:asl2.0)))
 
+(define-public python-mir-eval
+  (package
+    (name "python-mir-eval")
+    (version "0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "mir_eval" version))
+              (sha256
+               (base32
+                "0pp6xdflqhj2czhb2w3kk2c7mx4h2hj0n5rabiaafrbcfsjvmzp1"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-future python-numpy python-scipy
+                             python-six))
+    (native-inputs (list python-matplotlib))
+    (home-page "https://github.com/craffel/mir_eval")
+    (synopsis "Common metrics for common audio/music processing tasks.")
+    (description "This is a Python library for computing common heuristic
+accuracy scores for various music/audio information retrieval/signal
+processing tasks.")
+    (license license:expat)))
+
 (define-public python-pafy
   (package
     (name "python-pafy")
