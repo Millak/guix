@@ -12167,6 +12167,34 @@ allow hyphenation (the corresponding commands in LaTeX, all of whose names are
 lower-case, prevent hyphenation altogether).")
     (license license:lppl1.3c)))
 
+(define-public texlive-refstyle
+  (package
+    (name "texlive-refstyle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/refstyle/" "source/latex/refstyle/"
+                   "tex/latex/refstyle/")
+             (base32
+              "0ckfm04kfi67babpn3m99nqj4b9r1fs0ivq5m7yz90mz4lqykhbs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/refstyle")
+    (synopsis "Advanced formatting of cross references")
+    (description
+     "The package provides a consistent way of producing references throughout
+a project.  Enough flexibility is provided to make local changes to a single
+reference.  The user can configure their own setup.  The package offers
+a direct interface to varioref (for use, for example, in large projects such
+as a series of books, or a multivolume thesis written as a series of
+documents), and name references from the nameref package may be incorporated
+with ease.  For large projects such as a series of books or a multi volume
+thesis, written as freestanding documents, a facility is provided to interface
+to the @code{xr} package for external document references.")
+    (license license:lppl)))
+
 (define-public texlive-relsize
   (package
     (inherit (simple-texlive-package
