@@ -15191,7 +15191,7 @@ time.")
            texlive-latex-jknapltx
            texlive-ms
            texlive-latex-parskip
-           texlive-latex-trimspaces
+           texlive-trimspaces
            texlive-latex-upquote
            texlive-stringenc
            texlive-tcolorbox

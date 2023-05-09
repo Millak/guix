@@ -5234,8 +5234,8 @@ rotated.")
            texlive-l3kernel ; for expl3
            texlive-oberdiek
            texlive-latex-psfrag
-           texlive-tools ; for shellesc
-           texlive-latex-trimspaces
+           texlive-tools                ; for shellesc
+           texlive-trimspaces
            texlive-latex-xkeyval))
     (home-page "https://www.ctan.org/pkg/pstool")
     (synopsis "Process PostScript graphics within pdfLaTeX documents")
@@ -5354,39 +5354,41 @@ and the ability to create new ‘List of ...’. The ToC @code{\\parskip} may
 be changed.")
     (license license:lppl1.3c+)))
 
-(define-public texlive-latex-trimspaces
+(define-public texlive-trimspaces
   (package
-    (name "texlive-latex-trimspaces")
+    (name "texlive-trimspaces")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "trimspaces"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0da00lb32am4g63mn96625wg48p3pj3spx79lajrk17d549apwqa"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/trimspaces/"
+                   "source/latex/trimspaces/"
+                   "tex/latex/trimspaces/")
+             (base32
+              "0if7pqaib533fbrj9r62mmr4h012hrpszdxs759rwhmyycikg6dk")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/trimspaces"
-       #:tex-format "latex"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-bug
-           (lambda _
-             ;; The "ins" file refers to the wrong source file.
-             (substitute* "trimspaces.ins"
-               (("pstool.tex") "trimspaces.tex"))
-             #t)))))
-    (inputs
+     (list
+      #:tex-format "latex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-bug
+            (lambda _
+              ;; The "ins" file refers to the wrong source file.
+              (substitute* "source/latex/trimspaces/trimspaces.ins"
+                (("pstool\\.tex") "trimspaces.tex")))))))
+    (propagated-inputs
      (list texlive-filecontents))
-    (home-page "https://www.ctan.org/pkg/trimspaces")
+    (home-page "https://ctan.org/pkg/trimspaces")
     (synopsis "Trim spaces around an argument or within a macro")
     (description
-     "This very short package allows you to expandably remove spaces around a
-token list (commands are provided to remove spaces before, spaces after, or
-both); or to remove surrounding spaces within a macro definition, or to define
-space-stripped macros.")
+     "This package provides a very short package that allows you to expandably
+remove spaces around a token list (commands are provided to remove spaces
+before, spaces after, or both); or to remove surrounding spaces within a macro
+definition, or to define space-stripped macros.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-trimspaces texlive-trimspaces)
 
 (define-public texlive-calrsfs
   (package
