@@ -22809,14 +22809,14 @@ using the three.js visualization library.")
 (define-public r-mlbench
   (package
     (name "r-mlbench")
-    (version "2.1-3")
+    (version "2.1-3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlbench" version))
        (sha256
         (base32
-         "157iqsld0wj8g8cbs7nh6p2x6kasmkhs3078hsmqac946gk2pydi"))))
+         "1w2w7nkrp69c0di0lss82jf4fbxdpqwxzqa2lrp55av8i7awdzks"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/mlbench/")
     (synopsis "Machine learning benchmark problems")
