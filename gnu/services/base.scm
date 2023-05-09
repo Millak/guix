@@ -1603,20 +1603,22 @@ information on the configuration file syntax."
 
 (define pam-limits-service-type
   (let ((pam-extension
-         (lambda (pam)
-           (let ((pam-limits (pam-entry
-                              (control "required")
-                              (module "pam_limits.so")
-                              (arguments
-                               '("conf=/etc/security/limits.conf")))))
-             (if (member (pam-service-name pam)
-                         '("login" "greetd" "su" "slim" "gdm-password" "sddm"
-                           "sudo" "sshd"))
-                 (pam-service
-                  (inherit pam)
-                  (session (cons pam-limits
-                                 (pam-service-session pam))))
-                 pam))))
+         (pam-extension
+          (transformer
+           (lambda (pam)
+             (let ((pam-limits (pam-entry
+                                (control "required")
+                                (module "pam_limits.so")
+                                (arguments
+                                 '("conf=/etc/security/limits.conf")))))
+               (if (member (pam-service-name pam)
+                           '("login" "greetd" "su" "slim" "gdm-password"
+                             "sddm" "sudo" "sshd"))
+                   (pam-service
+                    (inherit pam)
+                    (session (cons pam-limits
+                                   (pam-service-session pam))))
+                   pam))))))
 
         ;; XXX: Using file-like objects is deprecated, use lists instead.
         ;;      This is to be reduced into the list? case when the deprecated
@@ -3264,16 +3266,18 @@ to handle."
                      (greetd-allow-empty-passwords? config)
                      #:motd
                      (greetd-motd config))
-   (lambda (pam)
-     (if (member (pam-service-name pam)
-                 '("login" "greetd" "su" "slim" "gdm-password"))
-         (pam-service
-          (inherit pam)
-          (auth (append (pam-service-auth pam)
-                        (list optional-pam-mount)))
-          (session (append (pam-service-session pam)
-                           (list optional-pam-mount))))
-         pam))))
+   (pam-extension
+    (transformer
+     (lambda (pam)
+       (if (member (pam-service-name pam)
+                   '("login" "greetd" "su" "slim" "gdm-password"))
+           (pam-service
+            (inherit pam)
+            (auth (append (pam-service-auth pam)
+                          (list optional-pam-mount)))
+            (session (append (pam-service-session pam)
+                             (list optional-pam-mount))))
+           pam))))))
 
 (define (greetd-shepherd-services config)
   (map
@@ -3285,7 +3289,7 @@ to handle."
           (greetd-vt (greetd-terminal-vt tc)))
        (shepherd-service
         (documentation "Minimal and flexible login manager daemon")
-        (requirement '(user-processes host-name udev virtual-terminal))
+        (requirement '(pam user-processes host-name udev virtual-terminal))
         (provision (list (symbol-append
                           'term-tty
                           (string->symbol (greetd-terminal-vt tc)))))

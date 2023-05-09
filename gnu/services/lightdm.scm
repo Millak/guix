@@ -616,7 +616,7 @@ port=" (number->string vnc-server-port) "\n"
   (list
    (shepherd-service
     (documentation "LightDM display manager")
-    (requirement '(dbus-system user-processes host-name))
+    (requirement '(pam dbus-system user-processes host-name))
     (provision '(lightdm display-manager xorg-server))
     (respawn? #f)
     (start

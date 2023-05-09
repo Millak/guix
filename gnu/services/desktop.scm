@@ -1187,10 +1187,12 @@ seats.)"
      (module (file-append (elogind-package config)
                           "/lib/security/pam_elogind.so"))))
 
-  (list (lambda (pam)
-          (pam-service
-           (inherit pam)
-           (session (cons pam-elogind (pam-service-session pam)))))))
+  (list (pam-extension
+         (transformer
+          (lambda (pam)
+            (pam-service
+             (inherit pam)
+             (session (cons pam-elogind (pam-service-session pam)))))))))
 
 (define (elogind-shepherd-service config)
   "Return a Shepherd service to start elogind according to @var{config}."
@@ -1703,22 +1705,24 @@ dispatches events from it.")))
      (arguments arguments)))
 
   (list
-   (lambda (service)
-     (case (assoc-ref (gnome-keyring-pam-services config)
-                      (pam-service-name service))
-       ((login)
-        (pam-service
-         (inherit service)
-         (auth (append (pam-service-auth service)
-                       (list (%pam-keyring-entry))))
-         (session (append (pam-service-session service)
-                          (list (%pam-keyring-entry "auto_start"))))))
-       ((passwd)
-        (pam-service
-         (inherit service)
-         (password (append (pam-service-password service)
-                           (list (%pam-keyring-entry))))))
-       (else service)))))
+   (pam-extension
+    (transformer
+     (lambda (service)
+       (case (assoc-ref (gnome-keyring-pam-services config)
+                        (pam-service-name service))
+         ((login)
+          (pam-service
+           (inherit service)
+           (auth (append (pam-service-auth service)
+                         (list (%pam-keyring-entry))))
+           (session (append (pam-service-session service)
+                            (list (%pam-keyring-entry "auto_start"))))))
+         ((passwd)
+          (pam-service
+           (inherit service)
+           (password (append (pam-service-password service)
+                             (list (%pam-keyring-entry))))))
+         (else service)))))))
 
 (define gnome-keyring-service-type
   (service-type

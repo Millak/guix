@@ -197,9 +197,11 @@
                      interfaces)))))
 
   (define requires
-    (if (and daemonic? (lsh-configuration-syslog-output? config))
-        '(networking syslogd)
-        '(networking)))
+    `(networking
+      pam
+      ,@(if (and daemonic? (lsh-configuration-syslog-output? config))
+            '(syslogd)
+            '())))
 
   (list (shepherd-service
          (documentation "GNU lsh SSH server")
@@ -566,7 +568,7 @@ of user-name/file-like tuples."
 
   (list (shepherd-service
          (documentation "OpenSSH server.")
-         (requirement '(syslogd loopback))
+         (requirement '(pam syslogd loopback))
          (provision '(ssh-daemon ssh sshd))
 
          (start #~(if #$inetd-style?

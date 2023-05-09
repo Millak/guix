@@ -428,27 +428,29 @@ generates such a file.  It does not cause any daemon to be started.")))
 
 (define (pam-krb5-pam-service config)
   "Return a PAM service for Kerberos authentication."
-  (lambda (pam)
-    (define pam-krb5-module
-      #~(string-append #$(pam-krb5-configuration-pam-krb5 config)
-                       "/lib/security/pam_krb5.so"))
+  (pam-extension
+   (transformer
+    (lambda (pam)
+      (define pam-krb5-module
+        #~(string-append #$(pam-krb5-configuration-pam-krb5 config)
+                         "/lib/security/pam_krb5.so"))
 
-    (let ((pam-krb5-sufficient
-           (pam-entry
-            (control "sufficient")
-            (module pam-krb5-module)
-            (arguments
-             (list
-              (format #f "minimum_uid=~a"
-                      (pam-krb5-configuration-minimum-uid config)))))))
-      (pam-service
-       (inherit pam)
-       (auth (cons* pam-krb5-sufficient
-                    (pam-service-auth pam)))
-       (session (cons* pam-krb5-sufficient
-                       (pam-service-session pam)))
-       (account (cons* pam-krb5-sufficient
-                       (pam-service-account pam)))))))
+      (let ((pam-krb5-sufficient
+             (pam-entry
+              (control "sufficient")
+              (module pam-krb5-module)
+              (arguments
+               (list
+                (format #f "minimum_uid=~a"
+                        (pam-krb5-configuration-minimum-uid config)))))))
+        (pam-service
+         (inherit pam)
+         (auth (cons* pam-krb5-sufficient
+                      (pam-service-auth pam)))
+         (session (cons* pam-krb5-sufficient
+                         (pam-service-session pam)))
+         (account (cons* pam-krb5-sufficient
+                         (pam-service-account pam)))))))))
 
 (define (pam-krb5-pam-services config)
   (list (pam-krb5-pam-service config)))
