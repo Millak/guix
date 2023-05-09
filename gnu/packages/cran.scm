@@ -17330,17 +17330,17 @@ only sparse real matrices in Matrix package format are supported.")
 (define-public r-speedglm
   (package
     (name "r-speedglm")
-    (version "0.3-4")
+    (version "0.3-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "speedglm" version))
        (sha256
         (base32
-         "1kj662nfkfhvx37jrbvxd4dyjclz5cm3xh50z7s5rbzapiyxn4hs"))))
+         "0jxvh9gbhip1hj7hzjs5fj8iw6ibvl6hc0llcg2j9wqgq5vkcrpq"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass r-matrix))
+     (list r-biglm r-mass r-matrix))
     (home-page "https://cran.r-project.org/web/packages/speedglm")
     (synopsis "Fit linear and generalized linear models to large data sets")
     (description
