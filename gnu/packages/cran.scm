@@ -27859,14 +27859,14 @@ classification and regression models.")
 (define-public r-adabag
   (package
     (name "r-adabag")
-    (version "4.2")
+    (version "4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adabag" version))
        (sha256
         (base32
-         "109wrl1pwvmyv2l909hrvk7dg4aa9pv449mvdycp50zwrsw9w0a7"))))
+         "1v4cl50wbv834cpbwkkhaq5wf8s746fp8xkjrwvyw912x6b2zmik"))))
     (properties `((upstream-name . "adabag")))
     (build-system r-build-system)
     (propagated-inputs
