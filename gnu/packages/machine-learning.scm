@@ -3418,6 +3418,33 @@ Note: currently this package does not provide GPU support.")
 
 (define-public python-pytorch-for-r-torch python-pytorch)
 
+(define-public python-lightning-cloud
+  (package
+    (name "python-lightning-cloud")
+    (version "0.5.34")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lightning_cloud" version))
+              (sha256
+               (base32
+                "0mqrhq3s23mn8n4i0q791pshn3dgplp0h9ny0pmmp798q0798dzs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-click
+                             python-fastapi
+                             python-multipart
+                             python-pyjwt
+                             python-requests
+                             python-rich
+                             python-six
+                             python-urllib3
+                             python-uvicorn
+                             python-websocket-client))
+    (home-page "https://lightning.ai")
+    (synopsis "Lightning Cloud command line client")
+    (description "This package provides a command line interface for Lightning
+AI services.")
+    (license license:asl2.0)))
+
 ;; Keep this in sync with python-pytorch
 (define-public python-torchvision
   (package
