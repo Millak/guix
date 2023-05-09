@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 (define-module (gnu packages barrier)
   #:use-module (guix build-system cmake)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -48,9 +50,17 @@
         (base32 "19bwa9qidq2mxv1fkyxxc1xdmv3jx6bj35bkaaw70jzkblnfmlfs"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DBARRIER_USE_EXTERNAL_GTEST=ON")
-       #:tests? #f)) ;tests require a running x server
+     (list
+      #:configure-flags
+      #~(list "-DBARRIER_USE_EXTERNAL_GTEST=ON")
+      #:tests? #f ;; tests require a running x server
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-null
+            (lambda _
+              (substitute* "src/lib/base/Event.h"
+                (("#include \"common/stdmap\\.h\"")
+                 "#include \"common/stdmap.h\"\n#include <cstddef>")))))))
     (native-inputs
      (list googletest pkg-config))
     (inputs
