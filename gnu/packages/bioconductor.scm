@@ -5802,13 +5802,13 @@ powerful online queries from gene annotation to database mining.")
 (define-public r-biomartr
   (package
     (name "r-biomartr")
-    (version "1.0.2")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "biomartr" version))
               (sha256
                (base32
-                "0hr7wks88lbfcqzjzm4x265dk4lpmc3i2ndp7xcrx8ssj76wrmkz"))))
+                "093v32r6s9sn7yisa4fdwgjif313ap19nvq0sbsgj2482k646d55"))))
     (properties `((upstream-name . "biomartr")))
     (build-system r-build-system)
     (propagated-inputs
