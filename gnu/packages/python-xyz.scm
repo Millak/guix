@@ -5299,6 +5299,24 @@ which only supports flat sequences, and allows you to apply a function to each
 leaf preserving the overall structure.")
     (license license:asl2.0)))
 
+(define-public python-docstring-parser
+  (package
+    (name "python-docstring-parser")
+    (version "0.15")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "docstring_parser" version))
+              (sha256
+               (base32
+                "10pnbg2q0ic1h6pwbyhhqd075fv67sq07k3gjncmi1mix29w1pa8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/rr-/docstring_parser")
+    (synopsis "Parse Python docstrings in reST, Google and Numpydoc format")
+    (description "This package lets you parse Python docstrings in reST,
+Google and Numpydoc format.")
+    (license license:expat)))
+
 (define-public python-docutils
   (package
     (name "python-docutils")
