@@ -8340,6 +8340,21 @@ Interface) framework/toolkit for building async web services in Python.")
 starlette.")
     (license license:expat)))
 
+(define-public python-fastapi-for-pytorch-lightning
+  (package
+    (inherit python-fastapi)
+    (name "python-fastapi")
+    (version "0.88.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fastapi" version))
+              (sha256
+               (base32
+                "00pznprvjvrkiqcvn0ksz1pq5n2cgmxhk0gc0mb7q3ha302g6nwi"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-fastapi)
+       (replace "python-starlette" python-starlette-for-fastapi-0.88)))))
+
 (define-public python-pyactiveresource
   (package
     (name "python-pyactiveresource")
