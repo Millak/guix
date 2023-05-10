@@ -2530,7 +2530,7 @@ parametrize.  This plugin allows you to use all four.")
 (define-public python-pytest-httpx
   (package
     (name "python-pytest-httpx")
-    (version "0.21.0")
+    (version "0.22.0")
     (source
      (origin
        ;; pypi package doesn't include the tests
@@ -2540,16 +2540,8 @@ parametrize.  This plugin allows you to use all four.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12mcy1f5d5cq3rqrqgi2ar0qvzw62ibys17hw6dsdfd0j2syck4r"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "PYTHONPATH" (getcwd))
-               (invoke "pytest" "-vv")))))))
+        (base32 "1ncpd74hmsz4sadvjg99fnfscxpgh3mc2siini0dhxzwgwdkk5i7"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-httpx))
     (native-inputs (list python-pytest python-pytest-asyncio))
     (home-page "https://colin-b.github.io/pytest_httpx/")
