@@ -914,6 +914,14 @@ fonts to gEDA.")
                     ((guix build guile-build-system) #:prefix guile:)
                     (guix build utils))
         #:test-target "libfive-test"
+        #:configure-flags #~(list
+                             (string-append
+                              "-DPYTHON_SITE_PACKAGES_DIR="
+                              #$output "/lib/python"
+                              #$(version-major+minor
+                                 (package-version
+                                  (this-package-input "python-wrapper")))
+                              "/site-packages"))
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'remove-native-compilation
@@ -929,7 +937,10 @@ fonts to gEDA.")
                   (("\\(get-environment-variable \"LIBFIVE_FRAMEWORK_DIR\"\\)" m)
                    (string-append m "\n\"" #$output "/lib/\""))
                   (("\\(get-environment-variable \"LIBFIVE_STDLIB_DIR\"\\)" m)
-                   (string-append m "\n\"" #$output "/lib/\"")))))
+                   (string-append m "\n\"" #$output "/lib/\"")))
+                (substitute* "libfive/bind/python/libfive/ffi.py"
+                  (("os.environ.get\\('LIBFIVE_FRAMEWORK_DIR'\\)" m)
+                   (string-append m " or \"" #$output "/lib/\"")))))
             (add-after 'unpack 'do-not-build-guile-bindings
               (lambda _
                 (delete-file "libfive/bind/guile/CMakeLists.txt")
@@ -948,22 +959,28 @@ fonts to gEDA.")
                        (scm (string-append #$output "/share/guile/site/"
                                            effective-version))
                        (go (string-append #$output "/lib/guile/"
-                                          effective-version "/site-ccache")))
+                                          effective-version "/site-ccache"))
+                       (py (string-append #$output "/lib/python"
+                                          #$(version-major+minor
+                                             (package-version
+                                              (this-package-input "python-wrapper")))
+                                          "/site-packages")))
                   (wrap-program (string-append #$output "/bin/Studio")
                     `("GUILE_LOAD_PATH" ":" prefix (,scm))
-                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,go)))))))))
+                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,go))
+                    `("GUIX_PYTHONPATH" ":" prefix (,py)))))))))
       (native-inputs
        (list pkg-config))
       (inputs
-       (list boost libpng qtbase eigen guile-3.0 bash-minimal))
+       (list bash-minimal boost eigen guile-3.0 libpng python-wrapper qtbase))
       (home-page "https://libfive.com")
       (synopsis "Tool for programmatic computer-aided design")
       (description
        "Libfive is a tool for programmatic computer-aided design (CAD).  In
-libfive, solid models are defined as Scheme scripts, and there are no opaque
-function calls into the geometry kernel: everything is visible to the user.
-Even fundamental, primitive shapes are represented as code in the user-level
-language.")
+libfive, solid models are defined as Scheme or Python scripts, and there are
+no opaque function calls into the geometry kernel: everything is visible to
+the user.  Even fundamental, primitive shapes are represented as code in the
+user-level language.")
       (license (list license:mpl2.0               ;library
                      license:gpl2+))              ;Guile bindings and GUI
 
