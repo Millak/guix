@@ -5927,9 +5927,18 @@ and copy/paste text in the console and in xterm.")
     (arguments
      (list
       #:configure-flags
-      ;; The ‘Python support’ was never actually installed by previous
-      ;; versions of this package, but did prevent cross-compilation.
-      #~(list "--disable-python")
+      #~(append
+         ;; Without --disable-documentation, it complains about missing
+         ;; python-sphinx on systems where this package isn't available
+         ;; (because it requires Rust).
+         (if #$@(member (%current-system)
+                        (package-transitive-supported-systems
+                         python-sphinx))
+             '()
+             (list "--disable-documentation"))
+         ;; The ‘Python support’ was never actually installed by previous
+         ;; versions of this package, but did prevent cross-compilation.
+         (list "--disable-python"))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-makefile
                      (lambda* (#:key outputs #:allow-other-keys)
@@ -5968,15 +5977,21 @@ and copy/paste text in the console and in xterm.")
                   `(,zlib "static")
                   `(,zstd "lib")
                   `(,zstd "static")))
-    (native-inputs (list pkg-config
-                         python-sphinx            ;for building documentation
-                         acl                      ;for tests
-                         lvm2                     ;for dmsetup
-                         grep                     ;need Perl regexp support
-                         libaio
-                         liburing
-                         util-linux               ;for fallocate
-                         which))
+    (native-inputs
+     (append
+      ;; For building documentation.  Since python-sphinx requires Rust, add
+      ;; it conditionally depending on such support.
+      (if (supported-package? python-sphinx)
+          (list python-sphinx)
+          '())
+      (list pkg-config
+            acl                                   ;for tests
+            lvm2                                  ;for dmsetup
+            grep                                  ;need Perl regexp support
+            libaio
+            liburing
+            util-linux                            ;for fallocate
+            which)))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
     (synopsis "Create and manage btrfs copy-on-write file systems")
     (description
