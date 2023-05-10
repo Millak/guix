@@ -20,7 +20,7 @@
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
@@ -908,17 +908,21 @@ fonts to gEDA.")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:imported-modules `((guix build guile-build-system)
+                             ,@%cmake-build-system-modules)
+        #:modules '((guix build cmake-build-system)
+                    ((guix build guile-build-system) #:prefix guile:)
+                    (guix build utils))
         #:test-target "libfive-test"
-        #:configure-flags
-        #~(list (string-append "-DGUILE_CCACHE_DIR="
-                               #$output "/lib/guile/3.0/site-ccache"))
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'fix-autocompilation
-              (lambda _ (setenv "HOME" "/tmp")))
             (add-after 'unpack 'remove-native-compilation
               (lambda _
                 (substitute* "CMakeLists.txt" (("-march=native") ""))))
+            (add-after 'unpack 'remove-environment-variable-override
+              (lambda _
+                (substitute* "studio/src/guile/interpreter.cpp"
+                  (("qputenv\\(\"GUILE_LOAD_COMPILED_PATH\".*") ""))))
             (add-after 'unpack 'fix-library-location
               (lambda _
                 (substitute* "libfive/bind/guile/libfive/lib.scm"
@@ -926,19 +930,32 @@ fonts to gEDA.")
                    (string-append m "\n\"" #$output "/lib/\""))
                   (("\\(get-environment-variable \"LIBFIVE_STDLIB_DIR\"\\)" m)
                    (string-append m "\n\"" #$output "/lib/\"")))))
-            (add-after 'install 'install-scm-files
+            (add-after 'unpack 'do-not-build-guile-bindings
               (lambda _
-                (for-each
-                 (lambda (file)
-                   (install-file file
-                                 (string-append #$output
-                                                "/share/guile/site/3.0/libfive")))
-                 (find-files "../source/libfive/bind/guile/libfive"
-                             "\\.scm$")))))))
+                (delete-file "libfive/bind/guile/CMakeLists.txt")
+                (call-with-output-file
+                    "libfive/bind/guile/CMakeLists.txt"
+                  (lambda (port)
+                    (display "add_custom_target(libfive-guile)\n" port)))))
+            (add-after 'build 'guile-build
+              (lambda args
+                (apply (assoc-ref guile:%standard-phases 'build)
+                       #:source-directory "../source/libfive/bind/guile"
+                       args)))
+            (add-after 'install 'wrap-studio
+              (lambda _
+                (let* ((effective-version (guile:target-guile-effective-version))
+                       (scm (string-append #$output "/share/guile/site/"
+                                           effective-version))
+                       (go (string-append #$output "/lib/guile/"
+                                          effective-version "/site-ccache")))
+                  (wrap-program (string-append #$output "/bin/Studio")
+                    `("GUILE_LOAD_PATH" ":" prefix (,scm))
+                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,go)))))))))
       (native-inputs
        (list pkg-config))
       (inputs
-       (list boost libpng qtbase-5 eigen guile-3.0))
+       (list boost libpng qtbase eigen guile-3.0 bash-minimal))
       (home-page "https://libfive.com")
       (synopsis "Tool for programmatic computer-aided design")
       (description
