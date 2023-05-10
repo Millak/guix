@@ -27928,34 +27928,24 @@ placement and scaling of SVG figures and adding markers, such as labels.")
 (define-public python-blessed
   (package
     (name "python-blessed")
-    (version "1.17.9")
+    (version "1.20.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "blessed" version))
         (sha256
          (base32
-          "1fx9lyzyaxd44jwpp9k3c0gx37xsww1q7gq01hqbf258x1dplj8d"))
-        (modules '((guix build utils)))
+          "103ng3ap33xs6i7606q3k6rwvjva9l7qi8j7vw08y13ffkw6gp9c"))
         (snippet
-         '(begin
-            ;; Don't get hung up on Windows test failures.
-            (delete-file "blessed/win_terminal.py")))))
-    (build-system python-build-system)
+         ;; Don't get hung up on Windows test failures.
+         '(delete-file "blessed/win_terminal.py"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-               (when tests?
-                 (add-installed-pythonpath inputs outputs)
-                 (delete-file "tox.ini")
-                 (invoke "python" "-m" "pytest" "tests")))))))
-    (propagated-inputs
-     (list python-jinxed python-six python-wcwidth))
-    (native-inputs
-     (list python-mock python-pytest))
+      ;; Avoid python-pytest-coverage
+      #:test-flags '(list "-c /dev/null")))
+    (propagated-inputs (list python-wcwidth))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/jquast/blessed")
     (synopsis "Wrapper around terminal capabilities")
     (description
