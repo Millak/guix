@@ -260,7 +260,6 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages bdw-gc)
-  #:use-module (gnu packages serialization)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
