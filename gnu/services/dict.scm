@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -172,8 +172,10 @@ database {
                         (make-inetd-constructor
                          (list #$dicod "--inetd" "--foreground"
                                (string-append "--config=" #$dicod.conf))
-                         (addrinfo:addr
-                          (car (getaddrinfo #$(first interfaces) "dict")))
+                         (list (endpoint
+                                (addrinfo:addr
+                                 (car (getaddrinfo #$(first interfaces)
+                                                   "dict")))))
                          #:user "dicod" #:group "dicod"
                          #:service-name-stem "dicod")
                         (make-forkexec-constructor
