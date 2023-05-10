@@ -290,11 +290,19 @@ logic, also known as grey logic.")
     (name "python-scikit-optimize")
     (version "0.9.0")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "scikit-optimize" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/scikit-optimize/scikit-optimize")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0230ya8bwrzxjwcy2vz23a3hg6caggnnmg2vq1f9zz2797kckn3p"))))
+                "0hsq6pmryimxc275yrcy4bv217bx7ma6rz0q6m4138bv4zgq18d1"))
+              (patches
+               ;; These are for compatibility with more recent versions of
+               ;; numpy and scikit-learn.
+               (search-patches "python-scikit-optimize-1148.patch"
+                               "python-scikit-optimize-1150.patch"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-joblib
