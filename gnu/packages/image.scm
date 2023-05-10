@@ -1423,7 +1423,9 @@ channels.")
                     (lib (string-append out "/lib")))
                (for-each delete-file (find-files lib "\\.a$")))))
 
-         ,@(if (or (target-ppc64le?) (target-aarch64?))
+         ,@(if (or (target-ppc64le?)
+                   (target-aarch64?)
+                   (target-riscv64?))
                '((add-after 'unpack 'adjust-tests
                    (lambda _
                      ;; Adjust test on ppc64 and aarch64, where no exception

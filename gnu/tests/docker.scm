@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -108,6 +108,9 @@ inside %DOCKER-OS."
             '("hello world" "hi!" "JSON!" #o1777)
             (marionette-eval
              `(begin
+                (use-modules (ice-9 popen)
+                             (ice-9 rdelim))
+
                 (define slurp
                   (lambda args
                     (let* ((port (apply open-pipe* OPEN_READ args))
@@ -242,6 +245,10 @@ inside %DOCKER-OS."
           (test-assert "load system image and run it"
             (marionette-eval
              `(begin
+                (use-modules (ice-9 popen)
+                             (ice-9 rdelim)
+                             (guix build utils))
+
                 (define (slurp command . args)
                   ;; Return the output from COMMAND.
                   (let* ((port (apply open-pipe* OPEN_READ command args))

@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
@@ -13178,7 +13178,8 @@ interface for MySQL, PostgreSQL and SQLite.")
     (inputs
      `(("cffi" ,sbcl-cffi)
        ("md5" ,sbcl-md5)
-       ("mysql" ,mysql)
+       ("mariadb-dev" ,mariadb "dev")
+       ("mariadb-lib" ,mariadb "lib")
        ("postgresql" ,postgresql)
        ("postmodern" ,sbcl-postmodern)
        ("sqlite" ,sqlite)
@@ -13224,15 +13225,16 @@ interface for MySQL, PostgreSQL and SQLite.")
                   lib))
                (substitute* "db-mysql/mysql-loader.lisp"
                  (("libmysqlclient" all)
-                  (string-append (assoc-ref inputs "mysql") "/lib/" all))
+                  (string-append (assoc-ref inputs "mariadb-lib") "/lib/" all))
                  (("clsql-mysql-system::\\*library-file-dir\\*")
                   lib)))
              #t))
          (add-before 'build 'build-helper-library
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((mysql (assoc-ref inputs "mysql"))
-                    (inc-dir (string-append mysql "/include/mysql"))
-                    (lib-dir (string-append mysql "/lib"))
+             (let* ((mariadb-dev (assoc-ref inputs "mariadb-dev"))
+                    (mariadb-lib (assoc-ref inputs "mariadb-lib"))
+                    (inc-dir (string-append mariadb-dev "/include/mysql"))
+                    (lib-dir (string-append mariadb-lib "/lib"))
                     (shared-lib-dir (string-append (assoc-ref outputs "out")
                                                    "/lib"))
                     (shared-lib (string-append shared-lib-dir
@@ -13242,7 +13244,7 @@ interface for MySQL, PostgreSQL and SQLite.")
                        "-I" inc-dir
                        "db-mysql/clsql_mysql.c"
                        "-Wl,-soname=clsql_mysql"
-                       "-L" lib-dir "-lmysqlclient" "-lz"
+                       "-L" lib-dir "-lmariadb" "-lz"
                        "-o" shared-lib)
                #t)))
          (add-after 'unpack 'fix-tests
@@ -13265,7 +13267,7 @@ interfaces as well as a functional and an object oriented interface.")
     (native-inputs
      `(("rt" ,cl-rt)))
     (inputs
-     (list mysql postgresql sqlite zlib))
+     (list (list mariadb "dev") postgresql sqlite zlib))
     (propagated-inputs
      `(("cffi" ,cl-cffi)
        ("md5" ,cl-md5)
@@ -25672,7 +25674,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -25682,7 +25684,7 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "0g34xm32h0bc0zcyrkr2637jdb8mgb2zymqp6zfjc912sisgcs0l"))
+         "0aym0m12s5px139ragna0pr8jan8bx3akhjgamj6h0y28xksziji"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -25700,7 +25702,7 @@ desktop files to the right directories.
      "NClasses provides helper macros to help write classes, conditions,
 generic functions, and CLOS code in general with less boilerplate.
 
-It's a fork of @code{hu.dwim.defclass-star}.  It inclues some bug fixes and
+It's a fork of @code{hu.dwim.defclass-star}.  It includes some bug fixes and
 extra features like type inference.")
     (license license:public-domain)))
 

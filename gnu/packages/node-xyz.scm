@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Charles <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,11 +47,59 @@
         (base32 "068h5gysz8bbslq31dva8f223rdf8l7w6nxcxjnv4zdprwkzkhaa"))))
     (build-system node-build-system)
     (arguments
-     '(#:phases
+     '(#:tests? #f
+       #:modules
+       ((guix build node-build-system)
+        (srfi srfi-1)
+        (ice-9 match)
+        (guix build utils))
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'change-directory
            (lambda _
-             (chdir "acorn"))))))
+             (chdir "acorn")))
+         (add-before 'configure 'avoid-prepare-scripts
+           (lambda _
+             ;; We need to remove the prepare script from "package.json", as
+             ;; it would try to use the build environment and would block the
+             ;; automatic building by other packages making use of node-acorn.
+             ;; TODO: Add utility function
+             (with-atomic-json-file-replacement "package.json"
+               (match-lambda
+                 (('@ . pkg-meta-alist)
+                  (cons '@ (map (match-lambda
+                                  (("scripts" @ . scripts-alist)
+                                   `("scripts" @ ,@(filter (match-lambda
+                                                             (("prepare" . _)
+                                                              #f)
+                                                             (_
+                                                              #t))
+                                                           scripts-alist)))
+                                  (other other))
+                                pkg-meta-alist)))))))
+         (replace 'build
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (let ((esbuild (search-input-file (or native-inputs inputs)
+                                        "/bin/esbuild")))
+               (invoke esbuild
+                     "src/index.js"
+                     "--outfile=dist/acorn.js"
+                     "--format=cjs"
+                     "--bundle"
+                     "--platform=node")
+               (invoke esbuild
+                     "src/index.js"
+                     "--outfile=dist/acorn.mjs"
+                     "--format=esm"
+                     "--bundle"
+                     "--platform=node")
+               (invoke esbuild
+                     "src/bin/acorn.js"
+                     "--outfile=dist/bin.js"
+                     "--format=cjs"
+                     "--platform=node")))))))
+    (native-inputs
+     (list esbuild))
     (home-page "https://github.com/acornjs/acorn/tree/master/acorn")
     (synopsis "Javascript-based Javascript parser")
     (description "Acornjs is a Javascript parser with many options and an
@@ -74,10 +123,9 @@ architecture supporting plugins.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("tap")))))))
     (home-page "https://github.com/brianloveswords/buffer-crc32")
     (synopsis "CRC32 implementation in Javascript")
     (description
@@ -131,10 +179,16 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
                       (substitute* "lib/configuration.js"
                         (("mri")
                          "minimist"))))
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("c8"
+                                             "docdash"
+                                             "eslint"
+                                             "eslint-plugin-jsdoc"
+                                             "jsdoc"
+                                             "tap-diff"
+                                             "tape"
+                                             "tape-catch")))))))
     (inputs (list node-minimist node-pbf node-yazl))
     (home-page "https://github.com/ahwayakchih/crx3")
     (synopsis "Create CRXv3 browser extensions with Javascript")
@@ -259,10 +313,9 @@ random number generator.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("covert" "tap" "tape")))))))
     (home-page "https://github.com/substack/minimist")
     (synopsis "Parse CLI arguments in Javascript")
     (description "This package can scan for CLI flags and arguments in
@@ -311,10 +364,19 @@ while being as light-weight and simple as possible.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies
+                       '("benchmark"
+                         "browserify"
+                         "eslint"
+                         "eslint-config-mourner"
+                         "mkdirp"
+                         "protobufjs"
+                         "protocol-buffers"
+                         "tap"
+                         "tile-stats-runner"
+                         "uglify-js")))))))
     (inputs (list node-ieee754 node-resolve-protobuf-schema))
     (home-page "https://github.com/mapbox/pbf")
     (synopsis "Decode and encode protocol buffers in Javascript")
@@ -343,10 +405,9 @@ code.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("standard" "tape")))))))
     (home-page "https://github.com/mafintosh/protocol-buffers-schema")
     (synopsis "Protocol buffers schema parser written in Javascript")
     (description "This package provides a protocol buffers schema parser
@@ -370,10 +431,9 @@ written in Javascript.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("standard" "tape")))))))
     (inputs (list node-protocol-buffers-schema))
     (home-page "https://github.com/mafintosh/resolve-protobuf-schema")
     (synopsis "Resolve protobuf imports")
@@ -563,10 +623,9 @@ if desired.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("airtap" "standard" "tape")))))))
     (home-page "https://github.com/feross/ieee754")
     (synopsis "Read/write IEEE754 floating point numbers in Javascript")
     (description "This package can read and write IEEE754 floating point
@@ -1325,6 +1384,8 @@ after a (configurable) newline delimiter is received.")))
                                                              (_
                                                               #t))
                                                            scripts-alist)))
+                                  (("gypfile" . _)
+                                   '("gypfile" . #f))
                                   (other
                                    other))
                                 pkg-meta-alist))))))))
@@ -1529,10 +1590,9 @@ default set of parsers and bindings.")))
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("airtap" "bl" "istanbul" "yauzl")))))))
     (inputs (list node-buffer-crc32))
     (home-page "https://github.com/thejoshwolfe/yazl")
     (synopsis "Yet another zip library for node")

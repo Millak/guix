@@ -169,8 +169,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "286cdf0bc55a29d5a63f7191edde7ea4dbd8cf2a")
-        (revision 5))
+        (commit "dc5430c9dc20ee53441995d9a89a90b0a86aeed3")
+        (revision 6))
     (package
       (name "guix")
 
@@ -186,7 +186,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1jwi6z1mgp7drl384m40cbdqbv451mbhs2k7iplg7a5l7dg120nz"))
+                  "192jxca7gdf8451kac58fq1f2rxn3624krmhz04bh7ln2sp5q0yd"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -476,6 +476,7 @@ $(prefix)/etc/openrc\n")))
          ("guile-gcrypt" ,guile-gcrypt)
          ("guile-json" ,guile-json-4)
          ("guile-lib" ,guile-lib)
+         ("guile-semver" ,guile-semver)
          ("guile-sqlite3" ,guile-sqlite3)
          ("guile-ssh" ,guile-ssh)
          ("guile-git" ,guile-git)
@@ -1377,8 +1378,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "6a4e827f304178d3d20c2037b4f1bf62e969ddce")
-        (revision "79"))
+  (let ((commit "3f6473c0d296ed6efab1feebcacd76fc597bb6ef")
+        (revision "81"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1389,7 +1390,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1w4iqmv493rs94dc2h6l3dnhx2513pz1fknzl6a643d2z6bkb7zj"))
+                  "0c2k2v15ga4bdmm74f4h385pwjimvsvrgjzsfd04il9a6r4qg319"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

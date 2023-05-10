@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,7 +113,7 @@
 corresponds to CPU, a record as returned by 'current-cpu'."
   (match (cpu-architecture cpu)
     ("x86_64"
-     ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.c.
+     ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.cc.
      (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
               (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
               (letrec-syntax ((if-flags (syntax-rules (=>)
@@ -127,8 +127,11 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                                              name
                                              (if-flags rest ...))))))
 
-                (if-flags ("avx" "avx512vp2intersect" "tsxldtrk" => "sapphirerapids")
+                (if-flags ("avx" "raoint" => "grandridge")
+                          ("avx" "amx_fp16" => "graniterapids")
+                          ("avx" "avxvnniint8" => "sierraforest")
                           ("avx" "avx512vp2intersect" => "tigerlake")
+                          ("avx" "tsxldtrk" => "sapphirerapids")
                           ("avx" "avx512bf16" => "cooperlake")
                           ("avx" "wbnoinvd" => "icelake-server")
                           ("avx" "avx512bitalg" => "icelake-client")
@@ -148,7 +151,8 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                           ("sse4_2" => "nehalem")
                           ("ssse3" "movbe" => "bonnell")
                           ("ssse3" => "core2")
-                          ("longmode" => "x86-64"))))
+                          ("longmode" => "x86-64")
+                          ("lm" => "x86-64"))))
 
          (and (equal? "AuthenticAMD" (cpu-vendor cpu))
               (letrec-syntax ((if-flags (syntax-rules (=>)
@@ -165,8 +169,13 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                 (or (and (= 22 (cpu-family cpu))
                          (if-flags ("movbe" => "btver2")))
                     (and (= 6 (cpu-family cpu))
-                         (if-flags ("3dnowp" => "athalon")))
-                    (if-flags ("vaes" => "znver3")
+                         (if-flags ("3dnowp" => "athalon")
+                                   ("longmode" "sse3" => "k8-sse3")
+                                   ("lm" "sse3" => "k8-sse3")
+                                   ("longmode" => "k8")
+                                   ("lm" => "k8")))
+                    (if-flags ("avx512f" => "znver4")
+                              ("vaes" => "znver3")
                               ("clwb" => "znver2")
                               ("clzero" => "znver1")
                               ("avx2" => "bdver4")
@@ -177,8 +186,10 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                               ("sse4a" => "amdfam10")
                               ("sse2" "sse3" => "k8-sse3")
                               ("longmode" "sse3" => "k8-sse3")
+                              ("lm" "sse3" => "k8-sse3")
                               ("sse2" => "k8")
                               ("longmode" => "k8")
+                              ("lm" => "k8")
                               ("mmx" "3dnow" => "k6-3")
                               ("mmx" => "k6")
                               (_ => "pentium")))))
@@ -195,18 +206,24 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                                                  '(flags ...))
                                           name
                                           (if-flags rest ...))))))
-           (if-flags ("avx512" => "knl")
-                     ("adx" => "broadwell")
-                     ("avx2" => "haswell")
-                     ;; TODO: tigerlake, cooperlake, etc.
-                     ("avx" => "sandybridge")
-                     ("sse4_2" "gfni" => "tremont")
-                     ("sse4_2" "sgx" => "goldmont-plus")
-                     ("sse4_2" "xsave" => "goldmont")
-                     ("sse4_2" "movbe" => "silvermont")
-                     ("sse4_2" => "nehalem")
-                     ("ssse3" "movbe" => "bonnell")
-                     ("ssse3" => "core2")))
+           (if (and (= 7 (cpu-family cpu))
+                    (= #x3b (cpu-model cpu)))
+             "lujiazui"
+             (if-flags ("avx512" => "knl")
+                       ("adx" => "broadwell")
+                       ("avx2" => "haswell")
+                       ;; TODO: tigerlake, cooperlake, etc.
+                       ("avx" => "sandybridge")
+                       ("sse4_2" "gfni" => "tremont")
+                       ("sse4_2" "sgx" => "goldmont-plus")
+                       ("sse4_2" "xsave" => "goldmont")
+                       ("sse4_2" "movbe" => "silvermont")
+                       ("sse4_2" => "nehalem")
+                       ("ssse3" "movbe" => "bonnell")
+                       ("ssse3" "sse3" "longmode" => "nocona")
+                       ("ssse3" "sse3" "lm" => "nocona")
+                       ("ssse3" "sse3" => "prescott")
+                       ("ssse3" => "core2"))))
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
@@ -219,13 +236,14 @@ corresponds to CPU, a record as returned by 'current-cpu'."
         (match (cpu-model cpu)
           ((or #xd02 #xd04 #xd03 #xd07 #xd08 #xd09)
            "armv8-a")
-          ((or #xd05 #xd0a #xd0b #xd0e #xd0d #xd41 #xd42 #xd4b #xd46 #xd43 #xd44 #xd41 #xd0c #xd4a)
+          ((or #xd05 #xd0a #xd0b #xd0e #xd0d #xd41 #xd42 #xd4b #xd06 #xd43 #xd44
+               #xd4c #xd0c #xd4a)
            "armv8.2-a")
           (#xd40
            "armv8.4-a")
           (#xd15
            "armv8-r")
-          ((or #xd46 #xd47 #xd48 #xd49 #xd4f)
+          ((or #xd46 #xd47 #xd4d #xd48 #xd4e #xd49 #xd4f)
            "armv9-a")))
        ("0x42"
         "armv8.1-a")
@@ -259,6 +277,8 @@ corresponds to CPU, a record as returned by 'current-cpu'."
         "armv8-a")
        ("0xC0"
         "armv8.6-a")
+       ("0xC00"
+        "armv8-a")
        (_
         "armv8-a"))
      "armv8-a")

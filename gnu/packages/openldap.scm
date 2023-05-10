@@ -178,14 +178,14 @@ an LDAP server.")
 (define-public python-ldap
   (package
     (name "python-ldap")
-    (version "3.4.0")
+    (version "3.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-ldap" version))
        (sha256
         (base32
-         "04hd7rdm59i7wrykx0nggzxx1p42wkm296j483yy0wayqa7lqik0"))))
+         "1872bvrakypb96wrsf932f3xflnbqniiyf8h58x48apgl0cwa9mb"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -233,6 +233,7 @@ servers from Python programs.")
                   (guix build utils))
       #:imported-modules `((guix build python-build-system)
                            ,@%gnu-build-system-modules)
+      #:disallowed-references (list httpd)
       #:configure-flags
       #~(list "--enable-cmocka"
               (string-append "--with-db="
@@ -322,7 +323,6 @@ servers from Python programs.")
            cracklib
            cyrus-sasl
            gnutls
-           httpd
            icu4c
            iproute
            json-c
@@ -353,6 +353,7 @@ servers from Python programs.")
            cmocka
            doxygen
            gettext-minimal
+           httpd
            libtool
            rsync
            pkg-config))

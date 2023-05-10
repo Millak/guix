@@ -14,6 +14,7 @@
 # Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+# Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 #
@@ -329,6 +330,7 @@ MODULES =					\
   guix/scripts/lint.scm				\
   guix/scripts/challenge.scm			\
   guix/scripts/import/crate.scm			\
+  guix/scripts/import/cpan.scm			\
   guix/scripts/import/cran.scm			\
   guix/scripts/import/egg.scm   		\
   guix/scripts/import/elm.scm			\
@@ -1110,6 +1112,19 @@ cuirass-jobs: $(GOBJECTS)
 .PHONY: assert-final-inputs-self-contained check-channel-news
 .PHONY: clean-go make-go as-derivation authenticate
 .PHONY: update-guix-package update-NEWS cuirass-jobs release
+
+# Git auto-configuration.
+.git/hooks/pre-push: etc/git/pre-push
+	$(AM_V_at)if test -d .git; then \
+	cp etc/git/pre-push .git/hooks/pre-push; \
+	fi
+
+.git/config: etc/git/gitconfig
+	$(AM_V_at)if command -v git >/dev/null && test -d .git; then \
+	git config --add include.path ../etc/git/gitconfig; \
+	fi
+
+nodist_noinst_DATA = .git/hooks/pre-push .git/config
 
 # Downloading up-to-date PO files.
 

@@ -26,6 +26,49 @@
 (channel-news
  (version 0)
 
+ (entry (commit "ae11fcb84ac478dfa56d322ef08890645183a087")
+        (title
+         (en "New @option{--with-configure-flag} transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-configure-flag}")
+         (fr "Nouvelle option de transformation @option{--with-configure-flag}"))
+        (body
+         (en "The new @option{--with-configure-flag} package transformation
+option lets you pass an additional configure flag to the build system of a
+package.  For instance, here is how you would pass a flag to @command{cmake},
+the build system of the @code{lapack} package:
+
+@example
+guix build lapack \\
+  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+@end example
+
+Run @command{info \"(guix) Package Transformation Options\"} for more info.")
+         (de "Die neue Paketumwandlungsoption @option{--with-configure-flag}
+macht es möglich, dem Erstellungssystem eines Pakets eine zusätzliche
+Befehlszeilenoption für configure mitzugeben.  Zum Beispiel können Sie dem
+@command{cmake}-Erstellungssystem des @code{lapack}-Pakets eine Option mitgeben:
+
+@example
+guix build lapack \\
+  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+@end example
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "La nouvelle option de transformation de paquets
+@option{--with-configure-flag} permet de passer un drapeau supplémentaire au
+système de construction d'un paquet.  Par exemple, voici comment on passerait
+un drapeau à @command{cmake}, le système de construction du logiciel
+@code{lapack} :
+
+@example
+guix build lapack \\
+  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+@end example
+
+Voir @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus de détails.")))
+
  (entry (commit "c919bfefd98bf2e29549539b4e28e6dc2a8a6f32")
         (title
          (en "Core packages updated")

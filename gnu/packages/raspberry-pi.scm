@@ -466,7 +466,7 @@ secondary LCD display connected to the Raspberry Pi board.")
 (define-public rpi-imager
   (package
     (name "rpi-imager")
-    (version "1.7.3")
+    (version "1.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -489,7 +489,7 @@ secondary LCD display connected to the Raspberry Pi board.")
                                                     (cut member <> keep)))))))
               (sha256
                (base32
-                "0i7r1myhinhlgispq92nzvrjvbc48l87z8xfwc038l44qj1lsq8g"))))
+                "0m0dmga049banm79221ilmrqpb2bd6p0rcqrlzirsgb592ci64ba"))))
     (build-system qt-build-system)
     (arguments
      (list

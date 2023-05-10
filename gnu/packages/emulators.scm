@@ -2274,7 +2274,7 @@ framework based on QEMU.")
 (define-public ppsspp
   (package
     (name "ppsspp")
-    (version "1.12.3")
+    (version "1.14.4")
     (source
      (origin
        (method git-fetch)
@@ -2282,7 +2282,7 @@ framework based on QEMU.")
              (url "https://github.com/hrydgard/ppsspp")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1p6pmp0lhqhk9h5r9xsjicd0zn08bwx3y8533npps96ixwbm2y15"))
+        (base32 "1l80zs1khph4a3g3hnh91awafmyy6wdcayb81xnflkzmpv3bwq8i"))
        (file-name (git-file-name name version))
        (patches
         (search-patches "ppsspp-disable-upgrade-and-gold.patch"))
@@ -2314,10 +2314,8 @@ framework based on QEMU.")
            (substitute* "CMakeLists.txt"
              ;; Drop unnecessary includes and targets.
              (("include_directories\\(ext/glslang\\)") "")
-             (("include_directories\\(ext/xxhash\\)") "")
-             (("include_directories\\(ext/cityhash\\)") "")
-             (("include_directories\\(ext/zstd.*") "")
-             (("libzstd_static") "zstd")
+             (("target_include_directories\\(.*ext/xxhash\\)") "")
+             (("target_include_directories\\(.*ext/cityhash\\)") "")
              (("set_target_properties\\(cityhash .*\\)") "")
              ;; Fix linking to GLEW.
              (("TARGET Ext::GLEW") "true")
@@ -2384,9 +2382,11 @@ elseif(FALSE)"))
     (arguments
      (list
       #:out-of-source? #f
-      #:configure-flags #~(list "-DUSE_DISCORD=OFF"
+      #:configure-flags #~(list "-DARMIPS_USE_STD_FILESYSTEM=ON" ; from armips
+                                "-DUSE_DISCORD=OFF"
                                 "-DUSE_SYSTEM_FFMPEG=ON"
                                 "-DUSE_SYSTEM_LIBZIP=ON"
+                                "-DUSE_SYSTEM_ZSTD=ON"
                                 ;; for testing
                                 "-DUNITTEST=ON" "-DHEADLESS=ON")
       #:phases
@@ -2394,37 +2394,7 @@ elseif(FALSE)"))
           (add-after 'unpack 'add-external-sources
             (lambda* (#:key inputs #:allow-other-keys)
               ;; TODO: unbundle armips.
-              (copy-recursively #$(package-source armips) "ext/armips")
-              ;; Some tests are externalised, so we add them here.
-              (copy-recursively
-               #$(let ((commit "1047400eaec6bcbdb2a64d326375ef6a6617c4ac"))
-                   (origin
-                     (method git-fetch)
-                     (uri (git-reference
-                           (url "https://github.com/hrydgard/pspautotests")
-                           (commit commit)))
-                     (sha256
-                      (base32 "0nxv1lskcr8zbg6nrfai21mxsw0n5vaqhbsa41c3cxfyx5c4w2pg"))
-                     (file-name (git-file-name "pspautotests" commit))))
-               "pspautotests")))
-          (add-after 'unpack 'fix-unittest-build
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("unittest/TestVertexJit.cpp" all)
-                 (string-append all " unittest/TestShaderGenerators.cpp")))
-              (substitute* "unittest/TestVertexJit.cpp"
-                (("#include \"unittest/UnitTest.h\"" all)
-                 (string-append all "\n#include <cmath>")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (for-each
-                 (lambda (t) (invoke "./unitTest" t))
-                 '("Arm64Emitter" "ArmEmitter" "X64Emitter" "VertexJit" "Asin"
-                   "SinCos" "VFPUSinCos" "MathUtil" "Parsers" "Jit"
-                   "MatrixTranspose" "ParseLBN" "QuickTexHash" "CLZ"
-                   #|"ShaderGenerators"|#))
-                (invoke "python3" "test.py" "-g"))))
+              (copy-recursively #$(package-source armips) "ext/armips")))
           (replace 'install
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))

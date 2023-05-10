@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2021 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
@@ -30,6 +30,7 @@
   #:use-module (guix i18n)
   #:use-module (guix ui)
   #:use-module (gnu services)
+  #:use-module (gnu services admin)
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
   #:use-module (gnu services mcron)
@@ -155,13 +156,19 @@ representation."
              #:log-file "/var/log/earlyoom.log"))
    (stop #~(make-kill-destructor))))
 
+(define %earlyoom-log-rotation
+  (list (log-rotation
+         (files '("/var/log/earlyoom.log")))))
+
 (define earlyoom-service-type
   (service-type
    (name 'earlyoom)
    (default-value (earlyoom-configuration))
    (extensions
     (list (service-extension shepherd-root-service-type
-                             (compose list earlyoom-shepherd-service))))
+                             (compose list earlyoom-shepherd-service))
+          (service-extension rottlog-service-type
+                             (const %earlyoom-log-rotation))))
    (description "Run @command{earlyoom}, the Early OOM daemon.")))
 
 

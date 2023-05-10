@@ -500,7 +500,7 @@ programs.")
 
 (define-configuration cups-configuration
   (cups
-   (file-like cups)
+   (file-like cups-minimal)
    "The CUPS package.")
   (extensions
    (package-list (list brlaser cups-filters epson-inkjet-printer-escpr
@@ -841,7 +841,7 @@ IPP specifications.")
 
 (define-configuration opaque-cups-configuration
   (cups
-   (package cups)
+   (package cups-minimal)
    "The CUPS package.")
   (extensions
    (package-list '())

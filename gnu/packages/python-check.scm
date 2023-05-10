@@ -518,16 +518,7 @@ Astropy project, but is optimized for use with astropy-related projects.")
        (sha256
         (base32 "04g2rh261s3s6ym8mwi4iv2a6anbgwvwzcvkyilfck6yxrncdqw5"))))
     (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; There is a bug somewhere that makes pytest-filter-subpackage appear
-         ;; as version 0.0.0 to setup.py.  Remove it from the requirements.
-         (add-after 'unpack 'remove-requirement
-           (lambda _
-             (substitute* "setup.cfg"
-               ((".*pytest-filter-subpackage.*") "")))))))
+    (arguments (list #:tests? #f)) ; there are no tests
     (native-inputs
      (list python-attrs python-pytest-mock python-setuptools-scm))
     (propagated-inputs
@@ -550,22 +541,22 @@ astropy related packages.")
 (define-public python-pytest-arraydiff
   (package
     (name "python-pytest-arraydiff")
-    (version "0.3")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-arraydiff" version))
        (sha256
-        (base32 "05bcvhh2ycxa35znl8b3l9vkcmx7vwm5c3fpakbpw46c7vsn4bfy"))))
+        (base32 "1livzfbi7ag17hskd5845dh1kdir24f7jrbw8y2s1pyhzyz4jhbi"))))
     (build-system python-build-system)
     (arguments
      ;; Tests require python-astropy, which itself requires this package.
      ;; Disable tests to avoid the circular dependency problem.
      '(#:tests? #f))
     (native-inputs
-     (list python-pytest)) ; for sanity-check
+     (list python-pytest python-setuptools-scm)) ; for sanity-check
     (propagated-inputs
-     (list python-numpy python-six))
+     (list python-numpy))
     (home-page "https://github.com/astropy/pytest-arraydiff")
     (synopsis "Pytest plugin to help with comparing array output from tests")
     (description
@@ -577,32 +568,25 @@ are too large to conveniently hard-code them in the tests.")
 (define-public python-pytest-doctestplus
   (package
     (name "python-pytest-doctestplus")
-    (version "0.11.2")
+    (version "0.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-doctestplus" version))
        (sha256
-        (base32 "0j1lvlj3ps975q9hmg8i6rpqm0313j3r18bc3l8mz6khb7vav4zk"))))
-    (build-system python-build-system)
+        (base32 "10ciqylgziihxwxryxvxgmkqgws51pqcarn0gbh1d4cxx55rx5vs"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "-k"
-                       (string-append   ; skip tests that require remote data
-                        "not test_remote_data_url"
-                        " and not test_remote_data_float_cmp"
-                        " and not test_remote_data_ignore_whitespace"
-                        " and not test_remote_data_ellipsis"
-                        " and not test_remote_data_requires"
-                        " and not test_remote_data_ignore_warnings"))))))))
+     (list #:test-flags
+           #~(list "-k" (string-append
+                         "not test_remote_data_url"
+                         " and not test_remote_data_float_cmp"
+                         " and not test_remote_data_ignore_whitespace"
+                         " and not test_remote_data_ellipsis"
+                         " and not test_remote_data_requires"
+                         " and not test_remote_data_ignore_warnings"))))
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-numpy python-pytest python-setuptools-scm))
     (home-page "https://github.com/astropy/pytest-doctestplus")
     (synopsis "Pytest plugin with advanced doctest features")
     (description
@@ -640,27 +624,19 @@ for interactively selecting and running Pytest tests.")
 (define-public python-pytest-filter-subpackage
   (package
     (name "python-pytest-filter-subpackage")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-filter-subpackage" version))
        (sha256
-        (base32 "1s4s2kd31yc65rfvl4xhy8xx806xhy59kc7668h6b6wq88xgrn5p"))))
-    (build-system python-build-system)
-    (arguments
-     '(;; One test is failing. There's an issue reported upstream. See
-       ;; https://github.com/astropy/pytest-filter-subpackage/issues/3.
-       ;; Disable it for now.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k" "not test_with_rst"))))))
+        (base32 "10hpl3f7g2bm29lakmp8492b7lr0dp90khfni12m4gl02xks7bhz"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-doctestplus))
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-setuptools-scm))
     (home-page "https://github.com/astropy/pytest-filter-subpackage")
     (synopsis "Pytest plugin for filtering based on sub-packages")
     (description
@@ -759,30 +735,23 @@ were inadvertently left open at the end of a unit test.")
 (define-public python-pytest-remotedata
   (package
     (name "python-pytest-remotedata")
-    (version "0.3.2")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-remotedata" version))
        (sha256
-        (base32 "1h6g6shib6z07azf12rnsa053470ggbd7hy3bnbw8nf3nza5h372"))))
-    (build-system python-build-system)
+        (base32 "1j5106j331cfdyfcwzrbs3yby84mq1b0kddfysq12z2dwdcca8dy"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make the installed plugin discoverable by Pytest.
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k"
-                     (string-append
-                      ;; These tests require internet access. Disable them.
-                      "not test_default_behavior"
-                      " and not test_strict_with_decorator")))))))
+     (list
+      #:test-flags #~(list "-k" (string-append
+                                 "not test_default_behavior"
+                                 " and not test_strict_with_decorator"))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs
-     (list python-six))
+     (list python-packaging))
     (home-page "https://github.com/astropy/pytest-remotedata")
     (synopsis "Pytest plugin for controlling remote data access")
     (description
@@ -862,24 +831,25 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
 (define-public python-pytest-mpl
   (package
     (name "python-pytest-mpl")
-    (version "0.11")
+    (version "0.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-mpl" version))
        (sha256
-        (base32 "1km202c1s5kcn52fx0266p06qb34va3warcby594dh6vixxa9i96"))))
-    (build-system python-build-system)
+        (base32 "0sa4229xkkah3fdg9wnqnvb9j13xsd3x1h5rwbsgb3sf2a0icmrd"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+     (list
+      #:test-flags #~(list "-m" "mpl_image_compare")))
     (native-inputs
      (list python-pytest))
     (propagated-inputs
-     (list python-matplotlib python-nose python-pillow))
+     (list python-jinja2
+           python-matplotlib
+           python-nose
+           python-packaging
+           python-pillow))
     (home-page "https://github.com/matplotlib/pytest-mpl")
     (synopsis "Pytest plugin to help with testing figures output from Matplotlib")
     (description
@@ -1736,27 +1706,18 @@ Python software under test, when they make an HTTP query.")
 (define-public python-atpublic
   (package
     (name "python-atpublic")
-    (version "1.0")
+    (version "3.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "atpublic" version))
         (sha256
          (base32
-          "0i3sbxkdlbb4560rrlmwwd5y4ps7k73lp4d8wnmd7ag9k426gjkx"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'enable-c-implementation
-           (lambda _
-             (setenv "ATPUBLIC_BUILD_EXTENSION" "yes")
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "python" "-m" "nose2" "-v"))))))
+          "060v2b5jfn7p99j09amxlb6w9ynwbq7fix31kl0caz0hs09fx61h"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:build-backend "pdm.backend"))
     (native-inputs
-     (list python-nose2))
+     (list python-pytest python-pdm-backend python-sybil python-pytest-cov))
     (home-page "https://public.readthedocs.io/")
     (synopsis "@code{@@public} decorator for populating @code{__all__}")
     (description
@@ -1766,6 +1727,57 @@ it, the declaration of a name's public export semantics are not separated from
 the implementation of that name.")
     (license (list license:asl2.0
                    license:lgpl3))))    ; only for setup_helpers.py
+
+(define-public python-memory-profiler
+  (package
+    (name "python-memory-profiler")
+    (version "0.61")
+    (source
+     (origin
+       ;; PyPi tarball lacks tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pythonprofilers/memory_profiler")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n6g47qqmnn7abh3v25535hd8bmfvhf9bnp72m7bkd89f715m7xh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: @profile is not loaded in some test files and there are 3
+          ;; tests fail, disable them for now.
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (with-directory-excursion "test"
+                (for-each delete-file
+                          '("test_as.py"
+                            "test_func.py"
+                            "test_gen.py"
+                            "test_loop.py"
+                            "test_loop_decorated.py"
+                            "test_mprofile.py"
+                            "test_nested.py"
+                            "test_precision_command_line.py"
+                            "test_unicode.py")))
+              (substitute* "test/test_attributes.py"
+                (("def test_with_profile") "def __off_test_with_profile"))
+              (substitute* "test/test_stream_unicode.py"
+                (("def test_unicode") "def __off_test_unicode"))
+              (substitute* "test/test_tracemalloc.py"
+                (("def test_memory_profiler")
+                 "def __off_test_memory_profiler")))))))
+    (native-inputs
+     (list python-pytest python-pytest-fixture-config python-safety))
+    (propagated-inputs (list python-psutil))
+    (home-page "https://github.com/pythonprofilers/memory_profiler")
+    (synopsis "Memory profiler for Python")
+    (description
+     "This package provides a module for monitoring the memory usage of a
+Python program.")
+    (license license:bsd-3)))
 
 (define-public python-mockito
   (package

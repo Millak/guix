@@ -70,8 +70,10 @@
               #$(string-join (map pam-limits-entry->string pam-limit-entries)
                              "\n" 'suffix)
               (marionette-eval
-               '(call-with-input-file "/etc/security/limits.conf"
-                  get-string-all)
+               '(begin
+                  (use-modules (rnrs io ports))
+                  (call-with-input-file "/etc/security/limits.conf"
+                    get-string-all))
                marionette))
 
             (test-end)))))

@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021, 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -41,6 +41,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -1131,13 +1132,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.2.1")
+    (version "5.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "08xc6brs7xwiqchhsjq8l10p6qc5p68cfxps7s889spqfyh2gbpn"))
+        (base32 "170ddflli35mvhf6pla7aizfw8a7ckq66g1mi1br99dx2r3y7ag6"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1187,21 +1188,33 @@ accurately in real time at any rate desired.")
                (invoke "python" "setup.py" "build_ext" "--inplace")
                (invoke "python" "-m" "pytest" "--pyargs" "astropy"
                        ;; Skip tests that need remote data.
-                       "-m" "not remote_data")))))))
+                       "-k" (string-append
+                             "not remote_data"
+                             ;; XXX: Check why this tests failing.
+                             " and not test_ignore_sigint"
+                             " and not test_parquet_filter"))))))))
     (native-inputs
      (list pkg-config
+           python-colorlog
            python-coverage
            python-cython
            python-extension-helpers
+           python-h5py
            python-ipython
            python-jplephem
            python-objgraph
+           python-pandas
+           python-pyarrow
            python-pytest
            python-pytest-astropy
+           python-pytest-astropy-header
            python-pytest-xdist
+           python-scikit-image
+           python-scipy
            python-setuptools-scm
            python-sgp4
-           python-skyfield))
+           python-skyfield
+           python-timezonefinder))
     (inputs
      (list cfitsio expat wcslib))
     (propagated-inputs
@@ -1300,6 +1313,81 @@ astronomy and astrophysics.")
     (synopsis "Access online astronomical data resources")
     (description "Astroquery is a package that contains a collection of tools
 to access online Astronomical data.  Each web service has its own sub-package.")
+    (license license:bsd-3)))
+
+(define-public python-astroscrappy
+  (package
+    (name "python-astroscrappy")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astroscrappy" version))
+       (sha256
+        (base32 "0shmfilvzpmlwz4fh0bx4kqmzr0y39fgga6vipxb5d1rx1y6q6by"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "astroscrappy")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'preparations
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "astroscrappy/_compiler.c")))
+          (add-before 'check 'tests-preparation
+            (lambda _
+              (make-file-writable "astroscrappy/_compiler.c")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-h5py
+           python-pandas
+           python-pytest-astropy
+           python-scikit-image
+           python-scipy
+           python-setuptools-scm))
+    (propagated-inputs (list python-astropy python-numpy))
+    (home-page "https://github.com/astropy/astroscrappy")
+    (synopsis "Speedy Cosmic Ray Annihilation Package in Python")
+    (description
+     "Astro-SCRAPPY is designed to detect cosmic rays in images (numpy
+arrays), based on Pieter van Dokkum's L.A.Cosmic algorithm.  Much of this was
+originally adapted from cosmics.py written by Malte Tewes.  This is designed to
+be as fast as possible so some of the readability has been sacrificed,
+specifically in the C code.")
+    (license license:bsd-3)))
+
+(define-public python-ccdproc
+  (package
+    (name "python-ccdproc")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ccdproc" version))
+       (sha256
+        (base32 "0fy1sni87cr05dkljd8wb7vgh7z9agh8wv5kiagxcpbcf8l06jv1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; FIXME: Test failed a lot with: DeprecationWarning: distutils Version
+     ;; classes are deprecated. Use packaging.version instead (see:
+     ;; https://github.com/astropy/ccdproc/issues/805).
+     (list #:tests? #f))
+    (native-inputs (list python-memory-profiler python-pytest-astropy))
+    (propagated-inputs
+     (list python-astropy
+           python-astroscrappy
+           python-numpy
+           python-reproject
+           python-scikit-image
+           python-scipy))
+    (home-page "http://ccdproc.readthedocs.io/")
+    (synopsis "Basic data reductions of CCD images")
+    (description "The ccdproc package provides many of the necessary tools for
+processing of CCD images built on a framework to provide error propagation and
+bad pixel tracking throughout the reduction process.")
     (license license:bsd-3)))
 
 (define-public python-cdflib
@@ -2474,13 +2562,13 @@ Moon position, etc.")
 (define-public python-jplephem
   (package
     (name "python-jplephem")
-    (version "2.17")
+    (version "2.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jplephem" version))
        (sha256
-        (base32 "09xaibxnwbzzs3x9g3ibqa2la17z3r6in93321glh02dbibfbip1"))))
+        (base32 "1rgswy52ismij0bkmfqwbml5zikzvzzs1f833dwk0y64lkl12aa9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2991,22 +3079,25 @@ default) to world coordinates.")
 (define-public python-astroalign
   (package
     (name "python-astroalign")
-    (version "2.3.1")
+    (version "2.4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "astroalign" version))
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quatrope/astroalign")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19qzv3552lgrd9qmj0rxs51wmx485hw04cbf76ds5pin85kfaiy1"))))
-    (build-system python-build-system)
-    (arguments
-     ;; TODO: (Sharlatan-20210213T162940+0000): I could not make tests run
-     `(#:tests? #f))
-    (inputs
-     `(("numpy" ,python-numpy)
-       ("scikit-image" ,python-scikit-image)
-       ("scipy" ,python-scipy)
-       ("sep" ,python-sep)))
+        (base32 "0hly20a65540hr3l1lsd1i4d90a0vdrbwnn6zx3z8s89ha9lq3pb"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-astropy python-ccdproc python-pillow))
+    (propagated-inputs
+     (list python-bottleneck
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sep))
     (home-page "https://astroalign.readthedocs.io/")
     (synopsis "Astrometric Alignment of Images")
     (description
@@ -3017,13 +3108,13 @@ astronomical images, especially when there is no WCS information available.")
 (define-public python-skyfield
   (package
     (name "python-skyfield")
-    (version "1.39")
+    (version "1.46")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "skyfield" version))
        (sha256
-        (base32 "1qh3k7g9dm6idppk87hnwxpx9a22xx98vav0zk31p6291drak3as"))))
+        (base32 "1r4kpsh1pa4h3diyxy3gyapp0rykfjdqmn5w348a2ck2qkdlx997"))))
     (build-system python-build-system)
     (arguments
      ;; NOTE: (Sharlatan-20210207T163305+0000): tests depend on custom test

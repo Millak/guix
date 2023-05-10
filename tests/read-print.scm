@@ -58,6 +58,11 @@ expressions."
   (call-with-input-string "(a . b)"
     read-with-comments))
 
+(test-equal "read-with-comments: half dot notation"
+  '(lambda x x)
+  (call-with-input-string "(lambda (. x) x)"
+    read-with-comments))
+
 (test-equal "read-with-comments: list with blank line"
   `(list with ,(vertical-space 1) blank line)
   (call-with-input-string "\

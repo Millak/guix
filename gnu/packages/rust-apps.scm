@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
@@ -71,6 +71,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python-xyz)
@@ -106,6 +107,8 @@
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
         ("rust-url" ,rust-url-2))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/mbrubeck/agate")
     (synopsis "Very simple server for the Gemini hypertext protocol")
     (description
@@ -175,7 +178,7 @@ low-end hardware and serving many concurrent requests.")
        (("rust-serde-bytes" ,rust-serde-bytes-0.11)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (native-inputs
-     (list pkg-config))
+     (list perl pkg-config))
     (inputs
      (list at-spi2-core
            gtk
@@ -458,7 +461,7 @@ also knows about symlinks, extended attributes, and Git.")
 (define-public fd
   (package
     (name "fd")
-    (version "8.1.1")
+    (version "8.7.0")
     (source
      (origin
        (method url-fetch)
@@ -467,58 +470,71 @@ also knows about symlinks, extended attributes, and Git.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "124a5r8hpk2phs1288jybh34d48yxy44wr7gv5ggchs272gs2jam"))))
+         "186217yyb0znfn4jcc9l3i51fhfyb23lhbm3gg084sdrbj6bdnbg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-anyhow" ,rust-anyhow-1)
+     `(#:cargo-test-flags
+       '("--release"
+         "--"
+         ;; No user 'root' in the build environment.
+         "--skip=test_owner_root")
+       #:install-source? #f
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-argmax" ,rust-argmax-0.3)
         ("rust-atty" ,rust-atty-0.2)
-        ("rust-clap" ,rust-clap-2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-ctrlc" ,rust-ctrlc-3)
-        ("rust-dirs" ,rust-dirs-2)
+        ("rust-dirs-next" ,rust-dirs-next-2)
+        ("rust-faccess" ,rust-faccess-0.2)
         ("rust-globset" ,rust-globset-0.4)
         ("rust-humantime" ,rust-humantime-2)
         ("rust-ignore" ,rust-ignore-0.4)
-        ("rust-jemallocator" ,rust-jemallocator-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-jemallocator" ,rust-jemallocator-0.5)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-lscolors" ,rust-lscolors-0.7)
+        ("rust-lscolors" ,rust-lscolors-0.13)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-normpath" ,rust-normpath-0.3)
+        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.46)
         ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-regex-syntax" ,rust-regex-syntax-0.6)
-        ("rust-users" ,rust-users-0.10)
+        ("rust-users" ,rust-users-0.11)
         ("rust-version-check" ,rust-version-check-0.9))
        #:cargo-development-inputs
        (("rust-diff" ,rust-diff-0.1)
         ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-tempdir" ,rust-tempdir-0.3))
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-test-case" ,rust-test-case-2))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'override-jemalloc
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((jemalloc (assoc-ref inputs "jemalloc")))
+               ;; This flag is needed when not using the bundled jemalloc.
+               ;; https://github.com/tikv/jemallocator/issues/19
+               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
                (setenv "JEMALLOC_OVERRIDE"
-                       (string-append jemalloc "/lib/libjemalloc.so")))
-             #t))
+                       (string-append jemalloc "/lib/libjemalloc.so")))))
          (add-after 'install 'install-extra
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (install-completion
-                     (lambda (completion out-dir)
-                       (for-each
-                        (lambda (f)
-                          (install-file f (string-append out out-dir)))
-                        (find-files "target/release/build/" completion)))))
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "make" "completions")
                ;; Manpages
                (install-file "doc/fd.1" (string-append out "/share/man/man1"))
                ;; Completions
-               (install-completion "^fd.bash$" "/etc/bash_completion.d")
-               (install-completion "^fd.fish$" "/share/fish/vendor_completions.d")
-               (install-completion "^_fd$" "/share/zsh/site-functions")
+               (install-file "autocomplete/fd.bash"
+                             (string-append out "/etc/bash_completion.d"))
+               (install-file "autocomplete/fd.fish"
+                             (string-append out "/share/fish/vendor_completions.d"))
+               (install-file "autocomplete/_fd"
+                             (string-append out "/share/zsh/site-functions"))
                (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
-                            (string-append out "/etc/bash_completion.d/fd"))
-               #t))))))
+                            (string-append out "/etc/bash_completion.d/fd"))))))))
     (inputs (list jemalloc))
     (home-page "https://github.com/sharkdp/fd")
     (synopsis "Simple, fast and user-friendly alternative to find")
@@ -908,6 +924,8 @@ browsers.")
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
+       ;; error[E0463]: can't find crate for `cargo_test_macro`
+       #:tests? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
@@ -938,11 +956,17 @@ browsers.")
         ("rust-predicates" ,rust-predicates-2)
         ("rust-snapbox" ,rust-snapbox-0.2)
         ("rust-trycmd" ,rust-trycmd-0.13)
-        ("rust-url" ,rust-url-2))))
+        ("rust-url" ,rust-url-2))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'dont-default-to-vendored-libgit2
+           (lambda _
+             (substitute* "Cargo.toml"
+               ((".*\"vendored-libgit2\".*") "")))))))
     (native-inputs
-     (list pkg-config))
+     (list perl pkg-config))
     (inputs
-     (list libgit2
+     (list libgit2-1.4
            libssh2
            openssl
            zlib))
@@ -1239,7 +1263,7 @@ rebase.")
 (define-public sniffglue
   (package
     (name "sniffglue")
-    (version "0.12.1")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
@@ -1248,7 +1272,7 @@ rebase.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1q1kwkw1hq38qgvc6j4b5l9m85a6lpn1jls4bm27c5kha9cg8l24"))))
+         "038wcjiiay825wc8inmn62flklc1adxskg5fmjhmxqnhwmj1k5gn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -1256,31 +1280,34 @@ rebase.")
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-atty" ,rust-atty-0.2)
         ("rust-base64" ,rust-base64-0.13)
+        ("rust-bstr" ,rust-bstr-0.2)
         ("rust-dhcp4r" ,rust-dhcp4r-0.2)
         ("rust-dirs-next" ,rust-dirs-next-2)
         ("rust-dns-parser" ,rust-dns-parser-0.8)
-        ("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-nix" ,rust-nix-0.20)
-        ("rust-nom" ,rust-nom-6)
+        ("rust-nix" ,rust-nix-0.23)
+        ("rust-nom" ,rust-nom-7)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-pcap-sys" ,rust-pcap-sys-0.1)
-        ("rust-pktparse" ,rust-pktparse-0.5)
+        ("rust-pktparse" ,rust-pktparse-0.7)
         ("rust-reduce" ,rust-reduce-0.1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-sha2" ,rust-sha2-0.10)
         ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-syscallz" ,rust-syscallz-0.15)
-        ("rust-tls-parser" ,rust-tls-parser-0.10)
+        ("rust-syscallz" ,rust-syscallz-0.16)
+        ("rust-tls-parser" ,rust-tls-parser-0.11)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-users" ,rust-users-0.11))
        #:cargo-development-inputs
-       (("rust-boxxy" ,rust-boxxy-0.11))))
+       (("rust-boxxy" ,rust-boxxy-0.12))))
     (inputs
      (list libpcap libseccomp))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/kpcyrd/sniffglue")
     (synopsis "Secure multithreaded packet sniffer")
     (description
@@ -1653,6 +1680,8 @@ runs a command whenever it detects modifications.")
         ("rust-url" ,rust-url-2)
         ("rust-uuid" ,rust-uuid-0.8)
         ("rust-zeroize" ,rust-zeroize-1))))
+    (native-inputs
+     (list perl))
     (home-page "https://git.tozt.net/rbw")
     (synopsis "Unofficial Bitwarden CLI")
     (description "This package is an unofficial command line client for
@@ -1840,7 +1869,7 @@ support for Rust.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.8+cargo-0.60")
+    (version "0.9.16+cargo-0.68")
     (source
       (origin
         (method url-fetch)
@@ -1849,27 +1878,29 @@ support for Rust.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1zdzs3drjr9p6chg32inyi05rfv1c12nkk4bi7qpha12m6rsn26d"))))
+          "0k2sw67dx06b45qpvckbhz00kn2ingd89y53pwlzky72hnzv075v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cbindgen" ,rust-cbindgen-0.20)
-        ("rust-cargo" ,rust-cargo-0.60)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
-        ("rust-structopt" ,rust-structopt-0.3)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cargo" ,rust-cargo-0.68)
+        ("rust-cargo-util" ,rust-cargo-util-0.2)
+        ("rust-cbindgen" ,rust-cbindgen-0.24)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-itertools" ,rust-itertools-0.10)
         ("rust-log" ,rust-log-0.4)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-cargo-metadata" ,rust-cargo-metadata-0.9)
-        ("rust-semver" ,rust-semver-0.10)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-regex" ,rust-regex-1))))
+        ("rust-toml" ,rust-toml-0.6))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libgit2-1.3 libssh2 openssl-1.1 zlib))
+     (list curl libgit2 libssh2 openssl zlib))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description
@@ -2123,16 +2154,18 @@ daemon which executes them.")
 (define-public tealdeer
   (package
     (name "tealdeer")
-    (version "1.4.1")
+    (version "1.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (crate-uri "tealdeer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       ;; Completions aren't in the release tarball.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dbrgn/tealdeer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cwf46k2rszcpydrqajnm4dvhggr3ms7sjma0jx02ch4fjicxch7"))))
+         "0ipd23b30pqvyh20mxfd13ps0rnvg7zfpysv7wambfbb92xdh36d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:phases
@@ -2141,13 +2174,17 @@ daemon which executes them.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
                     (bash (string-append out "/etc/bash_completion.d/"))
-                    (fish (string-append out "/share/fish/vendor_completions.d/")))
+                    (fish (string-append out "/share/fish/vendor_completions.d/"))
+                    (zsh  (string-append out "/share/zsh/site-functions/")))
                (mkdir-p bash)
                (mkdir-p fish)
-               (copy-file "bash_tealdeer"
+               (mkdir-p zsh)
+               (copy-file "completion/bash_tealdeer"
                           (string-append bash "tealdeer"))
-               (copy-file "fish_tealdeer"
-                          (string-append fish "tealdeer.fish"))))))
+               (copy-file "completion/fish_tealdeer"
+                          (string-append fish "tealdeer.fish"))
+               (copy-file "completion/zsh_tealdeer"
+                          (string-append zsh "_tealdeer"))))))
        #:install-source? #f
        #:cargo-test-flags
        '("--release" "--"
@@ -2159,34 +2196,31 @@ daemon which executes them.")
          "--skip=test_markdown_rendering"
          "--skip=test_spaces_find_command"
          "--skip=test_autoupdate_cache"
-         "--skip=test_update_cache")
+         "--skip=test_update_cache"
+         "--skip=test_create_cache_directory_path")
        #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
+       (("rust-anyhow" ,rust-anyhow-1)
         ("rust-app-dirs2" ,rust-app-dirs2-2)
         ("rust-atty" ,rust-atty-0.2)
-        ("rust-docopt" ,rust-docopt-1)
-        ("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-flate2" ,rust-flate2-1)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-log" ,rust-log-0.4)
-        ("rust-pager" ,rust-pager-0.15)
-        ("rust-reqwest" ,rust-reqwest-0.10)
+        ("rust-pager" ,rust-pager-0.16)
+        ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-tar" ,rust-tar-0.4)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-xdg" ,rust-xdg-2))
+        ("rust-yansi" ,rust-yansi-0.5)
+        ("rust-zip" ,rust-zip-0.6))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
         ("rust-escargot" ,rust-escargot-0.5)
         ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-predicates" ,rust-predicates-1)
-        ;; This earlier version is required to fix a bug.
-        ;; Remove rust-remove-dir-all-0.5.2 when tealdeer gets upgraded
-        ("rust-remove-dir-all" ,rust-remove-dir-all-0.5.2)
+        ("rust-predicates" ,rust-predicates-2)
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
-     (list pkg-config))
+     (list perl pkg-config))
     (inputs
      (list openssl))
     (home-page "https://github.com/dbrgn/tealdeer/")

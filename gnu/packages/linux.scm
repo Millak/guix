@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
@@ -485,7 +485,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.2-version "6.2.12")
+(define-public linux-libre-6.2-version "6.2.14")
 (define-public linux-libre-6.2-gnu-revision "gnu")
 (define deblob-scripts-6.2
   (linux-libre-deblob-scripts
@@ -495,12 +495,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0560xc8l2z79qk2dnv15i0m4igw9mq2ymv2a40nw2z3lcqygcs5x")))
 (define-public linux-libre-6.2-pristine-source
   (let ((version linux-libre-6.2-version)
-        (hash (base32 "1j6cn1ifmcqfqvxp9h10y8yfxi918yzl3yjbf96gmb9p4ysldqf7")))
+        (hash (base32 "0ab756x6baza5wmi0r836g7z0hkvby65g0k6n1sd95nl16irzg0f")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.2)))
 
-(define-public linux-libre-6.1-version "6.1.25")
+(define-public linux-libre-6.1-version "6.1.27")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -510,7 +510,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0cchdhjra74zanyk14brv2l2dvxpg8dn58rn477lgfb44mcnhq33")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "149h95r5msvqah868zd36y92ls9h41cr1rb5vzinl20mxdn46wnb")))
+        (hash (base32 "01grx5y48scyyihpj176knn5yvgpxv2gfkli03rwj31xvnb4pdy2")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -518,7 +518,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.108")
+(define-public linux-libre-5.15-version "5.15.110")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -528,12 +528,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "03hwhwbcicwyx5i30d6m715kwgrxz4h21xhk55wnawlk8zhx3r35")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1fj38bvsyr9g89qr8pcjrp0kaq44g301x46gyjibq73gljnnkswb")))
+        (hash (base32 "0nqbhgafl513pdfn55j608829bsw8kn0v616gblxqy4rgg3zqacq")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.178")
+(define-public linux-libre-5.10-version "5.10.179")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -543,12 +543,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1g4vabfswxzf9ahxc06k2ffksf84kcr2csx4m5kx680w0jqqnk80")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1bx8wws9gvksg1c1af29nm03jjz2f5a5sq9hzc00ymjyf7isvkqs")))
+        (hash (base32 "0abylcqbzpxxh45kmvd9i2cig64aajz87j5c8vm3w1ab2mf49g8v")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.241")
+(define-public linux-libre-5.4-version "5.4.242")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -558,12 +558,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1d6as1yk9svysh07hdybs8glvn8s9f8gwlbjl7f9m920pdam2r60")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0z7api3qcjrd6w7fva7k6fj4zx17mg5ibn28a6qbgy27dyny1h7z")))
+        (hash (base32 "0a7wfi84p74qsnbj1vamz4qxzp94v054jp1csyfl0blz3knrlbql")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.281")
+(define-public linux-libre-4.19-version "4.19.282")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -573,12 +573,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1q0fgpbdwc21wj9wnjjb49dp84ch6ymd5na3iaabadwjs2nmb6bd")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "13nwzsh3h634450k37pxdca5j8vr3qswx7k79bs2999xp2js9pf0")))
+        (hash (base32 "02z20879xl4ya957by1p35vi1a7myzxwiqd9cnvm541sgnci99a3")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.313")
+(define-public linux-libre-4.14-version "4.14.314")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -588,7 +588,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1ccggm19nl7pdcxmsm08fkqy8phz8rqfmww5ypizibdmnrmpn2v9")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0k2j856niappvkp9m1wxr87xvbwdzdy03mbcj827kmpjd9gdca76")))
+        (hash (base32 "0lwiykv2ci7lrjvvykbiqavzzizdkf8xxqlybixi9l1as7q02v47")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -5621,7 +5621,20 @@ Linux Device Mapper multipathing driver:
            #:test-target "partcheck"    ; need root for a full 'check'
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))))   ; no configure script
+               (delete 'configure)      ; no configure script
+               #$@(if (target-riscv64?)
+                    #~((add-after 'unpack 'patch-test
+                         (lambda* (#:key build-inputs #:allow-other-keys)
+                           (invoke "patch" "-p1" "-i"
+                                   #$(local-file
+                                       (search-patch
+                                         "libaio-riscv-test5.patch"))))))
+                    #~()))))
+    (native-inputs
+     (if (target-riscv64?)
+       (list (search-patch "libaio-riscv-test5.patch")
+             patch)
+       '()))
     (home-page "https://pagure.io/libaio")
     (synopsis "Linux-native asynchronous I/O access library")
     (description
@@ -8070,7 +8083,7 @@ receiving to-be-logged packets from the kernel nfnetlink_log subsystem
                   libpcap
                   jansson
                   postgresql
-                  mysql
+                  (list mariadb "dev")
                   zlib
                   openssl))
     (arguments
@@ -8078,7 +8091,7 @@ receiving to-be-logged packets from the kernel nfnetlink_log subsystem
            #~(list (string-append "--with-pgsql="
                                   (assoc-ref %build-inputs "postgresql"))
                    (string-append "--with-mysql="
-                                  (assoc-ref %build-inputs "mysql")))
+                                  (assoc-ref %build-inputs "mariadb")))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'install-doc

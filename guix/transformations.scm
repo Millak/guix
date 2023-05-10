@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -676,6 +677,46 @@ to the same package but with #:strip-binaries? #f in its 'arguments' field."
         (rewrite obj)
         obj)))
 
+(define (transform-package-configure-flag specs)
+  "Return a procedure that, when passed a package and a flag, adds the flag to
+#:configure-flags in the package's 'arguments' field."
+  (define (package-with-configure-flag p extra-flag)
+    (package/inherit p
+      (arguments
+       (substitute-keyword-arguments (package-arguments p)
+         ((#:configure-flags flags #~'())
+          ;; Add EXTRA-FLAG to the end so it can potentially override FLAGS.
+          #~(append #$flags '(#$extra-flag)))))))
+
+  (define configure-flags
+    ;; Spec/flag alist.
+    (map (lambda (spec)
+           ;; Split SPEC on the first equal sign (the configure flag might
+           ;; contain equal signs, as in '-DINTSIZE=32').
+           (let ((equal (string-index spec #\=)))
+             (match (and equal
+                         (list (string-take spec equal)
+                               (string-drop spec (+ 1 equal))))
+               ((spec flag)
+                (cons spec flag))
+               (_
+                (raise (formatted-message
+                        (G_ "~a: invalid package configure flag specification")
+                        spec))))))
+         specs))
+
+  (define rewrite
+    (package-input-rewriting/spec
+     (map (match-lambda
+            ((spec . flags)
+             (cons spec (cut package-with-configure-flag <> flags))))
+          configure-flags)))
+
+  (lambda (obj)
+    (if (package? obj)
+        (rewrite obj)
+        obj)))
+
 (define (patched-source name source patches)
   "Return a file-like object with the given NAME that applies PATCHES to
 SOURCE.  SOURCE must itself be a file-like object of any type, including
@@ -845,6 +886,7 @@ are replaced by the specified upstream version."
     (tune . ,transform-package-tuning)
     (with-debug-info . ,transform-package-with-debug-info)
     (without-tests . ,transform-package-tests)
+    (with-configure-flag . ,transform-package-configure-flag)
     (with-patch  . ,transform-package-patches)
     (with-latest . ,transform-package-latest)
     (with-version . ,transform-package-version)))
@@ -915,6 +957,8 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
                   (parser 'with-debug-info))
           (option '("without-tests") #t #f
                   (parser 'without-tests))
+          (option '("with-configure-flag") #t #f
+                  (parser 'with-configure-flag))
           (option '("with-patch") #t #f
                   (parser 'with-patch))
           (option '("with-latest") #t #f
@@ -952,6 +996,9 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
   (display (G_ "
       --with-patch=PACKAGE=FILE
                          add FILE to the list of patches of PACKAGE"))
+  (display (G_ "
+      --with-configure-flag=PACKAGE=FLAG
+                         append FLAG to the configure flags of PACKAGE"))
   (display (G_ "
       --with-latest=PACKAGE
                          use the latest upstream release of PACKAGE"))

@@ -90,11 +90,10 @@
     "net/third_party/uri_template" ;ASL2.0
     "third_party/abseil-cpp" ;ASL2.0
     "third_party/angle" ;BSD-3
-    "third_party/angle/src/common/third_party/base" ;BSD-3
-    "third_party/angle/src/common/third_party/smhasher" ;Public domain
     "third_party/angle/src/common/third_party/xxhash" ;BSD-2
+    "third_party/angle/src/third_party/ceval" ;Expat
     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
-    "third_party/angle/src/third_party/trace_event" ;BSD-3
+    "third_party/angle/src/third_party/systeminfo" ;BSD-2
     "third_party/angle/src/third_party/volk" ;Expat
     "third_party/apple_apsl" ;APSL2.0
     "third_party/axe-core" ;MPL2.0
@@ -145,13 +144,16 @@
     "third_party/devtools-frontend/src/front_end/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/lighthouse" ;ASL2.0
-    "third_party/devtools-frontend/src/front_end/third_party/lit-html" ;BSD-3
+    "third_party/devtools-frontend/src/front_end/third_party/lit" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/lodash-isequal" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/marked" ;Expat, BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer\
 /package/lib/esm/third_party/mitt" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party\
+/vscode.web-custom-data" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/wasmparser" ;ASL2.0
+    "third_party/devtools-frontend/src/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/typescript" ;ASL2.0
     "third_party/distributed_point_functions" ;ASL2.0
@@ -185,7 +187,6 @@
     "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
-    "third_party/libjxl" ;ASL2.0
     "third_party/libgav1" ;ASL2.0
     "third_party/libjingle_xmpp" ;BSD-3
     "third_party/libphonenumber" ;ASL2.0
@@ -208,6 +209,7 @@
     "third_party/lss" ;BSD-3
     "third_party/mako" ;Expat
     "third_party/markupsafe" ;BSD-3
+    "third_party/material_color_utilities" ;ASL2.0
     "third_party/mesa_headers" ;Expat, SGI
     "third_party/metrics_proto" ;BSD-3
     "third_party/minigbm" ;BSD-3
@@ -236,7 +238,6 @@
     "third_party/private_membership" ;ASL2.0
     "third_party/private-join-and-compute" ;ASL2.0
     "third_party/protobuf" ;BSD-3
-    "third_party/protobuf/third_party/six" ;Expat
     "third_party/pthreadpool" ;BSD-2
     "third_party/pyjson5" ;ASL2.0
     "third_party/qcms" ;Expat
@@ -273,9 +274,7 @@
     "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
     "third_party/vulkan_memory_allocator" ;Expat
-    "third_party/wayland/src/protocol" ;Expat
-    "third_party/wayland/stubs" ;BSD-3, Expat
-    "third_party/wayland/wayland_scanner_wrapper.py" ;BSD-3
+    "third_party/wayland" ;BSD-3, Expat
     "third_party/wayland-protocols" ;Expat
     "third_party/web-animations-js" ;ASL2.0
     "third_party/webdriver" ;ASL2.0
@@ -308,6 +307,7 @@
     "v8/src/third_party/siphash" ;Public domain
     "v8/src/third_party/utf8-decoder" ;Expat
     "v8/src/third_party/valgrind" ;BSD-4
+    "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64" ;LGPL2.1+
     "v8/third_party/inspector_protocol" ;BSD-3
     "v8/third_party/v8/builtins")) ;PSFL
 
@@ -317,11 +317,9 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "109.0.5414.119")
+(define %chromium-version "112.0.5615.165")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/103.0.5060.53-1")
-  ;; This is the first release supporting openjpeg@2.5 in openjpeg.patch;
-  ;; it still includes jsoncpp.patch, which also appears to be needed.
+(define %debian-revision "debian/110.0.5481.177-1")
 (define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
 
 (define %ungoogled-origin
@@ -332,7 +330,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1nb0099gwkhxv3zc184jyvpl5jrrq194pv6yq95nbc27vw6zz7qv"))))
+      "1q2870z4k2hkn3jh24xc0xiadd1sxc4apn1jz740yzlwsi6jmcgw"))))
 
 (define %debian-origin
   (origin
@@ -345,7 +343,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "0bmbp1y0cykcbjhvsk330d11f7qnwmapcwxv76vdbl8cjfb6h60w"))))
+      "02cvdrr3s3v7v107284n8w9zpdmdl42rgjjvqjdjxb1gyk546kvg"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -359,7 +357,6 @@
 (define %debian-patches
   (map debian-patch
        '("fixes/clang-and-gcc11.patch"
-         "system/jsoncpp.patch"
          "system/zlib.patch"
          "system/openjpeg.patch")))
 
@@ -381,9 +378,7 @@
 (define %arch-patches
   (list
    (arch-patch %arch-revision "disable-GlobalMediaControlsCastStartStop.patch"
-               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")
-   (arch-patch %arch-revision "fix-the-way-to-handle-codecs-in-the-system-icu.patch"
-               "1qy7ldw7lnfbg0dl49m7myrflw0ps80adaisq5dqjndhn0rcbmd5")))
+               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")))
 
 (define %guix-patches
   (list (local-file
@@ -467,10 +462,10 @@
             (("#if defined\\(OFFICIAL_BUILD\\)")
              "#if 0"))
           (invoke "python" "build/linux/unbundle/replace_gn_files.py"
-                  "--system-libraries" "ffmpeg" "flac" "fontconfig"
-                  "freetype" "harfbuzz-ng" "icu" "libdrm" "libevent"
-                  "libjpeg" "libpng" "libwebp" "libxml" "libxslt"
-                  "openh264" "opus" "re2" "zlib")))))
+                  "--system-libraries" "ffmpeg" "flac" "fontconfig" "freetype"
+                  "harfbuzz-ng" "icu" "jsoncpp" "libdrm" "libevent" "libjpeg"
+                  "libpng" "libwebp" "libxml" "libxslt" "openh264" "opus" "re2"
+                  "zlib")))))
 
 (define opus+custom
   (package/inherit opus
@@ -496,7 +491,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0bdyb14v12izxkldq27jx532p0bid3wdwfpd1mwm7jqswxgfzkfb"))
+                "1zbrgkzcb211y1mvi9g35421dnp5bskkczwnpygzja7lm7z6530n"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -559,15 +554,10 @@
               "use_system_harfbuzz=true"
               "use_system_lcms2=true"
               "use_system_libdrm=true"
+              "use_system_libffi=true"
               "use_system_libjpeg=true"
               "use_system_libopenjpeg2=true"
               "use_system_libpng=true"
-              "use_system_libwayland=true"
-              "use_system_wayland_scanner=true"
-              (string-append "system_wayland_scanner_path=\""
-                             (search-input-file %build-inputs
-                                                "/bin/wayland-scanner")
-                             "\"")
 
               "use_system_zlib=true"
               "use_gnome_keyring=false" ;deprecated by libsecret
@@ -698,8 +688,6 @@
                     (libvulkan.so.1 (search-input-file inputs
                                                        "/lib/libvulkan.so.1"))
                     (icd.d (search-input-directory inputs "share/vulkan/icd.d"))
-                    (mesa-lib (dirname (search-input-file inputs
-                                                          "/lib/libGL.so.1")))
                     (gtk-libs '("libgio-2.0.so.0"
                                 "libgdk_pixbuf-2.0.so.0"
                                 "libgdk-3.so.0"
@@ -717,20 +705,6 @@
                 (substitute* "device/udev_linux/udev1_loader.cc"
                   (("libudev\\.so\\.1") libudev.so.1))
 
-                ;; Patch libvulkan.so everywhere.
-                (substitute*
-                    '("third_party/swiftshader/include/vulkan/vulkan.hpp"
-                      "third_party/vulkan-deps/vulkan-tools\
-/src/vulkaninfo/vulkaninfo.h"
-                      "third_party/vulkan-deps/vulkan-headers\
-/src/include/vulkan/vulkan.hpp"
-                      "content/gpu/gpu_sandbox_hook_linux.cc"
-                      "ui/ozone/platform/wayland/gpu/vulkan_implementation_wayland.cc"
-                      "ui/ozone/platform/drm/gpu/vulkan_implementation_gbm.cc"
-                      "ui/ozone/platform/x11/vulkan_implementation_x11.cc"
-                      "third_party/skia/tools/sk_app/unix\
-/DawnVulkanWindowContext_unix.cpp")
-                  (("libvulkan\\.so\\.1") libvulkan.so.1))
                 (substitute* "content/gpu/gpu_sandbox_hook_linux.cc"
                   (("/usr/share/vulkan/icd\\.d") icd.d))
 
@@ -739,19 +713,7 @@
                   (("^([[:blank:]]+)mRuntimeSearchPaths\\.push_back\\(\"\"\\);"
                     all indent)
                    (string-append indent "mRuntimeSearchPaths.push_back(\""
-                                  (dirname libvulkan.so.1) "/\");\n" all)))
-
-                (substitute*
-                    '("ui/ozone/platform/x11/gl_ozone_glx.cc"
-                      "ui/ozone/common/egl_util.cc"
-                      "third_party/angle/src/libANGLE/renderer/gl/glx\
-/FunctionsGLX.cpp")
-                  (("libGL\\.so\\.1")
-                   (string-append mesa-lib "/libGL.so.1"))
-                  (("libEGL\\.so\\.1")
-                   (string-append mesa-lib "/libEGL.so.1"))
-                  (("libGLESv2\\.so\\.2")
-                   (string-append mesa-lib "/libGLESv2.so.2"))))))
+                                  (dirname libvulkan.so.1) "/\");\n" all))))))
           (add-before 'configure 'prepare-build-environment
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (let ((node (search-input-file (or native-inputs inputs)
@@ -833,6 +795,8 @@
                           "chromium/master-preferences.json")))
                      (gtk (dirname (dirname
                                     (search-input-file inputs "lib/libgtk-3.so"))))
+                     (mesa (dirname (search-input-file inputs "lib/libGL.so")))
+                     (vulkan (dirname (search-input-file inputs "lib/libvulkan.so")))
                      (xdg-utils (dirname (search-input-file inputs "bin/xdg-open"))))
 
                 (substitute* '("chrome/app/resources/manpage.1.in"
@@ -870,6 +834,11 @@
                   (wrap-program exe
                     ;; Avoid file manager crash.  See <https://bugs.gnu.org/26593>.
                     `("XDG_DATA_DIRS" ":" prefix (,(string-append gtk "/share")))
+                    ;; Provide libGL and libvulkan without patching all references.
+                    ;; XXX: How to add on RUNPATH instead of this hack?
+                    `("LD_LIBRARY_PATH" ":" prefix
+                      (,(string-append mesa ":" vulkan)))
+                    ;; Ensure xdg-open et al. is found.
                     `("PATH" ":" prefix (,xdg-utils))))
 
                 (with-directory-excursion "chrome/app/theme/chromium"

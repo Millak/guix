@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -3739,11 +3739,11 @@ for common mesh file formats, and collision detection.")
   ;; The latest release on SourceForge relies on an unreleased version of SFML
   ;; with a different API, so we take the latest version from the official
   ;; repository on Github.
-  (let ((commit   "c855d044094a1d92317e38935d81ba938946132e")
-        (revision "1"))
+  (let ((commit   "84664cda094efe6e49d9b1550e4f4f98c33eefa2")
+        (revision "2"))
     (package
       (name "mars")
-      (version (string-append "0.7.5." revision "." (string-take commit 7) ))
+      (version (git-version "0.7.5" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3752,31 +3752,24 @@ for common mesh file formats, and collision detection.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1r4c5gap1z2zsv4yjd34qriqkxaq4lb4rykapyzkkdf4g36lc3nh"))
-                (patches (search-patches "mars-sfml-2.3.patch"
-                                         "mars-install.patch"))))
+                  "0bdi4ja39rark742qvqixm8khai5k8qd84z5kzim9jcjdvvwyqj9"))))
       (build-system cmake-build-system)
       (arguments
        `(#:tests? #f        ; There are no tests
+         #:configure-flags (list (string-append "-Dmars_EXE_DEST_DIR="
+                                                %output "/bin"))
          #:phases
          (modify-phases %standard-phases
-           (add-after 'unpack 'fix-install-path
-            (lambda _
-              (substitute* "src/CMakeLists.txt"
-                (("\\$\\{CMAKE_INSTALL_PREFIX\\}/games")
-                 "${CMAKE_INSTALL_PREFIX}/bin"))
-              #t))
            (add-after 'unpack 'fix-data-path
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* "src/System/settings.cpp"
                 (("C_dataPath = \"./data/\";")
                  (string-append "C_dataPath = \""
                                 (assoc-ref outputs "out")
-                                "/share/games/marsshooter/\";")))
-              #t)))))
+                                "/share/games/marsshooter/\";"))))))))
       (inputs
        (list mesa fribidi taglib sfml))
-      (home-page "http://mars-game.sourceforge.net/")
+      (home-page "https://mars-game.sourceforge.net/")
       (synopsis "2D space shooter")
       (description
        "M.A.R.S. is a 2D space shooter with pretty visual effects and
@@ -4538,14 +4531,14 @@ world}, @uref{http://evolonline.org, Evol Online} and
 (define openttd-engine
   (package
     (name "openttd-engine")
-    (version "13.0")
+    (version "13.1")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://cdn.openttd.org/openttd-releases/"
                                  version "/openttd-" version "-source.tar.xz"))
              (sha256
               (base32
-               "0rxbsymfirkw2d9hn2lmi8yhlfx7qvpzhy7y7b48fw42w3hgi79k"))))
+               "1fsq1azddk1l11w89r93mgmhna34kvarfak7xy2q48rmf39j5psy"))))
     (build-system cmake-build-system)
     (inputs
      (list allegro
@@ -4958,7 +4951,7 @@ logging, so games can be viewed again.")
 (define-public pinball
   (package
     (name "pinball")
-    (version "0.3.20201218")
+    (version "0.3.20230219")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -4967,7 +4960,7 @@ logging, so games can be viewed again.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "056jk98v6zlkrj9vjm06p0pmpnav1x658n6qw10v5klg5gr6ldf7"))
+               "02by4df9hgda5zhl9p3rwg0s4mlxdr0v8f8dk152vjp43p1wqvfp"))
              (patches (search-patches "pinball-system-ltdl.patch"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -4976,27 +4969,23 @@ logging, so games can be viewed again.")
      (list glu
            libltdl
            mesa
-           sdl
-           sdl-image
-           sdl-mixer))
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer))))
     (arguments
-     '(#:configure-flags
-       ;; Configure tries to use pkg-config, but falls short, so:
-       (list (string-append "CPPFLAGS=-I"
-                            (assoc-ref %build-inputs "sdl-image")
-                            "/include/SDL -I"
-                            (assoc-ref %build-inputs "sdl-mixer")
-                            "/include/SDL"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           ;; The `bootstrap` script tries to call a script with
-           ;; `/usr/bin/make` in the shebang, but ultimately does the same as
-           ;; autoreconf would do, so just use that.
-           (lambda _
-             (symlink "README.md" "README")
-             (display (which "autoreconf")) (newline)
-             (invoke "autoreconf" "-vif"))))))
+     (list
+      #:configure-flags
+      ;; Configure tries to use pkg-config, but falls short, so:
+      #~(list (string-append "CPPFLAGS=-I"
+                             #$(this-package-input "sdl-union")
+                             "/include/SDL2"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            ;; The `bootstrap` script tries to call a script with
+            ;; `/usr/bin/make` in the shebang, but ultimately does the same as
+            ;; autoreconf would do, so just use that.
+            (lambda _
+              (symlink "README.md" "README")
+              (invoke "autoreconf" "-vif"))))))
     (home-page "https://pinball.sourceforge.net")
     (synopsis "Pinball simulator")
     (description "The Emilia Pinball Project is a pinball simulator.  There
@@ -7057,7 +7046,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.15")
+    (version "1.16")
     (source
      (origin
        (method git-fetch)
@@ -7066,7 +7055,7 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gair1dfqgzjzvsasisv2szh3wgy8pfgmpxpisybn6svn294yzhf"))))
+        (base32 "0spciwqcyldalzdd813zwigbldcnyaxi7kfslq1yp0fg4c4a10aa"))))
     (build-system gnu-build-system)
     (arguments
      (list

@@ -166,6 +166,33 @@ yet extensible format.  Google uses Protocol Buffers for almost all of its
 internal RPC protocols and file formats.")
     (license license:bsd-3)))
 
+;; Needed for python-mysql-connector-python
+(define-public protobuf-3.20
+  (package
+    (inherit protobuf)
+    (name "protobuf")
+    (version "3.20.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/protocolbuffers/"
+                    "protobuf/releases/download/v" version
+                    "/protobuf-cpp-" version ".tar.gz"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "third_party"))
+              (sha256
+               (base32
+                "1hsscx9jm8qv3afgwc764rx9sx1ylkrr54xw1wc0mfjbl8mpw5m0"))))
+    (build-system gnu-build-system)
+    (arguments (substitute-keyword-arguments (package-arguments protobuf)
+                 ;; XXX: insists on using bundled googletest
+                 ((#:tests? _ #f) #false)
+                 ((#:configure-flags _ #f)
+                  #~(list))
+                 ((#:phases phases)
+                  #~(modify-phases #$phases
+                      (delete 'set-c++-standard)))))))
+
 ;; Tensorflow requires version 3.6 specifically.
 (define-public protobuf-3.6
   (package

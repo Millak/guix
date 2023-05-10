@@ -38,7 +38,7 @@
 (define-public tree-sitter
   (package
     (name "tree-sitter")
-    (version "0.20.7")
+    (version "0.20.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -47,7 +47,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nv2a2hr22w8ix71b6rkkxv9rfvhvwlmyql0g6lva9qzj4vy50p4"))
+                "10w17lfn9asqrk612xivkx26lc620s3nnm30hhlyqd4bj19k7gyv"))
               (modules '((guix build utils)))
               (snippet #~(begin
                            ;; Remove bundled ICU parts
@@ -141,18 +141,19 @@ This package includes the @code{libtree-sitter} runtime library.")
         ("rust-semver" ,rust-semver-1)
         ("rust-smallbitvec" ,rust-smallbitvec-2)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-tiny-http" ,rust-tiny-http-0.8)
+        ("rust-tiny-http" ,rust-tiny-http-0.12)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-webbrowser" ,rust-webbrowser-0.5)
+        ("rust-webbrowser" ,rust-webbrowser-0.8)
         ("rust-which" ,rust-which-4))
       #:cargo-development-inputs
-      `(("rust-pretty-assertions" ,rust-pretty-assertions-0.7))
+      `(("rust-ctor" ,rust-ctor-0.1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-unindent" ,rust-unindent-0.2))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'delete-cargo-lock
-            (lambda _
-              (delete-file "Cargo.lock")))
           (add-after 'unpack 'patch-node
             (lambda _
               (substitute* "cli/src/generate/mod.rs"

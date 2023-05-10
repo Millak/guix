@@ -1873,9 +1873,13 @@ addons which can add many functionalities to the base client.")
                       (bin (string-append out "/bin"))
                       (doc (string-append out "/share/doc/msmtp"))
                       (msmtpq "scripts/msmtpq")
+                      (msmtpqueue "scripts/msmtpqueue")
                       (vimfiles (string-append out "/share/vim/vimfiles/syntax")))
                  (install-file (string-append msmtpq "/msmtpq") bin)
                  (install-file (string-append msmtpq "/msmtp-queue") bin)
+                 (install-file (string-append msmtpqueue "/msmtp-enqueue.sh") bin)
+                 (install-file (string-append msmtpqueue "/msmtp-listqueue.sh") bin)
+                 (install-file (string-append msmtpqueue "/msmtp-runqueue.sh") bin)
                  (install-file (string-append msmtpq "/README.msmtpq") doc)
                  (install-file "scripts/vim/msmtp.vim" vimfiles)))))))
     (properties
@@ -3260,7 +3264,7 @@ to esoteric or niche requirements.")
     (inputs
      `(("libressl" ,libressl)
        ("libevent" ,libevent)
-       ("mysql" ,mysql)
+       ("mysql" ,mariadb "dev")
        ("opensmtpd" ,opensmtpd)
        ("postgresql" ,postgresql)
        ("python" ,python-2)
@@ -4129,6 +4133,7 @@ It is a replacement for the @command{urlview} program.")
              guile-email
              guile-fibers
              guile-gcrypt
+             guile-gnutls
              guile-json-4
              guile-kolam
              guile-redis

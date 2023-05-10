@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
@@ -478,7 +478,7 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
                        (base32
                         ,(guix-hash-url temp)))))
                    ,@(maybe-upstream-name name)
-                   (build-system python-build-system)
+                   (build-system pyproject-build-system)
                    ,@(maybe-inputs required-inputs 'propagated-inputs)
                    ,@(maybe-inputs native-inputs 'native-inputs)
                    (home-page ,home-page)

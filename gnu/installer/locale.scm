@@ -93,9 +93,10 @@ optionally, CODESET."
 (define (supported-locales->locales supported-locales)
   "Given SUPPORTED-LOCALES, a file produced by 'glibc-supported-locales',
 return a list of locales where each locale is an alist."
-  (map (match-lambda
-         ((locale . codeset)
-          (locale-string->locale locale codeset)))
+  (filter-map (match-lambda
+                (("C.UTF-8" . codeset) #f)
+                ((locale . codeset)
+                 (locale-string->locale locale codeset)))
        (call-with-input-file supported-locales read)))
 
 

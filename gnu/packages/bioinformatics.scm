@@ -1251,6 +1251,54 @@ Format (GFF) with Biopython integration.")
      (modify-inputs (package-propagated-inputs python-bcbio-gff)
        (replace "python-biopython" python-biopython-1.73)))))
 
+;; Note: the name on PyPi is "biofluff".
+(define-public python-biofluff
+  (package
+    (name "python-biofluff")
+    (version "3.0.4")
+    ;; PyPi tarball does not contain test data.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simonvh/fluff")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12yvhgp72s2ygf3h07rrc852zd6q8swc41hm28mcczpsyprggxyz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Theses tests require internet access
+      '(list "--ignore=tests/test_mirror.py"
+             "-k" "not test_plots_big")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'matplotlib-compatibility
+           (lambda _
+             (substitute* "fluff/plot.py"
+               (("beginarrow=False, endarrow=True,") "")))))))
+    (propagated-inputs
+     (list htseq
+           python-matplotlib
+           python-numpy
+           python-palettable
+           python-pybedtools
+           python-pybigwig
+           python-pysam
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/simonvh/fluff/")
+    (synopsis "Analysis and visualization of high-throughput sequencing data")
+    (description
+     "Fluff is a Python package that contains several scripts to produce
+pretty, publication-quality figures for next-generation sequencing
+experiments.")
+    (license license:expat)))
+
 (define-public python-cellbender
   (package
     (name "python-cellbender")
@@ -1446,6 +1494,29 @@ to produce high quality figures that can be used in publications.")
 protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
+
+(define-public python-logomaker
+  (package
+    (name "python-logomaker")
+    (version "0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "logomaker" version))
+              (sha256
+               (base32
+                "0v9z3ml1s7imk28hqyhrqjqg3sq0j29lx975d36n2ybdgld51iyq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pandas))
+    (home-page "https://logomaker.readthedocs.io")
+    (synopsis "Package for making Sequence Logos")
+    (description "Logomaker is a Python package for generating
+publication-quality sequence logos.  Logomaker can generate both standard and
+highly customized logos illustrating the properties of DNA, RNA, or protein
+sequences.  Logos are rendered as vector graphics embedded within native
+matplotlib Axes objects, making them easy to style and incorporate into
+multi-panel figures.")
+    (license license:expat)))
 
 (define-public python-pegasusio
   (package
@@ -4655,6 +4726,64 @@ variety of diversity measures including those that make use of phylogenetic
 similarity of community members.")
    (license license:gpl3+)))
 
+(define-public fanc
+  (let ((commit "354401e52ba2320e6b1ba0d3b5aab3541d31c9f3")
+	(revision "1"))
+    (package
+      (name "fanc")
+      (version (git-version "0" revision commit))
+      (source (origin
+		(method git-fetch)
+		(uri (git-reference
+		      (url "https://github.com/vaquerizaslab/fanc.git")
+		      (commit commit)))
+		(file-name (git-file-name name version))
+		(sha256
+		 (base32
+		  "0vp2cak5snla4j2q23d3ixx016bwzvxfiv4z6yp7anl0xaksd5bl"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        '(list "-m" "not longrunning"
+               ;; XXX: some of the tests here just take forever
+               "--ignore=fanc/test/test_matrix.py")))
+      (propagated-inputs
+       (list python-biopython
+	     python-cooler
+             python-deprecated
+	     python-future
+	     python-genomic-regions
+	     python-gridmap
+	     python-h5py
+	     python-imageio
+	     python-intervaltree
+	     python-matplotlib
+	     python-msgpack
+	     python-msgpack-numpy
+             python-numpy
+	     python-pandas
+	     python-pillow
+	     python-progressbar2
+	     python-pybedtools
+	     python-pybigwig
+	     python-pysam
+	     python-pywavelets
+	     python-pyyaml
+	     python-scikit-image
+	     python-scikit-learn
+	     python-scipy
+	     python-seaborn
+	     python-tables
+	     python-tifffile))
+      (native-inputs
+       (list python-cython python-pytest))
+      (home-page "https://github.com/vaquerizaslab/fanc")
+      (synopsis "Framework for the analysis of C-like data")
+      (description "FAN-C provides a pipeline for analysing Hi-C data starting
+at mapped paired-end sequencing reads.")
+      (license license:gpl3+))))
+
 (define-public fasttree
   (package
    (name "fasttree")
@@ -5040,6 +5169,63 @@ indexing scheme is called a @dfn{Hierarchical Graph FM index} (HGFM).")
     ;; GPLv3 or later.
     (license license:gpl3+)))
 
+(define-public homer
+  (package
+    (name "homer")
+    (version "4.11.1")
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "http://homer.ucsd.edu/homer/data/software/homer.v"
+                           version ".zip"))
+       (sha256
+        (base32
+         "0ay802swzq6ix9d8fkinpplcvyc1xyi3cjmj2x08jab7c40cvlc0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (let ((share (string-append #$output "/share/homer")))
+                (mkdir-p share)
+                (substitute* "configureHomer.pl"
+                  (("my \\$homeDir = \\$1;")
+                   (string-append "my $homeDir = \"" share "\";"))))))
+          (replace 'build
+            (lambda _
+              (let ((share (string-append #$output "/share/homer")))
+                (copy-recursively "." share))
+              (invoke "perl" "configureHomer.pl" "-local")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke (string-append #$output "/share/homer/bin/homer2")))))
+          (replace 'install
+            (lambda _
+              (mkdir-p (string-append #$output "/bin"))
+              (symlink (string-append #$output "/share/homer/bin/homer2")
+                       (string-append #$output "/bin/homer2"))
+              (for-each patch-shebang
+                        (find-files (string-append #$output "/share/homer/bin")
+                                    "\\.pl$")))))))
+    (inputs
+     (list perl))
+    (native-inputs
+     (list perl unzip))
+    (home-page "http://homer.ucsd.edu/homer")
+    (synopsis "Motif discovery and next generation sequencing analysis")
+    (description
+     "HOMER (Hypergeometric Optimization of Motif EnRichment) is a suite of
+tools for Motif Discovery and next-gen sequencing analysis.  It is a
+collection of command line programs written in Perl and C++.  HOMER was
+primarily written as a de novo motif discovery algorithm and is well suited
+for finding 8-20 bp motifs in large scale genomics data.  HOMER contains many
+useful tools for analyzing ChIP-Seq, GRO-Seq, RNA-Seq, DNase-Seq, Hi-C and
+numerous other types of functional genomics sequencing data sets.")
+    (license license:gpl3+)))
+
 (define-public hmmer
   (package
     (name "hmmer")
@@ -5108,6 +5294,59 @@ HMMs).")
      "This package provides a framework to process and analyze data from
 high-throughput sequencing (HTS) assays")
     (license license:gpl3+)))
+
+(define-public python-genomepy
+  (package
+    (name "python-genomepy")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "genomepy" version))
+              (sha256
+               (base32
+                "0jmyvnsn6w0djjmxh4fjspy1346337jzihxb276v3s275r6zjmln"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; The tests require internet access.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Needed by tests
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-appdirs
+                             python-biopython
+                             python-click
+                             python-colorama
+                             python-diskcache
+                             ;; We cannot use an older filelock, because the
+                             ;; @lock annotation is used here.
+                             python-filelock-3.5
+                             python-loguru
+                             python-mygene
+                             python-mysql-connector-python
+                             python-norns
+                             python-numpy
+                             python-pandas
+                             python-pyfaidx
+                             python-requests
+                             python-tqdm))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page "https://vanheeringen-lab.github.io/genomepy/")
+    (synopsis "Genes and genomes at your fingertips")
+    (description "genomepy is designed to provide a simple and straightforward
+way to download and use genomic data.  This includes
+
+@enumerate
+@item searching available data,
+@item showing the available metadata,
+@item automatically downloading, preprocessing and matching data, and
+@item generating optional aligner indexes.
+@end enumerate
+
+All with sensible, yet controllable defaults.")
+    (license license:expat)))
 
 (define-public java-htsjdk
   (package
@@ -7628,19 +7867,17 @@ complexity samples.")
 (define-public python-screed
   (package
     (name "python-screed")
-    (version "1.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "screed" version))
        (sha256
-        (base32
-         "148vcb7w2wr6a4w6vs2bsxanbqibxfk490zbcbg4m61s8669zdjx"))))
-    (build-system python-build-system)
+        (base32 "0slva743xn93h4sl5zg2as4ricnnj5pp6nw9dm4qclk4i9xglkvk"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-runner))
-    (inputs
-     (list python-bz2file))
+     (list python-pytest-cov
+           python-pytest-runner))
     (home-page "https://github.com/dib-lab/screed/")
     (synopsis "Short read sequence database utilities")
     (description "Screed parses FASTA and FASTQ files and generates databases.
@@ -9267,13 +9504,13 @@ single cell ATAC-seq sequencing data.")
 (define-public r-tictoc
   (package
     (name "r-tictoc")
-    (version "1.1")
+    (version "1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tictoc" version))
               (sha256
                (base32
-                "0ka7zd857xfqb5afn0psn0yzfv2qjb0ddxfyiq6aggbnla5qc3qj"))))
+                "037jbwb58mj5asf3kr6hpf3fy9c6fkinnd8hbpfb141a2jsa8pph"))))
     (properties `((upstream-name . "tictoc")))
     (build-system r-build-system)
     (home-page "https://github.com/jabiru/tictoc")
@@ -12279,6 +12516,48 @@ selection of file types and formats for handling genomic region data---all
 using the same syntax.")
     (license license:expat)))
 
+(define-public python-goatools
+  (package
+    (name "python-goatools")
+    (version "1.3.1")
+    ;; Pypi tarball doesn't include test files.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tanghaibao/goatools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0a295zk9jc8kny5vnka63q3gbksins42kcmgvskf8xy7hkca7cmq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Almost all tests require access to the internet.
+      #:tests? #false
+      #:test-flags
+      ;; These have syntax errors.
+      '(list "--ignore=tests/test_i195_sgd_gaf.py"
+             "--ignore=tests/test_i206.py"
+             "--ignore=tests/test_setup_dirs.py")))
+    (propagated-inputs (list python-docopt
+                             python-numpy
+                             python-openpyxl
+                             python-pandas
+                             python-pydot
+                             python-requests
+                             python-scipy
+                             python-statsmodels
+                             python-xlsxwriter))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/tanghaibao/goatools")
+    (synopsis "Python scripts to find enrichment of GO terms")
+    (description "Python scripts to find enrichment of GO terms.  In addition,
+this package is used for processing the obo-formatted file from Gene Ontology
+website.  The data structure is a directed acyclic graph that allows easy
+traversal from leaf to root.")
+    (license license:bsd-2)))
+
 (define-public python-loompy
   (package
     (name "python-loompy")
@@ -13261,7 +13540,7 @@ based methods.")
 (define-public pigx-sars-cov-2
   (package
     (name "pigx-sars-cov-2")
-    (version "0.0.8")
+    (version "0.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_sars-cov-2"
@@ -13269,7 +13548,7 @@ based methods.")
                                   "/pigx_sars-cov-2-" version ".tar.gz"))
               (sha256
                (base32
-                "1yf1y25asnhxz80dajs54wrhr0wyi9fldk7lxsnqrh7gpqp2dvcs"))))
+                "168hrafgsn165q3hcdn916vlbl0zbzri1lckaqapbrcqk00izxma"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -14874,17 +15153,32 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
 (define-public python-pyfaidx
   (package
     (name "python-pyfaidx")
-    (version "0.5.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyfaidx" version))
-       (sha256
-        (base32
-         "038xi3a6zvrxbyyfpp64ka8pcjgsdq4fgw9cl5lpxbvmm1bzzw2q"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
+    (version "0.7.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyfaidx" version))
+              (sha256
+               (base32
+                "182ia2zg026lgphv68agxm9imw7649z9pdhfn8zkalrxkq5d5w1h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require the download of large fasta.gz files.
+      '(list "--ignore=tests/test_Fasta_bgzip.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\""))))))))
+    (native-inputs
+     (list python-fsspec
+           python-mock
+           python-numpy
+           python-pytest
+           python-pytest-cov))
     (home-page "http://mattshirley.com")
     (synopsis "Random access to fasta subsequences")
     (description

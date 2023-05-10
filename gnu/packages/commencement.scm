@@ -2082,9 +2082,7 @@ exec " gcc "/bin/" program
                            (substitute* "gnulib-tests/Makefile"
                              (("^XFAIL_TESTS =")
                               "XFAIL_TESTS = test-fnmatch ")))))
-                     '())))
-           ((#:make-flags flags ''())
-            ''()))))))
+                     '()))))))))
 
 (define file
   (package
@@ -2259,13 +2257,13 @@ exec " gcc "/bin/" program
              ((or "i686-linux" "x86_64-linux")
               (substitute-keyword-arguments (package-arguments lib)
                 ((#:phases phases)
-                 `(modify-phases ,phases
-                    (add-after 'unpack 'workaround-wrapper-bug
-                      ;; XXX: The crude gcc-cross-wrapper causes "g++ -v" to
-                      ;; fail, which in turn confuses the configure script.
-                      (lambda _
-                        (substitute* "libstdc++-v3/configure"
-                          (("g\\+\\+ -v") "true"))))))))
+                 #~(modify-phases #$phases
+                     (add-after 'unpack 'workaround-wrapper-bug
+                       ;; XXX: The crude gcc-cross-wrapper causes "g++ -v" to
+                       ;; fail, which in turn confuses the configure script.
+                       (lambda _
+                         (substitute* "libstdc++-v3/configure"
+                           (("g\\+\\+ -v") "true"))))))))
              (_ (package-arguments lib)))
 
          ;; Explicitly add #:modules so MAKE-LIBSTDC++ can be changed
@@ -2292,28 +2290,28 @@ exec " gcc "/bin/" program
 
          ,@(substitute-keyword-arguments (package-arguments lib)
              ((#:phases phases)
-              `(modify-phases ,phases
-                 (add-after 'unpack 'unpack-gmp&co
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
-                           (mpfr (assoc-ref %build-inputs "mpfr-source"))
-                           (mpc  (assoc-ref %build-inputs "mpc-source")))
+              #~(modify-phases #$phases
+                  (add-after 'unpack 'unpack-gmp&co
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
+                            (mpfr (assoc-ref %build-inputs "mpfr-source"))
+                            (mpc  (assoc-ref %build-inputs "mpc-source")))
 
-                       ;; To reduce the set of pre-built bootstrap inputs, build
-                       ;; GMP & co. from GCC.
-                       (for-each (lambda (source)
-                                   (invoke "tar" "xvf" source))
-                                 (list gmp mpfr mpc))
+                        ;; To reduce the set of pre-built bootstrap inputs, build
+                        ;; GMP & co. from GCC.
+                        (for-each (lambda (source)
+                                    (invoke "tar" "xvf" source))
+                                  (list gmp mpfr mpc))
 
-                       ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
-                       ,@(map (lambda (lib)
-                                ;; Drop trailing letters, as gmp-6.0.0a unpacks
-                                ;; into gmp-6.0.0.
-                                `(symlink ,(string-trim-right
-                                            (package-full-name lib "-")
-                                            char-set:letter)
-                                          ,(package-name lib)))
-                              (list gmp-6.0 mpfr mpc))))))))))
+                        ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
+                        #$@(map (lambda (lib)
+                                  ;; Drop trailing letters, as gmp-6.0.0a unpacks
+                                  ;; into gmp-6.0.0.
+                                  #~(symlink #$(string-trim-right
+                                                (package-full-name lib "-")
+                                                char-set:letter)
+                                             #$(package-name lib)))
+                                (list gmp-6.0 mpfr mpc))))))))))
       (inputs `(("gmp-source" ,(bootstrap-origin (package-source gmp-6.0)))
                 ("mpfr-source" ,(bootstrap-origin (package-source mpfr)))
                 ("mpc-source" ,(bootstrap-origin (package-source mpc)))
@@ -2338,81 +2336,82 @@ exec " gcc "/bin/" program
              (system* #$(file-append coreutils-boot0 "/bin/rm") "-rf"
                       "gcc/testsuite/go.test/test/fixedbugs/issue27836.dir"))))))
     (arguments
-     `(#:guile ,%bootstrap-guile
-       #:implicit-inputs? #f
-       #:modules ((guix build gnu-build-system)
+     (cons*
+      #:guile %bootstrap-guile
+      #:implicit-inputs? #f
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 regex)
                   (srfi srfi-1)
                   (srfi srfi-26))
-       ,@(substitute-keyword-arguments (package-arguments gcc)
-           ((#:configure-flags flags)
-            `(append (list ,(string-append "--target=" (boot-triplet))
+      (substitute-keyword-arguments (package-arguments gcc)
+        ((#:configure-flags flags)
+         #~(append (list #$(string-append "--target=" (boot-triplet))
 
-                           ;; No libc yet.
-                           "--without-headers"
+                         ;; No libc yet.
+                         "--without-headers"
 
-                           ;; Disable features not needed at this stage.
-                           "--disable-shared"
-                           "--enable-languages=c,c++"
+                         ;; Disable features not needed at this stage.
+                         "--disable-shared"
+                         "--enable-languages=c,c++"
 
-                           ;; libstdc++ cannot be built at this stage
-                           ;; ("Link tests are not allowed after
-                           ;; GCC_NO_EXECUTABLES.").
-                           "--disable-libstdc++-v3"
+                         ;; libstdc++ cannot be built at this stage
+                         ;; ("Link tests are not allowed after
+                         ;; GCC_NO_EXECUTABLES.").
+                         "--disable-libstdc++-v3"
 
-                           "--disable-threads"
-                           "--disable-libmudflap"
-                           "--disable-libatomic"
-                           "--disable-libsanitizer"
-                           "--disable-libitm"
-                           "--disable-libgomp"
-                           "--disable-libmpx"
-                           "--disable-libcilkrts"
-                           "--disable-libvtv"
-                           "--disable-libssp"
-                           "--disable-libquadmath"
-                           "--disable-decimal-float")
-                     (remove (cut string-match
-                               "--(with-system-zlib|enable-languages.*)" <>)
-                             ,flags)))
-           ((#:make-flags flags)
-            `(let* ((libc        (assoc-ref %build-inputs "libc"))
-                    (libc-native (or (assoc-ref %build-inputs "libc-native")
-                                     libc)))
-               `(,(string-append "LDFLAGS="
-                                 "-Wl,-rpath=" libc-native "/lib "
-                                 "-Wl,-dynamic-linker "
-                                 "-Wl," libc-native ,(glibc-dynamic-linker
-                                                      (match (%current-system)
-                                                        ("x86_64-linux" "i686-linux")
-                                                        (_ (%current-system))))))))
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (add-after 'unpack 'unpack-gmp&co
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
-                         (mpfr (assoc-ref %build-inputs "mpfr-source"))
-                         (mpc  (assoc-ref %build-inputs "mpc-source")))
+                         "--disable-threads"
+                         "--disable-libmudflap"
+                         "--disable-libatomic"
+                         "--disable-libsanitizer"
+                         "--disable-libitm"
+                         "--disable-libgomp"
+                         "--disable-libmpx"
+                         "--disable-libcilkrts"
+                         "--disable-libvtv"
+                         "--disable-libssp"
+                         "--disable-libquadmath"
+                         "--disable-decimal-float")
+                   (remove (cut string-match
+                                "--(with-system-zlib|enable-languages.*)" <>)
+                           #$flags)))
+        ((#:make-flags flags)
+         `(let* ((libc        (assoc-ref %build-inputs "libc"))
+                 (libc-native (or (assoc-ref %build-inputs "libc-native")
+                                  libc)))
+            `(,(string-append "LDFLAGS="
+                              "-Wl,-rpath=" libc-native "/lib "
+                              "-Wl,-dynamic-linker "
+                              "-Wl," libc-native ,(glibc-dynamic-linker
+                                                   (match (%current-system)
+                                                     ("x86_64-linux" "i686-linux")
+                                                     (_ (%current-system))))))))
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'unpack 'unpack-gmp&co
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
+                       (mpfr (assoc-ref %build-inputs "mpfr-source"))
+                       (mpc  (assoc-ref %build-inputs "mpc-source")))
 
-                     ;; To reduce the set of pre-built bootstrap inputs, build
-                     ;; GMP & co. from GCC.
-                     (for-each (lambda (source)
-                                 (invoke "tar" "xvf" source))
-                               (list gmp mpfr mpc))
+                   ;; To reduce the set of pre-built bootstrap inputs, build
+                   ;; GMP & co. from GCC.
+                   (for-each (lambda (source)
+                               (invoke "tar" "xvf" source))
+                             (list gmp mpfr mpc))
 
-                     ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
-                     ,@(map (lambda (lib)
-                              ;; Drop trailing letters, as gmp-6.0.0a unpacks
-                              ;; into gmp-6.0.0.
-                              `(symlink ,(string-trim-right
-                                          (package-full-name lib "-")
-                                          char-set:letter)
-                                        ,(package-name lib)))
-                            (list gmp-6.0 mpfr mpc)))))
-               ,(match (%current-system)
-                  ((or "i686-linux" "x86_64-linux")
-                   '(add-before 'configure 'fix-libcc1
+                   ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
+                   #$@(map (lambda (lib)
+                             ;; Drop trailing letters, as gmp-6.0.0a unpacks
+                             ;; into gmp-6.0.0.
+                             #~(symlink #$(string-trim-right
+                                           (package-full-name lib "-")
+                                           char-set:letter)
+                                        #$(package-name lib)))
+                           (list gmp-6.0 mpfr mpc)))))
+             #$(match (%current-system)
+                 ((or "i686-linux" "x86_64-linux")
+                  #~(add-before 'configure 'fix-libcc1
                       (lambda* (#:key inputs #:allow-other-keys)
                         ;; libcc1.so NEEDs libgcc_s.so, so provide one here
                         ;; to placate the 'validate-runpath' phase.
@@ -2423,18 +2422,18 @@ exec " gcc "/bin/" program
                         ;; XXX: "g++ -v" is broken (see also libstdc++ above).
                         (substitute* "libcc1/configure"
                           (("g\\+\\+ -v") "true")))))
-                  (_ '(add-before 'configure 'return-true
+                 (_ #~(add-before 'configure 'return-true
                         (lambda _ #t))))
-               (add-after 'install 'symlink-libgcc_eh
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "lib")))
-                     ;; Glibc wants to link against libgcc_eh, so provide
-                     ;; it.
-                     (with-directory-excursion
-                         (string-append out "/lib/gcc/"
-                                        ,(boot-triplet)
-                                        "/" ,(package-version gcc))
-                       (symlink "libgcc.a" "libgcc_eh.a"))))))))))
+             (add-after 'install 'symlink-libgcc_eh
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let ((out (assoc-ref outputs "lib")))
+                   ;; Glibc wants to link against libgcc_eh, so provide
+                   ;; it.
+                   (with-directory-excursion
+                       (string-append out "/lib/gcc/"
+                                      #$(boot-triplet)
+                                      "/" #$(package-version gcc))
+                     (symlink "libgcc.a" "libgcc_eh.a"))))))))))
 
     (inputs `(("gmp-source" ,(bootstrap-origin (package-source gmp-6.0)))
               ("mpfr-source" ,(bootstrap-origin (package-source mpfr)))
@@ -2452,7 +2451,7 @@ exec " gcc "/bin/" program
               ,@(alist-delete "libc" (%boot0-inputs))))
 
     ;; No need for the native-inputs to build the documentation at this stage.
-    (native-inputs `())))
+    (native-inputs '())))
 
 (define perl-boot0
   (package
@@ -2885,41 +2884,42 @@ that makes it available under the native tool names."
     (build-system trivial-build-system)
     (outputs '("out"))
     (arguments
-     `(#:guile ,%bootstrap-guile
-       #:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
+     (list
+      #:guile %bootstrap-guile
+      #:modules '((guix build utils))
+      #:builder #~(begin
+                    (use-modules (guix build utils))
 
-                   (let* ((binutils (assoc-ref %build-inputs "binutils"))
-                          (gcc      (assoc-ref %build-inputs "gcc"))
-                          (libc     (assoc-ref %build-inputs "libc"))
-                          (bash     (assoc-ref %build-inputs "bash"))
-                          (out      (assoc-ref %outputs "out"))
-                          (bindir   (string-append out "/bin"))
-                          (triplet  ,(boot-triplet)))
-                     (define (wrap-program program)
-                       ;; GCC-BOOT0 is a libc-less cross-compiler, so it
-                       ;; needs to be told where to find the crt files and
-                       ;; the dynamic linker.
-                       (call-with-output-file program
-                         (lambda (p)
-                           (format p "#!~a/bin/bash
+                    (let* ((binutils (assoc-ref %build-inputs "binutils"))
+                           (gcc      (assoc-ref %build-inputs "gcc"))
+                           (libc     (assoc-ref %build-inputs "libc"))
+                           (bash     (assoc-ref %build-inputs "bash"))
+                           (out      (assoc-ref %outputs "out"))
+                           (bindir   (string-append out "/bin"))
+                           (triplet  #$(boot-triplet)))
+                      (define (wrap-program program)
+                        ;; GCC-BOOT0 is a libc-less cross-compiler, so it
+                        ;; needs to be told where to find the crt files and
+                        ;; the dynamic linker.
+                        (call-with-output-file program
+                          (lambda (p)
+                            (format p "#!~a/bin/bash
 exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
-                                   bash
-                                   gcc triplet program
-                                   libc libc
-                                   ,(glibc-dynamic-linker))))
+                                    bash
+                                    gcc triplet program
+                                    libc libc
+                                    #$(glibc-dynamic-linker))))
 
-                       (chmod program #o555))
+                        (chmod program #o555))
 
-                     (mkdir-p bindir)
-                     (with-directory-excursion bindir
-                       (for-each (lambda (tool)
-                                   (symlink (string-append binutils "/bin/"
-                                                           triplet "-" tool)
-                                            tool))
-                                 '("ar" "ranlib"))
-                       (for-each wrap-program '("gcc" "g++")))))))
+                      (mkdir-p bindir)
+                      (with-directory-excursion bindir
+                        (for-each (lambda (tool)
+                                    (symlink (string-append binutils "/bin/"
+                                                            triplet "-" tool)
+                                             tool))
+                                  '("ar" "ranlib"))
+                        (for-each wrap-program '("gcc" "g++")))))))
     (native-inputs
      `(("binutils" ,binutils)
        ("gcc" ,gcc)
@@ -3119,79 +3119,80 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
     (outputs (delete "debug" (package-outputs gcc-boot0)))
 
     (arguments
-     `(#:guile ,%bootstrap-guile
-       #:implicit-inputs? #f
+     (cons*
+      #:guile %bootstrap-guile
+      #:implicit-inputs? #f
 
-       #:allowed-references ("out" "lib" ,zlib-final
+      #:allowed-references `("out" "lib" ,zlib-final
                              ,glibc-final ,static-bash-for-glibc)
 
-       ;; Things like libasan.so and libstdc++.so NEED ld.so for some
-       ;; reason, but it is not in their RUNPATH.  This is a false
-       ;; positive, so turn it off.
-       #:validate-runpath? #f
+      ;; Things like libasan.so and libstdc++.so NEED ld.so for some
+      ;; reason, but it is not in their RUNPATH.  This is a false
+      ;; positive, so turn it off.
+      #:validate-runpath? #f
 
-       ;; Additional modules for the libstdc++ phase below.
-       #:modules ((srfi srfi-1)
+      ;; Additional modules for the libstdc++ phase below.
+      #:modules `((srfi srfi-1)
                   (srfi srfi-26)
                   ,@%gnu-build-system-modules)
 
-       ,@(substitute-keyword-arguments (package-arguments gcc)
-           ((#:make-flags flags)
-            ;; Since $LIBRARY_PATH is not honored, add the relevant flags.
-            `(let ((zlib (assoc-ref %build-inputs "zlib")))
-               (map (lambda (flag)
-                      (if (string-prefix? "LDFLAGS=" flag)
-                          (string-append flag " -L"
-                                         (assoc-ref %build-inputs "libstdc++")
-                                         "/lib -L" zlib "/lib -Wl,-rpath="
-                                         zlib "/lib")
-                          flag))
-                    ,flags)))
-           ;; Build again GMP & co. within GCC's build process, because it's hard
-           ;; to do outside (because GCC-BOOT0 is a cross-compiler, and thus
-           ;; doesn't honor $LIBRARY_PATH, which breaks `gnu-build-system'.)
-           ((#:phases phases)
-            `(modify-phases ,phases
-                (add-after 'unpack 'unpack-gmp&co
-                  (lambda* (#:key inputs #:allow-other-keys)
-                    (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
-                          (mpfr (assoc-ref %build-inputs "mpfr-source"))
-                          (mpc  (assoc-ref %build-inputs "mpc-source")))
+      (substitute-keyword-arguments (package-arguments gcc)
+        ((#:make-flags flags)
+         ;; Since $LIBRARY_PATH is not honored, add the relevant flags.
+         #~(let ((zlib (assoc-ref %build-inputs "zlib")))
+             (map (lambda (flag)
+                    (if (string-prefix? "LDFLAGS=" flag)
+                        (string-append flag " -L"
+                                       (assoc-ref %build-inputs "libstdc++")
+                                       "/lib -L" zlib "/lib -Wl,-rpath="
+                                       zlib "/lib")
+                        flag))
+                  #$flags)))
+        ;; Build again GMP & co. within GCC's build process, because it's hard
+        ;; to do outside (because GCC-BOOT0 is a cross-compiler, and thus
+        ;; doesn't honor $LIBRARY_PATH, which breaks `gnu-build-system'.)
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'unpack 'unpack-gmp&co
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
+                       (mpfr (assoc-ref %build-inputs "mpfr-source"))
+                       (mpc  (assoc-ref %build-inputs "mpc-source")))
 
-                      ;; To reduce the set of pre-built bootstrap inputs, build
-                      ;; GMP & co. from GCC.
-                      (for-each (lambda (source)
-                                  (invoke "tar" "xvf" source))
-                                (list gmp mpfr mpc))
+                   ;; To reduce the set of pre-built bootstrap inputs, build
+                   ;; GMP & co. from GCC.
+                   (for-each (lambda (source)
+                               (invoke "tar" "xvf" source))
+                             (list gmp mpfr mpc))
 
-                      ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
-                      ,@(map (lambda (lib)
-                               ;; Drop trailing letters, as gmp-6.0.0a unpacks
-                               ;; into gmp-6.0.0.
-                               `(symlink ,(string-trim-right
+                   ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
+                   #$@(map (lambda (lib)
+                             ;; Drop trailing letters, as gmp-6.0.0a unpacks
+                             ;; into gmp-6.0.0.
+                             #~(symlink #$(string-trim-right
                                            (package-full-name lib "-")
                                            char-set:letter)
-                                         ,(package-name lib)))
-                             (list gmp-6.0 mpfr mpc)))))
-                (add-after 'unpack 'fix-build-with-external-libstdc++
-                  (lambda* (#:key inputs #:allow-other-keys)
-                    (let ((libstdc++ (assoc-ref inputs "libstdc++")))
-                      ;; Fix a regression in GCC 11 where the libstc++ input
-                      ;; shadows glibc headers when building libstdc++.  An
-                      ;; upstream fix was added in GCC 11.3.0, but it only
-                      ;; hides system include directories, not those on
-                      ;; CPLUS_INCLUDE_PATH.  See discussion at
-                      ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>.
-                      (substitute* "libstdc++-v3/src/c++17/Makefile.in"
-                        (("AM_CXXFLAGS = ")
-                         (string-append "CPLUS_INCLUDE_PATH = "
-                                        (string-join
-                                         (remove (cut string-prefix? libstdc++ <>)
-                                                 (string-split
-                                                  (getenv "CPLUS_INCLUDE_PATH")
-                                                  #\:))
-                                         ":")
-                                        "\nAM_CXXFLAGS = ")))))))))))
+                                        #$(package-name lib)))
+                           (list gmp-6.0 mpfr mpc)))))
+             (add-after 'unpack 'fix-build-with-external-libstdc++
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((libstdc++ (assoc-ref inputs "libstdc++")))
+                   ;; Fix a regression in GCC 11 where the libstc++ input
+                   ;; shadows glibc headers when building libstdc++.  An
+                   ;; upstream fix was added in GCC 11.3.0, but it only
+                   ;; hides system include directories, not those on
+                   ;; CPLUS_INCLUDE_PATH.  See discussion at
+                   ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>.
+                   (substitute* "libstdc++-v3/src/c++17/Makefile.in"
+                     (("AM_CXXFLAGS = ")
+                      (string-append "CPLUS_INCLUDE_PATH = "
+                                     (string-join
+                                      (remove (cut string-prefix? libstdc++ <>)
+                                              (string-split
+                                               (getenv "CPLUS_INCLUDE_PATH")
+                                               #\:))
+                                      ":")
+                                     "\nAM_CXXFLAGS = ")))))))))))
 
     ;; This time we want Texinfo, so we get the manual.  Add
     ;; STATIC-BASH-FOR-GLIBC so that it's used in the final shebangs of

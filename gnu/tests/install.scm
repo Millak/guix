@@ -1733,7 +1733,8 @@ build (current-guix) and then store a couple of full system images.")
       (setvbuf (current-output-port) 'none)
       (setvbuf (current-error-port) 'none)
 
-      (marionette-eval* '(use-modules (gnu installer tests))
+      (marionette-eval* '(use-modules (gnu installer tests)
+                                      (guix build utils))
                         #$marionette)
 
       ;; Arrange so that 'converse' prints debugging output to the console.

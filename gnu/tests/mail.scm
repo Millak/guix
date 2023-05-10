@@ -382,7 +382,9 @@ Subject: Hello Nice to meet you!")
             (marionette-eval
              '(begin
                 (use-modules (ice-9 ftw)
-                             (ice-9 match))
+                             (ice-9 match)
+                             (rnrs io ports))
+
                 (let ((TESTBOX/new "/home/alice/Maildir/TESTBOX/new/"))
                   (match (scandir TESTBOX/new)
                     (("." ".." message-file)
@@ -556,7 +558,9 @@ Subject: Hello Nice to meet you!")
              (marionette-eval
               '(begin
                  (use-modules (ice-9 ftw)
-                              (ice-9 match))
+                              (ice-9 match)
+                              (rnrs io ports))
+
                  (let ((TESTBOX/new "/home/alice/TestMaildir/new/"))
                    (match (scandir TESTBOX/new)
                      (("." ".." message-file)

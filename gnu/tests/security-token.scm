@@ -50,7 +50,9 @@
           (test-assert "pcscd is alive"
             (marionette-eval
              '(begin
-                (use-modules (gnu services herd))
+                (use-modules (gnu services herd)
+                             (srfi srfi-1))
+
                 (live-service-running
                  (find (lambda (live)
                          (memq 'pcscd (live-service-provision live)))

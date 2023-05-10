@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,9 @@
 (define-module (gnu packages time)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages geo)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -50,8 +53,10 @@
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (guix packages))
@@ -228,6 +233,28 @@ datetime module, available in Python 2.3+.")
     ;; BSD-3 still; but all new code is dual licensed (the user can choose).
     (license (list bsd-3 asl2.0))))
 
+(define-public python-dateutils
+  (package
+    (name "python-dateutils")
+    (version "0.6.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dateutils" version))
+              (sha256
+               (base32
+                "1wg3f3imjq3snvjccv64h5498pqv9xz664xhni7bsh8mnay91p83"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil python-pytz))
+    (home-page "https://github.com/jmcantrell/python-dateutils")
+    (synopsis "Various utilities for working with date and datetime objects")
+    (description
+     "The main purpose of this package is to provide more complex arithmetic
+operations on dates/times.  Heavy use is made of the @code{relativedelta} type
+from the @code{dateutil} library.  Much of this package is just a light
+wrapper on top of this with some added features such as range generation and
+business day calculation.")
+    (license bsd-0)))
+
 (define-public python-parsedatetime
   (package
     (name "python-parsedatetime")
@@ -276,6 +303,38 @@ datetime module, available in Python 2.3+.")
     (description
      "The package ciso8601 converts ISO 8601 or RFC 3339 date time strings into
 Python datetime objects.")
+    (license expat)))
+
+(define-public python-timezonefinder
+  (package
+    (name "python-timezonefinder")
+    (version "6.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       ;; The PyPi distribution doesn't include the tests.
+       (uri (git-reference
+             (url "https://github.com/jannikmi/timezonefinder")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qv9rh6j8c1cqwh4sxrfl1m1ah4aqrf0w2kyrf5cgrpfxi6xr94z"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; TODO: Guix has lower python-pytz than required in the latest
+      ;; version:  pytz.exceptions.UnknownTimeZoneError:
+      ;; 'America/Ciudad_Juarez'
+      ;; It's optional, remove this constrain where python-pytz is updated.
+      #:test-flags #~(list "-k" "not test_with_pytz")))
+    (native-inputs
+     (list python-poetry-core python-pytest))
+    (propagated-inputs
+     (list python-cffi python-h3-3 python-numba python-numpy python-pytz))
+    (home-page "https://timezonefinder.michelfe.it/gui")
+    (synopsis "Finding the timezone of any coordinates on Earth offline")
+    (description "This is a python package for looking up the corresponding
+timezone for given coordinates on earth entirely offline.")
     (license expat)))
 
 (define-public python-tzlocal
@@ -408,13 +467,13 @@ timestamps.")
 (define-public python-arrow
   (package
     (name "python-arrow")
-    (version "1.1.1")
+    (version "1.2.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "arrow" version))
               (sha256
                (base32
-                "0fl24gv7jc6b9pqxwlcgrf465i8v8h0y7dcm018yrqv0dhpn1ryy"))))
+                "189knrgxb3x21lzvqac6qlpd32308hcmpccxdlvr5wmrl46b6d1r"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

@@ -51,6 +51,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
@@ -1211,3 +1212,19 @@ is that Gerbil modules are single instantiation, supporting high performance ahe
 time compilation and compiled macros.")
     (home-page "https://cons.io")
     (license `(,lgpl2.1 ,asl2.0))))
+
+(define-public emacs-gerbil-mode
+  (package
+    (inherit gerbil)
+    (name "emacs-gerbil-mode")
+    (version "1.0")
+    (build-system emacs-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'install 'change-directory
+                          (lambda _
+                            (chdir "etc"))))))
+    (synopsis "Emacs major-mode for editing Gerbil code")
+    (description
+     "Gerbil mode provides font-lock, indentation, navigation, and REPL for
+Gerbil code within Emacs.")))

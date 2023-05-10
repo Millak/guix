@@ -155,7 +155,10 @@ sources.")
               (uri (pypi-uri "Sphinx" version))
               (sha256
                (base32
-                "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))))
+                "1rp28jryxwy24y8vpacclqihbizyi6b1s6id86pibvm46ybcmy3v"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-sphinx)
+       (replace "python-docutils" python-docutils-0.15)))))
 
 (define-public python-sphinxcontrib-apidoc
   (package

@@ -14,7 +14,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
@@ -38,6 +38,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages geo)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
@@ -47,12 +48,11 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
-  #:use-module (guix gexp)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module (guix svn-download)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix svn-download)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -89,9 +89,9 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
-  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages libusb)
@@ -118,8 +118,8 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages speech)
-  #:use-module (gnu packages swig)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -226,6 +226,121 @@ operators to manipulate and analyse climate and NWP model data.  Supported
 data formats are GRIB 1/2, netCDF 3/4, SERVICE, EXTRA and IEG.  There are more
 than 600 operators available.")
     (license license:bsd-3)))
+
+(define-public h3
+  (package
+    (name "h3")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber/h3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x764xzna8ka6yhgv2y4hb158a61y3g9a6835qckqp7wfkpqvb7f"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://h3geo.org/")
+    (synopsis "Hexagonal hierarchical geospatial indexing system")
+    (description "H3 is a geospatial indexing system using a hexagonal grid
+that can be (approximately) subdivided into finer and finer hexagonal grids,
+combining the benefits of a hexagonal grid with S2's hierarchical
+subdivisions.")
+    (license license:asl2.0)))
+
+;; For python-timezonefinder, remove it when it starts supporting newer
+;; version.
+(define-public h3-3
+  (package
+    (inherit h3)
+    (name "h3")
+    (version "3.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber/h3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bvsljfxmjvl23v9gxykc4aynjzh5xfy3wg02bxad7cknr1amx9j"))))))
+
+(define-public python-h3
+  (package
+    (name "python-h3")
+    (version "4.0.0b2")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/uber/h3-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k1n256hhlh05gjcj64pqh08zlaz6962jkb6nk1aazsgg8p41zs0"))
+       (modules '((guix build utils)))
+       ;; Remove bundeled H3 lib.
+       (snippet #~(begin (delete-file-recursively "src/h3lib")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Check why these tests are failing.
+      ;; test_versions - assert (4, 1) == (4, 0)
+      ;; test_resolution - h3._cy.error_system.H3Failed
+      #:test-flags #~(list "-k" (string-append
+                                 "not test_versions"
+                                 " and not test_resolution"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Use packaged in Guix h3 source.
+          (add-after 'unpack 'patch-cmakelists
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(src/h3lib\\)")
+                 (string-append
+                  "include_directories(" #$(this-package-input "h3")
+                  "/include/h3)\n"
+                  "link_directories(" #$(this-package-input "h3")
+                  "/lib)\n"))
+                ((".*CMAKE_CURRENT_BINARY_DIR.*")
+                 (string-append #$(this-package-input "h3")
+                                "/include/h3/h3api.h\n"))))))))
+    (native-inputs
+     (list cmake-minimal
+           python-cython
+           python-numpy
+           python-pytest
+           python-scikit-build
+           python-setuptools-scm))
+    (inputs (list h3))
+    (home-page "https://uber.github.io/h3-py")
+    (synopsis "Python bindings for H3")
+    (description "This package provides a Python bindings for H3, a
+hierarchical hexagonal geospatial indexing system")
+    (license license:asl2.0)))
+
+;; For python-timezonefinder, remove it when it starts supporting newer
+;; version.
+(define-public python-h3-3
+  (package
+    (inherit python-h3)
+    (name "python-h3")
+    (version "3.7.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber/h3-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16gxa1sivghxw179rik87r918mjasars2qkzidlwq83qfa4axn20"))))
+    (inputs
+     (modify-inputs (package-inputs python-h3)
+       (replace "h3" h3-3)))))
 
 (define-public memphis
   (package

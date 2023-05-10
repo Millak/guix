@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -222,6 +222,26 @@
       (inputs (list gmp acl))\n")
   (call-with-test-package '((inputs `(("GMP" ,gmp) ("ACL" ,acl)))
                             (arguments '()))      ;no build system arguments
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "inputs"
+               "--input-simplification=safe")
+
+      (load file)
+      (list (package-inputs (@ (my-packages) my-coreutils))
+            (read-package-field (@ (my-packages) my-coreutils) 'inputs)))))
+
+(test-equal "input labels, 'safe' policy, trivial arguments"
+  (list `(("gmp" ,gmp) ("mpfr" ,mpfr))
+        "\
+      (inputs (list gmp mpfr))\n")
+  (call-with-test-package '((inputs `(("GMP" ,gmp) ("Mpfr" ,mpfr)))
+                            (arguments            ;"trivial" arguments
+                             '(#:tests? #f
+                               #:test-target "whatever")))
     (lambda (directory)
       (define file
         (string-append directory "/my-packages.scm"))

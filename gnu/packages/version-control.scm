@@ -234,7 +234,8 @@ Python 3.3 and later, rather than on Python 2.")
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1mpjvhyw8mv2q941xny4d0gw3mb6b4bqaqbh73jd8b1v6zqpaps7"))))
+              "1mpjvhyw8mv2q941xny4d0gw3mb6b4bqaqbh73jd8b1v6zqpaps7"))
+            (patches (search-patches "git-header-cmd.patch"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -936,6 +937,10 @@ write native speed custom Git applications in any language with bindings.")
              #t))
          (replace 'build
            (lambda _
+             ;; Add flag to work around OpenSSL 3 incompatibility.
+             ;; See <https://github.com/AGWA/git-crypt/issues/232>.
+             (setenv "CXXFLAGS" "-DOPENSSL_API_COMPAT=0x30000000L")
+
              (invoke "make" "ENABLE_MAN=yes")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -1619,6 +1624,11 @@ control to Git repositories.")
        #:make-flags (list "GUILE_AUTO_COMPILE=0")
        #:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             ;; The 'bootstrap' script lacks a shebang, leading to "Exec
+             ;; format error" with glibc 2.35.
+             (invoke "autoreconf" "-vfi")))
          (add-after 'install-bin 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (use-modules (guix build guile-build-system))
@@ -1658,7 +1668,7 @@ control to Git repositories.")
            guile-gcrypt
            guile-git
            guile-syntax-highlight-for-gitile
-           gnutls))
+           guile-gnutls))
     (home-page "https://git.lepiller.eu/gitile")
     (synopsis "Simple Git forge written in Guile")
     (description "Gitile is a Git forge written in Guile that lets you

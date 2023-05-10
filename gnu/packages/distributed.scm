@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Brant Gardner <brantcgardner@brantware.com>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,7 @@
 (define-public boinc-client
   (package
     (name "boinc-client")
-    (version "7.16.17")
+    (version "7.22.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -55,7 +56,7 @@
               (file-name (git-file-name "boinc" version))
               (sha256
                (base32
-                "1p8y3mnf5yfhavhqxwf9v68prg1601h8q1pllm5z89zh661di3mj"))))
+                "0af7j6zg3saa5x7lfsg41p7j9r1d1dsdsz5b241p1f2yrhba0m81"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-server")))
     (inputs (list openssl

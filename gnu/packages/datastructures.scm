@@ -359,7 +359,7 @@ equivalent succinct data structure are (most of the time) identical.")
 (define-public tllist
   (package
     (name "tllist")
-    (version "1.0.5")
+    (version "1.1.0")
     (home-page "https://codeberg.org/dnkl/tllist")
     (source (origin
               (method git-fetch)
@@ -367,7 +367,7 @@ equivalent succinct data structure are (most of the time) identical.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "061mkg6hc9x89zya3bw18ymxlzd8fbhjipxpva8x01lh2vp1d4f0"))))
+                "03296h1w0rnsj87490cgy007axngyg1v8w3z5nvm6x5gcs6b8rg1"))))
     (build-system meson-build-system)
     (synopsis "Typed link list for C")
     (description

@@ -1,0 +1,24 @@
+--- Cargo.toml	2023-05-07 13:39:13.029066693 +0100
++++ Cargo.toml	2023-05-07 13:39:22.545138206 +0100
+@@ -67,21 +67,3 @@
+ [target."cfg(target_arch = \"wasm32\")".dependencies.web-sys]
+ version = "0.3"
+ features = ["Window"]
+-
+-[target."cfg(target_os = \"android\")".dependencies.jni]
+-version = "0.21"
+-
+-[target."cfg(target_os = \"android\")".dependencies.ndk-context]
+-version = "0.1"
+-
+-[target."cfg(target_os = \"android\")".dev-dependencies.ndk-glue]
+-version = ">= 0.3, <= 0.7"
+-
+-[target."cfg(target_os = \"ios\")".dependencies.objc]
+-version = "0.2.7"
+-
+-[target."cfg(target_os = \"ios\")".dependencies.raw-window-handle]
+-version = "0.5.0"
+-
+-[target."cfg(target_os = \"macos\")".dependencies.core-foundation]
+-version = "0.9"

@@ -987,7 +987,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "285")
+    (version "286")
     (source
      (origin
        (method git-fetch)
@@ -996,7 +996,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ypsgakhak0znmg3wzblfcwd4s4nanzm61dz66gwi48rfnq35znl"))))
+        (base32 "0c5prq9ans4qv8dgfn85555by9rb22p276g21w4mns0rqhjd0ij8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1335,10 +1335,11 @@ C.  It features inferred static typing, macros, automatic memory
 management without a garbage collector, a REPL, and straightforward
 integration with code written in C.")
       (license license:asl2.0))))
+
 (define-public lisp-repl-core-dumper
   (package
     (name "lisp-repl-core-dumper")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1347,7 +1348,7 @@ integration with code written in C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yfsyxj462yi3bx587yssp4gwb54jdm6fjk9q93gjrfv8a65ilp7"))))
+        (base32 "04c12gi5izpkv8ha98z9qdkbmyrsq6ga060adrx53da8z31gnhk1"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan

@@ -197,6 +197,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages time)
   #:use-module (gnu packages upnp)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
@@ -1501,14 +1502,14 @@ quality and performance.")
 (define-public libva
   (package
     (name "libva")
-    (version "2.17.0")
+    (version "2.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/intel/libva/releases/download/"
                            version "/libva-" version ".tar.bz2"))
        (sha256
-        (base32 "1b2f1hik4x3n4n8217sg1k602wqjba8x20r7nsdmmq05qckyprgk"))))
+        (base32 "10j9rm6ajgp3fda7pwl058lchdip0wq20bvydil28ff2l3mpwmx3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list config pkg-config))
@@ -1557,14 +1558,14 @@ standards (MPEG-2, MPEG-4 ASP/H.263, MPEG-4 AVC/H.264, and VC-1/VMW3).")
 (define-public libva-utils
   (package
     (name "libva-utils")
-    (version "2.5.0")
+    (version "2.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/intel/libva-utils/releases/download/"
                            version "/libva-utils-" version ".tar.bz2"))
        (sha256
-        (base32 "05rasyqnsg522zqxak1q8rrm1hys7wwbi41kd0szjq0d27awjf4j"))))
+        (base32 "06n123kvzk51bx5cbhf34i3cfxc8vxmksgh5azycz9fwwcz3n7rm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1574,7 +1575,7 @@ standards (MPEG-2, MPEG-4 ASP/H.263, MPEG-4 AVC/H.264, and VC-1/VMW3).")
      (list pkg-config))
     (inputs
      (list libdrm libva libx11 mesa wayland))
-    (home-page "https://01.org/linuxmedia/vaapi")
+    (home-page "https://github.com/intel/libva-utils")
     (synopsis "Collection of testing utilities for VA-API")
     (description
      "This is a collection of utilities  to query and test the @acronym{VA-API,
@@ -1784,14 +1785,14 @@ audio/video codec library.")
 (define-public ffmpeg-5
   (package
     (inherit ffmpeg)
-    (version "5.1.2")
+    (version "5.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1p7kxr0f9f9d0pyyxq9ciaj9ch2drmcw5p9jk22j111ccrnp17k1"))))))
+                "0biil32xnshg1b4lwzbdc5rxv1g7lpfsr5gdgaz96wlhzy9ka48v"))))))
 
 (define-public ffmpeg-4
   (package
@@ -3624,7 +3625,7 @@ present in modern GPUs.")
 (define-public vdpauinfo
   (package
     (name "vdpauinfo")
-    (version "1.4")
+    (version "1.5")
     (source
       (origin
         (method git-fetch)
@@ -3633,7 +3634,7 @@ present in modern GPUs.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0s84bavxr39w0r7zfaac7kpbfsg88hgymqyzcr0yvbj1yry3liz2"))))
+         (base32 "01nkk8rixzvicrg0cr90mbxyd4vdyd0739ipywn0mx56xddambmx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -5281,38 +5282,10 @@ result in several formats:
     (home-page "https://www.gen2vdr.de/wirbel/w_scan/index2.html")
     (license license:gpl2+)))
 
-;;; XXX: This crate is used only for rav1e and can be removed once the latter
-;;; is updated.  See <https://issues.guix.gnu.org/52837>.
-(define rust-dav1d-sys-0.3.2
-  (package
-    (name "rust-dav1d-sys")
-    (version "0.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dav1d-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1jdxhnlxcml6jd67lx78ifzkn1xm18zfk4li7vjdh3fa61i073kx"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.54)
-        ("rust-metadeps" ,rust-metadeps-1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list dav1d clang llvm))
-    (home-page "https://github.com/rust-av/dav1d-rs")
-    (synopsis "FFI bindings to dav1d")
-    (description "This package provides FFI bindings to dav1d.")
-    (license license:expat)))
-
 (define-public rav1e
   (package
     (name "rav1e")
-    (version "0.5.1")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
@@ -5321,71 +5294,73 @@ result in several formats:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))))
+         "0if94sfviy5cwljlnsy0f470ixfs090k54g416kcc0qd9w4rhy17"))))
     (build-system cargo-build-system)
     (arguments
-     `(;; Strip the '--release' flag to work around the doctest failures with
-       ;; Rust 1.57 (see: https://github.com/xiph/rav1e/issues/2851).
-       #:cargo-test-flags '()
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-aom-sys" ,rust-aom-sys-0.3)
         ("rust-arbitrary" ,rust-arbitrary-0.4)
         ("rust-arg-enum-proc-macro" ,rust-arg-enum-proc-macro-0.3)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
-        ("rust-av-metrics" ,rust-av-metrics-0.7)
+        ("rust-av-metrics" ,rust-av-metrics-0.9)
+        ("rust-av1-grain" ,rust-av1-grain-0.2)
         ("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-bitstream-io" ,rust-bitstream-io-1)
+        ("rust-built" ,rust-built-0.5)
         ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-console" ,rust-console-0.14)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-console" ,rust-console-0.15)
+        ("rust-const-fn-assert" ,rust-const-fn-assert-0.1)
         ("rust-crossbeam" ,rust-crossbeam-0.8)
-        ("rust-dav1d-sys" ,rust-dav1d-sys-0.3)
+        ("rust-dav1d-sys" ,rust-dav1d-sys-0.7)
         ("rust-fern" ,rust-fern-0.6)
-        ("rust-image" ,rust-image-0.23)
+        ("rust-image" ,rust-image-0.24)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
         ("rust-itertools" ,rust-itertools-0.10)
         ("rust-ivf" ,rust-ivf-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libfuzzer-sys" ,rust-libfuzzer-sys-0.3)
         ("rust-log" ,rust-log-0.4)
+        ("rust-maybe-rayon" ,rust-maybe-rayon-0.1)
         ("rust-nasm-rs" ,rust-nasm-rs-0.2)
+        ("rust-new-debug-unreachable" ,rust-new-debug-unreachable-1)
+        ("rust-nom" ,rust-nom-7)
         ("rust-noop-proc-macro" ,rust-noop-proc-macro-0.3)
         ("rust-num-derive" ,rust-num-derive-0.3)
         ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-paste" ,rust-paste-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1)
         ("rust-rust-hawktracer" ,rust-rust-hawktracer-0.7)
         ("rust-rustc-version" ,rust-rustc-version-0.4)
         ("rust-scan-fmt" ,rust-scan-fmt-0.2)
         ("rust-serde" ,rust-serde-1)
+        ("rust-serde-big-array" ,rust-serde-big-array-0.4)
         ("rust-signal-hook" ,rust-signal-hook-0.3)
         ("rust-simd-helpers" ,rust-simd-helpers-0.1)
+        ("rust-system-deps" ,rust-system-deps-6)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-v-frame" ,rust-v-frame-0.2)
-        ("rust-vergen" ,rust-vergen-3)
+        ("rust-v-frame" ,rust-v-frame-0.3)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-y4m" ,rust-y4m-0.7))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-criterion" ,rust-criterion-0.4)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
         ("rust-semver" ,rust-semver-1))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'relax-versions
-           (lambda _
-             (substitute* "Cargo.toml"
-               ;; Allow using more recent versions of system-deps.
-               (("~3.1.2") "~3"))))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -5397,7 +5372,9 @@ result in several formats:
              (delete-file (string-append (assoc-ref outputs "out")
                                          "/lib/librav1e.a")))))))
     (native-inputs
-     (list rust-cargo-c nasm))
+     (list nasm pkg-config rust-cargo-c))
+    (inputs
+     (list libgit2 zlib))
     (home-page "https://github.com/xiph/rav1e/")
     (synopsis "Fast and safe AV1 encoder")
     (description "@code{rav1e} is an AV1 video encoder.  It is designed to
@@ -5421,15 +5398,14 @@ for cases where libaom (the reference encoder) is too slow.")
     (build-system meson-build-system)
     (arguments '(#:glib-or-gtk? #t))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("python" ,python-wrapper)))
+     (list gtk+ python-wrapper))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")         ; for glib-compile-resources
-       ("gtk+-bin" ,gtk+ "bin")         ; For gtk-update-icon-cache
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list desktop-file-utils ; for update-desktop-database
+           gettext-minimal
+           `(,glib "bin") ; for glib-compile-resources
+           `(,gtk+ "bin") ; For gtk-update-icon-cache
+           pkg-config
+           vala))
     (home-page "https://github.com/phw/peek")
     (synopsis "Simple animated GIF screen recorder")
     (description

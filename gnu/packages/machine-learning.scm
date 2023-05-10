@@ -102,6 +102,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
@@ -3271,7 +3272,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.12.0")
+    (version "1.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3281,7 +3282,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pdqi91qzgyx947zv4pw2fdj9vpqvdhfzw1ydjd4mpqm8g5njgnz"))
+                "17yxjzwp4zp75fz7czgz9acijzw7dpyqcza50v8y1x7hfg2gw369"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -3301,7 +3302,10 @@ TensorFlow.js, PyTorch, and MediaPipe.")
                               "gloo" "googletest" "ios-cmake" "NNPACK"
                               "onnx" "protobuf" "pthreadpool"
                               "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))))))
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -3413,50 +3417,283 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
-(define-public python-pytorch-for-r-torch
+(define-public python-pytorch-for-r-torch python-pytorch)
+
+(define-public python-lightning-cloud
   (package
-    (inherit python-pytorch)
-    (name "python-pytorch")
-    (version "1.13.1")
+    (name "python-lightning-cloud")
+    (version "0.5.34")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lightning_cloud" version))
+              (sha256
+               (base32
+                "0mqrhq3s23mn8n4i0q791pshn3dgplp0h9ny0pmmp798q0798dzs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-click
+                             python-fastapi
+                             python-multipart
+                             python-pyjwt
+                             python-requests
+                             python-rich
+                             python-six
+                             python-urllib3
+                             python-uvicorn
+                             python-websocket-client))
+    (home-page "https://lightning.ai")
+    (synopsis "Lightning Cloud command line client")
+    (description "This package provides a command line interface for Lightning
+AI services.")
+    (license license:asl2.0)))
+
+(define-public python-lightning-utilities
+  (package
+    (name "python-lightning-utilities")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "lightning-utilities" version))
+              (sha256
+               (base32
+                "084pn8fizxrcn1699jb8x2jsg4wcx01l65bwxpgnq0kzqp3rapcf"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-importlib-metadata python-packaging
+                             python-typing-extensions))
+    (native-inputs (list python-coverage))
+    (home-page "https://github.com/Lightning-AI/utilities")
+    (synopsis "PyTorch Lightning sample project")
+    (description "This package provides common Python utilities and GitHub
+Actions for the Lightning suite of libraries.")
+    (license license:asl2.0)))
+
+(define-public python-readchar
+  (package
+    (name "python-readchar")
+    (version "4.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "readchar" version))
+              (sha256
+               (base32
+                "09n8vl2jjbnbnrzfvkynijrnwrqvc91bb2267zg8r261sz15d908"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This one file requires the msvcrt module, which we don't have.
+         (add-after 'unpack 'delete-windows-file
+           (lambda _
+             (delete-file "readchar/_win_read.py"))))))
+    (propagated-inputs (list python-setuptools))
+    (home-page "https://github.com/magmax/python-readchar")
+    (synopsis "Library to easily read single chars and key strokes")
+    (description "This package provides a Python library to easily read single
+characters and key strokes.")
+    (license license:expat)))
+
+(define-public python-inquirer
+  (package
+    (name "python-inquirer")
+    (version "3.1.3")
+    ;; Pypi has no tests.
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/pytorch/pytorch")
-                    (commit (string-append "v" version))
-                    (recursive? #t)))
+                    (url "https://github.com/magmax/python-inquirer")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17yxjzwp4zp75fz7czgz9acijzw7dpyqcza50v8y1x7hfg2gw369"))
-              (patches (search-patches "python-pytorch-system-libraries.patch"
-                                       "python-pytorch-runpath.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; XXX: Let's be clear: this package is a bundling fest.  We
-                  ;; delete as much as we can, but there's still a lot left.
-                  (for-each (lambda (directory)
-                              (delete-file-recursively
-                               (string-append "third_party/" directory)))
-                            '("benchmark" "cpuinfo" "eigen"
+                "0kp6a0535n9ra5sk8bmb5qvhrv0fbn1zawydi0fkb7104jqcfrzc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-blessed python-editor python-readchar))
+    (native-inputs
+     (list python-poetry-core python-pexpect python-pytest))
+    (home-page "https://github.com/magmax/python-inquirer")
+    (synopsis "Collection of common interactive command line user interfaces")
+    (description
+     "Inquirer should ease the process of asking end user questions, parsing,
+validating answers, managing hierarchical prompts and providing error
+feedback.")
+    (license license:expat)))
 
-                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
-                              ;; needs these.
-                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+(define-public python-pytorch-lightning
+  (package
+    (name "python-pytorch-lightning")
+    (version "2.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Lightning-AI/lightning")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w4lajiql4y5nnhqf6i5wii1mrwnhp5f4bzbwdzb5zz0d0lysb1i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-m" "not cloud and not tpu" "tests/tests_pytorch"
+             ;; we don't have onnxruntime
+             "--ignore=tests/tests_pytorch/models/test_onnx.py"
 
-                              "gloo" "googletest" "ios-cmake" "NNPACK"
-                              "onnx" "protobuf" "pthreadpool"
-                              "pybind11" "python-enum" "python-peachpy"
-                              "python-six" "tbb" "XNNPACK" "zstd"))
-                  (substitute* "functorch/CMakeLists.txt"
-                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
-                     "$ORIGIN/../torch/lib"))))))))
+             ;; We don't have tensorboard, so we skip all those tests that
+             ;; require it for logging.
+             "--ignore=tests/tests_pytorch/checkpointing/test_model_checkpoint.py"
+             "--ignore=tests/tests_pytorch/loggers/test_all.py"
+             "--ignore=tests/tests_pytorch/loggers/test_logger.py"
+             "--ignore=tests/tests_pytorch/loggers/test_tensorboard.py"
+             "--ignore=tests/tests_pytorch/models/test_cpu.py"
+             "--ignore=tests/tests_pytorch/models/test_hparams.py"
+             "--ignore=tests/tests_pytorch/models/test_restore.py"
+             "--ignore=tests/tests_pytorch/profilers/test_profiler.py"
+             "--ignore=tests/tests_pytorch/trainer/flags/test_fast_dev_run.py"
+             "--ignore=tests/tests_pytorch/trainer/logging_/test_eval_loop_logging.py"
+             "--ignore=tests/tests_pytorch/trainer/logging_/test_train_loop_logging.py"
+             "--ignore=tests/tests_pytorch/trainer/properties/test_loggers.py"
+             "--ignore=tests/tests_pytorch/trainer/properties/test_log_dir.py"
+             "--ignore=tests/tests_pytorch/trainer/test_trainer.py"
+
+             ;; This needs internet access
+             "--ignore=tests/tests_pytorch/helpers/test_models.py"
+             "--ignore=tests/tests_pytorch/helpers/test_datasets.py"
+             "--ignore=tests/tests_pytorch/helpers/datasets.py"
+
+             ;; We have no legacy checkpoints
+             "--ignore=tests/tests_pytorch/checkpointing/test_legacy_checkpoints.py"
+
+             ;; TypeError: _FlakyPlugin._make_test_flaky() got an unexpected keyword argument 'reruns'
+             "--ignore=tests/tests_pytorch/models/test_amp.py"
+             "--ignore=tests/tests_pytorch/profilers/test_profiler.py"
+
+             "--ignore=tests/tests_pytorch/graveyard/test_legacy_import_unpickler.py"
+
+             "-k"
+             (string-append
+              ;; We don't have tensorboard
+              "not test_property_logger"
+              " and not test_cli_logger_shorthand"
+              ;; Something wrong with Flaky
+              " and not test_servable_module_validator_with_trainer"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-version-detection
+           (lambda _
+             ;; We do have pytorch 1.13.1, but the version comparison fails.
+             (substitute* "src/lightning/fabric/utilities/imports.py"
+               (("_TORCH_GREATER_EQUAL_1_13 =.*")
+                "_TORCH_GREATER_EQUAL_1_13 = True\n"))))
+         (add-before 'build 'pre-build
+           (lambda _ (setenv "PACKAGE_NAME" "lightning")))
+         (add-after 'install 'pre-build-pytorch
+           (lambda _
+             ;; pyproject-build-system only tolerates unicycles.
+             (for-each delete-file (find-files "dist" "\\.whl"))
+             (setenv "PACKAGE_NAME" "pytorch")))
+         (add-after 'pre-build-pytorch 'build-pytorch
+           (assoc-ref %standard-phases 'build))
+         (add-after 'build-pytorch 'install-pytorch
+           (assoc-ref %standard-phases 'install))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; We don't have Tensorboard
+             (substitute* "tests/tests_pytorch/test_cli.py"
+               ((" TensorBoardLogger\\(\".\"\\)") "")))))))
+    (propagated-inputs
+     (list python-arrow
+           python-beautifulsoup4
+           python-croniter
+           python-dateutils
+           python-deepdiff
+           python-fastapi-for-pytorch-lightning
+           python-fsspec
+           python-inquirer
+           python-jsonargparse
+           python-lightning-cloud
+           python-lightning-utilities
+           python-numpy
+           python-packaging
+           python-pytorch
+           python-pyyaml
+           python-starsessions-for-pytorch-lightning
+           python-torchmetrics
+           python-torchvision
+           python-tqdm
+           python-traitlets
+           python-typing-extensions))
+    (native-inputs
+     (list python-aiohttp
+           python-cloudpickle
+           python-coverage
+           python-flaky
+           python-pympler
+           python-pytest
+           python-psutil
+           python-requests-mock
+           python-scikit-learn))
+    (home-page "https://lightning.ai/")
+    (synopsis "Deep learning framework to train, deploy, and ship AI products")
+    (description
+     "PyTorch Lightning is just organized PyTorch; Lightning disentangles
+PyTorch code to decouple the science from the engineering.")
+    (license license:asl2.0)))
+
+(define-public python-torchmetrics
+  (package
+    (name "python-torchmetrics")
+    (version "0.11.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "torchmetrics" version))
+              (sha256
+               (base32
+                "150lcy6c20n42rwxl4d3m1b8s4js9ddds5wh3685vmjdnha5mr0z"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-numpy python-packaging python-pytorch
+           python-typing-extensions))
+    (native-inputs
+     (list python-cloudpickle
+           python-coverage
+           python-fire
+           python-mir-eval
+           python-mypy
+           python-pandas
+           python-psutil
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-rerunfailures
+           python-pytest-timeout
+           python-requests
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-types-protobuf
+           python-types-setuptools))
+    (home-page "https://github.com/Lightning-AI/metrics")
+    (synopsis "Machine learning metrics for PyTorch applications")
+    (description "TorchMetrics is a collection of 100+ PyTorch metrics
+implementations and an easy-to-use API to create custom metrics.  It offers:
+
+@itemize
+@item A standardized interface to increase reproducibility
+@item Reduces boilerplate
+@item Automatic accumulation over batches
+@item Metrics optimized for distributed-training
+@item Automatic synchronization between multiple devices
+@end itemize
+")
+    (license license:asl2.0)))
 
 ;; Keep this in sync with python-pytorch
 (define-public python-torchvision
   (package
     (name "python-torchvision")
-    (version "0.13.0")
+    (version "0.15.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3466,17 +3703,11 @@ Note: currently this package does not provide GPU support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19f6s3ffwkdvjjbvib18c8n7vhysg58smxzq3rvii1c0z4g3b0cw"))))
-    (build-system python-build-system)
+                "1cq2s13vkgg9rljjbrm4g33yxq7q5zqp7f4xm5cq624gvs0wxmi8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false ;the test suite is expensive and there is no easy way
-                       ;to subset it.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list #:tests? #false)) ;the test suite is expensive and there is no easy
+                             ;way to subset it.
     (inputs
      (list libpng
            libjpeg-turbo))

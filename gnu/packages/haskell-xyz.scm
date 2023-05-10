@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Danny Milosavljevic <dannym@scratchpost.org>
@@ -14501,7 +14501,7 @@ Haskell newer than 2.8.")
     (properties '((upstream-name . "mysql")))
     (arguments `(#:tests? #f)) ; TODO: Fails to connect to server.
     (inputs
-     (list mysql zlib openssl))
+     (list (list mariadb "dev") zlib openssl))
     (native-inputs (list ghc-hspec))
     (home-page "https://github.com/paul-rouse/mysql")
     (synopsis "Low-level MySQL client library")

@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,7 +66,7 @@
 (define-public wxwidgets
   (package
     (name "wxwidgets")
-    (version "3.2.1")
+    (version "3.2.2.1")
     (source
      (origin
        (method url-fetch)
@@ -73,7 +74,7 @@
                            "releases/download/v" version
                            "/wxWidgets-" version ".tar.bz2"))
        (sha256
-        (base32 "0rpsyph7l7kmpld376y0940la3c94y5vdpxmbkj8isqknimrfaf2"))
+        (base32 "00ic4h4j0621v8h6n8zbl9xgay01a4dynh48gx5zyvr9f6zbdz6z"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -94,6 +95,7 @@
                                                            preserved-3rdparty))))))
              (with-directory-excursion "src"
                (for-each delete-file-recursively bundled-src)))))))
+    (outputs '("out" "debug"))
     (build-system glib-or-gtk-build-system)
     (inputs
      (list catch-framework
@@ -124,6 +126,7 @@
       #:configure-flags #~'("--with-libmspack"
                             "--with-regex"
                             "--with-sdl"
+                            "--enable-debug_info"
                             "--enable-gui"
                             "--enable-mediactrl"
                             "--enable-webview")
@@ -276,32 +279,34 @@ and many other languages.")
        (snippet
         '(begin
            ;; Remove bundled wxwidgets
-           (delete-file-recursively "ext/wxWidgets")
-           #t))))
+           (delete-file-recursively "ext/wxWidgets")))
+       (patches (search-patches "python-wxwidgets-type-errors.patch"))))
     (build-system python-build-system)
+    (outputs '("out" "debug"))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "WXWIN" (assoc-ref inputs "wxwidgets"))
-             ;; Copy the waf executable to the source directory since it needs
-             ;; to be in a writable directory.
-             (copy-file (search-input-file inputs "/bin/waf")
-                        "bin/waf")
-             (setenv "WAF" "bin/waf")
-             ;; The build script tries to copy license files from the
-             ;; wxwidgets source tree. Prevent it.
-             (substitute* "wscript"
-               (("updateLicenseFiles\\(cfg\\)" all)
-                (string-append "#" all)))
-             ;; The build script tries to write to demo/version.py. So, we set
-             ;; correct write permissions.
-             (chmod "demo/version.py" #o644)
-             ;; Build only the python bindings, not wxwidgets also.
-             (substitute* "setup.py"
-               (("'build']") "'build_py', '--use_syswx']"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Configure the build options provided to the 'build.py' build
+              ;; script.
+              (setenv "WXPYTHON_BUILD_ARGS"
+                      (string-join '("--debug"        ;include debug symbols
+                                     "--use_syswx"))) ;use system wxwidgets
+              (setenv "WXWIN" #$(this-package-input "wxwidgets"))
+              ;; Copy the waf executable to the source directory since it needs
+              ;; to be in a writable directory.
+              (copy-file (search-input-file inputs "/bin/waf") "bin/waf")
+              (setenv "WAF" "bin/waf")
+              ;; The build script tries to copy license files from the
+              ;; wxwidgets source tree. Prevent it.
+              (substitute* "wscript"
+                (("updateLicenseFiles\\(cfg\\)" all)
+                 (string-append "#" all)))
+              ;; The build script tries to write to demo/version.py. So, we set
+              ;; correct write permissions.
+              (chmod "demo/version.py" #o644))))))
     (inputs
      (list gtk+ wxwidgets))
     (native-inputs

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -187,9 +187,9 @@ package definition."
 (define %cran-canonical-url "https://cran.r-project.org/package=")
 (define %bioconductor-url "https://bioconductor.org/packages/")
 
-;; The latest Bioconductor release is 3.16.  Bioconductor packages should be
+;; The latest Bioconductor release is 3.17.  Bioconductor packages should be
 ;; updated together.
-(define %bioconductor-version "3.16")
+(define %bioconductor-version "3.17")
 
 (define* (bioconductor-packages-list-url #:optional type)
   (string-append "https://bioconductor.org/packages/"
@@ -399,6 +399,7 @@ empty list when the FIELD cannot be found."
         "posix.1-2001"
         "linux"
         "none"
+        "unix"
         "windows"
         "xcode"
         "xquartz"))
@@ -435,6 +436,7 @@ empty list when the FIELD cannot be found."
     ("udunits-2" "udunits")
     ("whoami" "coreutils")
     ("x11" "libx11")
+    ("xml2" "libxml2")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))

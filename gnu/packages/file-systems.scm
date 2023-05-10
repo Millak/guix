@@ -9,7 +9,7 @@
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
-;;; Copyright © 2021 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2021, 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 Brian Cully <bjc@spork.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1364,7 +1364,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.9")
+    (version "2.1.11")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1373,7 +1373,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "1xjhzqi4jqc3mdps93w4b5f0qhy16fmhz44gsvy1fkmm5vgjq5vb"))))
+           (base32 "1cnfv3adk7prl6b8r3nw62y6dbjy2q7ai68p9xc0g8nhaklf8kx5"))))
     (build-system linux-module-build-system)
     (arguments
      (list

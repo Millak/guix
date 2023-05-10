@@ -556,17 +556,17 @@ Go.  It also includes runtime support libraries for these languages.")
        ,@(package-inputs gcc-4.7)))))
 
 (define %gcc-7.5-aarch64-micro-architectures
-  ;; Suitable '-march' values for GCC 7.5.
+  ;; Suitable '-march' values for GCC 7.5 (info "(gcc) AArch64 Options").
   ;; TODO: Allow dynamically adding feature flags.
   '("armv8-a" "armv8.1-a" "armv8.2-a" "armv8.3-a"))
 
 (define %gcc-7.5-armhf-micro-architectures
-  ;; Suitable '-march' values for GCC 7.5.
+  ;; Suitable '-march' values for GCC 7.5 (info "(gcc) ARM Options").
   ;; TODO: Allow dynamically adding feature flags.
   '("armv7" "armv7-a" "armv7-m" "armv7-r" "armv7e-m" "armv7ve"
     "armv8-a" "armv8-a+crc" "armv8.1-a" "armv8.1-a+crc"
     "armv8-m.base" "armv8-m.main" "armv8-m.main+dsp"
-    "iwmmxt" "iwmmxt2"))
+    "iwmmxt" "iwmmxt2" "armv8.2-a"))
 
 (define %gcc-7.5-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 7.5 (info "(gcc) x86 Options").
@@ -589,7 +589,7 @@ Go.  It also includes runtime support libraries for these languages.")
   ;; Suitable '-march' values for GCC 10.
   ;; TODO: Allow dynamically adding feature flags.
   (append %gcc-7.5-armhf-micro-architectures
-          '("armv8.2-a" "armv8.3-a" "armv8.4-a" "armv8.5-a" "armv8.6-a"
+          '("armv8.3-a" "armv8.4-a" "armv8.5-a" "armv8.6-a"
             "armv8-r" "armv8.1-m.main")))
 
 (define %gcc-10-x86_64-micro-architectures
@@ -603,7 +603,8 @@ Go.  It also includes runtime support libraries for these languages.")
 
 (define %gcc-11-aarch64-micro-architectures
   ;; Suitable '-march' values for GCC 11.
-  %gcc-10-aarch64-micro-architectures)            ;unchanged
+  (append %gcc-10-aarch64-micro-architectures
+          '("armv8-r")))
 
 (define %gcc-11-armhf-micro-architectures
   %gcc-10-armhf-micro-architectures)
@@ -614,6 +615,31 @@ Go.  It also includes runtime support libraries for these languages.")
           '("sapphirerapids" "alterlake" "rocketlake" ;Intel
 
             "btver1" "btver2")))                  ;AMD
+
+;; Suitable '-march' values for GCC 12.
+(define %gcc-12-aarch64-micro-architectures
+  (append %gcc-11-aarch64-micro-architectures
+          '("armv8.7-a" "armv8.8-a" "armv9-a")))
+
+(define %gcc-12-armhf-micro-architectures
+  (append %gcc-11-armhf-micro-architectures
+          '("armv9-a")))
+
+(define %gcc-12-x86_64-micro-architectures
+  (append %gcc-11-x86_64-micro-architectures
+          '("znver4")))                           ;AMD
+
+;; Suitable '-march' values for GCC 13.
+(define %gcc-13-aarch64-micro-architectures
+  (append %gcc-12-aarch64-micro-architectures
+          '("armv9.1-a" "armv9.2-a" "armv9.3-a")))
+
+(define %gcc-13-armhf-micro-architectures
+  %gcc-12-armhf-micro-architectures)
+
+(define %gcc-13-x86_64-micro-architectures
+  (append %gcc-12-x86_64-micro-architectures
+          '("graniterapids")))                    ;Intel
 
 (define-public gcc-7
   (package
@@ -735,19 +761,24 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-12
   (package
     (inherit gcc-11)
-    ;; Note: 'compiler-cpu-architectures' is unchanged compared to GCC 11.
-    (version "12.2.0")
+    (version "12.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gcc/gcc-"
                                   version "/gcc-" version ".tar.xz"))
               (sha256
                (base32
-                "1zrhca90c7hqnjz3jgr1vl675q3h5lrd92b5ggi00jjryffcyjg5"))
+                "0fwcvbgpmjdfj5drfs8k6bkqsmxmz8pv4cmmjcd451p7k57mv6ll"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"))
               (modules '((guix build utils)))
-              (snippet gcc-canadian-cross-objdump-snippet)))))
+              (snippet gcc-canadian-cross-objdump-snippet)))
+   (properties
+    `((compiler-cpu-architectures
+       ("aarch64" ,@%gcc-12-aarch64-micro-architectures)
+       ("armhf" ,@%gcc-12-armhf-micro-architectures)
+       ("x86_64" ,@%gcc-12-x86_64-micro-architectures))
+      ,@(package-properties gcc-11)))))
 
 
 ;; Note: When changing the default gcc version, update
@@ -861,62 +892,63 @@ using compilers other than GCC."
     (inherit gcc)
     (name "libstdc++")
     (arguments
-     `(#:out-of-source? #t
-       #:modules ((srfi srfi-1)
+     (list
+      #:out-of-source? #t
+      #:modules `((srfi srfi-1)
                   (srfi srfi-26)
                   ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (version>=? (package-version gcc) "11")
-               `((add-after 'unpack 'hide-gcc-headers
-                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     (let ((gcc (assoc-ref (or native-inputs inputs)
-                                           ,(if (%current-target-system)
-                                                "cross-gcc"
-                                                "gcc"))))
-                       ;; Fix a regression in GCC 11 where the GCC headers
-                       ;; shadows glibc headers when building libstdc++.  An
-                       ;; upstream fix was added in GCC 11.3.0, but it only
-                       ;; hides system include directories, not those on
-                       ;; CPLUS_INCLUDE_PATH.  See discussion at
-                       ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>
-                       ;; and the similar adjustment in GCC-FINAL.
-                       (substitute* "libstdc++-v3/src/c++17/Makefile.in"
-                         (("AM_CXXFLAGS = ")
-                          (string-append ,(if (%current-target-system)
-                                              "CROSS_CPLUS_INCLUDE_PATH = "
-                                              "CPLUS_INCLUDE_PATH = ")
-                                         (string-join
-                                          (remove (cut string-prefix? gcc <>)
-                                                  (string-split
-                                                   (getenv
-                                                    ,(if (%current-target-system)
-                                                         "CROSS_CPLUS_INCLUDE_PATH"
-                                                         "CPLUS_INCLUDE_PATH"))
-                                                   #\:))
-                                          ":")
-                                         "\nAM_CXXFLAGS = ")))))))
-               '())
-         ,@(let ((version (package-version gcc)))
-                (if (and (target-ppc64le?)
-                    (version>=? version "11")
-                    (not (version>=? version "12")))
-               `((add-after 'unpack 'patch-powerpc
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (invoke "patch" "--force" "-p1" "-i"
-                             (assoc-ref inputs "powerpc64le-patch")))))
-               '()))
-         ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
-         (add-before 'chdir 'fix-rs6000-libdir
-           (lambda _
-             (when (file-exists? "gcc/config/rs6000")
-               (substitute* (find-files "gcc/config/rs6000")
-                 (("/lib64") "/lib")))))
-         (add-before 'configure 'chdir
-           (lambda _
-             (chdir "libstdc++-v3"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (version>=? (package-version gcc) "11")
+                 #~((add-after 'unpack 'hide-gcc-headers
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (let ((gcc (assoc-ref (or native-inputs inputs)
+                                              #$(if (%current-target-system)
+                                                    "cross-gcc"
+                                                    "gcc"))))
+                          ;; Fix a regression in GCC 11 where the GCC headers
+                          ;; shadows glibc headers when building libstdc++.  An
+                          ;; upstream fix was added in GCC 11.3.0, but it only
+                          ;; hides system include directories, not those on
+                          ;; CPLUS_INCLUDE_PATH.  See discussion at
+                          ;; <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100017>
+                          ;; and the similar adjustment in GCC-FINAL.
+                          (substitute* "libstdc++-v3/src/c++17/Makefile.in"
+                            (("AM_CXXFLAGS = ")
+                             (string-append #$(if (%current-target-system)
+                                                  "CROSS_CPLUS_INCLUDE_PATH = "
+                                                  "CPLUS_INCLUDE_PATH = ")
+                                            (string-join
+                                             (remove (cut string-prefix? gcc <>)
+                                                     (string-split
+                                                      (getenv
+                                                       #$(if (%current-target-system)
+                                                             "CROSS_CPLUS_INCLUDE_PATH"
+                                                             "CPLUS_INCLUDE_PATH"))
+                                                      #\:))
+                                             ":")
+                                            "\nAM_CXXFLAGS = ")))))))
+                 '())
+          #$@(let ((version (package-version gcc)))
+               (if (and (target-ppc64le?)
+                       (version>=? version "11")
+                       (not (version>=? version "12")))
+                   #~((add-after 'unpack 'patch-powerpc
+                        (lambda* (#:key inputs #:allow-other-keys)
+                          (invoke "patch" "--force" "-p1" "-i"
+                                  (assoc-ref inputs "powerpc64le-patch")))))
+                   '()))
+          ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
+          (add-before 'chdir 'fix-rs6000-libdir
+            (lambda _
+              (when (file-exists? "gcc/config/rs6000")
+                (substitute* (find-files "gcc/config/rs6000")
+                  (("/lib64") "/lib")))))
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "libstdc++-v3"))))
 
-       #:configure-flags `("--disable-libstdcxx-pch"
+      #:configure-flags '`("--disable-libstdcxx-pch"
                            ,(string-append "--with-gxx-include-dir="
                                            (assoc-ref %outputs "out")
                                            "/include"))))

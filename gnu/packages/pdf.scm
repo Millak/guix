@@ -78,6 +78,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -165,6 +166,33 @@ It does not have a document model and instead uses PDF primitives
 directly.  It uses LittleCMS for color management but otherwise does not
 convert data in any way.")
     (license license:asl2.0)))
+
+(define-public diffpdf
+  (let ((commit "ba68231d3d05e0cb3a2d4a4fca8b70d4044f4303")
+        (revision "1"))
+    (package
+      (name "diffpdf")
+      (version (git-version "2.1.3.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/eang/diffpdf")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1vwgv28b291lrcs9fljnlbnicv16lwj4vvl4bz6w3ldp9n5isjmf"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f))
+      (inputs (list qtbase-5 qttools-5 poppler-qt5))
+      (native-inputs (list pkg-config extra-cmake-modules))
+      (home-page "http://www.qtrac.eu/diffpdf-foss.html")
+      (synopsis "Compare two PDF files")
+      (description
+       "@command{diffpdf} lets you compare PDF files, offering three
+comparison modes: words, characters, and appearance.")
+      (license license:gpl2))))
 
 (define-public extractpdfmark
   (package
@@ -796,28 +824,25 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.21.1")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "0876sn5nd8vyw9d3d3bmripm119jy6734rs0ywppqzvccy839936"))
-       (modules '((guix build utils)))
+        (base32 "0ghwam1c1izks1n2zq2pr8z67nvrx4njk5rla86b75l4pw58mmxy"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-1)))
        (snippet
-        #~(begin
-            ;; Remove bundled software.  Keep patched variants.
-            (let* ((keep (list "extract" "freeglut" "lcms2"))
-                   (from "thirdparty")
-                   (kept (string-append from "~temp")))
-              (mkdir-p kept)
-              (for-each (lambda (file)
-                          (rename-file (string-append from "/" file)
-                                       (string-append kept "/" file)))
-                        keep)
-              (delete-file-recursively from)
-              (rename-file kept from))))))
+        ;; Remove bundled software.  Keep patched variants.
+        #~(with-directory-excursion "thirdparty"
+            (let ((keep '("README" "extract" "freeglut" "lcms2")))
+              (for-each delete-file-recursively
+                        (lset-difference string=?
+                                         (scandir ".")
+                                         (cons* "." ".." keep))))))))
     (build-system gnu-build-system)
     (inputs
      (list curl

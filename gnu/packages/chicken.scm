@@ -77,6 +77,24 @@ produces portable and efficient C, supports almost all of the R5RS Scheme
 language standard, and includes many enhancements and extensions.")
     (license license:bsd-3)))
 
+(define-public chicken-compile-file
+  (package
+    (name "chicken-compile-file")
+    (version "1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (egg-uri "compile-file" version))
+              (sha256
+               (base32
+                "1029i5ifr48vb3clvl8n50iq23rzc42szdcsl9320qmj1ksg9y93"))))
+    (build-system chicken-build-system)
+    (arguments `(#:egg-name "compile-file"))
+    (home-page "https://wiki.call-cc.org/egg/compile-file")
+    (synopsis "Programmatic compiler invocation")
+    (description "This egg provides a way to do on-the-fly compilation of
+source code and load it into the running process.")
+    (license license:bsd-3)))
+
 (define-public chicken-srfi-1
   (package
     (name "chicken-srfi-1")
@@ -155,6 +173,30 @@ scheme.")
 a characters and be compared to other character sets")
     (license (license:non-copyleft
               "http://wiki.call-cc.org/eggref/5/srfi-14#license"))))
+
+(define-public chicken-srfi-18
+  (package
+    (name "chicken-srfi-18")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (egg-uri "srfi-18" version))
+              (sha256
+               (base32
+                "0v2pkdck0ji1wiqgg8sg4z6rbkj2qw4vy4b9lx0w0pmhlxqpg1xd"))))
+    (build-system chicken-build-system)
+    (arguments
+     `(#:egg-name "srfi-18"))
+    (native-inputs (list chicken-compile-file))
+    (home-page "https://wiki.call-cc.org/egg/srfi-18")
+    (synopsis "Multithreading package, largely following SRFI-18")
+    (description "The threads implemented in CHICKEN are so called \"green\"
+threads, based on first-class continuations.  Native threads that map directly
+to the threads provided by the operating system are not supported.  The
+advantage of this is that threads are very lightweight and somewhat larger
+degree of determinism.  The disadvantage is that execution of Scheme code on
+multiple processor cores is not available.")
+    (license license:bsd-3)))
 
 (define-public chicken-srfi-69
   (package

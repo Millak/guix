@@ -252,20 +252,6 @@ library.")
        (sha256
         (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))))))
 
-(define-public spdlog-for-kodi
-  (package
-    (inherit spdlog)
-    (version "1.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gabime/spdlog")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "spdlog" version))
-       (sha256
-        (base32 "0dn44r3xbw1w0bk9yflnxkh3rzdq2bpxkks44skfmqig0rsj1f1x"))))))
-
 (define-public rsyslog
   (package
     (name "rsyslog")

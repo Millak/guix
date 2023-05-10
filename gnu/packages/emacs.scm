@@ -13,7 +13,7 @@
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse John Gildersleve <jessejohngildersleve@zohomail.eu>
@@ -345,9 +345,7 @@
            ;; must also provide zlib as an input.
            libpng
            zlib
-           (if (target-x86-64?)
-               librsvg
-               librsvg-2.40)
+           (librsvg-for-system)
            libxpm
            libxml2
            libice
@@ -460,6 +458,19 @@ languages.")
     (synopsis "Emacs text editor with @code{pgtk} and @code{tree-sitter} support")
     (description "This Emacs build implements graphical UI purely in terms
 of GTK and supports tree-sitter.")))
+
+(define-public emacs-next-pgtk-xwidgets
+  (package
+    (inherit emacs-next-pgtk)
+    (name "emacs-next-pgtk-xwidgets")
+    (synopsis "Emacs text editor with @code{xwidgets} and @code{pgtk} support")
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next-pgtk)
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-xwidgets" #$flags))))
+    (inputs
+     (modify-inputs (package-inputs emacs-next-pgtk)
+       (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
 
 (define-public emacs-minimal
   ;; This is the version that you should use as an input to packages that just

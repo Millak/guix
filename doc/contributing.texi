@@ -130,14 +130,16 @@ more information.
 Then, run:
 
 @example
-./configure --localstatedir=/var
+./configure --localstatedir=/var --sysconfdir=/etc
 @end example
 
 @noindent
 ... where @file{/var} is the normal @code{localstatedir} value
-(@pxref{The Store}, for information about this).  Note that you will
-probably not run @command{make install} at the end (you don't have to)
-but it's still important to pass the right @code{localstatedir}.
+(@pxref{The Store}, for information about this) and @file{/etc} is the
+normal @code{sysconfdir} value.  Note that you will probably not run
+@command{make install} at the end (you don't have to) but it's still
+important to pass the right @code{localstatedir} and @code{sysconfdir}
+values, which get recorded in the @code{(guix config)} Guile module.
 
 Finally, you can build Guix and, if you feel so inclined, run the tests
 (@pxref{Running the Test Suite}):
@@ -1395,28 +1397,8 @@ different name or email just for commits in this repository, you can
 use @command{git config --local}, or edit @file{.git/config} in the
 repository instead of @file{~/.gitconfig}.
 
-We provide some default settings in @file{etc/git/gitconfig} which
-modify how patches are generated, making them easier to read and apply.
-These settings can be applied by manually copying them to
-@file{.git/config} in your checkout, or by telling Git to include the
-whole file:
-
-@example
-git config --local include.path ../etc/git/gitconfig
-@end example
-
-From then on, any changes to @file{etc/git/gitconfig} would
-automatically take effect.
-
-Since the first patch in a series must be sent separately
-(@pxref{Sending a Patch Series}), it can also be helpful to tell
-@command{git format-patch} to handle the e-mail threading instead of
-@command{git send-email}:
-
-@example
-git config --local format.thread shallow
-git config --local sendemail.thread no
-@end example
+Other important Git configuration will automatically be configured when
+building the project (@pxref{Building from Git}).
 
 @node Sending a Patch Series
 @subsection Sending a Patch Series
@@ -1439,10 +1421,12 @@ output of the @code{git} package, i.e. @code{git:send-email}.
 
 The following command will create a patch email from the latest commit,
 open it in your @var{EDITOR} or @var{VISUAL} for editing, and send it to
-the Guix mailing list to be reviewed and merged:
+the Guix mailing list to be reviewed and merged.  Assuming you have
+already configured Git according to @xref{Configuring Git}, you can
+simply use:
 
 @example
-$ git send-email -1 -a --base=auto --to=guix-patches@@gnu.org
+$ git send-email --annotate -1
 @end example
 
 @quotation Tip
@@ -1453,31 +1437,26 @@ other than the @code{master} branch of
 @url{https://git.savannah.gnu.org/cgit/guix.git}.
 
 @example
-git send-email -1 -a --base=auto \
-    --subject-prefix='PATCH core-updates' \
-    --to=guix-patches@@gnu.org
+git send-email --annotate --subject-prefix='PATCH core-updates' -1
 @end example
 @end quotation
 
 The patch email contains a three-dash separator line after the commit
 message.  You may ``annotate'' the patch with explanatory text by adding
 it under this line.  If you do not wish to annotate the email, you may
-drop the @option{-a} flag (which is short for @option{--annotate}).
-
-The @option{--base=auto} flag automatically adds a note at the bottom
-of the patch of the commit it was based on, making it easier for
-maintainers to rebase and merge your patch.
+drop the @option{--annotate} option.
 
 If you need to send a revised patch, don't resend it like this or send
 a ``fix'' patch to be applied on top of the last one; instead, use
-@command{git commit -a} or @url{https://git-rebase.io, @command{git rebase}}
-to modify the commit, and use the @email{@var{ISSUE_NUMBER}@@debbugs.gnu.org}
-address and the @option{-v} flag with @command{git send-email}.
+@command{git commit --amend} or @url{https://git-rebase.io,
+@command{git rebase}} to modify the commit, and use the
+@email{@var{ISSUE_NUMBER}@@debbugs.gnu.org} address and the @option{-v}
+flag with @command{git send-email}.
 
 @example
-$ git commit -a
-$ git send-email -1 -a --base=auto -v@var{REVISION} \
-      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org
+$ git commit --amend
+$ git send-email --annotate -v@var{REVISION} \
+      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -1
 @end example
 
 @quotation Note
@@ -1494,14 +1473,14 @@ reply to incoming bugs and patches, which contains the bug number.
 @unnumberedsubsubsec Notifying Teams
 @anchor{Notifying Teams}
 @cindex teams
-The @file{etc/teams.scm} script may be used to notify all those who
-may be interested in your patch of its existence (@pxref{Teams}).
-Use @command{etc/teams.scm list-teams} to display all the teams,
-decide which team(s) your patch relates to, and use
-@command{etc/teams.scm cc} to output various @command{git send-email}
-flags which will notify the appropriate team members, or use
-@command{etc/teams.scm cc-members} to detect the appropriate teams
-automatically.
+If your git checkout has been correctly configured (@pxref{Configuring
+Git}), the @command{git send-email} command will automatically notify
+the appropriate team members, based on the scope of your changes.  This
+relies on the @file{etc/teams.scm} script, which can also be invoked
+manually if you do not use the preferred @command{git send-email}
+command to submit patches.  To list the available actions of the script,
+you can invoke it via the @command{etc/teams.scm help} command.  For
+more information regarding teams, see @xref{Teams}.
 
 @unnumberedsubsubsec Multiple Patches
 @anchor{Multiple Patches}
@@ -1528,9 +1507,7 @@ We can now send @emph{just} the cover letter to the
 that we can send the rest of the patches to.
 
 @example
-$ git send-email outgoing/0000-cover-letter.patch -a \
-      --to=guix-patches@@gnu.org \
-      $(etc/teams.scm cc-members ...)
+$ git send-email outgoing/0000-cover-letter.patch --annotate
 $ rm outgoing/0000-cover-letter.patch # we don't want to resend it!
 @end example
 
@@ -1542,9 +1519,7 @@ Once the Debbugs mailer has replied to your cover letter email, you
 can send the actual patches to the newly-created issue address.
 
 @example
-$ git send-email outgoing/*.patch \
-      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org \
-      $(etc/teams.scm cc-members ...)
+$ git send-email outgoing/*.patch --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org
 $ rm -rf outgoing # we don't need these anymore
 @end example
 
@@ -1553,14 +1528,13 @@ to send an amended patch series, since an issue already exists for
 the patchset.
 
 @example
-$ git send-email -@var{NUMBER_COMMITS} \
-      -v@var{REVISION} --base=auto \
+$ git send-email -@var{NUMBER_COMMITS} -v@var{REVISION} \
       --to @var{ISSUE_NUMBER}@@debbugs.gnu.org
 @end example
 
-If need be, you may use @option{--cover-letter -a} to send another cover
-letter, e.g. for explaining what's changed since the last revision, and
-these changes are necessary.
+If need be, you may use @option{--cover-letter --annotate} to send
+another cover letter, e.g. for explaining what's changed since the last
+revision, and these changes are necessary.
 
 @node Teams
 @subsection Teams
@@ -1587,7 +1561,8 @@ You can run the following command to have the @code{Mentors} team put in
 CC of a patch series:
 
 @example
-$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org $(./etc/teams.scm cc mentors) *.patch
+$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org \
+  --header-cmd='etc/teams.scm cc-mentors-header-cmd' *.patch
 @end example
 
 The appropriate team or teams can also be inferred from the modified
@@ -1596,7 +1571,7 @@ current Git repository to review, you can run:
 
 @example
 $ guix shell -D guix
-[env]$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org $(./etc/teams.scm cc-members HEAD~2 HEAD) *.patch
+[env]$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org -2
 @end example
 
 @node Tracking Bugs and Patches
@@ -1831,16 +1806,9 @@ To check that commits are signed with correct key, use:
 make authenticate
 @end example
 
-You can prevent yourself from accidentally pushing unsigned or signed
-with the wrong key commits to Savannah by using the pre-push Git hook
-located at @file{etc/git/pre-push}:
-
-@example
-cp etc/git/pre-push .git/hooks/pre-push
-@end example
-
-It additionally calls @code{make check-channel-news} to be sure
-@file{news.scm} file is correct.
+To avoid accidentally pushing unsigned or signed with the wrong key
+commits to Savannah, make sure to configure Git according to
+@xref{Configuring Git}.
 
 @subsection Commit Policy
 

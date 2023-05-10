@@ -1,0 +1,275 @@
+From cd74e00d0e4f435d548444e1a5edc20155e371d7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jonas=20T=C3=B8rnes?= <jonas.tornes@gmail.com>
+Date: Wed, 15 Feb 2023 18:47:52 +0100
+Subject: [PATCH 1/5] Update RandomForesetRegressor criterion to be inline with
+ scikit-learn change from mse to squared error this has the same funcitonality
+
+---
+ requirements.txt         |  6 +++---
+ setup.py                 |  6 +++---
+ skopt/learning/forest.py | 30 +++++++++++++++---------------
+ 3 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/requirements.txt b/requirements.txt
+index 1eaa3083a..23ab3d856 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,6 +1,6 @@
+-numpy>=1.13.3
+-scipy>=0.19.1
+-scikit-learn>=0.20
++numpy>=1.23.2
++scipy>=1.10.0
++scikit-learn>=1.2.1
+ matplotlib>=2.0.0
+ pytest
+ pyaml>=16.9
+diff --git a/setup.py b/setup.py
+index 8879da880..e7f921765 100644
+--- a/setup.py
++++ b/setup.py
+@@ -42,9 +42,9 @@
+       classifiers=CLASSIFIERS,
+       packages=['skopt', 'skopt.learning', 'skopt.optimizer', 'skopt.space',
+                 'skopt.learning.gaussian_process', 'skopt.sampler'],
+-      install_requires=['joblib>=0.11', 'pyaml>=16.9', 'numpy>=1.13.3',
+-                        'scipy>=0.19.1',
+-                        'scikit-learn>=0.20.0'],
++      install_requires=['joblib>=0.11', 'pyaml>=16.9', 'numpy>=1.23.2',
++                        'scipy>=1.10.0',
++                        'scikit-learn>=1.2.1'],
+       extras_require={
+         'plots':  ["matplotlib>=2.0.0"]
+         }
+diff --git a/skopt/learning/forest.py b/skopt/learning/forest.py
+index 096770c1d..ebde568f5 100644
+--- a/skopt/learning/forest.py
++++ b/skopt/learning/forest.py
+@@ -27,7 +27,7 @@ def _return_std(X, trees, predictions, min_variance):
+     -------
+     std : array-like, shape=(n_samples,)
+         Standard deviation of `y` at `X`. If criterion
+-        is set to "mse", then `std[i] ~= std(y | X[i])`.
++        is set to "squared_error", then `std[i] ~= std(y | X[i])`.
+ 
+     """
+     # This derives std(y | x) as described in 4.3.2 of arXiv:1211.0906
+@@ -61,9 +61,9 @@ class RandomForestRegressor(_sk_RandomForestRegressor):
+     n_estimators : integer, optional (default=10)
+         The number of trees in the forest.
+ 
+-    criterion : string, optional (default="mse")
++    criterion : string, optional (default="squared_error")
+         The function to measure the quality of a split. Supported criteria
+-        are "mse" for the mean squared error, which is equal to variance
++        are "squared_error" for the mean squared error, which is equal to variance
+         reduction as feature selection criterion, and "mae" for the mean
+         absolute error.
+ 
+@@ -194,7 +194,7 @@ class RandomForestRegressor(_sk_RandomForestRegressor):
+     .. [1] L. Breiman, "Random Forests", Machine Learning, 45(1), 5-32, 2001.
+ 
+     """
+-    def __init__(self, n_estimators=10, criterion='mse', max_depth=None,
++    def __init__(self, n_estimators=10, criterion='squared_error', max_depth=None,
+                  min_samples_split=2, min_samples_leaf=1,
+                  min_weight_fraction_leaf=0.0, max_features='auto',
+                  max_leaf_nodes=None, min_impurity_decrease=0.,
+@@ -228,20 +228,20 @@ def predict(self, X, return_std=False):
+         Returns
+         -------
+         predictions : array-like of shape = (n_samples,)
+-            Predicted values for X. If criterion is set to "mse",
++            Predicted values for X. If criterion is set to "squared_error",
+             then `predictions[i] ~= mean(y | X[i])`.
+ 
+         std : array-like of shape=(n_samples,)
+             Standard deviation of `y` at `X`. If criterion
+-            is set to "mse", then `std[i] ~= std(y | X[i])`.
++            is set to "squared_error", then `std[i] ~= std(y | X[i])`.
+ 
+         """
+         mean = super(RandomForestRegressor, self).predict(X)
+ 
+         if return_std:
+-            if self.criterion != "mse":
++            if self.criterion != "squared_error":
+                 raise ValueError(
+-                    "Expected impurity to be 'mse', got %s instead"
++                    "Expected impurity to be 'squared_error', got %s instead"
+                     % self.criterion)
+             std = _return_std(X, self.estimators_, mean, self.min_variance)
+             return mean, std
+@@ -257,9 +257,9 @@ class ExtraTreesRegressor(_sk_ExtraTreesRegressor):
+     n_estimators : integer, optional (default=10)
+         The number of trees in the forest.
+ 
+-    criterion : string, optional (default="mse")
++    criterion : string, optional (default="squared_error")
+         The function to measure the quality of a split. Supported criteria
+-        are "mse" for the mean squared error, which is equal to variance
++        are "squared_error" for the mean squared error, which is equal to variance
+         reduction as feature selection criterion, and "mae" for the mean
+         absolute error.
+ 
+@@ -390,7 +390,7 @@ class ExtraTreesRegressor(_sk_ExtraTreesRegressor):
+     .. [1] L. Breiman, "Random Forests", Machine Learning, 45(1), 5-32, 2001.
+ 
+     """
+-    def __init__(self, n_estimators=10, criterion='mse', max_depth=None,
++    def __init__(self, n_estimators=10, criterion='squared_error', max_depth=None,
+                  min_samples_split=2, min_samples_leaf=1,
+                  min_weight_fraction_leaf=0.0, max_features='auto',
+                  max_leaf_nodes=None, min_impurity_decrease=0.,
+@@ -425,19 +425,19 @@ def predict(self, X, return_std=False):
+         Returns
+         -------
+         predictions : array-like of shape=(n_samples,)
+-            Predicted values for X. If criterion is set to "mse",
++            Predicted values for X. If criterion is set to "squared_error",
+             then `predictions[i] ~= mean(y | X[i])`.
+ 
+         std : array-like of shape=(n_samples,)
+             Standard deviation of `y` at `X`. If criterion
+-            is set to "mse", then `std[i] ~= std(y | X[i])`.
++            is set to "squared_error", then `std[i] ~= std(y | X[i])`.
+         """
+         mean = super(ExtraTreesRegressor, self).predict(X)
+ 
+         if return_std:
+-            if self.criterion != "mse":
++            if self.criterion != "squared_error":
+                 raise ValueError(
+-                    "Expected impurity to be 'mse', got %s instead"
++                    "Expected impurity to be 'squared_error', got %s instead"
+                     % self.criterion)
+             std = _return_std(X, self.estimators_, mean, self.min_variance)
+             return mean, std
+
+From 6eb2d4ddaa299ae47d9a69ffb31ebc4ed366d1c1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jonas=20T=C3=B8rnes?= <jonas.tornes@gmail.com>
+Date: Thu, 16 Feb 2023 11:34:58 +0100
+Subject: [PATCH 2/5] Change test to be consistent with code changes.
+
+---
+ skopt/learning/tests/test_forest.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/skopt/learning/tests/test_forest.py b/skopt/learning/tests/test_forest.py
+index 0711cde9d..c6ed610f3 100644
+--- a/skopt/learning/tests/test_forest.py
++++ b/skopt/learning/tests/test_forest.py
+@@ -35,7 +35,7 @@ def test_random_forest():
+     assert_array_equal(clf.predict(T), true_result)
+     assert 10 == len(clf)
+ 
+-    clf = RandomForestRegressor(n_estimators=10, criterion="mse",
++    clf = RandomForestRegressor(n_estimators=10, criterion="squared_error",
+                                 max_depth=None, min_samples_split=2,
+                                 min_samples_leaf=1,
+                                 min_weight_fraction_leaf=0.,
+@@ -80,7 +80,7 @@ def test_extra_forest():
+     assert_array_equal(clf.predict(T), true_result)
+     assert 10 == len(clf)
+ 
+-    clf = ExtraTreesRegressor(n_estimators=10, criterion="mse",
++    clf = ExtraTreesRegressor(n_estimators=10, criterion="squared_error",
+                               max_depth=None, min_samples_split=2,
+                               min_samples_leaf=1, min_weight_fraction_leaf=0.,
+                               max_features="auto", max_leaf_nodes=None,
+
+From 52c620add07d845debbaff2ce2b1c5faf3eae79b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jonas=20T=C3=B8rnes?= <jonas.tornes@gmail.com>
+Date: Wed, 22 Feb 2023 16:59:03 +0100
+Subject: [PATCH 3/5] Update skopt/learning/forest.py
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fix max line width
+
+Co-authored-by: Roland Laurès <roland@laures-valdivia.net>
+---
+ skopt/learning/forest.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/skopt/learning/forest.py b/skopt/learning/forest.py
+index ebde568f5..07dc42664 100644
+--- a/skopt/learning/forest.py
++++ b/skopt/learning/forest.py
+@@ -194,8 +194,8 @@ class RandomForestRegressor(_sk_RandomForestRegressor):
+     .. [1] L. Breiman, "Random Forests", Machine Learning, 45(1), 5-32, 2001.
+ 
+     """
+-    def __init__(self, n_estimators=10, criterion='squared_error', max_depth=None,
+-                 min_samples_split=2, min_samples_leaf=1,
++    def __init__(self, n_estimators=10, criterion='squared_error',
++                 max_depth=None, min_samples_split=2, min_samples_leaf=1,
+                  min_weight_fraction_leaf=0.0, max_features='auto',
+                  max_leaf_nodes=None, min_impurity_decrease=0.,
+                  bootstrap=True, oob_score=False,
+
+From 52a7db95cb567186fb4e9003139fea4592bdbf05 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jonas=20T=C3=B8rnes?= <jonas.tornes@gmail.com>
+Date: Wed, 22 Feb 2023 17:03:25 +0100
+Subject: [PATCH 4/5] Fix line widht issues
+
+---
+ skopt/learning/forest.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/skopt/learning/forest.py b/skopt/learning/forest.py
+index 07dc42664..d4c24456b 100644
+--- a/skopt/learning/forest.py
++++ b/skopt/learning/forest.py
+@@ -390,8 +390,8 @@ class ExtraTreesRegressor(_sk_ExtraTreesRegressor):
+     .. [1] L. Breiman, "Random Forests", Machine Learning, 45(1), 5-32, 2001.
+ 
+     """
+-    def __init__(self, n_estimators=10, criterion='squared_error', max_depth=None,
+-                 min_samples_split=2, min_samples_leaf=1,
++    def __init__(self, n_estimators=10, criterion='squared_error',
++                 max_depth=None, min_samples_split=2, min_samples_leaf=1,
+                  min_weight_fraction_leaf=0.0, max_features='auto',
+                  max_leaf_nodes=None, min_impurity_decrease=0.,
+                  bootstrap=False, oob_score=False,
+
+From 6b185e489fb4a56625e8505292a20c80434f0633 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jonas=20T=C3=B8rnes?= <jonas.tornes@gmail.com>
+Date: Wed, 22 Feb 2023 18:37:11 +0100
+Subject: [PATCH 5/5] Fix lin width issues for comments.
+
+---
+ skopt/learning/forest.py | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/skopt/learning/forest.py b/skopt/learning/forest.py
+index d4c24456b..eb3bd6648 100644
+--- a/skopt/learning/forest.py
++++ b/skopt/learning/forest.py
+@@ -63,9 +63,9 @@ class RandomForestRegressor(_sk_RandomForestRegressor):
+ 
+     criterion : string, optional (default="squared_error")
+         The function to measure the quality of a split. Supported criteria
+-        are "squared_error" for the mean squared error, which is equal to variance
+-        reduction as feature selection criterion, and "mae" for the mean
+-        absolute error.
++        are "squared_error" for the mean squared error, which is equal to
++        variance reduction as feature selection criterion, and "mae" for the
++        mean absolute error.
+ 
+     max_features : int, float, string or None, optional (default="auto")
+         The number of features to consider when looking for the best split:
+@@ -259,9 +259,9 @@ class ExtraTreesRegressor(_sk_ExtraTreesRegressor):
+ 
+     criterion : string, optional (default="squared_error")
+         The function to measure the quality of a split. Supported criteria
+-        are "squared_error" for the mean squared error, which is equal to variance
+-        reduction as feature selection criterion, and "mae" for the mean
+-        absolute error.
++        are "squared_error" for the mean squared error, which is equal to
++        variance reduction as feature selection criterion, and "mae" for the
++        mean absolute error.
+ 
+     max_features : int, float, string or None, optional (default="auto")
+         The number of features to consider when looking for the best split:

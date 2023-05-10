@@ -4,6 +4,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -293,32 +294,33 @@ look up the development dependencs for the given crate."
           (match-lambda* (((name _) ...)
                           (apply string-ci<? name)))))
 
-  (and crate version*
-       (let* ((dependencies (crate-version-dependencies version*))
-              (dep-crates dev-dep-crates (partition normal-dependency? dependencies))
-              (cargo-inputs (sort-map-dependencies dep-crates))
-              (cargo-development-inputs (if include-dev-deps?
-                                            (sort-map-dependencies dev-dep-crates)
-                                            '())))
-         (values
-          (make-crate-sexp #:build? include-dev-deps?
-                           #:name crate-name
-                           #:version (crate-version-number version*)
-                           #:cargo-inputs cargo-inputs
-                           #:cargo-development-inputs cargo-development-inputs
-                           #:home-page
-                           (let ((home-page (crate-home-page crate)))
-                             (if (string? home-page)
-                                 home-page
-                                 (let ((repository (crate-repository crate)))
-                                   (if (string? repository)
-                                       repository
-                                       ""))))
-                           #:synopsis (crate-description crate)
-                           #:description (crate-description crate)
-                           #:license (and=> (crate-version-license version*)
-                                            string->license))
-          (append cargo-inputs cargo-development-inputs)))))
+  (if (and crate version*)
+      (let* ((dependencies (crate-version-dependencies version*))
+             (dep-crates dev-dep-crates (partition normal-dependency? dependencies))
+             (cargo-inputs (sort-map-dependencies dep-crates))
+             (cargo-development-inputs (if include-dev-deps?
+                                           (sort-map-dependencies dev-dep-crates)
+                                           '())))
+        (values
+         (make-crate-sexp #:build? include-dev-deps?
+                          #:name crate-name
+                          #:version (crate-version-number version*)
+                          #:cargo-inputs cargo-inputs
+                          #:cargo-development-inputs cargo-development-inputs
+                          #:home-page
+                          (let ((home-page (crate-home-page crate)))
+                            (if (string? home-page)
+                                home-page
+                                (let ((repository (crate-repository crate)))
+                                  (if (string? repository)
+                                      repository
+                                      ""))))
+                          #:synopsis (crate-description crate)
+                          #:description (crate-description crate)
+                          #:license (and=> (crate-version-license version*)
+                                           string->license))
+         (append cargo-inputs cargo-development-inputs)))
+      (values #f '())))
 
 (define* (crate-recursive-import crate-name #:key version)
   (recursive-import crate-name

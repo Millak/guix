@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
@@ -273,14 +273,14 @@
 (define-public httpd
   (package
     (name "httpd")
-    (version "2.4.52")
+    (version "2.4.57")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/httpd/httpd-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1"))))
+               "0ajdz5f2w9nbmqydip2mv9m4xlnc4swmw7mqzgnrbq4mxr5bik6v"))))
     (build-system gnu-build-system)
     (native-inputs (list `(,pcre "bin")))       ;for 'pcre-config'
     (inputs (list apr apr-util openssl perl)) ; needed to run bin/apxs
@@ -305,10 +305,25 @@ and its related documentation.")
     (license license:asl2.0)
     (home-page "https://httpd.apache.org/")))
 
+;; A package variant that may be out of date and vulnerable. Only for use in
+;; test suites and should never be referred to by a built package.
+(define-public httpd/pinned
+  (hidden-package
+    (package
+      (inherit httpd)
+      (version "2.4.52")
+      (source (origin
+               (method url-fetch)
+               (uri (string-append "mirror://apache/httpd/httpd-"
+                                   version ".tar.bz2"))
+               (sha256
+                (base32
+                 "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1")))))))
+
 (define-public mod-wsgi
   (package
     (name "mod-wsgi")
-    (version "4.7.1")
+    (version "4.9.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -317,17 +332,19 @@ and its related documentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1savh6h3qds20mwn1nqasmqzcp57pdhfc9v4b4k78d6q28y0r17s"))))
+                "1zf921nd9xxdvvc8awzzfrljr0n29vi28mlam0jdwvsk0xv4gd7a"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                 ; TODO: can't figure out if there are tests
+     `(#:disallowed-references (,httpd)
+       #:tests? #f                 ; TODO: can't figure out if there are tests
        #:make-flags (list
                      (string-append "DESTDIR="
                                     (assoc-ref %outputs "out"))
                      "LIBEXECDIR=/modules")))
+    (native-inputs
+     `(("httpd" ,httpd)))
     (inputs
-     `(("httpd" ,httpd)
-       ("python" ,python-wrapper)))
+     `(("python" ,python-wrapper)))
     (synopsis "Apache HTTPD module for Python WSGI applications")
     (description
      "The mod_wsgi module for the Apache HTTPD Server adds support for running
@@ -1767,8 +1784,12 @@ UTS#46.")
              (when tests?
                ;; The "Go Race Detector" is only supported on 64-bit
                ;; platforms, this variable disables it.
-               (unless ,(target-64bit?)
-                 (setenv "ESBUILD_RACE" ""))
+               ;; TODO: Causes too many rebuilds, rewrite to limit to x86_64,
+               ;; aarch64 and ppc64le.
+               ,(if (target-riscv64?)
+                  `(setenv "ESBUILD_RACE" "")
+                  `(unless ,(target-64bit?)
+                     (setenv "ESBUILD_RACE" "")))
                (with-directory-excursion (string-append "src/" unpack-path)
                  (invoke "make" "test-go")))
              #t)))))
@@ -4749,8 +4770,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "8c2f97eef82412a4309273e22b6edeaf53dc2d0e")
-        (revision "39"))
+  (let ((commit "3734a85650cc4a34d5bfa06d151edcc7efe7144e")
+        (revision "40"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4762,7 +4783,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "12k930vkg07i9xysli3fxbgn3hbqy2l5s9rybm7ayvbcmbdqmgcn"))))
+                  "1a3li1gfll9w6w7amk4av1565abw8i4a706rfkd5lg36jikkap4q"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)

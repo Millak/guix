@@ -1482,13 +1482,13 @@ CSV, DB3, iXF, SQLite, MS-SQL or MySQL to PostgreSQL.")
 (define-public python-pymysql
   (package
     (name "python-pymysql")
-    (version "0.9.3")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyMySQL" version))
        (sha256
-        (base32 "1ry8lxgdc1p3k7gbw20r405jqi5lvhi5wk83kxdbiv8xv3f5kh6q"))))
+        (base32 "0dmdszskfri11b9m6n3lag31vzi10aqxz9gc583md3gka2ijfsc1"))))
     (build-system python-build-system)
     (inputs
      (list python-cryptography))
@@ -3022,14 +3022,14 @@ protocol with Cython for performance.")
 (define-public python-aiomysql
   (package
     (name "python-aiomysql")
-    (version "0.0.21")
+    (version "0.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "aiomysql" version))
         (sha256
-          (base32 "0b442d0jb82z3lk19ylmm64ix88ppz7gay08bxld538ivg06j5c1"))))
-    (build-system python-build-system)
+          (base32 "0zhhisf2bz2hv0vcklw45k54yr0f7gx61gnq4lc7vdp6v97nqs0d"))))
+    (build-system pyproject-build-system)
     (arguments '(#:tests? #f))           ;test suite requires docker
     (propagated-inputs (list python-pymysql))
     (home-page "https://github.com/aio-libs/aiomysql")
@@ -3410,14 +3410,14 @@ on localhost.")
 (define-public python-sqlalchemy
   (package
     (name "python-sqlalchemy")
-    (version "1.4.35")
+    (version "1.4.42")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "SQLAlchemy" version))
       (sha256
-       (base32 "1ddab00d5mpzg25r1qxccma2zb551hhmymsy1ycp6r6w04xq3z1g"))))
-    (build-system python-build-system)
+       (base32 "0qzkxy47y06fqh1m7a0p7q2r9h48x9k5kl3znzhx2vj79j8l2zhp"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-cython ; for C extensions
            python-pytest python-mock python-pytest-xdist)) ; for tests
@@ -3425,16 +3425,10 @@ on localhost.")
      (list python-greenlet))
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        "-n" (number->string (parallel-job-count))
-                        ;; The memory usage tests are very expensive and run in
-                        ;; sequence; skip them.
-                        "-k" "not test_memusage.py")))))))
+      #:test-flags
+      '(list ;; The memory usage tests are very expensive and run in sequence;
+             ;; skip them.
+             "-k" "not test_memusage.py")))
     (home-page "https://www.sqlalchemy.org")
     (synopsis "Database abstraction library")
     (description
@@ -3719,27 +3713,28 @@ into Python.")
 (define-public python-aiosqlite
   (package
     (name "python-aiosqlite")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiosqlite" version))
-       (sha256
-        (base32
-         "0lgfpbkcd730hbgj3zlrbx2y8fzvdns2zj3s4r4l31n49g1arrph"))))
-    (build-system python-build-system)
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/omnilib/aiosqlite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a8sggh1wwbpl46k5qcfmp97s9hjysna0x7mwwc53kyfm0m95wf8"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "python" "-m" "unittest" "aiosqlite.tests")
-                          (format #t "test suite not run~%"))
-                      #t)))))
-    (propagated-inputs
-     (list python-typing-extensions))
-    (native-inputs
-     (list python-aiounittest))
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "coverage" "run" "-m"
+                                      "aiosqlite.tests")
+                              (invoke "python" "-m" "coverage" "report")))))))
+    (native-inputs (list python-flit-core
+                         python-coverage
+                         python-mypy))
     (home-page "https://github.com/jreese/aiosqlite")
     (synopsis
      "Asyncio bridge for sqlite3")
@@ -3752,13 +3747,13 @@ managers for automatically closing connections.")
 (define-public python-databases
   (package
     (name "python-databases")
-    (version "0.5.5")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "databases" version))
        (sha256
-        (base32 "0dzb998kg35xmd50ih168320vih2w3ich798r8fc4lf9q4bb1ih2"))))
+        (base32 "0x5nqhzgjqimv2ybjbzy5vv0l23g0n1g5f6fnyahbf1f7nfl2bga"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-aiosqlite
@@ -3768,8 +3763,9 @@ managers for automatically closing connections.")
            python-asyncmy
            python-sqlalchemy))
     (home-page "https://github.com/encode/databases")
-    (synopsis "Async database support for Python")
-    (description "This package implements async database support for Python.")
+    (synopsis "Asynchronous database abstraction library")
+    (description "Databases provides a wrapper around asynchronous database
+libraries with SQLALchemy.")
     (license license:bsd-3)))
 
 (define-public python-psycopg2
@@ -4276,7 +4272,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "11.0.0")
+    (version "12.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4286,104 +4282,98 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06d3jjxagj5f14j9c48rh63x7pr9f96v69anjnpc6lakr0gkpi1d"))))
+         "057n3l9bpnfn8fqlqblkdz4w4rkmkr7zrh3adlgfw4nipwmm38zj"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'enter-source-directory
-           (lambda _ (chdir "cpp")))
-         (add-after 'unpack 'set-env
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cpp/cmake_modules/ThirdpartyToolchain.cmake"
-               (("set\\(xsimd_SOURCE.*") ""))
-             (setenv "BOOST_ROOT" (assoc-ref inputs "boost"))
-             (setenv "BROTLI_HOME" (assoc-ref inputs "brotli"))
-             (setenv "FLATBUFFERS_HOME" (assoc-ref inputs "flatbuffers"))
-             (setenv "RAPIDJSON_HOME" (assoc-ref inputs "rapidjson")))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'enter-source-directory
+            (lambda _ (chdir "cpp")))
+          (add-after 'unpack 'set-env
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "cpp/cmake_modules/ThirdpartyToolchain.cmake"
+                (("set\\(xsimd_SOURCE.*") ""))
+              (setenv "BOOST_ROOT" #$(this-package-input "boost"))
+              (setenv "BROTLI_HOME" #$(this-package-input "brotli"))
+              (setenv "FLATBUFFERS_HOME" #$(this-package-input "flatbuffers"))
+              (setenv "RAPIDJSON_HOME" #$(this-package-input "rapidjson")))))
        #:build-type "Release"
        #:configure-flags
-       (list "-DARROW_PYTHON=ON"
-             "-DARROW_GLOG=ON"
-             ;; Parquet options
-             "-DARROW_PARQUET=ON"
-             "-DPARQUET_BUILD_EXECUTABLES=ON"
-             ;; The maintainers disallow using system versions of
-             ;; jemalloc:
-             ;; https://issues.apache.org/jira/browse/ARROW-3507. This
-             ;; is unfortunate because jemalloc increases performance:
-             ;; https://arrow.apache.org/blog/2018/07/20/jemalloc/.
-             "-DARROW_JEMALLOC=OFF"
+       #~(list "-DARROW_PYTHON=ON"
+               "-DARROW_GLOG=ON"
+               ;; Parquet options
+               "-DARROW_PARQUET=ON"
+               "-DPARQUET_BUILD_EXECUTABLES=ON"
+               ;; The maintainers disallow using system versions of
+               ;; jemalloc:
+               ;; https://issues.apache.org/jira/browse/ARROW-3507. This
+               ;; is unfortunate because jemalloc increases performance:
+               ;; https://arrow.apache.org/blog/2018/07/20/jemalloc/.
+               "-DARROW_JEMALLOC=OFF"
 
-             ;; The CMake option ARROW_DEPENDENCY_SOURCE is a global
-             ;; option that instructs the build system how to resolve
-             ;; each dependency. SYSTEM = Finding the dependency in
-             ;; system paths using CMake's built-in find_package
-             ;; function, or using pkg-config for packages that do not
-             ;; have this feature
-             "-DARROW_DEPENDENCY_SOURCE=SYSTEM"
-             "-Dxsimd_SOURCE=SYSTEM"
+               ;; The CMake option ARROW_DEPENDENCY_SOURCE is a global
+               ;; option that instructs the build system how to resolve
+               ;; each dependency. SYSTEM = Finding the dependency in
+               ;; system paths using CMake's built-in find_package
+               ;; function, or using pkg-config for packages that do not
+               ;; have this feature
+               "-DARROW_DEPENDENCY_SOURCE=SYSTEM"
+               "-Dxsimd_SOURCE=SYSTEM"
 
-             "-DARROW_RUNTIME_SIMD_LEVEL=NONE"
-             "-DARROW_SIMD_LEVEL=NONE"
-             "-DARROW_PACKAGE_KIND=Guix"
+               "-DARROW_RUNTIME_SIMD_LEVEL=NONE"
+               "-DARROW_SIMD_LEVEL=NONE"
+               "-DARROW_PACKAGE_KIND=Guix"
 
-             ;; Split output into its component packages.
-             (string-append "-DCMAKE_INSTALL_PREFIX="
-                            (assoc-ref %outputs "lib"))
-             (string-append "-DCMAKE_INSTALL_RPATH="
-                            (assoc-ref %outputs "lib")
-                            "/lib")
-             (string-append "-DCMAKE_INSTALL_BINDIR="
-                            (assoc-ref %outputs "out")
-                            "/bin")
-             (string-append "-DCMAKE_INSTALL_INCLUDEDIR="
-                            (assoc-ref %outputs "include")
-                            "/share/include")
+               ;; Split output into its component packages.
+               (string-append "-DCMAKE_INSTALL_PREFIX=" #$output:lib)
+               (string-append "-DCMAKE_INSTALL_RPATH=" #$output:lib "/lib")
+               (string-append "-DCMAKE_INSTALL_BINDIR=" #$output "/bin")
+               (string-append "-DCMAKE_INSTALL_INCLUDEDIR=" #$output:include
+                              "/share/include")
 
+               "-DARROW_WITH_SNAPPY=ON"
+               "-DARROW_WITH_ZLIB=ON"
+               "-DARROW_WITH_ZSTD=ON"
+               "-DARROW_WITH_LZ4=ON"
+               "-DARROW_COMPUTE=ON"
+               "-DARROW_CSV=ON"
+               "-DARROW_DATASET=ON"
+               "-DARROW_FILESYSTEM=ON"
+               "-DARROW_HDFS=ON"
+               "-DARROW_JSON=ON"
+               ;; Arrow Python C++ integration library (required for
+               ;; building pyarrow). This library must be built against
+               ;; the same Python version for which you are building
+               ;; pyarrow. NumPy must also be installed. Enabling this
+               ;; option also enables ARROW_COMPUTE, ARROW_CSV,
+               ;; ARROW_DATASET, ARROW_FILESYSTEM, ARROW_HDFS, and
+               ;; ARROW_JSON.
+               "-DARROW_PYTHON=ON"
 
-             "-DARROW_WITH_SNAPPY=ON"
-             "-DARROW_WITH_ZLIB=ON"
-             "-DARROW_WITH_ZSTD=ON"
-             "-DARROW_WITH_LZ4=ON"
-             "-DARROW_COMPUTE=ON"
-             "-DARROW_CSV=ON"
-             "-DARROW_DATASET=ON"
-             "-DARROW_FILESYSTEM=ON"
-             "-DARROW_HDFS=ON"
-             "-DARROW_JSON=ON"
-             ;; Arrow Python C++ integration library (required for
-             ;; building pyarrow). This library must be built against
-             ;; the same Python version for which you are building
-             ;; pyarrow. NumPy must also be installed. Enabling this
-             ;; option also enables ARROW_COMPUTE, ARROW_CSV,
-             ;; ARROW_DATASET, ARROW_FILESYSTEM, ARROW_HDFS, and
-             ;; ARROW_JSON.
-             "-DARROW_PYTHON=ON"
-
-             ;; Building the tests forces on all the
-             ;; optional features and the use of static
-             ;; libraries.
-             "-DARROW_BUILD_TESTS=OFF"
-             "-DBENCHMARK_ENABLE_GTEST_TESTS=OFF"
-             ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
-             "-DARROW_BUILD_STATIC=OFF")))
+               ;; Building the tests forces on all the
+               ;; optional features and the use of static
+               ;; libraries.
+               "-DARROW_BUILD_TESTS=OFF"
+               "-DBENCHMARK_ENABLE_GTEST_TESTS=OFF"
+               ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
+               "-DARROW_BUILD_STATIC=OFF")))
     (inputs
-     `(("boost" ,boost)
-       ("brotli" ,brotli)
-       ("bzip2" ,bzip2)
-       ("double-conversion" ,double-conversion)
-       ("gflags" ,gflags)
-       ("glog" ,glog)
-       ("grpc" ,grpc)
-       ("protobuf" ,protobuf)
-       ("python-3" ,python)
-       ("python-numpy" ,python-numpy)
-       ("rapidjson" ,rapidjson)
-       ("re2" ,re2)
-       ("snappy" ,snappy)
-       ("xsimd" ,xsimd)))
+     (list boost
+           brotli
+           bzip2
+           double-conversion
+           gflags
+           glog
+           grpc
+           protobuf
+           python
+           python-numpy
+           rapidjson
+           re2
+           snappy
+           xsimd))
     ;; These are all listed under Requires.private in arrow.pc
     (propagated-inputs
      (list `(,apache-thrift "lib") lz4 utf8proc zlib

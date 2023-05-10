@@ -277,51 +277,53 @@ this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
       (license license:gpl2+))))
 
 (define-public airspyhf
-  (package
-    (name "airspyhf")
-    (version "1.6.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/airspy/airspyhf")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0n699i5a9fzzhf80fcjlqq6p2a013rzlwmwv4nmwfafy6c8cr924"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libusb))
-    (arguments
-     '(#:configure-flags '("-DINSTALL_UDEV_RULES=ON")
-       #:tests? #f ; No tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "tools/CMakeLists.txt"
-               (("DESTINATION \"/etc/udev/")
-                (string-append "DESTINATION \""
-                               (assoc-ref outputs "out")
-                               "/lib/udev/")))))
-         (add-after 'fix-paths 'fix-udev-rules
-           (lambda _
-             (substitute* "tools/52-airspyhf.rules"
-               ;; The plugdev group does not exist; use dialout as in
-               ;; the hackrf package.
-               (("GROUP=\"plugdev\"")
-                "GROUP=\"dialout\"")))))))
-    (home-page "https://github.com/airspy/airspyhf")
-    (synopsis "Software defined radio driver for Airspy HF+")
-    (description
-     "This package provides the driver and utilities for controlling the Airspy
-HF+ Software Defined Radio (SDR) over USB.
+  (let ((commit "40836c59d35d989fe00ac12ef774df736a36c6e4")
+        (revision "1"))
+    (package
+      (name "airspyhf")
+      (version (git-version "1.6.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/airspy/airspyhf")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1s3fm856smvja3cg6fy615igir8wb0dzbp0q25v3vls0qj6pvprb"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list libusb))
+      (arguments
+       '(#:configure-flags '("-DINSTALL_UDEV_RULES=ON")
+         #:tests? #f ; No tests
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "tools/CMakeLists.txt"
+                 (("DESTINATION \"/etc/udev/")
+                  (string-append "DESTINATION \""
+                                 (assoc-ref outputs "out")
+                                 "/lib/udev/")))))
+           (add-after 'fix-paths 'fix-udev-rules
+             (lambda _
+               (substitute* "tools/52-airspyhf.rules"
+                 ;; The plugdev group does not exist; use dialout as in
+                 ;; the hackrf package.
+                 (("GROUP=\"plugdev\"")
+                  "GROUP=\"dialout\"")))))))
+      (home-page "https://github.com/airspy/airspyhf")
+      (synopsis "Software defined radio driver for Airspy HF+")
+      (description
+       "This package provides the driver and utilities for controlling the
+Airspy HF+ Software Defined Radio (SDR) over USB.
 
 To install the airspyhf udev rules, you must extend @code{udev-service-type}
 with this package.  E.g.: @code{(udev-rules-service 'airspyhf airspyhf)}")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public soapysdr
   (package
@@ -1098,7 +1100,7 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.15.10")
+    (version "2.16")
     (source
      (origin
        (method git-fetch)
@@ -1107,7 +1109,7 @@ satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c1s3y7w0gcav666mnkwkb60cczab0rkwdkaqicq1768fsgyhad3"))))
+        (base32 "189cgmp88kabv823l5bfn1xfyyj6sldi5sdbmflvncxicf51b0yp"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -2515,53 +2517,56 @@ various hardware.")
     (license license:gpl3+)))
 
 (define-public sdr++
-  (package
-    (name "sdr++")
-    (version "1.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AlexandreRouma/SDRPlusPlus")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xwbz6yyca6wmzad5ykxw6i0r8jzc7i3jbzq7mhp8caiymd6knw3"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("airspyhf" ,airspyhf)
-       ("alsa-lib" ,alsa-lib)
-       ("codec2" ,codec2)
-       ("fftwf" ,fftwf)
-       ("glew" ,glew)
-       ("glfw" ,glfw)
-       ("hackrf" ,hackrf)
-       ("jack" ,jack-2)
-       ("libusb" ,libusb)
-       ("pulseaudio" ,pulseaudio)
-       ("rtaudio" ,rtaudio)
-       ("rtl-sdr" ,rtl-sdr)
-       ("soapysdr" ,soapysdr)
-       ("volk" ,volk)))
-    (arguments
-     `(#:tests? #f ; No test suite.
-       #:configure-flags '("-DOPT_BUILD_AIRSPY_SOURCE=OFF"
-                           "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
-                           "-DOPT_BUILD_M17_DECODER=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("/usr")
-                (assoc-ref outputs "out"))))))))
-    (home-page "https://github.com/AlexandreRouma/SDRPlusPlus")
-    (synopsis "Software defined radio software")
-    (description
-     "SDR++ is a software defined radio software for various hardware.")
-    (license license:gpl3+)))
+  (let ((commit "b89fdba433cf6aa0dab424a06974a0b45abf6c4a")
+        (revision "1"))
+    (package
+      (name "sdr++")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/AlexandreRouma/SDRPlusPlus")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11l1ja3dwxa67rp09x4rr5pd6rh6amn48z5vv6dygspq64w63hp2"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list airspyhf
+             alsa-lib
+             codec2
+             fftwf
+             glew
+             glfw
+             hackrf
+             jack-2
+             libusb
+             pulseaudio
+             rtaudio
+             rtl-sdr
+             soapysdr
+             volk
+             (list zstd "lib")))
+      (arguments
+       (list #:tests? #f ; No test suite.
+             #:configure-flags #~(list "-DOPT_BUILD_AIRSPY_SOURCE=OFF"
+                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+                                       "-DOPT_BUILD_M17_DECODER=ON")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda _
+                     (substitute* "CMakeLists.txt"
+                       (("/usr")
+                        #$output)))))))
+      (home-page "https://github.com/AlexandreRouma/SDRPlusPlus")
+      (synopsis "Software defined radio software")
+      (description
+       "SDR++ is a software defined radio software for various hardware.")
+      (license license:gpl3+))))
 
 (define-public inspectrum
   (package

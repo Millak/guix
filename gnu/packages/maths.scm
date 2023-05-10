@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020–2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020–2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -4510,9 +4510,7 @@ full text searching.")
     (build-system cmake-build-system)
     (arguments `(#:tests? #f))          ; no test target
     (inputs
-     `(("openblas" ,openblas)
-       ("lapack" ,lapack)
-       ("arpack" ,arpack-ng)))
+     (list openblas lapack arpack-ng))
     (home-page "https://arma.sourceforge.net/")
     (synopsis "C++ linear algebra library")
     (description
@@ -5756,12 +5754,14 @@ set.")
            python-breathe
            python-sphinx
            (texlive-updmap.cfg (list texlive-adjustbox
+                                     texlive-alphalph
                                      texlive-amsfonts
                                      texlive-bibtex
                                      texlive-capt-of
                                      texlive-caption
                                      texlive-cm
                                      texlive-courier
+                                     texlive-enumitem
                                      texlive-etoolbox
                                      texlive-fancyhdr
                                      texlive-fancyvrb
@@ -6795,7 +6795,7 @@ linear algebra primitives specifically targeting graph analytics.")
 (define-public dune-common
   (package
     (name "dune-common")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -6803,7 +6803,8 @@ linear algebra primitives specifically targeting graph analytics.")
                            version "/dune-common-" version ".tar.gz"))
        (sha256
         (base32
-         "0sidwdkyrrqjkqhpvrlc991pzi5xzlvxk91s2n7qk3widwy7fch2"))))
+         "04pzk8q0bibci8z5xlwndhh3y3vs63mw7kad62lbzfwrr5121hrd"))
+       (patches (search-patches "dune-common-skip-failing-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -6832,7 +6833,7 @@ Differences} (FD).")
 (define-public dune-geometry
   (package
     (name "dune-geometry")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -6840,7 +6841,7 @@ Differences} (FD).")
                            version "/dune-geometry-" version ".tar.gz"))
        (sha256
         (base32
-         "068mh3fd110xl27rwxqlqy4d9cpqw2vqm2pzfrripiaqscb3byfy"))))
+         "1bl1abipcf7zysmyyy2ikfx0nip55kasrb1bbkh11ghdilxrwwqy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -6873,7 +6874,7 @@ This package contains the basic DUNE geometry classes.")
 (define-public dune-uggrid
   (package
     (name "dune-uggrid")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -6883,7 +6884,7 @@ This package contains the basic DUNE geometry classes.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11qz52g9d5k96fqik2lyi80xryw174rnny074pj70ardl6zzz83p"))))
+         "1xwmiabb25nydi0yzhd64vq6fm3razix6k87afhq88q0ywzll65x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -6913,7 +6914,7 @@ This package contains the DUNE UG grid classes.")
 (define-public dune-grid
   (package
     (name "dune-grid")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -6921,7 +6922,9 @@ This package contains the DUNE UG grid classes.")
                            version "/dune-grid-" version ".tar.gz"))
        (sha256
         (base32
-         "15iws03hkbmr4a4rqqb0rriz1m8szl96wdr7gw0jmrcnlzbdbbx5"))))
+         "17l2vlr8q3rfifxv80r3jlzamx478xn0vfjkrl3ns1akk7miycq8"))
+       (patches (search-patches
+                  "dune-grid-add-missing-include-cassert.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -6959,7 +6962,7 @@ This package contains the basic DUNE grid classes.")
 (define-public dune-istl
   (package
     (name "dune-istl")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -6967,7 +6970,8 @@ This package contains the basic DUNE grid classes.")
                            version "/dune-istl-" version ".tar.gz"))
        (sha256
         (base32
-         "1cy69s1266hvnh8blznlvvkrf8i2g640rc3mf7kp872wgvdz4nb9"))))
+         "0smghqr400xl84j0laabgwaj2p5jlj3n3s85bm7qp9m2vjz6rav6"))
+       (patches (search-patches "dune-istl-fix-solver-playground.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -7020,7 +7024,7 @@ aggregation-based algebraic multigrid.")
 (define-public dune-localfunctions
   (package
     (name "dune-localfunctions")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
@@ -7028,7 +7032,7 @@ aggregation-based algebraic multigrid.")
                            version "/dune-localfunctions-" version ".tar.gz"))
        (sha256
         (base32
-         "031i42anrhi0ngpvp42rdjbkic7v3008fwild9xg7flffwvnpshg"))))
+         "02zl49q40ifmic221fxlhi8zj9pybdyjavzvgn1zwh636ysgjbsp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -7076,78 +7080,76 @@ assemble global function spaces on finite-element grids.")
     (license license:gpl2)))
 
 (define-public dune-alugrid
-  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17,
-  ;; unfortunately there was no tag for any 2.7 release.
-  (let ((commit "51bde29a2dfa7cfac4fb73d40ffd42b9c1eb1d3d"))
-    (package
-      (name "dune-alugrid")
-      (version (git-version "2.7.1" "0" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.dune-project.org/extensions/dune-alugrid.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0z16wg6llzxs7vjg2yilg31vwnkz8k050j6bspg3blbym0razy15"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-include
-             (lambda _
-               (substitute* "dune/alugrid/test/test-alugrid.cc"
-                 (("doc/grids/gridfactory/testgrids")
-                  "doc/dune-grid/grids/gridfactory/testgrids"))
-               #t))
-           (add-after 'build 'build-tests
-             (lambda* (#:key inputs make-flags parallel-build? #:allow-other-keys)
-               (setenv "CPLUS_INCLUDE_PATH"
-                       (string-append (assoc-ref inputs "dune-grid") "/share"))
-               (apply invoke "make" "build_tests"
-                      `(,@(if parallel-build?
-                              `("-j" ,(number->string (parallel-job-count)))
-                              '())
-                        ,@make-flags)))))))
-      (inputs
-       (list dune-common
-             dune-geometry
-             dune-grid
-             ;; Optional
-             metis
-             openblas
-             python
-             superlu
-             gmp
-             zlib))
-      (native-inputs
-       (list gfortran pkg-config))
-      (home-page "https://dune-project.org/")
-      (synopsis "Distributed and Unified Numerics Environment")
-      (description "ALUGrid is an adaptive, loadbalancing, unstructured
+  (package
+    (name "dune-alugrid")
+    (version "2.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.dune-project.org/extensions/dune-alugrid.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0s41jinsfpm56nx41vkmyv3y9n072ssw9hxjm7di64zcszgpjmzd"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-include
+           (lambda _
+             (substitute* "dune/alugrid/test/test-alugrid.cc"
+               (("doc/grids/gridfactory/testgrids")
+                "doc/dune-grid/grids/gridfactory/testgrids"))
+             #t))
+         (add-after 'build 'build-tests
+           (lambda* (#:key inputs make-flags parallel-build? #:allow-other-keys)
+             (setenv "CPLUS_INCLUDE_PATH"
+                     (string-append (assoc-ref inputs "dune-grid") "/share"))
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
+    (inputs
+     (list dune-common
+           dune-geometry
+           dune-grid
+           ;; Optional
+           metis
+           openblas
+           python
+           superlu
+           gmp
+           zlib))
+    (native-inputs
+     (list gfortran pkg-config))
+    (home-page "https://dune-project.org/")
+    (synopsis "Distributed and Unified Numerics Environment")
+    (description "ALUGrid is an adaptive, loadbalancing, unstructured
 implementation of the DUNE grid interface supporting either simplices or
 cubes.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public dune-subgrid
-  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17.
-  ;; Unfortunately the dune-subgrid repository contains no release tags.
-  (let ((commit "45d1ee9f3f711e209695deee97912f4954f7f280"))
+  ; dune-subgrid does not tag its releases.
+  ; The following commit is a few commits past the releases/2.9 branch
+  ; to include some additional commits fixing compatibility with dune-uggrid.
+  (let ((commit "e83f3f919c2602425467ed767f279bc9c356c436"))
     (package
       (name "dune-subgrid")
-      (version (git-version "2.7.1" "0" commit))
+      (version (git-version "2.9.0" "1" commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-           (url "https://git.imp.fu-berlin.de/agnumpde/dune-subgrid")
+           (url "https://gitlab.dune-project.org/extensions/dune-subgrid")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-            "0xjf7865wil7kzym608kv3nc3ff3m3nlqich4k9wjyvy3lz6panh"))))
+            "1dv4zg5j17bldpgg02ycg9fbfmnc1kffixgzbkkz86f2dmwgh2b6"))))
       (build-system cmake-build-system)
       (arguments
        `(#:phases
@@ -7180,7 +7182,7 @@ provides the full grid interface including adaptive mesh refinement.")
 (define-public dune-typetree
   (package
     (name "dune-typetree")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -7190,7 +7192,7 @@ provides the full grid interface including adaptive mesh refinement.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kx9k8i7pdw6l6ny6nq85v5p1nd6yxldzaj8k3nizaz3q1j407pv"))))
+         "1qcnl8giivnn8zprszdwrqw4q29sv3c2pr8dlrz616j10i4r8p18"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -7222,7 +7224,7 @@ operating on statically typed trees of objects.")
 (define-public dune-functions
   (package
     (name "dune-functions")
-    (version "2.7.1")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
@@ -7232,7 +7234,7 @@ operating on statically typed trees of objects.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "04dhr4asnl38bf1gp8hrk31maav33m7q71lhl2n5yk1q1x6i77nw"))))
+         "0pmi9vk0pdq9qp3xvknsndg8l6f2xkjr1rwbfbzsl9aj0qv9rn2p"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -7273,12 +7275,12 @@ implemented as callable objects, and bases of finite element spaces.")
     (license (list license:lgpl3+ license:gpl2))))
 
 (define-public dune-pdelab
-  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17,
-  ;; unfortunately there was no tag for any 2.7 release.
-  (let ((commit "09aef74d95661d18a7789d2f517ae77797eec738"))
+  ;; This was the last commit on the releases/2.8 branch as of 2023-04-12,
+  ;; unfortunately there was no tag for any 2.8 release.
+  (let ((commit "d5dddb6b1c21b95e867ff53cca159ad676689f5c"))
     (package
       (name "dune-pdelab")
-      (version (git-version "2.7.1" "0" commit))
+      (version (git-version "2.8.0" "0" commit))
       (source
        (origin
          (method git-fetch)
@@ -7288,7 +7290,7 @@ implemented as callable objects, and bases of finite element spaces.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0nv69ayr4gln9m1s94z9zkrxqi8nzar3z6awnvgqz595nmjf82ac"))))
+           "0l2idjp59a6x46vdd30xhhsnv7chql0z7msdsyra2h6pqm6xiqxk"))))
       (build-system cmake-build-system)
       (arguments '(#:tests? #f)) ; XXX: the tests cannot be compiled
       (inputs

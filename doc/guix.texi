@@ -49,7 +49,7 @@ Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*
-Copyright @copyright{} 2017, 2019, 2020, 2021, 2022 Maxim Cournoyer@*
+Copyright @copyright{} 2017, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
@@ -180,7 +180,7 @@ Weblate} (@pxref{Translating Guix}).
 * Introduction::                What is Guix about?
 * Installation::                Installing Guix.
 * System Installation::         Installing the whole operating system.
-* System Troubleshooting Tips:: When things don't go as planned.
+* System Troubleshooting Tips::  When things don't go as planned.
 * Getting Started::             Your first steps.
 * Package Management::          Package installation, upgrade, etc.
 * Channels::                    Customizing the package collection.
@@ -210,8 +210,8 @@ Weblate} (@pxref{Translating Guix}).
 
 Introduction
 
-* Managing Software the Guix Way::      What's special.
-* GNU Distribution::                    The packages and tools.
+* Managing Software the Guix Way::  What's special.
+* GNU Distribution::            The packages and tools.
 
 Installation
 
@@ -241,14 +241,14 @@ System Installation
 * Installing Guix in a VM::     Guix System playground.
 * Building the Installation Image::  How this comes to be.
 
-System Troubleshooting Tips
-
-* Chrooting into an existing system::  Fixing things from a chroot
-
 Manual Installation
 
-* Keyboard Layout and Networking and Partitioning:: Initial setup.
+* Keyboard Layout and Networking and Partitioning::  Initial setup.
 * Proceeding with the Installation::  Installing.
+
+System Troubleshooting Tips
+
+* Chrooting into an existing system::
 
 Package Management
 
@@ -293,7 +293,7 @@ Development
 * Invoking guix environment::   Setting up development environments.
 * Invoking guix pack::          Creating software bundles.
 * The GCC toolchain::           Working with languages supported by GCC.
-* Invoking guix git authenticate:: Authenticating Git repositories.
+* Invoking guix git authenticate::  Authenticating Git repositories.
 
 Programming Interface
 
@@ -309,7 +309,7 @@ Programming Interface
 * Derivations::                 Low-level interface to package derivations.
 * The Store Monad::             Purely functional interface to the store.
 * G-Expressions::               Manipulating build expressions.
-* Invoking guix repl::          Programming Guix in Guile.
+* Invoking guix repl::          Programming Guix in Guile
 * Using Guix Interactively::    Fine-grain interaction at the REPL.
 
 Defining Packages
@@ -344,8 +344,9 @@ Invoking @command{guix build}
 * Debugging Build Failures::    Real life packaging experience.
 
 Foreign Architectures
-* Cross-Compilation::   Cross-compiling for another architecture.
-* Native Builds::       Targeting another architecture through native builds.
+
+* Cross-Compilation::           Cross-compiling for another architecture.
+* Native Builds::               Targeting another architecture through native builds.
 
 System Configuration
 
@@ -368,9 +369,9 @@ System Configuration
 * Running Guix in a VM::        How to run Guix System in a virtual machine.
 * Defining Services::           Adding new service definitions.
 
-Home Environment Configuration
+File Systems
 
-* Invoking guix home::          Instantiating a home environment configuration.
+* Btrfs file system::
 
 Services
 
@@ -388,12 +389,14 @@ Services
 * Mail Services::               IMAP, POP3, SMTP, and all that.
 * Messaging Services::          Messaging services.
 * Telephony Services::          Telephony services.
+* File-Sharing Services::       File-sharing services.
 * Monitoring Services::         Monitoring services.
 * Kerberos Services::           Kerberos services.
 * LDAP Services::               LDAP services.
 * Web Services::                Web servers.
 * Certificate Services::        TLS certificates via Let's Encrypt.
 * DNS Services::                DNS daemons.
+* VNC Services::                VNC daemons.
 * VPN Services::                VPN daemons.
 * Network File System::         NFS related services.
 * Samba Services::              Samba services.
@@ -417,17 +420,44 @@ Defining Services
 * Shepherd Services::           A particular type of service.
 * Complex Configurations::      Defining bindings for complex configurations.
 
+Home Configuration
+
+* Declaring the Home Environment::  Customizing your Home.
+* Configuring the Shell::       Enabling home environment.
+* Home Services::               Specifying home services.
+* Invoking guix home::          Instantiating a home configuration.
+
+Home Services
+
+* Essential Home Services::     Environment variables, packages, on-* scripts.
+* Shells: Shells Home Services.  POSIX shells, Bash, Zsh.
+* Mcron: Mcron Home Service.    Scheduled User's Job Execution.
+* Power Management: Power Management Home Services.  Services for battery power.
+* Shepherd: Shepherd Home Service.  Managing User's Daemons.
+* SSH: Secure Shell.            Setting up the secure shell client.
+* GPG: GNU Privacy Guard.       Setting up GPG and related tools.
+* Desktop: Desktop Home Services.  Services for graphical environments.
+* Guix: Guix Home Services.     Services for Guix.
+* Fonts: Fonts Home Services.   Services for managing User's fonts.
+* Sound: Sound Home Services.   Dealing with audio.
+* Messaging: Messaging Home Services.  Services for managing messaging.
+* Media: Media Home Services.   Services for managing media.
+
 Platforms
 
 * platform Reference::          Detail of platform declarations.
 * Supported Platforms::         Description of the supported platforms.
 
-System Images
+Creating System Images
 
 * image Reference::             Detail of image declarations.
 * Instantiate an Image::        How to instantiate an image record.
 * image-type Reference::        Detail of image types declaration.
 * Image Modules::               Definition of image modules.
+
+@code{image} Reference
+
+* partition Reference::
 
 Installing Debugging Files
 
@@ -437,7 +467,7 @@ Installing Debugging Files
 Bootstrapping
 
 * Full-Source Bootstrap::       A Bootstrap worthy of GNU.
-* Preparing to Use the Bootstrap Binaries:: Building that what matters most.
+* Preparing to Use the Bootstrap Binaries::  Building that what matters most.
 
 @end detailmenu
 @end menu
@@ -468,8 +498,8 @@ readily available through the @command{guix system} command, even if you're
 using a different distro underneath!}.  @xref{GNU Distribution}.
 
 @menu
-* Managing Software the Guix Way::      What's special.
-* GNU Distribution::                    The packages and tools.
+* Managing Software the Guix Way::  What's special.
+* GNU Distribution::            The packages and tools.
 @end menu
 
 @node Managing Software the Guix Way
@@ -1016,14 +1046,21 @@ C++11 standard.
 @end itemize
 
 @cindex state directory
+@cindex localstatedir
+@cindex system configuration directory
+@cindex sysconfdir
 When configuring Guix on a system that already has a Guix installation,
 be sure to specify the same state directory as the existing installation
 using the @option{--localstatedir} option of the @command{configure}
 script (@pxref{Directory Variables, @code{localstatedir},, standards,
-GNU Coding Standards}).  Usually, this @var{localstatedir} option is
-set to the value @file{/var}.  The @command{configure} script protects
+GNU Coding Standards}).  Usually, this @var{localstatedir} option is set
+to the value @file{/var}.  The @command{configure} script protects
 against unintended misconfiguration of @var{localstatedir} so you do not
-inadvertently corrupt your store (@pxref{The Store}).
+inadvertently corrupt your store (@pxref{The Store}).  The configuration
+directory should also be configured by setting the @option{--sysconfdir}
+option to the @file{/etc} value, which is the location used by Guix to
+store for example the access control list of authorized machines and the
+definition of offload machines.
 
 @node Running the Test Suite
 @section Running the Test Suite
@@ -2407,7 +2444,7 @@ Guix System.  This means that you can install additional packages, should you
 need it, using @command{guix package} (@pxref{Invoking guix package}).
 
 @menu
-* Keyboard Layout and Networking and Partitioning:: Initial setup.
+* Keyboard Layout and Networking and Partitioning::  Initial setup.
 * Proceeding with the Installation::  Installing.
 @end menu
 
@@ -2905,6 +2942,10 @@ from there.  Such technique is explained below.
 @cindex chroot, guix system
 @cindex chrooting, guix system
 @cindex repairing GRUB, via chroot
+@menu
+* Chrooting into an existing system::
+@end menu
+
 @node Chrooting into an existing system
 @section Chrooting into an existing system
 
@@ -5922,7 +5963,7 @@ easily distributed to users who do not run Guix.
 * Invoking guix environment::   Setting up development environments.
 * Invoking guix pack::          Creating software bundles.
 * The GCC toolchain::           Working with languages supported by GCC.
-* Invoking guix git authenticate:: Authenticating Git repositories.
+* Invoking guix git authenticate::  Authenticating Git repositories.
 @end menu
 
 @node Invoking guix shell
@@ -10140,23 +10181,31 @@ phase before the @code{build} phase, called
     ;; other fields omitted
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-before 'build 'set-prefix-in-makefile
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Modify the makefile so that its
-                      ;; 'PREFIX' variable points to "out".
-                      (let ((out (assoc-ref outputs "out")))
-                        (substitute* "Makefile"
-                          (("PREFIX =.*")
-                           (string-append "PREFIX = "
-                                          out "\n")))))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'set-prefix-in-makefile
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Modify the makefile so that its
+              ;; 'PREFIX' variable points to #$output and
+              ;; 'XMLLINT' points to the correct path.
+              (substitute* "Makefile"
+                (("PREFIX =.*")
+                 (string-append "PREFIX = " #$output "\n"))
+                (("XMLLINT =.*")
+                 (string-append "XMLLINT = "
+                                (search-input-file inputs "/bin/xmllint")
+                                "\n"))))))))))
 @end lisp
 
 The new phase that is inserted is written as an anonymous procedure,
-introduced with @code{lambda*}; it honors the @code{outputs} parameter
-we have seen before.  @xref{Build Utilities}, for more about the helpers
-used by this phase, and for more examples of @code{modify-phases}.
+introduced with @code{lambda*}; it looks for the @file{xmllint}
+executable under a @file{/bin} directory among the package's inputs
+(@pxref{package Reference}).  It also honors the @code{outputs} parameter
+we have seen before.  @xref{Build Utilities}, for more about
+the helpers used by this phase, and for more examples of
+@code{modify-phases}.
 
 @cindex code staging
 @cindex staging, of code
@@ -12918,6 +12967,35 @@ guix build coreutils --with-patch=glibc=./glibc-frob.patch
 
 In this example, glibc itself as well as everything that leads to
 Coreutils in the dependency graph is rebuilt.
+
+@cindex configure flags, changing them
+@item --with-configure-flag=@var{package}=@var{flag}
+Append @var{flag} to the configure flags of @var{package}, where
+@var{package} is a spec such as @code{guile@@3.0} or @code{glibc}.  The
+build system of @var{package} must support the @code{#:configure-flags}
+argument.
+
+For example, the command below builds GNU@tie{}Hello with the
+configure flag @code{--disable-nls}:
+
+@example
+guix build hello --with-configure-flag=hello=--disable-nls
+@end example
+
+The following command passes an extra flag to @command{cmake} as it
+builds @code{lapack}:
+
+@example
+guix build lapack \
+  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+@end example
+
+@quotation Note
+Under the hood, this option works by passing the
+@samp{#:configure-flags} argument to the build system of the package of
+interest (@pxref{Build Systems}).  Most build systems support that
+option but some do not.  In that case, an error is raised.
+@end quotation
 
 @cindex upstream, latest version
 @item --with-latest=@var{package}
@@ -16119,8 +16197,8 @@ requires emulation, using the QEMU program for instance.
 @end enumerate
 
 @menu
-* Cross-Compilation::   Cross-compiling for another architecture.
-* Native Builds::       Targeting another architecture through native builds.
+* Cross-Compilation::           Cross-compiling for another architecture.
+* Native Builds::               Targeting another architecture through native builds.
 @end menu
 
 @node Cross-Compilation
@@ -17033,6 +17111,10 @@ UUIDs are another way to unambiguously refer to file systems in
 operating system configuration.  See the examples above.
 @end defun
 
+
+@menu
+* Btrfs file system::
+@end menu
 
 @node Btrfs file system
 @subsection Btrfs file system
@@ -37140,6 +37222,9 @@ for the hook and the value is the number of threads to run.
 @item @code{guile} (default: @code{guile-3.0-latest})
 The Guile package with which to run the Guix Build Coordinator.
 
+@item @code{extra-environment-variables} (default: @var{'()})
+Extra environment variables to set via the shepherd service.
+
 @end table
 @end deftp
 
@@ -37171,6 +37256,9 @@ will use the current system it's running on as the default.
 
 @item @code{max-parallel-builds} (default: @code{1})
 The number of builds to perform in parallel.
+
+@item @code{max-parallel-uploads} (default: @code{1})
+The number of uploads to perform in parallel.
 
 @item @code{max-allocated-builds} (default: @code{#f})
 The maximum number of builds this agent can be allocated.
@@ -41709,9 +41797,9 @@ still in an experimental stage, though.
 
 @menu
 * Declaring the Home Environment::  Customizing your Home.
-* Configuring the Shell::     Enabling home environment.
-* Home Services::             Specifying home services.
-* Invoking guix home::        Instantiating a home configuration.
+* Configuring the Shell::       Enabling home environment.
+* Home Services::               Specifying home services.
+* Invoking guix home::          Instantiating a home configuration.
 @end menu
 
 @node Declaring the Home Environment
@@ -43115,7 +43203,7 @@ This is the multicast address used by default by the two services above.
 
 @cindex znc
 The @uref{https://znc.in, ZNC bouncer} can be run as a daemon to manage
-your IRC presence.  With the @code{(gnu home services znc)} service, you
+your IRC presence.  With the @code{(gnu home services messaging)} service, you
 can configure ZNC to run upon login.
 
 You will have to provide a @file{~/.znc/configs/znc.conf} seperately.
@@ -43727,10 +43815,10 @@ This chapter explains how to define customized system images and how to
 turn them into actual bootable images.
 
 @menu
-* image Reference::        Detail of image declarations.
-* Instantiate an Image::   How to instantiate an image record.
-* image-type Reference::   Detail of image types declaration.
-* Image Modules::          Definition of image modules.
+* image Reference::             Detail of image declarations.
+* Instantiate an Image::        How to instantiate an image record.
+* image-type Reference::        Detail of image types declaration.
+* Image Modules::               Definition of image modules.
 @end menu
 
 @node image Reference
@@ -43820,6 +43908,10 @@ defaults to @code{true}.
 
 @end table
 @end deftp
+
+@menu
+* partition Reference::
+@end menu
 
 @node partition Reference
 @subsection @code{partition} Reference
@@ -44665,7 +44757,7 @@ Binaries}).
 
 @menu
 * Full-Source Bootstrap::       A Bootstrap worthy of GNU.
-* Preparing to Use the Bootstrap Binaries:: Building that what matters most.
+* Preparing to Use the Bootstrap Binaries::  Building that what matters most.
 @end menu
 
 @node Full-Source Bootstrap

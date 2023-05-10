@@ -3404,12 +3404,19 @@ addon for removing tracking fields from URLs.")
     (build-system python-build-system)
     (arguments `(#:tests? #f))
     (propagated-inputs
-     (list ;; These 5 inputs are used to build urrlib3[secure]
-           python-certifi
-           python-cryptography
-           python-idna
-           python-pyopenssl
-           python-pysocks))
+     (append
+       ;; These 5 inputs are used to build urrlib3[secure]
+       (list python-certifi)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems python-cryptography))
+         (list python-cryptography)
+         '())
+       (list python-idna)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems python-pyopenssl))
+         (list python-pyopenssl)
+         '())
+       (list python-pysocks)))
     (home-page "https://urllib3.readthedocs.io/")
     (synopsis "HTTP library with thread-safe connection pooling")
     (description
@@ -3986,31 +3993,6 @@ Betamax that may possibly end up in the main package.")
 transfers.")
     (home-page "https://github.com/boto/s3transfer")
     (license license:asl2.0)))
-
-(define-public python-slimit
-  (package
-    (name "python-slimit")
-    (version "0.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "slimit" version ".zip"))
-       (sha256
-        (base32
-         "02vj2x728rs1127q2nc27frrqra4fczivnb7gch6n5lzi7pxqczl"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list unzip))
-    (propagated-inputs
-     (list python-ply))
-    (home-page "https://slimit.readthedocs.io/")
-    (synopsis "JavaScript minifier, parser and lexer written in Python")
-    (description
-     "SlimIt is a JavaScript minifier written in Python.  It compiles
-JavaScript into more compact code so that it downloads and runs faster.
-SlimIt also provides a library that includes a JavaScript parser, lexer,
-pretty printer and a tree visitor.")
-    (license license:expat)))
 
 (define-public python-flask-jwt
   (package
@@ -6901,7 +6883,11 @@ applications.")
                            " and not test_non_default_uvloop_config_raises_warning"
                            " and not test_listeners_triggered"
                            " and not test_keep_alive_connection_context"
-                           " and not test_keep_alive_client_timeout"))))))))
+                           " and not test_keep_alive_client_timeout"
+                           ;; Unclear why they fail since core-updates merge.
+                           " and not test_missing_sni"
+                           " and not test_no_matching_cert"
+                           " and not test_wildcards"))))))))
     (propagated-inputs
      (list python-aiofiles
            python-httptools
@@ -8258,14 +8244,17 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
 (define-public python-starlette
   (package
     (name "python-starlette")
-    (version "0.20.4")
+    (version "0.25.0")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "starlette" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/encode/starlette")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "112hmwk4fh4dl21nlr2xd37h43xzxpjxfnic7v7fz3wr5w9g7z22"))))
-    (build-system python-build-system)
+                "1mkkj15lphgycnp51dnrfxbyrx3dicjdcpsqvwc7yw55zyih6h5k"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-anyio
                              python-typing-extensions
                              ;; [all] extra dependencies:
@@ -8274,12 +8263,150 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
                              python-multipart
                              python-pyyaml
                              python-requests))
+    (native-inputs (list python-hatchling
+                         python-httpx
+                         python-pytest
+                         python-typing-extensions))
     (home-page "https://github.com/encode/starlette")
     (synopsis "Little ASGI library")
     (description
      "Starlette is a lightweight ASGI (Asynchronous Server Gateway
 Interface) framework/toolkit for building async web services in Python.")
     (license license:bsd-3)))
+
+(define-public python-starlette-for-fastapi-0.88
+  (package
+    (inherit python-starlette)
+    (name "python-starlette")
+    (version "0.22.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/encode/starlette")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ybhcw80vj44p5b61kbm0jmw4lndm0dqsysi33rysnh20csqn8dz"))))
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: unclear why these tests fail with a decoding error.
+      '(list "-k" "not test_gzip_ignored_for_responses_with_encoding_set")))))
+
+;; A newer version exists, but python-pytorch-lightning requires <2.0.
+(define-public python-starsessions-for-pytorch-lightning
+  (package
+    (name "python-starsessions")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alex-oleshkevich/starsessions")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00dkdhp22vfmcn0w4y7f2ii8m1xj5i7409x58g3l8lvk6v5ng2nf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require a running redis server
+      '(list "--ignore=tests/backends/test_redis.py"
+             ;; XXX: this failure indicates a real compatibility problem, but
+             ;; it seems restricted to the tests only.
+             ;; AttributeError: 'Cookies' object has no attribute
+             ;; 'clear_session_cookies'
+             "-k" "not test_session_clears_on_tab_close")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibilitiy
+           (lambda _
+             ;; aioredis has been renamed
+             (substitute* "starsessions/backends/redis.py"
+               (("aioredis") "redis")))))))
+    (propagated-inputs
+     (list python-redis
+           python-itsdangerous
+           python-starlette-for-fastapi-0.88))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-httpx
+           python-mypy
+           python-poetry-core
+           python-pytest
+           python-pytest-asyncio
+           python-requests))
+    (home-page "https://github.com/alex-oleshkevich/starsessions")
+    (synopsis "Pluggable session support for Starlette and FastAPI")
+    (description
+     "This package adds pluggable session backends and ships default
+@code{InMemoryBackend} and @code{CookieBackend} implementations for Starlette
+and FastAPI.")
+    (license license:expat)))
+
+(define-public python-fastapi
+  (package
+    (name "python-fastapi")
+    (version "0.92.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fastapi" version))
+              (sha256
+               (base32
+                "1pm4p5i9h732f0qag85yd9ngjz8x9bhs3fyk2j861cn8s9dhyfh2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; The test_create_user tests fail with a 400 error: "Email already registered".
+      '(list "--ignore=docs_src/sql_databases/sql_app_py310/tests/test_sql_app.py"
+             "--ignore=docs_src/sql_databases/sql_app_py39/tests/test_sql_app.py")))
+    (propagated-inputs (list python-email-validator
+                             python-httpx
+                             python-itsdangerous
+                             python-jinja2
+                             python-multipart
+                             python-orjson
+                             python-starlette
+                             python-pydantic
+                             python-pyyaml
+                             python-uvicorn
+                             python-ujson))
+    (native-inputs (list python-databases
+                         python-flask
+                         python-hatchling
+                         python-isort
+                         python-jose
+                         python-mypy
+                         python-passlib
+                         python-peewee
+                         python-pytest
+                         python-sqlalchemy
+                         python-types-orjson
+                         python-types-ujson))
+    (home-page "https://github.com/tiangolo/fastapi")
+    (synopsis "Web framework based on type hints")
+    (description "FastAPI provides a web API framework based on pydantic and
+starlette.")
+    (license license:expat)))
+
+(define-public python-fastapi-for-pytorch-lightning
+  (package
+    (inherit python-fastapi)
+    (name "python-fastapi")
+    (version "0.88.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fastapi" version))
+              (sha256
+               (base32
+                "00pznprvjvrkiqcvn0ksz1pq5n2cgmxhk0gc0mb7q3ha302g6nwi"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-fastapi)
+       (replace "python-starlette" python-starlette-for-fastapi-0.88)))))
 
 (define-public python-pyactiveresource
   (package

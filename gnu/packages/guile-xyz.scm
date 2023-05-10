@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Erik Edrosa <erik.edrosa@gmail.com>
-;;; Copyright © 2016, 2019, 2020, 2021 Eraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019-2021, 2023 Eraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2021 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
 ;;; Copyright © 2016, 2021 Amirouche <amirouche@hypermove.net>
@@ -311,8 +311,8 @@ currently does not do much, but it might in the future.")
     (license license:gpl3+)))
 
 (define-public guile-openai
-  (let ((commit "252f2d5660bb546015d18c60be96d3cf60c4dcfa")
-        (revision "1"))
+  (let ((commit "9265b641dea0246609b7bd5031f3f6780ef6a167")
+        (revision "2"))
     (package
       (name "guile-openai")
       (version (git-version "0.1" revision commit))
@@ -324,7 +324,7 @@ currently does not do much, but it might in the future.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1qv0kr30d1x7ap1b0h03gl5pzp20xw4qd6b3l5v4iz4ka8qna9gi"))))
+                  "0sydjsgdr6xxk1w5f8pf14wgimfy4fb1hpi8yml0nv83p7bfr1w3"))))
       (build-system guile-build-system)
       (arguments
        (list
@@ -850,14 +850,12 @@ is not available for Guile 2.0.")
     (license license:lgpl3+)))
 
 (define-public guile-fibers-next
-  (let ((commit "36a6cc707921f4ab503965fefd096d80afee72f0")
-        (revision "1"))
+  (let ((commit "745bd409bef17284648805fb985777d21dba79f7")
+        (revision "2"))
     (package
       (inherit guile-fibers-1.1)
       (name "guile-fibers-next")
-      (version (git-version (package-version guile-fibers-1.1)
-                            revision
-                            commit))
+      (version (git-version "1.2.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -866,7 +864,7 @@ is not available for Guile 2.0.")
                 (file-name (git-file-name "guile-fibers" version))
                 (sha256
                  (base32
-                  "0vcb1xck7wv1z9d7i9gzs1k2vav73yf6as5cbjgjjfz8dzm0rq7q")))))))
+                  "0rn6v4phpnb443i0azfx33b38axd5asv40hhxx9b710hi22j4aic")))))))
 
 (define-public guile-fibers
   (package
@@ -4145,7 +4143,7 @@ tests being run, resulting clearer and more specific output.")
                 "109p4n39ln44cxvwdccf9kgb96qx54makvd2ir521ssz6wchjyag"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list guile-3.0 pkg-config))
     (inputs
      (list guile-3.0))
     (home-page "https://ngyro.com/software/guile-semver.html")
@@ -4159,6 +4157,8 @@ the style of the Node Package Manager (NPM).")
   (package
     (inherit guile-semver)
     (name "guile2.2-semver")
+    (native-inputs
+     (list guile-2.2 pkg-config))
     (inputs
      (list guile-2.2))))
 
@@ -4518,11 +4518,17 @@ according to Bitorrent BEP003.")
                   "1jx8704200l29ndg9bfyamgxrzknya0f0vwb2sxhd0k3b8r94avw"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:configure-flags '("--enable-gnutls=yes")))
+       `(#:configure-flags '("--enable-gnutls=yes")
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'bootstrap 'fix-autogen.sh
+             (lambda _
+               (substitute* "autogen.sh"
+                 ((" #!") "#!")))))))
       (native-inputs
        (list autoconf automake texinfo pkg-config))
       (inputs
-       (list gnutls guile-3.0))
+       (list gnutls guile-gnutls guile-3.0))
       (home-page "https://github.com/rekado/guile-irc")
       (synopsis "IRC library for Guile")
       (description "This package provides a Guile library for @dfn{Internet
@@ -5585,7 +5591,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.10")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
@@ -5594,7 +5600,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "13nzmwi4m0j27rmn2ks0p3k620npnhx736q25n8llj2ivkn2vxd2"))))
+         "1ic4f65kbziszi5cz1b7ypl6acph6kdq5pc3wasa1jns3gkzfl6l"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

@@ -1,0 +1,24 @@
+From ef843b1a66308247ba4d2e2c116ff5517421a91b Mon Sep 17 00:00:00 2001
+From: Simon Praetorius <simon.praetorius@tu-dresden.de>
+Date: Tue, 6 Dec 2022 13:39:44 +0100
+Subject: [PATCH] Add missing include <cassert>
+
+---
+ dune/grid/test/yasp/test-yaspgrid-partitioner.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/dune/grid/test/yasp/test-yaspgrid-partitioner.cc b/dune/grid/test/yasp/test-yaspgrid-partitioner.cc
+index 93ae042b0..9a4530201 100644
+--- a/dune/grid/test/yasp/test-yaspgrid-partitioner.cc
++++ b/dune/grid/test/yasp/test-yaspgrid-partitioner.cc
+@@ -6,6 +6,7 @@
+ #include <config.h>
+ 
+ #include <array>
++#include <cassert>
+ #include <iostream>
+ 
+ #include <dune/common/filledarray.hh>
+-- 
+2.39.2
+

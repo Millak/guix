@@ -1,0 +1,28 @@
+Disable tests known to fail on AArch64:
+
+  https://gitlab.dune-project.org/core/dune-common/-/issues/262
+  https://issues.guix.gnu.org/62842
+
+--- a/dune/common/test/eigenvaluestest.cc
++++ b/dune/common/test/eigenvaluestest.cc
+@@ -340,20 +340,15 @@
+   testSymmetricFieldMatrix<double,200>();
+   testSymmetricFieldMatrix<float,4>();
+   testSymmetricFieldMatrix<float,200>();
+-  testSymmetricFieldMatrix<long double,4>();
+-  testSymmetricFieldMatrix<long double,200>();
+ #endif // HAVE_LAPACK
+ 
+   testSymmetricFieldMatrix<double,2>();
+   testSymmetricFieldMatrix<double,3>();
+   testSymmetricFieldMatrix<float,2>();
+   testSymmetricFieldMatrix<float,3>();
+-  testSymmetricFieldMatrix<long double,2>();
+-  testSymmetricFieldMatrix<long double,3>();
+ 
+   checkMultiplicity<double>();
+   checkMultiplicity<float>();
+-  checkMultiplicity<long double>();
+ 
+   return 0;
+ }

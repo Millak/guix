@@ -12,6 +12,7 @@
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
+;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -435,6 +436,33 @@ structure of the YAML documents to read/write, and the C data structure(s)
 in which the loaded data is arranged in memory.")
     (home-page "https://github.com/tlsa/libcyaml")
     (license license:isc)))
+
+(define-public libfyaml
+  (package
+    (name "libfyaml")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pantoniou/libfyaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "002g0grddfi5y42lq06zj8266rf7h27wq76sr598ad5pxllx3y3g"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config))
+    (home-page "https://github.com/pantoniou/libfyaml")
+    (synopsis "YAML version 1.2 and JSON parser and writer")
+    (description "Libfyaml is a YAML parser and emitter, supporting the latest
+YAML spec and passing the full YAML testsuite.  It is designed to be very
+efficient, avoiding copies of data, and has no artificial limits like the 1024
+character limit for implicit keys.")
+    (license license:expat)))
 
 (define-public yaml-cpp
   (package

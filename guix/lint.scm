@@ -1610,11 +1610,11 @@ try again later")
   (parameterize ((%allow-request? skip-when-limit-reached))
     (catch #t
       (lambda ()
-        (match (and (origin? (package-source package))
-                    (package-source package))
+        (match (package-source package)
           (#f                                     ;no source
            '())
-          ((= origin-uri (? git-reference? reference))
+          ((and (? origin?)
+                (= origin-uri (? git-reference? reference)))
            (define url
              (git-reference-url reference))
            (define commit
@@ -1680,9 +1680,12 @@ Disarchive entry refers to non-existent SWH directory '~a'")
                    ((? content?)
                     '())))
                '()))
+          ((? local-file?)
+           '())
           (_
            (list (make-warning package
-                               (G_ "unsupported source type")
+                               (G_ "\
+source is not an origin, it cannot be archived")
                                #:field 'source)))))
       (match-lambda*
         (('swh-error url method response)

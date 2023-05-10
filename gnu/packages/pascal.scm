@@ -24,6 +24,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
@@ -32,9 +33,13 @@
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg)
   #:use-module (ice-9 match))
 
 (define %fpc-version "3.2.2")
@@ -270,3 +275,74 @@ Pascal source code to C source code, and @command{p2cc}, a compiler for
 Pascal programs.")
     (home-page "http://users.fred.net/tds/lab/p2c/")
     (license license:gpl2+)))
+
+(define-public lazarus
+  (package
+    (name "lazarus")
+    (version "2.2.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://gitlab.com/freepascal.org/lazarus/lazarus.git")
+                    (commit (string-append "lazarus_"
+                                           (string-join (string-split version
+                                                                      #\.)
+                                                        "_")))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0hpk6fxmy1h1q0df41jg1vnp8g8vynrg5v5ad43lv229nizfs3wj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;No tests exist
+           #:make-flags #~(list (string-append "INSTALL_PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (replace 'build
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (let* ((libdirs (map (lambda (x)
+                                                   (assoc-ref inputs x))
+                                                 '("glib" "gdk-pixbuf"
+                                                   "gtk+"
+                                                   "libx11"
+                                                   "libx11"
+                                                   "pango"
+                                                   "cairo"
+                                                   "atk")))
+                                   (libs (append (map (lambda (name)
+                                                        (string-append "-Fl"
+                                                                       name
+                                                                       "/lib"))
+                                                      libdirs)
+                                                 (map (lambda (name)
+                                                        (string-append
+                                                         "-k-rpath=" name
+                                                         "/lib")) libdirs))))
+                              (setenv "LAZARUS_LIBPATHS"
+                                      (string-join libs " "))
+                              (setenv "MAKEFLAGS"
+                                      (string-append "LHELP_OPT="
+                                                     (string-join libs "\\ "))))
+                            (invoke "make" "bigide"))))))
+    (native-inputs (list fpc pkg-config))
+    (inputs (list glib
+                  gdk-pixbuf
+                  gtk+-2
+                  libx11
+                  pango
+                  cairo
+                  atk))
+    (synopsis "Integrated development environment for Pascal")
+    (description "This package provides an integrated development environment
+for Pascal.")
+    (home-page "https://www.lazarus-ide.org/")
+    ;; Some Android stuff is under asl2.0. Some artwork is under CC-BY-SA-3
+    ;; or CC-BY-SA-4.
+    ;; Some components are under MIT expat.
+    ;; The Freetype components are under Freetype license.
+    ;; A lot of components are under LGPL-2+.
+    ;; synedit and turbopower_ipro are under MPL-1.1
+    ;; PascalScript is under a zlib-like license.
+    (license (list license:gpl2+ license:lgpl2.0+))))

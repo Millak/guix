@@ -2316,7 +2316,7 @@ partial release of the General MIDI sound set.")
 (define-public guitarix
   (package
     (name "guitarix")
-    (version "0.43.1")
+    (version "0.44.1")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -2324,14 +2324,14 @@ partial release of the General MIDI sound set.")
                    version ".tar.xz"))
              (sha256
               (base32
-               "1bsjlfd7x09p3iiljilyfbns6hpqn9cgp6psl4ccd6i1lwascfrm"))))
+               "063cdvrzrpnj08dm22z651hy5cz5bnsywf1z8b2kib2i9xskvs3p"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f ; no "check" target
-       #:configure-flags
-       (list
-        ;; Add the output lib directory to the RUNPATH.
-        (string-append "--ldflags=-Wl,-rpath=" %output "/lib"))))
+     (list #:tests? #f ; no "check" target
+           #:configure-flags
+           #~(list
+              ;; Add the output lib directory to the RUNPATH.
+              (string-append "--ldflags=-Wl,-rpath=" #$output "/lib"))))
     (inputs
      (list libsndfile
            boost
@@ -2349,12 +2349,12 @@ partial release of the General MIDI sound set.")
            zita-resampler
            zita-convolver))
     (native-inputs
-     `(("gperf" ,gperf)
-       ("faust" ,faust)
-       ("intltool" ,intltool)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("sassc" ,sassc)))
+     (list gperf
+           faust
+           intltool
+           gettext-minimal
+           pkg-config
+           sassc))
     (native-search-paths
      (list (search-path-specification
             (variable "LV2_PATH")

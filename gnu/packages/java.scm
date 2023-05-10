@@ -13509,6 +13509,49 @@ for the JVM.  It supports colors, autocompletion, subcommands, and more.  Writte
 in Java, usable from Groovy, Kotlin, Scala, etc.")
     (license license:asl2.0)))
 
+(define-public java-pj
+  (package
+    (name "java-pj")
+    (version "20150107")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.cs.rit.edu/~ark/pjsrc"
+                                  version ".jar"))
+              (sha256
+               (base32
+                "078xwaivl2qqjc07r0vk6kzpqlcb1bcar80p8r5qigh34hpr86d3"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each delete-file
+                          (find-files "." "\\.class$")))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "src/pj")))
+          (add-after 'chdir 'patch-source-directory
+            (lambda _
+              (substitute* "compile"
+                (("SRCDIR1=/home/ark/public_html/pj/lib")
+                 (string-append "SRCDIR1=" (getcwd) "/lib")))))
+          (replace 'build
+            (lambda _
+              (invoke "bash" "./compile" "linux")
+              (with-directory-excursion "lib"
+                (apply invoke "jar" "cf" (string-append "pj" #$version ".jar")
+                       (find-files "." "\\.class$")))))
+          (replace 'install (install-jars ".")))))
+    (home-page "https://www.cs.rit.edu/~ark/pj.shtml")
+    (synopsis "Parallel programming in Java")
+    (description "Parallel Java (PJ) is an API and middleware for parallel
+programming in 100% Java on shared memory multiprocessor (SMP) parallel
+computers, cluster parallel computers, and hybrid SMP cluster parallel
+computers.")
+    (license license:gpl3+)))
+
 (define-public java-jetbrains-annotations
   (package
     (name "java-jetbrains-annotations")

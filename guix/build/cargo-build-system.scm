@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -210,12 +210,32 @@ directory = '" port)
       #t))
 
 (define* (package #:key
+                  source
+                  skip-build?
                   install-source?
                   (cargo-package-flags '("--no-metadata" "--no-verify"))
                   #:allow-other-keys)
   "Run 'cargo-package' for a given Cargo package."
   (if install-source?
-    (apply invoke `("cargo" "package" ,@cargo-package-flags))
+    (if skip-build?
+      (begin
+        (install-file source "target/package")
+        (with-directory-excursion "target/package"
+          (for-each
+            (lambda (file)
+              (make-file-writable file)
+              ;; Strip the hash and replace '.tar.gz' with '.crate'.
+              (rename-file file
+                           (string-append (string-drop-right
+                                            (string-drop file 35)
+                                            (string-length ".tar.gz"))
+                                          ".crate")))
+            (find-files "." "\\.tar\\.gz$"))))
+      (begin
+        ;;error: invalid inclusion of reserved file name Cargo.toml.orig in package source
+        (when (file-exists? "Cargo.toml.orig")
+          (delete-file "Cargo.toml.orig"))
+        (apply invoke `("cargo" "package" ,@cargo-package-flags))))
     (format #t "Not installing cargo sources, skipping `cargo package`.~%"))
   #t)
 

@@ -179,9 +179,11 @@ BLANK-LINE? is true, assume PORT is at the beginning of a new line."
       (match lst
         (() result)
         (((? dot?) . rest)
-         (let ((dotted (reverse rest)))
-           (set-cdr! (last-pair dotted) (car result))
-           dotted))
+         (if (pair? rest)
+             (let ((dotted (reverse rest)))
+               (set-cdr! (last-pair dotted) (car result))
+               dotted)
+             (car result)))
         ((x . rest) (loop (cons x result) rest)))))
 
   (let loop ((blank-line? blank-line?)
@@ -333,6 +335,8 @@ expressions and blanks that were read."
    ('with-output-to-file 2)
    ('with-input-from-file 2)
    ('with-directory-excursion 2)
+   ('wrap-program 2)
+   ('wrap-script 2)
 
    ;; (gnu system) and (gnu services).
    ('operating-system 1)

@@ -348,7 +348,7 @@ interactive means to merge two files.")
                        (("#!/bin/sh")
                         (string-append "#!" (which "sh")))))))
       #:make-flags ,(if (hurd-target?)
-                        ''("XFAIL_TESTS=test-perror2")
+                        ''("XFAIL_TESTS=test-strerror_r")
                         ''())))
    (synopsis "Operating on files matching given criteria")
    (description
