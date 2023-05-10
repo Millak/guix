@@ -24787,16 +24787,38 @@ append on old values.  Partd excels at shuffling operations.")
 (define-public python-fsspec
   (package
     (name "python-fsspec")
-    (version "2022.5.0")
+    (version "2023.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fsspec" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fsspec/filesystem_spec")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1d43qiz8g395042a52yswz6j7q41gvrv3k53wvxn1rs4bk3mjm3s"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ; there are none
+         "0c0brw5s4330rj0yjcrqi56hanvaahn43854jai70qzqg1qvyl88"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (substitute* "fsspec/__init__.py"
+                (("__version__ = .*")
+                 (string-append "__version__ = \"" #$version "\"")))
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\""))))))
+      #:test-flags
+      '(list
+        ;; requires internet access
+        "--ignore=fsspec/implementations/tests/test_dbfs.py")))
+    (propagated-inputs
+     (list python-aiohttp python-libarchive-c python-requests python-tqdm))
+    (native-inputs
+     (list python-pytest python-pytest-mock python-numpy))
     (home-page "https://github.com/intake/filesystem_spec")
     (synopsis "File-system specification")
     (description "The purpose of this package is to produce a template or
