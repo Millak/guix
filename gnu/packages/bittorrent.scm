@@ -239,19 +239,21 @@ XML-RPC over SCGI.")
     (license l:gpl2+)))
 
 (define-public tremc
+  (let ((commit "6c15e3f5637c8f3641473328bd8c5b0cc122d930")
+        (revision "0"))
   (package
     (name "tremc")
-    (version "0.9.3")
+    (version (git-version "0.9.3" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tremc/tremc")
-             (commit version)))
+             (commit commit)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11izsgwj435skkgvw96an6ddcm1hk3ff1gji4ksnidlyv6g6npyv"))))
+         "1anlqzbwgmhrxlh20pfzf4iyw5l2w227h95rq6xf29ai7vddr82k"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -268,7 +270,7 @@ XML-RPC over SCGI.")
     (description "Tremc is a console client, with a curses interface, for the
 Transmission BitTorrent daemon.")
     (home-page "https://github.com/tremc/tremc")
-    (license l:gpl3+)))
+    (license l:gpl3+))))
 
 (define-public aria2
   (package
