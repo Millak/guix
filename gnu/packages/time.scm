@@ -233,6 +233,28 @@ datetime module, available in Python 2.3+.")
     ;; BSD-3 still; but all new code is dual licensed (the user can choose).
     (license (list bsd-3 asl2.0))))
 
+(define-public python-dateutils
+  (package
+    (name "python-dateutils")
+    (version "0.6.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dateutils" version))
+              (sha256
+               (base32
+                "1wg3f3imjq3snvjccv64h5498pqv9xz664xhni7bsh8mnay91p83"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil python-pytz))
+    (home-page "https://github.com/jmcantrell/python-dateutils")
+    (synopsis "Various utilities for working with date and datetime objects")
+    (description
+     "The main purpose of this package is to provide more complex arithmetic
+operations on dates/times.  Heavy use is made of the @code{relativedelta} type
+from the @code{dateutil} library.  Much of this package is just a light
+wrapper on top of this with some added features such as range generation and
+business day calculation.")
+    (license bsd-0)))
+
 (define-public python-parsedatetime
   (package
     (name "python-parsedatetime")
