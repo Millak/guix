@@ -5925,60 +5925,58 @@ and copy/paste text in the console and in xterm.")
     (build-system gnu-build-system)
     (outputs '("out" "static")) ;static versions of the binaries in "out"
     (arguments
-     '(#:configure-flags
-       ;; The ‘Python support’ was never actually installed by previous
-       ;; versions of this package, but did prevent cross-compilation.
-       (list "--disable-python")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-makefile
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "Makefile"
-                        (("\\$\\(DESTDIR\\)\\$\\(udevruledir\\)")
-                         (string-append (assoc-ref outputs "out")
-                                        "/lib/udev/rules.d")))))
-                  (add-after 'build 'build-static
-                    (lambda _
-                      (invoke "make" "static")))
-                  (add-after 'install 'install-bash-completion
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bashcomp (string-append out
-                                        "/etc/bash_completion.d")))
-                        (mkdir-p bashcomp)
-                        (copy-file "btrfs-completion"
-                                   (string-append bashcomp "/btrfs")))))
-                  (add-after 'install 'install-static
-                    (let ((staticbin (string-append (assoc-ref %outputs
-                                                               "static")
-                                                    "/bin")))
-                      (lambda _
-                        (invoke "make"
-                                (string-append "bindir=" staticbin)
-                                "install-static")))))
+     (list
+      #:configure-flags
+      ;; The ‘Python support’ was never actually installed by previous
+      ;; versions of this package, but did prevent cross-compilation.
+      #~(list "--disable-python")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-makefile
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (substitute* "Makefile"
+                         (("\\$\\(DESTDIR\\)\\$\\(udevruledir\\)")
+                          (string-append (assoc-ref outputs "out")
+                                         "/lib/udev/rules.d")))))
+                   (add-after 'build 'build-static
+                     (lambda _
+                       (invoke "make" "static")))
+                   (add-after 'install 'install-bash-completion
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (bashcomp (string-append out
+                                                       "/etc/bash_completion.d")))
+                         (mkdir-p bashcomp)
+                         (copy-file "btrfs-completion"
+                                    (string-append bashcomp "/btrfs")))))
+                   (add-after 'install 'install-static
+                     (let ((staticbin (string-append (assoc-ref %outputs
+                                                                "static")
+                                                     "/bin")))
+                       (lambda _
+                         (invoke "make"
+                                 (string-append "bindir=" staticbin)
+                                 "install-static")))))
        #:tests? #f ;XXX: require the 'btrfs' kernel module.
        #:test-target "test"
        #:parallel-tests? #f)) ;tests fail when run in parallel
-    (inputs `(("e2fsprogs" ,e2fsprogs)
-               ;for btrfs-convert
-              ("eudev" ,eudev)
-              ("lzo" ,lzo)
-              ("util-linux:lib" ,util-linux "lib") ;for libblkid and libuuid
-              ("util-linux:static" ,util-linux "static") ;ditto
-              ("zlib" ,zlib)
-              ("zlib:static" ,zlib "static")
-              ("zstd" ,zstd "lib")
-              ("zstd:static" ,zstd "static")))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ;; For building documentation.
-                     ("python-sphinx" ,python-sphinx)
-                     ;; For tests.
-                     ("acl" ,acl)
-                     ("dmsetup" ,lvm2)
-                     ("grep" ,grep) ;need Perl regexp support
-                     ("libaio" ,libaio)
-                     ("liburing" ,liburing)
-                     ("util-linux" ,util-linux) ;for fallocate
-                     ("which" ,which)))
+    (inputs (list e2fsprogs   ;for btrfs-convert
+                  eudev
+                  lzo
+                  `(,util-linux "lib")            ;for libblkid and libuuid
+                  `(,util-linux "static")         ;ditto
+                  zlib
+                  `(,zlib "static")
+                  `(,zstd "lib")
+                  `(,zstd "static")))
+    (native-inputs (list pkg-config
+                         python-sphinx            ;for building documentation
+                         acl                      ;for tests
+                         lvm2                     ;for dmsetup
+                         grep                     ;need Perl regexp support
+                         libaio
+                         liburing
+                         util-linux               ;for fallocate
+                         which))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
     (synopsis "Create and manage btrfs copy-on-write file systems")
     (description
