@@ -3465,6 +3465,54 @@ AI services.")
 Actions for the Lightning suite of libraries.")
     (license license:asl2.0)))
 
+(define-public python-torchmetrics
+  (package
+    (name "python-torchmetrics")
+    (version "0.11.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "torchmetrics" version))
+              (sha256
+               (base32
+                "150lcy6c20n42rwxl4d3m1b8s4js9ddds5wh3685vmjdnha5mr0z"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-numpy python-packaging python-pytorch
+           python-typing-extensions))
+    (native-inputs
+     (list python-cloudpickle
+           python-coverage
+           python-fire
+           python-mir-eval
+           python-mypy
+           python-pandas
+           python-psutil
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-rerunfailures
+           python-pytest-timeout
+           python-requests
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-types-protobuf
+           python-types-setuptools))
+    (home-page "https://github.com/Lightning-AI/metrics")
+    (synopsis "Machine learning metrics for PyTorch applications")
+    (description "TorchMetrics is a collection of 100+ PyTorch metrics
+implementations and an easy-to-use API to create custom metrics.  It offers:
+
+@itemize
+@item A standardized interface to increase reproducibility
+@item Reduces boilerplate
+@item Automatic accumulation over batches
+@item Metrics optimized for distributed-training
+@item Automatic synchronization between multiple devices
+@end itemize
+")
+    (license license:asl2.0)))
+
 ;; Keep this in sync with python-pytorch
 (define-public python-torchvision
   (package
