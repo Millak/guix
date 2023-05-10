@@ -3570,7 +3570,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
 (define-public python-torchvision
   (package
     (name "python-torchvision")
-    (version "0.13.0")
+    (version "0.15.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3580,17 +3580,11 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19f6s3ffwkdvjjbvib18c8n7vhysg58smxzq3rvii1c0z4g3b0cw"))))
-    (build-system python-build-system)
+                "1cq2s13vkgg9rljjbrm4g33yxq7q5zqp7f4xm5cq624gvs0wxmi8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false ;the test suite is expensive and there is no easy way
-                       ;to subset it.
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
+     (list #:tests? #false)) ;the test suite is expensive and there is no easy
+                             ;way to subset it.
     (inputs
      (list libpng
            libjpeg-turbo))
