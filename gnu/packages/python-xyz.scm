@@ -30981,6 +30981,22 @@ Python, with static types.")
     (description "This package provides typing stubs for setuptools.")
     (license license:asl2.0)))
 
+(define-public python-types-urllib3
+  (package
+    (name "python-types-urllib3")
+    (version "1.26.25.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-urllib3" version))
+              (sha256
+               (base32
+                "0zcipjdnbnc8ymk8mh9n5mypa0qr03rqj98lbmahldcdrrap6md1"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for urllib3")
+    (description "This package provides typing stubs for urllib3.")
+    (license license:asl2.0)))
+
 (define-public python-psycopg2-binary
   (package
     (name "python-psycopg2-binary")
