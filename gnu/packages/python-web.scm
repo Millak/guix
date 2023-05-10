@@ -8294,6 +8294,59 @@ Interface) framework/toolkit for building async web services in Python.")
       ;; XXX: unclear why these tests fail with a decoding error.
       '(list "-k" "not test_gzip_ignored_for_responses_with_encoding_set")))))
 
+;; A newer version exists, but python-pytorch-lightning requires <2.0.
+(define-public python-starsessions-for-pytorch-lightning
+  (package
+    (name "python-starsessions")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alex-oleshkevich/starsessions")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00dkdhp22vfmcn0w4y7f2ii8m1xj5i7409x58g3l8lvk6v5ng2nf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require a running redis server
+      '(list "--ignore=tests/backends/test_redis.py"
+             ;; XXX: this failure indicates a real compatibility problem, but
+             ;; it seems restricted to the tests only.
+             ;; AttributeError: 'Cookies' object has no attribute
+             ;; 'clear_session_cookies'
+             "-k" "not test_session_clears_on_tab_close")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibilitiy
+           (lambda _
+             ;; aioredis has been renamed
+             (substitute* "starsessions/backends/redis.py"
+               (("aioredis") "redis")))))))
+    (propagated-inputs
+     (list python-redis
+           python-itsdangerous
+           python-starlette-for-fastapi-0.88))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-httpx
+           python-mypy
+           python-poetry-core
+           python-pytest
+           python-pytest-asyncio
+           python-requests))
+    (home-page "https://github.com/alex-oleshkevich/starsessions")
+    (synopsis "Pluggable session support for Starlette and FastAPI")
+    (description
+     "This package adds pluggable session backends and ships default
+@code{InMemoryBackend} and @code{CookieBackend} implementations for Starlette
+and FastAPI.")
+    (license license:expat)))
+
 (define-public python-fastapi
   (package
     (name "python-fastapi")
