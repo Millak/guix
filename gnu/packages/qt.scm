@@ -3955,7 +3955,20 @@ color-related widgets.")
           (add-before 'configure 'set-build-env
             (lambda _
               (let ((llvm #$(this-package-input "clang-toolchain")))
-                (setenv "CLANG_INSTALL_DIR" llvm)))))))
+                (setenv "CLANG_INSTALL_DIR" llvm))))
+          (add-before 'configure 'workaround-importlib-error
+            (lambda _
+              ;; The following hack works around the error
+              ;;   "module 'importlib' has no attribute 'machinery'"
+              ;; when building python-pyside-2, which depends on
+              ;; this package.
+              (substitute* "libshiboken/embed/signature_bootstrap.py"
+                (("import importlib" all)
+                 (string-append
+                  all
+                  "\n        import importlib.machinery as imachi"))
+                (("importlib.machinery.ModuleSpec")
+                 "imachi.ModuleSpec")))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "Shiboken generates bindings for C++ libraries using CPython source code")
