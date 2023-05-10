@@ -60,6 +60,7 @@
             guix-build-coordinator-agent-configuration-authentication
             guix-build-coordinator-agent-configuration-systems
             guix-build-coordinator-agent-configuration-max-parallel-builds
+            guix-build-coordinator-agent-configuration-max-parallel-uploads
             guix-build-coordinator-agent-configuration-max-allocated-builds
             guix-build-coordinator-agent-configuration-max-1min-load-average
             guix-build-coordinator-agent-configuration-derivation-substitute-urls
@@ -192,6 +193,9 @@
                        (default #f))
   (max-parallel-builds
    guix-build-coordinator-agent-configuration-max-parallel-builds
+   (default 1))
+  (max-parallel-uploads
+   guix-build-coordinator-agent-configuration-max-parallel-uploads
    (default 1))
   (max-allocated-builds
    guix-build-coordinator-agent-configuration-max-allocated-builds
@@ -426,9 +430,9 @@
 
 (define (guix-build-coordinator-agent-shepherd-services config)
   (match-record config <guix-build-coordinator-agent-configuration>
-    (package user coordinator authentication max-parallel-builds
-             max-allocated-builds
-             max-1min-load-average
+    (package user coordinator authentication
+             max-parallel-builds max-parallel-uploads
+             max-allocated-builds max-1min-load-average
              derivation-substitute-urls non-derivation-substitute-urls
              systems)
     (list
@@ -464,6 +468,10 @@
                                               token-file))))
                     #$(simple-format #f "--max-parallel-builds=~A"
                                      max-parallel-builds)
+                    #$@(if max-parallel-uploads
+                           #~(#$(simple-format #f "--max-parallel-uploads=~A"
+                                               max-parallel-uploads))
+                           #~())
                     #$@(if max-allocated-builds
                            #~(#$(simple-format #f "--max-allocated-builds=~A"
                                                max-allocated-builds))

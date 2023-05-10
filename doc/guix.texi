@@ -37257,6 +37257,9 @@ will use the current system it's running on as the default.
 @item @code{max-parallel-builds} (default: @code{1})
 The number of builds to perform in parallel.
 
+@item @code{max-parallel-uploads} (default: @code{1})
+The number of uploads to perform in parallel.
+
 @item @code{max-allocated-builds} (default: @code{#f})
 The maximum number of builds this agent can be allocated.
 
