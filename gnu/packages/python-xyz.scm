@@ -3385,6 +3385,53 @@ audio playback capability for Python 3 on OSX, Windows, and Linux.")
 Python.")
     (license license:expat)))
 
+(define-public python-jsonargparse
+  (package
+    (name "python-jsonargparse")
+    (version "4.21.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jsonargparse" version))
+              (sha256
+               (base32
+                "1k3b60x0zf86fh50y2jyby30gksqriyvvpfnf5mqq0qn7jih01y7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" (string-append "not test_env_prefix"
+                                 " and not test_basemodel"
+                                 " and not test_field_default_factory"
+                                 " and not test_field_description"
+                                 " and not test_get_param_relative_import_from_init"
+                                 ;; Strangely, the arguments are interpreted
+                                 ;; as arguments to pytest.
+                                 " and not test_pydantic_types"))))
+    (propagated-inputs
+     (list python-contextvars
+           python-dataclasses
+           python-docstring-parser
+           python-pyyaml
+           python-typeshed-client))
+    (native-inputs
+     (list python-attrs
+           python-coverage
+           python-pre-commit
+           python-pycodestyle
+           python-pydantic
+           python-pytest
+           python-pytest-subtests
+           python-responses
+           python-tox
+           python-types-requests))
+    (home-page "https://github.com/omni-us/jsonargparse/")
+    (synopsis "Implement minimal boilerplate CLIs derived from type hints")
+    (description
+     "This package lets you implement minimal boilerplate CLIs derived from
+type hints and parse from command line, config files and environment
+variables.")
+    (license license:expat)))
+
 (define-public python-simplejson
   (package
     (name "python-simplejson")
