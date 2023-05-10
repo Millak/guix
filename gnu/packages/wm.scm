@@ -112,6 +112,7 @@
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
@@ -2805,6 +2806,47 @@ for wayland conceptually based on the X11 window manager
      (description "libucl implements a configuration language that is easy to
 read and write, and compatible with JSON.")
     (license license:bsd-2)))
+
+(define-public labwc
+  (package
+    (name "labwc")
+    (version "0.6.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/labwc/labwc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zbgj8r8ppvqnz2imh6f825f2lvsqpiqfa0r5g5r4nsvadiipivp"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config gettext-minimal scdoc))
+    (inputs
+     (list cairo
+           glib
+           libxcb
+           libxml2
+           pango
+           wlroots))
+    (home-page "https://labwc.github.io")
+    (synopsis "Window-stacking compositor for Wayland")
+    (description
+     "Labwc is lightweight and independent with a focus on simply stacking
+windows well and rendering some window decorations, it is inspired by Openbox.
+It takes a no-bling/frills approach and says no to features such as icons
+(except window buttons), animations, decorative gradients and any other
+options not required to reasonably render common themes.  It relies on clients
+for panels, screenshots, wallpapers and so on to create a full desktop
+environment.
+
+Labwc tries to stay in keeping with wlroots and sway in terms of general
+approach and coding style.
+
+Labwc has no reliance on any particular Desktop Environment, Desktop Shell or
+session.  Nor does it depend on any UI toolkits such as Qt or GTK.")
+    (license license:gpl2)))
 
 (define-public hikari
   (package
