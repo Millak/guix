@@ -941,6 +941,16 @@ fonts to gEDA.")
                 (substitute* "libfive/bind/python/libfive/ffi.py"
                   (("os.environ.get\\('LIBFIVE_FRAMEWORK_DIR'\\)" m)
                    (string-append m " or \"" #$output "/lib/\"")))))
+            (add-before 'build 'generate-bindings
+              (lambda _
+                ;; These files already exist but we regenerate them from source
+                (with-directory-excursion "../source/libfive/stdlib"
+                  (substitute* '("gen_scm.py" "gen_c.py" "gen_py.py")
+                    (("datetime.now\\(\\)\\.strftime\\([^)]+)") "\"N/A\"")
+                    (("os\\.getlogin\\(\\)") "\"guix\""))
+                  (invoke "python" "gen_scm.py")
+                  (invoke "python" "gen_c.py")
+                  (invoke "python" "gen_py.py"))))
             (add-after 'unpack 'do-not-build-guile-bindings
               (lambda _
                 (delete-file "libfive/bind/guile/CMakeLists.txt")
