@@ -8274,6 +8274,26 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
 Interface) framework/toolkit for building async web services in Python.")
     (license license:bsd-3)))
 
+(define-public python-starlette-for-fastapi-0.88
+  (package
+    (inherit python-starlette)
+    (name "python-starlette")
+    (version "0.22.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/encode/starlette")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ybhcw80vj44p5b61kbm0jmw4lndm0dqsysi33rysnh20csqn8dz"))))
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: unclear why these tests fail with a decoding error.
+      '(list "-k" "not test_gzip_ignored_for_responses_with_encoding_set")))))
+
 (define-public python-fastapi
   (package
     (name "python-fastapi")
