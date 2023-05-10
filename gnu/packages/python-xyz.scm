@@ -2688,14 +2688,14 @@ class.")
 (define-public python-can
   (package
     (name "python-can")
-    (version "4.0.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-can" version))
        (sha256
         (base32
-         "0pcbdgdw94lc2sxd56w6wdsshrs9dd5d3wp0x4sfd0drzx32inar"))))
+         "1w5sdzxivpd3pw4pypwnjlksvfimdb93qnlddbrh5f13flhsgg8g"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
