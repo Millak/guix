@@ -66,7 +66,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
-;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
@@ -5917,14 +5917,13 @@ and copy/paste text in the console and in xterm.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
-                                  "people/kdave/btrfs-progs/"
-                                  "btrfs-progs-v" version ".tar.xz"))
+                                  "people/kdave/btrfs-progs/" "btrfs-progs-v"
+                                  version ".tar.xz"))
               (sha256
                (base32
                 "0ylxszcsm0jqsa5glccd1pv3rcfk1f5wjcf3ayxc0r9xgzcngrkb"))))
     (build-system gnu-build-system)
-    (outputs '("out"
-               "static"))      ; static versions of the binaries in "out"
+    (outputs '("out" "static")) ;static versions of the binaries in "out"
     (arguments
      '(#:configure-flags
        ;; The ‘Python support’ was never actually installed by previous
@@ -5937,29 +5936,33 @@ and copy/paste text in the console and in xterm.")
                         (("\\$\\(DESTDIR\\)\\$\\(udevruledir\\)")
                          (string-append (assoc-ref outputs "out")
                                         "/lib/udev/rules.d")))))
-                 (add-after 'build 'build-static
-                   (lambda _ (invoke "make" "static")))
-                 (add-after 'install 'install-bash-completion
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let* ((out (assoc-ref outputs "out"))
-                            (bashcomp (string-append out "/etc/bash_completion.d")))
-                       (mkdir-p bashcomp)
-                       (copy-file "btrfs-completion"
-                                  (string-append bashcomp "/btrfs")))))
-                 (add-after 'install 'install-static
-                   (let ((staticbin (string-append (assoc-ref %outputs "static")
-                                                  "/bin")))
-                     (lambda _
-                       (invoke "make"
-                               (string-append "bindir=" staticbin)
-                               "install-static")))))
-       #:tests? #f            ; XXX: require the 'btrfs' kernel module.
+                  (add-after 'build 'build-static
+                    (lambda _
+                      (invoke "make" "static")))
+                  (add-after 'install 'install-bash-completion
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bashcomp (string-append out
+                                        "/etc/bash_completion.d")))
+                        (mkdir-p bashcomp)
+                        (copy-file "btrfs-completion"
+                                   (string-append bashcomp "/btrfs")))))
+                  (add-after 'install 'install-static
+                    (let ((staticbin (string-append (assoc-ref %outputs
+                                                               "static")
+                                                    "/bin")))
+                      (lambda _
+                        (invoke "make"
+                                (string-append "bindir=" staticbin)
+                                "install-static")))))
+       #:tests? #f ;XXX: require the 'btrfs' kernel module.
        #:test-target "test"
-       #:parallel-tests? #f)) ; tests fail when run in parallel
-    (inputs `(("e2fsprogs" ,e2fsprogs)  ; for btrfs-convert
+       #:parallel-tests? #f)) ;tests fail when run in parallel
+    (inputs `(("e2fsprogs" ,e2fsprogs)
+               ;for btrfs-convert
               ("eudev" ,eudev)
               ("lzo" ,lzo)
-              ("util-linux:lib" ,util-linux "lib")       ;for libblkid and libuuid
+              ("util-linux:lib" ,util-linux "lib") ;for libblkid and libuuid
               ("util-linux:static" ,util-linux "static") ;ditto
               ("zlib" ,zlib)
               ("zlib:static" ,zlib "static")
@@ -5971,14 +5974,15 @@ and copy/paste text in the console and in xterm.")
                      ;; For tests.
                      ("acl" ,acl)
                      ("dmsetup" ,lvm2)
-                     ("grep" ,grep)     ; need Perl regexp support
+                     ("grep" ,grep) ;need Perl regexp support
                      ("libaio" ,libaio)
                      ("liburing" ,liburing)
-                     ("util-linux" ,util-linux) ; for fallocate
+                     ("util-linux" ,util-linux) ;for fallocate
                      ("which" ,which)))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
     (synopsis "Create and manage btrfs copy-on-write file systems")
-    (description "Btrfs is a @acronym{CoW, copy-on-write} file system for Linux
+    (description
+     "Btrfs is a @acronym{CoW, copy-on-write} file system for Linux
 aimed at implementing advanced features while focusing on fault tolerance,
 repair and easy administration.")
     ;; GPL2+: crc32.c, radix-tree.c, raid6.c, rbtree.c.
