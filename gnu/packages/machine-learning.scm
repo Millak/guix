@@ -3465,6 +3465,32 @@ AI services.")
 Actions for the Lightning suite of libraries.")
     (license license:asl2.0)))
 
+(define-public python-readchar
+  (package
+    (name "python-readchar")
+    (version "4.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "readchar" version))
+              (sha256
+               (base32
+                "09n8vl2jjbnbnrzfvkynijrnwrqvc91bb2267zg8r261sz15d908"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This one file requires the msvcrt module, which we don't have.
+         (add-after 'unpack 'delete-windows-file
+           (lambda _
+             (delete-file "readchar/_win_read.py"))))))
+    (propagated-inputs (list python-setuptools))
+    (home-page "https://github.com/magmax/python-readchar")
+    (synopsis "Library to easily read single chars and key strokes")
+    (description "This package provides a Python library to easily read single
+characters and key strokes.")
+    (license license:expat)))
+
 (define-public python-torchmetrics
   (package
     (name "python-torchmetrics")
