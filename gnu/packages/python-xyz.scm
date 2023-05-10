@@ -30965,6 +30965,23 @@ static types.")
 Python, with static types.")
     (license license:asl2.0)))
 
+(define-public python-types-requests
+  (package
+    (name "python-types-requests")
+    (version "2.30.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-requests" version))
+              (sha256
+               (base32
+                "0cas3cjkhrvsz2rmqnhqiihy9j79wxi9xbih8jk0p9r48c2q3iyy"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-types-urllib3))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for requests")
+    (description "This package provides typing stubs for requests.")
+    (license license:asl2.0)))
+
 (define-public python-types-setuptools
   (package
     (name "python-types-setuptools")
