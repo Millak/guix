@@ -3491,6 +3491,33 @@ Actions for the Lightning suite of libraries.")
 characters and key strokes.")
     (license license:expat)))
 
+(define-public python-inquirer
+  (package
+    (name "python-inquirer")
+    (version "3.1.3")
+    ;; Pypi has no tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/magmax/python-inquirer")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0kp6a0535n9ra5sk8bmb5qvhrv0fbn1zawydi0fkb7104jqcfrzc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-blessed python-editor python-readchar))
+    (native-inputs
+     (list python-poetry-core python-pexpect python-pytest))
+    (home-page "https://github.com/magmax/python-inquirer")
+    (synopsis "Collection of common interactive command line user interfaces")
+    (description
+     "Inquirer should ease the process of asking end user questions, parsing,
+validating answers, managing hierarchical prompts and providing error
+feedback.")
+    (license license:expat)))
+
 (define-public python-torchmetrics
   (package
     (name "python-torchmetrics")
