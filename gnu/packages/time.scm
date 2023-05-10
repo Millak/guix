@@ -467,13 +467,13 @@ timestamps.")
 (define-public python-arrow
   (package
     (name "python-arrow")
-    (version "1.1.1")
+    (version "1.2.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "arrow" version))
               (sha256
                (base32
-                "0fl24gv7jc6b9pqxwlcgrf465i8v8h0y7dcm018yrqv0dhpn1ryy"))))
+                "189knrgxb3x21lzvqac6qlpd32308hcmpccxdlvr5wmrl46b6d1r"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
