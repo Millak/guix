@@ -31014,6 +31014,24 @@ Python, with static types.")
     (description "This package provides typing stubs for urllib3.")
     (license license:asl2.0)))
 
+(define-public python-typeshed-client
+  (package
+    (name "python-typeshed-client")
+    (version "2.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "typeshed_client" version))
+              (sha256
+               (base32
+                "1vdwp1jjg27b22qxgm49v21nb8vm1iki3bfsm0fnq2rsz5alfwz2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-resources))
+    (home-page "https://github.com/JelleZijlstra/typeshed_client")
+    (synopsis "Library for accessing stubs in typeshed")
+    (description
+     "This package provides a library for accessing stubs in typeshed.")
+    (license license:expat)))
+
 (define-public python-psycopg2-binary
   (package
     (name "python-psycopg2-binary")
