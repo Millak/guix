@@ -2696,40 +2696,24 @@ class.")
        (sha256
         (base32
          "1w5sdzxivpd3pw4pypwnjlksvfimdb93qnlddbrh5f13flhsgg8g"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-version-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("mock~=2\\.0") "mock")
-                        (("coverage<5") "coverage")
-                        (("pytest~=4\\.6") "pytest")
-                        (("pytest-timeout~=1\\.3") "pytest-timeout")
-                        (("pytest-cov.*") "pytest-cov\n")
-                        (("hypothesis~=4\\.56") "hypothesis"))))
-                  (add-after 'unpack 'fix-broken-tests
-                    ;; The tests try to run two scripts it expects should be
-                    ;; in PATH, but they aren't at this time (see:
-                    ;; https://github.com/hardbyte/python-can/issues/805).
-                    (lambda _
-                      (substitute* "test/test_scripts.py"
-                        (("\"can_logger\\.py --help\"") "")
-                        (("\"can_player\\.py --help\"") ""))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv" "test"
-                                ;; Disable tests which require specific CAN
-                                ;; drivers we have no package for in Guix.
-                                "--ignore" "test/test_interface_canalystii.py"
-                                ;; These tests fail with "OSError: [Errno 19]
-                                ;; No such device".
-                                "-k" "not BasicTestUdpMulticastBusIPv")))))))
+     (list
+      #:test-flags
+      #~(list
+         ;; TODO: Check if it could be packed:
+         ;; https://github.com/projectgus/python-canalystii
+         ;;
+         ;; Disable tests which require specific CAN drivers we have no
+         ;; package for in Guix.
+         "--ignore" "test/test_interface_canalystii.py"
+         ;; These tests fail with "OSError: [Errno 19] No such device".
+         "-k" "not BasicTestUdpMulticastBusIPv")))
     (propagated-inputs
      (list python-msgpack python-typing-extensions python-wrapt))
     (native-inputs
-     (list python-codecov
+     (list ;; python-canalystii ; Not packed yet
+           python-codecov
            python-coverage
            python-future
            python-hypothesis
