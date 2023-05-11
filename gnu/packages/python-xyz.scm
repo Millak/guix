@@ -24832,29 +24832,61 @@ decisions with any given backend.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2022.05.2")
+    (version "2023.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dask/dask/")
-             (commit "8db1597c9745543df3129399bead5fbc95a54571")))
+             (commit "a69a808f75a961504a9ba18058bff5e458be97fb")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xfk3wml972z502w5ii5mn03ls3rg5p4hqgl0hkicgpmzlyz9kph"))
-       (snippet
-        ;; Delete generated copy of python-versioneer.  We recreate it below.
-        '(delete-file "versioneer.py"))))
-    (build-system python-build-system)
+        (base32 "089kz6hcgl4yxwx99br1124sg1gkdy554hf120z9a5cfbrf0ah9y"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'versioneer
-           (lambda _
-             (invoke "versioneer" "install")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv")))))))
+     (list
+      ;; Avoid coverage
+      #:test-flags
+      #~(list "-m" "not gpu and not slow and not network"
+              "-k" (string-append
+                    ;; This one cannot be interrupted.
+                    "not test_interrupt"
+                    ;; This one expects a deprecation warning that never
+                    ;; comes.
+                    " and not test_RandomState_only_funcs")
+              ;; Tests must run from the output directory, because otherwise
+              ;; it complains about the difference between the target
+              ;; directory embedded in the pyc files and the source directory
+              ;; from which we run tests.
+              (getcwd))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'versioneer
+            (lambda _
+              ;; Our version of versioneer needs setup.cfg.  This is adapted
+              ;; from pyproject.toml.
+              (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = dask/_version.py
+versionfile_build = dask/_version.py
+tag_prefix =
+parentdir_prefix = dask-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\"")))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; This option is not supported by our version of pytest.
+              (substitute* "pyproject.toml"
+                (("--cov-config=pyproject.toml") ""))))
+          (add-before 'check 'pre-check
+            (lambda _ (chdir "/tmp"))))))
     (propagated-inputs
      (list python-cloudpickle
            python-fsspec
@@ -24865,7 +24897,9 @@ decisions with any given backend.")
            python-toolz
            python-pyyaml))
     (native-inputs
-     (list python-pytest python-pytest-runner python-pytest-rerunfailures
+     (list python-click
+           python-importlib-metadata
+           python-pytest python-pytest-runner python-pytest-rerunfailures
            python-versioneer))
     (home-page "https://github.com/dask/dask/")
     (synopsis "Parallel computing with task scheduling")
