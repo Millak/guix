@@ -44296,6 +44296,24 @@ function data structures.")
         ("rust-uncased" ,rust-uncased-0.9)
         ("rust-unicase" ,rust-unicase-2))))))
 
+(define-public rust-phf-shared-0.9
+  (package
+    (inherit rust-phf-shared-0.10)
+    (name "rust-phf-shared")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf-shared" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ng0hi2byifqah6bcdy3zcpbwq8jxgl4laz65gq40dp3dm11i0x6"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-siphasher" ,rust-siphasher-0.3)
+        ("rust-uncased" ,rust-uncased-0.9)
+        ("rust-unicase" ,rust-unicase-2))))))
+
 (define-public rust-phf-shared-0.8
   (package
     (inherit rust-phf-shared-0.10)
