@@ -32669,14 +32669,14 @@ values of all the exported APIs match the platform that libc is compiled for.")
 (define-public rust-libc-print-0.1
   (package
     (name "rust-libc-print")
-    (version "0.1.13")
+    (version "0.1.21")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libc-print" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cjvz622b9bmf32q3mzmxv9ddxfdla6z2v647v8f3qx7lci9kmji"))))
+        (base32 "04bcx06gb04v0csgyzsvd1v9wvmv26xwbipmpcblgfnrigasbkh6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
