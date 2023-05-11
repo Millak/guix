@@ -18174,6 +18174,65 @@ specified in POSIX.1-2001 and POSIX.1-2008.")
 objects, patterned after the Mocha library for Ruby.")
     (license license:bsd-3)))
 
+(define-public python-inflect
+  (package
+    (name "python-inflect")
+    (version "6.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "inflect" version))
+              (sha256
+               (base32
+                "1sqj4svg2vbn4vq332nxnvky2433rgxbvjd529lddjmn2yd68hhq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore=_custom_build/backend.py"
+             "-k" "not mypy-status")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; The build system insists on ignoring the existing environment and
+         ;; running "pip install".
+         (add-after 'unpack 'do-not-use-pip-install
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^build-backend.*") "\
+build-backend = \"backend\"
+backend_path = [\"_custom_build\"]\n")
+               (("requires = .*") "requires = []\n"))
+             (mkdir-p "_custom_build")
+             (with-output-to-file "_custom_build/backend.py"
+               (lambda _
+                 (display "\
+from setuptools import build_meta as _orig
+from setuptools.build_meta import *
+def get_requires_for_build_wheel(config_settings=None):
+    return []
+def get_requires_for_build_sdist(config_settings=None):
+    return []
+")))
+             (setenv "PYTHONPATH"
+                     (string-append (getcwd) "/_custom_build")))))))
+    (propagated-inputs (list python-pydantic))
+    (native-inputs (list python-flake8
+                         python-pygments
+                         python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-flake8
+                         python-pytest-mypy
+                         ;; For the version number
+                         python-setuptools-scm))
+    (home-page "https://github.com/jaraco/inflect")
+    (synopsis "Correctly generate plurals, singular nouns, ordinals, indefinite articles")
+    (description
+     "This Python module lets you correctly generate plurals, singular nouns,
+ordinals, indefinite articles; it also can convert numbers to words.")
+    (license license:expat)))
+
 (define-public python-inflection
   (package
     (name "python-inflection")
