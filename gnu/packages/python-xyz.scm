@@ -22094,14 +22094,14 @@ library.")
   (package
     (inherit python-pyopengl)
     (name "python-pyopengl-accelerate")
-    (version "3.1.5")
+    (version "3.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyOpenGL-accelerate" version))
        (sha256
         (base32
-         "01iggy5jwxv7lxnj51zbmlbhag9wcb7dvrbwgi97i90n0a5m3r8j"))))
+         "1hydrpdn4p4z6mlczcg1y4s0z8si3rs6zq8x4ql558pcaq1312md"))))
     (inputs
      (list mesa python-numpy)) ; for cython module
                                         ; numpy_formathandler, thus not propagated
