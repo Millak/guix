@@ -52902,8 +52902,52 @@ rustc compiler.")
         `(("rust-failure" ,rust-failure-0.1)
           ,@(alist-delete "rust-anyhow" cargo-inputs)))))))
 
+(define-public rust-rustix-0.37
+  (package
+    (name "rust-rustix")
+    (version "0.37.19")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustix" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gb12rp992bh2h5msqcbpdsx6h1gslsb0zpp5hdnyxj2hnfp5y5c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-errno" ,rust-errno-0.3)
+        ("rust-io-lifetimes" ,rust-io-lifetimes-1)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-linux-raw-sys" ,rust-linux-raw-sys-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-ctor" ,rust-ctor-0.2)
+        ("rust-errno" ,rust-errno-0.3)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-io-lifetimes" ,rust-io-lifetimes-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.8)
+        ("rust-serial-test" ,rust-serial-test-0.6)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/bytecodealliance/rustix")
+    (synopsis "Safe Rust bindings to POSIX syscalls")
+    (description
+     "This package provides safe Rust bindings to POSIX syscalls.")
+    ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rustix-0.36
   (package
+    (inherit rust-rustix-0.37)
     (name "rust-rustix")
     (version "0.36.4")
     (source (origin
@@ -52913,7 +52957,6 @@ rustc compiler.")
               (sha256
                (base32
                 "08vwnvf76nkgb2bbxf8cn51c43x6sc9k462khrwbb2z0g19fi4yb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.4)
@@ -52936,13 +52979,7 @@ rustc compiler.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-windows-sys" ,rust-windows-sys-0.42))))
-    (home-page "https://github.com/bytecodealliance/rustix")
-    (synopsis "Safe Rust bindings to POSIX syscalls")
-    (description
-     "This package provides safe Rust bindings to POSIX syscalls.")
-    ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
-    (license (list license:asl2.0 license:expat))))
+        ("rust-windows-sys" ,rust-windows-sys-0.42))))))
 
 (define-public rust-rustix-0.35
   (package
