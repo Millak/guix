@@ -50789,6 +50789,33 @@ Rust.")
 functionality as retain but gives mutable borrow to the predicate.")
     (license license:expat)))
 
+(define-public rust-rfc6979-0.4
+  (package
+    (name "rust-rfc6979")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rfc6979" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1chw95jgcfrysyzsq6a10b1j5qb7bagkx8h0wda4lv25in02mpgq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hmac" ,rust-hmac-0.12)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/RustCrypto/signatures/tree/master/rfc6979")
+    (synopsis "Pure Rust implementation of RFC6979")
+    (description
+     "This package provides a pure Rust implementation of RFC6979: Deterministic
+Usage of the @dfn{Digital Signature Algorithm} (DSA) and @dfn{Elliptic Curve
+Digital Signature Algorithm} (ECDSA).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ring-0.16
   (package
     (name "rust-ring")
