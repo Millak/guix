@@ -119,6 +119,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module ((guix licenses) #:prefix license:)
@@ -1751,6 +1752,54 @@ This module implements the Encoding standard and has encoding labels and
 BOM detection, but the actual implementation for encoders and decoders
 is Python’s.")
     (license license:bsd-3)))
+
+(define-public python-omnipath
+  (package
+    (name "python-omnipath")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "omnipath" version))
+              (sha256
+               (base32
+                "01hmcp1202g5drs8dkxnyyb5v14g503dj4zfiqypghmigi9ipw86"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax
+           (lambda _
+             (substitute* "requirements.txt"
+               (("wrapt>=1.12.0")
+                "wrapt>=1.11.0"))))
+         (add-after 'unpack 'set-home
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-attrs
+           python-docrep
+           python-inflect
+           python-networkx
+           python-packaging
+           python-pandas
+           python-requests
+           python-tqdm
+           python-typing-extensions
+           python-urllib3
+           python-wrapt))
+    (native-inputs
+     (list python-bump2version
+           python-pre-commit
+           python-pytest
+           python-pytest-mock
+           python-requests-mock
+           python-setuptools-scm
+           python-tox))
+    (home-page "https://omnipathdb.org/")
+    (synopsis "Python client for the OmniPath web service")
+    (description "This package provides a Python client for the OmniPath web
+service.")
+    (license license:expat)))
 
 (define-public python-openapi-schema-validator
   (package
