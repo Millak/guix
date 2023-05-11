@@ -16226,8 +16226,33 @@ use with sct crate.")
      `(#:cargo-inputs
        (("rust-sct" ,rust-sct-0.3))))))
 
+(define-public rust-ctor-0.2
+  (package
+    (name "rust-ctor")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ctor" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06rhrw85py0gkk7g99qk124mk6d5isq95nn3abc84fyf7zv5ch6x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-libc-print" ,rust-libc-print-0.1))))
+    (home-page "https://github.com/mmastrac/rust-ctor")
+    (synopsis "__attribute__((constructor)) for Rust")
+    (description
+     "This package provides an @code{__attribute__((constructor))} for Rust.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ctor-0.1
   (package
+    (inherit rust-ctor-0.2)
     (name "rust-ctor")
     (version "0.1.26")
     (source
@@ -16237,18 +16262,12 @@ use with sct crate.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32 "15m0wqhv12p25xkxz5dxvg23r7a6bkh7p8zi1cdhgswjhdl028vd"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-syn" ,rust-syn-1)
              ("rust-quote" ,rust-quote-1))
            #:cargo-development-inputs
-           `(("rust-libc-print" ,rust-libc-print-0.1))))
-    (home-page "https://github.com/mmastrac/rust-ctor")
-    (synopsis "__attribute__((constructor)) for Rust")
-    (description
-     "This package provides an @code{__attribute__((constructor))} for Rust.")
-    (license (list license:asl2.0 license:expat))))
+           `(("rust-libc-print" ,rust-libc-print-0.1))))))
 
 (define-public rust-ctr-0.9
   (package
