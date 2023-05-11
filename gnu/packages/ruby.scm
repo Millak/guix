@@ -3112,14 +3112,14 @@ the GNOME Libxml2 XML toolkit.")
 (define-public ruby-lino
   (package
     (name "ruby-lino")
-    (version "1.1.0")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "lino" version))
        (sha256
         (base32
-         "11d29g0fk372b9fcpyr0k6hxm2b4j4igpysmi542hgbbgqgp9cd3"))))
+         "1zq9dza040fgjvr9imh7z2lgxrcyc5ac100rqimsnsf9bpfz3fsm"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; No included tests
