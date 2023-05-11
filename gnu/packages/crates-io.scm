@@ -43928,6 +43928,25 @@ function data structures.")
         ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
         ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-phf-0.9
+  (package
+    (inherit rust-phf-0.10)
+    (name "rust-phf")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sk9arhiv4hkg3hbmbxnpjvr0bffhyz7kpb2pn86mn6ia4c566xj"))))
+    (arguments
+     `(#:tests? #f          ; Doc tests fail.
+       #:cargo-inputs
+       (("rust-phf-macros" ,rust-phf-macros-0.9)
+        ("rust-phf-shared" ,rust-phf-shared-0.9)
+        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))))
+
 (define-public rust-phf-0.8
   (package
     (inherit rust-phf-0.10)
