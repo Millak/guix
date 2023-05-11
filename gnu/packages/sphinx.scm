@@ -453,7 +453,9 @@ supported with @code{sphinx-issues}.")
     (propagated-inputs (list python-docutils-0.15 python-sphinx-4))
     (native-inputs
      (list python-pytest
-           python-pytest-regressions))
+           python-pytest-regressions
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/executablebooks/sphinx-panels")
     (synopsis "Sphinx extension for creating panels in a grid layout")
     (description

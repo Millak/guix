@@ -191,12 +191,17 @@ belonging to various licenses.")
                         (add-before 'check 'chdir
                           (lambda _
                             (chdir "/tmp"))))))
-    (native-inputs (list python-poetry-core python-pytest))
-    (inputs (list python-binaryornot
-                  python-boolean.py
-                  python-debian
-                  python-jinja2
-                  python-license-expression))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-wheel))
+    (inputs
+     (list python-binaryornot
+           python-boolean.py
+           python-debian
+           python-jinja2
+           python-license-expression
+           python-setuptools)) ; For pkg_resources.
     (home-page "https://reuse.software/")
     (synopsis "Provide and verify copyright and licensing information")
     (description

@@ -2191,7 +2191,7 @@ and fast file reading.")
                  ;; Remove dataset with unclear license.
                  (lambda _
                    (delete-file "vega_datasets/_data/la-riots.csv"))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (propagated-inputs (list python-pandas))
     (home-page "https://github.com/altair-viz/vega_datasets")
     (synopsis "Example datasets used by Vega-related projects")
@@ -2236,6 +2236,7 @@ and Vega-Lite examples.")
                              python-jsonschema
                              python-numpy
                              python-pandas
+                             python-setuptools
                              python-toolz
                              python-typing-extensions))
     (native-inputs (list python-black
@@ -2323,7 +2324,8 @@ correlated samples from Markov Chain Monte Carlo (MCMC).")
            (lambda _
              ;; Cython extensions have to be built before running the tests.
              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-cython python-numpy))
+    (propagated-inputs (list python-cython python-numpy python-setuptools
+                             python-wheel))
     (native-inputs (list python-nose))
     (home-page "http://github.com/daleroberts/hdmedians")
     (synopsis "High-dimensional medians")
@@ -2374,7 +2376,9 @@ machine learning, computer vision, and high-dimensional statistics.")
                              python-scipy
                              python-typing-extensions
                              python-xarray
-                             python-xarray-einstats))
+                             python-xarray-einstats
+                             python-setuptools
+                             python-wheel))
     (home-page "https://github.com/arviz-devs/arviz")
     (synopsis "Exploratory analysis of Bayesian models")
     (description
@@ -2670,7 +2674,9 @@ sampler for Markov chain Monte Carlo (MCMC).")
            python-pytest
            python-pytest-randomly
            python-pytest-xdist
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (home-page
      (string-append "https://www.statsmodels.org/v" version "/"))
     (synopsis "Statistical modeling and econometrics in Python")

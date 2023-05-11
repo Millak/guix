@@ -160,7 +160,9 @@ interfaces for other technical domains.")
            python-mock
            python-pytest
            python-pytest-cov
-           python-pytest-mock))
+           python-pytest-mock
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/xflr6/graphviz")
     (synopsis "Simple Python interface for Graphviz")
     (description

@@ -6181,7 +6181,7 @@ video from a Wayland session.")
                 "1z9j3r9pm4rdynlmhgsgnwnnaqw5274yfy4kyillgd77msnpbhaw"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list gettext-minimal pkg-config))
+     (list gettext-minimal pkg-config python-setuptools python-wheel))
     (inputs
      (list bash-minimal
            python-pygobject

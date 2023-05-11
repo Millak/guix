@@ -219,7 +219,7 @@ Python file, so it can be easily copied into your project.")
     (build-system pyproject-build-system)
     (arguments (list #:build-backend "setuptools.build_meta"
                      #:tests? #f))      ;keep dependencies to a minimum
-    (native-inputs (list python-wheel))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/pypa/trove-classifiers")
     (synopsis "Canonical source for classifiers on PyPI")
     (description "This package is the canonical source for classifiers use on
@@ -650,6 +650,7 @@ specified by PEP 517, @code{flit_core.buildapi}.")
                      ;; builder instead.
                      #:build-backend "setuptools.build_meta"))
     (propagated-inputs (list python-flit-core python-setuptools-scm python-tomli))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://gitlab.com/WillDaSilva/flit_scm")
     (synopsis "PEP 518 build backend combining flit_core and setuptools_scm")
     (description "This package provides a PEP 518 build backend that uses

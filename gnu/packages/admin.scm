@@ -5080,10 +5080,17 @@ elogind's uaccess feature.")
                ;; XXX Guix's America/Los_Angeles time zone is somehow broken.
                (add-before 'check 'hack-time-zone
                  (lambda _
-                   (setenv "TZ" "PST8PDT"))))))
-    (native-inputs (list python-pytest))
+                   (setenv "TZ" "PST8PDT")
+                   (substitute* (find-files "tests" "^test.*\\.py$")
+                     (("America/Los_Angeles") "PST8PDT")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs
-     (list python-pygments python-ruamel.yaml python-xmltodict))
+     (list python-pygments
+           python-ruamel.yaml
+           python-xmltodict))
     (home-page "https://github.com/kellyjonbrazil/jc")
     (synopsis "Convert the output of command-line tools to JSON")
     (description "@code{jc} JSONifies the output of many CLI tools and

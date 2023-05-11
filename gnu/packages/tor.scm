@@ -50,6 +50,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -447,7 +448,8 @@ Potential client and exit connections are scrubbed of sensitive information.")
          "1542g6alycwlmvndxcijzn4d5lgycmxxb78gqd8qwgm9kw0fnr3q"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list (list glib "bin")))       ; for glib-compile-schemas.
+     (list python-setuptools python-wheel
+           (list glib "bin")))       ; for glib-compile-schemas.
     (inputs
      (list python-fire
            python-psutil

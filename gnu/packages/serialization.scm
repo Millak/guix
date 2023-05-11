@@ -746,7 +746,9 @@ RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faste
                          python-mypy
                          python-pytest
                          python-setuptools-scm
-                         python-versioneer))
+                         python-versioneer
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs (list python-pyyaml python-tomli python-tomli-w))
     (home-page "https://jcristharif.com/msgspec/")
     (synopsis "Fast serialization/validation library")

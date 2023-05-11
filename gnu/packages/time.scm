@@ -285,6 +285,7 @@ datetime module, available in Python 2.3+.")
                 "1wg3f3imjq3snvjccv64h5498pqv9xz664xhni7bsh8mnay91p83"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-dateutil python-pytz))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/jmcantrell/python-dateutils")
     (synopsis "Various utilities for working with date and datetime objects")
     (description
@@ -368,7 +369,7 @@ Python datetime objects.")
       ;; It's optional, remove this constrain where python-pytz is updated.
       #:test-flags #~(list "-k" "not test_with_pytz")))
     (native-inputs
-     (list python-poetry-core python-pytest))
+     (list python-poetry-core python-pytest python-setuptools))
     (propagated-inputs
      (list python-cffi python-h3-3 python-numba python-numpy python-pytz))
     (home-page "https://timezonefinder.michelfe.it/gui")

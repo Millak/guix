@@ -532,7 +532,11 @@ converts any cubic curves to quadratic.  The most useful function is probably
        (sha256
         (base32 "1rg2997af8blvswlwif0kpz2vxrlh555gzqslz6yv9y7i7v8lphl"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools-scm))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (propagated-inputs
      (list python-booleanoperations
            python-cffsubr
@@ -679,7 +683,8 @@ process.  FontParts is the successor of RoboFab.")
                        "--ignore=tests/builder/interpolation_test.py")))
     (native-inputs
      (list python-setuptools-scm
-
+           python-setuptools
+           python-wheel
            ;; For tests.
            python-pytest
            python-xmldiff))
@@ -859,6 +864,7 @@ suite of the @code{psautohint} package.")
            python-pytest-cov
            python-pytest-xdist
            python-setuptools-scm
+           python-setuptools
            python-wheel))
     (home-page "https://github.com/adobe-type-tools/psautohint")
     (synopsis "Adobe's PostScript autohinter")
@@ -1782,8 +1788,13 @@ with @samp{nameIDs}.")
         (base32 "0yx4i8q5rfyqhr2fj70a7z1bp1jv7bdlr64ww9z4nv9ycbda4x9j"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools-scm))
-    (propagated-inputs (list python-attrs python-fonttools))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-attrs
+           python-fonttools))
     (home-page "https://github.com/fonttools/ufoLib2")
     (synopsis "Unified Font Object (UFO) font processing library")
     (description "The ufoLib2 Python library is meant to be a thin

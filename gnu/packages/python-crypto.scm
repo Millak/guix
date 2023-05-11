@@ -302,7 +302,9 @@ do what is needed for client/server Kerberos authentication based on
     (native-inputs
      (list python-toml
            python-pytest
-           python-setuptools-scm))
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
     (propagated-inputs
      (list python-importlib-metadata
            python-jaraco-classes
@@ -530,11 +532,13 @@ is used by the Requests library to verify HTTPS requests.")
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))  ; No tests included.
     (native-inputs
-     (list python-flit-core))
+     (list python-flit-core
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
     (description
-      "This package contains test vectors for the cryptography package.")
+     "This package contains test vectors for the cryptography package.")
     ;; Distributed under either BSD-3 or ASL2.0
     (license (list license:bsd-3 license:asl2.0))))
 
@@ -574,7 +578,10 @@ is used by the Requests library to verify HTTPS requests.")
            python-iso8601
            python-pretend
            python-pytest                ;for subtests
-           python-pytest-benchmark))
+           python-pytest-benchmark
+           python-pytest-subtests
+           python-setuptools
+           python-wheel))
     (inputs (list python-cryptography-rust))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/pyca/cryptography")
@@ -1093,7 +1100,7 @@ provides drop-in compatibility with PyCrypto.")))
        ;; certificates.
        #:tests? #f))
     (inputs (list openssl))
-    (native-inputs (list swig))
+    (native-inputs (list swig python-setuptools python-wheel))
     (home-page "https://gitlab.com/m2crypto/m2crypto")
     (synopsis "Python crypto and TLS toolkit")
     (description "@code{M2Crypto} is a complete Python wrapper for OpenSSL
@@ -1280,7 +1287,11 @@ derivation function.")
                (base32
                 "0d4x84crbz0a17d8gi90z6zlxwm9pslc65rx0cdw2797ra360v3f"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-idna python-pytest))
+    (native-inputs
+     (list python-idna
+           python-pytest
+           python-setuptools
+           python-wheel))
     (propagated-inputs (list python-attrs python-cryptography python-pyasn1
                              python-pyasn1-modules python-six))
     (home-page "https://service-identity.readthedocs.io/")
@@ -1511,6 +1522,8 @@ items and collections, editing items, locking and unlocking collections
            python-pytest
            python-pytest-cov
            python-service-identity
+           python-setuptools
+           python-wheel
            python-zipp))
     (propagated-inputs
      (list python-cryptography

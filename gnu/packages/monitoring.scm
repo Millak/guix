@@ -326,7 +326,10 @@ solution (server-side)")))
                                      (string-append #$output "/share/doc/"
                                                     #$name "/html")))))))
     (native-inputs
-     (list python-pytest python-sphinx))
+     (list python-pytest
+           python-setuptools
+           python-sphinx
+           python-wheel))
     (inputs
      (list ncurses python-requests))
     (home-page "https://github.com/unioslo/zabbix-cli")

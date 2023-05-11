@@ -114,7 +114,9 @@ This Python package wraps the Blosc library.")
            python-hypothesis
            python-pyannotate
            python-pytest
-           python-pytest-cov))
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/miurahr/multivolume")
     (synopsis "Treat multiple files as one")
     (description "MultiVolumefile is a Python library that provides a
@@ -251,7 +253,9 @@ following algorithms are available:
            python-hypothesis
            python-pytest
            python-pytest-cov
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (home-page "https://codeberg.org/miurahr/pybcj")
     (synopsis "BCJ filter library")
     (description "In data compression, BCJ, short for Branch-Call-Jump, refers
@@ -311,6 +315,7 @@ Jump conversion filter by CFFI for Python.")
                (setenv "USE_SHARED_BROTLI" "1"))))))
     (propagated-inputs (list python-cffi))
     (inputs (list brotli))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/python-hyper/brotlicffi")
     (synopsis "Python CFFI bindings to the Brotli library")
     (description "This package provides Python CFFI bindings to the Brotli
@@ -332,7 +337,9 @@ library.")
     (native-inputs
      (list python-pyannotate
            python-pytest
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (home-page "https://pypi.org/project/inflate64/")
     (synopsis "Compression/decompression library")
     (description "The @code{inflate64} package provides @code{Deflater} and
@@ -361,7 +368,7 @@ compression algorithm.")
          (add-after 'unpack 'use-dynamic-linking
            (lambda _ (setenv "PYTHON_ISAL_LINK_DYNAMIC" "1"))))))
     (inputs (list isa-l))
-    (native-inputs (list python-cython))
+    (native-inputs (list python-cython python-setuptools python-wheel))
     (home-page "https://github.com/pycompression/python-isal")
     (synopsis "Python bindings for the ISA-L compression library")
     (description
@@ -407,7 +414,9 @@ headers compressed with QPACK.")
            python-pytest-benchmark
            python-pytest-cov
            python-pytest-timeout
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/miurahr/pyppmd")
     (synopsis "PPMd compression/decompression library")
     (description "Pyppmd provides classes and functions for compressing and
@@ -468,9 +477,8 @@ several possible methods.")
            python-pyzstd
            python-texttable))
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-coverage
+     (list python-coverage
+           python-setuptools
            python-coveralls
            python-libarchive-c
            python-py-cpuinfo
@@ -479,7 +487,9 @@ several possible methods.")
            python-pytest-benchmark
            python-pytest-cov
            python-pytest-remotedata
-           python-pytest-timeout))
+           python-pytest-timeout
+           python-setuptools-scm
+           python-wheel))
     (home-page "https://github.com/miurahr/py7zr")
     (synopsis "7-zip in Python")
     (description "This package provides py7zr, which implements 7-zip

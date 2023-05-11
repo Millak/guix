@@ -32,6 +32,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages python-build)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
@@ -89,7 +90,8 @@
                     name)))))))))
     (inputs (list tree-sitter))
     (native-inputs
-     (list tree-sitter-python tree-sitter-javascript))
+     (list tree-sitter-python tree-sitter-javascript
+           python-setuptools python-wheel))
     (home-page "https://github.com/tree-sitter/py-tree-sitter")
     (synopsis "Python bindings to the Tree-sitter parsing library")
     (description "This package provides Python bindings to the

@@ -1047,7 +1047,7 @@ and not test_wmt22_references")
                              python-portalocker
                              python-regex
                              python-tabulate))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/mjpost/sacrebleu")
     (synopsis
      "Compute shareable, comparable, and reproducible BLEU, chrF, and TER scores")
@@ -1088,7 +1088,7 @@ unsupervised text tokenizer.")
     (build-system pyproject-build-system)
     ;; This package depends on spacy, which depends on this package.
     (arguments (list #:tests? #false))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://spacy.io")
     (synopsis "Legacy registered functions for spaCy backwards compatibility")
     (description
@@ -1109,7 +1109,7 @@ compatibility.")
     (build-system pyproject-build-system)
     ;; This package depends on spacy, which depends on this package.
     (arguments (list #:tests? #false))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/explosion/spacy-loggers")
     (synopsis "Logging utilities for SpaCy")
     (description "This package provides logging utilities for the SpaCy
@@ -1967,6 +1967,8 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
                          python-pandas
                          python-pytest
                          python-pytest-cov
+                         python-setuptools
+                         python-wheel
                          tensorflow))
     (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
     (synopsis "Toolbox for imbalanced dataset in machine learning")
@@ -2147,7 +2149,9 @@ standard feature selection algorithms.")
      (list python-pytest
            python-pytest-lazy-fixture
            python-pytorch
-           python-torchvision))
+           python-torchvision
+           python-setuptools
+           python-wheel))
     (home-page "https://cleanlab.ai")
     (synopsis "Automatically find and fix dataset issues")
     (description
@@ -2179,7 +2183,7 @@ data by providing clean labels during training.")
            python-scipy
            python-tqdm))
     (native-inputs
-     (list python-pytest))))
+     (list python-pytest python-setuptools python-wheel))))
 
 (define-public python-cma
   (package
@@ -2220,7 +2224,7 @@ and a few related numerical optimization tools.")
         (base32 "17bk60mhkglz6s7wz6xcyhw1h4mvghc1iid0805dra7jdyafwrfn"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-hypothesis))
+    (native-inputs (list python-hypothesis python-setuptools python-wheel))
     (propagated-inputs (list python-numpy))
     (home-page "https://github.com/CyberAgentAILab/cmaes")
     (synopsis "CMA-ES implementation for Python")
@@ -2386,13 +2390,15 @@ interactive learning.")
            python-networkx
            python-numpy
            python-scipy
+           python-setuptools ; For pkg_resources.
            python-six
            python-tqdm))
     (native-inputs
      (list python-black
            python-nose
            python-pymongo
-           python-pytest))
+           python-pytest
+           python-wheel))
     (home-page "https://hyperopt.github.io/hyperopt/")
     (synopsis "Library for hyperparameter optimization")
     (description "Hyperopt is a Python library for serial and parallel
@@ -3962,7 +3968,8 @@ These include a barrier, broadcast, and allreduce.")
          ;; nor is examples/plot_quantum.py
          " and not test_file_is_generated"))))
     (propagated-inputs (list python-jsmin python-numpy python-scipy))
-    (native-inputs (list python-pytest python-pytest-cov python-sphinx))
+    (native-inputs (list python-pytest python-pytest-cov python-sphinx
+                         python-setuptools python-wheel))
     (home-page "https://github.com/tensorly/tensorly")
     (synopsis "Tensor learning in Python")
     (description
@@ -5123,6 +5130,7 @@ as torchvision, torchtext, and others.")
            (lambda _
              (delete-file "readchar/_win_read.py"))))))
     (propagated-inputs (list python-setuptools))
+    (native-inputs (list python-wheel))
     (home-page "https://github.com/magmax/python-readchar")
     (synopsis "Library to easily read single chars and key strokes")
     (description "This package provides a Python library to easily read single
@@ -5391,7 +5399,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
            python-pillow-simd
            python-pytorch))
     (native-inputs
-     (list which python-pytest))
+     (list which python-pytest python-setuptools python-wheel))
     (home-page "https://pytorch.org/vision/stable/index.html")
     (synopsis "Datasets, transforms and models specific to computer vision")
     (description
@@ -5994,7 +6002,7 @@ fi"
                              ;; Required by codegen.
                              python-setuptools
                              python-sympy))
-    (native-inputs (list python-pytest python-pytest-xdist))
+    (native-inputs (list python-pytest python-pytest-xdist python-wheel))
     (home-page "https://briansimulator.org/")
     (synopsis "Clock-driven simulator for spiking neural networks")
     (description

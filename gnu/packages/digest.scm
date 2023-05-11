@@ -116,7 +116,10 @@ platforms (both big and little endian).")
          "1hdxcscry59gh0znlm71ya23mm9rfmvz8lvvlplzxzf63pib28dc"))))
     (build-system pyproject-build-system)
     ;; Needed to embed the correct version string
-    (native-inputs (list python-setuptools-scm))
+    (native-inputs
+     (list python-setuptools-scm
+           python-setuptools
+           python-wheel))
     (home-page "https://github.com/ifduyue/python-xxhash")
     (synopsis "Python binding for xxHash")
     (description "This package provides Python bindings for the xxHash hash

@@ -370,9 +370,12 @@ routines such as routines for numerical integration and optimization.")
              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-dask
-           python-numpy))
+           python-numpy
+           python-click))
     (native-inputs
      (list python-cython
+           python-setuptools
+           python-wheel
            ;; The following are all needed for the tests
            htslib
            python-h5py
@@ -591,7 +594,7 @@ swarm algorithm.")
            python-scikit-learn
            python-scipy))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://scikit-optimize.github.io/")
     (synopsis "Sequential model-based optimization toolbox")
     (description "Scikit-Optimize, or @code{skopt}, is a simple and efficient
@@ -1852,7 +1855,7 @@ multiple deep learning frameworks.")
              (string-append "not test_datetime_conversion_warning"
                             " and not test_timedelta_conversion_warning"))))
     (native-inputs
-     (list python-setuptools-scm python-pytest))
+     (list python-setuptools python-setuptools-scm python-pytest python-wheel))
     (propagated-inputs
      (list python-numpy python-packaging python-pandas))
     (home-page "https://github.com/pydata/xarray")
@@ -2019,7 +2022,9 @@ parentdir_prefix = pytensor-
     (native-inputs (list python-cython
                          python-pytest
                          python-pytest-mock
-                         python-versioneer))
+                         python-versioneer
+                         python-setuptools
+                         python-wheel))
     (propagated-inputs (list python-cons
                              python-etuples
                              python-filelock
@@ -2882,7 +2887,9 @@ aggregated sum and more.")
                          python-pandas
                          python-pytest
                          python-pytest-cov
+                         python-setuptools
                          python-setuptools-scm
+                         python-wheel
                          tzdata-for-tests))
     (home-page "https://github.com/has2k1/plotnine")
     (synopsis "Grammar of Graphics for Python")
@@ -3666,7 +3673,12 @@ compagnies.")
                 "0mrm4rd6x1sm6hkvhk20mkqp9q53sl3lbvq6hqzyymkw1iqq6bhy"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-lxml python-six))
-    (native-inputs (list python-pytest python-numpy python-tables))
+    (native-inputs
+     (list python-pytest
+           python-numpy
+           python-setuptools
+           python-tables
+           python-wheel))
     (home-page "https://libneuroml.readthedocs.org/en/latest/")
     (synopsis
      "Python library for working with NeuroML descriptions of neuronal models")

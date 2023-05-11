@@ -72,6 +72,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
@@ -1030,7 +1031,12 @@ through its msgpack-rpc API.")
                (base32
                 "00kxlb3f1k7iaxzpsr07scavmnyg8c1jmicmr13mfk2lcdac6g2b"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-psutil python-pynvim))
+    (native-inputs
+     (list python-wheel))
+    (propagated-inputs
+     (list python-psutil
+           python-pynvim
+           python-setuptools))
     (home-page "https://github.com/mhinz/neovim-remote")
     (synopsis "Control nvim processes using `nvr` commandline tool")
     (description "This package provide a `nvr` command, which can open File in

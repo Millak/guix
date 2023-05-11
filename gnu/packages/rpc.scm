@@ -254,7 +254,7 @@ type information of gRPC.")
     (inputs
      (list abseil-cpp-20211102.0 c-ares grpc-for-python-grpcio openssl re2 zlib))
     (native-inputs
-     (list python-cython))
+     (list python-cython python-setuptools python-wheel))
     (propagated-inputs
      (list python-six))
     (home-page "https://grpc.io")
