@@ -41428,14 +41428,14 @@ crate.")
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
-    (version "0.10.49")
+    (version "0.10.52")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "openssl" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0cssygqbgdim10y7qrgz0rj5k839jqiv2n9ccw1lx8ipp1m10bsd"))))
+                "0mldyz9w6d5bf3004m7kyjry7944m0pkkifzbywgg06z0935gf01"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
