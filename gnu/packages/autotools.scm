@@ -369,29 +369,29 @@ output is indexed in many ways to simplify browsing.")
                  (string-append "exit 77\n" all "\n")))))
 
           #$@(if (%current-target-system)
-                 '((add-after 'install 'patch-non-shebang-references
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       ;; `patch-shebangs' patches shebangs only, and the Perl
-                       ;; scripts use a re-exec feature that references the
-                       ;; build hosts' perl.  Also, AUTOCONF and BASH store
-                       ;; references hide in the scripts.
-                       (let ((autoconf
-                              (dirname (dirname
-                                        (search-input-file inputs "bin/autoconf"))))
-                             (bash
-                              (dirname (dirname
-                                        (search-input-file inputs "bin/bash"))))
-                             (perl
-                              (dirname (dirname
-                                        (search-input-file inputs "bin/perl"))))
-                             (store-directory (%store-directory)))
-                         (substitute* (find-files (string-append #$output "/bin"))
-                           (((string-append store-directory "/[^/]*-autoconf-[^/]*"))
-                            autoconf)
-                           (((string-append store-directory "/[^/]*-bash-[^/]*"))
-                            bash)
-                           (((string-append store-directory "/[^/]*-perl-[^/]*"))
-                            perl))))))
+                 #~((add-after 'install 'patch-non-shebang-references
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        ;; `patch-shebangs' patches shebangs only, and the Perl
+                        ;; scripts use a re-exec feature that references the
+                        ;; build hosts' perl.  Also, AUTOCONF and BASH store
+                        ;; references hide in the scripts.
+                        (let ((autoconf
+                               (dirname (dirname
+                                         (search-input-file inputs "bin/autoconf"))))
+                              (bash
+                               (dirname (dirname
+                                         (search-input-file inputs "bin/bash"))))
+                              (perl
+                               (dirname (dirname
+                                         (search-input-file inputs "bin/perl"))))
+                              (store-directory (%store-directory)))
+                          (substitute* (find-files (string-append #$output "/bin"))
+                            (((string-append store-directory "/[^/]*-autoconf-[^/]*"))
+                             autoconf)
+                            (((string-append store-directory "/[^/]*-bash-[^/]*"))
+                             bash)
+                            (((string-append store-directory "/[^/]*-perl-[^/]*"))
+                             perl))))))
                  '())
 
           ;; Files like `install-sh', `mdate.sh', etc. must use
