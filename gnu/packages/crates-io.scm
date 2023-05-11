@@ -21243,8 +21243,33 @@ deserialized from environment variables.")
      "Type-erased Serialize and Serializer traits.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-errno-0.3
+  (package
+    (name "rust-errno")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "errno" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0fp7qy6fwagrnmi45msqnl01vksqwdb2qbbv60n9cz7rf0xfrksb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-errno-dragonfly" ,rust-errno-dragonfly-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/lambda-fairy/rust-errno")
+    (synopsis "Cross-platform interface to the @code{errno} variable")
+    (description
+     "This package provides a cross-platform interface to the
+@code{errno} variable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-errno-0.2
   (package
+    (inherit rust-errno-0.3)
     (name "rust-errno")
     (version "0.2.8")
     (source
@@ -21255,19 +21280,12 @@ deserialized from environment variables.")
        (sha256
         (base32
          "18cnqgk8r6lq1n5cfy3bryiyz9zkqr10dxj49sa3fkzfamih8fgn"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
            #:cargo-inputs
            `(("rust-errno-dragonfly" ,rust-errno-dragonfly-0.1)
              ("rust-libc" ,rust-libc-0.2)
-             ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/lambda-fairy/rust-errno")
-    (synopsis "Cross-platform interface to the @code{errno} variable")
-    (description
-     "This package provides a cross-platform interface to the
-@code{errno} variable.")
-    (license (list license:asl2.0 license:expat))))
+             ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-errno-dragonfly-0.1
   (package
