@@ -476,14 +476,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "40.0.1")
+    (version "40.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "0hd0ppss5xg0kzf36q8cdaxh1xw8ry4k7jkianlf832xbdmp0q44"))))
+         "16hcprw919f2rl3jipsy2996bnsz170inway3lishqi30xwqf6x8"))))
     (build-system python-build-system)
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
