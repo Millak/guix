@@ -13437,17 +13437,18 @@ const functions with conditional compilations.")
 (define-public rust-const-oid-0.9
   (package
     (name "rust-const-oid")
-    (version "0.9.1")
+    (version "0.9.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "const-oid" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0fyxvwnl3x6bxhy08a3g4ryf8mky6wnhwd6ll4g6mjxgfnk1ihyf"))))
+                "04xr993r37hd3kcwzll34kpihxrxj7yhr7fawgir8gs80wyby3sj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t))
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))
     (home-page "https://github.com/RustCrypto/formats/tree/master/const-oid")
     (synopsis "Implementation of the ISO/IEC Object Identifier (OID)")
     (description
