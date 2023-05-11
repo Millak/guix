@@ -1574,16 +1574,11 @@ reload its settings file.")))
                     (display #$(G_ "Service syslog is not running."))))))))
    ;; Note: a static file name is used for syslog.conf so that the reload
    ;; action work as intended.
-   (start #~(let ((spawn (make-forkexec-constructor
-                          (list #$(syslog-configuration-syslogd config)
-                                #$(string-append "--rcfile=" syslog.conf))
-                          #:pid-file "/var/run/syslog.pid")))
-              (lambda ()
-                ;; Set the umask such that file permissions are #o640.
-                (let ((mask (umask #o137))
-                      (pid  (spawn)))
-                  (umask mask)
-                  pid))))
+   (start #~(make-forkexec-constructor
+             (list #$(syslog-configuration-syslogd config)
+                   #$(string-append "--rcfile=" syslog.conf))
+             #:file-creation-mask #o137
+             #:pid-file "/var/run/syslog.pid"))
    (stop #~(make-kill-destructor))))
 
 (define syslog-service-type
