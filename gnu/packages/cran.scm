@@ -20192,6 +20192,36 @@ The flagship function is @code{ggMarginal()}, which can be used to add
 marginal histograms/boxplots/density plots to ggplot2 scatterplots.")
     (license license:expat)))
 
+(define-public r-ggpattern
+  (package
+    (name "r-ggpattern")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggpattern" version))
+       (sha256
+        (base32 "1b9bfxlg64gr39bz58fp6jmg4nziwk8rk94rzpjsqhfhpwi2lrgr"))))
+    (properties `((upstream-name . "ggpattern")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2
+           r-glue
+           r-gridpattern
+           r-rlang
+           r-scales))
+    (native-inputs (list r-knitr r-ragg r-rmarkdown))
+    (home-page "https://github.com/coolbutuseless/ggpattern")
+    (synopsis "Ggplot2 pattern geoms")
+    (description
+     "This package provides ggplot2 geoms filled with various patterns.
+It includes a patterned version of every ggplot2 geom that has a region that
+can be filled with a pattern.  It provides a suite of ggplot2 aesthetics and
+scales for controlling pattern appearances.  It supports over a dozen builtin
+patterns (every pattern implemented by gridpattern) as well as allowing custom
+user-defined patterns.")
+    (license license:expat)))
+
 (define-public r-minpack-lm
   (package
     (name "r-minpack-lm")
