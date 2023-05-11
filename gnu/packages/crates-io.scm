@@ -39096,6 +39096,26 @@ combinators library (fork for proposals for v8)")
     (description "This package provides custom derive nom parsers from structs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nonempty-0.7
+  (package
+    (name "rust-nonempty")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nonempty" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xynyd2mgjfc4lcishd6xky7cmkxgy4d7rawxfx6wpiq37kr3rg9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/cloudhead/nonempty")
+    (synopsis "Correct by construction non-empty vector")
+    (description "Correct by construction non-empty vector.")
+    (license license:expat)))
+
 (define-public rust-noop-proc-macro-0.3
   (package
     (name "rust-noop-proc-macro")
