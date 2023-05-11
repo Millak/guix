@@ -6180,18 +6180,18 @@ c6e7d37.  However, this package works only up to 128 bytes.")
 (define-public rust-base64ct-1
   (package
     (name "rust-base64ct")
-    (version "1.3.3")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "base64ct" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1818i0gpg7q35s6yglmhgciwi3jwx65mqc2ipjl54jfbmm288kw7"))))
+        (base32 "0nvdba4jb8aikv60az40x2w1y96sjdq8z3yp09rwzmkhiwv1lg4c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
-       (("rust-base64" ,rust-base64-0.13)
+       (("rust-base64" ,rust-base64-0.21)
         ("rust-proptest" ,rust-proptest-1))))
     (home-page "https://github.com/RustCrypto/formats/tree/master/base64ct")
     (synopsis "Implementation of Base64 (RFC 4648)")
