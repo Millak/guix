@@ -54615,8 +54615,37 @@ shareable by multiple crates in a build graph and erased by @code{cargo
 clean}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-scrypt-0.11
+  (package
+    (name "rust-scrypt")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "scrypt" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07zxfaqpns9jn0mnxm7wj3ksqsinyfpirkav1f7kc2bchs2s65h5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-password-hash" ,rust-password-hash-0.5)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.12)
+        ("rust-salsa20" ,rust-salsa20-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-password-hash" ,rust-password-hash-0.5))))
+    (home-page
+     "https://github.com/RustCrypto/password-hashes/tree/master/scrypt")
+    (synopsis "Scrypt password-based key derivation function")
+    (description
+     "This package provides a Scrypt password-based key derivation
+function.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-scrypt-0.8
   (package
+    (inherit rust-scrypt-0.11)
     (name "rust-scrypt")
     (version "0.8.1")
     (source
@@ -54626,7 +54655,6 @@ clean}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "09fkz5sc7qx97dyi1nkv69z36diggd2c9mja33cxpsqicdy6sgg7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -54634,13 +54662,7 @@ clean}.")
         ("rust-password-hash" ,rust-password-hash-0.3)
         ("rust-pbkdf2" ,rust-pbkdf2-0.10)
         ("rust-salsa20" ,rust-salsa20-0.9)
-        ("rust-sha2" ,rust-sha2-0.10))))
-    (home-page "https://github.com/RustCrypto/password-hashes")
-    (synopsis "Scrypt password-based key derivation function")
-    (description
-     "This package provides a Scrypt password-based key derivation
-function.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-sha2" ,rust-sha2-0.10))))))
 
 (define-public rust-scrypt-0.5
   (package
