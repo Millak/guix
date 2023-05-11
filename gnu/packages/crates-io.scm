@@ -35567,6 +35567,25 @@ for Rust structs.")
        (sha256
         (base32 "13ir50j549gdz94pds1i7ljnk14d66q5x91s11hncm1pih7jif8c"))))))
 
+(define-public rust-memuse-0.2
+  (package
+    (name "rust-memuse")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "memuse" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06kgsfv8fnhqbwnq3q841ndfq5wkanz5jpykldpfmrdc6na8ci91"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nonempty" ,rust-nonempty-0.7))))
+    (home-page "https://github.com/str4d/memuse")
+    (synopsis "Traits for measuring dynamic memory usage of types")
+    (description "Traits for measuring dynamic memory usage of types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-merge-derive-0.1
   (package
     (name "rust-merge-derive")
