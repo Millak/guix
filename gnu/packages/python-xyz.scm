@@ -621,6 +621,29 @@ remembers the order in which the items were inserted and supports almost all the
 features of the Python's built-in dict.")
     (license license:unlicense)))
 
+(define-public python-adjusttext
+  (package
+    (name "python-adjusttext")
+    (version "0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "adjustText" version))
+              (sha256
+               (base32
+                "05zf0xn7ab40dan213fwbp1z4rybih8dphf9mzb2ddmbafxq41mv"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib python-numpy))
+    (home-page "https://github.com/Phlya/adjustText")
+    (synopsis "Adjust text position in matplotlib plots to minimize overlaps")
+    (description
+     "Often when we want to label multiple points on a graph the text will
+start heavily overlapping with both other labels and data points.  This can be
+a major problem requiring manual solution.  However this can be largely
+automatized by smart placing of the labels (difficult) or iterative adjustment
+of their positions to minimize overlaps (relatively easy).  This library
+implements the latter option to help with matplotlib graphs.")
+    (license license:expat)))
+
 (define-public python-argopt
   (package
    (name "python-argopt")
