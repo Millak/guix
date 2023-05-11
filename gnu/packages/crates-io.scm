@@ -27318,22 +27318,21 @@ consistent, and reasonably well performing.")
        #:cargo-inputs
        (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
-(define-public rust-hermit-abi-0.2
+(define-public rust-hermit-abi-0.3
   (package
     (name "rust-hermit-abi")
-    (version "0.2.6")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hermit-abi" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1iz439yz9qzk3rh9pqx2rz5c4107v3qbd7bppfsbzb1mzr02clgf"))))
+                "11j2v3q58kmi5mhjvh6hfrb7il2yzg7gmdf5lpwnwwv6qj04im7y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-libc" ,rust-libc-0.2)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
     (home-page "https://github.com/hermitcore/rusty-hermit")
@@ -27343,6 +27342,25 @@ consistent, and reasonably well performing.")
 It is used to build the target x86_64-unknown-hermit.")
     ;; The user can choose either license.
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-hermit-abi-0.2
+  (package
+    (inherit rust-hermit-abi-0.3)
+    (name "rust-hermit-abi")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hermit-abi" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1iz439yz9qzk3rh9pqx2rz5c4107v3qbd7bppfsbzb1mzr02clgf"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
 (define-public rust-hermit-abi-0.1
   (package
