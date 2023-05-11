@@ -495,14 +495,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "40.0.1")
+    (version "40.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "0wilrilfcyl78caxcpna2k3aya6qamppwv4j35262pz9n7wg40r8"))))
+         "16awbsm13vdksm98dybwvmpy2y1l636bq7g0s93scksrp0r0sg63"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -585,6 +585,7 @@ ciphers, message digests and key derivation functions.")
                             (string-append #$output "/lib")))))
       #:cargo-inputs
       `(("rust-asn1-0.13" ,rust-asn1-0.13)
+        ("rust-cc" ,rust-cc-1)
         ("rust-chrono-0.4" ,rust-chrono-0.4)
         ("rust-foreign-types-shared-0.1" ,rust-foreign-types-shared-0.1)
         ("rust-once-cell-1" ,rust-once-cell-1)
@@ -592,9 +593,7 @@ ciphers, message digests and key derivation functions.")
         ("rust-openssl-sys-0.9" ,rust-openssl-sys-0.9)
         ("rust-ouroboros-0.15" ,rust-ouroboros-0.15)
         ("rust-pem-1" ,rust-pem-1)
-        ("rust-pyo3-0.15" ,rust-pyo3-0.15))
-      #:cargo-development-inputs
-      `(("rust-cc" ,rust-cc-1))))
+        ("rust-pyo3-0.15" ,rust-pyo3-0.15))))
     (native-inputs (list pkg-config python python-cffi))
     ;; XXX: Adding rust-openssl-sys-0.9 is needed because #:cargo-inputs
     ;; doesn't honor propagated-inputs.
