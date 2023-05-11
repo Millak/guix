@@ -19954,21 +19954,28 @@ easy.")
 (define-public rust-ed25519-1
   (package
     (name "rust-ed25519")
-    (version "1.0.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ed25519" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1vxn7x1xinbv1cl31015m0fw08jwkphylxrll17animv9i9nmiip"))))
+    (version "1.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ed25519" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1rzydm5wd8szkddx3g55w4vm86y1ika8qp8qwckada5vf1fg7kwi"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-serde" ,rust-serde-1)
-         ("rust-signature" ,rust-signature-1))))
-    (home-page "")
+     `(#:cargo-inputs
+       (("rust-pkcs8" ,rust-pkcs8-0.9)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-signature" ,rust-signature-1)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-ed25519-dalek" ,rust-ed25519-dalek-1)
+        ("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-rand-core" ,rust-rand-core-0.5))))
+    (home-page "https://github.com/RustCrypto/signatures/tree/master/ed25519")
     (synopsis "Edwards Digital Signature Algorithm (EdDSA) over Curve25519")
     (description
       "EdDSA over Curve25519 is specified in RFC 8032.  This package contains
