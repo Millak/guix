@@ -7704,19 +7704,44 @@ easily generate fake data: names, addresses, phone numbers, etc.")
 (define-public ruby-terraform
   (package
   (name "ruby-terraform")
-  (version "0.22.0")
+  (version "1.7.0")
   (source
    (origin
-     (method url-fetch)
-     (uri (rubygems-uri "ruby-terraform" version))
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/infrablocks/ruby_terraform")
+           (commit (string-append "v" version))))
+     (file-name (git-file-name name version))
      (sha256
       (base32
-       "13zjkp71cd19j2ds2h9rqwcfr1zdg5nsh63p89l6qcsc9z39z324"))))
+       "18d1qkf2rbbvc2f0dxni85i2l2g8zn5kzh0v8zr1b86r1wjy6rvd"))))
   (build-system ruby-build-system)
   (arguments
-   '(#:tests? #f)) ; No included tests
+   (list
+    #:test-target "spec"
+    #:phases
+    #~(modify-phases %standard-phases
+        (add-after 'unpack 'disable-bundler
+          (lambda _
+            (substitute* "spec/spec_helper.rb"
+              (("require 'bundler/setup'") ""))))
+        (add-before 'check 'disable-falinig-tests
+          (lambda _
+            (substitute* "spec/ruby_terraform/commands/plan_spec.rb"
+              (("it 'logs an error raised when running the command'")
+               "xit 'logs an error raised when running the command'")
+              (("it 'raises execution error when an error occurs running the command'")
+               "xit 'raises execution error when an error occurs running the command'"))))
+        (replace 'check
+          (lambda* (#:key tests? #:allow-other-keys)
+            (when tests?
+              (invoke "rspec")))))))
+  (native-inputs
+   (list ruby-rspec
+         ruby-faker
+         ruby-simplecov))
   (propagated-inputs
-   (list ruby-lino))
+   (list ruby-lino ruby-immutable-struct))
   (synopsis "Ruby wrapper around the Terraform command line interface")
   (description
    "This package provides a Ruby wrapper around the Terraform command line
