@@ -53977,8 +53977,33 @@ quickly convert floating point numbers to decimal strings.")
      "This package provides a procedural macros for the salsa crate.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-salsa20-0.10
+  (package
+    (name "rust-salsa20")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "salsa20" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04w211x17xzny53f83p8f7cj7k2hi8zck282q5aajwqzydd2z8lp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/stream-ciphers")
+    (synopsis "Salsa20 Stream Cipher")
+    (description "Salsa20 is a collection of stream cipher algorithms written
+in pure Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-salsa20-0.9
   (package
+    (inherit rust-salsa20-0.10)
     (name "rust-salsa20")
     (version "0.9.0")
     (source
@@ -53988,17 +54013,11 @@ quickly convert floating point numbers to decimal strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "11i646kpgimimqiq8hyi0b7ngp588f7nl9xsc317d9kdcxgvn3qc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-cipher" ,rust-cipher-0.3)
-        ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://github.com/RustCrypto/stream-ciphers")
-    (synopsis "Salsa20 Stream Cipher")
-    (description "Salsa20 is a collection of stream cipher algorithms written
-in pure Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-salsa-0.17
   (package
