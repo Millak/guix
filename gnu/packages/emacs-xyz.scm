@@ -129,6 +129,7 @@
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022-2023 Simon Josefsson <simon@josefsson.org>
+;;; Copyright © 2023 Fabio Natali <me@fabionatali.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32497,6 +32498,30 @@ such as:
 @item swap windows à-la @code{windmove}.
 @end itemize")
     (license license:gpl3+)))
+
+(define-public emacs-framemove
+  ;; Use the latest commit, as there are no tagged releases.
+  (let ((commit "0faa8a4937f398e4971fc877b1c294100506b645")
+        (revision "0"))
+    (package
+      (name "emacs-framemove")
+      (version (git-version "0.10" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsmirror/framemove")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1z4xqx1cvllil03pdwsybsj5v9w7ggdrak1kxa856ki5mj1ja3gl"))))
+      (build-system emacs-build-system)
+      (home-page "https://www.emacswiki.org/emacs/framemove.el")
+      (synopsis "Directional frame selection routines")
+      (description "Framemove is similar to the Windmove library, but for
+frames.  It provides a simple set of keystrokes to move the input/focus
+between windows.")
+      (license license:gpl3))))
 
 (define-public emacs-flycheck-cpplint
   (package
