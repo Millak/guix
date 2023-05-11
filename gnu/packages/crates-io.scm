@@ -44149,8 +44149,35 @@ function data structures.")
     (description "PHF generation logic")
     (license license:expat)))
 
+(define-public rust-phf-macros-0.11
+  (package
+    (name "rust-phf-macros")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rncvjimjri2vancig85icbk8h03a5s3z4cyasd70s37y72wvalj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-phf-generator" ,rust-phf-generator-0.11)
+        ("rust-phf-shared" ,rust-phf-shared-0.11)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-unicase" ,rust-unicase-2))))
+    (home-page "https://github.com/rust-phf/rust-phf")
+    (synopsis "Macros to generate types in the phf crate")
+    (description
+     "This package contains macros to generate types in the phf crate.")
+    (license license:expat)))
+
 (define-public rust-phf-macros-0.10
   (package
+    (inherit rust-phf-macros-0.11)
     (name "rust-phf-macros")
     (version "0.10.0")
     (source
@@ -44160,7 +44187,6 @@ function data structures.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1q5ljwvb10dx188i6jxzckqfimjw5pm2p4kkvmhg2q6m9lcg7zaq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -44170,12 +44196,7 @@ function data structures.")
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1)
-        ("rust-unicase" ,rust-unicase-2))))
-    (home-page "https://github.com/sfackler/rust-phf")
-    (synopsis "Macros to generate types in the phf crate")
-    (description
-     "This package contains macros to generate types in the phf crate.")
-    (license license:expat)))
+        ("rust-unicase" ,rust-unicase-2))))))
 
 (define-public rust-phf-macros-0.8
   (package
