@@ -42809,6 +42809,42 @@ and would-block I/O operations.")
         ("rust-tokio-core" ,rust-tokio-core-0.1))))
     (license license:bsd-3)))
 
+(define-public rust-pasetors-0.6
+  (package
+    (name "rust-pasetors")
+    (version "0.6.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pasetors" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sgag8mxix45inzmvkcp2nahmnd5gdi62wdh5v7dxhaxp0rzcjw2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ct-codecs" ,rust-ct-codecs-1)
+        ("rust-ed25519-compact" ,rust-ed25519-compact-2)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-orion" ,rust-orion-0.17)
+        ("rust-p384" ,rust-p384-0.13)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex" ,rust-hex-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/brycx/pasetors")
+    (synopsis "PASETO: Platform-Agnostic Security Tokens (in Rust)")
+    (description "PASETO: Platform-Agnostic Security Tokens (in Rust)")
+    (license license:expat)))
+
 (define-public rust-password-hash-0.5
   (package
     (name "rust-password-hash")
