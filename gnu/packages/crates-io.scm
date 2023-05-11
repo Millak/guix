@@ -54999,6 +54999,39 @@ proven statistical guarantees.")
 statistical guarantees.")
     (license license:expat)))
 
+(define-public rust-sec1-0.7
+  (package
+    (name "rust-sec1")
+    (version "0.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sec1" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vh4pvdfnghbjglh6k74vs93jj337jpli28bbyqr0srxh67c9bph"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base16ct" ,rust-base16ct-0.2)
+        ("rust-der" ,rust-der-0.7)
+        ("rust-generic-array" ,rust-generic-array-0.14)
+        ("rust-pkcs8" ,rust-pkcs8-0.10)
+        ("rust-serdect" ,rust-serdect-0.2)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/sec1")
+    (synopsis
+     "Rust implementation of SEC1: Elliptic Curve Cryptography encoding formats")
+    (description
+     "This package procides a pure Rust implementation of SEC1: Elliptic Curve
+Cryptography encoding formats including ASN.1 DER-serialized private keys as
+well as the Elliptic-Curve-Point-to-Octet-String encoding.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-seccomp-sys-0.1
   (package
     (name "rust-seccomp-sys")
