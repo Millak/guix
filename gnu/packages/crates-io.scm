@@ -49583,8 +49583,43 @@ random generic types.")
     (license
      (list license:zlib license:asl2.0 license:expat))))
 
+(define-public rust-raw-cpuid-10
+  (package
+    (name "rust-raw-cpuid")
+    (version "10.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "raw-cpuid" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ckkg47m8wbdinqg4z4dx7ipi3d7fjxdnrwzikx70x46rdwpcabc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-termimad" ,rust-termimad-0.20))
+       #:cargo-development-inputs
+       (("rust-core-affinity" ,rust-core-affinity-0.5)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-phf" ,rust-phf-0.11)
+        ("rust-rustversion" ,rust-rustversion-1))))
+    (home-page "https://github.com/gz/rust-cpuid")
+    (synopsis "Library to parse the x86 CPUID instruction, written in Rust")
+    (description
+     "This package provides a library to parse the x86 CPUID instruction,
+written in Rust with no external dependencies.  The implementation closely
+resembles the Intel CPUID manual description.  The library does only depend on
+libcore.")
+    (license license:expat)))
+
 (define-public rust-raw-cpuid-8
   (package
+    (inherit rust-raw-cpuid-10)
     (name "rust-raw-cpuid")
     (version "8.1.2")
     (source
@@ -49594,7 +49629,6 @@ random generic types.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0wry932lx7gqyxn7w54mg61b7hiwywyir754jhfxiws3pnfpvpqz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -49605,15 +49639,7 @@ random generic types.")
        #:cargo-development-inputs
        (("rust-core-affinity" ,rust-core-affinity-0.5)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-rustversion" ,rust-rustversion-0.1))))
-    (home-page "https://github.com/gz/rust-cpuid")
-    (synopsis "Library to parse the x86 CPUID instruction, written in Rust")
-    (description
-     "This package provides a library to parse the x86 CPUID instruction,
-written in Rust with no external dependencies.  The implementation closely
-resembles the Intel CPUID manual description.  The library does only depend on
-libcore.")
-    (license license:expat)))
+        ("rust-rustversion" ,rust-rustversion-0.1))))))
 
 (define-public rust-rawpointer-0.2
   (package
