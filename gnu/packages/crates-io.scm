@@ -22699,6 +22699,31 @@ custom fixed-size hash types.")
          (base32
           "0czam11mi80dbyhf4rd4lz0ihcf7vkfchrdcrn45wbs0h40dxm46"))))))
 
+(define-public rust-flagset-0.4
+  (package
+    (name "rust-flagset")
+    (version "0.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "flagset" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16alqal1jyg1pibd72drdq2ax5cb1fs09f54ghpw043qg75579nd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-repr" ,rust-serde-repr-0.1))))
+    (home-page "https://github.com/enarx/flagset")
+    (synopsis
+     "Data types and a macro for generating enumeration-based bit flags")
+    (description "This package provides data types and a macro for generating
+enumeration-based bit flags in rust.")
+    (license license:asl2.0)))
+
 (define-public rust-flame-0.2
   (package
     (name "rust-flame")
