@@ -44198,6 +44198,32 @@ function data structures.")
         ("rust-syn" ,rust-syn-1)
         ("rust-unicase" ,rust-unicase-2))))))
 
+(define-public rust-phf-macros-0.9
+  (package
+    (inherit rust-phf-macros-0.10)
+    (name "rust-phf-macros")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1rpc0jy5sfrk3ir87k2q0kk44a45nsrbwc131jmsi6f8hi3fqi7g"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-phf-generator" ,rust-phf-generator-0.9)
+        ("rust-phf-shared" ,rust-phf-shared-0.9)
+        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs
+       (("rust-phf" ,rust-phf-0.9)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-unicase" ,rust-unicase-2))))))
+
 (define-public rust-phf-macros-0.8
   (package
     (inherit rust-phf-macros-0.10)
