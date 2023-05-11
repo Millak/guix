@@ -36120,6 +36120,25 @@ file's MIME type by its extension.")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-minimad-0.9
+  (package
+    (name "rust-minimad")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "minimad" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d2qnjwdrb3ngb0sayzj2b56pjb75ajqiaz4iw7zfs4537q3jxi7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/Canop/minimad")
+    (synopsis "Light markdown parser")
+    (description "Light markdown parser.")
+    (license license:expat)))
+
 (define-public rust-minimal-lexical-0.2
   (package
     (name "rust-minimal-lexical")
