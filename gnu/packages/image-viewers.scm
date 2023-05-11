@@ -829,14 +829,14 @@ with tiling window managers.  Features include:
 (define-public qiv
   (package
     (name "qiv")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://spiegl.de/qiv/download/qiv-"
                            version ".tgz"))
        (sha256
-        (base32 "1mc0f2nnas4q0d7zc9r6g4z93i32xlx0p9hl4fn5zkyml24a1q28"))
+        (base32 "011pad6gvmpphiv85yq820w3m79m3spfafarcsrhb2ylwbymy27g"))
        (modules '((guix build utils)))
        (snippet
         '(begin
