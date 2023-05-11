@@ -2328,7 +2328,9 @@ Features include:
                              "cmd/generate_density_map/main.cpp"
                              "cmd/generate_sdf/main.cpp")
                 (("^#include <cxxopts/cxxopts\\.hpp>")
-                 "#include <cxxopts.hpp>"))))))
+                 "#include <cxxopts.hpp>")
+                (("cxxopts::OptionException")
+                 "cxxopts::exceptions::parsing"))))))
       (build-system cmake-build-system)
       (outputs '("out" "bin"))
       (arguments
