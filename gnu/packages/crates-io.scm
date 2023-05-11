@@ -57651,8 +57651,36 @@ Ed25519)")
 for generating and verifying digital signatures.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-signature-derive-2
+  (package
+    (name "rust-signature-derive")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "signature-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1z0mjjg3fpj08kc3nkax4lczgp7sfzbcm8q2qgim865510wkgpxc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page
+     "https://github.com/RustCrypto/traits/tree/master/signature/derive")
+    (synopsis "Custom derive support for the 'signature' crate")
+    (description "This package provides proc macros used by the signature
+crate.
+
+It's not intended to be used directly.  See the signature crate's documentation
+for additional details.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-signature-derive-1
   (package
+    (inherit rust-signature-derive-2)
     (name "rust-signature-derive")
     (version "1.0.0-pre.4")
     (source
@@ -57662,22 +57690,13 @@ for generating and verifying digital signatures.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0p1x0wv6grrgdn226m9rsqpcnpfwkpji7rjpalkbk1ynv0xpvf57"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))))
-    (home-page "signature_derive")
-    (synopsis "Custom derive support for the 'signature' crate")
-    (description "This package provides proc macros used by the signature
-crate.
-
-It's not intended to be used directly.  See the signature crate's documentation
-for additional details.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-synstructure" ,rust-synstructure-0.12))))))
 
 (define-public rust-simba-0.6
   (package
