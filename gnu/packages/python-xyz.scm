@@ -1201,6 +1201,9 @@ generator MkDocs.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 match))
       #:test-flags
       ;; "from sklearn.datasets import load_boston" fails because it has been
       ;; removed from scikit-learn since version 1.2.
@@ -1209,17 +1212,26 @@ generator MkDocs.")
              "--ignore=tests/tree/test_regressor.py"
              "--ignore=tests/ensemble/test_regressor.py")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "tests/conftest.py"
-               (("from sklearn.datasets import load_boston") "")
-               (("^_boston_X.*") "_boston_X, _boston_Y = (True, True)\n"))))
-         (add-before 'check 'build-extensions
-           (lambda _
-             ;; Cython extensions have to be built before running the tests.
-             (invoke "python" "buildpre.py")
-             (invoke "python" "build.py" "build_ext" "--inplace"))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests/conftest.py"
+                (("from sklearn.datasets import load_boston") "")
+                (("^_boston_X.*") "_boston_X, _boston_Y = (True, True)\n"))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "buildpre.py")
+              (invoke "python" "build.py" "build_ext" "--inplace")
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages/skranger"))
+                    (lib (match (find-files "build" "\\.so")
+                           ((the-lib) the-lib)
+                           (_ (error "could not find .so")))))
+                (mkdir-p site)
+                (install-file lib site)))))))
     (propagated-inputs (list python-scikit-learn))
     (native-inputs
      (list python-cython
