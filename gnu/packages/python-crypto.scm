@@ -557,11 +557,6 @@ ciphers, message digests and key derivation functions.")
                   (guix build utils)
                   (srfi srfi-1)
                   (ice-9 match))
-      ;; XXX: Building the test objects appear to fail due to a missing link
-      ;; directive to Python's shared library (e.g.: "ld:
-      ;; cryptography_rust.c950d742-cgu.11:(.text._ZN3...+0x57): undefined
-      ;; reference to `PyLong_FromLong'").
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -579,6 +574,11 @@ ciphers, message digests and key derivation functions.")
               (apply (assoc-ref %standard-phases 'configure)
                      (append args
                              (list #:inputs (alist-delete "source" inputs))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; As seen in tox.ini
+                (invoke "cargo" "test" "--no-default-features"))))
           (add-after 'install 'install-shared-library
             (lambda _
               (install-file "target/release/libcryptography_rust.so"
