@@ -17845,6 +17845,25 @@ targets")
 `Choice` and `Sequence` traits.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-der-derive-0.6
+  (package
+    (inherit rust-der-derive-0.7)
+    (name "rust-der-derive")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "der-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1fg3dv4cjjwd4a6dh62ch2gb477s1pvwh5s8wbg567rsbgdivxwf"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-der-derive-0.4
   (package
     (inherit rust-der-derive-0.7)
