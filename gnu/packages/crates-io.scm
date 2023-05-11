@@ -42096,20 +42096,19 @@ platform-native strings.")
 (define-public rust-ouroboros-0.15
   (package
     (name "rust-ouroboros")
-    (version "0.15.2")
+    (version "0.15.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ouroboros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qhd9cvc4hwdbr37da1jh0k0742slchixlxn4wxgc7g3l63yl9bl"))))
+        (base32 "1nvjra9dana2g6kxv3397qrgpyw6lknzya6lzs1s1llbap8qndg1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aliasable" ,rust-aliasable-0.1)
-        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.15)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+        ("rust-ouroboros-macro" ,rust-ouroboros-macro-0.15))))
     (home-page "https://github.com/joshua-maros/ouroboros")
     (synopsis "Self-referential struct generation")
     (description
