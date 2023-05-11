@@ -57959,14 +57959,14 @@ code is translated from C to Rust using c2rust.")
 (define-public rust-sha2-0.10
   (package
     (name "rust-sha2")
-    (version "0.10.1")
+    (version "0.10.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1v60pzdr3pp6y2sgg1v1nwv4169rb6psk44jmnnq51y5d60vvhwr"))))
+        (base32 "1h5xrrv2y06kr1gsz4pwrm3lsp206nm2gjxgbf21wfrfzsavgrl2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
