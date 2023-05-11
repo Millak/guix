@@ -44633,6 +44633,33 @@ Standards (PKCS) #5: Password-Based Cryptography Specification Version
 2.1 (RFC 8018).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pkcs5-0.5
+  (package
+    (inherit rust-pkcs5-0.7)
+    (name "rust-pkcs5")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs5" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0x81m285ijqi0fqkgym6a6ax02mfzdx87zfvqgrjsc2w3wn8c3fi"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-cbc" ,rust-cbc-0.1)
+        ("rust-der" ,rust-der-0.6)
+        ("rust-des" ,rust-des-0.8)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.11)
+        ("rust-scrypt" ,rust-scrypt-0.10)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-spki" ,rust-spki-0.6))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-pkcs5-0.3
   (package
     (inherit rust-pkcs5-0.7)
