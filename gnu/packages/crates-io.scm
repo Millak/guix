@@ -17794,8 +17794,35 @@ the Distinguished Encoding Rules (DER) for Abstract Syntax Notation One
 targets")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-der-derive-0.7
+  (package
+    (name "rust-der-derive")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "der-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cmyza28s52wfb67ymydjmvsc4m3sfp98dv9vprx6ibmdfx94iqi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/der/derive")
+    (synopsis
+      "Custom derive support for the `der` crate's `Choice` and `Sequence` traits")
+    (description
+      "This package provides a custom derive support for the `der` crate's
+`Choice` and `Sequence` traits.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-der-derive-0.4
   (package
+    (inherit rust-der-derive-0.7)
     (name "rust-der-derive")
     (version "0.4.1")
     (source
@@ -17805,7 +17832,6 @@ targets")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
           (base32 "0snv85yfy9iln05qsgbhwr1159gd0jfrgzj5dkrnricdc0y3pvca"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build?
         #t                              ; FIXME
@@ -17813,14 +17839,7 @@ targets")
         (("rust-proc-macro2" ,rust-proc-macro2-1)
          ("rust-quote" ,rust-quote-1)
          ("rust-syn" ,rust-syn-1)
-         ("rust-synstructure" ,rust-synstructure-0.12))))
-    (home-page "https://github.com/RustCrypto/formats/tree/master/der/derive")
-    (synopsis
-      "Custom derive support for the `der` crate's `Choice` and `Sequence` traits")
-    (description
-      "This package provides a custom derive support for the `der` crate's
-`Choice` and `Sequence` traits.")
-    (license (list license:asl2.0 license:expat))))
+         ("rust-synstructure" ,rust-synstructure-0.12))))))
 
 (define-public rust-der-oid-macro-0.5
   (package
