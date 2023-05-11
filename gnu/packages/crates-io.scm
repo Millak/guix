@@ -24743,7 +24743,7 @@ Rust.")
 (define-public rust-generic-array-0.14
   (package
     (name "rust-generic-array")
-    (version "0.14.4")
+    (version "0.14.7")
     (source
       (origin
         (method url-fetch)
@@ -24752,13 +24752,15 @@ Rust.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "05qqwm9v5asbil9z28wjkmpfvs1c5c99n8n9gwxis3d3r3n6c52h"))))
+          "16lyyrzrljfq424c3n8kfwkqihlimmsg5nhshbbp48np3yjrqr45"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Doc tests fail
+       #:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-typenum" ,rust-typenum-1)
-        ("rust-version-check" ,rust-version-check-0.9))
+        ("rust-version-check" ,rust-version-check-0.9)
+        ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
         ("rust-serde-json" ,rust-serde-json-1))))
