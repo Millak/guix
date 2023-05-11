@@ -66,7 +66,7 @@
 ;;; Copyright © 2019, 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020, 2021, 2022 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2019, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2019, 2021-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Riku Viitanen <riku.viitanen@protonmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 sirgazil <sirgazil@zoho.com>
@@ -2793,6 +2793,26 @@ a library.")
     (synopsis "Disk and file backed cache library")
     (description "DiskCache is a disk and file backed persistent cache.")
     (license license:asl2.0)))
+
+(define-public python-optparse-pretty
+  (package
+    (name "python-optparse-pretty")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "optparse-pretty" version))
+       (sha256
+        (base32 "1920wbh2b7a8qn7zx2iiqbcdaax335l81a73x9pp8h11yzs2jdmh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;There are none
+    (home-page "https://github.com/gvalkov/optparse-pretty")
+    (synopsis "Compact help formatter for optparse")
+    (description
+     "This module provides two help formatters for optparse.  They provide
+terser and more customizable option formatting in comparison to the default
+help formatter.")
+    (license license:bsd-3)))
 
 (define-public python-orjson
   (package
