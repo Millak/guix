@@ -43884,8 +43884,33 @@ and graph algorithms.")
                (("fn dot\\(\\) \\{" all)
                 (string-append "#[ignore] " all))))))))))
 
+(define-public rust-phf-0.11
+  (package
+    (name "rust-phf")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1354fbpb52cp9gs5mlkaygc5qhdx6r07rfv3xy482m4kvqsnb34j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Doc tests fail.
+       #:cargo-inputs
+       (("rust-phf-macros" ,rust-phf-macros-0.11)
+        ("rust-phf-shared" ,rust-phf-shared-0.11)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/rust-phf/rust-phf")
+    (synopsis "Runtime support for perfect hash function data structures")
+    (description "This package provides runtime support for perfect hash
+function data structures.")
+    (license license:expat)))
+
 (define-public rust-phf-0.10
   (package
+    (inherit rust-phf-0.11)
     (name "rust-phf")
     (version "0.10.1")
     (source
@@ -43895,19 +43920,13 @@ and graph algorithms.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0naj8n5nasv5hj5ldlva3cl6y3sv7zp3kfgqylhbrg55v3mg3fzs"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Doc tests fail.
        #:cargo-inputs
        (("rust-phf-macros" ,rust-phf-macros-0.10)
         ("rust-phf-shared" ,rust-phf-shared-0.10)
         ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/sfackler/rust-phf")
-    (synopsis "Runtime support for perfect hash function data structures")
-    (description "This package provides runtime support for perfect hash
-function data structures.")
-    (license license:expat)))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-phf-0.8
   (package
