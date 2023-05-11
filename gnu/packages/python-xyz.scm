@@ -22049,14 +22049,14 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
 (define-public python-pyopengl
   (package
     (name "python-pyopengl")
-    (version "3.1.5")
+    (version "3.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyOpenGL" version))
        (sha256
         (base32
-         "091lp9bpqi8yf1nmyg19xmvw611lrzq2q94cl1k5gnlh0c6vl1s1"))))
+         "09syrsfrcknr1k2wmj05gfd5d0dyjfxzbipzbd0agv9775vwi9lf"))))
     (build-system python-build-system)
     (inputs
      (list mesa freeglut glu))
