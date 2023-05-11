@@ -44105,6 +44105,32 @@ function data structures.")
         ("rust-phf-shared" ,rust-phf-shared-0.10)
         ("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-phf-generator-0.9
+  (package
+    (inherit rust-phf-generator-0.10)
+    (name "rust-phf-generator")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf-generator" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "10ih96kaxnkn1yxk3ghpzgm09nc0rn69fd52kv68003fv4h34gyl"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                          (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-phf-shared" ,rust-phf-shared-0.9)
+        ("rust-rand" ,rust-rand-0.8))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))))
+
 (define-public rust-phf-generator-0.8
   (package
     (inherit rust-phf-generator-0.10)
