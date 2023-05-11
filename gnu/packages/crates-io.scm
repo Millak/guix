@@ -59599,8 +59599,39 @@ and spirv-std-macros.")
 SPIR-V.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-spki-0.7
+  (package
+    (name "rust-spki")
+    (version "0.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "spki" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jhq00sv4w3psdi6li3vjjmspc6z2d9b1wc1srbljircy1p9j7lx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-base64ct" ,rust-base64ct-1)
+        ("rust-der" ,rust-der-0.7)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/spki")
+    (synopsis
+     "X.509 Subject Public Key Info (RFC5280) describing public keys")
+    (description
+     "This package provides X.509 Subject Public Key Info (RFC5280)
+describing public keys as well as their associated AlgorithmIdentifiers (i.e.
+OIDs)")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-spki-0.4
   (package
+    (inherit rust-spki-0.7)
     (name "rust-spki")
     (version "0.4.1")
     (source
@@ -59610,16 +59641,7 @@ SPIR-V.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ckgkcg6db5y94dqhmyikgn8yrsah6pyf4j197hv1c51bp0s00aw"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t #:cargo-inputs (("rust-der" ,rust-der-0.4))))
-    (home-page "https://github.com/RustCrypto/formats/tree/master/spki")
-    (synopsis
-     "X.509 Subject Public Key Info (RFC5280) describing public keys")
-    (description
-     "This package provides X.509 Subject Public Key Info (RFC5280)
-describing public keys as well as their associated AlgorithmIdentifiers (i.e.
-OIDs)")
-    (license (list license:asl2.0 license:expat))))
+    (arguments `(#:skip-build? #t #:cargo-inputs (("rust-der" ,rust-der-0.4))))))
 
 (define-public rust-spmc-0.3
   (package
