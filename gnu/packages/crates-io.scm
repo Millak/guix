@@ -61913,6 +61913,24 @@ a syntax tree of Rust source code.")
      "This package provides the features between \"full\" and \"derive\" of syn.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-syn-test-suite-0.0.0
+  (package
+    (name "rust-syn-test-suite")
+    (version "0.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "syn-test-suite" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15yz9q7rgxaplv0zbnanzyv1la4gmg47yq5wlkcwv3cck4qlncdm"))))
+    (build-system cargo-build-system)
+    (arguments (list #:skip-build? #t))
+    (home-page "https://github.com/dtolnay/syn")
+    (synopsis "Test suite of the syn crate")
+    (description "Test suite of the syn crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-synchronoise-1
   (package
     (name "rust-synchronoise")
