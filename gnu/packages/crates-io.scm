@@ -15595,8 +15595,49 @@ character.")
     (arguments
      `(#:cargo-inputs (("rust-nom" ,rust-nom-6))))))
 
+(define-public rust-crypto-bigint-0.5
+  (package
+    (name "rust-crypto-bigint")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "crypto-bigint" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05gy7sqkxg65bj1wrgq1pbh8iwn1kmfysvzx1g22p4gx3972yk6g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-generic-array" ,rust-generic-array-0.14)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-rlp" ,rust-rlp-0.5)
+        ("rust-serdect" ,rust-serdect-0.2)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+        ("rust-rand-core" ,rust-rand-core-0.6))))
+    (home-page "https://github.com/RustCrypto/crypto-bigint")
+    (synopsis "Big integer library designed for use in cryptography")
+    (description
+     "This crate is a pure Rust implementation of a big integer library which
+has been designed from the ground-up for use in cryptographic applications.
+Provides constant-time, no_std-friendly implementations of modern formulas
+using const generics.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-crypto-bigint-0.2
   (package
+    (inherit rust-crypto-bigint-0.5)
     (name "rust-crypto-bigint")
     (version "0.2.11")
     (source
@@ -15606,7 +15647,6 @@ character.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00qckh65nzb7s7vd60wylw6alxf9g37xh31lirb1qw0l8fxx6fzq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -15614,15 +15654,7 @@ character.")
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-rlp" ,rust-rlp-0.5)
         ("rust-subtle" ,rust-subtle-2)
-        ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://github.com/RustCrypto/crypto-bigint")
-    (synopsis "Big integer library designed for use in cryptography")
-    (description
-     "This crate is a pure Rust implementation of a big integer library which
-has been designed from the ground-up for use in cryptographic applications.
-Provides constant-time, no_std-friendly implementations of modern formulas
-using const generics.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-crypto-common-0.1
   (package
