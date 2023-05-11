@@ -73095,8 +73095,31 @@ if they were just another Rust module.")
      "This package provides code gen support for the windows crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-aarch64-msvc-0.48
+  (package
+    (name "rust-windows-aarch64-msvc")
+    (version "0.48.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows-aarch64-msvc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wvwipchhywcjaw73h998vzachf668fpqccbhrxzrz5xszh2gvxj"))
+              (snippet
+               '(delete-file "lib/windows.0.48.0.lib"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Code gen support for the windows crate")
+    (description "This package provides code gen support for the windows
+crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-aarch64-msvc-0.42
   (package
+    (inherit rust-windows-aarch64-msvc-0.48)
     (name "rust-windows-aarch64-msvc")
     (version "0.42.2")
     (source (origin
@@ -73108,14 +73131,8 @@ if they were just another Rust module.")
                 "0hsdikjl5sa1fva5qskpwlxzpc5q9l909fpl1w6yy1hglrj8i3p0"))
               (snippet
                '(delete-file "lib/windows.lib"))))
-    (build-system cargo-build-system)
     (arguments
-     (list #:skip-build? #t))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Code gen support for the windows crate")
-    (description "This package provides code gen support for the windows
-crate.")
-    (license (list license:expat license:asl2.0))))
+     (list #:skip-build? #t))))
 
 (define-public rust-windows-aarch64-msvc-0.36
   (package
