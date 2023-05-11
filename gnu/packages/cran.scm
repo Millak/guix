@@ -17853,6 +17853,36 @@ visualization; flexible image manipulation; metadata and sparse image
 handling.")
     (license license:gpl2)))
 
+(define-public r-gridpattern
+  (package
+    (name "r-gridpattern")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gridpattern" version))
+       (sha256
+        (base32 "13yypjsbpr61yn15y4cyz6s8jvcgg3mmr8rncskinpk8lsa8h2h4"))))
+    (properties `((upstream-name . "gridpattern")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-glue
+           r-memoise
+           r-png
+           r-rlang
+           r-sf))
+    (native-inputs (list r-knitr r-rmarkdown))
+    (home-page "https://trevorldavis.com/R/gridpattern/")
+    (synopsis "Grid pattern grobs")
+    (description
+     "This package provides grid grobs that fill in a user-defined area with
+various patterns.  It includes enhanced versions of the geometric and
+image-based patterns originally contained in the ggpattern package as well as
+original @code{pch}, @code{polygon_tiling}, @code{regular_polygon},
+@code{rose}, @code{text}, @code{wave}, and @code{weave} patterns plus support
+for custom user-defined patterns.")
+    (license license:expat)))
+
 (define-public r-gridsvg
   (package
     (name "r-gridsvg")
