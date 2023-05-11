@@ -31511,20 +31511,23 @@ debugging.")
 (define-public rust-keccak-0.1
   (package
     (name "rust-keccak")
-    (version "0.1.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "keccak" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "19ybbvxrdk9yy65rk7f5ad0hcxszkjwph68yzkj3954lnir1bhk7"))))
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "keccak" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0h7rcvwvf20g4k8cx2brnrqvah6jwzs84w09vrj4743dczc5wvcg"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://crates.io/crates/keccak")
+    (arguments
+     `(#:cargo-inputs (("rust-cpufeatures" ,rust-cpufeatures-0.2))))
+    (home-page "https://github.com/RustCrypto/sponges/tree/master/keccak")
     (synopsis "Keccak-f sponge function for Rust")
-    (description "This package provides a keccak-f sponge function")
-    (license license:cc0)))
+    (description
+     "Pure Rust implementation of the Keccak sponge function including the
+keccak-f and keccak-p variants.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public rust-kernel32-sys-0.2
   (package
