@@ -1200,7 +1200,7 @@ algorithm called SAscan.")
 (define-public cxxopts
   (package
     (name "cxxopts")
-    (version "3.0.0")
+    (version "3.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1209,7 +1209,7 @@ algorithm called SAscan.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08x7j168l1xwj0r3rv89cgghmfhsx98lpq35r3vkh504m1pd55a6"))))
+                "0d37qpsaq8ik7pl4vk8346vqcqyfzfbnpq8mhsa2gb2zf1lwr4wl"))))
     (build-system cmake-build-system)
     (synopsis "Lightweight C++ command line option parser")
     (description
