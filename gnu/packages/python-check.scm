@@ -2115,6 +2115,62 @@ reducing a number of combinations of variables into a lesser set that covers
 most situations.")
     (license license:expat)))
 
+(define-public python-pytest-enabler
+  (package
+    (name "python-pytest-enabler")
+    (version "2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-enabler" version))
+              (sha256
+               (base32
+                "0m7m19829jwj1wqss73m8q1lpmkqhzkqp1xm4ahq0d7kjjghd4cb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore=_custom_build/backend.py"
+             "-k" "not mypy-status")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; The build system insists on ignoring the existing environment and
+         ;; running "pip install".
+         (add-after 'unpack 'do-not-use-pip-install
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^build-backend.*") "\
+build-backend = \"backend\"
+backend_path = [\"_custom_build\"]\n")
+               (("requires = .*") "requires = []\n"))
+             (mkdir-p "_custom_build")
+             (with-output-to-file "_custom_build/backend.py"
+               (lambda _
+                 (display "\
+from setuptools import build_meta as _orig
+from setuptools.build_meta import *
+def get_requires_for_build_wheel(config_settings=None):
+    return []
+def get_requires_for_build_sdist(config_settings=None):
+    return []
+")))
+             (setenv "PYTHONPATH"
+                     (string-append (getcwd) "/_custom_build")))))))
+    (propagated-inputs (list python-jaraco-context python-jaraco-functools
+                             python-toml))
+    (native-inputs (list python-flake8
+                         python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-flake8
+                         python-pytest-mypy
+                         python-types-toml))
+    (home-page "https://github.com/jaraco/pytest-enabler")
+    (synopsis "Enable installed pytest plugins")
+    (description "The enabler plugin allows configuration of plugins if
+present, but omits the settings if the plugin is not present.")
+    (license license:expat)))
+
 (define-public python-pytest-mp
   (package
     (name "python-pytest-mp")
