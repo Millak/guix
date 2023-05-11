@@ -17799,6 +17799,30 @@ the Distinguished Encoding Rules (DER) for Abstract Syntax Notation One
 targets")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-der-0.6
+  (package
+    (inherit rust-der-0.7)
+    (name "rust-der")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "der" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pnl3y52m1s6srxpfrfbazf6qilzq8fgksk5dv79nxaybjk6g97i"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-const-oid" ,rust-const-oid-0.9)
+        ("rust-der-derive" ,rust-der-derive-0.6)
+        ("rust-flagset" ,rust-flagset-0.4)
+        ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.6)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-proptest" ,rust-proptest-1))))))
+
 (define-public rust-der-0.4
   (package
     (inherit rust-der-0.7)
