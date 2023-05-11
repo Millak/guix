@@ -54643,6 +54643,28 @@ clean}.")
 function.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-scrypt-0.10
+  (package
+    (inherit rust-scrypt-0.11)
+    (name "rust-scrypt")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "scrypt" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0pglmppcl8mdzfxdv2x9dsjrwxhc1bm9zvxjibnlv59jnv9297lz"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hmac" ,rust-hmac-0.12)
+        ("rust-password-hash" ,rust-password-hash-0.4)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.11)
+        ("rust-salsa20" ,rust-salsa20-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-password-hash" ,rust-password-hash-0.4))))))
+
 (define-public rust-scrypt-0.8
   (package
     (inherit rust-scrypt-0.11)
