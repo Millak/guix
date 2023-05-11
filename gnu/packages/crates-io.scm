@@ -10049,10 +10049,10 @@ capabilities.")
         ("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-libc" ,rust-libc-0.2))))))
 
-(define-public rust-cargo-0.68
+(define-public rust-cargo-0.69
   (package
     (name "rust-cargo")
-    (version "0.68.0")
+    (version "0.69.1")
     (source
      (origin
        (method url-fetch)
@@ -10061,7 +10061,12 @@ capabilities.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0kgj3kh3lkdviz2y2apmkkh1yy7n88aj6gfb96l0gm1w2xq80pnz"))))
+         "0m2dki3hx81vifhy2abp3j5079y3nja52arm60xp6lv24jwimkrf"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)" _ version)
+                   (string-append "^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(;; The test suite is disabled as the internal 'cargo-test-macro' and
@@ -10105,6 +10110,7 @@ capabilities.")
         ("rust-opener" ,rust-opener-0.5)
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-os-info" ,rust-os-info-3)
+        ("rust-pasetors" ,rust-pasetors-0.6)
         ("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
@@ -10121,6 +10127,7 @@ capabilities.")
         ("rust-tar" ,rust-tar-0.4)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-time" ,rust-time-0.3)
         ("rust-toml-edit" ,rust-toml-edit-0.15)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.2)
