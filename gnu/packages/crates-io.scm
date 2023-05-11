@@ -30247,24 +30247,25 @@ versions < 0.2.")
 (define-public rust-io-lifetimes-1
   (package
     (name "rust-io-lifetimes")
-    (version "1.0.3")
+    (version "1.0.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "io-lifetimes" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0g76f1c4w3cgyl6qn3kfmi7srphrmjhx3a0rl4qks4ib4n9jl4a6"))))
+                "08625nsz0lgbd7c9lly6b6l45viqpsnj9jbsixd9mrz7596wfrlw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
                        ("rust-fs-err" ,rust-fs-err-2)
+                       ("rust-hermit-abi" ,rust-hermit-abi-0.3)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-mio" ,rust-mio-0.8)
                        ("rust-os-pipe" ,rust-os-pipe-1)
                        ("rust-socket2" ,rust-socket2-0.4)
                        ("rust-tokio" ,rust-tokio-1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.42))))
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (home-page "https://github.com/sunfishcode/io-lifetimes")
     (synopsis "Low-level I/O ownership and borrowing library")
     (description
