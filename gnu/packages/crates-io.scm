@@ -2015,7 +2015,7 @@ ciphers implementations.")
      (("rust-aes-soft" ,rust-aes-soft-0.6)
       ("rust-aesni" ,rust-aesni-0.10)
       ("rust-cipher" ,rust-cipher-0.2)
-      ("rust-ctr", rust-ctr-0.6))
+      ("rust-ctr" ,rust-ctr-0.6))
      #:cargo-development-inputs
      (("rust-cipher" ,rust-cipher-0.2))))
   (home-page "https://github.com/RustCrypto/block-ciphers/tree/master/aes")
@@ -28856,7 +28856,7 @@ on both POSIX and Microsoft Windows hosts.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cc", rust-cc-1)
+       (("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/messense/if-addrs")
     (synopsis "Retrieve the IP addresses for all network interfaces")
