@@ -14581,7 +14581,7 @@ mile, ...).")
 (define-public rust-crates-io-0.35
   (package
     (name "rust-crates-io")
-    (version "0.35.0")
+    (version "0.35.1")
     (source
      (origin
        (method url-fetch)
@@ -14590,7 +14590,7 @@ mile, ...).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0zlp8zdkd0qr1ik64wik8bavdm75y54xxp6d7mqvxvv8ssq97144"))))
+         "0bkypzxwchlff8nb6iy3a060lbph6hvhxsxj98k0f0m6gl3vdpz2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
