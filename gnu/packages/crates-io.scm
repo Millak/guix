@@ -43547,6 +43547,21 @@ and other messages.  It provides a no_std-friendly, constant-time
 implementation suitable for use with cryptographic private keys.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pem-rfc7468-0.6
+  (package
+    (inherit rust-pem-rfc7468-0.7)
+    (name "rust-pem-rfc7468")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem-rfc7468" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1b5d8rvc4lgwxhs72m99fnrg0wq7bqh4x4wq0c7501ci7a1mkl94"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
+
 (define-public rust-pem-rfc7468-0.2
   (package
     (inherit rust-pem-rfc7468-0.7)
