@@ -12833,6 +12833,10 @@ orientation by conforming PDF viewers.")
             "tex/latex/datetime2/")
       (base32 "0yjkpfic1ni4j2g61rrjj5hjyd43shc9c0sg1aivbbsmqh30dn33")
       #:trivial? #t))
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-latex-xkeyval
+           texlive-tracklang))
     (home-page "https://ctan.org/pkg/datetime2")
     (synopsis "Formats for dates, times and time zones")
     (description
