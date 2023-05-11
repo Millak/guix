@@ -44689,6 +44689,29 @@ Standards (PKCS) #8: Private-Key Information Syntax Specification (RFC 5208),
 with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pkcs8-0.9
+  (package
+    (inherit rust-pkcs8-0.10)
+    (name "rust-pkcs8")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs8" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1fm4sigvcd0zpzg9jcp862a8p272kk08b9lgcs1dm1az19cjrjly"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.6)
+        ("rust-pkcs5" ,rust-pkcs5-0.5)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-spki" ,rust-spki-0.6)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-pkcs8-0.7
   (package
     (inherit rust-pkcs8-0.10)
