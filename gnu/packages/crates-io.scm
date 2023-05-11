@@ -69580,6 +69580,27 @@ arithmetic.")
      "This package provides an utility to deal with Unix access mode.")
     (license license:expat)))
 
+(define-public rust-unarray-0.1
+  (package
+    (name "rust-unarray")
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "unarray" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "154smf048k84prsdgh09nkm2n0w0336v84jd4zikyn6v6jrqbspa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `proptest`
+       #:cargo-development-inputs
+       (("rust-test-strategy" ,rust-test-strategy-0.2))))
+    (home-page "https://github.com/cameron1024/unarray")
+    (synopsis "Utilities for working with uninitialized arrays")
+    (description "Utilities for working with uninitialized arrays.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-uncased-0.9
   (package
     (name "rust-uncased")
