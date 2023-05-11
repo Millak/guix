@@ -7636,6 +7636,39 @@ of terminal output.")
     ;; There is no mention of the "or later" clause.
     (license license:gpl2)))
 
+(define-public ruby-immutable-struct
+  (package
+    (name "ruby-immutable-struct")
+    (version "2.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stitchfix/immutable-struct")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "17hlmy9jfwn3i5h2rwv832ycwcdqwxq7dkkd2yly28klwj0l52rq"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      ;; Issues with the lack of Set in Ruby 3
+      #:ruby ruby-2.7
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ruby" (which "rspec"))))))))
+    (native-inputs
+     (list ruby-rspec))
+    (synopsis "Ruby library for creating immutable struct classes")
+    (description
+     "Easily create value objects without the pain of Ruby's Struct (or its setters)")
+    (home-page "https://stitchfix.github.io/immutable-struct/")
+    (license license:expat)))
+
 (define-public ruby-terraform
   (package
   (name "ruby-terraform")
