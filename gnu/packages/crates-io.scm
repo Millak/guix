@@ -43522,21 +43522,20 @@ PEM-encoded data.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3))))))
 
-(define-public rust-pem-rfc7468-0.2
+(define-public rust-pem-rfc7468-0.7
   (package
     (name "rust-pem-rfc7468")
-    (version "0.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pem-rfc7468" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))))
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem-rfc7468" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04l4852scl4zdva31c1z6jafbak0ni5pi0j38ml108zwzjdrrcw8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))
     (home-page "https://github.com/RustCrypto/formats/tree/master/pem-rfc7468")
     (synopsis
      "PEM Encoding implementing a subset of Privacy-Enhanced Mail encoding")
@@ -43547,6 +43546,22 @@ encoding intended specifically for use with cryptographic keys, certificates,
 and other messages.  It provides a no_std-friendly, constant-time
 implementation suitable for use with cryptographic private keys.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-pem-rfc7468-0.2
+  (package
+    (inherit rust-pem-rfc7468-0.7)
+    (name "rust-pem-rfc7468")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pem-rfc7468" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m1c9jypydzabg4yscplmvff7pdcc8gg4cqg081hnlf03hxkmsc4"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
 
 (define-public rust-percent-encoding-2
   (package
