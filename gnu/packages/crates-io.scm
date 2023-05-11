@@ -19918,6 +19918,40 @@ from the main thread.")
 easy.")
     (license (list license:unlicense license:zlib))))
 
+(define-public rust-ecdsa-0.16
+  (package
+    (name "rust-ecdsa")
+    (version "0.16.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ecdsa" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1zapr75j8w1b7bdnijppb94f2jrk2qdrhv8i4fqc0c4agd9mv3m4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
+        ("rust-rfc6979" ,rust-rfc6979-0.4)
+        ("rust-serdect" ,rust-serdect-0.2)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-signature" ,rust-signature-2))
+       #:cargo-development-inputs
+       (("rust-elliptic-curve" ,rust-elliptic-curve-0.13)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/RustCrypto/signatures/tree/master/ecdsa")
+    (synopsis "Pure Rust implementation of the ECDSA algorithm")
+    (description
+     "This package provides a pure Rust implementation of the @dfn{Elliptic
+Curve Digital Signature Algorithm} (ECDSA) as specified in FIPS 186-4 (Digital
+Signature Standard), providing RFC6979 deterministic signatures as well as
+support for added entropy.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-ecies-ed25519-0.5
   (package
     (name "rust-ecies-ed25519")
