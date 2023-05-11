@@ -44254,8 +44254,32 @@ function data structures.")
      "Macros to generate types in the phf crate.")
     (license license:expat)))
 
+(define-public rust-phf-shared-0.11
+  (package
+    (name "rust-phf-shared")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf-shared" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0xp6krf3cd411rz9rbk7p6xprlz786a215039j6jlxvbh9pmzyz1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-siphasher" ,rust-siphasher-0.3)
+        ("rust-uncased" ,rust-uncased-0.9)
+        ("rust-unicase" ,rust-unicase-2))))
+    (home-page "https://github.com/rust-phf/rust-phf")
+    (synopsis "Support code shared by PHF libraries")
+    (description
+     "This package provides support code shared by PHF libraries.")
+    (license license:expat)))
+
 (define-public rust-phf-shared-0.10
   (package
+    (inherit rust-phf-shared-0.11)
     (name "rust-phf-shared")
     (version "0.10.0")
     (source
@@ -44265,18 +44289,12 @@ function data structures.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "15n02nc8yqpd8hbxngblar2g53p3nllc93d8s8ih3p5cf7bnlydn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-siphasher" ,rust-siphasher-0.3)
         ("rust-uncased" ,rust-uncased-0.9)
-        ("rust-unicase" ,rust-unicase-2))))
-    (home-page "https://github.com/sfackler/rust-phf")
-    (synopsis "Support code shared by PHF libraries")
-    (description
-     "This package provides support code shared by PHF libraries.")
-    (license license:expat)))
+        ("rust-unicase" ,rust-unicase-2))))))
 
 (define-public rust-phf-shared-0.8
   (package
