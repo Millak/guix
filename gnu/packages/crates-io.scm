@@ -44633,8 +44633,39 @@ Standards (PKCS) #5: Password-Based Cryptography Specification Version
 2.1 (RFC 8018).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pkcs8-0.10
+  (package
+    (name "rust-pkcs8")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs8" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1dx7w21gvn07azszgqd3ryjhyphsrjrmq5mmz1fbxkj5g0vv4l7r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-pkcs5" ,rust-pkcs5-0.7)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-spki" ,rust-spki-0.7)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs8")
+    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #8")
+    (description
+     "This package is a pure Rust implementation of Public-Key Cryptography
+Standards (PKCS) #8: Private-Key Information Syntax Specification (RFC 5208),
+with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pkcs8-0.7
   (package
+    (inherit rust-pkcs8-0.10)
     (name "rust-pkcs8")
     (version "0.7.6")
     (source
@@ -44644,7 +44675,6 @@ Standards (PKCS) #5: Password-Based Cryptography Specification Version
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0iq46p6fa2b8xy6pj52zpmdy8ya3fg31dj4rc19x1fi69nvgjgpf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -44654,14 +44684,7 @@ Standards (PKCS) #5: Password-Based Cryptography Specification Version
         ("rust-pkcs5" ,rust-pkcs5-0.3)
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-spki" ,rust-spki-0.4)
-        ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs8")
-    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #8")
-    (description
-     "This package is a pure Rust implementation of Public-Key Cryptography
-Standards (PKCS) #8: Private-Key Information Syntax Specification (RFC 5208),
-with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-pkg-config-0.3
   (package
