@@ -22434,6 +22434,36 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-ff-derive-0.13
+  (package
+    (name "rust-ff-derive")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ff-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jnq13qqmnvgh1xmjzdgynwgbbkf64qibqf5a5hjiva5pq24gxg9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-addchain" ,rust-addchain-0.2)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-num-bigint" ,rust-num-bigint-0.3)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/zkcrypto/ff")
+    (synopsis
+     "Procedural macro library used to build custom prime field implementations")
+    (description
+     "This package provides a procedural macro library used to build custom
+prime field implementations in rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fiat-crypto-0.1
   (package
     (name "rust-fiat-crypto")
