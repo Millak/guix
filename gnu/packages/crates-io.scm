@@ -26345,6 +26345,31 @@ provides standard printing of search results, similar to grep itself.")
      "Fast line oriented regex searching as a library.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-group-0.13
+  (package
+    (name "rust-group")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "group" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qqs2p5vqnv3zvq9mfjkmw3qlvgqb0c3cm6p33srkh7pc9sfzygh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ff" ,rust-ff-0.13)
+        ("rust-memuse" ,rust-memuse-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+        ("rust-subtle" ,rust-subtle-2))))
+    (home-page "https://github.com/zkcrypto/group")
+    (synopsis "Elliptic curve group traits and utilities")
+    (description "Elliptic curve group traits and utilities.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-groupable-0.2
   (package
     (name "rust-groupable")
