@@ -17765,25 +17765,30 @@ strings.")
     (description "Demo of proc-macro-hack.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-der-0.4
+(define-public rust-der-0.7
   (package
     (name "rust-der")
-    (version "0.4.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "der" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1x4k0jln8va1657cghl40l6p7hyvr1ixz71v9cd6imwmgp51rdvr"))))
+    (version "0.7.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "der" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06f2clallhpjc51s3dc7mpcw5ms3jak727qc5yrfg3ncrpzqvr85"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t                               ; FIXME
-       #:cargo-inputs
-       (("rust-const-oid" ,rust-const-oid-0.6)
-        ("rust-crypto-bigint" ,rust-crypto-bigint-0.2)
-        ("rust-der-derive" ,rust-der-derive-0.4))))
+     `(#:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-const-oid" ,rust-const-oid-0.9)
+        ("rust-der-derive" ,rust-der-derive-0.7)
+        ("rust-flagset" ,rust-flagset-0.4)
+        ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.7)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-proptest" ,rust-proptest-1))))
     (home-page "https://github.com/RustCrypto/formats/tree/master/der")
     (synopsis
      "Implementation of the Distinguished Encoding Rules (DER)")
@@ -17793,6 +17798,26 @@ the Distinguished Encoding Rules (DER) for Abstract Syntax Notation One
 (ASN.1) as described in ITU X.690 with full support for heapless no_std
 targets")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-der-0.4
+  (package
+    (inherit rust-der-0.7)
+    (name "rust-der")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "der" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x4k0jln8va1657cghl40l6p7hyvr1ixz71v9cd6imwmgp51rdvr"))))
+    (arguments
+     `(#:skip-build?
+       #t                               ; FIXME
+       #:cargo-inputs
+       (("rust-const-oid" ,rust-const-oid-0.6)
+        ("rust-crypto-bigint" ,rust-crypto-bigint-0.2)
+        ("rust-der-derive" ,rust-der-derive-0.4))))))
 
 (define-public rust-der-derive-0.7
   (package
