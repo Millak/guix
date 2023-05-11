@@ -56244,6 +56244,31 @@ data.  This crate provides a wrapper that works with any existing Serde
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-0.9))))))
 
+(define-public rust-serde-json-core-0.5
+  (package
+    (name "rust-serde-json-core")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "serde-json-core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1w2g6ylmxbj9fbz4f86i0nnyk2mbv7qbksx0mbimxx17wj7krv2q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-heapless" ,rust-heapless-0.7)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/rust-embedded-community/serde-json-core")
+    (synopsis "serde-json for no_std programs")
+    (description "This package provides @code{serde-json} for @code{no_std}
+programs in rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-path-to-error-0.1
   (package
     (name "rust-serde-path-to-error")
