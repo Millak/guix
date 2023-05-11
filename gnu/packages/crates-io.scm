@@ -63766,6 +63766,37 @@ writing colored text to a terminal.")
        #:cargo-inputs
        (("rust-wincolor" ,rust-wincolor-0.1))))))
 
+(define-public rust-termimad-0.20
+  (package
+    (name "rust-termimad")
+    (version "0.20.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "termimad" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11qj19k1bry9pf78r515sgamnjia8s3irqyc4vr1qq0ppjs49ayg"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)" _ version)
+                          (string-append "^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph
+       #:cargo-inputs
+       (("rust-coolor" ,rust-coolor-0.5)
+        ("rust-crossbeam" ,rust-crossbeam-0.8)
+        ("rust-crossterm" ,rust-crossterm-0.23)
+        ("rust-minimad" ,rust-minimad-0.9)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://github.com/Canop/termimad")
+    (synopsis "Markdown Renderer for the Terminal")
+    (description "Markdown Renderer for the Terminal.")
+    (license license:expat)))
+
 (define-public rust-terminal-size-0.2
   (package
     (name "rust-terminal-size")
