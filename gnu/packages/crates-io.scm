@@ -22434,6 +22434,34 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-ff-0.13
+  (package
+    (name "rust-ff")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ff" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jcl8yhcs5kbfxfpnrhpkkvnk7s666vly6sgawg3nri9nx215m6y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitvec" ,rust-bitvec-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-ff-derive" ,rust-ff-derive-0.13)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs
+       (("rust-blake2b-simd" ,rust-blake2b-simd-1)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/zkcrypto/ff")
+    (synopsis "Library for building and interfacing with finite fields")
+    (description "This package provides a rust library for building and
+interfacing with finite fields.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ff-derive-0.13
   (package
     (name "rust-ff-derive")
