@@ -42058,18 +42058,17 @@ platform-native strings.")
 (define-public rust-ouroboros-macro-0.15
   (package
     (name "rust-ouroboros-macro")
-    (version "0.15.2")
+    (version "0.15.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ouroboros_macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01lgyj5nxgr6r1l0m20pp4ilz3m14clsqg2j28hic2rrlsjafjkk"))))
+        (base32 "1dsn37vds4qpkzscmwaw17dv3m5m7a7j9qby8dsac19ks3622zaz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-inflector" ,rust-inflector-0.11)
         ("rust-proc-macro-error" ,rust-proc-macro-error-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
