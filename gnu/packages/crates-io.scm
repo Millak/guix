@@ -13537,8 +13537,31 @@ generation.")
      "This package provides a sha1 implementation for use in const contexts.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-constant-time-eq-0.2
+  (package
+    (name "rust-constant-time-eq")
+    (version "0.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "constant-time-eq" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sy7bs12dfa2d5hw7759b0mvjqcs85giajg4qyg39xq8a1s8wh8k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4))))
+    (home-page "https://github.com/cesarb/constant_time_eq")
+    (synopsis
+     "Compares two equal-sized byte strings in constant time")
+    (description
+     "This package compares two equal-sized byte strings in constant time.
+It is inspired by the Linux kernel's @code{crypto_memneq}.")
+    (license (list license:cc0 license:expat-0 license:asl2.0))))
+
 (define-public rust-constant-time-eq-0.1
   (package
+    (inherit rust-constant-time-eq-0.2)
     (name "rust-constant-time-eq")
     (version "0.1.5")
     (source
@@ -13549,13 +13572,7 @@ generation.")
        (sha256
         (base32
          "1g3vp04qzmk6cpzrd19yci6a95m7ap6wy7wkwgiy2pjklklrfl14"))))
-    (build-system cargo-build-system)
     (home-page "https://github.com/cesarb/constant_time_eq")
-    (synopsis
-     "Compares two equal-sized byte strings in constant time")
-    (description
-     "This package compares two equal-sized byte strings in constant time.
-It is inspired by the Linux kernel's @code{crypto_memneq}.")
     (license license:cc0)))
 
 (define-public rust-content-inspector-0.2
