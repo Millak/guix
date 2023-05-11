@@ -61678,14 +61678,14 @@ interface")
 (define-public rust-syn-2
   (package
     (name "rust-syn")
-    (version "2.0.5")
+    (version "2.0.15")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "syn" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "12iqdd7j7hfsp4584bph1318n47z7x79ddgvl63j30i6db3x3hl9"))))
+                "08n8c235bj7f86a5jg561s5zjfijdn8jw6ih2im7xxb0iczcykx3"))))
     (build-system cargo-build-system)
     (arguments
      ;; Tests fail to compile
@@ -61707,10 +61707,17 @@ interface")
        #:cargo-development-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-automod" ,rust-automod-1)
+        ("rust-flate2" ,rust-flate2-1)
         ("rust-insta" ,rust-insta-1)
+        ("rust-rayon" ,rust-rayon-1)
         ("rust-ref-cast" ,rust-ref-cast-1)
+        ("rust-regex" ,rust-regex-1)
         ("rust-reqwest" ,rust-reqwest-0.11)
-        ("rust-tar" ,rust-tar-0.4))))
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-syn-test-suite" ,rust-syn-test-suite-0.0.0)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-walkdir" ,rust-walkdir-2))))
     (inputs (list openssl))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/dtolnay/syn")
