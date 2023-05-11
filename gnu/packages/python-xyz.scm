@@ -22727,19 +22727,27 @@ queue.")
 (define-public python-zict
   (package
     (name "python-zict")
-    (version "2.0.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zict" version))
        (sha256
         (base32
-         "05pd1hyhqvpw87rnbvl3vdyf619snpyccbswaxisdj17frwnjacf"))))
-    (build-system python-build-system)
+         "19gvr41xi5fazkzkg33kwrk70sv50hygng0cg70ayym9nriy48g3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This uses "importorskip", but it won't skip.
+      '(list "--ignore=tests/test_lmdb.py")))
     (propagated-inputs
      (list python-heapdict))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-repeat
+           python-pytest-timeout))
     (home-page "https://zict.readthedocs.io/en/latest/")
     (synopsis "Composable mutable mapping tools")
     (description "This package provides abstract @code{MutableMapping} classes
