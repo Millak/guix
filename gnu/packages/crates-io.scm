@@ -44013,6 +44013,23 @@ function data structures.")
        (("rust-phf-generator" ,rust-phf-generator-0.10)
         ("rust-phf-shared" ,rust-phf-shared-0.10))))))
 
+(define-public rust-phf-codegen-0.9
+  (package
+    (inherit rust-phf-codegen-0.10)
+    (name "rust-phf-codegen")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf-codegen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1q4r7mqisvzjz5fzfnr16nb5bxrj6xv32qnq1ds75xql783md31z"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-phf-generator" ,rust-phf-generator-0.9)
+        ("rust-phf-shared" ,rust-phf-shared-0.9))))))
+
 (define-public rust-phf-codegen-0.8
   (package
     (inherit rust-phf-codegen-0.10)
