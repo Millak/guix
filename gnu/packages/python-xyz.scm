@@ -1184,6 +1184,55 @@ commits.")
 generator MkDocs.")
     (license license:expat)))
 
+(define-public python-skranger
+  (package
+    (name "python-skranger")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/crflynn/skranger")
+                    (commit version)
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0njy4xbc98l295k92nyk93njv1348vd1il5pdyrnk8nnzc2anzf0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; "from sklearn.datasets import load_boston" fails because it has been
+      ;; removed from scikit-learn since version 1.2.
+      '(list "--ignore=tests/conftest.py"
+             "--ignore=tests/test_tools.py"
+             "--ignore=tests/tree/test_regressor.py"
+             "--ignore=tests/ensemble/test_regressor.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "tests/conftest.py"
+               (("from sklearn.datasets import load_boston") "")
+               (("^_boston_X.*") "_boston_X, _boston_Y = (True, True)\n"))))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "buildpre.py")
+             (invoke "python" "build.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-scikit-learn))
+    (native-inputs
+     (list python-cython
+           python-matplotlib
+           python-pandas
+           python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/crflynn/skranger")
+    (synopsis "Python bindings for C++ ranger random forests")
+    (description "This package provides scikit-learn compatible Python
+bindings to the C++ random forest implementation, ranger, using Cython.")
+    (license license:gpl3+)))
+
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
