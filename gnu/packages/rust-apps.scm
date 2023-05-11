@@ -1869,7 +1869,7 @@ support for Rust.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.16+cargo-0.68")
+    (version "0.9.18+cargo-0.69")
     (source
       (origin
         (method url-fetch)
@@ -1878,12 +1878,12 @@ support for Rust.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0k2sw67dx06b45qpvckbhz00kn2ingd89y53pwlzky72hnzv075v"))))
+          "191d0813g4m2g1c1h8ykgrfp00blkbds6pg3zl044iyxaclng29h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo" ,rust-cargo-0.68)
+        ("rust-cargo" ,rust-cargo-0.69)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
         ("rust-cbindgen" ,rust-cbindgen-0.24)
         ("rust-cc" ,rust-cc-1)
@@ -1896,7 +1896,7 @@ support for Rust.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.6))))
+        ("rust-toml" ,rust-toml-0.7))))
     (native-inputs
      (list pkg-config))
     (inputs
