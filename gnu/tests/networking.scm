@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -299,6 +299,14 @@ port 7, and a dict service on port 2628."
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "openvswitch")
+
+          ;; Wait for our configuration to be active (it sets up br0).
+          (test-assert "openvswitch-configuration is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'openvswitch-configuration))
+             marionette))
 
           ;; Make sure the bridge is created.
           (test-assert "br0 exists"
