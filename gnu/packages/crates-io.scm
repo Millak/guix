@@ -46635,14 +46635,14 @@ property-based testing and fuzzing.")
 (define-public rust-proptest-1
   (package
     (name "rust-proptest")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "proptest" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rdhjnf0xma5rmsq04d31n2vq1pgbm42pjc6jn3jsj8qgz09q38y"))))
+        (base32 "0w5s3wwchd3i6m15lsbsk3r3y25d1gwn13m6a185ks8w06cbiw99"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -46658,7 +46658,8 @@ property-based testing and fuzzing.")
         ("rust-regex-syntax" ,rust-regex-syntax-0.6)
         ("rust-rusty-fork" ,rust-rusty-fork-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-x86" ,rust-x86-0.33))
+        ("rust-unarray" ,rust-unarray-0.1)
+        ("rust-x86" ,rust-x86-0.52))
        #:cargo-development-inputs
        (("rust-regex" ,rust-regex-1))))
     (home-page "https://altsysrq.github.io/proptest-book/proptest/index.html")
