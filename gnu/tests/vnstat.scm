@@ -61,12 +61,9 @@
   (define forwarded-port 9999)
 
   (define vm
-    (let* ((inetd-service-name "discard")
-           (inetd-service-proto
-            (inetd-entry-protocol inetd-service-entry-config))
-           (guest-port
-            (servent:port (getservbyname inetd-service-name
-                                         inetd-service-proto))))
+    ;; The 'discard' port is 9.  Avoid using 'getservbyname' as that might
+    ;; fail depending on what /etc/services has (if it's available).
+    (let ((guest-port 9))
       (virtual-machine
        (operating-system os)
        (port-forwardings `((,forwarded-port . ,guest-port))))))
