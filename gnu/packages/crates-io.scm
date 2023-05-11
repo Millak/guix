@@ -19989,6 +19989,33 @@ be plugged in, enabling support for using different Ed25519 implementations,
 including HSMs or Cloud KMS services.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ed25519-compact-2
+  (package
+    (name "rust-ed25519-compact")
+    (version "2.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ed25519-compact" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0k4y7bjl5g0l871iav4zj35qx047n0a4qsvhr28p6434hhp3hgba"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ct-codecs" ,rust-ct-codecs-1)
+        ("rust-ed25519" ,rust-ed25519-1)
+        ("rust-getrandom" ,rust-getrandom-0.2))
+       #:cargo-development-inputs
+       (("rust-ct-codecs" ,rust-ct-codecs-1)
+        ("rust-getrandom" ,rust-getrandom-0.2))))
+    (home-page "https://github.com/jedisct1/rust-ed25519-compact")
+    (synopsis "Wasm-friendly Ed25519 implementation")
+    (description
+     "This package provides a small, self-contained, wasm-friendly Ed25519
+implementation.")
+    (license license:expat)))
+
 (define-public rust-ed25519-dalek-1
   (package
     (name "rust-ed25519-dalek")
