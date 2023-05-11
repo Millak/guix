@@ -16154,6 +16154,26 @@ data structures that can be easily serialized to and deserialized from disk.")
      "This crates implements CStr and CString for no_std environments.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ct-codecs-1
+  (package
+    (name "rust-ct-codecs")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ct-codecs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pvmrkk95jadmhhd5mn88mq2dfnq0yng8mk3pfd5l6dq0i2fpdzk"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/jedisct1/rust-ct-codecs")
+    (synopsis
+     "Constant-time hex and base64 codecs from libsodium reimplemented in Rust")
+    (description
+     "This package provides constant-time hex and base64 codecs from libsodium
+reimplemented in Rust")
+    (license license:expat)))
+
 (define-public rust-ct-logs-0.8
   (package
     (name "rust-ct-logs")
