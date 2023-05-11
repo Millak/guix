@@ -7872,8 +7872,33 @@ streams in big-endian and little-endian formats.")
     (description "This package provides BLAKE2 hash functions in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-blake2b-simd-1
+  (package
+    (name "rust-blake2b-simd")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "blake2b-simd" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1g04mc4gf6jyymyj41749jhhplm3ymnc6z7rhkc1fqwclv4hsbrw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrayref" ,rust-arrayref-0.3)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.2))))
+    (home-page "https://github.com/oconnor663/blake2_simd")
+    (synopsis "Pure Rust BLAKE2b implementation with dynamic SIMD")
+    (description
+     "This package provides a pure Rust implementation of the BLAKE2b and
+BLAKE2bp hash functions.")
+    (license license:expat)))
+
 (define-public rust-blake2b-simd-0.5
   (package
+    (inherit rust-blake2b-simd-1)
     (name "rust-blake2b-simd")
     (version "0.5.10")
     (source
@@ -7885,19 +7910,12 @@ streams in big-endian and little-endian formats.")
        (sha256
         (base32
          "12icvk8ixlivv3jv5nyrg01sajp4s279zb1kmif0nfja4ms2vyyq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-arrayref" ,rust-arrayref-0.3)
         ("rust-arrayvec" ,rust-arrayvec-0.5)
-        ("rust-constant-time-eq" ,rust-constant-time-eq-0.1))))
-    (home-page "https://github.com/oconnor663/blake2_simd")
-    (synopsis "Pure Rust BLAKE2b implementation with dynamic SIMD")
-    (description
-     "This package provides a pure Rust implementation of the BLAKE2b and
-BLAKE2bp hash functions.")
-    (license license:expat)))
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.1))))))
 
 (define-public rust-blakeout-0.3
   (package
