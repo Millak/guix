@@ -44057,8 +44057,38 @@ function data structures.")
     (description "Codegen library for PHF types.")
     (license license:expat)))
 
+(define-public rust-phf-generator-0.11
+  (package
+    (name "rust-phf-generator")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "phf-generator" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1gsgy5k45y937qnwp58dc05d63lwlfm3imqr1zslb8qgb2a1q65i"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                          (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-phf-shared" ,rust-phf-shared-0.11)
+        ("rust-rand" ,rust-rand-0.8))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/rust-phf/rust-phf")
+    (synopsis "PHF generation logic")
+    (description "PHF generation logic.")
+    (license license:expat)))
+
 (define-public rust-phf-generator-0.10
   (package
+    (inherit rust-phf-generator-0.11)
     (name "rust-phf-generator")
     (version "0.10.0")
     (source
@@ -44068,17 +44098,12 @@ function data structures.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mlq6hlajsvlsx6rhw49g9ricsm017lrxmgmmbk85sxm7f4qaljx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-phf-shared" ,rust-phf-shared-0.10)
-        ("rust-rand" ,rust-rand-0.8))))
-    (home-page "https://github.com/sfackler/rust-phf")
-    (synopsis "PHF generation logic")
-    (description "PHF generation logic.")
-    (license license:expat)))
+        ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-phf-generator-0.8
   (package
