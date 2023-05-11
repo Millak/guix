@@ -4897,6 +4897,50 @@ makes available functions for visualization and exploration of the data and
 results.")
     (license license:gpl3+)))
 
+(define-public r-dropletutils
+  (package
+    (name "r-dropletutils")
+    (version "1.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "DropletUtils" version))
+       (sha256
+        (base32 "09xwfb4ihpsp465vb1zbcwm6ww6qi3spn9d8p4i1gczyc0p9pf1y"))))
+    (properties `((upstream-name . "DropletUtils")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-beachmat
+           r-bh
+           r-biocgenerics
+           r-biocparallel
+           r-delayedarray
+           r-delayedmatrixstats
+           r-dqrng
+           r-edger
+           r-genomicranges
+           r-hdf5array
+           r-iranges
+           r-matrix
+           r-r-utils
+           r-rcpp
+           r-rhdf5
+           r-rhdf5lib
+           r-s4vectors
+           r-scuttle
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/DropletUtils")
+    (synopsis "Utilities for handling single-cell droplet data")
+    (description
+     "This package provides a number of utility functions for handling
+single-cell RNA-seq data from droplet technologies such as 10X Genomics.  This
+includes data loading from count matrices or molecule information files,
+identification of cells from empty droplets, removal of barcode-swapped
+pseudo-cells, and downsampling of the count matrix.")
+    (license license:gpl3)))
+
 (define-public r-dss
   (package
     (name "r-dss")
