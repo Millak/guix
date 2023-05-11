@@ -1156,34 +1156,34 @@ provides the GNU compiler for the Go programming language.")
       (arguments
        (substitute-keyword-arguments (package-arguments gccgo)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'install 'wrap-go-with-tool-path
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (exedir (string-append out "/libexec/gcc"))
-                        (tooldir (dirname (car (find-files exedir "^cgo$")))))
-                   (wrap-program (string-append out "/bin/go")
-                     `("GCCGOTOOLDIR" =
-                       (,(string-append "${GCCGOTOOLDIR:-" tooldir "}")))
-                     `("GOROOT" =
-                       (,(string-append "${GOROOT:-" out "}")))))))
-             (add-before 'configure 'fix-gotools-runpath
-               (lambda _
-                 (substitute* "gotools/Makefile.in"
-                   (("AM_LDFLAGS =" all)
-                    (string-append all " -Wl,-rpath=$(libdir) ")))))
-             (add-before 'configure 'remove-tool-reference-from-libgo
-               (lambda _
-                 (substitute* "libgo/Makefile.in"
-                   (("(GccgoToolDir = \\\")[^\\\"]+" _ start)
-                    (string-append start "/nonexistent"))
-                   ,@(if (version>=? (package-version gccgo) "12.0")
-                       '((("(defaultGOROOT = `)[^`]+" _ start)
-                          (string-append start "/nonexistent")))
-                       '((("(DefaultGoroot = \\\")[^\\\"]+" _ start)
-                          (string-append start "/nonexistent"))))
-                   (("(defaultGOROOTValue.*?return `)[^`]+" _ start)
-                    (string-append start "/nonexistent"))))))))))))
+          #~(modify-phases #$phases
+              (add-after 'install 'wrap-go-with-tool-path
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let* ((out (assoc-ref outputs "out"))
+                         (exedir (string-append out "/libexec/gcc"))
+                         (tooldir (dirname (car (find-files exedir "^cgo$")))))
+                    (wrap-program (string-append out "/bin/go")
+                      `("GCCGOTOOLDIR" =
+                        (,(string-append "${GCCGOTOOLDIR:-" tooldir "}")))
+                      `("GOROOT" =
+                        (,(string-append "${GOROOT:-" out "}")))))))
+              (add-before 'configure 'fix-gotools-runpath
+                (lambda _
+                  (substitute* "gotools/Makefile.in"
+                    (("AM_LDFLAGS =" all)
+                     (string-append all " -Wl,-rpath=$(libdir) ")))))
+              (add-before 'configure 'remove-tool-reference-from-libgo
+                (lambda _
+                  (substitute* "libgo/Makefile.in"
+                    (("(GccgoToolDir = \\\")[^\\\"]+" _ start)
+                     (string-append start "/nonexistent"))
+                    #$@(if (version>=? (package-version gccgo) "12.0")
+                           '((("(defaultGOROOT = `)[^`]+" _ start)
+                              (string-append start "/nonexistent")))
+                           '((("(DefaultGoroot = \\\")[^\\\"]+" _ start)
+                              (string-append start "/nonexistent"))))
+                    (("(defaultGOROOTValue.*?return `)[^`]+" _ start)
+                     (string-append start "/nonexistent"))))))))))))
 
 (define-public gccgo-4.9
   (custom-gcc (package
