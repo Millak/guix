@@ -583,6 +583,26 @@ and variables you'll need already imported and created.
 scipy and numpy of negative binomial maximum likelihood estimation.")
     (license license:gpl3+)))
 
+(define-public python-docrep
+  (package
+    (name "python-docrep")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "docrep" version))
+              (sha256
+               (base32
+                "0523jrzjj29kxpdllmfhrfj9kysi9mphp2m7ippjkn5b07i1g2pd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-pytest python-pytest-runner))
+    (home-page "https://github.com/Chilipp/docrep")
+    (synopsis "Python package for docstring repetition")
+    (description "Docrep is the documentation repetition module.  This module
+targets developers that develop complex and nested Python APIs and helps them
+to create a well-documented piece of software.")
+    (license license:asl2.0)))
+
 (define-public python-dotmap
   (package
     (name "python-dotmap")
