@@ -74249,8 +74249,40 @@ Diffie-Hellman key exchange, with curve operations provided by
 5280 certificates).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-x86-0.52
+  (package
+    (name "rust-x86")
+    (version "0.52.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "x86" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11d3jip94x3dvcv0i0d5cxsgi1p2xyjrdhs550mas5vjg2bxp097"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Remove some dependencies
+       #:cargo-inputs
+       (("rust-bit-field" ,rust-bit-field-0.10)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-phf" ,rust-phf-0.9)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.9)
+        ("rust-raw-cpuid" ,rust-raw-cpuid-10)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/gz/rust-x86")
+    (synopsis "Library to program x86 (amd64) hardware")
+    (description
+     "This is a Library to program x86 (amd64) hardware.  It contains x86
+specific data structure descriptions, data-tables, as well as convenience
+function to call assembly instructions typically not exposed in higher level
+languages.")
+    (license license:expat)))
+
 (define-public rust-x86-0.33
   (package
+    (inherit rust-x86-0.52)
     (name "rust-x86")
     (version "0.33.0")
     (source
@@ -74265,7 +74297,6 @@ Diffie-Hellman key exchange, with curve operations provided by
         '(begin
            (substitute* "Cargo.toml"
              (("8\\.0") "8"))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -74275,15 +74306,7 @@ Diffie-Hellman key exchange, with curve operations provided by
         ("rust-phf" ,rust-phf-0.7)
         ("rust-phf-codegen" ,rust-phf-codegen-0.7)
         ("rust-raw-cpuid" ,rust-raw-cpuid-8)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/gz/rust-x86")
-    (synopsis "Library to program x86 (amd64) hardware")
-    (description
-     "This is a Library to program x86 (amd64) hardware.  It contains x86
-specific data structure descriptions, data-tables, as well as convenience
-function to call assembly instructions typically not exposed in higher level
-languages.")
-    (license license:expat)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-xattr-0.2
   (package
