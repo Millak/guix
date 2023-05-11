@@ -63448,24 +63448,24 @@ deleting all contents when it's dropped.")
 (define-public rust-tempfile-3
   (package
     (name "rust-tempfile")
-    (version "3.3.0")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tempfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r3rdp66f7w075mz6blh244syr3h0lbm07ippn7xrbgfxbs1xnsw"))))
+        (base32 "163rp254r3x7i5hisagrpxid2166pq94jvk511dpkmc1yf2fryxr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-fastrand" ,rust-fastrand-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.2)
-        ("rust-remove-dir-all" ,rust-remove-dir-all-0.5)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-redox-syscall" ,rust-redox-syscall-0.3)
+        ("rust-rustix" ,rust-rustix-0.37)
+        ("rust-windows-sys" ,rust-windows-sys-0.45))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page "https://stebalien.com/projects/tempfile-rs")
     (synopsis "Library for managing temporary files and directories")
     (description
