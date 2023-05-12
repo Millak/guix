@@ -1508,9 +1508,9 @@ and auto-mapping slices to MIDI note numbers.")
            texinfo
            texi2html-1.82
            (texlive-updmap.cfg
-            (list texlive-epsf
+            (list texlive-cyrillic
+                  texlive-epsf
                   texlive-fontinst
-                  texlive-latex-cyrillic
                   texlive-lh
                   texlive-lm
                   texlive-metapost))

@@ -4535,28 +4535,36 @@ support of Swedish in @code{babel}.  It provides all the necessary macros,
 definitions and settings to typeset Swedish documents.")
       (license license:lppl1.3c+))))
 
-(define-public texlive-latex-cyrillic
+(define-public texlive-cyrillic
   (package
-    (name "texlive-latex-cyrillic")
+    (name "texlive-cyrillic")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "cyrillic"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "083xbwg7hrnlv47fkwvz8yjb830bhxx7y0mq7z7nz2f96y2ldr6b"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cyrillic/"
+                   "source/latex/cyrillic/"
+                   "tex/latex/cyrillic/")
+             (base32
+              "0a1dcpdgnzf08cd1b9ihdk4229aw19ar0f5sfjr44fqqwkav3l5i")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/cyrillic"))
-    (home-page "https://www.ctan.org/pkg/latex-cyrillic")
+     (list
+      #:tex-engine "tex"
+      #:tex-format #f
+      #:texlive-latex-base #f))
+    (native-inputs
+     (list texlive-docstrip))
+    (home-page "https://ctan.org/pkg/cyrillic")
     (synopsis "Support for Cyrillic fonts in LaTeX")
     (description
      "This bundle of macros files provides macro support (including font
 encoding macros) for the use of Cyrillic characters in fonts encoded under the
-T2* and X2 encodings. These encodings cover (between them) pretty much every
+T2* and X2 encodings.  These encodings cover (between them) pretty much every
 language that is written in a Cyrillic alphabet.")
-    (license license:lppl1.3c+)))
+    (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-cyrillic texlive-cyrillic)
 
 (define-public texlive-passivetex
   (package
@@ -4766,7 +4774,7 @@ part of the LaTeX required set of packages.")
                 texlive-amscls
                 texlive-babel
                 texlive-generic-babel-english
-                texlive-latex-cyrillic
+                texlive-cyrillic
                 texlive-psnfss
                 texlive-tools
                 texlive-tetex)))
@@ -11686,7 +11694,7 @@ handle complex tests.")
                          texlive-greek-fontenc
                          texlive-hyperref
                          texlive-latex-base
-                         texlive-latex-cyrillic
+                         texlive-cyrillic
                          texlive-latex-geometry
                          (texlive-updmap.cfg ;fonts
                           (list texlive-cbfonts
