@@ -12628,6 +12628,56 @@ single-cell RNA-seq data.")
 API services.")
     (license license:bsd-3)))
 
+(define-public python-mgatk
+  (package
+    (name "python-mgatk")
+    (version "0.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/caleblareau/mgatk")
+             ;; There is no tag for 0.6.7, but this is the commit
+             ;; corresponding to the version bump.
+             (commit "2633903acb1fb406bb58c787f320c3641f446ee7")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "19iklfv1brwsfg1l5lrs3z8m343nskkn1998c1fs7fdn0lgrki2p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The md5 module has been removed in Python 3
+          (add-after 'unpack 'python3-compatibility
+            (lambda _
+              (substitute* "tests/test_cli.py"
+                (("import md5") "from hashlib import md5")
+                (("md5.new") "md5")
+                (("\\.digest") ".hexdigest")))))))
+    (propagated-inputs
+     (list python-biopython
+           python-click
+           python-numpy
+           python-optparse-pretty
+           python-pandas
+           python-pysam
+           python-regex
+           python-ruamel.yaml
+           snakemake))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/caleblareau/mgatk")
+    (synopsis "Mitochondrial genome analysis toolkit.")
+    (description "This package is a Python-based command line interface for
+processing .bam files with mitochondrial reads and generating high-quality
+heteroplasmy estimation from sequencing data.  The mgatk package places a
+special emphasis on mitochondrial genotypes generated from single-cell
+genomics data, primarily @acronym{mtscATAC-seq, mitochondrial single-cell
+ATAC-sequence}, but is generally applicable across other assays.")
+    (license license:expat)))
+
 (define-public python-multivelo
   (package
     (name "python-multivelo")
