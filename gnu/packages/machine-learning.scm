@@ -3432,7 +3432,7 @@ Note: currently this package does not provide GPU support.")
                 "0mqrhq3s23mn8n4i0q791pshn3dgplp0h9ny0pmmp798q0798dzs"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-click
-                             python-fastapi
+                             python-fastapi-for-pytorch-lightning
                              python-multipart
                              python-pyjwt
                              python-requests
