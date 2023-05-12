@@ -123,6 +123,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -133,10 +134,10 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnuzilla))
 
-(define-public bitcoin-core-23.0
+(define-public bitcoin-core-23.1
   (package
     (name "bitcoin-core")
-    (version "23.0")
+    (version "23.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -144,7 +145,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "01fcb90pqip3v77kljykx51cmg7jdg2cmp7ys0a40svdkps8nx16"))))
+                "03k56vgk0a0wr84gpj256hvijk6iyshl85hcrx800hiznyzl5hkl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -160,7 +161,8 @@
            libevent
            miniupnpc
            openssl
-           qtbase-5))
+           qtbase-5
+           sqlite))
     (arguments
      `(#:configure-flags
        (list
@@ -214,7 +216,7 @@ line client and a client based on Qt.")
 ;; The support lifetimes for bitcoin-core versions can be found in
 ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
 
-(define-public bitcoin-core bitcoin-core-23.0)
+(define-public bitcoin-core bitcoin-core-23.1)
 
 (define-public ghc-hledger
   (package
