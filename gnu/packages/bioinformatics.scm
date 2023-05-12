@@ -17856,15 +17856,16 @@ patterns.")
                 "1sfhf2ap75qxpnmy1ifgmxqs18rq8mah9mcgkby73vc6h0sw99ws"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       ,#~(list "CC=gcc"
-                "CFLAGS=-fcommon"
-                (string-append "prefix=" #$output "/bin/"))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list "CC=gcc"
+              "CFLAGS=-fcommon"
+              (string-append "prefix=" #$output "/bin/"))
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              (substitute* "Makefile"
                (("-lhts ") "-lhts -lBigWig ")
                (("install MethylDackel \\$\\(prefix\\)" match)
@@ -17874,7 +17875,7 @@ patterns.")
            htslib-1.9 libbigwig zlib))
     ;; Needed for tests
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (home-page "https://github.com/dpryan79/MethylDackel")
     (synopsis "Universal methylation extractor for BS-seq experiments")
     (description
