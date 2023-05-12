@@ -17766,7 +17766,7 @@ length of a short-read sequencing alignment.")
 (define-public samblaster
   (package
     (name "samblaster")
-    (version "0.1.24")
+    (version "0.1.26")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17775,11 +17775,11 @@ length of a short-read sequencing alignment.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0iv2ddfw8363vb2x8gr3p8g88whb6mb9m0pf71i2cqsbv6jghap7"))))
+                "0g24fq5hplnfgqkh3xqpg3lgx3wmxwnh9c7m6yw7pbi40lmgl1jv"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f                       ; there are none
+      #:tests? #f                       ;there are none
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)           ;There is no configure phase.
