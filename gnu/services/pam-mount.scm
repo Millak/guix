@@ -94,7 +94,7 @@
   (define optional-pam-mount
     (pam-entry
      (control "optional")
-     (module #~(string-append #$pam-mount "/lib/security/pam_mount.so"))))
+     (module (file-append pam-mount "/lib/security/pam_mount.so"))))
   (list
    (pam-extension
     (transformer

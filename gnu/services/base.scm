@@ -3263,7 +3263,7 @@ to handle."
   (define optional-pam-mount
     (pam-entry
      (control "optional")
-     (module #~(string-append #$greetd-pam-mount "/lib/security/pam_mount.so"))
+     (module (file-append greetd-pam-mount "/lib/security/pam_mount.so"))
      (arguments '("disable_interactive"))))
 
   (list
