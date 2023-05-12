@@ -2827,9 +2827,14 @@ help formatter.")
     (build-system cargo-build-system)
     (arguments
      (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'build-python-module
+          (add-after 'install 'prepare-python-module
             (lambda _
               ;; We don't use maturin.
               (delete-file "pyproject.toml")
@@ -2857,15 +2862,11 @@ exclude =
   integration
   test
   Cargo.toml
-" #$version)))
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+" #$version)))))
+          (add-after 'prepare-python-module 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
+            (assoc-ref py:%standard-phases 'install))
           (add-after 'install-python-module 'install-python-library
             (lambda _
               (let ((site (string-append #$output "/lib/python"
