@@ -3645,6 +3645,37 @@ exec ~a/bin/freedink -refdir ~a/share/dink\n"
               ("bash" ,bash)))
     (native-inputs '())))
 
+(define-public fuzzylite
+  (package
+    (name "fuzzylite")
+    (version "6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fuzzylite/fuzzylite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yay0qc81x0irlvxqpy7jywjxpkmpjabdhq2hdh28r9z85wp2nwb"))
+              (patches (search-patches "fuzzylite-use-catch2.patch"
+                                       "fuzzylite-soften-float-equality.patch"
+                                       "fuzzylite-relative-path-in-tests.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'configure 'switch-to-fuzzylite-dir
+                    (lambda _
+                      (chdir "fuzzylite"))))))
+    (native-inputs (list catch2))
+    (home-page "https://www.fuzzylite.com/")
+    (synopsis "Fuzzy logic control binary")
+    (description
+     "This package provides fuzzylite, a fuzzy logic control library which
+allows one to easily create fuzzy logic controllers in a few steps utilizing
+object-oriented programming.")
+    (license license:gpl3)))
+
 (define-public xboard
   (package
     (name "xboard")
