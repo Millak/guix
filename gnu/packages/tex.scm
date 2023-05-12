@@ -5566,6 +5566,32 @@ numbers.  While the package may obviously be used to typeset DNA sequences, the
 user may consider the @code{dnaseq} as a rather more powerful alternative.")
     (license license:lppl1.3+)))
 
+(define-public texlive-showexpl
+  (package
+    (name "texlive-showexpl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/showexpl/" "source/latex/showexpl/"
+                   "tex/latex/showexpl/")
+             (base32
+              "0vff1yk7a3f4csxibfk6r37s3h6n4wdpnk3qj4dsx7kh5zrcysha")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-attachfile
+           texlive-latex-float
+           texlive-graphics
+           texlive-listings
+           texlive-refcount
+           texlive-latex-varwidth))
+    (home-page "https://ctan.org/pkg/showexpl")
+    (synopsis "Typesetting LaTeX source code")
+    (description
+     "This package provides a way to typeset LaTeX source code and the related
+result in the same document.")
+    (license license:lppl1.2+)))
+
 (define-public texlive-latex-stackengine
   (package
     (inherit (simple-texlive-package
