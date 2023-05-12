@@ -5809,7 +5809,7 @@ set.")
                                      texlive-latex-multirow
                                      texlive-natbib
                                      texlive-latex-needspace
-                                     texlive-latex-newunicodechar
+                                     texlive-newunicodechar
                                      texlive-latex-parskip
                                      texlive-latex-stackengine
                                      texlive-latex-tabulary

@@ -5401,14 +5401,18 @@ the LaTeX standard foating environments @code{figure} and @code{table}.")
 
 (define-deprecated-package texlive-latex-newfloat texlive-newfloat)
 
-(define-public texlive-latex-newunicodechar
+(define-public texlive-newunicodechar
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-newunicodechar"
-              '("/doc/latex/newunicodechar/" "/tex/latex/newunicodechar/")
-              (base32
-               "0pwx3ylhvk5hxjnalas00grrbwla79j424i27hrm0zgflq7wsbrj")
-              #:trivial? #t))
+    (name "texlive-newunicodechar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newunicodechar/" "source/latex/newunicodechar"
+                   "tex/latex/newunicodechar/")
+             (base32
+              "0mybqah1n9vmxvi6f587jlxbn7pv3624qw83psq5vwfnddw3n70y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (home-page "https://www.ctan.org/pkg/newunicodechar")
     (synopsis "Definitions of the meaning of Unicode characters")
     (description
@@ -5416,6 +5420,8 @@ the LaTeX standard foating environments @code{figure} and @code{table}.")
 Unicode characters.  The document should be processed by (pdf)LaTeX with the
 Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-latex-newunicodechar texlive-newunicodechar)
 
 (define-public texlive-pdftexcmds
   (let ((template (simple-texlive-package
