@@ -5563,14 +5563,18 @@ recent classes such as powerdot or beamer, both of which are tuned to
 
 (define-deprecated-package texlive-latex-seminar texlive-seminar)
 
-(define-public texlive-latex-seqsplit
+(define-public texlive-seqsplit
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-seqsplit"
+    (name "texlive-seqsplit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
               (list "doc/latex/seqsplit/"
+                    "source/latex/seqsplit/"
                     "tex/latex/seqsplit/")
-              (base32 "1vwzs90520qsk22djl6gs6gpqx83y4b19kziirwj2xwbivcfk1h4")
-              #:trivial? #t))
+              (base32
+               "0x6xcism9s9mhpr278xi4c1gimz3mlqnrpr40vkx5abglr0gzm0j")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/seqsplit")
     (synopsis "Split long sequences of characters in a neutral way")
@@ -5583,6 +5587,8 @@ be found, such as in base-sequences in genes or calculations of transcendental
 numbers.  While the package may obviously be used to typeset DNA sequences, the
 user may consider the @code{dnaseq} as a rather more powerful alternative.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-seqsplit texlive-seqsplit)
 
 (define-public texlive-showexpl
   (package
