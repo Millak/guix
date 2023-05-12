@@ -308,18 +308,18 @@ colors, styles, options and details.")
            texinfo                      ;for generating documentation
            (texlive-updmap.cfg
             (list texlive-amsfonts
-                  texlive-dvips-l3backend
                   texlive-epsf
                   texlive-etoolbox
                   texlive-fonts-ec
-                  texlive-infwarerr
-                  texlive-kvdefinekeys
-                  texlive-grfext
-                  texlive-hyperref
-                  texlive-latex-base
                   texlive-latex-geometry
                   texlive-graphics
+                  texlive-grfext
+                  texlive-hyperref
+                  texlive-infwarerr
+                  texlive-kvdefinekeys
                   texlive-kvoptions
+                  texlive-l3backend
+                  texlive-latex-base
                   texlive-latex-media9
                   texlive-oberdiek      ;for ifluatex
                   texlive-latex-ocgx2

@@ -844,7 +844,7 @@ integer programming problems and computes Markov bases for statistics.")
                          automake
                          libtool
                          texlive-amsfonts
-                         texlive-dvips-l3backend
+                         texlive-l3backend
                          texlive-graphics
                          texlive-l3backend
                          texlive-tiny))

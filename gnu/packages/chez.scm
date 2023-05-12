@@ -760,7 +760,7 @@ Chez Scheme.")))
        (propagated-inputs
         (list xorg-rgb
               (texlive-updmap.cfg
-               (list texlive-dvips-l3backend
+               (list texlive-l3backend
                      texlive-hyperref
                      texlive-bibtex
                      texlive-epsf

@@ -1378,7 +1378,7 @@ libpanel, librsvg and quartz.")
        ;; For documentation
        ("ghostscript" ,ghostscript)
        ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-fonts-ec texlive-dvips-l3backend)))
+                    (list texlive-fonts-ec texlive-l3backend)))
        ("hevea" ,hevea)
        ("lynx" ,lynx)
        ("which" ,which)))
