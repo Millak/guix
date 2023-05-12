@@ -5804,7 +5804,7 @@ set.")
                                      texlive-latex-fncychap
                                      texlive-latex-framed
                                      texlive-latex-geometry
-                                     texlive-latex-hanging
+                                     texlive-hanging
                                      texlive-hyperref
                                      texlive-latex-multirow
                                      texlive-latex-natbib
