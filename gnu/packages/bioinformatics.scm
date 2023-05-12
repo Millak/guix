@@ -17902,44 +17902,43 @@ containing the reference genome as well.")
                 "10lpbllvny923jjbbyrpxahhd1m5h7sbj9gx7rd123rg10mlidki"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       ,#~(list "CC=gcc"
-                (string-append "DESTDIR=" #$output))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Fix syntax
-             (substitute* "test/Makefile"
-               (("        ") "	"))
-             (substitute* "Makefile"
-               (("CLAPACKPATH=/usr/lib")
-                (string-append "CLAPACKPATH="
-                               (assoc-ref inputs "clapack") "/lib")))
-             ;; Renaming the libraries is not necessary with our version of
-             ;; CLAPACK.
-             (substitute* "src/lib/Makefile"
-               (("ifdef CLAPACKPATH") "ifdef UNNECESSARY"))
-             (substitute* "src/make-include.mk"
-               (("-lblaswr") "-lblas")
-               (("-ltmg") "-ltmglib")
-               (("liblapack.a") "liblapack.so")
-               (("libblas.a") "libblas.so")
-               (("libf2c.a") "libf2c.so"))
-             (substitute* "src/Makefile"
-               (("/opt") "/share")
-               (("/usr/") "/"))
-             #t))
-         (replace 'check
-           (lambda _
-             (setenv "PATH"
-                     (string-append (getcwd) "/bin:" (getenv "PATH")))
-             ;; Disable broken test
-             (substitute* "test/Makefile"
-               ((".*if.*hmrc_summary" m) (string-append "#" m)))
-             ;; Only run the msa_view tests because the others fail for
-             ;; unknown reasons.
-             (invoke "make" "-C" "test" "msa_view"))))))
+     (list
+      #:make-flags
+      #~(list "CC=gcc" (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Fix syntax
+              (substitute* "test/Makefile"
+                (("        ") "	"))
+              (substitute* "Makefile"
+                (("CLAPACKPATH=/usr/lib")
+                 (string-append "CLAPACKPATH="
+                                #$(this-package-input "clapack") "/lib")))
+              ;; Renaming the libraries is not necessary with our version of
+              ;; CLAPACK.
+              (substitute* "src/lib/Makefile"
+                (("ifdef CLAPACKPATH") "ifdef UNNECESSARY"))
+              (substitute* "src/make-include.mk"
+                (("-lblaswr") "-lblas")
+                (("-ltmg") "-ltmglib")
+                (("liblapack.a") "liblapack.so")
+                (("libblas.a") "libblas.so")
+                (("libf2c.a") "libf2c.so"))
+              (substitute* "src/Makefile"
+                (("/opt") "/share")
+                (("/usr/") "/"))))
+          (replace 'check
+            (lambda _
+              (setenv "PATH"
+                      (string-append (getcwd) "/bin:" (getenv "PATH")))
+              ;; Disable broken test
+              (substitute* "test/Makefile"
+                ((".*if.*hmrc_summary" m) (string-append "#" m)))
+              ;; Only run the msa_view tests because the others fail for
+              ;; unknown reasons.
+              (invoke "make" "-C" "test" "msa_view"))))))
     (inputs
      (list clapack))
     (native-inputs
