@@ -4922,27 +4922,31 @@ TS3. \"Times-like\" Adobe Type 1 versions are provided for both the T3 and the
 TS3 fonts.")
     (license license:lppl)))
 
-(define-public texlive-latex-amsrefs
+(define-public texlive-amsrefs
   (package
-    (name "texlive-latex-amsrefs")
+    (name "texlive-amsrefs")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "amsrefs"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "15i4k479dwrpr0kspmm70g1yn4p3dkh0whyzmr93hph9bggnh1i1"))))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/amsrefs/" "bibtex/bst/amsrefs/"
+                   "doc/latex/amsrefs/" "source/latex/amsrefs/"
+                   "tex/latex/amsrefs/")
+             (base32
+              "12la66vz5ic6jc1cy96b2zh2fxsbaii9kbs4wrz1ii8v508wdkhv")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/amsrefs"))
-    (home-page "https://www.ctan.org/pkg/amsrefs")
+    (propagated-inputs
+     (list texlive-hyperref texlive-url))
+    (home-page "https://ctan.org/pkg/amsrefs")
     (synopsis "LaTeX-based replacement for BibTeX")
     (description
-     "Amsrefs is a LaTeX package for bibliographies that provides an archival
-data format similar to the format of BibTeX database files, but adapted to
-make direct processing by LaTeX easier.  The package can be used either in
-conjunction with BibTeX or as a replacement for BibTeX.")
+     "Amsrefs is a LaTeX package for bibliographies that provides an
+archival data format similar to the format of BibTeX database files, but
+adapted to make direct processing by LaTeX easier.  The package can be used
+either in conjunction with BibTeX or as a replacement for BibTeX.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-amsrefs texlive-amsrefs)
 
 (define-public texlive-bigfoot
   (let ((template (simple-texlive-package
