@@ -1983,7 +1983,7 @@ actions, a built-in clock, a battery monitor and a system tray.")
 (define-public tofi
   (package
     (name "tofi")
-    (version "0.8.1")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1992,7 +1992,8 @@ actions, a built-in clock, a battery monitor and a system tray.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11bfi9his0cc5mzikamr5icv5mh2fyj9jy5l3sbbayj6jk51f68y"))))
+                "1paknsgfsgan27lqwhb2ndsk4gi8ciq9r49b0fpbbdwxk7ljk2cn"))
+              (patches (search-patches "tofi-32bit-compat.patch"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list cairo

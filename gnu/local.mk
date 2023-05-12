@@ -1961,6 +1961,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tk-find-library.patch			\
   %D%/packages/patches/tla2tools-build-xml.patch		\
   %D%/packages/patches/tlf-support-hamlib-4.2+.patch		\
+  %D%/packages/patches/tofi-32bit-compat.patch			\
   %D%/packages/patches/tootle-glib-object-naming.patch		\
   %D%/packages/patches/tootle-reason-phrase.patch		\
   %D%/packages/patches/transcode-ffmpeg.patch	\
