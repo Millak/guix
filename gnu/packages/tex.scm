@@ -5376,15 +5376,21 @@ compatible with @code{natbib}.")
 
 (define-deprecated-package texlive-latex-natbib texlive-natbib)
 
-(define-public texlive-latex-newfloat
+(define-public texlive-newfloat
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-newfloat"
-              (list "doc/latex/newfloat/"
-                    "tex/latex/newfloat/")
-              (base32 "1047max3li9ni15njgsvc7qglakgrjy2l0s72imgzdmwgb2h8jyf")
-              #:trivial? #t))
+    (name "texlive-newfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newfloat/"
+                   "source/latex/newfloat/"
+                   "tex/latex/newfloat/")
+             (base32
+              "1hrackdfrzad8cgbl3f3yaagk4p4zjbvq710rm8b1z02fr9z2zkq")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
     (home-page "https://ctan.org/pkg/newfloat")
     (synopsis "Define new floating environments")
     (description
@@ -5392,6 +5398,8 @@ compatible with @code{natbib}.")
 which the user may use to define new floating environments which behave like
 the LaTeX standard foating environments @code{figure} and @code{table}.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-newfloat texlive-newfloat)
 
 (define-public texlive-latex-newunicodechar
   (package
@@ -10668,12 +10676,12 @@ configuration of its own fixed names, using @file{.mld} files.")
       (propagated-inputs (list python-pygments
                                texlive-etoolbox
                                texlive-fancyvrb
-                               texlive-fvextra
                                texlive-latex-float
                                texlive-latex-framed
+                               texlive-fvextra
                                texlive-ifplatform
-                               texlive-latex-newfloat
                                texlive-lineno
+                               texlive-newfloat
                                texlive-xstring))
       (home-page "https://ctan.org/pkg/minted")
       (synopsis "Highlight source code in LaTeX documents")
