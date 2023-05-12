@@ -1152,20 +1152,19 @@ cpp.find_library('hdf5_cpp', dirs : '~a'), "
                 "0ykjbps1y3z3085q94npw8i9x5gldc6shy8vlc08v76zljsm07hv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (script)
-                  (wrap-program (string-append out "/bin/" script)
-                    `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
-                '("create_annotations_files.bash"
-                  "create_metaplots.bash"
-                  "Ribotaper_ORF_find.sh"
-                  "Ribotaper.sh")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-executables
+            (lambda _
+              (for-each
+               (lambda (script)
+                 (wrap-program (string-append #$output "/bin/" script)
+                   `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
+               '("create_annotations_files.bash"
+                 "create_metaplots.bash"
+                 "Ribotaper_ORF_find.sh"
+                 "Ribotaper.sh")))))))
     (inputs
      (list bedtools-2.18
            samtools-0.1
