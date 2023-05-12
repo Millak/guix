@@ -8013,86 +8013,88 @@ unique transcripts.")
          "1cr2mijkfs5sm35ffjs6861qsd1qkgnhnbavdv65zg5d655abbjf"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-build? #f             ; not supported
-       #:tests? #f                      ; no "check" target
-       #:make-flags
-       ,#~(list (string-append "DEFAULT_CRT="
-                               #$(this-package-input "ncbi-vdb")
-                               "/kfg/certs.kfg")
-                (string-append "DEFAULT_KFG="
-                               #$(this-package-input "ncbi-vdb")
-                               "/kfg/default.kfg")
-                (string-append "VDB_LIBDIR="
-                               #$(this-package-input "ncbi-vdb")
-                               #$(if (string-prefix? "x86_64"
-                                                     (or (%current-target-system)
-                                                         (%current-system)))
-                                     "/lib64"
-                                     "/lib32")))
+     (list
+      #:parallel-build? #f             ; not supported
+      #:tests? #f                      ; no "check" target
+      #:make-flags
+      #~(list (string-append "DEFAULT_CRT="
+                             #$(this-package-input "ncbi-vdb")
+                             "/kfg/certs.kfg")
+              (string-append "DEFAULT_KFG="
+                             #$(this-package-input "ncbi-vdb")
+                             "/kfg/default.kfg")
+              (string-append "VDB_LIBDIR="
+                             #$(this-package-input "ncbi-vdb")
+                             #$(if (string-prefix? "x86_64"
+                                                   (or (%current-target-system)
+                                                       (%current-system)))
+                                   "/lib64"
+                                   "/lib32")))
        #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-perl-search-path
-           (lambda _
-             ;; Work around "dotless @INC" build failure.
-             (setenv "PERL5LIB"
-                     (string-append (getcwd) "/setup:"
-                                    (getenv "PERL5LIB")))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; The build system expects a directory containing the sources and
-             ;; raw build output of ncbi-vdb, including files that are not
-             ;; installed.  Since we are building against an installed version of
-             ;; ncbi-vdb, the following modifications are needed.
-             (substitute* "setup/konfigure.perl"
-               ;; Make the configure script look for the "ilib" directory of
-               ;; "ncbi-vdb" without first checking for the existence of a
-               ;; matching library in its "lib" directory.
-               (("^            my \\$f = File::Spec->catdir\\(\\$libdir, \\$lib\\);")
-                "my $f = File::Spec->catdir($ilibdir, $ilib);")
-               ;; Look for interface libraries in ncbi-vdb's "ilib" directory.
-               (("my \\$ilibdir = File::Spec->catdir\\(\\$builddir, 'ilib'\\);")
-                "my $ilibdir = File::Spec->catdir($dir, 'ilib');"))
+       #~(modify-phases %standard-phases
+           (add-before 'configure 'set-perl-search-path
+             (lambda _
+               ;; Work around "dotless @INC" build failure.
+               (setenv "PERL5LIB"
+                       (string-append (getcwd) "/setup:"
+                                      (getenv "PERL5LIB")))))
+           (replace 'configure
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               ;; The build system expects a directory containing the sources and
+               ;; raw build output of ncbi-vdb, including files that are not
+               ;; installed.  Since we are building against an installed version of
+               ;; ncbi-vdb, the following modifications are needed.
+               (substitute* "setup/konfigure.perl"
+                 ;; Make the configure script look for the "ilib" directory of
+                 ;; "ncbi-vdb" without first checking for the existence of a
+                 ;; matching library in its "lib" directory.
+                 (("^            my \\$f = File::Spec->catdir\\(\\$libdir, \\$lib\\);")
+                  "my $f = File::Spec->catdir($ilibdir, $ilib);")
+                 ;; Look for interface libraries in ncbi-vdb's "ilib" directory.
+                 (("my \\$ilibdir = File::Spec->catdir\\(\\$builddir, 'ilib'\\);")
+                  "my $ilibdir = File::Spec->catdir($dir, 'ilib');"))
 
-             ;; Dynamic linking
-             (substitute* "tools/copycat/Makefile"
-               (("smagic-static") "lmagic"))
-             (substitute* "tools/driver-tool/utf8proc/Makefile"
-               (("CC\\?=gcc") "myCC=gcc")
-               (("\\(CC\\)") "(myCC)"))
+               ;; Dynamic linking
+               (substitute* "tools/copycat/Makefile"
+                 (("smagic-static") "lmagic"))
+               (substitute* "tools/driver-tool/utf8proc/Makefile"
+                 (("CC\\?=gcc") "myCC=gcc")
+                 (("\\(CC\\)") "(myCC)"))
 
-             ;; The 'configure' script doesn't recognize things like
-             ;; '--enable-fast-install'.
-             (invoke "./configure"
-                     (string-append "--build-prefix=" (getcwd) "/build")
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     (string-append "--debug")
-                     (string-append "--with-fuse-prefix="
-                                    (assoc-ref inputs "fuse"))
-                     (string-append "--with-magic-prefix="
-                                    (assoc-ref inputs "libmagic"))
-                     ;; TODO: building with libxml2 fails with linker errors
-                     #;
-                     (string-append "--with-xml2-prefix="
-                                    (assoc-ref inputs "libxml2"))
-                     (string-append "--with-ncbi-vdb-sources="
-                                    (assoc-ref inputs "ncbi-vdb"))
-                     (string-append "--with-ncbi-vdb-build="
-                                    (assoc-ref inputs "ncbi-vdb"))
-                     (string-append "--with-ngs-sdk-prefix="
-                                    (assoc-ref inputs "ngs-sdk"))
-                     (string-append "--with-hdf5-prefix="
-                                    (assoc-ref inputs "hdf5")))
-             #t)))))
+               ;; Don't link libxml2 statically
+               (substitute* "build/ld.linux.exe.sh"
+                 (("grep -q 'OS_DISTRIBUTOR = Ubuntu.*") "true\n"))
+
+               ;; The 'configure' script doesn't recognize things like
+               ;; '--enable-fast-install'.
+               (invoke "./configure"
+                       (string-append "--build-prefix=" (getcwd) "/build")
+                       (string-append "--prefix=" #$output)
+                       (string-append "--debug")
+                       (string-append "--with-fuse-prefix="
+                                      #$(this-package-input "fuse"))
+                       (string-append "--with-magic-prefix="
+                                      #$(this-package-input "file"))
+                       (string-append "--with-xml2-prefix="
+                                      #$(this-package-input "libxml2"))
+                       (string-append "--with-ncbi-vdb-sources="
+                                      #$(this-package-input "ncbi-vdb"))
+                       (string-append "--with-ncbi-vdb-build="
+                                      #$(this-package-input "ncbi-vdb"))
+                       (string-append "--with-ngs-sdk-prefix="
+                                      #$(this-package-input "ngs-sdk"))
+                       (string-append "--with-hdf5-prefix="
+                                      #$(this-package-input "hdf5"))))))))
     (native-inputs (list perl))
     (inputs
-     `(("ngs-sdk" ,ngs-sdk)
-       ("ncbi-vdb" ,ncbi-vdb)
-       ("libmagic" ,file)
-       ("fuse" ,fuse)
-       ("hdf5" ,hdf5-1.10)
-       ("zlib" ,zlib)
-       ("python" ,python-wrapper)))
+     (list ngs-sdk
+           ncbi-vdb
+           file
+           fuse
+           hdf5-1.10
+           libxml2
+           zlib
+           python-wrapper))
     (home-page
      "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software")
     (synopsis "Tools and libraries for reading and writing sequencing data")
