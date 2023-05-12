@@ -7554,6 +7554,33 @@ the whole font.")
 
 (define-deprecated-package texlive-fonts-stmaryrd texlive-stmaryrd)
 
+(define-public texlive-subfig
+  (package
+    (name "texlive-subfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subfig/" "source/latex/subfig/"
+                   "tex/latex/subfig/")
+             (base32
+              "0bq1328pb1ak91j7q8n1kh2fncr742lvff7apgf8kkxzxjfg2z9r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-caption
+           texlive-graphics))
+    (home-page "https://ctan.org/pkg/subfig")
+    (synopsis "Figures broken into subfigures")
+    (description
+     "The package provides support for the manipulation and reference of small
+or sub figures and tables within a single figure or table environment.  It is
+convenient to use this package when your subfigures are to be separately
+captioned, referenced, or are to be included in the List-of-Figures.  A new
+@code{\\subfigure} command is introduced which can be used inside a figure
+environment for each subfigure.  An optional first argument is used as the
+caption for that subfigure.")
+    (license license:lppl)))
+
 (define-public texlive-subfigure
   (let ((template (simple-texlive-package
                    "texlive-subfigure"
