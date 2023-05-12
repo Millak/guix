@@ -7246,6 +7246,28 @@ in the form @code{key=value} are available, for example:
 
 (define-deprecated-package texlive-latex-enumitem texlive-enumitem)
 
+(define-public texlive-multido
+  (package
+    (name "texlive-multido")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/multido/"
+                   "source/generic/multido/"
+                   "tex/generic/multido/" "tex/latex/multido/")
+             (base32
+              "1vwf2naw5bgs93s2gcmf226f60ws9z6cmw6gi1562fs8vg4mnjsh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multido")
+    (synopsis "Loop facility for Generic TeX")
+    (description
+     "The package provides the @code{\\multido} command, which was originally
+designed for use with PSTricks.  Fixed-point arithmetic is used when working
+on the loop variable, so that the package is equally applicable in graphics
+applications like PSTricks as it is with the more common integer loops.")
+    (license license:lppl)))
+
 (define-public texlive-latex-multirow
   (package
     (name "texlive-latex-multirow")
