@@ -17768,31 +17768,30 @@ length of a short-read sequencing alignment.")
     (name "samblaster")
     (version "0.1.24")
     (source (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/GregoryFaust/samblaster")
-            (commit (string-append "v." version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32
-        "0iv2ddfw8363vb2x8gr3p8g88whb6mb9m0pf71i2cqsbv6jghap7"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/GregoryFaust/samblaster")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0iv2ddfw8363vb2x8gr3p8g88whb6mb9m0pf71i2cqsbv6jghap7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "samblaster"
-                           (string-append (assoc-ref outputs "out") "/bin"))
-             #t)))))
+     (list
+      #:tests? #f                       ; there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;There is no configure phase.
+          (replace 'install
+            (lambda _
+              (install-file "samblaster" (string-append #$output "/bin")))))))
     (home-page "https://github.com/GregoryFaust/samblaster")
     (synopsis "Mark duplicates in paired-end SAM files")
     (description "Samblaster is a fast and flexible program for marking
 duplicates in read-id grouped paired-end SAM files.  It can also optionally
 output discordant read pairs and/or split read mappings to separate SAM files,
-and/or unmapped/clipped reads to a separate FASTQ file. When marking
+and/or unmapped/clipped reads to a separate FASTQ file.  When marking
 duplicates, samblaster will require approximately 20MB of memory per 1M read
 pairs.")
     (license license:expat)))
