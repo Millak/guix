@@ -3220,6 +3220,36 @@ with the required packages, constitutes what every LaTeX distribution should
 contain.")
       (license license:lppl1.3c+))))
 
+(define-public texlive-attachfile
+  (package
+    (name "texlive-attachfile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/attachfile/"
+                   "doc/latex/attachfile/"
+                   "source/latex/attachfile/"
+                   "tex/latex/attachfile/")
+             (base32
+              "0340c4rvxhhk95wlhf54n9akiwhj6pj0bslys6bkq29x9903zx5h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics
+           texlive-hyperref
+           texlive-iftex))
+    (home-page "https://ctan.org/pkg/attachfile")
+    (synopsis "Attach arbitrary files to a PDF document")
+    (description
+     "Starting with PDF 1.3, PDF files can contain file attachments, i.e.,
+arbitrary files that a reader can extract, just like attachments to an e-mail
+message.  The @code{attachfile} package brings this functionality to pdfLaTeX
+and provides some additional features such as the ability to use arbitrary
+LaTeX code for the file icon.  Settings can be made either globally or on
+a per-attachment basis.  @code{attachfile} makes it easy to attach files and
+customize their appearance in the enclosing document.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-atveryend
   (let ((template (simple-texlive-package
                    "texlive-atveryend"
