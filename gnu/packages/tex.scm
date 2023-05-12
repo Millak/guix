@@ -5351,29 +5351,30 @@ between various classes of Unix systems.")
 
 (define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
 
-(define-public texlive-latex-natbib
+(define-public texlive-natbib
   (package
-    (name "texlive-latex-natbib")
+    (name "texlive-natbib")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "natbib"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0aqliq0nwblxyrzhwhv77pnmk7qh2y3prgq7z7qhwcbgz5kisld7"))))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/natbib/" "doc/latex/natbib/"
+                   "source/latex/natbib/" "tex/latex/natbib/")
+             (base32
+              "17hyba6v24wrbjvakgjxkndjb418mmi2wmnhrm7zmfwb0bvy6f2j")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/natbib"))
-    (home-page "https://www.ctan.org/pkg/natbib")
+    (home-page "https://ctan.org/pkg/natbib")
     (synopsis "Flexible bibliography support")
     (description
-     "This bundle provides a package that implements both author-year and
+     "The bundle provides a package that implements both author-year and
 numbered references, as well as much detailed of support for other
-bibliography use.  Also provided are versions of the standard BibTeX styles
-that are compatible with @code{natbib}: @code{plainnat}, @code{unsrtnat},
-@code{abbrnat}.  The bibliography styles produced by @code{custom-bib} are
-designed from the start to be compatible with @code{natbib}.")
+bibliography use.  Also Provided are versions of the standard BibTeX styles
+that are compatible with natbib--plainnat, unsrtnat, abbrnat.  The
+bibliography styles produced by custom-bib are designed from the start to be
+compatible with @code{natbib}.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-natbib texlive-natbib)
 
 (define-public texlive-latex-newfloat
   (package
@@ -11914,7 +11915,7 @@ maintained).")
               (base32
                "0bcfpcmflhvxwzmdj8dgf43mzaywx2asahp52nqn3wwvq64bqym6")
               #:trivial? #t))
-    (propagated-inputs (list texlive-latex-natbib
+    (propagated-inputs (list texlive-natbib
                              texlive-tools))
     (home-page "https://www.ctan.org/pkg/apacite")
     (synopsis "Citation style following the rules of the APA")

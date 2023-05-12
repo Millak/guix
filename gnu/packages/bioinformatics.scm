@@ -4772,7 +4772,7 @@ data and settings.")
                   texlive-latex-examplep
                   texlive-hyperref
                   texlive-ms
-                  texlive-latex-natbib
+                  texlive-natbib
                   texlive-bibtex        ;style files used by natbib
                   texlive-pgf           ;tikz
                   texlive-latex-verbatimbox))
