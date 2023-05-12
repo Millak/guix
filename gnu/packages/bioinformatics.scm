@@ -7561,99 +7561,99 @@ simultaneously.")
                 "0m8hlxscidsfqm9x9fyi62q6lpf1dv5115kgjjgnrkl49q9c27m6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-build? #f ; not supported
-       #:tests? #f ; no "check" target
-       #:make-flags '("HAVE_HDF5=1")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-files-writable
-           (lambda _ (for-each make-file-writable (find-files "." ".*")) #t))
-         (add-before 'configure 'set-perl-search-path
-           (lambda _
-             ;; Work around "dotless @INC" build failure.
-             (setenv "PERL5LIB"
-                     (string-append (getcwd) "/setup:"
-                                    (getenv "PERL5LIB")))
-             #t))
-         ;; See https://github.com/ncbi/ncbi-vdb/issues/14
-         (add-after 'unpack 'patch-krypto-flags
-           (lambda _
-             (substitute* "libs/krypto/Makefile"
-               (("-Wa,-march=generic64\\+aes") "")
-               (("-Wa,-march=generic64\\+sse4") ""))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Override include path for libmagic
-               (substitute* "setup/package.prl"
-                 (("name => 'magic', Include => '/usr/include'")
-                  (string-append "name=> 'magic', Include => '"
-                                 (assoc-ref inputs "libmagic")
-                                 "/include" "'")))
+     (list
+      #:parallel-build? #f              ; not supported
+      #:tests? #f                       ; no "check" target
+      #:make-flags '(list "HAVE_HDF5=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          #;
+          (add-after 'unpack 'make-files-writable
+            (lambda _ (for-each make-file-writable (find-files "." ".*"))))
+          (add-before 'configure 'set-perl-search-path
+            (lambda _
+              ;; Work around "dotless @INC" build failure.
+              (setenv "PERL5LIB"
+                      (string-append (getcwd) "/setup:"
+                                     (getenv "PERL5LIB")))))
+          ;; See https://github.com/ncbi/ncbi-vdb/issues/14
+          (add-after 'unpack 'patch-krypto-flags
+            (lambda _
+              (substitute* "libs/krypto/Makefile"
+                (("-Wa,-march=generic64\\+aes") "")
+                (("-Wa,-march=generic64\\+sse4") ""))))
+          (replace 'configure
+            (lambda _
+              ;; Override include path for libmagic
+              (substitute* "setup/package.prl"
+                (("name => 'magic', Include => '/usr/include'")
+                 (string-append "name=> 'magic', Include => '"
+                                #$(this-package-input "file")
+                                "/include" "'")))
 
-               ;; Install kdf5 library (needed by sra-tools)
-               (substitute* "build/Makefile.install"
-                 (("LIBRARIES_TO_INSTALL =")
-                  "LIBRARIES_TO_INSTALL = kdf5.$(VERSION_LIBX) kdf5.$(VERSION_SHLX)"))
+              ;; Install kdf5 library (needed by sra-tools)
+              (substitute* "build/Makefile.install"
+                (("LIBRARIES_TO_INSTALL =")
+                 "LIBRARIES_TO_INSTALL = kdf5.$(VERSION_LIBX) kdf5.$(VERSION_SHLX)"))
 
-               (substitute* "build/Makefile.env"
-                 (("CFLAGS	=" prefix)
-                  (string-append prefix "-msse2 ")))
+              (substitute* "build/Makefile.env"
+                (("CFLAGS	=" prefix)
+                 (string-append prefix "-msse2 ")))
 
-               ;; Override search path for ngs-java
-               (substitute* "setup/package.prl"
-                 (("/usr/local/ngs/ngs-java")
-                  (assoc-ref inputs "java-ngs")))
+              ;; Override search path for ngs-java
+              (substitute* "setup/package.prl"
+                (("/usr/local/ngs/ngs-java")
+                 #$(this-package-input "java-ngs")))
 
-               ;; The 'configure' script doesn't recognize things like
-               ;; '--enable-fast-install'.
-               (invoke "./configure"
-                       (string-append "--build-prefix=" (getcwd) "/build")
-                       (string-append "--prefix=" (assoc-ref outputs "out"))
-                       (string-append "--debug")
-                       (string-append "--with-xml2-prefix="
-                                      (assoc-ref inputs "libxml2"))
-                       (string-append "--with-ngs-sdk-prefix="
-                                      (assoc-ref inputs "ngs-sdk"))
-                       (string-append "--with-hdf5-prefix="
-                                      (assoc-ref inputs "hdf5")))
-               #t)))
-         (add-after 'install 'install-interfaces
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Install interface libraries.  On i686 the interface libraries
-             ;; are installed to "linux/gcc/i386", so we need to use the Linux
-             ;; architecture name ("i386") instead of the target system prefix
-             ;; ("i686").
-             (mkdir (string-append (assoc-ref outputs "out") "/ilib"))
-             (copy-recursively (string-append
-                                "build/ncbi-vdb/linux/gcc/"
-                                ,(platform-linux-architecture
-                                  (lookup-platform-by-target-or-system
-                                   (or (%current-target-system)
-                                       (%current-system))))
-                                              "/rel/ilib")
-                               (string-append (assoc-ref outputs "out")
-                                              "/ilib"))
-             ;; Install interface headers
-             (copy-recursively "interfaces"
-                               (string-append (assoc-ref outputs "out")
-                                              "/include"))
-             #t))
-         ;; These files are needed by sra-tools.
-         (add-after 'install 'install-configuration-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((target (string-append (assoc-ref outputs "out") "/kfg")))
-               (mkdir target)
-               (install-file "libs/kfg/default.kfg" target)
-               (install-file "libs/kfg/certs.kfg" target))
-             #t)))))
+              ;; The 'configure' script doesn't recognize things like
+              ;; '--enable-fast-install'.
+              (invoke "./configure"
+                      (string-append "--build-prefix=" (getcwd) "/build")
+                      (string-append "--prefix=" #$output)
+                      (string-append "--debug")
+                      (string-append "--with-xml2-prefix="
+                                     #$(this-package-input "libxml2"))
+                      (string-append "--with-ngs-sdk-prefix="
+                                     #$(this-package-input "ngs-sdk"))
+                      (string-append "--with-hdf5-prefix="
+                                     #$(this-package-input "hdf5")))))
+          (add-after 'install 'install-interfaces
+            (lambda _
+              ;; Install interface libraries.  On i686 the interface libraries
+              ;; are installed to "linux/gcc/i386", so we need to use the Linux
+              ;; architecture name ("i386") instead of the target system prefix
+              ;; ("i686").
+              (mkdir (string-append #$output "/ilib"))
+              (copy-recursively (string-append
+                                 "build/ncbi-vdb/linux/gcc/"
+                                 #$(platform-linux-architecture
+                                    (lookup-platform-by-target-or-system
+                                     (or (%current-target-system)
+                                         (%current-system))))
+                                 "/rel/ilib")
+                                (string-append #$output "/ilib"))
+              ;; Install interface headers
+              (copy-recursively "interfaces"
+                                (string-append #$output "/include"))))
+          (add-after 'install-interfaces 'install-libs
+            (lambda _
+              (copy-recursively (string-append
+                                 "build/ncbi-vdb/linux/gcc/"
+                                 #$(platform-linux-architecture
+                                    (lookup-platform-by-target-or-system
+                                     (or (%current-target-system)
+                                         (%current-system))))
+                                 "/rel/lib")
+                                (string-append #$output "/lib"))))
+          ;; These files are needed by sra-tools.
+          (add-after 'install 'install-configuration-files
+            (lambda _
+              (let ((target (string-append #$output "/kfg")))
+                (mkdir target)
+                (install-file "libs/kfg/default.kfg" target)
+                (install-file "libs/kfg/certs.kfg" target)))))))
     (inputs
-     `(("libxml2" ,libxml2)
-       ("ngs-sdk" ,ngs-sdk)
-       ("java-ngs" ,java-ngs)
-       ("libmagic" ,file)
-       ("hdf5" ,hdf5)))
+     (list file hdf5 java-ngs libxml2 ngs-sdk ))
     (native-inputs (list perl))
     ;; NCBI-VDB requires SSE capability.
     (supported-systems '("i686-linux" "x86_64-linux"))
