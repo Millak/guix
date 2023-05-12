@@ -3209,7 +3209,7 @@ formats.")
              ;; TODO: This dependency isn't needed for LaTeX version 2021-06-01
              ;; and later. See:
              ;; https://tug.org/pipermail/tex-live/2021-June/047180.html
-             texlive-latex-l3packages
+             texlive-l3packages
              texlive-latexconfig))
       (home-page "https://www.ctan.org/pkg/latex-base")
       (synopsis "Base sources of LaTeX")
@@ -3946,77 +3946,61 @@ an independent schedule.")
 (define-deprecated-package texlive-dvips-l3backend texlive-l3backend)
 (define-deprecated-package texlive-latex-l3backend texlive-l3backend)
 
-(define-public texlive-latex-l3packages
+(define-public texlive-l3packages
   (package
-    (name "texlive-latex-l3packages")
+    (name "texlive-l3packages")
     (version (number->string %texlive-revision))
-    (source (texlive-origin name version
-                            '("/source/latex/l3packages/"
-                              ;; These files have been generated with a
-                              ;; bespoke source tree and then modified by
-                              ;; hand. It's unfeasible to recreate them. See:
-                              ;; https://tug.org/pipermail/tex-live/2021-June/047188.html
-                              "/tex/latex/l3packages/xparse/xparse-2018-04-12.sty"
-                              "/tex/latex/l3packages/xparse/xparse-2020-10-01.sty"
-
-                              ;; TODO: This file can be removed when using
-                              ;; LaTeX version 2021-06-01 or newer. See:
-                              ;; https://tug.org/pipermail/tex-live/2021-June/047180.html
-                              "/tex/latex/l3packages/xparse/xparse-generic.tex")
-                            (base32 "05rjxdqhhg7z1z2rmhmwj2qf09xygymayy3jzj9fdphk0pab3amm")))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l3packages/"
+                   "source/latex/l3packages/l3keys2e/"
+                   "source/latex/l3packages/xfp/"
+                   "source/latex/l3packages/xfrac/"
+                   "source/latex/l3packages/xparse/"
+                   "source/latex/l3packages/xtemplate/"
+                   "tex/latex/l3packages/l3keys2e/"
+                   "tex/latex/l3packages/xfp/"
+                   "tex/latex/l3packages/xfrac/"
+                   "tex/latex/l3packages/xparse/"
+                   "tex/latex/l3packages/xtemplate/")
+             (base32
+              "1k9zms255qz6i24k74g7wnyrdvshl52jgb198pmg6mj9ajhw9sks")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/l3packages"
-       #:tex-engine "tex"
-       #:tex-format #f
-       #:texlive-latex-base #f
-       ;; build-targets must be specified manually since they are in
-       ;; sub-directories.
-       #:build-targets '("l3keys2e.ins" "xparse.ins" "xfrac.ins" "xfp.ins" "xtemplate.ins")
-       #:phases
-       (modify-phases %standard-phases
-         ;; All package sources are in sub-directories, so we need to add them
-         ;; to TEXINPUTS.
-         (add-after 'unpack 'set-TEXINPUTS
-           (lambda _
-             (let ((cwd (getcwd)))
-               (setenv "TEXINPUTS"
-                       (string-append cwd "/source/latex/l3packages/l3keys2e:"
-                                      cwd "/source/latex/l3packages/xparse:"
-                                      cwd "/source/latex/l3packages/xfrac:"
-                                      cwd "/source/latex/l3packages/xfp:"
-                                      cwd "/source/latex/l3packages/xtemplate"
-                                      ;; The terminating ":" is required to include the
-                                      ;; l3kernel input as well.
-                                      ":")))
-             #t))
-         (add-after 'install 'copy-generated-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((dest (string-append (assoc-ref outputs "out")
-                                        "/share/texmf-dist/tex/latex/l3packages")))
-               (copy-recursively "tex/latex/l3packages/xparse" dest)))))
-       ))
+     (list
+      #:build-targets
+      '(list "l3keys2e.ins"
+             "xparse.ins"
+             "xfrac.ins"
+             "xfp.ins"
+             "xtemplate.ins")
+      #:tex-engine "tex"
+      #:tex-format #f
+      #:texlive-latex-base #f))
     (native-inputs
      (list texlive-docstrip))
     (propagated-inputs
      (list texlive-l3kernel))
-    (home-page "https://www.ctan.org/pkg/l3packages")
+    (home-page "https://ctan.org/pkg/l3packages")
     (synopsis "High-level LaTeX3 concepts")
     (description
-     "This bundle holds prototype implementations of concepts for a LaTeX
-designer interface, to be used with the experimental LaTeX kernel as
-programming tools and kernel support.  Packages provided in this release are:
+     "This collection contains implementations for aspects of the LaTeX3
+kernel, dealing with higher-level ideas such as the Designer Interface.  The
+packages here are considered broadly stable (The LaTeX3 Project does not
+expect the interfaces to alter radically).  These packages are built on
+LaTeX2e conventions at the interface level, and so may not migrate in the
+current form to a stand-alone LaTeX3 format.
 
-@enumerate
-@item l3keys2e, which makes the facilities of the kernel module l3keys
-  available for use by LaTeX 2e packages;
-@item xfrac, which provides flexible splitlevel fractions;
-@item xparse, which provides a high-level interface for declaring document
-  commands; and
-@item xtemplate, which provides a means of defining generic functions using a
-  key-value syntax.
-@end enumerate\n")
-    (license license:lppl1.3c+)))
+Packages provided are @code{xparse}, which provides a high-level interface for
+declaring document commands @code{xfp}, an expandable IEEE 754 FPU for LaTeX,
+@code{l3keys2e}, which makes the facilities of the kernel module l3keys
+available for use by LaTeX 2e packages, @code{xtemplate}, which provides
+a means of defining generic functions using a key-value syntax, and
+@code{xfrac}, which provides flexible split-level fractions.")
+    (license license:lppl1.3c)))
+
+(define-deprecated-package texlive-latex-l3packages texlive-l3packages)
 
 (define-public texlive-fontspec
   (let ((template (simple-texlive-package
@@ -4033,7 +4017,7 @@ programming tools and kernel support.  Packages provided in this release are:
          ((#:tex-directory _ #t)
           "latex/fontspec")))
       (propagated-inputs
-       (list texlive-cm texlive-latex-l3packages texlive-lm))
+       (list texlive-cm texlive-l3packages texlive-lm))
       (home-page "https://www.ctan.org/pkg/fontspec")
       (synopsis "Advanced font selection in XeLaTeX and LuaLaTeX")
       (description
@@ -5770,7 +5754,7 @@ in LaTeX documents; a jiffy to create slashed characters for physicists.")
     (propagated-inputs
      (list texlive-etoolbox
            texlive-hyperref
-           texlive-latex-l3packages
+           texlive-l3packages
            texlive-listings
            texlive-pgf
            texlive-tools
@@ -6237,7 +6221,7 @@ also provides compacted versions of enumerate and itemize.")
            texlive-stringenc
            texlive-zapfding
            texlive-makecmds
-           texlive-latex-l3packages     ;expl3, l3keys2e, xparse
+           texlive-l3packages           ;expl3, l3keys2e, xparse
            texlive-tools
            texlive-latex-xkeyval))
     (home-page "https://www.ctan.org/pkg/polyglossia")
@@ -10394,7 +10378,7 @@ The behaviour in standalone mode may adjusted using a configuration file
      '(#:tex-directory "latex/siunitx"
        #:build-targets '("siunitx.dtx")))
     (propagated-inputs
-     (list texlive-l3kernel texlive-latex-l3packages))
+     (list texlive-l3kernel texlive-l3packages))
     (home-page "http://www.ctan.org/pkg/siunitx")
     (synopsis "Comprehensive SI units package")
     (description
@@ -12893,7 +12877,7 @@ itself may be shipped out to the DVI file.")
            texlive-fonts-latex
            texlive-l3backend
            texlive-l3kernel
-           texlive-latex-l3packages
+           texlive-l3packages
            texlive-lm
            texlive-tex-ini-files
            texlive-tex-plain
