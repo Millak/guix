@@ -2848,10 +2848,9 @@ requires = ['setuptools']
               (call-with-output-file "setup.cfg"
                 (lambda (port)
                   (format port "\
-
 [metadata]
 name = orjson
-version = '~a'
+version = ~a
 
 [options]
 packages = find:
