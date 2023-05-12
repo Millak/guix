@@ -16525,35 +16525,36 @@ includes a command line tool and an analysis pipeline.")
          "0jx9656ry766vb8z08m1c3im87b0c82qpnjby9wz4kcz8vn87dx2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((htslib (assoc-ref inputs "htslib")))
-               (substitute* "Makefile"
-                 (("-I\\$\\(HTSLIB\\)/htslib")
-                  (string-append "-I" htslib "/include/htslib"))
-                 ((" \\$\\(HTSLIB\\)/libhts.a")
-                  (string-append " " htslib "/lib/libhts.so"))))
-             (substitute* "run_arriba.sh"
-               (("^STAR ") (string-append (which "STAR") " "))
-               (("samtools --version-only")
-                (string-append (which "samtools") " --version-only"))
-               (("samtools index")
-                (string-append (which "samtools") " index"))
-               (("samtools sort")
-                (string-append (which "samtools") " sort")))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (install-file "arriba" bin)
-               (install-file "run_arriba.sh" bin)
-               (install-file "draw_fusions.R" bin)
-               (wrap-program (string-append bin "/draw_fusions.R")
-                 `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE")))))
-             #t)))))
+     (list
+      #:tests? #f                       ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("-I\\$\\(HTSLIB\\)/htslib")
+                 (string-append "-I"
+                                (search-input-directory inputs "/include/htslib")))
+                ((" \\$\\(HTSLIB\\)/libhts.a")
+                 (string-append " " (search-input-file inputs "/lib/libhts.so"))))
+              (let ((samtools (search-input-file inputs "/bin/samtools")))
+                (substitute* "run_arriba.sh"
+                  (("^STAR ")
+                   (string-append (search-input-file inputs "/bin/STAR") " "))
+                  (("samtools --version-only")
+                   (string-append samtools " --version-only"))
+                  (("samtools index")
+                   (string-append samtools " index"))
+                  (("samtools sort")
+                   (string-append samtools " sort"))))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (install-file "arriba" bin)
+                (install-file "run_arriba.sh" bin)
+                (install-file "draw_fusions.R" bin)
+                (wrap-program (string-append bin "/draw_fusions.R")
+                  `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE"))))))))))
     (inputs
      (list htslib
            r-minimal
