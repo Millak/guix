@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
 ;;; Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2019, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -846,7 +846,7 @@ integer programming problems and computes Markov bases for statistics.")
                          texlive-amsfonts
                          texlive-dvips-l3backend
                          texlive-graphics
-                         texlive-latex-l3backend
+                         texlive-l3backend
                          texlive-tiny))
     (arguments
      (list #:configure-flags

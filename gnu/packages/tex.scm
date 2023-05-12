@@ -3205,7 +3205,7 @@ formats.")
              texlive-ukrhyph
              texlive-ruhyphen
              texlive-l3kernel
-             texlive-latex-l3backend
+             texlive-l3backend
              ;; TODO: This dependency isn't needed for LaTeX version 2021-06-01
              ;; and later. See:
              ;; https://tug.org/pipermail/tex-live/2021-June/047180.html
@@ -3912,34 +3912,38 @@ LaTeX3 conventions can be used with regular LaTeX2e packages.")
 
 (define-deprecated-package texlive-latex-l3kernel texlive-l3kernel)
 
-(define-public texlive-latex-l3backend
+(define-public texlive-l3backend
   (package
-    (name "texlive-latex-l3backend")
+    (name "texlive-l3backend")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "l3backend"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0mlwyzssqn6wkyv9hzp24d40p8f20zrjqgvqyqs1rd7q7awan42a"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l3backend/"
+                   "dvips/l3backend/"
+                   "source/latex/l3backend/"
+                   "tex/latex/l3backend/")
+             (base32
+              "18i6aczhj7pvqgdwfgkbmjz7a8xgd5w2jhibrv8khqlvxp62in94")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/l3backend"
-       #:tex-engine "tex"
-       #:tex-format #f
-       #:texlive-latex-base #f))
+     (list
+      #:tex-engine "tex"
+      #:tex-format #f
+      #:texlive-latex-base #f))
     (native-inputs
      (list texlive-docstrip))
-    (home-page "https://www.ctan.org/pkg/l3backend")
+    (home-page "https://ctan.org/pkg/l3backend")
     (synopsis "LaTeX3 backend drivers")
     (description
      "This package forms parts of expl3, and contains the code used to
-interface with backends (drivers) across the expl3 codebase. The functions
-here are defined differently depending on the engine in use. As such, these
+interface with backends (drivers) across the expl3 codebase.  The functions
+here are defined differently depending on the engine in use.  As such, these
 are distributed separately from l3kernel to allow this code to be updated on
 an independent schedule.")
-    (license license:lppl1.3c+)))
+    (license license:lppl1.3c)))
+
+(define-deprecated-package texlive-latex-l3backend texlive-l3backend)
 
 (define-public texlive-latex-l3packages
   (package
@@ -12903,7 +12907,7 @@ itself may be shipped out to the DVI file.")
            texlive-hyphen-base
            texlive-latex-base
            texlive-fonts-latex
-           texlive-latex-l3backend
+           texlive-l3backend
            texlive-l3kernel
            texlive-latex-l3packages
            texlive-lm
