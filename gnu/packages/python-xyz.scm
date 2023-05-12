@@ -11218,27 +11218,7 @@ SVG, EPS, PNG and terminal output.")
               (sha256
                (base32
                 "08vvnp4ps86857imxz2l5xi2vir5xdcdp3apq4badb4b5llifgw9"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:modules '((guix build python-build-system)
-                       (guix build utils)
-                       (ice-9 match))
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'build
-                          (lambda _
-                            (invoke "python" "-m" "build" "--wheel"
-                                    "--no-isolation" ".")))
-                        (replace 'install
-                          (lambda _
-                            (match (find-files "dist" "\\.whl$")
-                              ((wheel _ ...)
-                               (invoke "python" "-m" "pip" "install"
-                                       (string-append "--prefix=" #$output)
-                                       wheel)))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-pandas python-matplotlib python-numpy
                              python-scipy))
     (native-inputs (list python-flit-core python-pypa-build python-pytest))
@@ -11250,7 +11230,6 @@ graphics in Python.  It is built on top of matplotlib and tightly integrated
 with the PyData stack, including support for numpy and pandas data structures
 and statistical routines from scipy and statsmodels.")
     (license license:bsd-3)))
-
 
 (define-public python-session-info
   (package
