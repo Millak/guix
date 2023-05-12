@@ -5318,31 +5318,38 @@ not yet reflected in the package's or class's code.  The file
 meant to be loaded during format generation and not by the user.")
       (license license:lppl1.3c))))
 
-(define-public texlive-latex-ifplatform
+(define-public texlive-ifplatform
   (package
-    (name "texlive-latex-ifplatform")
+    (name "texlive-ifplatform")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "ifplatform"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "157pplavvm2z97b3jl4x41w11k6q9wgy074mfg0dwmsx5lm328jy"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ifplatform/"
+                   "source/latex/ifplatform/"
+                   "tex/latex/ifplatform/")
+             (base32
+              "1llas0xwq3y9nk7gblg40l99cgmkl9r7rbfazrhpnbaz5cshl8pl")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs (list texlive-catchfile))
-    (arguments '(#:tex-directory "latex/ifplatform"))
-    (home-page "https://www.ctan.org/pkg/ifplatform")
+    (propagated-inputs
+     (list texlive-catchfile
+           texlive-iftex
+           texlive-pdftexcmds
+           texlive-tools))
+    (home-page "https://ctan.org/pkg/ifplatform")
     (synopsis "Conditionals to test which platform is being used")
     (description
-     "This package uses the (La)TeX extension @code{-shell-escape} to
-establish whether the document is being processed on a Windows or on a
-Unix-like system, or on Cygwin (Unix environment over a Windows system).
+     "This package uses the (La)TeX extension @samp{-shell-escape} to
+establish whether the document is being processed on a Windows or on
+a Unix-like system, or on Cygwin.
+
 Booleans provided are: @code{\\ifwindows}, @code{\\iflinux}, @code{\\ifmacosx}
-and @code{\\ifcygwin}.  The package also preserves the output of @code{uname}
-on a Unix-like system, which may be used to distinguish between various
-classes of systems.")
-    (license license:lppl)))
+and @code{\\ifcygwin}.  The package also preserves the output of
+@command{uname} on a Unix-like system, which may be used to distinguish
+between various classes of Unix systems.")
+    (license license:lppl1.3c)))
+
+(define-deprecated-package texlive-latex-ifplatform texlive-ifplatform)
 
 (define-public texlive-latex-natbib
   (package
@@ -5467,7 +5474,7 @@ rotated.")
      (list texlive-bigfoot ; for suffix
            texlive-filemod
            texlive-graphics
-           texlive-latex-ifplatform
+           texlive-ifplatform
            texlive-l3kernel ; for expl3
            texlive-oberdiek
            texlive-latex-psfrag
@@ -10663,7 +10670,7 @@ configuration of its own fixed names, using @file{.mld} files.")
                                texlive-fvextra
                                texlive-latex-float
                                texlive-latex-framed
-                               texlive-latex-ifplatform
+                               texlive-ifplatform
                                texlive-latex-newfloat
                                texlive-lineno
                                texlive-xstring))
