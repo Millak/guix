@@ -11912,31 +11912,7 @@ plugin for flake8 to check PEP-8 naming conventions.")
        (sha256
         (base32
          "00zahgw9zjfqwf0218bj5k732aibnn68cq1p8f0wmbirb7fy5k31"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build/install procedures copied from
-          ;; python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        ;; Two parameterized test_load tests are currently
-                        ;; failing (see:
-                        ;; https://github.com/FFY00/python-pep621/issues/14).
-                        "-k" "not test_load"))))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-packaging))
     (native-inputs (list python-pypa-build python-pytest python-tomli))
     (home-page "https://github.com/FFY00/python-pyproject-metadata")
