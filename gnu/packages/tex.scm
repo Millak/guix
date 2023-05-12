@@ -9813,6 +9813,25 @@ Support for use with LaTeX is available in @code{freenfss}, part of
 
 (define-deprecated-package texlive-fonts-charter texlive-charter)
 
+(define-public texlive-chngcntr
+  (package
+    (name "texlive-chngcntr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chngcntr/" "tex/latex/chngcntr/")
+             (base32
+              "0ag1hb1vkl0xdzslp6f0j59dijwr9k9kq7vaada148241q0hflbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chngcntr")
+    (synopsis "Change the resetting of counters")
+    (description
+     "This package defines commands @code{\\counterwithin} (which sets up
+a counter to be reset when another is incremented) and
+@code{\\counterwithout} (which unsets such a relationship).")
+    (license license:lppl)))
+
 (define-public texlive-context
   (package
     (inherit (simple-texlive-package
