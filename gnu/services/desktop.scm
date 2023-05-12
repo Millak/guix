@@ -1398,18 +1398,7 @@ rules."
                     '("gnome-settings-daemon"
                       "gnome-control-center"
                       "gnome-system-monitor"
-                      "gvfs"
-                      ;; spice-gtk provides polkit actions for USB redirection
-                      ;; in GNOME Boxes.
-                      ("gnome-boxes" "spice-gtk")))))
-
-(define (gnome-setuid-programs config)
-  "Return the list of GNOME setuid programs."
-  (let* ((gnome (gnome-desktop-configuration-gnome config))
-         (spice-gtk (gnome-package gnome '("gnome-boxes" "spice-gtk"))))
-    (map file-like->setuid-program
-         (list (file-append spice-gtk
-                            "/libexec/spice-client-glib-usb-acl-helper")))))
+                      "gvfs"))))
 
 (define gnome-desktop-service-type
   (service-type
@@ -1419,8 +1408,6 @@ rules."
                              gnome-udev-rules)
           (service-extension polkit-service-type
                              gnome-polkit-settings)
-          (service-extension setuid-program-service-type
-                             gnome-setuid-programs)
           (service-extension profile-service-type
                              (compose list gnome-desktop-configuration-gnome))))
    (default-value (gnome-desktop-configuration))

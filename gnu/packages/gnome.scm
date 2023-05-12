@@ -10058,7 +10058,6 @@ world.")
           epiphany
           evince
           file-roller
-          gnome-boxes
           gnome-calculator
           gnome-calendar
           gnome-characters
