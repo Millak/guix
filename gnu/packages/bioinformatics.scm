@@ -17369,30 +17369,30 @@ significance profiles for each word studied across the sorted genelist.")
     (name "multichoose")
     (version "1.0.3")
     (source (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/ekg/multichoose/")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0ci5fqvmpamwgxvmyd79ygj6n3bnbl3vc7b6h1sxz58186sm3pfs"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ekg/multichoose/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ci5fqvmpamwgxvmyd79ygj6n3bnbl3vc7b6h1sxz58186sm3pfs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; Tests require node.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (include (string-append out "/include")))
-               ;; TODO: There are Python modules for these programs too.
-               (install-file "multichoose" bin)
-               (install-file "multipermute" bin)
-               (install-file "multichoose.h" include)
-               (install-file "multipermute.h" include))
-             #t)))))
+     (list
+      #:tests? #f                       ;Tests require node.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;There is no configure phase.
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (include (string-append #$output "/include")))
+                ;; TODO: There are Python modules for these programs too.
+                (install-file "multichoose" bin)
+                (install-file "multipermute" bin)
+                (install-file "multichoose.h" include)
+                (install-file "multipermute.h" include)))))))
     (home-page "https://github.com/ekg/multichoose")
     (synopsis "Efficient loopless multiset combination generation algorithm")
     (description "This library implements an efficient loopless multiset
