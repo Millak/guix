@@ -15862,46 +15862,45 @@ Barcoding Kit or Rapid Barcoding Kit.")
          "0bsa5mf9n9q5jz7mmacrra41l7r8rac5vgsn6wv1fb52ya58b970"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (libexec (string-append out "/libexec/jamm"))
-                    (bin (string-append out "/bin")))
-               (substitute* '("JAMM.sh"
-                              "SignalGenerator.sh")
-                 (("^sPath=.*")
-                  (string-append "sPath=\"" libexec "\"\n")))
-               (for-each (lambda (file)
-                           (install-file file libexec))
-                         (list "bincalculator.r"
-                               "peakfinder.r"
-                               "peakhelper.r"
-                               "signalmaker.r"
-                               "xcorr.r"
-                               "xcorrhelper.r"
-                               ;; Perl scripts
-                               "peakfilter.pl"
-                               "readshifter.pl"))
+     (list
+      #:tests? #f                       ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let ((libexec (string-append #$output "/libexec/jamm"))
+                    (bin (string-append #$output "/bin")))
+                (substitute* '("JAMM.sh"
+                               "SignalGenerator.sh")
+                  (("^sPath=.*")
+                   (string-append "sPath=\"" libexec "\"\n")))
+                (for-each (lambda (file)
+                            (install-file file libexec))
+                          (list "bincalculator.r"
+                                "peakfinder.r"
+                                "peakhelper.r"
+                                "signalmaker.r"
+                                "xcorr.r"
+                                "xcorrhelper.r"
+                                ;; Perl scripts
+                                "peakfilter.pl"
+                                "readshifter.pl"))
 
-               (for-each
-                (lambda (script)
-                  (chmod script #o555)
-                  (install-file script bin)
-                  (wrap-program (string-append bin "/" script)
-                    `("PATH" ":" prefix
-                      (,(string-append (assoc-ref inputs "coreutils") "/bin")
-                       ,(string-append (assoc-ref inputs "gawk") "/bin")
-                       ,(string-append (assoc-ref inputs "perl") "/bin")
-                       ,(string-append (assoc-ref inputs "r-minimal") "/bin")))
-                    `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))
-                    `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE")))))
-                (list "JAMM.sh" "SignalGenerator.sh")))
-             #t)))))
+                (for-each
+                 (lambda (script)
+                   (chmod script #o555)
+                   (install-file script bin)
+                   (wrap-program (string-append bin "/" script)
+                     `("PATH" ":" prefix
+                       (,(string-append #$(this-package-input "coreutils") "/bin")
+                        ,(string-append #$(this-package-input "gawk") "/bin")
+                        ,(string-append #$(this-package-input "perl") "/bin")
+                        ,(string-append #$(this-package-input "r-minimal") "/bin")))
+                     `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))
+                     `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE")))))
+                 (list "JAMM.sh" "SignalGenerator.sh"))))))))
     (inputs
      (list bash
            coreutils
