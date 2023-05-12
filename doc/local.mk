@@ -229,8 +229,8 @@ $(srcdir)/%D%/guix.1: scripts/guix.in $(sub_commands_mans)
 # The 'case' ensures the man pages are only generated if the corresponding
 # source script (the first prerequisite) has been changed.  The $(GOBJECTS)
 # prerequisite is solely meant to force these docs to be made only after all
-# Guile modules have been compiled.
-$(srcdir)/%D%/guix-%.1: guix/scripts/%.scm $(GOBJECTS)
+# Guile modules have been compiled.  We also need the guix script to exist.
+$(srcdir)/%D%/guix-%.1: scripts/guix guix/scripts/%.scm $(GOBJECTS)
 	-@case '$?' in \
 	  *$<*) $(AM_V_P) && set -x || echo "  HELP2MAN $@"; \
 	        $(gen_man) --output="$@" "guix $*";; \
