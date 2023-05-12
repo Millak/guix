@@ -12111,7 +12111,7 @@ programs for inferring phylogenies (evolutionary trees).")
                                      texlive-graphics
                                      texlive-grfext
                                      texlive-hyperref
-                                     texlive-latex-psfrag
+                                     texlive-psfrag
                                      texlive-xcolor))))
     (home-page "https://github.com/stephaneguindon/phyml")
     (synopsis "Programs for working on SAM/BAM files")

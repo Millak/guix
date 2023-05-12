@@ -5451,30 +5451,35 @@ available for LuaTeX by reimplementing them using Lua.")
 
 (define-deprecated-package texlive-latex-pdftexcmds texlive-pdftexcmds)
 
-(define-public texlive-latex-psfrag
+(define-public texlive-psfrag
   (package
-    (name "texlive-latex-psfrag")
+    (name "texlive-psfrag")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "psfrag"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1dxbl5il7wbbsp0v45vk884xi1192wxw03849pb1g5q4x808n352"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/psfrag/"
+                   "dvips/psfrag/"
+                   "source/latex/psfrag/"
+                   "tex/latex/psfrag/")
+             (base32
+              "06vp5x6rnl4gqwxzzynbl169q23k8pmaxjhb0lbzdcm3ihvzp47z")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/psfrag"))
-    (home-page "https://www.ctan.org/pkg/psfrag")
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/psfrag")
     (synopsis "Replace strings in encapsulated PostScript figures")
     (description
      "This package allows LaTeX constructions (equations, picture
 environments, etc.) to be precisely superimposed over Encapsulated PostScript
 figures, using your own favorite drawing tool to create an EPS figure and
-placing simple text \"tags\" where each replacement is to be placed, with
-PSfrag automatically removing these tags from the figure and replacing them
-with a user specified LaTeX construction, properly aligned, scaled, and/or
+placing simple text tags where each replacement is to be placed, with PSfrag
+automatically removing these tags from the figure and replacing them with
+a user specified LaTeX construction, properly aligned, scaled, and/or
 rotated.")
     (license (license:fsf-free "file://psfrag.dtx"))))
+
+(define-deprecated-package texlive-latex-psfrag texlive-psfrag)
 
 (define-public texlive-pstool
   (package
@@ -5492,7 +5497,7 @@ rotated.")
            texlive-ifplatform
            texlive-l3kernel ; for expl3
            texlive-oberdiek
-           texlive-latex-psfrag
+           texlive-psfrag
            texlive-tools                ; for shellesc
            texlive-trimspaces
            texlive-latex-xkeyval))
