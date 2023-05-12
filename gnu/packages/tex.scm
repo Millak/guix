@@ -12359,6 +12359,30 @@ also contains the @code{flexisym} and @code{mathstyle} packages, which are
 both designated as support for @code{breqn}.")
       (license license:lppl1.3+))))
 
+(define-public texlive-breakurl
+  (package
+    (name "texlive-breakurl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/breakurl/" "source/latex/breakurl/"
+                   "tex/latex/breakurl/")
+             (base32
+              "1lihfrihf1i300sddz09rsn6gj30g299warn88gli9hbrfy6nvw5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-iftex texlive-latex-xkeyval))
+    (home-page "https://ctan.org/pkg/breakurl")
+    (synopsis "Line-breakable links in @code{hyperref} for dvips/ps2pdf")
+    (description
+     "This package provides a command much like @code{hyperref}'s @code{\\url}
+that typesets a URL using a typewriter-like font.  However, if the dvips
+driver is being used, the original @code{\\url} doesn't allow line breaks in
+the middle of the created link: the link comes in one atomic piece.  This
+package allows such line breaks in the generated links.")
+    (license license:lppl)))
+
 (define-public texlive-comment
   (package
     (inherit (simple-texlive-package
