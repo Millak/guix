@@ -5961,25 +5961,29 @@ and a new version of @code{g-brief}.")
 
 (define-deprecated-package texlive-latex-g-brief texlive-g-brief)
 
-(define-public texlive-latex-galois
+(define-public texlive-galois
   (package
-    (name "texlive-latex-galois")
+    (name "texlive-galois")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "galois"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0d4l0msk8j5pi95xnmm9wygv1vbpkwkv5amx9l0km86cs79jpp1h"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/galois/"
+                   "source/latex/galois/"
+                   "tex/latex/galois/")
+             (base32
+              "1324nw1r1aj6khz6fvrhd1p1sinadrd83j0s2q2fhnsgwp6sw94f")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/galois"))
+    (propagated-inputs
+     (list texlive-graphics))
     (home-page "https://www.ctan.org/pkg/galois")
     (synopsis "Typeset Galois connections")
     (description
      "The package deals with connections in two-dimensional style, optionally
 in colour.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-galois texlive-galois)
 
 (define-public texlive-latex-gcite
   (package
