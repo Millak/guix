@@ -118,7 +118,7 @@
            texlive-fancyvrb
            texlive-latex-float
            texlive-fncychap
-           texlive-latex-framed
+           texlive-framed
            texlive-latex-geometry
            texlive-graphics                       ;graphicx, color
            texlive-kvoptions

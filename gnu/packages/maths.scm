@@ -5802,7 +5802,7 @@ set.")
                                      texlive-latex-colortbl
                                      texlive-latex-float
                                      texlive-fncychap
-                                     texlive-latex-framed
+                                     texlive-framed
                                      texlive-latex-geometry
                                      texlive-hanging
                                      texlive-hyperref
