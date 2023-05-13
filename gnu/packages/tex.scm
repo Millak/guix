@@ -6590,25 +6590,30 @@ copy-and-paste functions work properly.")
 
 (define-deprecated-package texlive-latex-cmap texlive-cmap)
 
-(define-public texlive-latex-colortbl
+(define-public texlive-colortbl
   (package
-    (name "texlive-latex-colortbl")
+    (name "texlive-colortbl")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "colortbl"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1qa0mh0fy9hcvfsmprv6q50q0qzdjjfbxi3axap26z6zg3qj68bc"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colortbl/"
+                   "source/latex/colortbl/"
+                   "tex/latex/colortbl/")
+             (base32
+              "0fb4a5l3yqk6l5gr0hlkqwpy004wi8zymyicdzjyhqwcib4jnzjs")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/colortbl"))
-    (home-page "https://www.ctan.org/pkg/colortbl")
+    (propagated-inputs
+     (list texlive-graphics
+           texlive-tools))
+    (home-page "https://ctan.org/pkg/colortbl")
     (synopsis "Add colour to LaTeX tables")
     (description
-     "This package allows rows, columns, and even individual cells in LaTeX
-tables to be coloured.")
+     "The package allows rows and columns to be coloured, and even
+individual cells.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-colortbl texlive-colortbl)
 
 (define-public texlive-latex-fancybox
   (package
@@ -7895,7 +7900,7 @@ Simple Young tableaux.
              ;; provided by the jknappen package collection.
              texlive-jknappen
              texlive-hyperref
-             texlive-latex-colortbl
+             texlive-colortbl
              texlive-fancyhdr
              texlive-graphics ;for color.sty
              texlive-tools ;for array.sty

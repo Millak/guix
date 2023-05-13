@@ -5799,7 +5799,7 @@ set.")
                                      texlive-xypic
                                      texlive-listofitems
                                      texlive-cmap
-                                     texlive-latex-colortbl
+                                     texlive-colortbl
                                      texlive-latex-float
                                      texlive-fncychap
                                      texlive-framed

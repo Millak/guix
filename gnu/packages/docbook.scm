@@ -539,7 +539,7 @@ the in DocBook SGML DTDs.")
                                              texlive-appendix
                                              texlive-bookmark
                                              texlive-changebar
-                                             texlive-latex-colortbl
+                                             texlive-colortbl
                                              texlive-latex-fancybox
                                              texlive-fancyhdr
                                              texlive-fancyvrb
