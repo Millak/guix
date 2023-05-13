@@ -4038,32 +4038,26 @@ the l3kernel and xparse bundles from the LaTeX 3 development team.")
 (define-deprecated-package texlive-latex-fontspec texlive-fontspec)
 
 (define-public texlive-grffile
-  (let ((template (simple-texlive-package
-                   "texlive-grffile"
-                   (list "/doc/latex/grffile/README.md"
-                         "/source/latex/grffile/grffile.dtx")
-                   (base32
-                    "1ib2n4d52faipvxdvdh4ar1p5j997h7cza26sfyd8z3qdf0naqgx"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/grffile")
-         ((#:build-targets _ #t)
-          '(list "grffile.dtx"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/grffile/")))))))
-      (home-page "https://www.ctan.org/pkg/grffile")
-      (synopsis "Extended file name support for graphics (legacy package)")
-      (description
-       "The original grffile package extended the file name processing of the
-@code{graphics} package to support a larger range of file names.  The base
-LaTeX code now supports multiple dots and spaces, and this package by default
-is a stub that just loads @code{graphicx}.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-grffile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grffile/"
+                   "source/latex/grffile/"
+                   "tex/latex/grffile/")
+             (base32
+              "01mlvdhqwfwj1l91jfvkdfbn1hj95rlb6xhwikzx1r8qrz5whw7n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://www.ctan.org/pkg/grffile")
+    (synopsis "Extended file name support for graphics (legacy package)")
+    (description
+     "The original @code{grffile} package extended the file name processing
+of the @code{graphics} package to support a larger range of file names.  The
+base LaTeX code now supports multiple dots and spaces, and this package by
+default is a stub that just loads @code{graphicx}.")
+    (license license:lppl1.3c+)))
 
 (define-public texlive-stringenc
   (let ((template (simple-texlive-package
