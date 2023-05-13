@@ -3228,6 +3228,33 @@ with the required packages, constitutes what every LaTeX distribution should
 contain.")
       (license license:lppl1.3c+))))
 
+(define-public texlive-atenddvi
+  (package
+    (name "texlive-atenddvi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/atenddvi/"
+                   "source/latex/atenddvi/"
+                   "tex/latex/atenddvi/")
+             (base32
+              "1fwa5233mdgvixhl2rzn9s06zz52j6ml7hfzd4194bn389n9syhk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-atbegshi texlive-zref))
+    (home-page "https://ctan.org/pkg/atenddvi")
+    (synopsis "Provide the @code{\\AtEndDvi} command for older LaTeX format")
+    (description
+     "This package is unneeded and does nothing when used with a LaTeX format
+2020-10-01 or newer as in this case the format provides the @code{\\AtEndDvi}
+command.  For older formats it implements @code{\\AtEndDvi}, a counterpart to
+@code{\\AtBeginDvi}.  The execution of its argument is delayed to the end of
+the document at the end of the last page.  Thus @code{\\special} and
+@code{\\write} remain effective, because they are put into the last page.
+This is the main difference to @code{\\AtEndDocument}.")
+    (license license:lppl1.3c+)))
+
 (define-public texlive-attachfile
   (package
     (name "texlive-attachfile")
