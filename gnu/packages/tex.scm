@@ -6694,20 +6694,20 @@ the obsolete @code{here} package.  You can select this as automatic default
 with @code{\\floatplacement{figure}{H}}.")
     (license license:lppl)))
 
-(define-public texlive-latex-footmisc
+(define-public texlive-footmisc
   (package
-    (name "texlive-latex-footmisc")
+    (name "texlive-footmisc")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "footmisc"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "03x61wwql8nh6zrqiiiq3rb0x7m3pn48c606zapy19y21fybwdxs"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/footmisc/"
+                   "source/latex/footmisc/"
+                   "tex/latex/footmisc/")
+             (base32
+              "1v1hkf0xcq6hyz3b32z3hvs53lmwrnkn79y9wxq6pqmhcgilqji3")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/footmisc"))
-    (home-page "https://www.ctan.org/pkg/footmisc")
+    (home-page "https://ctan.org/pkg/footmisc")
     (synopsis "Range of footnote options")
     (description
      "This is a collection of ways to change the typesetting of footnotes.
@@ -6717,6 +6717,8 @@ a way to number footnotes per page, to make footnotes disappear in a
 the same place.  The package also has a range of techniques for labelling
 footnotes with symbols rather than numbers.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-footmisc texlive-footmisc)
 
 (define-public texlive-letltxmacro
   (let ((template (simple-texlive-package
@@ -10382,19 +10384,19 @@ environments, as well as the @code{array} environment in maths mode.")
                            "xkvutils.tex"))
                #t))))))
     (native-inputs
-     (list texlive-latex-base
-           texlive-cm
-           texlive-lm
-           texlive-url
+     (list texlive-cm
+           texlive-footmisc
            texlive-graphics-def
-           texlive-xcolor
-           texlive-latex-footmisc
            texlive-iftex
+           texlive-latex-base
            texlive-listings
-           texlive-pstricks
+           texlive-lm
+           texlive-pgf
            texlive-pst-text
+           texlive-pstricks
            texlive-tools
-           texlive-pgf))
+           texlive-url
+           texlive-xcolor))
     (home-page "http://www.ctan.org/pkg/xkeyval")
     (synopsis "Extension of the keyval package")
     (description
