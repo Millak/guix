@@ -535,7 +535,7 @@ the in DocBook SGML DTDs.")
     ;; TODO: Add xfig/transfig for fig2dev utility
     (inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                             texlive-latex-anysize
+                                             texlive-anysize
                                              texlive-latex-appendix
                                              texlive-latex-bookmark
                                              texlive-latex-changebar
