@@ -1247,22 +1247,33 @@ Password-Authenticated Key Exchange algorithm.")
 (define-public python-txtorcon
   (package
     (name "python-txtorcon")
-    (version "19.0.0")
+    (version "23.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "txtorcon" version))
               (sha256
                (base32
-                "0fxzhsc62bhmr730vj9pzallmw56gz6iykvl28a5agrycm0bfc9p"))
-              (modules '((guix build utils)))
-              (snippet #~(substitute* "txtorcon/controller.py"
-                           (("from collections import Sequence")
-                            "from collections.abc import Sequence")))))
+                "09a3k4g90pvs0q006ighka7xic39nnnk9bfrka23g4b8cynzy982"))))
     (build-system python-build-system)
     (arguments
-     ;; The tests fail immediately due to a missing file. Reported upstream:
-     ;; <https://github.com/meejah/txtorcon/issues/330>
-     (list #:tests? #f))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'disable-failing-tests
+                          (lambda _
+                            ;; These tests fail
+                            (substitute* "test/test_router.py"
+                              (("\\W+def test_countrycode\\(self\\):" all)
+                               (string-append
+                                "    from unittest import skip as _skip\n"
+                                "    @_skip('Fails during Guix build')\n" all))
+                              (("\\W+def test_get_location_private\\(self\\):"
+                                all)
+                               (string-append
+                                "    @_skip('Fails during Guix build')\n" all)))
+                            ;; This test errors out
+                            (substitute* "test/test_util.py"
+                              (("\\W+def test_real_addr\\(self\\):" all)
+                               (string-append
+                                "    @_skip('Fails during Guix build')\n" all))))))))
     (propagated-inputs (list python-automat
                              python-idna
                              python-incremental
@@ -1270,6 +1281,7 @@ Password-Authenticated Key Exchange algorithm.")
                              python-service-identity
                              python-twisted
                              python-zope-interface))
+    (native-inputs (list python-mock))
     (home-page "https://github.com/meejah/txtorcon")
     (synopsis "Twisted-based Tor controller client")
     (description "This package provides a Twisted-based Tor controller client,
