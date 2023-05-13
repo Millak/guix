@@ -6326,27 +6326,29 @@ separately).
 
 (define-deprecated-package texlive-latex-polyglossia texlive-polyglossia)
 
-(define-public texlive-latex-supertabular
+(define-public texlive-supertabular
   (package
-    (name "texlive-latex-supertabular")
+    (name "texlive-supertabular")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "supertabular"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "19fd0bqxjkzc16bza3w20pnsc90gbhbllm244b3h6sink4dlnn54"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/supertabular/"
+                   "source/latex/supertabular/"
+                   "tex/latex/supertabular/")
+             (base32
+              "1z4kyx20w2zvn6c5a7p702pxj254f2pwlk7x815gzlcc6563js6a")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/supertabular"))
     (home-page "https://www.ctan.org/pkg/supertabular")
     (synopsis "Multi-page tables package")
     (description
      "This package was a predecessor of @code{longtable}; the newer
 package (designed on quite different principles) is easier to use and more
-flexible, in many cases, but supertabular retains its usefulness in a few
-situations where longtable has problems.")
+flexible, in many cases, but @code{supertabular} retains its usefulness in
+a few situations where longtable has problems.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-supertabular texlive-supertabular)
 
 (define-public texlive-tex-texinfo
   (package
