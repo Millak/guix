@@ -7110,23 +7110,24 @@ format under XeTeX.")
 
 (define-public texlive-zref
   (package
-    (inherit (simple-texlive-package
-              "texlive-zref"
-              (list "doc/latex/zref/"
-                    "source/latex/zref/")
-              (base32 "09l2wrqx0navislkx15iazv7jy0ip8bqaw3c0hjf0jy81kqrrm01")))
+    (name "texlive-zref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zref/" "source/latex/zref/"
+                   "tex/latex/zref/")
+             (base32
+              "1lc83d4qyqljfnf2m3jhq36f3f1yjbi71ys1hc11b9x2a46xk4pf")))
     (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:build-targets #~(list "zref.dtx")
-      #:tex-directory "latex/zref"))
-    (propagated-inputs (list texlive-atbegshi
-                             texlive-gettitlestring
-                             texlive-iftex
-                             texlive-atveryend
-                             texlive-kvoptions
-                             texlive-pdftexcmds
-                             texlive-xkeyval))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-atveryend
+           texlive-gettitlestring
+           texlive-iftex
+           texlive-kvoptions
+           texlive-pdftexcmds
+           texlive-xkeyval))
     (home-page "https://github.com/ho-tex/zref")
     (synopsis "Reference scheme for LaTeX")
     (description "This package offers a means to remove the limitation, of
@@ -7134,35 +7135,7 @@ only two properties, that is inherent in the way LaTeX's reference system
 works.  The package implements an extensible referencing system, where
 properties may be defined and used in the course of a document.  It provides
 an interface for macro programmers to access the new reference scheme and some
-modules that use it.  Modules available are:
-@table @code
-@item zref-user
-use zref for traditional labels and references;
-@item zref-abspage
-retrieve absolute page numbers (physical pages, as opposed to the logical page
-number that is normally typeset when a page number is requested;
-@item zref-lastpage
-provide a zref-label for the last page of the document;
-@item zref-nextpage
-provide the page number of the next page of the document;
-@item zref-totpages
-provide the total number of pages in the document;
-@item zref-pagelayout
-provide the page layout parameters of a each page (which may then be printed
-at the end of the document);
-@item zref-perpage
-make a counter reset for each new page;
-@item zref-titleref
-make section title or caption text available through the reference system;
-@item zref-savepos
-make positions on a page available;
-@item zref-dotfill
-controlled dot-filling
-@item zref-env
-record the latest environment's name and the line it started on;
-@item zref-xr
-provide the facilities of the xr and xr-hyper packages.
-@end table")
+modules that use it.")
     (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-fonts-adobe-zapfding texlive-zapfding)
