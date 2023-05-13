@@ -53,6 +53,7 @@
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3049,3 +3050,85 @@ prevalent typefaces in Traditional Chinese regions.")
 Kong variant of Adobe’s Source Han Sans.  The font aims at providing a modern,
 region-agnostic glyph set adopting the “modern” glyph style that is similar to
 prevalent typefaces in Traditional Chinese regions.")))
+
+(define-public font-spleen
+  (package
+    (name "font-spleen")
+    (version "1.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/fcambus/spleen/releases/download/"
+                    version "/spleen-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09bbwza14pl70cxbr09f9m8522s5p1p04kx9gh8svpd50bdixbdp"))))
+    (build-system font-build-system)
+    (outputs '("out" ;OTB
+               "bdf" "otf" "pcf" "psf"))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((otb (assoc-ref outputs "out"))
+                     (bdf (assoc-ref outputs "bdf"))
+                     (otf (assoc-ref outputs "otf"))
+                     (pcf (assoc-ref outputs "pcf"))
+                     (psf (assoc-ref outputs "psf"))
+                     (otb-font-dir (string-append (assoc-ref outputs
+                                                             "out")
+                                                  "/share/fonts/misc"))
+                     (bdf-font-dir (string-append (assoc-ref outputs
+                                                             "bdf")
+                                                  "/share/fonts/misc"))
+                     (otf-font-dir (string-append (assoc-ref outputs
+                                                             "otf")
+                                                  "/share/fonts/opentype"))
+                     (pcf-font-dir (string-append (assoc-ref outputs
+                                                             "pcf")
+                                                  "/share/fonts/misc"))
+                     (psf-font-dir (string-append (assoc-ref outputs
+                                                             "psf")
+                                                  "/share/consolefonts")))
+                (mkdir-p otb-font-dir)
+                (mkdir-p bdf-font-dir)
+                (mkdir-p otf-font-dir)
+                (mkdir-p pcf-font-dir)
+                (mkdir-p psf-font-dir)
+                (for-each (lambda (otb)
+                            (install-file otb otb-font-dir))
+                          (find-files "." "\\.otb$"))
+                (for-each (lambda (bdf)
+                            (install-file bdf bdf-font-dir))
+                          (find-files "." "\\.bdf$"))
+                (for-each (lambda (otf)
+                            (install-file otf otf-font-dir))
+                          (find-files "." "\\.otf$"))
+                (for-each (lambda (pcf)
+                            (install-file pcf pcf-font-dir))
+                          (find-files "." "\\.pcf$"))
+                (for-each (lambda (psf)
+                            (install-file psf psf-font-dir))
+                          (find-files "." "\\.psfu$"))) #t)))))
+    (home-page "https://www.cambus.net/spleen-monospaced-bitmap-fonts/")
+    (synopsis "Monospaced bitmap font for consoles and terminals")
+    (description
+     "Spleen is a monospaced bitmap font available in 6 sizes:
+ 5x8, 6x12, 8x16, 12x24, 16x32, 32x64.
+
+All sizes are provided in the Glyph Bitmap Distribution Format (BDF),
+ PCF, PSF (for the Linux console), and OTB formats.  All sizes, except
+ 5x8, are provided in OTF format also.
+
+All font sizes, except 5x8 and 6x12, contain all ISO/IEC 8859-1
+ characters (Basic Latin and Latin-1 Supplement Unicode block), Latin
+ Extended-A characters, as well as Box Drawing, Block Elements, and
+ Braille Patterns Unicode blocks.
+
+The 5x8 and 6x12 versions only contain printable ASCII characters,
+ the Braille Patterns Unicode block, and light Box Drawing characters.
+
+Spleen also has support for Powerline symbols out of the box.")
+    (license license:bsd-2)))
