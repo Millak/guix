@@ -549,7 +549,7 @@ the in DocBook SGML DTDs.")
                                              texlive-jknapltx
                                              texlive-listings
                                              texlive-multirow
-                                             texlive-latex-overpic
+                                             texlive-overpic
                                              texlive-pdfpages
                                              texlive-refcount
                                              texlive-subfigure

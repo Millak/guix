@@ -7387,32 +7387,21 @@ advantage with @code{\\multirow} cells.")
 
 (define-deprecated-package texlive-latex-multirow texlive-multirow)
 
-(define-public texlive-latex-overpic
+(define-public texlive-overpic
   (package
-    (name "texlive-latex-overpic")
+    (name "texlive-overpic")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/overpic"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1ygsr0rsdabj61zask3346xrwiphz5i6f1nfb9k4d3234psh09kb"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/overpic")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/overpic/"
+                   "source/latex/overpic/"
+                   "tex/latex/overpic/")
+             (base32
+              "0z6jkn54b4yfk2ia8cxcb5is3qyg64r0na05ixd8xbirrks9ir7w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-eepic texlive-graphics))
     (home-page "https://www.ctan.org/pkg/overpic")
     (synopsis "Combine LaTeX commands over included graphics")
     (description
@@ -7422,6 +7411,8 @@ advantage with @code{\\multirow} cells.")
 the included graphic.  LaTeX commands can be placed on the graphic at defined
 positions; a grid for orientation is available.")
     (license license:lppl1.0+)))
+
+(define-deprecated-package texlive-latex-overpic texlive-overpic)
 
 (define-public texlive-latex-parskip
   (package
