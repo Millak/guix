@@ -5010,7 +5010,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "22.12.21")
+    (version "23.07.29")
     (source
      (origin
        (method git-fetch)
@@ -5019,7 +5019,7 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hchnywsrkvnz07r2i1cffg1a8zi59pcpswz8x93a0rdc42hlk3d"))))
+        (base32 "1xdybjs39bg361jl7i3rlqdiwhi2xai7x45j7f6cgzygdd833pw5"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests
@@ -5054,7 +5054,7 @@ transitions, and effects and then export your film to many common formats.")
                  `("PATH" ":" prefix
                    ,(list (string-append mlt "/bin"))))))))))
     (native-inputs
-     (list pkg-config python-wrapper qttools-5))
+     (list pkg-config python-wrapper qttools))
     (inputs
      (list bash-minimal
            ffmpeg
@@ -5064,15 +5064,9 @@ transitions, and effects and then export your film to many common formats.")
            ladspa
            mlt
            pulseaudio
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtmultimedia-5
-           qtquickcontrols-5
-           qtquickcontrols2-5
-           qtsvg-5
-           qtwebsockets-5
-           qtx11extras
+           qtbase
+           qtdeclarative
+           qtmultimedia
            sdl2))
     (home-page "https://www.shotcut.org/")
     (synopsis "Video editor built on the MLT framework")
