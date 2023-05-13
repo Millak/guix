@@ -5797,7 +5797,7 @@ set.")
                                      texlive-wasy
                                      texlive-xcolor
                                      texlive-xypic
-                                     texlive-generic-listofitems
+                                     texlive-listofitems
                                      texlive-latex-cmap
                                      texlive-latex-colortbl
                                      texlive-latex-float

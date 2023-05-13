@@ -9590,39 +9590,27 @@ level of curly braces are removed from the values.")
 
 (define-deprecated-package texlive-generic-kvsetkeys texlive-kvsetkeys)
 
-(define-public texlive-generic-listofitems
+(define-public texlive-listofitems
   (package
-    (name "texlive-generic-listofitems")
+    (name "texlive-listofitems")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/generic/listofitems"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1wnbnfrhi6hgqa78jsw6hljzi03i5x99mlr5n2419hgws52hk67y"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/generic/listofitems")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/listofitems")
+    (source (texlive-origin
+             name version
+             (list "doc/generic/listofitems"
+                   "tex/generic/listofitems")
+             (base32
+              "1vzp4qkpfxzgcll1ak9syyc91sl93k9wr5rgfqvd6d6rgrnh3ava")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/listofitems")
     (synopsis "Grab items in lists using user-specified separation character")
     (description
-     "This package allows one to capture all the items of a list, for which
-the parsing character has been selected by the user, and to access any of
-these items with a simple syntax.")
+     "This package is designed to read a list, for which the parsing character
+has been selected by the user, and to access any of these items with a simple
+interface.")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-generic-listofitems texlive-listofitems)
 
 (define-public texlive-ltxcmds
   (let ((template (simple-texlive-package
@@ -9734,7 +9722,7 @@ values are not limited.")
            (copy-recursively (assoc-ref %build-inputs "source") target)
            #t))))
     (propagated-inputs
-     (list texlive-generic-listofitems))
+     (list texlive-listofitems))
     (home-page "https://www.ctan.org/pkg/readarray")
     (synopsis "Read, store and recall array-formatted data")
     (description
