@@ -6048,19 +6048,19 @@ ability to communicate the paper size it's set up to the output.")
 
 (define-deprecated-package texlive-latex-geometry texlive-geometry)
 
-(define-public texlive-latex-mdwtools
+(define-public texlive-mdwtools
   (package
-    (name "texlive-latex-mdwtools")
+    (name "texlive-mdwtools")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "mdwtools"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0caxs74hla28hc67csf5i5ahadx97w8vxh3mdmsprxbpd1mr7ssg"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mdwtools/"
+                   "source/latex/mdwtools/"
+                   "tex/latex/mdwtools/")
+             (base32
+              "08wyw0k6r3fv7vdgwbcpq9ckifldy17fzhpar51s1qn0yib93zdg")))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/mdwtools"))
+    (outputs '("out" "doc"))
     (home-page "https://www.ctan.org/pkg/mdwtools")
     (synopsis "Miscellaneous tools by Mark Wooding")
     (description
@@ -6068,9 +6068,12 @@ ability to communicate the paper size it's set up to the output.")
 starting with @code{@@}, macros to sanitize the OT1 encoding of the
 @code{cmtt} fonts; a @code{doafter} command; improved @code{footnote} support;
 @code{mathenv} for various alignment in maths; list handling; @code{mdwmath}
-which adds some minor changes to LaTeX maths; a rewrite of LaTeX's tabular and
-array environments; verbatim handling; and syntax diagrams.")
+which adds some minor changes to LaTeX maths; a rewrite of LaTeX's
+@code{tabular} and @code{array} environments; verbatim handling; and syntax
+diagrams.")
     (license license:gpl3+)))
+
+(define-deprecated-package texlive-latex-mdwtools texlive-mdwtools)
 
 (define-public texlive-makecmds
   (package
