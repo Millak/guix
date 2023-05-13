@@ -4087,27 +4087,24 @@ default is a stub that just loads @code{graphicx}.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-stringenc
-  (let ((template (simple-texlive-package
-                   "texlive-stringenc"
-                   (list "/doc/latex/stringenc/README.md"
-                         "/source/latex/stringenc/stringenc.dtx")
-                   (base32
-                    "19sfi5jxldxmy79pxmapmgmn3iknf8wjczasvlrrwv0gyycxdzhw"))))
-    (package
-      (inherit template)
-      (outputs '("doc" "out"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "generic/stringenc")
-         ((#:build-targets _ #t)
-          '(list "stringenc.dtx"))))
-      (home-page "https://www.ctan.org/pkg/stringenc")
-      (synopsis "Converting a string between different encodings")
-      (description
-       "This package provides @code{\\StringEncodingConvert} for converting a
+  (package
+    (name "texlive-stringenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stringenc/"
+                   "source/latex/stringenc/"
+                   "tex/generic/stringenc/")
+             (base32
+              "1pz9fgn3zc1brbpkw2kkphsv8q6vpvbn51n0smmfl1n2m97fni9j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stringenc")
+    (synopsis "Converting a string between different encodings")
+    (description
+     "This package provides @code{\\StringEncodingConvert} for converting a
 string between different encodings.  Both LaTeX and plain-TeX are supported.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-public texlive-l3build
   (let ((template (simple-texlive-package
