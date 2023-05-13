@@ -4994,22 +4994,8 @@ recognition library with full Unicode support.  It has features like:
               (sha256
                (base32
                 "1nh75i72584r70alhqc479gys04s5m5g3vq601yf2njbs7z5jzng"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;pypi source does not contains tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _ (invoke "flit" "build")))
-          (replace 'install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs)
-              (for-each
-               (lambda (wheel)
-                 (invoke "python" "-m" "pip" "install"
-                         wheel (string-append "--prefix=" #$output)))
-               (find-files "dist" "\\.whl$")))))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;pypi source does not contains tests
     (native-inputs (list python-flit))
     (propagated-inputs
      (list python-mdurl
