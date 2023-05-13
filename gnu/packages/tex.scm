@@ -5933,34 +5933,33 @@ course of the framed/shaded matter.  There is also a command
 
 (define-deprecated-package texlive-latex-framed texlive-framed)
 
-(define-public texlive-latex-g-brief
+(define-public texlive-g-brief
   (package
-    (name "texlive-latex-g-brief")
+    (name "texlive-g-brief")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "g-brief"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1br4kv9y17cvngp83ykpvy7gy3jqfan5plk7sggcgbdfhndi5dsr"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/g-brief/"
+                   "source/latex/g-brief/"
+                   "tex/latex/g-brief/")
+             (base32
+              "0sicgf3wjw5jymh5xjxby2hsilakhw2lqgywx0f2zax1z854xc2m")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/g-brief"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-generated-file
-           (lambda _
-             (delete-file "g-brief.drv")
-             #t)))))
+    (propagated-inputs
+     (list texlive-babel
+           texlive-eurosym
+           texlive-marvosym))
     (home-page "https://www.ctan.org/pkg/g-brief")
     (synopsis "Letter document class")
     (description
      "This package is designed for formatting formless letters in German; it
 can also be used for English (by those who can read the documentation).  There
-are LaTeX 2.09 @code{documentstyle} and LaTeX 2e class files for both an
-\"old\" and a \"new\" version of g-brief.")
+are LaTeX 2.09 @code{documentstyle} and LaTeX 2e class files for both an old
+and a new version of @code{g-brief}.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-g-brief texlive-g-brief)
 
 (define-public texlive-latex-galois
   (package
