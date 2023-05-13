@@ -31,6 +31,7 @@
   #:use-module (guix utils)
   #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
@@ -182,10 +183,16 @@ fundamental object types for C.")
               (string-append "--with-xml-catalog-path="
                              #$(this-package-native-input "docbook-xml")
                              "/xml/dtd/docbook/catalog.xml"))
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system)
+                   #:select (ensure-no-mtimes-pre-1980)))
+      #:imported-modules (append %default-gnu-imported-modules
+                                 %python-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'ensure-no-mtimes-pre-1980
-            (@@ (guix build python-build-system) ensure-no-mtimes-pre-1980))
+                     ensure-no-mtimes-pre-1980)
           (add-after 'patch-source-shebangs 'patch-more-shebangs
             (lambda _
               (substitute* '("src/tools/analyzer/sss_analyze"
