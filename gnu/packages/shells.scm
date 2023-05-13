@@ -851,7 +851,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -864,7 +864,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0qsfkav6a70nvp27ilab7zilmihw4ygga48a0dkxa14q9giwlgwr"))))
+        (base32 "1yy4523lbwkb0abnnvp4v08nv94isxb16wjryrp820idb90c1zfb"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary
