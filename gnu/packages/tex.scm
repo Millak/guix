@@ -6569,39 +6569,26 @@ drivers, and VTeX and pdfTeX.")
 
 (define-deprecated-package texlive-latex-changebar texlive-changebar)
 
-(define-public texlive-latex-cmap
+(define-public texlive-cmap
   (package
-    (name "texlive-latex-cmap")
+    (name "texlive-cmap")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/cmap"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0m4r52gw9vwsi1pzwh0cy03jxhwizymi4a2fj3jfs5rrvh105r5y"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/cmap")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.tug.org/svn/texlive/tags/texlive-2017.1/\
-Master/texmf-dist/tex/latex/cmap/")
-    (synopsis "CMap support for PDF files")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cmap/"
+                   "tex/latex/cmap/")
+             (base32
+              "1hag26l3g9mpmmy1kn7lrnfzzr8k0hpm259qp087smggykvsjc4v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmap")
+    (synopsis "Make PDF files searchable and copyable")
     (description
      "This package embeds CMap tables into PDF files to make search and
 copy-and-paste functions work properly.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-cmap texlive-cmap)
 
 (define-public texlive-latex-colortbl
   (package

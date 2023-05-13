@@ -113,7 +113,7 @@
            texlive-ltxcmds
            texlive-hyperref
            texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
-           texlive-latex-cmap
+           texlive-cmap
            texlive-fancyhdr
            texlive-fancyvrb
            texlive-latex-float

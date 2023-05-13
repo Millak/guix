@@ -5798,7 +5798,7 @@ set.")
                                      texlive-xcolor
                                      texlive-xypic
                                      texlive-listofitems
-                                     texlive-latex-cmap
+                                     texlive-cmap
                                      texlive-latex-colortbl
                                      texlive-latex-float
                                      texlive-fncychap
