@@ -7280,21 +7280,29 @@ drawing ellipses, arcs, splines, and filled circles and ellipses.")
 
 (define-deprecated-package texlive-latex-eepic texlive-eepic)
 
-(define-public texlive-latex-enotez
+(define-public texlive-enotez
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-enotez"
-              (list "doc/latex/enotez/"
-                    "tex/latex/enotez/")
-              (base32 "1s1wyq6m5932gpbpvvkiw857q94jn1rp7xy9y7hysz9aafjqjyk2")
-              #:trivial? #t))
+    (name "texlive-enotez")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/enotez/"
+                   "tex/latex/enotez/")
+             (base32
+              "1s1wyq6m5932gpbpvvkiw857q94jn1rp7xy9y7hysz9aafjqjyk2")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-l3packages
+           texlive-translations))
     (home-page "https://ctan.org/pkg/enotez")
     (synopsis "Support for end-notes")
     (description
      "This package allows nested endnotes, supports @code{hyperref} and
 provides means for easy customization of the list of notes.")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-latex-enotez texlive-enotez)
 
 (define-public texlive-endnotes
   (package
