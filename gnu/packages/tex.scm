@@ -11542,15 +11542,21 @@ are valid as arguments for the macros.  The package may be used under
 LaTeX and plain TeX.")
     (license (license:fsf-free "file:/binhex.dtx"))))
 
-(define-public texlive-latex-translations
+(define-public texlive-translations
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-translations"
+    (name "texlive-translations")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
               (list "doc/latex/translations/"
                     "tex/latex/translations/")
-              (base32 "0vl7ckpbkjvz3a5snzppb96ncwgmhpwb2p6cg30grfyn421kap3v")
-              #:trivial? #t))
+              (base32
+               "0vl7ckpbkjvz3a5snzppb96ncwgmhpwb2p6cg30grfyn421kap3v")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-pdftexcmds))
     (home-page "https://ctan.org/pkg/translations")
     (synopsis "Internationalisation of LaTeX2e packages")
     (description
@@ -11564,6 +11570,8 @@ Dutch, French, German, Italian, Spanish, Catalan, Turkish, Croatian, Hungarian,
 Danish and Portuguese from babel or polyglossia if either is in use in the
 document.")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-latex-translations texlive-translations)
 
 (define-public texlive-translator
   (package
