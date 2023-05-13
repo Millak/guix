@@ -7440,22 +7440,30 @@ designed class) helps alleviate this untidiness.")
 
 (define-deprecated-package texlive-latex-parskip texlive-parskip)
 
-(define-public texlive-latex-pbox
+(define-public texlive-pbox
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-pbox"
-              (list "doc/latex/pbox/"
-                    "tex/latex/pbox/")
-              (base32 "0902snjidmhjml01zcppcpp4j6pidin1sdvfi7gnbb5v86zd5f0n")
-              #:trivial? #t))
+    (name "texlive-pbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pbox/"
+                   "source/latex/pbox/"
+                   "tex/latex/pbox/")
+             (base32
+              "104x4y22msgxhnlz2x331zq7rw28v129s5ym1jqhsk685izb3hcl")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-tools))
     (home-page "https://ctan.org/pkg/pbox")
-    (synopsis "\\parbox with a variable width")
+    (synopsis "@code{\\parbox} with a variable width")
     (description
-     "@code{pbox} defines a \\pbox{<max width>}{<text>} command which adjusts
-the box width to that of the enclosed text, up to the maximum width given.  The
-package also defines some associated length commands.")
+     "@code{pbox} defines a @code{\\pbox} command which adjusts the box width
+to that of the enclosed text, up to the maximum width given.  The package also
+defines some associated length commands.")
     (license license:gpl3+)))
+
+(define-deprecated-package texlive-latex-pbox texlive-pbox)
 
 (define-public texlive-pdfpages
   (let ((template (simple-texlive-package
