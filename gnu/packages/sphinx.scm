@@ -10,7 +10,7 @@
 ;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -117,7 +117,7 @@
            texlive-fancyhdr
            texlive-fancyvrb
            texlive-latex-float
-           texlive-latex-fncychap
+           texlive-fncychap
            texlive-latex-framed
            texlive-latex-geometry
            texlive-graphics                       ;graphicx, color

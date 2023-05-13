@@ -5801,7 +5801,7 @@ set.")
                                      texlive-latex-cmap
                                      texlive-latex-colortbl
                                      texlive-latex-float
-                                     texlive-latex-fncychap
+                                     texlive-fncychap
                                      texlive-latex-framed
                                      texlive-latex-geometry
                                      texlive-hanging
