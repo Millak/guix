@@ -373,7 +373,7 @@ interface and is based on GNU Guile.")
     (version "0.10.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://alpha.gnu.org/gnu/shepherd/shepherd-"
+              (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
