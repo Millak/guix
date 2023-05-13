@@ -37803,6 +37803,9 @@ Number of cached nars to generate at a time.
 Location to fetch nars from when computing cached compressions.  By
 default, the storage location will be used.
 
+@item @code{extra-environment-variables} (default: @code{'()})
+Extra environment variables to set via the shepherd service.
+
 @end table
 @end deftp
 
