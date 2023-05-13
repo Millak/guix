@@ -7254,42 +7254,31 @@ routine, which may be used to place the output at fixed positions.  The
 
 (define-deprecated-package texlive-latex-eso-pic texlive-eso-pic)
 
-(define-public texlive-latex-eepic
+(define-public texlive-eepic
   (package
-    (name "texlive-latex-eepic")
+    (name "texlive-eepic")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/eepic"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1c68gvh021pvybg07apsd2xhq2ljbg80kq94wh71drdga3c2zqjw"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/eepic")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eepic/"
+                   "tex/latex/eepic/")
+             (base32
+              "16v8j3f8bgww9adddpfzpwd5q9kvak7xnp5kkvkrvhw8vshdspaa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
     (home-page "https://www.ctan.org/pkg/eepic")
-    (synopsis "Extensions to epic and the LaTeX drawing tools")
+    (synopsis "Extensions to @code{epic} and the LaTeX drawing tools")
     (description
-     "Extensions to @code{epic} and the LaTeX picture drawing environment,
-include the drawing of lines at any slope, the drawing of circles in any
-radii, and the drawing of dotted and dashed lines much faster with much less
-TeX memory, and providing several new commands for drawing ellipses, arcs,
-splines, and filled circles and ellipses.  The package uses @code{tpic}
-@code{\\special} commands.")
+     "This package provides extensions to @code{epic} and the LaTeX picture
+drawing environment.  It includes the drawing of lines at any slope, the
+drawing of circles in any radii, and the drawing of dotted and dashed lines
+much faster with much less TeX memory, and providing several new commands for
+drawing ellipses, arcs, splines, and filled circles and ellipses.")
     (license license:public-domain)))
+
+(define-deprecated-package texlive-latex-eepic texlive-eepic)
 
 (define-public texlive-latex-enotez
   (package
