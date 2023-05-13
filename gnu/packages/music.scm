@@ -6176,6 +6176,42 @@ audio and MIDI plugins that can also run as standalone JACK applications.")
     (home-page "https://x42-plugins.com/x42/")
     (license license:gpl2+)))
 
+(define-public xuidesigner
+  (package
+    (name "xuidesigner")
+    (version "0.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/brummer10/XUiDesigner")
+                    (commit (string-append "v" version))
+                    ;; For libxputty
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1ap6g2j9lr4x9gpnavdhs4qa3z4dw100xgknpi6ysj0rmzc220mi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no "check" target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (inputs
+     (list cairo libx11 lilv))
+    (native-inputs
+     (list pkg-config which xxd))
+    (home-page "https://github.com/brummer10/XUiDesigner")
+    (synopsis "GUI generator tool to create X11 UIs for LV2 plugins")
+    (description "XUiDesigner parses an LV2 plugin's ttl file and generates
+the needed controller widgets.  The created GUI can be saved as UI-Bundle,
+which then could be built and installed.  For later editing of the UI, a JSON
+file is added, which you could load per drag 'n drop into XUiDesigner.")
+    (license license:bsd-0)))
+
 (define-public zam-plugins
   (package
     (name "zam-plugins")
