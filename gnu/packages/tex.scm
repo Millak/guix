@@ -5985,19 +5985,21 @@ in colour.")
 
 (define-deprecated-package texlive-latex-galois texlive-galois)
 
-(define-public texlive-latex-gcite
+(define-public texlive-gcite
   (package
-    (name "texlive-latex-gcite")
+    (name "texlive-gcite")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "gcite"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "03g9by54yrypn599y98r1xh7qw0bbbmpzq0bfwpj6j5q5rkl1mfa"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gcite/"
+                   "source/latex/gcite/"
+                   "tex/latex/gcite/")
+             (base32
+              "0yb7sid13bx25yar3aw6pbf4jmmfi0gdmcd7ynf5hjh9qdfb3zyh")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/gcite"))
+    (propagated-inputs
+     (list texlive-biblatex))
     (home-page "https://www.ctan.org/pkg/gcite")
     (synopsis "Citations in a reader-friendly style")
     (description
@@ -6008,6 +6010,8 @@ made.  It combines a desire to eliminate unnecessary page-turning with the
 look-up efficiency afforded by numeric citations.  The package makes use of
 BibLaTeX, and is considered experimental.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-gcite texlive-gcite)
 
 (define-public texlive-latex-geometry
   (package
