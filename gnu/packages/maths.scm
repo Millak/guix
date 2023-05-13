@@ -5803,7 +5803,7 @@ set.")
                                      texlive-latex-float
                                      texlive-fncychap
                                      texlive-framed
-                                     texlive-latex-geometry
+                                     texlive-geometry
                                      texlive-hanging
                                      texlive-hyperref
                                      texlive-latex-multirow

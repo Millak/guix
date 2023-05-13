@@ -311,7 +311,7 @@ colors, styles, options and details.")
                   texlive-epsf
                   texlive-etoolbox
                   texlive-fonts-ec
-                  texlive-latex-geometry
+                  texlive-geometry
                   texlive-graphics
                   texlive-grfext
                   texlive-hyperref

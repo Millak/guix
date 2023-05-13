@@ -119,7 +119,7 @@
            texlive-latex-float
            texlive-fncychap
            texlive-framed
-           texlive-latex-geometry
+           texlive-geometry
            texlive-graphics                       ;graphicx, color
            texlive-kvoptions
            texlive-latex-needspace

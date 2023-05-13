@@ -899,9 +899,10 @@ emphasis on quality rather than speed.")
     (inputs (list openblas))
     (native-inputs
      (list gfortran
-           (texlive-updmap.cfg (list texlive-fonts-ec
-                                     texlive-graphics
-                                     texlive-latex-geometry))))
+           (texlive-updmap.cfg
+            (list texlive-fonts-ec
+                  texlive-geometry
+                  texlive-graphics))))
     (home-page "https://github.com/greglandrum/yaehmop")
     (synopsis "Perform extended Hückel calculations")
     (description "@acronym{YAeHMOP, Yet Another extended Hueckel Molecular

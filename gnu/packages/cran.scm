@@ -36197,7 +36197,7 @@ package online.")
             texlive-iftex
             texlive-fancyhdr
             texlive-fancyvrb
-            texlive-latex-geometry
+            texlive-geometry
             texlive-graphics
             texlive-latex-threeparttable
             texlive-titlesec
