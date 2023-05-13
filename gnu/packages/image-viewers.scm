@@ -27,6 +27,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
+;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -427,13 +428,24 @@ needs.")
         (base32 "14qvx1wajncd5ab0207274cwk32f4ipfnlaci6phmah0cwra2did"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-source
-                    (lambda _
-                      ;; Don't create 'icon-theme.cache'
-                      (substitute* "meson.build"
-                        (("meson.add_install_script*") "")))))
-       #:tests? #f))                    ;no tests
+     (list #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-source
+                 (lambda _
+                   ;; Don't create 'icon-theme.cache'
+                   (substitute* "meson.build"
+                     (("meson.add_install_script*") ""))))
+               (add-after 'glib-or-gtk-wrap 'wrap-pixbuf
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((viewnior (string-append #$output "/bin/viewnior")))
+                     (wrap-program viewnior
+                       ;; Wrap GDK_PIXBUF_MODULE_FILE so viewnior can be used
+                       ;; to view JPG, PNG and SVG, without the user needing
+                       ;; to install gdk-pixbuf or librsvg.
+                       `("GDK_PIXBUF_MODULE_FILE" =
+                         (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))
+           #:tests? #f))                    ;no tests
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ;glib-genmarshal
@@ -442,7 +454,8 @@ needs.")
     (inputs
      (list exiv2
            gdk-pixbuf
-           gtk+-2))
+           gtk+-2
+           webp-pixbuf-loader))
     (home-page "https://siyanpanayotov.com/project/viewnior")
     (synopsis "Simple, fast and elegant image viewer")
     (description "Viewnior is an image viewer program.  Created to be simple,
