@@ -5616,22 +5616,30 @@ user may consider the @code{dnaseq} as a rather more powerful alternative.")
 result in the same document.")
     (license license:lppl1.2+)))
 
-(define-public texlive-latex-stackengine
+(define-public texlive-stackengine
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-stackengine"
-              (list "/doc/latex/stackengine/"
-                    "/tex/latex/stackengine/")
-              (base32
-               "1rbw3dmb6kl3wlnpxacr8cmp2ivac1kpnb33k7r5s3lp1q59ck38")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/stackengine")
+    (name "texlive-stackengine")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stackengine/"
+                   "tex/latex/stackengine/")
+             (base32
+              "1rbw3dmb6kl3wlnpxacr8cmp2ivac1kpnb33k7r5s3lp1q59ck38")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-listofitems))
+    (home-page "https://ctan.org/pkg/stackengine")
     (synopsis "Customised stacking of objects")
     (description
      "The package provides a versatile way to stack objects vertically in a
 variety of customizable ways.  A number of useful macros are provided, all
 of which make use of the @code{stackengine} core.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-stackengine texlive-stackengine)
 
 (define-public texlive-latex-tocloft
   (package

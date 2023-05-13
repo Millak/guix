@@ -5811,7 +5811,7 @@ set.")
                                      texlive-latex-needspace
                                      texlive-newunicodechar
                                      texlive-latex-parskip
-                                     texlive-latex-stackengine
+                                     texlive-stackengine
                                      texlive-latex-tabulary
                                      texlive-latex-tocloft
                                      texlive-latex-upquote
