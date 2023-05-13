@@ -6514,22 +6514,35 @@ be used, for example, for per chapter/section appendices.  An
 
 (define-deprecated-package texlive-latex-appendix texlive-appendix)
 
-(define-public texlive-latex-bookmark
+(define-public texlive-bookmark
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-bookmark"
-              (list "/doc/latex/bookmark/"
-                    "/tex/latex/bookmark/")
-              (base32
-               "0xwjdah0p4an0fknvgj9y5phl62sf522z6570pvy6c09hkz0j4h1")
-              #:trivial? #t))
+    (name "texlive-bookmark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bookmark/"
+                   "source/latex/bookmark/"
+                   "tex/latex/bookmark/")
+             (base32
+              "111sjwabcbr8ry8fh94ywpzska032y8r4iz4waxa4kf5l3k0p4bs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:build-targets #~(list "bookmark.dtx")))
+    (propagated-inputs
+     (list texlive-atenddvi
+           texlive-atveryend
+           texlive-auxhook
+           texlive-hyperref))
     (home-page "https://www.ctan.org/pkg/bookmark")
-    (synopsis "Bookmark (outline) organization for hyperref")
+    (synopsis "Bookmark (outline) organization for @code{hyperref}")
     (description
      "This package implements a new bookmark (outline) organization for the
 @code{hyperref} package.  Bookmark properties such as style and color.  Other
 action types are available (URI, GoToR, Named).")
     (license license:lppl1.3c+)))
+
+(define-deprecated-package texlive-latex-bookmark texlive-bookmark)
 
 (define-public texlive-latex-changebar
   (package
