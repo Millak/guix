@@ -641,7 +641,7 @@ This package contains the binaries.")
     (propagated-inputs (list texlive-iftex
                              texlive-ltxcmds
                              texlive-hyperref
-                             texlive-latex-xkeyval
+                             texlive-xkeyval
                              texlive-zref))
     (home-page "https://ctan.org/pkg/bidi")
     (synopsis "Bidirectional typesetting in plain TeX and LaTeX using XeTeX")
@@ -5528,7 +5528,7 @@ rotated.")
            texlive-psfrag
            texlive-tools                ; for shellesc
            texlive-trimspaces
-           texlive-latex-xkeyval))
+           texlive-xkeyval))
     (home-page "https://www.ctan.org/pkg/pstool")
     (synopsis "Process PostScript graphics within pdfLaTeX documents")
     (description
@@ -6314,7 +6314,7 @@ also provides compacted versions of enumerate and itemize.")
            texlive-makecmds
            texlive-l3packages           ;expl3, l3keys2e, xparse
            texlive-tools
-           texlive-latex-xkeyval))
+           texlive-xkeyval))
     (home-page "https://www.ctan.org/pkg/polyglossia")
     (synopsis "Alternative to Babel for XeLaTeX and LuaLaTeX")
     (description "This package provides a complete Babel replacement for users
@@ -7126,7 +7126,7 @@ format under XeTeX.")
                              texlive-atveryend
                              texlive-kvoptions
                              texlive-pdftexcmds
-                             texlive-latex-xkeyval))
+                             texlive-xkeyval))
     (home-page "https://github.com/ho-tex/zref")
     (synopsis "Reference scheme for LaTeX")
     (description "This package offers a means to remove the limitation, of
@@ -10325,76 +10325,51 @@ used in place of @code{tabular}, @code{tabular*} and @code{tabularx}
 environments, as well as the @code{array} environment in maths mode.")
       (license license:lppl1.3+))))
 
-(define-public texlive-latex-xkeyval
+(define-public texlive-xkeyval
   (package
-    (name "texlive-latex-xkeyval")
+    (name "texlive-xkeyval")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "xkeyval"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0w4x82wmdvcmy8z3p55xvpz5q7jac1q1j591hi8mngfyqa8rda1c"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xkeyval/"
+                   "source/latex/xkeyval/"
+                   "tex/generic/xkeyval/"
+                   "tex/latex/xkeyval/")
+             (base32
+              "0hcfqxbi907yi9jwq61i638n8g9abf6zc0aazk2lxzshy44h3ms1")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/xkeyval"
-       #:build-targets '("xkeyval.dtx")
-       #:tex-format "latex" ; won't build with luatex
+     '(#:build-targets '("xkeyval.dtx")
+       #:tex-format "latex"             ;won't build with luatex
        #:phases
        (modify-phases %standard-phases
          ;; This package cannot be built out of tree as it expects to find
          ;; built files in the working directory.
          (add-before 'build 'fix-build
            (lambda _
-             (setenv "TEXINPUTS"
-                     (string-append (getcwd) "/build:"))
-             (substitute* "xkeyval.dtx"
+             (setenv "TEXINPUTS" (string-append (getcwd) "/build:"))
+             (substitute* "source/latex/xkeyval/xkeyval.dtx"
                (("usepackage\\{xcolor\\}")
-                "usepackage[dvips]{xcolor}"))
-             #t))
-         ;; FIXME: We don't have a package for this font yet.
-         (add-after 'unpack 'remove-dependency-on-fourier
-           (lambda _
-             (substitute* "xkeyval.dtx"
-               (("\\\\usepackage\\{fourier\\}") ""))
-             #t))
-         (add-after 'install 'move-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/texmf-dist"))
-                    (source (string-append share "/tex/latex/xkeyval/"))
-                    (target (string-append share "/tex/generic/xkeyval/")))
-               (mkdir-p target)
-               (for-each (lambda (file)
-                           (rename-file (string-append source file)
-                                        (string-append target file)))
-                         '("keyval.tex"
-                           "pst-xkey.tex"
-                           "xkeyval.tex"
-                           "xkvex1.tex"
-                           "xkvex2.tex"
-                           "xkvex3.tex"
-                           "xkvex4.tex"
-                           "xkvtxhdr.tex"
-                           "xkvutils.tex"))
-               #t))))))
+                "usepackage[dvips]{xcolor}")))))))
     (native-inputs
-     (list texlive-cm
-           texlive-footmisc
-           texlive-graphics-def
-           texlive-iftex
-           texlive-latex-base
-           texlive-listings
-           texlive-lm
-           texlive-pgf
-           texlive-pst-text
-           texlive-pstricks
-           texlive-tools
-           texlive-url
-           texlive-xcolor))
-    (home-page "http://www.ctan.org/pkg/xkeyval")
-    (synopsis "Extension of the keyval package")
+     (list (texlive-updmap.cfg
+            (list texlive-ec
+                  texlive-footmisc
+                  texlive-fourier
+                  texlive-graphics-def
+                  texlive-iftex
+                  texlive-listings
+                  texlive-lm
+                  texlive-pgf
+                  texlive-pst-text
+                  texlive-pstricks
+                  texlive-url
+                  texlive-xcolor))))
+    (propagated-inputs
+     (list texlive-tools))
+    (home-page "https://ctan.org/pkg/xkeyval")
+    (synopsis "Extension of the @code{keyval} package")
     (description
      "This package is an extension of the keyval package and offers additional
 macros for setting keys and declaring and setting class or package options.
@@ -10403,6 +10378,8 @@ macros it defines for keys, and to define families of key definitions; these
 all help use in documents where several packages define their own sets of
 keys.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-xkeyval texlive-xkeyval)
 
 (define-public texlive-standalone
   (package
@@ -10419,7 +10396,7 @@ keys.")
     (build-system texlive-build-system)
     (arguments '(#:tex-directory "latex/standalone"))
     (propagated-inputs
-     (list texlive-latex-xkeyval))
+     (list texlive-xkeyval))
     (native-inputs
      (list texlive-ydoc))
     (home-page "http://www.ctan.org/pkg/standalone")
@@ -10619,7 +10596,7 @@ citations and references.")
     (package
       (inherit template)
       (propagated-inputs
-       (list texlive-pgf texlive-latex-xkeyval))
+       (list texlive-pgf texlive-xkeyval))
       (home-page "http://www.ctan.org/pkg/todonotes")
       (synopsis "Marking things to do in a LaTeX document")
       (description "The @code{todonotes} package lets the user mark
@@ -11378,12 +11355,12 @@ the list of graphics file extensions recognised by package graphics.")
       (native-inputs
        (list texlive-ydoc))
       (propagated-inputs
-       (list texlive-latex-varwidth
-             texlive-latex-xkeyval
-             texlive-collectbox
+       (list texlive-collectbox
              texlive-ifoddpage
+             texlive-pgf
              texlive-storebox
-             texlive-pgf))
+             texlive-latex-varwidth
+             texlive-xkeyval))
       (home-page "https://www.ctan.org/pkg/adjustbox")
       (synopsis "Graphics package-alike macros for “general” boxes")
       (description "The package provides several macros to adjust boxed
@@ -11412,14 +11389,14 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
       #:tex-directory "latex/qrcode"))
     (propagated-inputs
      (list texlive-lm
-           texlive-latex-xkeyval
-           texlive-xcolor))
+           texlive-xcolor
+           texlive-xkeyval))
     (native-inputs
      (list (texlive-updmap.cfg (list texlive-lm texlive-zapfding))
            texlive-hyperref
-           texlive-latex-xkeyval
            texlive-stringenc
-           texlive-xcolor))
+           texlive-xcolor
+           texlive-xkeyval))
     (home-page "https://www.ctan.org/pkg/qrcode")
     (synopsis "QR codes without external tools")
     (description "This package creates @acronym{QR,Quick Response} codes for
@@ -12539,7 +12516,7 @@ both designated as support for @code{breqn}.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-iftex texlive-latex-xkeyval))
+     (list texlive-iftex texlive-xkeyval))
     (home-page "https://ctan.org/pkg/breakurl")
     (synopsis "Line-breakable links in @code{hyperref} for dvips/ps2pdf")
     (description

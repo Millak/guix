@@ -385,16 +385,16 @@ graphs in Graphviz's DOT language, written in pure Python.")
      (list python-pyparsing
            ;; These TeX dependencies are propagated to make it easier to build
            ;; the resulting generated TeX files, which \usepackage them.
-           texlive-bin
            texlive-amsmath
+           texlive-bin
            texlive-geometry
            texlive-graphics
            texlive-latex-base
            texlive-latex-preview
-           texlive-latex-xkeyval
            texlive-pgf
            texlive-pstricks
-           texlive-xcolor))
+           texlive-xcolor
+           texlive-xkeyval))
     (home-page "https://github.com/kjellmf/dot2tex")
     (synopsis "Graphviz to LaTeX converter")
     (description

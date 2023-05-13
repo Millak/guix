@@ -401,7 +401,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
                                      texlive-tools
                                      texlive-upquote
                                      texlive-url
-                                     texlive-latex-xkeyval))
+                                     texlive-xkeyval))
            tzdata-for-tests
            xz))
     (inputs
