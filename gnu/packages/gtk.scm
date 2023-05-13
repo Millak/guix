@@ -1109,7 +1109,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.8.1")
+    (version "4.10.3")
     (source
      (origin
        (method url-fetch)
@@ -1117,9 +1117,11 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1za2nyqqs2lrbss61gfw17qba2f0w6a119m1xk4d0fx2k3gdis2w"))
+        (base32 "1aff06l9v40j16s4s0qvdbj8cs54qxnh41d7w2v7wdwyswd48ia5"))
        (patches
-        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
+        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))
+       (modules '((guix build utils)))
+       (snippet #~(begin (delete-file-recursively "subprojects/gi-docgen")))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
@@ -1143,6 +1145,8 @@ application suites.")
                             ;; Use the same test options as upstream uses for
                             ;; their CI.
                             "--suite=gtk"
+                            "--no-suite=failing"
+                            "--no-suite=flaky"
                             "--no-suite=gsk-compare-broadway")
       #:phases
       #~(modify-phases %standard-phases
@@ -1249,6 +1253,7 @@ application suites.")
            cups                         ;for CUPS print-backend
            ffmpeg                       ;for ffmpeg media-backend
            fribidi
+           gi-docgen
            gstreamer                    ;for gstreamer media-backend
            gst-plugins-bad              ;provides gstreamer-player
            gst-plugins-base             ;provides gstreamer-gl
