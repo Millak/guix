@@ -37,6 +37,7 @@
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
             add-installed-pythonpath
+            ensure-no-mtimes-pre-1980
             site-packages
             python-version
             python-build))
@@ -270,7 +271,8 @@ installed with setuptools."
   ;; timestamps before 1980.
   (let ((early-1980 315619200))  ; 1980-01-02 UTC
     (ftw "." (lambda (file stat flag)
-               (unless (<= early-1980 (stat:mtime stat))
+               (unless (or (<= early-1980 (stat:mtime stat))
+                           (eq? (stat:type stat) 'symlink))
                  (utime file early-1980 early-1980))
                #t))))
 
