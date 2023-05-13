@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016-2019, 2022 Marius Bakke <marius@gnu.org>
@@ -368,15 +368,8 @@ Blog, News or Announcements section to a Sphinx website.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "1ivqz6yv96a2jp59kylg1gbkrmzq6zwilppz3ij0zrkjn25zb97k"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (propagated-inputs (list python-docutils python-sphinx-4))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-docutils-0.15 python-sphinx-4))
     (native-inputs
      (list python-pytest
            python-pytest-regressions))
