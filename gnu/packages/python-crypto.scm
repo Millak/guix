@@ -27,6 +27,7 @@
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1253,7 +1254,12 @@ Password-Authenticated Key Exchange algorithm.")
         (uri (pypi-uri "txtorcon" version))
         (sha256
          (base32
-          "0fxzhsc62bhmr730vj9pzallmw56gz6iykvl28a5agrycm0bfc9p"))))
+          "0fxzhsc62bhmr730vj9pzallmw56gz6iykvl28a5agrycm0bfc9p"))
+        (modules '((guix build utils)))
+        (snippet
+         #~(substitute* "txtorcon/controller.py"
+             (("from collections import Sequence")
+              "from collections.abc import Sequence")))))
     (build-system python-build-system)
     (arguments
       ;; The tests fail immediately due to a missing file. Reported upstream:
