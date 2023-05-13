@@ -6615,40 +6615,28 @@ individual cells.")
 
 (define-deprecated-package texlive-latex-colortbl texlive-colortbl)
 
-(define-public texlive-latex-fancybox
+(define-public texlive-fancybox
   (package
-    (name "texlive-latex-fancybox")
+    (name "texlive-fancybox")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/fancybox"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0smmnaad2q8qwicay1frri990lv65l0k8cwzsvdsyp3jk8kp042w"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/fancybox")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/fancybox")
-    (synopsis "Variants of \\fbox and other games with boxes")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancybox/"
+                   "tex/latex/fancybox/")
+             (base32
+              "0pb1j0a1va8yhrzig7dwrd8jgq39mbcpygl810jhrv8pl473mfmn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancybox")
+    (synopsis "Variants of @code{\\fbox} and other games with boxes")
     (description
      "This package provides variants of @code{\\fbox}: @code{\\shadowbox},
 @code{\\doublebox}, @code{\\ovalbox}, @code{\\Ovalbox}, with helpful tools for
 using box macros and flexible verbatim macros.  You can box mathematics,
 floats, center, flushleft, and flushright, lists, and pages.")
     (license license:lppl1.2+)))
+
+(define-deprecated-package texlive-latex-fancybox texlive-fancybox)
 
 (define-public texlive-fancyhdr
   (let ((template (simple-texlive-package
