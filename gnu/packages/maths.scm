@@ -5814,7 +5814,7 @@ set.")
                                      texlive-stackengine
                                      texlive-latex-tabulary
                                      texlive-tocloft
-                                     texlive-latex-upquote
+                                     texlive-upquote
                                      texlive-latex-varwidth
                                      texlive-titlesec
                                      texlive-ulem

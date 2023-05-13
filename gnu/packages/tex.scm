@@ -6413,26 +6413,26 @@ might say:
 @end example\n")
     (license license:lppl)))
 
-(define-public texlive-latex-upquote
+(define-public texlive-upquote
   (package
-    (name "texlive-latex-upquote")
+    (name "texlive-upquote")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "upquote"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0d1050i973wnxigy0xpky5l7vn4ff7ldhkjpdqsw5s653gagwixp"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/upquote/"
+                   "source/latex/upquote/"
+                   "tex/latex/upquote/")
+             (base32
+              "1manbljqx2859wq9by6bpcx4rnxvc596a05d21cw464484f8a8z2")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/upquote"))
     (home-page "https://www.ctan.org/pkg/upquote")
-    (synopsis "Show \"realistic\" quotes in verbatim")
+    (synopsis "Show realistic quotes in verbatim")
     (description
      "Typewriter-style fonts are best for program listings, but Computer
-Modern Typewriter prints @code{`} and @code{'} as bent opening and closing
-single quotes.  Other fonts, and most programming languages, print @code{`} as
-a grave accent and @code{'} upright; @code{'} is used both to open and to
+Modern Typewriter prints @samp{`} and @samp{'} as bent opening and closing
+single quotes.  Other fonts, and most programming languages, print @samp{`} as
+a grave accent and @samp{'} upright; @samp{'} is used both to open and to
 close quoted strings.  The package switches the typewriter font to Computer
 Modern Typewriter in OT1 encoding, and modifies the behaviour of
 @code{verbatim}, @code{verbatim*}, @code{\\verb}, and @code{\\verb*} to print
@@ -6440,6 +6440,8 @@ in the expected way.  It does this regardless of other fonts or encodings in
 use, so long as the package is loaded after the other fonts were.  The package
 does not affect @code{\\tt}, @code{\\texttt}, etc.")
     (license license:lppl1.2+)))
+
+(define-deprecated-package texlive-latex-upquote texlive-upquote)
 
 (define-public texlive-latex-anysize
   (package

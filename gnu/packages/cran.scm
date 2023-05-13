@@ -36201,7 +36201,7 @@ package online.")
             texlive-graphics
             texlive-latex-threeparttable
             texlive-titlesec
-            texlive-latex-upquote
+            texlive-upquote
             texlive-listings
             texlive-polyglossia
             texlive-titling

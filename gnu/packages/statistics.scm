@@ -399,7 +399,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
                                      texlive-hyperref
                                      texlive-oberdiek
                                      texlive-tools
-                                     texlive-latex-upquote
+                                     texlive-upquote
                                      texlive-url
                                      texlive-latex-xkeyval))
            tzdata-for-tests

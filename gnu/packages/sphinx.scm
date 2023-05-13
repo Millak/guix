@@ -128,7 +128,7 @@
            texlive-latex-tabulary
            texlive-titlesec
            texlive-tools                          ;multicol, longtable
-           texlive-latex-upquote
+           texlive-upquote
            texlive-latex-varwidth
            texlive-oberdiek             ;hypcap
            texlive-wrapfig

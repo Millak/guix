@@ -15192,7 +15192,7 @@ time.")
            texlive-ms
            texlive-latex-parskip
            texlive-trimspaces
-           texlive-latex-upquote
+           texlive-upquote
            texlive-stringenc
            texlive-tcolorbox
            texlive-titling
