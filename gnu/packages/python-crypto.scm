@@ -1248,31 +1248,28 @@ Password-Authenticated Key Exchange algorithm.")
   (package
     (name "python-txtorcon")
     (version "19.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "txtorcon" version))
-        (sha256
-         (base32
-          "0fxzhsc62bhmr730vj9pzallmw56gz6iykvl28a5agrycm0bfc9p"))
-        (modules '((guix build utils)))
-        (snippet
-         #~(substitute* "txtorcon/controller.py"
-             (("from collections import Sequence")
-              "from collections.abc import Sequence")))))
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "txtorcon" version))
+              (sha256
+               (base32
+                "0fxzhsc62bhmr730vj9pzallmw56gz6iykvl28a5agrycm0bfc9p"))
+              (modules '((guix build utils)))
+              (snippet #~(substitute* "txtorcon/controller.py"
+                           (("from collections import Sequence")
+                            "from collections.abc import Sequence")))))
     (build-system python-build-system)
     (arguments
-      ;; The tests fail immediately due to a missing file. Reported upstream:
-      ;; <https://github.com/meejah/txtorcon/issues/330>
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-automat
-           python-idna
-           python-incremental
-           python-pyopenssl
-           python-service-identity
-           python-twisted
-           python-zope-interface))
+     ;; The tests fail immediately due to a missing file. Reported upstream:
+     ;; <https://github.com/meejah/txtorcon/issues/330>
+     (list #:tests? #f))
+    (propagated-inputs (list python-automat
+                             python-idna
+                             python-incremental
+                             python-pyopenssl
+                             python-service-identity
+                             python-twisted
+                             python-zope-interface))
     (home-page "https://github.com/meejah/txtorcon")
     (synopsis "Twisted-based Tor controller client")
     (description "This package provides a Twisted-based Tor controller client,
