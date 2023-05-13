@@ -6544,28 +6544,30 @@ action types are available (URI, GoToR, Named).")
 
 (define-deprecated-package texlive-latex-bookmark texlive-bookmark)
 
-(define-public texlive-latex-changebar
+(define-public texlive-changebar
   (package
-    (name "texlive-latex-changebar")
+    (name "texlive-changebar")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "changebar"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "05x15ilynqrl448h8l6qiraygamdldlngz89a2bw7kg74fym14ch"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/changebar/"
+                   "source/latex/changebar/"
+                   "tex/latex/changebar/")
+             (base32
+              "0y32inrdpki6v3dwyymfglf78wbfd29b6xa8vjn337dr4gxlma85")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/changebar"))
     (home-page "https://www.ctan.org/pkg/changebar")
     (synopsis "Generate changebars in LaTeX documents")
     (description
      "Identify areas of text to be marked with changebars with the
 @code{\\cbstart} and @code{\\cbend} commands; the bars may be coloured.  The
-package uses @code{drivers} to place the bars; the available drivers can work
-with @code{dvitoln03}, @code{dvitops}, @code{dvips}, the emTeX and TeXtures DVI
+package uses drivers to place the bars; the available drivers can work with
+@code{dvitoln03}, @code{dvitops}, @code{dvips}, the emTeX and TeXtures DVI
 drivers, and VTeX and pdfTeX.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-changebar texlive-changebar)
 
 (define-public texlive-latex-cmap
   (package
