@@ -1459,79 +1459,87 @@ fonts.")
 
 (define-deprecated-package texlive-fonts-knuth-lib texlive-knuth-lib)
 
-(define-public texlive-fonts-latex
+(define-public texlive-latex-fonts
   (package
-    (name "texlive-fonts-latex")
+    (name "texlive-latex-fonts")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/fonts/source/public/latex-fonts"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0ypsm4xv9cw0jckk2qc7gi9hcmhf31mrg56pz3llyx3yd9vq2lps"))))
-    (build-system gnu-build-system)
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/latex-fonts/"
+                   "fonts/source/public/latex-fonts/"
+                   "fonts/tfm/public/latex-fonts/")
+             (base32
+              "1bzqzzhs15w7dqz90hfjnaffjqh24q14w2h1h8vnxzvrlsyv21vq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((mf (assoc-ref inputs "texlive-metafont")))
-               ;; Tell mf where to find mf.base
-               (setenv "MFBASES" (string-append mf "/share/texmf-dist/web2c"))
-               ;; Tell mf where to look for source files
-               (setenv "MFINPUTS"
-                       (string-append (getcwd) ":"
-                                      mf "/share/texmf-dist/metafont/base:"
-                                      (assoc-ref inputs "texlive-cm")
-                                      "/share/texmf-dist/fonts/source/public/cm")))
-             (mkdir "build")
-             (for-each (lambda (font)
-                         (format #t "building font ~a\n" font)
-                         (invoke "mf" "-progname=mf"
-                                 "-output-directory=build"
-                                 (string-append "\\"
-                                                "mode:=ljfour; "
-                                                "mag:=1; "
-                                                "batchmode; "
-                                                "input " font)))
-                       '("icmcsc10" "icmex10" "icmmi8" "icmsy8" "icmtt8"
-                         "ilasy8" "ilcmss8" "ilcmssb8" "ilcmssi8"
-                         "lasy5" "lasy6" "lasy7" "lasy8" "lasy9" "lasy10" "lasyb10"
-                         "lcircle10" "lcirclew10" "lcmss8" "lcmssb8" "lcmssi8"
-                         "line10" "linew10"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (tfm (string-append
-                          out "/share/texmf-dist/fonts/tfm/public/latex-fonts"))
-                    (mf  (string-append
-                          out "/share/texmf-dist/fonts/source/public/latex-fonts")))
-               (for-each (cut install-file <> tfm)
-                         (find-files "build" "\\.*"))
-               (for-each (cut install-file <> mf)
-                         (find-files "." "\\.mf"))
-               #t))))))
+     (list
+      #:texlive-latex-base #f
+      #:modules
+      '((guix build texlive-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'generate-fonts-metrics
+            (lambda _
+              (let ((cm #$(this-package-native-input "texlive-cm"))
+                    (metafont #$(this-package-native-input "texlive-metafont"))
+                    (fonts-directories
+                     (delete-duplicates
+                      (map (lambda (f)
+                             (string-drop (dirname f) (string-length "./")))
+                           (find-files "." "[0-9]+\\.mf$"))))
+                    (root (getcwd)))
+                (mkdir-p "build")
+                ;; Tell mf where to find mf.base.
+                (setenv "MFBASES"
+                        (string-append metafont "/share/texmf-dist/web2c/"))
+                (for-each
+                 (lambda (directory)
+                   ;; Tell mf where to look for source files.
+                   (setenv "MFINPUTS"
+                           (string-append
+                            (getcwd) "/" directory ":"
+                            metafont "/share/texmf-dist/metafont/base/:"
+                            cm "/share/texmf-dist/fonts/source/public/cm/"))
+                   ;; Build font metrics (tfm).
+                   (with-directory-excursion directory
+                     (for-each (lambda (font)
+                                 (format #t "building font ~a\n" font)
+                                 (invoke "mf" "-progname=mf"
+                                         (string-append "-output-directory="
+                                                        root "/build")
+                                         (string-append "\\"
+                                                        "mode:=ljfour; "
+                                                        "mag:=1; "
+                                                        "batchmode; "
+                                                        "input "
+                                                        (basename font ".mf"))))
+                               (find-files "." "[0-9]+\\.mf$")))
+                   ;; Install font metrics at the appropriate location.
+                   (let ((destination
+                          ;; fonts/source/xxx/yyy/... -> fonts/tfm/xxx/yyy/...
+                          (string-append "fonts/tfm"
+                                         (string-drop
+                                          directory
+                                          (string-length "fonts/source")))))
+                     (format #t "moving font metrics in ~a\n" destination)
+                     (for-each (cut install-file <> destination)
+                               (find-files "build/" "\\.tfm$"))))
+                 fonts-directories)))))))
     (native-inputs
-     (list texlive-bin texlive-metafont texlive-cm))
-    (home-page "https://www.ctan.org/pkg/latex-fonts")
+     (list texlive-bin texlive-cm texlive-metafont))
+    (home-page "https://ctan.org/pkg/latex-fonts")
     (synopsis "Collection of fonts used in LaTeX distributions")
-    (description "This is a collection of fonts for use with standard LaTeX
-packages and classes. It includes invisible fonts (for use with the slides
-class), line and circle fonts (for use in the picture environment) and LaTeX
-symbol fonts.")
+    (description
+     "This is a collection of fonts for use with standard LaTeX packages and
+classes. It includes invisible fonts (for use with the slides class), line and
+circle fonts (for use in the picture environment) and LaTeX symbol fonts.")
     (license license:lppl1.2+)))
+
+(define-deprecated-package texlive-fonts-latex texlive-latex-fonts)
 
 (define-public texlive-mflogo
   (let ((template (simple-texlive-package
@@ -3039,7 +3047,7 @@ formats.")
                                    dir)))
                                '(("texlive-etex" . "/etex")
                                  ("texlive-cm" . "/cm")
-                                 ("texlive-fonts-latex" . "/latex-fonts")
+                                 ("texlive-latex-fonts" . "/latex-fonts")
                                  ("texlive-knuth-lib" . "/knuth-lib")))
                           ":"))
                  (let ((cwd (getcwd)))
@@ -3126,7 +3134,7 @@ formats.")
          ("texlive-tex-plain" ,texlive-tex-plain)
          ("texlive-kpathsea" ,texlive-kpathsea)
          ("texlive-cm" ,texlive-cm)
-         ("texlive-fonts-latex" ,texlive-fonts-latex)
+         ("texlive-latex-fonts" ,texlive-latex-fonts)
          ("texlive-knuth-lib" ,texlive-knuth-lib)
          ("texlive-luatexconfig"
           ,(texlive-origin
@@ -4762,15 +4770,15 @@ part of the LaTeX required set of packages.")
 (define-public texlive-base
   (let ((default-packages
           (list texlive-bin
+                texlive-cm
+                texlive-cm-super        ; to avoid bitmap fonts
                 texlive-dvips
                 texlive-fontname
-                texlive-cm
-                texlive-cm-super ; to avoid bitmap fonts
-                texlive-fonts-latex
                 texlive-graphics
-                texlive-metafont
+                texlive-kpathsea        ;for mktex.opt
                 texlive-latex-base
-                texlive-kpathsea       ;for mktex.opt
+                texlive-latex-fonts
+                texlive-metafont
                 ;; LaTeX packages from the "required" set.
                 texlive-amsmath
                 texlive-amscls
@@ -6245,7 +6253,7 @@ also provides compacted versions of enumerate and itemize.")
                          texlive-context
                          texlive-fancyvrb
                          texlive-etoolbox
-                         texlive-fonts-latex
+                         texlive-latex-fonts
                          texlive-fontspec
                          texlive-hyperref
                          ;; TODO: Remove texlive-stringenc and
@@ -7885,7 +7893,7 @@ Simple Young tableaux.
        (list texlive-xmltex texlive-kpathsea)) ;for fmtutil.cnf template
       (native-inputs
        (list texlive-cm ;for cmex10 and others
-             texlive-fonts-latex ;for lasy6
+             texlive-latex-fonts        ;for lasy6
              ;; The t1cmr.fd file of texlive-latex-base refers to the ecrm font,
              ;; provided by the jknappen package collection.
              texlive-jknappen
@@ -12915,7 +12923,7 @@ itself may be shipped out to the DVI file.")
            texlive-firstaid
            texlive-hyphen-base
            texlive-latex-base
-           texlive-fonts-latex
+           texlive-latex-fonts
            texlive-l3backend
            texlive-l3kernel
            texlive-l3packages
