@@ -323,7 +323,7 @@ colors, styles, options and details.")
                   texlive-latex-media9
                   texlive-oberdiek      ;for ifluatex
                   texlive-latex-ocgx2
-                  texlive-latex-parskip
+                  texlive-parskip
                   texlive-pdftexcmds
                   texlive-tex-texinfo))))
     (inputs

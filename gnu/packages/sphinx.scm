@@ -123,7 +123,7 @@
            texlive-graphics                       ;graphicx, color
            texlive-kvoptions
            texlive-latex-needspace
-           texlive-latex-parskip
+           texlive-parskip
            texlive-latex-preview
            texlive-latex-tabulary
            texlive-titlesec

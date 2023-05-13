@@ -15190,7 +15190,7 @@ time.")
            texlive-geometry
            texlive-jknapltx
            texlive-ms
-           texlive-latex-parskip
+           texlive-parskip
            texlive-trimspaces
            texlive-upquote
            texlive-stringenc

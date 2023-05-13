@@ -5810,7 +5810,7 @@ set.")
                                      texlive-natbib
                                      texlive-latex-needspace
                                      texlive-newunicodechar
-                                     texlive-latex-parskip
+                                     texlive-parskip
                                      texlive-stackengine
                                      texlive-latex-tabulary
                                      texlive-tocloft

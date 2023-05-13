@@ -7414,39 +7414,31 @@ positions; a grid for orientation is available.")
 
 (define-deprecated-package texlive-latex-overpic texlive-overpic)
 
-(define-public texlive-latex-parskip
+(define-public texlive-parskip
   (package
-    (name "texlive-latex-parskip")
+    (name "texlive-parskip")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/parskip"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1zll8jci8lsd7y44j567akf6y8fp2p7qq23rs527zhr0br9mn3sh"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/parskip")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/parskip/"
+                   "source/latex/parskip/"
+                   "tex/latex/parskip/")
+             (base32
+              "18yygddxv3kblvf4jhzqa8h1js0n8g1bw723r6ss2hlz4lj64kf0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-kvoptions))
     (home-page "https://www.ctan.org/pkg/parskip")
-    (synopsis "Layout with zero \\parindent, non-zero \\parskip")
+    (synopsis "Layout with zero @code{\\parindent}, non-zero @code{\\parskip}")
     (description
      "Simply changing @code{\\parskip} and @code{\\parindent} leaves a layout
 that is untidy; this package (though it is no substitute for a properly
 designed class) helps alleviate this untidiness.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-parskip texlive-parskip)
 
 (define-public texlive-latex-pbox
   (package
