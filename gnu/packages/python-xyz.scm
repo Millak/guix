@@ -15188,7 +15188,7 @@ time.")
            texlive-fancyvrb
            texlive-float
            texlive-geometry
-           texlive-latex-jknapltx
+           texlive-jknapltx
            texlive-ms
            texlive-latex-parskip
            texlive-trimspaces

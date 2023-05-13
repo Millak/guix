@@ -546,7 +546,7 @@ the in DocBook SGML DTDs.")
                                              texlive-float
                                              texlive-footmisc
                                              texlive-hyperref
-                                             texlive-latex-jknapltx
+                                             texlive-jknapltx
                                              texlive-listings
                                              texlive-latex-multirow
                                              texlive-latex-overpic

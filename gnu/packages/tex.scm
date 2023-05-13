@@ -6839,44 +6839,34 @@ styles.  Support for @code{hyperref} is provided.")
 
 (define-deprecated-package texlive-latex-listings texlive-listings)
 
-(define-public texlive-latex-jknapltx
+(define-public texlive-jknapltx
   (package
-    (name "texlive-latex-jknapltx")
+    (name "texlive-jknapltx")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/jknapltx"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0m034x72f2g07icr50gacyxfb9g1lz2rmqh4kqr1qjb421x2kds9"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/jknapltx")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/jknappen")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jknapltx/"
+                   "tex/latex/jknapltx/")
+             (base32
+              "0as43yqq123cacxhvp4sbdp4ka3cyp2spmxwayqny0fh5rsk6qaq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/jknapltx")
     (synopsis "Miscellaneous packages by Joerg Knappen")
     (description
-     "This package provides miscellaneous macros by Joerg Knappen, including:
-represent counters in greek; Maxwell's non-commutative division;
+     "This package provides miscellaneous macros by Joerg Knappen,
+including: represent counters in greek; Maxwell's non-commutative division;
 @code{latin1jk}, @code{latin2jk} and @code{latin3jk}, which are
 @code{inputenc} definition files that allow verbatim input in the respective
 ISO Latin codes; blackboard bold fonts in maths; use of RSFS fonts in maths;
 extra alignments for @code{\\parboxes}; swap Roman and Sans fonts;
 transliterate semitic languages; patches to make (La)TeX formulae embeddable
 in SGML; use maths minus in text as appropriate; simple Young tableaux.")
-    (license license:gpl2)))
+    (license license:gpl3+)))
+
+(define-deprecated-package texlive-latex-jknapltx texlive-jknapltx)
 
 (define-public texlive-kvoptions
   (let ((template (simple-texlive-package
