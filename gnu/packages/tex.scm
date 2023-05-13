@@ -4441,27 +4441,29 @@ external program.")
     ;; that says the package must be renamed from 'csplain' if it is modified.
     (license (license:non-copyleft "file:///tex/csplain/base/csplain.ini"))))
 
-(define-public texlive-generic-babel-english
+(define-public texlive-babel-english
   (package
-    (name "texlive-generic-babel-english")
+    (name "texlive-babel-english")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "generic" "babel-english"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1s404wbx91z5w65hm024kyl4h56zsa096irx18vsx8jvlmwsr5wc"))))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-english/"
+                   "source/generic/babel-english/"
+                   "tex/generic/babel-english/")
+             (base32
+              "0fh8xxxh79za80yvgypf8clzj0lk237lfyqfkl233id9rlias08d")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "generic/babel-english"))
-    (home-page "https://www.ctan.org/pkg/babel-english")
+    (home-page "https://ctan.org/pkg/babel-english")
     (synopsis "Babel support for English")
     (description
-     "This package provides the language definition file for support of
-English in @code{babel}.  Care is taken to select British hyphenation patterns
-for British English and Australian text, and default (\"american\") patterns
-for Canadian and USA text.")
+     "The package provides the language definition file for support of
+English in @code{babel}.  Care is taken to select british hyphenation patterns
+for British English and Australian text, and default (american) patterns for
+Canadian and USA text.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-generic-babel-english texlive-babel-english)
 
 (define-public texlive-babel-french
   (let ((template
@@ -4773,7 +4775,7 @@ part of the LaTeX required set of packages.")
                 texlive-amsmath
                 texlive-amscls
                 texlive-babel
-                texlive-generic-babel-english
+                texlive-babel-english
                 texlive-cyrillic
                 texlive-psnfss
                 texlive-tools
