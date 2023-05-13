@@ -2268,7 +2268,7 @@ a JACK session.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method git-fetch)
@@ -2280,7 +2280,7 @@ a JACK session.")
         (search-patches "mixxx-link-qtscriptbytearray-qtscript.patch"
                         "mixxx-system-googletest-benchmark.patch"))
        (sha256
-        (base32 "056zn0nxl7xrmg467ljdszsycrszsrzsc8k4s39mp4qxyd9qq4yn"))
+        (base32 "0142xcq5ahk50kzc06s13xilj8m4p0spmd5hqd8s08qjhr37n2il"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
