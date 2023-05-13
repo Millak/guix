@@ -5806,7 +5806,7 @@ set.")
                                      texlive-geometry
                                      texlive-hanging
                                      texlive-hyperref
-                                     texlive-latex-multirow
+                                     texlive-multirow
                                      texlive-natbib
                                      texlive-latex-needspace
                                      texlive-newunicodechar

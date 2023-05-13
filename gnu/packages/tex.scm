@@ -6189,7 +6189,7 @@ output routine.")
                          texlive-latex-base
                          texlive-latex-eukdate
                          texlive-graphics
-                         texlive-latex-multirow
+                         texlive-multirow
                          texlive-lm     ;for lmroman10-regular
                          texlive-stix2-otf))
     (propagated-inputs (list texlive-fontspec texlive-iftex
@@ -7363,26 +7363,29 @@ on the loop variable, so that the package is equally applicable in graphics
 applications like PSTricks as it is with the more common integer loops.")
     (license license:lppl)))
 
-(define-public texlive-latex-multirow
+(define-public texlive-multirow
   (package
-    (name "texlive-latex-multirow")
+    (name "texlive-multirow")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "multirow"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1kak9i6nwz6vc4xjj6lbvkb69s49pis6qynjzvsjraxbdw28y2dq"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multirow/"
+                   "source/latex/multirow/"
+                   "tex/latex/multirow/")
+             (base32
+              "18xnxqbkkzblngws1ydmkiwfrf9gvrriqrjpb6g6kmaxciwypqd6")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/multirow"))
-    (home-page "https://www.ctan.org/pkg/multirow")
+    (home-page "https://ctan.org/pkg/multirow")
     (synopsis "Create tabular cells spanning multiple rows")
     (description
-     "The package provides tools for creating tabular cells spanning multiple
-rows.  It has a lot of flexibility, including an option for specifying an
-entry at the \"natural\" width of its text.")
+     "The package has a lot of flexibility, including an option for specifying
+an entry at the natural width of its text.  The package is distributed with
+the @code{bigdelim} and @code{bigstrut} packages, which can be used to
+advantage with @code{\\multirow} cells.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-multirow texlive-multirow)
 
 (define-public texlive-latex-overpic
   (package

@@ -548,7 +548,7 @@ the in DocBook SGML DTDs.")
                                              texlive-hyperref
                                              texlive-jknapltx
                                              texlive-listings
-                                             texlive-latex-multirow
+                                             texlive-multirow
                                              texlive-latex-overpic
                                              texlive-pdfpages
                                              texlive-refcount
