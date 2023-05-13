@@ -616,6 +616,11 @@ printing and other features typical of a source code editor.")
                ;; Tests require a running X server.
                (system (string-append Xvfb " :1 &"))
                (setenv "DISPLAY" ":1")
+               ;; Use an X11 setup to find the display.
+               (setenv "GDK_BACKEND" "x11")
+               ;; Avoid spawning (and failing to connect to) the accessiblity
+               ;; bus.
+               (setenv "GTK_A11Y" "none")
                ;; For the missing /etc/machine-id.
                (setenv "DBUS_FATAL_WARNINGS" "0")))))))
     (native-inputs
