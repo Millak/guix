@@ -915,7 +915,7 @@ makeinfo OPTIONS."
                      texlive-base
                      texlive-bin        ;for GUIX_TEXMF
                      texlive-epsf
-                     texlive-fonts-ec
+                     texlive-ec
                      texlive-tex-texinfo)))))
 
   (define build

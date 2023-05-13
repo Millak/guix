@@ -6882,69 +6882,64 @@ package options.")
 
 (define-deprecated-package texlive-latex-kvoptions texlive-kvoptions)
 
-(define-public texlive-fonts-ec
+(define-public texlive-ec
   (package
-    (name "texlive-fonts-ec")
+    (name "texlive-ec")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/fonts/source/jknappen/ec/"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "12av65fbz9xiashm09c9m1fj1mijxls5xspd7652ry1n5s0nixy4"))))
-    (build-system gnu-build-system)
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ec/"
+                   "fonts/source/jknappen/ec/"
+                   "fonts/tfm/jknappen/ec/")
+             (base32
+              "1cyi0vv9dnp45s0ilsrbkyznj9ji62s5bhkqgh49461mv2f8qj6p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((mf (assoc-ref inputs "texlive-metafont")))
-               ;; Tell mf where to find mf.base
-               (setenv "MFBASES" (string-append mf "/share/texmf-dist/web2c"))
-               ;; Tell mf where to look for source files
-               (setenv "MFINPUTS"
-                       (string-append (getcwd) ":"
-                                      mf "/share/texmf-dist/metafont/base:"
-                                      (assoc-ref inputs "texlive-cm")
-                                      "/share/texmf-dist/fonts/source/public/cm")))
-             (mkdir "build")
-             (for-each (lambda (font)
-                         (format #t "building font ~a\n" font)
-                         (invoke "mf" "-progname=mf"
-                                 "-output-directory=build"
-                                 (string-append "\\"
-                                                "mode:=ljfour; "
-                                                "mag:=1; "
-                                                "batchmode; "
-                                                "input " (basename font ".mf"))))
-                       (find-files "." "[0-9]+\\.mf$"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (tfm (string-append
-                          out "/share/texmf-dist/fonts/tfm/jknappen/ec"))
-                    (mf  (string-append
-                          out "/share/texmf-dist/fonts/source/jknappen/ec")))
-               (for-each (cut install-file <> tfm)
-                         (find-files "build" "\\.*"))
-               (for-each (cut install-file <> mf)
-                         (find-files "." "\\.mf"))
-               #t))))))
+     (list
+      #:modules
+      '((guix build texlive-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 're-generate-fonts-metrics
+            (lambda _
+              (let ((mf #$(this-package-native-input "texlive-metafont"))
+                    (cm #$(this-package-native-input "texlive-cm"))
+                    (root (getcwd)))
+                (mkdir-p "build")
+                (with-directory-excursion "fonts/source/jknappen/ec"
+                  ;; Tell mf where to find mf.base.
+                  (setenv "MFBASES"
+                          (string-append mf "/share/texmf-dist/web2c"))
+                  ;; Tell mf where to look for source files.
+                  (setenv "MFINPUTS"
+                          (string-append
+                           (getcwd) ":"
+                           mf "/share/texmf-dist/metafont/base:"
+                           cm "/share/texmf-dist/fonts/source/public/cm"))
+                  ;; Build font metrics (tfm).
+                  (for-each (lambda (font)
+                              (format #t "building font ~a\n" font)
+                              (invoke "mf" "-progname=mf"
+                                      (string-append "-output-directory="
+                                                     root "/build")
+                                      (string-append "\\"
+                                                     "mode:=ljfour; "
+                                                     "mag:=1; "
+                                                     "batchmode; "
+                                                     "input "
+                                                     (basename font ".mf"))))
+                            (find-files "." "[0-9]+\\.mf$")))
+                ;; Install font metrics at the appropriate location.
+                (for-each
+                 (cut install-file <> "fonts/tfm/jknappen/ec")
+                 (find-files "build/" "\\.tfm$"))))))))
     (native-inputs
-     (list texlive-bin texlive-metafont texlive-cm))
-    (home-page "https://www.ctan.org/pkg/ec")
+     (list texlive-bin texlive-cm texlive-metafont))
+    (home-page "https://ctan.org/pkg/ec")
     (synopsis "Computer modern fonts in T1 and TS1 encodings")
     (description
      "The EC fonts are European Computer Modern Fonts, supporting the complete
@@ -6954,14 +6949,15 @@ files.  The set also contains a Text Companion Symbol font, called @code{tc},
 featuring many useful characters needed in text typesetting, for example
 oldstyle digits, currency symbols (including the newly created Euro symbol),
 the permille sign, copyright, trade mark and servicemark as well as a copyleft
-sign, and many others.  Recent releases of LaTeX2e support the EC fonts.  The
-EC fonts supersede the preliminary version released as the DC fonts.  The
-fonts are available in (traced) Adobe Type 1 format, as part of the
-@code{cm-super} bundle.  The other Computer Modern-style T1-encoded Type 1
-set, Latin Modern, is not actually a direct development of the EC set, and
-differs from the EC in a number of particulars.")
+sign, and many others.  The fonts are available in (traced) Adobe Type
+1 format, as part of the @code{cm-super} bundle.  The other Computer
+Modern-style T1-encoded Type 1 set, Latin Modern, is not actually a direct
+development of the EC set, and differs from the EC in a number of
+particulars.")
     (license (license:fsf-free "https://www.tug.org/svn/texlive/tags/\
 texlive-2019.3/Master/texmf-dist/doc/fonts/ec/copyrite.txt"))))
+
+(define-deprecated-package texlive-fonts-ec texlive-ec)
 
 ;; FIXME: the fonts should be built from source, but running "tex aefonts.tex"
 ;; fails with obscure TeX-typical error messages.
@@ -8944,7 +8940,7 @@ and Karl Berry.")
            qtsvg-5
            zlib))
     (propagated-inputs
-     (list (texlive-updmap.cfg (list texlive-fonts-ec))))
+     (list (texlive-updmap.cfg (list texlive-ec))))
     (native-inputs
      (list python pkg-config))
     (home-page "https://www.lyx.org/")

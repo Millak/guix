@@ -29191,11 +29191,11 @@ By default it uses the open Python vulnerability database Safety DB.")
      `(("wheel" ,python-wheel)))
     (native-inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-fonts-ec
+                                        texlive-ec
                                         texlive-iftex
                                         texlive-hyperref
-                                        texlive-oberdiek
                                         texlive-lm
+                                        texlive-oberdiek
                                         texlive-xcolor)))))
     (arguments
      `(#:phases

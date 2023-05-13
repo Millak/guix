@@ -900,7 +900,7 @@ emphasis on quality rather than speed.")
     (native-inputs
      (list gfortran
            (texlive-updmap.cfg
-            (list texlive-fonts-ec
+            (list texlive-ec
                   texlive-geometry
                   texlive-graphics))))
     (home-page "https://github.com/greglandrum/yaehmop")

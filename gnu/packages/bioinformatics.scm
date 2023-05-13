@@ -4768,7 +4768,7 @@ data and settings.")
             (list texlive-cm
                   texlive-amsfonts
                   texlive-doi
-                  texlive-fonts-ec
+                  texlive-ec
                   texlive-latex-examplep
                   texlive-hyperref
                   texlive-ms
@@ -12106,8 +12106,8 @@ programs for inferring phylogenies (evolutionary trees).")
            (texlive-updmap.cfg (list texlive-amsfonts
                                      texlive-caption
                                      texlive-cite
+                                     texlive-ec
                                      texlive-fancyvrb
-                                     texlive-fonts-ec
                                      texlive-graphics
                                      texlive-grfext
                                      texlive-hyperref
@@ -17090,7 +17090,7 @@ to an artifact/contaminant file.")
      (list openmpi zlib))
     (native-inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-graphics
-                                             texlive-fonts-ec
+                                             texlive-ec
                                              texlive-hyperref)))))
     (home-page "https://www.ebi.ac.uk/~zerbino/velvet/")
     (synopsis "Nucleic acid sequence assembler for very short reads")

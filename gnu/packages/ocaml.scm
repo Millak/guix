@@ -1378,7 +1378,7 @@ libpanel, librsvg and quartz.")
        ;; For documentation
        ("ghostscript" ,ghostscript)
        ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-fonts-ec texlive-l3backend)))
+                    (list texlive-ec texlive-l3backend)))
        ("hevea" ,hevea)
        ("lynx" ,lynx)
        ("which" ,which)))
@@ -10255,7 +10255,7 @@ SHA384, SHA512, Blake2b, Blake2s and RIPEMD160.")
     (native-inputs
      `(("which" ,which)
        ("texlive" ,(texlive-updmap.cfg
-                    (list texlive-fonts-ec texlive-preprint
+                    (list texlive-ec texlive-preprint
                           texlive-hyperref texlive-bibtex)))))
     (propagated-inputs
      (list hevea))

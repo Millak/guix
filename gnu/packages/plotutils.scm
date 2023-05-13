@@ -308,9 +308,9 @@ colors, styles, options and details.")
            texinfo                      ;for generating documentation
            (texlive-updmap.cfg
             (list texlive-amsfonts
+                  texlive-ec
                   texlive-epsf
                   texlive-etoolbox
-                  texlive-fonts-ec
                   texlive-geometry
                   texlive-graphics
                   texlive-grfext

@@ -760,11 +760,11 @@ Chez Scheme.")))
        (propagated-inputs
         (list xorg-rgb
               (texlive-updmap.cfg
-               (list texlive-l3backend
-                     texlive-hyperref
-                     texlive-bibtex
+               (list texlive-bibtex
+                     texlive-ec
                      texlive-epsf
-                     texlive-fonts-ec
+                     texlive-hyperref
+                     texlive-l3backend
                      texlive-oberdiek))
               ghostscript
               netpbm))
