@@ -32,7 +32,7 @@
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Jonathan Frederickson <jonathan@terracrypt.net>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
@@ -3564,20 +3564,20 @@ using Guix System.")
 (define-public libshout-idjc
   (package
     (name "libshout-idjc")
-    (version "2.4.4")
+    (version "2.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/libshoutidjc.idjc.p"
                            "/libshout-idjc-" version ".tar.gz"))
        (sha256
-        (base32 "1r9z8ggxylr2ab0isaljbm574rplnlcb12758j994h54nh2vikwb"))))
+        (base32 "1cgbym1qms408l4anc0imlcf091yk9kic4s9n7zcri3xzbi8lv1z"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libogg libtheora libvorbis speex))
-    (home-page "https://idjc.sourceforge.net/")
+     (list libogg libshout libtheora libvorbis speex))
+    (home-page "https://idjc.sourceforge.io/")
     (synopsis "Broadcast streaming library with IDJC extensions")
     (description "This package provides libshout plus IDJC extensions.")
     ;; GNU Library (not Lesser) General Public License.
