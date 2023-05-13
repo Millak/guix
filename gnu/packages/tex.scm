@@ -6744,44 +6744,72 @@ that also takes care of the involved internal macros.")
 
 (define-deprecated-package texlive-latex-letltxmacro texlive-letltxmacro)
 
-(define-public texlive-latex-frankenstein
+(define-public texlive-frankenstein
   (package
-    (name "texlive-latex-frankenstein")
+    (name "texlive-frankenstein")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference (url (string-append
-                                        "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/frankenstein"))
-                                  (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1zhdvn3zgdarlzfcyq8nzilvw0v0bqgl4m0y7j233cbqw8wiil4z"))))
-    (build-system trivial-build-system)
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/frankenstein/"
+                   "bibtex/bst/frankenstein/"
+                   "doc/latex/frankenstein/"
+                   "source/latex/frankenstein/"
+                   "tex/latex/frankenstein/")
+             (base32
+              "1x494vl4acl0bhfshs96ap8j47xk4m4njfincfhg2b0mi7l5mj1i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
-                   (let ((target (string-append (assoc-ref %outputs "out")
-                                  "/share/texmf-dist/tex/latex/frankenstein")))
-                     (mkdir-p target)
-                     (copy-recursively (assoc-ref %build-inputs "source")
-                                       target) #t))))
+     (list
+      #:modules '((guix build texlive-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-TEXINPUTS
+            ;; The ".ins" files strip comments from ".sty", turning them into
+            ;; faster ".stq" (and ".bsq") files.  Unfortunately, the ".ins"
+            ;; and the ".sty" files are not located in the same
+            ;; directory. This phase extends TEXINPUTS so everyone can see
+            ;; each other, including the docstrip utility.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TEXINPUTS"
+                      (let ((cwd (getcwd)))
+                        (string-append
+                         cwd "/tex/latex/frankenstein//:"
+                         cwd "/source/latex/frankenstein//:"
+                         (string-join
+                          (map (match-lambda ((_ . dir) dir)) inputs)
+                          "//:"))))))
+          (add-before 'install 'install-faster-files
+            (lambda _
+              ;; Replace ".sty" and ".bst" files with their faster
+              ;; counterpart.
+              (copy-file "build/achicago.bsq"
+                         "bibtex/bst/frankenstein/achicago.bst")
+              ;; "build/tex/.../xxx.stq" -> "tex/.../xxx.sty"
+              (for-each (lambda (file)
+                          (copy-file file
+                                     (string-append "tex/latex/frankenstein/"
+                                                    (basename file ".stq")
+                                                    ".sty")))
+                        (find-files "build/tex" "\\.stq$")))))))
+    (propagated-inputs
+     (list texlive-relsize texlive-tools texlive-url))
     (home-page "https://ctan.org/pkg/frankenstein")
-    (synopsis "Collection of unrelated LaTeX packages")
+    (synopsis "Collection of LaTeX packages")
     (description
-     "Frankenstein is a bundle of LaTeX packages serving various purposes and a
-BibTeX bibliography style.  The individual packages are: @code{abbrevs},
+     "Frankenstein is a bundle of LaTeX packages serving various purposes
+and a BibTeX bibliography style.  The individual packages are: @code{abbrevs},
 @code{achicago}, @code{achicago} bibstyle, @code{attrib}, @code{blkcntrl},
-@code{compsci}, @code{dialogue}, @code{lips}, @code{moredefs}, @code{newclude},
-@code{slemph} and @code{titles}.  Note: The installation follows the suboptimal
-``Quick and dirty'' recipe, rendering some features unavailable.")
-    ;; README mentions an unspecified version of GNU GPL and points to COPYING,
-    ;; which is missing. However, the individual files mention LPPL 1.2 or
-    ;; later.
+@code{compsci}, @code{dialogue}, @code{lips}, @code{moredefs},
+@code{newclude}, @code{slemph} and @code{titles}.")
+    ;; README mentions an unspecified version of GNU GPL and points to
+    ;; COPYING, which is missing. However, the individual files mention LPPL
+    ;; 1.2 or later.
     (license license:lppl1.2+)))
+
+(define-deprecated-package texlive-latex-frankenstein texlive-frankenstein)
 
 (define-public texlive-listings
   (let ((template
