@@ -6168,24 +6168,22 @@ major web browsers.")
         (modules '((guix build utils)))
         (snippet
          '(delete-file-recursively "rapidjson"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--rj-include-dir="
-                            (assoc-ref %build-inputs "rapidjson")
-                            "/include/rapidjson"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "python" "setup.py" "build"
-                     (string-append "--rj-include-dir="
-                                    (assoc-ref %build-inputs "rapidjson")
-                                    "/include/rapidjson"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "tests")))))))
+     (list
+      #:test-flags '(list "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; We cannot seem to use #:configure-flags with the
+          ;; pyproject-build-system to override rj_include_dir.
+          (add-after 'unpack 'override-rapidjson-sources
+            (lambda _
+              (substitute* "setup.py"
+                (("^rj_include_dir =.*")
+                 (string-append "rj_include_dir = '"
+                                #$(this-package-native-input "rapidjson")
+                                "/include/rapidjson" "'"))
+                (("if not os.path.isdir.*") "if False:")))))))
     (native-inputs
      (list rapidjson python-pytest python-pytz))
     (home-page "https://github.com/python-rapidjson/python-rapidjson")
