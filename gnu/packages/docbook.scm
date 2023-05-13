@@ -536,7 +536,7 @@ the in DocBook SGML DTDs.")
     (inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                              texlive-anysize
-                                             texlive-latex-appendix
+                                             texlive-appendix
                                              texlive-latex-bookmark
                                              texlive-latex-changebar
                                              texlive-latex-colortbl

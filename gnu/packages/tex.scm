@@ -6465,28 +6465,30 @@ considered obsolete; alternatives are the @code{typearea} package from the
 
 (define-deprecated-package texlive-latex-anysize texlive-anysize)
 
-(define-public texlive-latex-appendix
+(define-public texlive-appendix
   (package
-    (name "texlive-latex-appendix")
+    (name "texlive-appendix")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "appendix"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1gc2brr2rs495w7qi6spdva1xrza94x7a36dncjdkghnsq8r92h4"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/appendix/"
+                   "source/latex/appendix/"
+                   "tex/latex/appendix/")
+             (base32
+              "1vqkqpzs7bc6pbjnafakrwayjyfx9mvadrqxccdf549m8172qvzk")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/appendix"))
-    (home-page "https://www.ctan.org/pkg/appendix")
+    (home-page "https://ctan.org/pkg/appendix")
     (synopsis "Extra control of appendices")
     (description
-     "The appendix package provides various ways of formatting the titles of
-appendices.  Also (sub)appendices environments are provided that can be used,
-for example, for per chapter/section appendices.  An @code{appendices}
-environment is provided which can be used instead of the @code{\\appendix}
-command.")
-    (license license:lppl)))
+     "The @code{appendix} package provides various ways of formatting the
+titles of appendices.  Also (sub)appendices environments are provided that can
+be used, for example, for per chapter/section appendices.  An
+@code{appendices} environment is provided which can be used instead of the
+@code{\\appendix} command.")
+    (license license:lppl1.3c)))
+
+(define-deprecated-package texlive-latex-appendix texlive-appendix)
 
 (define-public texlive-latex-bookmark
   (package
