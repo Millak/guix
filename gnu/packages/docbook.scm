@@ -543,7 +543,7 @@ the in DocBook SGML DTDs.")
                                              texlive-fancybox
                                              texlive-fancyhdr
                                              texlive-fancyvrb
-                                             texlive-latex-float
+                                             texlive-float
                                              texlive-footmisc
                                              texlive-hyperref
                                              texlive-latex-jknapltx

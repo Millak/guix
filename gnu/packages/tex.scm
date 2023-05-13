@@ -5632,7 +5632,7 @@ user may consider the @code{dnaseq} as a rather more powerful alternative.")
     (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-attachfile
-           texlive-latex-float
+           texlive-float
            texlive-graphics
            texlive-listings
            texlive-refcount
@@ -6665,29 +6665,30 @@ LaTeX would automatically change the heading style in use).")
 
 (define-deprecated-package texlive-latex-fancyhdr texlive-fancyhdr)
 
-(define-public texlive-latex-float
+(define-public texlive-float
   (package
-    (name "texlive-latex-float")
+    (name "texlive-float")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "float"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0nbl7wylkv22fcdv4p8byhhj575fli6jnqjpkhrkbv8dzwah84nq"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/float/"
+                   "source/latex/float/"
+                   "tex/latex/float/")
+             (base32
+              "1rfyvk1n83zsmrrp0x643052nrjb00cj935d2cpm37x4pz649f5d")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/float"))
-    (home-page "https://www.ctan.org/pkg/float")
+    (home-page "https://ctan.org/pkg/float")
     (synopsis "Improved interface for floating objects")
     (description
-     "This package improves the interface for defining floating objects such
-as figures and tables.  It introduces the boxed float, the ruled float and the
-plaintop float.  You can define your own floats and improve the behaviour of
-the old ones.  The package also provides the @code{H} float modifier option of
-the obsolete @code{here} package.  You can select this as automatic default
-with @code{\\floatplacement{figure}{H}}.")
+     "The @code{float} package improves the interface for defining floating
+objects such as figures and tables.  It introduces the boxed float, the ruled
+float and the plaintop float.  You can define your own floats and improve the
+behaviour of the old ones.  The package also provides the @samp{H} float
+modifier option of the obsolete @code{here} package.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-float texlive-float)
 
 (define-public texlive-footmisc
   (package
@@ -10657,7 +10658,7 @@ configuration of its own fixed names, using @file{.mld} files.")
       (propagated-inputs (list python-pygments
                                texlive-etoolbox
                                texlive-fancyvrb
-                               texlive-latex-float
+                               texlive-float
                                texlive-framed
                                texlive-fvextra
                                texlive-ifplatform
@@ -11878,7 +11879,7 @@ and selecting references used in a publication.")
                              texlive-fancyhdr
                              texlive-xstring
                              texlive-graphics
-                             texlive-latex-float
+                             texlive-float
                              texlive-lm
                              texlive-substr
                              texlive-times

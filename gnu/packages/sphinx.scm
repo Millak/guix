@@ -116,7 +116,7 @@
            texlive-cmap
            texlive-fancyhdr
            texlive-fancyvrb
-           texlive-latex-float
+           texlive-float
            texlive-fncychap
            texlive-framed
            texlive-geometry

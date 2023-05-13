@@ -5800,7 +5800,7 @@ set.")
                                      texlive-listofitems
                                      texlive-cmap
                                      texlive-colortbl
-                                     texlive-latex-float
+                                     texlive-float
                                      texlive-fncychap
                                      texlive-framed
                                      texlive-geometry

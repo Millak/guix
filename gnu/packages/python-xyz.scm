@@ -15186,7 +15186,7 @@ time.")
            texlive-grffile
            texlive-hyperref
            texlive-fancyvrb
-           texlive-latex-float
+           texlive-float
            texlive-geometry
            texlive-latex-jknapltx
            texlive-ms
