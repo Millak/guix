@@ -2474,7 +2474,7 @@ package provides command line tools using the Bio++ library.")
 (define-public blast+
   (package
     (name "blast+")
-    (version "2.11.0")
+    (version "2.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2482,7 +2482,7 @@ package provides command line tools using the Bio++ library.")
                     version "/ncbi-blast-" version "+-src.tar.gz"))
               (sha256
                (base32
-                "0m0r9vkw631ky1za1wilsfk9k9spwqh22nkrb9a57rbwmrc1i3nq"))
+                "003mn7m4y306k7visv3in3ikfgm8m41z0jq9lyvz10iv1hdpyixz"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2518,103 +2518,101 @@ package provides command line tools using the Bio++ library.")
                     (("cksum") "cksum >/dev/null"))))))
     (build-system gnu-build-system)
     (arguments
-     `(;; There are two(!) tests for this massive library, and both fail with
-       ;; "unparsable timing stats".
-       ;; ERR [127] --  [serial/datatool] datatool.sh     (unparsable timing stats)
-       ;; ERR [127] --  [serial/datatool] datatool_xml.sh     (unparsable timing stats)
-       #:tests? #f
-       #:out-of-source? #t
-       #:parallel-build? #f ; not supported
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-HOME
-          ;; $HOME needs to be set at some point during the configure phase
-          (lambda _ (setenv "HOME" "/tmp") #t))
-         (add-after 'unpack 'enter-dir
-          (lambda _ (chdir "c++") #t))
-         (add-after 'enter-dir 'fix-build-system
-          (lambda _
-            (define (which* cmd)
-              (cond ((string=? cmd "date")
-                     ;; make call to "date" deterministic
-                     "date -d @0")
-                    ((which cmd)
-                     => identity)
-                    (else
-                     (format (current-error-port)
-                             "WARNING: Unable to find absolute path for ~s~%"
-                             cmd)
-                     #f)))
+     (list
+      ;; There are two(!) tests for this massive library, and both fail with
+      ;; "unparsable timing stats".
+      ;; ERR [127] --  [serial/datatool] datatool.sh     (unparsable timing stats)
+      ;; ERR [127] --  [serial/datatool] datatool_xml.sh     (unparsable timing stats)
+      #:tests? #f
+      #:out-of-source? #t
+      #:parallel-build? #f              ;not supported
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-HOME
+            ;; $HOME needs to be set at some point during the configure phase
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir "c++")))
+          (add-after 'enter-dir 'fix-build-system
+            (lambda _
+              (define (which* cmd)
+                (cond ((string=? cmd "date")
+                       ;; make call to "date" deterministic
+                       "date -d @0")
+                      ((which cmd)
+                       => identity)
+                      (else
+                       (format (current-error-port)
+                               "WARNING: Unable to find absolute path for ~s~%"
+                               cmd)
+                       #false)))
 
-            ;; Rewrite hardcoded paths to various tools
-            (substitute* (append '("src/build-system/configure.ac"
-                                   "src/build-system/configure"
-                                   "src/build-system/helpers/run_with_lock.c"
-                                   "scripts/common/impl/if_diff.sh"
-                                   "scripts/common/impl/run_with_lock.sh"
-                                   "src/build-system/Makefile.configurables.real"
-                                   "src/build-system/Makefile.in.top"
-                                   "src/build-system/Makefile.meta.gmake=no"
-                                   "src/build-system/Makefile.meta.in"
-                                   "src/build-system/Makefile.meta_l"
-                                   "src/build-system/Makefile.meta_p"
-                                   "src/build-system/Makefile.meta_r"
-                                   "src/build-system/Makefile.mk.in"
-                                   "src/build-system/Makefile.requirements"
-                                   "src/build-system/Makefile.rules_with_autodep.in")
-                                 (find-files "scripts/common/check" "\\.sh$"))
-              (("(/usr/bin/|/bin/)([a-z][-_.a-z]*)" all dir cmd)
-               (or (which* cmd) all)))
+              ;; Rewrite hardcoded paths to various tools
+              (substitute* (append '("src/build-system/configure.ac"
+                                     "src/build-system/configure"
+                                     "src/build-system/helpers/run_with_lock.c"
+                                     "scripts/common/impl/if_diff.sh"
+                                     "scripts/common/impl/run_with_lock.sh"
+                                     "src/build-system/Makefile.configurables.real"
+                                     "src/build-system/Makefile.in.top"
+                                     "src/build-system/Makefile.meta.gmake=no"
+                                     "src/build-system/Makefile.meta.in"
+                                     "src/build-system/Makefile.meta_l"
+                                     "src/build-system/Makefile.meta_p"
+                                     "src/build-system/Makefile.meta_r"
+                                     "src/build-system/Makefile.mk.in"
+                                     "src/build-system/Makefile.requirements"
+                                     "src/build-system/Makefile.rules_with_autodep.in")
+                                   (find-files "scripts/common/check" "\\.sh$"))
+                (("(/usr/bin/|/bin/)([a-z][-_.a-z]*(\\+\\+)?)" all dir cmd)
+                 (or (which* cmd) all)))
 
-            (substitute* (find-files "src/build-system" "^config.*")
-              (("LN_S=/bin/\\$LN_S") (string-append "LN_S=" (which "ln")))
-              (("^PATH=.*") ""))
+              (substitute* (find-files "src/build-system" "^config.*")
+                (("LN_S=/bin/\\$LN_S") (string-append "LN_S=" (which "ln")))
+                (("^PATH=.*") ""))
 
-            ;; rewrite "/var/tmp" in check script
-            (substitute* "scripts/common/check/check_make_unix.sh"
-              (("/var/tmp") "/tmp"))
+              ;; rewrite "/var/tmp" in check script
+              (substitute* "scripts/common/check/check_make_unix.sh"
+                (("/var/tmp") "/tmp"))
 
-            ;; do not reset PATH
-            (substitute* (find-files "scripts/common/impl/" "\\.sh$")
-              (("^ *PATH=.*") "")
-              (("action=/bin/") "action=")
-              (("export PATH") ":"))
-            #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out     (assoc-ref outputs "out"))
-                   (lib     (string-append (assoc-ref outputs "lib") "/lib"))
-                   (include (string-append (assoc-ref outputs "include")
-                                           "/include/ncbi-tools++")))
-               ;; The 'configure' script doesn't recognize things like
-               ;; '--enable-fast-install'.
-               (invoke "./configure.orig"
-                       (string-append "--with-build-root=" (getcwd) "/build")
-                       (string-append "--prefix=" out)
-                       (string-append "--libdir=" lib)
-                       (string-append "--includedir=" include)
-                       (string-append "--with-bz2="
-                                      (assoc-ref inputs "bzip2"))
-                       (string-append "--with-z="
-                                      (assoc-ref inputs "zlib"))
-                       (string-append "--with-pcre="
-                                      (assoc-ref inputs "pcre"))
-                       ;; Each library is built twice by default, once
-                       ;; with "-static" in its name, and again
-                       ;; without.
-                       "--without-static"
-                       "--with-dll")
-               #t))))))
+              ;; do not reset PATH
+              (substitute* (find-files "scripts/common/impl/" "\\.sh$")
+                (("^ *PATH=.*") "")
+                (("action=/bin/") "action=")
+                (("export PATH") ":"))))
+          (replace 'configure
+            (lambda _
+              (let ((lib     (string-append #$output:lib "/lib"))
+                    (include (string-append #$output:include
+                                            "/include/ncbi-tools++")))
+                ;; The 'configure' script doesn't recognize things like
+                ;; '--enable-fast-install'.
+                (invoke "./configure.orig"
+                        (string-append "--with-build-root=" (getcwd) "/build")
+                        (string-append "--prefix=" #$output)
+                        (string-append "--libdir=" lib)
+                        (string-append "--includedir=" include)
+                        (string-append "--with-bz2="
+                                       #$(this-package-input "bzip2"))
+                        (string-append "--with-z="
+                                       #$(this-package-input "zlib"))
+                        (string-append "--with-pcre="
+                                       #$(this-package-input "pcre"))
+                        ;; Each library is built twice by default, once
+                        ;; with "-static" in its name, and again
+                        ;; without.
+                        "--without-static"
+                        "--with-dll")))))))
     (outputs '("out"       ;  21 MB
                "lib"       ; 226 MB
                "include")) ;  33 MB
     (inputs
-     `(("bzip2" ,bzip2)
-       ("lmdb" ,lmdb)
-       ("zlib" ,zlib)
-       ("pcre" ,pcre)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)))
+     (list bzip2
+           lmdb
+           zlib
+           pcre
+           perl
+           python-wrapper))
     (native-inputs
      (list cpio))
     (home-page "https://blast.ncbi.nlm.nih.gov")
