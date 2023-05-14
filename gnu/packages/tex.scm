@@ -12486,13 +12486,15 @@ to the @code{xr} package for external document references.")
 
 (define-public texlive-relsize
   (package
-    (inherit (simple-texlive-package
-              "texlive-relsize"
-              (list "doc/latex/relsize/"
-                    "tex/latex/relsize/")
-              (base32
-               "07g9wqxsh3a9rmfbppaqhyic82a1i1habizaf4hpdi3246w6nnby")
-              #:trivial? #t))
+    (name "texlive-relsize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/relsize/" "tex/latex/relsize/")
+             (base32
+              "07g9wqxsh3a9rmfbppaqhyic82a1i1habizaf4hpdi3246w6nnby")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/relsize")
     (synopsis "Set the font size relative to the current font size")
     (description
