@@ -103,6 +103,8 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  ;; Using autoload to avoid a cycle.
+  ;; Note that (gnu packages serialization) has #:use-module (gnu packages cpp)
   #:autoload   (gnu packages serialization) (cereal)
   #:use-module (ice-9 match))
 
