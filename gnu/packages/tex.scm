@@ -8351,23 +8351,22 @@ the @code{wasysym} package.")
   (package
     (name "texlive-wasysym")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "wasysym"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0zxcf0pfqf439cfwl0r5dd93b0v4pbiih36n2pwshdlvnmy0nr50"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wasysym/" "source/latex/wasysym/"
+                   "tex/latex/wasysym/")
+             (base32
+              "1n0rrrh510hy04a4fkxqh7skwfhp3xiiji78cw3mc65g06h1jyjc")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/wasysym"))
-    (home-page "https://www.ctan.org/pkg/wasysym")
-    (synopsis "LaTeX support file to use the @code{wasy} fonts")
+    (home-page "https://ctan.org/pkg/wasysym")
+    (synopsis "LaTeX support for the @code{wasy} fonts")
     (description
-     "The @code{wasy} (Waldi Symbol) font by Roland Waldi provides many glyphs like
-male and female symbols and astronomical symbols, as well as the complete
+     "The @code{wasy} (Waldi Symbol) font by Roland Waldi provides many glyphs
+like male and female symbols and astronomical symbols, as well as the complete
 @code{lasy} font set and other odds and ends.  The @code{wasysym} package
 implements an easy to use interface for these symbols.")
-    (license license:lppl)))
+    (license license:lppl1.3c)))
 
 (define-deprecated-package texlive-latex-wasysym texlive-wasysym)
 
