@@ -32,7 +32,25 @@
 (test-begin "texlive")
 
 (define %fake-tlpdb
-  '(("example"
+  '(("12many"
+     . ((name
+         . "12many")
+        (catalogue
+         . "one2many")
+        (shortdesc
+         . "Generalising mathematical index sets")
+        (longdesc
+         . "In the discrete branches of mathematics...")
+        (docfiles
+         . ("texmf-dist/doc/latex/12many/12many.pdf"
+            "texmf-dist/doc/latex/12many/README"))
+        (srcfiles
+         . ("texmf-dist/source/latex/12many/12many.dtx"
+            "texmf-dist/source/latex/12many/12many.ins"))
+        (runfiles
+         . ("texmf-dist/tex/latex/12many/12many.sty"))
+        (catalogue-license . "lppl")))
+    ("example"
      . ((name . "example")
         (shortdesc . "Typeset examples...")
         (longdesc . "The package makes it easier...")
@@ -238,6 +256,43 @@ completely compatible with Plain TeX.")
                        'texlive-plain
                        'texlive-tex))
                ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license 'lppl))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with catalogue entry, no inputs"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "12many"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-12many")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "doc/latex/12many/"
+                                "source/latex/12many/"
+                                "tex/latex/12many/")
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('home-page "https://ctan.org/pkg/one2many")
                ('synopsis (? string?))
                ('description (? string?))
                ('license 'lppl))

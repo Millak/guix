@@ -133,6 +133,7 @@
             '((name     . string)
               (shortdesc . string)
               (longdesc . string)
+              (catalogue . string)
               (catalogue-license . string)
               (catalogue-ctan . string)
               (srcfiles . list)
