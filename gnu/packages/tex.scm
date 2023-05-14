@@ -12670,24 +12670,29 @@ Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
 use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
     (license (list license:lppl1.3+ license:silofl1.1))))
 
-(define-public texlive-latex-hyphenat
+(define-public texlive-hyphenat
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-hyphenat"
-              (list "doc/latex/hyphenat/"
-                    "tex/latex/hyphenat/")
-              (base32 "0b3jx2yvryx95am0ll9h6yc99niw2lwgsbq7r89j84z2qyp2llsq")
-              #:trivial? #t))
+    (name "texlive-hyphenat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hyphenat/" "source/latex/hyphenat/"
+                   "tex/latex/hyphenat/")
+             (base32
+              "0gm7s7bidp9b4sfgylvwydban8jylfcskmqrf0sxlwxsqxqq5fy5")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/hyphenat")
-    (synopsis "Disable/enable hyphenation")
+    (synopsis "Disable/enable hypenation")
     (description
      "This package can disable all hyphenation or enable hyphenation of
 non-alphabetics or monospaced fonts.  The package can also enable hyphenation
-within ‘words’ that contain non-alphabetic characters (e.g., that include
-underscores), and hyphenation of text typeset in monospaced (e.g., cmtt)
-fonts.")
-    (license license:lppl1.3c+)))
+within words that contain non-alphabetic characters (e.g., that include
+underscores), and hyphenation of text typeset in monospaced (e.g.,
+@code{cmtt}) fonts.")
+    (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-hyphenat texlive-hyphenat)
 
 (define-public texlive-lastpage
   (let ((template  (simple-texlive-package
