@@ -3849,6 +3849,32 @@ arrows; record information about document class(es) used; and many more.")
 
 (define-deprecated-package texlive-latex-oberdiek texlive-oberdiek)
 
+(define-public texlive-regexpatch
+  (package
+    (name "texlive-regexpatch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/regexpatch/"
+                   "source/latex/regexpatch/"
+                   "tex/latex/regexpatch/")
+             (base32
+              "1jv8hvkvq0yvc8mh68ybj8fvhf6kcdzwjin1czs45i26s0dpsngj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-l3kernel
+           texlive-l3packages))
+    (home-page "https://ctan.org/pkg/regexpatch")
+    (synopsis "High level patching of commands")
+    (description
+     "The package generalises the macro patching commands provided by
+P. Lehmann's @code{etoolbox}.  The difference between this package and its
+sibling @code{xpatch} is that this package sports a very powerful
+@code{\\regexpatchcmd} based on the @code{l3regex} module of the LaTeX3
+experimental packages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-rerunfilecheck
   (let ((template (simple-texlive-package
                    "texlive-rerunfilecheck"
