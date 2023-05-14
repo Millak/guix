@@ -11608,31 +11608,23 @@ pre-compiled font files, and documentation.")
   (package
     (name "texlive-kastrup")
     (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (texlive-ref "generic" "kastrup"))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "1kkshc48brkq2nx3rlbv78a2130izykbf33ri1q2shqr8pjfmmq8"))))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/kastrup/"
+                   "source/generic/kastrup/"
+                   "tex/generic/kastrup/")
+             (base32
+              "0sbf4xw1jsh9pbjhqw3f0bg067f0rhf936wfnqpzj9kp2167n41j")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "generic/kastrup"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-generated-file
-           (lambda _
-             (delete-file "binhex.drv")
-             #t)))))
-    (home-page "http://www.ctan.org/pkg/binhex")
+    (home-page "https://ctan.org/pkg/binhex")
     (synopsis "Convert numbers into binary, octal and hexadecimal")
-    (description "The @code{kastrup} package provides the
-@emph{binhex.tex} file.  This file provides expandable macros for both
-fixed-width and minimum-width numbers to bases 2, 4, 8 and 16.  All
-constructs TeX accepts as arguments to its @code{\\number} primitive
-are valid as arguments for the macros.  The package may be used under
-LaTeX and plain TeX.")
+    (description
+     "The @code{kastrup} package provides the @emph{binhex.tex} file.  This
+file provides expandable macros for both fixed-width and minimum-width numbers
+to bases 2, 4, 8 and 16.  All constructs TeX accepts as arguments to its
+@code{\\number} primitive are valid as arguments for the macros.  The package
+may be used under LaTeX and plain TeX.")
     (license (license:fsf-free "file:/binhex.dtx"))))
 
 (define-public texlive-translations
