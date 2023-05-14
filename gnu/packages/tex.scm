@@ -12753,20 +12753,28 @@ use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
 
 (define-public texlive-sourcecodepro
   (package
-    (inherit (simple-texlive-package
-              "texlive-sourcecodepro"
-              '("/doc/latex/sourcecodepro/"
-                "/fonts/enc/dvips/sourcecodepro/"
-                "/fonts/map/dvips/sourcecodepro/"
-                "/fonts/opentype/adobe/sourcecodepro/"
-                ;; ^ see comment on texlive-sourcesanspro
-                "/fonts/tfm/adobe/sourcecodepro/"
-                "/fonts/type1/adobe/sourcecodepro/"
-                "/fonts/vf/adobe/sourcecodepro/"
-                "/tex/latex/sourcecodepro/")
-              (base32
-               "009v9y7d3vsljgq9nw5yx4kzyqavxbwrlvwhfjj83s6rmb9xcrmh")
-              #:trivial? #t))
+    (name "texlive-sourcecodepro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sourcecodepro/"
+                   "fonts/enc/dvips/sourcecodepro/"
+                   "fonts/map/dvips/sourcecodepro/"
+                   "fonts/opentype/adobe/sourcecodepro/"
+                   ;; ^ See comment in `texlive-sourcesanspro'.
+                   "fonts/tfm/adobe/sourcecodepro/"
+                   "fonts/type1/adobe/sourcecodepro/"
+                   "fonts/vf/adobe/sourcecodepro/"
+                   "tex/latex/sourcecodepro/")
+             (base32
+              "009v9y7d3vsljgq9nw5yx4kzyqavxbwrlvwhfjj83s6rmb9xcrmh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-fontaxes
+           texlive-iftex
+           texlive-mweights
+           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/sourcecodepro")
     (synopsis "Use Source Code Pro with TeX(-alike) systems")
     (description "This package provides the Source Code Pro font family from
