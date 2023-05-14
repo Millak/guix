@@ -12548,14 +12548,18 @@ compatibility reasons.  See @code{lthooks-doc.pdf} for instructions how to use
 
 (define-public texlive-everyshi
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-everyshi"
-      (list "doc/latex/everyshi/"
-            "source/latex/everyshi/"
-            "tex/latex/everyshi/")
-      (base32 "11y6xazv1nk0m2hzsainjr8ijn5cff04xfccm6a65hzg7ipggraj")
-      #:trivial? #t))
+    (name "texlive-everyshi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/everyshi/" "source/latex/everyshi/"
+                   "tex/latex/everyshi/")
+             (base32
+              "11y6xazv1nk0m2hzsainjr8ijn5cff04xfccm6a65hzg7ipggraj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"))
     (home-page "https://ctan.org/pkg/everyshi")
     (synopsis "Take action at every @code{\\shipout}")
     (description
