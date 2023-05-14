@@ -10936,18 +10936,16 @@ figure versions offered by many professional fonts.")
 (define-public texlive-preprint
   (package
     (name "texlive-preprint")
-    (version "1.0e")
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (texlive-ref "latex" "preprint"))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "173ik9xad3zih6gcdwdkzyljarh06ky6c5d2x1yjs22qqi75py5a"))))
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/preprint/" "source/latex/preprint/"
+                   "tex/latex/preprint/")
+             (base32
+              "198xwg6mll3yndc1kf79l6zgnq3nsk7fsh3rlj28nipd26ysw6lq")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/preprint"))
-    (home-page "http://www.ctan.org/pkg/preprint")
+    (home-page "https://ctan.org/pkg/preprint")
     (synopsis "Bundle of modules for preprints")
     (description "The bundle comprises: @code{authblk}, which permits
 footnote style author/affiliation input in the @command{\\author} command,
