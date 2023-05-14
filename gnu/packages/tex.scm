@@ -9037,45 +9037,36 @@ with documents of any length in which the usual processing abilities are
 required: automatic sectioning and pagination, spell checking and so forth.")
     (license license:gpl2+)))
 
-(define-public texlive-latex-media9
+(define-public texlive-media9
   (package
-    (name "texlive-latex-media9")
+    (name "texlive-media9")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/media9"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0a1v70k6231323y1lazfda1y9568w8hn7c8jhc7rblkhdfv3slw7"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/media9")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/media9")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/media9/"
+                   "source/latex/media9/files/"
+                   "source/latex/media9/players/"
+                   "tex/latex/media9/javascript/"
+                   "tex/latex/media9/players/")
+             (base32
+              "1kx0zbwd7pd4mah0b8l595hyjc03g505kfmn6fv7iaqvkixqrgbi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/media9")
     (synopsis "Multimedia inclusion package with Adobe Reader-9/X compatibility")
     (description
-     "The package provides an interface to embed interactive Flash (SWF) and 3D
-objects (Adobe U3D & PRC), as well as video and sound files or streams in the
-popular MP4, FLV and MP3 formats into PDF documents with Acrobat-9/X
+     "The package provides an interface to embed interactive Flash (SWF) and
+3D objects (Adobe U3D & PRC), as well as video and sound files or streams in
+the popular MP4, FLV and MP3 formats into PDF documents with Acrobat-9/X
 compatibility.  Playback of multimedia files uses the built-in Flash Player of
-Adobe Reader and does, therefore, not depend on external plug-ins.  Flash Player
-supports the efficient H.264 codec for video compression.
+Adobe Reader and does, therefore, not depend on external plug-ins.  Flash
+Player supports the efficient H.264 codec for video compression.
 
 The package is based on the RichMedia Annotation, an Adobe addition to the PDF
 specification.  It replaces the now obsolete @code{movie15} package.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-media9 texlive-media9)
 
 (define-public texlive-latex-ocgx2
   (package

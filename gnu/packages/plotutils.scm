@@ -320,7 +320,7 @@ colors, styles, options and details.")
                   texlive-kvoptions
                   texlive-l3backend
                   texlive-latex-base
-                  texlive-latex-media9
+                  texlive-media9
                   texlive-oberdiek      ;for ifluatex
                   texlive-latex-ocgx2
                   texlive-parskip
