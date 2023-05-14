@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -62,7 +62,8 @@
               (marionette-eval
                '(begin
                   (use-modules (gnu services herd))
-                  (start-service 'term-tty1))
+                  (start-service 'term-tty1)
+                  (start-service 'elogind))
                marionette)
               (marionette-control "sendkey ctrl-alt-f1" marionette)
 
@@ -85,6 +86,13 @@
                 (list (guest-file "/root/sessions")
                       (guest-file "/root/seats")
                       (guest-file "/root/users")))))
+
+          (test-assert "screendump"
+            (begin
+              (let ((capture (string-append #$output "/tty1.ppm")))
+                (marionette-control
+                 (string-append "screendump " capture) marionette)
+                (file-exists? capture))))
 
           (test-end))))
 
