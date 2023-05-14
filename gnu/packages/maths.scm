@@ -5812,7 +5812,7 @@ set.")
                                      texlive-newunicodechar
                                      texlive-parskip
                                      texlive-stackengine
-                                     texlive-latex-tabulary
+                                     texlive-tabulary
                                      texlive-tocloft
                                      texlive-upquote
                                      texlive-latex-varwidth

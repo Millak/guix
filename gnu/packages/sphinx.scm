@@ -125,7 +125,7 @@
            texlive-latex-needspace
            texlive-parskip
            texlive-latex-preview
-           texlive-latex-tabulary
+           texlive-tabulary
            texlive-titlesec
            texlive-tools                          ;multicol, longtable
            texlive-upquote

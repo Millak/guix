@@ -7655,20 +7655,21 @@ the more recent @code{subcaption} package more satisfactory.")
 
 (define-deprecated-package texlive-latex-subfigure texlive-subfigure)
 
-(define-public texlive-latex-tabulary
+(define-public texlive-tabulary
   (package
-    (name "texlive-latex-tabulary")
+    (name "texlive-tabulary")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "tabulary"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1adkdx2zkk42g82nqf57lv1nc1z7kwl13jmy8vpcsizsa0xdnx9n"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabulary/" "source/latex/tabulary/"
+                   "tex/latex/tabulary/")
+             (base32
+              "00afi9r5264rhfy5kg73fk763i7wm6bvzkmrlg7n17fwl6hx0sa1")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/tabulary"))
-    (home-page "https://www.ctan.org/pkg/tabulary")
+    (propagated-inputs
+     (list texlive-tools))
+    (home-page "https://ctan.org/pkg/tabulary")
     (synopsis "Tabular with variable width columns balanced")
     (description
      "The package defines a @code{tabular*}-like environment, @code{tabulary},
@@ -7679,6 +7680,8 @@ variable width columns (@code{\\raggedright}, @code{\\centering},
 @code{tabularx}'s @code{X} columns, the width of each column is weighted
 according to the natural width of the widest cell in the column.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-tabulary texlive-tabulary)
 
 (define-public texlive-latex-threeparttable
   (package
