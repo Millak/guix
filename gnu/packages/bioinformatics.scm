@@ -4256,7 +4256,7 @@ data and settings.")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-force-source-date
-           ;; for reproducible dates, texlive needs this to respect respect
+           ;; for reproducible dates, texlive needs this to respect
            ;; SOURCE_DATE_EPOCH
            (lambda _
              (setenv "FORCE_SOURCE_DATE" "1")))
@@ -4287,18 +4287,19 @@ data and settings.")
     (inputs
      (list boost cairo rmath-standalone))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-cm
-                                             texlive-amsfonts
-                                             texlive-doi
-                                             texlive-fonts-ec
-                                             texlive-latex-examplep
-                                             texlive-hyperref
-                                             texlive-ms
-                                             texlive-latex-natbib
-                                             texlive-bibtex ;style files used by natbib
-                                             texlive-pgf    ;tikz
-                                             texlive-latex-verbatimbox)))
-       ("imagemagick" ,imagemagick)))
+     (list (texlive-updmap.cfg
+            (list texlive-cm
+                  texlive-amsfonts
+                  texlive-doi
+                  texlive-fonts-ec
+                  texlive-latex-examplep
+                  texlive-hyperref
+                  texlive-ms
+                  texlive-latex-natbib
+                  texlive-bibtex        ;style files used by natbib
+                  texlive-pgf           ;tikz
+                  texlive-latex-verbatimbox))
+           imagemagick))
     (home-page "https://dorina.mdc-berlin.de/public/rajewsky/discrover/")
     (synopsis "Discover discriminative nucleotide sequence motifs")
     (description "Discrover is a motif discovery method to find binding sites
