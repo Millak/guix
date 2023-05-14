@@ -36179,40 +36179,40 @@ package online.")
     (name "r-prereg")
     (version "0.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "prereg" version))
-        (sha256
-          (base32
-            "039nrl5cirsx1ysh214dr6xnn1h6h3f90im6k9dgmzfksxdqigpw"))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "prereg" version))
+       (sha256
+        (base32
+         "039nrl5cirsx1ysh214dr6xnn1h6h3f90im6k9dgmzfksxdqigpw"))))
     (properties `((upstream-name . "prereg")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-rmarkdown
-            ;; The package provides a custom LaTex template in
-            ;; inst/rmd/prereg_form.tex, which depends on these packages:
-            texlive-amsmath
-            texlive-booktabs
-            texlive-etoolbox
-            texlive-iftex
-            texlive-fancyhdr
-            texlive-fancyvrb
-            texlive-geometry
-            texlive-graphics
-            texlive-latex-threeparttable
-            texlive-titlesec
-            texlive-upquote
-            texlive-listings
-            texlive-polyglossia
-            texlive-titling
-            texlive-tools
-            texlive-ulem
-            (texlive-updmap.cfg (list texlive-amsfonts texlive-lm))))
+     (list r-rmarkdown
+           ;; The package provides a custom LaTex template in
+           ;; inst/rmd/prereg_form.tex, which depends on these packages:
+           texlive-amsmath
+           texlive-booktabs
+           texlive-etoolbox
+           texlive-fancyhdr
+           texlive-fancyvrb
+           texlive-geometry
+           texlive-graphics
+           texlive-iftex
+           texlive-listings
+           texlive-polyglossia
+           texlive-threeparttable
+           texlive-titlesec
+           texlive-titling
+           texlive-tools
+           texlive-ulem
+           texlive-upquote
+           (texlive-updmap.cfg (list texlive-amsfonts texlive-lm))))
     (home-page "https://github.com/crsh/prereg")
     (synopsis
-      "R Markdown Templates to preregister Scientific Studies")
+     "R Markdown Templates to preregister Scientific Studies")
     (description
-      "This package provides a collection of templates to author
+     "This package provides a collection of templates to author
 preregistration documents for scientific studies in PDF format.")
     (license license:gpl3)))
 

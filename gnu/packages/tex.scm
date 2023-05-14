@@ -7683,33 +7683,22 @@ according to the natural width of the widest cell in the column.")
 
 (define-deprecated-package texlive-latex-tabulary texlive-tabulary)
 
-(define-public texlive-latex-threeparttable
+(define-public texlive-threeparttable
   (package
-    (name "texlive-latex-threeparttable")
+    (name "texlive-threeparttable")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/threeparttable"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "10vy9k150w2lviw8h22s2mcykff38xci653m5823s2vv44pwbmzq"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/threeparttable")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/threeparttable")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/threeparttable/"
+                   "tex/latex/threeparttable/")
+             (base32
+              "05i50k1y736m52903nz4kf2xl23w6y7rrzyacs4kgd1w6kmjm6f7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-bookmark
+           texlive-hyperref))
+    (home-page "https://ctan.org/pkg/threeparttable")
     (synopsis "Tables with captions and notes all the same width")
     (description
      "This package facilitates tables with titles (captions) and notes.  The
