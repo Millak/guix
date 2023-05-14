@@ -15205,11 +15205,11 @@ time.")
                                      texlive-eurosym
                                      texlive-fonts-rsfs
                                      texlive-jknappen
-                                     texlive-latex-ucs
                                      texlive-lm
                                      texlive-lm-math
                                      texlive-mathpazo
                                      texlive-oberdiek
+                                     texlive-ucs
                                      texlive-zapfding))))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")

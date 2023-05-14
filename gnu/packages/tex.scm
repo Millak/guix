@@ -8373,45 +8373,34 @@ It does not work in combination with list environments, but can be used in a
 
 (define-deprecated-package texlive-latex-wrapfig texlive-wrapfig)
 
-(define-public texlive-latex-ucs
+(define-public texlive-ucs
   (package
-    (name "texlive-latex-ucs")
+    (name "texlive-ucs")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/ucs"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0rrxwi60wmz5dfjifl4fwk66plf7wix85qnhfv4ylvmj6qi6hw37"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/ucs")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/ucs")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ucs/" "tex/latex/ucs/data/"
+                   "tex/latex/ucs/utils/")
+             (base32
+              "1hr7dsfx7vggai1j7saba48lsm1a003my9qkbr6qmazgc3lbcvl8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics
+           texlive-hyperref))
+    (home-page "https://ctan.org/pkg/ucs")
     (synopsis "Extended UTF-8 input encoding support for LaTeX")
     (description
-     "The bundle provides the @code{ucs} package, and @code{utf8x.def},
-together with a large number of support files.  The @code{utf8x.def}
+     "The bundle provides the @code{ucs} package, and @file{utf8x.def},
+together with a large number of support files.  The @file{utf8x.def}
 definition file for use with @code{inputenc} covers a wider range of Unicode
-characters than does @code{utf8.def} in the LaTeX distribution.  The package
+characters than does @file{utf8.def} in the LaTeX distribution.  The package
 provides facilities for efficient use of its large sets of Unicode characters.
 Glyph production may be controlled by various options, which permits use of
-non-ASCII characters when coding mathematical formulae.  Note that the bundle
-previously had an alias “unicode”; that alias has now been withdrawn, and no
-package of that name now exists.")
+non-ASCII characters when coding mathematical formulae.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-ucs texlive-ucs)
 
 (define-public texlive-latex-preview
   (package
