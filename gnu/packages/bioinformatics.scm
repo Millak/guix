@@ -3679,28 +3679,26 @@ files.")
 (define-public python-pybigwig
   (package
     (name "python-pybigwig")
-    (version "0.3.17")
+    (version "0.3.22")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyBigWig" version))
               (sha256
                (base32
-                "157x6v48y299zm382krf1dw08fdxg95im8lnabhp5vc94s04zxj1"))
+                "0hr25lkp26mk0fp7irdjdrdsd5lann9kyv0xq9npyyxxakvjci2x"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Delete bundled libBigWig sources
-                  (delete-file-recursively "libBigWig")
-                  #t))))
-    (build-system python-build-system)
+               ;; Delete bundled libBigWig sources
+               '(delete-file-recursively "libBigWig"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
+     '(#:tests? #false      ;only one test exists and it needs internet access
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'link-with-libBigWig
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda _
              (substitute* "setup.py"
-               (("libs=\\[") "libs=[\"BigWig\", "))
-             #t)))))
+               (("libs=\\[") "libs=[\"BigWig\", ")))))))
     (propagated-inputs
      (list python-numpy))
     (inputs
