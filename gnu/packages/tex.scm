@@ -4260,6 +4260,33 @@ this bundle for use independent of ConTeXt.")
 in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
     (license license:expat)))
 
+(define-public texlive-luatexbase
+  (package
+    (name "texlive-luatexbase")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+
+             name version
+             (list "doc/luatex/luatexbase/"
+                   "source/luatex/luatexbase/"
+                   "tex/luatex/luatexbase/")
+             (base32
+              "1nz2k9czqdmn08v75qa2bwanvcvyp9jmqcgwaxcy4fy4mpbrn8ra")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-ctablestack))
+    (home-page "https://ctan.org/pkg/luatexbase")
+    (synopsis "Basic resource management for LuaTeX code")
+    (description
+     "The LaTeX kernel builds in support for LuaTeX functionality, also
+available as @file{ltluatex.tex} for users of plain TeX and those with older
+LaTeX kernel implementations.  This support is based on ideas taken from the
+original @code{luatexbase} package, but there are interface differences.  This
+stub package provides a compatibility layer to allow existing packages to
+upgrade smoothly to the new support structure.")
+    (license license:lppl1.3+)))
+
 ;; TODO: We should be able to build this from the sources on Github with
 ;; texlive-l3build, but I haven't been able to get it to work.
 (define-public texlive-luaotfload
