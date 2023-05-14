@@ -8402,27 +8402,19 @@ non-ASCII characters when coding mathematical formulae.")
 
 (define-deprecated-package texlive-latex-ucs texlive-ucs)
 
-(define-public texlive-latex-preview
+(define-public texlive-preview
   (package
-    (name "texlive-latex-preview")
+    (name "texlive-preview")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "preview"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0hnf821yvki9bzfkz79ns9m1msjp3yvd4dhf3268wrpr1zjx6w8v"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/preview/" "source/latex/preview/"
+                   "tex/latex/preview/")
+             (base32
+              "1njw4ziyigmzxky86sh6byn8jjdah51iyd8lkmwx5rxhaqp7snkp")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/preview"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-generated-file
-           (lambda _
-             (delete-file "preview.drv")
-             #t)))))
-    (home-page "https://www.ctan.org/pkg/preview")
+    (home-page "https://ctan.org/pkg/preview")
     (synopsis "Extract bits of a LaTeX source for output")
     (description
      "The main purpose of the preview package is the extraction of selected
@@ -8433,6 +8425,8 @@ with DVI files postprocessed by either Dvips and Ghostscript or
 dvipng, but it also works when you are using PDFTeX for generating PDF
 files.")
     (license license:gpl3+)))
+
+(define-deprecated-package texlive-latex-preview texlive-preview)
 
 (define-public texlive-acronym
   (let ((template (simple-texlive-package

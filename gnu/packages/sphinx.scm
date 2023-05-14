@@ -125,7 +125,7 @@
            texlive-latex-needspace
            texlive-oberdiek             ;hypcap
            texlive-parskip
-           texlive-latex-preview
+           texlive-preview
            texlive-tabulary
            texlive-titlesec
            texlive-tools                ;multicol, longtable

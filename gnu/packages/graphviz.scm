@@ -390,9 +390,9 @@ graphs in Graphviz's DOT language, written in pure Python.")
            texlive-geometry
            texlive-graphics
            texlive-latex-base
-           texlive-latex-preview
            texlive-pgf
            texlive-pstricks
+           texlive-preview
            texlive-xcolor
            texlive-xkeyval))
     (home-page "https://github.com/kjellmf/dot2tex")
