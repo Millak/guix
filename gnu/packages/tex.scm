@@ -873,55 +873,53 @@ to adapt the plain e-TeX source file to work with XeTeX and LuaTeX.")
   (package
     (name "texlive-metafont")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-multi-fetch)
-              (uri (svn-multi-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist"))
-                    (locations '("/metafont/"
-                                 "/fonts/source/public/modes/"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "17y72xmz5a36vdsq7pfrwj0j4c7llrm9j5kcq349cpaas7r32lmb"))))
-    (build-system gnu-build-system)
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/inimf.1"
+                   "doc/man/man1/inimf.man1.pdf"
+                   "doc/man/man1/mf-nowin.1"
+                   "doc/man/man1/mf-nowin.man1.pdf"
+                   "doc/man/man1/mf.1"
+                   "doc/man/man1/mf.man1.pdf"
+                   "metafont/base/"
+                   "metafont/config/"
+                   "metafont/misc/")
+             (base32
+              "1zzab3b8h2xsp88jqjr64i7f0yiqzd9rmzyvpgbfpyhd4sdl4fk4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
-     `(#:tests? #f ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((cwd (getcwd))
-                    (mf (string-append cwd "/metafont"))
-                    (modes (string-append cwd "/fonts/source/public/modes")))
-               (setenv "MFINPUTS"
-                       (string-append modes ":"
-                                      mf "/base:"
-                                      mf "/misc:"
-                                      mf "/roex:"
-                                      mf "/feynmf:"
-                                      mf "/mfpic:"
-                                      mf "/config")))
-             (mkdir "build")
-             (with-directory-excursion "build"
-               (invoke "inimf" "mf.mf"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (base (string-append out "/share/texmf-dist/web2c"))
-                    (mf   (string-append out "/share/texmf-dist/metafont/")))
-               (mkdir-p base)
-               (mkdir-p mf)
-               (install-file "build/mf.base" base)
-               (with-directory-excursion "metafont"
-                 (for-each (lambda (where)
-                             (copy-recursively where (string-append mf where)))
-                           (list "base" "misc" "config")))))))))
+     (list
+      #:texlive-latex-base #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'generate-mf.base
+            ;; Even though the file "mf.base" does not appear in tlpdb, it
+            ;; must be generated and provided in metafont package.
+            (lambda _
+              (let* ((cwd (getcwd))
+                     (mf (string-append cwd "/metafont"))
+                     (modes #$(this-package-native-input "texlive-modes")))
+                (setenv "MFINPUTS"
+                        (string-append
+                         modes "/share/texmf-dist/fonts/source/public/modes:"
+                         mf "/base:"
+                         mf "/misc:"
+                         mf "/roex:"
+                         mf "/feynmf:"
+                         mf "/mfpic:"
+                         mf "/config")))
+              ;; "build" directory was not created during `build' phases since
+              ;; there is no ".ins" nor ".dtx" file to process.
+              (mkdir-p "build")
+              (with-directory-excursion "build"
+                (invoke "inimf" "mf.mf")
+                (install-file "mf.base"
+                              (string-append #$output
+                                             "/share/texmf-dist/web2c"))))))))
     (native-inputs
-     (list texlive-bin))
-    (home-page "https://www.ctan.org/pkg/metafont")
+     (list texlive-bin texlive-modes))
+    (home-page "https://ctan.org/pkg/metafont")
     (synopsis "Metafont base files")
     (description "This package provides the Metafont base files needed to
 build fonts using the Metafont system.")
