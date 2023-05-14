@@ -11134,28 +11134,27 @@ floats merely delays the arrival of the inevitable error message.")
       (license license:lppl1.3c+))))
 
 (define-public texlive-ifmtarg
-  (let ((template (simple-texlive-package
-                   "texlive-ifmtarg"
-                   (list "/doc/latex/ifmtarg/"
-                         "/source/latex/ifmtarg/")
-                   (base32
-                    "0cwjn4bhq9zyfxr1595hgyc1d7rcsf9lva55x98q81xy5xrrmrb2"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/ifmtarg")
-         ((#:build-targets _ '())
-          ''("ifmtarg.ins"))
-         ((#:tex-format _ "latex") "latex")))
-      (inputs
-       (list texlive-filecontents))
-      (home-page "https://www.ctan.org/pkg/ifmtarg")
-      (synopsis "If-then-else command for processing potentially empty arguments")
-      (description "This package provides a command for the LaTeX programmer for
-testing whether an argument is empty.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-ifmtarg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ifmtarg/" "source/latex/ifmtarg/"
+                   "tex/latex/ifmtarg/")
+             (base32
+              "19bfi12j5ra19k6vjd1q5fjsm68vipa7ida7pg9pf15l5pxwbgqz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"))
+    (native-inputs
+     (list texlive-filecontents))
+    (home-page "https://ctan.org/pkg/ifmtarg")
+    (synopsis "If-then-else command for processing potentially empty arguments")
+    (description
+     "This package provides a command for the LaTeX programmer for testing
+whether an argument is empty.")
+    (license license:lppl1.3c+)))
 
 (define-public texlive-pagenote
   (let ((template (simple-texlive-package
