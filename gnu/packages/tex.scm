@@ -3498,6 +3498,30 @@ verbatim source).")
 
 (define-deprecated-package texlive-latex-fancyvrb texlive-fancyvrb)
 
+(define-public texlive-gincltex
+  (package
+    (name "texlive-gincltex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gincltex/" "source/latex/gincltex/"
+                   "tex/latex/gincltex/")
+             (base32
+              "1x6bsf445dp8wc5hfgyywlal8vky5w23d69zlpybkp2d9am9a71p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-adjustbox
+           texlive-svn-prov))
+    (home-page "https://ctan.org/pkg/gincltex")
+    (synopsis "Include TeX files as graphics")
+    (description
+     "The package builds on the standard LaTeX packages @code{graphics} and
+allows external LaTeX source files to be included, in the same way as graphic
+files, by @code{\\includegraphics}.  In effect, then package adds support for
+the @file{.tex} extension.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-glyphlist
   (package
     (inherit (simple-texlive-package
