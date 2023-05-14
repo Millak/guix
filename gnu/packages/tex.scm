@@ -12438,22 +12438,30 @@ tables).")
 
 (define-public texlive-ragged2e
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-ragged2e"
-      (list "doc/latex/ragged2e/"
-            "source/latex/ragged2e/"
-            "tex/latex/ragged2e/")
-      (base32 "1cxj5jdgvr3xk1inrb3yzpm3l386jjawgpqiwsz53k6yshb6yfml")
-      #:trivial? #t))
+    (name "texlive-ragged2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ragged2e/" "source/latex/ragged2e/"
+                   "tex/latex/ragged2e/")
+             (base32
+              "1cxj5jdgvr3xk1inrb3yzpm3l386jjawgpqiwsz53k6yshb6yfml")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"))
+    (propagated-inputs
+     (list texlive-everysel
+           texlive-footmisc))
     (home-page "https://ctan.org/pkg/ragged2e")
-    (synopsis "Alternative versions of \"ragged\"-type commands")
+    (synopsis "Alternative versions of ragged-type commands")
     (description
-     "The @code{ragged2e} package defines new commands @code{\\Centering}, @code{\\RaggedLeft},
-and @code{\\RaggedRight} and new environments @code{Center}, @code{FlushLeft},
-and @code{FlushRight}, which set ragged text and are easily configurable to
-allow hyphenation (the corresponding commands in LaTeX, all of whose names are
-lower-case, prevent hyphenation altogether).")
+     "The @code{ragged2e} package defines new commands @code{\\Centering},
+@code{\\RaggedLeft}, and @code{\\RaggedRight} and new environments
+@code{Center}, @code{FlushLeft}, and @code{FlushRight}, which set ragged text
+and are easily configurable to allow hyphenation (the corresponding commands
+in LaTeX, all of whose names are lower-case, prevent hyphenation
+altogether).")
     (license license:lppl1.3c)))
 
 (define-public texlive-refstyle
