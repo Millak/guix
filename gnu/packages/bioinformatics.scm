@@ -4212,7 +4212,7 @@ bases are detected.")
 (define-public diamond
   (package
     (name "diamond")
-    (version "0.9.30")
+    (version "2.1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4221,18 +4221,11 @@ bases are detected.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k6f3kb6cniw11xw6763kkbs1sl0yack7xsy7q5fl5v170ssphq4"))))
+                "0kb17jwlsrvgswfahzznrffv1i6ybwwmq99qs7iga5yzbx64jp6q"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-native-compilation
-           (lambda _
-             (substitute* "CMakeLists.txt" (("-march=native") ""))
-             #t)))))
-    (inputs
-     (list zlib))
+     (list #:configure-flags '(list "-DX86=OFF"))) ;avoid SSE4 and AVX2
+    (inputs (list zlib))
     (home-page "https://github.com/bbuchfink/diamond")
     (synopsis "Accelerated BLAST compatible local sequence aligner")
     (description
@@ -4241,7 +4234,7 @@ translated DNA query sequences against a protein reference database (BLASTP
 and BLASTX alignment mode).  The speedup over BLAST is up to 20,000 on short
 reads at a typical sensitivity of 90-99% relative to BLAST depending on the
 data and settings.")
-    (license license:agpl3+)))
+    (license license:gpl3+)))
 
 (define-public discrover
   (package
