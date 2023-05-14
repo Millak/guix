@@ -8032,26 +8032,26 @@ toolkits.")
      (list graphviz
            inkscape/stable
            python-colorspacious
+           python-ipython
+           python-ipywidgets
            python-mpl-sphinx-theme
+           python-numpydoc
            python-scipy
            python-sphinx
            python-sphinx-copybutton
            python-sphinx-gallery
            python-sphinxcontrib-svg2pdfconverter
-           python-numpydoc
-           python-ipython
-           python-ipywidgets
+           texinfo
            texlive-amsfonts
            texlive-amsmath
            texlive-babel
+           texlive-etoolbox
            texlive-expdlist
            texlive-fontspec
-           texlive-unicode-math
-           texlive-etoolbox
-           texlive-underscore
-           texlive-latex-type1cm
            texlive-times
-           texinfo))
+           texlive-type1cm
+           texlive-underscore
+           texlive-unicode-math))
     (synopsis "Documentation for the @code{python-matplotlib} package")))
 
 (define-public python-matplotlib-inline

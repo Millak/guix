@@ -7996,34 +7996,32 @@ floats in a page.  You may assign headers/footers to individual floats, too.")
 
 (define-deprecated-package texlive-latex-titlesec texlive-titlesec)
 
-(define-public texlive-latex-type1cm
+(define-public texlive-type1cm
   (package
-    (name "texlive-latex-type1cm")
+    (name "texlive-type1cm")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "type1cm"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1lvxrqfwcwa4p31zyfm80gr05v8c28xybv5ri79zi2ngz6834z12"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/type1cm/" "source/latex/type1cm/"
+                   "tex/latex/type1cm/")
+             (base32
+              "1922af5xvhrh4l8rqwz3bjd1gqvzfkxrfim28rpnvbx4n7jl6sdh")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/type1cm"))
-    (home-page "https://www.ctan.org/pkg/type1cm")
+    (home-page "https://ctan.org/pkg/type1cm")
     (synopsis "Arbitrary size font selection in LaTeX")
     (description
      "LaTeX, by default, restricts the sizes at which you can use its default
 computer modern fonts, to a fixed set of discrete sizes (effectively, a set
 specified by Knuth).  The @code{type1cm} package removes this restriction;
-this is particularly useful when using scalable versions of the CM
+this is particularly useful when using scalable versions of the @code{cm}
 fonts (Bakoma, or the versions from BSR/Y&Y, or True Type versions from Kinch,
-PCTeX, etc.).  In fact, since modern distributions will automatically generate
-any bitmap font you might need, @code{type1cm} has wider application than just
-those using scalable versions of the fonts.  Note that the LaTeX distribution
-now contains a package @code{fix-cm},f which performs the task of
-@code{type1cm}, as well as doing the same job for T1- and TS1-encoded
-@code{ec} fonts.")
+PCTeX, etc.).  Note that the LaTeX distribution now contains a package
+@code{fix-cm}, which performs the task of @code{type1cm}, as well as doing the
+same job for T1- and TS1-encoded @code{ec} fonts.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-type1cm texlive-type1cm)
 
 (define-public texlive-lh
   (let ((template (simple-texlive-package
