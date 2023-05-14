@@ -1176,9 +1176,7 @@ for and start applications.")
      (list exo
            garcon
            adwaita-icon-theme
-           ;; Greybird is the recommend theme since Xfce 4.14, see:
-           ;; <https://mail.xfce.org/pipermail/xfce4-dev/2018-August/032151.html>
-           ;; TODO: Make it default via "xfconf/xfce/perchannel-xml/xsettinsg.xml"
+           elementary-xfce-icon-theme
            greybird-gtk-theme
            hicolor-icon-theme
            mate-polkit-for-xfce
