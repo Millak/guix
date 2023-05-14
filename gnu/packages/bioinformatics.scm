@@ -3446,31 +3446,31 @@ setup"))))
                 "0115hkjflsnfzn36xppwf9h9avfxlavr43djqmshkkzbgjzsz60i"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/codingquarry")))
-               (install-file "INSTRUCTIONS.pdf" doc)
-               (copy-recursively "QuarryFiles"
-                                 (string-append out "/QuarryFiles"))
-               (install-file "CodingQuarry" bin)
-               (install-file "CufflinksGTF_to_CodingQuarryGFF3.py" bin))
-             #t)))))
-    (inputs (list openmpi))
+     (list
+      #:tests? #f                       ;no "check" target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (doc (string-append #$output "/share/doc/codingquarry")))
+                (install-file "INSTRUCTIONS.pdf" doc)
+                (copy-recursively "QuarryFiles"
+                                  (string-append #$output
+                                                 "/share/codingquarry/QuarryFiles"))
+                (install-file "CodingQuarry" bin)
+                (install-file "CufflinksGTF_to_CodingQuarryGFF3.py" bin)))))))
+    ;; TODO: This package also needs a Python 2 variant of biopython
+    (inputs (list openmpi python-2)) ;Only Python 2 is supported
     (native-search-paths
      (list (search-path-specification
             (variable "QUARRY_PATH")
-            (files '("QuarryFiles")))))
-    (native-inputs `(("python" ,python-2))) ; Only Python 2 is supported
+            (files '("share/codingquarry/QuarryFiles")))))
+    (home-page "https://sourceforge.net/projects/codingquarry/")
     (synopsis "Fungal gene predictor")
     (description "CodingQuarry is a highly accurate, self-training GHMM fungal
 gene predictor designed to work with assembled, aligned RNA-seq transcripts.")
-    (home-page "https://sourceforge.net/projects/codingquarry/")
     (license license:gpl3+)))
 
 (define-public clustal-omega
