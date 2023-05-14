@@ -719,12 +719,16 @@ Alphalph's commands can be used as a replacement for LaTeX's
 
 (define texlive-docstrip
   (package
-    (inherit (simple-texlive-package
-              "texlive-docstrip"
-              (list "/tex/latex/base/docstrip.tex")
-              (base32
-               "1pxbqbia0727vg01xv8451szm55z2w8sb0vv3kf4iqx5ibb6m0d2")
-              #:trivial? #t))
+    (name "texlive-docstrip")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "/tex/latex/base/docstrip.tex")
+             (base32
+              "1pxbqbia0727vg01xv8451szm55z2w8sb0vv3kf4iqx5ibb6m0d2")))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:texlive-latex-base #f))
     (home-page "https://www.ctan.org/texlive")
     (synopsis "Utility to strip documentation from TeX files")
     (description "This package provides the docstrip utility to strip
