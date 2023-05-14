@@ -12686,18 +12686,24 @@ bibliographies, and displaying personal pronouns.")
 
 (define-public texlive-physics
   (package
-    (inherit (simple-texlive-package
-              "texlive-physics"
-              '("/doc/latex/physics/"
-                "/tex/latex/physics/")
-              (base32
-               "1wy58wwcv1pv18xs1n71abnm73dqnxqijxvhfxk0rcmvbc6wvwrb")
-              #:trivial? #t))
+    (name "texlive-physics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/physics/" "tex/latex/physics/")
+             (base32
+              "1wy58wwcv1pv18xs1n71abnm73dqnxqijxvhfxk0rcmvbc6wvwrb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-l3packages))
     (home-page "https://ctan.org/pkg/physics")
     (synopsis "Macros supporting the Mathematics of Physics")
-    (description "The package defines simple and flexible macros for
-typesetting equations in the languages of vector calculus and linear
-algebra, using Dirac notation.")
+    (description
+     "The package defines simple and flexible macros for typesetting equations
+in the languages of vector calculus and linear algebra, using Dirac
+notation.")
     (license license:lppl)))
 
 (define-public texlive-sourcesanspro
