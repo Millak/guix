@@ -12399,23 +12399,26 @@ replaces @code{datetime.sty} which is now obsolete.")
 
 (define-public texlive-tracklang
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-tracklang"
-      (list "doc/generic/tracklang/"
-            "source/latex/tracklang/"
-            "tex/generic/tracklang/"
-            "tex/latex/tracklang/")
-      (base32 "1386sg25y6zb4ixvrbdv6n1gp54h18mjd984bnwwqda6jafxx4zr")
-      #:trivial? #t))
-    (home-page "https://ctan.org/macros/generic/tracklang")
+    (name "texlive-tracklang")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tracklang/"
+                   "source/latex/tracklang/"
+                   "tex/generic/tracklang/"
+                   "tex/latex/tracklang/")
+             (base32
+              "1386sg25y6zb4ixvrbdv6n1gp54h18mjd984bnwwqda6jafxx4zr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tracklang")
     (synopsis "Language and dialect tracker")
     (description
-     "The @code{tracklang} package is provided for package developers who want a
-simple interface to find out which languages the user has requested through
+     "The @code{tracklang} package is provided for package developers who want
+a simple interface to find out which languages the user has requested through
 packages such as @code{babel} or @code{polyglossia}.  This package does not
 provide any translations!  Its purpose is simply to track which languages have
-been requested by the user.  Generic TeX code is in @code{tracklang.tex} for
+been requested by the user.  Generic TeX code is in @file{tracklang.tex} for
 non-LaTeX users.")
     (license license:lppl1.3+)))
 
