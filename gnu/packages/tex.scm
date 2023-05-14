@@ -10424,17 +10424,15 @@ package to handle all of the possible unit-related needs of LaTeX users.")
   (package
     (name "texlive-booktabs")
     (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (texlive-ref "latex" "booktabs"))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "1mycxzl761p2zzmva8xsjbxbvrxx3vhi5p160mh9kiqwhrs5biz5"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/booktabs/" "source/latex/booktabs/"
+                   "tex/latex/booktabs/")
+             (base32
+              "0pv2kv4hgayqfcij2sz1jmk6kbxqccyaksz8xlw5kvqrbag9vxm3")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/booktabs"))
-    (home-page "http://www.ctan.org/pkg/booktabs")
+    (home-page "https://ctan.org/pkg/booktabs")
     (synopsis "Publication quality tables in LaTeX")
     (description
      "This package enhances the quality of tables in LaTeX, providing extra
