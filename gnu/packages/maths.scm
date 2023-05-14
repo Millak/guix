@@ -5803,7 +5803,7 @@ set.")
                                      texlive-listofitems
                                      texlive-multirow
                                      texlive-natbib
-                                     texlive-latex-needspace
+                                     texlive-needspace
                                      texlive-newunicodechar
                                      texlive-parskip
                                      texlive-sectsty

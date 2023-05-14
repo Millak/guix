@@ -9240,30 +9240,31 @@ and after the formatted number.")
 
 (define-deprecated-package texlive-latex-numprint texlive-numprint)
 
-(define-public texlive-latex-needspace
+(define-public texlive-needspace
   (package
-    (name "texlive-latex-needspace")
+    (name "texlive-needspace")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "needspace"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0kw80f5jh4gdpa2ka815abza3gr5z8b929w0745vrlc59pl0017y"))))
+    (source (texlive-origin name version
+                            (list "doc/latex/needspace/"
+                                  "source/latex/needspace/"
+                                  "tex/latex/needspace/")
+                            (base32
+                             "12hbvv1w6b1k29qjvp72bkpnzsxpvrimzshllwinrxh9rx1mn550")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/needspace"
-       #:tex-format "latex"))
-    (inputs
+     (list #:tex-format "latex"))
+    (native-inputs
      (list texlive-filecontents))
-    (home-page "https://www.ctan.org/pkg/needspace")
+    (home-page "https://ctan.org/pkg/needspace")
     (synopsis "Insert pagebreak if not enough space")
     (description
-     "Provides commands to disable pagebreaking within a given vertical
-space.  If there is not enough space between the command and the bottom of the
-page, a new page will be started.")
+     "This package provides commands to disable pagebreaking within a given
+vertical space.  If there is not enough space between the command and the
+bottom of the page, a new page will be started.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-needspace texlive-needspace)
 
 (define-public texlive-latex-changepage
   (package
@@ -12271,7 +12272,7 @@ Polish of standard ``LaTeX names''.")
        "tex/latex/mdframed/")
       (base32 "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")
       #:trivial? #t))
-    (propagated-inputs (list texlive-latex-needspace
+    (propagated-inputs (list texlive-needspace
                              texlive-zref))
     (home-page "https://ctan.org/pkg/mdframed")
     (synopsis "Framed environments that can split at page boundaries")

@@ -122,7 +122,7 @@
            texlive-kvoptions
            texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
            texlive-ltxcmds
-           texlive-latex-needspace
+           texlive-needspace
            texlive-oberdiek             ;hypcap
            texlive-parskip
            texlive-preview
