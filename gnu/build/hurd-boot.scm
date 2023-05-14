@@ -280,13 +280,13 @@ XXX TODO: use Linux xattr/setxattr to remove (settrans in) /libexec/RUNSYSTEM
             (system  (find-long-option "gnu.system" args))
             (to-load (find-long-option "gnu.load" args)))
 
-       (format #t "Setting-up essential translators...\n")
-       (setenv "PATH" (string-append system "/profile/bin"))
-       (set-hurd-device-translators)
-
        (false-if-exception (delete-file "/hurd"))
        (let ((hurd/hurd (readlink* (string-append system "/profile/hurd"))))
          (symlink hurd/hurd "/hurd"))
+
+       (format #t "Setting-up essential translators...\n")
+       (setenv "PATH" (string-append system "/profile/bin"))
+       (set-hurd-device-translators)
 
        (format #t "Starting pager...\n")
        (unless (zero? (system* "/hurd/mach-defpager"))
