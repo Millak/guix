@@ -4769,7 +4769,7 @@ data and settings.")
                   texlive-amsfonts
                   texlive-doi
                   texlive-ec
-                  texlive-latex-examplep
+                  texlive-examplep
                   texlive-hyperref
                   texlive-ms
                   texlive-natbib

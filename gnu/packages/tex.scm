@@ -9827,46 +9827,33 @@ in places where the standard @code{verbatim} environment (which is based on a
 
 (define-deprecated-package texlive-latex-verbatimbox texlive-verbatimbox)
 
-(define-public texlive-latex-examplep
+(define-public texlive-examplep
   (package
-    (name "texlive-latex-examplep")
+    (name "texlive-examplep")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/examplep"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0fsvvmz68ij0zwfzrny6x13d92grxr4ap59lxgah4smbkccd6s27"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/examplep")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/examplep")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/examplep/" "tex/latex/examplep/")
+             (base32
+              "0afbl77i57hxngc3l0czdzmmkhcgh2l4h2dpbg9ax9p9dv8c006n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/examplep")
     (synopsis "Verbatim phrases and listings in LaTeX")
     (description
-     "Examplep provides sophisticated features for typesetting verbatim source
-code listings, including the display of the source code and its compiled LaTeX
-or METAPOST output side-by-side, with automatic width detection and enabled
-page breaks (in the source), without the need for specifying the source twice.
-Special care is taken that section, page and footnote numbers do not interfere
-with the main document.  For typesetting short verbatim phrases, a replacement
-for the @code{\\verb} command is also provided in the package, which can be
-used inside tables and moving arguments such as footnotes and section
-titles.")
+     "The @code{examplep} package provides sophisticated features for
+typesetting verbatim source code listings, including the display of the source
+code and its compiled LaTeX or METAPOST output side-by-side, with automatic
+width detection and enabled page breaks (in the source), without the need for
+specifying the source twice.  Special care is taken that section, page and
+footnote numbers do not interfere with the main document.  For typesetting
+short verbatim phrases, a replacement for the @code{\\verb} command is also
+provided in the package, which can be used inside tables and moving arguments
+such as footnotes and section titles.")
     ;; No version of the GPL is specified.
     (license license:gpl3+)))
+
+(define-deprecated-package texlive-latex-examplep texlive-examplep)
 
 (define-public texlive-xunicode
   (package
