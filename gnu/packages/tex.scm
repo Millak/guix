@@ -4666,28 +4666,30 @@ language of the document).")
 
 (define-deprecated-package texlive-generic-babel-french texlive-babel-french)
 
-(define-public texlive-generic-babel-german
+(define-public texlive-babel-german
   (package
-    (name "texlive-generic-babel-german")
+    (name "texlive-babel-german")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "generic" "babel-german"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1x9hnr9gz5mqdb97cinivn9xjnfr4qi996aa4cnr2sm2dsbhqxnp"))))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-german/"
+                   "source/generic/babel-german/"
+                   "tex/generic/babel-german/")
+             (base32
+              "0iwnn35xnpczi2gxrzrgyilh30qbnj6w05p3q0gvcmnisawfva9q")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "generic/babel-german"))
-    (home-page "https://www.ctan.org/pkg/babel-german")
-    (synopsis "Babel support for German")
+    (home-page "https://ctan.org/pkg/babel-german")
+    (synopsis "Babel support for documents written in German")
     (description
-     "This package provides the language definition file for support of German
-in @code{babel}.  It provides all the necessary macros, definitions and
-settings to typeset German documents.  The bundle includes support for the
-traditional and reformed German orthography as well as for the Austrian and
-Swiss varieties of German.")
+     "This bundle is an extension to the babel package for multilingual typesetting.
+It provides all the necessary macros, definitions and settings to typeset
+German documents.  The bundle includes support for the traditional and
+reformed German orthography as well as for the Austrian and Swiss varieties of
+German.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-generic-babel-german texlive-babel-german)
 
 (define-public texlive-babel-swedish
   (let ((template (simple-texlive-package
