@@ -12645,13 +12645,15 @@ package allows such line breaks in the generated links.")
 
 (define-public texlive-comment
   (package
-    (inherit (simple-texlive-package
-              "texlive-comment"
-              '("/doc/latex/comment/"
-                "/tex/latex/comment/")
-              (base32
-               "1c1mqziwxyf1bqzpw6ji65n7ypygm3lyknblxmf0c70w0ivw76pa")
-              #:trivial? #t))
+    (name "texlive-comment")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/comment/" "tex/latex/comment/")
+             (base32
+              "1c1mqziwxyf1bqzpw6ji65n7ypygm3lyknblxmf0c70w0ivw76pa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/comment")
     (synopsis "Selectively include/exclude portions of text")
     (description "This package provides environments for selectively including
