@@ -34,6 +34,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cross-base)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gnupg)
@@ -47,7 +48,8 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages xorg) ;libpciaccess-0.17
-  #:use-module (guix git-download))
+  #:use-module (guix git-download)
+  #:use-module (ice-9 match))
 
 (define (hurd-source-url version)
   (string-append "mirror://gnu/hurd/hurd-"
@@ -148,9 +150,7 @@ communication.")
        (list autoconf
              automake
              (if (%current-target-system)
-                 (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
-                        (cross-mig (module-ref cross-base 'cross-mig)))
-                   (cross-mig (%current-target-system)))
+                 (cross-mig (%current-target-system))
                  mig)))
       (arguments
        `(#:phases
@@ -282,10 +282,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
      (list autoconf
            automake
            (if (%current-target-system)
-                   (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
-                          (cross-mig (module-ref cross-base 'cross-mig)))
-                     (cross-mig (%current-target-system)))
-                   mig)
+               (cross-mig (%current-target-system))
+               mig)
            perl
            texinfo-4))
     (supported-systems %hurd-systems)
@@ -537,11 +535,9 @@ exec ${system}/rc \"$@\"
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
        ("libgcrypt" ,libgcrypt)                   ;for 'libgcrypt-config'
-       ("mig" ,(if (%current-target-system)
-                   (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
-                          (cross-mig (module-ref cross-base 'cross-mig)))
-                     (cross-mig (%current-target-system)))
-                   mig))
+       ("mig" , (if (%current-target-system)
+                    (cross-mig (%current-target-system))
+                    mig))
        ("pkg-config" ,pkg-config)
        ("perl" ,perl)
        ("texinfo" ,texinfo-4)
@@ -637,3 +633,229 @@ in userland processes thanks to the DDE layer.")
       ;; Some drivers are dually licensed with the options being GPLv2 or one
       ;; of MPL/Expat/BSD-3 (dependent on the driver).
       (license gpl2))))
+
+(define-public rumpkernel
+  (let ((commit "81043d42fabda9baed7ac9ca36e3f3f5ed11ba81")
+        (revision "3"))
+    (package
+      (name "rumpkernel")
+      (version (git-version "0-20211031" revision commit))
+      ;; This uses the Debian Salsa rumpkernel package git as upstream as that
+      ;; is where development happens.  Once things have stabilized, upstream
+      ;; may change to the NetBSD git from where Debian takes their snapshots.
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://salsa.debian.org/hurd-team/rumpkernel.git")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0fv0k52qqcg3nq9012hibgsamvsd7mnvn2ikdasmzjhsp8qh5q3r"))
+                (file-name (git-file-name name commit))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f
+        #:modules '((srfi srfi-26)
+                    (ice-9 rdelim)
+                    (guix build utils)
+                    (guix build gnu-build-system))
+        ;; As we are using the Debian package as upstream, we follow their
+        ;; build:
+        ;;   * apply patches in debian/patches taken from the
+        ;;     debian/patches/series file
+        ;;   * for the configure, make, and install stages, follow
+        ;;     the code in debian/rules
+        ;; The Debian patchset includes a cross build feature that we
+        ;; use with two differences
+        ;;   * Debian uses a multiarch toolchain
+        ;;   * we use cross-mig
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'apply-patches
+              (lambda* (#:key target #:allow-other-keys)
+                (let* ((patch-directory "debian/patches/")
+                       (series (string-append patch-directory "series"))
+                       (text (with-input-from-file series read-string))
+                       (lines (string-split (string-trim-right text) #\newline))
+                       (patches (filter (negate (cute string-prefix? "#" <>))
+                                        lines))
+                       (patch-files (map
+                                     (cute string-append patch-directory <>)
+                                     patches)))
+                  (for-each
+                   (cute invoke "patch" "--force" "-p1" "-i" <>)
+                   patch-files)
+                  ;; Somewhere in the build.sh/make process MIG is not being
+                  ;; exported, apparently.
+                  (let* ((prefix (if (not target) "" (string-append target "-")))
+                         (mig (string-append prefix "mig")))
+                    (substitute* "pci-userspace/src-gnu/Makefile.inc"
+                      (("MIG=mig")
+                       (string-append "MIG=" mig)))))))
+            (add-before 'configure 'setenv
+              (lambda* (#:key build target #:allow-other-keys)
+                (define (noisy-setenv name value)
+                  (setenv name value)
+                  (format (current-error-port) "set ~a=~s\n" name value))
+                (noisy-setenv "HOST_CC" "gcc")
+                (let* ((prefix (if (not target) "" (string-append target "-"))))
+                  (noisy-setenv "TARGET_AR" (string-append prefix "ar"))
+                  (noisy-setenv "TARGET_CC" (string-append prefix "gcc"))
+                  (noisy-setenv "TARGET_CXX" (string-append prefix "g++"))
+                  (noisy-setenv "TARGET_LD" (string-append prefix "ld"))
+                  (noisy-setenv "TARGET_MIG" (string-append prefix "mig"))
+                  (noisy-setenv "TARGET_NM" (string-append prefix "nm"))
+                  (noisy-setenv "MIG" (string-append prefix "mig")))
+                (setenv "PAWD" "pwd")
+                (for-each
+                 (cute noisy-setenv <> "")
+                 '("_GCC_CRTENDS"
+                   "_GCC_CRTEND"
+                   "_GCC_CRTBEGINS"
+                   "_GCC_CRTBEGIN"
+                   "_GCC_CRTI"
+                   "_GCC_CRTN"))))
+            (replace 'configure
+              (lambda args
+                (let ((configure (assoc-ref %standard-phases 'configure)))
+                  (with-directory-excursion "buildrump.sh/src/lib/librumpuser"
+                    (apply configure args)))))
+            ;; The build has three toplevel entry points
+            ;;   * buildrump.sh/src/build.sh: create a NetBSD-compatible
+            ;;     toolchain and supports cross-compiling
+            ;;   * buildrump.sh/src/lib/librumpuser: the librump* libraries
+            ;;   * pci-userspace/src-gnu: the librumpdev_pci* libraries
+            (replace 'build
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (let* ((jobs (if parallel-build? (parallel-job-count) 1))
+                       (host-cpu #$(match (or (%current-target-system)
+                                              (%current-system))
+                                     ((? target-x86-32?)
+                                      "i386")
+                                     ((? target-x86-64?)
+                                      "amd64")))
+                       (toprump (string-append
+                                 (getcwd)
+                                 "/buildrump.sh/src/sys/rump"))
+                       (rump-make (string-append
+                                   (getcwd)
+                                   "/buildrump.sh/src/obj/tooldir/bin/nbmake-"
+                                   host-cpu)))
+                  (mkdir "obj")
+                  (with-directory-excursion "buildrump.sh/src"
+                    (invoke
+                     "sh" "build.sh"
+                     "-V" "TOOLS_BUILDRUMP=yes"
+                     "-V" "MKBINUTILS=no"
+                     "-V" "MKGDB=no"
+                     "-V" "MKGROFF=no"
+                     "-V" (string-append "TOPRUMP=" toprump)
+                     "-V" "BUILDRUMP_CPPFLAGS=-Wno-error=stringop-overread"
+                     "-V" "RUMPUSER_EXTERNAL_DPLIBS=pthread"
+		     "-V" (string-append
+                           "CPPFLAGS="
+                           " -I../../obj/destdir." host-cpu "/usr/include"
+                           " -D_FILE_OFFSET_BITS=64"
+                           " -DRUMP_REGISTER_T=int"
+                           " -DRUMPUSER_CONFIG=yes"
+                           " -DNO_PCI_MSI_MSIX=yes"
+                           " -DNUSB_DMA=1")
+                     "-V" (string-append
+                           "CWARNFLAGS="
+                           " -Wno-error=maybe-uninitialized"
+                           " -Wno-error=address-of-packed-member"
+                           " -Wno-error=unused-variable"
+                           " -Wno-error=stack-protector"
+                           " -Wno-error=array-parameter"
+                           " -Wno-error=array-bounds"
+                           " -Wno-error=stringop-overflow")
+                     "-V" "LIBCRTBEGIN="
+                     "-V" "LIBCRTEND="
+                     "-V" "LIBCRT0="
+                     "-V" "LIBCRTI="
+                     "-V" "_GCC_CRTENDS="
+                     "-V" "_GCC_CRTEND="
+                     "-V" "_GCC_CRTBEGINS="
+                     "-V" "_GCC_CRTBEGIN="
+                     "-V" "_GCC_CRTI="
+                     "-V" "_GCC_CRTN="
+                     "-U"
+                     "-u"
+                     "-T" "./obj/tooldir"
+                     "-m" host-cpu
+                     "-j" (number->string jobs)
+                     "tools"
+                     "rump"))
+                  (with-directory-excursion "buildrump.sh/src/lib/librumpuser"
+                    (setenv "RUMPRUN" "true")
+                    (invoke rump-make "dependall"))
+                  (with-directory-excursion "pci-userspace/src-gnu"
+                    (invoke rump-make "dependall")))))
+            (replace 'install
+              (lambda _
+                (define (install-file file target)
+                  (let ((dest (string-append target (basename file))))
+                    (format (current-output-port) "`~a' -> `~a'~%" file dest)
+                    (mkdir-p (dirname dest))
+                    ;; Some libraries are duplicated/copied around in the
+                    ;; build system, do not fail trying to install one
+                    ;; a second time.
+                    (if (file-exists? dest)
+                        (format (current-error-port)
+                                "warning: skipping: ~a\n" file)
+                        (let ((stat (lstat file)))
+                          (case (stat:type stat)
+                            ((symlink)
+                             (let ((target (readlink file)))
+                               (symlink target dest)))
+                            (else
+                             (copy-file file dest)))))))
+                (let ((header (string-append #$output "/include/rump"))
+                      (lib (string-append #$output "/lib/")))
+                  (mkdir-p header)
+                  (copy-recursively "buildrump.sh/src/sys/rump/include/rump"
+                                    header)
+                  (mkdir-p lib)
+                  (for-each
+                   (cute install-file <> lib)
+                   (append (find-files "buildrump.sh/src" "librump.*[.](a|so.*)")
+                           (find-files "obj" "librump.*[.](a|so.*)")))))))))
+      (inputs
+       (list gnumach-headers libpciaccess-0.17))
+      (native-inputs
+       (list autoconf
+             automake
+             libgcrypt
+             (if (%current-target-system)
+                 (cross-mig (%current-target-system))
+                 mig)
+             zlib))
+      (supported-systems %hurd-systems)
+      (home-page "https://wiki.netbsd.org/rumpkernel")
+      (synopsis "NetBSD as rumpkernel for the GNU/Hurd")
+      (description
+       "This package provides NetBSD as rumpkernel for the GNU/Hurd, so that
+the Hurd may be installed on iron.  Using this rumpkernel package, the hurd
+package's rumpdisk can be built which provides the pci.arbiter and rumpdisk
+servers.")
+      (license
+       ;; The NetBSD rumpkernel code is a big hodgepodge of softwares many of
+       ;; which have their own different licensing terms, see also
+       ;; https://salsa.debian.org/hurd-team/rumpkernel/-/blob/master/debian/copyright
+       (list asl2.0
+             boost1.0
+             bsd-2
+             bsd-3
+             bsd-4
+             cddl1.0
+             expat
+             gpl1
+             gpl2+
+             gpl3+
+             isc
+             lgpl2.0+
+             public-domain
+             (@ (guix licenses) zlib)
+             (non-copyleft "file://src/lib/libc/hash/hashhl.c"
+                           "See debian/copyright in the distribution."))))))
