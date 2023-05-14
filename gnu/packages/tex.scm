@@ -8225,29 +8225,29 @@ the derived Type 1 font, together with support files for TeX (LaTeX).")
   (package
     (name "texlive-metapost")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/metapost"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "140k9dz2g2vj5ypgyqx3px9c1y9a820y8kq139p96lw0yk6839aw"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/metapost")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/metapost")
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/dvitomp.1"
+                   "doc/man/man1/dvitomp.man1.pdf"
+                   "doc/man/man1/mpost.1"
+                   "doc/man/man1/mpost.man1.pdf"
+                   "doc/metapost/base/"
+                   "fonts/afm/metapost/"
+                   "fonts/enc/dvips/metapost/"
+                   "fonts/map/dvips/metapost/"
+                   "fonts/tfm/metapost/"
+                   "fonts/type1/metapost/"
+                   "metapost/base/"
+                   "metapost/config/"
+                   "metapost/misc/"
+                   "metapost/support/charlib/"
+                   "tex/generic/metapost/")
+             (base32
+              "04pgi23frfk6ds10zypqvki0852ds7m1s52c5qvbpyl647nfbgc5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/metapost")
     (synopsis "Create scalable illustrations")
     (description
      "MetaPost uses a language based on that of Metafont to produce precise
