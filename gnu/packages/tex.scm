@@ -12421,18 +12421,23 @@ non-LaTeX users.")
 
 (define-public texlive-ltablex
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-ltablex"
-      (list "doc/latex/ltablex/" "tex/latex/ltablex/")
-      (base32 "14lmgj820j6zwj1xnd6ad38kzb9w132kp7sp55cv5bk9vhx3621w")
-      #:trivial? #t))
+    (name "texlive-ltablex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltablex/" "tex/latex/ltablex/")
+             (base32
+              "14lmgj820j6zwj1xnd6ad38kzb9w132kp7sp55cv5bk9vhx3621w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-tools))
     (home-page "https://ctan.org/pkg/ltablex")
     (synopsis "Table package extensions")
     (description
      "The @code{ltablex} package modifies the @code{tabularx} environment to
-combine the features of the @code{tabularx} package (auto-sized columns in a
-fixed-width table) with those of the @code{longtable} package (multi-page
+combine the features of the @code{tabularx} package (auto-sized columns in
+a fixed-width table) with those of the @code{longtable} package (multi-page
 tables).")
     (license license:lppl)))
 
