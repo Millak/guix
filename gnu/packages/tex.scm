@@ -4210,6 +4210,27 @@ default is a stub that just loads @code{graphicx}.")
 string between different encodings.  Both LaTeX and plain-TeX are supported.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-svn-prov
+  (package
+    (name "texlive-svn-prov")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/svn-prov/" "source/latex/svn-prov/"
+                   "tex/latex/svn-prov/")
+             (base32
+              "1w416cf1yb1m2j9y38002zq6rbhbmkafi7w100y9m9lrzya0ws06")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/svn-prov")
+    (synopsis "Subversion variants of @code{\\Provides}... macros")
+    (description
+     "The package introduces Subversion variants of the standard LaTeX macros
+@code{\\ProvidesPackage}, @code{\\ProvidesClass} and @code{\\ProvidesFile}
+where the file name and date is extracted from Subversion Id keywords.  The
+file name may also be given explicitly as an optional argument.")
+    (license license:lppl)))
+
 (define-public texlive-l3build
   (let ((template (simple-texlive-package
                    "texlive-l3build"
