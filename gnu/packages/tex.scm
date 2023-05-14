@@ -4195,6 +4195,32 @@ releases.  The bundle consists of a Lua script to run the tasks and a
 context of LuaTeX.")
     (license (list license:lppl1.3c license:expat))))
 
+(define-public texlive-luacode
+  (package
+    (name "texlive-luacode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luacode/"
+                   "source/lualatex/luacode/"
+                   "tex/lualatex/luacode/")
+             (base32
+              "1dyld5yb57p3j7wz591plbgjy7dk7ngn8cxw1lfmvx8iprgk1f8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-iftex
+           texlive-luatexbase))
+    (home-page "https://ctan.org/pkg/luacode")
+    (synopsis "Helper for executing Lua code from within TeX")
+    (description
+     "Executing Lua code from within TeX with directlua can sometimes be
+tricky: there is no easy way to use the percent character, counting
+backslashes may be hard, and Lua comments don't work the way you expect.  The
+package provides the @code{\\luaexec} command and the @code{luacode}
+environments to help with these problems.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lualatex-math
   (package
     (name "texlive-lualatex-math")
