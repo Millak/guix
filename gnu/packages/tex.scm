@@ -957,6 +957,32 @@ word in the phrase, where the words are separated by regular
 spaces.  (Exceptions can be made for words that shouldn't be converted.)")
     (license license:lppl1.3+)))
 
+(define-public texlive-modes
+  (package
+    (name "texlive-modes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/modes/"
+                   "fonts/source/public/modes/")
+             (base32
+              "1vz3ygpixswnk7hr3qfn3nffw460cp5wjq09q5ac83ddw3nya1ca")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:texlive-latex-base #f))
+    (home-page "https://ctan.org/pkg/modes")
+    (synopsis "Collection of Metafont @code{mode_def}'s")
+    (description
+     "The modes file collects all known Metafont modes for printing or display
+devices, of whatever printing technology.  Special provision is made for
+write-white printers, and a landscape mode is available, for making suitable
+fonts for printers with pixels whose aspect is non-square.  The file also
+provides definitions that make @code{\\specials} identifying the mode in
+Metafont's GF output, and put coding information and other Xerox-world
+information in the TFM file.")
+    (license license:public-domain)))
+
 (define-public texlive-fontinst
   (let ((template (simple-texlive-package
                    "texlive-fontinst"
