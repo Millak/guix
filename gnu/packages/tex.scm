@@ -8239,25 +8239,55 @@ technical illustrations.  Its output is scalable PostScript or SVG, rather
 than the bitmaps Metafont creates.")
     (license license:lppl)))
 
-(define-public texlive-latex-acmart
+(define-public texlive-acmart
   (package
-    (name "texlive-latex-acmart")
-    (version "1.60")
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "acmart"))
-              (sha256
-               (base32
-                "12wxav9r6v7dlfja9myrwz7famgfpcfwd292qzmgg283xgngh9kd"))
-              (file-name (string-append name "-" version "-checkout"))))
+    (name "texlive-acmart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/acmart/" "doc/latex/acmart/"
+                   "source/latex/acmart/" "tex/latex/acmart/")
+             (base32
+              "0vz0dla2frf5wgp5xrqc9q4z730k9wayfkfj0vg58a2xjriarrzn")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/acmart"))
-    (home-page "https://www.ctan.org/pkg/acmart")
+    (propagated-inputs
+     (list texlive-booktabs
+           texlive-caption
+           texlive-cmap
+           texlive-comment
+           texlive-draftwatermark
+           texlive-environ
+           texlive-etoolbox
+           texlive-fancyhdr
+           texlive-float
+           texlive-geometry
+           texlive-graphics
+           texlive-hyperref
+           texlive-hyperxmp
+           texlive-iftex
+           texlive-inconsolata
+           texlive-libertine
+           texlive-microtype
+           texlive-natbib
+           texlive-ncctools
+           texlive-newtx
+           texlive-preprint
+           texlive-refcount
+           texlive-setspace
+           texlive-textcase
+           texlive-totpages
+           texlive-xcolor
+           texlive-xkeyval
+           texlive-xstring))
+    (home-page "https://ctan.org/pkg/acmart")
     (synopsis "Class for typesetting publications of ACM")
     (description
      "This package provides a class for typesetting publications of the
 Association for Computing Machinery (ACM).")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-acmart texlive-acmart)
 
 (define-public texlive-latex-varwidth
   (package
