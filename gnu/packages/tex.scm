@@ -10241,42 +10241,47 @@ standards-compliant PDF documents with pdfTeX, LuaTeX and XeTeX.")
 (define-deprecated-package texlive-latex-pdfx texlive-pdfx)
 
 (define-public texlive-ydoc
-  (let ((template (simple-texlive-package
-                   "texlive-ydoc"
-                   (list "/doc/latex/ydoc/"
-                         "/source/latex/ydoc/")
-                   (base32
-                    "0ckcpy1b8v1fk3qc8qkxgiag2wc0qzxm6bgksv000m4m1hsi2g8b")
-                   #:trivial? #f)))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/ydoc")
-         ((#:build-targets _ #t)
-          ''("ydoc.dtx"))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/ydoc") #t))
-             (add-after 'copy-files 'move-files
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let ((source (assoc-ref inputs "source"))
-                       (doc (string-append (assoc-ref outputs "doc")
-                                           "/share/texmf-dist/doc")))
-                   (copy-recursively (string-append source "/doc")  doc))))))))
-      (home-page "http://www.ctan.org/pkg/ydoc")
-      (synopsis "Macros for documentation of LaTeX classes and packages")
-      (description "The package provides macros and environments to document
+  (package
+    (name "texlive-ydoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ydoc/" "source/latex/ydoc/"
+                   "tex/generic/ydoc/" "tex/latex/ydoc/")
+             (base32
+              "1z7690vin47mw47gjg7k4h49b4ckg6g96l1zlziyjmjbkyzmyhdn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-missing-directories
+            ;; XXX: These directories are not created even though they belong
+            ;; to locations in TEXLIVE-ORIGIN.  Create them manually.
+            (lambda _
+              (mkdir-p "tex/generic/ydoc/")
+              (mkdir-p "tex/latex/ydoc/"))))))
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-float
+           texlive-hyperref
+           texlive-listings
+           texlive-needspace
+           texlive-svn-prov
+           texlive-tools
+           texlive-url
+           texlive-xcolor))
+    (home-page "https://ctan.org/pkg/ydoc")
+    (synopsis "Macros for documentation of LaTeX classes and packages")
+    (description "The package provides macros and environments to document
 LaTeX packages and classes.  It is an (as yet unfinished) alternative to the
 @code{ltxdoc} class and the @code{doc} or @code{xdoc} packages.  The aim is to
 provide a different layout and more modern styles (using the @code{xcolor},
 @code{hyperref} packages, etc.)  This is an alpha release, and should probably
 not (yet) be used with other packages, since the implementation might
 change.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-public texlive-pstricks
   (let ((template (simple-texlive-package
