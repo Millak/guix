@@ -13008,6 +13008,22 @@ reporting the number of the last page, as does @code{lastpage}).  The counter
 itself may be shipped out to the DVI file.")
       (license license:lppl))))
 
+(define-public texlive-xetexconfig
+  (package
+    (name "texlive-xetexconfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/xelatex/xetexconfig/")
+             (base32
+              "1253njshiwdayzq0xir9cmbi8syhjb3sc4pyrw9p6kzyqvckkcxm")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xetexconfig")
+    (synopsis "@file{crop.cfg} for XeLaTeX")
+    (description "The @file{crop.cfg} file attempts to persuade
+@file{crop.sty} to work with XeTeX.")
+    (license license:public-domain)))
+
 (define-public texlive-xetex
   (package
     (inherit (simple-texlive-package
