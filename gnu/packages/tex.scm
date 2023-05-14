@@ -5757,7 +5757,7 @@ user may consider the @code{dnaseq} as a rather more powerful alternative.")
            texlive-graphics
            texlive-listings
            texlive-refcount
-           texlive-latex-varwidth))
+           texlive-varwidth))
     (home-page "https://ctan.org/pkg/showexpl")
     (synopsis "Typesetting LaTeX source code")
     (description
@@ -8289,54 +8289,29 @@ Association for Computing Machinery (ACM).")
 
 (define-deprecated-package texlive-latex-acmart texlive-acmart)
 
-(define-public texlive-latex-varwidth
-  (package
-    (name "texlive-latex-varwidth")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/varwidth"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1bmz9ap0ffyg7qry2xi7lki06qx4809w028xvk88cl66h7p46g52"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/varwidth")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/varwidth")
-    (synopsis "Variable-width minipage")
-    (description
-     "The @code{varwidth} environment is superficially similar to
-@code{minipage}, but the specified width is just a maximum value — the box may
-get a narrower “natural” width.")
-    (license license:lppl)))
-
 (define-public texlive-varwidth
   (package
-    (inherit (simple-texlive-package
-              "texlive-varwidth"
-              (list "doc/latex/varwidth/" "tex/latex/varwidth/")
-              (base32 "0jcrv4klcjpl17ml0zyqfvkrq6qwn2imxv8syqs5m6qk0fk7hg6l")
-              #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/varwidth")
-    (synopsis "Variable-width minipage LaTeX environment")
+    (name "texlive-varwidth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/varwidth/" "tex/latex/varwidth/")
+             (base32
+              "0jcrv4klcjpl17ml0zyqfvkrq6qwn2imxv8syqs5m6qk0fk7hg6l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-bookmark
+           texlive-hyperref))
+    (home-page "https://ctan.org/pkg/varwidth")
+    (synopsis "Variable-width @code{minipage}")
     (description
-     "The varwidth environment is superficially similar to minipage, but the
-specified width is just a maximum value --- the box may get a narrower natural
-width.")
+     "The @code{varwidth} environment is superficially similar to @code{minipage},
+but the specified width is just a maximum value -- the box may get a narrower
+natural width.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-varwidth texlive-varwidth)
 
 (define-public texlive-wasy
   (package
@@ -11481,7 +11456,7 @@ the list of graphics file extensions recognised by package graphics.")
              texlive-ifoddpage
              texlive-pgf
              texlive-storebox
-             texlive-latex-varwidth
+             texlive-varwidth
              texlive-xkeyval))
       (home-page "https://www.ctan.org/pkg/adjustbox")
       (synopsis "Graphics package-alike macros for “general” boxes")

@@ -5784,42 +5784,42 @@ set.")
                                      texlive-capt-of
                                      texlive-caption
                                      texlive-cm
+                                     texlive-cmap
+                                     texlive-colortbl
                                      texlive-courier
                                      texlive-enumitem
                                      texlive-etoc
                                      texlive-etoolbox
                                      texlive-fancyhdr
                                      texlive-fancyvrb
-                                     texlive-helvetic
-                                     texlive-jknappen
-                                     texlive-sectsty
-                                     texlive-tex-gyre
-                                     texlive-wasy
-                                     texlive-xcolor
-                                     texlive-xypic
-                                     texlive-listofitems
-                                     texlive-cmap
-                                     texlive-colortbl
                                      texlive-float
                                      texlive-fncychap
                                      texlive-framed
                                      texlive-geometry
                                      texlive-hanging
+                                     texlive-helvetic
                                      texlive-hyperref
+                                     texlive-jknappen
+                                     texlive-listofitems
                                      texlive-multirow
                                      texlive-natbib
                                      texlive-latex-needspace
                                      texlive-newunicodechar
                                      texlive-parskip
+                                     texlive-sectsty
                                      texlive-stackengine
                                      texlive-tabulary
-                                     texlive-tocloft
-                                     texlive-upquote
-                                     texlive-latex-varwidth
+                                     texlive-tex-gyre
                                      texlive-titlesec
+                                     texlive-tocloft
                                      texlive-ulem
+                                     texlive-upquote
+                                     texlive-varwidth
+                                     texlive-wasy
                                      texlive-wasysym
-                                     texlive-wrapfig))))
+                                     texlive-wrapfig
+                                     texlive-xcolor
+                                     texlive-xypic))))
     (inputs
      (list openblas lapack))
     (arguments

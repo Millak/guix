@@ -109,28 +109,28 @@
            texlive-amsmath
            texlive-capt-of
            texlive-carlisle             ;remreset
-           texlive-etoolbox
-           texlive-ltxcmds
-           texlive-hyperref
-           texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
            texlive-cmap
+           texlive-etoolbox
            texlive-fancyhdr
            texlive-fancyvrb
            texlive-float
            texlive-fncychap
            texlive-framed
            texlive-geometry
-           texlive-graphics                       ;graphicx, color
+           texlive-graphics             ;graphicx, color
+           texlive-hyperref
            texlive-kvoptions
+           texlive-latex-base           ;alltt, atbegshi, makeidx, textcomp
+           texlive-ltxcmds
            texlive-latex-needspace
+           texlive-oberdiek             ;hypcap
            texlive-parskip
            texlive-latex-preview
            texlive-tabulary
            texlive-titlesec
-           texlive-tools                          ;multicol, longtable
+           texlive-tools                ;multicol, longtable
            texlive-upquote
-           texlive-latex-varwidth
-           texlive-oberdiek             ;hypcap
+           texlive-varwidth
            texlive-wrapfig
            texlive-xcolor))
     (native-inputs
