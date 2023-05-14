@@ -12351,14 +12351,21 @@ Several keys customize the appearance of the chart elements.")
 
 (define-public texlive-pdflscape
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-pdflscape"
-      (list "doc/latex/pdflscape/"
-            "source/latex/pdflscape/"
-            "tex/latex/pdflscape/")
-      (base32 "05vvmwd8vlzs2x2rm6pfzlvrrihqf924d7krlrkvc6giiwyfsic4")
-      #:trivial? #t))
+    (name "texlive-pdflscape")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdflscape/"
+                   "source/latex/pdflscape/"
+                   "tex/latex/pdflscape/")
+             (base32
+              "05vvmwd8vlzs2x2rm6pfzlvrrihqf924d7krlrkvc6giiwyfsic4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-graphics
+           texlive-iftex))
     (home-page "https://ctan.org/pkg/pdflscape")
     (synopsis "Make landscape pages display as landscape")
     (description
