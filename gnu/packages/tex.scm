@@ -12906,25 +12906,26 @@ UTF-8.  Namely the input encodings in @file{utf8.def} from package
       (license license:lppl1.3+))))
 
 (define-public texlive-xstring
-  (let ((template (simple-texlive-package
-                   "texlive-xstring"
-                   (list "/doc/generic/xstring/"
-                         "/tex/generic/xstring/")
-                   (base32
-                    "1azpq855kq1l4686bjp8haxim5c8wycz1b6lcg5q7x8kb4g9sppn")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (home-page "http://www.ctan.org/pkg/xstring")
-      (synopsis "String manipulation for (La)TeX")
-      (description
-       "@code{xstring} package provides macros for manipulating strings --
+  (package
+    (name "texlive-xstring")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/xstring/" "tex/generic/xstring/")
+             (base32
+              "1azpq855kq1l4686bjp8haxim5c8wycz1b6lcg5q7x8kb4g9sppn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xstring")
+    (synopsis "String manipulation for (La)TeX")
+    (description
+     "The @code{xstring} package provides macros for manipulating strings, i.e.,
 testing a string's contents, extracting substrings, substitution of substrings
 and providing numbers such as string length, position of, or number of
-recurrences of, a substring.  The package works equally in Plain TeX and LaTeX
-(though e-TeX is always required).  The strings to be processed may contain
-(expandable) macros.")
-      (license license:lppl1.3c))))
+recurrences of, a substring.  The package works equally in Plain TeX and
+LaTeX (though e-TeX is always required).  The strings to be processed may
+contain (expandable) macros.")
+    (license license:lppl1.3c)))
 
 (define-deprecated texlive-generic-xstring texlive-xstring)
 
