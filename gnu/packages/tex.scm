@@ -9388,64 +9388,52 @@ pstricks, it can produce either PostScript or PDF output.")
 
 (define-deprecated-package texlive-latex-pgf texlive-pgf)
 
-(define-public texlive-latex-koma-script
+(define-public texlive-koma-script
   (package
-    (name "texlive-latex-koma-script")
+    (name "texlive-koma-script")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/koma-script"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1m6i8162r6ka19q517llrf0lax80rrsq564qirwk1chv5dqsmnfi"))))
-    (build-system trivial-build-system)
+    (source (texlive-origin
+             name version
+             (list "doc/latex/koma-script/"
+                   "source/latex/koma-script/"
+                   "tex/latex/koma-script/")
+             (base32
+              "0k8mhikpll066x3683gmg3xas7a2mz93b9fip4k56hacxxb6map1")))
+    (build-system texlive-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 match))
-         (let ((root (string-append (assoc-ref %outputs "out")
-                                    "/share/texmf-dist/"))
-               (pkgs '(("source" . "tex/latex/koma-script"))))
-           (for-each (match-lambda
-                       ((pkg . dir)
-                        (let ((target (string-append root dir)))
-                          (mkdir-p target)
-                          (copy-recursively (assoc-ref %build-inputs pkg)
-                                            target))))
-                     pkgs)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/koma-script")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-required-files
+            ;; These files are required by the build process.
+            (lambda _
+              (for-each (lambda (f)
+                          (install-file
+                           (string-append "doc/latex/koma-script/" f)
+                           "build/"))
+                        '("komabug.tex" "manifest.txt" "INSTALL.txt"
+                          "INSTALLD.txt" "lppl.txt" "lppl-de.txt")))))))
+    (propagated-inputs
+     (list texlive-bookmark
+           texlive-eso-pic
+           texlive-etoolbox
+           texlive-graphics
+           texlive-l3packages
+           texlive-xpatch))
+    (home-page "https://ctan.org/pkg/koma-script")
     (synopsis "Bundle of versatile classes and packages")
     (description
-     "The KOMA-Script bundle provides replacements for the article, report, and
-book classes with emphasis on typography and versatility.  There is also a
-letter class.
+     "The KOMA-Script bundle provides replacements for the article, report,
+and book classes with emphasis on typography and versatility.  There is also
+a letter class.  The bundle also offers: a package for calculating type areas
+in the way laid down by the typographer Jan Tschichold, packages for easily
+changing and defining page styles, a package @code{scrdate} for getting not
+only the current date but also the name of the day, and a package
+@code{scrtime} for getting the current time.  All these packages may be used
+not only with KOMA-Script classes but also with the standard classes.")
+    (license license:lppl1.3c+)))
 
-The bundle also offers:
-
-@itemize
-@item a package for calculating type areas in the way laid down by the
-typographer Jan Tschichold,
-@item packages for easily changing and defining page styles,
-@item a package scrdate for getting not only the current date but also the name
-of the day, and
-@item a package scrtime for getting the current time.
-@end itemize
-
-All these packages may be used not only with KOMA-Script classes but also with
-the standard classes.
-
-Since every package has its own version number, the version number quoted only
-refers to the version of scrbook, scrreprt, scrartcl, scrlttr2 and
-typearea (which are the main parts of the bundle).")
-    (license license:lppl1.3+)))
+(define-deprecated-package texlive-latex-koma-script texlive-koma-script)
 
 (define-public texlive-atbegshi
   (let ((template (simple-texlive-package
