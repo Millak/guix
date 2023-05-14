@@ -9240,32 +9240,34 @@ bottom of the page, a new page will be started.")
 
 (define-deprecated-package texlive-latex-needspace texlive-needspace)
 
-(define-public texlive-latex-changepage
+(define-public texlive-changepage
   (package
-    (name "texlive-latex-changepage")
+    (name "texlive-changepage")
     (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (texlive-ref "latex" "changepage"))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "1rpw8xg5p4jsyh236jma9dz3l29wjx4062f154b3wak5yjcxyxyb"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/changepage/"
+                   "source/latex/changepage/"
+                   "tex/latex/changepage/")
+             (base32
+              "0g9zlbqrgxh3p2vys2s84i8v590qi4fbpppp5lkaqc1di8kw60lm")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments
-     '(#:tex-directory "latex/changepage"
-       #:tex-format "latex"))
-    (inputs
+     (list #:tex-format "latex"))
+    (native-inputs
      (list texlive-filecontents))
-    (home-page "https://www.ctan.org/pkg/changepage")
+    (home-page "https://ctan.org/pkg/changepage")
     (synopsis "Margin adjustment and detection of odd/even pages")
     (description
      "The package provides commands to change the page layout in the middle of
-a document, and to robustly check for typesetting on odd or even pages.
-Instructions for use are at the end of the file.  The package is an extraction
-of code from the @code{memoir} class, whose user interface it shares.")
+a document, and to robustly check for typesetting on odd or even pages.  The
+package is an extraction of code from the @code{memoir} class, whose user
+interface it shares.  This package will eventually replace the @code{chngpage}
+package, which is distributed with the package.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-changepage texlive-changepage)
 
 (define-public texlive-latex-eukdate
   (package
