@@ -9918,30 +9918,20 @@ AMS-LaTeX, AMS-TeX, and plain TeX).  The distribution includes Michael Barr's
   (package
     (name "texlive-bibtex")
     (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (svn-reference
-             (url (string-append "svn://www.tug.org/texlive/tags/"
-                                 %texlive-tag "/Master/texmf-dist/"
-                                 "/bibtex"))
-             (revision %texlive-revision)))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "0fr0s3jhrvplddb42if570dxllz54fa0pf4d2am27h8m385nghbf"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/bibtex")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/bibtex")
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/base/"
+                   "bibtex/bst/base/"
+                   "doc/bibtex/base/"
+                   "doc/man/man1/bibtex.1"
+                   "doc/man/man1/bibtex.man1.pdf"
+                   "tex/generic/bibtex/")
+             (base32
+              "0h72ckha1mv1a2i5v85l68amfc0kf0km9iyin6vxxal69146j8gp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kpathsea))
+    (home-page "https://ctan.org/pkg/bibtex")
     (synopsis "Process bibliographies for LaTeX")
     (description
      "BibTeX allows the user to store his citation data in generic form, while
