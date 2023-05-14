@@ -10469,30 +10469,42 @@ keys.")
   (package
     (name "texlive-standalone")
     (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (texlive-ref "latex" "standalone"))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "192ydxcn8ir96q8qwvnppksmqf5i0p50i0wz6iqazbwmh3dqxpx4"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/standalone/"
+                   "source/latex/standalone/"
+                   "tex/latex/standalone/"
+                   "tex/plain/standalone/")
+             (base32
+              "00cs6bxpcpl8fjld280af52njkv44fm81yww9ynhqa9xp49q0p90")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/standalone"))
-    (propagated-inputs
-     (list texlive-xkeyval))
     (native-inputs
      (list texlive-ydoc))
-    (home-page "http://www.ctan.org/pkg/standalone")
+    (propagated-inputs
+     (list texlive-adjustbox
+           texlive-currfile
+           texlive-filemod
+           texlive-gincltex
+           texlive-iftex
+           texlive-multido
+           texlive-pdftexcmds
+           texlive-pgf
+           texlive-preview
+           texlive-pstricks
+           texlive-tools
+           texlive-varwidth
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/standalone")
     (synopsis "Compile TeX pictures stand-alone or as part of a document")
-    (description "A class and package is provided which allows TeX pictures or
-other TeX code to be compiled standalone or as part of a main document.
-Special support for pictures with beamer overlays is also provided.  The
-package is used in the main document and skips extra preambles in sub-files.
-The class may be used to simplify the preamble in sub-files.  By default the
-@code{preview} package is used to display the typeset code without margins.
-The behaviour in standalone mode may adjusted using a configuration file
-@code{standalone.cfg} to redefine the standalone environment.")
+    (description
+     "This package provides a class and package is provided which allows TeX
+pictures or other TeX code to be compiled standalone or as part of a main
+document.  Special support for pictures with @code{beamer} overlays is also
+provided.  The package is used in the main document and skips extra preambles
+in sub-files.  The class may be used to simplify the preamble in sub-files.
+By default the @code{preview} package is used to display the typeset code
+without margins.")
     (license license:lppl1.3+)))
 
 (define-public texlive-siunitx
