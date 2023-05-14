@@ -482,8 +482,14 @@ available, greatly increasing its breadth and scope.")
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'set-timezone
+           ;; We need TZ during the configure step.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZ" "UTC+1")
+             (setenv "TZDIR"
+                     (search-input-directory inputs "share/zoneinfo"))))
          (add-after 'configure 'chdir
-           (lambda _ (chdir "src/nmath/standalone/") #t)))))
+           (lambda _ (chdir "src/nmath/standalone/"))))))
     (synopsis "Standalone R math library")
     (description
      "This package provides the R math library as an independent package.")))
