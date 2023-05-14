@@ -7532,23 +7532,31 @@ They combine a comprehensive Unicode-based collection of mathematical symbols
 and alphabets with a set of text faces suitable for professional publishing.")
       (license license:silofl1.1))))
 
-(define-public texlive-latex-sidecap
+(define-public texlive-sidecap
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-sidecap"
-              (list "doc/latex/sidecap/"
-                    "tex/latex/sidecap/")
-              (base32 "1biyxvh7fm70pq1rxqrla2vs013bpsd1j8jvlyl3vjg433d5bly3")
-              #:trivial? #t))
+    (name "texlive-sidecap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sidecap/"
+                   "source/latex/sidecap/"
+                   "tex/latex/sidecap/")
+             (base32
+              "0bjb514a6j90ad7dgyyzrwk6pp7rlb3zk9mfy0fv5a615a5gz82x")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-ragged2e))
     (home-page "https://ctan.org/pkg/sidecap")
     (synopsis "Typeset captions sideways")
     (description
-     "@code{sidecap} defines environments called @code{SCfigure} and
-@code{SCtable} (analogous to @code{figure} and @code{table}) to typeset
+     "The @code{sidecap} package defines environments called @code{SCfigure}
+and @code{SCtable} (analogous to @code{figure} and @code{table}) to typeset
 captions sideways.  Options include @code{outercaption}, @code{innercaption},
 @code{leftcaption} and @code{rightcaption}.")
     (license license:lppl1.0+)))
+
+(define-deprecated-package texlive-latex-sidecap texlive-sidecap)
 
 (define-public texlive-stmaryrd
   (let ((template (simple-texlive-package
