@@ -9776,42 +9776,29 @@ values are not limited.")
 
 (define-deprecated-package texlive-generic-uniquecounter texlive-uniquecounter)
 
-(define-public texlive-latex-readarray
+(define-public texlive-readarray
   (package
-    (name "texlive-latex-readarray")
+    (name "texlive-readarray")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/readarray"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0c53k180ivn1n7fz3ngvd2w1i5dw3kxml0n64vhki88xsylz7lxp"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/readarray")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/readarray/" "tex/latex/readarray/")
+             (base32
+              "05yi37j8jq5a9pp9n6qg76m2fw899vpmwafzgnxbg0qp2fmch2ch")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-listofitems))
     (home-page "https://www.ctan.org/pkg/readarray")
     (synopsis "Read, store and recall array-formatted data")
     (description
-     "This package allows the user to input formatted data into elements of a
-2-D or 3-D array and to recall that data at will by individual cell number.
+     "This package allows the user to input formatted data into elements of
+a 2-D or 3-D array and to recall that data at will by individual cell number.
 The data can be but need not be numerical in nature.  It can be, for example,
 formatted text.")
     (license license:lppl1.3)))
+
+(define-deprecated-package texlive-latex-readarray texlive-readarray)
 
 (define-public texlive-latex-verbatimbox
   (package
@@ -9840,7 +9827,7 @@ formatted text.")
            (copy-recursively (assoc-ref %build-inputs "source") target)
            #t))))
     (propagated-inputs
-     (list texlive-latex-readarray))
+     (list texlive-readarray))
     (home-page "https://www.ctan.org/pkg/verbatimbox")
     (synopsis "Deposit verbatim text in a box")
     (description
