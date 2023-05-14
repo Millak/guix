@@ -6523,34 +6523,18 @@ a few situations where longtable has problems.")
 
 (define-deprecated-package texlive-latex-supertabular texlive-supertabular)
 
-(define-public texlive-tex-texinfo
+(define-public texlive-texinfo
   (package
-    (name "texlive-tex-texinfo")
+    (name "texlive-texinfo")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/texinfo"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1qcmcsxdsibca0mad559vhz36xaxsbkivgv1hc98vdyd90fg4y31"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/texinfo")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/texinfo")
-    (synopsis "TeX macros to handle Texinfo files")
+    (source (texlive-origin
+             name version
+             (list "tex/texinfo/")
+             (base32
+              "0wbbhjr1jqiicnssiy6n5s4v5p6axhlilpkfhix4kavbj8mb6mfn")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texinfo")
+    (synopsis "Texinfo documentation system")
     (description
      "Texinfo is the preferred format for documentation in the GNU project;
 the format may be used to produce online or printed output from a single
@@ -6558,6 +6542,8 @@ source.  The Texinfo macros may be used to produce printable output using TeX;
 other programs in the distribution offer online interactive use (with
 hypertext linkages in some cases).")
     (license license:gpl3+)))
+
+(define-deprecated-package texlive-tex-texinfo texlive-texinfo)
 
 (define-public texlive-textcase
   (package

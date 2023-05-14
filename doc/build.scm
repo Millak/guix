@@ -916,7 +916,7 @@ makeinfo OPTIONS."
                      texlive-bin        ;for GUIX_TEXMF
                      texlive-epsf
                      texlive-ec
-                     texlive-tex-texinfo)))))
+                     texlive-texinfo)))))
 
   (define build
     (with-imported-modules '((guix build utils))

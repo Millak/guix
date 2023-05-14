@@ -325,7 +325,7 @@ colors, styles, options and details.")
                   texlive-ocgx2
                   texlive-parskip
                   texlive-pdftexcmds
-                  texlive-tex-texinfo))))
+                  texlive-texinfo))))
     (inputs
      (list bash-minimal
            eigen

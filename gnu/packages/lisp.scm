@@ -481,7 +481,7 @@ an interpreter, a compiler, a debugger, and much more.")
            ed
            inetutils         ;for hostname(1)
            texinfo
-           (texlive-updmap.cfg (list texlive-tex-texinfo))
+           (texlive-updmap.cfg (list texlive-texinfo))
            which))
     (inputs
      (list gmp                          ; for sb-gmp
