@@ -12720,43 +12720,31 @@ It is particularly useful in the page footer that says: @samp{Page N of M}.")
 
 (define-deprecated-package texlive-latex-lastpage texlive-lastpage)
 
-(define-public texlive-latex-tabto-ltx
+(define-public texlive-tabto-ltx
   (package
-    (name "texlive-latex-tabto-ltx")
+    (name "texlive-tabto-ltx")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference (url (string-append
-                                        "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/tabto-ltx"))
-                                  (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1vq9s3n0mdgx2w84bjdsqxp3vcasfb824agjy56713902li1g8vm"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
-                   (let ((target (string-append (assoc-ref %outputs "out")
-                                  "/share/texmf-dist/tex/latex/tabto")))
-                     (mkdir-p target)
-                     (copy-recursively (assoc-ref %build-inputs "source")
-                                       target) #t))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabto-ltx/" "tex/latex/tabto-ltx/")
+             (base32
+              "0q0v1pc4hvj71nayfpkj6gfwcbi18s5c526r1k7j4p9m5fcqmbgm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/tabto-ltx")
-    (synopsis "``Tab'' to a measured position in the line")
+    (synopsis "Tab to a measured position in the line")
     (description
      "This package provides @code{\\tabto{<length>}}, which moves the
 typesetting position to @code{<length>} from the left margin of the paragraph.
-If the typesetting position is already further along, @code{\\tabto} starts a
-new line; the command @code{\\tabto*} will move position backwards if
+If the typesetting position is already further along, @code{\\tabto} starts
+a new line; the command @code{\\tabto*} will move position backwards if
 necessary, so that previous text may be overwritten.  In addition, the command
 @code{\\TabPositions} may be used to define a set of tabbing positions, after
 which the command @code{\\tab} advances typesetting position to the next
-defined ``tab stop''.")
+defined tab stop.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-tabto-ltx texlive-tabto-ltx)
 
 (define-public texlive-soul
   (let ((template (simple-texlive-package
