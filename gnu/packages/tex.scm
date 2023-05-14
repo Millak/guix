@@ -9068,50 +9068,33 @@ specification.  It replaces the now obsolete @code{movie15} package.")
 
 (define-deprecated-package texlive-latex-media9 texlive-media9)
 
-(define-public texlive-latex-ocgx2
+(define-public texlive-ocgx2
   (package
-    (name "texlive-latex-ocgx2")
+    (name "texlive-ocgx2")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/ocgx2"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1mrz1mj59m27bfya52vi4lm84ifisaf30pmf8id1biqwcq4jyynh"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/ogcx2")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/ocgx2")
-    (synopsis "Provide OCG (Optional Content Groups) support within a PDF document")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ocgx2/" "tex/latex/ocgx2/")
+             (base32
+              "195zli0l69rvxxd7cs387g6bipppfl0pyfsf5invq191zlv319b2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-l3packages
+           texlive-media9
+           texlive-pgf))
+    (home-page "https://ctan.org/pkg/ocgx2")
+    (synopsis "Drop-in replacement for 'ocgx' and 'ocg-p'")
     (description
-     "This package provides OCG (Optional Content Groups) support within a PDF
-document.
-
-It re-implements the functionality of the @code{ocg}, @code{ocgx}, and
-@code{ocg-p} packages and adds support for all known engines and back-ends
-including:
-
-@itemize
-@item LaTeX → dvips → @code{ps2pdf}/Distiller
-@item (Xe)LaTeX(x) → @code{dvipdfmx}
-@item pdfLaTeX and LuaLaTeX .
-@end itemize
-
-It also ensures compatibility with the @code{media9} and @code{animate} packages.")
+     "This package serves as a drop-in replacement for the packages
+@code{ocgx} by Paul Gaborit and @code{ocg-p} by Werner Moshammer for the
+creation of PDF Layers.  It re-implements the functionality of the @code{ocg},
+@code{ocgx}, and @code{ocg-p} packages and adds support for all known engines
+and back-ends.  It also ensures compatibility with the @code{media9} and
+@code{animate} packages.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-ocgx2 texlive-ocgx2)
 
 (define-public texlive-ms
   (let ((template
