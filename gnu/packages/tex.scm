@@ -11619,28 +11619,31 @@ language preferred by the user.  This package is not intended to be used to
 automatically translate more than a few words.")
     (license (list license:lppl license:gpl1+))))
 
-(define-public texlive-latex-textpos
+(define-public texlive-textpos
   (package
-    (inherit (simple-texlive-package
-              "texlive-latex-textpos"
-              (list "doc/latex/textpos/"
-                    "tex/latex/textpos/")
-              (base32 "0sqm3pr9jyf9sf432qawscbf50glj58acwcfzyk58ijic2g01hzl")
-              #:trivial? #t))
+    (name "texlive-textpos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textpos/" "source/latex/textpos/"
+                   "tex/latex/textpos/")
+             (base32
+              "0gg6b2ckafj8fbrlw85m538c08qyq2cv5z59r9pzcwg1c1xdyn02")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-everyshi
+           texlive-graphics))
     (home-page "https://ctan.org/pkg/textpos")
-    (synopsis "Absolute positioning of text on the LaTeX page")
+    (synopsis "Place boxes at arbitrary positions on the LaTeX page")
     (description
-     "This package facilitates placing boxes at absolute positions on the
-LaTeX page.  There are several reasons why this might be useful, but the main
-one (or at least my motivating one) is to help produce a large-format
-conference poster.
+     "This package provides a package to facilitate placement of boxes at
+absolute positions on the LaTeX page.  There are several reasons why this
+might be useful, an important one being to help the creation of large-format
+conference posters.")
+    (license license:lppl1.3+)))
 
-This package provides a single environment, plus a starred variant, which
-contains the text (or graphics, or table, or whatever) which is to be placed
-on the page, and which specifies where it is to be placed.  The environment is
-accompanied by various configuration commands.")
-    (license license:lppl)))
+(define-deprecated-package texlive-latex-textpos texlive-textpos)
 
 (define-public texlive-unicode-math
   (package
