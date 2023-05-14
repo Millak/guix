@@ -11417,32 +11417,32 @@ the list of graphics file extensions recognised by package graphics.")
       (license license:lppl1.3c+))))
 
 (define-public texlive-adjustbox
-  (let ((template (simple-texlive-package
-                   "texlive-adjustbox"
-                   (list "/doc/latex/adjustbox/"
-                         "/source/latex/adjustbox/")
-                   (base32
-                    "074nxbnl184b6iwhis5n85pilq3b2pld3bbrq0wc30hw462m898k"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/adjustbox")
-         ((#:build-targets _ '())
-          ''("adjustbox.ins"))))
-      (native-inputs
-       (list texlive-ydoc))
-      (propagated-inputs
-       (list texlive-collectbox
-             texlive-ifoddpage
-             texlive-pgf
-             texlive-storebox
-             texlive-varwidth
-             texlive-xkeyval))
-      (home-page "https://www.ctan.org/pkg/adjustbox")
-      (synopsis "Graphics package-alike macros for “general” boxes")
-      (description "The package provides several macros to adjust boxed
+  (package
+    (name "texlive-adjustbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/adjustbox/"
+                   "source/latex/adjustbox/"
+                   "tex/latex/adjustbox/")
+             (base32
+              "01r6cb8aadbgsfcqhqnwaig3xwzgr0nfxci3mzb8ln3k4dghmq97")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list texlive-ydoc))
+    (propagated-inputs
+     (list texlive-collectbox
+           texlive-graphics
+           texlive-ifoddpage
+           texlive-pgf
+           texlive-storebox
+           texlive-tools
+           texlive-varwidth
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/adjustbox")
+    (synopsis "Graphics package-alike macros for general boxes")
+    (description "The package provides several macros to adjust boxed
 content.  One purpose is to supplement the standard @code{graphics} package,
 which defines the macros @code{\\resizebox}, @code{\\scalebox} and
 @code{\\rotatebox} , with the macros @code{\\trimbox} and @code{\\clipbox}.
@@ -11451,7 +11451,7 @@ The main feature is the general @code{\\adjustbox} macro which extends the
 @code{graphics} package and applies it to general text content.  Additional
 provided box macros are @code{\\lapbox}, @code{\\marginbox},
 @code{\\minsizebox}, @code{\\maxsizebox} and @code{\\phantombox}.")
-      (license license:lppl1.3))))
+    (license license:lppl1.3+)))
 
 (define-public texlive-qrcode
   (package
