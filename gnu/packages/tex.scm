@@ -11021,24 +11021,22 @@ matching maths fonts are provided by the @code{fourier} and
 (define-public texlive-fontaxes
   (package
     (name "texlive-fontaxes")
-    (version "1.0e")
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (texlive-ref "latex" "fontaxes"))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "0j3w1y66pkf3bjl9dh5xy3lfg33rg08s4wx37a3jcndvcji20j3f"))))
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fontaxes/" "source/latex/fontaxes/"
+                   "tex/latex/fontaxes/")
+             (base32
+              "1d9ji2qvjf1ky8l6rfqbag2hw61r0hyjxkzsp18s4pckyq4dqwdm")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/fontaxes"))
-    (home-page "http://www.ctan.org/pkg/fontaxes")
+    (home-page "https://ctan.org/pkg/fontaxes")
     (synopsis "Additional font axes for LaTeX")
-    (description "The @code{fontaxes} package adds several new font
-axes on top of LaTeX's New Font Selection Scheme (NFSS).  In
-particular, it splits the shape axis into a primary and a secondary
-shape axis and it adds three new axes to deal with the different
-figure versions offered by many professional fonts.")
+    (description "The @code{fontaxes} package adds several new font axes on
+top of LaTeX's New Font Selection Scheme (NFSS).  In particular, it splits the
+shape axis into a primary and a secondary shape axis and it adds three new
+axes to deal with the different figure versions offered by many professional
+fonts.")
     (license license:lppl1.3+)))
 
 (define-public texlive-preprint
