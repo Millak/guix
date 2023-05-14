@@ -9800,34 +9800,20 @@ formatted text.")
 
 (define-deprecated-package texlive-latex-readarray texlive-readarray)
 
-(define-public texlive-latex-verbatimbox
+(define-public texlive-verbatimbox
   (package
-    (name "texlive-latex-verbatimbox")
+    (name "texlive-verbatimbox")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/latex/verbatimbox"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0qh1cgvfs463zsi2pjg490gj0mkjfdpfc381j10cbb5la304psna"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/verbatimbox")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verbatimbox/"
+                   "tex/latex/verbatimbox/")
+             (base32
+              "00n3x075ya3s2qwmcz2vvn8x70pbbgj2cbwz0ifw89jrc4ljisgi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-readarray))
+     (list texlive-tools))
     (home-page "https://www.ctan.org/pkg/verbatimbox")
     (synopsis "Deposit verbatim text in a box")
     (description
@@ -9838,6 +9824,8 @@ a replica of the @code{boxedverbatim} environment itself).  A valuable use is
 in places where the standard @code{verbatim} environment (which is based on a
 @code{trivlist}) may not appear.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-verbatimbox texlive-verbatimbox)
 
 (define-public texlive-latex-examplep
   (package

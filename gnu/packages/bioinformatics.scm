@@ -4775,7 +4775,7 @@ data and settings.")
                   texlive-natbib
                   texlive-bibtex        ;style files used by natbib
                   texlive-pgf           ;tikz
-                  texlive-latex-verbatimbox))
+                  texlive-verbatimbox))
            imagemagick))
     (home-page "https://dorina.mdc-berlin.de/public/rajewsky/discrover/")
     (synopsis "Discover discriminative nucleotide sequence motifs")
