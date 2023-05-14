@@ -1723,21 +1723,31 @@ programmers may assume e-TeX functionality.  The pdftex engine directly
 incorporates the e-TeX extensions.")
       (license license:knuth))))
 
-(define-public texlive-tex-plain
+(define-public texlive-plain
   (package
-    (inherit (simple-texlive-package
-              "texlive-tex-plain"
-              (list "/tex/plain/")
-              (base32
-               "1hafbphx1486069cky87hyksx6ia5gd83m4wp2xmgc09z87faf0h")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/plain")
+    (name "texlive-plain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "makeindex/plain/" "tex/plain/base/"
+                   "tex/plain/config/")
+             (base32
+              "0zwvrfw8z28c9dy8nby5qfwbyrd2a0cdfwyd5jndscjczhw0yi62")))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-engine "tex"
+      #:tex-format #f
+      #:texlive-latex-base #f))
+    (home-page "https://ctan.org/pkg/plain")
     (synopsis "Plain TeX format and supporting files")
     (description
      "This package contains files used to build the Plain TeX format, as
 described in the TeXbook, together with various supporting files (some also
 discussed in the book).")
     (license license:knuth)))
+
+(define-deprecated-package texlive-tex-plain texlive-plain)
 
 (define-public texlive-halloweenmath
   (let ((template (simple-texlive-package
@@ -2724,7 +2734,7 @@ T1/EC and UTF-8 encodings.")
                (mkdir-p where)
                (with-directory-excursion where
                  (invoke "tex" "-ini"
-                         (string-append (assoc-ref inputs "texlive-tex-plain")
+                         (string-append (assoc-ref inputs "texlive-plain")
                                         "/share/texmf-dist/tex/plain/config/tex.ini"))))))
          (add-before 'build 'build-loaders-and-converters
            (lambda* (#:key outputs #:allow-other-keys)
@@ -2759,12 +2769,12 @@ T1/EC and UTF-8 encodings.")
     (native-inputs
      (list ruby-2.7
            texlive-bin
-           ;; The following packages are needed for build "tex.fmt", which we need
-           ;; for a working "tex".
-           texlive-tex-plain
+           ;; The following packages are needed for build "tex.fmt", which we
+           ;; need for a working "tex".
            texlive-cm
            texlive-knuth-lib
-           texlive-hyphen-base))
+           texlive-hyphen-base
+           texlive-plain))
     (home-page "https://ctan.org/pkg/hyph-utf8")
     (synopsis "Hyphenation patterns expressed in UTF-8")
     (description "Modern native UTF-8 engines such as XeTeX and LuaTeX need
@@ -3152,7 +3162,7 @@ formats.")
       (native-inputs
        `(("texlive-bin" ,texlive-bin)
          ("texlive-tex-ini-files" ,texlive-tex-ini-files)
-         ("texlive-tex-plain" ,texlive-tex-plain)
+         ("texlive-plain" ,texlive-plain)
          ("texlive-kpathsea" ,texlive-kpathsea)
          ("texlive-cm" ,texlive-cm)
          ("texlive-latex-fonts" ,texlive-latex-fonts)
@@ -8489,7 +8499,7 @@ e-TeX.")
            texlive-hyphen-base
            texlive-kpathsea
            texlive-tex-ini-files
-           texlive-tex-plain))
+           texlive-plain))
     (home-page "https://www.ctan.org/pkg/pdftex")
     (synopsis "TeX extension for direct creation of PDF")
     (description
@@ -12929,7 +12939,7 @@ itself may be shipped out to the DVI file.")
            texlive-l3packages
            texlive-lm
            texlive-tex-ini-files
-           texlive-tex-plain
+           texlive-plain
            texlive-unicode-data))
     (home-page "https://www.tug.org/texlive/")
     (synopsis "Extended variant of TeX for use with Unicode sources")

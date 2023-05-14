@@ -1025,7 +1025,7 @@ create compilers, making them easier to understand and maintain.")
                                        texlive-pdftex
                                        texlive-context
                                        texlive-cm
-                                       texlive-tex-plain))))
+                                       texlive-plain))))
       (arguments
        (list
         #:make-flags
