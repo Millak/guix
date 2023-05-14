@@ -11437,27 +11437,22 @@ theorems.  The package supports saving and reuse of source code and text
 parts.")
       (license license:lppl1.3c+))))
 
-(define-public texlive-latex-ebproof
+(define-public texlive-ebproof
   (package
-    (name "texlive-latex-ebproof")
-    (version "2.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://framagit.org/manu/ebproof")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1zkrfaf343js0yc1x7m3d8hzbh5izn0lb01jrmdpjm51kdbh30xq"))))
+    (name "texlive-ebproof")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ebproof/" "source/latex/ebproof/"
+                   "tex/latex/ebproof/")
+             (base32
+              "1a3203jgxsgihfgb6wwm0gfpaxbf1lg5axcakan9rj316xrrj4lc")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/ebproof"))
     (propagated-inputs
      (list texlive-l3kernel))
-    (home-page "http://www.ctan.org/pkg/ebproof")
-    (synopsis
-     "Formal proofs in the style of sequent calculus")
+    (home-page "https://ctan.org/pkg/ebproof")
+    (synopsis "Formal proofs in the style of sequent calculus")
     (description
      "This package provides commands to typeset proof trees in the style of
 sequent calculus and related systems.  The commands allow for writing
@@ -11465,6 +11460,8 @@ inferences with any number of premises and alignment of successive formulas on
 an arbitrary point.  Various options allow complete control over spacing,
 styles of inference rules, placement of labels, etc.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-latex-ebproof texlive-ebproof)
 
 (define-public texlive-latex-bussproofs
   (let ((template (simple-texlive-package
