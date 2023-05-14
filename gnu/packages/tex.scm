@@ -3765,6 +3765,53 @@ pdf and HTML backends.  The package is distributed with the @code{backref} and
 
 (define-deprecated-package texlive-latex-hyperref texlive-hyperref)
 
+(define-public texlive-hyperxmp
+  (package
+    (name "texlive-hyperxmp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hyperxmp/"
+                   "doc/man/man1/hyperxmp-add-bytecount.1"
+                   "doc/man/man1/hyperxmp-add-bytecount.man1.pdf"
+                   "scripts/hyperxmp/"
+                   "source/latex/hyperxmp/"
+                   "tex/latex/hyperxmp/")
+             (base32
+              "177wx80mc6ipl0ciddnwgjjfg9vqv71y9ql0y69sviplyy533ng7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            (lambda _
+              (delete-file "source/latex/hyperxmp/hyperxmp-stds.tex"))))))
+    (propagated-inputs
+     (list texlive-atenddvi
+           texlive-etoolbox
+           texlive-hyperref
+           texlive-ifmtarg
+           texlive-iftex
+           texlive-intcalc
+           texlive-kvoptions
+           texlive-luacode
+           texlive-oberdiek             ;for ifdraft
+           texlive-pdfescape
+           texlive-stringenc
+           texlive-totpages))
+    (home-page "https://ctan.org/pkg/hyperxmp")
+    (synopsis "Embed XMP metadata within a LaTeX document")
+    (description
+     "XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe for
+embedding document metadata, within the document itself.  The metadata is
+designed to be easy to extract, even by programs that are oblivious to the
+document's file format.  The @code{hyperxmp} package makes it trivial for
+LaTeX document authors to store XMP metadata in their documents as well.  It
+is compatible with pdfLaTeX, XeLaTeX, LaTeX+dvipdfm, and LaTeX+dvips+ps2pdf.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-oberdiek
   (let ((template (simple-texlive-package
                    "texlive-oberdiek"
