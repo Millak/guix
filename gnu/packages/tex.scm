@@ -1321,6 +1321,27 @@ support (for use with a variety of encodings) is provided.")
     ;; additional but not legally binding clause.
     (license license:lppl1.3c+)))
 
+(define-public texlive-ctablestack
+  (package
+    (name "texlive-ctablestack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/ctablestack/"
+                   "source/luatex/ctablestack/"
+                   "tex/luatex/ctablestack/")
+             (base32
+              "13l779436aj3hlchwvhkpiikbyfa2j4swzfrwqkjh9l8bc2cwg7n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ctablestack")
+    (synopsis "Catcode table stable support")
+    (description
+     "This package provides a method for defining category code table stacks
+in LuaTeX.  It is required by the @code{luatexbase} package which uses
+@code{ctablestack} to provide a back-compatibility form of this concept.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-lm
   (package
     (inherit (simple-texlive-package
