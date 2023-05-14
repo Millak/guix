@@ -3152,3 +3152,55 @@ The 5x8 and 6x12 versions only contain printable ASCII characters,
 
 Spleen also has support for Powerline symbols out of the box.")
     (license license:bsd-2)))
+
+(define-public font-scientifica
+  (package
+    (name "font-scientifica")
+    (version "2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/nerdypepper/scientifica/releases/download/"
+                    "v" version "/scientifica.tar"))
+              (sha256
+               (base32
+                "0zwa3s75lvbky2vn73i1fmxa37hi3zfm7f6wfpqwcip8l1lpi1gh"))))
+    (build-system font-build-system)
+    (outputs '("out" ;OTB
+               "bdf" "ttf"))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'install
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (let* ((otb (assoc-ref outputs "out"))
+                                   (bdf (assoc-ref outputs "bdf"))
+                                   (ttf (assoc-ref outputs "ttf"))
+                                   (otb-font-dir (string-append (assoc-ref
+                                                                 outputs "out")
+                                                  "/share/fonts/misc"))
+                                   (ttf-font-dir (string-append (assoc-ref
+                                                                 outputs "ttf")
+                                                  "/share/fonts/truetype"))
+                                   (bdf-font-dir (string-append (assoc-ref
+                                                                 outputs "bdf")
+                                                  "/share/fonts/misc")))
+                              (mkdir-p otb-font-dir)
+                              (mkdir-p bdf-font-dir)
+                              (mkdir-p ttf-font-dir)
+                              (for-each (lambda (otb)
+                                          (install-file otb otb-font-dir))
+                                        (find-files "." "\\.otb$"))
+                              (for-each (lambda (bdf)
+                                          (install-file bdf bdf-font-dir))
+                                        (find-files "." "\\.bdf$"))
+                              (for-each (lambda (ttf)
+                                          (install-file ttf ttf-font-dir))
+                                        (find-files "." "\\.ttf$"))) #t)))))
+    (home-page "https://github.com/nerdypepper/scientifica")
+    (synopsis "Tall and condensed bitmap font for geeks")
+    (description
+     "@code{scientifica} is largely based on
+@url{https://github.com/romeovs/creep, @code{creep}}, with a number of
+minor tweaks to improve readability (a matter of taste of course).
+Most characters are just 4px wide, which is brilliant for low dpi(90-120) displays.")
+    (license license:silofl1.1)))
