@@ -11338,29 +11338,31 @@ mode where all pages use the odd page layout.")
     (license license:lppl1.3)))
 
 (define-public texlive-storebox
-  (let ((template (simple-texlive-package
-                   "texlive-storebox"
-                   (list "/source/latex/storebox/")
-                   (base32
-                    "1ybpjfrria57fwvr9kriiw6y76ivwvsyb6ayp0bi750smsv8k5n1"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/storebox")
-         ((#:build-targets _ '())
-          ''("storebox.ins"))))
-      (native-inputs
-       (list texlive-ydoc))
-      (home-page "https://www.ctan.org/pkg/storebox")
-      (synopsis "Storing information for reuse")
-      (description "The package provides \"store boxes\" whose user interface
-matches that of normal LaTeX \"save boxes\", except that the content of a
-store box appears at most once in the output PDF file, however often it is
-used.  The present version of the package supports pdfLaTeX and LuaLaTeX; when
-DVI is output, store boxes behave the same as save boxes.")
-      (license license:lppl1.3))))
+  (package
+    (name "texlive-storebox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/storebox/" "source/latex/storebox/"
+                   "tex/latex/storebox/")
+             (base32
+              "1vbjq9aq2kbncq1dn4rk7jspfb6kcxk66h49z0xz1qix5yg94gmx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list texlive-ydoc))
+    (propagated-inputs
+     (list texlive-collectbox
+           texlive-iftex))
+    (home-page "https://ctan.org/pkg/storebox")
+    (synopsis "Storing information for reuse")
+    (description
+     "The package provides store boxes whose user interface matches that of
+normal LaTeX save boxes, except that the content of a store box appears at
+most once in the output PDF file, however often it is used.  The present
+version of the package supports pdfLaTeX and LuaLaTeX; when DVI is output,
+store boxes behave the same as save boxes.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-collectbox
   (package
