@@ -4027,25 +4027,23 @@ with Python.")
                (base32 "1ibnplgfzj96w8glkx17v7sld3pm402fr5ybmf3h0rlcryabxrqy"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "src/htslib")
-                  #t))))
+               '(delete-file-recursively "src/htslib"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; There are no tests to run.
-       #:make-flags
-       ,#~(list "PARALLEL=1"           ; Allow parallel execution at run-time.
-                (string-append "prefix=" #$output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (add-after 'install 'install-templates
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((templates (string-append (assoc-ref outputs "out")
-                                             "/share/delly/templates")))
-               (mkdir-p templates)
-               (copy-recursively "excludeTemplates" templates)
-               #t))))))
+     (list
+      #:tests? #f                       ;There are no tests to run.
+      #:make-flags
+      #~(list "PARALLEL=1"             ; Allow parallel execution at run-time.
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; There is no configure phase.
+          (add-after 'install 'install-templates
+            (lambda _
+              (let ((templates (string-append #$output
+                                              "/share/delly/templates")))
+                (mkdir-p templates)
+                (copy-recursively "excludeTemplates" templates)))))))
     (inputs
      (list boost bzip2 htslib zlib))
     (home-page "https://github.com/dellytools/delly")
