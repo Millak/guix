@@ -12135,26 +12135,28 @@ Finnish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Finnish documents.")
       (license license:lppl1.3c+))))
 
-(define-public texlive-generic-babel-norsk
+(define-public texlive-babel-norsk
   (package
-    (name "texlive-generic-babel-norsk")
+    (name "texlive-babel-norsk")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "generic" "babel-norsk"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1yf538l2isxgmab8jslxxx5fbdk4njf147n4raf5vyw3l4slxm6m"))))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-norsk/"
+                   "source/generic/babel-norsk/"
+                   "tex/generic/babel-norsk/")
+             (base32
+              "1zsssgcdllhjk7r58k4rv8bh59nmj091syqj45chvp1i667ndryp")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "generic/babel-norsk"))
-    (home-page "https://www.ctan.org/pkg/babel-norsk")
+    (home-page "https://ctan.org/pkg/babel-norsk")
     (synopsis "Babel support for Norwegian")
     (description
-       "The package provides the language definition file for support of
-Norwegian in @code{babel}.  Some shortcuts are defined, as well as translations
-to Norsk of standard “LaTeX names”.")
+     "The package provides the language definition file for support of
+Norwegian in Babel.  Some shortcuts are defined, as well as translations to
+Norsk of standard LaTeX names.")
     (license license:lppl1.3+)))
+
+(define-deprecated-package texlive-generic-babel-norsk texlive-babel-norsk)
 
 (define-public texlive-babel-danish
   (let ((template (simple-texlive-package
