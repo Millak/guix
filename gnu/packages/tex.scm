@@ -12370,57 +12370,61 @@ orientation by conforming PDF viewers.")
 
 (define-public texlive-datetime2
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-datetime2"
-      (list "doc/latex/datetime2/"
-            "source/latex/datetime2/"
-            "tex/latex/datetime2/")
-      (base32 "0yjkpfic1ni4j2g61rrjj5hjyd43shc9c0sg1aivbbsmqh30dn33")
-      #:trivial? #t))
+    (name "texlive-datetime2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2/"
+                   "source/latex/datetime2/"
+                   "tex/latex/datetime2/")
+             (base32
+              "0yjkpfic1ni4j2g61rrjj5hjyd43shc9c0sg1aivbbsmqh30dn33")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-etoolbox
-           texlive-latex-xkeyval
-           texlive-tracklang))
+           texlive-pgf
+           texlive-tracklang
+           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/datetime2")
     (synopsis "Formats for dates, times and time zones")
     (description
-     "The @code{datetime2} package provides commands for formatting dates, times
-and time zones and redefines @code{\\today} to use the same formatting style.
-In addition to @code{\\today}, you can also use
+     "The @code{datetime2} package provides commands for formatting dates,
+times and time zones and redefines @code{\\today} to use the same formatting
+style.  In addition to @code{\\today}, you can also use
 @code{\\DTMcurrenttime} (current time) or @code{\\DTMnow} (current date and
 time).  Dates and times can be saved for later use.  The accompanying
 @code{datetime2-calc} package can be used to convert date-times to UTC+00:00.
 Language and regional support is provided by independently maintained and
 installed modules.  The @code{datetime2-calc} package uses the
 @code{pgfcalendar} package (part of the PGF/TikZ bundle).  This package
-replaces @code{datetime.sty} which is now obsolete.")
+replaces @code{datetime.sty}, which is now obsolete.")
     (license license:lppl1.3+)))
 
 (define-public texlive-tracklang
-  (package
-    (name "texlive-tracklang")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/generic/tracklang/"
-                   "source/latex/tracklang/"
-                   "tex/generic/tracklang/"
-                   "tex/latex/tracklang/")
-             (base32
-              "1386sg25y6zb4ixvrbdv6n1gp54h18mjd984bnwwqda6jafxx4zr")))
-    (outputs '("out" "doc"))
-    (build-system texlive-build-system)
-    (home-page "https://ctan.org/pkg/tracklang")
-    (synopsis "Language and dialect tracker")
-    (description
-     "The @code{tracklang} package is provided for package developers who want
+(package
+  (name "texlive-tracklang")
+  (version (number->string %texlive-revision))
+  (source (texlive-origin
+           name version
+           (list "doc/generic/tracklang/"
+                 "source/latex/tracklang/"
+                 "tex/generic/tracklang/"
+                 "tex/latex/tracklang/")
+           (base32
+            "1386sg25y6zb4ixvrbdv6n1gp54h18mjd984bnwwqda6jafxx4zr")))
+  (outputs '("out" "doc"))
+  (build-system texlive-build-system)
+  (home-page "https://ctan.org/pkg/tracklang")
+  (synopsis "Language and dialect tracker")
+  (description
+   "The @code{tracklang} package is provided for package developers who want
 a simple interface to find out which languages the user has requested through
 packages such as @code{babel} or @code{polyglossia}.  This package does not
 provide any translations!  Its purpose is simply to track which languages have
 been requested by the user.  Generic TeX code is in @file{tracklang.tex} for
 non-LaTeX users.")
-    (license license:lppl1.3+)))
+  (license license:lppl1.3+)))
 
 (define-public texlive-ltablex
   (package
