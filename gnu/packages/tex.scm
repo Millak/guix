@@ -13026,16 +13026,20 @@ itself may be shipped out to the DVI file.")
 
 (define-public texlive-xetex
   (package
-    (inherit (simple-texlive-package
-              "texlive-xetex"
-              (list "/doc/man/man1/xetex.1"
-                    "/doc/man/man1/xelatex.1"
-                    "/doc/xetex/base/"
-                    "/fonts/misc/xetex/fontmapping/base/"
-                    "/tex/xelatex/xetexconfig/")
-              (base32
-               "0j396anlhk5pqrnwxr8bpq55sp3qfyb6n9g08x4nmaa6p9b9y8ab")
-              #:trivial? #t))
+    (name "texlive-xetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/xelatex.1"
+                   "doc/man/man1/xelatex.man1.pdf"
+                   "doc/man/man1/xetex.1"
+                   "doc/man/man1/xetex.man1.pdf"
+                   "doc/xetex/base/"
+                   "fonts/misc/xetex/fontmapping/base/")
+             (base32
+              "15bjr41p9l5d6837hy3nrhkkylgv04b0150vysyg5730svh3fnan")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-atbegshi
            texlive-atveryend
@@ -13046,16 +13050,17 @@ itself may be shipped out to the DVI file.")
            texlive-everyshi
            texlive-firstaid
            texlive-hyphen-base
-           texlive-latex-base
-           texlive-latex-fonts
            texlive-l3backend
            texlive-l3kernel
            texlive-l3packages
+           texlive-latex-base
+           texlive-latex-fonts
            texlive-lm
-           texlive-tex-ini-files
            texlive-plain
-           texlive-unicode-data))
-    (home-page "https://www.tug.org/texlive/")
+           texlive-tex-ini-files
+           texlive-unicode-data
+           texlive-xetexconfig))
+    (home-page "https://ctan.org/pkg/xetex")
     (synopsis "Extended variant of TeX for use with Unicode sources")
     (description
      "XeTeX is a TeX typesetting engine using Unicode and supporting modern font
