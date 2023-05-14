@@ -10119,21 +10119,21 @@ effects, varying slide transitions and animations.")
 
 (define-deprecated-package texlive-latex-beamer texlive-beamer)
 
-(define-public texlive-latex-xmpincl
+(define-public texlive-xmpincl
   (package
-    (name "texlive-latex-xmpincl")
+    (name "texlive-xmpincl")
     (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (texlive-ref "latex" "xmpincl"))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "0lq3dfb4fsw955gjwllnk7cg00ciq5mva64mlpbva6g2jz117734"))))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xmpincl/" "source/latex/xmpincl/"
+                   "tex/latex/xmpincl/")
+             (base32
+              "1r9vga6pl8q0p40njr1l04nhga4i0pjyppsd9qmxx0kx408siram")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/xmpincl"))
-    (home-page "http://www.ctan.org/pkg/xmpincl")
+    (propagated-inputs
+     (list texlive-iftex))
+    (home-page "https://ctan.org/pkg/xmpincl")
     (synopsis "Include eXtensible Metadata Platform data in pdfLaTeX")
     (description
      "The XMP (eXtensible Metadata platform) is a framework to add metadata to
@@ -10141,6 +10141,8 @@ digital material to enhance the workflow in publication.  The essence is that
 the metadata is stored in an XML file, and this XML stream is then embedded in
 the file to which it applies.")
     (license license:gpl3+)))
+
+(define-deprecated-package texlive-latex-xmpincl texlive-xmpincl)
 
 (define-public texlive-pdfx
   (let ((template (simple-texlive-package
