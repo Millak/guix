@@ -5610,6 +5610,33 @@ Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
 
 (define-deprecated-package texlive-latex-newunicodechar texlive-newunicodechar)
 
+(define-public texlive-newverbs
+  (package
+    (name "texlive-newverbs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newverbs/" "source/latex/newverbs/"
+                   "tex/latex/newverbs/")
+             (base32
+              "1m3afrpyc75g5gdxfknad565r5jgmwks98skkqycm66i92ky9dqr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list texlive-ydoc))
+    (home-page "https://ctan.org/pkg/newverbs")
+    (synopsis "Define new versions of @code{\\verb}")
+    (description
+     "The package allows the definition of @code{\\verb} variants which add
+TeX code before and after the verbatim text (e.g., quotes or surrounding
+@code{\\fbox@{@}}).  When used together with the @code{shortvrb} package it
+allows the definition of short verbatim characters which use this package's
+variant instead of the normal @code{\\verb}.  In addition, it is possible to
+collect an argument verbatim to either typeset or write it into a file.  The
+@code{\\Verbdef} command defines verbatim text to a macro which can later be
+used to write the verbatim text to a file.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-pdftexcmds
   (let ((template (simple-texlive-package
                    "texlive-pdftexcmds"
