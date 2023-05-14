@@ -6305,10 +6305,10 @@ output routine.")
     (native-inputs (list fontconfig    ;for XDG_DATA_DIRS, to locate OTF fonts
                          texlive-booktabs
                          texlive-cm
+                         texlive-eukdate
                          texlive-fontspec
                          texlive-iftex
                          texlive-latex-base
-                         texlive-latex-eukdate
                          texlive-graphics
                          texlive-multirow
                          texlive-lm     ;for lmroman10-regular
@@ -9269,41 +9269,29 @@ package, which is distributed with the package.")
 
 (define-deprecated-package texlive-latex-changepage texlive-changepage)
 
-(define-public texlive-latex-eukdate
+(define-public texlive-eukdate
   (package
-    (name "texlive-latex-eukdate")
+    (name "texlive-eukdate")
     (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (svn-reference
-             (url (string-append "svn://www.tug.org/texlive/tags/"
-                                 %texlive-tag "/Master/texmf-dist/"
-                                 "/tex/latex/eukdate"))
-             (revision %texlive-revision)))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "18xan116l8w47v560bkw6nbhkrml7g04xrlzk3jrpc7qsyf3n5fz"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/latex/eukdate")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/eukdate")
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eukdate/" "source/latex/eukdate/"
+                   "tex/latex/eukdate/")
+             (base32
+              "1bz32l4500y4sx7ighpcvzfh0z45lzyyxm1dq1knmhdsv46gqaxi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eukdate")
     (synopsis "UK format dates, with weekday")
     (description
      "The package is used to change the format of @code{\\today}’s date,
-including the weekday, e.g., \"Saturday, 26 June 2008\", the 'UK format', which
-is preferred in many parts of the world, as distinct from that which is used in
-@code{\\maketitle} of the article class, \"June 26, 2008\", the 'US format'.")
+including the weekday, e.g., @samp{Saturday, 26 June 2008}, the UK format,
+which is preferred in many parts of the world, as distinct from that which is
+used in @code{\\maketitle} of the article class, @samp{June 26, 2008}, the US
+format.")
     (license license:lppl)))
+
+(define-deprecated-package texlive-latex-eukdate texlive-eukdate)
 
 (define-public texlive-ulem
   (package
