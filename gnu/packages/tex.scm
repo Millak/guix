@@ -7303,78 +7303,79 @@ modules that use it.")
 
 (define-deprecated-package texlive-fonts-adobe-zapfding texlive-zapfding)
 
-(define-public texlive-fonts-rsfs
+(define-public texlive-rsfs
   (package
-    (name "texlive-fonts-rsfs")
+    (name "texlive-rsfs")
     (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/fonts/source/public/rsfs/"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0r12pn02r4a955prcvq0048nifh86ihlcgvw3pppqqvfngv34l5h"))))
-    (build-system gnu-build-system)
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/rsfs/"
+                   "fonts/afm/public/rsfs/"
+                   "fonts/map/dvips/rsfs/"
+                   "fonts/source/public/rsfs/"
+                   "fonts/tfm/public/rsfs/"
+                   "fonts/type1/public/rsfs/"
+                   "tex/plain/rsfs/")
+             (base32
+              "1sa32wnsj84wbwqji1fb4k9ik99dy5ji7zz4v0xbd7306agyhns5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1)
-                  (srfi srfi-26))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((mf (assoc-ref inputs "texlive-metafont")))
-               ;; Tell mf where to find mf.base
-               (setenv "MFBASES" (string-append mf "/share/texmf-dist/web2c"))
-               ;; Tell mf where to look for source files
-               (setenv "MFINPUTS"
-                       (string-append (getcwd) ":"
-                                      mf "/share/texmf-dist/metafont/base:"
-                                      (assoc-ref inputs "texlive-cm")
-                                      "/share/texmf-dist/fonts/source/public/cm")))
-             (mkdir "build")
-             (for-each (lambda (font)
-                         (format #t "building font ~a\n" font)
-                         (invoke "mf" "-progname=mf"
-                                 "-output-directory=build"
-                                 (string-append "\\"
-                                                "mode:=ljfour; "
-                                                "mag:=1; "
-                                                "batchmode; "
-                                                "input " (basename font ".mf"))))
-                       (find-files "." "[0-9]+\\.mf$"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (tfm (string-append
-                          out "/share/texmf-dist/fonts/tfm/public/rsfs"))
-                    (mf  (string-append
-                          out "/share/texmf-dist/fonts/source/public/rsfs")))
-               (for-each (cut install-file <> tfm)
-                         (find-files "build" "\\.*"))
-               (for-each (cut install-file <> mf)
-                         (find-files "." "\\.mf"))
-               #t))))))
+     (list
+      #:modules
+      '((guix build texlive-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 're-generate-fonts-metrics
+            (lambda _
+              (let ((mf #$(this-package-native-input "texlive-metafont"))
+                    (cm #$(this-package-native-input "texlive-cm"))
+                    (root (getcwd)))
+                (mkdir-p "build")
+                (with-directory-excursion "fonts/source/public/rsfs"
+                  ;; Tell mf where to find mf.base.
+                  (setenv "MFBASES"
+                          (string-append mf "/share/texmf-dist/web2c"))
+                  ;; Tell mf where to look for source files.
+                  (setenv "MFINPUTS"
+                          (string-append
+                           (getcwd) ":"
+                           mf "/share/texmf-dist/metafont/base:"
+                           cm "/share/texmf-dist/fonts/source/public/cm"))
+                  ;; Build font metrics (tfm).
+                  (for-each (lambda (font)
+                              (format #t "building font ~a\n" font)
+                              (invoke "mf" "-progname=mf"
+                                      (string-append "-output-directory="
+                                                     root "/build")
+                                      (string-append "\\"
+                                                     "mode:=ljfour; "
+                                                     "mag:=1; "
+                                                     "batchmode; "
+                                                     "input "
+                                                     (basename font ".mf"))))
+                            (find-files "." "[0-9]+\\.mf$")))
+                ;; Install font metrics at the appropriate location.
+                (for-each
+                 (cut install-file <> "fonts/tfm/public/rsfs/")
+                 (find-files "build/" "\\.tfm$"))))))))
     (native-inputs
      (list texlive-bin texlive-metafont texlive-cm))
-    (home-page "https://www.ctan.org/pkg/rsfs")
+    (home-page "https://ctan.org/pkg/rsfs")
     (synopsis "Ralph Smith's Formal Script font")
     (description
      "The fonts provide uppercase formal script letters for use as symbols in
 scientific and mathematical typesetting (in contrast to the informal script
 fonts such as that used for the calligraphic symbols in the TeX maths symbol
-font).  The fonts are provided as Metafont source, and as derived Adobe Type 1
-format.  LaTeX support, for using these fonts in mathematics, is available via
-one of the packages @code{calrsfs} and @code{mathrsfs}.")
+font).  The fonts are provided as Metafont source, and as derived Adobe Type
+1 format.  LaTeX support, for using these fonts in mathematics, is available
+via one of the packages @code{calrsfs} and @code{mathrsfs}.")
     (license (license:fsf-free "http://mirrors.ctan.org/fonts/rsfs/README"))))
+
+(define-deprecated-package texlive-fonts-rsfs texlive-rsfs)
 
 (define-public texlive-eso-pic
   (let ((template (simple-texlive-package

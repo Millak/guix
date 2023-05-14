@@ -556,7 +556,7 @@ the in DocBook SGML DTDs.")
                                              texlive-titlesec
                                              texlive-wasysym
 
-                                             texlive-fonts-rsfs
+                                             texlive-rsfs
                                              texlive-stmaryrd
 
                                              texlive-iftex)))

@@ -15203,12 +15203,12 @@ time.")
            (texlive-updmap.cfg (list texlive-amsfonts
                                      texlive-amsmath
                                      texlive-eurosym
-                                     texlive-fonts-rsfs
                                      texlive-jknappen
                                      texlive-lm
                                      texlive-lm-math
                                      texlive-mathpazo
                                      texlive-oberdiek
+                                     texlive-rsfs
                                      texlive-ucs
                                      texlive-zapfding))))
     (home-page "https://jupyter.org")
