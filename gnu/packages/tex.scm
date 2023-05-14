@@ -12702,30 +12702,39 @@ algebra, using Dirac notation.")
 
 (define-public texlive-sourcesanspro
   (package
-    (inherit (simple-texlive-package
-              "texlive-sourcesanspro"
-              '("/doc/latex/sourcesanspro/"
-                "/fonts/enc/dvips/sourcesanspro/"
-                "/fonts/map/dvips/sourcesanspro/"
-                "/fonts/opentype/adobe/sourcesanspro/"
-                ;; ^ It would be tempting to use our
-                ;; font-adobe-source-sans-pro for these, but the version in
-                ;; texlive could differ from our version: probably the
-                ;; difference would be small, but debugging would not be fun.
-                ;; If the files are really identical, Guix will hard-link them
-                ;; anyway.
-                "/fonts/tfm/adobe/sourcesanspro/"
-                "/fonts/type1/adobe/sourcesanspro/"
-                "/fonts/vf/adobe/sourcesanspro/"
-                "/tex/latex/sourcesanspro/")
-              (base32
-               "18z7ln8dyh0sp6v0vdvc6qqxnpg3h3ix0f5magjcjbpay54kl0i3")
-              #:trivial? #t))
+    (name "texlive-sourcesanspro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sourcesanspro/"
+                   "fonts/enc/dvips/sourcesanspro/"
+                   "fonts/map/dvips/sourcesanspro/"
+                   "fonts/opentype/adobe/sourcesanspro/"
+                   ;; ^ It would be tempting to use our
+                   ;; font-adobe-source-sans-pro for these, but the version in
+                   ;; texlive could differ from our version: probably the
+                   ;; difference would be small, but debugging would not be
+                   ;; fun.  If the files are really identical, Guix will
+                   ;; hard-link them anyway.
+                   "fonts/tfm/adobe/sourcesanspro/"
+                   "fonts/type1/adobe/sourcesanspro/"
+                   "fonts/vf/adobe/sourcesanspro/"
+                   "tex/latex/sourcesanspro/")
+             (base32
+              "18z7ln8dyh0sp6v0vdvc6qqxnpg3h3ix0f5magjcjbpay54kl0i3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-fontaxes
+           texlive-iftex
+           texlive-mweights
+           texlive-xkeyval))
     (home-page "https://ctan.org/pkg/sourcesanspro")
     (synopsis "Use Source Sans Pro with TeX(-alike) systems")
-    (description "This package provides the Source Sans Pro font family from
-Adobe in both Adobe Type 1 and OpenType formats, plus macros supporting the
-use of the fonts in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
+    (description
+     "This package provides the Source Sans Pro font family from Adobe in both
+Adobe Type 1 and OpenType formats, plus macros supporting the use of the fonts
+in LaTeX (Type 1) and XeLaTeX/LuaLaTeX (OTF).")
     (license (list license:lppl1.3+ license:silofl1.1))))
 
 (define-public texlive-sourceserifpro
