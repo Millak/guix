@@ -10337,19 +10337,34 @@ for a wealth of support information.")
 
 (define-public texlive-beamer
   (package
-    (inherit (simple-texlive-package
-              "texlive-beamer"
-              (list "/doc/latex/beamer/"
-                    "/tex/latex/beamer/")
-              (base32
-               "091n27n4l3iac911bvmpp735ffryyzaq46mkclgn3q9jsvc4ngiv")
-              #:trivial? #t))
+    (name "texlive-beamer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamer/"
+                   "tex/latex/beamer/")
+             (base32
+              "091n27n4l3iac911bvmpp735ffryyzaq46mkclgn3q9jsvc4ngiv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-hyperref texlive-oberdiek texlive-etoolbox
-           texlive-pgf))
+     (list texlive-amsfonts
+           texlive-amsmath
+           texlive-atbegshi
+           texlive-etoolbox
+           texlive-graphics
+           texlive-hyperref
+           texlive-iftex
+           texlive-oberdiek
+           texlive-pgf
+           texlive-tools
+           texlive-translator
+           texlive-ucs
+           texlive-xcolor))
     (home-page "https://www.ctan.org/pkg/beamer")
     (synopsis "LaTeX class for producing presentations and slides")
-    (description "The beamer LaTeX class can be used for producing slides.
+    (description
+     "The @code{beamer} LaTeX class can be used for producing slides.
 The class works in both PostScript and direct PDF output modes, using the
 @code{pgf} graphics system for visual effects.  Content is created in the
 @code{frame} environment, and each frame can be made up of a number of slides
