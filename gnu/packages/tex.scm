@@ -8479,31 +8479,28 @@ files.")
 (define-deprecated-package texlive-latex-preview texlive-preview)
 
 (define-public texlive-acronym
-  (let ((template (simple-texlive-package
-                   "texlive-acronym"
-                   (list "doc/latex/acronym/"
-                         "source/latex/acronym/"
-                         "tex/latex/acronym/")
-                   (base32
-                    "0p2sws3qy7wv0v6bsy6c5j36n9s1ps7b1z7dmg1370schrjpqnfh"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/acronym")
-         ((#:build-targets _ '()) '(list "acronym.ins"))))
-      (propagated-inputs
-       (list texlive-bigfoot texlive-relsize texlive-xstring))
-      (home-page "https://ctan.org/pkg/acronym")
-      (synopsis "Expand acronyms at least once")
-      (description
-       "This package ensures that all acronyms used in the text are spelled
-out in full at least once.  It also provides an environment to build a list of
+  (package
+    (name "texlive-acronym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/acronym/" "source/latex/acronym/"
+                   "tex/latex/acronym/")
+             (base32
+              "0p2sws3qy7wv0v6bsy6c5j36n9s1ps7b1z7dmg1370schrjpqnfh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-bigfoot texlive-relsize texlive-xstring))
+    (home-page "https://ctan.org/pkg/acronym")
+    (synopsis "Expand acronyms at least once")
+    (description
+     "This package ensures that all acronyms used in the text are spelled out
+in full at least once.  It also provides an environment to build a list of
 acronyms used.  The package is compatible with PDF bookmarks.  The package
 requires the @code{suffix} package, which in turn requires that it runs under
 e-TeX.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-acronym texlive-acronym)
 
