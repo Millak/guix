@@ -97,20 +97,21 @@ Import the latest package named PACKAGE-NAME from an ELPA repository.\n"))
          (package-name->name+version spec))
        (when version
          (warning (G_ "this importer does not consider the version~%")))
-       (if (assoc-ref opts 'recursive)
-           (with-error-handling
-             (map (match-lambda
-                    ((and ('package ('name name) . rest) pkg)
-                     `(define-public ,(string->symbol name)
-                        ,pkg))
-                    (_ #f))
+       (match (if (assoc-ref opts 'recursive)
                   (elpa-recursive-import package-name
-                                         (or (assoc-ref opts 'repo) 'gnu))))
-           (let ((sexp (elpa->guix-package package-name
-                                           #:repo (assoc-ref opts 'repo))))
-             (unless sexp
-               (leave (G_ "failed to download package '~a'~%") package-name))
-             sexp)))
+                                         (or (assoc-ref opts 'repo) 'gnu))
+                  (elpa->guix-package package-name
+                                      #:repo (assoc-ref opts 'repo)))
+         ((or #f '())
+          (leave (G_ "failed to download meta-data for package '~a'~%") package-name))
+         (('package etc ...) `(package ,etc))
+         ((? list? sexps) (map
+                           (match-lambda
+                             ((and ('package ('name name) . rest) pkg)
+                              `(define-public ,(string->symbol name)
+                                 ,pkg))
+                             (_ #f))
+                           sexps))))
       (()
        (leave (G_ "too few arguments~%")))
       ((many ...)
