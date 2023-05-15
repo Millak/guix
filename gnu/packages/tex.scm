@@ -10947,35 +10947,39 @@ configuration of its own fixed names, using @file{.mld} files.")
     (license license:lppl1.3+)))
 
 (define-public texlive-minted
-  (let ((template (simple-texlive-package
-                   "texlive-minted"
-                   (list "/doc/latex/minted/"
-                         "/source/latex/minted/"
-                         "/tex/latex/minted/")
-                   (base32
-                    "13cjsjb3b04n9arwp46ayk8fcicylxq5g1864cpxl1lxjxh1yi0l"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/minted")))
-      (propagated-inputs (list python-pygments
-                               texlive-etoolbox
-                               texlive-fancyvrb
-                               texlive-float
-                               texlive-framed
-                               texlive-fvextra
-                               texlive-ifplatform
-                               texlive-lineno
-                               texlive-newfloat
-                               texlive-xstring))
-      (home-page "https://ctan.org/pkg/minted")
-      (synopsis "Highlight source code in LaTeX documents")
-      (description "This package facilitates expressive syntax highlighting in
-LaTeX using the Pygments library.  This package also provides options to
-customize the highlighted source code output using fancyvrb and fvextra.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-minted")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minted/" "source/latex/minted/"
+                   "tex/latex/minted/")
+             (base32
+              "13cjsjb3b04n9arwp46ayk8fcicylxq5g1864cpxl1lxjxh1yi0l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list python-pygments
+           texlive-etoolbox
+           texlive-fancyvrb
+           texlive-float
+           texlive-framed
+           texlive-fvextra
+           texlive-graphics
+           texlive-ifplatform
+           texlive-kvoptions
+           texlive-lineno
+           texlive-newfloat
+           texlive-pdftexcmds
+           texlive-tools
+           texlive-xstring))
+    (home-page "https://ctan.org/pkg/minted")
+    (synopsis "Highlighted source code for LaTeX")
+    (description
+     "The package that facilitates expressive syntax highlighting in LaTeX
+using the powerful Pygments library.  The package also provides options to
+customize the highlighted source code output using @code{fancyvrb}.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-caption
   (package
