@@ -11065,16 +11065,17 @@ for fixed point real numbers of high precision.")
 
 (define-public texlive-fpl
   (package
-    (inherit (simple-texlive-package
-              "texlive-fpl"
-              (list "/doc/fonts/fpl/"
-                    "/source/fonts/fpl/"
-                    "/fonts/afm/public/fpl/"
-                    "/fonts/type1/public/fpl/")
-              (base32
-               "02gkl516z9kn8xqs269pdkqn37sxm8ib0pcs43s4rs2rhyyl5z68")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/fpl")
+    (name "texlive-fpl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fpl/" "fonts/afm/public/fpl/"
+                   "fonts/type1/public/fpl/" "source/fonts/fpl/")
+             (base32
+              "02gkl516z9kn8xqs269pdkqn37sxm8ib0pcs43s4rs2rhyyl5z68")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fpl")
     (synopsis "SC and OsF fonts for URW Palladio L")
     (description "The FPL Fonts provide a set of SC/OsF fonts for URW
 Palladio L which are compatible with the Palatino SC/OsF fonts from
