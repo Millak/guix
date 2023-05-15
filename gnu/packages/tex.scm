@@ -9221,43 +9221,33 @@ toc-entries;
     (license license:lppl)))
 
 (define-public texlive-numprint
-  (let ((template
-         (simple-texlive-package
-          "texlive-numprint"
-          (list "doc/latex/numprint/"
-                "source/latex/numprint/"
-                "tex/latex/numprint/")
-          (base32 "1rqbqj4ffcfxxxxbs100pdslaiimwzgg19mf2qzcmm5snxwrf7zj"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/numprint")
-         ((#:build-targets _ '())
-          '(list "numprint.ins"))))
-      (home-page "https://www.ctan.org/pkg/numprint")
-      (synopsis "Print numbers with separators and exponent if necessary")
-      (description
-       "The package numprint prints numbers with a separator every three
-digits and converts numbers given as 12345.6e789 to 12\\,345,6\\cdot
-10^{789}.  Numbers are printed in the current mode (text or math) in
-order to use the correct font.
+  (package
+    (name "texlive-numprint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numprint/" "source/latex/numprint/"
+                   "tex/latex/numprint/")
+             (base32
+              "1rqbqj4ffcfxxxxbs100pdslaiimwzgg19mf2qzcmm5snxwrf7zj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-tools))
+    (home-page "https://ctan.org/pkg/numprint")
+    (synopsis "Print numbers with separators and exponent if necessary")
+    (description
+     "The package numprint prints numbers with a separator every three digits
+and converts numbers given as @samp{12345.6e789} to @samp{12\\,345,6\\cdot
+10^@{789@}}.  Numbers are printed in the current mode (text or math) in order
+to use the correct font.
 
-Many things, including the decimal sign, the thousand separator, as
-well as the product sign can be changed by the user, e.g., to reach
-12,345.6\\times 10^{789}.
-
-If an optional argument is given it is printed upright as unit.
-Numbers can be rounded to a given number of digits.  The package
-supports an automatic, language-dependent change of the number format.
-
-Tabular alignment using the tabular, array, tabularx, and longtable
-environments (similar to the dcolumn and rccol packages) is supported
-using all features of numprint.  Additional text can be added before
-and after the formatted number.")
-      (license license:lppl))))
+Many things, including the decimal sign, the thousand separator, as well as
+the product sign can be changed by the user.  If an optional argument is given
+it is printed upright as unit.  Numbers can be rounded to a given number of
+digits.  The package supports an automatic, language-dependent change of the
+number format.")
+    (license license:lppl)))
 
 (define-deprecated-package texlive-latex-numprint texlive-numprint)
 
