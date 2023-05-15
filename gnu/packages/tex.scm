@@ -8597,13 +8597,16 @@ implements an easy to use interface for these symbols.")
 
 (define-public texlive-wrapfig
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-wrapfig"
-      (list "doc/latex/wrapfig/" "tex/latex/wrapfig/")
-      (base32 "0wk1vp0dqsp597xzsqbwj8xk80v7d77qmpjir84n54f920rf9ka9")
-      #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/wrapfig")
+    (name "texlive-wrapfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wrapfig/" "tex/latex/wrapfig/")
+             (base32
+              "0wk1vp0dqsp597xzsqbwj8xk80v7d77qmpjir84n54f920rf9ka9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wrapfig")
     (synopsis "Produces figures which text can flow around")
     (description
      "This package allows figures or tables to have text wrapped around them.
