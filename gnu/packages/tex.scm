@@ -11116,29 +11116,52 @@ support packages.  Others are cmbright, hvmath and kerkis.")
 
 (define-public texlive-mathdesign
   (package
-    (inherit (simple-texlive-package
-              "texlive-mathdesign"
-              (list "/doc/fonts/mathdesign/"
-                    "/dvips/mathdesign/"
-                    "/fonts/enc/dvips/mathdesign/"
-                    "/fonts/map/dvips/mathdesign/"
-                    "/fonts/tfm/public/mathdesign/"
-                    "/fonts/type1/public/mathdesign/"
-                    "/fonts/vf/public/mathdesign/"
-                    "/tex/latex/mathdesign/")
-              (base32
-               "0jcby2sd0l3ank2drxc0qcf5d1cwa8idzh4g91h4nxk8zrzxj8nr")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/mathdesign")
+    (name "texlive-mathdesign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mathdesign/"
+                   "dvips/mathdesign/"
+                   "fonts/enc/dvips/mathdesign/"
+                   "fonts/map/dvips/mathdesign/"
+                   "fonts/tfm/public/mathdesign/mdbch/"
+                   "fonts/tfm/public/mathdesign/mdgreek/"
+                   "fonts/tfm/public/mathdesign/mdici/"
+                   "fonts/tfm/public/mathdesign/mdpgd/"
+                   "fonts/tfm/public/mathdesign/mdpus/"
+                   "fonts/tfm/public/mathdesign/mdput/"
+                   "fonts/tfm/public/mathdesign/mdugm/"
+                   "fonts/type1/public/mathdesign/mdbch/"
+                   "fonts/type1/public/mathdesign/mdici/"
+                   "fonts/type1/public/mathdesign/mdpgd/"
+                   "fonts/type1/public/mathdesign/mdpus/"
+                   "fonts/type1/public/mathdesign/mdput/"
+                   "fonts/type1/public/mathdesign/mdugm/"
+                   "fonts/vf/public/mathdesign/mdbch/"
+                   "fonts/vf/public/mathdesign/mdgreek/"
+                   "fonts/vf/public/mathdesign/mdici/"
+                   "fonts/vf/public/mathdesign/mdpgd/"
+                   "fonts/vf/public/mathdesign/mdpus/"
+                   "fonts/vf/public/mathdesign/mdput/"
+                   "fonts/vf/public/mathdesign/mdugm/"
+                   "tex/latex/mathdesign/")
+             (base32
+              "0jcby2sd0l3ank2drxc0qcf5d1cwa8idzh4g91h4nxk8zrzxj8nr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/mathdesign")
     (synopsis "Mathematical fonts to fit with particular text fonts")
-    (description "The Math Design project offers free mathematical
-fonts that match with existing text fonts.  To date, three free font
-families are available: Adobe Utopia, URW Garamond and Bitstream
-Charter.  Mathdesign covers the whole LaTeX glyph set including AMS
-symbols.  Both roman and bold versions of these symbols can be used.
-Moreover, there is a choice between three greek fonts (two of them
-created by the Greek Font Society).")
-    (license license:gpl2+)))
+    (description
+     "The Math Design project offers mathematical fonts that match with
+existing text fonts.  To date, three free font families are available: Adobe
+Utopia, URW Garamond and Bitstream Charter.  Mathdesign covers the whole LaTeX
+glyph set including AMS symbols.  Both roman and bold versions of these
+symbols can be used.  Moreover, there is a choice between three greek
+fonts (two of them created by the Greek Font Society).")
+    (license license:gpl3+)))
 
 (define-public texlive-bera
   (package
