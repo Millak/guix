@@ -3726,72 +3726,82 @@ and @code{pdfxmltex}.")
     (license license:public-domain)))
 
 (define-public texlive-xmltex
-  (let ((template (simple-texlive-package
-                   "texlive-xmltex"
-                   (list
-                    "/doc/otherformats/xmltex/"
-                    "/tex/xmltex/")
-                   (base32
-                    "023gv9axq05vwqz50fnkig24dzahwlc4raks2s8xc4pzrv2dv1zy"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "tex/xmltex/base")
-         ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (add-before 'install 'generate-formats
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (mkdir "web2c")
-                 (for-each (lambda (f)
-                             (copy-file f (basename f)))
-                           (find-files "tex" "\\.(ini|tex)$"))
-                 (invoke "fmtutil-sys" "--byfmt" "xmltex"
-                         "--fmtdir=web2c")
-                 (invoke "fmtutil-sys" "--byfmt" "pdfxmltex"
-                         "--fmtdir=web2c")))
-             (add-after 'install 'install-formats-and-wrappers
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (texlive-bin (assoc-ref inputs "texlive-bin"))
-                        (pdftex (string-append texlive-bin "/bin/pdftex"))
-                        (web2c (string-append out "/share/texmf-dist/web2c")))
-                   (mkdir-p web2c)
-                   (copy-recursively "web2c" web2c)
-                   ;; Create convenience command wrappers.
-                   (mkdir-p (string-append out "/bin"))
-                   (symlink pdftex (string-append out "/bin/xmltex"))
-                   (symlink pdftex (string-append out "/bin/pdfxmltex"))
-                   #t)))))))
-      (propagated-inputs
-       ;; The following fonts are propagated as a texlive-updmap.cfg as the font
-       ;; maps need to be recreated for the fonts to be usable.  They are
-       ;; required by xmltex through mlnames.sty and unicode.sty.
-       `(("texlive" ,(texlive-updmap.cfg
-                      (list
-                       texlive-amsfonts
-                       texlive-babel
-                       texlive-courier
-                       texlive-helvetic
-                       texlive-hyperref
-                       texlive-symbol
-                       texlive-tipa
-                       texlive-times
-                       texlive-zapfding
-                       ;; The following fonts, while not required, are used if
-                       ;; available:
-                       texlive-stmaryrd
-                       texlive-wasy)))))
-      (native-inputs
-       (list texlive-tex-ini-files))
-      (home-page "https://www.ctan.org/pkg/xmltex/")
-      (synopsis "Support for parsing XML documents")
-      (description "The package provides an implementation of a parser for
-documents matching the XML 1.0 and XML Namespace Recommendations.  Element and
-attribute names, as well as character data, may use any characters allowed in
-XML, using UTF-8 or a suitable 8-bit encoding.")
-      (license license:lppl1.0+))))        ;per xmltex/base/readme.txt
+  (package
+    (name "texlive-xmltex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/otherformats/xmltex/base/"
+                   "tex/xmltex/base/")
+             (base32
+              "1rqwsapba8zs2ijjs7lpzksm20jqb8zbmanpw7wmdp2rq26ahylh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'generate-formats
+            (lambda _
+              (let ((web2c (string-append (getcwd) "/web2c")))
+                (mkdir "web2c")
+                (with-directory-excursion "tex/xmltex/base/"
+                  (invoke "fmtutil-sys"
+                          "--byfmt" "xmltex"
+                          (string-append"--fmtdir=" web2c))
+                  (invoke "fmtutil-sys"
+                          "--byfmt" "pdfxmltex"
+                          (string-append "--fmtdir=" web2c))))))
+          (add-after 'install 'install-formats-and-wrappers
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pdftex (search-input-file inputs "/bin/pdftex"))
+                    (web2c (string-append #$output "/share/texmf-dist/web2c")))
+                (mkdir-p web2c)
+                (copy-recursively "web2c" web2c)
+                (for-each delete-file (find-files web2c "\\.log$"))
+                ;; Create convenience command wrappers.
+                (mkdir-p (string-append #$output "/bin"))
+                (symlink pdftex (string-append #$output "/bin/xmltex"))
+                (symlink pdftex (string-append #$output "/bin/pdfxmltex"))))))))
+    (native-inputs
+     (list texlive-tex-ini-files
+           texlive-xmltexconfig))
+    (propagated-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-amsfonts
+                  texlive-babel
+                  texlive-courier
+                  texlive-helvetic
+                  texlive-hyperref
+                  texlive-latex-fonts
+                  texlive-stmaryrd
+                  texlive-symbol
+                  texlive-times
+                  texlive-tipa
+                  texlive-wasy
+                  texlive-zapfding))
+           texlive-atbegshi
+           texlive-atveryend
+           texlive-babel
+           texlive-cm
+           texlive-dehyph
+           texlive-everyshi
+           texlive-firstaid
+           texlive-hyph-utf8
+           texlive-hyphen-base
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-tex-ini-files
+           texlive-xmltexconfig))
+    (home-page "https://ctan.org/pkg/xmltex")
+    (synopsis "Support for parsing XML documents")
+    (description
+     "The package provides an implementation of a parser for documents
+matching the XML 1.0 and XML Namespace Recommendations.  Element and attribute
+names, as well as character data, may use any characters allowed in XML, using
+UTF-8 or a suitable 8-bit encoding.")
+    (license license:lppl1.0+)))        ;per xmltex/base/readme.txt
 
 (define-public texlive-hyperref
   (let ((template (simple-texlive-package
