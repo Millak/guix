@@ -3697,28 +3697,26 @@ for Greek text font encodings for use with fontenc.")
     (license license:lppl1.3+)))
 
 (define-public texlive-hycolor
-  (let ((template  (simple-texlive-package
-                    "texlive-hycolor"
-                    (list "doc/latex/hycolor/"
-                          "source/latex/hycolor/"
-                          "tex/latex/hycolor/")
-                    (base32
-                     "0hmkx37wwmznxjqqnca87shy7qrgqrh2cn5r941ddgivnym31xbh"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/hycolor")
-         ((#:build-targets _ '())
-          #~(list "hycolor.dtx"))))
-      (home-page "https://www.ctan.org/pkg/latex-graphics")
-      (synopsis "Color for hyperref and bookmark")
-      (description
-       "This package provides the code for the @code{color} option that is
-used by @code{hyperref} and @code{bookmark}.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-hycolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hycolor/" "source/latex/hycolor/"
+                   "tex/latex/hycolor/")
+             (base32
+              "0hmkx37wwmznxjqqnca87shy7qrgqrh2cn5r941ddgivnym31xbh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-hopatch))
+    (home-page "https://ctan.org/pkg/hycolor")
+    (synopsis "Colour for packages @code{hyperref} and @code{bookmark}")
+    (description
+     "This package provides the code for the color option that is used by
+packages @code{hyperref} and @code{bookmark}.  It is not intended as a package
+for the user.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-hycolor texlive-hycolor)
 
