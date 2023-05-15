@@ -18512,39 +18512,37 @@ protocol for Mastodon.")
   (sbcl-package->cl-source-package sbcl-tooter))
 
 (define-public sbcl-croatoan
-  (let ((commit "42e474f4dffe2f4e429905a612be5736c2c3e374")
-        (revision "7"))
-    (package
-      (name "sbcl-croatoan")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/McParen/croatoan")
-               (commit commit)))
-         (file-name (git-file-name "cl-croatoan" version))
-         (sha256
-          (base32 "12hnj8gwk2600j3kn778xvvpx3y6z0428v5dq2qbf4vbzj66vcxj"))))
-      (build-system asdf-build-system/sbcl)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "ncurses/ncurses.lisp"
-                 (("libncursesw.so")
-                  (search-input-file inputs "/lib/libncursesw.so"))))))))
-      (inputs
-       (list ncurses
-             sbcl-cffi
-             sbcl-trivial-gray-streams
-             sbcl-bordeaux-threads))
-      (synopsis "Common Lisp bindings for the ncurses terminal library")
-      (description "Croatoan provides high-level Common Lisp CLOS bindings for
+  (package
+    (name "sbcl-croatoan")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/McParen/croatoan")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-croatoan" version))
+       (sha256
+        (base32 "1whbvwc4df7zz0002xy3aczrpf4s3vk6kmyh9wydgwl112h060pd"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "ncurses/ncurses.lisp"
+               (("libncursesw.so")
+                (search-input-file inputs "/lib/libncursesw.so"))))))))
+    (inputs
+     (list ncurses
+           sbcl-cffi
+           sbcl-trivial-gray-streams
+           sbcl-bordeaux-threads))
+    (synopsis "Common Lisp bindings for the ncurses terminal library")
+    (description "Croatoan provides high-level Common Lisp CLOS bindings for
 the ncurses terminal library.")
-      (home-page "https://github.com/McParen/croatoan")
-      (license license:expat))))
+    (home-page "https://github.com/McParen/croatoan")
+    (license license:expat)))
 
 (define-public ecl-croatoan
   (sbcl-package->ecl-package sbcl-croatoan))
