@@ -5478,29 +5478,27 @@ corresponding italics: light, regular, medium, bold, ...")
                    license:silofl1.1))))
 
 (define-public texlive-firstaid
-  (let ((template (simple-texlive-package
-                   "texlive-firstaid"
-                   (list "/doc/latex/firstaid/"
-                         "/source/latex/firstaid/"
-                         "/tex/latex/firstaid/")
-                   (base32
-                    "1ahn47kz8a2qdmzdfdgjanf6h5bn8f2rzp1zvwgjpk1plcix8k90"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "tex/latex/firstaid")
-         ((#:build-targets _ '()) '(list "firstaid.ins"))))
-      (home-page "https://ctan.org/macros/latex/required/firstaid")
-      (synopsis
-       "First aid for external LaTeX files and packages that need updating")
-      (description
-       "This package contains some first aid for LaTeX packages or classes
-that require updates because of internal changes to the LaTeX kernel that are
-not yet reflected in the package's or class's code.  The file
+  (package
+    (name "texlive-firstaid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/firstaid/" "source/latex/firstaid/"
+                   "tex/latex/firstaid/")
+             (base32
+              "1ahn47kz8a2qdmzdfdgjanf6h5bn8f2rzp1zvwgjpk1plcix8k90")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/firstaid")
+    (synopsis
+     "First aid for external LaTeX files and packages that need updating")
+    (description
+     "This package contains some first aid for LaTeX packages or classes that
+require updates because of internal changes to the LaTeX kernel that are not
+yet reflected in the package's or class's code.  The file
 @file{latex2e-first-aid-for-external-files.ltx} provided by this package is
 meant to be loaded during format generation and not by the user.")
-      (license license:lppl1.3c))))
+    (license license:lppl1.3c)))
 
 (define-public texlive-ifplatform
   (package
