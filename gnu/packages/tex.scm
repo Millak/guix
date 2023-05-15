@@ -12003,32 +12003,38 @@ now distributed separately.")
 
 (define-public texlive-inriafonts
   (package
-    (inherit (simple-texlive-package
-              "texlive-inriafonts"
-              (list "doc/fonts/inriafonts/"
-                    "fonts/enc/dvips/inriafonts/"
-                    "fonts/map/dvips/inriafonts/"
-                    "fonts/opentype/public/inriafonts/"
-                    "fonts/tfm/public/inriafonts/"
-                    "fonts/truetype/public/inriafonts/"
-                    "fonts/type1/public/inriafonts/"
-                    "fonts/vf/public/inriafonts/"
-                    "tex/latex/inriafonts/")
-              (base32
-               "0ngbpr4pl7r82jmdhiksp32qvbvggf2nawwqq0pkb7cffp95ya49")
-              #:trivial? #t))
-    (propagated-inputs (list texlive-ly1))        ;requires LY1 font encoding
-    (home-page "https://ctan.org/fonts/inriafonts")
+    (name "texlive-inriafonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/inriafonts/"
+                   "fonts/enc/dvips/inriafonts/"
+                   "fonts/map/dvips/inriafonts/"
+                   "fonts/opentype/public/inriafonts/"
+                   "fonts/tfm/public/inriafonts/"
+                   "fonts/truetype/public/inriafonts/"
+                   "fonts/type1/public/inriafonts/"
+                   "fonts/vf/public/inriafonts/"
+                   "tex/latex/inriafonts/")
+             (base32
+              "0ngbpr4pl7r82jmdhiksp32qvbvggf2nawwqq0pkb7cffp95ya49")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-fontaxes
+           texlive-ly1                  ;requires LY1 font encoding
+           texlive-mweights
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/inriafonts")
     (synopsis "Inria fonts with LaTeX support")
     (description
-     "Inria is a free font designed by Black[Foundry] for Inria, a French research
-institute.  It comes as Serif and Sans Serif, each with three weights and
-matching italics.  Using these fonts with XeLaTeX and LuaLaTeX is easy using
-the fontspec package; we refer to the documentation of fontspec for more
-information.  The present package provides a way of using them with LaTeX and
-pdfLaTeX: it provides two style files, @file{InriaSerif.sty} and
-@file{InriaSans.sty}, together with the PostScript version of the fonts and
-their associated files.  These were created using autoinst.")
+     "Inria is a free font designed by Black[Foundry] for Inria, a French
+research institute.  It comes as Serif and Sans Serif, each with three weights
+and matching italics.  Using these fonts with XeLaTeX and LuaLaTeX is easy
+using the @code{fontspec} package.  The present package provides a way of
+using them with LaTeX and pdfLaTeX: it provides two style files,
+@file{InriaSerif.sty} and @file{InriaSans.sty}, together with the PostScript
+version of the fonts and their associated files.")
     (license (list license:lppl license:silofl1.1))))
 
 (define-public texlive-floatflt
