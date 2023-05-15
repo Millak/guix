@@ -7058,30 +7058,26 @@ in SGML; use maths minus in text as appropriate; simple Young tableaux.")
 (define-deprecated-package texlive-jknappen texlive-jknapltx)
 
 (define-public texlive-kvoptions
-  (let ((template (simple-texlive-package
-                   "texlive-kvoptions"
-                   (list "doc/latex/kvoptions/"
-                         "source/latex/kvoptions/"
-                         "tex/latex/kvoptions/")
-                   (base32
-                    "1b8q93l54160b8gn3fq484n15n6cylrhmf2xk7p42czg2rqw7w3l"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/kvoptions")
-         ((#:build-targets _ '())
-          #~(list "kvoptions.dtx"))))
-      (propagated-inputs
-       (list texlive-kvsetkeys texlive-ltxcmds))
-      (home-page "https://www.ctan.org/pkg/kvoptions")
-      (synopsis "Key/value format for package options")
-      (description
-       "This package provides facilities for using key-value format in
+  (package
+    (name "texlive-kvoptions")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kvoptions/"
+                   "source/latex/kvoptions/"
+                   "tex/latex/kvoptions/")
+             (base32
+              "1b8q93l54160b8gn3fq484n15n6cylrhmf2xk7p42czg2rqw7w3l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-kvsetkeys texlive-ltxcmds))
+    (home-page "https://www.ctan.org/pkg/kvoptions")
+    (synopsis "Key/value format for package options")
+    (description
+     "This package provides facilities for using key-value format in
 package options.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-kvoptions texlive-kvoptions)
 
