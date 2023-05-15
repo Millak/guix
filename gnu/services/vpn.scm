@@ -44,6 +44,7 @@
   #:use-module (guix i18n)
   #:use-module (guix deprecation)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:export (openvpn-client-service  ; deprecated
@@ -745,7 +746,7 @@ strongSwan.")))
   (peers              wireguard-configuration-peers ;list of <wiregard-peer>
                       (default '()))
   (dns                wireguard-configuration-dns ;list of strings
-                      (default #f))
+                      (default '()))
   (monitor-ips?       wireguard-configuration-monitor-ips? ;boolean
                       (default #f))
   (monitor-ips-interval wireguard-configuration-monitor-ips-interval
@@ -763,24 +764,15 @@ strongSwan.")))
 
 (define (wireguard-configuration-file config)
   (define (peer->config peer)
-    (let ((name (wireguard-peer-name peer))
-          (public-key (wireguard-peer-public-key peer))
-          (endpoint (wireguard-peer-endpoint peer))
-          (allowed-ips (wireguard-peer-allowed-ips peer))
-          (keep-alive (wireguard-peer-keep-alive peer)))
-      (format #f "[Peer] #~a
-PublicKey = ~a
-AllowedIPs = ~a
-~a~a"
-              name
-              public-key
-              (string-join allowed-ips ",")
-              (if endpoint
-                  (format #f "Endpoint = ~a\n" endpoint)
-                  "")
-              (if keep-alive
-                  (format #f "PersistentKeepalive = ~a\n" keep-alive)
-                  "\n"))))
+    (match-record peer <wireguard-peer>
+      (name public-key endpoint allowed-ips keep-alive)
+      (let ((lines (list
+                    (format #f "[Peer]   #~a" name)
+                    (format #f "PublicKey = ~a" public-key)
+                    (format #f "AllowedIPs = ~{~a~^, ~}" allowed-ips)
+                    (format #f "~@[Endpoint = ~a~]" endpoint)
+                    (format #f "~@[PersistentKeepalive = ~a~]" keep-alive))))
+        (string-join (remove string-null? lines) "\n"))))
 
   (define (peers->preshared-keys peer keys)
     (let ((public-key (wireguard-peer-public-key peer))
@@ -799,65 +791,44 @@ AllowedIPs = ~a
             (computed-file
              "wireguard-config"
              #~(begin
+                 (use-modules (ice-9 format)
+                              (srfi srfi-1))
+
+                 (define lines
+                   (list
+                    "[Interface]"
+                    #$@(if (null? addresses)
+                           '()
+                           (list (format #f "Address = ~{~a~^, ~}"
+                                         addresses)))
+                    (format #f "~@[Table = ~a~]" #$table)
+                    #$@(if (null? pre-up)
+                           '()
+                           (list (format #f "~{PreUp = ~a~%~}" pre-up)))
+                    (format #f "PostUp = ~a set %i private-key ~a\
+~{ peer ~a preshared-key ~a~}" #$(file-append wireguard "/bin/wg")
+#$private-key '#$peer-keys)
+                    #$@(if (null? post-up)
+                           '()
+                           (list (format #f "~{PostUp = ~a~%~}" post-up)))
+                    #$@(if (null? pre-down)
+                           '()
+                           (list (format #f "~{PreDown = ~a~%~}" pre-down)))
+                    #$@(if (null? post-down)
+                           '()
+                           (list (format #f "~{PostDown = ~a~%~}" post-down)))
+                    (format #f "~@[ListenPort = ~a~]" #$port)
+                    #$@(if (null? dns)
+                           '()
+                           (list (format #f "~{DNS = ~{~a~^, ~}" dns)))))
+
                  (mkdir #$output)
                  (chdir #$output)
                  (call-with-output-file #$config-file
                    (lambda (port)
-                     (let ((format (@ (ice-9 format) format)))
-                       (format port "[Interface]
-Address = ~a
-~a
-~a
-PostUp = ~a set %i private-key ~a~{ peer ~a preshared-key ~a~}
-~a
-~a
-~a
-~a
-~a
-~{~a~^~%~}"
-                               #$(string-join addresses ",")
-                               #$(if table
-                                     (format #f "Table = ~a" table)
-                                     "")
-                               #$(if (null? pre-up)
-                                     ""
-                                     (string-join
-                                      (map (lambda (command)
-                                             (format #f "PreUp = ~a" command))
-                                           pre-up)
-                                      "\n"))
-                               #$(file-append wireguard "/bin/wg")
-                               #$private-key
-                               '#$peer-keys
-                               #$(if (null? post-up)
-                                     ""
-                                     (string-join
-                                      (map (lambda (command)
-                                             (format #f "PostUp = ~a" command))
-                                           post-up)
-                                      "\n"))
-                               #$(if (null? pre-down)
-                                     ""
-                                     (string-join
-                                      (map (lambda (command)
-                                             (format #f "PreDown = ~a" command))
-                                           pre-down)
-                                      "\n"))
-                               #$(if (null? post-down)
-                                     ""
-                                     (string-join
-                                      (map (lambda (command)
-                                             (format #f "PostDown = ~a" command))
-                                           post-down)
-                                      "\n"))
-                               #$(if port
-                                     (format #f "ListenPort = ~a" port)
-                                     "")
-                               #$(if dns
-                                     (format #f "DNS = ~a"
-                                             (string-join dns ","))
-                                     "")
-                               (list #$@peers)))))))))
+                     (format port "~a~%~%~{~a~%~^~%~}"
+                             (string-join (remove string-null? lines) "\n")
+                             '#$peers)))))))
       (file-append config "/" config-file))))
 
 (define (wireguard-activation config)

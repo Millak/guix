@@ -32952,7 +32952,7 @@ The IP addresses to be assigned to the above interface.
 @item @code{port} (default: @code{51820})
 The port on which to listen for incoming connections.
 
-@item @code{dns} (default: @code{#f})
+@item @code{dns} (default: @code{'())})
 The DNS server(s) to announce to VPN clients via DHCP.
 
 @item @code{monitor-ips?} (default: @code{#f})
