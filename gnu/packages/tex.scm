@@ -10112,21 +10112,25 @@ such as footnotes and section titles.")
 
 (define-public texlive-xunicode
   (package
-    (inherit
-     (simple-texlive-package "texlive-xunicode"
-                             (list "doc/xelatex/xunicode/"
-                                   "tex/xelatex/xunicode/")
-                             (base32
-                              "1d96i8kd2lhbykc3rxy2jjvws404f2vy1cvdcp5bdr6l9m72q1fa")
-                             #:trivial? #t))
-    (propagated-inputs (list texlive-tipa))
-    (home-page "https://ctan.org/macros/xetex/latex/xunicode")
+    (name "texlive-xunicode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/xunicode/"
+                   "tex/xelatex/xunicode/")
+             (base32
+              "1d96i8kd2lhbykc3rxy2jjvws404f2vy1cvdcp5bdr6l9m72q1fa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics texlive-tipa))
+    (home-page "https://ctan.org/pkg/xunicode")
     (synopsis "Generate Unicode characters from accented glyphs")
     (description
-     "The package supports XeTeX's (and other putative future similar engines')
-need for Unicode characters, in a similar way to what the fontenc does for
-8-bit (and the like) fonts: convert accent-glyph sequence to a single Unicode
-character for output.  The package also covers glyphs specified by
+     "The package supports XeTeX's (and other putative future similar
+engines') need for Unicode characters, in a similar way to what the fontenc
+does for 8-bit (and the like) fonts: convert accent-glyph sequence to a single
+Unicode character for output.  The package also covers glyphs specified by
 packages (such as @code{tipa}) which define many commands for single text
 glyphs.")
     (license license:lppl1.3+)))
