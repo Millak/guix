@@ -9470,30 +9470,27 @@ not only with KOMA-Script classes but also with the standard classes.")
 (define-deprecated-package texlive-latex-koma-script texlive-koma-script)
 
 (define-public texlive-atbegshi
-  (let ((template (simple-texlive-package
-                   "texlive-atbegshi"
-                   (list "doc/latex/atbegshi/"
-                         "source/latex/atbegshi/"
-                         "tex/generic/atbegshi/")
-                   (base32
-                    "0vd90wdjwj5w4g4xka4nms3rgixjw63iwf0hj0v1akcfflwvgn69"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/atbegshi")
-         ((#:build-targets _ '())
-          #~(list "atbegshi.dtx"))))
-      (home-page "https://www.ctan.org/pkg/atbegshi")
-      (synopsis "Execute commands at @code{\\shipout} time")
-      (description
-       "This package is a modern reimplementation of package @code{everyshi},
+  (package
+    (name "texlive-atbegshi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/atbegshi/" "source/latex/atbegshi/"
+                   "tex/generic/atbegshi/")
+             (base32
+              "0vd90wdjwj5w4g4xka4nms3rgixjw63iwf0hj0v1akcfflwvgn69")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-iftex texlive-infwarerr texlive-ltxcmds))
+    (home-page "https://ctan.org/pkg/atbegshi")
+    (synopsis "Execute commands at @code{\\shipout} time")
+    (description
+     "This package is a modern reimplementation of package @code{everyshi},
 providing various commands to be executed before a @code{\\shipout} command.
 It makes use of e-TeX’s facilities if they are available.  The package may
 be used either with LaTeX or with plain TeX.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-generic-atbegshi texlive-atbegshi)
 
