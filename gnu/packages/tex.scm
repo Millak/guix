@@ -6790,29 +6790,24 @@ floats, center, flushleft, and flushright, lists, and pages.")
 (define-deprecated-package texlive-latex-fancybox texlive-fancybox)
 
 (define-public texlive-fancyhdr
-  (let ((template (simple-texlive-package
-                   "texlive-fancyhdr"
-                   (list "doc/latex/fancyhdr/"
-                         "source/latex/fancyhdr/"
-                         "tex/latex/fancyhdr/")
-                   (base32
-                    "15fainwxs22gg4xhwsv1vmjgdhg34dbkir26nnk4pb6jprpwb83f"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/fancyhdr")
-         ((#:build-targets _ '())
-          #~(list "fancyhdr.ins"))))
-      (home-page "https://www.ctan.org/pkg/fancyhdr")
-      (synopsis "Extensive control of page headers and footers in LaTeX2e")
-      (description
-       "This package provides extensive facilities, both for constructing
-headers and footers, and for controlling their use (for example, at times when
-LaTeX would automatically change the heading style in use).")
-      (license license:lppl))))
+  (package
+    (name "texlive-fancyhdr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancyhdr/" "source/latex/fancyhdr/"
+                   "tex/latex/fancyhdr/")
+             (base32
+              "15fainwxs22gg4xhwsv1vmjgdhg34dbkir26nnk4pb6jprpwb83f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancyhdr")
+    (synopsis "Extensive control of page headers and footers in LaTeX2e")
+    (description
+     "The package provides extensive facilities, both for constructing headers
+and footers, and for controlling their use (for example, at times when LaTeX
+would automatically change the heading style in use).")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-fancyhdr texlive-fancyhdr)
 
