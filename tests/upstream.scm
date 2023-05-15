@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -78,69 +78,29 @@
     (description "test")
     (license license:gpl3+)))
 
-(define test-package-sexp
-  '(package
-    (name "test")
-    (version "2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/hello/hello-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
-    (build-system gnu-build-system)
-    (inputs
-     `(("hello" ,hello)))
-    (native-inputs
-     `(("sed" ,sed)
-       ("tar" ,tar)))
-    (propagated-inputs
-     `(("grep" ,grep)))
-    (home-page "http://localhost")
-    (synopsis "test")
-    (description "test")
-    (license license:gpl3+)))
-
 (test-equal "changed-inputs returns no changes"
   '()
-  (changed-inputs test-package test-package-sexp))
-
-(test-assert "changed-inputs returns changes to labelled input list"
-  (let ((changes (changed-inputs
-                  (package
-                    (inherit test-package)
-                    (inputs `(("hello" ,hello)
-                              ("sed" ,sed))))
-                  test-package-sexp)))
-    (match changes
-      ;; Exactly one change
-      (((? upstream-input-change? item))
-       (and (equal? (upstream-input-change-type item)
-                    'regular)
-            (equal? (upstream-input-change-action item)
-                    'remove)
-            (string=? (upstream-input-change-name item)
-                      "sed")))
-      (else (pk else #false)))))
-
-(test-assert "changed-inputs returns changes to all labelled input lists"
-  (let ((changes (changed-inputs
-                  (package
-                    (inherit test-package)
-                    (inputs '())
-                    (native-inputs '())
-                    (propagated-inputs '()))
-                  test-package-sexp)))
-    (match changes
-      (((? upstream-input-change? items) ...)
-       (and (equal? (map upstream-input-change-type items)
-                    '(regular native native propagated))
-            (equal? (map upstream-input-change-action items)
-                    '(add add add add))
-            (equal? (map upstream-input-change-name items)
-                    '("hello" "sed" "tar" "grep"))))
-      (else (pk else #false)))))
+  (changed-inputs test-package
+                  (upstream-source
+                   (package "test")
+                   (version "1")
+                   (urls '())
+                   (inputs
+                    (let ((->input
+                           (lambda (type)
+                             (match-lambda
+                               ((label _)
+                                (upstream-input
+                                 (name label)
+                                 (downstream-name label)
+                                 (type type)))))))
+                      (append (map (->input 'regular)
+                                   (package-inputs test-package))
+                              (map (->input 'native)
+                                   (package-native-inputs test-package))
+                              (map (->input 'propagated)
+                                   (package-propagated-inputs
+                                    test-package))))))))
 
 (define test-new-package
   (package
@@ -152,35 +112,20 @@
     (propagated-inputs
      (list grep))))
 
-(define test-new-package-sexp
-  '(package
-    (name "test")
-    (version "2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/hello/hello-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list hello))
-    (native-inputs
-     (list sed tar))
-    (propagated-inputs
-     (list grep))
-    (home-page "http://localhost")
-    (synopsis "test")
-    (description "test")
-    (license license:gpl3+)))
-
 (test-assert "changed-inputs returns changes to plain input list"
   (let ((changes (changed-inputs
                   (package
                     (inherit test-new-package)
-                    (inputs (list hello sed)))
-                  test-new-package-sexp)))
+                    (inputs (list hello sed))
+                    (native-inputs '())
+                    (propagated-inputs '()))
+                  (upstream-source
+                   (package "test")
+                   (version "1")
+                   (urls '())
+                   (inputs (list (upstream-input
+                                  (name "hello")
+                                  (downstream-name name))))))))
     (match changes
       ;; Exactly one change
       (((? upstream-input-change? item))
@@ -199,7 +144,26 @@
                     (inputs '())
                     (native-inputs '())
                     (propagated-inputs '()))
-                  test-new-package-sexp)))
+                  (upstream-source
+                   (package "test")
+                   (version "1")
+                   (urls '())
+                   (inputs (list (upstream-input
+                                  (name "hello")
+                                  (downstream-name name)
+                                  (type 'regular))
+                                 (upstream-input
+                                  (name "sed")
+                                  (downstream-name name)
+                                  (type 'native))
+                                 (upstream-input
+                                  (name "tar")
+                                  (downstream-name name)
+                                  (type 'native))
+                                 (upstream-input
+                                  (name "grep")
+                                  (downstream-name name)
+                                  (type 'propagated))))))))
     (match changes
       (((? upstream-input-change? items) ...)
        (and (equal? (map upstream-input-change-type items)

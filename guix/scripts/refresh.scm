@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -404,7 +404,7 @@ warn about packages that have no matching updater."
                      (('remove 'propagated)
                       (info loc (G_ "~a: consider removing this propagated input: ~a~%")
                             name change-name))))
-                 (upstream-source-input-changes source))
+                 (changed-inputs package source))
                 (let ((hash (file-hash* output)))
                   (update-package-source package source hash)))
               (warning (G_ "~a: version ~a could not be \

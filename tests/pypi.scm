@@ -25,9 +25,12 @@
   #:use-module (guix base32)
   #:use-module (guix memoization)
   #:use-module (guix utils)
+  #:use-module ((guix base16) #:select (base16-string->bytevector))
+  #:use-module (guix upstream)
   #:use-module (gcrypt hash)
   #:use-module (guix tests)
   #:use-module (guix tests http)
+  #:use-module ((guix download) #:select (url-fetch))
   #:use-module (guix build-system python)
   #:use-module ((guix build utils)
                 #:select (delete-file-recursively
@@ -42,6 +45,12 @@
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 match)
   #:use-module (ice-9 optargs))
+
+(define default-sha256
+  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+(define default-sha256/base32
+  (bytevector->nix-base32-string
+   (base16-string->bytevector default-sha256)))
 
 (define* (foo-json #:key (name "foo") (name-in-url #f))
   "Create a JSON description of an example pypi package, named @var{name},
@@ -65,7 +74,8 @@ optionally using a different @var{name in its URL}."
               ((url . ,(format #f "~a/~a-1.0.0.tar.gz"
                                (%local-url #:path "")
                                (or name-in-url name)))
-               (packagetype . "sdist"))
+               (packagetype . "sdist")
+               (digests . (("sha256" . ,default-sha256))))
               ((url . ,(format #f "~a/~a-1.0.0-py2.py3-none-any.whl"
                                (%local-url #:path "")
                                (or name-in-url name)))
@@ -308,9 +318,7 @@ files specified by SPECS.  Return its file name."
            ('synopsis "summary")
            ('description "summary")
            ('license 'license:lgpl2.0))
-         (and (string=? (bytevector->nix-base32-string
-                         (file-sha256 tarball))
-                        hash)
+         (and (string=? default-sha256/base32 hash)
               (equal? (pypi->guix-package "foo" #:version "1.0.0")
                       (pypi->guix-package "foo"))
               (guard (c ((error? c) #t))
@@ -352,8 +360,7 @@ to make sure we're testing wheels"))))
            ('synopsis "summary")
            ('description "summary")
            ('license 'license:lgpl2.0))
-         (string=? (bytevector->nix-base32-string (file-sha256 tarball))
-                   hash))
+         (string=? default-sha256/base32 hash))
         (x
          (pk 'fail x #f))))))
 
@@ -382,8 +389,7 @@ to make sure we're testing wheels"))))
            ('synopsis "summary")
            ('description "summary")
            ('license 'license:lgpl2.0))
-         (string=? (bytevector->nix-base32-string (file-sha256 tarball))
-                   hash))
+         (string=? default-sha256/base32 hash))
         (x
          (pk 'fail x #f))))))
 
@@ -414,10 +420,46 @@ to make sure we're testing wheels"))))
            ('synopsis "summary")
            ('description "summary")
            ('license 'license:lgpl2.0))
-         (string=? (bytevector->nix-base32-string (file-sha256 tarball))
-                   hash))
+         (string=? default-sha256/base32 hash))
         (x
          (pk 'fail x #f))))))
+
+(test-equal "package-latest-release"
+  (list '("foo-1.0.0.tar.gz")
+        '("foo-1.0.0.tar.gz.asc")
+        (list (upstream-input
+               (name "bar")
+               (downstream-name "python-bar")
+               (type 'propagated))
+              (upstream-input
+               (name "foo")
+               (downstream-name "python-foo")
+               (type 'propagated))
+              (upstream-input
+               (name "pytest")
+               (downstream-name "python-pytest")
+               (type 'native))))
+  (let ((tarball (pypi-tarball
+                  "foo-1.0.0"
+                  `(("src/bizarre.egg-info/requires.txt"
+                     ,test-requires.txt)))))
+    (with-pypi `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
+                 ("/foo-1.0.0-py2.py3-none-any.whl" 404 "")
+                 ("/foo/json" 200 ,(lambda (port)
+                                     (display (foo-json) port))))
+      (define source
+        (package-latest-release
+         (dummy-package "python-foo"
+                        (version "0.1.2")
+                        (source (dummy-origin
+                                 (method url-fetch)
+                                 (uri (pypi-uri "foo" version))))
+                        (build-system python-build-system))
+         (list %pypi-updater)))
+
+      (list (map basename (upstream-source-urls source))
+            (map basename (upstream-source-signature-urls source))
+            (upstream-source-inputs source)))))
 
 (test-end "pypi")
 (delete-file-recursively sample-directory)

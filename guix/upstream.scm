@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -55,7 +55,20 @@
             upstream-source-urls
             upstream-source-signature-urls
             upstream-source-archive-types
-            upstream-source-input-changes
+            upstream-source-inputs
+
+            upstream-input-type-predicate
+            upstream-source-regular-inputs
+            upstream-source-native-inputs
+            upstream-source-propagated-inputs
+
+            upstream-input
+            upstream-input?
+            upstream-input-name
+            upstream-input-downstream-name
+            upstream-input-type
+            upstream-input-min-version
+            upstream-input-max-version
 
             url-predicate
             url-prefix-predicate
@@ -102,8 +115,40 @@
   (urls           upstream-source-urls)           ;list of strings|git-reference
   (signature-urls upstream-source-signature-urls  ;#f | list of strings
                   (default #f))
-  (input-changes  upstream-source-input-changes
-                  (default '()) (thunked)))
+  (inputs         upstream-source-inputs        ;#f | list of <upstream-input>
+                  (delayed) (default #f))) ;delayed because optional and costly
+
+;; Representation of a dependency as expressed by upstream.
+(define-record-type* <upstream-input>
+  upstream-input make-upstream-input
+  upstream-input?
+  (name         upstream-input-name)               ;upstream package name
+  (downstream-name upstream-input-downstream-name) ;Guix package name
+  (type         upstream-input-type          ;'regular | 'native | 'propagated
+                (default 'regular))
+  (min-version  upstream-input-min-version
+                (default 'any))
+  (max-version  upstream-input-max-version
+                (default 'any)))
+
+(define (upstream-input-type-predicate type)
+  "Return a predicate that returns true when passed an <upstream-input> record
+of the given TYPE (a symbol such as 'propagated)."
+  (lambda (source)
+    (eq? type (upstream-input-type source))))
+
+(define (input-type-filter type)
+  "Return a procedure that, given an <upstream-source>, returns the subset of
+its inputs that have the given TYPE (a symbol such as 'native)."
+  (lambda (source)
+    "Return the subset of inputs of SOURCE that have the given TYPE."
+    (filter (lambda (input)
+              (eq? type (upstream-input-type input)))
+            (upstream-source-inputs source))))
+
+(define upstream-source-regular-inputs (input-type-filter 'regular))
+(define upstream-source-native-inputs (input-type-filter 'native))
+(define upstream-source-propagated-inputs (input-type-filter 'propagated))
 
 ;; Representation of an upstream input change.
 (define-record-type* <upstream-input-change>
@@ -113,67 +158,55 @@
   (type    upstream-input-change-type)    ;symbol: regular | native | propagated
   (action  upstream-input-change-action)) ;symbol: add | remove
 
-(define (changed-inputs package package-sexp)
-  "Return a list of input changes for PACKAGE based on the newly imported
-S-expression PACKAGE-SEXP."
-  (match package-sexp
-    ((and expr ('package fields ...))
-     (let* ((input->name (match-lambda ((name pkg . out) name)))
-            (new-regular
-             (match expr
-               ((path *** ('inputs
-                           ('quasiquote ((label ('unquote sym)) ...)))) label)
-               ((path *** ('inputs
-                           ('list sym ...))) (map symbol->string sym))
-               (_ '())))
-            (new-native
-             (match expr
-               ((path *** ('native-inputs
-                           ('quasiquote ((label ('unquote sym)) ...)))) label)
-               ((path *** ('native-inputs
-                           ('list sym ...))) (map symbol->string sym))
-               (_ '())))
-            (new-propagated
-             (match expr
-               ((path *** ('propagated-inputs
-                           ('quasiquote ((label ('unquote sym)) ...)))) label)
-               ((path *** ('propagated-inputs
-                           ('list sym ...))) (map symbol->string sym))
-               (_ '())))
-            (current-regular
-             (map input->name (package-inputs package)))
-            (current-native
-             (map input->name (package-native-inputs package)))
-            (current-propagated
-             (map input->name (package-propagated-inputs package))))
-       (append-map
-        (match-lambda
-          ((action type names)
-           (map (lambda (name)
-                  (upstream-input-change
-                   (name name)
-                   (type type)
-                   (action action)))
-                names)))
-        `((add regular
-           ,(lset-difference equal?
-                             new-regular current-regular))
-          (remove regular
-           ,(lset-difference equal?
-                             current-regular new-regular))
-          (add native
-           ,(lset-difference equal?
-                             new-native current-native))
-          (remove native
-           ,(lset-difference equal?
-                             current-native new-native))
-          (add propagated
-           ,(lset-difference equal?
-                             new-propagated current-propagated))
-          (remove propagated
-           ,(lset-difference equal?
-                             current-propagated new-propagated))))))
-    (_ '())))
+(define (changed-inputs package source)
+  "Return a list of input changes for PACKAGE compared to the 'inputs' field
+of SOURCE, an <upstream-source> record."
+  (define input->name
+    (match-lambda
+      ((label (? package? pkg) . out) (package-name pkg))
+      (_ #f)))
+
+  (if (upstream-source-inputs source)
+      (let* ((new-regular (map upstream-input-downstream-name
+                               (upstream-source-regular-inputs source)))
+             (new-native (map upstream-input-downstream-name
+                              (upstream-source-native-inputs source)))
+             (new-propagated (map upstream-input-downstream-name
+                                  (upstream-source-propagated-inputs source)))
+             (current-regular
+              (filter-map input->name (package-inputs package)))
+             (current-native
+              (filter-map input->name (package-native-inputs package)))
+             (current-propagated
+              (filter-map input->name (package-propagated-inputs package))))
+        (append-map
+         (match-lambda
+           ((action type names)
+            (map (lambda (name)
+                   (upstream-input-change
+                    (name name)
+                    (type type)
+                    (action action)))
+                 names)))
+         `((add regular
+                ,(lset-difference equal?
+                                  new-regular current-regular))
+           (remove regular
+                   ,(lset-difference equal?
+                                     current-regular new-regular))
+           (add native
+                ,(lset-difference equal?
+                                  new-native current-native))
+           (remove native
+                   ,(lset-difference equal?
+                                     current-native new-native))
+           (add propagated
+                ,(lset-difference equal?
+                                  new-propagated current-propagated))
+           (remove propagated
+                   ,(lset-difference equal?
+                                     current-propagated new-propagated)))))
+      '()))
 
 (define* (url-predicate matching-url?)
   "Return a predicate that returns true when passed a package whose source is

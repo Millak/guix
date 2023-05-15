@@ -29,6 +29,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (guix import json)
   #:use-module (guix import hackage)
+  #:autoload   (guix import cabal) (eval-cabal)
   #:use-module (guix import utils)
   #:use-module (guix memoization)
   #:use-module (guix packages)
@@ -157,15 +158,13 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
            (warning (G_ "failed to parse ~a~%")
                     (hackage-cabal-url hackage-name))
            #f)
-          (_ (let ((url (hackage-source-url hackage-name version)))
+          (_ (let ((url (hackage-source-url hackage-name version))
+                   (cabal (eval-cabal (hackage-fetch hackage-name) '())))
                (upstream-source
                 (package (package-name pkg))
                 (version version)
                 (urls (list url))
-                (input-changes
-                 (changed-inputs
-                  pkg
-                  (stackage->guix-package hackage-name #:packages (packages))))))))))))
+                (inputs (cabal-package-inputs cabal))))))))))
 
 (define (stackage-lts-package? package)
   "Return whether PACKAGE is available on the default Stackage LTS release."
