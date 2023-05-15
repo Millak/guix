@@ -7056,6 +7056,30 @@ and a BibTeX bibliography style.  The individual packages are: @code{abbrevs},
 
 (define-deprecated-package texlive-latex-frankenstein texlive-frankenstein)
 
+(define-public texlive-lipsum
+  (package
+    (name "texlive-lipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lipsum/" "source/latex/lipsum/"
+                   "tex/latex/lipsum/")
+             (base32
+              "1iwk2iqq5s5sn2z2kr7m59fm5j14dr4nsxivia3lhph8q38p5q6q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-l3kernel
+           texlive-l3packages))
+    (home-page "https://ctan.org/pkg/lipsum")
+    (synopsis "Easy access to the Lorem Ipsum dummy text")
+    (description
+     "This package gives you easy access to the Lorem Ipsum dummy text; an
+option is available to separate the paragraphs of the dummy text into
+TeX-paragraphs.  All the paragraphs are taken with permission from
+@url{http://lipsum.com/}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-listings
   (let ((template
          (simple-texlive-package
