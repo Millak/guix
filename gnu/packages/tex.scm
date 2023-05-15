@@ -6709,6 +6709,26 @@ copy-and-paste functions work properly.")
 
 (define-deprecated-package texlive-latex-cmap texlive-cmap)
 
+(define-public texlive-colorprofiles
+  (package
+    (name "texlive-colorprofiles")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/colorprofiles/"
+                   "tex/generic/colorprofiles/")
+             (base32
+              "1nxbds0jhn5wvf50iy1a4mpfgk56587kqvs4wxf08ysvqx6xiaxv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colorprofiles")
+    (synopsis "Collection of free ICC profiles")
+    (description
+     "This package collects ICC profiles that can be used by color profile
+aware applications or tools like the @code{pdfx} package, as well as TeX and
+LaTeX packages to access them.")
+    (license license:lppl1.2+)))        ;per "colorprofiles.sty"
+
 (define-public texlive-colortbl
   (package
     (name "texlive-colortbl")
