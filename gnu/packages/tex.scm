@@ -9758,29 +9758,27 @@ plain TeX.")
 (define-deprecated-package texlive-generic-ltxcmds texlive-ltxcmds)
 
 (define-public texlive-pdfescape
-  (let ((template (simple-texlive-package
-                   "texlive-pdfescape"
-                   (list "doc/latex/pdfescape/"
-                         "source/latex/pdfescape/"
-                         "tex/generic/pdfescape/")
-                   (base32
-                    "16a0rdmpa4wxh6gyf46qwfgyh399rwdind2wc89phqd50ky9b5m4"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/pdfescape")
-         ((#:build-targets _ '())
-          #~(list "pdfescape.dtx"))))
-      (home-page "https://www.ctan.org/pkg/pdfescape")
-      (synopsis "pdfTeX's escape features for plain TeX")
-      (description
-       "This package implements pdfTeX's escape features (@code{\\pdfescapehex},
+  (package
+    (name "texlive-pdfescape")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfescape/"
+                   "source/latex/pdfescape/"
+                   "tex/generic/pdfescape/")
+             (base32
+              "16a0rdmpa4wxh6gyf46qwfgyh399rwdind2wc89phqd50ky9b5m4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-ltxcmds texlive-pdftexcmds))
+    (home-page "https://ctan.org/pkg/pdfescape")
+    (synopsis "Implements pdfTeX's escape features using TeX or e-TeX")
+    (description
+     "This package implements pdfTeX's escape features (@code{\\pdfescapehex},
 @code{\\pdfunescapehex}, @code{\\pdfescapename}, @code{\\pdfescapestring})
 using TeX or e-TeX.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-generic-pdfescape texlive-pdfescape)
 
