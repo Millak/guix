@@ -3721,37 +3721,32 @@ for the user.")
 (define-deprecated-package texlive-latex-hycolor texlive-hycolor)
 
 (define-public texlive-xcolor
-  (let ((template (simple-texlive-package
-                   "texlive-xcolor"
-                   (list "doc/latex/xcolor/"
-                         "dvips/xcolor/"
-                         "source/latex/xcolor/"
-                         "tex/latex/xcolor/")
-                   (base32
-                    "1d7108b67fcaf1sgyk43ph18l0z5m35iqg3aahqs1ymzwdfnd3f7"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/xcolor")
-         ((#:build-targets _ '())
-          #~(list "xcolor.ins"))))
-      ;; TODO: Propagate texlive-hyperref and many others in the next rebuild
-      ;; cycle.  Grep for '\usepackage' to see what packages it requires.
-      ;; (propagated-inputs (list texlive-hyperref ...))
-      (home-page "https://www.ctan.org/pkg/xcolor")
-      (synopsis "Driver-independent color extensions for LaTeX and pdfLaTeX")
-      (description
-       "The package starts from the basic facilities of the colorcolor package,
+  (package
+    (name "texlive-xcolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xcolor/" "dvips/xcolor/"
+                   "source/latex/xcolor/" "tex/latex/xcolor/")
+             (base32
+              "1d7108b67fcaf1sgyk43ph18l0z5m35iqg3aahqs1ymzwdfnd3f7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-colortbl
+           texlive-hyperref
+           texlive-lwarp))
+    (home-page "https://ctan.org/pkg/xcolor")
+    (synopsis "Driver-independent color extensions for LaTeX and pdfLaTeX")
+    (description
+     "The package starts from the basic facilities of the colorcolor package,
 and provides easy driver-independent access to several kinds of color tints,
-shades, tones, and mixes of arbitrary colors.  It allows a user to select a
-document-wide target color model and offers complete tools for conversion
+shades, tones, and mixes of arbitrary colors.  It allows a user to select
+a document-wide target color model and offers complete tools for conversion
 between eight color models.  Additionally, there is a command for alternating
 row colors plus repeated non-aligned material (like horizontal lines) in
 tables.")
-      (license license:lppl1.2+))))
+    (license license:lppl1.2+)))
 
 (define-deprecated-package texlive-latex-xcolor texlive-xcolor)
 
