@@ -6293,19 +6293,20 @@ diagrams.")
 
 (define-public texlive-makecmds
   (package
-    (inherit (simple-texlive-package
-              "texlive-makecmds"
-              (list "doc/latex/makecmds/README"
-                    "source/latex/makecmds/makecmds.dtx"
-                    "source/latex/makecmds/makecmds.ins")
-              (base32 "0znx80x6ic7a25v9dw8yjibq7lx65wangcyii18kk5x5z4jljba9")))
+    (name "texlive-makecmds")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makecmds/" "source/latex/makecmds/"
+                   "tex/latex/makecmds/")
+             (base32
+              "05y5n265in7mrbpgjxqg339l8r8dmp6lvl4k528pr3rkb8z94qaf")))
     (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:tex-directory "latex/makecmds"))
-    (native-inputs (list (texlive-updmap.cfg
-                          (list texlive-amsfonts
-                                texlive-cm))))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-amsfonts
+                  texlive-cm))))
     (home-page "https://www.ctan.org/pkg/makecmds")
     (synopsis "TeX macro to define or redefine a command")
     (description "The package provides a @code{\\makecommand} command, which
