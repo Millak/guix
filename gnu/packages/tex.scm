@@ -7154,6 +7154,33 @@ is needed.  Keywords, comments and strings can be typeset using different
 styles.  Support for @code{hyperref} is provided.")
       (license license:lppl1.3+))))
 
+(define-public texlive-listingsutf8
+  (package
+    (name "texlive-listingsutf8")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/listingsutf8/"
+                   "source/latex/listingsutf8/"
+                   "tex/latex/listingsutf8/")
+             (base32
+              "152gzkzm7sl3bvggmmfcj1pw74vc40s2kpkbp01fd9i0d0v60wma")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-listings
+           texlive-pdftexcmds
+           texlive-stringenc))
+    (home-page "https://ctan.org/pkg/listingsutf8")
+    (synopsis "Allow UTF-8 in listings input")
+    (description
+     "Package @code{listings} does not support files with multi-byte encodings
+such as UTF-8.  In the case of @code{\\lstinputlisting}, a simple workaround
+is possible if a one-byte encoding exists that the file can be converted to.
+The package requires the e-TeX extensions under pdfTeX (in either PDF or DVI
+output mode).")
+    (license license:lppl1.3+)))
+
 (define-deprecated-package texlive-latex-listings texlive-listings)
 
 (define-public texlive-jknapltx
