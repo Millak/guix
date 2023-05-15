@@ -10132,35 +10132,34 @@ glyphs.")
     (license license:lppl1.3+)))
 
 (define-public texlive-xypic
-  (let ((template (simple-texlive-package
-                   "texlive-xypic"
-                   (list "/doc/generic/xypic/"
-                         "/dvips/xypic/xy389dict.pro"
-                         "/fonts/enc/dvips/xypic/"
-                         "/fonts/map/dvips/xypic/xypic.map"
-
-                         "/fonts/source/public/xypic/"
-                         "/fonts/afm/public/xypic/"
-                         "/fonts/tfm/public/xypic/"
-                         "/fonts/type1/public/xypic/"
-                         "/tex/generic/xypic/")
-                   (base32
-                    "09b51bbm189xh7039h5n8nmab5nn2bybhh26qjn08763m80zdhjg")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (delete 'reset-gzip-timestamps)))))
-      (home-page "https://www.ctan.org/pkg/xypic")
-      (synopsis "Flexible diagramming macros")
-      (description "This is a package for typesetting a variety of graphs and
+  (package
+    (name "texlive-xypic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/xypic/"
+                   "dvips/xypic/"
+                   "fonts/afm/public/xypic/"
+                   "fonts/enc/dvips/xypic/"
+                   "fonts/map/dvips/xypic/"
+                   "fonts/source/public/xypic/"
+                   "fonts/tfm/public/xypic/"
+                   "fonts/type1/public/xypic/"
+                   "tex/generic/xypic/")
+             (base32
+              "09b51bbm189xh7039h5n8nmab5nn2bybhh26qjn08763m80zdhjg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics texlive-iftex))
+    (home-page "https://ctan.org/pkg/xypic")
+    (synopsis "Flexible diagramming macros")
+    (description
+     "This package provides a package for typesetting a variety of graphs and
 diagrams with TeX.  Xy-pic works with most formats (including LaTeX,
 AMS-LaTeX, AMS-TeX, and plain TeX).  The distribution includes Michael Barr's
 @code{diag} package, which was previously distributed stand-alone.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-deprecated-package texlive-fonts-xypic texlive-xypic)
 
