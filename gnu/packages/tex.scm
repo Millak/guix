@@ -1817,47 +1817,42 @@ discussed in the book).")
 (define-deprecated-package texlive-tex-plain texlive-plain)
 
 (define-public texlive-halloweenmath
-  (let ((template (simple-texlive-package
-                   "texlive-halloweenmath"
-                   (list "doc/latex/halloweenmath/"
-                         "source/latex/halloweenmath/"
-                         "tex/latex/halloweenmath/")
-                   (base32
-                    "1xq72k1p820b5q3haxf936g69p6gv34hr30870l96jnxa3ad7y05"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/halloweenmath")
-         ((#:build-targets _ '()) '(list "halloweenmath.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'chdir 'non-interactive-build
-                ;; When it realizes it cannot employ the usedir directive, the
-                ;; build process stops and waits for an input before inserting
-                ;; generated files in the working directory.  Do not ask for
-                ;; an input.
-                (lambda _
-                  (substitute* "source/latex/halloweenmath/halloweenmath.ins"
-                    (("\\Ask.*") "")
-                    (("\\(your .*? will be ignored\\).*") ""))))))))
-      (native-inputs
-       (list texlive-bin
-             texlive-kpathsea
-             (texlive-updmap.cfg)))     ;for psfonts.map
-      (propagated-inputs
-       (list texlive-amsmath texlive-pict2e))
-      (home-page "https://ctan.org/pkg/halloweenmath")
-      (synopsis "Scary and creepy math symbols with AMS-LaTeX integration")
-      (description
-       "The package defines a handful of commands for typesetting mathematical
+  (package
+    (name "texlive-halloweenmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/halloweenmath/"
+                   "source/latex/halloweenmath/"
+                   "tex/latex/halloweenmath/")
+             (base32
+              "1xq72k1p820b5q3haxf936g69p6gv34hr30870l96jnxa3ad7y05")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'non-interactive-build
+            ;; When it realizes it cannot employ the usedir directive, the
+            ;; build process stops and waits for an input before inserting
+            ;; generated files in the working directory.  Do not ask for an
+            ;; input.
+            (lambda _
+              (substitute* "source/latex/halloweenmath/halloweenmath.ins"
+                (("\\Ask.*") "")
+                (("\\(your .*? will be ignored\\).*") "")))))))
+    (native-inputs (list texlive-cm))
+    (home-page "https://ctan.org/pkg/halloweenmath")
+    (synopsis "Scary and creepy math symbols with AMS-LaTeX integration")
+    (description
+     "The package defines a handful of commands for typesetting mathematical
 symbols of various kinds, ranging from large operators to extensible
 arrow-like relations and growing arrow-like math accents that all draw from
 the classic Halloween-related iconography (pumpkins, witches, ghosts, cats,
 and so on) while being, at the same time, seamlessly integrated within the
 rest of the mathematics produced by (AmS-)LaTeX.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-public texlive-hardwrap
   (package
