@@ -10464,32 +10464,54 @@ change.")
     (license license:lppl1.3+)))
 
 (define-public texlive-pstricks
-  (let ((template (simple-texlive-package
-                   "texlive-pstricks"
-                   (list "/doc/generic/pstricks/"
-                         "/dvips/pstricks/"
-                         "/tex/generic/pstricks/"
-                         "/tex/latex/pstricks/")
-                   (base32
-                    "15c9iqfq2y9c8c78cvqb6vzd5a5rm7qq5x7m05jq1hb8sgqrqb0j")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (delete 'reset-gzip-timestamps)))))
-      (home-page "http://www.ctan.org/pkg/pstricks")
-      (synopsis "PostScript macros for TeX")
-      (description "PSTricks offers an extensive collection of macros for
-generating PostScript that is usable with most TeX macro formats, including
-Plain TeX, LaTeX, AMS-TeX, and AMS-LaTeX.  Included are macros for colour,
-graphics, pie charts, rotation, trees and overlays.  It has many special
-features, including a wide variety of graphics (picture drawing) macros, with
-a flexible interface and with colour support.  There are macros for colouring
-or shading the cells of tables.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-pstricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pstricks/"
+                   "dvips/pstricks/"
+                   "tex/generic/pstricks/"
+                   "tex/latex/pstricks/")
+             (base32
+              "15c9iqfq2y9c8c78cvqb6vzd5a5rm7qq5x7m05jq1hb8sgqrqb0j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-amsmath
+           texlive-babel
+           texlive-bera
+           texlive-biblatex
+           texlive-booktabs
+           texlive-caption
+           texlive-chngcntr
+           texlive-eso-pic
+           texlive-fancyvrb
+           texlive-filecontents
+           texlive-footmisc
+           texlive-graphics
+           texlive-hyperref
+           texlive-ifplatform
+           texlive-iftex
+           texlive-listings
+           texlive-multido
+           texlive-ragged2e
+           texlive-setspace
+           texlive-subfig
+           texlive-tools
+           texlive-xcolor))
+    (home-page "http://www.ctan.org/pkg/pstricks")
+    (synopsis "PostScript macros for TeX")
+    (description
+     "PSTricks offers an extensive collection of macros for generating
+PostScript that is usable with most TeX macro formats, including Plain TeX,
+LaTeX, AMS-TeX, and AMS-LaTeX.  Included are macros for colour, graphics, pie
+charts, rotation, trees and overlays.  It has many special features, including
+a wide variety of graphics (picture drawing) macros, with a flexible interface
+and with colour support.  There are macros for colouring or shading the cells
+of tables.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-pst-text
   (package
