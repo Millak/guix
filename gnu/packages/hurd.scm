@@ -35,6 +35,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gnupg)
@@ -312,12 +313,15 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 (define-public hurd
   (package
     (name "hurd")
-    (source (package-source hurd-headers))
+    (source (origin
+              (inherit (package-source hurd-headers))
+              (patches (search-patches "hurd-fix-rumpdisk-build.patch"
+                                       "hurd-rumpdisk-no-hd.patch"))))
     (version (package-version hurd-headers))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'prepare-dde
+         (add-after 'unpack 'prepare-addons
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              ;; First we import the things we want from dde.
              (for-each make-file-writable (find-files "."))
@@ -331,7 +335,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
              ;; Makefile. libdde_linux26 is built later in its own phase.
              (substitute* "Makefile"
                (("libbpf ")
-                "libbpf libmachdevdde libddekit"))))
+                "libbpf libmachdevdde libddekit rumpdisk"))))
          (add-after 'unpack 'find-tirpc
            (lambda* (#:key inputs #:allow-other-keys)
              (for-each (lambda (var)
@@ -494,10 +498,10 @@ exec ${system}/rc \"$@\"
        #:configure-flags
        ,#~(list (string-append "LDFLAGS=-Wl,-rpath="
                                #$output "/lib")
+                "--enable-static-progs=ext2fs,iso9660fs,rumpdisk,pci-arbiter,acpi"
                 "--disable-ncursesw"
                 "--without-libbz2"
                 "--without-libz"
-                "--without-parted"
                 ;; This is needed to pass the configure check for
                 ;; clnt_create
                 "ac_func_search_save_LIBS=-ltirpc"
@@ -518,7 +522,9 @@ exec ${system}/rc \"$@\"
        ("coreutils" ,coreutils)
        ("sed" ,sed)
        ("grep" ,grep)
-       ("util-linux" ,util-linux)))
+       ("util-linux" ,util-linux "static")       ;libuuid.a, for parted
+       ("parted" ,parted)                        ;for rumpdisk
+       ("rumpkernel" ,rumpkernel)))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)

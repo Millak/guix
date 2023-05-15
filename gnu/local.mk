@@ -1366,6 +1366,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/hubbub-maybe-uninitialized.patch         \
   %D%/packages/patches/hueplusplus-mbedtls.patch		\
   %D%/packages/patches/hurd-add-without-rump-configure-option.patch \
+  %D%/packages/patches/hurd-fix-rumpdisk-build.patch		\
+  %D%/packages/patches/hurd-rumpdisk-no-hd.patch		\
   %D%/packages/patches/hurd-fix-types-of-read-write-and-readables-methods-2.patch \
   %D%/packages/patches/hurd-fix-types-of-read-write-and-readables-methods.patch \
   %D%/packages/patches/hwloc-1-test-btrfs.patch			\
