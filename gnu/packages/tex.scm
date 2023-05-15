@@ -782,6 +782,29 @@ out to date by @code{unicode-letters.tex}.")
 
 (define-deprecated-package texlive-generic-unicode-data texlive-unicode-data)
 
+(define-public texlive-hopatch
+  (package
+    (name "texlive-hopatch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hopatch/" "source/latex/hopatch/"
+                   "tex/latex/hopatch/")
+             (base32
+              "1yc9pzh8h4caaxii197jzd8wmvj754ymdq5x2hvmn171mxqp4d3v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-ltxcmds))
+    (home-page "https://ctan.org/pkg/hopatch")
+    (synopsis "Load patches for packages")
+    (description
+     "Hopatch provides a command with which the user may register of patch code
+for a particular package.  Hopatch will apply the patch immediately, if the
+relevant package has already been loaded; otherwise it will store the patch
+until the package appears.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-hyphen-base
   (package
     (inherit (simple-texlive-package
