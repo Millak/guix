@@ -11305,30 +11305,44 @@ use with [pdf]LaTeX.")
 
 (define-public texlive-newtx
   (package
-    (inherit (simple-texlive-package
-              "texlive-newtx"
-              (list "/doc/fonts/newtx/"
-                    "/fonts/afm/public/newtx/"
-                    "/fonts/enc/dvips/newtx/"
-                    "/fonts/map/dvips/newtx/"
-                    "/fonts/opentype/public/newtx/"
-                    "/fonts/tfm/public/newtx/"
-                    "/fonts/type1/public/newtx/"
-                    "/fonts/vf/public/newtx/"
-                    "/tex/latex/newtx/")
-              (base32
-               "0h0wm3cd0wxag5x7vy3vgr42jd8m6ffkl90pnkvqdxzbnfdjv3l6")
-              #:trivial? #t))
+    (name "texlive-newtx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "/doc/fonts/newtx/"
+                   "/fonts/afm/public/newtx/"
+                   "/fonts/enc/dvips/newtx/"
+                   "/fonts/map/dvips/newtx/"
+                   "/fonts/opentype/public/newtx/"
+                   "/fonts/tfm/public/newtx/"
+                   "/fonts/type1/public/newtx/"
+                   "/fonts/vf/public/newtx/"
+                   "/tex/latex/newtx/")
+             (base32
+              "0h0wm3cd0wxag5x7vy3vgr42jd8m6ffkl90pnkvqdxzbnfdjv3l6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-carlisle
+           texlive-etextools
+           texlive-etoolbox
+           texlive-fontaxes
+           texlive-iftex
+           texlive-oberdiek
+           texlive-trimspaces
+           texlive-xkeyval
+           texlive-xstring))
     (home-page "https://www.ctan.org/pkg/newtx")
     (synopsis "Repackaging of the TX fonts with improved metrics")
-    (description "The @code{newtx} bundle splits
-@code{txfonts.sty} (from the TX fonts distribution) into two
-independent packages, @code{newtxtext.sty} and @code{newtxmath.sty},
-each with fixes and enhancements.  @code{newtxmath}'s metrics have
-been re-evaluated to provide a less tight appearance and to provide a
-@code{libertine} option that substitutes Libertine italic and Greek
-letters for the existing math italic and Greek glyphs, making a
-mathematics package that matches Libertine text quite well.")
+    (description
+     "The @code{newtx} bundle splits @file{txfonts.sty} (from the TX fonts
+distribution) into two independent packages, @code{newtxtext.sty} and
+@code{newtxmath.sty}, each with fixes and enhancements.  @code{newtxmath}'s
+metrics have been re-evaluated to provide a less tight appearance and to
+provide a @code{libertine} option that substitutes Libertine italic and Greek
+letters for the existing math italic and Greek glyphs, making a mathematics
+package that matches Libertine text quite well.")
     (license license:lppl1.3)))
 
 (define-public texlive-xcharter
