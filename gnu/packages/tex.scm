@@ -12162,23 +12162,25 @@ index for a document.")
 
 (define-public texlive-endfloat
   (package
-    (inherit (simple-texlive-package
-              "texlive-endfloat"
-              (list "doc/latex/endfloat/"
-                    "source/latex/endfloat/"
-                    "tex/latex/endfloat/")
-              (base32
-               "1zslmc5g28z6adfyd8bdlbw03jawxmgafq0mgwy811hrbcppb2kg")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/endfloat")
+    (name "texlive-endfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/endfloat/" "source/latex/endfloat/"
+                   "tex/latex/endfloat/")
+             (base32
+              "1zslmc5g28z6adfyd8bdlbw03jawxmgafq0mgwy811hrbcppb2kg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/endfloat")
     (synopsis "Move floats to the end, leaving markers where they belong")
-    (description "Place all floats on pages by themselves at the end of
-the document, optionally leaving markers like “[Figure 3 about here]”
-in the text near to where the figure (or table) would normally have
-occurred.  Float types figure and table are recognised by the package,
-unmodified.  Since several packages define other types of float, it is
-possible to register these float types with endfloat.")
-    (license license:gpl2+)))
+    (description
+     "The @code{endfloat} package places all floats on pages by themselves at
+the end of the document, optionally leaving markers in the text near to where
+the figure (or table) would normally have occurred.")
+    (license license:gpl3+)))
 
 (define-public texlive-was
   (package
