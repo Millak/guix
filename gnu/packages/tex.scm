@@ -5402,14 +5402,18 @@ remain in sequence).")
 
 (define-public texlive-filemod
   (package
-    (inherit (simple-texlive-package
-              "texlive-filemod"
-              (list "/doc/latex/filemod/"
-                    "/tex/latex/filemod/"
-                    "/tex/generic/filemod/")
-              (base32
-               "1snsj7kblkj1ig3x3845lsypz7ab04lf0dcpdh946xakgjnz4fb5")
-              #:trivial? #t))
+    (name "texlive-filemod")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/filemod/" "tex/generic/filemod/"
+                   "tex/latex/filemod/")
+             (base32
+              "1snsj7kblkj1ig3x3845lsypz7ab04lf0dcpdh946xakgjnz4fb5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/filemod")
     (synopsis "Provide file modification times, and compare them")
     (description
