@@ -10194,18 +10194,21 @@ package, such as @command{natbib} as well).")
 
 (define-public texlive-charter
   (package
-    (inherit (simple-texlive-package
-              "texlive-charter"
-              (list "/doc/fonts/charter/readme.charter"
-                    "/fonts/afm/bitstrea/charter/"
-                    "/fonts/tfm/bitstrea/charter/"
-                    "/fonts/type1/bitstrea/charter/"
-                    "/fonts/vf/bitstrea/charter/")
-              (base32
-               "09l5ymgz48s3hyn776l01g3isk3dnhrj1vdavdw4qq4kfxxpqdn9")
-              #:trivial? #t))
-    ;; This provides charter.map.
+    (name "texlive-charter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/charter/"
+                   "fonts/afm/bitstrea/charter/"
+                   "fonts/tfm/bitstrea/charter/"
+                   "fonts/type1/bitstrea/charter/"
+                   "fonts/vf/bitstrea/charter/")
+             (base32
+              "09l5ymgz48s3hyn776l01g3isk3dnhrj1vdavdw4qq4kfxxpqdn9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
+     ;; This provides charter.map.
      (list texlive-psnfss))
     (home-page "https://www.ctan.org/pkg/charter")
     (synopsis "Charter fonts for TeX")
