@@ -3630,31 +3630,29 @@ set default \"driver\" options for the color and graphics packages.")
     (license license:public-domain)))
 
 (define-public texlive-graphics
-  (let ((template (simple-texlive-package
-                   "texlive-graphics"
-                   (list "doc/latex/graphics/"
-                         "source/latex/graphics/"
-                         "tex/latex/graphics/")
-                   (base32
-                    "0prw1zcv4fcj3zg0kyhj0k7ax0530adl60bajzvbv3fi16d7rqlq"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/graphics")
-         ((#:build-targets _ '())
-          #~(list "graphics-drivers.ins" "graphics.ins"))))
-      (propagated-inputs (list texlive-graphics-def texlive-graphics-cfg))
-      (home-page "https://ctan.org/macros/latex/required/graphics")
-      (synopsis "The LaTeX standard graphics bundle")
-      (description
-       "This is a collection of LaTeX packages for: producing colour including
+  (package
+    (name "texlive-graphics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphics/"
+                   "source/latex/graphics/"
+                   "tex/latex/graphics/")
+             (base32
+              "0prw1zcv4fcj3zg0kyhj0k7ax0530adl60bajzvbv3fi16d7rqlq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics-def texlive-graphics-cfg))
+    (home-page "https://ctan.org/macros/latex/required/graphics")
+    (synopsis "The LaTeX standard graphics bundle")
+    (description
+     "This is a collection of LaTeX packages for: producing colour including
 graphics (e.g., PostScript) files rotation and scaling of text in LaTeX
-documents.  It comprises the packages color, graphics, graphicx, trig, epsfig,
-keyval, and lscape.")
-      (license license:lppl1.3c))))
+documents.  It comprises the packages @code{color}, @code{graphics},
+@code{graphicx}, @code{trig}, @code{epsfig}, @code{keyval}, and
+@code{lscape}.")
+    (license license:lppl1.3c)))
 
 (define-deprecated-package texlive-latex-graphics texlive-graphics)
 
