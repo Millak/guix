@@ -4908,114 +4908,27 @@ with the LaTeX @code{picture} environment.")
     (license license:lppl1.3+)))
 
 (define-public texlive-psnfss
-  (let ((template (simple-texlive-package
-                   "texlive-psnfss"
-                   (list "/doc/latex/psnfss/"
-                         "/source/latex/psnfss/"
-                         "/fonts/map/dvips/psnfss/"
-
-                         ;; Only the .sty files are generated from the sources.
-                         "/tex/latex/psnfss/8rbch.fd"
-                         "/tex/latex/psnfss/8rpag.fd"
-                         "/tex/latex/psnfss/8rpbk.fd"
-                         "/tex/latex/psnfss/8rpcr.fd"
-                         "/tex/latex/psnfss/8rphv.fd"
-                         "/tex/latex/psnfss/8rpnc.fd"
-                         "/tex/latex/psnfss/8rppl.fd"
-                         "/tex/latex/psnfss/8rptm.fd"
-                         "/tex/latex/psnfss/8rput.fd"
-                         "/tex/latex/psnfss/8rpzc.fd"
-                         "/tex/latex/psnfss/omlbch.fd"
-                         "/tex/latex/psnfss/omlpag.fd"
-                         "/tex/latex/psnfss/omlpbk.fd"
-                         "/tex/latex/psnfss/omlpcr.fd"
-                         "/tex/latex/psnfss/omlphv.fd"
-                         "/tex/latex/psnfss/omlpnc.fd"
-                         "/tex/latex/psnfss/omlppl.fd"
-                         "/tex/latex/psnfss/omlptm.fd"
-                         "/tex/latex/psnfss/omlptmcm.fd"
-                         "/tex/latex/psnfss/omlput.fd"
-                         "/tex/latex/psnfss/omlpzc.fd"
-                         "/tex/latex/psnfss/omlzplm.fd"
-                         "/tex/latex/psnfss/omlzpple.fd"
-                         "/tex/latex/psnfss/omlztmcm.fd"
-                         "/tex/latex/psnfss/omsbch.fd"
-                         "/tex/latex/psnfss/omspag.fd"
-                         "/tex/latex/psnfss/omspbk.fd"
-                         "/tex/latex/psnfss/omspcr.fd"
-                         "/tex/latex/psnfss/omsphv.fd"
-                         "/tex/latex/psnfss/omspnc.fd"
-                         "/tex/latex/psnfss/omsppl.fd"
-                         "/tex/latex/psnfss/omsptm.fd"
-                         "/tex/latex/psnfss/omsput.fd"
-                         "/tex/latex/psnfss/omspzc.fd"
-                         "/tex/latex/psnfss/omspzccm.fd"
-                         "/tex/latex/psnfss/omszplm.fd"
-                         "/tex/latex/psnfss/omszpple.fd"
-                         "/tex/latex/psnfss/omsztmcm.fd"
-                         "/tex/latex/psnfss/omxpsycm.fd"
-                         "/tex/latex/psnfss/omxzplm.fd"
-                         "/tex/latex/psnfss/omxzpple.fd"
-                         "/tex/latex/psnfss/omxztmcm.fd"
-                         "/tex/latex/psnfss/ot1bch.fd"
-                         "/tex/latex/psnfss/ot1pag.fd"
-                         "/tex/latex/psnfss/ot1pbk.fd"
-                         "/tex/latex/psnfss/ot1pcr.fd"
-                         "/tex/latex/psnfss/ot1phv.fd"
-                         "/tex/latex/psnfss/ot1pnc.fd"
-                         "/tex/latex/psnfss/ot1ppl.fd"
-                         "/tex/latex/psnfss/ot1pplj.fd"
-                         "/tex/latex/psnfss/ot1pplx.fd"
-                         "/tex/latex/psnfss/ot1ptm.fd"
-                         "/tex/latex/psnfss/ot1ptmcm.fd"
-                         "/tex/latex/psnfss/ot1put.fd"
-                         "/tex/latex/psnfss/ot1pzc.fd"
-                         "/tex/latex/psnfss/ot1zplm.fd"
-                         "/tex/latex/psnfss/ot1zpple.fd"
-                         "/tex/latex/psnfss/ot1ztmcm.fd"
-                         "/tex/latex/psnfss/t1bch.fd"
-                         "/tex/latex/psnfss/t1pag.fd"
-                         "/tex/latex/psnfss/t1pbk.fd"
-                         "/tex/latex/psnfss/t1pcr.fd"
-                         "/tex/latex/psnfss/t1phv.fd"
-                         "/tex/latex/psnfss/t1pnc.fd"
-                         "/tex/latex/psnfss/t1ppl.fd"
-                         "/tex/latex/psnfss/t1pplj.fd"
-                         "/tex/latex/psnfss/t1pplx.fd"
-                         "/tex/latex/psnfss/t1ptm.fd"
-                         "/tex/latex/psnfss/t1put.fd"
-                         "/tex/latex/psnfss/t1pzc.fd"
-                         "/tex/latex/psnfss/ts1bch.fd"
-                         "/tex/latex/psnfss/ts1pag.fd"
-                         "/tex/latex/psnfss/ts1pbk.fd"
-                         "/tex/latex/psnfss/ts1pcr.fd"
-                         "/tex/latex/psnfss/ts1phv.fd"
-                         "/tex/latex/psnfss/ts1pnc.fd"
-                         "/tex/latex/psnfss/ts1ppl.fd"
-                         "/tex/latex/psnfss/ts1pplj.fd"
-                         "/tex/latex/psnfss/ts1pplx.fd"
-                         "/tex/latex/psnfss/ts1ptm.fd"
-                         "/tex/latex/psnfss/ts1put.fd"
-                         "/tex/latex/psnfss/ts1pzc.fd"
-                         "/tex/latex/psnfss/ufplm.fd"
-                         "/tex/latex/psnfss/ufplmbb.fd"
-                         "/tex/latex/psnfss/upsy.fd"
-                         "/tex/latex/psnfss/upzd.fd")
-                   (base32
-                    "11f14dzhwsy4pli21acccip43d36nf3pac33ihjffnps1i2mhqkd"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/psnfss")))
-      (native-inputs
-       (list texlive-cm))
-      (home-page "https://www.ctan.org/pkg/psnfss")
-      (synopsis "Font support for common PostScript fonts")
-      (description
-       "The PSNFSS collection includes a set of files that provide a complete
+  (package
+    (name "texlive-psnfss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/psnfss/"
+                   "fonts/map/dvips/psnfss/"
+                   "source/latex/psnfss/"
+                   "tex/latex/psnfss/")
+             (base32
+              "17zxqz32ky99z22yaqayg9ih8lyaswi97d34jykc0s12w4k4i97c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list texlive-cm))
+    (propagated-inputs
+     (list texlive-graphics texlive-symbol texlive-zapfding))
+    (home-page "https://www.ctan.org/pkg/psnfss")
+    (synopsis "Font support for common PostScript fonts")
+    (description
+     "The PSNFSS collection includes a set of files that provide a complete
 working setup of the LaTeX font selection scheme (NFSS2) for use with common
 PostScript fonts.  The base set of text fonts covered by PSNFSS includes the
 AvantGarde, Bookman, Courier, Helvetica, New Century Schoolbook, Palatino,
@@ -5026,7 +4939,7 @@ Helvetica to be loaded with its size scaled to something more appropriate for
 use as a Sans-Serif font to match Times, while @code{pifont} provides the
 means to select single glyphs from symbol fonts.  The bundle as a whole is
 part of the LaTeX required set of packages.")
-      (license license:lppl1.2+))))
+    (license license:lppl1.2+)))
 
 (define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
