@@ -9148,28 +9148,27 @@ and back-ends.  It also ensures compatibility with the @code{media9} and
 (define-deprecated-package texlive-latex-ocgx2 texlive-ocgx2)
 
 (define-public texlive-ms
-  (let ((template
-         (simple-texlive-package
-          "texlive-ms"
-          (list "doc/latex/ms/" "source/latex/ms/" "tex/latex/ms/")
-          (base32 "1cgrpx5mybiirjjdmni8kvqdg37dwfkixq3h9ami0mgxqqqfl2x3"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/ms")
-         ((#:tex-format _ "latex") "latex")
-         ((#:build-targets _ '())
-          #~(list "count1to.ins" "multitoc.ins"))))
-      (home-page "https://ctan.org/macros/latex/contrib/ms")
-      (synopsis "Various LaTeX packages by Martin Schroder")
-      (description
-       "The remains of a bundle of LaTeX packages by Martin Schroder; the
-collection comprises: count1to, make use of TeX counters; and multitoc,
-typeset the table of contents in multiple columns.")
-      (license license:lppl))))
+  (package
+    (name "texlive-ms")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ms/" "source/latex/ms/"
+                   "tex/latex/ms/")
+             (base32
+              "1cgrpx5mybiirjjdmni8kvqdg37dwfkixq3h9ami0mgxqqqfl2x3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (propagated-inputs
+     (list texlive-everyshi texlive-tools))
+    (home-page "https://ctan.org/pkg/ms")
+    (synopsis "Various LaTeX packages by Martin Schroder")
+    (description
+     "This package is the remains of a bundle of LaTeX packages by Martin
+Schroder; the collection comprises: @code{count1to}, make use of TeX counters;
+and @code{multitoc}, typeset the table of contents in multiple columns.")
+    (license license:lppl)))
 
 (define-deprecated-package texlive-latex-ms texlive-ms)
 
