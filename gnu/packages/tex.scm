@@ -9764,6 +9764,33 @@ adding a prefix to e-TeX’s commands.  For example, ε-TeX’s
 
 (define-deprecated-package texlive-generic-etexcmds texlive-etexcmds)
 
+(define-public texlive-etextools
+  (package
+    (name "texlive-etextools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etextools/"
+                   "source/latex/etextools/"
+                   "tex/latex/etextools/")
+             (base32
+              "0bfcc8g8q5v1nyqmrg8n17hv4k8yvhsplansvriccpmvyx0w9y9d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etex
+           texlive-etoolbox
+           texlive-letltxmacro))
+    (home-page "https://ctan.org/pkg/etextools")
+    (synopsis "e-TeX tools for LaTeX users and package writers")
+    (description
+     "The package provides many (purely expandable) tools for LaTeX: extensive
+list management; purely expandable loops; conversion; addition/deletion;
+expansion and group control; tests on tokens, characters and control
+sequences; tests on strings; purely expandable macros with options or
+modifiers; some purely expandable numerics.")
+    (license license:lppl)))
+
 (define-public texlive-gettitlestring
   (let ((template (simple-texlive-package
                    "texlive-gettitlestring"
