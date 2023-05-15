@@ -8281,30 +8281,36 @@ command).")
 
 (define-public texlive-libertine
   (package
-    (inherit (simple-texlive-package
-              "texlive-libertine"
-              (list "/doc/fonts/libertine/"
-
-                    "/fonts/enc/dvips/libertine/"
-                    "/fonts/map/dvips/libertine/"
-                    "/fonts/opentype/public/libertine/"
-                    "/fonts/tfm/public/libertine/"
-                    "/fonts/type1/public/libertine/"
-                    "/fonts/vf/public/libertine/"
-
-                    "/tex/latex/libertine/")
-              (base32
-               "1d5r80isyvs2v3i8pzlhsn7ns6bn8ldkbs82g25widraixlhg6yg")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/libertine")
-    (synopsis "Use Linux Libertine and Biolinum fonts with LaTeX")
+    (name "texlive-libertine")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/libertine/"
+                   "fonts/enc/dvips/libertine/"
+                   "fonts/map/dvips/libertine/"
+                   "fonts/opentype/public/libertine/"
+                   "fonts/tfm/public/libertine/"
+                   "fonts/type1/public/libertine/"
+                   "fonts/vf/public/libertine/"
+                   "tex/latex/libertine/")
+             (base32
+              "1d5r80isyvs2v3i8pzlhsn7ns6bn8ldkbs82g25widraixlhg6yg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-fontaxes
+           texlive-fontspec
+           texlive-hyperref
+           texlive-iftex
+           texlive-mweights
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/libertine")
+    (synopsis "Use of Linux Libertine and Biolinum fonts with LaTeX")
     (description
      "The package provides the Libertine and Biolinum fonts in both Type 1 and
 OTF styles, together with support macros for their use.  Monospaced and
-display fonts, and the \"keyboard\" set are also included, in OTF style, only.
-The @code{mweights} package is used to manage the selection of font weights.
-The package supersedes both the @code{libertineotf} and the
-@code{libertine-legacy} packages.")
+display fonts, and the keyboard set are also included, in OTF style, only.
+The @code{mweights} package is used to manage the selection of font weights.")
     (license (list license:gpl2+        ; with font exception
                    license:silofl1.1
                    license:lppl))))
