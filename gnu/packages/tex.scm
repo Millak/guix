@@ -10880,22 +10880,24 @@ of the visual appearance.")
       (license license:lppl1.3+))))
 
 (define-public texlive-units
-  (let ((template (simple-texlive-package
-                   "texlive-units"
-                   (list "/doc/latex/units/"
-                         "/tex/latex/units/")
-                   (base32
-                    "1ia1vzy8dp7pdvmawwnmh9lmkajmpnnh62dixrjpb6mnxq118bfd")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (home-page "http://www.ctan.org/pkg/units")
-      (synopsis "Typeset physical units and fractions")
-      (description "@code{units} is a package for typesetting physical
-units in a standard-looking way.  The package is based upon
-@code{nicefrac}, a package for typing fractions.  @code{nicefrac} is
-included in the @code{units} bundle.")
-      (license license:gpl3+))))
+  (package
+    (name "texlive-units")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/units/" "source/latex/units/"
+                   "tex/latex/units/")
+             (base32
+              "1mrdsg55f40cvarrx84gbhrnsk8mlv915nll17lnfzfapgmvjsbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/units")
+    (synopsis "Typeset physical units and fractions")
+    (description "@code{units} is a package for typesetting physical units in
+a standard-looking way.  The package is based upon @code{nicefrac}, a package
+for typing fractions.  @code{nicefrac} is included in the @code{units}
+bundle.")
+    (license license:gpl3+)))
 
 (define-public texlive-microtype
   (package
