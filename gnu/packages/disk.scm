@@ -530,6 +530,44 @@ which respectively make and check MS-DOS FAT file systems.")
 and a @command{fsck.vfat} compatibility symlink for use in an initrd.")
     (license (package-license dosfstools))))
 
+(define-public hdparm
+  (package
+    (name "hdparm")
+    (version "9.65")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/hdparm/hdparm/"
+                                  "hdparm-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jssagggg52ssl9kg99m88afghj7bm1854vyf4p96q6h23wjjjfi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "binprefix=" #$output)
+                   (string-append "manprefix=" #$output)
+                   (string-append "CC=" #$(cc-for-target))
+                   ;; Let Guix strip binaries and not break cross-compilation.
+                   "STRIP=true")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))     ; no configure script
+           #:tests? #f))                ; no test suite
+    (home-page "https://sourceforge.net/projects/hdparm/")
+    (synopsis "View and tune ATA disk drive parameters")
+    (description
+     "@command{hdparm} is a command-line utility to control ATA controllers and
+disk drives.  It can increase performance and/or reliability by careful tuning
+of hardware settings like power and acoustic management, DMA modes, and caching.
+It can also display detailed device information, or be used as a simple
+performance benchmarking tool.
+
+@command{hdparm} provides a command line interface to various Linux kernel
+interfaces provided by the SATA/ATA/SAS @code{libata} subsystem, and the older
+IDE driver subsystem.  Many external USB drive enclosures with SCSI-ATA Command
+Translation (@dfn{SAT}) are also supported.")
+    (license (license:non-copyleft "file://LICENSE.TXT"))))
+
 (define-public sdparm
   (package
     (name "sdparm")

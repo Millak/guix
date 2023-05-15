@@ -113,6 +113,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -5148,44 +5149,6 @@ container image formats.  It can build SquashFS container images or import
 existing Docker images.  Singularity requires kernel support for container
 isolation or root privileges.")
     (license license:bsd-3)))
-
-(define-public hdparm
-  (package
-    (name "hdparm")
-    (version "9.65")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/hdparm/hdparm/"
-                                  "hdparm-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0jssagggg52ssl9kg99m88afghj7bm1854vyf4p96q6h23wjjjfi"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:make-flags
-           #~(list (string-append "binprefix=" #$output)
-                   (string-append "manprefix=" #$output)
-                   (string-append "CC=" #$(cc-for-target))
-                   ;; Let Guix strip binaries and not break cross-compilation.
-                   "STRIP=true")
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure))     ; no configure script
-           #:tests? #f))                ; no test suite
-    (home-page "https://sourceforge.net/projects/hdparm/")
-    (synopsis "View and tune ATA disk drive parameters")
-    (description
-     "@command{hdparm} is a command-line utility to control ATA controllers and
-disk drives.  It can increase performance and/or reliability by careful tuning
-of hardware settings like power and acoustic management, DMA modes, and caching.
-It can also display detailed device information, or be used as a simple
-performance benchmarking tool.
-
-@command{hdparm} provides a command line interface to various Linux kernel
-interfaces provided by the SATA/ATA/SAS @code{libata} subsystem, and the older
-IDE driver subsystem.  Many external USB drive enclosures with SCSI-ATA Command
-Translation (@dfn{SAT}) are also supported.")
-    (license (license:non-copyleft "file://LICENSE.TXT"))))
 
 (define-public libnvme
   (package
