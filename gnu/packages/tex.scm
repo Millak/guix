@@ -10492,25 +10492,27 @@ or shading the cells of tables.")
       (license license:lppl1.3+))))
 
 (define-public texlive-pst-text
-  (let ((template (simple-texlive-package
-                   "texlive-pst-text"
-                   (list "/doc/generic/pst-text/"
-                         "/dvips/pst-text/pst-text.pro"
-                         "/tex/generic/pst-text/"
-                         "/tex/latex/pst-text/")
-                   (base32
-                    "146fpzd1xlqi94q5r48z8ni8qww713yh6nwkbr9pw27mjrqdadb9")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (propagated-inputs
-       (list texlive-pstricks))
-      (home-page "http://www.ctan.org/pkg/pst-text")
-      (synopsis "Text and character manipulation in PSTricks")
-      (description "Pst-text is a PSTricks based package for plotting text along
+  (package
+    (name "texlive-pst-text")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pst-text/"
+                   "dvips/pst-text/"
+                   "tex/generic/pst-text/"
+                   "tex/latex/pst-text/")
+             (base32
+              "146fpzd1xlqi94q5r48z8ni8qww713yh6nwkbr9pw27mjrqdadb9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-pstricks))
+    (home-page "http://www.ctan.org/pkg/pst-text")
+    (synopsis "Text and character manipulation in PSTricks")
+    (description "Pst-text is a PSTricks based package for plotting text along
 a different path and manipulating characters.  It includes the functionality
 of the old package @code{pst-char}.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-public texlive-marginnote
   (let ((template (simple-texlive-package
