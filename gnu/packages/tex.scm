@@ -9535,19 +9535,23 @@ format.")
 
 (define-public texlive-ulem
   (package
-    (inherit (simple-texlive-package
-              "texlive-ulem"
-              (list "doc/generic/ulem/" "tex/generic/ulem/")
-              (base32 "0wcfnw5h6lsg2ilvkkf7mns8jgcn0n5sh45iznfsb49pfb4mming")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/ulem")
-    (synopsis "Underline text in TeX")
+    (name "texlive-ulem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/ulem/" "tex/generic/ulem/")
+             (base32
+              "0wcfnw5h6lsg2ilvkkf7mns8jgcn0n5sh45iznfsb49pfb4mming")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ulem")
+    (synopsis "Package for underlining")
     (description
      "The package provides an @code{\\ul} (underline) command which will break
-over line ends; this technique may be used to replace @code{\\em} (both in that
-form and as the @code{\\emph} command), so as to make output look as if it comes
-from a typewriter.  The package also offers double and wavy underlining, and
-striking out (line through words) and crossing out (/// over words).")
+over line ends; this technique may be used to replace @code{\\em} (both in
+that form and as the @code{\\emph} command), so as to make output look as if
+it comes from a typewriter.  The package also offers double and wavy
+underlining, and striking out, and crossing out.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-pgf
