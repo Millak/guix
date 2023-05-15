@@ -8179,28 +8179,37 @@ same job for T1- and TS1-encoded @code{ec} fonts.")
 (define-deprecated-package texlive-latex-type1cm texlive-type1cm)
 
 (define-public texlive-lh
-  (let ((template (simple-texlive-package
-                   "texlive-lh"
-                   (list "/doc/fonts/lh/"
-                         "/source/fonts/lh/"
-                         "/source/latex/lh/"
-                         "/fonts/source/lh/"
-                         "/tex/plain/lh/")
-                   (base32
-                    "0vw75i52asi5sssp8k9r8dy4ihvqbvmbsl3dini3ls8cky15lz37"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/lh")
-         ((#:build-targets _ '())
-          ''("nfssfox.ins" "lcyfonts.ins" "ot2fonts.ins" "t2ccfonts.ins"))))
-      (home-page "https://www.ctan.org/pkg/lh")
-      (synopsis "Cyrillic fonts that support LaTeX standard encodings")
-      (description
-       "The LH fonts address the problem of the wide variety of alphabets that
+  (package
+    (name "texlive-lh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lh/"
+                   "fonts/source/lh/base/"
+                   "fonts/source/lh/lh-XSlav/"
+                   "fonts/source/lh/lh-conc/"
+                   "fonts/source/lh/lh-lcy/"
+                   "fonts/source/lh/lh-ot2/"
+                   "fonts/source/lh/lh-t2a/"
+                   "fonts/source/lh/lh-t2b/"
+                   "fonts/source/lh/lh-t2c/"
+                   "fonts/source/lh/lh-t2d/"
+                   "fonts/source/lh/lh-x2/"
+                   "fonts/source/lh/nont2/"
+                   "fonts/source/lh/specific/"
+                   "source/fonts/lh/"
+                   "source/latex/lh/"
+                   "tex/latex/lh/"
+                   "tex/plain/lh/")
+             (base32
+              "0cqwns4zy1847fn3dp8z3wbfpy4dl05cr065nk9k65fmp7wksnjk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-ec))
+    (home-page "https://ctan.org/pkg/lh")
+    (synopsis "Cyrillic fonts that support LaTeX standard encodings")
+    (description
+     "The LH fonts address the problem of the wide variety of alphabets that
 are written with Cyrillic-style characters.  The fonts are the original basis
 of the set of T2* and X2 encodings that are now used when LaTeX users need to
 write in Cyrillic languages.  Macro support in standard LaTeX encodings is
@@ -8209,7 +8218,7 @@ offers support for other (more traditional) encodings.  The fonts, in the
 standard T2* and X2 encodings are available in Adobe Type 1 format, in the
 CM-Super family of fonts.  The package also offers its own LaTeX support for
 OT2 encoded fonts, CM bright shaped fonts and Concrete shaped fonts.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-deprecated-package texlive-latex-lh texlive-lh)
 
