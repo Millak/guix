@@ -11650,27 +11650,44 @@ levels.  All functionality is provided by the single @code{\\qrcode} command.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-tcolorbox
-  (let ((template (simple-texlive-package
-                   "texlive-tcolorbox"
-                   (list "/doc/latex/tcolorbox/"
-                         "/tex/latex/tcolorbox/")
-                   (base32
-                    "1qnsbblkadzdn1fx2k21xnlwcb35pg9xya24chkm66jmidi22qp0")
-                   #:trivial? #true)))
-    (package
-      (inherit template)
-      (propagated-inputs
-       (list texlive-etoolbox texlive-environ texlive-pgf texlive-tools))
-      (home-page "https://www.ctan.org/pkg/tcolorbox")
-      (synopsis "Colored boxes, for LaTeX examples and theorems, etc")
-      (description "This package provides an environment for colored and
-framed text boxes with a heading line.  Optionally, such a box may be split in
-an upper and a lower part; thus the package may be used for the setting of
-LaTeX examples where one part of the box displays the source code and the
-other part shows the output.  Another common use case is the setting of
-theorems.  The package supports saving and reuse of source code and text
-parts.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-tcolorbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tcolorbox/" "tex/latex/tcolorbox/")
+             (base32
+              "1qnsbblkadzdn1fx2k21xnlwcb35pg9xya24chkm66jmidi22qp0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-environ
+           texlive-etoolbox
+           texlive-hyperref
+           texlive-incgraph
+           texlive-iftex
+           texlive-l3packages
+           texlive-listings
+           texlive-listingsutf8
+           texlive-marvosym
+           texlive-minted
+           texlive-oberdiek             ;for pdfcol
+           texlive-pdftexcmds
+           texlive-pgf
+           texlive-psnfss
+           texlive-refcount
+           texlive-tools))
+    (home-page "https://ctan.org/pkg/tcolorbox")
+    (synopsis "Coloured boxes, for LaTeX examples and theorems, etc")
+    (description
+     "This package provides an environment for coloured and framed text boxes
+with a heading line.  Optionally, such a box may be split in an upper and
+a lower part; thus the package may be used for the setting of LaTeX examples
+where one part of the box displays the source code and the other part shows
+the output.  Another common use case is the setting of theorems.  The package
+supports saving and reuse of source code and text parts.")
+    (license license:lppl1.3c+)))
 
 (define-public texlive-ebproof
   (package
