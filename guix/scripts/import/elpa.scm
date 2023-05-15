@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,7 +92,11 @@ Import the latest package named PACKAGE-NAME from an ELPA repository.\n"))
                             (_ #f))
                            (reverse opts))))
     (match args
-      ((package-name)
+      ((spec)
+       (define-values (package-name version)
+         (package-name->name+version spec))
+       (when version
+         (warning (G_ "this importer does not consider the version~%")))
        (if (assoc-ref opts 'recursive)
            (with-error-handling
              (map (match-lambda
