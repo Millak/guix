@@ -4760,30 +4760,24 @@ Canadian and USA text.")
 (define-deprecated-package texlive-generic-babel-english texlive-babel-english)
 
 (define-public texlive-babel-french
-  (let ((template
-         (simple-texlive-package
-          "texlive-babel-french"
-          (list "doc/generic/babel-french/"
-                "source/generic/babel-french/"
-                "tex/generic/babel-french/")
-          (base32 "0cgn4dq5wnlfh9wddjzxsf7p56pk29lyndg56zg6558y7xf67cw8"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/babel-french")
-         ((#:build-targets _ '())
-          ;; TODO: use dtx and build documentation.
-          '(list "frenchb.ins"))))
-      (home-page "https://ctan.org/macros/latex/contrib/babel-contrib/french")
-      (synopsis "Babel contributed support for French")
-      (description
-       "The package, formerly known as frenchb, establishes French conventions
-in a document (or a subset of the conventions, if French is not the main
-language of the document).")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-babel-french")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-french/"
+                   "source/generic/babel-french/"
+                   "tex/generic/babel-french/")
+             (base32
+              "0cgn4dq5wnlfh9wddjzxsf7p56pk29lyndg56zg6558y7xf67cw8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-french")
+    (synopsis "Babel contributed support for French")
+    (description
+     "The package establishes French conventions in a document (or a subset of
+the conventions, if French is not the main language of the document).")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-generic-babel-french texlive-babel-french)
 
