@@ -12386,17 +12386,40 @@ Polish of standard ``LaTeX names''.")
 
 (define-public texlive-mdframed
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-mdframed"
-      (list
-       "doc/latex/mdframed/"
-       "source/latex/mdframed/"
-       "tex/latex/mdframed/")
-      (base32 "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")
-      #:trivial? #t))
-    (propagated-inputs (list texlive-needspace
-                             texlive-zref))
+    (name "texlive-mdframed")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mdframed/" "source/latex/mdframed/"
+                   "tex/latex/mdframed/")
+             (base32
+              "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-booktabs
+           texlive-csquotes
+           texlive-eso-pic
+           texlive-etoolbox
+           texlive-iftex
+           texlive-geometry
+           texlive-graphics
+           texlive-kantlipsum
+           texlive-kvoptions
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-lipsum
+           texlive-listings
+           texlive-microtype
+           texlive-needspace
+           texlive-ntheorem
+           texlive-oberdiek
+           texlive-pgf
+           texlive-selinput
+           texlive-tools
+           texlive-xcolor
+           texlive-zref))
     (home-page "https://ctan.org/pkg/mdframed")
     (synopsis "Framed environments that can split at page boundaries")
     (description
