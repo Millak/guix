@@ -5828,6 +5828,29 @@ corresponding thing with the page reference of the label.")
 
 (define-deprecated-package texlive-latex-refcount texlive-refcount)
 
+(define-public texlive-selinput
+  (package
+    (name "texlive-selinput")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/selinput/" "source/latex/selinput/"
+                   "tex/latex/selinput/")
+             (base32
+              "0x8l98r6xzyi4lc909bv7ii2nbpff8j7j3q4z86l7rrjk1jkx9qi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-kvoptions
+           texlive-kvsetkeys
+           texlive-stringenc))
+    (home-page "https://ctan.org/pkg/selinput")
+    (synopsis "Semi-automatic detection of input encoding")
+    (description
+     "This package selects the input encoding by specifying pairs of input
+characters and their glyph names.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-seminar
   (package
     (inherit (simple-texlive-package
