@@ -5136,31 +5136,24 @@ either in conjunction with BibTeX or as a replacement for BibTeX.")
 (define-deprecated-package texlive-latex-amsrefs texlive-amsrefs)
 
 (define-public texlive-bigfoot
-  (let ((template (simple-texlive-package
-                   "texlive-bigfoot"
-                   (list "doc/latex/bigfoot/"
-                         "source/latex/bigfoot/"
-                         "tex/latex/bigfoot/")
-                   (base32
-                    "140b4bbjcgajd1flznmi3ga6lx5pna2nxybr2dqm9515lny8gwf0"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/bigfoot")
-         ((#:build-targets _ '()) '(list "bigfoot.ins"))
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'chdir 'delete-drv-files
-                (lambda _
-                  (for-each delete-file (find-files "." "\\.drv$"))))))))
-      (propagated-inputs
-       (list texlive-etex texlive-ncctools))
-      (home-page "https://ctan.org/pkg/bigfoot")
-      (synopsis "Footnotes for critical editions")
-      (description
-       "The package aims to provide a one-stop solution to requirements for
+  (package
+    (name "texlive-bigfoot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bigfoot/"
+                   "source/latex/bigfoot/"
+                   "tex/latex/bigfoot/")
+             (base32
+              "140b4bbjcgajd1flznmi3ga6lx5pna2nxybr2dqm9515lny8gwf0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etex texlive-ncctools))
+    (home-page "https://ctan.org/pkg/bigfoot")
+    (synopsis "Footnotes for critical editions")
+    (description
+     "The package aims to provide a one-stop solution to requirements for
 footnotes.  It offers multiple footnote apparatus superior to that of
 @code{manyfoot}.  Footnotes can be formatted in separate paragraphs, or be run
 into a single paragraph.  Note that the majority of the @code{bigfoot}
@@ -5169,7 +5162,7 @@ information from that package's documentation.
 
 The @code{bigfoot} bundle also provides the @code{perpage} and @code{suffix}
 packages.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-deprecated-package texlive-latex-bigfoot texlive-bigfoot)
 
