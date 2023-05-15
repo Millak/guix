@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -968,6 +968,14 @@ Language.")
        #:parallel-tests? ,(target-x86-64?)
        #:phases
        (modify-phases %standard-phases
+         ;; TODO: Move this patch to the source field.
+         ,@(if (target-riscv64?)
+             `((add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                   (invoke "patch" "-p1" "--force" "--input"
+                           (assoc-ref (or native-inputs inputs)
+                                      "patch-file")))))
+             '())
          (add-after 'unpack 'adjust-output-references
            (lambda _
              ;; The build system invariably prepends $CMAKE_INSTALL_PREFIX
@@ -1103,7 +1111,12 @@ Language.")
                 (("-lssl -lcrypto" all)
                  (string-append "-L" openssl " " all)))))))))
     (native-inputs
-     (list bison perl))
+     `(,@(if (target-riscv64?)
+           `(("patch" ,patch)
+             ("patch-file" ,(search-patch "mariadb-rocksdb-atomic-linking.patch")))
+           `())
+        ("bison" ,bison)
+        ("perl" ,perl)))
     (inputs
      (list fmt
            jemalloc
