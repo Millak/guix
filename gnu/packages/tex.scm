@@ -10207,33 +10207,40 @@ the file to which it applies.")
 (define-deprecated-package texlive-latex-xmpincl texlive-xmpincl)
 
 (define-public texlive-pdfx
-  (let ((template (simple-texlive-package
-                   "texlive-pdfx"
-                   (list "/doc/latex/pdfx/"
-                         "/source/latex/pdfx/"
-                         "/tex/latex/pdfx/")
-                   (base32
-                    "1z4j4d92k2fjmf8jfap4zn7ij97d9rz2jcs9aslcac07ag4x5bdp"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/pdfx")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'fix-encoding
-               (lambda _
-                 (substitute* "source/latex/pdfx/pdfx.dtx"
-                   (("    .+umaczy") "umaczy"))))))))
-      (propagated-inputs
-       (list texlive-pdftex))
-      (home-page "https://www.ctan.org/pkg/pdfx")
-      (synopsis "PDF/X and PDF/A support for pdfTeX, LuaTeX and XeTeX")
-      (description
-       "This package helps LaTeX users to create PDF/X, PDF/A and other
+  (package
+    (name "texlive-pdfx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfx/" "source/latex/pdfx/"
+                   "tex/latex/pdfx/")
+             (base32
+              "1z4j4d92k2fjmf8jfap4zn7ij97d9rz2jcs9aslcac07ag4x5bdp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-encoding
+            (lambda _
+              (substitute* "source/latex/pdfx/pdfx.dtx"
+                (("    .+umaczy") "umaczy")))))))
+    (propagated-inputs
+     (list texlive-colorprofiles
+           texlive-everyshi
+           texlive-hyperref
+           texlive-iftex
+           texlive-pdftexcmds
+           texlive-stringenc
+           texlive-xcolor
+           texlive-xmpincl))
+    (home-page "https://ctan.org/pkg/pdfx")
+    (synopsis "PDF/X and PDF/A support for pdfTeX, LuaTeX and XeTeX")
+    (description
+     "The package helps LaTeX users to create PDF/X, PFD/A and other
 standards-compliant PDF documents with pdfTeX, LuaTeX and XeTeX.")
-      (license license:lppl1.2+))))
+    (license license:lppl1.2+)))
 
 (define-deprecated-package texlive-latex-pdfx texlive-pdfx)
 
