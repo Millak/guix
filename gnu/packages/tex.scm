@@ -6831,30 +6831,28 @@ footnotes with symbols rather than numbers.")
 (define-deprecated-package texlive-latex-footmisc texlive-footmisc)
 
 (define-public texlive-letltxmacro
-  (let ((template (simple-texlive-package
-                   "texlive-letltxmacro"
-                   (list "doc/latex/letltxmacro/"
-                         "source/latex/letltxmacro/"
-                         "tex/latex/letltxmacro/")
-                   (base32
-                    "16bmwsng9p80jf78sdmib24apwnw3raw306cs1ms50z5s9dsfdby"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/letltxmacro")
-         ((#:build-targets _ '())
-          #~(list "letltxmacro.dtx"))))
-      (home-page "https://www.ctan.org/pkg/letltxmacro")
-      (synopsis "Let assignment for macros")
-      (description
-       "TeX’s @code{\\let} assignment does not work for LaTeX macros with
-optional arguments, or for macros that are defined as robust macros by
-@code{\\DeclareRobustCommand}.  This package defines @code{\\LetLtxMacro}
-that also takes care of the involved internal macros.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-letltxmacro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/letltxmacro/"
+                   "source/latex/letltxmacro/"
+                   "tex/latex/letltxmacro/")
+             (base32
+              "16bmwsng9p80jf78sdmib24apwnw3raw306cs1ms50z5s9dsfdby")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox))
+    (home-page "https://ctan.org/pkg/letltxmacro")
+    (synopsis "Let assignment for LaTeX macros")
+    (description
+     "TeX's @code{\\let} assignment does not work for LaTeX macros with
+optional arguments or for macros that are defined as robust macros by
+@code{\\DeclareRobustCommand}.  This package defines @code{\\LetLtxMacro} that
+also takes care of the involved internal macros.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-letltxmacro texlive-letltxmacro)
 
