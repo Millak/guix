@@ -8422,27 +8422,31 @@ OT2 encoded fonts, CM bright shaped fonts and Concrete shaped fonts.")
 
 (define-public texlive-marvosym
   (package
-    (inherit (simple-texlive-package
-              "texlive-marvosym"
-              (list "/doc/fonts/marvosym/"
-                    "/fonts/afm/public/marvosym/"
-                    "/fonts/map/dvips/marvosym/"
-                    "/fonts/tfm/public/marvosym/"
-                    "/fonts/truetype/public/marvosym/"
-                    "/fonts/type1/public/marvosym/"
-                    "/tex/latex/marvosym/")
-              (base32
-               "0m3bbg06cia8ni86fjhvb7x4a5qcxgnpqcvicfms91w2px9ysc46")
-              #:trivial? #t))
-    (home-page "https://martinvogel.de/blog/index.php?\
-/archives/131-Marvosym.ttf.html")
+    (name "texlive-marvosym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/marvosym/"
+                   "fonts/afm/public/marvosym/"
+                   "fonts/map/dvips/marvosym/"
+                   "fonts/tfm/public/marvosym/"
+                   "fonts/truetype/public/marvosym/"
+                   "fonts/type1/public/marvosym/"
+                   "source/fonts/marvosym/"
+                   "tex/latex/marvosym/")
+             (base32
+              "16s5ibpw6c9d3vzc82hfn90dg643xlracivikdbr9s43f2ayak41")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/marvosym")
     (synopsis "Martin Vogel's Symbols (marvosym) font")
-    (description "The Martin Vogel’s Symbols fonts (marvosym) contains the
-Euro currency symbol as defined by the European commission, along with symbols
-for structural engineering, symbols for steel cross-sections, astronomy
-signs (sun, moon, planets), the 12 signs of the zodiac, scissor symbols, CE
-sign and others.  This package contains both the original TrueType font and
-the derived Type 1 font, together with support files for TeX (LaTeX).")
+    (description
+     "Martin Vogel's Symbol font (marvosym) contains the Euro currency symbol
+as defined by the European commission, along with symbols for structural
+engineering; symbols for steel cross-sections; astronomy signs (sun, moon,
+planets); the 12 signs of the zodiac; scissor symbols; CE sign and others.
+The package contains both the original TrueType font and the derived Type
+1 font, together with support files for TeX (LaTeX).")
     (license (list license:lppl          ;for TeX support files
                    license:silofl1.1)))) ;for fonts
 
