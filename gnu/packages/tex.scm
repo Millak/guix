@@ -6342,56 +6342,26 @@ output routine.")
 
 (define-public texlive-metalogo
   (package
-    (inherit (simple-texlive-package
-              "texlive-metalogo"
-              (list "doc/latex/metalogo/README"
-                    ;; These PDFs are apparently used as graphic files, not
-                    ;; built.
-                    "doc/latex/metalogo/TeXoutline.pdf"
-                    "doc/latex/metalogo/eLaToutline.pdf"
-                    "source/latex/metalogo/metalogo.dtx"
-                    "source/latex/metalogo/metalogo.ins")
-              (base32 "0v1jwp8xhzwn0a4apiyya17s4r1kpn6q9nmv38jj1wwdvgia0jpi")))
+    (name "texlive-metalogo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/metalogo/" "source/latex/metalogo/"
+                   "tex/latex/metalogo/")
+             (base32
+              "1xzy982kc7k5n7gy019rk4hbvxli2mlf4s7h7s11diasmh5fa2gf")))
     (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:tex-directory "latex/metalogo"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-metalogo.dtx
-            (lambda _
-              (substitute* "source/latex/metalogo/metalogo.dtx"
-                ;; Prevent embedding a build time date, for reproducibility.
-                (("^% \\\\date.*") "")
-                ;; These fonts are not free.
-                (("^\\\\setmainfont.*") "")
-                (("^\\\\DeclareSymbolFont\\{SabonMaths}.*") "")
-                (("^\\\\AtBeginDocument\\{.*") "")
-                ((".*\\\\expandafter.*\\\\symSabonMaths.*") "")
-                (("^\\\\setsansfont.*MgOpen Cosmetica.*") "")
-                (("^\\\\setmonofont.*Consolas.*") "")
-                ;; The 'stix' texlive font package has been obsoleted by
-                ;; stix2.
-                (("^\\\\newfontfamily\\\\stixgeneral\\{STIXGeneral}")
-                 "\\newfontfamily\\stixgeneral{STIX Two Text}")))))))
-    (native-inputs (list fontconfig    ;for XDG_DATA_DIRS, to locate OTF fonts
-                         texlive-booktabs
-                         texlive-cm
-                         texlive-eukdate
-                         texlive-fontspec
-                         texlive-iftex
-                         texlive-latex-base
-                         texlive-graphics
-                         texlive-multirow
-                         texlive-lm     ;for lmroman10-regular
-                         texlive-stix2-otf))
-    (propagated-inputs (list texlive-fontspec texlive-iftex
-                             texlive-graphics))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-fontspec
+           texlive-graphics
+           texlive-iftex))
     (home-page "https://ctan.org/pkg/metalogo")
     (synopsis "Extended TeX logo macros")
-    (description "This package exposes spacing parameters for various TeX
-logos to the end user, to optimise the logos for different fonts.  It is
-written especially for XeLaTeX users.")
+    (description
+     "This package exposes spacing parameters for various TeX logos to the end
+user, to optimise the logos for different fonts.  It is written especially for
+XeLaTeX users.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-paralist
