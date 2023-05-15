@@ -11333,24 +11333,28 @@ Type 1 and OTF formats, with supporting files as necessary.")
 
 (define-public texlive-ly1
   (package
-    (inherit (simple-texlive-package
-              "texlive-ly1"
-              (list "/doc/fonts/ly1/"
-                    "/fonts/enc/dvips/ly1/"
-                    "/fonts/map/dvips/ly1/"
-                    "/fonts/tfm/adobe/ly1/"
-                    "/fonts/vf/adobe/ly1/"
-                    "/tex/latex/ly1/")
-              (base32
-               "0wjyw0risgvrq97zfciglwy1f4msvfslln6pz0q8yzzx8wsv3zgq")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/ly1")
+    (name "texlive-ly1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ly1/"
+                   "fonts/enc/dvips/ly1/"
+                   "fonts/map/dvips/ly1/"
+                   "fonts/tfm/adobe/ly1/"
+                   "fonts/vf/adobe/ly1/"
+                   "tex/latex/ly1/"
+                   "tex/plain/ly1/")
+             (base32
+              "1lks902rr94m3n3r4rc2lm4vvqhqv9prgrpni5ww64rqrv56h8yy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ly1")
     (synopsis "Support for LY1 LaTeX encoding")
-    (description "The legacy @emph{texnansi} (TeX and ANSI) encoding
-is known in the LaTeX scheme of things as @emph{LY1} encoding.  The
-@code{ly1} bundle includes metrics and LaTeX macros to use the three
-basic Adobe Type 1 fonts (Times, Helvetica and Courier) in LaTeX using
-LY1 encoding.")
+    (description
+     "The legacy @code{texnansi} (TeX and ANSI) encoding is known in the LaTeX
+scheme of things as @emph{LY1} encoding.  The @code{ly1} bundle includes
+metrics and LaTeX macros to use the three basic Adobe Type 1 fonts (Times,
+Helvetica and Courier) in LaTeX using LY1 encoding.")
     (license license:lppl1.0+)))
 
 (define-public texlive-sectsty
