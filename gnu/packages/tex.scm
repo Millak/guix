@@ -3405,26 +3405,23 @@ the @file{.aux} file.")
 (define-deprecated-package texlive-latex-atveryend texlive-atveryend)
 
 (define-public texlive-auxhook
-  (let ((template (simple-texlive-package
-                   "texlive-auxhook"
-                   (list "doc/latex/auxhook/"
-                         "source/latex/auxhook/"
-                         "tex/latex/auxhook/")
-                   (base32
-                    "1qfs7bz8ryp4prr2fw4hwypnfc6yr4rc4wd8qy4rpmab0hab0vdy"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:build-targets _ '())
-          #~(list "auxhook.dtx"))))
-      (home-page "https://www.ctan.org/pkg/auxhook")
-      (synopsis "Hooks for auxiliary files")
-      (description
-       "This package provides hooks for adding code at the beginning of
+  (package
+    (name "texlive-auxhook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/auxhook/" "source/latex/auxhook/"
+                   "tex/latex/auxhook/")
+             (base32
+              "1qfs7bz8ryp4prr2fw4hwypnfc6yr4rc4wd8qy4rpmab0hab0vdy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/auxhook")
+    (synopsis "Hooks for auxiliary files")
+    (description
+     "This package provides hooks for adding code at the beginning of
 @file{.aux} files.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-auxhook texlive-auxhook)
 
