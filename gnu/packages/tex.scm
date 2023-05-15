@@ -10978,28 +10978,30 @@ customize the highlighted source code output using fancyvrb and fvextra.")
       (license license:lppl1.3+))))
 
 (define-public texlive-caption
-  (let ((template (simple-texlive-package
-                   "texlive-caption"
-                   (list "/doc/latex/caption/"
-                         "/tex/latex/caption/")
-                   (base32
-                    "1isnn375d14xsx398j3m8rbb0pdk12kijw4xcgl82xici170klwq")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (home-page "http://www.ctan.org/pkg/caption")
-      (synopsis "Customising captions in floating environments")
-      (description "The @code{caption} package provides many ways to
-customise the captions in floating environments like figure and table.
-Facilities include rotating captions, sideways captions and continued
-captions (for tables or figures that come in several parts).  A list
-of compatibility notes, for other packages, is provided in the
-documentation.  The package also provides the \"caption outside
-float\" facility, in the same way that simpler packages like
-@code{capt-ofcapt-of} do.  The package supersedes @code{caption2}.
-Packages @code{bicaption}, @code{ltcaption} and @code{subcaption} are
-included in the bundle.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-caption")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/caption/" "source/latex/caption/"
+                   "tex/latex/caption/")
+             (base32
+              "1fg3zfgi54zqx911wbqfb1y24d9ihm6wg59npng4clnqz45lla2i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/caption")
+    (synopsis "Customising captions in floating environments")
+    (description
+     "The @code{caption} package provides many ways to customise the captions
+in floating environments like figure and table, and cooperates with many other
+packages.  Facilities include rotating captions, sideways captions, continued
+captions (for tables or figures that come in several parts).  A list of
+compatibility notes, for other packages, is provided in the documentation.
+The package also provides the caption outside float facility, in the same way
+that simpler packages like capt-of do.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-symbol
   (package
