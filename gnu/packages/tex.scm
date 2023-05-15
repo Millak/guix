@@ -11306,22 +11306,31 @@ mathematics package that matches Libertine text quite well.")
 
 (define-public texlive-xcharter
   (package
-    (inherit (simple-texlive-package
-              "texlive-xcharter"
-              (list "/doc/fonts/xcharter/"
-                    "/fonts/afm/public/xcharter/"
-                    "/fonts/enc/dvips/xcharter/"
-                    "/fonts/map/dvips/xcharter/"
-                    "/fonts/opentype/public/xcharter/"
-                    "/fonts/tfm/public/xcharter/"
-                    "/fonts/type1/public/xcharter/"
-                    "/fonts/vf/public/xcharter/"
-                    "/tex/latex/xcharter/")
-              (base32
-               "0d8rvcmvxrlxqqxpirxqbhmiijpsz5y4vvldh1jnc018aannjlhm")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/xcharter")
-    (synopsis "Extension of the Bitstream Charter fonts")
+    (name "texlive-xcharter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/xcharter/"
+                   "fonts/afm/public/xcharter/"
+                   "fonts/enc/dvips/xcharter/"
+                   "fonts/map/dvips/xcharter/"
+                   "fonts/opentype/public/xcharter/"
+                   "fonts/tfm/public/xcharter/"
+                   "fonts/type1/public/xcharter/"
+                   "fonts/vf/public/xcharter/"
+                   "tex/latex/xcharter/")
+             (base32
+              "0d8rvcmvxrlxqqxpirxqbhmiijpsz5y4vvldh1jnc018aannjlhm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-carlisle
+           texlive-etoolbox
+           texlive-fontaxes
+           texlive-xstring
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/xcharter")
+    (synopsis "Extension of Bitstream Charter fonts")
     (description "@code{xcharter} repackages Bitstream Charter with an
 extended set of features.  The extension provides small caps, oldstyle
 figures and superior figures in all four styles, accompanied by LaTeX
