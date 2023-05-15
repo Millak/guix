@@ -4222,29 +4222,32 @@ a means of defining generic functions using a key-value syntax, and
 (define-deprecated-package texlive-latex-l3packages texlive-l3packages)
 
 (define-public texlive-fontspec
-  (let ((template (simple-texlive-package
-                   "texlive-fontspec"
-                   (list "/doc/latex/fontspec/"
-                         "/source/latex/fontspec/"
-                         "/tex/latex/fontspec/fontspec.cfg")
-                   (base32
-                    "06rms8dw1j67v3rgv6xmfykdmgbxi5rp78yxc782cy1sw07blgsg"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/fontspec")))
-      (propagated-inputs
-       (list texlive-cm texlive-l3packages texlive-lm))
-      (home-page "https://www.ctan.org/pkg/fontspec")
-      (synopsis "Advanced font selection in XeLaTeX and LuaLaTeX")
-      (description
-       "Fontspec is a package for XeLaTeX and LuaLaTeX.  It provides an
+  (package
+    (name "texlive-fontspec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fontspec/"
+                   "source/latex/fontspec/"
+                   "tex/latex/fontspec/")
+             (base32
+              "1k999jgdd4a9d20rywl53vzpvl3synqxik1fiskxwzlzibjlibv1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-euenc
+           texlive-iftex
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-lm
+           texlive-xunicode))
+    (home-page "https://ctan.org/pkg/fontspec")
+    (synopsis "Advanced font selection in XeLaTeX and LuaLaTeX")
+    (description
+     "Fontspec is a package for XeLaTeX and LuaLaTeX.  It provides an
 automatic and unified interface to feature-rich AAT and OpenType fonts through
-the NFSS in LaTeX running on XeTeX or LuaTeX engines.  The package requires
-the l3kernel and xparse bundles from the LaTeX 3 development team.")
-      (license license:lppl1.3+))))
+the NFSS in LaTeX running on XeTeX or LuaTeX engines.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-fontspec texlive-fontspec)
 
