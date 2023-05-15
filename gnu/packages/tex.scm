@@ -3998,34 +3998,30 @@ experimental packages.")
     (license license:lppl1.3c)))
 
 (define-public texlive-rerunfilecheck
-  (let ((template (simple-texlive-package
-                   "texlive-rerunfilecheck"
-                   (list "doc/latex/rerunfilecheck/"
-                         "source/latex/rerunfilecheck/"
-                         "tex/latex/rerunfilecheck/")
-                   (base32
-                    "0f53b6dlnlrxkzj7h7x750p0489i2gg3isfqn0dlpncpq23w1r36"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/rerunfilecheck")
-         ((#:build-targets _ '())
-          #~(list "rerunfilecheck.dtx"))))
-      (propagated-inputs
-       (list texlive-atveryend
-             texlive-infwarerr
-             texlive-kvoptions
-             texlive-pdftexcmds
-             texlive-uniquecounter))
-      (home-page "https://www.ctan.org/pkg/rerunfilecheck")
-      (synopsis "Checksum based rerun checks on auxiliary files")
-      (description
-       "This package provides additional rerun warnings if some auxiliary
-files have changed.  It is based on MD5 checksum, provided by pdfTeX.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-rerunfilecheck")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rerunfilecheck/"
+                   "source/latex/rerunfilecheck/"
+                   "tex/latex/rerunfilecheck/")
+             (base32
+              "0f53b6dlnlrxkzj7h7x750p0489i2gg3isfqn0dlpncpq23w1r36")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-atveryend
+           texlive-infwarerr
+           texlive-kvoptions
+           texlive-pdftexcmds
+           texlive-uniquecounter))
+    (home-page "https://www.ctan.org/pkg/rerunfilecheck")
+    (synopsis "Checksum based rerun checks on auxiliary files")
+    (description
+     "This package provides additional rerun warnings if some auxiliary files
+have changed.  It is based on MD5 checksum, provided by pdfTeX.")
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-rerunfilecheck texlive-rerunfilecheck)
 
