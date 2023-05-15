@@ -6485,26 +6485,23 @@ written especially for XeLaTeX users.")
 
 (define-public texlive-paralist
   (package
-    (inherit (simple-texlive-package
-              "texlive-paralist"
-              (list "doc/latex/paralist/README"
-                    "source/latex/paralist/paralist.dtx"
-                    "source/latex/paralist/paralist.ins")
-              (base32 "1lz8yds2i64wkb89a9amydwkzsdbc09s1kbgn7vgh2qsxqrrgwam")))
+    (name "texlive-paralist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/paralist/" "source/latex/paralist/"
+                   "tex/latex/paralist/")
+             (base32
+              "003gs7rjm97vqh903wdjys3ls96kx45w3s4qghjk1fdjx6qxd32l")))
     (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:tex-directory "latex/paralist"))
-    (native-inputs (list texlive-latex-base
-                         (texlive-updmap.cfg
-                          (list texlive-cm
-                                texlive-jknapltx))))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/paralist")
-    (synopsis "Enumerate and itemize within paragraphs")
-    (description "The @code{paralist} package provides enumerate and itemize
-environments that can be used within paragraphs to format the items either as
-running text or as separate paragraphs with a preceding number or symbol.  It
-also provides compacted versions of enumerate and itemize.")
+    (synopsis "@code{enumerate} and @code{itemize} within paragraphs")
+    (description "The @code{paralist} package provides @code{enumerate} and
+@code{itemize} environments that can be used within paragraphs to format the
+items either as running text or as separate paragraphs with a preceding number
+or symbol.  It also provides compacted versions of @code{enumerate} and
+@code{itemize}.")
     (license license:lppl1.0+)))
 
 (define-public texlive-polyglossia
