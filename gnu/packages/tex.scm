@@ -3379,29 +3379,28 @@ customize their appearance in the enclosing document.")
     (license license:lppl1.3+)))
 
 (define-public texlive-atveryend
-  (let ((template (simple-texlive-package
-                   "texlive-atveryend"
-                   (list "doc/latex/atveryend/"
-                         "source/latex/atveryend/"
-                         "tex/latex/atveryend/")
-                   (base32 "1rp805h0m99rxs107a798l951lyahlnp7irfklfadn2a2ljzhafn"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:build-targets _ #t)
-          #~(list "atveryend.dtx"))))
-      (home-page "https://ctan.org/macros/latex/contrib/atveryend")
-      (synopsis "Hooks at the very end of a document")
-      (description
-       "This LaTeX packages provides two hooks for @code{\\end{document}} that
+  (package
+    (name "texlive-atveryend")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/atveryend/"
+                   "source/latex/atveryend/"
+                   "tex/latex/atveryend/")
+             (base32
+              "1rp805h0m99rxs107a798l951lyahlnp7irfklfadn2a2ljzhafn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/atveryend")
+    (synopsis "Hooks at the very end of a document")
+    (description
+     "This LaTeX packages provides two hooks for @code{\\end{document}} that
 are executed after the hook of @code{\\AtEndDocument}:
 @code{\\AfterLastShipout} can be used for code that is to be executed right
 after the last @code{\\clearpage} before the @file{.aux} file is closed.
 @code{\\AtVeryEndDocument} is used for code after closing and final reading of
 the @file{.aux} file.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-atveryend texlive-atveryend)
 
