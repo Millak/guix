@@ -12204,18 +12204,25 @@ possible to register these float types with endfloat.")
 
 (define-public texlive-xpatch
   (package
-    (inherit (simple-texlive-package
-              "texlive-xpatch"
-              (list "doc/latex/xpatch/"
-                    "source/latex/xpatch/"
-                    "tex/latex/xpatch/")
-              (base32
-               "0r08hadnwx9vyppzmbn1bj69b12i5fw1mhk49piw2rqbk01722zk")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/xpatch")
-    (synopsis "Extending etoolbox patching commands")
-    (description "The package generalises the macro patching commands
-provided by Philipp Lehmann’s etoolbox.")
+    (name "texlive-xpatch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xpatch/" "source/latex/xpatch/"
+                   "tex/latex/xpatch/")
+             (base32
+              "0r08hadnwx9vyppzmbn1bj69b12i5fw1mhk49piw2rqbk01722zk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-l3kernel
+           texlive-l3packages))
+    (home-page "https://ctan.org/pkg/xpatch")
+    (synopsis "Extending @code{etoolbox} patching commands")
+    (description
+     "The package generalises the macro patching commands provided by Philipp
+Lehmann's @code{etoolbox}.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-threeparttablex
