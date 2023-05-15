@@ -2659,7 +2659,11 @@ database and supports many programming languages.  It is a NoSQL database.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list "--enable-pthread" "--enable-off64" "--enable-fastest"
+       (list "--enable-pthread" "--enable-off64"
+             ,@(if (target-x86?)
+                 ;; Enables x86 specific cflags.
+                 '("--enable-fastest")
+                 '())
         (string-append "LDFLAGS=-Wl,-rpath="
                        (assoc-ref %outputs "out") "/lib"))))
     (inputs
