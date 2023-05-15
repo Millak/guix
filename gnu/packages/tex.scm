@@ -12220,17 +12220,24 @@ provided by Philipp Lehmann’s etoolbox.")
 
 (define-public texlive-threeparttablex
   (package
-    (inherit (simple-texlive-package
-              "texlive-threeparttablex"
-              (list "doc/latex/threeparttablex/"
-                    "tex/latex/threeparttablex/")
-              (base32
-               "19pvw2ifswxcf8dxw0mzjmqhl592477w5hcfh97f4wpya0dv2m9p")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/threeparttablex")
-    (synopsis "Notes in longtables")
-    (description "The package provides the functionality of the
-threeparttable package to tables created using the longtable package.")
+    (name "texlive-threeparttablex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/threeparttablex/"
+                   "tex/latex/threeparttablex/")
+             (base32
+              "19pvw2ifswxcf8dxw0mzjmqhl592477w5hcfh97f4wpya0dv2m9p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-environ
+           texlive-threeparttable))
+    (home-page "https://ctan.org/pkg/threeparttablex")
+    (synopsis "Notes in @code{longtables}")
+    (description
+     "The package provides the functionality of the @code{threeparttable}
+package to tables created using the @code{longtable} package.")
     (license license:lppl1.3+)))
 
 (define-public texlive-lineno
