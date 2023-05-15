@@ -11980,25 +11980,29 @@ making a list of theorems, analagous to @code{\\listoffigures}.")
 
 (define-public texlive-fmtcount
   (package
-    (inherit (simple-texlive-package
-              "texlive-fmtcount"
-              (list "doc/latex/fmtcount/"
-                    "scripts/fmtcount/"
-                    "source/latex/fmtcount/"
-                    "tex/latex/fmtcount/")
-              (base32
-               "1biw0g6s2arq6kq52c1yfkl0vzafja2az65c3d0syq0vgjzj9763")
-              #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/fmtcount")
+    (name "texlive-fmtcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fmtcount/" "scripts/fmtcount/"
+                   "source/latex/fmtcount/" "tex/latex/fmtcount/")
+             (base32
+              "1biw0g6s2arq6kq52c1yfkl0vzafja2az65c3d0syq0vgjzj9763")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-etoolbox
+           texlive-graphics
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/fmtcount")
     (synopsis "Display the value of a LaTeX counter in a variety of formats")
     (description
-     "The package provides commands that display the value of a LaTeX counter in a
-variety of formats (ordinal, text, hexadecimal, decimal, octal, binary etc).
-The package offers some multilingual support; configurations for use in English
-(both British and American usage), French (including Belgian and Swiss
-variants), German, Italian, Portuguese and Spanish documents are provided.  This
-package was originally provided as part of the author's datetime package, but is
-now distributed separately.")
+     "The package provides commands that display the value of a LaTeX counter
+in a variety of formats (ordinal, text, hexadecimal, decimal, octal, binary
+etc).  The package offers some multilingual support; configurations for use in
+English (both British and American usage), French (including Belgian and Swiss
+variants), German, Italian, Portuguese and Spanish documents are provided.")
     (license license:lppl1.3+)))
 
 (define-public texlive-inriafonts
