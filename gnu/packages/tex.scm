@@ -7440,29 +7440,24 @@ via one of the packages @code{calrsfs} and @code{mathrsfs}.")
 (define-deprecated-package texlive-fonts-rsfs texlive-rsfs)
 
 (define-public texlive-eso-pic
-  (let ((template (simple-texlive-package
-                   "texlive-eso-pic"
-                   (list "doc/latex/eso-pic/"
-                         "source/latex/eso-pic/"
-                         "tex/latex/eso-pic/")
-                   (base32
-                    "05bqm4x209wji0q6xk1jrjp0nzqafp44dlq30hlpcagrggjb3d9s"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/eso-pic")
-         ((#:build-targets _ '())
-          #~(list "eso-pic.ins"))))
-      (home-page "https://ctan.org/macros/latex/contrib/eso-pic")
-      (synopsis "Add picture commands (or backgrounds) to every page")
-      (description
-       "The package adds one or more user commands to LaTeX's @code{shipout}
+  (package
+    (name "texlive-eso-pic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eso-pic/" "source/latex/eso-pic/"
+                   "tex/latex/eso-pic/")
+             (base32
+              "05bqm4x209wji0q6xk1jrjp0nzqafp44dlq30hlpcagrggjb3d9s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eso-pic")
+    (synopsis "Add picture commands (or backgrounds) to every page")
+    (description
+     "The package adds one or more user commands to LaTeX's @code{shipout}
 routine, which may be used to place the output at fixed positions.  The
 @code{grid} option may be used to find the correct places.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-eso-pic texlive-eso-pic)
 
