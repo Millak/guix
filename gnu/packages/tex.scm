@@ -9173,26 +9173,23 @@ and @code{multitoc}, typeset the table of contents in multiple columns.")
 (define-deprecated-package texlive-latex-ms texlive-ms)
 
 (define-public texlive-ncctools
-  (let ((template (simple-texlive-package
-                   "texlive-ncctools"
-                   (list "doc/latex/ncctools/"
-                         "source/latex/ncctools/"
-                         "tex/latex/ncctools/")
-                   (base32
-                    "1g3fpvrg6kx2ns97ih6iwdk0rcbxlv043x8rdppxdincl2lvbdx5"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/ncctools")
-         ((#:build-targets _ '()) '(list "ncctools.ins"))))
-      (propagated-inputs
-       (list texlive-amsmath texlive-graphics))
-      (home-page "https://ctan.org/pkg/ncctools")
-      (synopsis "Collection of general packages for LaTeX")
-      (description
-       "The NCCtools bundle contains many packages for general use under LaTeX;
+  (package
+    (name "texlive-ncctools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ncctools/" "source/latex/ncctools/"
+                   "tex/latex/ncctools/")
+             (base32
+              "1g3fpvrg6kx2ns97ih6iwdk0rcbxlv043x8rdppxdincl2lvbdx5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath texlive-graphics))
+    (home-page "https://ctan.org/pkg/ncctools")
+    (synopsis "A collection of general packages for LaTeX")
+    (description
+     "The NCCtools bundle contains many packages for general use under LaTeX;
 many are also used by NCC LaTeX.  The bundle includes tools for:
 @itemize
 @item executing commands after a package is loaded;
@@ -9221,7 +9218,7 @@ toc-entries;
 @item centered page layouts;
 @item un-numbered top-level section.
 @end itemize")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-public texlive-numprint
   (let ((template
