@@ -3454,29 +3454,29 @@ a process to convert the EPS to PDF, using the script @command{epstopdf}.")
 (define-deprecated-package texlive-latex-epstopdf-pkg texlive-epstopdf-pkg)
 
 (define-public texlive-filecontents
-  (let ((template (simple-texlive-package
-                   "texlive-filecontents"
-                   (list "doc/latex/filecontents/"
-                         "source/latex/filecontents/"
-                         "tex/latex/filecontents/")
-                   (base32
-                    "0ifhqfdzx91hrmndhg5441rpmv9k4lxrql02kd5yx75xpplxryzw"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '()) "latex/filecontents")))
-      (home-page "https://ctan.org/pkg/filecontents")
-      (synopsis "Create an external file from within a LaTeX document")
-      (description
-       "LaTeX2e's @code{filecontents} and @code{filecontents*} environments
+  (package
+    (name "texlive-filecontents")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/filecontents/"
+                   "source/latex/filecontents/"
+                   "tex/latex/filecontents/")
+             (base32
+              "0ifhqfdzx91hrmndhg5441rpmv9k4lxrql02kd5yx75xpplxryzw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/filecontents")
+    (synopsis "Create an external file from within a LaTeX document")
+    (description
+     "LaTeX2e's @code{filecontents} and @code{filecontents*} environments
 enable a LaTeX source file to generate external files as it runs through
 LaTeX.  However, there are two limitations of these environments: they refuse
 to overwrite existing files, and they can only be used in the preamble of
 a document.  The filecontents package removes these limitations, letting you
 overwrite existing files and letting you use @code{filecontents}
 @code{filecontents*} anywhere.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-filecontents texlive-filecontents)
 
