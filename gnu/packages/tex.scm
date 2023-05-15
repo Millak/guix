@@ -6973,30 +6973,30 @@ TeX-paragraphs.  All the paragraphs are taken with permission from
     (license license:lppl1.3+)))
 
 (define-public texlive-listings
-  (let ((template
-         (simple-texlive-package
-          "texlive-listings"
-          (list "doc/latex/listings/"
-                "source/latex/listings/"
-                "tex/latex/listings/")
-          (base32 "15dnm0j86305x84ss3ymhhcczcw45b2liq01vrab6fj204wzsahk"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/listings")
-         ((#:build-targets _ '())
-          #~(list "listings.ins"))))
-      (home-page "https://www.ctan.org/pkg/listings")
-      (synopsis "Typeset source code listings using LaTeX")
-      (description
-       "The package enables the user to typeset programs (programming code)
+  (package
+    (name "texlive-listings")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/listings/" "source/latex/listings/"
+                   "tex/latex/listings/")
+             (base32
+              "15dnm0j86305x84ss3ymhhcczcw45b2liq01vrab6fj204wzsahk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     ;; Do not build intermediate "lstdrvrs.ins".
+     (list #:build-targets '(list "listings.ins")))
+    (propagated-inputs
+     (list texlive-fancyvrb texlive-hyperref texlive-url))
+    (home-page "https://ctan.org/pkg/listings")
+    (synopsis "Typeset source code listings using LaTeX")
+    (description
+     "The package enables the user to typeset programs (programming code)
 within LaTeX; the source code is read directly by TeX---no front-end processor
 is needed.  Keywords, comments and strings can be typeset using different
 styles.  Support for @code{hyperref} is provided.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-public texlive-listingsutf8
   (package
