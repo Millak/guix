@@ -6392,93 +6392,62 @@ or symbol.  It also provides compacted versions of @code{enumerate} and
 
 (define-public texlive-polyglossia
   (package
-    (inherit (simple-texlive-package
-              "texlive-polyglossia"
-              (list "source/latex/polyglossia/"
-                    ;; These files are not part of polyglossia.dtx
-                    "tex/latex/polyglossia/arabicnumbers.sty"
-                    "tex/latex/polyglossia/xpg-cyrillicnumbers.sty")
-              (base32 "1p0hhclypv2zbs8h64c6sd689m9ym3vvpn966qpwpjxbymsrc49g")))
+    (name "texlive-polyglossia")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/polyglossia/"
+                   "fonts/misc/xetex/fontmapping/polyglossia/"
+                   "source/latex/polyglossia/"
+                   "tex/latex/polyglossia/")
+             (base32
+              "1lkf06mr7p7p1fdkrnhmvj8iamzppjy952d79mc81cilkw5zskah")))
     (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
      (list
-      #:tex-directory "latex/polyglossia"
       #:tex-format "xelatex"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'build-and-install-xelatex.fmt
-            (lambda* (#:key tex-format #:allow-other-keys)
-              (invoke "fmtutil-sys" "--byfmt" tex-format "--fmtdir=web2c")
+          (add-after 'unpack 'substitute-fonts
+            (lambda _
+              (substitute* "source/latex/polyglossia/polyglossia.dtx"
+                (("\\{Serto Jerusalem}") "{FreeSans}") ;non-free
+                ;; XXX: Amiri font would introduce a (native) dependency on
+                ;; webkitgtk!  No, thanks.
+                (("\\{Amiri}") "{FreeSans}"))))
+          (add-after 'unpack 'extend-texmf
+            (lambda _
               ;; Extend the current TEXMF environment variable to make
-              ;; available the newly built formats.
-              (setenv "GUIX_TEXMF" (string-append (getcwd) ":"
-                                                  (getenv "GUIX_TEXMF")))
-              ;; XXX: Extend the base (more limited) xelatex.fmt provided by
-              ;; texlive-latex-base, otherwise packages using Polyglossia
-              ;; would encounter the same lack of hyphenation support problem.
-              (install-file "web2c/xetex/xelatex.fmt"
-                            (string-append #$output
-                                           "/share/texmf-dist/web2c/xetex"))))
-          (add-before 'build 'chdir
-            (lambda _
-              ;; This is so the build can find the files not part of the .dtx.
-              (setenv "TEXINPUTS" (string-append (getcwd)
-                                                 "/tex/latex/polyglossia:"))))
-          (add-after 'chdir 'substitute-nonfree-fonts
-            (lambda _
-              (substitute* "polyglossia.dtx"
-                (("\\{Serto Jerusalem}")
-                 "{FreeSans}"))))
-          (add-after 'substitute-nonfree-fonts 'extract-dtx
-            (lambda* (#:key tex-format #:allow-other-keys)
-              (invoke tex-format "polyglossia.dtx"))))))
-    (native-inputs (list fontconfig     ;for XDG_DATA_DIRS (to locate fonts)
-                         font-amiri
-                         font-dejavu
-                         font-gfs-ambrosia
-                         font-gnu-freefont
-                         font-linuxlibertine
-                         font-sil-ezra
-                         texlive-latex-base
-                         texlive-babel
-                         texlive-bin    ;for fmtutil.cnf
-                         texlive-bidi
-                         texlive-booktabs
-                         texlive-caption
-                         texlive-context
-                         texlive-fancyvrb
-                         texlive-etoolbox
-                         texlive-latex-fonts
-                         texlive-fontspec
-                         texlive-hyperref
-                         ;; TODO: Remove texlive-stringenc and
-                         ;; texlive-zapfding after texlive-hyperref propagates
-                         ;; them.
-                         texlive-stringenc
-                         texlive-zapfding
-                         texlive-graphics
-                         texlive-kpathsea ;for cp227.tcx & friends
-                         texlive-makecmds
-                         texlive-metalogo
-                         texlive-microtype
-                         texlive-paralist
-                         texlive-tools
-                         texlive-tex-ini-files)) ;for pdftexconfig
-    ;; polyglossia.sty \RequirePackage or \\usepackage these other TexLive
-    ;; packages.
-    (propagated-inputs
-     (list texlive-bidi
-           texlive-etoolbox
-           texlive-fontspec
+              ;; Polyglossia own libraries visible.
+              (setenv "GUIX_TEXMF"
+                      (string-append (getcwd) ":"
+                                     (getenv "GUIX_TEXMF"))))))))
+    (native-inputs
+     (list font-dejavu
+           font-gfs-ambrosia
+           font-gnu-freefont
+           font-linuxlibertine
+           font-sil-ezra
+           fontconfig                   ;for XDG_DATA_DIRS (to locate fonts)
+           texlive-babel
+           texlive-bidi
+           texlive-booktabs
+           texlive-caption
+           texlive-context
+           texlive-fancyvrb
+           texlive-graphics
            texlive-hyperref
-           ;; TODO: Remove texlive-stringenc and
-           ;; texlive-zapfding after texlive-hyperref propagates
-           ;; them.
-           texlive-stringenc
-           texlive-zapfding
+           texlive-latex-fonts
+           texlive-metalogo
+           texlive-microtype
+           texlive-paralist))
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-filehook
+           texlive-fontspec
+           texlive-iftex
            texlive-makecmds
-           texlive-l3packages           ;expl3, l3keys2e, xparse
-           texlive-tools
            texlive-xkeyval))
     (home-page "https://www.ctan.org/pkg/polyglossia")
     (synopsis "Alternative to Babel for XeLaTeX and LuaLaTeX")
@@ -6491,25 +6460,24 @@ different writing system.  It enables:
 Loading the appropriate hyphenation patterns.
 @item
 Setting the script and language tags of the current font (if possible and
-available), using the package fontspec.
+available), using the package @code{fontspec}.
 @item
 Switching to a font assigned by the user to a particular script or language.
 @item
 Adjusting some typographical conventions in function of the current language
-(such as afterindent, frenchindent, spaces before or after punctuation marks,
-etc.)
+(such as @code{afterindent}, @code{frenchindent}, spaces before or after
+punctuation marks, etc.)
 @item
 Redefining the document strings (like @samp{chapter}, @samp{figure},
 @samp{bibliography}).  Adapting the formatting of dates (for non-gregorian
-calendars via external packages bundled with polyglossia: currently the
+calendars via external packages bundled with @code{polyglossia}: currently the
 Hebrew, Islamic and Farsi calendars are supported).
 @item
 For languages that have their own numeration system, modifying the formatting
 of numbers appropriately.
 @item
 Ensuring the proper directionality if the document contains languages
-written from right to left (via the packages bidi and luabidi, available
-separately).
+written from right to left.
 @end itemize")
     (license license:expat)))
 
