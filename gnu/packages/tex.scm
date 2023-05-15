@@ -9735,29 +9735,25 @@ interface.")
 (define-deprecated-package texlive-generic-listofitems texlive-listofitems)
 
 (define-public texlive-ltxcmds
-  (let ((template (simple-texlive-package
-                   "texlive-ltxcmds"
-                   (list "doc/generic/ltxcmds/"
-                         "source/generic/ltxcmds/"
-                         "tex/generic/ltxcmds/")
-                   (base32
-                    "1izcw9jl64iij541183hc156sjwamvxm7q9fkpfnz8sppyg31fkb"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/ltxcmds")
-         ((#:build-targets _ '())
-          #~(list "ltxcmds.dtx"))))
-      (home-page "https://www.ctan.org/pkg/ltxcmds")
-      (synopsis "LaTeX kernel commands extracted for general use")
-      (description
-       "This package exports some utility macros from the LaTeX kernel into
-a separate namespace and also makes them available for other formats such
-as plain TeX.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-ltxcmds")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/ltxcmds/"
+                   "source/generic/ltxcmds/"
+                   "tex/generic/ltxcmds/")
+             (base32
+              "1izcw9jl64iij541183hc156sjwamvxm7q9fkpfnz8sppyg31fkb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltxcmds")
+    (synopsis "Some LaTeX kernel commands for general use")
+    (description
+     "This package exports some utility macros from the LaTeX kernel into
+a separate namespace and also makes them available for other formats such as
+plain TeX.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-generic-ltxcmds texlive-ltxcmds)
 
