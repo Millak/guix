@@ -11869,14 +11869,18 @@ by the following fonts:
 
 (define-public texlive-xifthen
   (package
-    (inherit (simple-texlive-package
-              "texlive-xifthen"
-              (list "doc/latex/xifthen/"
-                    "tex/latex/xifthen/")
-              (base32
-               "0b33mlmnxsj5mi06v2w2zgamk51mgv1lxdr1cax8nkpn9g7n9axw")
-              #:trivial? #t))
+    (name "texlive-xifthen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xifthen/" "tex/latex/xifthen/")
+             (base32
+              "0b33mlmnxsj5mi06v2w2zgamk51mgv1lxdr1cax8nkpn9g7n9axw")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-ifmtarg
+           texlive-tools))
     (home-page "https://ctan.org/pkg/xifthen")
     (synopsis "Extended conditional commands")
     (description
