@@ -12140,25 +12140,27 @@ maintained).")
 
 (define-public texlive-apacite
   (package
-    (inherit (simple-texlive-package
-              "texlive-apacite"
-              (list "tex/latex/apacite/")
-              (base32
-               "0bcfpcmflhvxwzmdj8dgf43mzaywx2asahp52nqn3wwvq64bqym6")
-              #:trivial? #t))
-    (propagated-inputs (list texlive-natbib
-                             texlive-tools))
-    (home-page "https://www.ctan.org/pkg/apacite")
+    (name "texlive-apacite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/apacite/" "doc/bibtex/apacite/"
+                   "source/bibtex/apacite/" "tex/latex/apacite/")
+             (base32
+              "0nc86zngk71xpbinrfm8p0413xphc0v86ddhcw94gi2sl00hsmzq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-natbib
+           texlive-tools))
+    (home-page "https://ctan.org/pkg/apacite")
     (synopsis "Citation style following the rules of the APA")
-    (description "Apacite provides a BibTeX style and a LaTeX package which
-are designed to match the requirements of the American Psychological
-Association’s style for citations.  The package follows the 6th edition
-of the APA manual, and is designed to work with the apa6 class.  A test
-document is provided.  The package is compatible with chapterbib and
-(to some extent) with hyperref (for limits of compatibility, see the
-documentation).  The package also includes a means of generating an author
-index for a document.")
-    (license license:lppl1.3+)))
+    (description
+     "Apacite provides a BibTeX style and a LaTeX package which are designed
+to match the requirements of the American Psychological Association's style
+for citations.  The package follows the 6th edition of the APA manual, and is
+designed to work with the @code{apa6} class.")
+    (license license:lppl)))
 
 (define-public texlive-endfloat
   (package
