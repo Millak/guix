@@ -3965,8 +3965,8 @@ encode and decode wavpack files.")
 
 (define-public libmixed
   ;; Release is much outdated.
-  (let ((commit "91e6b9f2438bca41205fade02c9d8f4f938838b6")
-        (revision "0"))
+  (let ((commit "9b2668e0d85175b0e92864cfbf1b9e58f77c92e0")
+        (revision "1"))
     (package
       (name "libmixed")
       (version (git-version "2.0" revision commit))
@@ -3978,14 +3978,10 @@ encode and decode wavpack files.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "01vwgv8ivpg7a4y95krkgh656mmklsn1k3fmhwp474aj82grd3m4"))))
+          (base32 "0ql2h0hh4jl96sc9i6mk1d6qq261bvsfapinvzr9gx3lpzycpfb7"))))
       (build-system cmake-build-system)
       (arguments
        (list
-        ;; FIXME: (Sharlatan-20230326T121542+0100): Tests failed 1/34, 1 failed,
-        ;; 33 passed. There is not simple way to disable just one test.
-        ;; https://github.com/Shirakumo/libmixed/issues/13
-        #:tests? #f
         #:configure-flags
         #~(list "-DBUILD_STATIC=OFF"
                 "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
