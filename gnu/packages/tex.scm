@@ -11938,13 +11938,15 @@ terms and in terms of the collating order of the text being processed.")
 
 (define-public texlive-nth
   (package
-    (inherit (simple-texlive-package
-              "texlive-nth"
-              (list "tex/generic/nth/")
-              (base32
-               "0716sd99xjdkplm7jdmg4lx8lpfnnx6mxjp1l1sp2bfqcg73p4hm")
-              #:trivial? #t))
-    (home-page "https://ctan.org/macros/generic/misc/nth.sty")
+    (name "texlive-nth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/generic/nth/")
+             (base32
+              "0716sd99xjdkplm7jdmg4lx8lpfnnx6mxjp1l1sp2bfqcg73p4hm")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nth")
     (synopsis "Generate English ordinal numbers")
     (description
      "The command @code{\\nth{<number>}} generates English ordinal numbers of
