@@ -12235,20 +12235,25 @@ threeparttable package to tables created using the longtable package.")
 
 (define-public texlive-lineno
   (package
-    (inherit (simple-texlive-package
-              "texlive-lineno"
-              (list "doc/latex/lineno/"
-                    "source/latex/lineno/"
-                    "tex/latex/lineno/")
-              (base32
-               "1xf8ljgcj411yqmng89wc49rqfz19j95yqqpnb35dj3qc1chvm2a")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/lineno")
+    (name "texlive-lineno")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lineno/" "source/latex/lineno/"
+                   "tex/latex/lineno/")
+             (base32
+              "1xf8ljgcj411yqmng89wc49rqfz19j95yqqpnb35dj3qc1chvm2a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-tools))
+    (home-page "https://ctan.org/pkg/lineno")
     (synopsis "Line numbers on paragraphs")
-    (description "Adds line numbers to selected paragraphs with reference
-possible through the LaTeX @code{\\ref} and @code{\\pageref} cross reference
-mechanism.  Line numbering may be extended to footnote lines, using the
-fnlineno package.")
+    (description
+     "The @code{lineno} package adds line numbers to selected paragraphs with
+reference possible through the LaTeX @code{\\ref} and @code{\\pageref} cross
+reference mechanism.  Line numbering may be extended to footnote lines, using
+the @code{fnlineno} package.")
     (license license:lppl1.3a+)))
 
 (define-public texlive-babel-czech
