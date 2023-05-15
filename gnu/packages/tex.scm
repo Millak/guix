@@ -10535,24 +10535,27 @@ frames made with the @code{framed} package.")
       (license license:lppl1.3c+))))
 
 (define-public texlive-iftex
-  (let ((template (simple-texlive-package
-                   "texlive-iftex"
-                   (list "/doc/generic/iftex/"
-                         "/tex/generic/iftex/")
-                   (base32
-                    "147xa5kl4kjs05nj8v3kd7dpr5xkz3xp3gdvjih32ccd7527f5vp")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (home-page "http://www.ctan.org/pkg/iftex")
-      (synopsis "Determine the currently used TeX engine")
-      (description "This package, which works both for Plain TeX and for
-LaTeX, defines the @code{\\ifPDFTeX}, @code{\\ifXeTeX}, and @code{\\ifLuaTeX}
-conditionals for testing which engine is being used for typesetting.  The
-package also provides the @code{\\RequirePDFTeX}, @code{\\RequireXeTeX}, and
-@code{\\RequireLuaTeX} commands which throw an error if pdfTeX, XeTeX or
-LuaTeX (respectively) is not the engine in use.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-iftex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "/doc/generic/iftex/"
+                   "/tex/generic/iftex/")
+             (base32
+              "147xa5kl4kjs05nj8v3kd7dpr5xkz3xp3gdvjih32ccd7527f5vp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "http://www.ctan.org/pkg/iftex")
+    (synopsis "Determine the currently used TeX engine")
+    (description
+     "This package, which works both for Plain TeX and for LaTeX, defines the
+@code{\\ifPDFTeX}, @code{\\ifXeTeX}, and @code{\\ifLuaTeX} conditionals for
+testing which engine is being used for typesetting.  The package also provides
+the @code{\\RequirePDFTeX}, @code{\\RequireXeTeX}, and @code{\\RequireLuaTeX}
+commands which throw an error if pdfTeX, XeTeX or LuaTeX (respectively) is not
+the engine in use.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-generic-iftex texlive-iftex)
 
