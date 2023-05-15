@@ -9495,30 +9495,26 @@ be used either with LaTeX or with plain TeX.")
 (define-deprecated-package texlive-generic-atbegshi texlive-atbegshi)
 
 (define-public texlive-bigintcalc
-  (let ((template (simple-texlive-package
-                   "texlive-bigintcalc"
-                   (list "doc/latex/bigintcalc/"
-                         "source/latex/bigintcalc/"
-                         "tex/generic/bigintcalc/")
-                   (base32
-                    "1cyv4mcvx83ab782l6h2f86a63ipm845r7hv1m6f1z2336vy7rc5"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/bigintcalc")
-         ((#:build-targets _ '())
-          #~(list "bigintcalc.dtx"))))
-      (propagated-inputs
-       (list texlive-pdftexcmds))
-      (home-page "https://www.ctan.org/pkg/bigintcalc")
-      (synopsis "Integer calculations on very large numbers")
-      (description
-       "This package provides expandable arithmetic operations with big
-integers that can exceed TeX's number limits.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-bigintcalc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bigintcalc/"
+                   "source/latex/bigintcalc/"
+                   "tex/generic/bigintcalc/")
+             (base32
+              "1cyv4mcvx83ab782l6h2f86a63ipm845r7hv1m6f1z2336vy7rc5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-pdftexcmds))
+    (home-page "https://ctan.org/pkg/bigintcalc")
+    (synopsis "Integer calculations on very large numbers")
+    (description
+     "This package provides expandable arithmetic operations with big integers
+that can exceed TeX's number limits.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-generic-bigintcalc texlive-bigintcalc)
 
