@@ -228,8 +228,10 @@ interpretation of the specifications for these languages.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? (not (or (%current-target-system)
-                        (target-riscv64?)))
+      ;; As many as 23 tests are expected to fail per architecture.
+      ;; Limit the tests to those architectures tested upstream.
+      #:tests? (and (%current-system)
+                    (target-x86?))
       #:configure-flags
       #~(list (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
                              (dirname (dirname
