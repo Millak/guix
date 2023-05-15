@@ -756,14 +756,18 @@ affected).")
 
 (define-public texlive-unicode-data
   (package
-    (inherit (simple-texlive-package
-              "texlive-unicode-data"
-              (list "/tex/generic/unicode-data/"
-                    "/doc/generic/unicode-data/")
-              (base32
-               "1d41zvjsig7sqf2j2m89dnbv3gicpb16r04b4ikps4gabhbky83k")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/unicode-data")
+    (name "texlive-unicode-data")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/unicode-data/"
+                   "tex/generic/unicode-data/")
+             (base32
+              "1d41zvjsig7sqf2j2m89dnbv3gicpb16r04b4ikps4gabhbky83k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
+    (home-page "https://ctan.org/pkg/unicode-data")
     (synopsis "Unicode data and loaders for TeX")
     (description "This bundle provides generic access to Unicode Consortium
 data for TeX use.  It contains a set of text files provided by the Unicode
