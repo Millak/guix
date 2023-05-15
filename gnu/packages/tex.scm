@@ -11255,22 +11255,25 @@ footnote style author/affiliation input in the @command{\\author} command,
 
 (define-public texlive-mweights
   (package
-    (inherit (simple-texlive-package
-              "texlive-mweights"
-              (list "/doc/latex/mweights/"
-                    "/tex/latex/mweights/")
-              (base32
-               "12493g3yz06mhiybnphqbp49fjzy36clzw63b74mkfhsg1pq7h1b")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/mweights")
+    (name "texlive-mweights")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mweights/" "tex/latex/mweights/")
+             (base32
+              "12493g3yz06mhiybnphqbp49fjzy36clzw63b74mkfhsg1pq7h1b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mweights")
     (synopsis "Support for multiple-weight font packages")
-    (description "Many font families available for use with LaTeX are
-available at multiple weights.  Many Type 1-oriented support packages
-for such fonts re-define the standard @code{\\mddefault} or
-@code{\\bfdefault} macros.  This can create difficulties if the weight
-desired for one font family is not available for another font family,
-or if it differs from the weight desired for another font family.  The
-@code{mweights} package provides a solution to these difficulties.")
+    (description
+     "Many font families available for use with LaTeX are available at
+multiple weights.  Many Type 1-oriented support packages for such fonts
+re-define the standard @code{\\mddefault} or @code{\\bfdefault} macros.  This
+can create difficulties if the weight desired for one font family isn't
+available for another font family, or if it differs from the weight desired
+for another font family.  The package provides a solution to these
+difficulties.")
     (license license:lppl)))
 
 (define-public texlive-cabin
