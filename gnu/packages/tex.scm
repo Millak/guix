@@ -8699,37 +8699,41 @@ e-TeX.")
 
 (define-public texlive-pdftex
   (package
-    (inherit (simple-texlive-package
-              "texlive-pdftex"
-              (list "/doc/pdftex/"
-                    "/doc/man/man1/pdftex.1"
-                    "/doc/man/man1/pdfetex.1"
-                    "/fonts/map/dvips/dummy-space/dummy-space.map"
-                    "/fonts/tfm/public/pdftex/dummy-space.tfm"
-                    "/fonts/type1/public/pdftex/dummy-space.pfb"
-                    "/scripts/simpdftex/simpdftex"
-                    "/tex/generic/config/pdftex-dvi.tex"
-                    "/tex/generic/pdftex/glyphtounicode.tex"
-                    "/tex/generic/pdftex/pdfcolor.tex")
-              (base32
-               "0w4ar5g7x4w8zw8z6hdwqxwcbglfzzq7pcznz8rawllwy6dssr8g")
-              #:trivial? #t))
-    ;; TODO: add this missing package:
-    ;; dehyph
+    (name "texlive-pdftex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/pdfetex.1"
+                   "doc/man/man1/pdfetex.man1.pdf"
+                   "doc/man/man1/pdftex.1"
+                   "doc/man/man1/pdftex.man1.pdf"
+                   "doc/pdftex/"
+                   "fonts/map/dvips/dummy-space/"
+                   "fonts/tfm/public/pdftex/"
+                   "fonts/type1/public/pdftex/"
+                   "scripts/simpdftex/"
+                   "tex/generic/config/"
+                   "tex/generic/pdftex/")
+             (base32
+              "1d2fvz0j7picfks57sacm5j4lwl4r231iia99fv5z71id9blr2vc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-cm
+           texlive-dehyph
            texlive-etex
-           texlive-knuth-lib
+           texlive-hyph-utf8
            texlive-hyphen-base
+           texlive-knuth-lib
            texlive-kpathsea
-           texlive-tex-ini-files
-           texlive-plain))
-    (home-page "https://www.ctan.org/pkg/pdftex")
+           texlive-plain
+           texlive-tex-ini-files))
+    (home-page "https://ctan.org/pkg/pdftex")
     (synopsis "TeX extension for direct creation of PDF")
     (description
-     "This package provides an extension of TeX which can be configured to
-directly generate PDF documents instead of DVI.")
-    (license license:gpl2+)))
+     "This package is an extension of TeX which can directly generate PDF
+documents as well as DVI output.")
+    (license license:gpl3+)))
 
 (define-deprecated-package texlive-generic-pdftex texlive-pdftex)
 
