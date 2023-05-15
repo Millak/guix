@@ -10361,26 +10361,25 @@ of the old package @code{pst-char}.")
     (license license:lppl)))
 
 (define-public texlive-marginnote
-  (let ((template (simple-texlive-package
-                   "texlive-marginnote"
-                   (list "/source/latex/marginnote/marginnote.dtx")
-                   (base32
-                    "152bwxhnssj40rr72r6cfirvqbnc0h7xnagfrbz58v2xck53qhg1"))))
-    (package
-      (inherit template)
-      (home-page "http://www.ctan.org/pkg/marginnote")
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/marginnote")
-         ((#:build-targets _ '())
-          ''("marginnote.dtx"))))
-      (synopsis "Notes in the margin")
-      (description "This package provides the command @code{\\marginnote} that
+  (package
+    (name "texlive-marginnote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/marginnote/"
+                   "source/latex/marginnote/"
+                   "tex/latex/marginnote/")
+             (base32
+              "1drmscvd14akcv7n6wl3d3cnj18cwkd7z7rm2gg7z43b89s7kdqr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/marginnote")
+    (synopsis "Notes in the margin")
+    (description "This package provides the command @code{\\marginnote} that
 may be used instead of @code{\\marginpar} at almost every place where
 @code{\\marginpar} cannot be used, e.g., inside floats, footnotes, or in
 frames made with the @code{framed} package.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-public texlive-iftex
   (package
