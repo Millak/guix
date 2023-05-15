@@ -5633,30 +5633,26 @@ used to write the verbatim text to a file.")
     (license license:lppl1.3+)))
 
 (define-public texlive-pdftexcmds
-  (let ((template (simple-texlive-package
-                   "texlive-pdftexcmds"
-                   (list "doc/generic/pdftexcmds/"
-                         "source/generic/pdftexcmds/"
-                         "tex/generic/pdftexcmds/")
-                   (base32
-                    "0gad1vi0r5xw7gyj1cb2cp58j4dqrw4awcfxmfrna9xbz91g4sn9"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/pdftexcmds")
-         ((#:build-targets _ '())
-          #~(list "pdftexcmds.dtx"))))
-      (propagated-inputs
-       (list texlive-iftex texlive-infwarerr texlive-ltxcmds))
-      (home-page "https://www.ctan.org/pkg/pdftexcmds")
-      (synopsis "LuaTeX support for pdfTeX utility functions")
-      (description
-       "This package makes a number of utility functions from pdfTeX
+  (package
+    (name "texlive-pdftexcmds")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pdftexcmds/"
+                   "source/generic/pdftexcmds/"
+                   "tex/generic/pdftexcmds/")
+             (base32
+              "0gad1vi0r5xw7gyj1cb2cp58j4dqrw4awcfxmfrna9xbz91g4sn9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-iftex texlive-infwarerr texlive-ltxcmds))
+    (home-page "https://www.ctan.org/pkg/pdftexcmds")
+    (synopsis "LuaTeX support for pdfTeX utility functions")
+    (description
+     "This package makes a number of utility functions from pdfTeX
 available for LuaTeX by reimplementing them using Lua.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-pdftexcmds texlive-pdftexcmds)
 
