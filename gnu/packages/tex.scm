@@ -8311,24 +8311,26 @@ The package supersedes both the @code{libertineotf} and the
 
 (define-public texlive-dejavu
   (package
-    (inherit (simple-texlive-package
-              "texlive-dejavu"
-              (list "/doc/fonts/dejavu/"
-
-                    "/fonts/enc/dvips/dejavu/"
-                    "/fonts/map/dvips/dejavu/"
-
-                    "/fonts/afm/public/dejavu/"
-                    "/fonts/tfm/public/dejavu/"
-                    "/fonts/truetype/public/dejavu/"
-                    "/fonts/type1/public/dejavu/"
-                    "/fonts/vf/public/dejavu/"
-
-                    "/tex/latex/dejavu/")
-              (base32
-               "0y4qf5jl0xncah9nkcaalmy69wwq02n3j895zp71n2p0nfi24aka")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/libertine")
+    (name "texlive-dejavu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/dejavu/"
+                   "fonts/afm/public/dejavu/"
+                   "fonts/enc/dvips/dejavu/"
+                   "fonts/map/dvips/dejavu/"
+                   "fonts/tfm/public/dejavu/"
+                   "fonts/truetype/public/dejavu/"
+                   "fonts/type1/public/dejavu/"
+                   "fonts/vf/public/dejavu/"
+                   "tex/latex/dejavu/")
+             (base32
+              "0y4qf5jl0xncah9nkcaalmy69wwq02n3j895zp71n2p0nfi24aka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/dejavu")
     (synopsis "LaTeX support for the DejaVu fonts")
     (description
      "The package contains LaTeX support for the DejaVu fonts, which are
