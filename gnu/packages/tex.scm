@@ -4026,52 +4026,48 @@ have changed.  It is based on MD5 checksum, provided by pdfTeX.")
 (define-deprecated-package texlive-latex-rerunfilecheck texlive-rerunfilecheck)
 
 (define-public texlive-onedown
-  (let ((template
-         (simple-texlive-package
-          "texlive-onedown"
-          (list "doc/latex/onedown/"
-                "source/latex/onedown/"
-                "tex/latex/onedown/")
-          (base32
-           "04ih7i4v96ggwk4k1mpfx3dzcpi2siqablv93wryg7dk4cks5wkl"))))
-    (package
-      (inherit template)
-      (outputs '("doc" "out"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/onedown")))
-      (home-page "https://ctan.org/pkg/onedown")
-      (synopsis "Typeset bridge diagrams")
-      (description
-       "This is a comprehensive package to draw all sorts of bridge diagrams,
+  (package
+    (name "texlive-onedown")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/onedown/"
+                   "source/latex/onedown/"
+                   "tex/latex/onedown/")
+             (base32
+              "04ih7i4v96ggwk4k1mpfx3dzcpi2siqablv93wryg7dk4cks5wkl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/onedown")
+    (synopsis "Typeset bridge diagrams")
+    (description
+     "This is a comprehensive package to draw all sorts of bridge diagrams,
 including hands, bidding tables, trick tables, and expert quizzes.
 
 It works for all font sizes.  Different fonts for hands, bidding diagrams and
 compass are possible.  It also provides annotations to card and bidding
 diagrams, automated check on consistency of suit and hands, and multilingual
 output of bridge terms.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-public texlive-tools
-  (let ((template (simple-texlive-package
-                   "texlive-tools"
-                   (list "doc/latex/tools/"
-                         "source/latex/tools/"
-                         "tex/latex/tools/")
-                   (base32
-                    "0c0ixkcvrlzx6sdj25ak3bx0j65qghf51w66yg5wlnpg08d3awrs"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/tools")
-         ((#:build-targets _ '())
-          #~(list "tools.ins"))))
-      (home-page "https://www.ctan.org/tex-archive/macros/latex/required/tools/")
-      (synopsis "LaTeX standard tools bundle")
-      (description "This package provides a collection of simple tools that
+  (package
+    (name "texlive-tools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tools/"
+                   "source/latex/tools/"
+                   "tex/latex/tools/")
+             (base32
+              "0c0ixkcvrlzx6sdj25ak3bx0j65qghf51w66yg5wlnpg08d3awrs")))
+    (outputs '("out" "doc"))
+    (arguments
+     (list #:build-targets #~(list "tools.ins")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tools")
+    (synopsis "The LaTeX standard tools bundle")
+    (description "This package provides a collection of simple tools that
 are part of the LaTeX required tools distribution, comprising the packages:
 @code{afterpage}, @code{array}, @code{bm}, @code{calc}, @code{dcolumn},
 @code{delarray}, @code{enumerate}, @code{fileerr}, @code{fontsmpl},
@@ -4079,7 +4075,7 @@ are part of the LaTeX required tools distribution, comprising the packages:
 @code{longtable}, @code{multicol}, @code{rawfonts}, @code{showkeys},
 @code{somedefs}, @code{tabularx}, @code{theorem}, @code{trace},
 @code{varioref}, @code{verbatim}, @code{xr}, and @code{xspace}.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-tools texlive-tools)
 
