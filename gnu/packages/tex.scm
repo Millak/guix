@@ -4699,26 +4699,38 @@ available.")
 ;;; its license.
 (define-public texlive-csplain
   (package
-    (inherit (simple-texlive-package
-              "texlive-csplain"
-              (list "tex/csplain/base/")
-              (base32 "0cgrwc8lgf2x2hq6bb4kqxw597card985zdd9ipn7k98mmwrxhz3")
-              #:trivial? #t))
+    (name "texlive-csplain")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/csplain/base/"
+                   "tex/csplain/fonts/"
+                   "tex/csplain/opmac/")
+             (base32
+              "068g31l2ralz03gsv58j67dm85vy0ad58dvdkh93ws0yzf0rnr5f")))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-cm
+           texlive-cs
+           texlive-enctex
+           texlive-hyph-utf8
+           texlive-hyphen-base
+           texlive-tex-ini-files))
     (home-page "https://petr.olsak.net/csplain-e.html")
     (synopsis "Plain TeX multilanguage support")
-    (description "CSplain is a small extension of basic Plain TeX macros from
-which the formats @code{csplain} and @code{pdfcsplain} can be generated.  It
-supports: hyphenation of words for 50+ languages, simple and powerful font
-loading system (various sizes of fonts), TeX, pdfTeX, XeTeX and LuaTeX
-engines, math fonts simply loaded with full amstex-like features, three
-internal encodings (IL2 for Czech/Slovak languages, T1 for many languages with
-latin alphabet and Unicode in new TeX engines), natural UTF-8 input in pdfTeX
-using encTeX without any active characters, Czech and Slovak special
-typesetting features.  An important part of the package is OPmac, which
-implements most of LaTeX's features (sectioning, font selection, color, hyper
-reference and URLs, bibliography, index, table of contents, tables, etc.) by
-Plain TeX macros.  The OPmac macros can generate a bibliography without any
-external program.")
+    (description
+     "CSplain is a small extension of basic Plain TeX macros from which the
+formats @code{csplain} and @code{pdfcsplain} can be generated.  It supports:
+hyphenation of words for 50+ languages, simple and powerful font loading
+system (various sizes of fonts), TeX, pdfTeX, XeTeX and LuaTeX engines, math
+fonts simply loaded with full amstex-like features, three internal
+encodings (IL2 for Czech/Slovak languages, T1 for many languages with latin
+alphabet and Unicode in new TeX engines), natural UTF-8 input in pdfTeX using
+encTeX without any active characters, Czech and Slovak special typesetting
+features.  An important part of the package is OPmac, which implements most of
+LaTeX's features (sectioning, font selection, color, hyper reference and URLs,
+bibliography, index, table of contents, tables, etc.) by Plain TeX macros.
+The OPmac macros can generate a bibliography without any external program.")
     ;; This custom permissive license includes as a redistribution condition
     ;; that says the package must be renamed from 'csplain' if it is modified.
     (license (license:non-copyleft "file:///tex/csplain/base/csplain.ini"))))
