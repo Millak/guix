@@ -9687,30 +9687,28 @@ keyval’s @code{\\define@@key}, to define keys for use by @code{kvsetkeys}.")
 (define-deprecated-package texlive-generic-kvdefinekeys texlive-kvdefinekeys)
 
 (define-public texlive-kvsetkeys
-  (let ((template (simple-texlive-package
-                   "texlive-kvsetkeys"
-                   (list "doc/latex/kvsetkeys/"
-                         "source/latex/kvsetkeys/"
-                         "tex/generic/kvsetkeys/")
-                   (base32
-                    "0b2f2r49vi8x54qshm1h9sh8zhdmy0mc2y44yd05kcmmbiiq7hfz"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/kvsetkeys")
-         ((#:build-targets _ '())
-          #~(list "kvsetkeys.dtx"))))
-      (home-page "https://www.ctan.org/pkg/kvsetkeys")
-      (synopsis "Key value parser with default handler support")
-      (description
-       "This package provides @code{\\kvsetkeys}, a variant of @code{\\setkeys}
+  (package
+    (name "texlive-kvsetkeys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kvsetkeys/"
+                   "source/latex/kvsetkeys/"
+                   "tex/generic/kvsetkeys/")
+             (base32
+              "0b2f2r49vi8x54qshm1h9sh8zhdmy0mc2y44yd05kcmmbiiq7hfz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-infwarerr))
+    (home-page "https://ctan.org/pkg/kvsetkeys")
+    (synopsis "Key value parser with default handler support")
+    (description
+     "This package provides @code{\\kvsetkeys}, a variant of @code{\\setkeys}
 from the @code{keyval} package.  Users can specify a handler that deals with
 unknown options.  Active commas and equal signs may be used, and only one
 level of curly braces are removed from the values.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-generic-kvsetkeys texlive-kvsetkeys)
 
