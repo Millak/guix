@@ -7828,35 +7828,31 @@ caption for that subfigure.")
     (license license:lppl)))
 
 (define-public texlive-subfigure
-  (let ((template (simple-texlive-package
-                   "texlive-subfigure"
-                   (list "doc/latex/subfigure/"
-                         "source/latex/subfigure/"
-                         "tex/latex/subfigure/")
-                   (base32
-                    "1327ygajf6gza5msvhfjjnk6r3sw7vb7rxg23v4gx4dmyxqfqrbi"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/subfigure")
-         ((#:build-targets _ '())
-          #~(list "subfigure.ins"))))
-      (home-page "https://www.ctan.org/pkg/subfigure")
-      (synopsis "Figures divided into subfigures")
-      (description
+  (package
+    (name "texlive-subfigure")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subfigure/"
+                   "source/latex/subfigure/"
+                   "tex/latex/subfigure/")
+             (base32
+              "1327ygajf6gza5msvhfjjnk6r3sw7vb7rxg23v4gx4dmyxqfqrbi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subfigure")
+    (synopsis "Deprecated: Figures divided into subfigures")
+    (description
        "This (deprecated) package provides support for the manipulation and
-reference of small or \"sub\" figures and tables within a single figure or
-table environment.  It is convenient to use this package when your subfigures
-are to be separately captioned, referenced, or are to be included in the
+reference of small, or sub, figures and tables within a single figure or table
+environment.  It is convenient to use this package when your subfigures are to
+be separately captioned, referenced, or are to be included in the
 List-of-Figures.  A new @code{\\subfigure} command is introduced which can be
 used inside a figure environment for each subfigure.  An optional first
 argument is used as the caption for that subfigure.  The package is now
 considered obsolete: it was superseded by @code{subfig}, but users may find
 the more recent @code{subcaption} package more satisfactory.")
-      (license license:lppl))))
+      (license license:lppl)))
 
 (define-deprecated-package texlive-latex-subfigure texlive-subfigure)
 
