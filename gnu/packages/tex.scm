@@ -9595,29 +9595,25 @@ modifiers; some purely expandable numerics.")
     (license license:lppl)))
 
 (define-public texlive-gettitlestring
-  (let ((template (simple-texlive-package
-                   "texlive-gettitlestring"
-                   (list "doc/latex/gettitlestring/"
-                         "source/latex/gettitlestring/"
-                         "tex/generic/gettitlestring/")
-                   (base32
-                    "1vbvmwrpsvy37gbwdmsqbbsicjiww3i0bh1yqnb75jiya9an0sjb"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/gettitlestring")
-         ((#:build-targets _ '())
-          #~(list "gettitlestring.dtx"))))
-      (home-page "https://www.ctan.org/pkg/gettitlestring")
-      (synopsis "Clean up title references")
-      (description
-       "This package provides commands for cleaning up the title string
+  (package
+    (name "texlive-gettitlestring")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gettitlestring/"
+                   "source/latex/gettitlestring/"
+                   "tex/generic/gettitlestring/")
+             (base32
+              "1vbvmwrpsvy37gbwdmsqbbsicjiww3i0bh1yqnb75jiya9an0sjb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gettitlestring")
+    (synopsis "Clean up title references")
+    (description
+     "This package provides commands for cleaning up the title string
 (such as removing @code{\\label} commands) for packages that typeset such
 strings.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-generic-gettitlestring texlive-gettitlestring)
 
