@@ -5970,28 +5970,23 @@ including files to the root of the tree).  The package supersedes FiNK.")
     (license license:public-domain)))
 
 (define-public texlive-capt-of
-  (let ((template
-         (simple-texlive-package
-          "texlive-capt-of"
-          (list "doc/latex/capt-of/"
-                "source/latex/capt-of/"
-                "tex/latex/capt-of/")
-          (base32 "0bf0cdd9ca3kkqxqqkq6jalh5ybs60l80l5gfkl2whk2v4bnzfvz"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/capt-of")
-         ((#:build-targets _ '())
-          '(list "capt-of.ins"))))
-      (home-page "https://www.ctan.org/pkg/capt-of")
-      (synopsis "Captions on more than floats")
-      (description
-       "This package defines a command @code{\\captionof} for putting a caption
+  (package
+    (name "texlive-capt-of")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/capt-of/" "source/latex/capt-of/"
+                   "tex/latex/capt-of/")
+             (base32
+              "0bf0cdd9ca3kkqxqqkq6jalh5ybs60l80l5gfkl2whk2v4bnzfvz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://www.ctan.org/pkg/capt-of")
+    (synopsis "Captions on more than floats")
+    (description
+     "This package defines a command @code{\\captionof} for putting a caption
 to something that's not a float.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-deprecated-package texlive-latex-capt-of texlive-capt-of)
 
