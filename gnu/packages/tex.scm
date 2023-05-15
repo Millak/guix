@@ -10860,24 +10860,30 @@ citations and references.")
     (license license:lppl1.3c)))
 
 (define-public texlive-todonotes
-  (let ((template (simple-texlive-package
-                   "texlive-todonotes"
-                   (list "/doc/latex/todonotes/"
-                         "/tex/latex/todonotes/")
-                   (base32
-                    "1jqw8jy73488bdr971w0dnlggsvicagpnpx8ddqkma920ba8rabp")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (propagated-inputs
-       (list texlive-pgf texlive-xkeyval))
-      (home-page "http://www.ctan.org/pkg/todonotes")
-      (synopsis "Marking things to do in a LaTeX document")
-      (description "The @code{todonotes} package lets the user mark
-things to do later, in a simple and visually appealing way.  The
-package takes several options to enable customization and finetuning
-of the visual appearance.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-todonotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/todonotes/"
+                   "source/latex/todonotes/"
+                   "tex/latex/todonotes/")
+             (base32
+              "0lhqzrvf216j3rzg7lmc1mvnr2mzr0a6c2kqrfwzw6qbpm9v29nk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-pgf
+           texlive-tools
+           texlive-xcolor
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/todonotes")
+    (synopsis "Marking things to do in a LaTeX document")
+    (description
+     "The @code{todonotes} package lets the user mark things to do later, in
+a simple and visually appealing way.  The package takes several options to
+enable customization and finetuning of the visual appearance.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-units
   (package
