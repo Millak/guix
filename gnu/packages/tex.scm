@@ -9663,28 +9663,26 @@ using the e-TeX extension @code{\\numexpr} if it is available.")
 (define-deprecated-package texlive-generic-intcalc texlive-intcalc)
 
 (define-public texlive-kvdefinekeys
-  (let ((template (simple-texlive-package
-                   "texlive-kvdefinekeys"
-                   (list "doc/latex/kvdefinekeys/"
-                         "source/latex/kvdefinekeys/"
-                         "tex/generic/kvdefinekeys/")
-                   (base32
-                    "1026h223ph3nzhs6jqbasa0bzsrdg3zgllfcwwcavfzb5i6p9jdf"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/kvdefinekeys")
-         ((#:build-targets _ '())
-          #~(list "kvdefinekeys.dtx"))))
-      (home-page "https://www.ctan.org/pkg/kvdefinekeys")
-      (synopsis "Define keys for use in the @code{kvsetkeys} package")
-      (description
-       "This package provides the @code{\\kv@@define@@key} (analogous to
+  (package
+    (name "texlive-kvdefinekeys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kvdefinekeys/"
+                   "source/latex/kvdefinekeys/"
+                   "tex/generic/kvdefinekeys/")
+             (base32
+              "1026h223ph3nzhs6jqbasa0bzsrdg3zgllfcwwcavfzb5i6p9jdf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-ltxcmds))
+    (home-page "https://ctan.org/pkg/kvdefinekeys")
+    (synopsis "Define keys for use in the @code{kvsetkeys} package")
+    (description
+     "This package provides the @code{\\kv@@define@@key} (analogous to
 keyval’s @code{\\define@@key}, to define keys for use by @code{kvsetkeys}.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-generic-kvdefinekeys texlive-kvdefinekeys)
 
