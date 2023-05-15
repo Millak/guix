@@ -7056,6 +7056,31 @@ and a BibTeX bibliography style.  The individual packages are: @code{abbrevs},
 
 (define-deprecated-package texlive-latex-frankenstein texlive-frankenstein)
 
+(define-public texlive-kantlipsum
+  (package
+    (name "texlive-kantlipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kantlipsum/"
+                   "source/latex/kantlipsum/"
+                   "tex/latex/kantlipsum/")
+             (base32
+              "1bz08i8b7ihzd2qi4v9r9kjl2kr5a3l516lqb36spxyyrlmmwv4p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-l3kernel
+           texlive-l3packages))
+    (home-page "https://ctan.org/pkg/kantlipsum")
+    (synopsis "Generate sentences in Kant's style")
+    (description
+     "The package spits out sentences in Kantian style; the text is provided
+by the Kant generator for Python by Mark Pilgrim, described in the book ``Dive
+into Python''.  The package is modelled on @code{lipsum}, and may be used for
+similar purposes.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-lipsum
   (package
     (name "texlive-lipsum")
