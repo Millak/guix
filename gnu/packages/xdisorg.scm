@@ -1995,7 +1995,7 @@ actions, a built-in clock, a battery monitor and a system tray.")
                 "1paknsgfsgan27lqwhb2ndsk4gi8ciq9r49b0fpbbdwxk7ljk2cn"))
               (patches (search-patches "tofi-32bit-compat.patch"))))
     (build-system meson-build-system)
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config scdoc))
     (inputs (list cairo
                   harfbuzz
                   libxkbcommon
