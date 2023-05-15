@@ -9519,31 +9519,26 @@ that can exceed TeX's number limits.")
 (define-deprecated-package texlive-generic-bigintcalc texlive-bigintcalc)
 
 (define-public texlive-bitset
-  (let ((template (simple-texlive-package
-                   "texlive-bitset"
-                   (list "doc/latex/bitset/"
-                         "source/latex/bitset/"
-                         "tex/generic/bitset/")
-                   (base32
-                    "1q7vk5gr5a4vaa3l20j178cg2q7a99rxdiyxhzpx9a6lfqfkjddz"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/bitset")
-         ((#:build-targets _ '())
-          #~(list "bitset.dtx"))))
-      (propagated-inputs
-       (list texlive-bigintcalc texlive-infwarerr texlive-intcalc))
-      (home-page "https://www.ctan.org/pkg/bitset")
-      (synopsis "Handle bit-vector datatype")
-      (description
-       "This package defines and implements the data type bit set, a vector
-of bits.  The size of the vector may grow dynamically.  Individual bits
-can be manipulated.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-bitset")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bitset/" "source/latex/bitset/"
+                   "tex/generic/bitset/")
+             (base32
+              "1q7vk5gr5a4vaa3l20j178cg2q7a99rxdiyxhzpx9a6lfqfkjddz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-bigintcalc texlive-infwarerr texlive-intcalc))
+    (home-page "https://ctan.org/pkg/bitset")
+    (synopsis "Handle bit-vector datatype")
+    (description
+     "This package defines and implements the data type bit set, a vector of
+bits.  The size of the vector may grow dynamically.  Individual bits can be
+manipulated.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-generic-bitset texlive-bitset)
 
