@@ -11142,25 +11142,30 @@ created by the Greek Font Society).")
 
 (define-public texlive-bera
   (package
-    (inherit (simple-texlive-package
-              "texlive-bera"
-              (list "/doc/fonts/bera/"
-                    "/fonts/afm/public/bera/"
-                    "/fonts/map/dvips/bera/"
-                    "/fonts/tfm/public/bera/"
-                    "/fonts/type1/public/bera/"
-                    "/fonts/vf/public/bera/"
-                    "/tex/latex/bera/")
-              (base32
-               "1pkmhhr6ah44xhipjr7nianv03hr4w4bn45xcvp264yw6ymqzqwr")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/bera")
+    (name "texlive-bera")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/bera/"
+                   "fonts/afm/public/bera/"
+                   "fonts/map/dvips/bera/"
+                   "fonts/tfm/public/bera/"
+                   "fonts/type1/public/bera/"
+                   "fonts/vf/public/bera/"
+                   "tex/latex/bera/")
+             (base32
+              "1pkmhhr6ah44xhipjr7nianv03hr4w4bn45xcvp264yw6ymqzqwr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/bera")
     (synopsis "Bera fonts")
-    (description "The @code{bera} package contains the Bera Type 1
-fonts and files to use the fonts with LaTeX.  Bera is a set of three
-font families: Bera Serif (a slab-serif Roman), Bera Sans (a Frutiger
-descendant) and Bera Mono (monospaced/typewriter).  The Bera family is
-a repackaging, for use with TeX, of the Bitstream Vera family.")
+    (description "The @code{bera} package contains the Bera Type 1 fonts and
+files to use the fonts with LaTeX.  Bera is a set of three font families: Bera
+Serif (a slab-serif Roman), Bera Sans (a Frutiger descendant) and Bera
+Mono (monospaced/typewriter).  The Bera family is a repackaging, for use with
+TeX, of the Bitstream Vera family.")
     (license license:silofl1.1)))
 
 (define-public texlive-fourier
