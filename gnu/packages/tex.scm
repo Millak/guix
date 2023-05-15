@@ -5718,31 +5718,28 @@ re-processing.")
 (define-deprecated-package texlive-latex-pstool texlive-pstool)
 
 (define-public texlive-refcount
-  (let ((template (simple-texlive-package
-                   "texlive-refcount"
-                   (list "doc/latex/refcount/"
-                         "source/latex/refcount/"
-                         "tex/latex/refcount/")
-                   (base32
-                    "128cvwdl4wcdshvs59yn5iljdxxdrc5jircbxav77y7kc3l33z7z"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/refcount")
-         ((#:build-targets _ '())
-          #~(list "refcount.dtx"))))
-      (home-page "https://www.ctan.org/pkg/refcount")
-      (synopsis "Counter operations with label references")
-      (description
-       "This package provides the @code{\\setcounterref} and
+  (package
+    (name "texlive-refcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/refcount/" "source/latex/refcount/"
+                   "tex/latex/refcount/")
+             (base32
+              "128cvwdl4wcdshvs59yn5iljdxxdrc5jircbxav77y7kc3l33z7z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-infwarerr texlive-ltxcmds))
+    (home-page "https://www.ctan.org/pkg/refcount")
+    (synopsis "Counter operations with label references")
+    (description
+     "This package provides the @code{\\setcounterref} and
 @code{\\addtocounterref} commands which use the section (or other) number
 from the reference as the value to put into the counter.  It also provides
 @code{\\setcounterpageref} and @code{\\addtocounterpageref} that do the
 corresponding thing with the page reference of the label.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-refcount texlive-refcount)
 
