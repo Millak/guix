@@ -3122,27 +3122,6 @@ early boot when entropy may be low, especially in virtualised environments.")
     (license (list license:bsd-3        ; or
                    license:gpl2+))))
 
-(define-public lsscsi
-  (package
-    (name "lsscsi")
-    (version "0.32")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "http://sg.danny.cz/scsi/lsscsi-" version ".tar.xz"))
-             (sha256
-              (base32
-               "0jp458m2b3wckr18qkln69i01152qlwz33zm49103lq8fgx0n6d4"))))
-    (build-system gnu-build-system)
-    (synopsis "Lists information about SCSI or NVMe devices in Linux")
-    (home-page "https://sg.danny.cz/scsi/lsscsi.html")
-    (description
-     "@command{lsscsi} lists SCSI logical units or SCSI targets.  It can
-also list NVMe namespaces or controllers and show the relationship between a
-device's primary node name, its SCSI generic (sg) node name and its kernel
-name.")
-    (license license:gpl2)))
-
 (define-public ebtables
   (package
     (name "ebtables")
