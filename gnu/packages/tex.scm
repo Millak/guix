@@ -7928,39 +7928,42 @@ captions sideways.  Options include @code{outercaption}, @code{innercaption},
 (define-deprecated-package texlive-latex-sidecap texlive-sidecap)
 
 (define-public texlive-stmaryrd
-  (let ((template (simple-texlive-package
-                   "texlive-stmaryrd"
-                   (list "/fonts/afm/public/stmaryrd/"
-                         "/fonts/map/dvips/stmaryrd/"
-                         "/fonts/source/public/stmaryrd/"
-                         "/fonts/tfm/public/stmaryrd/"
-                         "/fonts/type1/public/stmaryrd/"
-                         "/source/fonts/stmaryrd/"
-                         "/doc/fonts/stmaryrd/")
-                   (base32
-                    "0yn0yl6x1z9ab5gb56lhvkqabd2agz3ggxifwxkiysrj5780j29z"))))
-    (package
-      (inherit template)
-      (arguments (substitute-keyword-arguments (package-arguments template)
-                   ((#:tex-directory _ #t)
-                    "latex/stmaryrd")
-                   ((#:phases phases)
-                    `(modify-phases ,phases
-                       (add-after 'unpack 'patch-ins
-                         (lambda _
-                           (substitute* "source/fonts/stmaryrd/stmaryrd.ins"
-                             (("^%% LaTeX2e.*") "\\input docstrip\n")
-                             (("fontdef\\}\\}" line)
-                              (string-append line "\n\\endbatchfile")))))))))
-      (home-page "https://www.ctan.org/pkg/stmaryrd")
-      (synopsis "St Mary Road symbols for theoretical computer science")
-      (description
-       "The fonts were originally distributed as Metafont sources only, but
+  (package
+    (name "texlive-stmaryrd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/stmaryrd/"
+                   "fonts/afm/public/stmaryrd/"
+                   "fonts/map/dvips/stmaryrd/"
+                   "fonts/source/public/stmaryrd/"
+                   "fonts/tfm/public/stmaryrd/"
+                   "fonts/type1/public/stmaryrd/"
+                   "source/fonts/stmaryrd/"
+                   "tex/latex/stmaryrd/")
+             (base32
+              "0ljrxbf2p301p4cmadf2w0qb5idvgmx4j6y3kq7qg2v8x4maqqj4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-ins
+            (lambda _
+              (substitute* "source/fonts/stmaryrd/stmaryrd.ins"
+                (("^%% LaTeX2e.*") "\\input docstrip\n")
+                (("fontdef\\}\\}" line)
+                 (string-append line "\n\\endbatchfile"))))))))
+    (home-page "https://ctan.org/pkg/stmaryrd")
+    (synopsis "St Mary Road symbols for theoretical computer science")
+    (description
+     "The fonts were originally distributed as METAFONT sources only, but
 Adobe Type 1 versions are also now available.  Macro support is provided for
 use under LaTeX; the package supports the @code{only} option (provided by the
 @code{somedefs} package) to restrict what is loaded, for those who don't need
 the whole font.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-deprecated-package texlive-fonts-stmaryrd texlive-stmaryrd)
 
