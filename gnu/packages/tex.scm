@@ -12103,39 +12103,51 @@ and selecting references used in a publication.")
 
 (define-public texlive-apa6
   (package
-    (inherit (simple-texlive-package
-              "texlive-apa6"
-              (list "doc/latex/apa6/"
-                    "source/latex/apa6/"
-                    "tex/latex/apa6/")
-              (base32
-               "08jn8piyaad4zln33c0gikyhdkcsk2s3ms9l992riq2hbpbm9lcf")
-              #:trivial? #t))
-    (propagated-inputs (list texlive-apacite
-                             texlive-babel
-                             texlive-booktabs
-                             texlive-draftwatermark
-                             texlive-endnotes
-                             texlive-etoolbox
-                             texlive-fancyhdr
-                             texlive-xstring
-                             texlive-graphics
-                             texlive-float
-                             texlive-lm
-                             texlive-substr
-                             texlive-times
-                             texlive-tools))
-    (home-page "https://www.ctan.org/pkg/apa6")
+    (name "texlive-apa6")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/apa6/" "source/latex/apa6/"
+                   "tex/latex/apa6/")
+             (base32
+              "08jn8piyaad4zln33c0gikyhdkcsk2s3ms9l992riq2hbpbm9lcf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            ;; Build process wants to generate files in the wrong directory.
+            (lambda _
+              (substitute* "source/latex/apa6/apa6.ins"
+                (("file\\{\\./.*?/") "file{")))))))
+    (propagated-inputs
+     (list texlive-apacite
+           texlive-babel
+           texlive-biblatex
+           texlive-booktabs
+           texlive-caption
+           texlive-draftwatermark
+           texlive-endnotes
+           texlive-etoolbox
+           texlive-fancyhdr
+           texlive-float
+           texlive-geometry
+           texlive-graphics
+           texlive-lm
+           texlive-substr
+           texlive-threeparttable
+           texlive-times
+           texlive-tools
+           texlive-xstring))
+    (home-page "https://ctan.org/pkg/apa6")
     (synopsis "Format documents in APA style (6th edition)")
-    (description "The class formats documents in APA style (6th
-Edition).  It provides a full set of facilities in three different
-output modes (journal-like appearance, double-spaced manuscript,
-LaTeX-like document), in contrast to the earlier apa6e, which only formats
-double-spaced manuscripts in APA style.  The class can mask author identity
-for copies for use in masked peer review.
-
-The class is a development of the apa class (which is no longer
-maintained).")
+    (description
+     "The class formats documents in APA style (6th Edition).  It provides
+a full set of facilities in three different output modes (journal-like
+appearance, double-spaced manuscript, LaTeX-like document).  The class can
+mask author identity for copies for use in masked peer review.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-apacite
