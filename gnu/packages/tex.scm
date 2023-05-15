@@ -9642,28 +9642,23 @@ implementations.")
 (define-deprecated-package texlive-generic-infwarerr texlive-infwarerr)
 
 (define-public texlive-intcalc
-  (let ((template (simple-texlive-package
-                   "texlive-intcalc"
-                   (list "doc/latex/intcalc/"
-                         "source/latex/intcalc/"
-                         "tex/generic/intcalc/")
-                   (base32
-                    "15alwp9cr8wasfajs3p201p7nqml37vly9mpg1j5l6xv95javk7x"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/intcalc")
-         ((#:build-targets _ '())
-          #~(list "intcalc.dtx"))))
-      (home-page "https://www.ctan.org/pkg/intcalc")
-      (synopsis "Expandable arithmetic operations with integers")
-      (description
-       "This package provides expandable arithmetic operations with integers,
+  (package
+    (name "texlive-intcalc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/intcalc/" "source/latex/intcalc/"
+                   "tex/generic/intcalc/")
+             (base32
+              "15alwp9cr8wasfajs3p201p7nqml37vly9mpg1j5l6xv95javk7x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/intcalc")
+    (synopsis "Expandable arithmetic operations with integers")
+    (description
+     "This package provides expandable arithmetic operations with integers,
 using the e-TeX extension @code{\\numexpr} if it is available.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-generic-intcalc texlive-intcalc)
 
