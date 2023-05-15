@@ -4566,31 +4566,27 @@ definitions.")
 (define-deprecated-package texlive-latex-amsmath texlive-amsmath)
 
 (define-public texlive-mathdots
-  (let ((template
-         (simple-texlive-package
-          "texlive-mathdots"
-          (list "doc/generic/mathdots/"
-                "source/generic/mathdots/"
-                "tex/generic/mathdots/")
-          (base32"1jaffj343p1chdxs2g7s6lpckvihk0jfw22nw0vmijyjxfiy9yg0"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/mathdots")
-         ((#:build-targets _ '())
-          '(list "mathdots.ins"))))
-      (home-page "https://ctan.org/macros/generic/mathdots")
-      (synopsis "Commands to produce dots in math that respect font size")
-      (description
-       "Mathdots redefines @code{\\ddots} and @code{\\vdots}, and defines
+  (package
+    (name "texlive-mathdots")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/mathdots/"
+                   "source/generic/mathdots/"
+                   "tex/generic/mathdots/")
+             (base32
+              "1jaffj343p1chdxs2g7s6lpckvihk0jfw22nw0vmijyjxfiy9yg0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathdots")
+    (synopsis "Commands to produce dots in math that respect font size")
+    (description
+     "Mathdots redefines @code{\\ddots} and @code{\\vdots}, and defines
 @code{\\iddots}.  The dots produced by @code{\\iddots} slant in the opposite
 direction to @code{\\ddots}.  All the commands are designed to change size
 appropriately in scripts, as well as in response to LaTeX size changing
 commands.  The commands may also be used in plain TeX.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-public texlive-amscls
   (let ((template (simple-texlive-package
