@@ -8556,16 +8556,17 @@ natural width.")
 
 (define-public texlive-wasy
   (package
-    (inherit (simple-texlive-package
-              "texlive-wasy"
-              (list "/fonts/source/public/wasy/"
-                    "/fonts/tfm/public/wasy/"
-                    "/tex/plain/wasy/"
-                    "/doc/fonts/wasy/")
-              (base32
-               "1swzxgld3lndi5q0q6zkwbw06ndh13fvp04as7zpwyhh646s0hbx")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/wasy")
+    (name "texlive-wasy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/wasy/" "fonts/source/public/wasy/"
+                   "fonts/tfm/public/wasy/" "tex/plain/wasy/")
+             (base32
+              "1swzxgld3lndi5q0q6zkwbw06ndh13fvp04as7zpwyhh646s0hbx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wasy")
     (synopsis "Waldi symbol fonts")
     (description "This package provides the @code{wasy} (Waldi symbol) fonts,
 in the Metafont and Adobe Type 1 formats.  Support under LaTeX is provided by
