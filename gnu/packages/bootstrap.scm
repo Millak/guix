@@ -325,14 +325,11 @@ or false to signal an error."
 
      ;; XXX: This one is used bare-bones, without a libc, so add a case
      ;; here just so we can keep going.
-     ((string=? system "arm-elf") "no-ld.so")
      ((string=? system "arm-eabi") "no-ld.so")
-     ((string=? system "xtensa-elf") "no-ld.so")
      ((string=? system "avr") "no-ld.so")
-     ((string=? system "propeller-elf") "no-ld.so")
      ((string=? system "i686-mingw") "no-ld.so")
      ((string=? system "x86_64-mingw") "no-ld.so")
-     ((string=? system "vc4-elf") "no-ld.so")
+     ((string-suffix? "-elf" system) "no-ld.so")
 
      (else (error "dynamic linker name not known for this system"
                   system)))))
