@@ -630,19 +630,21 @@ This package contains the binaries.")
                     (url (string-append "svn://www.tug.org/texlive/tags/"
                                         "texlive-2022.0/Master/texmf-dist"))
                     (locations (list "doc/xelatex/bidi/"
-                                     "source/xelatex/bidi/"))
+                                     "source/xelatex/bidi/"
+                                     "tex/xelatex/bidi/"))
                     (revision 62885)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "09nfvsjfnms3pclyd2rcivyb5qvzw48b934i3bcl83hv69ix2ks7"))))
+                "1s2p6zp64q6nh8r8hrdx7bbpzj90sq51jbwslh6zj281yx9mv61s"))))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs (list texlive-iftex
-                             texlive-ltxcmds
-                             texlive-hyperref
-                             texlive-xkeyval
-                             texlive-zref))
+    (propagated-inputs
+     (list texlive-iftex
+           texlive-ltxcmds
+           texlive-hyperref
+           texlive-xkeyval
+           texlive-zref))
     (home-page "https://ctan.org/pkg/bidi")
     (synopsis "Bidirectional typesetting in plain TeX and LaTeX using XeTeX")
     (description "The @code{bidi} package provides a convenient interface for
