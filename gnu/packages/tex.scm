@@ -3941,39 +3941,33 @@ is compatible with pdfLaTeX, XeLaTeX, LaTeX+dvipdfm, and LaTeX+dvips+ps2pdf.")
     (license license:lppl1.3c)))
 
 (define-public texlive-oberdiek
-  (let ((template (simple-texlive-package
-                   "texlive-oberdiek"
-                   (list "bibtex/bib/oberdiek/"
-                         "doc/latex/oberdiek/"
-                         "source/latex/oberdiek/"
-                         "tex/generic/oberdiek/"
-                         "tex/latex/oberdiek/")
-                   (base32
-                    "00lp24fckawpy997j7zagsxv89jif40wgjq8fw502v06d225ikp3"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/oberdiek")
-         ((#:build-targets _ '())
-          #~(list "oberdiek.ins"))))
-      (propagated-inputs
-       (list texlive-auxhook
-             texlive-grfext
-             texlive-grffile
-             texlive-iftex
-             texlive-infwarerr
-             texlive-kvoptions
-             texlive-pdftexcmds))
-      (home-page "https://www.ctan.org/pkg/oberdiek")
-      (synopsis "Bundle of packages submitted by Heiko Oberdiek")
-      (description
-       "The bundle comprises various LaTeX packages, providing among others:
+  (package
+    (name "texlive-oberdiek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/oberdiek/" "doc/latex/oberdiek/"
+                   "source/latex/oberdiek/"
+                   "tex/generic/oberdiek/" "tex/latex/oberdiek/")
+             (base32
+              "00lp24fckawpy997j7zagsxv89jif40wgjq8fw502v06d225ikp3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-auxhook
+           texlive-grfext
+           texlive-grffile
+           texlive-iftex
+           texlive-infwarerr
+           texlive-kvoptions
+           texlive-pdftexcmds))
+    (home-page "https://www.ctan.org/pkg/oberdiek")
+    (synopsis "Bundle of packages submitted by Heiko Oberdiek")
+    (description
+     "The bundle comprises various LaTeX packages, providing among others:
 better accessibility support for PDF files; extensible chemists reaction
 arrows; record information about document class(es) used; and many more.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-oberdiek texlive-oberdiek)
 
