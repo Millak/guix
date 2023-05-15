@@ -12182,24 +12182,23 @@ possible to register these float types with endfloat.")
 
 (define-public texlive-was
   (package
-    (inherit (simple-texlive-package
-              "texlive-was"
-              (list "doc/latex/was/"
-                    "source/latex/was/"
-                    "tex/latex/was/")
-              (base32
-               "1fp0l9sn9yrhf8hz175dzc2x28byk1ygfirn23am5ak72csmi0cp")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/was")
+    (name "texlive-was")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/was/" "source/latex/was/"
+                   "tex/latex/was/")
+             (base32
+              "1fp0l9sn9yrhf8hz175dzc2x28byk1ygfirn23am5ak72csmi0cp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/was")
     (synopsis "Collection of small packages by Walter Schmidt")
-    (description "A bundle of packages that arise in the author’s area of interest:
-
-@itemize
-@item compliance of maths typesetting with ISO standards;
-@item symbols that work in both maths and text modes
-@item commas for both decimal separator and maths; and
-@item upright Greek letters in maths
-@end itemize")
+    (description
+     "This package provides a bundle of packages that arise in the author's
+area of interest: compliance of maths typesetting with ISO standards; symbols
+that work in both maths and text modes commas for both decimal separator and
+maths; and upright Greek letters in maths.")
     (license license:lppl1.2+)))
 
 (define-public texlive-xpatch
