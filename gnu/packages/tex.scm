@@ -9783,31 +9783,27 @@ using TeX or e-TeX.")
 (define-deprecated-package texlive-generic-pdfescape texlive-pdfescape)
 
 (define-public texlive-uniquecounter
-  (let ((template (simple-texlive-package
-                   "texlive-uniquecounter"
-                   (list "doc/latex/uniquecounter/"
-                         "source/latex/uniquecounter/"
-                         "tex/generic/uniquecounter/")
-                   (base32
-                    "1ll3iwk8x44l3qx1dhna399ngg66vbllivv8i3lwzriwkx22xbf3"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/uniquecounter")
-         ((#:build-targets _ '())
-          #~(list "uniquecounter.dtx"))))
-      (propagated-inputs
-       (list texlive-bigintcalc texlive-infwarerr))
-      (home-page "https://www.ctan.org/pkg/uniquecounter")
-      (synopsis "Unlimited unique counter")
-      (description
-       "This package provides a kind of counter that provides unique number
-values.  Several counters can be created with different names.  The numeric
-values are not limited.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-uniquecounter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uniquecounter/"
+                   "source/latex/uniquecounter/"
+                   "tex/generic/uniquecounter/")
+             (base32
+              "1ll3iwk8x44l3qx1dhna399ngg66vbllivv8i3lwzriwkx22xbf3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-bigintcalc texlive-infwarerr))
+    (home-page "https://ctan.org/pkg/uniquecounter")
+    (synopsis "Provides unlimited unique counter")
+    (description
+     "This package provides a kind of counter that provides unique number values.
+Several counters can be created with different names.  The numeric values are
+not limited.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-generic-uniquecounter texlive-uniquecounter)
 
