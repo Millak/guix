@@ -11954,6 +11954,30 @@ TeX users have no access to package options, so need to redefine macros for
 these changes.")
     (license license:public-domain)))
 
+(define-public texlive-ntheorem
+  (package
+    (name "texlive-ntheorem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ntheorem/" "source/latex/ntheorem/"
+                   "tex/latex/ntheorem/")
+             (base32
+              "16xain8s0azcnhwj5xwh3m365sb9bhdvxanh19kvmnc52dggjc1y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsfonts))
+    (home-page "https://ctan.org/pkg/ntheorem")
+    (synopsis "Enhanced theorem environment")
+    (description
+     "The package offers enhancements for theorem-like environments: easier
+control of layout; proper placement of endmarks even when the environment ends
+with @code{\\end@{enumerate@}} or @code{\\end@{displaymath@}} (including
+support for @code{amsmath} displayed-equation environments); and support for
+making a list of theorems, analagous to @code{\\listoffigures}.")
+    (license license:lppl)))
+
 (define-public texlive-fmtcount
   (package
     (inherit (simple-texlive-package
