@@ -1594,24 +1594,60 @@ circle fonts (for use in the picture environment) and LaTeX symbol fonts.")
 (define-deprecated-package texlive-fonts-latex texlive-latex-fonts)
 
 (define-public texlive-mflogo
-  (let ((template (simple-texlive-package
-                   "texlive-mflogo"
-                   (list "/doc/latex/mflogo/"
-                         "/source/latex/mflogo/"
-                         "/fonts/source/public/mflogo/logosl8.mf")
-                   (base32
-                    "1vb4mg7fh4k54g7nqwiw3qm4iir8whpfnspis76l4sddzar1amh7"))))
-    (package
-      (inherit template)
-      (native-inputs
-       (list texlive-bin texlive-metafont texlive-knuth-lib))
-      (home-page "http://www.ctan.org/pkg/mflogo")
-      (synopsis "LaTeX support for Metafont logo fonts")
-      (description
-       "This package provides LaTeX and font definition files to access the
+  (package
+    (name "texlive-mflogo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mflogo/"
+                   "fonts/source/public/mflogo/"
+                   "fonts/tfm/public/mflogo/"
+                   "source/latex/mflogo/"
+                   "tex/latex/mflogo/")
+             (base32
+              "1r53qlrcqfwc0dfr7ji1nxnqrj6n0qrlg1rl7fjlw6ap3q9y434k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-font-metrics
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((root (assoc-ref inputs "source"))
+                    (mf #$(this-package-native-input "texlive-metafont"))
+                    (kl #$(this-package-native-input "texlive-knuth-lib")))
+                ;; Tell mf where to find mf.base.
+                (setenv "MFBASES"
+                        (string-append mf "/share/texmf-dist/web2c"))
+                ;; Tell mf where to look for source files.
+                (setenv "MFINPUTS"
+                        (string-append root ":"
+                                       mf "/share/texmf-dist/metafont/base:"
+                                       kl "/share/texmf-dist/fonts/source/public/knuth-lib:"
+                                       root "/fonts/source/public/mflogo/"))
+                (for-each (lambda (font)
+                            (format #t "building font ~a\n" font)
+                            (invoke "mf" "-progname=mf"
+                                    "-output-directory=build"
+                                    (string-append "\\"
+                                                   "mode:=ljfour; "
+                                                   "mag:=1; "
+                                                   "scrollmode; "
+                                                   "input " (basename font))))
+                          (find-files
+                           (string-append root
+                                          "/fonts/source/public/mflogo/")
+                           "\\.mf$"))))))))
+    (native-inputs
+     (list texlive-bin texlive-knuth-lib texlive-metafont))
+    (home-page "https://ctan.org/pkg/mflogo")
+    (synopsis "LaTeX support for Metafont logo fonts")
+    (description
+     "This package provides LaTeX and font definition files to access the
 Knuthian mflogo fonts described in The Metafontbook and to typeset Metafont
 logos in LaTeX documents.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-deprecated-package texlive-latex-mflogo texlive-mflogo)
 
