@@ -9618,30 +9618,26 @@ strings.")
 (define-deprecated-package texlive-generic-gettitlestring texlive-gettitlestring)
 
 (define-public texlive-infwarerr
-  (let ((template (simple-texlive-package
-                   "texlive-infwarerr"
-                   (list "doc/latex/infwarerr/"
-                         "source/latex/infwarerr/"
-                         "tex/generic/infwarerr/")
-                   (base32
-                    "0lpcrpf3d6xfdp68ri22126x57mvmq5dpj9np68ph8p8lhvhqdjd"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/infwarerr")
-         ((#:build-targets _ '())
-          #~(list "infwarerr.dtx"))))
-      (home-page "https://www.ctan.org/pkg/infwarerr")
-      (synopsis "Information/warning/error macros")
-      (description
-       "This package provides a complete set of macros for information,
-warning and error messages.  Under LaTeX, the commands are wrappers for
-the corresponding LaTeX commands; under Plain TeX they are available as
-complete implementations.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-infwarerr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/infwarerr/"
+                   "source/latex/infwarerr/"
+                   "tex/generic/infwarerr/")
+             (base32
+              "0lpcrpf3d6xfdp68ri22126x57mvmq5dpj9np68ph8p8lhvhqdjd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/infwarerr")
+    (synopsis "Complete set of information/warning/error message macros")
+    (description
+     "This package provides a complete set of macros for information, warning
+and error messages.  Under LaTeX, the commands are wrappers for the
+corresponding LaTeX commands; under Plain TeX they are available as complete
+implementations.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-generic-infwarerr texlive-infwarerr)
 
