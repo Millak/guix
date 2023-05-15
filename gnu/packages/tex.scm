@@ -692,32 +692,29 @@ executables.  It is maintained as a part of TeX Live.")))
     (deprecated-package (symbol->string 'old-name) name)))
 
 (define-public texlive-alphalph
-  (let ((template (simple-texlive-package
-                   "texlive-alphalph"
-                   (list "doc/latex/alphalph/"
-                         "source/latex/alphalph/"
-                         "tex/generic/alphalph/")
-                   (base32
-                    "0ap59hmg0brg2wlh3bl77jxfxrk7hphhdal8cr05mby9bw35gffy"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:build-targets _ '())
-          #~(list "alphalph.dtx"))))
-      (propagated-inputs
-       (list texlive-intcalc texlive-infwarerr))
-      (home-page "https://ctan.org/pkg/alphalph")
-      (synopsis "Convert numbers to letters")
-      (description
-       "This package provides commands @code{\\alphalph} and
-@code{\\AlphAlph}.  They are like @code{\\number} but the expansion
-consists of lowercase and uppercase letters respectively (1 to a, 26 to
-z, 27 to aa, 52 to zz, 53 to ba, 702 to zz, 703 to aaa, etc.).
-Alphalph's commands can be used as a replacement for LaTeX's
-@code{\\@@alph} and @code{\\@@Alph} macros.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-alphalph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/alphalph/"
+                   "source/latex/alphalph/"
+                   "tex/generic/alphalph/")
+             (base32
+              "0ap59hmg0brg2wlh3bl77jxfxrk7hphhdal8cr05mby9bw35gffy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-intcalc texlive-infwarerr))
+    (home-page "https://ctan.org/pkg/alphalph")
+    (synopsis "Convert numbers to letters")
+    (description
+     "This package provides commands @code{\\alphalph} and @code{\\AlphAlph}.
+They are like @code{\\number} but the expansion consists of lowercase and
+uppercase letters respectively (1 to a, 26 to z, 27 to aa, 52 to zz, 53 to ba,
+702 to zz, 703 to aaa, etc.).  Alphalph's commands can be used as
+a replacement for LaTeX's @code{\\@@alph} and @code{\\@@Alph} macros.")
+    (license license:lppl1.3c+)))
 
 (define texlive-docstrip
   (package
