@@ -3709,6 +3709,22 @@ tables.")
 
 (define-deprecated-package texlive-latex-xcolor texlive-xcolor)
 
+(define-public texlive-xmltexconfig
+  (package
+    (name "texlive-xmltexconfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/xmltex/xmltexconfig/")
+             (base32
+              "0drgvmn27snq43kjkpg5k4igkcdi56p1q3fwkrv3ivsiqfp6cdz3")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xmltexconfig")
+    (synopsis "Configuration files for @code{xmltex} and @code{pdfxmltex}")
+    (description "This package provides configuration files for @code{xmltex}
+and @code{pdfxmltex}.")
+    (license license:public-domain)))
+
 (define-public texlive-xmltex
   (let ((template (simple-texlive-package
                    "texlive-xmltex"
