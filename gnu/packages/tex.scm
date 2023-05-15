@@ -12033,20 +12033,24 @@ their associated files.  These were created using autoinst.")
 
 (define-public texlive-floatflt
   (package
-    (inherit (simple-texlive-package
-              "texlive-floatflt"
-              (list "doc/latex/floatflt/"
-                    "source/latex/floatflt/"
-                    "tex/latex/floatflt/")
-              (base32
-               "1piy8ajbbcadsjwp0mhlgxm2ggggnb5sn75arfs5fxiaqrwd572j")
-              #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/floatflt")
+    (name "texlive-floatflt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/floatflt/" "source/latex/floatflt/"
+                   "tex/latex/floatflt/")
+             (base32
+              "1piy8ajbbcadsjwp0mhlgxm2ggggnb5sn75arfs5fxiaqrwd572j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/floatflt")
     (synopsis "Wrap text around floats")
     (description
-     "The package can float text around figures and tables which do not
-span the full width of a page; it improves upon floatfig, and allows
-tables and figures to be set left/right or alternating on even/odd pages.")
+     "The package can float text around figures and tables which do not span
+the full width of a page; it improves upon floatfig, and allows tables/figures
+to be set left/right or alternating on even/odd pages.")
     (license license:lppl1.3+)))
 
 (define-public texlive-fvextra
