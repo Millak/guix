@@ -11165,27 +11165,34 @@ a repackaging, for use with TeX, of the Bitstream Vera family.")
 
 (define-public texlive-fourier
   (package
-    (inherit (simple-texlive-package
-              "texlive-fourier"
-              (list "/doc/fonts/fourier/"
-                    "/fonts/afm/public/fourier/"
-                    "/fonts/map/dvips/fourier/"
-                    "/fonts/tfm/public/fourier/"
-                    "/fonts/type1/public/fourier/"
-                    "/fonts/vf/public/fourier/"
-                    "/tex/latex/fourier/")
-              (base32
-               "04d575nd4yvl58g9dfab9mrjxiv4792bdkz4bjvlkx6x257vlfzn")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/fourier")
-    (synopsis "Utopia fonts for LaTeX documents")
-    (description "Fourier-GUTenberg is a LaTeX typesetting system
-which uses Adobe Utopia as its standard base font.  Fourier-GUTenberg
-provides all complementary typefaces needed to allow Utopia based TeX
-typesetting including an extensive mathematics set and several other
-symbols.  The system is absolutely stand-alone; apart from Utopia and
-Fourier no other typefaces are required.  Utopia is a registered
-trademark of Adobe Systems Incorporated.")
+    (name "texlive-fourier")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fourier/"
+                   "fonts/afm/public/fourier/"
+                   "fonts/map/dvips/fourier/"
+                   "fonts/opentype/public/fourier/"
+                   "fonts/tfm/public/fourier/"
+                   "fonts/type1/public/fourier/"
+                   "fonts/vf/public/fourier/"
+                   "tex/latex/fourier/")
+             (base32
+              "038h02n02fii0kv021d5z8ic2p0mqnjzwxdbvcfym4gkcw345fxk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-fontspec
+           texlive-iftex))
+    (home-page "https://ctan.org/pkg/fourier")
+    (synopsis "Using Utopia fonts for LaTeX documents")
+    (description
+     "Fourier-GUTenberg is a LaTeX typesetting system which uses Adobe Utopia
+as its standard base font.  Fourier-GUTenberg provides all complementary
+typefaces needed to allow Utopia based TeX typesetting, including an extensive
+mathematics set and several other symbols.  The system is absolutely
+stand-alone: apart from Utopia and Fourier, no other typefaces are required.
+Utopia is a registered trademark of Adobe Systems Incorporated")
     (license license:lppl)))
 
 (define-public texlive-utopia
