@@ -3845,52 +3845,51 @@ UTF-8 or a suitable 8-bit encoding.")
     (license license:lppl1.0+)))        ;per xmltex/base/readme.txt
 
 (define-public texlive-hyperref
-  (let ((template (simple-texlive-package
-                   "texlive-hyperref"
-                   (list "doc/latex/hyperref/"
-                         "source/latex/hyperref/"
-                         "tex/latex/hyperref/")
-                   (base32 "052k1nygm4msaivn8245n86km4h41knivigw80q58b7rc13s6hrk"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/hyperref")
-         ((#:build-targets _ '())
-          #~(list "hyperref.ins"))))
-      (propagated-inputs
-       (list texlive-atbegshi
-             texlive-auxhook
-             texlive-bitset
-             texlive-cm
-             texlive-etexcmds
-             texlive-gettitlestring
-             texlive-graphics           ;for keyval
-             texlive-hycolor
-             texlive-intcalc
-             texlive-kvdefinekeys
-             texlive-kvsetkeys
-             texlive-letltxmacro
-             texlive-ltxcmds
-             texlive-pdfescape
-             texlive-refcount
-             texlive-rerunfilecheck
-             texlive-stringenc
-             texlive-url
-             texlive-zapfding))
-      (home-page "https://www.ctan.org/pkg/hyperref")
-      (synopsis "Extensive support for hypertext in LaTeX")
-      (description
-       "The @code{hyperref} package is used to handle cross-referencing commands
+  (package
+    (name "texlive-hyperref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hyperref/"
+                   "source/latex/hyperref/"
+                   "tex/latex/hyperref/")
+             (base32
+              "052k1nygm4msaivn8245n86km4h41knivigw80q58b7rc13s6hrk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-atbegshi
+           texlive-auxhook
+           texlive-bitset
+           texlive-cm
+           texlive-etexcmds
+           texlive-gettitlestring
+           texlive-graphics             ;for keyval
+           texlive-hycolor
+           texlive-intcalc
+           texlive-kvdefinekeys
+           texlive-kvsetkeys
+           texlive-letltxmacro
+           texlive-ltxcmds
+           texlive-pdfescape
+           texlive-refcount
+           texlive-rerunfilecheck
+           texlive-stringenc
+           texlive-url
+           texlive-zapfding))
+    (home-page "https://www.ctan.org/pkg/hyperref")
+    (synopsis "Extensive support for hypertext in LaTeX")
+    (description
+     "The @code{hyperref} package is used to handle cross-referencing commands
 in LaTeX to produce hypertext links in the document.  The package provides
 backends for the @code{\\special} set defined for HyperTeX DVI processors; for
 embedded @code{pdfmark} commands for processing by Acrobat
 Distiller (@code{dvips} and Y&Y's @code{dvipsone}); for Y&Y's @code{dviwindo};
 for PDF control within pdfTeX and @code{dvipdfm}; for TeX4ht; and for VTeX's
 pdf and HTML backends.  The package is distributed with the @code{backref} and
-@code{nameref} packages, which make use of the facilities of @code{hyperref}.")
-      (license license:lppl1.3+))))
+@code{nameref} packages, which make use of the facilities of
+@code{hyperref}.")
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-hyperref texlive-hyperref)
 
