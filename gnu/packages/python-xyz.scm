@@ -15203,7 +15203,7 @@ time.")
            (texlive-updmap.cfg (list texlive-amsfonts
                                      texlive-amsmath
                                      texlive-eurosym
-                                     texlive-jknappen
+                                     texlive-jknapltx
                                      texlive-lm
                                      texlive-lm-math
                                      texlive-mathpazo

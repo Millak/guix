@@ -4839,7 +4839,7 @@ from within R.")
            swig
            ;;texlive-aeguill    ;;FIXME: package me!
            texlive-base
-           texlive-jknappen))
+           texlive-jknapltx))
     (propagated-inputs
      (list r-lattice
            r-matrix))

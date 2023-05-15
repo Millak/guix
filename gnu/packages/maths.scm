@@ -5799,7 +5799,7 @@ set.")
                                      texlive-hanging
                                      texlive-helvetic
                                      texlive-hyperref
-                                     texlive-jknappen
+                                     texlive-jknapltx
                                      texlive-listofitems
                                      texlive-multirow
                                      texlive-natbib

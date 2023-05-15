@@ -6498,7 +6498,7 @@ written especially for XeLaTeX users.")
     (native-inputs (list texlive-latex-base
                          (texlive-updmap.cfg
                           (list texlive-cm
-                                texlive-jknappen))))
+                                texlive-jknapltx))))
     (home-page "https://ctan.org/pkg/paralist")
     (synopsis "Enumerate and itemize within paragraphs")
     (description "The @code{paralist} package provides enumerate and itemize
@@ -7211,6 +7211,7 @@ in SGML; use maths minus in text as appropriate; simple Young tableaux.")
     (license license:gpl3+)))
 
 (define-deprecated-package texlive-latex-jknapltx texlive-jknapltx)
+(define-deprecated-package texlive-jknappen texlive-jknapltx)
 
 (define-public texlive-kvoptions
   (let ((template (simple-texlive-package
@@ -8148,54 +8149,6 @@ of ink traps which typify the Kurier font.")
 
 (define-deprecated-package texlive-fonts-iwona texlive-iwona)
 
-(define-public texlive-jknappen
-  (package
-    (inherit (simple-texlive-package
-              "texlive-jknappen"
-              (list "/fonts/source/jknappen/"
-                    "/fonts/tfm/jknappen/"
-                    "/tex4ht/ht-fonts/alias/jknappen/"
-                    "/tex4ht/ht-fonts/unicode/jknappen/")
-              (base32
-               "0xvy3c845jc7iw1h9rcm1r2yvm1ni1sm9r9k9j2cfc82xy43rwij")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/jknappen")
-    (synopsis "Miscellaneous packages by Jörg Knappen")
-    (description
-     "This package contains a collection of macros by Jörg Knappen:
-@table @code
-@item greekctr
-New counterstyles @code{\\greek} and @code{\\Greek}.
-@item holtpolt
-Non-commutative fractions
-@item latin1jk
-@itemx latin2jk
-@itemx latin3jk
-Inputenc definition files that allow verbatim input in the respective ISO
-Latin codes.
-@item mathbol
-Blackboard bold fonts for use in maths.
-@item mathrsfs
-Mathematical script letters, as traditionally used in physics for Lagrangian,
-Hamiltonian, path integral measures, etc.
-@item parboxx
-New alignment options for parboxen at top and bottom of the box.
-@item sans
-Interchanges the roles of sans serif and roman fonts throughout the document.
-@item semtrans
-Support for special latin letters and diacritics used in transliteration of
-semitic languages
-@item smartmn
-Intelligent hyphen/minus, which guesses whether to render as hyphen or minus.
-@item sgmlcmpt
-Commands replacing the characters <, >, and &.
-@item tccompat
-A compatibility package for users of the older versions of the textcomp package.
-@item young
-Simple Young tableaux.
-@end table")
-    (license license:gpl2)))                    ;per the 00readme_txt file.
-
 (define-public texlive-jadetex
   (let ((template (simple-texlive-package
                    "texlive-jadetex"
@@ -8258,7 +8211,7 @@ Simple Young tableaux.
              texlive-latex-fonts        ;for lasy6
              ;; The t1cmr.fd file of texlive-latex-base refers to the ecrm font,
              ;; provided by the jknappen package collection.
-             texlive-jknappen
+             texlive-jknapltx
              texlive-hyperref
              texlive-colortbl
              texlive-fancyhdr
@@ -12290,7 +12243,7 @@ handle complex tests.")
                          (texlive-updmap.cfg ;fonts
                           (list texlive-cbfonts
                                 texlive-lh
-                                texlive-jknappen))))
+                                texlive-jknapltx))))
     (inputs (list clisp perl))          ;used at run time
     (home-page "https://www.ctan.org/pkg/xindy")
     (synopsis "General-purpose index processor")
