@@ -8340,13 +8340,16 @@ LGR.  The package doesn't (currently) support mathematics.")
 
 (define-public texlive-titlesec
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-titlesec"
-      (list "doc/latex/titlesec/" "tex/latex/titlesec/")
-      (base32 "01nwh4p15xblc3kgivjliihy9kr8yr2cqsf9wn2iwqv1njx0i2zw")
-      #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/titlesec")
+    (name "texlive-titlesec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/titlesec/" "tex/latex/titlesec/")
+             (base32
+              "01nwh4p15xblc3kgivjliihy9kr8yr2cqsf9wn2iwqv1njx0i2zw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/titlesec")
     (synopsis "Select alternative section titles")
     (description
      "This package provides an interface to sectioning commands for selection
@@ -8354,7 +8357,7 @@ from various title styles, e.g. for marginal titles and to change the font of
 all headings with a single command, also providing simple one-step page
 styles.  It also includes a package to change the page styles when there are
 floats in a page.  You may assign headers/footers to individual floats, too.")
-    (license license:lppl)))
+    (license license:expat)))
 
 (define-deprecated-package texlive-latex-titlesec texlive-titlesec)
 
