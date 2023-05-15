@@ -4801,25 +4801,23 @@ German.")
 (define-deprecated-package texlive-generic-babel-german texlive-babel-german)
 
 (define-public texlive-babel-swedish
-  (let ((template (simple-texlive-package
-                   "texlive-babel-swedish"
-                   (list "/source/generic/babel-swedish/")
-                   (base32
-                    "03rp4n9wkqyckman765r8v8j2pg5fg9frbfxsnhq0i2mr0yhbr6v"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/babel-swedish")
-         ((#:build-targets _ '())
-          ''("swedish.ins"))))
-      (home-page "https://www.ctan.org/pkg/babel-swedish")
-      (synopsis "Babel support for Swedish")
-      (description "This package provides the language definition file for
-support of Swedish in @code{babel}.  It provides all the necessary macros,
-definitions and settings to typeset Swedish documents.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-babel-swedish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-swedish/"
+                   "source/generic/babel-swedish/"
+                   "tex/generic/babel-swedish/")
+             (base32
+              "0qi2rzhlxikabrk9n0096inbczgp5hwghvy5zn0mph8zmsxlfbdf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-swedish")
+    (synopsis "Babel support for typesetting Swedish")
+    (description
+     "The package provides the language definition file for Swedish.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-cyrillic
   (package
