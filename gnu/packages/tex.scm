@@ -11275,33 +11275,41 @@ or if it differs from the weight desired for another font family.  The
 
 (define-public texlive-cabin
   (package
-    (inherit (simple-texlive-package
-              "texlive-cabin"
-              (list "/doc/fonts/cabin/"
-                    "/fonts/enc/dvips/cabin/"
-                    "/fonts/map/dvips/cabin/"
-                    "/fonts/opentype/impallari/cabin/"
-                    "/fonts/tfm/impallari/cabin/"
-                    "/fonts/type1/impallari/cabin/"
-                    "/fonts/vf/impallari/cabin/"
-                    "/tex/latex/cabin/")
-              (base32
-               "1gqqqbj7i18fs1ss5n3axd821hzq5kbv1dl7dqxp4gba619f1rli")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/cabin")
+    (name "texlive-cabin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cabin/"
+                   "fonts/enc/dvips/cabin/"
+                   "fonts/map/dvips/cabin/"
+                   "fonts/opentype/impallari/cabin/"
+                   "fonts/tfm/impallari/cabin/"
+                   "fonts/type1/impallari/cabin/"
+                   "fonts/vf/impallari/cabin/"
+                   "tex/latex/cabin/")
+             (base32
+              "1gqqqbj7i18fs1ss5n3axd821hzq5kbv1dl7dqxp4gba619f1rli")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-fontaxes
+           texlive-fontspec
+           texlive-iftex
+           texlive-mweights
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/cabin")
     (synopsis "Humanist Sans Serif font with LaTeX support")
-    (description "Cabin is a humanist sans with four weights, true
-italics and small capitals.  According to its designer, Pablo
-Impallari, Cabin was inspired by the typefaces of Edward Johnston and
-Eric Gill.  Cabin incorporates modern proportions, optical adjustments
-and some elements of the geometric sans.  @code{cabin.sty} supports
-use of the font under LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX.  It uses
-the @code{mweights} package to manage the user's view of all those
-font weights.  An @code{sfdefault} option is provided to enable Cabin
-as the default text font.  The @code{fontaxes} package is required for
-use with [pdf]LaTeX.")
-    (license (list license:silofl1.1 ;for Cabin
-                   license:lppl))))  ;for support files
+    (description
+     "Cabin is a humanist sans with four weights and true italics and small
+capitals.  According to the designer, Pablo Impallari, Cabin was inspired by
+Edward Johnston's and Eric Gill's typefaces, with a touch of modernism.  Cabin
+incorporates modern proportions, optical adjustments, and some elements of the
+geometric sans.  @file{cabin.sty} supports use of the font under LaTeX,
+pdfLaTeX, XeLaTeX and LuaLaTeX; it uses the @code{mweights}, to manage the
+user's view of all those font weights.  An option is provided to enable Cabin
+as the default text font.")
+    (license (list license:silofl1.1    ;for Cabin
+                   license:lppl))))     ;for support files
 
 (define-public texlive-newtx
   (package
