@@ -7315,6 +7315,32 @@ fonts.  Note that direct substitutes for the bitmapped EC fonts are available,
 via the CM-super, Latin Modern and (in a restricted way) CM-LGC font sets.")
     (license license:lppl1.3+)))
 
+(define-public texlive-incgraph
+  (package
+    (name "texlive-incgraph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/incgraph/" "tex/latex/incgraph/")
+             (base32
+              "1j5pzhzfbgzd21bq3dh7932pv0052g5l8r0qyx68n3cbsg46lcdk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-bookmark
+           texlive-graphics
+           texlive-pgf))
+    (home-page "https://ctan.org/pkg/incgraph")
+    (synopsis "Sophisticated graphics inclusion in a PDF document")
+    (description
+     "The package provides tools for including graphics at the full size of
+the output medium, or for creating pages whose size is that of the graphic
+they contain.  A principal use case is documents that require inclusion
+of (potentially many) scans or photographs.  Bookmarking is especially
+supported.  The tool box has basic macros and a convenience user interface
+that wraps @code{\\includegraphics}.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-inconsolata
   (package
     (inherit (simple-texlive-package
