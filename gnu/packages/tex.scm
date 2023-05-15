@@ -7673,34 +7673,29 @@ defines some associated length commands.")
 (define-deprecated-package texlive-latex-pbox texlive-pbox)
 
 (define-public texlive-pdfpages
-  (let ((template (simple-texlive-package
-                   "texlive-pdfpages"
-                   (list "doc/latex/pdfpages/"
-                         "source/latex/pdfpages/"
-                         "tex/latex/pdfpages/")
-                   (base32
-                    "0a68vxkygk20fp51fkp7nvs8mc7h6irdvxal8qsnn9zrgr965d76"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/pdfpages")
-         ((#:build-targets _ '())
-          #~(list "pdfpages.ins"))))
-      (propagated-inputs
-       (list texlive-tools texlive-oberdiek texlive-graphics texlive-eso-pic))
-      (home-page "https://ctan.org/macros/latex/contrib/pdfpages")
-      (synopsis "Include PDF documents in LaTeX")
-      (description
-       "This package simplifies the inclusion of external multi-page PDF
+  (package
+    (name "texlive-pdfpages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfpages/" "source/latex/pdfpages/"
+                   "tex/latex/pdfpages/")
+             (base32
+              "0a68vxkygk20fp51fkp7nvs8mc7h6irdvxal8qsnn9zrgr965d76")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-eso-pic texlive-graphics texlive-oberdiek texlive-tools))
+    (home-page "https://ctan.org/pkg/pdfpages")
+    (synopsis "Include PDF documents in LaTeX")
+    (description
+     "This package simplifies the inclusion of external multi-page PDF
 documents in LaTeX documents.  Pages may be freely selected and it is possible
 to put several logical pages onto each sheet of paper.  Furthermore a lot of
 hypertext features like hyperlinks and article threads are provided.  The
 package supports pdfTeX (pdfLaTeX) and VTeX.  With VTeX it is even possible to
 use this package to insert PostScript files, in addition to PDF files.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-pdfpages texlive-pdfpages)
 
