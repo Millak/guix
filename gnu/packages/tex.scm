@@ -11774,23 +11774,27 @@ document.")
 
 (define-public texlive-translator
   (package
-    (inherit (simple-texlive-package
-              "texlive-translator"
-              (list "doc/latex/translator/"
-                    "tex/latex/translator/")
-              (base32 "13rxdqhvgwc5lz2wsw4jwsb92614wlxsa90rmzxyrc6xjz1jypnk")
-              #:trivial? #t))
+    (name "texlive-translator")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/translator/"
+                   "tex/latex/translator/")
+             (base32
+              "13rxdqhvgwc5lz2wsw4jwsb92614wlxsa90rmzxyrc6xjz1jypnk")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (home-page "https://ctan.org/macros/latex/contrib/translator")
+    (propagated-inputs
+     (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/translator")
     (synopsis "Easy translation of strings in LaTeX")
     (description
      "This LaTeX package provides a flexible mechanism for translating
-individual words into different languages.  For example, it can be used to
-translate a word like \"figure\" into, say, the German word \"Abbildung\".
-Such a translation mechanism is useful when the author of some package would
-like to localize the package such that texts are correctly translated into the
-language preferred by the user.  This package is not intended to be used to
-automatically translate more than a few words.")
+individual words into different languages.  Such a translation mechanism is
+useful when the author of some package would like to localize the package such
+that texts are correctly translated into the language preferred by the user.
+This package is not intended to be used to automatically translate more than
+a few words.")
     (license (list license:lppl license:gpl1+))))
 
 (define-public texlive-textpos
