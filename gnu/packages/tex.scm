@@ -9552,50 +9552,69 @@ striking out (line through words) and crossing out (/// over words).")
 
 (define-public texlive-pgf
   (package
-    (inherit (simple-texlive-package
-              "texlive-pgf"
-              (list "doc/generic/pgf/"
-                    "scripts/pgf/"
-                    "source/generic/pgf/c/"
-                    "source/generic/pgf/testsuite/external/"
-                    "source/generic/pgf/testsuite/mathtest/"
-                    "tex/context/third/pgf/basiclayer/"
-                    "tex/context/third/pgf/frontendlayer/"
-                    "tex/context/third/pgf/math/"
-                    "tex/context/third/pgf/systemlayer/"
-                    "tex/context/third/pgf/utilities/"
-                    "tex/generic/pgf/"
-                    "tex/latex/pgf/basiclayer/"
-                    "tex/latex/pgf/compatibility/"
-                    "tex/latex/pgf/doc/"
-                    "tex/latex/pgf/frontendlayer/"
-                    "tex/latex/pgf/math/"
-                    "tex/latex/pgf/systemlayer/"
-                    "tex/latex/pgf/utilities/"
-                    "tex/plain/pgf/basiclayer/"
-                    "tex/plain/pgf/frontendlayer/"
-                    "tex/plain/pgf/math/"
-                    "tex/plain/pgf/systemlayer/"
-                    "tex/plain/pgf/utilities/")
-              (base32
-               "02qfx9k0ggqfrbrjpfz74w8rkvvzk07rmgr37r7y64gggwpn4cw5")
-              #:trivial? #t))
+    (name "texlive-pgf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/pgf/"
+                   "scripts/pgf/"
+                   "source/generic/pgf/c/"
+                   "source/generic/pgf/testsuite/external/"
+                   "source/generic/pgf/testsuite/mathtest/"
+                   "tex/context/third/pgf/basiclayer/"
+                   "tex/context/third/pgf/frontendlayer/"
+                   "tex/context/third/pgf/math/"
+                   "tex/context/third/pgf/systemlayer/"
+                   "tex/context/third/pgf/utilities/"
+                   "tex/generic/pgf/basiclayer/"
+                   "tex/generic/pgf/frontendlayer/tikz/libraries/circuits/"
+                   "tex/generic/pgf/frontendlayer/tikz/libraries/datavisualization/"
+                   "tex/generic/pgf/frontendlayer/tikz/libraries/graphs/"
+                   "tex/generic/pgf/graphdrawing/lua/"
+                   "tex/generic/pgf/graphdrawing/tex/experimental/"
+                   "tex/generic/pgf/libraries/datavisualization/"
+                   "tex/generic/pgf/libraries/decorations/"
+                   "tex/generic/pgf/libraries/luamath/pgf/luamath/"
+                   "tex/generic/pgf/libraries/shapes/circuits/"
+                   "tex/generic/pgf/lua/pgf/"
+                   "tex/generic/pgf/math/"
+                   "tex/generic/pgf/modules/"
+                   "tex/generic/pgf/systemlayer/"
+                   "tex/generic/pgf/utilities/"
+                   "tex/latex/pgf/basiclayer/"
+                   "tex/latex/pgf/compatibility/"
+                   "tex/latex/pgf/doc/"
+                   "tex/latex/pgf/frontendlayer/libraries/"
+                   "tex/latex/pgf/math/"
+                   "tex/latex/pgf/systemlayer/"
+                   "tex/latex/pgf/utilities/"
+                   "tex/plain/pgf/basiclayer/"
+                   "tex/plain/pgf/frontendlayer/"
+                   "tex/plain/pgf/math/"
+                   "tex/plain/pgf/systemlayer/"
+                   "tex/plain/pgf/utilities/")
+             (base32
+              "1d6s7sf7dmcqrx652f7j468rylkarihxl0ghg0sy5scjdn3z9bdr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-atveryend
+           texlive-everyshi
            texlive-fp
            texlive-graphics
            texlive-ms
            texlive-pdftexcmds
            texlive-xcolor))
-    (home-page "https://ctan.org/graphics/pgf/base")
+    (home-page "https://ctan.org/pkg/pgf")
     (synopsis "Create PostScript and PDF graphics in TeX")
     (description
      "PGF is a macro package for creating graphics.  It is platform- and
 format-independent and works together with the most important TeX backend
-drivers, including pdfTeX and dvips.  It comes with a user-friendly syntax layer
-called TikZ.  Its usage is similar to pstricks and the standard picture
-environment.  PGF works with plain (pdf-)TeX, (pdf-)LaTeX, and ConTeXt.  Unlike
-pstricks, it can produce either PostScript or PDF output.")
+drivers, including pdfTeX and dvips.  It comes with a user-friendly syntax
+layer called TikZ.  Its usage is similar to @code{pstricks} and the standard
+@code{picture} environment.  PGF works with plain (pdf-)TeX, (pdf-)LaTeX, and
+ConTeXt.  Unlike @code{pstricks}, it can produce either PostScript or PDF
+output.")
     ;; The code of the package is dual-license: GPL-2 or LPPL-1.3c+.  The
     ;; documentation is also dual-license: LPPL-1.3c+ or GFDL-1.2.
     (license (list license:gpl2 license:lppl1.3c+ license:fdl1.2+))))
