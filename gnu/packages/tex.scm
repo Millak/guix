@@ -3608,14 +3608,16 @@ one before, and one after the final @code{\\clearpage}.")
 
 (define-public texlive-epsf
   (package
-    (inherit (simple-texlive-package
-              "texlive-epsf"
-              (list "/doc/generic/epsf/"
-                    "/tex/generic/epsf/")
-              (base32
-               "03jcf0kqh47is965d2590miwj7d5kif3c4mgsnvkyl664jzjkh92")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/epsf")
+    (name "texlive-epsf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/epsf/" "tex/generic/epsf/")
+             (base32
+              "03jcf0kqh47is965d2590miwj7d5kif3c4mgsnvkyl664jzjkh92")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epsf")
     (synopsis "Simple macros for EPS inclusion")
     (description
      "This package provides the original (and now obsolescent) graphics
