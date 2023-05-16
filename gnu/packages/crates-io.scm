@@ -30822,7 +30822,7 @@ that integrates with Rust idioms.")
 (define-public rust-ipnet-2
   (package
     (name "rust-ipnet")
-    (version "2.3.0")
+    (version "2.7.2")
     (source
      (origin
        (method url-fetch)
@@ -30830,11 +30830,12 @@ that integrates with Rust idioms.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0db147nh8jnxr23yxa7hwqn7dcjivdqi3aq4mgf2zgkqqqa2zgj7"))))
+         "0zxmnidy5qha1i384fzjfxcsi0qvkbcp730h26q4z3dg54hyxdhj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
+       (("rust-schemars" ,rust-schemars-0.8)
+        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/krisprice/ipnet")
