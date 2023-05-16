@@ -74,6 +74,7 @@
 ;;; Copyright © 2022 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12325,6 +12326,9 @@ non-privileged user.")
                     (lambda _
                       (substitute* "test/test-client.vala"
                         (("client.add_suite\\(new Application.CertificateManagerTest\\(\\).suite\\);")
+                         ""))
+                      (substitute* "test/test-engine.vala"
+                        (("engine.add_suite\\(new Geary.RFC822.MessageDataTest\\(\\).suite\\);")
                          ""))))
                   (add-after 'unpack 'generate-vapis
                     (lambda* (#:key inputs #:allow-other-keys)
@@ -12387,7 +12391,7 @@ non-privileged user.")
            libxml2
            pkg-config
            python-minimal
-           vala
+           vala-0.52
            xorg-server-for-tests))
     (synopsis "GNOME email application built around conversations")
     (description
