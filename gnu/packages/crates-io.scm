@@ -36676,21 +36676,21 @@ streaming API for miniz_oxide.")
 (define-public rust-mio-0.8
   (package
     (name "rust-mio")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pjqn6jvmqkgyykf2z5danqka1rfs3il7w4d0qin8yi062y35mz5"))))
+        (base32 "1ygx5chq81k3vk2bx722xwcwf2qydmm337jsnijgzd7mxx39m7av"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-log" ,rust-log-0.4)
              ("rust-wasi" ,rust-wasi-0.11)
-             ("rust-windows-sys" ,rust-windows-sys-0.42))
+             ("rust-windows-sys" ,rust-windows-sys-0.45))
            #:cargo-development-inputs
            `(("rust-env-logger" ,rust-env-logger-0.8)
              ("rust-rand" ,rust-rand-0.8))))
