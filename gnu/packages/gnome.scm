@@ -12318,41 +12318,40 @@ non-privileged user.")
                 "04hvw86r8sczvjm1z3ls5y5y5h6nyfb648rjkfx05ib00mqq5v1x"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       '("-Dprofile=release")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-failing-tests
-                    (lambda _
-                      (substitute* "test/test-client.vala"
-                        (("client.add_suite\\(new Application.CertificateManagerTest\\(\\).suite\\);")
-                         ""))
-                      (substitute* "test/test-engine.vala"
-                        (("engine.add_suite\\(new Geary.RFC822.MessageDataTest\\(\\).suite\\);")
-                         ""))))
-                  (add-after 'unpack 'generate-vapis
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; It’s not possible to generate the GMime vapi, because
-                      ;; there’s custom metadata that gmime didn’t
-                      ;; install. Thus, the vapi should be built and installed
-                      ;; with gmime.
-                      (define gmime
-                        (assoc-ref inputs "gmime"))
-                      (copy-file (string-append gmime "/share/vala/vapi/gmime-3.0.vapi")
-                                 "bindings/vapi/gmime-3.0.vapi")))
-                  (add-after 'unpack 'disable-postinstall-script
-                    (lambda _
-                      (substitute* "build-aux/post_install.py"
-                        (("gtk-update-icon-cache")
-                         "true"))))
-                  (add-before 'check 'setup-home
-                    (lambda _
-                      ;; Tests require a writable HOME.
-                      (setenv "HOME" (getcwd))))
-                  (add-before 'check 'setup-xvfb
-                    (lambda _
-                      (system "Xvfb :1 &")
-                      (setenv "DISPLAY" ":1"))))))
+     (list #:glib-or-gtk? #t
+           #:configure-flags
+           #~(list "-Dprofile=release")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-failing-tests
+                 (lambda _
+                   (substitute* "test/test-client.vala"
+                     (("client.add_suite\\(new Application.CertificateManagerTest\\(\\).suite\\);")
+                      ""))
+                   (substitute* "test/test-engine.vala"
+                     (("engine.add_suite\\(new Geary.RFC822.MessageDataTest\\(\\).suite\\);")
+                      ""))))
+               (add-after 'unpack 'generate-vapis
+                 (lambda _
+                   ;; It’s not possible to generate the GMime vapi, because
+                   ;; there’s custom metadata that gmime didn’t
+                   ;; install. Thus, the vapi should be built and installed
+                   ;; with gmime.
+                   (copy-file #$(file-append gmime "/share/vala/vapi/gmime-3.0.vapi")
+                              "bindings/vapi/gmime-3.0.vapi")))
+               (add-after 'unpack 'disable-postinstall-script
+                 (lambda _
+                   (substitute* "build-aux/post_install.py"
+                     (("gtk-update-icon-cache")
+                      "true"))))
+               (add-before 'check 'setup-home
+                 (lambda _
+                   ;; Tests require a writable HOME.
+                   (setenv "HOME" (getcwd))))
+               (add-before 'check 'setup-xvfb
+                 (lambda _
+                   (system "Xvfb :1 &")
+                   (setenv "DISPLAY" ":1"))))))
     (inputs
      (list enchant
            folks-with-libsoup2
