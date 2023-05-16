@@ -18636,14 +18636,14 @@ procedural macros.")
 (define-public rust-devise-codegen-0.2
   (package
     (name "rust-devise-codegen")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "devise_codegen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1msmq0h19l03n9qmkxxi1a5h8904i8m623kdvjzak4ya51wynv06"))))
+        (base32 "0lxbixni2v6snx2mkgi0kyq5dv8v6c5s57b6wc47q4hqs6884yza"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -18654,7 +18654,7 @@ procedural macros.")
     (synopsis "Library for devising derives and other procedural macros")
     (description
      "This package provides a library for devising derives and other
-procedural macros")
+procedural macros.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-devise-core-0.2
