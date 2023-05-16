@@ -7433,16 +7433,19 @@ Adobe's basic set.")
 
 (define-public texlive-zhspacing
   (package
-    (inherit
-     (simple-texlive-package "texlive-zhspacing"
-                             (list "doc/generic/zhspacing/"
-                                   "tex/context/third/zhspacing/"
-                                   "tex/generic/zhspacing/"
-                                   "tex/xelatex/zhspacing/")
-                             (base32
-                              "02hwa7yjwb6wxkkib83mjdbara5zcsixbp5xlawri8n9ah54vxjm")
-                             #:trivial? #t))
-    (home-page "https://ctan.org/macros/xetex/generic/zhspacing")
+    (name "texlive-zhspacing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/zhspacing/"
+                   "tex/context/third/zhspacing/"
+                   "tex/generic/zhspacing/"
+                   "tex/xelatex/zhspacing/")
+             (base32
+              "02hwa7yjwb6wxkkib83mjdbara5zcsixbp5xlawri8n9ah54vxjm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zhspacing")
     (synopsis "Spacing for mixed CJK-English documents in XeTeX")
     (description
      "The package manages spacing in a CJK document; between consecutive Chinese
