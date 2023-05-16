@@ -1102,20 +1102,23 @@ typesetting in these fonts.")
 
 (define-public texlive-fontname
   (package
-    (inherit (simple-texlive-package
-              "texlive-fontname"
-              (list "/doc/fonts/fontname/fontname.texi"
-                    "/fonts/map/fontname/")
-              (base32
-               "009qvjpw48lajp0gxpvdk10n5qw3q41cpq05ycns67mxwkcaywq6")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/fontname")
+    (name "texlive-fontname")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fontname/" "doc/info/fontname.info"
+                   "fonts/map/fontname/")
+             (base32
+              "014kiwbqz77yn8w58cb6fzqj0vlfmgyq09mxdj15ipjfgxjyvcbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontname")
     (synopsis "Scheme for naming fonts in TeX")
-    (description "This is Fontname, a naming scheme for (the base part of)
-external TeX font filenames.  This makes at most eight-character names
-from (almost) arbitrarily complex font names, thus helping portability of TeX
-documents.")
-    (license license:public-domain)))
+    (description
+     "This is Fontname, a naming scheme for (the base part of) external TeX
+font filenames.  This makes at most eight-character names from (almost)
+arbitrarily complex font names, thus helping portability of TeX documents.")
+    (license license:gpl3+)))
 
 (define-public texlive-cbfonts          ;71 MiB of greek fonts
   (package
