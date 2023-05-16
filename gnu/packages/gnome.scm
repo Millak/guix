@@ -12380,11 +12380,8 @@ non-privileged user.")
            cmake-minimal
            desktop-file-utils
            gettext-minimal
-           glib
            `(,glib "bin")
-           gmime
            gobject-introspection
-           gsettings-desktop-schemas
            itstool
            libarchive
            libxml2
