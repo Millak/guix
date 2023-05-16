@@ -7648,21 +7648,25 @@ the section, chapter or document.")
 
 (define-public texlive-enumitem
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-enumitem"
-      (list "doc/latex/enumitem/" "tex/latex/enumitem/")
-      (base32 "0qwbyjb4a82qjxrfmz06v3w5vly75id4ix4sw7lz2az68kz080dv")
-      #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/enumitem")
-    (synopsis "Customize basic list environments")
+    (name "texlive-enumitem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/enumitem/" "tex/latex/enumitem/")
+             (base32
+              "0qwbyjb4a82qjxrfmz06v3w5vly75id4ix4sw7lz2az68kz080dv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/enumitem")
+    (synopsis "Control layout of itemize, enumerate, description")
     (description
-     "This package is intended to ease customizing the three basic list
-environments: @code{enumerate}, @code{itemize} and @code{description}.  It
-extends their syntax to allow an optional argument where a set of parameters
-in the form @code{key=value} are available, for example:
-@code{\\begin{itemize}[itemsep=1ex,leftmargin=1cm]}.")
-    (license license:lppl1.3+)))
+     "This package provides user control over the layout of the three basic
+list environments: enumerate, itemize and description.  It supersedes both
+@code{enumerate} and @code{mdwlist} (providing well-structured replacements
+for all their functionality), and in addition provides functions to compute
+the layout of labels, and to clone the standard environments, to create new
+environments with counters of their own.")
+    (license license:expat)))
 
 (define-deprecated-package texlive-latex-enumitem texlive-enumitem)
 
