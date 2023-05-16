@@ -3712,14 +3712,17 @@ packages.")
 
 (define-public texlive-graphics-cfg
   (package
-    (inherit (simple-texlive-package
-              "texlive-graphics-cfg"
-              (list "/doc/latex/graphics-cfg/README.md"
-                    "/tex/latex/graphics-cfg/")
-              (base32
-               "00n63adb2laf43lzix39xl68aq0k5k80mmrw602w99w5n7f96gsf")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/latex-graphics")
+    (name "texlive-graphics-cfg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphics-cfg/"
+                   "tex/latex/graphics-cfg/")
+             (base32
+              "00n63adb2laf43lzix39xl68aq0k5k80mmrw602w99w5n7f96gsf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphics-cfg")
     (synopsis "Sample configuration files for LaTeX color and graphics")
     (description
      "This bundle includes @file{color.cfg} and @file{graphics.cfg} files that
