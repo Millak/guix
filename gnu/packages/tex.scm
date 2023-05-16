@@ -3755,19 +3755,22 @@ documents.  It comprises the packages @code{color}, @code{graphics},
 
 (define-public texlive-greek-fontenc
   (package
-    (inherit (simple-texlive-package
-              "texlive-greek-fontenc"
-              (list "doc/latex/greek-fontenc/"
-                    "tex/latex/greek-fontenc/"
-                    "source/latex/greek-fontenc/")
-              (base32
-               "1ncsvj5mlnkgllrvqdnbkv0qwpv2y7jkq3x2wdmm7d3daqq0ka5h")
-              #:trivial? #t))
-    (home-page "https://ctan.org/language/greek/greek-fontenc")
+    (name "texlive-greek-fontenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/greek-fontenc/"
+                   "source/latex/greek-fontenc/"
+                   "tex/latex/greek-fontenc/")
+             (base32
+              "1ncsvj5mlnkgllrvqdnbkv0qwpv2y7jkq3x2wdmm7d3daqq0ka5h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/greek-fontenc")
     (synopsis "LICR macros and encoding definition files for Greek")
     (description
-     "The package provides Greek LICR macro definitions and encoding definition files
-for Greek text font encodings for use with fontenc.")
+     "The package provides Greek LICR macro definitions and encoding
+definition files for Greek text font encodings for use with @code{fontenc}.")
     (license license:lppl1.3+)))
 
 (define-public texlive-hycolor
