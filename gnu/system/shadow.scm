@@ -458,6 +458,7 @@ the /etc/skel directory for those."
                                           (const '(user-homes)))
                        (service-extension etc-service-type
                                           etc-files)))
+                (default-value #f)
                 (description
                  "Ensure the specified user accounts and groups exist, as well
 as each account home directory.")))
