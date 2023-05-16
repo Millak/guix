@@ -4155,14 +4155,16 @@ are part of the LaTeX required tools distribution, comprising the packages:
 
 (define-public texlive-url
   (package
-    (inherit (simple-texlive-package
-              "texlive-url"
-              (list "/doc/latex/url/"
-                    "/tex/latex/url/")
-              (base32
-               "184m40wgnx939ky2hbxnj0v9aak023ldrhgffp0lgyk9wdqpxlqg")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/url")
+    (name "texlive-url")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/url/" "tex/latex/url/")
+             (base32
+              "184m40wgnx939ky2hbxnj0v9aak023ldrhgffp0lgyk9wdqpxlqg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/url")
     (synopsis "Verbatim with URL-sensitive line breaks")
     (description "The command @code{\\url} is a form of verbatim command that
 allows linebreaks at certain characters or combinations of characters, accepts
