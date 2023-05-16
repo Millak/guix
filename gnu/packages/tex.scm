@@ -5191,25 +5191,90 @@ It includes little more than the required set of LaTeX packages.")))
 
 (define-public texlive-tipa
   (package
-    (inherit (simple-texlive-package
-              "texlive-tipa"
-              (list "/tex4ht/ht-fonts/alias/tipa/"
-                    "/doc/fonts/tipa/"
-                    "/fonts/map/dvips/tipa/"
-                    "/fonts/source/public/tipa/"
-                    "/fonts/tfm/public/tipa/"
-                    "/fonts/type1/public/tipa/"
-                    "/tex/latex/tipa/")
-              (base32
-               "0cqzf8vb10b8jw99m9gflskxa4c3rpiznxglix6chl5lai5sgw44")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/tipa")
+    (name "texlive-tipa")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/tipa/"
+                   "fonts/map/dvips/tipa/"
+                   "fonts/source/public/tipa/"
+                   "fonts/tfm/public/tipa/"
+                   "fonts/type1/public/tipa/"
+                   "tex/latex/tipa/")
+             (base32
+              "11gi7yhq2lnfgvqa29i0sidi5mwkzpja5ggdcpvqwv4xljf4vpvh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build texlive-build-system)
+        (guix build utils)
+        (ice-9 regex)
+        (srfi srfi-1)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'generate-fonts-metrics
+            (lambda _
+              (let ((mf #$(this-package-native-input "texlive-metafont"))
+                    (cm #$(this-package-native-input "texlive-cm"))
+                    (fonts-directories
+                     (delete-duplicates
+                      (map dirname
+                           (find-files "." "[0-9]+\\.mf$"))))
+                    (root (getcwd)))
+                (mkdir-p "build")
+                ;; Tell mf where to find mf.base.
+                (setenv "MFBASES" (string-append mf "/share/texmf-dist/web2c"))
+                (for-each
+                 (lambda (directory)
+                   ;; Tell mf where to look for source files.
+                   (setenv "MFINPUTS"
+                           (string-append
+                            (getcwd) "/" directory ":"
+                            mf "/share/texmf-dist/metafont/base:"
+                            cm "/share/texmf-dist/fonts/source/public/cm"))
+                   ;; Build font metrics (tfm).
+                   (with-directory-excursion directory
+                     (for-each (lambda (font)
+                                 (format #t "building font ~a\n" font)
+                                 (invoke "mf" "-progname=mf"
+                                         (string-append "-output-directory="
+                                                        root "/build")
+                                         (string-append "\\"
+                                                        "mode:=ljfour; "
+                                                        "mag:=1; "
+                                                        "batchmode; "
+                                                        "input "
+                                                        (basename font ".mf"))))
+                               ;; "tipasym[1-4].mf are files to be included in
+                               ;; other ".mf" files and should not be compiled
+                               ;; by themselves.
+                               (filter
+                                (negate
+                                 (cut string-match "tipasym[0-9]\\.mf$" <>))
+                                (find-files "." "[0-9]+\\.mf$"))))
+                   ;; Install font metrics at the appropriate location.
+                   (let ((destination
+                          ;; fonts/source/xxx/yyy/... -> fonts/tfm/xxx/yyy/...
+                          (string-append "fonts/tfm"
+                                         (string-drop
+                                          directory
+                                          (string-length "fonts/source")))))
+                     (format #t "moving font metrics in ~a\n" destination)
+                     (for-each (cut install-file <> destination)
+                               (find-files "build/" "\\.tfm$"))))
+                 fonts-directories)))))))
+    (native-inputs
+     (list texlive-cm texlive-metafont))
+    (home-page "https://ctan.org/pkg/tipa")
     (synopsis "Fonts and macros for IPA phonetics characters")
-    (description "These fonts are considered the \"ultimate answer\" to IPA
-typesetting.  The encoding of these 8-bit fonts has been registered as LaTeX
-standard encoding T3, and the set of addendum symbols as encoding
-TS3. \"Times-like\" Adobe Type 1 versions are provided for both the T3 and the
-TS3 fonts.")
+    (description
+     "These fonts are considered the ultimate answer to IPA typesetting.  The
+encoding of these 8-bit fonts has been registered as LaTeX standard encoding
+T3, and the set of addendum symbols as encoding TS3.  Times-like Adobe Type
+1 versions are provided for both the T3 and the TS3 fonts.")
     (license license:lppl)))
 
 (define-public texlive-amsrefs
