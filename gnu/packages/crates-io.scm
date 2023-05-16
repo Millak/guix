@@ -8601,7 +8601,7 @@ Bresenham's line algorithm.")
 (define-public rust-brotli-3
   (package
     (name "rust-brotli")
-    (version "3.3.0")
+    (version "3.3.4")
     (source
      (origin
        (method url-fetch)
@@ -8609,7 +8609,7 @@ Bresenham's line algorithm.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0gk1g3fx1vps2ic8kh5n32gzq9h5w1j3ff6lvjm171ph428r2abz"))))
+         "0s7z0nrv04wxniwijh5iig1w31sphc6lz38zc8lr7qlarkdv3851"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
