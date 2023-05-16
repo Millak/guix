@@ -12990,7 +12990,7 @@ builds @code{lapack}:
 
 @example
 guix build lapack \
-  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+  --with-configure-flag=lapack=-DBUILD_SHARED_LIBS=OFF
 @end example
 
 @quotation Note

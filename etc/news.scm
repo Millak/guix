@@ -39,7 +39,7 @@ the build system of the @code{lapack} package:
 
 @example
 guix build lapack \\
-  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+  --with-configure-flag=lapack=-DBUILD_SHARED_LIBS=OFF
 @end example
 
 Run @command{info \"(guix) Package Transformation Options\"} for more info.")
@@ -50,7 +50,7 @@ Befehlszeilenoption für configure mitzugeben.  Zum Beispiel können Sie dem
 
 @example
 guix build lapack \\
-  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+  --with-configure-flag=lapack=-DBUILD_SHARED_LIBS=OFF
 @end example
 
 Führen Sie für mehr Informationen @command{info \"(guix.de)
@@ -63,7 +63,7 @@ un drapeau à @command{cmake}, le système de construction du logiciel
 
 @example
 guix build lapack \\
-  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+  --with-configure-flag=lapack=-DBUILD_SHARED_LIBS=OFF
 @end example
 
 Voir @command{info \"(guix.fr) Options de transformation de paquets\"} pour
