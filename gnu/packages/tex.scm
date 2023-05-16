@@ -3630,14 +3630,16 @@ users, via its Plain TeX version.)")
 
 (define-public texlive-fancyvrb
   (package
-    (inherit (simple-texlive-package
-              "texlive-fancyvrb"
-              (list "/doc/latex/fancyvrb/README"
-                    "/tex/latex/fancyvrb/")
-              (base32
-               "0pdilgpw4zc0ipp4z9kdi61nymifyjy2mfpk74xk2cw9vhynkk3w")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/fancyvrb")
+    (name "texlive-fancyvrb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancyvrb/" "tex/latex/fancyvrb/")
+             (base32
+              "0c7y3hfhsvn3qipkq0g5zl9r6aa7bhjvrafxn0w29rpxgs3mc4jj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancyvrb")
     (synopsis "Sophisticated verbatim text")
     (description
      "This package provides tools for the flexible handling of verbatim text
@@ -3646,7 +3648,7 @@ with many parameters; ability to define new customized verbatim environments;
 save and restore verbatim text and environments; write and read files in
 verbatim mode; build \"example\" environments (showing both result and
 verbatim source).")
-    (license license:lppl1.0+)))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-fancyvrb texlive-fancyvrb)
 
