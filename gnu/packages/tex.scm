@@ -6629,29 +6629,31 @@ hypertext linkages in some cases).")
 
 (define-public texlive-textcase
   (package
-    (inherit (simple-texlive-package
-              "texlive-textcase"
-              (list "doc/latex/textcase/"
-                    "tex/latex/textcase/"
-                    "source/latex/textcase/")
-              (base32
-               "185fibd41wd0v51gnai29ygi32snkk00p00110kcnk1bcnmpiw82")
-              #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/textcase")
+    (name "texlive-textcase")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textcase/" "source/latex/textcase/"
+                   "tex/latex/textcase/")
+             (base32
+              "185fibd41wd0v51gnai29ygi32snkk00p00110kcnk1bcnmpiw82")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/textcase")
     (synopsis "Case conversion ignoring mathematics, etc")
     (description
-     "The textcase package offers commands @code{\\MakeTextUppercase} and
-@code{\\MakeTextLowercase} are similar to the standard @code{\\MakeUppercase}
-and @code{\\MakeLowercase}, but they do not change the case of any sections of
-mathematics, or the arguments of @code{\\cite}, @code{\\label} and
-@code{\\ref} commands within the argument.  A further command
-@code{\\NoCaseChange} does nothing but suppress case change within its
+     "The @code{textcase} package offers commands @code{\\MakeTextUppercase}
+and @code{\\MakeTextLowercase} are similar to the standard
+@code{\\MakeUppercase} and @code{\\MakeLowercase}, but they do not change the
+case of any sections of mathematics, or the arguments of @code{\\cite},
+@code{\\label} and @code{\\ref} commands within the argument.  A further
+command @code{\\NoCaseChange} does nothing but suppress case change within its
 argument, so to force uppercase of a section including an environment, one
 might say:
 
 @example
 \\MakeTextUppercase{...\\NoCaseChange{\\begin{foo}} ...\\NoCaseChange{\\end{foo}}...}
-@end example\n")
+@end example")
     (license license:lppl)))
 
 (define-public texlive-upquote
