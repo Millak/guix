@@ -42287,7 +42287,7 @@ signing/verification, and general purpose curve arithmetic support.")
 (define-public rust-packed-simd-0.3
   (package
     (name "rust-packed-simd")
-    (version "0.3.3")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
@@ -42296,19 +42296,25 @@ signing/verification, and general purpose curve arithmetic support.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0822wqf6kzw4ig9ykndg348w2bxkhs3x64brzsvdxh2a1pyajpm8"))))
+         "17xih19yr6izg1d065d2ax29axs7bmywnxa3qps0l6d3bd4nbybc"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+       (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-core-arch" ,rust-core-arch-0.1)
+        ("rust-libm" ,rust-libm-0.1)
         ("rust-sleef-sys" ,rust-sleef-sys-0.1))
        #:cargo-development-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.4)
+       (("rust-arrayvec" ,rust-arrayvec-0.5)
         ("rust-paste" ,rust-paste-0.1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.2))))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/rust-lang/packed_simd")
     (synopsis "Portable Packed SIMD vectors")
     (description "Portable Packed SIMD vectors.")
