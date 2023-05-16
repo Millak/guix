@@ -53322,34 +53322,6 @@ Rayon-core represents the \"core, stable\" APIs of Rayon: join, scope, and so
 forth, as well as the ability to create custom thread-pools with ThreadPool.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-rustc-rayon-core-0.3
-  (package
-    (inherit rust-rustc-rayon-core-0.4)
-    (name "rust-rustc-rayon-core")
-    (version "0.3.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rustc-rayon-core" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1cwc50mcclzfmhmi87953fjk6cc9ppmchn9mlwzfllq03y1jf97a"))))
-    (arguments
-     `(#:tests? #f
-       #:cargo-inputs
-       (("rust-crossbeam-deque" ,rust-crossbeam-deque-0.7)
-        ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.1)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.6)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-num-cpus" ,rust-num-cpus-1))
-       #:cargo-development-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-rand" ,rust-rand-0.6)
-        ("rust-rand-xorshift" ,rust-rand-xorshift-0.1)
-        ("rust-scoped-tls" ,rust-scoped-tls-1))))))
-
 (define-public rust-rustc-serialize-0.3
   (package
     (name "rust-rustc-serialize")
