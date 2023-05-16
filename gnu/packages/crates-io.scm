@@ -9280,22 +9280,22 @@ validation framework for Rust.")
 (define-public rust-bytecount-0.6
   (package
     (name "rust-bytecount")
-    (version "0.6.2")
+    (version "0.6.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bytecount" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0bklbbl5ml9ic18s9kn5iix1grrqc6sypz6hvfn8sjc6zhgv7zkj"))))
+                "173wsvyagflb7ic3hpvp1db6q3dsigr452inslnzmsb3ix3nlrrc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-packed-simd-2" ,rust-packed-simd-2-0.3))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-rand" ,rust-rand-0.7))))
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/llogiq/bytecount")
     (synopsis "Count occurrences of a given byte")
     (description
