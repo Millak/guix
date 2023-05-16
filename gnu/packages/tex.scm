@@ -3030,39 +3030,23 @@ T2A.")
     (license license:lppl)))
 
 (define-public texlive-ruhyphen
-  (let ((template (simple-texlive-package
-                   "texlive-ruhyphen"
-                   (list "/source/generic/ruhyphen/"
-                         "/tex/generic/ruhyphen/")
-                   (base32
-                    "18n1bqhh8jv765vz3a3fjwffy7m71vhwx9yq8zl0p5j7p72q9qcn")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (replace 'build
-               (lambda _
-                 (let ((cwd (getcwd)))
-                   ;; Remove generated files.
-                   (for-each delete-file
-                             (find-files "tex/generic/ruhyphen/"
-                                         "^cyry.*.tex$"))
-                   (substitute* "source/generic/ruhyphen/Makefile"
-                     (("./mkcyryo") (string-append cwd "/source/generic/ruhyphen/mkcyryo")))
-                   (with-directory-excursion "tex/generic/ruhyphen"
-                     (invoke "make" "-f"
-                             (string-append cwd "/source/generic/ruhyphen/Makefile"))))))))))
-      (native-inputs
-       (list coreutils gawk sed grep perl))
-      (home-page "https://www.ctan.org/pkg/ruhyphen")
-      (synopsis "Hyphenation patterns for Russian")
-      (description "The package provides a collection of Russian hyphenation
+  (package
+    (name "texlive-ruhyphen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "source/generic/ruhyphen/"
+                   "tex/generic/ruhyphen/")
+             (base32
+              "18n1bqhh8jv765vz3a3fjwffy7m71vhwx9yq8zl0p5j7p72q9qcn")))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
+    (home-page "https://ctan.org/pkg/ruhyphen")
+    (synopsis "Hyphenation patterns for Russian")
+    (description "The package provides a collection of Russian hyphenation
 patterns supporting a number of Cyrillic font encodings, including T2,
 UCY (Omega Unicode Cyrillic), LCY, LWN (OT2), and koi8-r.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-public texlive-inputenx
   (package
