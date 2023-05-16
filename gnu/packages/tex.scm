@@ -6095,21 +6095,28 @@ to something that's not a float.")
 
 (define-public texlive-carlisle
   (package
-    (inherit (simple-texlive-package
-              "texlive-carlisle"
-              (list "doc/latex/carlisle/"
-                    "source/latex/carlisle/"
-                    "tex/latex/carlisle/")
-              (base32 "139k4n8dv6pbal1mx4m8b239x3i9cw61f6digk9mxscbxwvxfngb")
-              #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/carlisle")
+    (name "texlive-carlisle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/carlisle/" "source/latex/carlisle/"
+                   "tex/latex/carlisle/")
+             (base32
+              "139k4n8dv6pbal1mx4m8b239x3i9cw61f6digk9mxscbxwvxfngb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-graphics
+           texlive-tools))
+    (home-page "https://ctan.org/pkg/carlisle")
     (synopsis "David Carlisle's small packages")
     (description
      "Many of David Carlisle's more substantial packages stand on their own,
 or as part of the LaTeX latex-tools set; this set contains: making dotless
 @emph{j} characters for fonts that don't have them; a method for combining the
-capabilities of longtable and tabularx; an environment for including plain TeX
-in LaTeX documents; a jiffy to create slashed characters for physicists.")
+capabilities of @code{longtable} and @code{tabularx}; an environment for
+including plain TeX in LaTeX documents; a jiffy to create slashed characters
+for physicists.")
     (license license:lppl)))
 
 (define-public texlive-catchfile
