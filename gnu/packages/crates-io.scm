@@ -18612,14 +18612,14 @@ intelligently transliterating them.  It supports Emoji and Chinese.")
 (define-public rust-devise-0.2
   (package
     (name "rust-devise")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "devise" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lryvr39ia3rfswfnwn2zynsv2r8kj6gqqf0akcs0prws2i4pq3l"))))
+        (base32 "09p52f54givb0g9l7clj11z755vldk8758y2lwm5mp3sa156qwfx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
