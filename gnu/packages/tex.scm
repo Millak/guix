@@ -5791,32 +5791,34 @@ rotated.")
 
 (define-public texlive-pstool
   (package
-    (inherit (simple-texlive-package
-              "texlive-pstool"
-              (list "/doc/latex/pstool/"
-                    "/tex/latex/pstool/")
-              (base32
-               "12clzcw2cl7g2chr2phgmmiwxw4859cln1gbx1wgp8bl9iw590nc")
-              #:trivial? #t))
+    (name "texlive-pstool")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pstool/" "tex/latex/pstool/")
+             (base32
+              "12clzcw2cl7g2chr2phgmmiwxw4859cln1gbx1wgp8bl9iw590nc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
-     (list texlive-bigfoot ; for suffix
+     (list texlive-bigfoot              ; for suffix
            texlive-filemod
            texlive-graphics
            texlive-ifplatform
-           texlive-l3kernel ; for expl3
+           texlive-l3kernel             ; for expl3
            texlive-oberdiek
            texlive-psfrag
            texlive-tools                ; for shellesc
            texlive-trimspaces
            texlive-xkeyval))
-    (home-page "https://www.ctan.org/pkg/pstool")
-    (synopsis "Process PostScript graphics within pdfLaTeX documents")
+    (home-page "https://ctan.org/pkg/pstool")
+    (synopsis "Support for @code{psfrag} within pdfLaTeX")
     (description
      "This is a package for processing PostScript graphics with @code{psfrag}
 labels within pdfLaTeX documents.  Every graphic is compiled individually,
 drastically speeding up compilation time when only a single figure needs
 re-processing.")
-    (license license:lppl)))
+    (license license:lppl1.3c)))
 
 (define-deprecated-package texlive-latex-pstool texlive-pstool)
 
