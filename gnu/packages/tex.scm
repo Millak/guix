@@ -1311,24 +1311,24 @@ originals.")
 
 (define-public texlive-courier
   (package
-    (inherit (simple-texlive-package
-              "texlive-courier"
-              (list "/dvips/courier/"
-                    "/fonts/afm/adobe/courier/"
-                    "/fonts/afm/urw/courier/"
-                    "/fonts/map/dvips/courier/"
-                    "/fonts/tfm/adobe/courier/"
-                    "/fonts/tfm/urw35vf/courier/"
-                    "/fonts/type1/adobe/courier/"
-                    "/fonts/type1/urw/courier/"
-                    "/fonts/vf/adobe/courier/"
-                    "/fonts/vf/urw35vf/courier/"
-                    "/tex/latex/courier/"
-                    "/tex4ht/ht-fonts/alias/adobe/courier/"
-                    "/tex4ht/ht-fonts/unicode/adobe/courier/")
-              (base32
-               "05lglavi073glj26k9966351hka5ac22g4vim61dkfy001vz4i7r")
-              #:trivial? #t))
+    (name "texlive-courier")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/courier/"
+                   "fonts/afm/adobe/courier/"
+                   "fonts/afm/urw/courier/"
+                   "fonts/map/dvips/courier/"
+                   "fonts/tfm/adobe/courier/"
+                   "fonts/tfm/urw35vf/courier/"
+                   "fonts/type1/adobe/courier/"
+                   "fonts/type1/urw/courier/"
+                   "fonts/vf/adobe/courier/"
+                   "fonts/vf/urw35vf/courier/"
+                   "tex/latex/courier/")
+             (base32
+              "08g6lm12b0k6333pxcaqdf67v87fz5mrqp3jgal8qhrls5ym8q6r")))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
     (synopsis "URW Base 35 font pack for LaTeX")
     (description "This package provides a drop-in replacements for the Courier
