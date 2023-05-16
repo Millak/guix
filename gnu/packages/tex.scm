@@ -1398,21 +1398,24 @@ in LuaTeX.  It is required by the @code{luatexbase} package which uses
 
 (define-public texlive-lm
   (package
-    (inherit (simple-texlive-package
-              "texlive-lm"
-              (list "/doc/fonts/lm/"
-                    "/fonts/afm/public/lm/"
-                    "/fonts/enc/dvips/lm/"
-                    "/fonts/map/dvipdfm/lm/"
-                    "/fonts/map/dvips/lm/"
-                    "/fonts/opentype/public/lm/"
-                    "/fonts/tfm/public/lm/"
-                    "/fonts/type1/public/lm/"
-                    "/tex/latex/lm/")
-              (base32
-               "0yyk0dr4yms82mwy4dc03zf5igyhgcb65icdah042rk23rlpxygv")
-              #:trivial? #t))
-    (home-page "https://www.gust.org.pl/projects/e-foundry/latin-modern/")
+    (name "texlive-lm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/lm/"
+                   "fonts/afm/public/lm/"
+                   "fonts/enc/dvips/lm/"
+                   "fonts/map/dvipdfm/lm/"
+                   "fonts/map/dvips/lm/"
+                   "fonts/opentype/public/lm/"
+                   "fonts/tfm/public/lm/"
+                   "fonts/type1/public/lm/"
+                   "tex/latex/lm/")
+             (base32
+              "0yyk0dr4yms82mwy4dc03zf5igyhgcb65icdah042rk23rlpxygv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lm")
     (synopsis "Latin Modern family of fonts")
     (description "The Latin Modern fonts are derived from the famous Computer
 Modern fonts designed by Donald E. Knuth and described in Volume E of his
