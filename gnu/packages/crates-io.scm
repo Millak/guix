@@ -43867,14 +43867,14 @@ pdqsort.")
 (define-public rust-pear-0.1
   (package
     (name "rust-pear")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pear" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12mb00ick6y1slbxk6r4i8qxdbq8km3bs4pygjv94xwnvc9g482k"))))
+        (base32 "02lnp8c414z5ds0lskd4zxlalrjljzpkg8g6kizszij4h52sgprj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
