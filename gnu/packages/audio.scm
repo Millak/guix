@@ -5664,7 +5664,7 @@ with the provided metadata and adhere to well-known best practices.")
 (define-public ztoolkit
   (package
     (name "ztoolkit")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method git-fetch)
@@ -5674,7 +5674,7 @@ with the provided metadata and adhere to well-known best practices.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07xl3cmdaf7k9mm58m93cn8i1jvgimmiifdw1w7v2jl88nx60pm1"))))
+         "1k60zklrrnch4l0iyzwb4q0srdj3gggwq8cpldwgdhn26ddqkl0d"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
