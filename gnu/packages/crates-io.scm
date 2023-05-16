@@ -71765,20 +71765,20 @@ first byte.")
 (define-public rust-uuid-macro-internal-1
   (package
     (name "rust-uuid-macro-internal")
-    (version "1.3.0")
+    (version "1.3.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "uuid-macro-internal" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1jbccm5pk216zrrf0ibd1j7m86lgmsyibs8d59ykhak5g2l01cy1"))))
+                "1nj53qzhk4xqw6rkz33q40rjs0mx9pdbjg11xvhydwiayicv8rrz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/uuid-rs/uuid")
     (synopsis "@code{uuid!} macro implementation details")
     (description
