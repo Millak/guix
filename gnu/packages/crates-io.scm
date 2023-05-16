@@ -37318,7 +37318,7 @@ library.")
 (define-public rust-mysqlclient-sys-0.2
   (package
     (name "rust-mysqlclient-sys")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
@@ -37326,7 +37326,7 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "11ggkcbfnmp81amc9g0j98dk17fnmqcp9smgm9w401286kckg5ky"))))
+         "16wndr59cbpc2wgli45zfgi0hi837pbrsh1aqh2k0ads50akh6zn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
