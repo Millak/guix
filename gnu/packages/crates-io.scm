@@ -66489,11 +66489,10 @@ the current thread.")
     (description "This package provides future execution primitives.")
     (license license:expat)))
 
-;; Cyclic dependency with rust-tokio.
 (define-public rust-tokio-executor-0.1
   (package
     (name "rust-tokio-executor")
-    (version "0.1.7")
+    (version "0.1.10")
     (source
      (origin
        (method url-fetch)
@@ -66502,12 +66501,11 @@ the current thread.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0pjmgpg58k3hf5q9w6xjljsv8xy66lf734qnfwsc0g3pq3349sl3"))))
+         "0w8n78d2vixs1vghqc4wy9w0d1h6qkli51c1yzhzbns88n7inbgv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.6)
+     `(#:cargo-inputs
+       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
         ("rust-futures" ,rust-futures-0.1))
        #:cargo-development-inputs
        (("rust-tokio" ,rust-tokio-0.1))))
