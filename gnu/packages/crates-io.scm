@@ -67447,7 +67447,7 @@ futures-based code.")
 (define-public rust-tokio-threadpool-0.1
   (package
     (name "rust-tokio-threadpool")
-    (version "0.1.14")
+    (version "0.1.18")
     (source
      (origin
        (method url-fetch)
@@ -67456,23 +67456,23 @@ futures-based code.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1wkj3wixicsqvllm8w74b24knw6mdn00zslm8l9fm1p81gr8lmbj"))))
+         "12azq8jm71b7hdm72pxrgqm2879bn6b0fcdl1s7i2k3qh5jhnwnz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-crossbeam-deque" ,rust-crossbeam-deque-0.7)
-        ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.1)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.6)
-        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.2)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
         ("rust-futures" ,rust-futures-0.1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-rand" ,rust-rand-0.6)
         ("rust-slab" ,rust-slab-0.4)
         ("rust-tokio-executor" ,rust-tokio-executor-0.1))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.5)
+       (("rust-env-logger" ,rust-env-logger-0.6)
         ("rust-futures-cpupool" ,rust-futures-cpupool-0.1)
+        ("rust-rand" ,rust-rand-0.7)
         ("rust-threadpool" ,rust-threadpool-1))))
     (home-page "https://github.com/tokio-rs/tokio")
     (synopsis
