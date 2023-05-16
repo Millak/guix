@@ -68804,26 +68804,31 @@ be used directly.  See @code{rust-trackable} for more information.")
 (define-public rust-trash-2
   (package
     (name "rust-trash")
-    (version "2.0.2")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1g3wjnr5qvgvvi144mlgf0mh80dybmy9zv2xyswpm55p5p5vdsyk"))))
+        (base32 "14ji8b84ghwkln01v90ahhl2jkxv2qxkm0afprzphf1ln41k6nqi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-objc" ,rust-objc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-scopeguard" ,rust-scopeguard-1)
         ("rust-url" ,rust-url-2)
-        ("rust-windows" ,rust-windows-0.9)
-        ("rust-windows" ,rust-windows-0.9))))
+        ("rust-windows" ,rust-windows-0.9))
+       #:cargo-development-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serial-test" ,rust-serial-test-0.6))))
     (home-page "https://github.com/ArturKovacs/trash-rs")
     (synopsis "Library for moving files and folders to the recycle bin")
     (description
