@@ -6182,24 +6182,28 @@ hyperlink to the target of the DOI.")
 
 (define-public texlive-etoolbox
   (package
-    (inherit (simple-texlive-package
-              "texlive-etoolbox"
-              (list "/doc/latex/etoolbox/"
-                    "/tex/latex/etoolbox/")
-              (base32
-               "070iaj540rglf0c80l0hjkwg6aa7qyskhh4iwyhf7n8vrg5cjjab")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/etoolbox")
+    (name "texlive-etoolbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etoolbox/" "tex/latex/etoolbox/")
+             (base32
+              "070iaj540rglf0c80l0hjkwg6aa7qyskhh4iwyhf7n8vrg5cjjab")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etex))
+    (home-page "https://ctan.org/pkg/etoolbox")
     (synopsis "e-TeX tools for LaTeX")
     (description
-     "This package is a toolbox of programming facilities geared primarily
+     "The package is a toolbox of programming facilities geared primarily
 towards LaTeX class and package authors.  It provides LaTeX frontends to some
 of the new primitives provided by e-TeX as well as some generic tools which
 are not strictly related to e-TeX but match the profile of this package.  The
 package provides functions that seem to offer alternative ways of implementing
 some LaTeX kernel commands; nevertheless, the package will not modify any part
 of the LaTeX kernel.")
-    (license license:lppl1.3+)))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-etoolbox texlive-etoolbox)
 
