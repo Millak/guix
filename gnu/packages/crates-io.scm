@@ -38942,24 +38942,36 @@ while still providing platform specific APIs.")
   (package
     (inherit rust-nix-0.23)
     (name "rust-nix")
-    (version "0.22.1")
+    (version "0.22.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cahgzxhdwsaa8491n6cn8gadgfsxk5razyfw4xr3k34f5n5smg7"))))
+        (base32 "1bsgc8vjq07a1wg9vz819bva3dvn58an4r87h80dxrfqkqanz4g4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  ((">= 1\\.1\\.0, < 1\\.3\\.0") ">= 1.1.0"))))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Tests hang forever.
        #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1.2)
+       (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.6))))
+        ("rust-memoffset" ,rust-memoffset-0.6))
+       #:cargo-development-inputs
+       (("rust-assert-impl" ,rust-assert-impl-0.1)
+        ("rust-caps" ,rust-caps-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-sysctl" ,rust-sysctl-0.1)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (inputs
-     (list rust-bitflags-1.2 rust-cc-1 rust-cfg-if-1 rust-libc-0.2
+     (list rust-bitflags-1 rust-cc-1 rust-cfg-if-1 rust-libc-0.2
            rust-memoffset-0.6))))
 
 (define-public rust-nix-0.21
