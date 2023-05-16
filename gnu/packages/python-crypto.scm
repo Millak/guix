@@ -28,6 +28,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1024,14 +1025,14 @@ provides drop-in compatibility with PyCrypto.")))
 (define-public python-m2crypto
   (package
     (name "python-m2crypto")
-    (version "0.35.2")
+    (version "0.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "M2Crypto" version))
        (sha256
-        (base32 "09yirf3w77w6f49q6nxhrjm9c3a4y9s30s1k09chqrw8zdgx8sjc"))))
-    (build-system python-build-system)
+        (base32 "1jyynaybncgjp8rndrwjpj5gnbrislngimf6ind9874h6052dwlr"))))
+    (build-system pyproject-build-system)
     (arguments
      `(;; FIXME: Tests start failing with time due to date checks in TLS
        ;; certificates.
