@@ -6061,15 +6061,19 @@ including files to the root of the tree).  The package supersedes FiNK.")
 
 (define-public texlive-calrsfs
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-calrsfs"
-      (list "doc/latex/calrsfs/" "tex/latex/calrsfs/")
-      (base32 "0aqa0k0zzzicx5nynd29i9pdb7a4j6fvf1xwrbm4qg64pl55i6xa")
-      #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/calrsfs")
+    (name "texlive-calrsfs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/calrsfs/" "tex/latex/calrsfs/")
+             (base32
+              "0aqa0k0zzzicx5nynd29i9pdb7a4j6fvf1xwrbm4qg64pl55i6xa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/calrsfs")
     (synopsis "Copperplate calligraphic letters in LaTeX")
-    (description "This package provides a math interface to the Rsfs fonts.")
+    (description "This package provides a maths interface to the @code{rsfs}
+fonts.")
     (license license:public-domain)))
 
 (define-public texlive-capt-of
