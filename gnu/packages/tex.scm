@@ -7631,20 +7631,23 @@ provides means for easy customization of the list of notes.")
 
 (define-public texlive-endnotes
   (package
-    (inherit (simple-texlive-package
-              "texlive-endnotes"
-              (list "doc/latex/endnotes/"
-                    "tex/latex/endnotes/")
-              (base32
-               "1s7j5sg8fbhifng0gfqnghbvalbbh0p7j9v06r660w089364ypwz")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/endnotes")
-    (synopsis "Deal with endnotesings in strings")
+    (name "texlive-endnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/endnotes/" "tex/latex/endnotes/")
+             (base32
+              "1s7j5sg8fbhifng0gfqnghbvalbbh0p7j9v06r660w089364ypwz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/endnotes")
+    (synopsis "Place footnotes at the end")
     (description
-     "Accumulates notes (using the @code{\\endnote} command, which can be used
-as a replacement for @code{\\footnote}), and places them at the end of
-the section, chapter or document.")
-    (license license:lppl1.0+)))
+     "The @code{endnotes} package can be used to accumulate notes (using the
+@code{\\endnote} command, which can be used as a replacement for
+@code{\\footnote}), and place them at the end of the section, chapter or
+document.")
+    (license license:lppl1.2+)))
 
 (define-public texlive-enumitem
   (package
