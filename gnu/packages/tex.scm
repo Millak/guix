@@ -1012,91 +1012,40 @@ information in the TFM file.")
     (license license:public-domain)))
 
 (define-public texlive-fontinst
-  (let ((template (simple-texlive-package
-                   "texlive-fontinst"
-                   (list "/doc/fonts/fontinst/"
-                         "/doc/man/man1/fontinst.1"
-                         "/doc/man/man1/fontinst.man1.pdf"
-
-                         ;; This is used to build parts of
-                         ;; /tex/fontinst/{base,misc}/ and
-                         ;; /tex/latex/fontinst/fontdoc.sty.
-                         "/source/fontinst/base/"
-
-                         ;; These are not generated.
-                         "/tex/fontinst/base/bbox.sty"
-                         "/tex/fontinst/base/multislot.sty"
-                         "/tex/fontinst/misc/glyphbox.mtx"
-                         "/tex/fontinst/misc/glyphoff.mtx"
-                         "/tex/fontinst/misc/glyphon.mtx"
-                         "/tex/fontinst/misc/kernoff.mtx"
-                         "/tex/fontinst/misc/kernon.mtx"
-
-                         "/tex/fontinst/latinetx/"
-                         "/tex/fontinst/latinmtx/"
-                         "/tex/fontinst/mathmtx/"
-                         "/tex/fontinst/smblmtx/")
-                   (base32
-                    "195jsijrpv828pqy99gm13j31nsc8bsa58zlbln2r0h5j9l44b5g")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:modules _ '())
-          '((guix build gnu-build-system)
-            (guix build utils)
-            (ice-9 match)))
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (replace 'build
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "TEXINPUTS"
-                         (string-append (getcwd) "//:"
-                                        (getcwd) "/source/fontinst/base//:"
-                                        (assoc-ref inputs "texlive-docstrip") "//"))
-                 (mkdir "build")
-                 (invoke "tex" "-ini" "-interaction=scrollmode"
-                         "-output-directory=build"
-                         "fontinst.ins")))
-             ;; Since we're using docstrip without LaTeX we can't set \UseTDS
-             ;; or \BaseDirectory, so the generated files are just dumped in
-             ;; the "build" directory.
-             (add-after 'install 'install-generated-files
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (root (string-append out "/share/texmf-dist")))
-                   (for-each (match-lambda
-                               ((dir files ...)
-                                (for-each (lambda (file)
-                                            (install-file
-                                             (string-append "build/" file)
-                                             (string-append root dir)))
-                                          files)))
-                             '(("/tex/fontinst/base"
-                                "fontinst.sty"
-                                "cfntinst.sty"
-                                "xfntinst.sty"
-                                "finstmsc.sty"
-                                "fontinst.ini")
-                               ("/tex/fontinst/misc"
-                                "csc2x.tex"
-                                "csckrn2x.tex"
-                                "osf2x.tex")
-                               ("/tex/latex/fontinst"
-                                "fontdoc.sty")))
-                   #t)))))))
-      (native-inputs
-       (list texlive-bin texlive-docstrip))
-      (home-page "https://www.ctan.org/pkg/fontinst")
-      (synopsis "Tools for converting and installing fonts for TeX and LaTeX")
-      (description "This package provides TeX macros for converting Adobe Font
-Metric files to TeX metric and virtual font format.  Fontinst helps mainly
-with the number crunching and shovelling parts of font installation.  This
-means in practice that it creates a number of files which give the TeX
-metrics (and related information) for a font family that TeX needs to do any
-typesetting in these fonts.")
-      (license license:lppl1.1+))))
+  (package
+    (name "texlive-fontinst")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fontinst/"
+                   "doc/man/man1/fontinst.1"
+                   "doc/man/man1/fontinst.man1.pdf"
+                   ;; Extract the sole script expected in the package.
+                   "scripts/texlive-extra/fontinst.sh"
+                   "source/fontinst/base/"
+                   "tex/fontinst/base/"
+                   "tex/fontinst/latinetx/"
+                   "tex/fontinst/latinmtx/"
+                   "tex/fontinst/mathetx/"
+                   "tex/fontinst/mathmtx/"
+                   "tex/fontinst/misc/"
+                   "tex/fontinst/smbletx/"
+                   "tex/fontinst/smblmtx/"
+                   "tex/latex/fontinst/")
+             (base32
+              "0fbfhjbp7gxbwsbybbb8gm4l6za17nrm2mx2i2xa66lmpqcjbgg7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontinst")
+    (synopsis "Tools for converting and installing fonts for TeX and LaTeX")
+    (description
+     "This package provides TeX macros for converting Adobe Font Metric files
+to TeX metric and virtual font format.  Fontinst helps mainly with the number
+crunching and shovelling parts of font installation.  This means in practice
+that it creates a number of files which give the TeX metrics (and related
+information) for a font family that TeX needs to do any typesetting in these
+fonts.")
+    (license license:lppl1.1+)))
 
 (define-deprecated-package texlive-tex-fontinst-base texlive-fontinst)
 
