@@ -4558,14 +4558,18 @@ this bundle for use independent of ConTeXt.")
 
 (define-public texlive-lua-alt-getopt
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-lua-alt-getopt"
-      (list "doc/support/lua-alt-getopt/" "scripts/lua-alt-getopt/")
-      (base32 "0cizxzn33n3pn98xkqnxb8s6vdwkar3xrwhraqrs05pjfdn9d4wz")
-      #:trivial? #t))
-    (home-page "https://ctan.org/support/lualibs/lua-alt-getopt")
-    (synopsis "Process application arguments the same way as getopt_long")
+    (name "texlive-lua-alt-getopt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/lua-alt-getopt/"
+                   "scripts/lua-alt-getopt/")
+             (base32
+              "0cizxzn33n3pn98xkqnxb8s6vdwkar3xrwhraqrs05pjfdn9d4wz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-alt-getopt")
+    (synopsis "Process application arguments as @code{getopt_long}")
     (description
      "This package provides a Lua module for processing application arguments
 in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
