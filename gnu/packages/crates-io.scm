@@ -41916,19 +41916,19 @@ easy and usable crypto while trying to minimize the use of unsafe code.")
 (define-public rust-os-pipe-1
   (package
     (name "rust-os-pipe")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "os-pipe" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "04ls83i290scb8sfzdzj9b3kr9yplb5k864kg841cjzkz8hbngd5"))))
+         (base32 "0xy1igr1jfd9ijhr4sccvl8mzp0jic7njdmr56lsk3220ym5ks0a"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-windows-sys" ,rust-windows-sys-0.45))))
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (native-inputs
      (list python-minimal-wrapper))     ; For the tests.
     (home-page "https://github.com/oconnor663/os_pipe.rs")
