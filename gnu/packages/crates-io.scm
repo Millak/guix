@@ -62821,18 +62821,18 @@ a syntax tree of Rust source code.")
 (define-public rust-synchronoise-1
   (package
     (name "rust-synchronoise")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "synchronoise" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1szasv8xl6z3gxfq8h8wllw2mq53d71nn29achxsnfcxzh7fs5yp"))))
+                "1wnylkdf84520ks7a70fnwds2wibxmnkgqzz3j6ww9n61wwh3g1x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.1))))
+       (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3))))
     (home-page "https://github.com/QuietMisdreavus/synchronoise")
     (synopsis "Synchronization primitives")
     (description
