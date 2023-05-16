@@ -52780,7 +52780,7 @@ hashing function.")
 (define-public rust-rust-decimal-1
   (package
     (name "rust-rust-decimal")
-    (version "1.14.3")
+    (version "1.17.0")
     (source
       (origin
         (method url-fetch)
@@ -52789,7 +52789,7 @@ hashing function.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "10k58hf367626d4akl7ifyk5qwqphfs5x6z1yay22pkyc6w7q4h1"))))
+          "1s3k05vpq9ba8mj1wx1fj52kdbq1n8y88zvkrbf0wh0zdbwpadrm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; not all test files included.
@@ -52807,6 +52807,7 @@ hashing function.")
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
         ("rust-bytes" ,rust-bytes-1)
+        ("rust-criterion" ,rust-criterion-0.3)
         ("rust-csv" ,rust-csv-1)
         ("rust-futures" ,rust-futures-0.3)
         ("rust-serde-derive" ,rust-serde-derive-1)
