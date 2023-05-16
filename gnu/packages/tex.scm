@@ -3676,18 +3676,20 @@ the @file{.tex} extension.")
 
 (define-public texlive-glyphlist
   (package
-    (inherit (simple-texlive-package
-              "texlive-glyphlist"
-              (list "fonts/map/glyphlist/")
-              (base32
-               "12nmmyh77vr2622lzi11nm1z1k2bxs7jz018yl4rwjlpg0sxg1ja")
-              #:trivial? #t))
-    (home-page "https://www.tug.org/texlive/")
-    (synopsis "Adobe glyph list and TeX extensions")
+    (name "texlive-glyphlist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/map/glyphlist/")
+             (base32
+              "12nmmyh77vr2622lzi11nm1z1k2bxs7jz018yl4rwjlpg0sxg1ja")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glyphlist")
+    (synopsis "Adobe Glyph List and TeX extensions")
     (description
      "This package provides a map between traditional Adobe glyph names and
 Unicode points; it is maintained by Adobe.  The additional
-@file{texglyphlist.txt} is maintained as part of lcdf-typetools.")
+@file{texglyphlist.txt} is maintained as part of @code{lcdf-typetools}.")
     (license license:asl2.0)))
 
 (define-public texlive-graphics-def
