@@ -3066,21 +3066,23 @@ UCY (Omega Unicode Cyrillic), LCY, LWN (OT2), and koi8-r.")
 
 (define-public texlive-inputenx
   (package
-    (inherit (simple-texlive-package
-              "texlive-inputenx"
-              (list "doc/latex/inputenx/"
-                    "tex/latex/inputenx/"
-                    "source/latex/inputenx/")
-              (base32
-               "0snjndrcynm4w8m9iq8gmadzhrbwvsdy4y1ak24ia0hpsicdi4aj")
-              #:trivial? #t))
-    (home-page "https://ctan.org/macros/latex/contrib/inputenx")
+    (name "texlive-inputenx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inputenx/" "source/latex/inputenx/"
+                   "tex/latex/inputenx/")
+             (base32
+              "0snjndrcynm4w8m9iq8gmadzhrbwvsdy4y1ak24ia0hpsicdi4aj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inputenx")
     (synopsis "Enhanced input encoding handling")
     (description
-     "This package deals with input encodings.  It provides a wider range of input
-encodings using standard mappings, than does inputenc.  It also covers nearly all
-slots.  In this way, it serves as more up to date replacement for the inputenc
-package.")
+     "This package deals with input encodings.  It provides a wider range of
+input encodings using standard mappings, than does @code{inputenc}.  It also
+covers nearly all slots.  In this way, it serves as more up to date
+replacement for the @code{inputenc} package.")
     (license license:lppl1.3+)))
 
 (define-public texlive-kpathsea
