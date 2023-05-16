@@ -3654,17 +3654,17 @@ ArrayVec and ArrayString.")
 (define-public rust-arrow-5
   (package
     (name "rust-arrow")
-    (version "5.2.0")
+    (version "5.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arrow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zj2sjlnkwz2sdfc83zcz75vg1d3900h8ix15nkjsbz5hd1pzvri"))))
+        (base32 "0c8j4766cfjc04dmcyayigbn6mim9cfys78a64ilw26qrxpyhy16"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-chrono" ,rust-chrono-0.4)
@@ -3683,7 +3683,11 @@ ArrayVec and ArrayString.")
         ("rust-regex" ,rust-regex-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
+        ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/apache/arrow-rs")
     (synopsis "Rust implementation of Apache Arrow")
     (description
