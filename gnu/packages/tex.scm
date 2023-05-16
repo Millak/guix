@@ -4601,33 +4601,33 @@ upgrade smoothly to the new support structure.")
 ;; TODO: We should be able to build this from the sources on Github with
 ;; texlive-l3build, but I haven't been able to get it to work.
 (define-public texlive-luaotfload
-  (let ((template (simple-texlive-package
-                   "texlive-luaotfload"
-                   (list "/doc/luatex/luaotfload/"
-                         "/doc/man/man1/luaotfload-tool.1"
-                         "/doc/man/man5/luaotfload.conf.5"
-                         "/source/luatex/luaotfload/fontloader-reference-load-order.lua"
-                         "/source/luatex/luaotfload/fontloader-reference-load-order.tex"
-                         "/scripts/luaotfload/luaotfload-tool.lua"
-                         "/tex/luatex/luaotfload/")
-                   (base32
-                    "10wznvxx3qsl88n560py5vyx5r3a3914anbqfhwcmhmwg097xxl4")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (propagated-inputs
-       (list texlive-lua-alt-getopt ;for luaotfload-tool
-             texlive-lualibs))
-      (home-page "https://github.com/lualatex/luaotfload")
-      (synopsis "OpenType font loader for LuaTeX")
-      (description
-       "Luaotfload is an adaptation of the ConTeXt font loading system for the
+  (package
+    (name "texlive-luaotfload")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/luaotfload/"
+                   "doc/man/man1/luaotfload-tool.1"
+                   "doc/man/man1/luaotfload-tool.man1.pdf"
+                   "doc/man/man5/luaotfload.conf.5"
+                   "doc/man/man5/luaotfload.conf.man5.pdf"
+                   "scripts/luaotfload/"
+                   "source/luatex/luaotfload/"
+                   "tex/luatex/luaotfload/")
+             (base32
+              "15xhnb4kyzmr11lj0md1d502cqrxyq6zdcq738z9394k6bas377f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-lm texlive-lua-alt-getopt texlive-lualibs))
+    (home-page "https://ctan.org/pkg/luaotfload")
+    (synopsis "OpenType font loader for LuaTeX")
+    (description
+     "Luaotfload is an adaptation of the ConTeXt font loading system for the
 Plain and LaTeX formats.  It allows OpenType fonts to be loaded with font
 features accessible using an extended font request syntax while providing
 compatibilitywith XeTeX.  By indexing metadata in a database it facilitates
 loading fonts by their proper names instead of file names.")
-      ;; GPL version 2 only
-      (license license:gpl2))))
+    (license license:gpl2)))
 
 (define-deprecated-package texlive-luatex-luaotfload texlive-luaotfload)
 
