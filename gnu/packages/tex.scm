@@ -6134,12 +6134,15 @@ in LaTeX documents; a jiffy to create slashed characters for physicists.")
 
 (define-public texlive-ddphonism
   (package
-    (inherit (simple-texlive-package
-              "texlive-ddphonism"
-              (list "doc/latex/ddphonism/"
-                    "tex/latex/ddphonism/")
-              (base32 "1p02ai76nnh6042pnmqv4n30z6yxsvyyk2nb9jk7xlyyc87zzbdd")
-              #:trivial? #t))
+    (name "texlive-ddphonism")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ddphonism/" "tex/latex/ddphonism/")
+             (base32
+              "1p02ai76nnh6042pnmqv4n30z6yxsvyyk2nb9jk7xlyyc87zzbdd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-etoolbox
            texlive-hyperref
@@ -6148,7 +6151,7 @@ in LaTeX documents; a jiffy to create slashed characters for physicists.")
            texlive-pgf
            texlive-tools
            texlive-xstring))
-    (home-page "https://www.ctan.org/pkg/ddphonism")
+    (home-page "https://ctan.org/pkg/ddphonism")
     (synopsis "Dodecaphonic diagrams for LaTeX")
     (description
      "This is a music-related package which is focused on notation from the
