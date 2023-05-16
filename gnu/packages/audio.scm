@@ -5692,6 +5692,16 @@ minimum.")
     (home-page "https://git.zrythm.org/zrythm/ztoolkit")
     (license license:agpl3+)))
 
+(define-public ztoolkit-rsvg
+  (package/inherit ztoolkit
+    (name "ztoolkit-rsvg")
+    (arguments
+     (list #:configure-flags '(list "-Denable_rsvg=true")))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs ztoolkit)
+       (prepend librsvg)))
+    (synopsis "ZToolkit with SVG support")))
+
 (define-public libinstpatch
   (package
     (name "libinstpatch")
@@ -5722,16 +5732,6 @@ for creating instrument sounds for wavetable synthesis.  libInstPatch provides
 an object framework (based on GObject) to load patch files, which can then be
 edited, converted, compressed and saved.")
     (license license:lgpl2.1)))
-
-(define-public ztoolkit-rsvg
-  (package/inherit ztoolkit
-    (name "ztoolkit-rsvg")
-    (arguments
-     `(#:configure-flags `("-Denable_rsvg=true")))
-    (propagated-inputs
-     `(("librsvg" ,librsvg)
-       ,@(package-propagated-inputs ztoolkit)))
-    (synopsis "ZToolkit with SVG support")))
 
 (define-public lsp-dsp-lib
   (package
