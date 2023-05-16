@@ -7410,19 +7410,21 @@ Adobe's basic set.")
 
 (define-public texlive-zapfding
   (package
-    (inherit (simple-texlive-package
-              "texlive-zapfding"
-              (list "/dvips/zapfding/"
-                    "/fonts/afm/adobe/zapfding/"
-                    "/fonts/afm/urw/zapfding/"
-                    "/fonts/tfm/adobe/zapfding/"
-                    "/fonts/tfm/urw35vf/zapfding/"
-                    "/fonts/type1/urw/zapfding/"
-                    "/fonts/map/dvips/zapfding/"
-                    "/tex/latex/zapfding/")
-              (base32
-               "17mls8wilz9api9ivsbcczpiqp1f39qy8wa6ajssi8zhnc5lq7zn")
-              #:trivial? #t))
+    (name "texlive-zapfding")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/zapfding/"
+                   "fonts/afm/adobe/zapfding/"
+                   "fonts/afm/urw/zapfding/"
+                   "fonts/map/dvips/zapfding/"
+                   "fonts/tfm/adobe/zapfding/"
+                   "fonts/tfm/urw35vf/zapfding/"
+                   "fonts/type1/urw/zapfding/"
+                   "tex/latex/zapfding/")
+             (base32
+              "17mls8wilz9api9ivsbcczpiqp1f39qy8wa6ajssi8zhnc5lq7zn")))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
     (synopsis "URW Base 35 font pack for LaTeX")
     (description
