@@ -3327,7 +3327,7 @@ coverage-guided, mutation-based fuzzers.")
   (package
     (inherit rust-arc-swap-1)
     (name "rust-arc-swap")
-    (version "0.4.4")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
@@ -3336,16 +3336,17 @@ coverage-guided, mutation-based fuzzers.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1zwswfi9n7n3hiq51w1xv34572k2diazx680rrxlc9w07c9akf6p"))))
+         "1a3vg89xc7r2166mc25ciw3rbqfxjylfbjwlq4wrfy433wc5mgns"))))
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.6)
-        ("rust-itertools" ,rust-itertools-0.8)
-        ("rust-model" ,rust-model-0.1)
+     `(;; These tests require network access.
+       #:cargo-test-flags '("--release" "--" "--skip=test_html_root_url")
+       #:cargo-development-inputs
+       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
+        ("rust-itertools" ,rust-itertools-0.9)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-proptest" ,rust-proptest-0.8)
-        ("rust-version-sync" ,rust-version-sync-0.8))))))
+        ("rust-proptest" ,rust-proptest-0.9)
+        ("rust-version-sync" ,rust-version-sync-0.9))))))
 
 (define-public rust-arg-enum-proc-macro-0.3
   (package
