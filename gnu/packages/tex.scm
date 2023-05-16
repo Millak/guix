@@ -2992,20 +2992,24 @@ patterns as well.")
 
 (define-public texlive-dehyph-exptl
   (package
-    (inherit (simple-texlive-package
-              "texlive-dehyph-exptl"
-              (list "/tex/generic/dehyph-exptl/"
-                    "/doc/generic/dehyph-exptl/")
-              (base32
-               "0l57a0r4gycp94kz6lrxqvh9m57j2shmbr2laf5zjb0qnrisq46d")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-hyphen-base texlive-hyph-utf8))
-    (home-page "http://projekte.dante.de/Trennmuster/WebHome")
+    (name "texlive-dehyph-exptl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/dehyph-exptl/"
+                   "tex/generic/dehyph-exptl/")
+             (base32
+              "0l57a0r4gycp94kz6lrxqvh9m57j2shmbr2laf5zjb0qnrisq46d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
+    (propagated-inputs (list texlive-hyph-utf8 texlive-hyphen-base))
+    (home-page "https://ctan.org/pkg/dehyph-exptl")
     (synopsis "Hyphenation patterns for German")
-    (description "The package provides experimental hyphenation patterns for
-the German language, covering both traditional and reformed orthography.  The
-patterns can be used with packages Babel and hyphsubst from the Oberdiek
+    (description
+     "The package provides experimental hyphenation patterns for the German
+language, covering both traditional and reformed orthography.  The patterns
+can be used with packages Babel and @code{hyphsubst} from the Oberdiek
 bundle.")
     ;; Hyphenation patterns are under the Expat license; documentation is
     ;; under LPPL.
