@@ -3084,65 +3084,84 @@ package.")
     (license license:lppl1.3+)))
 
 (define-public texlive-kpathsea
-  (let ((template (simple-texlive-package
-                   "texlive-kpathsea"
-                   (list "/web2c/amiga-pl.tcx"
-                         "/web2c/cp1250cs.tcx"
-                         "/web2c/cp1250pl.tcx"
-                         "/web2c/cp1250t1.tcx"
-                         "/web2c/cp227.tcx"
-                         "/web2c/cp852-cs.tcx"
-                         "/web2c/cp852-pl.tcx"
-                         "/web2c/cp8bit.tcx"
-                         "/web2c/empty.tcx"
-                         "/web2c/fmtutil.cnf"
-                         "/web2c/il1-t1.tcx"
-                         "/web2c/il2-cs.tcx"
-                         "/web2c/il2-pl.tcx"
-                         "/web2c/il2-t1.tcx"
-                         "/web2c/kam-cs.tcx"
-                         "/web2c/kam-t1.tcx"
-                         "/web2c/macce-pl.tcx"
-                         "/web2c/macce-t1.tcx"
-                         "/web2c/maz-pl.tcx"
-                         "/web2c/mktex.cnf"
-                         "/web2c/mktex.opt"
-                         "/web2c/mktexdir"
-                         "/web2c/mktexdir.opt"
-                         "/web2c/mktexnam"
-                         "/web2c/mktexnam.opt"
-                         "/web2c/mktexupd"
-                         "/web2c/natural.tcx"
-                         "/web2c/tcvn-t5.tcx"
-                         "/web2c/viscii-t5.tcx")
-                   (base32
-                    "08nfk5hicqbvnz73rjbxi97lcakd9i1k2cy4qi2cwghan92650jq")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases '%standard-phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'patch-references
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((dirs (map dirname (list (which "sed")
-                                                (which "awk")))))
-                   (substitute* '("web2c/mktexdir"
-                                  "web2c/mktexnam"
-                                  "web2c/mktexupd")
-                     (("^version=" m)
-                      (format #false "PATH=\"~{~a:~}$PATH\"; export PATH~%~a"
-                              dirs m))))))))))
-      (inputs
-       (list sed gawk))
-      (home-page "https://www.tug.org/texlive/")
-      (synopsis "Files related to the path searching library for TeX")
-      (description "Kpathsea is a library and utility programs which provide
-path searching facilities for TeX file types, including the self-locating
-feature required for movable installations, layered on top of a general search
-mechanism.  This package provides supporting files.")
-      (license license:lgpl3+))))
+  (package
+    (name "texlive-kpathsea")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/info/dir"
+                   "doc/info/kpathsea.info"
+                   "doc/info/tds.info"
+                   "doc/info/web2c.info"
+                   "doc/kpathsea/"
+                   "doc/man/man1/kpseaccess.1"
+                   "doc/man/man1/kpseaccess.man1.pdf"
+                   "doc/man/man1/kpsereadlink.1"
+                   "doc/man/man1/kpsereadlink.man1.pdf"
+                   "doc/man/man1/kpsestat.1"
+                   "doc/man/man1/kpsestat.man1.pdf"
+                   "doc/man/man1/kpsewhich.1"
+                   "doc/man/man1/kpsewhich.man1.pdf"
+                   "doc/web2c/web2c.html"
+                   "doc/web2c/web2c.pdf"
+                   "web2c/amiga-pl.tcx"
+                   "web2c/cp1250cs.tcx"
+                   "web2c/cp1250pl.tcx"
+                   "web2c/cp1250t1.tcx"
+                   "web2c/cp227.tcx"
+                   "web2c/cp852-cs.tcx"
+                   "web2c/cp852-pl.tcx"
+                   "web2c/cp8bit.tcx"
+                   "web2c/empty.tcx"
+                   "web2c/fmtutil.cnf"
+                   "web2c/il1-t1.tcx"
+                   "web2c/il2-cs.tcx"
+                   "web2c/il2-pl.tcx"
+                   "web2c/il2-t1.tcx"
+                   "web2c/kam-cs.tcx"
+                   "web2c/kam-t1.tcx"
+                   "web2c/macce-pl.tcx"
+                   "web2c/macce-t1.tcx"
+                   "web2c/maz-pl.tcx"
+                   "web2c/mktex.cnf"
+                   "web2c/mktex.opt"
+                   "web2c/mktexdir"
+                   "web2c/mktexdir.opt"
+                   "web2c/mktexnam"
+                   "web2c/mktexnam.opt"
+                   "web2c/mktexupd"
+                   "web2c/natural.tcx"
+                   "web2c/tcvn-t5.tcx"
+                   "web2c/texmf.cnf"
+                   "web2c/viscii-t5.tcx")
+             (base32
+              "0wfixvszpmri2j19wbg69fqw2iiqmn7blrbxhq17qddbwinm1dbq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:texlive-latex-base #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-references
+            (lambda _
+              (let ((dirs (map dirname (list (which "sed")
+                                             (which "awk")))))
+                (substitute* '("web2c/mktexdir"
+                               "web2c/mktexnam"
+                               "web2c/mktexupd")
+                  (("^version=" m)
+                   (format #false "PATH=\"~{~a:~}$PATH\"; export PATH~%~a"
+                           dirs m)))))))))
+    (inputs (list sed gawk))
+    (home-page "https://ctan.org/pkg/kpathsea")
+    (synopsis "Files related to the path searching library for TeX")
+    (description
+     "Kpathsea is a library and utility programs which provide path searching
+facilities for TeX file types, including the self-locating feature required
+for movable installations, layered on top of a general search mechanism.  This
+package provides supporting files.")
+    (license license:lgpl3+)))
 
 (define-public texlive-kpfonts
   (package
