@@ -7355,21 +7355,23 @@ TeX, and LaTeX font definition and other relevant files.")
 
 (define-public texlive-times
   (package
-    (inherit (simple-texlive-package
-              "texlive-times"
-              (list "/dvips/times/"
-                    "/fonts/afm/adobe/times/"
-                    "/fonts/afm/urw/times/"
-                    "/fonts/tfm/adobe/times/"
-                    "/fonts/tfm/urw35vf/times/"
-                    "/fonts/type1/urw/times/"
-                    "/fonts/vf/adobe/times/"
-                    "/fonts/vf/urw35vf/times/"
-                    "/fonts/map/dvips/times/"
-                    "/tex/latex/times/")
-              (base32
-               "13g41a7vbkvsf7ki9dgl7qm100w382mnlqkcngwgl3axp6s5s8l0")
-              #:trivial? #t))
+    (name "texlive-times")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/times/"
+                   "fonts/afm/adobe/times/"
+                   "fonts/afm/urw/times/"
+                   "fonts/map/dvips/times/"
+                   "fonts/tfm/adobe/times/"
+                   "fonts/tfm/urw35vf/times/"
+                   "fonts/type1/urw/times/"
+                   "fonts/vf/adobe/times/"
+                   "fonts/vf/urw35vf/times/"
+                   "tex/latex/times/")
+             (base32
+              "13g41a7vbkvsf7ki9dgl7qm100w382mnlqkcngwgl3axp6s5s8l0")))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
     (synopsis "URW Base 35 font pack for LaTeX")
     (description
