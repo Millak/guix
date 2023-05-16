@@ -71641,7 +71641,7 @@ first byte.")
 (define-public rust-uuid-1
   (package
     (name "rust-uuid")
-    (version "1.3.0")
+    (version "1.3.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "uuid" version))
@@ -71649,7 +71649,7 @@ first byte.")
                (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ygxkj6bgfjkbhpdj1s0607zi9l8886pcw04lryd647f4r9q8x0n"))))
+                "1lpcqp1z0zy3l00yd418dpjlpih9la2swm62gwk1nia24kil8m1l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
@@ -71661,7 +71661,7 @@ first byte.")
         ("rust-trybuild" ,rust-trybuild-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-windows-sys" ,rust-windows-sys-0.45))
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-atomic" ,rust-atomic-0.5)
