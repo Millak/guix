@@ -1338,19 +1338,24 @@ font from Adobe's basic set.")
 
 (define-public texlive-tex-gyre
   (package
-    (inherit (simple-texlive-package
-              "texlive-tex-gyre"
-              '("/doc/fonts/tex-gyre/GUST-FONT-LICENSE.txt"
-                "/fonts/afm/public/tex-gyre/"
-                "/fonts/enc/dvips/tex-gyre/"
-                "/fonts/map/dvips/tex-gyre/"
-                "/fonts/opentype/public/tex-gyre/"
-                "/fonts/tfm/public/tex-gyre/"
-                "/fonts/type1/public/tex-gyre/"
-                "/tex/latex/tex-gyre/")
-              (base32
-               "1ldnlmclghm3gnyv02r8a6cqybygz2ifq07mhykhf43h1pw3aq7k")
-              #:trivial? #t))
+    (name "texlive-tex-gyre")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/tex-gyre/"
+                   "fonts/afm/public/tex-gyre/"
+                   "fonts/enc/dvips/tex-gyre/"
+                   "fonts/map/dvips/tex-gyre/"
+                   "fonts/opentype/public/tex-gyre/"
+                   "fonts/tfm/public/tex-gyre/"
+                   "fonts/type1/public/tex-gyre/"
+                   "source/fonts/tex-gyre/"
+                   "tex/latex/tex-gyre/")
+             (base32
+              "0229aa7cgw614zlc2n589fi4hfdfnv7dd83f5mfa358zdb8iw54j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-kvoptions))
     (home-page "https://ctan.org/pkg/tex-gyre")
     (synopsis "TeX fonts extending URW fonts")
     (description
