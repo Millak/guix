@@ -1252,27 +1252,36 @@ display, and mathematical fonts in a range of styles, based on Monotype Modern
 
 (define-public texlive-cm-lgc
   (package
-    (inherit (simple-texlive-package
-              "texlive-cm-lgc"
-              (list "/doc/fonts/cm-lgc/"
-                    "/fonts/afm/public/cm-lgc/"
-                    "/fonts/type1/public/cm-lgc/"
-                    "/fonts/vf/public/cm-lgc/"
-                    "/tex/latex/cm-lgc/")
-              (base32
-               "0rm7wgyb07y8h6vbvc2xzsqnxy322d4j9ly2p67z84b81c8i3zpc")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/cm-lgc")
+    (name "texlive-cm-lgc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cm-lgc/"
+                   "fonts/afm/public/cm-lgc/"
+                   "fonts/enc/dvips/cm-lgc/"
+                   "fonts/map/dvips/cm-lgc/"
+                   "fonts/ofm/public/cm-lgc/"
+                   "fonts/ovf/public/cm-lgc/"
+                   "fonts/tfm/public/cm-lgc/"
+                   "fonts/type1/public/cm-lgc/"
+                   "fonts/vf/public/cm-lgc/"
+                   "tex/latex/cm-lgc/")
+             (base32
+              "1nj3gp0kpzlqkm22lj2ym9c95xw323xc5z91gsyv8xs716868gp2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cm-lgc")
     (synopsis "Type 1 CM-based fonts for Latin, Greek and Cyrillic")
-    (description "The fonts are converted from Metafont sources of the
-Computer Modern font families, using @command{textrace}.  Supported encodings
-are: T1 (Latin), T2A (Cyrillic), LGR (Greek) and TS1.  The package also
-includes Unicode virtual fonts for use with Omega.  The font set is not a
-replacement for any of the other Computer Modern-based font sets (for example,
-cm-super for Latin and Cyrillic, or cbgreek for Greek), since it is available
-at a single size only; it offers a compact set for @i{general} working.  The
-fonts themselves are encoded to external standards, and virtual fonts are
-provided for use with TeX.")
+    (description
+     "The fonts are converted from METAFONT sources of the Computer Modern
+font families, using @command{textrace}.  Supported encodings are: T1 (Latin),
+T2A (Cyrillic), LGR (Greek) and TS1.  The package also includes Unicode
+virtual fonts for use with Omega.  The font set is not a replacement for any
+of the other Computer Modern-based font sets (for example, cm-super for Latin
+and Cyrillic, or cbgreek for Greek), since it is available at a single size
+only; it offers a compact set for general working.  The fonts themselves are
+encoded to external standards, and virtual fonts are provided for use with
+TeX.")
     (license license:gpl2+)))
 
 (define-public texlive-cm-super
