@@ -4785,29 +4785,25 @@ polyglossia package rather than Babel.")
 
 (define-public texlive-cs
   (package
-    (inherit (simple-texlive-package
-              "texlive-cs"
-              (list
-               "fonts/enc/dvips/cs/"
-               "fonts/map/dvips/cs/"
-               "fonts/source/public/cs/"
-               ;; TODO: Remove these pre-built files after the manual
-               ;; build below is fixed.
-               ;; The font fails to build from the Metafont sources, with
-               ;; errors such as:
-               ;; This is METAFONT, Version 2.71828182 (TeX Live 2021/GNU Guix) [...]
-               ;; (./csaccent.mf
-               ;; >> cap_curve#-dot_size#
-               ;; ! Unknown relation will be considered false.
-               ;; <to be read again>
-               "fonts/tfm/cs/cs-a35/"
-               "fonts/tfm/cs/cs-charter/"
-               "fonts/tfm/public/cs/"
-               "fonts/type1/public/cs/"
-               "fonts/vf/cs/cs-a35/")
-              (base32 "1ww5lrqja051fh0ygmfdyy5a6bhwq9k5zv857vwiqf5syvw5djps")
-              #:trivial? #t))
-    (home-page "https://petr.olsak.net/cstex/")
+    (name "texlive-cs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             ;; FIXME: Cannot build font metrics: "cannot find cmb12".
+             (list "fonts/enc/dvips/cs/"
+                   "fonts/map/dvips/cs/"
+                   "fonts/source/public/cs/"
+                   "fonts/tfm/cs/cs-a35/"
+                   "fonts/tfm/cs/cs-charter/"
+                   "fonts/tfm/public/cs/"
+                   "fonts/type1/public/cs/"
+                   "fonts/vf/cs/cs-a35/"
+                   "fonts/vf/cs/cs-charter/")
+             (base32
+              "0nzzcg1yvbslhqm5lsfcpqh6sbzkmnmmgyakg9l8855qpa8g9bf3")))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-cmexb))
+    (home-page "https://ctan.org/pkg/csfonts")
     (synopsis "Czech/Slovak-tuned Computer Modern fonts")
     (description "This package provides Czech/Slovak-tuned Computer Modern
 fonts in the Metafont format; Type 1 format versions (csfonts-t1) are also
