@@ -1276,36 +1276,34 @@ provided for use with TeX.")
     (license license:gpl2+)))
 
 (define-public texlive-cm-super
-  (let ((template (simple-texlive-package
-                   "texlive-cm-super"
-                   (list "/doc/fonts/cm-super/"
-                         "/dvips/cm-super/"
-                         "/fonts/afm/public/cm-super/"
-                         "/fonts/enc/dvips/cm-super/"
-                         "/fonts/map/dvips/cm-super/"
-                         "/fonts/map/vtex/cm-super/"
-                         "/fonts/type1/public/cm-super/"
-                         "/tex/latex/cm-super/")
-                   (base32
-                    "1k3afl0x0bqbr5mnawbnp7rr2126dwn0vwnxzibm9ggvzqilnkm6")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (delete 'reset-gzip-timestamps)))))
-      (home-page "https://www.ctan.org/pkg/cm-super")
-      (synopsis "Computer Modern Super family of fonts")
-      (description "The CM-Super family provides Adobe Type 1 fonts that replace
-the T1/TS1-encoded Computer Modern (EC/TC), T1/TS1-encoded Concrete,
+  (package
+    (name "texlive-cm-super")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cm-super/"
+                   "dvips/cm-super/"
+                   "fonts/afm/public/cm-super/"
+                   "fonts/enc/dvips/cm-super/"
+                   "fonts/map/dvips/cm-super/"
+                   "fonts/map/vtex/cm-super/"
+                   "fonts/type1/public/cm-super/"
+                   "tex/latex/cm-super/")
+             (base32
+              "1k3afl0x0bqbr5mnawbnp7rr2126dwn0vwnxzibm9ggvzqilnkm6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cm-super")
+    (synopsis "Computer Modern Super family of fonts")
+    (description
+     "The CM-Super family provides Adobe Type 1 fonts that replace the
+T1/TS1-encoded Computer Modern (EC/TC), T1/TS1-encoded Concrete,
 T1/TS1-encoded CM bright and LH Cyrillic fonts (thus supporting all European
 languages except Greek), and bringing many ameliorations in typesetting
 quality.  The fonts exhibit the same metrics as the METAFONT-encoded
 originals.")
-      ;; With font exception
-      (license license:gpl2+))))
+    ;; With font exception
+    (license license:gpl2+)))
 
 (define-deprecated-package texlive-fonts-cm-super texlive-cm-super)
 
