@@ -66910,7 +66910,7 @@ in Rust.")
 (define-public rust-tokio-process-0.2
   (package
     (name "rust-tokio-process")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
@@ -66919,11 +66919,10 @@ in Rust.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1s6vi5n5iax4ksx3bzpfdhfbngj49mvq5n40np1d4aycp3qnxgdg"))))
+         "0hvygspal1v62kamkjxqygzr8cwnakccziivbnzaw7537zs90b9q"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-crossbeam-queue" ,rust-crossbeam-queue-0.1)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-lazy-static" ,rust-lazy-static-1)
