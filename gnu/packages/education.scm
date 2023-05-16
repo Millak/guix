@@ -452,11 +452,11 @@ specialized device.")
   ;; The last release builds from qtwebkit, which has been removed from
   ;; Guix, so use the latest commit of the 1.7-dev branch, which builds with
   ;; qtwebengine-5.
-  (let ((commit "39e914f600d26565706f0e5b6ea2482b8b4038c7") ;1.6.2-rc0311
-        (revision "1"))
+  (let ((commit "47a96e1d6bbdc0250977d22f1b79f11fcc1cbeee")
+        (revision "0"))
     (package
       (name "openboard")
-      (version (git-version "1.6.1" revision commit))
+      (version (git-version "1.7-dev" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -465,7 +465,7 @@ specialized device.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1763l5dywirzidzc93726dggf9819p47hh6a7p7dwzd1bfq1wb2q"))))
+          (base32 "04pwmg41vlkwigym3zzkid6srh6f05b44g4mbihd6mhj6vsagx1f"))))
       (build-system qt-build-system)
       (arguments
        (list
@@ -500,7 +500,7 @@ specialized device.")
             (add-after 'unpack 'fix-library-path
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "OpenBoard.pro"
-                  (("/usr/include/quazip")
+                  (("/usr/include/quazip5")
                    (search-input-directory inputs "/include/quazip5"))
                   (("/usr/include/poppler")
                    (search-input-directory inputs "/include/poppler")))))
