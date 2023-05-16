@@ -6267,7 +6267,7 @@ portable \"best effort\" constant-time operation and embedded-friendly
 (define-public rust-base-x-0.2
   (package
     (name "rust-base-x")
-    (version "0.2.6")
+    (version "0.2.11")
     (source
      (origin
        (method url-fetch)
@@ -6275,14 +6275,13 @@ portable \"best effort\" constant-time operation and embedded-friendly
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1hfy0wv7j5ynd73yk1vyr32pqa77rp15lkrc54f8ky9c6hcbc80v"))))
+         "0w02sdqvg7zwm91agb2phikw4ri8jmncw32paxsv8ra1jv8ckfsc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-development-inputs
+     `(#:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-json" ,rust-json-0.11)
-        ("rust-rand" ,rust-rand-0.3))))
+        ("rust-json" ,rust-json-0.12)
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/OrKoN/base-x-rs")
     (synopsis "Encode/decode any base")
     (description "This library provides for encoding and decoding any base.")
