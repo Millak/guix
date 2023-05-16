@@ -3015,15 +3015,18 @@ bundle.")
 
 (define-public texlive-ukrhyph
   (package
-    (inherit (simple-texlive-package
-              "texlive-ukrhyph"
-              (list "/doc/generic/ukrhyph/"
-                    "/tex/generic/ukrhyph/")
-              (base32
-               "01ma274sixcrbpb7fpqkxwfvrnzfj2srv9b4a42rfnph1pdql74z")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/ukrhyph")
-    (synopsis "Hyphenation patterns for Ukrainian")
+    (name "texlive-ukrhyph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/ukrhyph/" "tex/generic/ukrhyph/")
+             (base32
+              "01ma274sixcrbpb7fpqkxwfvrnzfj2srv9b4a42rfnph1pdql74z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
+    (home-page "https://ctan.org/pkg/ukrhyph")
+    (synopsis "Hyphenation Patterns for Ukrainian")
     (description "The package provides a range of hyphenation patterns for
 Ukrainian, depending on the encoding of the output font including the standard
 T2A.")
