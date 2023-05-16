@@ -5557,20 +5557,29 @@ by making punctuation characters active.")
 
 (define-public texlive-fira
   (package
-    (inherit (simple-texlive-package
-              "texlive-fira"
-              (list "doc/fonts/fira/"
-                    "tex/latex/fira/"
-                    "fonts/vf/public/fira/"
-                    "fonts/type1/public/fira/"
-                    "fonts/tfm/public/fira/"
-                    "fonts/opentype/public/fira/"
-                    "fonts/map/dvips/fira/"
-                    "fonts/enc/dvips/fira/")
-              (base32 "1v3688hziqz4jywfysiv19vsdzfkknrf83zfbi7lhiqpgkpsfsm2")
-              #:trivial? #t))
+    (name "texlive-fira")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/fira/"
+                   "fonts/enc/dvips/fira/"
+                   "fonts/map/dvips/fira/"
+                   "fonts/opentype/public/fira/"
+                   "fonts/tfm/public/fira/"
+                   "fonts/type1/public/fira/"
+                   "fonts/vf/public/fira/"
+                   "tex/latex/fira/")
+             (base32
+              "1v3688hziqz4jywfysiv19vsdzfkknrf83zfbi7lhiqpgkpsfsm2")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (home-page "https://ctan.org/fonts/fira")
+    (propagated-inputs
+     (list texlive-fontaxes
+           texlive-fontspec
+           texlive-iftex
+           texlive-mweights
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/fira")
     (synopsis "Fira fonts with LaTeX support")
     (description
      "This package provides LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX support for
