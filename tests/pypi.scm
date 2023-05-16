@@ -28,8 +28,12 @@
   #:use-module (gcrypt hash)
   #:use-module (guix tests)
   #:use-module (guix build-system python)
-  #:use-module ((guix build utils) #:select (delete-file-recursively which mkdir-p))
+  #:use-module ((guix build utils)
+                #:select (delete-file-recursively
+                          which mkdir-p
+                          with-directory-excursion))
   #:use-module ((guix diagnostics) #:select (guix-warning-port))
+  #:use-module ((guix build syscalls) #:select (mkdtemp!))
   #:use-module (json)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -131,6 +135,58 @@ Provides-Extra: testing
 Requires-Dist: pytest (>=3.1.0); extra == 'testing'
 ")
 
+(define sample-directory
+  ;; Directory containing tarballs and .whl files for this test.
+  (let ((template (string-append (or (getenv "TMPDIR") "/tmp")
+                                 "/guix-pypi-test-XXXXXX")))
+    (mkdtemp! template)))
+
+(define (pypi-tarball name specs)
+  "Return a PyPI tarball called NAME suffixed with '.tar.gz' and containing
+the files specified in SPECS.  Return its file name."
+  (let ((directory (in-vicinity sample-directory name))
+        (tarball (in-vicinity sample-directory (string-append name ".tar.gz"))))
+    (false-if-exception (delete-file tarball))
+    (mkdir-p directory)
+    (for-each (match-lambda
+                ((file content)
+                 (mkdir-p (in-vicinity directory (dirname file)))
+                 (call-with-output-file (in-vicinity directory file)
+                   (lambda (port)
+                     (display content port)))))
+              specs)
+    (parameterize ((current-output-port (%make-void-port "w0")))
+      (system* "tar" "-C" sample-directory "-czvf" tarball
+               (basename directory)))
+    (delete-file-recursively directory)
+    tarball))
+
+(define (wheel-file name specs)
+  "Return a Wheel file called NAME suffixed with '.whl' and containing the
+files specified by SPECS.  Return its file name."
+  (let* ((directory (in-vicinity sample-directory
+                                 (string-append name ".dist-info")))
+         (zip-file (in-vicinity sample-directory
+                                (string-append name ".zip")))
+         (whl-file (in-vicinity sample-directory
+                                (string-append name ".whl"))))
+    (false-if-exception (delete-file whl-file))
+    (mkdir-p directory)
+    (for-each (match-lambda
+                ((file content)
+                 (mkdir-p (in-vicinity directory (dirname file)))
+                 (call-with-output-file (in-vicinity directory file)
+                   (lambda (port)
+                     (display content port)))))
+              specs)
+    ;; zip always adds a "zip" extension to the file it creates,
+    ;; so we need to rename it.
+    (with-directory-excursion (dirname directory)
+      (system* "zip" "-qr" zip-file (basename directory)))
+    (rename-file zip-file whl-file)
+    (delete-file-recursively directory)
+    whl-file))
+
 
 (test-begin "pypi")
 
@@ -224,17 +280,13 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
            (lambda (url file-name)
              (match url
                ("https://example.com/foo-1.0.0.tar.gz"
-                (begin
-                  ;; Unusual requires.txt location should still be found.
-                  (mkdir-p "foo-1.0.0/src/bizarre.egg-info")
-                  (with-output-to-file "foo-1.0.0/src/bizarre.egg-info/requires.txt"
-                    (lambda ()
-                      (display test-requires.txt)))
-                  (parameterize ((current-output-port (%make-void-port "rw+")))
-                    (system* "tar" "czvf" file-name "foo-1.0.0/"))
-                  (delete-file-recursively "foo-1.0.0")
+                ;; Unusual requires.txt location should still be found.
+                (let ((tarball (pypi-tarball "foo-1.0.0"
+                                             `(("src/bizarre.egg-info/requires.txt"
+                                                ,test-requires.txt)))))
+                  (copy-file tarball file-name)
                   (set! test-source-hash
-                    (call-with-input-file file-name port-sha256))))
+                        (call-with-input-file file-name port-sha256))))
                ("https://example.com/foo-1.0.0-py2.py3-none-any.whl" #f)
                (_ (error "Unexpected URL: " url)))))
           (mock ((guix http-client) http-fetch
@@ -279,28 +331,18 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
          (lambda (url file-name)
            (match url
              ("https://example.com/foo-1.0.0.tar.gz"
-              (begin
-                (mkdir-p "foo-1.0.0/foo.egg-info/")
-                (with-output-to-file "foo-1.0.0/foo.egg-info/requires.txt"
-                  (lambda ()
-                    (display "wrong data to make sure we're testing wheels ")))
-                (parameterize ((current-output-port (%make-void-port "rw+")))
-                  (system* "tar" "czvf" file-name "foo-1.0.0/"))
-                (delete-file-recursively "foo-1.0.0")
+              (let ((tarball (pypi-tarball
+                              "foo-1.0.0"
+                              '(("foo-1.0.0/foo.egg-info/requires.txt"
+                                 "wrong data \
+to make sure we're testing wheels")))))
+                (copy-file tarball file-name)
                 (set! test-source-hash
                   (call-with-input-file file-name port-sha256))))
              ("https://example.com/foo-1.0.0-py2.py3-none-any.whl"
-              (begin
-                (mkdir "foo-1.0.0.dist-info")
-                (with-output-to-file "foo-1.0.0.dist-info/METADATA"
-                  (lambda ()
-                    (display test-metadata)))
-                (let ((zip-file (string-append file-name ".zip")))
-                  ;; zip always adds a "zip" extension to the file it creates,
-                  ;; so we need to rename it.
-                  (system* "zip" "-q" zip-file "foo-1.0.0.dist-info/METADATA")
-                  (rename-file zip-file file-name))
-                (delete-file-recursively "foo-1.0.0.dist-info")))
+              (let ((wheel (wheel-file "foo-1.0.0"
+                                       `(("METADATA" ,test-metadata)))))
+                (copy-file wheel file-name)))
              (_ (error "Unexpected URL: " url)))))
         (mock ((guix http-client) http-fetch
                (lambda (url . rest)
@@ -342,12 +384,11 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
          (lambda (url file-name)
            (match url
              ("https://example.com/foo-1.0.0.tar.gz"
-              (mkdir-p "foo-1.0.0/foo.egg-info/")
-              (parameterize ((current-output-port (%make-void-port "rw+")))
-                (system* "tar" "czvf" file-name "foo-1.0.0/"))
-              (delete-file-recursively "foo-1.0.0")
-              (set! test-source-hash
-                (call-with-input-file file-name port-sha256)))
+              (let ((tarball (pypi-tarball "foo-1.0.0"
+                                           '(("foo.egg-info/.empty" "")))))
+                (copy-file tarball file-name)
+                (set! test-source-hash
+                      (call-with-input-file file-name port-sha256))))
              ("https://example.com/foo-1.0.0-py2.py3-none-any.whl" #f)
              (_ (error "Unexpected URL: " url)))))
         (mock ((guix http-client) http-fetch
@@ -388,15 +429,11 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
          (lambda (url file-name)
            (match url
              ("https://example.com/foo-99-1.0.0.tar.gz"
-              (begin
+              (let ((tarball (pypi-tarball "foo-99-1.0.0"
+                                           `(("src/bizarre.egg-info/requires.txt"
+                                              ,test-requires.txt)))))
                 ;; Unusual requires.txt location should still be found.
-                (mkdir-p "foo-99-1.0.0/src/bizarre.egg-info")
-                (with-output-to-file "foo-99-1.0.0/src/bizarre.egg-info/requires.txt"
-                  (lambda ()
-                    (display test-requires.txt)))
-                (parameterize ((current-output-port (%make-void-port "rw+")))
-                  (system* "tar" "czvf" file-name "foo-99-1.0.0/"))
-                (delete-file-recursively "foo-99-1.0.0")
+                (copy-file tarball file-name)
                 (set! test-source-hash
                   (call-with-input-file file-name port-sha256))))
              ("https://example.com/foo-99-1.0.0-py2.py3-none-any.whl" #f)
@@ -434,3 +471,4 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
                  (pk 'fail x #f))))))
 
 (test-end "pypi")
+(delete-file-recursively sample-directory)
