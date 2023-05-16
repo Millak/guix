@@ -4763,6 +4763,26 @@ polyglossia package rather than Babel.")
 
 (define-deprecated-package texlive-latex-babel texlive-babel)
 
+(define-public texlive-cmexb
+  (package
+    (name "texlive-cmexb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cmexb/" "fonts/map/dvips/cmexb/"
+                   "fonts/tfm/public/cmexb/"
+                   "fonts/type1/public/cmexb/")
+             (base32
+              "1fwnxzlkcf58n1f91vz8xbcp8nmhqmhjqhswgkzvyrd6lnp5gzdk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cmexb")
+    (synopsis "@code{cmexb10} metrics and Type 1")
+    (description
+     "This package provides Computer Modern Math Extension bold, metrics and
+@file{.pfb} file.")
+    (license license:public-domain)))   ;see "README-cmexb"
+
 (define-public texlive-cs
   (package
     (inherit (simple-texlive-package
