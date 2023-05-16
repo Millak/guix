@@ -6159,14 +6159,18 @@ sequence, of variable length.")
 
 (define-public texlive-doi
   (package
-    (inherit (simple-texlive-package
-              "texlive-doi"
-              (list "/doc/latex/doi/README.md"
-                    "/tex/latex/doi/")
-              (base32
-               "18z9922lqb3hliqn95h883fndqs4lgyi5yqbnq2932ya0imc3j7h")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/doi")
+    (name "texlive-doi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/doi/" "tex/latex/doi/")
+             (base32
+              "18z9922lqb3hliqn95h883fndqs4lgyi5yqbnq2932ya0imc3j7h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-hyperref))
+    (home-page "https://ctan.org/pkg/doi")
     (synopsis "Create correct hyperlinks for DOI numbers")
     (description
      "You can hyperlink DOI numbers to doi.org.  However, some publishers have
