@@ -67295,25 +67295,26 @@ Rust.")
 (define-public rust-tokio-stream-0.1
   (package
     (name "rust-tokio-stream")
-    (version "0.1.0")
+    (version "0.1.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-stream" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0airchgn5zwzynchygdr8m7i4nizhfmifjz0iw6224sbnw9yjfrz"))))
+        (base32 "0hi8hcwavh5sdi1ivc9qc4yvyr32f153c212dpd7sb366y6rhz1r"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false                  ;FIXME: unresolved import
+     `(#:tests? #false      ; unresolved import `tokio_test`
        #:cargo-inputs
        (("rust-async-stream" ,rust-async-stream-0.3)
-        ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
-        ("rust-tokio" ,rust-tokio-1))
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7))
        #:cargo-development-inputs
-       (("rust-futures" ,rust-futures-0.3)
-        ("rust-proptest" ,rust-proptest-0.10)
+       (("rust-async-stream" ,rust-async-stream-0.3)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
         ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://tokio.rs")
     (synopsis "Utilities to work with @code{Stream} and @code{tokio}")
