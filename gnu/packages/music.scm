@@ -6644,7 +6644,7 @@ as JACK standalone applications.")
 (define-public zplugins
   (package
     (name "zplugins")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method git-fetch)
@@ -6655,10 +6655,10 @@ as JACK standalone applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0l6cm6y8j1417mwspraldzixpnps8scx81wd36n2xpx60v4iqss0"))))
+         "0xsnq8kg57pdswqi9yy5nrpjbfgmym2m1qi3cj3hki33kwzx2nn1"))))
     (build-system meson-build-system)
     (inputs
-      (list guile-2.2 libsndfile lv2 ztoolkit-rsvg))
+      (list guile-3.0 libsndfile lv2 ztoolkit-rsvg))
     (native-inputs
       (list pkg-config))
     (synopsis "Audio plugin collection")
