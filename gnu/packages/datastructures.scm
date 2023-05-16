@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2018, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Meiyo Peng <meiyo.peng@gmail.com>
 ;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -444,11 +444,11 @@ better with a poor hash function.")
     (license license:expat)))
 
 (define-public zix
-  (let ((commit "56ec14c4369c591f5efbb500b0829b760bee7800")
+  (let ((commit "a13ae5ad9dc70075740f11139f1db96cc79faa59")
         (revision "0"))
     (package
       (name "zix")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.3.3" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -457,7 +457,7 @@ better with a poor hash function.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "095b2vjmwh9swbwkkkjpcdhsi0c93lxrzd76k7hzdyyf7zb5rgdx"))))
+                  "1njyb8lz1d5qzf0k14pb3rq13xkxnddwbz090dj69138ymz1xgyl"))))
       (build-system meson-build-system)
       (arguments
        (list #:configure-flags #~(list "-Ddocs=disabled"))) ;needs "sphinxygen"
