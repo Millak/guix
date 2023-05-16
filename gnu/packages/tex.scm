@@ -1973,27 +1973,30 @@ this useful when writing out arbitrary text to an external file.")
 
 (define-public texlive-helvetic
   (package
-    (inherit (simple-texlive-package
-              "texlive-helvetic"
-              (list "/dvips/helvetic/"
-                    "/fonts/afm/adobe/helvetic/"
-                    "/fonts/afm/urw/helvetic/"
-                    "/fonts/map/dvips/helvetic/"
-                    "/fonts/tfm/adobe/helvetic/"
-                    "/fonts/tfm/monotype/helvetic/"
-                    "/fonts/tfm/urw35vf/helvetic/"
-                    "/fonts/type1/urw/helvetic/"
-                    "/fonts/vf/adobe/helvetic/"
-                    "/fonts/vf/monotype/helvetic/"
-                    "/fonts/vf/urw35vf/helvetic/"
-                    "/tex/latex/helvetic/")
-              (base32
-               "0c3f1ly7y6404z0akbfbbfql13sz717v0n0g69qjpr69hi4n0nsl")
-              #:trivial? #t))
+    (name "texlive-helvetic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/helvetic/"
+                   "fonts/afm/adobe/helvetic/"
+                   "fonts/afm/urw/helvetic/"
+                   "fonts/map/dvips/helvetic/"
+                   "fonts/tfm/adobe/helvetic/"
+                   "fonts/tfm/monotype/helvetic/"
+                   "fonts/tfm/urw35vf/helvetic/"
+                   "fonts/type1/urw/helvetic/"
+                   "fonts/vf/adobe/helvetic/"
+                   "fonts/vf/monotype/helvetic/"
+                   "fonts/vf/urw35vf/helvetic/"
+                   "tex/latex/helvetic/")
+             (base32
+              "0c3f1ly7y6404z0akbfbbfql13sz717v0n0g69qjpr69hi4n0nsl")))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
     (synopsis "URW Base 35 font pack for LaTeX")
-    (description "This package provides a drop-in replacements for the Helvetica
-font from Adobe's basic set.")
+    (description
+     "This package provides a drop-in replacements for the Helvetica font from
+Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
