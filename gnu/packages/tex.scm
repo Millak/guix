@@ -1138,42 +1138,48 @@ sizes as are such font sets as the EC fonts.")
 
 (define-public texlive-cbfonts-fd
   (package
-    (inherit (simple-texlive-package
-              "texlive-cbfonts-fd"
-              (list "/doc/fonts/cbfonts/"
-                    "/tex/latex/cbfonts-fd/")
-              (base32
-               "0g91p2qcgqn916vgf777h45dabv2r6l6f9xkcq0b3gpir3qsj3d4")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/cbfonts-fd")
+    (name "texlive-cbfonts-fd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/cbfonts-fd/"
+                   "source/fonts/cbfonts-fd/"
+                   "tex/latex/cbfonts-fd/")
+             (base32
+              "1r2kmnccvrq181ac7gyff9y3wn7dydx50jy8f9n6qhnb824pdn78")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cbfonts-fd")
     (synopsis "LaTeX font description files for the CB Greek fonts")
-    (description "The package provides font description files for all the many
-shapes available from the cbfonts collection.  The files provide the means
-whereby the @acronym{NFSS, New Font Selection Scheme} knows which fonts a
-LaTeX user is requesting.
+    (description
+     "The package provides font description files for all the many shapes
+available from the @code{cbfonts} collection.  The files provide the means
+whereby the @acronym{NFSS, New Font Selection Scheme} knows which fonts
+a LaTeX user is requesting.
 
 Tip: installing @code{texlive-cbfonts} will automatically propagate this one.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-cite
   (package
-    (inherit (simple-texlive-package
-              "texlive-cite"
-              (list "doc/latex/cite/" "tex/latex/cite/")
-              (base32
-               "0b1amznayxj80dmqbzcysmj7q8aksbyz98k6djsqi0mhwp1cd0fd")
-              #:trivial? #t))
+    (name "texlive-cite")
     (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cite/" "tex/latex/cite/")
+             (base32
+              "0b1amznayxj80dmqbzcysmj7q8aksbyz98k6djsqi0mhwp1cd0fd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/cite")
     (synopsis "Improved citation handling in LaTeX")
     (description
      "The package supports compressed, sorted lists of numerical citations,
 and also deals with various punctuation and other issues of representation,
 including comprehensive management of break points.  The package is compatible
-with both hyperref and backref.  The package is (unsurprisingly) part of the
-cite bundle of the author's citation-related packages.")
-    (license (license:fsf-free
-              "/share/texmf-dist/doc/latex/cite/README"))))
+with both @code{hyperref} and @code{backref}.  The package is (unsurprisingly)
+part of the cite bundle of the author's citation-related packages.")
+    (license (license:fsf-free "/share/texmf-dist/doc/latex/cite/README"))))
 
 (define-public texlive-cm
   (package
