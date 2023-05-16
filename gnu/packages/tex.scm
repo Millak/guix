@@ -8029,22 +8029,23 @@ environment.")
 
 (define-public texlive-txfonts
   (package
-    (inherit (simple-texlive-package
-              "texlive-txfonts"
-              (list "/doc/fonts/txfonts/"
-
-                    "/fonts/afm/public/txfonts/"
-                    "/fonts/tfm/public/txfonts/"
-                    "/fonts/type1/public/txfonts/"
-                    "/fonts/vf/public/txfonts/"
-
-                    "/fonts/map/dvips/txfonts/"
-                    "/fonts/enc/dvips/txfonts/"
-                    "/tex/latex/txfonts/")
-              (base32
-               "017zjas5y1zlyq0iy4x6mv1qbz23xcy3y5xs0crj6zdnfvnccqgp")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/txfonts")
+    (name "texlive-txfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/txfonts/"
+                   "fonts/afm/public/txfonts/"
+                   "fonts/enc/dvips/txfonts/"
+                   "fonts/map/dvips/txfonts/"
+                   "fonts/tfm/public/txfonts/"
+                   "fonts/type1/public/txfonts/"
+                   "fonts/vf/public/txfonts/"
+                   "tex/latex/txfonts/")
+             (base32
+              "017zjas5y1zlyq0iy4x6mv1qbz23xcy3y5xs0crj6zdnfvnccqgp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/txfonts")
     (synopsis "Times-like fonts in support of mathematics")
     (description
      "Txfonts supplies virtual text roman fonts using Adobe Times (or URW
