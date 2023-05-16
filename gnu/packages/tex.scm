@@ -7280,17 +7280,18 @@ texlive-2019.3/Master/texmf-dist/doc/fonts/ec/copyrite.txt"))))
 ;; fails with obscure TeX-typical error messages.
 (define-public texlive-ae
   (package
-    (inherit (simple-texlive-package
-              "texlive-ae"
-              (list "/doc/fonts/ae/"
-                    "/source/fonts/ae/"
-                    "/fonts/tfm/public/ae/"
-                    "/fonts/vf/public/ae/"
-                    "/tex/latex/ae/")
-              (base32
-               "1xkzg381y0avdq381r2m990wp27czkdff0qkvsp2n5q62yc0bdsw")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/ae")
+    (name "texlive-ae")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/ae/" "fonts/tfm/public/ae/"
+                   "fonts/vf/public/ae/" "source/fonts/ae/"
+                   "tex/latex/ae/")
+             (base32
+              "1xkzg381y0avdq381r2m990wp27czkdff0qkvsp2n5q62yc0bdsw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ae")
     (synopsis "Virtual fonts for T1 encoded CMR-fonts")
     (description
      "This package provides a set of virtual fonts which emulates T1 coded
