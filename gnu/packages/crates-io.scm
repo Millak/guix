@@ -53701,25 +53701,16 @@ rustc compiler.")
   (package
     (inherit rust-rustix-0.37)
     (name "rust-rustix")
-    (version "0.36.4")
+    (version "0.36.9")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustix" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "08vwnvf76nkgb2bbxf8cn51c43x6sc9k462khrwbb2z0g19fi4yb"))))
+                "1g1pxwmz82gf47ar5l80ijzpbcrf5yh9a6bdfi05pmgc3zqnyp7x"))))
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4)
-        ("rust-ctor" ,rust-ctor-0.1)
-        ("rust-errno" ,rust-errno-0.2)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-io-lifetimes" ,rust-io-lifetimes-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.7)
-        ("rust-serial-test" ,rust-serial-test-0.6))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cc" ,rust-cc-1)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
@@ -53731,7 +53722,17 @@ rustc compiler.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-windows-sys" ,rust-windows-sys-0.42))))))
+        ("rust-windows-sys" ,rust-windows-sys-0.42))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-ctor" ,rust-ctor-0.1)
+        ("rust-errno" ,rust-errno-0.2)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-io-lifetimes" ,rust-io-lifetimes-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.7)
+        ("rust-serial-test" ,rust-serial-test-0.6)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-rustix-0.35
   (package
