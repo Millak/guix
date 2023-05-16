@@ -3146,19 +3146,23 @@ mechanism.  This package provides supporting files.")
 
 (define-public texlive-kpfonts
   (package
-    (inherit (simple-texlive-package
-              "texlive-kpfonts"
-              (list "doc/fonts/kpfonts/"
-                    "fonts/enc/dvips/kpfonts/"
-                    "fonts/map/dvips/kpfonts/"
-                    "fonts/tfm/public/kpfonts/"
-                    "fonts/type1/public/kpfonts/"
-                    "fonts/vf/public/kpfonts/"
-                    "source/fonts/kpfonts/"
-                    "tex/latex/kpfonts/")
-              (base32 "0inai1p9bbjd5x790nsamakjaj0imvwv21mp9f98dwvdlj58vkqb")
-              #:trivial? #t))
-    (home-page "https://ctan.org/fonts/kpfonts")
+    (name "texlive-kpfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/kpfonts/"
+                   "fonts/enc/dvips/kpfonts/"
+                   "fonts/map/dvips/kpfonts/"
+                   "fonts/tfm/public/kpfonts/"
+                   "fonts/type1/public/kpfonts/"
+                   "fonts/vf/public/kpfonts/"
+                   "source/fonts/kpfonts/"
+                   "tex/latex/kpfonts/")
+             (base32
+              "0inai1p9bbjd5x790nsamakjaj0imvwv21mp9f98dwvdlj58vkqb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kpfonts")
     (synopsis "Complete set of fonts for text and mathematics")
     (description
      "The family contains text fonts in roman, sans-serif and monospaced
