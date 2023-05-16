@@ -3175,13 +3175,16 @@ default and narrow versions of multiple integrals.")
 
 (define-public texlive-latexconfig
   (package
-    (inherit (simple-texlive-package
-              "texlive-latexconfig"
-              (list "/tex/latex/latexconfig/")
-              (base32
-               "1x5fyr2185nx3qlyariykdz44hcy5azimrk9db2p707dg08bjhsd")
-              #:trivial? #t))
-    (home-page "https://www.tug.org/")
+    (name "texlive-latexconfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/latexconfig/")
+             (base32
+              "1x5fyr2185nx3qlyariykdz44hcy5azimrk9db2p707dg08bjhsd")))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
+    (home-page "https://ctan.org/pkg/latexconfig")
     (synopsis "Configuration files for LaTeX-related formats")
     (description "The package provides configuration files for LaTeX-related
 formats.")
