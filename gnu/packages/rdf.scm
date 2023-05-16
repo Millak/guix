@@ -311,26 +311,24 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 (define-public sord
   (package
     (name "sord")
-    (version "0.16.8")
+    (version "0.16.14")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/sord-"
-                                 version ".tar.bz2"))
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "052y7zllrg0bzyky2rmrrwnnf16p6bk7q40rq9mgm0mzm8p9sa3w"))))
-    (build-system waf-build-system)
+               "06vkqk3dnn15zdnzklahib2pvbfspy2zcrnvhmxnw8fbbxyxj3r2"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'configure 'set-ldflags
-          (lambda* (#:key outputs #:allow-other-keys)
-            (setenv "LDFLAGS"
-                    (string-append "-Wl,-rpath="
-                                   (assoc-ref outputs "out") "/lib"))
-            #t)))))
+     (list
+      #:tests? #f                       ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-ldflags
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (inputs
      (list pcre))
     (native-inputs
