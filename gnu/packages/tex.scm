@@ -7382,22 +7382,23 @@ Adobe's basic set.")
 
 (define-public texlive-palatino
   (package
-    (inherit (simple-texlive-package
-              "texlive-palatino"
-              (list "/dvips/palatino/"
-                    "/fonts/afm/adobe/palatino/"
-                    "/fonts/afm/urw/palatino/"
-                    "/fonts/tfm/adobe/palatino/"
-                    "/fonts/tfm/urw35vf/palatino/"
-                    "/fonts/type1/urw/palatino/"
-                    "/fonts/vf/adobe/palatino/"
-                    "/fonts/vf/urw35vf/palatino/"
-
-                    "/fonts/map/dvips/palatino/"
-                    "/tex/latex/palatino/")
-              (base32
-               "12jc0av7v99857jigmva47qaxyllhpzsnqis10n0qya2kz44xf22")
-              #:trivial? #t))
+    (name "texlive-palatino")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/palatino/"
+                   "fonts/afm/adobe/palatino/"
+                   "fonts/afm/urw/palatino/"
+                   "fonts/map/dvips/palatino/"
+                   "fonts/tfm/adobe/palatino/"
+                   "fonts/tfm/urw35vf/palatino/"
+                   "fonts/type1/urw/palatino/"
+                   "fonts/vf/adobe/palatino/"
+                   "fonts/vf/urw35vf/palatino/"
+                   "tex/latex/palatino/")
+             (base32
+              "12jc0av7v99857jigmva47qaxyllhpzsnqis10n0qya2kz44xf22")))
+    (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/urw-base35")
     (synopsis "URW Base 35 font pack for LaTeX")
     (description
