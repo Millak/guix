@@ -27733,7 +27733,7 @@ It is used to build the target x86_64-unknown-hermit.")
   (package
     (inherit rust-hermit-abi-0.2)
     (name "rust-hermit-abi")
-    (version "0.1.10")
+    (version "0.1.20")
     (source
       (origin
         (method url-fetch)
@@ -27742,13 +27742,12 @@ It is used to build the target x86_64-unknown-hermit.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0blmmzik5cs79ivq70s9gal8ypgzj50wnl2hwsaam46gjjbz2p3j"))))
+          "1ypkwpf5r7m0jqdn2wfa0070i412kn9snvi1hg52w1yfvc40k8y7"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
 (define-public rust-hex-0.4
   (package
