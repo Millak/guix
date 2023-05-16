@@ -36951,7 +36951,7 @@ IOCP and Async I/O abstractions.")
   (package
     (inherit rust-miow-0.3)
     (name "rust-miow")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
       (origin
         (method url-fetch)
@@ -36959,7 +36959,7 @@ IOCP and Async I/O abstractions.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "06g9b8sqlh5gxakwqq4rrib07afwanfnxgxajrldwcgk3hxjy7wc"))))
+          "0kcl8rnv0bhiarcdakik670w8fnxzlxhi1ys7152sck68510in7b"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
