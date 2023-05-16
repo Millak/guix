@@ -4413,50 +4413,30 @@ file name may also be given explicitly as an optional argument.")
     (license license:lppl)))
 
 (define-public texlive-l3build
-  (let ((template (simple-texlive-package
-                   "texlive-l3build"
-                   (list "/doc/latex/l3build/"
-                         "/doc/man/man1/l3build.1"
-                         "/scripts/l3build/"
-                         "/tex/latex/l3build/"
-                         ;; TODO: The dtx file builds only the documentation.
-                         ;; We avoid this for a simpler package definition,
-                         ;; but it may be possible to exclude
-                         ;; /doc/latex/l3build and the man page in the future.
-                         "/source/latex/l3build/")
-                   (base32
-                    "1fcay05jj53qgp2b98jpawi0id298fs5xc4y1r5krrfr4sp4hd59")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'install 'patch-shebangs-again
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 ;; XXX: Since the 'patch-shebangs' phase cannot change the
-                 ;; original source files patch the shebangs again here.
-                 (let* ((coreutils (assoc-ref inputs "coreutils"))
-                        (texlive-bin (assoc-ref inputs "texlive-bin"))
-                        (path (list (string-append coreutils "/bin")
-                                    (string-append texlive-bin "/bin"))))
-                   (for-each (lambda (file)
-                               (format #t "~a~%" file)
-                               (patch-shebang file path))
-                             (find-files (assoc-ref outputs "out")))
-                   #t)))))))
-      (inputs
-       (list coreutils texlive-bin))
-      (home-page "https://github.com/latex3/luaotfload")
-      (synopsis "Testing and building system for LaTeX")
-      (description
-       "The l3build module is designed to support the development of
+  (package
+    (name "texlive-l3build")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/l3build/"
+                   "doc/man/man1/l3build.1"
+                   "doc/man/man1/l3build.man1.pdf"
+                   "scripts/l3build/"
+                   "source/latex/l3build/"
+                   "tex/latex/l3build/")
+             (base32
+              "0xxzy3xnq71z3sbkdq8glgnqydvr9g11ih2jmg68fmn5m145w8pi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/l3build")
+    (synopsis "Testing and building system for LaTeX")
+    (description
+     "The @code{l3build} module is designed to support the development of
 high-quality LaTeX code by providing: a unit testing system, automated
 typesetting of code sources, and a reliable packaging system for CTAN
-releases.  The bundle consists of a Lua script to run the tasks and a
-@code{.tex} file which provides the testing environment.")
-      (license license:lppl1.3c+))))
+releases.  The bundle consists of a Lua script to run the tasks and
+a @file{.tex} file which provides the testing environment.")
+    (license license:lppl1.3c+)))
 
 (define-public texlive-luabidi
   (package
