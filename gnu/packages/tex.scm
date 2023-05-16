@@ -1676,17 +1676,20 @@ logos in LaTeX documents.")
 
 (define-public texlive-mflogo-font
   (package
-    (inherit (simple-texlive-package
-              "texlive-mflogo-font"
-              (list "/doc/fonts/mflogo-font/README"
-                    "/fonts/afm/hoekwater/mflogo-font/"
-                    "/fonts/map/dvips/mflogo-font/"
-                    "/fonts/type1/hoekwater/mflogo-font/")
-              (base32
-               "094mknjv8ki2pvj1zin0f1z4f1w12g0cfqjiqcsawjsry4yfrmbg")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/mflogo-font")
-    (synopsis "Metafont logo font")
+    (name "texlive-mflogo-font")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/mflogo-font/"
+                   "fonts/afm/hoekwater/mflogo-font/"
+                   "fonts/map/dvips/mflogo-font/"
+                   "fonts/type1/hoekwater/mflogo-font/")
+             (base32
+              "094mknjv8ki2pvj1zin0f1z4f1w12g0cfqjiqcsawjsry4yfrmbg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mflogo-font")
+    (synopsis "METAFONT logo font")
     (description
      "These fonts were created in METAFONT by Knuth, for his own publications.
 At some stage, the letters P and S were added, so that the METAPOST logo could
