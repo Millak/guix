@@ -8097,87 +8097,129 @@ of ink traps which typify the Kurier font.")
 (define-deprecated-package texlive-fonts-iwona texlive-iwona)
 
 (define-public texlive-jadetex
-  (let ((template (simple-texlive-package
-                   "texlive-jadetex"
-                   (list "/doc/man/man1/jadetex.1"
-                         "/doc/man/man1/jadetex.man1.pdf"
-                         "/doc/man/man1/pdfjadetex.1"
-                         "/doc/man/man1/pdfjadetex.man1.pdf"
-                         "/source/jadetex/base/"
-                         ;; The following files are not generated from
-                         ;; sources.
-                         "/tex/jadetex/base/jadetex.ini"
-                         "/tex/jadetex/base/pdfjadetex.ini"
-                         "/tex/jadetex/base/uentities.sty")
-                   (base32
-                    "03chyc3vjqgxcj985gy4k0bd0lf1n4a6sgbhc7k84jparjk3hx4i"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "jadetex/base")
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'unify-source-directory
-               (lambda _
-                 (chdir "source/jadetex/base")
-                 (for-each (lambda (f)
-                             (copy-file f (basename f)))
-                           (find-files "../../../tex/jadetex/base"))
-                 #t))
-             (add-after 'build 'generate-formats
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (mkdir "web2c")
-                 (for-each (lambda (f)
-                             (symlink f (basename f)))
-                           (find-files "build"))
-                 (invoke "fmtutil-sys" "--byfmt" "jadetex"
-                         "--fmtdir=web2c")
-                 (invoke "fmtutil-sys" "--byfmt" "pdfjadetex"
-                         "--fmtdir=web2c")))
-             (add-after 'install 'install-formats-and-wrappers
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (texlive-bin (assoc-ref inputs "texlive-bin"))
-                        (pdftex (string-append texlive-bin "/bin/pdftex"))
-                        (web2c (string-append out "/share/texmf-dist/web2c")))
-                   (mkdir-p web2c)
-                   (copy-recursively "web2c" web2c)
-                   ;; Create convenience command wrappers.
-                   (mkdir-p (string-append out "/bin"))
-                   (symlink pdftex (string-append out "/bin/jadetex"))
-                   (symlink pdftex (string-append out "/bin/pdfjadetex"))
-                   #t)))))))
-      (propagated-inputs
-       ;; Propagate the texlive-updmap.cfg input used by xmltex, which provides the
-       ;; required fonts for its use.
-       (list texlive-xmltex texlive-kpathsea)) ;for fmtutil.cnf template
-      (native-inputs
-       (list texlive-cm ;for cmex10 and others
-             texlive-latex-fonts        ;for lasy6
-             ;; The t1cmr.fd file of texlive-latex-base refers to the ecrm font,
-             ;; provided by the jknappen package collection.
-             texlive-jknapltx
-             texlive-hyperref
+  (package
+    (name "texlive-jadetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/jadetex.1"
+                   "doc/man/man1/jadetex.man1.pdf"
+                   "doc/man/man1/pdfjadetex.1"
+                   "doc/man/man1/pdfjadetex.man1.pdf"
+                   "doc/otherformats/jadetex/base/"
+                   "source/jadetex/base/"
+                   "tex/jadetex/base/")
+             (base32
+              "0acan496ixymwjvygcd5rx5pmz4p5vffzkmazdryw1kpilhiixcx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'bring-ini-files
+            (lambda _
+              (for-each (lambda (f) (install-file f "build"))
+                        (find-files "tex/jadetex/base"))))
+          (add-after 'bring-ini-files 'generate-formats
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir "web2c")
+              (with-directory-excursion "build"
+                (invoke "fmtutil-sys" "--byfmt" "jadetex"
+                        "--fmtdir=../web2c")
+                (invoke "fmtutil-sys" "--byfmt" "pdfjadetex"
+                        "--fmtdir=../web2c"))))
+          (add-after 'install 'install-formats-and-wrappers
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pdftex (search-input-file inputs "/bin/pdftex"))
+                    (web2c (string-append #$output "/share/texmf-dist/web2c")))
+                (mkdir-p web2c)
+                (copy-recursively "web2c" web2c)
+                (for-each delete-file (find-files web2c "\\.log$"))
+                ;; Create convenience command wrappers.
+                (mkdir-p (string-append #$output "/bin"))
+                (symlink pdftex
+                         (string-append #$output "/bin/jadetex"))
+                (symlink pdftex
+                         (string-append #$output "/bin/pdfjadetex"))))))))
+    (native-inputs
+     (list texlive-amsfonts
+           texlive-cm                   ;for cmex10 and others
+           texlive-colortbl
+           texlive-fancyhdr
+           texlive-graphics             ;for color.sty
+           texlive-hyperref
+           ;; The t1cmr.fd file of texlive-latex-base refers to the ecrm font,
+           ;; provided by the jknapltx package collection.
+           texlive-jknapltx
+           texlive-latex-fonts          ;for lasy6
+           texlive-letltxmacro
+           texlive-marvosym
+           texlive-tex-ini-files        ;for pdftexconfig
+           texlive-tools                ;for array.sty
+           texlive-ulem))               ;for fmtutil.cnf template
+    (propagated-inputs
+     (list
+      (texlive-updmap.cfg
+       (list texlive-amsfonts
+             texlive-atbegshi
+             texlive-atveryend
+             texlive-auxhook
+             texlive-bigintcalc
+             texlive-bitset
              texlive-colortbl
+             texlive-dehyph
+             texlive-ec
+             texlive-etexcmds
+             texlive-everyshi
              texlive-fancyhdr
-             texlive-graphics ;for color.sty
-             texlive-tools ;for array.sty
+             texlive-firstaid
+             texlive-hycolor
+             texlive-hyperref
+             texlive-hyph-utf8
+             texlive-hyphen-base
+             texlive-latexconfig
+             texlive-iftex
+             texlive-infwarerr
+             texlive-intcalc
+             texlive-kvdefinekeys
+             texlive-kvoptions
+             texlive-kvsetkeys
+             texlive-l3backend
+             texlive-l3kernel
+             texlive-l3packages
+             texlive-latexconfig
+             texlive-letltxmacro
+             texlive-ltxcmds
              texlive-marvosym
-             texlive-tex-ini-files ;for pdftexconfig
-             texlive-ulem))
-      (home-page "https://www.ctan.org/pkg/jadetex/")
-      (synopsis "TeX macros to produce TeX output using OpenJade")
-      (description "JadeTeX is a companion package to the OpenJade DSSSL
+             texlive-passivetex
+             texlive-pdfescape
+             texlive-pdftex
+             texlive-pdftexcmds
+             texlive-rerunfilecheck
+             texlive-stmaryrd
+             texlive-symbol
+             texlive-tipa
+             texlive-ulem
+             texlive-unicode-data
+             texlive-uniquecounter
+             texlive-url
+             texlive-wasysym
+             ;; Propagate the texlive-updmap.cfg input used by xmltex,
+             ;; which provides the required fonts for its use.
+             texlive-xmltex
+             texlive-zapfding))))
+    (home-page "https://www.ctan.org/pkg/jadetex/")
+    (synopsis "TeX macros to produce TeX output using OpenJade")
+    (description "JadeTeX is a companion package to the OpenJade DSSSL
 processor.  OpenJade applies a DSSSL stylesheet to an SGML or XML document.
 The output of this process can be in a number of forms, including a set of
 high level LaTeX macros.  It is the task of the JadeTeX package to transform
 these macros into DVI/PostScript (using the @command{jadetex} command) or
 Portable Document Format (PDF) form (using the @command{pdfjadetex}
 command).")
-      ;; The license text is found at the header of the jadetex.dtx file.
-      (license license:expat))))
+    ;; The license text is found at the header of the jadetex.dtx file.
+    (license license:expat)))
 
 (define-public texlive-libertine
   (package
