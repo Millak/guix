@@ -1698,41 +1698,115 @@ Taco Hoekwater.")
 (define-deprecated-package texlive-fonts-mflogo-font texlive-mflogo-font)
 
 (define-public texlive-amsfonts
-  (let ((template (simple-texlive-package
-                   "texlive-amsfonts"
-                   (list "/source/latex/amsfonts/"
-                         "/fonts/source/public/amsfonts/"
-                         "/fonts/type1/public/amsfonts/"
-                         "/fonts/afm/public/amsfonts/"
-                         "/fonts/tfm/public/amsfonts/"
-                         "/fonts/map/dvips/amsfonts/"
-                         "/tex/plain/amsfonts/"
-                         "/doc/fonts/amsfonts/")
-                   (base32
-                    "1rpl87643q8v6gcqsz68mjha8wac6cqx7mr16ds8f0ccbw7a4w9b"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:build-targets _ #t)
-          '(list "amsfonts.ins"))))
-      (home-page "https://www.ctan.org/pkg/amsfonts")
-      (synopsis "TeX fonts from the American Mathematical Society")
-      (description
-       "This package provides an extended set of fonts for use in mathematics,
+  (package
+    (name "texlive-amsfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/amsfonts/"
+                   "fonts/afm/public/amsfonts/cm/"
+                   "fonts/afm/public/amsfonts/cmextra/"
+                   "fonts/afm/public/amsfonts/cyrillic/"
+                   "fonts/afm/public/amsfonts/euler/"
+                   "fonts/afm/public/amsfonts/latxfont/"
+                   "fonts/afm/public/amsfonts/symbols/"
+                   "fonts/map/dvips/amsfonts/"
+                   "fonts/source/public/amsfonts/cmextra/"
+                   "fonts/source/public/amsfonts/cyrillic/"
+                   "fonts/source/public/amsfonts/dummy/"
+                   "fonts/source/public/amsfonts/symbols/"
+                   "fonts/tfm/public/amsfonts/cmextra/"
+                   "fonts/tfm/public/amsfonts/cyrillic/"
+                   "fonts/tfm/public/amsfonts/dummy/"
+                   "fonts/tfm/public/amsfonts/euler/"
+                   "fonts/tfm/public/amsfonts/symbols/"
+                   "fonts/type1/public/amsfonts/cm/"
+                   "fonts/type1/public/amsfonts/cmextra/"
+                   "fonts/type1/public/amsfonts/cyrillic/"
+                   "fonts/type1/public/amsfonts/euler/"
+                   "fonts/type1/public/amsfonts/latxfont/"
+                   "fonts/type1/public/amsfonts/symbols/"
+                   "source/latex/amsfonts/"
+                   "tex/latex/amsfonts/"
+                   "tex/plain/amsfonts/")
+             (base32
+              "0phhzcxapa5607pk37agr981rg90zw2p4rqv7sk7i19byr867a1b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build texlive-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'generate-fonts-metrics
+            (lambda _
+              (let ((cm #$(this-package-native-input "texlive-cm"))
+                    (metafont #$(this-package-native-input "texlive-metafont"))
+                    (fonts-directories
+                     (delete-duplicates
+                      (map (lambda (f)
+                             (string-drop (dirname f) (string-length "./")))
+                           (find-files "." "[0-9]+\\.mf$"))))
+                    (root (getcwd)))
+                (mkdir-p "build")
+                ;; Tell mf where to find mf.base.
+                (setenv "MFBASES"
+                        (string-append metafont "/share/texmf-dist/web2c/"))
+                (for-each
+                 (lambda (directory)
+                   ;; Tell mf where to look for source files.
+                   (setenv "MFINPUTS"
+                           (string-append
+                            (getcwd) "/" directory ":"
+                            metafont "/share/texmf-dist/metafont/base/:"
+                            cm "/share/texmf-dist/fonts/source/public/cm/"))
+                   ;; Build font metrics (tfm).
+                   (with-directory-excursion directory
+                     (for-each (lambda (font)
+                                 (format #t "building font ~a\n" font)
+                                 (invoke "mf" "-progname=mf"
+                                         (string-append "-output-directory="
+                                                        root "/build")
+                                         (string-append "\\"
+                                                        "mode:=ljfour; "
+                                                        "mag:=1; "
+                                                        "batchmode; "
+                                                        "input "
+                                                        (basename font ".mf"))))
+                               (find-files "." "[0-9]+\\.mf$")))
+                   ;; Install font metrics at the appropriate location.
+                   (let ((destination
+                          ;; fonts/source/xxx/yyy/... -> fonts/tfm/xxx/yyy/...
+                          (string-append "fonts/tfm"
+                                         (string-drop
+                                          directory
+                                          (string-length "fonts/source")))))
+                     (format #t "moving font metrics in ~a\n" destination)
+                     (for-each (cut install-file <> destination)
+                               (find-files "build/" "\\.tfm$"))))
+                 fonts-directories)))))))
+    (native-inputs
+     (list texlive-kpathsea texlive-cm texlive-metafont))
+    (home-page "https://ctan.org/pkg/amsfonts")
+    (synopsis "TeX fonts from the American Mathematical Society")
+    (description
+     "This package provides an extended set of fonts for use in mathematics,
 including: extra mathematical symbols; blackboard bold letters (uppercase
 only); fraktur letters; subscript sizes of bold math italic and bold Greek
 letters; subscript sizes of large symbols such as sum and product; added sizes
 of the Computer Modern small caps font; cyrillic fonts (from the University of
-Washington); Euler mathematical fonts.  All fonts are provided as Adobe Type 1
-files, and all except the Euler fonts are provided as Metafont source.  The
+Washington); Euler mathematical fonts.  All fonts are provided as Adobe Type
+1 files, and all except the Euler fonts are provided as METAFONT source.  The
 distribution also includes the canonical Type 1 versions of the Computer
 Modern family of fonts.  The Euler fonts are supported by separate packages;
 details can be found in the documentation.")
-      (license license:silofl1.1))))
+    (license license:silofl1.1)))
 
 (define-deprecated-package texlive-fonts-amsfonts texlive-amsfonts)
-
 (define-deprecated-package texlive-latex-amsfonts texlive-amsfonts)
 
 (define-public texlive-mkpattern
