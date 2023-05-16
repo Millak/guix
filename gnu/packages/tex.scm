@@ -4534,24 +4534,22 @@ they are not directly related to Unicode mathematics typesetting.")
 
 (define-public texlive-lualibs
   (package
-    (inherit
-     (simple-texlive-package
-      "texlive-lualibs"
-      (list "doc/luatex/lualibs/"
-            "source/luatex/lualibs/"
-            "tex/luatex/lualibs/")
-      (base32 "0gf60vj9y75a7dlrmpbyqgsa00s1717r6if3lm5ldm41i9fm8ywz")
-      ;; The source dtx file only unpacks three files.  This is why we
-      ;; install all the files as they are, because there is no clear
-      ;; way to generate them all.
-      #:trivial? #true))
-    (home-page "https://ctan.org/macros/luatex/generic/lualibs")
+    (name "texlive-lualibs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/lualibs/" "source/luatex/lualibs/"
+                   "tex/luatex/lualibs/")
+             (base32
+              "0gf60vj9y75a7dlrmpbyqgsa00s1717r6if3lm5ldm41i9fm8ywz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lualibs")
     (synopsis "Additional Lua functions for LuaTeX macro programmers")
     (description
      "Lualibs is a collection of Lua modules useful for general programming.
-The bundle is based on Lua modules shipped with ConTeXt, and made available in
+The bundle is based on lua modules shipped with ConTeXt, and made available in
 this bundle for use independent of ConTeXt.")
-    ;; GPL version 2 only
     (license license:gpl2)))
 
 (define-deprecated-package texlive-luatex-lualibs texlive-lualibs)
