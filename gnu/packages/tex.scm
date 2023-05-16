@@ -5871,22 +5871,27 @@ characters and their glyph names.")
 
 (define-public texlive-seminar
   (package
-    (inherit (simple-texlive-package
-              "texlive-seminar"
-              (list "/doc/latex/seminar/"
-                    "/tex/latex/seminar/")
-              (base32
-               "1clgw5xy867khzfn8d210rc5hsw5s7r0pznhk84niybvw4zc7r3f")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/seminar")
+    (name "texlive-seminar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/seminar/" "tex/latex/seminar/")
+             (base32
+              "1clgw5xy867khzfn8d210rc5hsw5s7r0pznhk84niybvw4zc7r3f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-geometry
+           texlive-hyperref
+           texlive-pstricks))
+    (home-page "https://ctan.org/pkg/seminar")
     (synopsis "Make overhead slides")
-    ;; TODO: This package may need fancybox and xcomment at runtime.
     (description
      "This package provides a class that produces overhead
 slides (transparencies), with many facilities.  Seminar is not nowadays
 reckoned a good basis for a presentation — users are advised to use more
-recent classes such as powerdot or beamer, both of which are tuned to
-21st-century presentation styles.")
+recent classes such as @code{powerdot} or @code{beamer}, both of which are
+tuned to 21st-century presentation styles.")
     (license license:lppl1.2+)))
 
 (define-deprecated-package texlive-latex-seminar texlive-seminar)
