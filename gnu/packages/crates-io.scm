@@ -66950,7 +66950,7 @@ futures.")
 (define-public rust-tokio-reactor-0.1
   (package
     (name "rust-tokio-reactor")
-    (version "0.1.9")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
@@ -66959,17 +66959,22 @@ futures.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1khip64cn63xvayq1db68kxcnhgw3cb449a4n2lbw4p1qzx6pwba"))))
+         "0l8klnd41q55f3ialzz0lb7s5bfwa38nh86sa9vai2xsqh75kg09"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.6)
+       (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-mio" ,rust-mio-0.6)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-parking-lot" ,rust-parking-lot-0.7)
+        ("rust-parking-lot" ,rust-parking-lot-0.9)
         ("rust-slab" ,rust-slab-0.4)
         ("rust-tokio-executor" ,rust-tokio-executor-0.1)
         ("rust-tokio-io" ,rust-tokio-io-0.1)
