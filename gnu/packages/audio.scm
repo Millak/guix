@@ -3322,22 +3322,19 @@ buffers, and audio capture.")
 (define-public patchage
   (package
     (name "patchage")
-    (version "1.0.4")
+    (version "1.0.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/patchage-"
-                                  version
-                                  ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "0gbakiw3mikgbvy3pssrmqmn7z5c7kp4vyaxj5rs4jnkscxgw9vw"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f))                    ; no check target
+                "1m472rkvv7kr57xnvmvds3iq3fj129mbw878427djc21rfg2lq80"))))
+    (build-system meson-build-system)
+    (arguments `(#:tests? #f))                    ;no check target
     (inputs
      (list alsa-lib
-           boost
-           jack-1
+           jack-2
            ganv
            glibmm
            gtkmm-2
