@@ -7329,19 +7329,22 @@ that wraps @code{\\includegraphics}.")
 
 (define-public texlive-inconsolata
   (package
-    (inherit (simple-texlive-package
-              "texlive-inconsolata"
-              (list "/doc/fonts/inconsolata/"
-                    "/fonts/enc/dvips/inconsolata/"
-                    "/fonts/map/dvips/inconsolata/"
-                    "/fonts/opentype/public/inconsolata/"
-                    "/fonts/tfm/public/inconsolata/"
-                    "/fonts/type1/public/inconsolata/"
-                    "/tex/latex/inconsolata/")
-              (base32
-               "19lvma52vk7x8d7j4s9ymjwm3w2k08860fh6dkzn76scgpdm4wlb")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/inconsolata")
+    (name "texlive-inconsolata")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/inconsolata/"
+                   "fonts/enc/dvips/inconsolata/"
+                   "fonts/map/dvips/inconsolata/"
+                   "fonts/opentype/public/inconsolata/"
+                   "fonts/tfm/public/inconsolata/"
+                   "fonts/type1/public/inconsolata/"
+                   "tex/latex/inconsolata/")
+             (base32
+              "19lvma52vk7x8d7j4s9ymjwm3w2k08860fh6dkzn76scgpdm4wlb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inconsolata")
     (synopsis "Monospaced font with support files for use with TeX")
     (description
      "Inconsolata is a monospaced font designed by Raph Levien.  This package
