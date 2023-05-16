@@ -10,7 +10,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <jannek@gnu.org>
+;;; Copyright © 2020, 2023, 2026 Janneke Nieuwenhuizen <jannek@gnu.org>
 ;;; Copyright © 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
@@ -1537,9 +1537,14 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
                 "pci-arbiter"
                 "--host-priv-port='${host-port}'"
                 "--device-master-port='${device-port}'"
-                "--next-task='${disk-task}'"
+                "--next-task='${acpi-task}'"
                 "'$(pci-task=task-create)'"
                 "'$(task-resume)'"))
+         (acpi-command
+          (list (file-append hurd "/hurd/acpi.static")
+                "acpi"
+                "--next-task='${disk-task}'"
+                "'$(acpi-task=task-create)'"))
          (rumpdisk-command
           (list (file-append hurd "/hurd/rumpdisk.static")
                 "rumpdisk"
@@ -1570,6 +1575,7 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
           (list (file-append hurd "/hurd/exec.static") "exec"
                 "'$(exec-task=task-create)'")))
     (list pci-arbiter-command
+          acpi-command
           rumpdisk-command
           root-file-system-command
           exec-server-command)))
