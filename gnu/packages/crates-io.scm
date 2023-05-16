@@ -37983,19 +37983,20 @@ library.")
 (define-public rust-ndarray-0.15
   (package
     (name "rust-ndarray")
-    (version "0.15.3")
+    (version "0.15.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ndarray" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jd845r1ihybq02iz85b1xcnvxr7l2qs06dabgk278v086b59s08"))))
+        (base32 "0cpsm28hyk8qfjs4g9649dprv3hm53z12qqwyyjqbi3yjr72vcdd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-approx" ,rust-approx-0.4)
+        ("rust-approx" ,rust-approx-0.5)
         ("rust-cblas-sys" ,rust-cblas-sys-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-matrixmultiply" ,rust-matrixmultiply-0.3)
@@ -38009,7 +38010,7 @@ library.")
        (("rust-approx" ,rust-approx-0.4)
         ("rust-defmac" ,rust-defmac-0.2)
         ("rust-itertools" ,rust-itertools-0.10)
-        ("rust-quickcheck" ,rust-quickcheck-0.9))))
+        ("rust-quickcheck" ,rust-quickcheck-1))))
     (home-page "https://github.com/rust-ndarray/ndarray")
     (synopsis "N-dimensional container for general elements and for numerics")
     (description "@code{ndarray} implements an n-dimensional container for
