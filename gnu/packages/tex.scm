@@ -3692,17 +3692,18 @@ Unicode points; it is maintained by Adobe.  The additional
 
 (define-public texlive-graphics-def
   (package
-    (inherit (simple-texlive-package
-              "texlive-graphics-def"
-              (list "/doc/latex/graphics-def/README.md"
-                    "/tex/latex/graphics-def/")
-              (base32
-               "0b66fy06safyrd717rfr476g1gz6nqfv1vqvam7ac2yy0g0djb17")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-epstopdf-pkg))
-    (home-page "https://www.ctan.org/pkg/latex-graphics")
-    (synopsis "Color and graphics option files")
+    (name "texlive-graphics-def")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphics-def/"
+                   "tex/latex/graphics-def/")
+             (base32
+              "0b66fy06safyrd717rfr476g1gz6nqfv1vqvam7ac2yy0g0djb17")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphics-def")
+    (synopsis "Colour and graphics option files")
     (description
      "This bundle is a combined distribution consisting of @file{dvips.def},
 @file{pdftex.def}, @file{luatex.def}, @file{xetex.def}, @file{dvipdfmx.def},
