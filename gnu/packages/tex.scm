@@ -837,35 +837,51 @@ default versions of those), etc.")
     (license license:knuth)))
 
 (define-public texlive-dvipdfmx
-  (let ((template (simple-texlive-package
-                   "texlive-dvipdfmx"
-                   (list "doc/dvipdfm/"
-                         "doc/dvipdfmx/"
-                         "doc/man/man1/"
-                         "dvipdfmx/"
-                         "fonts/cmap/dvipdfmx/"
-                         "fonts/map/dvipdfmx/")
-                   (base32
-                    "08i81hciksh0sm9pw6lw8v8s2rj92p58wd5j2mq1mzqbp171wjmr")
-                   #:trivial? #t)))
-    (package
-      (inherit template)
-      (source
-       (origin
-         (inherit (package-source template))
-         ;; This map file is supposed to be generated in a profile hook.
-         (snippet '(delete-file "fonts/map/dvipdfmx/updmap/kanjix.map"))))
-      (propagated-inputs (list texlive-glyphlist))
-      (home-page "https://www.tug.org/texlive/")
-      (synopsis "Extended version of dvipdfm")
-      (description
-       "Dvipdfmx (formerly dvipdfm-cjk) is a development of dvipdfm created to
+  (package
+    (name "texlive-dvipdfmx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/dvipdfm/"
+                   "doc/dvipdfmx/"
+                   "doc/man/man1/dvipdfm.1"
+                   "doc/man/man1/dvipdfm.man1.pdf"
+                   "doc/man/man1/dvipdfmx.1"
+                   "doc/man/man1/dvipdfmx.man1.pdf"
+                   "doc/man/man1/dvipdft.1"
+                   "doc/man/man1/dvipdft.man1.pdf"
+                   "doc/man/man1/ebb.1"
+                   "doc/man/man1/ebb.man1.pdf"
+                   "doc/man/man1/extractbb.1"
+                   "doc/man/man1/extractbb.man1.pdf"
+                   "doc/man/man1/xdvipdfmx.1"
+                   "doc/man/man1/xdvipdfmx.man1.pdf"
+                   "dvipdfmx/"
+                   "fonts/cmap/dvipdfmx/"
+                   "fonts/map/dvipdfmx/")
+             (base32
+              "16qvi1id9qb8l337kl182qkl1di7wf16qbjw5k67x38g3p18qqna")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-map-file
+            ;; This map file is supposed to be generated in a profile hook.
+            (lambda _
+              (delete-file "fonts/map/dvipdfmx/updmap/kanjix.map"))))))
+    (propagated-inputs (list texlive-glyphlist))
+    (home-page "https://ctan.org/pkg/dvipdfmx")
+    (synopsis "Extended version of dvipdfm")
+    (description
+     "Dvipdfmx (formerly dvipdfm-cjk) is a development of dvipdfm created to
 support multi-byte character encodings and large character sets for East Asian
-languages.  Dvipdfmx, if \"called\" with the name dvipdfm, operates in a
-\"dvipdfm compatibility\" mode, so that users of the both packages need only
-keep one executable.  A secondary design goal is to support as many \"PDF\"
-features as does pdfTeX.")
-      (license license:gpl3+))))
+languages.  Dvipdfmx, if called with the name dvipdfm, operates in a dvipdfm
+compatibility mode, so that users of the both packages need only keep one
+executable.  A secondary design goal is to support as many PDF features as
+does pdfTeX.")
+    (license license:gpl3+)))
 
 (define-public texlive-dvips
   (package
