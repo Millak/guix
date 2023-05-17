@@ -869,21 +869,29 @@ features as does pdfTeX.")
 
 (define-public texlive-dvips
   (package
-    (inherit (simple-texlive-package
-              "texlive-dvips"
-              (list "/doc/man/man1/afm2tfm.1"
-                    "/doc/man/man1/dvips.1"
-                    "/dvips/base/"
-                    "/dvips/config/"
-                    "/fonts/enc/dvips/base/"
-                    "/tex/generic/dvips/")
-              (base32
-               "1fb73mfw9mp4ylp6sfc0465rbdb7k830aq0qf3c085c3n0zyrin8")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/dvips")
+    (name "texlive-dvips")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/dvips/"
+                   "doc/info/dvips.info"
+                   "doc/man/man1/afm2tfm.1"
+                   "doc/man/man1/afm2tfm.man1.pdf"
+                   "doc/man/man1/dvips.1"
+                   "doc/man/man1/dvips.man1.pdf"
+                   "dvips/base/"
+                   "dvips/config/"
+                   "fonts/enc/dvips/base/"
+                   "tex/generic/dvips/")
+             (base32
+              "0l4rvnb0m5y9rqibrdlbg3dijdzixjdx0nf69qjncvng5694p48m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvips")
     (synopsis "DVI to PostScript drivers")
-    (description "This package provides files needed for converting DVI files
-to PostScript.")
+    (description
+     "This package provides files needed for converting DVI files to
+PostScript.")
     (license license:lppl)))
 
 (define-public texlive-tex-ini-files
