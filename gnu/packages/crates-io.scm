@@ -4021,19 +4021,6 @@ library for Rust.")
      "This package provides #[derive] support for @code{asn1}.")
     (license license:bsd-3)))
 
-(define-public rust-asn1-derive-0.8
-  (package
-    (inherit rust-asn1-derive-0.13)
-    (name "rust-asn1-derive")
-    (version "0.8.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "asn1_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "098w0mxz4bx9w7v72gsl5wva6f0qbvzyc52m0s0n8svqbyh4z2dw"))))))
-
 (define-public rust-asn1-0.13
   (package
     (name "rust-asn1")
