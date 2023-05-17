@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
-;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,7 +64,6 @@
 (test-begin "cpan")
 
 (test-assert "cpan->guix-package"
-  ;; Replace network resources with sample data.
   (with-http-server `((200 ,test-json)
                       (200 ,test-source)
                       (200 "{ \"distribution\" : \"Test-Script\" }"))
@@ -82,9 +81,7 @@
                        ('base32
                         (? string? hash)))))
            ('build-system 'perl-build-system)
-           ('propagated-inputs
-            ('quasiquote
-             (("perl-test-script" ('unquote 'perl-test-script)))))
+           ('propagated-inputs ('list 'perl-test-script))
            ('home-page "https://metacpan.org/release/Foo-Bar")
            ('synopsis "Fizzle Fuzz")
            ('description 'fill-in-yourself!)

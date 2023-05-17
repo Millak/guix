@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -222,56 +222,73 @@ depend on (gnu packages perl)."
                                        first perl-version last))))
                            (loop)))))))))))
 
+(define (cpan-name->downstream-name name)
+  "Return the Guix package name corresponding to NAME."
+  (if (string-prefix? "perl-" name)
+      (string-downcase name)
+      (string-append "perl-" (string-downcase name))))
+
+(define (cran-dependency->upstream-input dependency)
+  "Return the <upstream-input> corresponding to DEPENDENCY, or #f if
+DEPENDENCY denotes an implicit or otherwise unnecessary dependency."
+  (match (cpan-dependency-module dependency)
+    ("perl" #f)                                   ;implicit dependency
+    (module
+     (let ((type (match (cpan-dependency-phase dependency)
+                   ((or 'configure 'build 'test)
+                    ;; "runtime" may also be needed here.  See
+                    ;; https://metacpan.org/pod/CPAN::Meta::Spec#Phases,
+                    ;; which says they are required during
+                    ;; building.  We have not yet had a need for
+                    ;; cross-compiled Perl modules, however, so
+                    ;; we leave it out.
+                    'native)
+                   ('runtime
+                    'propagated)
+                   (_
+                    #f))))
+       (and type
+            (not (core-module? module))           ;expensive call!
+            (upstream-input
+             (name (module->dist-name module))
+             (downstream-name (cpan-name->downstream-name name))
+             (type type)))))))
+
+(define (cpan-module-inputs release)
+  "Return the list of <upstream-input> for dependencies of RELEASE, a
+<cpan-release>."
+  (define (upstream-input<? a b)
+    (string<? (upstream-input-downstream-name a)
+              (upstream-input-downstream-name b)))
+
+  (sort (delete-duplicates
+         (filter-map cran-dependency->upstream-input
+                     (cpan-release-dependencies release)))
+        upstream-input<?))
+
 (define (cpan-module->sexp release)
   "Return the 'package' s-expression for a CPAN module from the release data
 in RELEASE, a <cpan-release> record."
   (define name
     (cpan-release-distribution release))
 
-  (define (guix-name name)
-    (if (string-prefix? "perl-" name)
-        (string-downcase name)
-        (string-append "perl-" (string-downcase name))))
-
   (define version (cpan-release-version release))
   (define source-url (cpan-source-url release))
 
-  (define (convert-inputs phases)
-    ;; Convert phase dependencies into a list of name/variable pairs.
-    (match (filter-map (lambda (dependency)
-                         (and (memq (cpan-dependency-phase dependency)
-                                    phases)
-                              (cpan-dependency-module dependency)))
-                       (cpan-release-dependencies release))
-      ((inputs ...)
-       (sort
-        (delete-duplicates
-         ;; Listed dependencies may include core modules.  Filter those out.
-         (filter-map (match-lambda
-                       ("perl" #f)                ;implicit dependency
-                       ((? core-module?) #f)
-                       (module
-                         (let ((name (guix-name (module->dist-name module))))
-                           (list name
-                                 (list 'unquote (string->symbol name))))))
-                     inputs))
-        (lambda args
-          (match args
-            (((a _ ...) (b _ ...))
-             (string<? a b))))))))
-
-  (define (maybe-inputs guix-name inputs)
+  (define (maybe-inputs input-type inputs)
     (match inputs
       (()
        '())
       ((inputs ...)
-       (list (list guix-name
-                   (list 'quasiquote inputs))))))
+       `((,input-type (list ,@(map (compose string->symbol
+                                            upstream-input-downstream-name)
+                                   inputs)))))))
 
   (let ((tarball (with-store store
-                   (download-to-store store source-url))))
+                   (download-to-store store source-url)))
+        (inputs (cpan-module-inputs release)))
     `(package
-       (name ,(guix-name name))
+       (name ,(cpan-name->downstream-name name))
        (version ,version)
        (source (origin
                  (method url-fetch)
@@ -281,14 +298,11 @@ in RELEASE, a <cpan-release> record."
                    ,(bytevector->nix-base32-string (file-sha256 tarball))))))
        (build-system perl-build-system)
        ,@(maybe-inputs 'native-inputs
-                       ;; "runtime" may also be needed here.  See
-                       ;; https://metacpan.org/pod/CPAN::Meta::Spec#Phases,
-                       ;; which says they are required during building.  We
-                       ;; have not yet had a need for cross-compiled perl
-                       ;; modules, however, so we leave it out.
-                       (convert-inputs '(configure build test)))
+                       (filter (upstream-input-type-predicate 'native)
+                               inputs))
        ,@(maybe-inputs 'propagated-inputs
-                       (convert-inputs '(runtime)))
+                       (filter (upstream-input-type-predicate 'propagated)
+                               inputs))
        (home-page ,(cpan-home name))
        (synopsis ,(cpan-release-abstract release))
        (description fill-in-yourself!)
