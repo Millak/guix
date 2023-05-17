@@ -43323,8 +43323,40 @@ parallelism and safety in mind.")
      "This package parses zoneinfo files from the IANA database.")
     (license license:expat)))
 
+(define-public rust-partial-io-0.5
+  (package
+    (name "rust-partial-io")
+    (version "0.5.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "partial-io" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05hfdlbqwfkwmkws797b6nrlpaszxg50avfs161v8n4zchicz5dg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-itertools" ,rust-itertools-0.10)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/sunshowers-code/partial-io")
+    (synopsis "Helpers to test partial, interrupted and would-block I/O operations")
+    (description "This package provides helpers to test partial, interrupted
+and would-block I/O operations.")
+    (license license:expat)))
+
 (define-public rust-partial-io-0.3
   (package
+    (inherit rust-partial-io-0.5)
     (name "rust-partial-io")
     (version "0.3.1")
     (source
@@ -43335,7 +43367,6 @@ parallelism and safety in mind.")
        (sha256
         (base32
          "0b9a2bvqmaj2r4rkbshjsg8zzvp23b67qfvj2y6jwjckrn6zhb38"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-futures" ,rust-futures-0.1)
@@ -43344,12 +43375,7 @@ parallelism and safety in mind.")
        #:cargo-development-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-quickcheck" ,rust-quickcheck-0.6)
-        ("rust-tokio-core" ,rust-tokio-core-0.1))))
-    (home-page "https://github.com/facebookincubator/rust-partial-io")
-    (synopsis "Helpers to test partial, interrupted and would-block I/O operations")
-    (description "This package provides helpers to test partial, interrupted
-and would-block I/O operations.")
-    (license license:expat)))
+        ("rust-tokio-core" ,rust-tokio-core-0.1))))))
 
 (define-public rust-partial-io-0.2
   (package
