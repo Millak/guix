@@ -47,6 +47,27 @@
 
             openssh-configuration
             openssh-configuration?
+            openssh-configuration-openssh
+            openssh-configuration-pid-file
+            openssh-configuration-port-number
+            openssh-configuration-max-connections
+            openssh-configuration-permit-root-login
+            openssh-configuration-allow-empty-passwords?
+            openssh-configuration-password-authentication?
+            openssh-configuration-public-key-authentication?
+            openssh-configuration-x11-forwarding?
+            openssh-configuration-allow-agent-forwarding?
+            openssh-configuration-allow-tcp-forwarding?
+            openssh-configuration-gateway-ports?
+            openssh-challenge-response-authentication?
+            openssh-configuration-use-pam?
+            openssh-configuration-print-last-log?
+            openssh-configuration-subsystems
+            openssh-configuration-accepted-environment
+            openssh-configuration-log-level
+            openssh-configuration-extra-content
+            openssh-configuration-authorized-keys
+            openssh-configuration-generate-host-keys?
             openssh-service-type
 
             dropbear-configuration
