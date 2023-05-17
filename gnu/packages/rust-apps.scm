@@ -1245,21 +1245,6 @@ rebase.")
          (base32
           "1ppwqbzydxlg9a24lynzfk60xrvqw4k31mpz1wrk6lbf88zf8nxi"))))))
 
-(define-public rust-cbindgen-0.12
-  (package
-    (inherit rust-cbindgen)
-    (name "rust-cbindgen")
-    (version "0.12.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cbindgen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "13jzbmjz1bmmfr0i80hw6ar484mgabx3hbpb2ynhk0ddqi0yr58m"))))))
-
 (define-public sniffglue
   (package
     (name "sniffglue")
