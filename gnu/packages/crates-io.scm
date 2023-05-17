@@ -76240,25 +76240,6 @@ implementation that works everywhere, even WASM!")
         ("rust-partial-io" ,rust-partial-io-0.5)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
-(define-public rust-zstd-0.8
-  (package
-    (inherit rust-zstd-0.9)
-    (name "rust-zstd")
-    (version "0.8.3+zstd.1.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "zstd" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1gy2rc3hmqpzfkh9f5d395lhwjk8qwpll3gb73bznn2agd60k9sy"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-futures" ,rust-futures-0.1)
-        ("rust-tokio-io" ,rust-tokio-io-0.1)
-        ("rust-zstd-safe" ,rust-zstd-safe-4))))))
-
 (define-public rust-zstd-safe-5
   (package
     (name "rust-zstd-safe")
