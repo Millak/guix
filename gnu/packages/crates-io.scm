@@ -16048,29 +16048,6 @@ processors.")
      "Bare bones CSV parsing with no_std support.")
     (license (list license:unlicense license:expat))))
 
-(define-public rust-csv-index-0.1
-  (package
-    (name "rust-csv-index")
-    (version "0.1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "csv-index" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "01048y84y0bakqm0x4y1svjv6lzc753b9q598xp7xgcqrdgi6x7j"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-csv" ,rust-csv-1))))
-    (home-page "https://github.com/BurntSushi/rust-csv")
-    (synopsis "On-disk CSV indexing data structures")
-    (description
-     "A collection of data structures for indexing CSV data, with a focus on
-data structures that can be easily serialized to and deserialized from disk.")
-    (license (list license:unlicense license:expat))))
-
 (define-public rust-cstr-core-0.2
   (package
     (name "rust-cstr-core")
