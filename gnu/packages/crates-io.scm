@@ -76287,7 +76287,7 @@ library.")
   (package
     (inherit rust-zstd-safe-5)
     (name "rust-zstd-safe")
-    (version "4.1.1+zstd.1.5.0")
+    (version "4.1.6+zstd.1.5.2")
     (source
      (origin
        (method url-fetch)
@@ -76295,10 +76295,9 @@ library.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yghr94blhnfigzsynm2km3g93886z49612y7rh07c4kqpr90769"))))
+        (base32 "1fz97qn7galkwl31n28cil44nxfj81ryd33v2vb041r7pd8irdll"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-zstd-sys" ,rust-zstd-sys-1))))))
 
