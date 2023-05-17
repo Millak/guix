@@ -11538,31 +11538,9 @@ traits.")
          (base32
           "1hjr333izzhs6bic84qwnyzy5xzmvasib8f3zkzj4ln3a97c1xyp"))))))
 
-(define-public rust-clang-sys-0.22
-  (package
-    (inherit rust-clang-sys-0.26)
-    (name "rust-clang-sys")
-    (version "0.22.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clang-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0f65dw1ydnzq4wrv894fql78n4ikb53jjp53xck0s4hb64s1m6lk"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0)
-        ("rust-glob" ,rust-glob-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-libloading" ,rust-libloading-0.5))))))
-
 (define-public rust-clang-sys-0.11
   (package
-    (inherit rust-clang-sys-0.22)
+    (inherit rust-clang-sys-0.26)
     (name "rust-clang-sys")
     (version "0.11.1")
     (source
