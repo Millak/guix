@@ -48,6 +48,20 @@
 ;;;
 ;;; Code:
 
+;; Generic locations are parts of the tree shared by multiple packages.
+;; Package definitions should single out files stored there, or all files in
+;; the directory from all involved packages would be downloaded.
+(define texlive-generic-locations
+  (list "doc/generic/hyph-utf8/"
+        "doc/info/"
+        "doc/man/"
+        "doc/web2c/"
+        "scripts/texlive/"
+        "scripts/texlive-extra/"
+        "tex/generic/config/"
+        "tex/generic/hyphen/"
+        "web2c/"))
+
 (define string->license
   (match-lambda
     ("artistic2" 'gpl3+)
@@ -70,9 +84,9 @@
 
     ("lpplgpl" `(list lppl gpl1+))
     ("lppl" 'lppl)
-    ("lppl1" 'lppl1.0+) ; usually means "or later"
-    ("lppl1.2" 'lppl1.2+) ; usually means "or later"
-    ("lppl1.3" 'lppl1.3+) ; usually means "or later"
+    ("lppl1" 'lppl1.0+)                 ; usually means "or later"
+    ("lppl1.2" 'lppl1.2+)               ; usually means "or later"
+    ("lppl1.3" 'lppl1.3+)               ; usually means "or later"
     ("lppl1.3a" 'lppl1.3a)
     ("lppl1.3b" 'lppl1.3b)
     ("lppl1.3c" 'lppl1.3c)
@@ -234,25 +248,34 @@ of those files are returned that are unexpectedly installed."
         (lset-difference string=?
                          (map strip-directory-prefix existing) files))))
 
-(define (files->directories files)
+(define (files->locations files)
   (define name->parts (cut string-split <> #\/))
-  (map (cut string-join <> "/" 'suffix)
-       (delete-duplicates (map (lambda (file)
-                                 (drop-right (name->parts file) 1))
-                               (sort files string<))
-                          ;; Remove sub-directories, i.e. more specific
-                          ;; entries with the same prefix.
-                          (lambda (x y) (every equal? x y)))))
+  ;; Generic locations are shared by multiple packages.  Provide the full file
+  ;; name to make so as to extract only the files related to the package being
+  ;; imported.
+  (let-values (((generic specific)
+                (partition (lambda (f)
+                             (any (cut string-prefix? <> f)
+                                  texlive-generic-locations))
+                           files)))
+    (append generic
+            (map (cut string-join <> "/" 'suffix)
+                 (delete-duplicates (map (lambda (file)
+                                           (drop-right (name->parts file) 1))
+                                         (sort specific string<))
+                                    ;; Remove sub-directories, i.e. more
+                                    ;; specific entries with the same prefix.
+                                    (lambda (x y) (every equal? x y)))))))
 
 (define (tlpdb->package name version package-database)
   (and-let* ((data (assoc-ref package-database name))
-             (dirs (files->directories
-                    (filter-map (lambda (dir)
+             (locs (files->locations
+                    (filter-map (lambda (file)
                                   ;; Ignore any file not starting with the
                                   ;; expected prefix.  Nothing good can come
                                   ;; from this.
-                                  (and (string-prefix? "texmf-dist/" dir)
-                                       (string-drop dir (string-length "texmf-dist/"))))
+                                  (and (string-prefix? "texmf-dist/" file)
+                                       (string-drop file (string-length "texmf-dist/"))))
                                 (append (or (assoc-ref data 'docfiles) (list))
                                         (or (assoc-ref data 'runfiles) (list))
                                         (or (assoc-ref data 'srcfiles) (list))))))
@@ -263,7 +286,7 @@ of those files are returned that are unexpectedly installed."
              (ref (svn-multi-reference
                    (url (string-append "svn://www.tug.org/texlive/tags/"
                                        %texlive-tag "/Master/texmf-dist"))
-                   (locations dirs)
+                   (locations locs)
                    (revision %texlive-revision)))
              ;; Ignore arch-dependent packages.
              (filtered-depends
@@ -295,7 +318,7 @@ of those files are returned that are unexpectedly installed."
             (() '())
             (inputs
              `((propagated-inputs
-                (list ,@(map-in-order
+                (list ,@(map
                          (lambda (tex-name)
                            (let ((name (guix-name tex-name)))
                              (string->symbol name)))
