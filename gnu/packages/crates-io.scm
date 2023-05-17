@@ -40455,29 +40455,33 @@ primitives and enums easier.")
 (define-public rust-num-format-0.4
   (package
     (name "rust-num-format")
-    (version "0.4.0")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-format" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r94i9lhr15hk32494v9my31r0829w29yyp7iql98a1cf9wl3zms"))))
+        (base32 "1hvjmib117jspyixfr76f900mhz5zfn71dnyqg9iywb339vxjlm6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.4)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
+     `(#:cargo-inputs
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
-        ("rust-itoa" ,rust-itoa-0.4)
+        ("rust-itoa" ,rust-itoa-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-num-bigint" ,rust-num-bigint-0.2)
-        ("rust-num-format-windows" ,rust-num-format-windows-0.3)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-num-format-windows" ,rust-num-format-windows-0.4)
         ("rust-serde" ,rust-serde-1)
-        ("rust-widestring" ,rust-widestring-0.4)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-widestring" ,rust-widestring-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/bcmyers/num-format")
     (synopsis "Produce string-representations of numbers")
     (description
