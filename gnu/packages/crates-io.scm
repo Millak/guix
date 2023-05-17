@@ -43025,14 +43025,14 @@ Format (MCF).")
 (define-public rust-path-abs-0.5
   (package
     (name "rust-path-abs")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "path_abs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "131qi5j201caraqz9rwbzk4mybd9bcrryrhf63lr9gz0xmnqwszb"))))
+        (base32 "1hrkjrk9w2mhgzwl84gl2lmajs7yagdrcpxnjf51vh1a6kv05vq5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -43042,6 +43042,7 @@ Format (MCF).")
         ("rust-stfu8" ,rust-stfu8-0.2))
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-0.4)
+        ("rust-regex" ,rust-regex-0.2)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tempdir" ,rust-tempdir-0.3))))
     (home-page "https://github.com/vitiral/path_abs")
