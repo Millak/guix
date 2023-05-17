@@ -38446,7 +38446,7 @@ in Rust that can compile to WebAssembly.")
 (define-public rust-net2-0.2
   (package
     (name "rust-net2")
-    (version "0.2.33")
+    (version "0.2.38")
     (source
       (origin
         (method url-fetch)
@@ -38454,11 +38454,10 @@ in Rust that can compile to WebAssembly.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "126g3fgfxp06zimc1l9iyxnn9cif1hjsg7sd81nlls5nnyghsma2"))))
+          "0cf66y4415qc1i9sr0rrn9my5f1pgxzf3xllwsr309fdrycxzl3l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))
