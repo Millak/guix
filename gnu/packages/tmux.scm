@@ -319,6 +319,47 @@ Optional:
       (home-page "https://github.com/tmux-plugins/tmux-resurrect/")
       (license license:expat))))
 
+(define-public tmux-plugin-continuum
+  (let ((commit "3e4bc35da41f956c873aea716c97555bf1afce5d")
+        (revision "0"))
+    (package
+      (name "tmux-plugin-continuum")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tmux-plugins/tmux-continuum/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1py8qfs2f93hkxhk039m813bjgcs5k54si662gx05g3czqy06pb7"))))
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils))
+         #:builder (begin
+                     (use-modules (guix build utils))
+                     (let ((out (string-append %output
+                                 "/share/tmux-plugins/continuum/")))
+                       (mkdir-p out)
+                       (copy-recursively (assoc-ref %build-inputs "source")
+                                         out)))))
+      (synopsis "Continuous saving of tmux environment")
+      (description
+       "Features:
+
+@itemize
+@item continuous saving of tmux environment
+@item automatic tmux start when computer/server is turned on
+@item automatic restore when tmux is started
+@end itemize
+
+Together, these features enable uninterrupted tmux usage.  No matter the
+computer or server restarts, if the machine is on, tmux will be there how you
+left it off the last time it was used.")
+      (home-page "https://github.com/tmux-plugins/tmux-continuum/")
+      (license license:expat))))
+
 (define-public tmux-plugin-mem-cpu-load
   (package
     (name "tmux-plugin-mem-cpu-load")
