@@ -16096,22 +16096,6 @@ use with sct crate.")
     (arguments
      `(#:cargo-inputs (("rust-sct" ,rust-sct-0.6))))))
 
-(define-public rust-ct-logs-0.6
-  (package
-    (inherit rust-ct-logs-0.7)
-    (name "rust-ct-logs")
-    (version "0.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ct-logs" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "04wiwiv4ghni3x2vni3z711mlz0ndqvh04vmdkbw3nr7zbsqcdjd"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-sct" ,rust-sct-0.6))))))
-
 (define-public rust-ct-logs-0.3
   (package
     (inherit rust-ct-logs-0.7)
