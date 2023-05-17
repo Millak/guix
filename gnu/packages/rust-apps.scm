@@ -1230,21 +1230,6 @@ rebase.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-toml" ,rust-toml-0.5))))))
 
-(define-public rust-cbindgen-0.14
-  (package
-    (inherit rust-cbindgen)
-    (name "rust-cbindgen")
-    (version "0.14.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "cbindgen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1ppwqbzydxlg9a24lynzfk60xrvqw4k31mpz1wrk6lbf88zf8nxi"))))))
-
 (define-public sniffglue
   (package
     (name "sniffglue")
