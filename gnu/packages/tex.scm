@@ -736,16 +736,19 @@ documentation from TeX files.  It is part of the LaTeX base.")
 
 (define-public texlive-underscore
   (package
-    (inherit (simple-texlive-package
-              "texlive-underscore"
-              (list "/doc/latex/underscore/"
-                    "/tex/latex/underscore/")
-              (base32
-               "0slxsxc9azmv3gsm55jkhkv8a06wafankp55hhsdd6k4prp8szrb")
-              #:trivial? #t))
+    (name "texlive-underscore")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/underscore/" "tex/latex/underscore/")
+             (base32
+              "0slxsxc9azmv3gsm55jkhkv8a06wafankp55hhsdd6k4prp8szrb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (home-page "https://www.ctan.org/pkg/underscore")
     (synopsis "Control the behaviour of @samp{_} in text")
-    (description "This package causes @code{\\_} in text mode (i.e.,
+    (description
+     "This package causes @code{\\_} in text mode (i.e.,
 @code{\\textunderscore}) to print an underscore so that hyphenation of words
 either side of it is not affected; a package option controls whether an actual
 hyphenation point appears after the underscore, or merely a break point.  The
