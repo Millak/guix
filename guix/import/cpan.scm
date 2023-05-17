@@ -154,7 +154,7 @@ return \"Test-Simple\""
           ((? origin? origin)
            (match (origin-uri origin)
              ((or (? string? url) (url _ ...))
-              (match (string-match (string-append "([^/]*)-v?[0-9\\.]+") url)
+              (match (string-match "([^/]*)-v?[0-9\\.]+" url)
                 (#f #f)
                 (m (match:substring m 1))))
              (_ #f)))
