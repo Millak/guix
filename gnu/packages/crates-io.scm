@@ -15229,14 +15229,14 @@ rasterizing glyphs, using native font engines whenever possible.")
   (package
     (inherit rust-crossfont-0.5)
     (name "rust-crossfont")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossfont" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "079431wkjc18zj3038djai83z6fna0x7r1hxpxjhhi50jdz9dh5n"))))
+        (base32 "0lc2a6q9c4p35hpiwddhnx4f21l48xixjywmlvjbf5v49id6k68j"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
