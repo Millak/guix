@@ -1046,6 +1046,38 @@ Metafont's GF output, and put coding information and other Xerox-world
 information in the TFM file.")
     (license license:public-domain)))
 
+(define-public texlive-mptopdf
+  (package
+    (name "texlive-mptopdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             ;; The first location prevents from downloading all ConTeXt
+             ;; "doc/context/scripts/mkii" directory.
+             (list "doc/context/scripts/mkii/mptopdf.man"
+                   "doc/man/man1/mptopdf.1"
+                   "doc/man/man1/mptopdf.man1.pdf"
+                   "scripts/context/perl/"
+                   "scripts/context/stubs/mswin/"
+                   "tex/context/base/mkii/"
+                   "tex/generic/context/mptopdf/")
+             (base32
+              "0gbc6si5i7pgh37lnh5fpgnjs9180vz0nxpj6qkz8z2yb84ikq7l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-plain))
+    (home-page "https://ctan.org/pkg/mptopdf")
+    (synopsis "mpost to PDF, native MetaPost graphics inclusion")
+    (description
+     "The @code{mptopdf} script does standalone conversion from mpost to PDF,
+using the @file{supp-*} and @file{syst-*} files.  They also allow native
+MetaPost graphics inclusion in LaTeX (via pdftex.def) and ConTeXt.  They can
+be used independently of the rest of ConTeXt.")
+    ;; Use the same licensing as ConTeXt.
+    (license (list license:lppl1.3c+
+                   license:gpl2+
+                   license:cc-by-sa4.0))))
+
 (define-public texlive-fontinst
   (package
     (name "texlive-fontinst")
