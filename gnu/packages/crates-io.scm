@@ -39488,26 +39488,6 @@ enhances the built-in library with some useful features.")
 framework.")
     (license license:expat)))
 
-(define-public rust-ntest-timeout-0.3
-  (package
-    (inherit rust-ntest-timeout-0.8)
-    (name "rust-ntest-timeout")
-    (version "0.3.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ntest_timeout" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0klryn3rgjxnq3cv6j8bwcsr0b7zw3x216h63144v22aja18p0g0"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-timebomb" ,rust-timebomb-0.1))))))
-
 (define-public rust-ntest-proc-macro-helper-0.8
   (package
     (name "rust-ntest-proc-macro-helper")
