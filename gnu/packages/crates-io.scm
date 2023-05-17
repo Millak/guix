@@ -72313,23 +72313,6 @@ with webpki.")
        (("rust-untrusted" ,rust-untrusted-0.6)
         ("rust-webpki" ,rust-webpki-0.18))))))
 
-(define-public rust-webpki-roots-0.14
-  (package
-    (inherit rust-webpki-roots-0.18)
-    (name "rust-webpki-roots")
-    (version "0.14.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "webpki-roots" version))
-      (file-name (string-append name "-" version ".tar.gz"))
-      (sha256
-       (base32 "05zw919077i3jadbvdsvl69wv2siijg2pjbykl6fyi7hmgb7bggd"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-untrusted" ,rust-untrusted-0.6)
-        ("rust-webpki" ,rust-webpki-0.18))))))
-
 (define-public rust-webview-sys-0.6
   (package
     (name "rust-webview-sys")
