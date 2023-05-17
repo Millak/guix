@@ -21,7 +21,10 @@
 (define-module (test-cpan)
   #:use-module (guix import cpan)
   #:use-module (guix base32)
+  #:use-module (guix upstream)
+  #:use-module ((guix download) #:select (url-fetch))
   #:use-module (gcrypt hash)
+  #:use-module (guix tests)
   #:use-module (guix tests http)
   #:use-module ((guix store) #:select (%graft?))
   #:use-module (srfi srfi-64)
@@ -91,6 +94,30 @@
                    hash))
         (x
          (pk 'fail x #f))))))
+
+(test-equal "package-latest-release"
+  (list '("http://example.com/Foo-Bar-0.1.tar.gz")
+        #f
+        (list (upstream-input
+               (name "Test-Script")
+               (downstream-name "perl-test-script")
+               (type 'propagated))))
+  (with-http-server `((200 ,test-json)
+                      (200 ,test-source)
+                      (200 "{ \"distribution\" : \"Test-Script\" }"))
+    (define source
+      (parameterize ((%metacpan-base-url (%local-url)))
+        (package-latest-release
+         (dummy-package "perl-test-script"
+                        (version "0.0.0")
+                        (source (dummy-origin
+                                 (method url-fetch)
+                                 (uri "mirror://cpan/Foo-Bar-0.0.0.tgz"))))
+         (list %cpan-updater))))
+
+    (list (upstream-source-urls source)
+          (upstream-source-signature-urls source)
+          (upstream-source-inputs source))))
 
 (test-equal "metacpan-url->mirror-url, http"
   "mirror://cpan/authors/id/T/TE/TEST/Foo-Bar-0.1.tar.gz"

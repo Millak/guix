@@ -354,7 +354,8 @@ in RELEASE, a <cpan-release> record."
        (upstream-source
         (package (package-name package))
         (version version)
-        (urls (list url)))))))
+        (urls (list url))
+        (inputs (cpan-module-inputs release)))))))
 
 (define %cpan-updater
   (upstream-updater
