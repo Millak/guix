@@ -61800,33 +61800,6 @@ a syntax tree of Rust source code.")
         ("rust-tempdir" ,rust-tempdir-0.3)
         ("rust-walkdir" ,rust-walkdir-1))))))
 
-(define-public rust-syn-mid-0.5
-  (package
-    (name "rust-syn-mid")
-    (version "0.5.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "syn-mid" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "12ikg5jfklixq0wsgfl7sdzjqlxgq50ygklxy4f972hjdjgm7qvv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-quote" ,rust-quote-1))))
-    (home-page "https://github.com/taiki-e/syn-mid")
-    (synopsis
-     "Provide the features between \"full\" and \"derive\" of syn")
-    (description
-     "This package provides the features between \"full\" and \"derive\" of syn.")
-    (license (list license:asl2.0 license:expat))))
-
 (define-public rust-syn-test-suite-0.0.0
   (package
     (name "rust-syn-test-suite")
