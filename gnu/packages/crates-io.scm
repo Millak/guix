@@ -70327,25 +70327,6 @@ comparable to calling @code{unwrap_err()}.")
 encoding.")
     (license license:expat)))
 
-(define-public rust-urlocator-0.1
- (package
-   (name "rust-urlocator")
-   (version "0.1.3")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (crate-uri "urlocator" version))
-      (file-name
-       (string-append name "-" version ".tar.gz"))
-      (sha256
-       (base32
-        "0r5ig00np3svjpvb1gha3ni798cwj2w7rnlwrc8jrrw7bvlb2yri"))))
-   (build-system cargo-build-system)
-   (home-page "https://github.com/alacritty/urlocator")
-   (synopsis "Locate URLs in character streams")
-   (description "Locate URLs in character streams.")
-   (license (list license:expat license:asl2.0))))
-
 (define-public rust-user32-sys-0.2
   (package
     (name "rust-user32-sys")
