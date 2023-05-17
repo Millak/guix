@@ -34723,7 +34723,7 @@ server (LSP).")
 (define-public rust-lzma-sys-0.1
   (package
     (name "rust-lzma-sys")
-    (version "0.1.17")
+    (version "0.1.20")
     (source
      (origin
        (method url-fetch)
@@ -34731,10 +34731,10 @@ server (LSP).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "06fnjsx5cj2w6rsqb12x30nl9lnj0xv4hv78z4x1vlfsxp1vgd5x"))
+         "09sxp20waxyglgn3cjz8qjkspb3ryz2fwx4rigkwvrk46ymh9njz"))
        (modules '((guix build utils)))
        (snippet
-        '(begin (delete-file-recursively "xz-5.2") #t))))
+        '(begin (delete-file-recursively "xz-5.2")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
