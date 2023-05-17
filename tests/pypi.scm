@@ -27,10 +27,11 @@
   #:use-module (guix utils)
   #:use-module (gcrypt hash)
   #:use-module (guix tests)
+  #:use-module (guix tests http)
   #:use-module (guix build-system python)
   #:use-module ((guix build utils)
                 #:select (delete-file-recursively
-                          which mkdir-p
+                          which mkdir-p dump-port
                           with-directory-excursion))
   #:use-module ((guix diagnostics) #:select (guix-warning-port))
   #:use-module ((guix build syscalls) #:select (mkdtemp!))
@@ -57,24 +58,18 @@ optionally using a different @var{name in its URL}."
      (urls . #())
      (releases
       . ((1.0.0
-          . #(((url . ,(format #f "https://example.com/~a-1.0.0.egg"
+          . #(((url . ,(format #f "~a/~a-1.0.0.egg"
+                               (%local-url #:path "")
                                (or name-in-url name)))
                (packagetype . "bdist_egg"))
-              ((url . ,(format #f "https://example.com/~a-1.0.0.tar.gz"
+              ((url . ,(format #f "~a/~a-1.0.0.tar.gz"
+                               (%local-url #:path "")
                                (or name-in-url name)))
                (packagetype . "sdist"))
-              ((url . ,(format #f "https://example.com/~a-1.0.0-py2.py3-none-any.whl"
+              ((url . ,(format #f "~a/~a-1.0.0-py2.py3-none-any.whl"
+                               (%local-url #:path "")
                                (or name-in-url name)))
                (packagetype . "bdist_wheel")))))))))
-
-(define test-json-1
-  (foo-json))
-
-(define test-json-2
-  (foo-json #:name "foo-99"))
-
-(define test-source-hash
-  "")
 
 (define test-specifications
   '("Fizzy [foo, bar]"
@@ -187,6 +182,18 @@ files specified by SPECS.  Return its file name."
     (delete-file-recursively directory)
     whl-file))
 
+(define (file-dump file)
+  "Return a procedure that dumps FILE to the given port."
+  (lambda (output)
+    (call-with-input-file file
+      (lambda (input)
+        (dump-port input output)))))
+
+(define-syntax-rule (with-pypi responses body ...)
+  (with-http-server responses
+    (parameterize ((%pypi-base-url (%local-url #:path "/")))
+      body ...)))
+
 
 (test-begin "pypi")
 
@@ -275,200 +282,146 @@ files specified by SPECS.  Return its file name."
    "https://files.pythonhosted.org/packages/f0/f00/goo-0.0.0.tar.gz"))
 
 (test-assert "pypi->guix-package, no wheel"
-  ;; Replace network resources with sample data.
-    (mock ((guix import utils) url-fetch
-           (lambda (url file-name)
-             (match url
-               ("https://example.com/foo-1.0.0.tar.gz"
-                ;; Unusual requires.txt location should still be found.
-                (let ((tarball (pypi-tarball "foo-1.0.0"
-                                             `(("src/bizarre.egg-info/requires.txt"
-                                                ,test-requires.txt)))))
-                  (copy-file tarball file-name)
-                  (set! test-source-hash
-                        (call-with-input-file file-name port-sha256))))
-               ("https://example.com/foo-1.0.0-py2.py3-none-any.whl" #f)
-               (_ (error "Unexpected URL: " url)))))
-          (mock ((guix http-client) http-fetch
-                 (lambda (url . rest)
-                   (match url
-                     ("https://pypi.org/pypi/foo/json"
-                      (values (open-input-string test-json-1)
-                              (string-length test-json-1)))
-                     ("https://example.com/foo-1.0.0-py2.py3-none-any.whl" #f)
-                     (_ (error "Unexpected URL: " url)))))
-                (match (pypi->guix-package "foo")
-                  (('package
-                     ('name "python-foo")
-                     ('version "1.0.0")
-                     ('source ('origin
-                                ('method 'url-fetch)
-                                ('uri ('pypi-uri "foo" 'version))
-                                ('sha256
-                                 ('base32
-                                  (? string? hash)))))
-                     ('build-system 'pyproject-build-system)
-                     ('propagated-inputs ('list 'python-bar 'python-foo))
-                     ('native-inputs ('list 'python-pytest))
-                     ('home-page "http://example.com")
-                     ('synopsis "summary")
-                     ('description "summary")
-                     ('license 'license:lgpl2.0))
-                   (and (string=? (bytevector->nix-base32-string
-                                   test-source-hash)
-                                  hash)
-                        (equal? (pypi->guix-package "foo" #:version "1.0.0")
-                                (pypi->guix-package "foo"))
-                        (guard (c ((error? c) #t))
-                          (pypi->guix-package "foo" #:version "42"))))
-                  (x
-                   (pk 'fail x #f))))))
+  (let ((tarball (pypi-tarball
+                  "foo-1.0.0"
+                  `(("src/bizarre.egg-info/requires.txt"
+                     ,test-requires.txt))))
+        (twice (lambda (lst) (append lst lst))))
+    (with-pypi (twice `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
+                        ("/foo-1.0.0-py2.py3-none-any.whl" 404 "")
+                        ("/foo/json" 200 ,(lambda (port)
+                                            (display (foo-json) port)))))
+      (match (pypi->guix-package "foo")
+        (('package
+           ('name "python-foo")
+           ('version "1.0.0")
+           ('source ('origin
+                      ('method 'url-fetch)
+                      ('uri ('pypi-uri "foo" 'version))
+                      ('sha256
+                       ('base32
+                        (? string? hash)))))
+           ('build-system 'pyproject-build-system)
+           ('propagated-inputs ('list 'python-bar 'python-foo))
+           ('native-inputs ('list 'python-pytest))
+           ('home-page "http://example.com")
+           ('synopsis "summary")
+           ('description "summary")
+           ('license 'license:lgpl2.0))
+         (and (string=? (bytevector->nix-base32-string
+                         (file-sha256 tarball))
+                        hash)
+              (equal? (pypi->guix-package "foo" #:version "1.0.0")
+                      (pypi->guix-package "foo"))
+              (guard (c ((error? c) #t))
+                (pypi->guix-package "foo" #:version "42"))))
+        (x
+         (pk 'fail x #f))))))
 
 (test-skip (if (which "zip") 0 1))
 (test-assert "pypi->guix-package, wheels"
-  ;; Replace network resources with sample data.
-  (mock ((guix import utils) url-fetch
-         (lambda (url file-name)
-           (match url
-             ("https://example.com/foo-1.0.0.tar.gz"
-              (let ((tarball (pypi-tarball
-                              "foo-1.0.0"
-                              '(("foo-1.0.0/foo.egg-info/requires.txt"
-                                 "wrong data \
-to make sure we're testing wheels")))))
-                (copy-file tarball file-name)
-                (set! test-source-hash
-                  (call-with-input-file file-name port-sha256))))
-             ("https://example.com/foo-1.0.0-py2.py3-none-any.whl"
-              (let ((wheel (wheel-file "foo-1.0.0"
-                                       `(("METADATA" ,test-metadata)))))
-                (copy-file wheel file-name)))
-             (_ (error "Unexpected URL: " url)))))
-        (mock ((guix http-client) http-fetch
-               (lambda (url . rest)
-                 (match url
-                   ("https://pypi.org/pypi/foo/json"
-                    (values (open-input-string test-json-1)
-                            (string-length test-json-1)))
-                   ("https://example.com/foo-1.0.0-py2.py3-none-any.whl" #f)
-                   (_ (error "Unexpected URL: " url)))))
-              ;; Not clearing the memoization cache here would mean returning the value
-              ;; computed in the previous test.
-              (invalidate-memoization! pypi->guix-package)
-              (match (pypi->guix-package "foo")
-                (('package
-                   ('name "python-foo")
-                   ('version "1.0.0")
-                   ('source ('origin
-                              ('method 'url-fetch)
-                              ('uri ('pypi-uri "foo" 'version))
-                              ('sha256
-                               ('base32
-                                (? string? hash)))))
-                   ('build-system 'pyproject-build-system)
-                   ('propagated-inputs ('list 'python-bar 'python-baz))
-                   ('native-inputs ('list 'python-pytest))
-                   ('home-page "http://example.com")
-                   ('synopsis "summary")
-                   ('description "summary")
-                   ('license 'license:lgpl2.0))
-                 (string=? (bytevector->nix-base32-string
-                            test-source-hash)
-                           hash))
-                (x
-                 (pk 'fail x #f))))))
+  (let ((tarball (pypi-tarball
+                  "foo-1.0.0"
+                  '(("foo-1.0.0/foo.egg-info/requires.txt"
+                     "wrong data \
+to make sure we're testing wheels"))))
+        (wheel (wheel-file "foo-1.0.0"
+                           `(("METADATA" ,test-metadata)))))
+    (with-pypi `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
+                 ("/foo-1.0.0-py2.py3-none-any.whl"
+                  200 ,(file-dump wheel))
+                 ("/foo/json" 200 ,(lambda (port)
+                                     (display (foo-json) port))))
+      ;; Not clearing the memoization cache here would mean returning the value
+      ;; computed in the previous test.
+      (invalidate-memoization! pypi->guix-package)
+      (match (pypi->guix-package "foo")
+        (('package
+           ('name "python-foo")
+           ('version "1.0.0")
+           ('source ('origin
+                      ('method 'url-fetch)
+                      ('uri ('pypi-uri "foo" 'version))
+                      ('sha256
+                       ('base32
+                        (? string? hash)))))
+           ('build-system 'pyproject-build-system)
+           ('propagated-inputs ('list 'python-bar 'python-baz))
+           ('native-inputs ('list 'python-pytest))
+           ('home-page "http://example.com")
+           ('synopsis "summary")
+           ('description "summary")
+           ('license 'license:lgpl2.0))
+         (string=? (bytevector->nix-base32-string (file-sha256 tarball))
+                   hash))
+        (x
+         (pk 'fail x #f))))))
 
 (test-assert "pypi->guix-package, no usable requirement file."
-  ;; Replace network resources with sample data.
-  (mock ((guix import utils) url-fetch
-         (lambda (url file-name)
-           (match url
-             ("https://example.com/foo-1.0.0.tar.gz"
-              (let ((tarball (pypi-tarball "foo-1.0.0"
-                                           '(("foo.egg-info/.empty" "")))))
-                (copy-file tarball file-name)
-                (set! test-source-hash
-                      (call-with-input-file file-name port-sha256))))
-             ("https://example.com/foo-1.0.0-py2.py3-none-any.whl" #f)
-             (_ (error "Unexpected URL: " url)))))
-        (mock ((guix http-client) http-fetch
-               (lambda (url . rest)
-                 (match url
-                   ("https://pypi.org/pypi/foo/json"
-                    (values (open-input-string test-json-1)
-                            (string-length test-json-1)))
-                   ("https://example.com/foo-1.0.0-py2.py3-none-any.whl" #f)
-                   (_ (error "Unexpected URL: " url)))))
-              ;; Not clearing the memoization cache here would mean returning the value
-              ;; computed in the previous test.
-              (invalidate-memoization! pypi->guix-package)
-              (match (pypi->guix-package "foo")
-                (('package
-                   ('name "python-foo")
-                   ('version "1.0.0")
-                   ('source ('origin
-                              ('method 'url-fetch)
-                              ('uri ('pypi-uri "foo" 'version))
-                              ('sha256
-                               ('base32
-                                (? string? hash)))))
-                   ('build-system 'pyproject-build-system)
-                   ('home-page "http://example.com")
-                   ('synopsis "summary")
-                   ('description "summary")
-                   ('license 'license:lgpl2.0))
-                 (string=? (bytevector->nix-base32-string
-                            test-source-hash)
-                           hash))
-                (x
-                 (pk 'fail x #f))))))
+  (let ((tarball (pypi-tarball "foo-1.0.0"
+                               '(("foo.egg-info/.empty" "")))))
+    (with-pypi `(("/foo-1.0.0.tar.gz" 200 ,(file-dump tarball))
+                 ("/foo-1.0.0-py2.py3-none-any.whl" 404 "")
+                 ("/foo/json" 200 ,(lambda (port)
+                                     (display (foo-json) port))))
+      ;; Not clearing the memoization cache here would mean returning the
+      ;; value computed in the previous test.
+      (invalidate-memoization! pypi->guix-package)
+      (match (pypi->guix-package "foo")
+        (('package
+           ('name "python-foo")
+           ('version "1.0.0")
+           ('source ('origin
+                      ('method 'url-fetch)
+                      ('uri ('pypi-uri "foo" 'version))
+                      ('sha256
+                       ('base32
+                        (? string? hash)))))
+           ('build-system 'pyproject-build-system)
+           ('home-page "http://example.com")
+           ('synopsis "summary")
+           ('description "summary")
+           ('license 'license:lgpl2.0))
+         (string=? (bytevector->nix-base32-string (file-sha256 tarball))
+                   hash))
+        (x
+         (pk 'fail x #f))))))
 
 (test-assert "pypi->guix-package, package name contains \"-\" followed by digits"
-  ;; Replace network resources with sample data.
-  (mock ((guix import utils) url-fetch
-         (lambda (url file-name)
-           (match url
-             ("https://example.com/foo-99-1.0.0.tar.gz"
-              (let ((tarball (pypi-tarball "foo-99-1.0.0"
-                                           `(("src/bizarre.egg-info/requires.txt"
-                                              ,test-requires.txt)))))
-                ;; Unusual requires.txt location should still be found.
-                (copy-file tarball file-name)
-                (set! test-source-hash
-                  (call-with-input-file file-name port-sha256))))
-             ("https://example.com/foo-99-1.0.0-py2.py3-none-any.whl" #f)
-             (_ (error "Unexpected URL: " url)))))
-        (mock ((guix http-client) http-fetch
-               (lambda (url . rest)
-                 (match url
-                   ("https://pypi.org/pypi/foo-99/json"
-                    (values (open-input-string test-json-2)
-                            (string-length test-json-2)))
-                   ("https://example.com/foo-99-1.0.0-py2.py3-none-any.whl" #f)
-                   (_ (error "Unexpected URL: " url)))))
-              (match (pypi->guix-package "foo-99")
-                (('package
-                   ('name "python-foo-99")
-                   ('version "1.0.0")
-                   ('source ('origin
-                              ('method 'url-fetch)
-                              ('uri ('pypi-uri "foo-99" 'version))
-                              ('sha256
-                               ('base32
-                                (? string? hash)))))
-                   ('properties ('quote (("upstream-name" . "foo-99"))))
-                   ('build-system 'pyproject-build-system)
-                   ('propagated-inputs ('list 'python-bar 'python-foo))
-                   ('native-inputs ('list 'python-pytest))
-                   ('home-page "http://example.com")
-                   ('synopsis "summary")
-                   ('description "summary")
-                   ('license 'license:lgpl2.0))
-                 (string=? (bytevector->nix-base32-string
-                            test-source-hash)
-                           hash))
-                (x
-                 (pk 'fail x #f))))))
+  (let ((tarball (pypi-tarball "foo-99-1.0.0"
+                               `(("src/bizarre.egg-info/requires.txt"
+                                  ,test-requires.txt)))))
+    (with-pypi `(("/foo-99-1.0.0.tar.gz" 200 ,(file-dump tarball))
+                 ("/foo-99-1.0.0-py2.py3-none-any.whl" 404 "")
+                 ("/foo-99/json" 200 ,(lambda (port)
+                                        (display (foo-json #:name "foo-99")
+                                                 port))))
+      (match (pypi->guix-package "foo-99")
+        (('package
+           ('name "python-foo-99")
+           ('version "1.0.0")
+           ('source ('origin
+                      ('method 'url-fetch)
+                      ('uri ('pypi-uri "foo-99" 'version))
+                      ('sha256
+                       ('base32
+                        (? string? hash)))))
+           ('properties ('quote (("upstream-name" . "foo-99"))))
+           ('build-system 'pyproject-build-system)
+           ('propagated-inputs ('list 'python-bar 'python-foo))
+           ('native-inputs ('list 'python-pytest))
+           ('home-page "http://example.com")
+           ('synopsis "summary")
+           ('description "summary")
+           ('license 'license:lgpl2.0))
+         (string=? (bytevector->nix-base32-string (file-sha256 tarball))
+                   hash))
+        (x
+         (pk 'fail x #f))))))
 
 (test-end "pypi")
 (delete-file-recursively sample-directory)
+
+;; Local Variables:
+;; eval: (put 'with-pypi 'scheme-indent-function 1)
+;; End:

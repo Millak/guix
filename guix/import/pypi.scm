@@ -55,7 +55,8 @@
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix licenses) #:prefix license:)
-  #:export (parse-requires.txt
+  #:export (%pypi-base-url
+            parse-requires.txt
             parse-wheel-metadata
             specification->requirement-name
             guix-package->pypi-name
@@ -66,6 +67,10 @@
 
 ;; The PyPI API (notice the rhyme) is "documented" at:
 ;; <https://warehouse.readthedocs.io/api-reference/json/>.
+
+(define %pypi-base-url
+  ;; Base URL of the PyPI API.
+  (make-parameter "https://pypi.org/pypi/"))
 
 (define non-empty-string-or-false
   (match-lambda
@@ -123,7 +128,7 @@
 
 (define (pypi-fetch name)
   "Return a <pypi-project> record for package NAME, or #f on failure."
-  (and=> (json-fetch (string-append "https://pypi.org/pypi/" name "/json"))
+  (and=> (json-fetch (string-append (%pypi-base-url) name "/json"))
          json->pypi-project))
 
 ;; For packages found on PyPI that lack a source distribution.
