@@ -882,19 +882,24 @@ to PostScript.")
 
 (define-public texlive-tex-ini-files
   (package
-    (inherit (simple-texlive-package
-              "texlive-tex-ini-files"
-              (list "/tex/generic/tex-ini-files/")
-              (base32
-               "0q1g62jg0qiqslm93ycvm30bw8ydmssjdshzsnzl7n2vpd62qfi2")
-              #:trivial? #t))
+    (name "texlive-tex-ini-files")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tex-ini-files/" "tex/generic/tex-ini-files/")
+             (base32
+              "0a18k27fz1vjha5blwskxpnd715k08hmfm7d1yc2f7adaf0rwl3m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
     (home-page "https://www.ctan.org/pkg/tex-ini-files")
     (synopsis "Files for creating TeX formats")
-    (description "This bundle provides a collection of model \".ini\" files
-for creating TeX formats.  These files are commonly used to introduced
-distribution-dependent variations in formats.  They are also used to
-allow existing format source files to be used with newer engines, for example
-to adapt the plain e-TeX source file to work with XeTeX and LuaTeX.")
+    (description
+     "This bundle provides a collection of model @file{.ini} files for
+creating TeX formats.  These files are commonly used to introduced
+distribution-dependent variations in formats.  They are also used to allow
+existing format source files to be used with newer engines, for example to
+adapt the plain e-TeX source file to work with XeTeX and LuaTeX.")
     (license license:public-domain)))
 
 (define-deprecated-package texlive-generic-tex-ini-files texlive-tex-ini-files)
