@@ -42133,25 +42133,6 @@ memory page size.")
      "This package pipes your Rust output through an external pager.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-pager-0.15
-  (package
-    (inherit rust-pager-0.16)
-    (name "rust-pager")
-    (version "0.15.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "pager" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0a35mg68s0p63ya2k5hsg620c4llkjw2fx1sfi0laz4pz8myv75n"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-errno" ,rust-errno-0.2)
-        ("rust-libc" ,rust-libc-0.2))))))
-
 (define-public rust-pam-sys-0.5
   (package
     (name "rust-pam-sys")
