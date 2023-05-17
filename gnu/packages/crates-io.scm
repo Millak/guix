@@ -40485,22 +40485,20 @@ primitives and enums easier.")
 of numbers, formatted according to international standards.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-num-format-windows-0.3
+(define-public rust-num-format-windows-0.4
   (package
     (name "rust-num-format-windows")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "num-format-windows" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1sy5jxrbhv6s28c51ibzi34s8qcjm8b21nf7biray7v1qi89h5sf"))))
+    (version "0.4.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "num-format-windows" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yic2lcv3gngyshzmnqjhaq1z736j8jgghhn3n8yph95fbv0f7lv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.47))))
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.63))))
     (home-page "https://github.com/bcmyers/num-format/num-format-windows")
     (synopsis "Helper crate for @code{num-format}")
     (description
