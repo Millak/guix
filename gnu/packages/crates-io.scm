@@ -38490,29 +38490,26 @@ types as proposed in RFC 1158.")
 (define-public rust-nettle-7
   (package
     (name "rust-nettle")
-    (version "7.0.3")
+    (version "7.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nettle" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qlsq3szglkw7s089h5qh9xa787qyvkdj5cgxm4qj30fazwr0hx0"))))
+        (base32 "0dk36l90p79c3xgmrzp8489h8dfaal0jzaid1n8n3cg7xbrwrzdr"))))
     (build-system cargo-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
      (list clang gmp nettle))
     (arguments
-     `(#:skip-build? #t ;; provides nothing, has no tests
-       #:cargo-inputs
-       (("rust-getrandom" ,rust-getrandom-0.1)
+     `(#:cargo-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-nettle-sys" ,rust-nettle-sys-2)
-        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs
-       (("rust-bindgen" ,rust-bindgen-0.51)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-typenum" ,rust-typenum-1))))
     (home-page "https://gitlab.com/sequoia-pgp/nettle-rs")
   (synopsis "Rust bindings for the Nettle cryptographic library")
   (description "This package provides Rust bindings for the Nettle
@@ -38531,7 +38528,13 @@ cryptographic library.")
         (string-append (package-name rust-nettle-7) "-" version ".tar.gz"))
        (sha256
         (base32 "0zfplqdf3mag8r7lc124hl24vri8yg711jmm8gl1mpwnlhass2n4"))
-       (patches (search-patches "rust-nettle-disable-vendor.patch"))))))
+       (patches (search-patches "rust-nettle-disable-vendor.patch"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-failure" ,rust-failure-0.1)
+        ("rust-getrandom" ,rust-getrandom-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nettle-sys" ,rust-nettle-sys-2))))))
 
 (define-public rust-nettle-sys-2
   (package
