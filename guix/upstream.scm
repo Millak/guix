@@ -38,6 +38,7 @@
   #:use-module (guix hash)
   #:use-module (guix store)
   #:use-module ((guix derivations) #:select (built-derivations derivation->output-path))
+  #:autoload   (guix read-print) (object->string*)
   #:autoload   (gcrypt hash) (port-sha256)
   #:use-module (guix monads)
   #:use-module (srfi srfi-1)
@@ -583,6 +584,52 @@ this method: ~s")
                   (package-name package)))
      (values #f #f #f))))
 
+(define (update-package-inputs package source)
+  "Update the input fields of the definition of PACKAGE according to those
+specified in SOURCE, an <upstream-source>."
+  (define (update-field field source-inputs package-inputs)
+    (define loc
+      (package-field-location package field))
+
+    (define new
+      (map (compose string->symbol upstream-input-downstream-name)
+           (source-inputs source)))
+
+    (define old
+      (match (package-inputs package)
+        (((labels (? package? packages)) ...)
+         labels)
+        (_
+         '())))
+
+    (define unchanged?
+      (equal? new old))
+
+    (if (and loc (not unchanged?))
+        (edit-expression (location->source-properties
+                          (absolute-location loc))
+                         (lambda (str)
+                           (object->string* `(list ,@new)
+                                            (location-column loc))))
+        (unless unchanged?
+          ;; XXX: Bail out when FIELD isn't already present in the source.
+          ;; TODO: Add the field if it's missing.
+          (warning (package-location package)
+                   (G_ "~a: '~a' field not found; leaving it unchanged~%")
+                   (package-name package) field)
+          (warning (package-location package)
+                   (G_ "~a: expected '~a' value: ~s~%")
+                   (package-name package) field new))))
+
+  (for-each update-field
+            '(inputs native-inputs propagated-inputs)
+            (list upstream-source-regular-inputs
+                  upstream-source-native-inputs
+                  upstream-source-propagated-inputs)
+            (list package-inputs
+                  package-native-inputs
+                  package-propagated-inputs)))
+
 (define* (update-package-source package source hash)
   "Modify the source file that defines PACKAGE to refer to SOURCE, an
 <upstream-source> whose tarball has SHA256 HASH (a bytevector).  Return the
@@ -637,9 +684,7 @@ new version string if an update was made, and #f otherwise."
               ;; function of the person who uploads the package.  Note that
               ;; package definitions usually concatenate fragments of the URL,
               ;; which is why we only attempt to replace a subset of the URL.
-              (let ((properties (location->source-properties
-                                 (absolute-location loc)))
-                    (replacements `((,old-version . ,version)
+              (let ((replacements `((,old-version . ,version)
                                     (,old-hash . ,hash)
                                     ,@(if (and old-commit new-commit)
                                           `((,old-commit . ,new-commit))
@@ -648,8 +693,11 @@ new version string if an update was made, and #f otherwise."
                                           `((,(dirname old-url) .
                                              ,(dirname new-url)))
                                           '()))))
-                (and (edit-expression properties
+                (and (edit-expression (location->source-properties
+                                       (absolute-location loc))
                                       (cut update-expression <> replacements))
+                     (or (not (upstream-source-inputs source))
+                         (update-package-inputs package source))
                      version))
               (begin
                 (warning (G_ "~a: could not locate source file")
