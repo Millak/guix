@@ -19,16 +19,20 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services rsync)
+  #:use-module ((gnu build linux-container) #:select (%namespaces))
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
+  #:autoload   (gnu system file-systems) (file-system-mapping)
   #:use-module (gnu system shadow)
-  #:use-module (gnu packages rsync)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages rsync)
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:use-module (guix least-authority)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
@@ -236,37 +240,66 @@ please use 'modules' instead~%")))
             #t))
         (const #f)))
 
-  (let* ((rsync       (rsync-configuration-package config))
-         (pid-file    (rsync-configuration-pid-file config))
-         (port-number (rsync-configuration-port-number config))
-         (user        (rsync-configuration-user config))
-         (group       (rsync-configuration-group config))
-         (config-file (rsync-config-file config))
-         (rsync-command #~(list (string-append #$rsync "/bin/rsync")
-                                "--config" #$config-file "--daemon")))
-    (list (shepherd-service
-           (provision '(rsync))
-           (documentation "Run rsync daemon.")
-           (actions (list (shepherd-configuration-action config-file)))
-           (start #~(if #$inetd-style?
-                        (make-inetd-constructor
-                         #$rsync-command
-                         (cons (endpoint
-                                (make-socket-address AF_INET INADDR_ANY
-                                                     #$port-number))
-                               (if #$ipv6-support?
-                                   (list
-                                    (endpoint
-                                     (make-socket-address AF_INET6 IN6ADDR_ANY
-                                                          #$port-number)))
-                                   '()))
-                         #:user #$user
-                         #:group #$group)
-                        (make-forkexec-constructor #$rsync-command
-                                                   #:pid-file #$pid-file
-                                                   #:user #$user
-                                                   #:group #$group)))
-           (stop #~(make-kill-destructor))))))
+  (define (module->file-system-mapping module)
+    "Return the <file-system-mapping> record corresponding to MODULE, an
+<rsync-module> object."
+    (match-record module <rsync-module>
+      (file-name read-only?)
+      (file-system-mapping
+       (source file-name)
+       (target source)
+       (writable? (not read-only?)))))
+
+  (match-record config <rsync-configuration>
+    (package log-file modules pid-file port-number user group)
+    ;; Run the rsync daemon in its own 'mnt' namespace, to guard against
+    ;; change to mount points it may be serving.
+    (let* ((config-file (rsync-config-file config))
+           (rsync-command #~(list #$(least-authority-wrapper
+                                     (file-append rsync "/bin/rsync")
+                                     #:name "rsync"
+                                     #:namespaces (fold delq %namespaces
+                                                        '(net user))
+                                     #:mappings
+                                     (append (list (file-system-mapping
+                                                    (source "/var/run/rsyncd")
+                                                    (target source)
+                                                    (writable? #t))
+                                                   (file-system-mapping
+                                                    (source (dirname log-file))
+                                                    (target source)
+                                                    (writable? #t))
+                                                   (file-system-mapping
+                                                    (source config-file)
+                                                    (target source)))
+                                             (map module->file-system-mapping
+                                                  modules)))
+                                  "--config" #$config-file "--daemon")))
+      (list (shepherd-service
+             (provision '(rsync))
+             (documentation "Run rsync daemon.")
+             (actions (list (shepherd-configuration-action config-file)))
+             (start #~(if #$inetd-style?
+                          (make-inetd-constructor
+                           #$rsync-command
+                           (cons (endpoint
+                                  (make-socket-address AF_INET INADDR_ANY
+                                                       #$port-number))
+                                 (if #$ipv6-support?
+                                     (list
+                                      (endpoint
+                                       (make-socket-address AF_INET6 IN6ADDR_ANY
+                                                            #$port-number)))
+                                     '()))
+                           #:user #$user
+                           #:group #$group)
+                          (make-forkexec-constructor #$rsync-command
+                                                     #:pid-file #$pid-file
+                                                     #:user #$user
+                                                     #:group #$group)))
+             (stop #~(if #$inetd-style?
+                         (make-inetd-destructor)
+                         (make-kill-destructor))))))))
 
 (define rsync-service-type
   (service-type
