@@ -76273,8 +76273,7 @@ implementation that works everywhere, even WASM!")
         (base32 "1nzl4q3xl68pq58g9xlym299bvjdii8cl7ix595ym7jgw22maahx"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-zstd-sys" ,rust-zstd-sys-2))))
     (home-page "https://github.com/gyscos/zstd-rs")
