@@ -807,21 +807,24 @@ until the package appears.")
 
 (define-public texlive-hyphen-base
   (package
-    (inherit (simple-texlive-package
-              "texlive-hyphen-base"
-              (list "/tex/generic/config/language.dat"
-                    "/tex/generic/config/language.dat.lua"
-                    "/tex/generic/config/language.def"
-                    "/tex/generic/config/language.us"
-                    "/tex/generic/config/language.us.def"
-                    "/tex/generic/config/language.us.lua"
-                    "/tex/generic/hyphen/dumyhyph.tex"
-                    "/tex/generic/hyphen/hyphen.tex"
-                    "/tex/generic/hyphen/hypht1.tex"
-                    "/tex/generic/hyphen/zerohyph.tex")
-              (base32
-               "1nad1bqpjsywm49hlv7d75mqvgha3j5vayvkvfhv8wwzgdb3mk84")
-              #:trivial? #t))
+    (name "texlive-hyphen-base")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "/tex/generic/config/language.dat"
+                   "/tex/generic/config/language.dat.lua"
+                   "/tex/generic/config/language.def"
+                   "/tex/generic/config/language.us"
+                   "/tex/generic/config/language.us.def"
+                   "/tex/generic/config/language.us.lua"
+                   "/tex/generic/hyphen/dumyhyph.tex"
+                   "/tex/generic/hyphen/hyphen.tex"
+                   "/tex/generic/hyphen/hypht1.tex"
+                   "/tex/generic/hyphen/zerohyph.tex")
+             (base32
+              "1nad1bqpjsywm49hlv7d75mqvgha3j5vayvkvfhv8wwzgdb3mk84")))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
     (home-page "https://tug.org/texlive/")
     (synopsis "Core hyphenation support files")
     (description "This package includes Knuth's original @file{hyphen.tex},
