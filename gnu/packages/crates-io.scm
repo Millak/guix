@@ -3669,39 +3669,6 @@ ArrayVec and ArrayString.")
 format.")
     (license license:asl2.0)))
 
-(define-public rust-arrow-4
-  (package
-    (inherit rust-arrow-5)
-    (name "rust-arrow")
-    (version "4.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "arrow" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "141qb0yqk179n324qrhbv14ysz13mcfsw00d6m09882gx9637wzn"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-csv" ,rust-csv-1)
-        ("rust-flatbuffers" ,rust-flatbuffers-0.8)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-lexical-core" ,rust-lexical-core-0.7)
-        ("rust-multiversion" ,rust-multiversion-0.6)
-        ("rust-num" ,rust-num-0.4)
-        ("rust-packed-simd-2" ,rust-packed-simd-2-0.3)
-        ("rust-prettytable-rs" ,rust-prettytable-rs-0.8)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1))))))
-
 (define-public rust-arrow-format-0.3
   (package
     (name "rust-arrow-format")
