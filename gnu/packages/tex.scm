@@ -4691,6 +4691,50 @@ this bundle for use independent of ConTeXt.")
 in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
     (license license:expat)))
 
+(define-public texlive-luatex
+  (package
+    (name "texlive-luatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/base/graphics/"
+                   "doc/man/man1/dviluatex.1"
+                   "doc/man/man1/dviluatex.man1.pdf"
+                   "doc/man/man1/luatex.1"
+                   "doc/man/man1/luatex.man1.pdf"
+                   "doc/man/man1/texlua.1"
+                   "doc/man/man1/texlua.man1.pdf"
+                   "doc/man/man1/texluac.1"
+                   "doc/man/man1/texluac.man1.pdf"
+                   "tex/generic/config/"
+                   "web2c/texmfcnf.lua")
+             (base32
+              "1g5z1mjfclb85ppcxclwndmkkgjmczrq1547vhg4kl3cclg8348q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
+    (propagated-inputs
+     (list texlive-cm
+           texlive-etex
+           texlive-hyph-utf8
+           texlive-hyphen-base
+           texlive-knuth-lib
+           texlive-plain
+           texlive-tex-ini-files
+           texlive-unicode-data))
+    (home-page "https://ctan.org/pkg/luatex")
+    (synopsis "Extended version of pdfTeX using Lua")
+    (description
+     "LuaTeX is an extended version of pdfTeX using Lua as an embedded
+scripting language.  The LuaTeX project's main objective is to provide an open
+and configurable variant of TeX while at the same time offering downward
+compatibility.  LuaTeX uses Unicode (as UTF-8) as its default input encoding,
+and is able to use modern (OpenType) fonts (for both text and mathematics).
+It should be noted that LuaTeX is still under development; its specification
+has been declared stable, but absolute stability may not in practice be
+assumed.")
+    (license license:gpl2)))
+
 (define-public texlive-luatexbase
   (package
     (name "texlive-luatexbase")
