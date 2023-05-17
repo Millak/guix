@@ -76197,9 +76197,14 @@ implementation that works everywhere, even WASM!")
         (base32 "1r7xlmgnifhxbfyid8vkcnd5ip16gx9hf89d1l0lzrpc4q1rdk10"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
-       (("rust-zstd-safe" ,rust-zstd-safe-5))))
+       (("rust-zstd-safe" ,rust-zstd-safe-5))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-humansize" ,rust-humansize-1)
+        ("rust-partial-io" ,rust-partial-io-0.5)
+        ("rust-walkdir" ,rust-walkdir-2))))
     (home-page "https://github.com/gyscos/zstd-rs")
     (synopsis "Binding to the zstd compression library")
     (description
