@@ -53619,21 +53619,6 @@ sub-processes using a fork-like interface.")
     (description "This package provides Rustyline macros implementation in Rust.")
     (license license:expat)))
 
-(define-public rust-rustyline-derive-0.2
-  (package
-    (inherit rust-rustyline-derive-0.3)
-    (name "rust-rustyline-derive")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rustyline-derive" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1n3iw9kaq70dw1rvvma0gjwydbj0f2mvvqvrva69f5cl6yv1dnd0"))))))
-
 (define-public rust-rkyv-0.7
   (package
     (name "rust-rkyv")
