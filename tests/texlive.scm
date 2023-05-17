@@ -50,6 +50,18 @@
         (runfiles
          . ("texmf-dist/tex/latex/12many/12many.sty"))
         (catalogue-license . "lppl")))
+    ("chs-physics-report"
+     . ((name . "ch-physics-report")
+        (shortdesc . "Physics lab reports...")
+        (longdesc . "This package may...")
+        (docfiles
+         .
+         ("texmf-dist/doc/latex/chs-physics-report/README.txt"
+          "texmf-dist/doc/latex/chs-physics-report/chs-physics-report.pdf"))
+        (runfiles
+         .
+         ("texmf-dist/tex/latex/chs-physics-report/chs-physics-report.sty"))
+        (catalogue-license . "pd cc-by-sa-3")))
     ("example"
      . ((name . "example")
         (shortdesc . "Typeset examples...")
@@ -296,6 +308,42 @@ completely compatible with Plain TeX.")
                ('synopsis (? string?))
                ('description (? string?))
                ('license 'lppl))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, multiple licenses"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "chs-physics-report"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-chs-physics-report")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "doc/latex/chs-physics-report/"
+                                "tex/latex/chs-physics-report/")
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license ('list 'public-domain 'cc-by-sa3.0)))
              #true)
             (_
              (begin

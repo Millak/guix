@@ -109,7 +109,8 @@
     ("cc-by-nc-nd-2.5" 'non-free)
     ("cc-by-nc-nd-3" 'non-free)
     ("cc-by-nc-nd-4" 'non-free)
-    ((x) (string->license x))
+    ((? string? x) (string->license (string-split x #\space)))
+    ((x) `(error unknown-license ,x))
     ((lst ...) `(list ,@(map string->license lst)))
     (x `(error unknown-license ,x))))
 
