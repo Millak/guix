@@ -38520,15 +38520,14 @@ cryptographic library.")
 (define-public rust-nettle-sys-2
   (package
     (name "rust-nettle-sys")
-    (version "2.0.4")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nettle-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yq1w6dlcmg89x529i7s20j29afdhgim7qnsa7978fszzwrr6qmq"))
-       (patches (search-patches "rust-nettle-sys-disable-vendor.patch"))))
+        (base32 "0wwa7pmxdz7yl9jwybml2kmrj3i87jcn0h0cdc5xl0lhgcs1rs5m"))))
     (build-system cargo-build-system)
     (native-inputs
      (list clang pkg-config))
@@ -38536,8 +38535,12 @@ cryptographic library.")
      (list nettle))
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.51)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+       (("rust-bindgen" ,rust-bindgen-0.63)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))
     (home-page "https://gitlab.com/sequoia-pgp/nettle-sys")
     (synopsis "Low-level Rust bindings for the Nettle cryptographic library")
     (description "This package provides low-level Rust bindings for the Nettle

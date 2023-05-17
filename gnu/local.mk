@@ -1917,7 +1917,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
   %D%/packages/patches/rust-ndarray-0.14-remove-blas-src.patch	\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
-  %D%/packages/patches/rust-nettle-sys-disable-vendor.patch	 \
   %D%/packages/patches/rust-openssl-sys-no-vendor.patch	\
   %D%/packages/patches/rust-webbrowser-remove-unsupported-os.patch	\
   %D%/packages/patches/rust-wl-clipboard-rs-newer-wl.patch      \
