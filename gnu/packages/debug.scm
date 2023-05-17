@@ -868,13 +868,13 @@ engineering.")
 (define-public ddd
   (package
     (name "ddd")
-    (version "3.3.12")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/ddd/ddd-" version ".tar.gz"))
               (sha256
                (base32
-                "0p5nx387857w3v2jbgvps2p6mlm0chajcdw5sfrddcglsxkwvmis"))))
+                "03sqsfiri5p130cmmzh2wikg0gisql496rvdhr1qaidh1f5bqk2x"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;tests require manual intervention
