@@ -3917,36 +3917,6 @@ extracted from Askama.")
     (description "This package provides shared code for Askama.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-askama-shared-0.11
-  (package
-    (inherit rust-askama-shared-0.12)
-    (name "rust-askama-shared")
-    (version "0.11.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "askama_shared" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1g3ksf5is0qwx9rd5lxn5gbvxfcpby5gl9cahg26wl1w1xzbg0i5"))))
-    (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-askama-escape" ,rust-askama-escape-0.10)
-             ("rust-humansize" ,rust-humansize-1)
-             ("rust-nom" ,rust-nom-6)
-             ("rust-num-traits" ,rust-num-traits-0.2)
-             ("rust-percent-encoding"
-              ,rust-percent-encoding-2)
-             ("rust-proc-macro2" ,rust-proc-macro2-1)
-             ("rust-quote" ,rust-quote-1)
-             ("rust-serde" ,rust-serde-1)
-             ("rust-serde-derive" ,rust-serde-derive-1)
-             ("rust-serde-json" ,rust-serde-json-1)
-             ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-             ("rust-syn" ,rust-syn-1)
-             ("rust-toml" ,rust-toml-0.5))))))
-
 (define-public rust-askama-derive-0.11
   (package
     (name "rust-askama-derive")
