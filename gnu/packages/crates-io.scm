@@ -31197,15 +31197,17 @@ and functions.")
 (define-public rust-itoa-1
   (package
     (name "rust-itoa")
-    (version "1.0.1")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "itoa" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0d8wr2qf5b25a04xf10rz9r0pdbjdgb0zaw3xvf8k2sqcz1qzaqs"))))
+        (base32 "19jc2sa3wvdc29zhgbwf3bayikq4rq18n20dbyg9ahd4hbsxjfj5"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-no-panic" ,rust-no-panic-0.1))))
     (home-page "https://github.com/dtolnay/itoa")
     (synopsis "Fast functions for printing integer primitives")
     (description "This crate provides fast functions for printing integer
