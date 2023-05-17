@@ -40749,37 +40749,6 @@ file formats.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-wasmparser" ,rust-wasmparser-0.57))))))
 
-(define-public rust-object-0.24
-  (package
-    (inherit rust-object-0.28)
-    (name "rust-object")
-    (version "0.24.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "object" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0w21hp41mixzaavsdpjylbylh44z2b5d2wbnf5ipkvkjq38ksnqs"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-compiler-builtins"
-         ,rust-compiler-builtins-0.1)
-        ("rust-crc32fast" ,rust-crc32fast-1)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-rustc-std-workspace-alloc"
-         ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core"
-         ,rust-rustc-std-workspace-core-1)
-        ("rust-wasmparser" ,rust-wasmparser-0.57))
-       #:cargo-development-inputs
-       (("rust-memmap" ,rust-memmap-0.7))))))
-
 (define-public rust-odds-0.3
   (package
     (name "rust-odds")
