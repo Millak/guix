@@ -637,8 +637,8 @@ new version string if an update was made, and #f otherwise."
               ;; function of the person who uploads the package.  Note that
               ;; package definitions usually concatenate fragments of the URL,
               ;; which is why we only attempt to replace a subset of the URL.
-              (let ((properties (assq-set! (location->source-properties loc)
-                                           'filename file))
+              (let ((properties (location->source-properties
+                                 (absolute-location loc)))
                     (replacements `((,old-version . ,version)
                                     (,old-hash . ,hash)
                                     ,@(if (and old-commit new-commit)
