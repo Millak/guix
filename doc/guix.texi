@@ -115,6 +115,7 @@ Copyright @copyright{} 2023 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
 Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
+Copyright @copyright{} 2023 Tanguy Le Carrour@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -42292,6 +42293,7 @@ services)}.
 * Guix: Guix Home Services.     Services for Guix.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
+* Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
 @end menu
@@ -43522,6 +43524,141 @@ Stopping the Shepherd service turns off broadcasting.
 @defvar %pulseaudio-rtp-multicast-address
 This is the multicast address used by default by the two services above.
 @end defvar
+
+@node Mail Home Services
+@subsection Mail Home Services
+ 
+The @code{(gnu home services mail)} module provides services that help
+you set up the tools to work with emails in your home environment.
+ 
+@cindex msmtp
+@uref{https://marlam.de/msmtp, MSMTP} is a @acronym{SMTP, Simple Mail
+Transfer Protocol} client.  It sends mail to a predefined SMTP server
+that takes care of proper delivery.
+ 
+The service reference is given below.
+ 
+@defvar home-msmtp-service-type
+This is the service type for @command{msmtp}.  Its value must be a
+@code{home-msmtp-configuration}, as shown below.  It provides the
+@file{~/.config/msmtp/config} file.
+ 
+As an example, here is how you would configure @code{msmtp} for a single
+account:
+ 
+@lisp
+(service home-msmtp-service-type
+         (home-msmtp-configuration
+          (accounts
+           (list
+            (msmtp-account
+             (name "alice")
+             (configuration
+              (msmtp-configuration
+               (host "mail.example.org")
+               (port 587)
+               (user "alice")
+               (password-eval "pass Mail/alice"))))))))
+@end lisp
+@end defvar
+
+@c %start of fragment
+ 
+@deftp {Data Type} home-msmtp-configuration
+Available @code{home-msmtp-configuration} fields are:
+ 
+@table @asis
+@item @code{defaults} (type: msmtp-configuration)
+The configuration that will be set as default for all accounts.
+ 
+@item @code{accounts} (default: @code{()}) (type: list-of-msmtp-accounts)
+A list of @code{msmtp-account} records which contain information about
+all your accounts.
+ 
+@item @code{default-account} (type: maybe-string)
+Set the default account.
+ 
+@item @code{extra-content} (default: @code{""}) (type: string)
+Extra content appended as-is to the configuration file.  Run
+@command{man msmtp} for more information about the configuration file
+format.
+ 
+@end table
+ 
+@end deftp
+ 
+@c %end of fragment
+ 
+@c %start of fragment
+ 
+@deftp {Data Type} msmtp-account
+Available @code{msmtp-account} fields are:
+ 
+@table @asis
+@item @code{name} (type: string)
+The unique name of the account.
+ 
+@item @code{configuration} (type: msmtp-configuration)
+The configuration for this given account.
+ 
+@end table
+ 
+@end deftp
+ 
+@c %end of fragment
+
+@c %start of fragment
+ 
+@deftp {Data Type} msmtp-configuration
+Available @code{msmtp-configuration} fields are:
+ 
+@table @asis
+@item @code{auth?} (type: maybe-boolean)
+Enable or disable authentication.
+ 
+@item @code{tls?} (type: maybe-boolean)
+Enable or disable TLS (also known as SSL) for secured connections.
+ 
+@item @code{tls-starttls?} (type: maybe-boolean)
+Choose the TLS variant: start TLS from within the session (‘on’,
+default), or tunnel the session through TLS (‘off’).
+ 
+@item @code{tls-trust-file} (type: maybe-string)
+Activate server certificate verification using a list of trusted
+Certification Authorities (CAs).
+ 
+@item @code{log-file} (type: maybe-string)
+Enable logging to the specified file.  An empty argument disables
+logging.  The file name ‘-’ directs the log information to standard
+output.
+ 
+@item @code{host} (type: maybe-string)
+The SMTP server to send the mail to.
+ 
+@item @code{port} (type: maybe-integer)
+The port that the SMTP server listens on.  The default is 25 ("smtp"),
+unless TLS without STARTTLS is used, in which case it is 465 ("smtps").
+ 
+@item @code{user} (type: maybe-string)
+Set the user name for authentication.
+ 
+@item @code{from} (type: maybe-string)
+Set the envelope-from address.
+ 
+@item @code{password-eval} (type: maybe-string)
+Set the password for authentication to the output (stdout) of the
+command cmd.
+ 
+@item @code{extra-content} (default: @code{""}) (type: string)
+Extra content appended as-is to the configuration block.  Run
+@command{man msmtp} for more information about the configuration file
+format.
+ 
+@end table
+ 
+@end deftp
+ 
+@c %end of fragment
 
 @node Messaging Home Services
 @subsection Messaging Home Services

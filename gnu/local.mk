@@ -35,7 +35,7 @@
 # Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 # Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 # Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
-# Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
+# Copyright © 2020, 2023 Tanguy Le Carrour <tanguy@bioneland.org>
 # Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 # Copyright © 2020 Malte Frank Gerdes <mate.f.gerdes@gmail.com>
 # Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
@@ -94,6 +94,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/fontutils.scm		\
   %D%/home/services/gnupg.scm			\
   %D%/home/services/guix.scm			\
+  %D%/home/services/mail.scm			\
   %D%/home/services/media.scm			\
   %D%/home/services/messaging.scm		\
   %D%/home/services/pm.scm			\
