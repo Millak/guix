@@ -70402,27 +70402,6 @@ See winapi for types and constants.")
 Unix users and groups.")
     (license license:expat)))
 
-(define-public rust-users-0.10
-  (package
-    (inherit rust-users-0.11)
-    (name "rust-users")
-    (version "0.10.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "users" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "11plda5r3dl8hs0sl0jskazam4ayv3a06vmhzk4l7914agljfhma"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4))
-       #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.7))))))
-
 (define-public rust-utf-8-0.7
   (package
     (name "rust-utf-8")
