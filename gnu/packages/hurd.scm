@@ -3,7 +3,7 @@
 ;;; Copyright © 2018, 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2022, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
@@ -46,7 +46,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages onc-rpc)
-  #:use-module (gnu packages xorg) ; libpciaccess
+  #:use-module (gnu packages xorg) ;libpciaccess-0.17
   #:use-module (guix git-download))
 
 (define (hurd-source-url version)
@@ -522,7 +522,7 @@ exec ${system}/rc \"$@\"
      `(("libgcrypt" ,libgcrypt)                  ;for /hurd/random
        ("libdaemon" ,libdaemon)                  ;for /bin/console --daemonize
        ("unifont" ,unifont)
-       ("libpciaccess" ,libpciaccess)
+       ("libpciaccess" ,libpciaccess-0.17)       ;need libpciaccess > 0.16
 
        ;; For NFS support
        ("libtirpc" ,libtirpc/hurd)
@@ -620,7 +620,7 @@ implementing them.")
                                             "/bin"))
                #t)))))
       (inputs
-       (list hurd libpciaccess zlib))
+       (list hurd libpciaccess-0.17 zlib))
       (native-inputs
        `(("coreutils" ,coreutils)
          ("gawk" ,gawk)
