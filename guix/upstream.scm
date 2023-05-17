@@ -82,12 +82,6 @@
             upstream-updater-predicate
             upstream-updater-import
 
-            upstream-input-change?
-            upstream-input-change-name
-            upstream-input-change-type
-            upstream-input-change-action
-            changed-inputs
-
             %updaters
             lookup-updater
 
@@ -150,64 +144,6 @@ its inputs that have the given TYPE (a symbol such as 'native)."
 (define upstream-source-regular-inputs (input-type-filter 'regular))
 (define upstream-source-native-inputs (input-type-filter 'native))
 (define upstream-source-propagated-inputs (input-type-filter 'propagated))
-
-;; Representation of an upstream input change.
-(define-record-type* <upstream-input-change>
-  upstream-input-change make-upstream-input-change
-  upstream-input-change?
-  (name    upstream-input-change-name)    ;string
-  (type    upstream-input-change-type)    ;symbol: regular | native | propagated
-  (action  upstream-input-change-action)) ;symbol: add | remove
-
-(define (changed-inputs package source)
-  "Return a list of input changes for PACKAGE compared to the 'inputs' field
-of SOURCE, an <upstream-source> record."
-  (define input->name
-    (match-lambda
-      ((label (? package? pkg) . out) (package-name pkg))
-      (_ #f)))
-
-  (if (upstream-source-inputs source)
-      (let* ((new-regular (map upstream-input-downstream-name
-                               (upstream-source-regular-inputs source)))
-             (new-native (map upstream-input-downstream-name
-                              (upstream-source-native-inputs source)))
-             (new-propagated (map upstream-input-downstream-name
-                                  (upstream-source-propagated-inputs source)))
-             (current-regular
-              (filter-map input->name (package-inputs package)))
-             (current-native
-              (filter-map input->name (package-native-inputs package)))
-             (current-propagated
-              (filter-map input->name (package-propagated-inputs package))))
-        (append-map
-         (match-lambda
-           ((action type names)
-            (map (lambda (name)
-                   (upstream-input-change
-                    (name name)
-                    (type type)
-                    (action action)))
-                 names)))
-         `((add regular
-                ,(lset-difference equal?
-                                  new-regular current-regular))
-           (remove regular
-                   ,(lset-difference equal?
-                                     current-regular new-regular))
-           (add native
-                ,(lset-difference equal?
-                                  new-native current-native))
-           (remove native
-                   ,(lset-difference equal?
-                                     current-native new-native))
-           (add propagated
-                ,(lset-difference equal?
-                                  new-propagated current-propagated))
-           (remove propagated
-                   ,(lset-difference equal?
-                                     current-propagated new-propagated)))))
-      '()))
 
 (define* (url-predicate matching-url?)
   "Return a predicate that returns true when passed a package whose source is
