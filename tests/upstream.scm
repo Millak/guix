@@ -32,26 +32,27 @@
 
 (test-begin "upstream")
 
-;; FIXME: Temporarily skipping this test; see <https://bugs.gnu.org/34229>.
-(test-skip 1)
-
 (test-equal "coalesce-sources same version"
-  (list (upstream-source
-         (package "foo") (version "1")
-         (urls '("ftp://example.org/foo-1.tar.xz"
-                 "ftp://example.org/foo-1.tar.gz"))
-         (signature-urls '("ftp://example.org/foo-1.tar.xz.sig"
-                           "ftp://example.org/foo-1.tar.gz.sig"))))
+  '((source "foo" "1"
+            ("ftp://example.org/foo-1.tar.xz"
+             "ftp://example.org/foo-1.tar.gz")
+            ("ftp://example.org/foo-1.tar.xz.sig"
+             "ftp://example.org/foo-1.tar.gz.sig")))
 
-  (coalesce-sources (list (upstream-source
-                           (package "foo") (version "1")
-                           (urls '("ftp://example.org/foo-1.tar.gz"))
-                           (signature-urls
-                            '("ftp://example.org/foo-1.tar.gz.sig")))
-                          (upstream-source
-                           (package "foo") (version "1")
-                           (urls '("ftp://example.org/foo-1.tar.xz"))
-                           (signature-urls
-                            '("ftp://example.org/foo-1.tar.xz.sig"))))))
+  (map (lambda (source)
+         `(source ,(upstream-source-package source)
+                  ,(upstream-source-version source)
+                  ,(upstream-source-urls source)
+                  ,(upstream-source-signature-urls source)))
+       (coalesce-sources (list (upstream-source
+                                (package "foo") (version "1")
+                                (urls '("ftp://example.org/foo-1.tar.gz"))
+                                (signature-urls
+                                 '("ftp://example.org/foo-1.tar.gz.sig")))
+                               (upstream-source
+                                (package "foo") (version "1")
+                                (urls '("ftp://example.org/foo-1.tar.xz"))
+                                (signature-urls
+                                 '("ftp://example.org/foo-1.tar.xz.sig")))))))
 
 (test-end)
