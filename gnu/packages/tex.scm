@@ -4775,6 +4775,26 @@ definitions.")
 the Knuth's manual font, such as the Dangerous Bend and Manual-errata Arrow.")
     (license license:lppl)))
 
+(define-public texlive-manfnt-font
+  (package
+    (name "texlive-manfnt-font")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/afm/hoekwater/manfnt-font/"
+                   "fonts/map/dvips/manfnt-font/"
+                   "fonts/type1/hoekwater/manfnt-font/")
+             (base32
+              "1cdd2a3xj00bwsby9z5iz5f2iy2iwsjl35gcack9q83hacbf3ssb")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/manual")
+    (synopsis "Knuth's manual fonts")
+    (description
+     "This package provides METAFONT (by Donald Knuth) and Adobe Type 1 (by
+Taco Hoekwater) versions of the font containing the odd symbols Knuth uses in
+his books.  LaTeX support is available using the @code{manfnt} package.")
+    (license license:knuth)))
+
 (define-public texlive-mathdots
   (package
     (name "texlive-mathdots")
