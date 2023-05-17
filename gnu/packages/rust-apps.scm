@@ -1099,19 +1099,6 @@ rebase.")
               (base32
                "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
 
-(define-public rust-cbindgen-0.20
-  (package
-    (inherit rust-cbindgen-0.24)
-    (name "rust-cbindgen")
-    (version "0.20.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "cbindgen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1p67vvjkxh07yfizfkvm6bjlv2bywrnl57hshcsz9h2x2qxrgqsi"))))))
-
 (define-public rust-cbindgen-0.19
   (package
     (inherit rust-cbindgen)
