@@ -877,6 +877,31 @@ Quizzes: arithmetic and quiz.")
               ;; phantasia (all but phantasia/pathnames.h.in, which is bsd-3)
               (license:fsf-free "file:///phantasia/COPYRIGHT")))))
 
+(define-public rogue
+  (package
+    (name "rogue")
+    (version "5.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Davidslv/rogue")
+                    (commit "cf9bd26d564a72fac4cf56b55c96c2435270d29a")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mk03l120scas4dcn6xccnhslnwmcx2blshbf925z06yk7rkzias"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f
+       #:make-flags (list "CFLAGS=-DNCURSES_INTERNALS")))
+    (inputs (list ncurses))
+    (synopsis "Original rogue game")
+    (description
+     "This package provides ``Rogue: Exploring the Dungeons of Doom'', the
+original rogue game found on 4.2BSD.")
+    (home-page "https://github.com/Davidslv/rogue")
+    (license license:bsd-3)))
+
 
 (define-public bzflag
   (package
