@@ -76314,7 +76314,7 @@ compression library.")
   (package
     (inherit rust-zstd-sys-2)
     (name "rust-zstd-sys")
-    (version "1.6.1+zstd.1.5.0")
+    (version "1.6.3+zstd.1.5.2")
     (source
      (origin
        (method url-fetch)
@@ -76322,10 +76322,11 @@ compression library.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cra76lginz5k659rch7axg5nyms67yffygr3k7ic7a3lb3j0lb1"))))
+        (base32 "1a1f839k3mxh3qhjga1vd2sfxrsi41cqrnpyc5byfd6nr2jsyjgw"))))
     (arguments
-     `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.58)
+     `(#:install-source? #f     ; invalid inclusion of reserved file name
+       #:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.59)
         ("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
