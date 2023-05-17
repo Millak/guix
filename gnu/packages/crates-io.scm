@@ -28379,22 +28379,24 @@ characters in HTML, decoding and unescaping HTML entities as well.")
 (define-public rust-hts-sys-2
   (package
     (name "rust-hts-sys")
-    (version "2.0.2")
+    (version "2.0.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hts-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1qn1qz2xa69x2dj1fbh91avm9943rbcykr37zs68pb2bdy847i3j"))
+                "1sy4wfk64f1i81m0brhrs4cm6qkb099zv62gr0k6js6k0v24zfhd"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "Cargo.toml"
                   ;; Do not use zlib-ng; just use zlib.
-                  (("features = \\[\"zlib-ng\", \"static\"\\]") "")
-                  ;; No static libraries please.
-                  (("\"static-curl\", \"static-ssl\",") "")
-                  ((", \"static\"") "")
+                  (("\"zlib-ng\",") "")
+                  (("\"static\",") "")
+                  ;; No static libraries please in curl-sys.
+                  (("\"static-curl\",") "")
+                  (("\"static-ssl\",") "\"ssl\",")
+                  ;; No static lzma.
                   (("\\[\"static\"\\]") "[]")))))
     (build-system cargo-build-system)
     (arguments
@@ -28405,7 +28407,7 @@ characters in HTML, decoding and unescaping HTML entities as well.")
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-fs-utils" ,rust-fs-utils-1)
         ("rust-glob" ,rust-glob-0.3)
-        ("rust-libdeflate-sys" ,rust-libdeflate-sys-0.5)
+        ("rust-libdeflate-sys" ,rust-libdeflate-sys-0.7)
         ("rust-libz-sys" ,rust-libz-sys-1)
         ("rust-lzma-sys" ,rust-lzma-sys-0.1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9))))
