@@ -73756,8 +73756,31 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
        (("rust-bytemuck" ,rust-bytemuck-1))))
     (license (list license:zlib))))
 
+(define-public rust-widestring-1
+  (package
+    (name "rust-widestring")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "widestring" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a11qxmqf8jhh0vbyb6cc614d9qdqsh01r5bqnivn5pc74gi8gv5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/starkat99/widestring-rs")
+    (synopsis "Wide string Rust FFI library")
+    (description
+     "A wide string Rust FFI library for converting to and from wide strings,
+such as those often used in Windows API or other FFI libraries.  Both UTF-16 and
+UTF-32 types are provided, including support for malformed encoding.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-widestring-0.5
   (package
+    (inherit rust-widestring-1)
     (name "rust-widestring")
     (version "0.5.1")
     (source
@@ -73768,18 +73791,9 @@ terms of allowing LLVM's auto-vectorizer to do its job.")
         (sha256
          (base32
           "10qrilijh1qzw362mvd4nsz3vv32dxx530vk41hkcx8hah22z20p"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
-       (("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/starkat99/widestring-rs")
-    (synopsis "Wide string Rust FFI library")
-    (description
-     "A wide string Rust FFI library for converting to and from wide strings,
-such as those often used in Windows API or other FFI libraries.  Both UTF-16 and
-UTF-32 types are provided, including support for malformed encoding.")
-    (license (list license:asl2.0
-                   license:expat))))
+       (("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-widestring-0.4
   (package
