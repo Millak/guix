@@ -4756,6 +4756,25 @@ definitions.")
 
 (define-deprecated-package texlive-latex-amsmath texlive-amsmath)
 
+(define-public texlive-manfnt
+  (package
+    (name "texlive-manfnt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/manfnt/" "source/latex/manfnt/"
+                   "tex/latex/manfnt/")
+             (base32
+              "0iwka406hkxb85yqg4kwr81483s3h250way1pmbfb67vl3x4p60x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/manfnt")
+    (synopsis "LaTeX support for the TeX book symbols")
+    (description
+     "This package provides a LaTeX package for easy access to the symbols of
+the Knuth's manual font, such as the Dangerous Bend and Manual-errata Arrow.")
+    (license license:lppl)))
+
 (define-public texlive-mathdots
   (package
     (name "texlive-mathdots")
