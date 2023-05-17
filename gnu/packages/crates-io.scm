@@ -33526,23 +33526,24 @@ single-cell and single-nucleus sequencing data.")
 (define-public rust-libsqlite3-sys-0.23
   (package
     (name "rust-libsqlite3-sys")
-    (version "0.23.1")
+    (version "0.23.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libsqlite3-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wm91qnsz729vfl3n1rhaq2ip2v4zzxbsawb975vlh4v8h68bmdb"))))
+        (base32 "0n6b4mlpw9l74cl5mahnpaanyjsgpmz5y517kmnk6v09fiygrjnj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bindgen" ,rust-bindgen-0.59)
         ("rust-cc" ,rust-cc-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (inputs
+     (list sqlite))
     (home-page "https://github.com/rusqlite/rusqlite")
     (synopsis "Native bindings to the libsqlite3 library")
     (description "Native bindings to the libsqlite3 library")
