@@ -76215,7 +76215,7 @@ implementation that works everywhere, even WASM!")
   (package
     (inherit rust-zstd-0.11)
     (name "rust-zstd")
-    (version "0.9.0+zstd.1.5.0")
+    (version "0.9.3+zstd.1.5.2")
     (source
      (origin
        (method url-fetch)
@@ -76224,11 +76224,21 @@ implementation that works everywhere, even WASM!")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1k9caa048d8x9asksjaf62xkpv0m1wsmw94h29k3csybq9frlx07"))))
+         "15dsisk3g9ncbxzb6miwav35p2v98az6clh5qdab5jxn05l9qzrp"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
-       (("rust-zstd-safe" ,rust-zstd-safe-4))))))
+       (("rust-zstd-safe" ,rust-zstd-safe-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-humansize" ,rust-humansize-1)
+        ("rust-partial-io" ,rust-partial-io-0.5)
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-zstd-0.8
   (package
