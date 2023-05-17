@@ -46844,37 +46844,6 @@ including most strategies and the testing framework itself.")
        #:cargo-development-inputs
        (("rust-regex" ,rust-regex-1))))))
 
-(define-public rust-proptest-0.8
-  (package
-    (inherit rust-proptest-0.9)
-    (name "rust-proptest")
-    (version "0.8.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "proptest" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "07qrxwsd72wr1cqs0b5b159lnagjffp0l4s4zriz8jak8w20cvcj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f      ; 1 doc test fails
-       #:cargo-inputs
-       (("rust-bit-set" ,rust-bit-set-0.5)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-quick-error" ,rust-quick-error-1)
-        ("rust-rand" ,rust-rand-0.5)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
-        ("rust-rusty-fork" ,rust-rusty-fork-0.2)
-        ("rust-tempfile" ,rust-tempfile-3))
-       #:cargo-development-inputs
-       (("rust-regex" ,rust-regex-1))))))
-
 (define-public rust-proptest-0.7
   (package
     (inherit rust-proptest-0.9)
