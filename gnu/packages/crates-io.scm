@@ -59305,16 +59305,32 @@ implementations.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1881q2yc17j2m1yvh01447c93ws1mspnrj3k2nbvwbvcm8z81kkv"))))
+         "1881q2yc17j2m1yvh01447c93ws1mspnrj3k2nbvwbvcm8z81kkv"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "src/lib.rs"
+             ;; __m64 is x86 only, not x86 or x86_64 as in the code.
+             ;; See: https://github.com/gnzlbg/sleef-sys/issues/27
+             (("__m64") "// __m64"))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-bindgen" ,rust-bindgen-0.46)
         ("rust-cmake" ,rust-cmake-0.1)
-        ("rust-env-logger" ,rust-env-logger-0.6))))
+        ("rust-env-logger" ,rust-env-logger-0.6))
+       #:phases
+       (modify-phases %standard-phases
+         ;; This makes it easier to test the package.
+         (add-after 'unpack 'enable-unstable-features
+           (lambda _
+             (setenv "RUSTC_BOOTSTRAP" "1"))))))
+    (inputs
+     (list clang))
+    (native-inputs
+     (list cmake-minimal))
     (home-page "https://github.com/gnzlbg/sleef-sys")
     (synopsis
      "Rust FFI bindings to the SLEEF Vectorized Math Library")
