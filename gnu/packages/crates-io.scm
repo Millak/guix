@@ -59312,15 +59312,22 @@ implementations.")
            (substitute* "src/lib.rs"
              ;; __m64 is x86 only, not x86 or x86_64 as in the code.
              ;; See: https://github.com/gnzlbg/sleef-sys/issues/27
-             (("__m64") "// __m64"))))))
+             (("__m64") "// __m64"))
+           (delete-file "Cargo.toml")
+           (rename-file "Cargo.toml.orig" "Cargo.toml")
+           (substitute* "Cargo.toml"
+             ;; Dependabot says the dependencies can be updated.
+             (("cfg-if = \"\\^0.1\"") "cfg-if = \"^1.0\"")
+             (("env_logger = \"0.6\"") "env_logger = \"0.9\"")
+             (("bindgen = \"\\^0.46\"") "bindgen = \"^0.59\""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+       (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-bindgen" ,rust-bindgen-0.46)
+        ("rust-bindgen" ,rust-bindgen-0.59)
         ("rust-cmake" ,rust-cmake-0.1)
-        ("rust-env-logger" ,rust-env-logger-0.6))
+        ("rust-env-logger" ,rust-env-logger-0.9))
        #:phases
        (modify-phases %standard-phases
          ;; This makes it easier to test the package.
