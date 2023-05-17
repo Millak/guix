@@ -1501,13 +1501,6 @@ outputs of those builds.")
   (package
     (inherit guix-build-coordinator)
     (name "guix-build-coordinator-agent-only")
-    (arguments
-     (list
-      #:modules `(((guix build guile-build-system)
-                   #:select (target-guile-effective-version))
-                  ,@%gnu-build-system-modules)
-      #:imported-modules `((guix build guile-build-system)
-                           ,@%gnu-build-system-modules)))
     (native-inputs
      (list pkg-config
            autoconf
