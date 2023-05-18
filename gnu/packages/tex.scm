@@ -13695,28 +13695,25 @@ underscores), and hyphenation of text typeset in monospaced (e.g.,
 (define-deprecated-package texlive-latex-hyphenat texlive-hyphenat)
 
 (define-public texlive-lastpage
-  (let ((template  (simple-texlive-package
-                    "texlive-lastpage"
-                    (list "doc/latex/lastpage/"
-                          "source/latex/lastpage/"
-                          "tex/latex/lastpage/")
-                    (base32
-                     "1cmzl0jkid4w60bjlyxrc5bynbc3lwq5nr77rsip0q9hprxykxks"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/lastpage")
-         ((#:build-targets _ '()) '(list "lastpage.ins"))))
-      (home-page "https://ctan.org/pkg/lastpage")
-      (synopsis "Reference last page for Page N of M type footers")
-      (description
-       "This package enables referencing the number of pages in a LaTeX
-document through the introduction of a new label which can be referenced like
+  (package
+    (name "texlive-lastpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lastpage/" "source/latex/lastpage/"
+                   "tex/latex/lastpage/")
+             (base32
+              "1cmzl0jkid4w60bjlyxrc5bynbc3lwq5nr77rsip0q9hprxykxks")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lastpage")
+    (synopsis "Reference last page for Page N of M type footers")
+    (description
+     "This package enables referencing the number of pages in a LaTeX document
+through the introduction of a new label which can be referenced like
 @code{\\pageref{LastPage}} to give a reference to the last page of a document.
 It is particularly useful in the page footer that says: @samp{Page N of M}.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-deprecated-package texlive-latex-lastpage texlive-lastpage)
 
