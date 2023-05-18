@@ -13061,26 +13061,25 @@ settings to typeset Danish documents.")
       (license license:lppl1.3c+)))
 
 (define-public texlive-babel-polish
-  (let ((template (simple-texlive-package
-                   "texlive-babel-polish"
-                   (list "/source/generic/babel-polish/")
-                   (base32
-                    "1jymxl98mwxmq0yq90mhrr7bq7c613rh1rnhl7l3bih36af55rwr"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/babel-polish")
-         ((#:build-targets _ '())
-          ''("polish.ins"))))
-      (home-page "https://www.ctan.org/pkg/babel-polish")
-      (synopsis "Babel support for Polish")
-      (description
-       "This package provides the language definition file for support of
-Polish in @code{babel}.  Some shortcuts are defined, as well as translations to
-Polish of standard ``LaTeX names''.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-babel-polish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-polish/"
+                   "source/generic/babel-polish/"
+                   "tex/generic/babel-polish/")
+             (base32
+              "0an9csjd4jhz6civdldsrmz7l76hw8zfcgxdp55mj8f1rchsjylx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-polish")
+    (synopsis "Babel support for Polish")
+    (description
+     "This package provides the language definition file for support of Polish
+in @code{babel}.  Some shortcuts are defined, as well as translations to
+Polish of standard LaTeX names.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-mdframed
   (package
