@@ -13744,30 +13744,27 @@ defined tab stop.")
 (define-deprecated-package texlive-latex-tabto-ltx texlive-tabto-ltx)
 
 (define-public texlive-soul
-  (let ((template (simple-texlive-package
-                   "texlive-soul"
-                   (list "doc/generic/soul/"
-                         "source/generic/soul/"
-                         "tex/generic/soul/")
-                   (base32
-                    "0ikipdswzsafi4rr6q9xh3hkxk2n2683ym1879qcax41xs6cizdl"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "generic/soul")
-         ((#:build-targets _ '()) '(list "soul.ins"))))
-      (home-page "http://www.ctan.org/pkg/soul")
-      (synopsis "Hyphenation for letterspacing, underlining, and more")
-      (description
-       "@code{soul} enables hyphenatable spacing out (letterspacing),
+  (package
+    (name "texlive-soul")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/soul/" "source/generic/soul/"
+                   "tex/generic/soul/")
+             (base32
+              "0ikipdswzsafi4rr6q9xh3hkxk2n2683ym1879qcax41xs6cizdl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/soul")
+    (synopsis "Hyphenation for letterspacing, underlining, and more")
+    (description
+     "The @code{soul} package enables hyphenatable spacing out (letterspacing),
 underlining, striking out, etc., using the TeX hyphenation algorithm to find
 the proper hyphens automatically.  The package also provides a mechanism that
 can be used to implement similar tasks, that have to treat text syllable by
 syllable.  The package itself does not support UTF-8 input in ordinary
 (PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-deprecated-package texlive-generic-soul texlive-soul)
 
