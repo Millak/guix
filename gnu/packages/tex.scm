@@ -12476,49 +12476,43 @@ conference posters.")
 
 (define-public texlive-unicode-math
   (package
-    (inherit (simple-texlive-package
-              "texlive-unicode-math"
-              (list "source/latex/unicode-math/"
-                    "doc/latex/unicode-math/"
-                    "tex/latex/unicode-math/unicode-math-table.tex")
-              (base32 "1j3041dcm7wqj0x26rxm9bb7q4xa1rqsqynqdb6cbjk3jmfvskxn")))
+    (name "texlive-unicode-math")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unicode-math/"
+                   "source/latex/unicode-math/"
+                   "tex/latex/unicode-math/")
+             (base32
+              "0w5gp11ccc486lckzag63arg97g1r0zkf29bdnnk13pz4r5m2lgx")))
     (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:tex-directory "latex/unicode-math"
-      #:tex-format "xelatex"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'copy-files
-            ;; The documentation isn't built.
-            (lambda* (#:key outputs tex-directory #:allow-other-keys)
-              (let ((doc (assoc-ref outputs "doc"))
-                    (tex (string-append #$output "/share/texmf-dist/tex/"
-                                        tex-directory)))
-                ;; Install documentation.
-                (mkdir-p (string-append doc "/share/texmf-dist/doc" ))
-                (copy-recursively "doc" doc)
-                ;; Install unicode-math-table.tex, which is not
-                ;; built.
-                (install-file "tex/latex/unicode-math/unicode-math-table.tex"
-                              tex)))))))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "xelatex"))
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-fontspec
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-lm-math
+           texlive-lualatex-math))
     (home-page "https://ctan.org/pkg/unicode-math")
     (synopsis "Unicode mathematics support for XeTeX and LuaTeX")
-    (description "This package will provide a complete implementation of
-Unicode maths for XeLaTeX and LuaLaTeX.  Unicode maths is currently supported
-by the following fonts:
+    (description
+     "This package will provide a complete implementation of unicode maths for
+XeLaTeX and LuaLaTeX.  Unicode maths is currently supported by the following
+fonts:
 @itemize
-@item Latin Modern Math
-@item TeX Gyre Bonum Math
-@item TeX Gyre Pagella Math
-@item TeX Gyre Schola Math
-@item TeX Gyre Termes Math
-@item DejaVu Math TeX Gyre
-@item Asana-Math
-@item STIX
-@item XITS Math
-@item Libertinus Math
-@item Fira Math
+@item Latin Modern Math,
+@item TeX Gyre Bonum Math,
+@item TeX Gyre Pagella Math,
+@item TeX Gyre Schola Math,
+@item TeX Gyre Termes Math,
+@item DejaVu Math TeX Gyre,
+@item Asana-Math fonts,
+@item STIX,
+@item XITS Math,
+@item Libertinus Math,
+@item Fira Math.
 @end itemize")
     (license license:lppl1.3c+)))
 
