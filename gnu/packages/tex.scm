@@ -4820,28 +4820,29 @@ commands.  The commands may also be used in plain TeX.")
     (license license:lppl)))
 
 (define-public texlive-amscls
-  (let ((template (simple-texlive-package
-                   "texlive-amscls"
-                   (list "/doc/latex/amscls/"
-                         "/source/latex/amscls/"
-                         "/bibtex/bst/amscls/")
-                   (base32
-                    "0vw0b815slvfqfd8qffyfzb3xfvyv6k77m12xp0l67hs8p08s5b7"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/amscls")))
-      (home-page "https://www.ctan.org/pkg/amscls")
-      (synopsis "AMS document classes for LaTeX")
-      (description
-       "This bundle contains three AMS classes: @code{amsartamsart} (for writing
-articles for the AMS), @code{amsbookamsbook} (for books) and
-@code{amsprocamsproc} (for proceedings), together with some supporting
-material.  The material is made available as part of the AMS-LaTeX
-distribution.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-amscls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/amscls/" "doc/latex/amscls/"
+                   "source/latex/amscls/" "tex/latex/amscls/")
+             (base32
+              "1chy1rqwici66p9brphb3gsprmcyhia9cvm5fn9wb5a9cchxqa08")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-amsmath
+           texlive-url))
+    (home-page "https://www.ctan.org/pkg/amscls")
+    (synopsis "AMS document classes for LaTeX")
+    (description
+     "This bundle contains three AMS classes: @code{amsart} (for writing
+articles for the AMS), @code{amsbook} (for books) and @code{amsproc} (for
+proceedings), together with some supporting material.  The material is made
+available as part of the AMS-LaTeX distribution.")
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-amscls texlive-amscls)
 
