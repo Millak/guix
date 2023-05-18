@@ -4288,19 +4288,23 @@ of file names.")
 
 (define-public texlive-tetex
   (package
-    (inherit (simple-texlive-package
-              "texlive-tetex"
-              (list "/dvips/tetex/"
-                    "/fonts/enc/dvips/tetex/"
-                    "/fonts/map/dvips/tetex/")
-              (base32
-               "05mf8yqdj2wrc1zm3al2j4aam2wx0ky6a7slxw17pkd1c7rmvjrq")
-              #:trivial? #t))
+    (name "texlive-tetex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "dvips/tetex/"
+                   "fonts/enc/dvips/tetex/"
+                   "fonts/map/dvips/tetex/")
+             (base32
+              "05mf8yqdj2wrc1zm3al2j4aam2wx0ky6a7slxw17pkd1c7rmvjrq")))
+    (build-system texlive-build-system)
+    (arguments (list #:texlive-latex-base #f))
     (home-page "https://www.ctan.org/pkg/tetex")
     (synopsis "Font maps originally from teTeX")
-    (description "This package provides font maps that were originally part of
-the now obsolete teTeX distributions but are still used at the core of the TeX
-Live distribution.")
+    (description
+     "This package provides font maps that were originally part of the now
+obsolete teTeX distributions but are still used at the core of the TeX Live
+distribution.")
     (license license:public-domain)))
 
 (define-public texlive-l3kernel
