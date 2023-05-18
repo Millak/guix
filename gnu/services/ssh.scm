@@ -59,7 +59,7 @@
             openssh-configuration-allow-agent-forwarding?
             openssh-configuration-allow-tcp-forwarding?
             openssh-configuration-gateway-ports?
-            openssh-challenge-response-authentication?
+            openssh-configuration-challenge-response-authentication?
             openssh-configuration-use-pam?
             openssh-configuration-print-last-log?
             openssh-configuration-subsystems
@@ -363,8 +363,10 @@ The other options should be self-descriptive."
                          (default #f))
 
   ;; Boolean
-  (challenge-response-authentication? openssh-challenge-response-authentication?
-                                      (default #f))
+  (challenge-response-authentication?
+   openssh-configuration-challenge-response-authentication?
+   (default #f))
+
   ;; Boolean
   (use-pam?              openssh-configuration-use-pam?
                          (default #t))
