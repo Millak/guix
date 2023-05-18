@@ -13446,31 +13446,33 @@ abstract in a two column paper.")
     (license license:lppl)))
 
 (define-public texlive-breqn
-  (let ((template (simple-texlive-package
-                   "texlive-breqn"
-                   '("/doc/latex/breqn/"
-                     "/source/latex/breqn/")
-                   (base32
-                    "186cypxiyf30fq6dxvvlbwn5yx7c8d4cd243wvvb3243n5l4rpl3"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #f)
-          "latex/breqn")
-         ((#:build-targets _ #t)
-          #~(list "breqnbundle.ins"))))
-      (home-page "https://wspr.io/breqn/")
-      (synopsis "Automatic line breaking of displayed equations")
-      (description "This package provides solutions to a number of common
-difficulties in writing displayed equations and getting high-quality output.
-The single most ambitious goal of the package is to support automatic
-linebreaking of displayed equations.  Such linebreaking cannot be done without
-substantial changes under the hood in the way formulae are processed; the code
-must be watched carefully, keeping an eye on possible glitches.  The bundle
-also contains the @code{flexisym} and @code{mathstyle} packages, which are
-both designated as support for @code{breqn}.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-breqn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/breqn/" "source/latex/breqn/"
+                   "tex/latex/breqn/")
+             (base32
+              "0w6jk97jmgwgshr9a3isbpwsh0fhrkzp36gywdiai1f5x2sldmpv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsfonts
+           texlive-amsmath
+           texlive-graphics
+           texlive-l3kernel
+           texlive-tools))
+    (home-page "https://ctan.org/pkg/breqn")
+    (synopsis "Automatic line breaking of displayed equations")
+    (description
+     "This package provides solutions to a number of common difficulties in
+writing displayed equations and getting high-quality output.  The single most
+ambitious goal of the package is to support automatic linebreaking of
+displayed equations.  The bundle also contains the @code{flexisym} and
+@code{mathstyle} packages, which are both designated as support for
+@code{breqn}.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-breakurl
   (package
