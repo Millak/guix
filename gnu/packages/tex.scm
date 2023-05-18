@@ -12954,26 +12954,25 @@ the @code{fnlineno} package.")
     (license license:lppl1.3a+)))
 
 (define-public texlive-babel-czech
-  (let ((template (simple-texlive-package
-                   "texlive-babel-czech"
-                   (list "/source/generic/babel-czech/")
-                   (base32
-                    "1274pzgdya7gkvxjmdm3v5rb7hc0sj6mqn9pd8y9418yx5449spg"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/babel-czech")
-         ((#:build-targets _ '())
-          ''("czech.ins"))))
-      (home-page "https://www.ctan.org/pkg/babel-czech")
-      (synopsis "Babel support for Czech")
-      (description
-       "This package provides the language definition file for support of
-Czech in @code{babel}.  Some shortcuts are defined, as well as translations to
-Czech of standard ``LaTeX names''.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-babel-czech")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-czech/"
+                   "source/generic/babel-czech/"
+                   "tex/generic/babel-czech/")
+             (base32
+              "036817g9dv7m0m1576igwv4mjk8b41klkih44zzwjigdgdjpwbn9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-czech")
+    (synopsis "Babel support for Czech")
+    (description
+     "This package provides the language definition file for support of Czech
+in @code{babel}.  Some shortcuts are defined, as well as translations to Czech
+of standard LaTeX names.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-babel-dutch
   (let ((template (simple-texlive-package
