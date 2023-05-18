@@ -13517,29 +13517,36 @@ controlled comment versions.")
     (license license:gpl2+)))
 
 (define-public texlive-datatool
-  (let ((template (simple-texlive-package
-                   "texlive-datatool"
-                   '("/bibtex/bst/datatool/"
-                     "/doc/latex/datatool/"
-                     "/source/latex/datatool/")
-                   (base32
-                    "0hh2623zlwgq8zb2lv4d8yfaqwzrz54dqhc1xk0jd1k4fp281kl5"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #f)
-          "latex/datatool")
-         ((#:build-targets _ #t)
-          #~(list "datatool.ins"))))
-      (home-page "https://ctan.org/pkg/datatool")
-      (synopsis "Tools to load and manipulate data")
-      (description "This package provides tools to create databases using LaTeX
-commands or by importing external files.  Databases may be sorted, filtered,
-and visualized using several kinds of configurable plots.  Particular support
-is provided for mail merging, indexing, creating glossaries, manipulating
+  (package
+    (name "texlive-datatool")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/datatool/" "doc/latex/datatool/"
+                   "source/latex/datatool/" "tex/latex/datatool/")
+             (base32
+              "13v6g3i9pch63159ibpn1r8dwl6ip4hm4cv4z0jx6nn3x8kds5ks")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-amsmath
+           texlive-etoolbox
+           texlive-fp
+           texlive-mfirstuc
+           texlive-pgf
+           texlive-substr
+           texlive-tools
+           texlive-xfor
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/datatool")
+    (synopsis "Tools to load and manipulate data")
+    (description
+     "This package provides tools to create databases using LaTeX commands
+or by importing external files.  Databases may be sorted, filtered, and
+visualized using several kinds of configurable plots.  Particular support is
+provided for mail merging, indexing, creating glossaries, manipulating
 bibliographies, and displaying personal pronouns.")
-      (license license:lppl1.3+))))
+    (license license:lppl1.3+)))
 
 (define-public texlive-physics
   (package
