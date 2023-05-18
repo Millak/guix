@@ -11975,27 +11975,25 @@ whether an argument is empty.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-pagenote
-  (let ((template (simple-texlive-package
-                   "texlive-pagenote"
-                   (list "/doc/latex/pagenote/"
-                         "/source/latex/pagenote/")
-                   (base32
-                    "0cqfqrfvnzq7ldaf255hcvi8xsfx8h7iha3hs8p9gdi3cfzbcmjm"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/pagenote")
-         ((#:build-targets _ '())
-          ''("pagenote.ins"))))
-      (propagated-inputs
-       (list texlive-ifmtarg))
-      (home-page "https://www.ctan.org/pkg/pagenote")
-      (synopsis "Notes at end of document")
-      (description "The pagenote package provides tagged notes on a separate
-page (also known as ‘end notes’).")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-pagenote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pagenote/" "source/latex/pagenote/"
+                   "tex/latex/pagenote/")
+             (base32
+              "1dffh7ac13w3gs94lvfxgw1i4k6cfkrpcyikj1sfrqaivrxpmqpi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-ifmtarg))
+    (home-page "https://ctan.org/pkg/pagenote")
+    (synopsis "Notes at end of document")
+    (description
+     "The @code{pagenote} package provides tagged notes on a separate
+page (also known as end notes).")
+    (license license:lppl1.3c+)))
 
 (define-public texlive-titling
   (let ((template (simple-texlive-package
