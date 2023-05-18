@@ -12975,26 +12975,25 @@ of standard LaTeX names.")
     (license license:lppl1.3+)))
 
 (define-public texlive-babel-dutch
-  (let ((template (simple-texlive-package
-                   "texlive-babel-dutch"
-                   (list "/source/generic/babel-dutch/")
-                   (base32
-                    "1a40rz6rznawgarnhk0wh751sln2x9js4420i0758y2clf4rlhg9"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/babel-dutch")
-         ((#:build-targets _ '())
-          ''("dutch.ins"))))
-      (home-page "https://www.ctan.org/pkg/babel-dutch")
-      (synopsis "Babel support for Dutch")
-      (description
-       "This package provides the language definition file for support of Dutch
+  (package
+    (name "texlive-babel-dutch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-dutch/"
+                   "source/generic/babel-dutch/"
+                   "tex/generic/babel-dutch/")
+             (base32
+              "1s72g2hfnk5nqnrsbiwydh7jb9wy9186h5vy7rh3ngjwkmcfg0pz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-dutch")
+    (synopsis "Babel contributed support for Dutch")
+    (description
+     "This package provides the language definition file for support of Dutch
 in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Dutch documents.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-public texlive-babel-finnish
   (let ((template (simple-texlive-package
