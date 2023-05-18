@@ -11925,30 +11925,31 @@ include the addition of rules above or below a section title.")
     (license license:lppl1.2+)))
 
 (define-public texlive-morefloats
-  (let ((template (simple-texlive-package
-                   "texlive-morefloats"
-                   (list "/doc/latex/morefloats/"
-                         "/source/latex/morefloats/")
-                   (base32
-                    "0n0405fjxyjlbjspzfvhl0wjkwiqicj3hk8fa0g7agw72wlxscpl"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/morefloats")
-         ((#:build-targets _ '())
-          ''("morefloats.ins"))))
-      (home-page "https://www.ctan.org/pkg/morefloats")
-      (synopsis "Increase the number of simultaneous LaTeX floats")
-      (description "LaTeX can, by default, only cope with 18 outstanding floats;
+  (package
+    (name "texlive-morefloats")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/morefloats/"
+                   "source/latex/morefloats/"
+                   "tex/latex/morefloats/")
+             (base32
+              "0y8rd3ys71ys9cab172wwhrmbs9b52wqrj6d3p0iy3075z93h51c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-iftex
+           texlive-kvoptions))
+    (home-page "https://ctan.org/pkg/morefloats")
+    (synopsis "Increase the number of simultaneous LaTeX floats")
+    (description "LaTeX can, by default, only cope with 18 outstanding floats;
 any more, and you get the error “too many unprocessed floats”.  This package
 releases the limit; TeX itself imposes limits (which are independent of the
 help offered by e-TeX).
 
 However, if your floats can’t be placed anywhere, extending the number of
 floats merely delays the arrival of the inevitable error message.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-public texlive-ifmtarg
   (package
