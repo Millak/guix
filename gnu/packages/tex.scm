@@ -12719,26 +12719,25 @@ to be set left/right or alternating on even/odd pages.")
     (license license:lppl1.3+)))
 
 (define-public texlive-fvextra
-  (let ((template (simple-texlive-package
-                   "texlive-fvextra"
-                   (list "/doc/latex/fvextra/"
-                         "/source/latex/fvextra/"
-                         "/tex/latex/fvextra/")
-                   (base32
-                    "0nawx1fh55yhqspy5jgss2qmwpqmikfrg7628smk931rph9nq0aa"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/fvextra")))
-      (home-page "https://ctan.org/macros/latex/contrib/fvextra")
-      (synopsis "Extensions and patches for fancyvrb")
-      (description
-       "This package provides several extensions to fancyvrb, including
-automatic line breaking and improved math mode.  It also patches some fancyvrb
-internals.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-fvextra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fvextra/" "source/latex/fvextra/"
+                   "tex/latex/fvextra/")
+             (base32
+              "0nawx1fh55yhqspy5jgss2qmwpqmikfrg7628smk931rph9nq0aa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-etoolbox texlive-fancyvrb texlive-lineno texlive-upquote))
+    (home-page "https://ctan.org/pkg/fvextra")
+    (synopsis "Extensions and patches for @code{fancyvrb}")
+    (description
+     "This package provides several extensions to fancyvrb, including
+automatic line breaking and improved math mode.")
+    (license license:lppl1.3+)))
 
 (define-public bibtool
   (package
