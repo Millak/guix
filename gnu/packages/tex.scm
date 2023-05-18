@@ -10974,35 +10974,27 @@ the engine in use.")
 (define-deprecated-package texlive-generic-ifxetex texlive-iftex)
 
 (define-public texlive-tabu
-  (let ((template
-         (simple-texlive-package
-          "texlive-tabu"
-          (list "doc/latex/tabu/"
-                "source/latex/tabu/"
-                "tex/latex/tabu/")
-          (base32 "0mixyrqavipq4ni38z42x3579cdjbz54cp2qqb4q4yhfbl0a4pka"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/tabu")
-         ((#:build-targets _ '())
-          '(list "tabu.dtx"))))
-      (propagated-inputs (list texlive-varwidth))
-      (home-page "https://ctan.org/macros/latex/contrib/tabu")
-      (synopsis "Flexible LaTeX tabulars")
-      (description
-       "The package provides an environment, tabu, which will make any sort of
-tabular, and an environment longtabu which provides the facilities of tabu in
-a modified longtable environment.  The package requires array, xcolor for
-coloured rules in tables, and colortbl for coloured cells.  The longtabu
-environment further requires that longtable be loaded.  The package itself
-does not load any of these packages for the user.  The tabu environment may be
-used in place of @code{tabular}, @code{tabular*} and @code{tabularx}
-environments, as well as the @code{array} environment in maths mode.")
-      (license license:lppl1.3+))))
+  (package
+    (name "texlive-tabu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabu/"
+                   "source/latex/tabu/"
+                   "tex/latex/tabu/")
+             (base32 "0mixyrqavipq4ni38z42x3579cdjbz54cp2qqb4q4yhfbl0a4pka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-tools
+           texlive-varwidth))
+    (home-page "https://ctan.org/macros/latex/contrib/tabu")
+    (synopsis "Flexible LaTeX tabulars")
+    (description
+     "The package provides an environment, @code{tabu}, which will make any
+sort of tabular, and an environment @code{longtabu} which provides the
+facilities of @code{tabu} in a modified @code{longtable} environment.")
+    (license license:lppl1.3+)))
 
 (define-public texlive-xkeyval
   (package
