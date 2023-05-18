@@ -107,8 +107,7 @@
                                  #:key trivial?)
   "Return a template for a simple TeX Live package with the given NAME,
 downloading from a list of LOCATIONS in the TeX Live repository, and expecting
-the provided output HASH.  If TRIVIAL? is provided, all files will simply be
-copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
+the provided output HASH.  The TRIVIAL? keyword is not used."
   (set! locations
         ;; Some locations may be manually inserted, so be tolerant with
         ;; leading slashes.  Ignore them consistently.
@@ -124,47 +123,8 @@ copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
     (name name)
     (version (number->string %texlive-revision))
     (source (texlive-origin name version locations hash))
-    (outputs (if with-documentation?
-                 '("out" "doc")
-                 '("out")))
-    (build-system (if trivial?
-                      gnu-build-system
-                      texlive-build-system))
-    (arguments
-     (let ((copy-files
-            `(lambda* (#:key outputs inputs tex-directory #:allow-other-keys)
-               (let (,@(if with-documentation?
-                           `((doc (string-append (assoc-ref outputs "doc")
-                                                 "/share/texmf-dist")))
-                           '())
-                     (source (assoc-ref inputs "source"))
-                     (out (string-append (assoc-ref outputs "out")
-                                         "/share/texmf-dist")))
-                 ,@(if with-documentation?
-                       '((mkdir-p doc)
-                         (copy-recursively
-                          (string-append source "/doc")
-                          (string-append doc "/doc")))
-                       '())
-                 (mkdir-p out)
-                 (copy-recursively "." out)
-                 ;; In any case, if documentation exists, it is already in the
-                 ;; "doc" output, so remove it from regular one.
-                 (let ((doc (string-append out "/doc")))
-                   (when (file-exists? doc)
-                     (delete-file-recursively doc)))
-                 ;; Also remove all source files.
-                 (let ((srcfiles (string-append out "/source")))
-                   (when (file-exists? srcfiles)
-                     (delete-file-recursively srcfiles)))))))
-       (if trivial?
-           `(#:tests? #f
-             #:phases
-             (modify-phases %standard-phases
-               (delete 'configure)
-               (replace 'build (const #t))
-               (replace 'install ,copy-files)))
-           `())))
+    (outputs (if with-documentation? '("out" "doc") '("out")))
+    (build-system texlive-build-system)
     (home-page #f)
     (synopsis #f)
     (description #f)
