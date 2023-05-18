@@ -12162,33 +12162,25 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
 
 (define-public texlive-qrcode
   (package
-    (inherit (simple-texlive-package
-              "texlive-qrcode"
-              (list "doc/latex/qrcode/README"
-                    "source/latex/qrcode/qrcode.dtx"
-                    "source/latex/qrcode/qrcode.ins")
-              (base32
-               "1xfv0imrrbxjqwjapcf2silg19rwz2jinawy1x65c1krg919vn02")))
+    (name "texlive-qrcode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qrcode/" "source/latex/qrcode/"
+                   "tex/latex/qrcode/")
+             (base32
+              "197v18lsvb90i07gxvc6mrmn1z63q8v0wvcnbk8dnn3hhabpn16y")))
     (outputs '("out" "doc"))
-    (arguments
-     (list
-      #:tex-directory "latex/qrcode"))
+    (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-lm
            texlive-xcolor
            texlive-xkeyval))
-    (native-inputs
-     (list (texlive-updmap.cfg (list texlive-lm texlive-zapfding))
-           texlive-hyperref
-           texlive-stringenc
-           texlive-xcolor
-           texlive-xkeyval))
-    (home-page "https://www.ctan.org/pkg/qrcode")
+    (home-page "https://ctan.org/pkg/qrcode")
     (synopsis "QR codes without external tools")
-    (description "This package creates @acronym{QR,Quick Response} codes for
-LaTeX documents without depending on external graphics packages.  It supports
-generating codes of different sizes and with different error correction
-levels.  All functionality is provided by the single @code{\\qrcode} command.")
+    (description
+     "The package generates QR (Quick Response) codes in LaTeX, without the
+need for PSTricks or any other graphical package.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-tcolorbox
