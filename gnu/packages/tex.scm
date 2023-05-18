@@ -103,33 +103,6 @@
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
 
-(define* (simple-texlive-package name locations hash
-                                 #:key trivial?)
-  "Return a template for a simple TeX Live package with the given NAME,
-downloading from a list of LOCATIONS in the TeX Live repository, and expecting
-the provided output HASH.  The TRIVIAL? keyword is not used."
-  (set! locations
-        ;; Some locations may be manually inserted, so be tolerant with
-        ;; leading slashes.  Ignore them consistently.
-        (map (lambda (location)
-               (if (string-prefix? "/" location)
-                   (string-drop location 1)
-                   location))
-             locations))
-  (define with-documentation?
-    (any (lambda (l) (string-prefix? "doc/" l))
-         locations))
-  (package
-    (name name)
-    (version (number->string %texlive-revision))
-    (source (texlive-origin name version locations hash))
-    (outputs (if with-documentation? '("out" "doc") '("out")))
-    (build-system texlive-build-system)
-    (home-page #f)
-    (synopsis #f)
-    (description #f)
-    (license #f)))
-
 (define hyph-utf8-scripts
   (origin
     (method svn-fetch)
