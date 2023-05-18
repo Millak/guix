@@ -916,6 +916,7 @@ public key, if any."
              (stop #~(lambda _
                        (invoke #$wg-quick "down" #$config)
                        #f))                       ;stopped!
+             (actions (list (shepherd-configuration-action config)))
              (documentation "Run the Wireguard VPN tunnel"))))))
 
 (define (wireguard-monitoring-jobs config)
