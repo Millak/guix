@@ -11904,27 +11904,25 @@ Helvetica and Courier) in LaTeX using LY1 encoding.")
     (license license:lppl1.0+)))
 
 (define-public texlive-sectsty
-  (let ((template (simple-texlive-package
-                   "texlive-sectsty"
-                   (list "/doc/latex/sectsty/"
-                         "/source/latex/sectsty/")
-                   (base32
-                    "08m90j7cg6w46vnwgsp10clpj4l6c9a6l8dad20q3mnd32l84hbl"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "latex/sectsty")
-         ((#:build-targets _ '())
-          ''("sectsty.ins"))
-         ((#:tex-format _ "latex") "latex")))
-      (home-page "https://www.ctan.org/pkg/sectsty")
-      (synopsis "Control sectional headers")
-      (description "This is a LaTeX2ε package to help change the style of any or
-all of LaTeX's sectional headers in the article, book, or report classes.
-Examples include the addition of rules above or below a section title.")
-      (license license:lppl1.2+))))
+  (package
+    (name "texlive-sectsty")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sectsty/" "source/latex/sectsty/"
+                   "tex/latex/sectsty/")
+             (base32
+              "1h7zi622s84vqjl6bi4g6iv639jz9m2imz4g7y1qpc0zdw1mlqv4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://www.ctan.org/pkg/sectsty")
+    (synopsis "Control sectional headers")
+    (description
+     "This is a LaTeX2ε package to help change the style of any or all of
+LaTeX's sectional headers in the article, book, or report classes.  Examples
+include the addition of rules above or below a section title.")
+    (license license:lppl1.2+)))
 
 (define-public texlive-morefloats
   (let ((template (simple-texlive-package
