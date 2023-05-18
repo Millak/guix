@@ -418,28 +418,14 @@ languages.")
        (prepend autoconf)))))
 
 (define-public emacs-next-tree-sitter
-  (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
-        (revision "0"))
-    (package
-      (inherit emacs-next)
-      (name "emacs-next-tree-sitter")
-      (version (git-version "30.0.50" revision commit))
-      (source
-       (origin
-         (inherit (package-source emacs-next))
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs.git/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
-      (inputs
-       (modify-inputs (package-inputs emacs-next)
-         (prepend sqlite tree-sitter)))
-      (synopsis "Emacs text editor with @code{tree-sitter} support")
-      (description "This Emacs build supports tree-sitter."))))
+  (package
+    (inherit emacs-next)
+    (name "emacs-next-tree-sitter")
+    (inputs
+     (modify-inputs (package-inputs emacs-next)
+       (prepend sqlite tree-sitter)))
+    (synopsis "Emacs text editor with @code{tree-sitter} support")
+    (description "This Emacs build supports tree-sitter.")))
 
 (define-public emacs-next-pgtk
   (package
