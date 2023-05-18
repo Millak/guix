@@ -12102,27 +12102,26 @@ The macros were designed for use within other macros.")
     (license license:lppl1.3)))
 
 (define-public texlive-grfext
-  (let ((template (simple-texlive-package
-                   "texlive-grfext"
-                   (list "doc/latex/grfext/"
-                         "source/latex/grfext/"
-                         "tex/latex/grfext/")
-                   (base32
-                    "1x35r10mkjg8dzx7aj99y4dwyf69jgs41qwapdx523lbglywmgxp"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
-          "latex/grfext")
-         ((#:build-targets _ #t)
-          #~(list "grfext.dtx"))))
-      (home-page "https://github.com/ho-tex/grfext")
-      (synopsis "Manipulate the graphics package's list of extensions")
-      (description "This package provides macros for adding to, and reordering
-the list of graphics file extensions recognised by package graphics.")
-      (license license:lppl1.3c+))))
+  (package
+    (name "texlive-grfext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grfext/" "source/latex/grfext/"
+                   "tex/latex/grfext/")
+             (base32
+              "1x35r10mkjg8dzx7aj99y4dwyf69jgs41qwapdx523lbglywmgxp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-infwarerr
+           texlive-kvdefinekeys))
+    (home-page "https://ctan.org/pkg/grfext")
+    (synopsis "Manipulate the @code{graphics} package's list of extensions")
+    (description
+     "This package provides macros for adding to, and reordering the list of
+graphics file extensions recognised by package @code{graphics}.")
+    (license license:lppl1.3c+)))
 
 (define-public texlive-adjustbox
   (package
