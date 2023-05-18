@@ -1576,7 +1576,7 @@ standards.")
 (define-public cli11
   (package
     (name "cli11")
-    (version "1.9.1")
+    (version "2.3.2")
     (source
       (origin
         (method git-fetch)
@@ -1585,35 +1585,14 @@ standards.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0hbch0vk8irgmiaxnfqlqys65v1770rxxdfn3d23m2vqyjh0j9l6"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file-recursively "extern")
-                 #t))))
+         (base32 "1iif7kzp3yyjqg4yfar89rqmz44xkbi603gf9kjdqbgraw3f8zy7"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        '("-DCLI11_SINGLE_FILE=OFF"
-         "-DCLI11_BUILD_EXAMPLES=OFF")
-       #:imported-modules ,%cmake-build-system-modules
-       #:modules ((guix build cmake-build-system)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'no-vendor-gtest
-           (lambda _
-             (substitute* "tests/CMakeLists.txt"
-               ;; We provide our own googletest, so this is not really a
-               ;; problem.
-               (("message\\(FATAL_ERROR \"You have requested")
-                "message(TRACE \"You have requested"))
-             (substitute* "cmake/AddGoogletest.cmake"
-               (("^add_subdirectory\\(.*googletest.*$") "find_package(GTest REQUIRED)")
-               (("^set_target_properties\\(gtest gtest_main gmock gmock_main") "")
-               (("^    PROPERTIES FOLDER \"Extern\"\\)") ""))
-             #t)))))
+         "-DCLI11_BUILD_EXAMPLES=OFF")))
     (native-inputs
-     (list doxygen googletest))
+     (list catch2 doxygen googletest))
     (synopsis "Command line parser for C++11")
     (description
      "CLI11 is a command line parser for C++11 and beyond that provides a rich
