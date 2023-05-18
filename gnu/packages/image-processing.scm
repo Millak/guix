@@ -901,7 +901,7 @@ recalculates.")
 (define-public paraview
   (package
     (name "paraview")
-    (version "5.11.0")
+    (version "5.11.1")
     (source
      (origin
        (method git-fetch)
@@ -911,7 +911,7 @@ recalculates.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qifzsbgg8f7zvg5a4934nql6nv5b6sm1f59bylyc6v5bqd0myas"))
+        (base32 "0m1lgkl95f0pyhxp97gq2rf8hibv39v4c49imfj1va40z0flvard"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Also remove unused bundled libraries and plugins?
@@ -962,7 +962,7 @@ recalculates.")
                         "lzma"
                         "mpi4py"
                         "netcdf"
-                        ;;"nlohmannjson" ; ParFlow build fails even with bundled
+                        "nlohmannjson"
                         "ogg"
                         ;;"pegtl"
                         "png"
@@ -1071,7 +1071,7 @@ recalculates.")
            "-DVTK_MODULE_USE_EXTERNAL_VTK_lzma=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_mpi4py=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
-           ;;"-DVTK_MODULE_USE_EXTERNAL_VTK_nlohmannjson=ON"
+           "-DVTK_MODULE_USE_EXTERNAL_VTK_nlohmannjson=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_ogg=ON"
            ;;"-DVTK_MODULE_USE_EXTERNAL_VTK_pegtl=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
@@ -1120,7 +1120,7 @@ recalculates.")
            glew
            gmsh
            hdf5
-           ;;nlohmann-json                ;For ParFlow; build fails
+           nlohmann-json                ;For ParFlow; build fails
            jsoncpp
            libjpeg-turbo
            libogg
