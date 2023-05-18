@@ -394,7 +394,7 @@ languages.")
   (package
     (inherit emacs)
     (name "emacs-next")
-    (version "29.0.90")
+    (version "29.0.91")
     (source
      (origin
        (inherit (package-source emacs))
@@ -409,7 +409,7 @@ languages.")
                                 "emacs-native-comp-driver-options.patch"))
        (sha256
         (base32
-         "1lmw3fa6c5w5d6cvk8vdqvqn67hm5lcxy9xykmvcgx258vs7x975"))))
+         "09jm1q5pvd1dc0xq5rhn66v1j235zlr72kwv5i27xigvi9nfqkv1"))))
     (inputs
      (modify-inputs (package-inputs emacs)
        (prepend sqlite)))
