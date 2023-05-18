@@ -35,6 +35,7 @@
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2090,29 +2091,35 @@ but implemented for C++11, C++14, C++17 or C++20.")
 (define-public cpp-mustache
   (package
     (name "cpp-mustache")
-    (version "4.1")
+    (version "5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/kainjow/Mustache")
-                    (commit (string-append "v" version))))
+                    (commit "4ed8c0b5a2a43d59394bd6900dc04e738dbf8c02")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r9rbk6v1wpld2ismfsk2lkhbyv3dkf0p03hkjivbj05qkfhvlbb"))))
+                "0qwrg35gby851viwd6dgrc346712701a0gll8a0m4xs8invxavrh"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:configure-flags
+           #~(list
+              (string-append "-DCMAKE_CXX_FLAGS=-I"
+                             #$(this-package-native-input "catch2")
+                             "/include/catch2/"))
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (invoke "./mustache"))))
+                     (invoke "./tests/mustache-unit-tests"))))
                (replace 'install
                  (lambda* (#:key outputs #:allow-other-keys)
                    (install-file "../source/mustache.hpp"
                                  (string-append (assoc-ref outputs "out")
                                                 "/include")))))))
+    (native-inputs (list catch2))
     (home-page "https://github.com/kainjow/Mustache")
     (synopsis "Mustache text templates for modern C++")
     (description "@code{cpp-mustache} is a Mustache implementation for C++ 11
