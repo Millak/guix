@@ -13040,26 +13040,25 @@ Norsk of standard LaTeX names.")
 (define-deprecated-package texlive-generic-babel-norsk texlive-babel-norsk)
 
 (define-public texlive-babel-danish
-  (let ((template (simple-texlive-package
-                   "texlive-babel-danish"
-                   (list "/source/generic/babel-danish/")
-                   (base32
-                    "00dryb078fqckqjnxa2riq478j6d5i28j5cclv4bw7dn5naa3lz7"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/babel-danish")
-         ((#:build-targets _ '())
-          ''("danish.ins"))))
-      (home-page "https://www.ctan.org/pkg/babel-danish")
-      (synopsis "Babel support for Danish")
-      (description
+  (package
+    (name "texlive-babel-danish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-danish/"
+                   "source/generic/babel-danish/"
+                   "tex/generic/babel-danish/")
+             (base32
+              "11fhmj850gahjm3l3rg5pg4l8j9x6mma59vgfpmnd4fkxj5acb0r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-danish")
+    (synopsis "Babel contributed support for Danish")
+    (description
        "This package provides the language definition file for support of
 Danish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Danish documents.")
-      (license license:lppl1.3c+))))
+      (license license:lppl1.3c+)))
 
 (define-public texlive-babel-polish
   (let ((template (simple-texlive-package
