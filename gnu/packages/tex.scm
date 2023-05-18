@@ -12996,26 +12996,25 @@ settings to typeset Dutch documents.")
     (license license:lppl1.3c+)))
 
 (define-public texlive-babel-finnish
-  (let ((template (simple-texlive-package
-                   "texlive-babel-finnish"
-                   (list "/source/generic/babel-finnish/")
-                   (base32
-                    "1930zxk4l6k5q4wcbvpvijv4s0gxp2mkxvblczn4gcbar10vfd4x"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ '())
-          "generic/babel-finnish")
-         ((#:build-targets _ '())
-          ''("finnish.ins"))))
-      (home-page "https://www.ctan.org/pkg/babel-finnish")
-      (synopsis "Babel support for Finnish")
-      (description
-       "This package provides the language definition file for support of
+  (package
+    (name "texlive-babel-finnish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/babel-finnish/"
+                   "source/generic/babel-finnish/"
+                   "tex/generic/babel-finnish/")
+             (base32
+              "1zwrbcqjwhy31mks31vlc4kxci67d5cfm53jaikaabkd8q6grq6i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/babel-finnish")
+    (synopsis "Babel support for Finnish")
+    (description
+     "This package provides the language definition file for support of
 Finnish in @code{babel}.  It provides all the necessary macros, definitions and
 settings to typeset Finnish documents.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-public texlive-babel-norsk
   (package
