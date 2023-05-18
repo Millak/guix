@@ -13835,31 +13835,26 @@ of occurrences of a substring.")
     (license license:lppl1.0+)))
 
 (define-public texlive-totcount
-  (let ((template (simple-texlive-package
-                   "texlive-totcount"
-                   (list "doc/latex/totcount/"
-                         "source/latex/totcount/"
-                         "tex/latex/totcount/")
-                   (base32
-                    "1rj9ncip5h2cbdljjqwxqsg14pb4mimzhz290q872n32w7rxkp28"))))
-    (package
-      (inherit template)
-      (outputs '("out" "doc"))
-      (build-system texlive-build-system)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t) "latex/totcount")
-         ((#:tex-format _ #t) "latex")
-         ((#:build-targets _ '()) '(list "totcount.ins"))))
-      (propagated-inputs
-       (list texlive-graphics))
-      (home-page "https://ctan.org/pkg/totcount")
-      (synopsis "Find the last value of a counter")
-      (description
-       "This package records the value that was last set, for any counter of
+  (package
+    (name "texlive-totcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/totcount/" "source/latex/totcount/"
+                   "tex/latex/totcount/")
+             (base32
+              "1rj9ncip5h2cbdljjqwxqsg14pb4mimzhz290q872n32w7rxkp28")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (propagated-inputs (list texlive-graphics))
+    (home-page "https://ctan.org/pkg/totcount")
+    (synopsis "Find the last value of a counter")
+    (description
+     "This package records the value that was last set, for any counter of
 interest.  Since most such counters are simply incremented when they are
 changed, the recorded value will usually be the maximum value.")
-      (license license:lppl1.3c+))))
+    (license license:lppl1.3c+)))
 
 (define-deprecated-package texlive-latex-totcount texlive-totcount)
 
