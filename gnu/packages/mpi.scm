@@ -422,7 +422,7 @@ only provides @code{MPI_THREAD_FUNNELED}.")))
              #t)))))
     (inputs
      (list openmpi))
-    (home-page "https://bitbucket.org/mpi4py/mpi4py/")
+    (home-page "https://github.com/mpi4py/mpi4py")
     (synopsis "Python bindings for the Message Passing Interface standard")
     (description "MPI for Python (mpi4py) provides bindings of the Message
 Passing Interface (MPI) standard for the Python programming language, allowing
