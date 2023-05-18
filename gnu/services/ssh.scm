@@ -524,7 +524,8 @@ of user-name/file-like tuples."
            (format port "PidFile ~a\n"
                    #$(openssh-configuration-pid-file config))
            (format port "ChallengeResponseAuthentication ~a\n"
-                   #$(if (openssh-challenge-response-authentication? config)
+                   #$(if (openssh-configuration-challenge-response-authentication?
+                          config)
                          "yes" "no"))
            (format port "UsePAM ~a\n"
                    #$(if (openssh-configuration-use-pam? config)
