@@ -1588,9 +1588,9 @@ standards.")
          (base32 "1iif7kzp3yyjqg4yfar89rqmz44xkbi603gf9kjdqbgraw3f8zy7"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       '("-DCLI11_SINGLE_FILE=OFF"
-         "-DCLI11_BUILD_EXAMPLES=OFF")))
+     (list #:configure-flags
+           #~(list "-DCLI11_SINGLE_FILE=OFF"
+                   "-DCLI11_BUILD_EXAMPLES=OFF")))
     (native-inputs
      (list catch2 doxygen googletest))
     (synopsis "Command line parser for C++11")
