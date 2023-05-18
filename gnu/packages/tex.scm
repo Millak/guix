@@ -13426,27 +13426,24 @@ loading @code{everyshi-2001-05-15}.")
     (license license:lppl1.3c)))
 
 (define-public texlive-abstract
-  (let ((template (simple-texlive-package
-                   "texlive-abstract"
-                   '("doc/latex/abstract/"
-                     "source/latex/abstract/"
-                     "tex/latex/abstract/")
-                   (base32
-                    "1axm78qgrpml09pkh252g1hsjx9c2w7mbdrm9rdl4yqh5ppwq4y9"))))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #f)
-          "latex/abstract")
-         ((#:build-targets _ #t)
-          #~(list "abstract.ins"))))
-      (home-page "https://ctan.org/pkg/abstract")
-      (synopsis "Control the typesetting of the abstract environment")
-      (description "The abstract package gives you control over the typesetting
-of the abstract environment, and in particular provides for a one column
+  (package
+    (name "texlive-abstract")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/abstract/" "source/latex/abstract/"
+                   "tex/latex/abstract/")
+             (base32
+              "1axm78qgrpml09pkh252g1hsjx9c2w7mbdrm9rdl4yqh5ppwq4y9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abstract")
+    (synopsis "Control the typesetting of the @code{abstract} environment")
+    (description
+     "The @code{abstract} package gives you control over the typesetting of
+the @code{abstract} environment, and in particular provides for a one column
 abstract in a two column paper.")
-      (license license:lppl))))
+    (license license:lppl)))
 
 (define-public texlive-breqn
   (let ((template (simple-texlive-package
