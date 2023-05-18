@@ -184,70 +184,75 @@ copied to their outputs; otherwise the TEXLIVE-BUILD-SYSTEM is used."
 
 (define (texlive-hyphen-package name code locations hash)
   "Return a TeX Live hyphenation package with the given NAME, using source
-files from LOCATIONS with expected checksum HASH.  CODE is not currently in use."
-  (let ((parent (simple-texlive-package
-                 name locations hash #:trivial? #t)))
-    (package
-      (inherit parent)
-      (arguments
-       (substitute-keyword-arguments (package-arguments parent)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (replace 'build
-               (lambda* (#:key inputs outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (root (string-append out "/share/texmf-dist"))
-                        (patterns
-                         (string-append root "/tex/generic/hyph-utf8/patterns/txt/"))
-                        (loaders
-                         (string-append root "/tex/generic/hyph-utf8/loadhyph"))
-                        (ptex
-                         (string-append root "/tex/generic/hyph-utf8/patterns/ptex"))
-                        (quote
-                         (string-append root "/tex/generic/hyph-utf8/patterns/quote")))
-                   (mkdir "scripts")
-                   (copy-recursively
-                    (dirname (search-input-file inputs "hyph-utf8.rb"))
-                    "scripts")
+files from LOCATIONS with expected checksum HASH.  CODE is not currently in
+use."
+  (package
+    (name name)
+    (version (number->string %texlive-revision))
+    (source (texlive-origin name version location hash))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:texlive-latex-base #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((root (string-append #$output "/share/texmf-dist"))
+                     (patterns
+                      (string-append root "/tex/generic/hyph-utf8/patterns/txt/"))
+                     (loaders
+                      (string-append root "/tex/generic/hyph-utf8/loadhyph"))
+                     (ptex
+                      (string-append root "/tex/generic/hyph-utf8/patterns/ptex"))
+                     (quote
+                      (string-append root "/tex/generic/hyph-utf8/patterns/quote")))
+                (mkdir "scripts")
+                (copy-recursively
+                 (dirname (search-input-file inputs "hyph-utf8.rb"))
+                 "scripts")
 
-                   ;; Prepare target directories
-                   (mkdir-p patterns)
-                   (mkdir-p loaders)
-                   (mkdir-p ptex)
-                   (mkdir-p quote)
+                ;; Prepare target directories
+                (mkdir-p patterns)
+                (mkdir-p loaders)
+                (mkdir-p ptex)
+                (mkdir-p quote)
 
-                   ;; Generate plain patterns
-                   (with-directory-excursion "scripts"
-                     (substitute* "lib/tex/hyphen/path.rb"
-                       (("^([[:blank:]]+)TeXROOT = .*" _ indent)
-                        (string-append indent "TeXROOT = \""
-                                       (getcwd) "/..\"\n")))
+                ;; Generate plain patterns
+                (with-directory-excursion "scripts"
+                  (substitute* "lib/tex/hyphen/path.rb"
+                    (("^([[:blank:]]+)TeXROOT = .*" _ indent)
+                     (string-append indent "TeXROOT = \""
+                                    (getcwd) "/..\"\n")))
 
-                     (substitute* "generate-plain-patterns.rb"
-                       ;; Ruby 2 does not need this.
-                       (("require 'unicode'") "")
-                       ;; Write directly to the output directory
-                       (("File\\.join\\(PATH::TXT")
-                        (string-append "File.join(\"" patterns "\""))
-                       (("File\\.join\\(PATH::QUOTE")
-                        (string-append "File.join(\"" quote "\"")))
-                     (invoke "ruby" "generate-plain-patterns.rb")
+                  (substitute* "generate-plain-patterns.rb"
+                    ;; Ruby 2 does not need this.
+                    (("require 'unicode'") "")
+                    ;; Write directly to the output directory
+                    (("File\\.join\\(PATH::TXT")
+                     (string-append "File.join(\"" patterns "\""))
+                    (("File\\.join\\(PATH::QUOTE")
+                     (string-append "File.join(\"" quote "\"")))
+                  (invoke "ruby" "generate-plain-patterns.rb")
 
-                     ;; Build pattern loaders
-                     (substitute* "generate-pattern-loaders.rb"
-                       (("File\\.join\\(PATH::LOADER")
-                        (string-append "File.join(\"" loaders "\"")))
+                  ;; Build pattern loaders
+                  (substitute* "generate-pattern-loaders.rb"
+                    (("File\\.join\\(PATH::LOADER")
+                     (string-append "File.join(\"" loaders "\"")))
 
-                     (invoke "ruby" "generate-pattern-loaders.rb")
+                  (invoke "ruby" "generate-pattern-loaders.rb")
 
-                     ;; Build ptex patterns
-                     (substitute* "generate-ptex-patterns.rb"
-                       (("File\\.join\\(PATH::PTEX")
-                        (string-append "File.join(\"" ptex "\"")))
-                     (invoke "ruby" "generate-ptex-patterns.rb")))))))))
-      (native-inputs
-       (list ruby-2.7 ruby-hydra-minimal/pinned hyph-utf8-scripts))
-      (home-page "https://ctan.org/pkg/hyph-utf8"))))
+                  ;; Build ptex patterns
+                  (substitute* "generate-ptex-patterns.rb"
+                    (("File\\.join\\(PATH::PTEX")
+                     (string-append "File.join(\"" ptex "\"")))
+                  (invoke "ruby" "generate-ptex-patterns.rb"))))))))
+    (native-inputs
+     (list hyph-utf8-scripts ruby-2.7 ruby-hydra-minimal/pinned))
+    (home-page "https://ctan.org/pkg/hyph-utf8")
+    (synopsis #f)
+    (description #f)
+    (license #f)))
 
 (define texlive-extra-src
   (origin
