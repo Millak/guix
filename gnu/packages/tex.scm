@@ -2891,115 +2891,112 @@ T1/EC and UTF-8 encodings.")
 
 (define-public texlive-hyph-utf8
   (package
-    (inherit (simple-texlive-package
-              "texlive-hyph-utf8"
-              (list "/source/generic/hyph-utf8/"
-                    "/source/luatex/hyph-utf8/"
-                    "/doc/luatex/hyph-utf8/"
-                    "/tex/luatex/hyph-utf8/etex.src"
-                    ;; Used to extract luatex-hyphen.lua
-                    "/tex/latex/base/docstrip.tex"
-
-                    ;; Documentation; we can't use the whole directory because
-                    ;; it includes files from other packages.
-                    "/doc/generic/hyph-utf8/CHANGES"
-                    "/doc/generic/hyph-utf8/HISTORY"
-                    "/doc/generic/hyph-utf8/hyph-utf8.pdf"
-                    "/doc/generic/hyph-utf8/hyph-utf8.tex"
-                    "/doc/generic/hyph-utf8/hyphenation-distribution.pdf"
-                    "/doc/generic/hyph-utf8/hyphenation-distribution.tex"
-                    "/doc/generic/hyph-utf8/img/miktex-languages.png"
-                    "/doc/generic/hyph-utf8/img/texlive-collection.png")
-              (base32
-               "0rgp0zn36gwzqwpmjb9h01ns3m19v3r7lpw1h0pc9bx115w6c9jx")))
+    (name "texlive-hyph-utf8")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/luatex/hyph-utf8/"
+                   "source/generic/hyph-utf8/"
+                   "source/generic/hyph-utf8/contributed/"
+                   "source/generic/hyph-utf8/data/"
+                   "source/luatex/hyph-utf8/"
+                   "tex/luatex/hyph-utf8/"
+                   ;; Documentation; we can't use the whole directory because
+                   ;; it includes files from other packages.
+                   "doc/generic/hyph-utf8/CHANGES"
+                   "doc/generic/hyph-utf8/HISTORY"
+                   "doc/generic/hyph-utf8/hyph-utf8.pdf"
+                   "doc/generic/hyph-utf8/hyph-utf8.tex"
+                   "doc/generic/hyph-utf8/hyphenation-distribution.pdf"
+                   "doc/generic/hyph-utf8/hyphenation-distribution.tex"
+                   "doc/generic/hyph-utf8/img/miktex-languages.png"
+                   "doc/generic/hyph-utf8/img/texlive-collection.png")
+             (base32
+              "1dm023k05c0pnnyqgbsy1cbpq8layabdp8acln0v59kpsx7flmj9")))
     (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:modules ((guix build gnu-build-system)
+     (list
+      #:tests? #f                       ; there are none
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 match))
-       #:make-flags
-       (list "-C" "source/luatex/hyph-utf8/"
-             (string-append "DO_TEX = tex --interaction=nonstopmode '&tex' $<")
-             (string-append "RUNDIR =" (assoc-ref %outputs "out") "/share/texmf-dist/tex/luatex/hyph-utf8/")
-             (string-append "DOCDIR =" (assoc-ref %outputs "doc") "/share/texmf-dist/doc/luatex/hyph-utf8/")
-             ;; hyphen.cfg is neither included nor generated, so let's only build the lua file.
-             (string-append "UNPACKED = $(NAME).lua"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; TeX isn't usable at this point, so we first need to generate the
-         ;; tex.fmt.
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Target directories must exist.
-             (mkdir-p (string-append (assoc-ref %outputs "out")
-                                     "/share/texmf-dist/tex/luatex/hyph-utf8/"))
-             (mkdir-p (string-append (assoc-ref %outputs "doc")
-                                     "/share/texmf-dist/doc/luatex/hyph-utf8/"))
+      #:make-flags
+      #~(list "-C" "source/luatex/hyph-utf8/"
+              (string-append "DO_TEX = tex --interaction=nonstopmode '&tex' $<")
+              (string-append "RUNDIR =" (assoc-ref %outputs "out") "/share/texmf-dist/tex/luatex/hyph-utf8/")
+              (string-append "DOCDIR =" (assoc-ref %outputs "doc") "/share/texmf-dist/doc/luatex/hyph-utf8/")
+              ;; hyphen.cfg is neither included nor generated, so let's only build the lua file.
+              (string-append "UNPACKED = $(NAME).lua"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TeX isn't usable at this point, so we first need to generate the
+          ;; tex.fmt.
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Target directories must exist.
+              (mkdir-p (string-append (assoc-ref %outputs "out")
+                                      "/share/texmf-dist/tex/luatex/hyph-utf8/"))
+              (mkdir-p (string-append (assoc-ref %outputs "doc")
+                                      "/share/texmf-dist/doc/luatex/hyph-utf8/"))
 
-             ;; We cannot build the documentation because that requires a
-             ;; fully functional pdflatex, which depends on this package.
-             (substitute* "source/luatex/hyph-utf8/Makefile"
-               (("all: .*") "all: $(RUNFILES)\n"))
+              ;; We cannot build the documentation because that requires a
+              ;; fully functional pdflatex, which depends on this package.
+              (substitute* "source/luatex/hyph-utf8/Makefile"
+                (("all: .*") "all: $(RUNFILES)\n"))
 
-             ;; Find required fonts for building tex.fmt
-             (setenv "TFMFONTS"
-                     (string-append (assoc-ref inputs "texlive-cm")
-                                    "/share/texmf-dist/fonts/tfm/public/cm:"
-                                    (assoc-ref inputs "texlive-knuth-lib")
-                                    "/share/texmf-dist/fonts/tfm/public/knuth-lib"))
-             ;; ...and find all tex files in this environment.
-             (setenv "TEXINPUTS"
-                     (string-append
-                      (getcwd) ":"
-                      (string-join
-                       (map (match-lambda ((_ . dir) dir)) inputs)
-                       "//:")))
+              ;; Find required fonts for building tex.fmt
+              (setenv "TFMFONTS"
+                      (string-append (assoc-ref inputs "texlive-cm")
+                                     "/share/texmf-dist/fonts/tfm/public/cm:"
+                                     (assoc-ref inputs "texlive-knuth-lib")
+                                     "/share/texmf-dist/fonts/tfm/public/knuth-lib"))
+              ;; ...and find all tex files in this environment.
+              (setenv "TEXINPUTS"
+                      (string-append
+                       (getcwd) ":"
+                       (string-join
+                        (map (match-lambda ((_ . dir) dir)) inputs)
+                        "//:")))
 
-             ;; Generate tex.fmt.
-             (let ((where "source/luatex/hyph-utf8"))
-               (mkdir-p where)
-               (with-directory-excursion where
-                 (invoke "tex" "-ini"
-                         (string-append (assoc-ref inputs "texlive-plain")
-                                        "/share/texmf-dist/tex/plain/config/tex.ini"))))))
-         (add-before 'build 'build-loaders-and-converters
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((root (string-append (assoc-ref outputs "out")
-                                         "/share/texmf-dist"))
-                    (conv
-                     (string-append root
-                                    "/tex/generic/hyph-utf8/conversions")))
+              ;; Generate tex.fmt.
+              (let ((where "source/luatex/hyph-utf8"))
+                (mkdir-p where)
+                (with-directory-excursion where
+                  (invoke "tex" "-ini"
+                          (string-append (assoc-ref inputs "texlive-plain")
+                                         "/share/texmf-dist/tex/plain/config/tex.ini"))))))
+          (add-before 'build 'build-loaders-and-converters
+            (lambda _
+              (let* ((root (string-append #$output "/share/texmf-dist"))
+                     (conv
+                      (string-append root "/tex/generic/hyph-utf8/conversions")))
 
-               ;; Build converters
-               (mkdir-p conv)
-               (with-directory-excursion "source/generic/hyph-utf8"
-                 (substitute* "generate-converters.rb"
-                   (("\\$path_root=File.*")
-                    (string-append "$path_root=\"" root "\"\n"))
-                   ;; Avoid error with newer Ruby.
-                   (("#1\\{%") "#1{%%"))
-                 (invoke "ruby" "generate-converters.rb"))
-               #t)))
-         (replace 'install
-           (lambda* (#:key source outputs #:allow-other-keys)
-             (let ((doc (assoc-ref outputs "doc"))
-                   (out (assoc-ref outputs "out")))
-               (mkdir-p doc)
-               (copy-recursively
-                (string-append source "/doc")
-                (string-append doc "/doc"))
-               (install-file
-                (string-append source "/tex/luatex/hyph-utf8/etex.src")
-                (string-append out "/share/texmf-dist/tex/luatex/hyph-utf8/")))
-             #t)))))
+                ;; Build converters
+                (mkdir-p conv)
+                (with-directory-excursion "source/generic/hyph-utf8"
+                  (substitute* "generate-converters.rb"
+                    (("\\$path_root=File.*")
+                     (string-append "$path_root=\"" root "\"\n"))
+                    ;; Avoid error with newer Ruby.
+                    (("#1\\{%") "#1{%%"))
+                  (invoke "ruby" "generate-converters.rb")))))
+          (replace 'install
+            (lambda* (#:key source #:allow-other-keys)
+              (mkdir-p #$output:doc)
+              (copy-recursively
+               (string-append source "/doc")
+               (string-append #$output:doc "/doc"))
+              (install-file
+               (string-append source "/tex/luatex/hyph-utf8/etex.src")
+               (string-append #$output "/share/texmf-dist/tex/luatex/hyph-utf8/")))))))
     (native-inputs
      (list ruby-2.7
            texlive-bin
            ;; The following packages are needed for build "tex.fmt", which we
            ;; need for a working "tex".
            texlive-cm
+           texlive-docstrip
            texlive-knuth-lib
            texlive-hyphen-base
            texlive-plain))
