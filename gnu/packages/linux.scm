@@ -34,7 +34,7 @@
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 mikadoZero <mikadozero@yandex.com>
-;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -641,28 +641,39 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 (define-public linux-libre-6.4-source
   (source-with-patches linux-libre-6.4-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-6.3-source
   (source-with-patches linux-libre-6.3-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-6.1-source
   (source-with-patches linux-libre-6.1-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch
-                             (search-patch "linux-libre-infodocs-target.patch"))))
+                       (append
+                        (list %boot-logo-patch
+                              %linux-libre-arm-export-__sync_icache_dcache-patch)
+                        (search-patches
+                         "linux-libre-infodocs-target.patch"
+                         "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-5.10-source
   (source-with-patches linux-libre-5.10-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch
+                              "linux-libre-wireguard-postup-privkey.patch"))))
 
 (define-public linux-libre-5.4-source
   (source-with-patches linux-libre-5.4-pristine-source

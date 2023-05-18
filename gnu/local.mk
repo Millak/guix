@@ -1544,6 +1544,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/linphone-desktop-without-sdk.patch	\
   %D%/packages/patches/linux-libre-infodocs-target.patch	\
   %D%/packages/patches/linux-libre-support-for-Pinebook-Pro.patch \
+  %D%/packages/patches/linux-libre-wireguard-postup-privkey.patch \
   %D%/packages/patches/linux-pam-no-setfsuid.patch		\
   %D%/packages/patches/linux-pam-unix_chkpwd.patch		\
   %D%/packages/patches/linuxdcpp-openssl-1.1.patch		\
