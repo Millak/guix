@@ -1298,22 +1298,22 @@ and multimedia programs in the Python language.")
              (delete-file-recursively "gen-static")))))
       (build-system python-build-system)
       (arguments
-       `(#:tests? #f                ; tests require pygame to be installed first
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'set-paths 'set-sdl-vars
-             (lambda* (#:key inputs #:allow-other-keys)
-               (setenv "PYGAME_SDL2_CFLAGS"
-                       (string-append "-I"
-                                      (assoc-ref inputs "sdl-union")
-                                      "/include/SDL2 -D_REENTRANT"))
-               (setenv "PYGAME_SDL2_LDFLAGS"
-                       (string-append "-L"
-                                      (assoc-ref inputs "sdl-union")
-                                      "/lib -Wl,-rpath,"
-                                      (assoc-ref inputs "sdl-union")
-                                      "/lib -Wl,--enable-new-dtags -lSDL2"))
-               #t)))))
+       (list
+        #:tests? #f               ; tests require pygame to be installed first
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'set-paths 'set-sdl-vars
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "PYGAME_SDL2_CFLAGS"
+                        (string-append "-I"
+                                       (assoc-ref inputs "sdl-union")
+                                       "/include/SDL2 -D_REENTRANT"))
+                (setenv "PYGAME_SDL2_LDFLAGS"
+                        (string-append "-L"
+                                       (assoc-ref inputs "sdl-union")
+                                       "/lib -Wl,-rpath,"
+                                       (assoc-ref inputs "sdl-union")
+                                       "/lib -Wl,--enable-new-dtags -lSDL2")))))))
       (inputs
        (list (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
       (native-inputs
