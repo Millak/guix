@@ -6488,7 +6488,7 @@ and as an LV2 plugin.")
     ;; distros to make necessary changes to integrate the software into the
     ;; distribution.
     (name "zrythm")
-    (version "1.0.0-beta.4.5.62")
+    (version "1.0.0-beta.4.9.1")
     (source
      (origin
        (method url-fetch)
@@ -6496,11 +6496,10 @@ and as an LV2 plugin.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1nfb3h3aky8f8xslx6qzvcgcfrhlqa1v50kzanmpjxrx9dcllin7"))))
+         "0skdb4bpw4v5175yw9wijrc6j36mxjq8i7p8nn9650lipxg6bshd"))))
     (build-system meson-build-system)
     (arguments
-     (list #:tests? #f             ;123 pass, 3 fail. Appears network-related.
-           #:glib-or-gtk? #t
+     (list #:glib-or-gtk? #t
            #:configure-flags
            #~(list "-Dtests=true"
                    "-Dmanpage=false"    ;fish-completions breaks this
@@ -6510,9 +6509,43 @@ and as an LV2 plugin.")
                    "-Dguile=enabled"    ;for Guile scripting
                    "-Djack=enabled"     ;for JACK audio/MIDI backend
                    "-Drtmidi=enabled"   ;for RtMidi backend (ALSA sequencer)
-                   "-Dsdl=enabled")   ;for SDL audio backend (which uses ALSA)
+                   "-Dsdl=enabled")     ;for SDL audio backend (which uses ALSA)
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tests
+                 (lambda _
+                   ;; io_mkdir must be called with a GError value, not plain
+                   ;; NULL, or else the assertion in io_mkdir segfaults.
+                   (substitute* "tests/helpers/zrythm.h"
+                     (("success = io_mkdir \\(tmp_log_dir, NULL\\);" m)
+                      (string-append "err = NULL;
+success = io_mkdir (tmp_log_dir, &err);")))
+
+                   ;; zrythm: fails because curl wants to access the internet.
+                   ;; project: unknown failure XXX
+                   ;; The other tests fail with this error:
+                   ;;     error: attempt to map invalid URI `'
+                   ;; This means that lilv is given an empty LV2 plugin URI.
+                   ;; This is probably because we don't provide all LV2
+                   ;; plugins that are needed for running the tests.
+                   (substitute* "tests/meson.build"
+                     (("foreach name, info : tests")
+                      "\
+  disabled_tests = {
+    'zrythm': 0,
+    'project': 0,
+    'audio/midi_track': 0,
+    'integration/recording': 0,
+    'actions/mixer_selections_action': 0,
+    'actions/tracklist_selections': 0
+  }
+  enabled_tests = {}
+  foreach name, info : tests
+    if name not in disabled_tests
+      enabled_tests += {name: info}
+    endif
+  endforeach
+  foreach name, info : enabled_tests"))))
                (add-before 'build 'disable-guile-auto-compilation
                  (lambda _
                    (setenv "GUILE_AUTO_COMPILE" "0")))
@@ -6533,12 +6566,11 @@ and as an LV2 plugin.")
            flex
            font-dseg
            gettext-minimal
-           glib-next
-           glibc
+           glib
            graphviz
            gtk
            gtksourceview
-           guile-2.2
+           guile-3.0
            jack-2
            json-glib
            libadwaita
@@ -6571,7 +6603,7 @@ and as an LV2 plugin.")
      ;; XDG_DATA_DIRS.
      (list breeze-icons                 ;native because not executable
            help2man
-           `(,glib-next "bin")          ;for 'glib-compile-resources'
+           `(,glib "bin")               ;for 'glib-compile-resources'
            pkg-config
            python-sphinx
            python-sphinx-intl
