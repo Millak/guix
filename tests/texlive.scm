@@ -195,7 +195,24 @@ completely compatible with Plain TeX.")
             "texmf-dist/tex/texsis/base/thesis.txs"
             "texmf-dist/tex/texsis/base/twin.txs"
             "texmf-dist/tex/texsis/config/texsis.ini"))
-        (catalogue-license . "lppl")))))
+        (catalogue-license . "lppl")))
+    ("trsym"
+     (name . "trsym")
+     (shortdesc . "Symbols for transformations")
+     (longdesc . "The bundle provides Metafont...")
+     (docfiles "texmf-dist/doc/latex/trsym/README"
+               "texmf-dist/doc/latex/trsym/manifest.txt"
+               "texmf-dist/doc/latex/trsym/trsym.pdf")
+     (srcfiles "texmf-dist/source/latex/trsym/trsym.dtx"
+               "texmf-dist/source/latex/trsym/trsym.ins")
+     (runfiles "texmf-dist/fonts/source/public/trsym/trsy.mf"
+               "texmf-dist/fonts/source/public/trsym/trsy10.mf"
+               "texmf-dist/fonts/source/public/trsym/trsy12.mf"
+               "texmf-dist/fonts/tfm/public/trsym/trsy10.tfm"
+               "texmf-dist/fonts/tfm/public/trsym/trsy12.tfm"
+               "texmf-dist/tex/latex/trsym/trsym.sty"
+               "texmf-dist/tex/latex/trsym/utrsy.fd")
+     (catalogue-license . "lppl"))))
 
 (test-assert "texlive->guix-package, no docfiles"
   ;; Replace network resources with sample data.
@@ -271,6 +288,40 @@ completely compatible with Plain TeX.")
                ('synopsis (? string?))
                ('description (? string?))
                ('license 'lppl))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with METAFONT files"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "trsym"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name _)
+               ('version _)
+               ('source _)
+               ('outputs _)
+               ('build-system _)
+               ('native-inputs
+                ('list 'texlive-metafont))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
              #true)
             (_
              (begin

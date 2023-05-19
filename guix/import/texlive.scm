@@ -315,6 +315,21 @@ of those files are returned that are unexpectedly installed."
               '((outputs '("out" "doc")))
               '())
         (build-system texlive-build-system)
+        ;; Texlive build system generates font metrics whenever a font metrics
+        ;; file has the same base name as a Metafont file.
+        ,@(or (and-let* ((runfiles (assoc-ref data 'runfiles))
+                         (metrics
+                          (filter-map (lambda (f)
+                                        (and (string-suffix? ".tfm" f)
+                                             (basename f ".tfm")))
+                                      runfiles))
+                         ((not (null? metrics)))
+                         ((any (lambda (f)
+                                 (and (string-suffix? ".mf" f)
+                                      (member (basename f ".mf") metrics)))
+                               runfiles)))
+                '((native-inputs (list texlive-metafont))))
+              '())
         ,@(match filtered-depends
             (() '())
             (inputs
