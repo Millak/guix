@@ -1225,6 +1225,7 @@ of xmpppy.")
            python-css-parser
            python-dbus
            python-gssapi
+           python-idna
            python-keyring
            python-nbxmpp
            python-packaging
