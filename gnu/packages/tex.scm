@@ -1089,8 +1089,14 @@ arbitrarily complex font names, thus helping portability of TeX documents.")
              (base32
               "0l0dpgvngah227snzk6j5hf3kxs5cz5jvlpkv8pbapw6jx084np6")))
     (outputs '("out" "doc"))
-    ;; FIXME: Font metrics cannot be generated due to "bad pos" errors.
     (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; FIXME: Font metrics cannot be generated due to "bad pos"
+               ;; errors.
+               (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-cm texlive-metafont))
     (propagated-inputs (list texlive-cbfonts-fd))
     (home-page "https://ctan.org/pkg/cbgreek-complete")
     (synopsis "Complete set of Greek fonts")
