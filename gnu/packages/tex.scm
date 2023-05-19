@@ -9912,8 +9912,8 @@ glyphs.")
               "09b51bbm189xh7039h5n8nmab5nn2bybhh26qjn08763m80zdhjg")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (propagated-inputs
-     (list texlive-graphics texlive-iftex))
+    (native-inputs (list texlive-cm texlive-metafont))
+    (propagated-inputs (list texlive-graphics texlive-iftex))
     (home-page "https://ctan.org/pkg/xypic")
     (synopsis "Flexible diagramming macros")
     (description
