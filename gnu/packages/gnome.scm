@@ -76,6 +76,7 @@
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
+;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7199,7 +7200,9 @@ principles are simplicity and standards compliance.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1jqw5ndpgyb0zxh0g21ai1911lfrm56vz18xbccfqm4sk95wwcw7"))))
+                "1jqw5ndpgyb0zxh0g21ai1911lfrm56vz18xbccfqm4sk95wwcw7"))
+              (patches
+               (search-patches "d-feet-drop-unused-meson-argument.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
