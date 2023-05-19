@@ -5717,11 +5717,11 @@ VCF.")
                (mkdir-p jni)
                (install-file "lib/jni/libIntelDeflater.so" jni)))))))
     (inputs
-     `(("java-snappy-1" ,java-snappy-1)
-       ("java-commons-jexl-2" ,java-commons-jexl-2)
-       ("java-cofoja" ,java-cofoja)
-       ("ant" ,ant/java8) ; for bzip2 support at runtime
-       ("zlib" ,zlib)))
+     (list java-snappy-1
+           java-commons-jexl-2
+           java-cofoja
+           ant/java8                    ;for bzip2 support at runtime
+           zlib))
     (native-inputs
      `(("ant-apache-bcel" ,ant-apache-bcel)
        ("ant-junit" ,ant-junit)
