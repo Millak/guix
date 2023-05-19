@@ -395,7 +395,7 @@ started for PAM to work.")
             (provision '(pam))
             (requirement shepherd-requirements)
             (start #~(const #t))
-            (stop #~(const #t)))))))
+            (stop #~(const #f)))))))
 
 (define (extend-configuration initial extensions)
   "Extend INITIAL with NEW."
