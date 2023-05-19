@@ -163,6 +163,7 @@ a focus on simplicity and productivity.")
   (package
     (inherit ruby-2.6)
     (version "2.7.6")
+    (replacement ruby-2.7-fixed) ; security fixes
     (source
      (origin
        (inherit (package-source ruby-2.6))
@@ -200,7 +201,7 @@ a focus on simplicity and productivity.")
 (define ruby-2.7-fixed
   (package
     (inherit ruby-2.7)
-    (version "2.7.7")
+    (version "2.7.8")
     (source
      (origin
        (inherit (package-source ruby-2.7))
@@ -209,7 +210,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.gz"))
        (sha256
         (base32
-         "143vih5jzmrd2r5h94pa3qzml0ldii0qzs6g09jg6zqxd7djf0g1"))))))
+         "182vni66djmiqagwzfsd0za7x9k3zag43b88c590aalgphybdnn2"))))))
 
 (define-public ruby-3.0
   (package
