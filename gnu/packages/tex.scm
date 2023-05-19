@@ -7415,50 +7415,7 @@ modules that use it.")
               "1sa32wnsj84wbwqji1fb4k9ik99dy5ji7zz4v0xbd7306agyhns5")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list
-      #:modules
-      '((guix build texlive-build-system)
-        (guix build utils)
-        (srfi srfi-1)
-        (srfi srfi-26))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 're-generate-fonts-metrics
-            (lambda _
-              (let ((mf #$(this-package-native-input "texlive-metafont"))
-                    (cm #$(this-package-native-input "texlive-cm"))
-                    (root (getcwd)))
-                (mkdir-p "build")
-                (with-directory-excursion "fonts/source/public/rsfs"
-                  ;; Tell mf where to find mf.base.
-                  (setenv "MFBASES"
-                          (string-append mf "/share/texmf-dist/web2c"))
-                  ;; Tell mf where to look for source files.
-                  (setenv "MFINPUTS"
-                          (string-append
-                           (getcwd) ":"
-                           mf "/share/texmf-dist/metafont/base:"
-                           cm "/share/texmf-dist/fonts/source/public/cm"))
-                  ;; Build font metrics (tfm).
-                  (for-each (lambda (font)
-                              (format #t "building font ~a\n" font)
-                              (invoke "mf" "-progname=mf"
-                                      (string-append "-output-directory="
-                                                     root "/build")
-                                      (string-append "\\"
-                                                     "mode:=ljfour; "
-                                                     "mag:=1; "
-                                                     "batchmode; "
-                                                     "input "
-                                                     (basename font ".mf"))))
-                            (find-files "." "[0-9]+\\.mf$")))
-                ;; Install font metrics at the appropriate location.
-                (for-each
-                 (cut install-file <> "fonts/tfm/public/rsfs/")
-                 (find-files "build/" "\\.tfm$"))))))))
-    (native-inputs
-     (list texlive-bin texlive-metafont texlive-cm))
+    (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/rsfs")
     (synopsis "Ralph Smith's Formal Script font")
     (description
