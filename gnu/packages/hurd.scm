@@ -253,6 +253,12 @@ Hurd-minimal package which are needed for both glibc and GCC.")
   (package
     (inherit gnumach-headers)
     (name "gnumach")
+    (source (origin
+              (inherit (package-source gnumach-headers))
+              (patches
+               (append
+                (search-patches "gnumach-support-noide.patch")
+                (origin-patches (package-source gnumach-headers))))))
     (arguments
      (substitute-keyword-arguments (package-arguments gnumach-headers)
        ((#:make-flags flags ''())

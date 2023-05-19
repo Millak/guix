@@ -1287,6 +1287,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnome-settings-daemon-gc.patch		\
   %D%/packages/patches/gnome-session-support-elogind.patch	\
   %D%/packages/patches/gnome-tweaks-search-paths.patch		\
+  %D%/packages/patches/gnumach-support-noide.patch		\
   %D%/packages/patches/gnupg-default-pinentry.patch		\
   %D%/packages/patches/gnupg-1-build-with-gcc10.patch		\
   %D%/packages/patches/gnutls-skip-trust-store-test.patch	\

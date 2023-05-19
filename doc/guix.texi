@@ -40078,7 +40078,29 @@ For example:
 @item @code{multiboot-arguments} (default: @code{'()})
 The list of extra command-line arguments for the multiboot-kernel.
 
-@item @code{multiboot-modules} (default: @code{'()})
+For example, when running in QEMU it can be useful to use a text-based
+console (use options @option{--nographic} @option{--serial mon:stdio}):
+
+@lisp
+'("console=com0")
+@end lisp
+
+To use the new and still experimental
+@uref{https://darnassus.sceen.net/~hurd-web/rump_kernel/, rumpdisk
+user-level disk driver} instead of GNU@tie{}Mach's in-kernel IDE driver,
+set @code{kernel-arguments} to:
+
+@lisp
+'("noide")
+@end lisp
+
+Of course, these options can be combined:
+
+@lisp
+'("console=com0" "noide")
+@end lisp
+
++@item @code{multiboot-modules} (default: @code{'()})
 The list of commands for loading Multiboot modules.  For example:
 
 @lisp
