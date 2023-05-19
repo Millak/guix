@@ -1359,47 +1359,48 @@ developed mainly for Ren'py.")
               (("official = official and .*") ""))))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ; Ren'py doesn't seem to package tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-commands
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "renpy/editor.py"
-               (("xdg-open")
-                (string-append (assoc-ref inputs "xdg-utils")
-                               "/bin/xdg-open")))))
-         (add-after 'set-paths 'set-build-vars
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (setenv "RENPY_CYTHON"
-                     (search-input-file (or native-inputs inputs)
-                                        "/bin/cython"))
-             (setenv "RENPY_DEPS_INSTALL" (string-join (map cdr inputs) ":"))))
-         (replace 'build
-           (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-             ;; The "module" subdirectory contains a python (really cython)
-             ;; project, which is built using a script, that is thankfully
-             ;; named "setup.py".
-             (with-directory-excursion "module"
-               (apply (assoc-ref %standard-phases 'build) args))
-             ;; The above only builds the cython modules, but nothing else,
-             ;; so we do that here.
-             (invoke "python" "-m" "compileall" "renpy")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-             ;; Again, we have to wrap the module installation.
-             ;; Additionally, we want to install the python code
-             ;; (both source and compiled) in the same directory.
-             (let* ((out (assoc-ref outputs "out"))
-                    (site (string-append "/lib/python"
-                                         (python-version
-                                          (assoc-ref inputs "python"))
-                                         "/site-packages")))
-               (with-directory-excursion "module"
-                 (apply (assoc-ref %standard-phases 'install) args))
-               (copy-recursively "renpy"
-                                 (string-append out site "/renpy"))
-               (delete-file-recursively (string-append out site
-                                                       "/renpy/common"))))))))
+     (list
+      #:tests? #f                       ; Ren'py doesn't seem to package tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "renpy/editor.py"
+                (("xdg-open")
+                 (string-append (assoc-ref inputs "xdg-utils")
+                                "/bin/xdg-open")))))
+          (add-after 'set-paths 'set-build-vars
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (setenv "RENPY_CYTHON"
+                      (search-input-file (or native-inputs inputs)
+                                         "/bin/cython"))
+              (setenv "RENPY_DEPS_INSTALL" (string-join (map cdr inputs) ":"))))
+          (replace 'build
+            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
+              ;; The "module" subdirectory contains a python (really cython)
+              ;; project, which is built using a script, that is thankfully
+              ;; named "setup.py".
+              (with-directory-excursion "module"
+                (apply (assoc-ref %standard-phases 'build) args))
+              ;; The above only builds the cython modules, but nothing else,
+              ;; so we do that here.
+              (invoke "python" "-m" "compileall" "renpy")))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
+              ;; Again, we have to wrap the module installation.
+              ;; Additionally, we want to install the python code
+              ;; (both source and compiled) in the same directory.
+              (let* ((out (assoc-ref outputs "out"))
+                     (site (string-append "/lib/python"
+                                          (python-version
+                                           (assoc-ref inputs "python"))
+                                          "/site-packages")))
+                (with-directory-excursion "module"
+                  (apply (assoc-ref %standard-phases 'install) args))
+                (copy-recursively "renpy"
+                                  (string-append out site "/renpy"))
+                (delete-file-recursively (string-append out site
+                                                        "/renpy/common"))))))))
     (native-inputs (list python-cython))
     (inputs
      (list ffmpeg
