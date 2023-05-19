@@ -1801,7 +1801,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "1.10.0.0")
+    (version "2.0.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1810,7 +1810,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12yb2rbd6hsns43qyxc5dm7h5k4sph9sb64q7kkbqi3xhgrrsjdq"))))
+        (base32 "0s4iyjfhjx21xa3z7433m4skfr115565k0ckza87ha2d4nl8kz5h"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1862,7 +1862,12 @@ following three utilities are included with the library:
              ;; an expired SSL certificate.
              (substitute* "src/qt/test/test_main.cpp"
                (("if \\(QTest::qExec\\(&test2\\) != 0\\)")
-                "if (QTest::qExec(&test2) == 0)"))))
+                "if (QTest::qExec(&test2) == 0)"))
+             ;; The following test passes with OpenSSL 1.1, but fails with
+             ;; OpenSSL 3.
+             (substitute* "src/secp256k1/src/tests.c"
+               (("run_ecdsa_der_parse\\(\\);")
+                ""))))
          (add-before 'check 'set-home
            (lambda _
              ;; Tests write to $HOME
