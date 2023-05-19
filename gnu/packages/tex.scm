@@ -4140,6 +4140,32 @@ base LaTeX code now supports multiple dots and spaces, and this package by
 default is a stub that just loads @code{graphicx}.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-sansmathfonts
+  (package
+    (name "texlive-sansmathfonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/sansmathfonts/"
+                   "fonts/map/dvips/sansmathfonts/"
+                   "fonts/source/public/sansmathfonts/"
+                   "fonts/tfm/public/sansmathfonts/"
+                   "fonts/type1/public/sansmathfonts/"
+                   "fonts/vf/public/sansmathfonts/"
+                   "tex/latex/sansmathfonts/")
+             (base32
+              "1l6q26590kdr2b24psdwgjw199p3sgk2hh74gq6fd6qircc1z3cy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs
+     (list texlive-amsfonts texlive-cm texlive-ec texlive-metafont))
+    (home-page "https://ctan.org/pkg/sansmathfonts")
+    (synopsis "Correct placement of accents in sans-serif maths")
+    (description
+     "This package provides sans serif small caps and math fonts for use with
+Computer Modern.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-stringenc
   (package
     (name "texlive-stringenc")
