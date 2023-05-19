@@ -5762,6 +5762,36 @@ corresponding thing with the page reference of the label.")
 characters and their glyph names.")
     (license license:lppl1.3+)))
 
+(define-public texlive-semaphor
+  (package
+    (name "texlive-semaphor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/semaphor/"
+                   "fonts/afm/public/semaphor/"
+                   "fonts/enc/dvips/semaphor/"
+                   "fonts/map/dvips/semaphor/"
+                   "fonts/opentype/public/semaphor/"
+                   "fonts/source/public/semaphor/"
+                   "fonts/tfm/public/semaphor/"
+                   "fonts/type1/public/semaphor/"
+                   "tex/context/third/semaphor/"
+                   "tex/latex/semaphor/"
+                   "tex/plain/semaphor/")
+             (base32
+              "1yigah8x75fd13x0f6ncpp21ly75nyfz6h5y5sfc590n7wcm0gvr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/semaphor")
+    (synopsis "Semaphore alphabet font")
+    (description
+     "These fonts represent semaphore in a highly schematic, but very clear,
+fashion.  The fonts are provided as Metafont source, and in both OpenType and
+Adobe Type 1 formats.")
+    (license license:gpl3+)))
+
 (define-public texlive-seminar
   (package
     (name "texlive-seminar")
