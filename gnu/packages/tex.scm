@@ -11923,50 +11923,7 @@ OpenType fonts.")
               "0ml24rxbl1yir4s3fjjxm0z7axklc3p33syg41b76zc7hck9mk8s")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     (list
-      #:modules
-      '((guix build texlive-build-system)
-        (guix build utils)
-        (srfi srfi-1)
-        (srfi srfi-26))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 're-generate-fonts-metrics
-            (lambda _
-              (let ((mf #$(this-package-native-input "texlive-metafont"))
-                    (cm #$(this-package-native-input "texlive-cm"))
-                    (root (getcwd)))
-                (mkdir-p "build")
-                (with-directory-excursion "fonts/source/public/eurosym"
-                  ;; Tell mf where to find mf.base.
-                  (setenv "MFBASES"
-                          (string-append mf "/share/texmf-dist/web2c"))
-                  ;; Tell mf where to look for source files.
-                  (setenv "MFINPUTS"
-                          (string-append
-                           (getcwd) ":"
-                           mf "/share/texmf-dist/metafont/base:"
-                           cm "/share/texmf-dist/fonts/source/public/cm"))
-                  ;; Build font metrics (tfm).
-                  (for-each (lambda (font)
-                              (format #t "building font ~a\n" font)
-                              (invoke "mf" "-progname=mf"
-                                      (string-append "-output-directory="
-                                                     root "/build")
-                                      (string-append "\\"
-                                                     "mode:=ljfour; "
-                                                     "mag:=1; "
-                                                     "batchmode; "
-                                                     "input "
-                                                     (basename font ".mf"))))
-                            (find-files "." "[0-9]+\\.mf$")))
-                ;; Install font metrics at the appropriate location.
-                (for-each
-                 (cut install-file <> "fonts/tfm/public/eurosym")
-                 (find-files "build/" "\\.tfm$"))))))))
-    (native-inputs
-     (list texlive-bin texlive-cm texlive-metafont))
+    (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/eurosym")
     (synopsis "METAFONT and macros for Euro sign")
     (description
