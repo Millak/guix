@@ -4998,13 +4998,13 @@ for httplib2 transport.")
 (define-public whoogle-search
   (package
     (name "whoogle-search")
-    (version "0.8.1")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "whoogle-search" version))
               (sha256
                (base32
-                "1kqkb23wb9a4a8zdky2066887vgv7ywhivhxi5nipkx07mf8v01k"))))
+                "1r6ymainwc3b8aar90b74mpnx3rsfscgzh0llwvsb03fbhiypw5g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
