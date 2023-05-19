@@ -17580,14 +17580,15 @@ hibernation via the @code{resume} kernel argument
                             file-systems)))))
 
 (kernel-arguments
-  (cons* "resume=/swapfile"
-         "resume_offset=92514304"
+  (cons* "resume=/dev/sda3"        ;device that holds /swapfile
+         "resume_offset=92514304"  ;offset of /swapfile on device
          %default-kernel-arguments))
 @end lisp
 
 This other snippet of @code{operating-system} enables the swap file
-@file{/swapfile} for hibernation by telling the kernel about the file
-(@code{resume} argument) and its offset on disk (@code{resume_offset}
+@file{/swapfile} for hibernation by telling the kernel about the
+partition containing it
+(@code{resume} argument) and its offset on that partition (@code{resume_offset}
 argument).  The latter value can be found in the output of the command
 @command{filefrag -e} as the first number right under the
 @code{physical_offset} column header (the second command extracts its
