@@ -10007,6 +10007,9 @@ and format can be specified with the @code{#:tex-format} argument.
 Different build targets can be specified with the @code{#:build-targets}
 argument, which expects a list of file names.
 
+It also generates font metrics (i.e., @file{.tfm} files) out of METAFONT
+files whenever possible.
+
 The build system adds only @code{texlive-bin} and
 @code{texlive-latex-base} (both from @code{(gnu packages tex}) to the
 inputs.  Both can be overridden with the arguments @code{#:texlive-bin}

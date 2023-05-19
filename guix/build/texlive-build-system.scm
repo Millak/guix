@@ -27,6 +27,7 @@
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
             texlive-build))
@@ -43,10 +44,110 @@
            (negate
             (cut member <> '("." ".." "build" "doc" "source")))))
 
+(define (install-as-runfiles dir regexp)
+  "Install files under DIR matching REGEXP on top of existing runfiles in the
+current tree.  Sub-directories below DIR are preserved when looking for the
+runfile to replace.  If a file has no matching runfile, it is ignored."
+  (let ((runfiles (append-map (cut find-files <>)
+                              (runfiles-root-directories))))
+    (for-each (lambda (file)
+                (match (filter
+                        (cut string-suffix?
+                             (string-drop file (string-length dir))
+                             <>)
+                        runfiles)
+                  ;; Current file is not a runfile.  Ignore it.
+                  (() #f)
+                  ;; One candidate only.  Replace it with the one from DIR.
+                  ((destination)
+                   (let ((target (dirname destination)))
+                     (install-file file target)
+                     (format #t "re-generated file ~s in ~s~%"
+                             (basename file)
+                             target)))
+                  ;; Multiple candidates!  Not much can be done.  Hopefully,
+                  ;; this should never happen.
+                  (_
+                   (format (current-error-port)
+                           "warning: ambiguous location for file ~s; ignoring it~%"
+                           (basename file)))))
+              (find-files dir regexp))))
+
 (define* (delete-drv-files #:rest _)
   "Delete pre-generated \".drv\" files in order to prevent build failures."
   (when (file-exists? "source")
     (for-each delete-file (find-files "source" "\\.drv$"))))
+
+(define* (generate-font-metrics #:key native-inputs inputs #:allow-other-keys)
+  ;; Decide what Metafont files to build by comparing them to the expected
+  ;; font metrics base names.  Keep only files for which the two base names
+  ;; do match.
+  (define (font-metrics root)
+    (and (file-exists? root)
+         (map (cut basename <> ".tfm") (find-files root "\\.tfm$"))))
+  (define (font-files directory metrics)
+    (if (file-exists? directory)
+        (delete-duplicates
+         (filter (lambda (f)
+                   (or (not metrics)
+                       (member (basename f ".mf") metrics)))
+                 (find-files directory "\\.mf$")))
+        '()))
+  ;; Metafont files could be scattered across multiple directories.  Treat
+  ;; each sub-directory as a separate font source.
+  (define (font-sources root metrics)
+    (delete-duplicates (map dirname (font-files root metrics))))
+  (define (texlive-input? input)
+    (string-prefix? "texlive-" input))
+  (and-let* ((local-metrics (font-metrics "fonts/tfm"))
+             (local-sources (font-sources "fonts/source" local-metrics))
+             ((not (null? local-sources))) ;nothing to generate: bail out
+             (root (getcwd))
+             (metafont
+              (cond ((assoc-ref (or native-inputs inputs) "texlive-metafont") =>
+                     (cut string-append <> "/share/texmf-dist"))
+                    (else
+                     (error "Missing 'texlive-metafont' native input"))))
+             ;; Collect all font source files from texlive (native-)inputs so
+             ;; "mf" can know where to look for them.
+             (font-inputs
+              (delete-duplicates
+               (append-map (match-lambda
+                             (((? (negate texlive-input?)) . _) '())
+                             (("texlive-bin" . _) '())
+                             (("texlive-metafont" . _)
+                              (list (string-append metafont "/metafont/base")))
+                             ((_ . input)
+                              (font-sources input #f)))
+                           (or native-inputs inputs)))))
+    ;; Tell mf where to find "mf.base".
+    (setenv "MFBASES" (string-append metafont "/web2c/"))
+    (mkdir-p "build")
+    (for-each
+     (lambda (source)
+       ;; Tell "mf" where are the font source files.  In case current package
+       ;; provides multiple sources, treat them separately.
+       (setenv "MFINPUTS"
+               (string-join (cons (string-append root "/" source)
+                                  font-inputs)
+                            ":"))
+       ;; Build font metrics (tfm).
+       (with-directory-excursion source
+         (for-each (lambda (font)
+                     (format #t "building font ~a~%" font)
+                     (invoke "mf" "-progname=mf"
+                             (string-append "-output-directory="
+                                            root "/build")
+                             (string-append "\\"
+                                            "mode:=ljfour; "
+                                            "mag:=1; "
+                                            "batchmode; "
+                                            "input "
+                                            (basename font ".mf"))))
+                   (font-files "." local-metrics)))
+       ;; Refresh font metrics at the appropriate location.
+       (install-as-runfiles "build" "\\.tfm$"))
+     local-sources)))
 
 (define (compile-with-latex engine format output file)
   (invoke engine
@@ -86,42 +187,14 @@
                   targets))
       ;; Now move generated files from the "build" directory into the rest of
       ;; the source tree, effectively replacing downloaded files.
-
+      ;;
       ;; Documentation may have been generated, but replace only runfiles,
       ;; i.e., files that belong neither to "doc" nor "source" trees.
       ;;
       ;; In TeX Live, all packages are fully pre-generated.  As a consequence,
-      ;; a generated file from the "build" top directory absent from the rest
-      ;; of the tree is deemed unnecessary and can safely be ignored.
-      (let ((runfiles (append-map (cut find-files <>)
-                                  (runfiles-root-directories))))
-        (for-each (lambda (file)
-                    (match (filter
-                            (cut string-suffix?
-                                 (string-drop file (string-length "build"))
-                                 <>)
-                            runfiles)
-                      ;; Current file is not a runfile.  Ignore it.
-                      (() #f)
-                      ;; One candidate only.  Replace it with the one just
-                      ;; generated.
-                      ((destination)
-                       (let ((target (dirname destination)))
-                         (install-file file target)
-                         (format #t "re-generated file ~s in ~s~%"
-                                 (basename file)
-                                 target)))
-                      ;; Multiple candidates!  Not much can be done.
-                      ;; Hopefully, this should never happen.
-                      (_
-                       (format (current-error-port)
-                               "warning: ambiguous localization of file ~s; \
-ignoring it~%"
-                               (basename file)))))
-                  ;; Preserve the relative file name of the generated file in
-                  ;; order to be more accurate when looking for the
-                  ;; corresponding runfile in the tree.
-                  (find-files "build"))))))
+      ;; a generated file from the "build" top directory absent from the rest of
+      ;; the tree is deemed unnecessary and can safely be ignored.
+      (install-as-runfiles "build" "."))))
 
 (define* (install #:key outputs #:allow-other-keys)
   (let ((out (assoc-ref outputs "out"))
@@ -147,6 +220,7 @@ ignoring it~%"
     (delete 'bootstrap)
     (delete 'configure)
     (add-before 'build 'delete-drv-files delete-drv-files)
+    (add-after 'delete-drv-files 'generate-font-metrics generate-font-metrics)
     (replace 'build build)
     (delete 'check)
     (replace 'install install)))
