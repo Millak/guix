@@ -1446,63 +1446,7 @@ conversion software and word processors.")
              (base32
               "0dl8z340n6m6xn7wari4hir0syxqi0kl2fhnf0bvnmkqhqwyzpca")))
     (build-system texlive-build-system)
-    (arguments
-     (list
-      #:texlive-latex-base #f
-      #:modules
-      '((guix build texlive-build-system)
-        (guix build utils)
-        (srfi srfi-1)
-        (srfi srfi-26))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'generate-fonts-metrics
-            (lambda _
-              (let ((cm #$(this-package-native-input "texlive-cm"))
-                    (metafont #$(this-package-native-input "texlive-metafont"))
-                    (fonts-directories
-                     (delete-duplicates
-                      (map (lambda (f)
-                             (string-drop (dirname f) (string-length "./")))
-                           (find-files "." "[0-9]+\\.mf$"))))
-                    (root (getcwd)))
-                (mkdir-p "build")
-                ;; Tell mf where to find mf.base.
-                (setenv "MFBASES"
-                        (string-append metafont "/share/texmf-dist/web2c/"))
-                (for-each
-                 (lambda (directory)
-                   ;; Tell mf where to look for source files.
-                   (setenv "MFINPUTS"
-                           (string-append
-                            (getcwd) "/" directory ":"
-                            metafont "/share/texmf-dist/metafont/base/:"
-                            cm "/share/texmf-dist/fonts/source/public/cm/"))
-                   ;; Build font metrics (tfm).
-                   (with-directory-excursion directory
-                     (for-each (lambda (font)
-                                 (format #t "building font ~a\n" font)
-                                 (invoke "mf" "-progname=mf"
-                                         (string-append "-output-directory="
-                                                        root "/build")
-                                         (string-append "\\"
-                                                        "mode:=ljfour; "
-                                                        "mag:=1; "
-                                                        "batchmode; "
-                                                        "input "
-                                                        (basename font ".mf"))))
-                               (find-files "." "[0-9]+\\.mf$")))
-                   ;; Install font metrics at the appropriate location.
-                   (let ((destination
-                          ;; fonts/source/xxx/yyy/... -> fonts/tfm/xxx/yyy/...
-                          (string-append "fonts/tfm"
-                                         (string-drop
-                                          directory
-                                          (string-length "fonts/source")))))
-                     (format #t "moving font metrics in ~a\n" destination)
-                     (for-each (cut install-file <> destination)
-                               (find-files "build/" "\\.tfm$"))))
-                 fonts-directories)))))))
+    (arguments (list #:texlive-latex-base #f))
     (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/knuth-lib")
     (synopsis "Small library of METAFONT sources")
