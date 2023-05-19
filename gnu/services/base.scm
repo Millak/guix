@@ -1187,7 +1187,11 @@ no serial port console requested; doing nothing~%"
                                       '#$(car provision))
                               'idle)))
                 args)))))
-      (stop #~(make-kill-destructor))))))
+      (stop #~(let ((stop (make-kill-destructor)))
+                (lambda (running)
+                  (if (eq? 'idle running)
+                      #f
+                      (stop running)))))))))
 
 (define agetty-service-type
   (service-type (name 'agetty)
