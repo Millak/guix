@@ -5640,8 +5640,7 @@ VCF.")
                '(begin
                   ;; Delete pre-built binaries.
                   (delete-file-recursively "lib")
-                  (mkdir-p "lib")
-                  #t))))
+                  (mkdir-p "lib")))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "picard-jar"
@@ -5671,8 +5670,7 @@ VCF.")
                (("name=\"test\" depends=\"compile, ")
                 "name=\"test\" depends=\"compile-tests, ")
                (("name=\"compile\" depends=\"compile-src, compile-tests\"")
-                "name=\"compile\" depends=\"compile-src\""))
-             #t))
+                "name=\"compile\" depends=\"compile-src\""))))
          (add-after 'unpack 'fix-deflater-path
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "src/java/net/sf/samtools/Defaults.java"
@@ -5680,8 +5678,7 @@ VCF.")
                 (string-append "getStringProperty(\"intel_deflater_so_path\", \""
                                (assoc-ref outputs "out")
                                "/lib/jni/libIntelDeflater.so"
-                               "\")")))
-             #t))
+                               "\")")))))
          ;; Build the deflater library, because we've previously deleted the
          ;; pre-built one.  This can only be built with access to the JDK
          ;; sources.
@@ -5704,25 +5701,21 @@ VCF.")
                        "-c" "-O3" "-fPIC" "IntelDeflater.c")
                (invoke "gcc" "-shared"
                        "-o" "../../../lib/jni/libIntelDeflater.so"
-                       "IntelDeflater.o" "-lz" "-lstdc++"))
-             #t))
+                       "IntelDeflater.o" "-lz" "-lstdc++"))))
          ;; We can only build everything else after building the JNI library.
          (add-after 'build-jni 'build-rest
            (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke `("ant" "all" ,@make-flags))
-             #t))
+             (apply invoke `("ant" "all" ,@make-flags))))
          (add-before 'build 'set-JAVA6_HOME
            (lambda _
-             (setenv "JAVA6_HOME" (getenv "JAVA_HOME"))
-             #t))
+             (setenv "JAVA6_HOME" (getenv "JAVA_HOME"))))
          (replace 'install (install-jars "dist"))
          (add-after 'install 'install-jni-lib
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((jni (string-append (assoc-ref outputs "out")
                                        "/lib/jni")))
                (mkdir-p jni)
-               (install-file "lib/jni/libIntelDeflater.so" jni)
-               #t))))))
+               (install-file "lib/jni/libIntelDeflater.so" jni)))))))
     (inputs
      `(("java-snappy-1" ,java-snappy-1)
        ("java-commons-jexl-2" ,java-commons-jexl-2)
