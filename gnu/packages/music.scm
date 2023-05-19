@@ -3539,9 +3539,8 @@ follows a traditional multi-track tape recorder control paradigm.")
              (unless (or (string-prefix? "x86_64" system)
                          (string-prefix? "i686" system))
                (substitute* "wscript"
-                 (("'-msse', '-mfpmath=sse', ") "")))
-             #t)))
-       #:tests? #f))                    ; no tests
+                 (("'-msse', '-mfpmath=sse', ") ""))))))
+       #:tests? #f))                    ;no tests
     (inputs
      (list cairo
            fftw
