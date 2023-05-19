@@ -134,10 +134,10 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnuzilla))
 
-(define-public bitcoin-core-23.1
+(define-public bitcoin-core-24.1
   (package
     (name "bitcoin-core")
-    (version "23.1")
+    (version "24.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -145,7 +145,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "03k56vgk0a0wr84gpj256hvijk6iyshl85hcrx800hiznyzl5hkl"))))
+                "0kmgpzknbykgwb8vd7hj3j1xxn35785gf4vii5705k6rnarks2la"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -216,7 +216,7 @@ line client and a client based on Qt.")
 ;; The support lifetimes for bitcoin-core versions can be found in
 ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
 
-(define-public bitcoin-core bitcoin-core-23.1)
+(define-public bitcoin-core bitcoin-core-24.1)
 
 (define-public ghc-hledger
   (package
