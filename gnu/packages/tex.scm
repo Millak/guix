@@ -7711,6 +7711,7 @@ captions sideways.  Options include @code{outercaption}, @code{innercaption},
                 (("^%% LaTeX2e.*") "\\input docstrip\n")
                 (("fontdef\\}\\}" line)
                  (string-append line "\n\\endbatchfile"))))))))
+    (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/stmaryrd")
     (synopsis "St Mary Road symbols for theoretical computer science")
     (description
