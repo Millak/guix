@@ -28379,11 +28379,11 @@ a vterm buffer and back again.")
 
 (define-public emacs-simple-mpc
   ;; There have been no releases.
-  (let ((commit "bee8520e81292b4c7353e45b193f9a13b482f5b2")
+  (let ((commit "35923caf39d4bebeb0e49264a29441c22216f1ed")
         (revision "1"))
     (package
       (name "emacs-simple-mpc")
-      (version (git-version "0" revision commit))
+      (version (git-version "1.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -28393,7 +28393,7 @@ a vterm buffer and back again.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1ja06pv007cmzjjgka95jlg31k7d29jrih1yxyblsxv85s9sg21q"))))
+           "0vnqnxw2qhxlzgyms220l9qcj1rvpyrmg1isri2l6hxk23ga89p9"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-s))
       (home-page "https://github.com/jorenvo/simple-mpc")
