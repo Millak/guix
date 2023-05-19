@@ -8339,6 +8339,7 @@ natural width.")
               "1swzxgld3lndi5q0q6zkwbw06ndh13fvp04as7zpwyhh646s0hbx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (native-inputs (list texlive-cm texlive-metafont))
     (home-page "https://ctan.org/pkg/wasy")
     (synopsis "Waldi symbol fonts")
     (description "This package provides the @code{wasy} (Waldi symbol) fonts,
