@@ -4618,7 +4618,6 @@ polyglossia package rather than Babel.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             ;; FIXME: Cannot build font metrics: "cannot find cmb12".
              (list "fonts/enc/dvips/cs/"
                    "fonts/map/dvips/cs/"
                    "fonts/source/public/cs/"
@@ -4631,6 +4630,14 @@ polyglossia package rather than Babel.")
              (base32
               "0nzzcg1yvbslhqm5lsfcpqh6sbzkmnmmgyakg9l8855qpa8g9bf3")))
     (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      ;; FIXME: The phase fails for multiple font files with error: "cannot
+      ;; find cmb12".
+      #~(modify-phases %standard-phases
+          (delete 'generate-font-metrics))))
+    (native-inputs (list texlive-cm texlive-metafont))
     (propagated-inputs (list texlive-cmexb))
     (home-page "https://ctan.org/pkg/csfonts")
     (synopsis "Czech/Slovak-tuned Computer Modern fonts")
