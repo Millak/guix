@@ -99,6 +99,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -1329,25 +1330,33 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.0.3")
+    (version "8.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.renpy.org/dl/" version
                            "/renpy-" version "-source.tar.bz2"))
-       (sha256 (base32 "1b49y60pi6304fg06lw5gajzrgg9w80swpfkn6pw0lxbr6djgjgn"))
+       (sha256
+        (base32
+         "08l7z2vwqxkskj3rs2a0w9ahah28ixq8hy48h30k2dm9g19h450h"))
        (modules '((guix build utils)))
-       (patches
-        (search-patches
-         "renpy-use-system-fribidi.patch"))
        (snippet
-        '(with-directory-excursion "module"
-           ;; drop fribidi sources
-           (delete-file-recursively "fribidi-src")
-           ;; drop _renpytfd, as there are missing sources
-           (substitute* "setup.py"
-             (("cython\\(\"_renpytfd\"" all)
-              (string-append "pass # " all)))))))
+        #~(begin
+            ;; Build without sync service.
+            ;; Encryption is only used for enabling this service and requires
+            ;; libhydrogen, which doesn't have a public release, so drop it
+            ;; as well
+            (for-each delete-file
+                      '("renpy/encryption.pyx"
+                        "renpy/common/00sync.rpy"))
+            (substitute* "module/setup.py"
+              (("cython\\(\"renpy\\.encryption\"\\)") ""))
+            (substitute* "renpy/__init__.py"
+              (("import renpy\\.encryption") ""))
+            ;; Trust vc_version.py when it comes to detecting whether a
+            ;; version is official.
+            (substitute* "renpy/__init__.py"
+              (("official = official and .*") ""))))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; Ren'py doesn't seem to package tests
@@ -1359,11 +1368,6 @@ developed mainly for Ren'py.")
                (("xdg-open")
                 (string-append (assoc-ref inputs "xdg-utils")
                                "/bin/xdg-open")))))
-         (add-after 'unpack 'fix-include-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "module/setup.py"
-               (("/usr/include/fribidi")
-                (search-input-directory inputs "include/fribidi")))))
          (add-after 'set-paths 'set-build-vars
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
              (setenv "RENPY_CYTHON"
@@ -1405,7 +1409,7 @@ developed mainly for Ren'py.")
            libpng
            (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
            xdg-utils))
-    (propagated-inputs (list python-future python-pygame-sdl2))
+    (propagated-inputs (list python-ecdsa python-future python-pygame-sdl2))
     (home-page "https://www.renpy.org/")
     (synopsis "Ren'py python module")
     (description "This package contains the shared libraries and Python modules
