@@ -3543,12 +3543,12 @@ follows a traditional multi-track tape recorder control paradigm.")
              #t)))
        #:tests? #f))                    ; no tests
     (inputs
-     `(("cairo" ,cairo)
-       ("fftw" ,fftw)
-       ("gtk" ,gtk+-2)
-       ("gtkmm" ,gtkmm-2)
-       ("lv2" ,lv2)
-       ("lvtk" ,lvtk)))
+     (list cairo
+           fftw
+           gtk+-2
+           gtkmm-2
+           lv2
+           lvtk))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/blablack/ams-lv2")
