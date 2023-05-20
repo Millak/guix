@@ -176,6 +176,7 @@ database {
                                 (addrinfo:addr
                                  (car (getaddrinfo #$(first interfaces)
                                                    "dict")))))
+                         #:requirements '#$requirement
                          #:user "dicod" #:group "dicod"
                          #:service-name-stem "dicod")
                         (make-forkexec-constructor

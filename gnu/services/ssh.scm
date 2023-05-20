@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2019, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -607,6 +607,7 @@ of user-name/file-like tuples."
                                    (make-socket-address AF_INET6 IN6ADDR_ANY
                                                         #$port-number)))
                                  '()))
+                       #:requirements '#$requirement
                        #:max-connections #$max-connections)
                       (make-forkexec-constructor #$openssh-command
                                                  #:pid-file #$pid-file)))

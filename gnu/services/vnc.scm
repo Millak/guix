@@ -228,6 +228,7 @@ CONFIG, a <xvnc-configuration> object."
                        ,@(if ipv6-socket
                              (list (endpoint ipv6-socket))
                              '()))
+                     #:requirements '#$requirement
                      #:user "xvnc"
                      #:group "xvnc"))
                 #~(make-forkexec-constructor

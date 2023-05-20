@@ -872,6 +872,7 @@ string, you could instantiate a prosody service like this:
                                                         #$(number->string port)
                                                         (logior AI_NUMERICHOST
                                                                 AI_NUMERICSERV))))))
+                              #:requirements '#$requirement
                               #:service-name-stem "bitlbee"
                               #:user "bitlbee" #:group "bitlbee"
 
