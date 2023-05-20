@@ -3070,6 +3070,32 @@ to the terminal in real time but is also available to the Python program
 for additional processing.")
     (license license:expat)))
 
+(define-public python-fastprogress
+  (package
+    (name "python-fastprogress")
+    (version "1.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fastai/fastprogress")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01h8f786wgmmd3fj98wk1n5id67nsp19gs8bbgims04aciwhvj21"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f                  ;there are no tests
+           #:phases #~(modify-phases %standard-phases
+                        ;; XXX: Fails with: "In procedure utime: No such file
+                        ;; or directory".
+                        (delete 'ensure-no-mtimes-pre-1980))))
+    (home-page "https://github.com/fastai/fastprogress")
+    (synopsis "Progress bar for Jupyter Notebook and console")
+    (description
+     "Fastprogress is a progress bar for Jupyter Notebook and console.")
+    (license license:asl2.0)))
+
 (define-public python-case
   (package
     (name "python-case")
