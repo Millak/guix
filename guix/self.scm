@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -72,7 +72,8 @@
       ("gettext-minimal"    . ,(ref 'gettext 'gettext-minimal))
       ("gcc-toolchain"      . ,(ref 'commencement 'gcc-toolchain))
       ("glibc-utf8-locales" . ,(ref 'base 'glibc-utf8-locales))
-      ("graphviz"           . ,(ref 'graphviz 'graphviz))
+      ("graphviz"           . ,(ref 'graphviz 'graphviz-minimal))
+      ("font-ghostscript"   . ,(ref 'ghostscript 'font-ghostscript))
       ("texinfo"            . ,(ref 'texinfo 'texinfo)))))
 
 (define (specification->package name)
@@ -404,6 +405,9 @@ a list of extra files, such as '(\"contributing\")."
   (define graphviz
     (specification->package "graphviz"))
 
+  (define font-ghostscript
+    (specification->package "font-ghostscript"))
+
   (define glibc-utf8-locales
     (specification->package "glibc-utf8-locales"))
 
@@ -444,6 +448,9 @@ a list of extra files, such as '(\"contributing\")."
 
           ;; Build graphs.
           (mkdir-p (string-append #$output "/images"))
+
+          (setenv "XDG_DATA_DIRS"                 ;fonts needed by 'dot'
+                  #+(file-append font-ghostscript "/share"))
           (for-each (lambda (dot-file)
                       (invoke #+(file-append graphviz "/bin/dot")
                               "-Tpng" "-Gratio=.9" "-Gnodesep=.005"
