@@ -2125,6 +2125,54 @@ point (up to 50% contamination) and have a number of nice applications in
 machine learning, computer vision, and high-dimensional statistics.")
     (license license:asl2.0)))
 
+(define-public python-arviz
+  (package
+    (name "python-arviz")
+    (version "0.15.1")
+    (source (origin
+              (method git-fetch)        ; PyPI misses some test files
+              (uri (git-reference
+                    (url "https://github.com/arviz-devs/arviz")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nqr4v927r9kc50z7rwlk2m8nw3dnnmmwmwcfijzd93gbg53wc4f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; FIXME: matplotlib tests fail because of the "--save" test flag.
+     (list #:test-flags #~'("--ignore"
+                            "arviz/tests/base_tests/test_plots_matplotlib.py")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-radon
+                 (lambda _
+                   (delete-file
+                    ;; This dataset is loaded remotely, it's not supposed to
+                    ;; be copied locally.
+                    "arviz/data/example_data/code/radon/radon.json")))
+               (add-before 'check 'write-permission
+                 (lambda _
+                   ;; 3 tests require write permission.
+                   (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-cloudpickle python-pytest))
+    (propagated-inputs (list python-h5netcdf
+                             python-matplotlib
+                             python-numpy
+                             python-packaging
+                             python-pandas
+                             python-scipy
+                             python-typing-extensions
+                             python-xarray
+                             python-xarray-einstats))
+    (home-page "https://github.com/arviz-devs/arviz")
+    (synopsis "Exploratory analysis of Bayesian models")
+    (description
+     "ArviZ is a Python package for exploratory analysis of Bayesian models.
+It includes functions for posterior analysis, data storage, model checking,
+comparison and diagnostics.")
+    (license license:asl2.0)))
+
 (define-public python-patsy
   (package
     (name "python-patsy")
