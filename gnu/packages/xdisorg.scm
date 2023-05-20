@@ -55,7 +55,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
-;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
@@ -129,6 +129,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -3530,3 +3531,34 @@ on the screen and which then writes out the necessary C code for it.")
                          (append mesa)))
     (synopsis
      "GUI toolkit for X based on the X11 Xlib library, with OpenGL support")))
+
+(define-public show-me-the-key
+  (package
+    (name "show-me-the-key")
+    (version "1.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/AlynxZhou/showmethekey/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256 (base32
+                       "1gvrri6kfywxk8hfchc66r6fpwlrcai2j227ib33w6503cx66rl9"))))
+    (build-system meson-build-system)
+    (inputs (list libevdev
+                  libinput
+                  gtk
+                  json-glib-minimal
+                  cairo
+                  pango
+                  libxkbcommon
+                  polkit))
+    (native-inputs (list `(,glib "bin") ; for glib-compile-resources
+                         `(,gtk  "bin") ; for gtk-update-icon-cache
+                         pkg-config))
+    (home-page "https://github.com/AlynxZhou/showmethekey")
+    (synopsis "Screencast tool to display pressed keys")
+    (description "Show Me the Key is a screencast tool to display your keys
+and works under both Xorg and Wayland (via @code{libinput}), inspired by
+@code{python-screenkey}.")
+    (license license:asl2.0)))
