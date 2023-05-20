@@ -324,11 +324,7 @@ system objects.")))
              (sync)
 
              (let ((null (%make-void-port "w")))
-               ;; Close 'shepherd.log'.
-               (display "closing log\n")
-               ((@ (shepherd comm) stop-logging))
-
-               ;; Redirect the default output ports..
+               ;; Redirect the default output ports.
                (set-current-output-port null)
                (set-current-error-port null)
 
