@@ -669,6 +669,40 @@ provides an example implementation of the algorithm as well as scripts
 necessary for reproducing the experiments in the paper.")
     (license license:expat)))
 
+(define-public python-einops
+  (package
+    (name "python-einops")
+    (version "0.6.1")
+    (source (origin
+              (method git-fetch) ;PyPI misses .ipynb files required for tests
+              (uri (git-reference
+                    (url "https://github.com/arogozhnikov/einops")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h8p39kd7ylg99mh620xr20hg7v78x1jnj6vxwk31rlw2dmv2dpr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'set-backend
+                          (lambda _
+                            ;; Einops supports different backends, but we test
+                            ;; only NumPy for availability and simplicity.
+                            (setenv "EINOPS_TEST_BACKENDS" "numpy"))))))
+    (native-inputs (list jupyter
+                         python-hatchling
+                         python-nbconvert
+                         python-nbformat
+                         python-parameterized
+                         python-pytest))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://einops.rocks/")
+    (synopsis "Tensor operations for different backends")
+    (description "Einops provides a set of tensor operations for NumPy and
+multiple deep learning frameworks.")
+    (license license:expat)))
+
 (define-public python-xarray
   (package
     (name "python-xarray")
