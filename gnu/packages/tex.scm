@@ -12142,49 +12142,46 @@ handle complex tests.")
 (define-public texlive-xindy
   (package
     (name "texlive-xindy")
-    (version "2.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://ctan/indexing/xindy/base/xindy-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0hxsx4zw19kmixkmrln17sxgg1ln4pfp4lpfn5v5fyr1nwfyk3ic"))))
-    (build-system gnu-build-system)
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/tex2xindy.1"
+                   "doc/man/man1/tex2xindy.man1.pdf"
+                   "doc/man/man1/texindy.1"
+                   "doc/man/man1/texindy.man1.pdf"
+                   "doc/man/man1/xindy.1"
+                   "doc/man/man1/xindy.man1.pdf"
+                   "doc/xindy/"
+                   "scripts/xindy/"
+                   "xindy/")
+             (base32
+              "0rgzckyy6w4rmgxins5kakllkpn2hrccaps7lwb8h2nzvd29yj3m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--enable-docs")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-clisp
+          (add-after 'unpack 'patch-inputs
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; The xindy.in file is encoded in ISO-8859-1 (or iso-latin-1).
-              (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                (substitute* "user-commands/xindy.in"
-                  (("(our \\$clisp = ).*" _ head)
-                   (format #f "our $clisp = ~s;~%"
-                           (search-input-file inputs "bin/clisp"))))))))))
-    (native-inputs (list clisp
-                         glibc-locales
-                         perl
-                         texlive-bin
-                         texlive-greek-fontenc
-                         texlive-hyperref
-                         texlive-latex-base
-                         texlive-cyrillic
-                         texlive-geometry
-                         (texlive-updmap.cfg ;fonts
-                          (list texlive-cbfonts
-                                texlive-lh
-                                texlive-jknapltx))))
-    (inputs (list clisp perl))          ;used at run time
-    (home-page "https://www.ctan.org/pkg/xindy")
+              (with-directory-excursion "scripts/xindy/"
+                ;; The scripts are encoded in ISO-8859-1 (or iso-latin-1).
+                (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                  (substitute* (list "texindy.pl" "xindy.pl")
+                    (("our \\$clisp = .*")
+                     (format #f "our $clisp = ~s;~%"
+                             (search-input-file inputs "/bin/clisp")))
+                    (("/usr/bin/env perl")
+                     (search-input-file inputs "/bin/perl"))))))))))
+    (inputs (list clisp perl))
+    (home-page "https://ctan.org/pkg/xindy")
     (synopsis "General-purpose index processor")
-    (description "Xindy was developed after an impasse had been encountered in
-the attempt to complete internationalisation of @command{makeindex}.  Xindy
-can be used to process indexes for documents marked up using (La)TeX, Nroff
-family and SGML-based languages.  Xindy is highly configurable, both in markup
-terms and in terms of the collating order of the text being processed.")
+    (description
+     "Xindy was developed after an impasse had been encountered in the attempt
+to complete internationalisation of @command{makeindex}.  Xindy can be used to
+process indexes for documents marked up using (La)TeX, Nroff family and
+SGML-based languages.  Xindy is highly configurable, both in markup terms and
+in terms of the collating order of the text being processed.")
     (license license:gpl2+)))
 
 (define-public texlive-nth
