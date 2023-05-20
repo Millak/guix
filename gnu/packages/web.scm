@@ -8248,6 +8248,9 @@ returned.")
        (sha256
         (base32 "1j3mzjlczjrk4ahc43s6kzpvzypzjmqz4sillnca5yadrwwgjf2x"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; ISO C++17 does not allow dynamic exception specifications
+     `(#:configure-flags '("CXXFLAGS=-std=c++11")))
     (home-page "https://htmlcxx.sourceforge.net/")
     (synopsis "Simple non-validating CSS1 and HTML parser for C++")
     (description "htmlcxx is a simple non-validating CSS1 and HTML parser for
