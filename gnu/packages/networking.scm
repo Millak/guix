@@ -1221,7 +1221,7 @@ and SSH, and it can use both TCP and UDP as transport mechanisms.")
 (define-public socat
   (package
     (name "socat")
-    (version "1.7.4.3")
+    (version "1.7.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1229,10 +1229,10 @@ and SSH, and it can use both TCP and UDP as transport mechanisms.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "01w0hpqf5xmgn40s1ablfd4y67dlrx5y9zlx24spc1qm8h81hwyl"))))
+                "1b40ccdvxq5kaghsbwg4q3dq5aw4acw1bpqvs3v3ljp5y392pm7v"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))          ; no test suite
-    (inputs (list openssl))
+    (inputs (list openssl readline))
     (home-page "http://www.dest-unreach.org/socat/")
     (synopsis
      "Open bidirectional communication channels from the command line")
