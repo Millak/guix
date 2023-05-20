@@ -754,6 +754,83 @@ and visualization with these data structures.")
 functions and around einops with an API and features adapted to xarray.")
     (license license:asl2.0)))
 
+(define-public python-pytensor
+  (package
+    (name "python-pytensor")
+    (version "2.12.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pymc-devs/pytensor")
+                    (commit (string-append "rel-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1445fwbmzkdbndkq9hxiagdkfclgrnmpfzad40zqn6m5ry8192x8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Replace version manually because pytensor uses
+          ;; versioneer, which requires git metadata.
+          (add-after 'unpack 'versioneer
+            (lambda _
+              (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = pytensor/_version.py
+versionfile_build = pytensor/_version.py
+tag_prefix =
+parentdir_prefix = pytensor-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\"")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp") ; required for most tests
+                ;; Test discovery fails, have to call pytest by hand.
+                ;; test_tensor_basic.py file requires JAX.
+                (invoke "python" "-m" "pytest" "-vv"
+                        "--ignore" "tests/link/jax/test_tensor_basic.py"
+                        ;; Skip benchmark tests.
+                        "-k" (string-append
+                              "not test_elemwise_speed"
+                              " and not test_logsumexp_benchmark"
+                              " and not test_fused_elemwise_benchmark"
+                              " and not test_scan_multiple_output"
+                              " and not test_vector_taps_benchmark"
+                              " and not test_cython_performance")
+                        ;; Skip computationally intensive tests.
+                        "--ignore" "tests/scan/"
+                        "--ignore" "tests/tensor/"
+                        "--ignore" "tests/sandbox/"
+                        "--ignore" "tests/sparse/sandbox/")))))))
+    (native-inputs (list python-cython python-pytest python-versioneer))
+    (propagated-inputs (list python-cons
+                             python-etuples
+                             python-filelock
+                             python-logical-unification
+                             python-minikanren
+                             python-numba
+                             python-numpy
+                             python-scipy
+                             python-typing-extensions))
+    (home-page "https://pytensor.readthedocs.io/en/latest/")
+    (synopsis
+     "Library for mathematical expressions in multi-dimensional arrays")
+    (description
+     "PyTensor is a Python library that allows one to define, optimize, and
+efficiently evaluate mathematical expressions involving multi-dimensional
+arrays.  It is a fork of the Aesara library.")
+    (license license:bsd-3)))
+
 (define-public python-msgpack-numpy
   (package
     (name "python-msgpack-numpy")
