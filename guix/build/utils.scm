@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2023 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -729,18 +730,22 @@ effects, such as displaying warnings or error messages."
 (define* (alist-cons-before reference key value alist
                             #:optional (key=? equal?))
   "Insert the KEY/VALUE pair before the first occurrence of a pair whose key
-is REFERENCE in ALIST.  Use KEY=? to compare keys."
+is REFERENCE in ALIST.  Use KEY=? to compare keys.  An error is raised when no
+such pair exists."
   (let-values (((before after)
                 (break (match-lambda
                         ((k . _)
                          (key=? k reference)))
                        alist)))
-    (append before (alist-cons key value after))))
+    (match after
+      ((_ _ ...)
+       (append before (alist-cons key value after))))))
 
 (define* (alist-cons-after reference key value alist
                            #:optional (key=? equal?))
   "Insert the KEY/VALUE pair after the first occurrence of a pair whose key
-is REFERENCE in ALIST.  Use KEY=? to compare keys."
+is REFERENCE in ALIST.  Use KEY=? to compare keys.  An error is raised when
+no such pair exists."
   (let-values (((before after)
                 (break (match-lambda
                         ((k . _)
@@ -748,9 +753,7 @@ is REFERENCE in ALIST.  Use KEY=? to compare keys."
                        alist)))
     (match after
       ((reference after ...)
-       (append before (cons* reference `(,key . ,value) after)))
-      (()
-       (append before `((,key . ,value)))))))
+       (append before (cons* reference `(,key . ,value) after))))))
 
 (define* (alist-replace key value alist #:optional (key=? equal?))
   "Replace the first pair in ALIST whose car is KEY with the KEY/VALUE pair.
