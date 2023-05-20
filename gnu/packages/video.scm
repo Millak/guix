@@ -64,6 +64,7 @@
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ott Joon <oj@vern.cc>
+;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2570,10 +2571,13 @@ YouTube.com and many more sites.")
         #~(modify-phases #$phases
             ;; See the comment for the corresponding phase in youtube-dl.
             (replace 'default-to-the-ffmpeg-input
-              (lambda _
+              (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "yt_dlp/postprocessor/ffmpeg.py"
-                  (("\\.get_param\\('ffmpeg_location'\\)" match)
-                   (format #f "~a or '~a'" match (which "ffmpeg"))))))
+                  (("location = self.get_param(.*)$")
+                   (string-append
+                     "location = '"
+                     (dirname (search-input-file inputs "bin/ffmpeg"))
+                     "'\n")))))
             (replace 'build-generated-files
               (lambda* (#:key inputs #:allow-other-keys)
                 (if (assoc-ref inputs "pandoc")
