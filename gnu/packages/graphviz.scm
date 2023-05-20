@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2015, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -123,6 +123,13 @@ interfaces for other technical domains.")
     (properties
      '((release-monitoring-url . "https://graphviz.org/download/source/")))
     (license license:epl1.0)))
+
+(define-public graphviz-minimal
+  (package/inherit graphviz
+    (name "graphviz-minimal")
+    (inputs (modify-inputs (package-inputs graphviz)
+              (delete "libxrender" "libx11" "pango" "libxaw")))
+    (synopsis "Graph visualization software (without X11 support)")))
 
 (define-public python-graphviz
   (package
