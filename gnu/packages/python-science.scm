@@ -730,6 +730,30 @@ large and growing library of domain-agnostic functions for advanced analytics
 and visualization with these data structures.")
     (license license:asl2.0)))
 
+(define-public python-xarray-einstats
+  (package
+    (name "python-xarray-einstats")
+    (version "0.5.1")
+    (source (origin
+              (method git-fetch) ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/arviz-devs/xarray-einstats")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gg7p2lq7zxic64nbr6a8ynizs8rjzb29fnqib7hw3lmp13wsfm0"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-einops python-flit-core python-numba
+                         python-pytest))
+    (propagated-inputs (list python-numpy python-scipy python-xarray))
+    (home-page "https://einstats.python.arviz.org/en/latest/")
+    (synopsis "Stats, linear algebra and einops for xarray")
+    (description
+     "@code{xarray_einstats} provides wrappers around some NumPy and SciPy
+functions and around einops with an API and features adapted to xarray.")
+    (license license:asl2.0)))
+
 (define-public python-msgpack-numpy
   (package
     (name "python-msgpack-numpy")
