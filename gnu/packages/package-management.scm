@@ -68,6 +68,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
@@ -273,6 +274,13 @@ $(prefix)/etc/openrc\n")))
                               (("\"[^\"]*/bin//xz")
                                (string-append "\"" xz "/bin/xz")))))
                         #t))
+                    (add-before 'build 'set-font-path
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        ;; Tell 'dot' where to look for fonts.
+                        (setenv "XDG_DATA_DIRS"
+                                (dirname
+                                 (search-input-directory inputs
+                                                         "share/fonts")))))
                     (add-before 'check 'copy-bootstrap-guile
                       (lambda* (#:key system target inputs #:allow-other-keys)
                         ;; Copy the bootstrap guile tarball in the store
@@ -431,7 +439,8 @@ $(prefix)/etc/openrc\n")))
                        ("automake" ,automake)
                        ("gettext" ,gettext-minimal)
                        ("texinfo" ,texinfo)
-                       ("graphviz" ,graphviz)
+                       ("graphviz" ,graphviz-minimal)
+                       ("font-ghostscript" ,font-ghostscript) ;fonts for 'dot'
                        ("help2man" ,help2man)
                        ("po4a" ,po4a)))
       (inputs
@@ -527,7 +536,7 @@ the Nix package manager.")
     ;; Use a minimum set of dependencies.
     (native-inputs
      (modify-inputs (package-native-inputs guix)
-       (delete "po4a" "graphviz" "help2man")))
+       (delete "po4a" "graphviz" "font-ghostscript" "help2man")))
     (inputs
      (modify-inputs (package-inputs guix)
        (delete "boot-guile" "boot-guile/i686" "util-linux")
@@ -546,6 +555,7 @@ the Nix package manager.")
         #f)
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
+           (delete 'set-font-path)
            (add-after 'unpack 'change-default-guix
              (lambda _
                ;; We need to tell 'guix-daemon' which 'guix' command to use.
