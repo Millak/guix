@@ -1834,6 +1834,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-typing-inspect-fix.patch		\
   %D%/packages/patches/python-unittest2-python3-compat.patch	\
   %D%/packages/patches/python-unittest2-remove-argparse.patch	\
+  %D%/packages/patches/python-vega-datasets-remove-la-riots-code.patch	\
   %D%/packages/patches/python-versioneer-guix-support.patch	\
   %D%/packages/patches/python-waitress-fix-tests.patch		\
   %D%/packages/patches/python-werkzeug-tests.patch		\

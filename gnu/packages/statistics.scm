@@ -2026,6 +2026,35 @@ and fast file reading.")
      "This package provides tools to export R data as LaTeX and HTML tables.")
     (license license:gpl2+)))
 
+(define-public python-vega-datasets
+  (package
+    (name "python-vega-datasets")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vega_datasets" version))
+       (sha256
+        (base32 "1h1zv607mars2j73v8fdwihjh479blqxyw29nhmc73lf40s9iglx"))
+       (modules '((guix build utils)))
+       (patches
+        (search-patches "python-vega-datasets-remove-la-riots-code.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-la-riots-dataset
+                 ;; Remove dataset with unclear license.
+                 (lambda _
+                   (delete-file "vega_datasets/_data/la-riots.csv"))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-pandas))
+    (home-page "https://github.com/altair-viz/vega_datasets")
+    (synopsis "Example datasets used by Vega-related projects")
+    (description "This package provides a collection of datasets used in Vega
+and Vega-Lite examples.")
+    (license license:expat)))
+
 (define-public python-hdmedians
   (package
     (name "python-hdmedians")
