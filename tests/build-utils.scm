@@ -41,17 +41,17 @@
   '((a . 1) (x . 42) (b . 2) (c . 3))
   (alist-cons-before 'b 'x 42 '((a . 1) (b . 2) (c . 3))))
 
-(test-equal "alist-cons-before, reference not found"
-  '((a . 1) (b . 2) (c . 3) (x . 42))
-  (alist-cons-before 'z 'x 42 '((a . 1) (b . 2) (c . 3))))
+(test-assert "alist-cons-before, reference not found"
+  (not (false-if-exception
+        (alist-cons-before 'z 'x 42 '((a . 1) (b . 2) (c . 3))))))
 
 (test-equal "alist-cons-after"
   '((a . 1) (b . 2) (x . 42) (c . 3))
   (alist-cons-after 'b 'x 42 '((a . 1) (b . 2) (c . 3))))
 
-(test-equal "alist-cons-after, reference not found"
-  '((a . 1) (b . 2) (c . 3) (x . 42))
-  (alist-cons-after 'z 'x 42 '((a . 1) (b . 2) (c . 3))))
+(test-assert "alist-cons-after, reference not found"
+  (not (false-if-exception
+        (alist-cons-after 'z 'x 42 '((a . 1) (b . 2) (c . 3))))))
 
 (test-equal "alist-replace"
   '((a . 1) (b . 77) (c . 3))
