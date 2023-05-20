@@ -81,6 +81,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -2053,6 +2054,45 @@ and fast file reading.")
     (synopsis "Example datasets used by Vega-related projects")
     (description "This package provides a collection of datasets used in Vega
 and Vega-Lite examples.")
+    (license license:expat)))
+
+(define-public python-altair
+  (package
+    (name "python-altair")
+    (version "5.0.1")
+    (source (origin
+              (method git-fetch)        ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/altair-viz/altair")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r74v5n51br9pjhxdzrr62cdgnwkapci93aifnl8dqmfpizfpd7d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; First two open an external connection.
+     ;; Last introduces a circular dependency on altair-viewer.
+     (list #:test-flags #~(list "-k" (string-append
+                                      "not test_from_and_to_json_roundtrip"
+                                      " and not test_render_examples_to_chart"
+                                      " and not test_save_html"))))
+    (propagated-inputs (list python-jinja2
+                             python-jsonschema
+                             python-numpy
+                             python-pandas
+                             python-toolz
+                             python-typing-extensions))
+    (native-inputs (list python-black
+                         python-hatchling
+                         python-ipython
+                         python-m2r
+                         python-pytest
+                         python-vega-datasets))
+    (home-page "https://altair-viz.github.io/")
+    (synopsis "Declarative statistical visualization library for Python")
+    (description
+     "Vega-Altair is a declarative statistical visualization library for Python.")
     (license license:expat)))
 
 (define-public python-hdmedians
