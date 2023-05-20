@@ -2173,6 +2173,63 @@ It includes functions for posterior analysis, data storage, model checking,
 comparison and diagnostics.")
     (license license:asl2.0)))
 
+(define-public python-pymc
+  (package
+    (name "python-pymc")
+    (version "5.5.0")
+    (source (origin
+              (method git-fetch)        ; no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/pymc-devs/pymc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "077xigv3lfcn9fqc14rsnam4v95fmqk2wpzfrgj08vg8m7f69wdj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f ; tests are too computationally intensive
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'versioneer
+                          (lambda _
+                            (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = pymc/_version.py
+versionfile_build = pymc/_version.py
+tag_prefix =
+parentdir_prefix = pymc-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\"")))))
+                        ;; To create the compiledir for tests.
+                        (add-before 'check 'write-permissions
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (setenv "HOME" "/tmp")))))))
+    (native-inputs (list python-pytest-cov python-versioneer))
+    (propagated-inputs (list python-arviz
+                             python-cachetools
+                             python-cloudpickle
+                             python-fastprogress
+                             python-numpy
+                             python-pandas
+                             python-pytensor
+                             python-scipy
+                             python-typing-extensions))
+    (home-page "https://github.com/pymc-devs/pymc")
+    (synopsis "Library for probabilistic programming in Python")
+    (description
+     "PyMC (formerly PyMC3) is a Python package for Bayesian statistical
+modeling focusing on advanced Markov chain Monte Carlo (MCMC) and variational
+inference (VI) algorithms.")
+    (license license:asl2.0)))
+
 (define-public python-patsy
   (package
     (name "python-patsy")
