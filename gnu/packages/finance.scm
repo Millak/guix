@@ -134,7 +134,9 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnuzilla))
 
-(define-public bitcoin-core-24.1
+(define-public bitcoin-core
+  ;; The support lifetimes for bitcoin-core versions can be found in
+  ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
     (version "24.1")
@@ -212,11 +214,6 @@ collectively by the network.  Bitcoin Core is the reference implementation
 of the bitcoin protocol.  This package provides the Bitcoin Core command
 line client and a client based on Qt.")
     (license license:expat)))
-
-;; The support lifetimes for bitcoin-core versions can be found in
-;; <https://bitcoincore.org/en/lifecycle/#schedule>.
-
-(define-public bitcoin-core bitcoin-core-24.1)
 
 (define-public ghc-hledger
   (package
