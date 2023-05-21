@@ -7392,14 +7392,14 @@ objects.")
 (define-public python-sparse
   (package
     (name "python-sparse")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sparse" version))
        (sha256
         (base32
-         "05ar1lhq1yy4nb78s7vpb1wz4ac4kj0r4lrd7yrf23kpmaacjpb8"))))
+         "1600xad37mff46xg80cy6bi3l2n6jm69j7sl19rzdmkcgyijfn2z"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
