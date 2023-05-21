@@ -2735,6 +2735,40 @@ parameter @code{ncores}.")
                    (license:fsdg-compatible "file://LICENSE"
                                             "See LICENSE file for details")))))
 
+(define-public ocaml-pyml
+  ;; NOTE: Using commit from master branch as 20220905 does not support
+  ;; Python 3.10.
+  (let ((revision "0")
+        (commit "e33f4c49cc97e7bc6f8e5faaa64cce994470642e"))
+    (package
+      (name "ocaml-pyml")
+      (version (git-version "20220905" revision commit))
+      (source
+        (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/thierry-martinez/pyml")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1v421i5cvj8mbgrg5cs78bz1yzdprm9r5r41niiy20d3j7j8jx9k"))))
+      (build-system dune-build-system)
+      (propagated-inputs
+       (list ocaml-stdcompat
+             python
+             python-numpy))
+      (home-page "https://github.com/thierry-martinez/pyml")
+      (synopsis "Python bindings for OCaml")
+      (description "Library that allows OCaml programs to interact with Python
+modules and objects.  The library also provides low-level bindings to the
+Python C API.
+
+This library is an alternative to @code{pycaml} which is no longer
+maintained.  The @code{Pycaml} module provides a signature close to
+@code{pycaml}, to ease migration of code to this library.")
+      (license license:bsd-2))))
+
 (define-public ocaml-react
   (package
     (name "ocaml-react")
