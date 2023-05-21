@@ -2265,7 +2265,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.19.0")
+    (version "6.19.2")
     (source
      (origin
        (method git-fetch)
@@ -2273,7 +2273,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "10vaq6ld4sddnpmv9dg71fjvw1jrfaddrp3bq6p3dxhsl153khm4"))
+       (sha256 (base32 "1hgcfq79d5060iryr34bpwf1dvgqmbmn9mm4ccfvp896r10j482h"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
@@ -2307,16 +2307,15 @@ and manipulation.")
     (home-page "https://xmrig.com/")
     (synopsis "Monero miner")
     (description
-     "XMRig is a high performance, cross platform RandomX, KawPow,
-CryptoNight, AstroBWT and GhostRider unified CPU/GPU miner and RandomX
-benchmark.
+     "XMRig is a high-performance, cross-platform RandomX, KawPow,
+CryptoNight and GhostRider unified CPU/GPU miner and RandomX benchmark.
 
 Warning: upstream, by default, receives a percentage of the mining time.  This
-anti-functionality has been neutralised in Guix, but possibly not in all other
+anti-functionality has been neutralized in Guix, but possibly not in all other
 distributions.
 
-Warning: this software, because of it's nature, has high energy consumption.
-Also, the energy expenses might be higher that the cryptocurrency gained by
+Warning: this software, because of its nature, has high energy consumption.
+Also, the energy expenses might be higher than the cryptocurrency gained by
 mining.")
     (license license:gpl3+)))
 
