@@ -1917,8 +1917,19 @@ automatically opened with this mode.")
        (sha256
         (base32 "10a7rxmijwmdkfb5rgavd8inc3a45q0m57dxdf6v62bcy00kmw4l"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-ghq-location
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((ghq (search-input-file inputs "/bin/ghq")))
+                (substitute* "ghq.el"
+                  (("\"ghq") (string-append "\"" ghq)))))))))
+    (inputs
+     (list ghq))
     (propagated-inputs
-     (list emacs-dash emacs-s ghq))
+     (list emacs-dash emacs-s))
     (home-page "https://github.com/rcoedo/emacs-ghq")
     (synopsis "Emacs interface for @code{ghq} tool")
     (description
