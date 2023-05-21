@@ -31125,6 +31125,25 @@ top of the old defadvice system, to help users of defadvice move to the new
 advice system without dropping support for Emacs<24.4.")
     (license license:gpl3+)))
 
+(define-public emacs-url-http-oauth
+  (package
+    (name "emacs-url-http-oauth")
+    (version "0.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://elpa.gnu.org/packages/url-http-oauth-" version
+             ".tar"))
+       (sha256 (base32
+                "1vcbx8rpzvx4v4g7iyja6kpsqidaiy2xzj7glrwwzhppkbp0xkvy"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/url-http-oauth.html")
+    (synopsis "OAuth 2.0 for URL library")
+    (description
+     "Url HTTP Oauth adds OAuth 2.0 support to Emacs's URL library.")
+    (license license:gpl3+)))
+
 (define-public emacs-url-http-ntlm
   (package
     (name "emacs-url-http-ntlm")
