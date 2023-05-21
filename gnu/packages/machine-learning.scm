@@ -4597,6 +4597,37 @@ inference.")
 linear algebra routines needed for structured matrices (or operators).")
     (license license:expat)))
 
+(define-public python-gpytorch
+  (package
+    (name "python-gpytorch")
+    (version "1.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "gpytorch" version))
+              (sha256
+               (base32
+                "0q17bml53vixk3cwj3p893809927hz81fprwsmxpxqv5i4mvgyvj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; The error message in test_t_matmul_matrix suggests the error may
+           ;; be due to a bug in gpytorch.  test_deprecated_methods fails with
+           ;; an AssertionError.
+           #~(list "-k" (string-append "not test_deprecated_methods"
+                                       " and not test_t_matmul_matrix"))))
+    (propagated-inputs (list python-linear-operator python-scikit-learn))
+    (native-inputs (list python-coverage
+                         python-flake8
+                         python-flake8-print
+                         python-nbval
+                         python-pytest
+                         python-twine))
+    (home-page "https://gpytorch.ai")
+    (synopsis "Implementation of Gaussian Processes in PyTorch")
+    (description
+     "GPyTorch is a Gaussian process library implemented using PyTorch.")
+    (license license:expat)))
+
 (define-public vosk-api
   (let* ((openfst openfst-for-vosk)
          (kaldi kaldi-for-vosk))
