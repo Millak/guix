@@ -7411,8 +7411,8 @@ objects.")
     (propagated-inputs
      (list python-numba python-numpy python-scipy))
     (native-inputs
-     (list python-dask python-pytest python-pytest-black
-           python-pytest-cov))
+     (list python-dask python-importlib-metadata python-pytest
+           python-pytest-black python-pytest-cov))
     (home-page "https://github.com/pydata/sparse/")
     (synopsis "Library for multi-dimensional sparse arrays")
     (description
