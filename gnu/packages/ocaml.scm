@@ -28,6 +28,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2023 Csepp <raingloom@riseup.net>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2697,6 +2698,42 @@ simple (yet expressive) query language to select the tests to run.")
      "Ppx_tools provides tools for authors of ppx rewriters and other
 syntactic tools.")
     (license license:expat)))
+
+(define-public ocaml-parmap
+  (package
+    (name "ocaml-parmap")
+    (version "1.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rdicosmo/parmap")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0x5gnfap9f7kmgh8j725vxlbkvlplwzbpn8jdx2ywfa3dd6bn6xl"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+     (list ocaml-odoc))
+    (home-page "https://github.com/rdicosmo/parmap")
+    (synopsis "Parallel map and fold primtives for OCaml")
+    (description
+     "Library to perform parallel fold or map taking advantage of multiple
+core architectures for OCaml programs.  Drop-in replacement for these
+@code{List} operations are provided:
+
+@itemize
+@item @code{List.map} -> @code{parmap}
+@item @code{List.map} -> @code{parfold}
+@item @code{List.mapfold} -> @code{parmapfold}
+@end itemize
+
+Also it allows specifying the number of cores to use with the optional
+parameter @code{ncores}.")
+    (license (list license:lgpl2.0
+                   (license:fsdg-compatible "file://LICENSE"
+                                            "See LICENSE file for details")))))
 
 (define-public ocaml-react
   (package
