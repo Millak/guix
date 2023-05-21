@@ -6884,13 +6884,14 @@ allrecipes.com.")
     (inputs
      (list pdf2svg))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-exec-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pdf2svg (assoc-ref inputs "pdf2svg")))
-               (substitute* "org-inline-pdf.el"
-                 (("\"pdf2svg\"") (string-append "\"" pdf2svg "/bin/pdf2svg\"")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-exec-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pdf2svg (search-input-file inputs "/bin/pdf2svg")))
+                (substitute* "org-inline-pdf.el"
+                  (("\"pdf2svg\"") (string-append "\"" pdf2svg "\"")))))))))
     (home-page "https://github.com/shg/org-inline-pdf.el")
     (synopsis "Inline PDF previewing for Org")
     (description "This package provides a minor mode that enables
