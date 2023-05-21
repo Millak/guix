@@ -1207,7 +1207,7 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
 (define-public emacs-with-editor
   (package
     (name "emacs-with-editor")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1216,7 +1216,7 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d98hagpm6h5vgx80qlh3zrfcb6z000rfc707w9zzmh634dkg3xx"))))
+        (base32 "1p0mrx4cixjpw34x8m8f8wna5f9rh8h3s4kpsycyvzmpmz3jicr9"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -1234,7 +1234,7 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
     (native-inputs
      (list texinfo))
     (propagated-inputs
-     (list emacs-async))
+     (list emacs-async emacs-compat))
     (home-page "https://github.com/magit/with-editor")
     (synopsis "Emacs library for using Emacsclient as EDITOR")
     (description
