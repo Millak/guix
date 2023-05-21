@@ -801,6 +801,32 @@ Networking and Cryptography library.  These libraries have a stated goal
 of improving usability, security and speed.")
     (license license:asl2.0)))
 
+(define-public python-crcmod
+  (package
+    (name "python-crcmod")
+    (version "1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "crcmod" version))
+              (sha256
+               (base32
+                "07k0hgr42vw2j92cln3klxka81f33knd7459cn3d8aszvfh52w6w"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; As per the Unit Testing subsection in the README.
+                (invoke "python" "-m" "crcmod.test")))))))
+    (synopsis "CRC generator for Python")
+    (description "Python module for generating objects that compute the
+Cyclic Redundancy Check.")
+    (home-page "https://crcmod.sourceforge.net/")
+    (license license:expat)))
+
 (define-public python-blurhash
   (package
     (name "python-blurhash")
