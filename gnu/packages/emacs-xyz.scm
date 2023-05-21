@@ -6870,7 +6870,7 @@ allrecipes.com.")
 (define-public emacs-org-inline-pdf
   (package
     (name "emacs-org-inline-pdf")
-    (version "0.2")
+    (version "0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6879,7 +6879,7 @@ allrecipes.com.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qc92xvgxmnwjixk8bxwbc1l1jj0qk9dg73jyaip6lk4g0wjk6xf"))))
+                "1i5hvdnd0bqr663i2ccdxba58ib0ixmc1y40mld6znmgc8p2973l"))))
     (build-system emacs-build-system)
     (inputs
      (list pdf2svg))
