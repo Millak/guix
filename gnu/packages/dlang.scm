@@ -149,14 +149,14 @@ to a minimal test case.")
 (define ldc-bootstrap
   (package
     (name "ldc")
-    (version "1.30.0")
+    (version "1.32.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ldc-developers/ldc/releases"
                            "/download/v" version "/ldc-" version "-src.tar.gz"))
        (sha256
-        (base32 "1kfs4fpr1525sv2ny10hlfppy8c075vjm8m649wr2b9411pkgfzx"))))
+        (base32 "15fdl7fy1ssjxpyb9g54ac4xzcirycly521whil142ijfkpam95z"))))
     (build-system cmake-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -264,11 +264,11 @@ bootstrapping more recent compilers written in D.")
                                    "/lib/linux\",\n"))))))
            (add-after 'unpack 'patch-paths-in-tests
              (lambda _
-               (substitute* "tests/d2/dmd-testsuite/Makefile"
+               (substitute* "tests/dmd/Makefile"
                  (("/bin/bash") (which "bash")))
                (substitute* "tests/linking/linker_switches.d"
                  (("echo") (which "echo")))
-               (substitute* "tests/d2/dmd-testsuite/dshell/test6952.d"
+               (substitute* "tests/dmd/dshell/test6952.d"
                  (("/usr/bin/env bash")
                   (which "bash")))))
            (add-after 'unpack 'disable-problematic-tests
@@ -281,8 +281,9 @@ bootstrapping more recent compilers written in D.")
                  ((" unittest") " version(skipunittest) unittest"))
                ;; The following tests plugins we don't have.
                (delete-file "tests/plugins/addFuncEntryCall/testPlugin.d")
+               (delete-file "tests/plugins/addFuncEntryCall/testPluginLegacy.d")
                ;; The following tests requires AVX instruction set in the CPU.
-               (substitute* "tests/d2/dmd-testsuite/runnable/cdvecfill.sh"
+               (substitute* "tests/dmd/runnable/cdvecfill.sh"
                  (("^// DISABLED: ") "^// DISABLED: linux64 "))
                ;; This unit test requires networking, fails with
                ;; "core.exception.RangeError@std/socket.d(778): Range
@@ -293,13 +294,13 @@ bootstrapping more recent compilers written in D.")
                ;; The GDB tests suite fails; there are a few bug reports about
                ;; it upstream.
                (for-each delete-file (find-files "tests" "gdb.*\\.(c|d|sh)$"))
-               (delete-file "tests/d2/dmd-testsuite/runnable/debug_info.d")
-               (delete-file "tests/d2/dmd-testsuite/runnable/b18504.d")
+               (delete-file "tests/dmd/runnable/debug_info.d")
+               (delete-file "tests/dmd/runnable/b18504.d")
                (substitute* "runtime/druntime/test/exceptions/Makefile"
                  ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
                   ""))
                ;; Drop gdb_dflags from the test suite.
-               (substitute* "tests/d2/CMakeLists.txt"
+               (substitute* "tests/dmd/CMakeLists.txt"
                  (("\\$\\{gdb_dflags\\}") ""))
                ;; The following tests fail on some systems, not all of
                ;; which are tested upstream.
@@ -315,10 +316,10 @@ bootstrapping more recent compilers written in D.")
                                  "instrument/xray_simple_execution.d"
                                  "sanitizers/msan_noerror.d"
                                  "sanitizers/msan_uninitialized.d"
-                                 "d2/dmd-testsuite/runnable_cxx/cppa.d")))
+                                 "dmd/runnable_cxx/cppa.d")))
                    (,(target-aarch64?)
                      (for-each delete-file
-                               '("d2/dmd-testsuite/runnable/ldc_cabi1.d"
+                               '("dmd/runnable/ldc_cabi1.d"
                                  "sanitizers/fuzz_basic.d"
                                  "sanitizers/msan_noerror.d"
                                  "sanitizers/msan_uninitialized.d")))
