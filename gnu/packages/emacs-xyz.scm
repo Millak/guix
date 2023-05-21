@@ -1906,7 +1906,7 @@ automatically opened with this mode.")
 (define-public emacs-ghq
   (package
     (name "emacs-ghq")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1915,10 +1915,10 @@ automatically opened with this mode.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rh2k93c3a0vl073a3s3a3h6gkw454v1lyd7y8l3pd24vw9hc628"))))
+        (base32 "10a7rxmijwmdkfb5rgavd8inc3a45q0m57dxdf6v62bcy00kmw4l"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list ghq))
+     (list emacs-dash emacs-s ghq))
     (home-page "https://github.com/rcoedo/emacs-ghq")
     (synopsis "Emacs interface for @code{ghq} tool")
     (description
