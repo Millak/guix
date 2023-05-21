@@ -16159,45 +16159,44 @@ using a convenient notation.")
                    license:fdl1.3+)))) ;GFDLv1.3+ for the manual
 
 (define-public emacs-beframe
-  (let ((commit "edfab6eefe4ac35cd8d1ed87fc7f670496d25e40")) ;version bump
-    (package
-      (name "emacs-beframe")
-      (version "0.2.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.sr.ht/~protesilaos/beframe")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0sd8r3icaj2gl7f62fyzlwkkb05mc3cwsqgicw0n1x07s5ir3129"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'makeinfo
-              (lambda _
-                (invoke "emacs"
-                        "--batch"
-                        "--eval=(require 'ox-texinfo)"
-                        "--eval=(find-file \"README.org\")"
-                        "--eval=(org-texinfo-export-to-info)")
-                (install-file "beframe.info"
-                              (string-append #$output "/share/info")))))))
-      (native-inputs
-       (list texinfo))
-      (home-page "https://protesilaos.com/emacs/beframe")
-      (synopsis "Isolate Emacs buffers per frame")
-      (description
-       "Beframe enables a frame-oriented Emacs workflow where each frame has
+  (package
+    (name "emacs-beframe")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~protesilaos/beframe")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nblpac1pkhgwpbw0k0p9xx6yc5kiai4pznw39slx703mzzqzqyj"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda _
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "beframe.info"
+                            (string-append #$output "/share/info")))))))
+    (native-inputs
+     (list texinfo))
+    (home-page "https://protesilaos.com/emacs/beframe")
+    (synopsis "Isolate Emacs buffers per frame")
+    (description
+     "Beframe enables a frame-oriented Emacs workflow where each frame has
 access to the list of buffers visited therein.  In the interest of brevity, we
 call buffers that belong to frames ``beframed''.  Producing multiple frames
 does not generate multiple buffer lists.  There still is only one global list
 of buffers.  Beframing them simply filters the list.")
-      (license (list license:gpl3+
-                     license:fdl1.3+))))) ; GFDLv1.3+ for the manual
+    (license (list license:gpl3+
+                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-gn-mode
   (package
