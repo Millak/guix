@@ -1995,6 +1995,39 @@ optimization over awkward search spaces, which may include real-valued,
 discrete, and conditional dimensions.")
     (license license:bsd-3)))
 
+(define-public python-deepxde
+  (package
+    (name "python-deepxde")
+    (version "1.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "DeepXDE" version))
+              (sha256
+               (base32
+                "07bz3d7d698l0fhznw5l8p16b22d4ly7xq99vrgv48c722qr2r5b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f                  ; there are no tests
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'sanity-check 'writable-home
+                          ;; sanity-check writes ~/.deepxde/config.json to set
+                          ;; the default backend.
+                          (lambda _
+                            (setenv "HOME" "/tmp"))))))
+    ;; DeepXDE supported backends are TensorFlow (v1 and v2), PyTorch, JAX and
+    ;; PaddlePaddle.  We test with PyTorch because we have it up to date.
+    (native-inputs (list python-pytorch python-setuptools-scm))
+    (propagated-inputs (list python-matplotlib python-numpy
+                             python-scikit-learn python-scikit-optimize
+                             python-scipy))
+    (home-page "https://deepxde.readthedocs.io/en/latest/")
+    (synopsis "Library for scientific machine learning")
+    (description "DeepXDE is a library for scientific machine learning and
+physics-informed learning.  It includes implementations for the PINN
+(physics-informed neural networks), DeepONet (deep operator network) and
+MFNN (multifidelity neural network) algorithms.")
+    (license license:lgpl2.1+)))
+
 ;; There have been no proper releases yet.
 (define-public kaldi
   (let ((commit "be22248e3a166d9ec52c78dac945f471e7c3a8aa")
