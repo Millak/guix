@@ -31146,14 +31146,14 @@ advice system without dropping support for Emacs<24.4.")
 (define-public emacs-soap-client
   (package
     (name "emacs-soap-client")
-    (version "3.2.1")
+    (version "3.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "soap-client-" version ".tar"))
        (sha256
-        (base32 "0ajv6l1p8dinnlybwzvv4c2i6291is6isjxb2h4apg27g66qbcki"))))
+        (base32 "0z6af253iwimam03jnpai2h989i6vyv05wdz7dadna6amdryfznc"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/soap-client.html")
     (synopsis "Access SOAP web services")
