@@ -587,7 +587,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "2.2.4")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -596,8 +596,13 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "12l7ir3q29v06jx0zng5cvlbmap7p709ka3ik6x29lw334qshm9b"))
-       (file-name (git-file-name "nyxt" version))))
+         "1jzlpi2iam15f0724nh6pb0zfs8d89mrf3zkvd87g99aq9w2h02a"))
+       (file-name (git-file-name "nyxt" version))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           (delete-file-recursively "libraries/nasdf")
+           #t))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list "nyxt" "NYXT_SUBMODULES=false"
@@ -639,60 +644,76 @@ driven and does not detract you from your daily work.")
                  `("LD_LIBRARY_PATH" ":" prefix (,path))
                  `("XDG_DATA_DIRS" ":" prefix (,xdg-path)))
                #t))))))
-    (native-inputs
-     `(("prove" ,sbcl-prove)
-       ("sbcl" ,sbcl)))
-    (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("cl-base64" ,sbcl-cl-base64)
-       ("cl-calispel" ,sbcl-calispel)
-       ("cl-containers" ,sbcl-cl-containers)
-       ("cl-css" ,sbcl-cl-css)
-       ("cl-custom-hash-table" ,sbcl-custom-hash-table)
-       ("cl-html-diff" ,sbcl-cl-html-diff)
-       ("cl-json" ,sbcl-cl-json)
-       ("cl-ppcre" ,sbcl-cl-ppcre)
-       ("cl-prevalence" ,sbcl-cl-prevalence)
-       ("cl-qrencode" ,sbcl-cl-qrencode)
-       ("closer-mop" ,sbcl-closer-mop)
-       ("cluffer" ,sbcl-cluffer)
-       ("dexador" ,sbcl-dexador)
-       ("enchant" ,sbcl-enchant)
-       ("flexi-streams" ,cl-flexi-streams)
-       ("fset" ,sbcl-fset)
-       ("hu.dwim.defclass-star" ,sbcl-hu.dwim.defclass-star)
-       ("iolib" ,sbcl-iolib)
-       ("local-time" ,sbcl-local-time)
-       ("log4cl" ,sbcl-log4cl)
-       ("lparallel" ,sbcl-lparallel)
-       ("mk-string-metrics" ,sbcl-mk-string-metrics)
-       ("moptilities" ,sbcl-moptilities)
-       ("named-readtables" ,sbcl-named-readtables)
-       ("parenscript" ,sbcl-parenscript)
-       ("plump" ,sbcl-plump)
-       ("clss" ,sbcl-clss)
-       ("quri" ,sbcl-quri)
-       ("serapeum" ,sbcl-serapeum)
-       ("spinneret" ,sbcl-spinneret)
-       ("str" ,sbcl-cl-str)
-       ("swank" ,sbcl-slime-swank)
-       ("trivia" ,sbcl-trivia)
-       ("trivial-clipboard" ,sbcl-trivial-clipboard)
-       ("trivial-features" ,sbcl-trivial-features)
-       ("trivial-package-local-nicknames" ,sbcl-trivial-package-local-nicknames)
-       ("trivial-types" ,sbcl-trivial-types)
-       ("unix-opts" ,sbcl-unix-opts)
-       ;; WebKitGTK deps
-       ("cl-cffi-gtk" ,sbcl-cl-cffi-gtk)
-       ("cl-webkit" ,sbcl-cl-webkit)
-       ("glib-networking" ,glib-networking)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ;; GObjectIntrospection
-       ("cl-gobject-introspection" ,sbcl-cl-gobject-introspection)
-       ("gtk" ,gtk+)                    ; For the main loop.
-       ("webkitgtk" ,webkitgtk)         ; Required when we use its typelib.
-       ("gobject-introspection" ,gobject-introspection)))
+    (native-inputs (list cl-lisp-unit2 sbcl))
+    (inputs (list sbcl-alexandria
+                  sbcl-bordeaux-threads
+                  sbcl-calispel
+                  sbcl-cl-base64
+                  sbcl-cl-colors2
+                  sbcl-cl-containers
+                  sbcl-cl-gopher
+                  sbcl-cl-html-diff
+                  sbcl-cl-json
+                  sbcl-cl-ppcre
+                  sbcl-cl-prevalence
+                  sbcl-cl-qrencode
+                  sbcl-cl-str
+                  sbcl-cl-tld
+                  sbcl-closer-mop
+                  sbcl-clss
+                  sbcl-cluffer
+                  sbcl-custom-hash-table
+                  sbcl-dexador
+                  sbcl-dissect
+                  sbcl-enchant
+                  sbcl-flexi-streams
+                  sbcl-fset
+                  sbcl-history-tree
+                  sbcl-iolib
+                  sbcl-lass
+                  sbcl-local-time
+                  sbcl-log4cl
+                  sbcl-lparallel
+                  sbcl-mk-string-metrics
+                  sbcl-montezuma
+                  sbcl-moptilities
+                  sbcl-named-readtables
+                  sbcl-nasdf
+                  sbcl-nclasses
+                  sbcl-ndebug
+                  sbcl-nfiles
+                  sbcl-nhooks
+                  sbcl-njson
+                  sbcl-nkeymaps
+                  sbcl-nsymbols
+                  sbcl-parenscript
+                  sbcl-phos
+                  sbcl-plump
+                  sbcl-prompter
+                  sbcl-py-configparser
+                  sbcl-quri
+                  sbcl-serapeum
+                  sbcl-slime-swank
+                  sbcl-slynk
+                  sbcl-spinneret
+                  sbcl-trivia
+                  sbcl-trivial-clipboard
+                  sbcl-trivial-custom-debugger
+                  sbcl-trivial-features
+                  sbcl-trivial-garbage
+                  sbcl-trivial-package-local-nicknames
+                  sbcl-trivial-types
+                  sbcl-unix-opts
+                  ;; WebKitGTK deps
+                  sbcl-cl-cffi-gtk
+                  sbcl-cl-webkit
+                  glib-networking
+                  gsettings-desktop-schemas
+                  cl-gobject-introspection
+                  gtk+                  ; For the main loop
+                  webkitgtk             ; Required when we use its typelib
+                  gobject-introspection
+                  pkg-config))
     (synopsis "Extensible web-browser in Common Lisp")
     (home-page "https://nyxt.atlas.engineer")
     (description "Nyxt is a keyboard-oriented, extensible web-browser designed
