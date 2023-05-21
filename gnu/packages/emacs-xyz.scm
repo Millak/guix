@@ -1582,7 +1582,7 @@ purpose finder.")
 (define-public emacs-minions
   (package
     (name "emacs-minions")
-    (version "0.3.7")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1591,10 +1591,10 @@ purpose finder.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bzxxs8mxaihpjkbxgynhsi39lbbnij28grdc3sk9sq09j9752vw"))))
+        (base32 "0ralw9znj749ii046l0dfa3aacm05g1ix59rfsjafhky8fiwz37m"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-dash))
+     (list emacs-compat emacs-dash))
     (home-page "https://github.com/tarsius/minions")
     (synopsis "Minor-mode menu for the mode line")
     (description
