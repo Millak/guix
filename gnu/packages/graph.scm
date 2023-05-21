@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -238,11 +238,16 @@ lines.")
             (lambda _
               (setenv "SKIP_NPM" "T")))
           (add-after 'unpack 'fix-version
-            ;; Versioneer is useless when there is no git metadata.
+            ;; TODO: Versioneer in Guix gets its release version from the
+            ;; parent directory, but the plotly package is located inside a
+            ;; depth 3 subdirectory.  Try to use versioneer if possible.
             (lambda _
               (substitute* "packages/python/plotly/setup.py"
                 (("version=versioneer.get_version\\(),")
-                 (format #f "version=~s," #$version)))))
+                 (format #f "version=~s," #$version)))
+              (substitute* "packages/python/plotly/plotly/version.py"
+                (("__version__ = get_versions\\(\\)\\[\"version\"\\]")
+                 (format #f "__version__ = ~s" #$version)))))
           (add-after 'fix-version 'chdir
             (lambda _
               (chdir "packages/python/plotly")))
