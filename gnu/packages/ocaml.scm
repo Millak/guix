@@ -4606,6 +4606,52 @@ of interactive program.  You can match the question using a regular expression
 or a timeout.")
     (license license:lgpl2.1+))) ; with the OCaml static compilation exception
 
+(define-public ocaml-stdcompat
+  (package
+    (name "ocaml-stdcompat")
+    (version "19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thierry-martinez/stdcompat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        #~(for-each delete-file '("Makefile.in" "configure")))
+       (sha256
+        (base32
+         "0r9qcfjkn8634lzxp5bkagzwsi3vmg0hb6vq4g1p1515rys00h1b"))))
+    (build-system dune-build-system)
+    (arguments
+     (list #:imported-modules `((guix build gnu-build-system)
+                                ,@%dune-build-system-modules)
+           #:modules '((guix build dune-build-system)
+                       ((guix build gnu-build-system) #:prefix gnu:)
+                       (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'bootstrap
+                 (assoc-ref gnu:%standard-phases 'bootstrap))
+               (add-before 'build 'prepare-build
+                 (lambda _
+                   (let ((bash (which "bash")))
+                     (setenv "CONFIG_SHELL" bash)
+                     (setenv "SHELL" bash)))))))
+    (native-inputs
+      (list autoconf
+            automake
+            ocaml
+            ocaml-findlib))
+    (home-page "https://github.com/thierry-martinez/stdcompat")
+    (synopsis "Compatibility module for OCaml standard library")
+    (description
+     "Compatibility module for OCaml standard library allowing programs to use
+some recent additions to the standard library while preserving the ability to
+be compiled on former versions of OCaml.")
+    (license license:bsd-2)))
+
 (define-public ocaml-stdlib-shims
   (package
     (name "ocaml-stdlib-shims")
