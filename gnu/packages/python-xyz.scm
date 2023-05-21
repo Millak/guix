@@ -1191,17 +1191,21 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
               (sha256
                (base32
                 "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This single test tries to write to $HOME/.cache/pint.
+     (list #:test-flags #~'("-k" "not test_auto")))
     (native-inputs
-     (list python-pytest                ;for pytest-subtests
+     (list python-dask
+           python-distributed
+           python-importlib-metadata
+           python-pytest                ;for pytest-subtests
            python-pytest-cov
            python-pytest-mpl
            python-pytest-subtests
            python-setuptools-scm
            python-sparse
-           python-dask
-           python-xarray
-           python-distributed))
+           python-xarray))
     (home-page "https://github.com/hgrecco/pint")
     (synopsis "Physical quantities module")
     (description
