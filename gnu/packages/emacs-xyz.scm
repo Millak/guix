@@ -5267,7 +5267,7 @@ kmonad's configuration files (@file{.kbd}).")
         (base32 "1hri91g6c0507vaisx3c0xr52xwy82j3vqk0irf30mcrv1j9a5hd"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-keycast))
+     (list emacs-compat))
     (home-page "https://github.com/tarsius/keycast")
     (synopsis "Show current command and its key in the mode line")
     (description
