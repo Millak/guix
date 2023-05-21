@@ -1183,7 +1183,7 @@ some utility functions, and commands using that infrastructure.")
 (define-public git-modes
   (package
     (name "emacs-git-modes")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1192,8 +1192,10 @@ some utility functions, and commands using that infrastructure.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aqz65pcqc35h5z4s606f48iqn87h5v9nj3cp6n9yjxa2v7w5hfk"))))
+        (base32 "0b9fywqwccdvyg1cfnlzl61gq1gryjvzp32cw91l4igv7ppmq684"))))
     (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://github.com/magit/git-modes")
     (synopsis "Emacs major modes for Git configuration files")
     (description
