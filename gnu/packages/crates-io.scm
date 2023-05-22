@@ -3062,6 +3062,39 @@ it outputs messages to Android's logcat.")
 escape codes.")
     (license license:mpl2.0)))
 
+(define-public rust-anstream-0.3
+  (package
+    (name "rust-anstream")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "anstream" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qzinx9c8zfq3xqpxzmlv6nrm3ymccr4n8gffkdmj31p50v4za0c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anstyle" ,rust-anstyle-1)
+        ("rust-anstyle-parse" ,rust-anstyle-parse-0.2)
+        ("rust-anstyle-query" ,rust-anstyle-query-1)
+        ("rust-anstyle-wincon" ,rust-anstyle-wincon-1)
+        ("rust-colorchoice" ,rust-colorchoice-1)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-utf8parse" ,rust-utf8parse-0.2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-owo-colors" ,rust-owo-colors-3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.1))))
+    (home-page "https://github.com/rust-cli/anstyle")
+    (synopsis "Library for writing colored text to a terminal")
+    (description
+     "This package provides a simple cross platform library for writing colored
+text to a terminal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anstyle-1
   (package
     (name "rust-anstyle")
