@@ -19113,8 +19113,30 @@ platform-specific standard locations of directories for config, cache and
 other data.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dirs-5
+  (package
+    (name "rust-dirs")
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "dirs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0992xk5vx75b2x91nw9ssb51mpl8x73j9rxmpi96cryn0ffmmi24"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dirs-sys" ,rust-dirs-sys-0.4))))
+    (home-page "https://github.com/soc/dirs-rs")
+    (synopsis "Abstractions for standard locations for various platforms")
+    (description
+     "This package is a tiny low-level library that provides platform-specific
+standard locations of directories for config, cache and other data.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dirs-4
   (package
+    (inherit rust-dirs-5)
     (name "rust-dirs")
     (version "4.0.0")
     (source
@@ -19124,16 +19146,9 @@ other data.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0n8020zl4f0frfnzvgb9agvk4a14i1kjz4daqnxkgslndwmaffna"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-dirs-sys" ,rust-dirs-sys-0.3))))
-    (home-page "https://github.com/soc/dirs-rs")
-    (synopsis "Abstractions for standard locations for various platforms")
-    (description
-     "This package is a tiny low-level library that provides platform-specific
-standard locations of directories for config, cache and other data.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-dirs-sys" ,rust-dirs-sys-0.3))))))
 
 (define-public rust-dirs-3
   (package
