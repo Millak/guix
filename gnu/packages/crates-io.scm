@@ -28536,14 +28536,14 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
 (define-public rust-html-escape-0.2
   (package
     (name "rust-html-escape")
-    (version "0.2.12")
+    (version "0.2.13")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "html-escape" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "01f2v3c6j2rk5h2lhdbh62j07cm1fvzqw4vplj2sms83jpx5qc8m"))))
+                "0xml3hswv0205fbm5iq7dqiwjkr6d245xkfppwi7wqjdfr4x86kd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
