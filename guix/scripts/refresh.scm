@@ -228,7 +228,8 @@ options like '--recursive'."
     (let* ((input->package (match-lambda
                              ((name (? package? package) _ ...) package)
                              (_ #f)))
-           (final-inputs   (map input->package %final-inputs))
+           (final-inputs   (map input->package
+                                (%final-inputs (%current-system))))
            (core           (append final-inputs
                                    (append-map (compose (cut filter-map input->package <>)
                                                         package-transitive-inputs)

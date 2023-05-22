@@ -76,6 +76,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (glibc
+            libc-for-target
             make-ld-wrapper
             libiconv-if-needed))
 
@@ -1420,20 +1421,41 @@ variety of options.  It is an alternative to the shell \"type\" built-in
 command.")
     (license gpl3+))) ; some files are under GPLv2+
 
+(define-public glibc/hurd
+  (package/inherit glibc
+    (name "glibc-hurd")
+    (version "2.37")
+    (source (origin
+            (method url-fetch)
+            (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
+            (sha256
+             (base32
+              "0hqsp4dzrjx0iga6jv0magjw26dh82pxlmk8yis5v0d127qyymr2"))
+            (patches (search-patches "glibc-ldd-powerpc.patch"
+                                     "glibc-dl-cache.patch"
+                                     "glibc-2.37-versioned-locpath.patch"
+                                     "glibc-reinstate-prlimit64-fallback.patch"
+                                     "glibc-supported-locales.patch"
+                                     "glibc-2.37-hurd-clock_t_centiseconds.patch"
+                                     "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
+                                     "glibc-hurd-mach-print.patch"
+                                     "glibc-hurd-gettyent.patch"))))
+    (supported-systems %hurd-systems)))
+
 (define-public glibc/hurd-headers
-  (package (inherit glibc)
+  (package/inherit glibc/hurd
     (name "glibc-hurd-headers")
     (outputs '("out"))
     (propagated-inputs (list gnumach-headers hurd-headers))
     (native-inputs
-     (modify-inputs (package-native-inputs glibc)
+     (modify-inputs (package-native-inputs glibc/hurd)
        (prepend (if (%current-target-system)
                     (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
                            (cross-mig (module-ref cross-base 'cross-mig)))
                       (cross-mig (%current-target-system)))
                     mig))))
     (arguments
-     (substitute-keyword-arguments (package-arguments glibc)
+     (substitute-keyword-arguments (package-arguments glibc/hurd)
        ;; We just pass the flags really needed to build the headers.
        ((#:configure-flags flags)
         `(list "--enable-add-ons"
@@ -1453,6 +1475,15 @@ command.")
                    (string-append out "/include/gnu/stubs.h"))))))
            (delete 'build)))))                  ; nothing to build
     (supported-systems %hurd-systems)))
+
+(define* (libc-for-target #:optional
+                          (target (or (%current-target-system)
+                                      (%current-system))))
+  (match target
+    ((? target-hurd?)
+     glibc/hurd)
+    (_
+     glibc)))
 
 (define-public tzdata
   (package
@@ -1602,6 +1633,6 @@ package needs iconv ,@(libiconv-if-needed) should be added."
   "Return the list of \"final inputs\"."
   ;; Avoid circular dependency by lazily resolving 'commencement'.
   (let ((iface (resolve-interface '(gnu packages commencement))))
-    (module-ref iface '%final-inputs)))
+    ((module-ref iface '%final-inputs) (%current-system))))
 
 ;;; base.scm ends here

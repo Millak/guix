@@ -2822,64 +2822,65 @@ memoized as a function of '%current-system'."
     ("binutils-cross" ,binutils-boot0)
     ,@(alist-delete "binutils" (%boot0-inputs))))
 
-(define glibc-final-with-bootstrap-bash
+(define/system-dependent glibc-final-with-bootstrap-bash
   ;; The final libc, "cross-built".  If everything went well, the resulting
   ;; store path has no dependencies.  Actually, the really-final libc is
   ;; built just below; the only difference is that this one uses the
   ;; bootstrap Bash.
-  (package
-    (inherit glibc)
-    (name "glibc-intermediate")
-    (outputs (delete "debug" (package-outputs glibc)))
-    (source (bootstrap-origin (package-source glibc)))
-    (arguments
-     `(#:guile ,%bootstrap-guile
-       #:implicit-inputs? #f
+  (let ((libc (libc-for-target)))
+    (package
+      (inherit libc)
+      (name "glibc-intermediate")
+      (outputs (delete "debug" (package-outputs libc)))
+      (source (bootstrap-origin (package-source libc)))
+      (arguments
+       `(#:guile ,%bootstrap-guile
+         #:implicit-inputs? #f
 
-       ,@(substitute-keyword-arguments (package-arguments glibc)
-           ((#:configure-flags flags)
-            `(append (list ,(string-append "--host=" (boot-triplet))
-                           ,(string-append "--build="
-                                           (nix-system->gnu-triplet))
-                           ,(if (system-hurd?) "--disable-werror"
-                                ""))
-                     ,flags))
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (add-before 'configure 'pre-configure
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Don't clobber include paths with the bootstrap libc.
-                   (unsetenv "C_INCLUDE_PATH")
-                   (unsetenv "CPLUS_INCLUDE_PATH")
+         ,@(substitute-keyword-arguments (package-arguments libc)
+             ((#:configure-flags flags)
+              `(append (list ,(string-append "--host=" (boot-triplet))
+                             ,(string-append "--build="
+                                             (nix-system->gnu-triplet))
+                             ,(if (system-hurd?) "--disable-werror"
+                                  ""))
+                       ,flags))
+             ((#:phases phases)
+              `(modify-phases ,phases
+                 (add-before 'configure 'pre-configure
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     ;; Don't clobber include paths with the bootstrap libc.
+                     (unsetenv "C_INCLUDE_PATH")
+                     (unsetenv "CPLUS_INCLUDE_PATH")
 
-                   ;; Tell 'libpthread' where to find 'libihash' on Hurd systems.
-                   ,@(if (system-hurd?)
-                       '((substitute* '("sysdeps/mach/Makefile"
-                                        "sysdeps/mach/hurd/Makefile")
-                           (("LDLIBS-pthread.so =.*")
-                            (string-append "LDLIBS-pthread.so = "
-                                           (assoc-ref %build-inputs "kernel-headers")
-                                           "/lib/libihash.a\n"))))
-                       '()))))))))
-    (propagated-inputs `(("kernel-headers" ,(kernel-headers-boot0))))
-    (native-inputs
-     `(("bison" ,bison-boot0)
-       ("texinfo" ,texinfo-boot0)
-       ("perl" ,perl-boot0)
-       ("python" ,python-boot0)))
-    (inputs
-     `( ;; The boot inputs.  That includes the bootstrap libc.  We don't want
-       ;; it in $CPATH, hence the 'pre-configure' phase above.
-       ,@(%boot1-inputs)
+                     ;; Tell 'libpthread' where to find 'libihash' on Hurd systems.
+                     ,@(if (system-hurd?)
+                           '((substitute* '("sysdeps/mach/Makefile"
+                                            "sysdeps/mach/hurd/Makefile")
+                               (("LDLIBS-pthread.so =.*")
+                                (string-append "LDLIBS-pthread.so = "
+                                               (assoc-ref %build-inputs "kernel-headers")
+                                               "/lib/libihash.a\n"))))
+                           '()))))))))
+      (propagated-inputs `(("kernel-headers" ,(kernel-headers-boot0))))
+      (native-inputs
+       `(("bison" ,bison-boot0)
+         ("texinfo" ,texinfo-boot0)
+         ("perl" ,perl-boot0)
+         ("python" ,python-boot0)))
+      (inputs
+       `( ;; The boot inputs.  That includes the bootstrap libc.  We don't want
+         ;; it in $CPATH, hence the 'pre-configure' phase above.
+         ,@(%boot1-inputs)
 
-       ;; A native MiG is needed to build Glibc on Hurd.
-       ,@(if (system-hurd?)
-             `(("mig" ,mig-boot0))
-             '())
+         ;; A native MiG is needed to build Glibc on Hurd.
+         ,@(if (system-hurd?)
+               `(("mig" ,mig-boot0))
+               '())
 
-       ;; Here, we use the bootstrap Bash, which is not satisfactory
-       ;; because we don't want to depend on bootstrap tools.
-       ("static-bash" ,@(assoc-ref (%boot0-inputs) "bash"))))))
+         ;; Here, we use the bootstrap Bash, which is not satisfactory
+         ;; because we don't want to depend on bootstrap tools.
+         ("static-bash" ,@(assoc-ref (%boot0-inputs) "bash")))))))
 
 (define (cross-gcc-wrapper gcc binutils glibc bash)
   "Return a wrapper for the pseudo-cross toolchain GCC/BINUTILS/GLIBC
@@ -2997,39 +2998,39 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                         (("^PROGRAMS =.*$")
                          "PROGRAMS =\n")))))))))
 
-(define glibc-final
+(define/system-dependent glibc-final
   ;; The final glibc, which embeds the statically-linked Bash built above.
   ;; Use 'package/inherit' so we get the 'replacement' of 'glibc', if any.
-  (package/inherit
-   glibc
-   (name "glibc")
-   (source (bootstrap-origin (package-source glibc)))
-   (inputs `(("static-bash" ,static-bash-for-glibc)
-             ,@(alist-delete
-                "static-bash"
-                (package-inputs glibc-final-with-bootstrap-bash))))
+  (let ((libc (libc-for-target)))
+    (package/inherit libc
+      (name "glibc")
+      (source (bootstrap-origin (package-source libc)))
+      (inputs `(("static-bash" ,static-bash-for-glibc)
+                ,@(alist-delete
+                   "static-bash"
+                   (package-inputs glibc-final-with-bootstrap-bash))))
 
-   ;; This time we need 'msgfmt' to install all the libc.mo files.
-   (native-inputs `(,@(package-native-inputs glibc-final-with-bootstrap-bash)
-                    ("gettext" ,gettext-boot0)))
+      ;; This time we need 'msgfmt' to install all the libc.mo files.
+      (native-inputs `(,@(package-native-inputs glibc-final-with-bootstrap-bash)
+                       ("gettext" ,gettext-boot0)))
 
-   (propagated-inputs
-    (package-propagated-inputs glibc-final-with-bootstrap-bash))
+      (propagated-inputs
+       (package-propagated-inputs glibc-final-with-bootstrap-bash))
 
-   ;; The final libc only refers to itself, but the 'debug' output contains
-   ;; references to GCC-BOOT0 and to the Linux headers.  XXX: Would be great
-   ;; if 'allowed-references' were per-output.
-   (arguments
-    `(#:allowed-references
-      (,(gexp-input gcc-boot0 "lib")
-       ,(kernel-headers-boot0)
-       ,static-bash-for-glibc
-       ,@(if (system-hurd?)
-             `(,gnumach-headers-boot0
-               ,hurd-headers-boot0)
-             '())
-       ,@(package-outputs glibc-final-with-bootstrap-bash))
-      ,@(package-arguments glibc-final-with-bootstrap-bash)))))
+      ;; The final libc only refers to itself, but the 'debug' output contains
+      ;; references to GCC-BOOT0 and to the Linux headers.  XXX: Would be great
+      ;; if 'allowed-references' were per-output.
+      (arguments
+       `(#:allowed-references
+         (,(gexp-input gcc-boot0 "lib")
+          ,(kernel-headers-boot0)
+          ,static-bash-for-glibc
+          ,@(if (system-hurd?)
+                `(,gnumach-headers-boot0
+                  ,hurd-headers-boot0)
+                '())
+          ,@(package-outputs glibc-final-with-bootstrap-bash))
+         ,@(package-arguments glibc-final-with-bootstrap-bash))))))
 
 (define/system-dependent gcc-boot0-wrapped
   ;; Make the cross-tools GCC-BOOT0 and BINUTILS-BOOT0 available under the
@@ -3356,45 +3357,49 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
     (package/inherit sed (native-inputs `(("perl" ,perl-boot0))))))
 
 (define-public %final-inputs
-  ;; Final derivations used as implicit inputs by 'gnu-build-system'.  We
-  ;; still use 'package-with-bootstrap-guile' so that the bootstrap tools are
-  ;; used for origins that have patches, thereby avoiding circular
-  ;; dependencies.
-  (let ((finalize (compose with-boot6
-                           package-with-bootstrap-guile)))
-    `(,@(map (match-lambda
-               ((name package)
-                (list name (finalize package))))
-             `(("tar" ,tar)
-               ("gzip" ,gzip)
-               ("bzip2" ,bzip2)
-               ("file" ,file)
-               ("diffutils" ,diffutils)
-               ("patch" ,patch)
-               ("findutils" ,findutils)
-               ("gawk" ,gawk)))
-      ("sed" ,sed-final)
-      ("grep" ,grep-final)
-      ("xz" ,xz-final)
-      ("coreutils" ,coreutils-final)
-      ("make" ,gnu-make-final)
-      ("bash" ,bash-final)
-      ("ld-wrapper" ,ld-wrapper)
-      ("binutils" ,binutils-final)
-      ("gcc" ,gcc-final)
-      ("libc" ,glibc-final)
-      ("libc:static" ,glibc-final "static")
-      ("locales" ,glibc-utf8-locales-final))))
+  ;; The 'glibc-final' package is not the same depending on what system is
+  ;; targeted, so this whole list must be parameterized.
+  (mlambda (system)
+    ;; Final derivations used as implicit inputs by 'gnu-build-system'.  We
+    ;; still use 'package-with-bootstrap-guile' so that the bootstrap tools are
+    ;; used for origins that have patches, thereby avoiding circular
+    ;; dependencies.
+    (let ((finalize (compose with-boot6
+                             package-with-bootstrap-guile)))
+      `(,@(map (match-lambda
+                 ((name package)
+                  (list name (finalize package))))
+               `(("tar" ,tar)
+                 ("gzip" ,gzip)
+                 ("bzip2" ,bzip2)
+                 ("file" ,file)
+                 ("diffutils" ,diffutils)
+                 ("patch" ,patch)
+                 ("findutils" ,findutils)
+                 ("gawk" ,gawk)))
+        ("sed" ,sed-final)
+        ("grep" ,grep-final)
+        ("xz" ,xz-final)
+        ("coreutils" ,coreutils-final)
+        ("make" ,gnu-make-final)
+        ("bash" ,bash-final)
+        ("ld-wrapper" ,ld-wrapper)
+        ("binutils" ,binutils-final)
+        ("gcc" ,gcc-final)
+        ("libc" ,glibc-final)
+        ("libc:static" ,glibc-final "static")
+        ("locales" ,glibc-utf8-locales-final)))))
 
 (define-public canonical-package
-  (let ((name->package (fold (lambda (input result)
-                               (match input
-                                 ((_ package . outputs)
-                                  (vhash-cons (package-full-name package)
-                                              package result))))
-                             vlist-null
-                             `(("guile" ,guile-final)
-                               ,@%final-inputs))))
+  (let ((name->package (mlambda (system)
+                         (fold (lambda (input result)
+                                 (match input
+                                   ((_ package . outputs)
+                                    (vhash-cons (package-full-name package)
+                                                package result))))
+                               vlist-null
+                               `(("guile" ,guile-final)
+                                 ,@(%final-inputs system))))))
     (lambda (package)
       "Return the 'canonical' variant of PACKAGE---i.e., if PACKAGE is one of
 the implicit inputs of 'gnu-build-system', return that one, otherwise return
@@ -3404,7 +3409,8 @@ The goal is to avoid duplication in cases like GUILE-FINAL vs. GUILE-2.2,
 COREUTILS-FINAL vs. COREUTILS, etc."
       ;; XXX: This doesn't handle dependencies of the final inputs, such as
       ;; libunistring, GMP, etc.
-      (match (vhash-assoc (package-full-name package) name->package)
+      (match (vhash-assoc (package-full-name package)
+                          (name->package (%current-system)))
         ((_ . canon)
          ;; In general we want CANON, except if we're cross-compiling: CANON
          ;; uses explicit inputs, so it is "anchored" in the bootstrapped
@@ -3486,7 +3492,8 @@ is the GNU Compiler Collection.")
       ;; install everything that we need, and (2) to make sure ld-wrapper comes
       ;; before Binutils' ld in the user's profile.
       (inputs `(("gcc" ,gcc)
-                ("ld-wrapper" ,(car (assoc-ref %final-inputs "ld-wrapper")))
+                ("ld-wrapper" ,(car (assoc-ref (%final-inputs (%current-system))
+                                               "ld-wrapper")))
                 ("binutils" ,binutils-final)
                 ("libc" ,libc)
                 ("libc-debug" ,libc "debug")

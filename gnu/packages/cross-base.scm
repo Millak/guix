@@ -578,7 +578,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
 
 (define* (cross-libc/deprecated target
                                 #:optional
-                                (libc glibc)
+                                (libc (libc-for-target target))
                                 (xgcc (cross-gcc target))
                                 (xbinutils (cross-binutils target))
                                 (xheaders (cross-kernel-headers target)))
@@ -591,7 +591,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
 
 (define* (cross-libc* target
                       #:key
-                      (libc glibc)
+                      (libc (libc-for-target target))
                       (xgcc (cross-gcc target))
                       (xbinutils (cross-binutils target))
                       (xheaders (cross-kernel-headers target)))
