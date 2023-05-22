@@ -52098,7 +52098,8 @@ Digital Signature Algorithm} (ECDSA).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1z682xp7v38ayq9g9nkbhhfpj6ygralmlx7wdmsfv8rnw99cylrh"))
-       (patches (search-patches "rust-ring-0.16-missing-files.patch"))
+       (patches (search-patches "rust-ring-0.16-missing-files.patch"
+                                "rust-ring-0.16-test-files.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -52112,8 +52113,7 @@ Digital Signature Algorithm} (ECDSA).")
                 (format #t "")))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false                  ;missing file
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-spin" ,rust-spin-0.5)
