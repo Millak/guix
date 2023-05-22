@@ -12489,6 +12489,29 @@ diagnostics easy and relatively painless for everyone!")
 sets of intervals.")
     (license license:expat)))
 
+(define-public rust-color-print-0.3
+  (package
+    (name "rust-color-print")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "color-print" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1l26nrk0w21kzh7hs15wfqs7lm80xbngwl46jra8ar6q9r8fd9gj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-color-print-proc-macro" ,rust-color-print-proc-macro-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-terminfo" ,rust-terminfo-0.7))))
+    (home-page "https://gitlab.com/yolenoyer/color-print")
+    (synopsis "Colorize and stylize strings at compile-time")
+    (description
+     "Colorize and stylize strings at compile-time, by using an HTML-like syntax.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-color-print-proc-macro-0.3
   (package
     (name "rust-color-print-proc-macro")
