@@ -1029,6 +1029,7 @@ large scale eigenvalue problems.")
     (arguments
      `(#:configure-flags (list
                           "-DBUILD_SHARED_LIBS:BOOL=YES"
+                          "-DCBLAS=ON"
                           "-DLAPACKE=ON"
                           ;; Build the 'LAPACKE_clatms' functions.
                           "-DLAPACKE_WITH_TMG=ON"
