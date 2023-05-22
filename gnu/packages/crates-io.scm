@@ -44429,7 +44429,7 @@ algorithm.")
 (define-public rust-pest-derive-2
   (package
     (name "rust-pest-derive")
-    (version "2.5.3")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
@@ -44438,11 +44438,10 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "19m0wd2lcg6d2halnlfcgl0mfpgjy5a29q875vk6bp8c7cwxl714"))))
+         "1yzv982pypxrr2zwhd08xv40plr474p155i26aj2anl63k3x8ybb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-pest" ,rust-pest-2)
         ("rust-pest-generator" ,rust-pest-generator-2))))
     (home-page "https://pest.rs/")
