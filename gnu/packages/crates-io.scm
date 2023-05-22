@@ -5824,7 +5824,7 @@ built on the Actix ecosystem.")
 (define-public rust-backtrace-0.3
   (package
     (name "rust-backtrace")
-    (version "0.3.66")
+    (version "0.3.67")
     (source
      (origin
        (method url-fetch)
@@ -5833,23 +5833,24 @@ built on the Actix ecosystem.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "19yrfx0gprqmzphmf6qv32g93w76ny5g751ks1abdkqnsqcl7f6a"))))
+         "1jk48laqafvbyc0mn1v0didk307qc0zji3z5jcq2lpqqdmnkfg93"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
-       (("rust-addr2line" ,rust-addr2line-0.17)
+       (("rust-addr2line" ,rust-addr2line-0.19)
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-cpp-demangle" ,rust-cpp-demangle-0.3)
+        ("rust-cpp-demangle" ,rust-cpp-demangle-0.4)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-libloading" ,rust-libloading-0.7)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.5)
-        ("rust-object" ,rust-object-0.29)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.6)
+        ("rust-object" ,rust-object-0.30)
         ("rust-rustc-demangle" ,rust-rustc-demangle-0.1)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-libloading" ,rust-libloading-0.7))))
     (home-page "https://github.com/rust-lang/backtrace-rs")
     (synopsis "Acquire a stack trace (backtrace) at runtime in a Rust program")
     (description
