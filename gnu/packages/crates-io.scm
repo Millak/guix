@@ -51955,8 +51955,57 @@ can handle huge texts and memory-incoherent edits with ease.")
      "This package provides a library for generic lossless syntax trees.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rsa-0.9
+  (package
+    (name "rust-rsa")
+    (version "0.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rsa" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a762gzj9xl14n8gmclsz8kcwp958nd1k05nnhqsdh93gns3pd3a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-const-oid" ,rust-const-oid-0.9)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-iter" ,rust-num-iter-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-pkcs1" ,rust-pkcs1-0.7)
+        ("rust-pkcs8" ,rust-pkcs8-0.10)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-signature" ,rust-signature-2)
+        ("rust-spki" ,rust-spki-0.7)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-base64ct" ,rust-base64ct-1)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-sha3" ,rust-sha3-0.10))))
+    (home-page "https://github.com/RustCrypto/RSA")
+    (synopsis "Pure Rust RSA implementation")
+    (description "This package provides a pure Rust RSA implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rsa-0.5
   (package
+    (inherit rust-rsa-0.9)
     (name "rust-rsa")
     (version "0.5.0")
     (source
@@ -51966,7 +52015,6 @@ can handle huge texts and memory-incoherent edits with ease.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "039676a4mj0875phdi7vc0bd37hv84dh0dql6fmk8dl2w81jcp70"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
@@ -51997,11 +52045,7 @@ can handle huge texts and memory-incoherent edits with ease.")
            (lambda _
              (substitute*
                  "Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\"")))))))
-    (home-page "https://github.com/RustCrypto/RSA")
-    (synopsis "Pure Rust RSA implementation")
-    (description "This package provides a pure Rust RSA implementation.")
-    (license (list license:expat license:asl2.0))))
+               (("version = \">=1, <1.5\"") "version = \"^1\"")))))))))
 
 (define-public rust-rspec-1
   (package
