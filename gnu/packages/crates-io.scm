@@ -23842,6 +23842,28 @@ more helpful error messages.")
 process and much more.")
     (license license:expat)))
 
+(define-public rust-fs-set-times-0.19
+  (package
+    (name "rust-fs-set-times")
+    (version "0.19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fs-set-times" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qc822hifnwvrfd706wnx5xhajqfsc4kn2lmalfda4x02pqx0cvq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-io-lifetimes" ,rust-io-lifetimes-1)
+        ("rust-rustix" ,rust-rustix-0.37)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/bytecodealliance/fs-set-times")
+    (synopsis "Set filesystem timestamps")
+    (description "Set filesystem timestamps")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-fs-utils-1
   (package
     (name "rust-fs-utils")
