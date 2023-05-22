@@ -93,21 +93,18 @@
     (name "mig")
     (version "1.8+git20230520")
     (source (origin
-              (method url-fetch)
-              ;; XXX: Versions 2.35 and 2.37 of glibc can only be built with an
-              ;; unreleased version of MiG:
-              ;; <https://lists.gnu.org/archive/html/bug-hurd/2023-03/msg00025.html>.
-              ;; It cannot be fetched from Git though, as the extra dependency
-              ;; on Autoconf/Automake would complicate bootstrapping.
-              (uri (string-append "mirror://gnu/guix/mirror/mig-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/hurd/mig.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ap31jd9jkvvz3vb88hg19cyqmqzmra724yl1xhcrv7gcgnan7d9"))))
+                "10r0fdjqjzqsy6ajb21rifvhw0wpjvrw6a1zdyliqlzqny5k0qlz"))))
     (build-system gnu-build-system)
     ;; Flex is needed both at build and run time.
     (inputs (list gnumach-headers flex))
-    (native-inputs (list flex bison))
+    (native-inputs (list autoconf automake flex bison))
     (arguments
      (list #:tests? #f
            #:phases

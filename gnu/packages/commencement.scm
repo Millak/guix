@@ -2700,7 +2700,19 @@ memoized as a function of '%current-system'."
      (inherit mig)
      (name "mig-boot0")
      (version "1.8+git20230520")
-     (source (origin (inherit (package-source mig))))
+     (source
+      (origin
+        (inherit (package-source mig))
+        (method
+         (git-fetch-from-tarball
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://git.savannah.gnu.org/cgit/hurd/mig.git/snapshot/"
+                  "mig-" version ".tar.gz"))
+            (sha256
+             (base32
+              "1l1vfm4wap5yxylv91wssgpy7fnq22wp3akgd5nv995kychfa9jy")))))))
      (native-inputs (list autoconf-boot0 automake-boot0 bison-boot0 flex-boot0
                           gnumach-headers-boot0))
      (inputs (list flex-boot0 gnumach-headers-boot0))
