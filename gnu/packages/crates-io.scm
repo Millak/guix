@@ -20123,6 +20123,30 @@ from the main thread.")
 easy.")
     (license (list license:unlicense license:zlib))))
 
+(define-public rust-ecb-0.1
+  (package
+    (name "rust-ecb")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ecb" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18l1frsqg84c9ymn6shp0k51q7j6l95cpg3vw8g3a159h6x89z8p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/magic-akari/ecb")
+    (synopsis "Electronic Codebook (ECB) block cipher mode of operation")
+    (description "Electronic Codebook (ECB) block cipher mode of operation")
+    (license license:expat)))
+
 (define-public rust-ecdsa-0.16
   (package
     (name "rust-ecdsa")
