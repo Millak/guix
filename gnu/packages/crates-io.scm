@@ -64130,6 +64130,29 @@ directories.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-tempfile-fast-0.3
+  (package
+    (name "rust-tempfile-fast")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "tempfile-fast" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xksx1l1019k9q0az9mhqsgb14w0vm88yax30iq6178s3d9yhjx7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/FauxFaux/tempfile-fast-rs")
+    (synopsis "Support for Linux-specific tempfile extensions")
+    (description
+     "This package provides support for Linux-specific tempfile extensions.")
+    (license license:expat)))
+
 (define-public rust-tendril-0.4
   (package
     (name "rust-tendril")
