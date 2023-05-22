@@ -12533,6 +12533,23 @@ sets of intervals.")
 colors.")
     (license license:expat)))
 
+(define-public rust-colorchoice-1
+  (package
+    (name "rust-colorchoice")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "colorchoice" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ix7w85kwvyybwi2jdkl3yva2r2bvdcc3ka2grjfzfgrapqimgxc"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-cli/anstyle")
+    (synopsis "Global override of color control")
+    (description "Global override of color control")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-colored-2
   (package
     (name "rust-colored")
