@@ -23797,6 +23797,41 @@ values to other threads.")
 duplication.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fs-at-0.1
+  (package
+    (name "rust-fs-at")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fs-at" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02mvd85zjs0pxpykvkbqlwkii5f768z8xm0fqbqzv1s41yrbl105"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aligned" ,rust-aligned-0.4)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cvt" ,rust-cvt-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-smart-default" ,rust-smart-default-0.7)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-fs-set-times" ,rust-fs-set-times-0.19)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-test-log" ,rust-test-log-0.2))))
+    (home-page "https://github.com/rbtcollins/fs_at.git")
+    (synopsis "Implementation of 'at' functions for various platforms")
+    (description "This package provides an implementation of at functions for
+various platforms.")
+    (license license:asl2.0)))
+
 (define-public rust-fs-err-2
   (package
     (name "rust-fs-err")
