@@ -11922,20 +11922,19 @@ Command Line Argument Parser.")
 (define-public rust-clap-complete-4
   (package
     (name "rust-clap-complete")
-    (version "4.1.2")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap-complete" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1zinf9gdr0fh1aff71nwqf51w856sbsbgq0dqpmmbhplggl5n4mx"))))
+               (base32 "04mynv337hkv9zrbhx7kgh117a62mxgmf96hczmfdj9vrjmdykd0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-clap" ,rust-clap-4)
-        ("rust-clap-lex" ,rust-clap-lex-0.3)
+        ("rust-clap-lex" ,rust-clap-lex-0.5)
         ("rust-is-executable" ,rust-is-executable-1)
-        ("rust-os-str-bytes" ,rust-os-str-bytes-6)
         ("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-shlex" ,rust-shlex-1)
         ("rust-unicode-xid" ,rust-unicode-xid-0.2))
