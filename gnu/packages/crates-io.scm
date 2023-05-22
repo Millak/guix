@@ -3082,6 +3082,34 @@ escape codes.")
     (description "This package provides ANSI text styling.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anstyle-parse-0.2
+  (package
+    (name "rust-anstyle-parse")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "anstyle-parse" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1vjprf080adyxxpls9iwwny3g7irawfns9s2cj9ngq28dqhzsrg7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-utf8parse" ,rust-utf8parse-0.2))
+       #:cargo-development-inputs
+       (("rust-codegenrs" ,rust-codegenrs-2)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-vte-generate-state-changes" ,rust-vte-generate-state-changes-0.1))))
+    (home-page "https://github.com/rust-cli/anstyle")
+    (synopsis "Parse ANSI Style Escapes")
+    (description "Parse ANSI Style Escapes")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anstyle-query-1
   (package
     (name "rust-anstyle-query")
