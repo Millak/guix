@@ -42176,27 +42176,27 @@ easy and usable crypto while trying to minimize the use of unsafe code.")
 (define-public rust-os-str-bytes-6
   (package
     (name "rust-os-str-bytes")
-    (version "6.0.0")
+    (version "6.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "os-str-bytes" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0r5z5xds2wzzqlqjaw96dpjsz5nqyzc1rflm4mh09aa32qyl88lf"))))
+         (base32 "0rz2711gl575ng6vm9a97q42wqnf4wk1165wn221jb8gn17z9vff"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-memchr" ,rust-memchr-2)
-        ("rust-print-bytes" ,rust-print-bytes-0.5)
+        ("rust-print-bytes" ,rust-print-bytes-1)
         ("rust-uniquote" ,rust-uniquote-3))
        #:cargo-development-inputs
-       (("rust-getrandom" ,rust-getrandom-0.2))))
+       (("rust-fastrand" ,rust-fastrand-1))))
     (home-page "https://github.com/dylni/os_str_bytes")
     (synopsis
      "Traits for converting between byte sequences and platform-native strings")
     (description
-     "This package provides a traits for converting between byte sequences and
+     "This package provides a trait for converting between byte sequences and
 platform-native strings.")
     (license (list license:expat license:asl2.0))))
 
