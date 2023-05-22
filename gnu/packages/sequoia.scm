@@ -281,6 +281,40 @@ This Guix package is built to use the nettle cryptographic library.")
         ("rust-sequoia-rfc2822" ,rust-sequoia-rfc2822-0.9)
         ("rust-time" ,rust-time-0.1))))))
 
+(define-public rust-sequoia-policy-config-0.6
+  (package
+    (name "rust-sequoia-policy-config")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sequoia-policy-config" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0x42h22kng4dsbfr0a6zdf2j9bcq14r0yr6xdw6rrggj139lazbm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-toml" ,rust-toml-0.5))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
+    (native-inputs
+     (list clang pkg-config))
+    (inputs
+     (list gmp nettle))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Configure Sequoia using a configuration file")
+    (description "Configure Sequoia using a configuration file.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-sequoia-rfc2822-0.9
   (package
     (name "rust-sequoia-rfc2822")
