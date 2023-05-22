@@ -9961,8 +9961,34 @@ encoding.")
 messages.")
     (license license:expat)))
 
+(define-public rust-capnp-rpc-0.14
+  (package
+    (name "rust-capnp-rpc")
+    (version "0.14.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "capnp-rpc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0pm9bjw481lw1zp8lmzkpsjrb85lbjg5s46piqbc3wk8dzwifksc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-capnp" ,rust-capnp-0.14)
+        ("rust-capnp-futures" ,rust-capnp-futures-0.14)
+        ("rust-futures" ,rust-futures-0.3))))
+    (native-inputs
+     (list capnproto))
+    (home-page "https://github.com/capnproto/capnproto-rust")
+    (synopsis "Cap'n Proto remote procedure call protocol implementation")
+    (description "This package provides an implementation of the Cap'n Proto
+remote procedure call protocol")
+    (license license:expat)))
+
 (define-public rust-capnp-rpc-0.13
   (package
+    (inherit rust-capnp-rpc-0.14)
     (name "rust-capnp-rpc")
     (version "0.13.1")
     (source
@@ -9972,21 +9998,13 @@ messages.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "17p0y0yk68pzsnpmaklhiqrrlrrv0ld8nhbg4qflmgibshi8b69p"))))
-    (build-system cargo-build-system)
-    (native-inputs
-     (list capnproto))
     (arguments
      `(#:cargo-inputs
        (("rust-capnp" ,rust-capnp-0.13)
         ("rust-capnp-futures" ,rust-capnp-futures-0.13)
         ("rust-futures" ,rust-futures-0.3))
        #:cargo-development-inputs
-       (("rust-capnpc" ,rust-capnpc-0.13))))
-    (home-page "https://github.com/capnproto/capnproto-rust")
-    (synopsis "Cap'n Proto remote procedure call protocol implementation")
-    (description "This package provides an implementation of the Cap'n Proto
-remote procedure call protocol")
-    (license license:expat)))
+       (("rust-capnpc" ,rust-capnpc-0.13))))))
 
 (define-public rust-capnpc-0.13
   (package
