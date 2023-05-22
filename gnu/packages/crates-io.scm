@@ -33652,21 +33652,21 @@ suite of tools for the rapid, accurate and memory-frugal processing
 single-cell and single-nucleus sequencing data.")
     (license license:bsd-3)))
 
-(define-public rust-libsqlite3-sys-0.23
+(define-public rust-libsqlite3-sys-0.26
   (package
     (name "rust-libsqlite3-sys")
-    (version "0.23.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "libsqlite3-sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0n6b4mlpw9l74cl5mahnpaanyjsgpmz5y517kmnk6v09fiygrjnj"))))
+    (version "0.26.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libsqlite3-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09j3v5nhgvjdyskgwajhg9g6v3b2ij0lxiz8qqav2cxic7zjxhmg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.59)
+       (("rust-bindgen" ,rust-bindgen-0.64)
         ("rust-cc" ,rust-cc-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
@@ -33677,6 +33677,26 @@ single-cell and single-nucleus sequencing data.")
     (synopsis "Native bindings to the libsqlite3 library")
     (description "Native bindings to the libsqlite3 library")
     (license license:expat)))
+
+(define-public rust-libsqlite3-sys-0.23
+  (package
+    (inherit rust-libsqlite3-sys-0.26)
+    (name "rust-libsqlite3-sys")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n6b4mlpw9l74cl5mahnpaanyjsgpmz5y517kmnk6v09fiygrjnj"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.59)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
 (define-public rust-libsqlite3-sys-0.22
   (package
