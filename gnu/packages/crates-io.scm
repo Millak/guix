@@ -3082,6 +3082,25 @@ escape codes.")
     (description "This package provides ANSI text styling.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anstyle-query-1
+  (package
+    (name "rust-anstyle-query")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "anstyle-query" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0js9bgpqz21g0p2nm350cba1d0zfyixsma9lhyycic5sw55iv8aw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/rust-cli/anstyle")
+    (synopsis "Look up colored console capabilities")
+    (description "Look up colored console capabilities")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anstyle-wincon-1
   (package
     (name "rust-anstyle-wincon")
