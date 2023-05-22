@@ -56255,6 +56255,32 @@ fragment of code.")
        (("rust-clippy" ,rust-clippy-0.0))
        #:tests? #f))))
 
+(define-public rust-serde-aux-4
+  (package
+    (name "rust-serde-aux")
+    (version "4.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "serde-aux" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0fdf1hdv85ghlfcil6ynl3npbbparmlx3ynn3c0wz7bgxfvy3py3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph.
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))
+       ;#:cargo-development-inputs
+       ;(("rust-serde-qs" ,rust-serde-qs-0.10))
+       ))
+    (home-page "https://github.com/vityafx/serde-aux")
+    (synopsis "Serde crate's auxiliary library")
+    (description "This package provides a serde crate's auxiliary library.")
+    (license license:expat)))
+
 (define-public rust-serde-big-array-0.4
   (package
     (name "rust-serde-big-array")
