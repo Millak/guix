@@ -11438,7 +11438,7 @@ usage.")
 (define-public rust-cipher-0.4
   (package
     (name "rust-cipher")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
       (origin
         (method url-fetch)
@@ -11446,7 +11446,7 @@ usage.")
         (file-name
          (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "17mmmqaalirdx7bpdhrgzp1sd392zm08mjrr24cjr57pz1q351yi"))))
+         (base32 "1b9x9agg67xq5nq879z66ni4l08m6m3hqcshk37d4is4ysd3ngvp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
