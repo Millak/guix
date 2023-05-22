@@ -45366,8 +45366,38 @@ along with strong support for variations and the core header tables.")
      "This crate provides async pipes, channels, mutexes, and more.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pkcs1-0.7
+  (package
+    (name "rust-pkcs1")
+    (version "0.7.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pkcs1" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0zz4mil3nchnxljdfs2k5ab1cjqn7kq5lqp62n9qfix01zqvkzy8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-der" ,rust-der-0.7)
+        ("rust-pkcs8" ,rust-pkcs8-0.10)
+        ("rust-spki" ,rust-spki-0.7))
+       #:cargo-development-inputs
+       (("rust-const-oid" ,rust-const-oid-0.9)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs1")
+    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #1")
+    (description
+     "This package provides a pure Rust implementation of Public-Key
+Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.2
+(RFC 8017).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pkcs1-0.2
   (package
+    (inherit rust-pkcs1-0.7)
     (name "rust-pkcs1")
     (version "0.2.4")
     (source
@@ -45377,20 +45407,12 @@ along with strong support for variations and the core header tables.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0b2f1a0lf5h53zrjvcqbxzjhh89gcfa1myhf6z7w10ypg61fwsqi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-der" ,rust-der-0.4)
         ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.2)
-        ("rust-zeroize" ,rust-zeroize-1))))
-    (home-page "https://github.com/RustCrypto/formats/tree/master/pkcs1")
-    (synopsis "Implementation of Public-Key Cryptography Standards (PKCS) #1")
-    (description
-     "This package provides a pure Rust implementation of Public-Key
-Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.2
-(RFC 8017)")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-zeroize" ,rust-zeroize-1))))))
 
 (define-public rust-pkcs5-0.7
   (package
