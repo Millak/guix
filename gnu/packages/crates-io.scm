@@ -64162,22 +64162,33 @@ directories.")
 (define-public rust-tera-1
   (package
     (name "rust-tera")
-    (version "1.15.0")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tera" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13dmx1qfn66v55l54gddp89mi82ghszwml9jyv75phhmnqqwijnk"))))
+        (base32 "1h3hgixby1vsfgk83ww09aq25p74jhqf48b7ql1jmwh22dsnb9lm"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; Not all files included.
+             "--skip=tera::tests::full_reload_with_glob"
+             "--skip=tera::tests::full_reload_with_glob_after_extending"
+             "--skip=tera::tests::can_load_from_glob_with_patterns"
+             "--skip=tera::tests::can_load_from_glob")
        #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-chrono-tz" ,rust-chrono-tz-0.6)
         ("rust-globwalk" ,rust-globwalk-0.8)
-        ("rust-humansize" ,rust-humansize-1)
+        ("rust-humansize" ,rust-humansize-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-pest" ,rust-pest-2)
@@ -64187,7 +64198,11 @@ directories.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-slug" ,rust-slug-0.1)
-        ("rust-unic-segment" ,rust-unic-segment-0.9))))
+        ("rust-unic-segment" ,rust-unic-segment-0.9))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://tera.netlify.com/")
     (synopsis "Template engine based on Jinja2/Django templates")
     (description
