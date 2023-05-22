@@ -44452,7 +44452,7 @@ algorithm.")
 (define-public rust-pest-generator-2
   (package
     (name "rust-pest-generator")
-    (version "2.5.3")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
@@ -44461,11 +44461,10 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0z52iw9g9jcg8v7d56s9m49cbl1k5wsxax1wjl1666f8v0s3dda6"))))
+         "0zh7igibnn9d4skgx3vjy4q6nya2hjhw7vf8xd8vhdv40zqmnhvc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-pest" ,rust-pest-2)
         ("rust-pest-meta" ,rust-pest-meta-2)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
