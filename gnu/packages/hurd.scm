@@ -56,7 +56,7 @@
 (define-public gnumach-headers
   (package
     (name "gnumach-headers")
-    (version "1.8+git20220827") ;; This is an upstream tag
+    (version "1.8+git20221224") ;; This is an upstream tag
     (source
      (origin
        (method git-fetch)
@@ -66,8 +66,7 @@
        (file-name (git-file-name "gnumach" version))
        (sha256
         (base32
-         "07qlaf8vw029y7xdnhjyiiyn788zjzwmyzj79inz7idpswqsnyhf"))
-       (patches (search-patches "gnumach-add-missing-const_mach_port_name_array_t-type.patch"))))
+         "0f49zqxf64ds75rmskizpybl2mw7sxs05k59gjp3pgspvr87w7gs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
