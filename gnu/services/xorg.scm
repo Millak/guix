@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +113,8 @@
             screen-locker-configuration-name
             screen-locker-configuration-program
             screen-locker-configuration-allow-empty-password?
+            screen-locker-configuration-using-pam?
+            screen-locker-configuration-using-setuid?
             screen-locker-service-type
             screen-locker-service  ; deprecated
 
@@ -703,30 +706,38 @@ reboot_cmd " shepherd "/sbin/reboot\n"
 ;;; Screen lockers & co.
 ;;;
 
-(define-record-type <screen-locker-configuration>
-  (screen-locker-configuration name program allow-empty-password?)
-  screen-locker-configuration?
-  (name    screen-locker-configuration-name)           ;string
-  (program screen-locker-configuration-program)        ;gexp
+(define-configuration/no-serialization screen-locker-configuration
+  (name
+   string
+   "Name of the screen locker.")
+  (program
+   file-like
+   "Path to the executable for the screen locker as a G-Expression.")
   (allow-empty-password?
-   screen-locker-configuration-allow-empty-password?)) ;Boolean
+   (boolean #f)
+   "Whether to allow empty passwords.")
+  (using-pam?
+   (boolean #t)
+   "Whether to setup PAM entry.")
+  (using-setuid?
+   (boolean #t)
+   "Whether to setup program as setuid binary."))
 
-(define-deprecated/public-alias
-  screen-locker
-  screen-locker-configuration)
+(define (screen-locker-pam-services config)
+  (match-record config <screen-locker-configuration>
+    (name allow-empty-password? using-pam?)
+    (if using-pam?
+        (list (unix-pam-service name
+                                #:allow-empty-passwords?
+                                allow-empty-password?))
+        '())))
 
-(define-deprecated/public-alias
-  screen-locker?
-  screen-locker-configuration?)
-
-(define screen-locker-pam-services
-  (match-lambda
-    (($ <screen-locker-configuration> name _ empty?)
-     (list (unix-pam-service name
-                             #:allow-empty-passwords? empty?)))))
-
-(define screen-locker-setuid-programs
-  (compose list file-like->setuid-program screen-locker-configuration-program))
+(define (screen-locker-setuid-programs config)
+  (match-record config <screen-locker-configuration>
+    (name program using-setuid?)
+    (if using-setuid?
+        (list (file-like->setuid-program program))
+        '())))
 
 (define screen-locker-service-type
   (service-type (name 'screen-locker)
@@ -739,6 +750,9 @@ reboot_cmd " shepherd "/sbin/reboot\n"
                  "Allow the given program to be used as a screen locker for
 the graphical server by making it setuid-root, so it can authenticate users,
 and by creating a PAM service for it.")))
+
+(define (screen-locker-generate-doc)
+  (configuration->documentation 'screen-locker-configuration))
 
 (define-deprecated (screen-locker-service package
                                           #:optional
@@ -755,9 +769,10 @@ for it.  For example:
 
 makes the good ol' XlockMore usable."
   (service screen-locker-service-type
-           (screen-locker-configuration program
-                                        (file-append package "/bin/" program)
-                                        allow-empty-passwords?)))
+           (screen-locker-configuration
+            (name program)
+            (program (file-append package "/bin/" program))
+            (allow-empty-password? allow-empty-passwords?))))
 
 
 ;;;

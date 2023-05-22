@@ -1839,10 +1839,12 @@ applications needing access to be root.")
          ;; Screen lockers are a pretty useful thing and these are small.
          (service screen-locker-service-type
                   (screen-locker-configuration
-                   "slock" (file-append slock "/bin/slock") #f))
+                   (name "slock")
+                   (program (file-append slock "/bin/slock"))))
          (service screen-locker-service-type
                   (screen-locker-configuration
-                   "xlock" (file-append xlockmore "/bin/xlock") #f))
+                   (name "xlock")
+                   (program (file-append xlockmore "/bin/xlock"))))
 
          ;; Add udev rules for MTP devices so that non-root users can access
          ;; them.

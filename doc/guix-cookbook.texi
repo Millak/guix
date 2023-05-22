@@ -2147,7 +2147,10 @@ be made setuid-root so it can authenticate users, and it needs a PAM service. Th
 can be achieved by adding the following service to your @file{config.scm}:
 
 @lisp
-(screen-locker-service slock)
+(service screen-locker-services-type
+         (screen-locker-configuration
+          (name "slock")
+          (program (file-append slock "/bin/slock"))))
 @end lisp
 
 If you manually lock your screen, e.g. by directly calling slock when you want to lock

@@ -97,7 +97,7 @@ Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
 Copyright @copyright{} 2021, 2022 Josselin Poiret@*
-Copyright @copyright{} 2021 muradm@*
+Copyright @copyright{} 2021, 2023 muradm@*
 Copyright @copyright{} 2021, 2022 Andrew Tropin@*
 Copyright @copyright{} 2021 Sarah Morgensen@*
 Copyright @copyright{} 2022 Remco van 't Veer@*
@@ -22530,36 +22530,62 @@ Usually the X server is started by a login manager.
 
 @defvar screen-locker-service-type
 Type for a service that adds a package for a screen locker or screen
-saver to the set of setuid programs and add a PAM entry for it.  The
+saver to the set of setuid programs and/or add a PAM entry for it.  The
 value for this service is a @code{<screen-locker-configuration>} object.
+
+While the default behavior is to setup both a setuid program and PAM
+entry, these two methods are redundant.  Screen locker programs may not
+execute when PAM is configured and @code{setuid} is set on their
+executable.  In this case, @code{using-setuid?} can be set to @code{#f}.
 
 For example, to make XlockMore usable:
 
 @lisp
 (service screen-locker-service-type
          (screen-locker-configuration
-           "xlock" (file-append xlockmore "/bin/xlock") #f))
+           (name "xlock")
+           (program (file-append xlockmore "/bin/xlock"))))
 @end lisp
 
 makes the good ol' XlockMore usable.
+
+For example, swaylock fails to execute when compiled with PAM support
+and setuid enabled.  One can thus disable setuid:
+
+@lisp
+(service screen-locker-service-type
+         (screen-locker-configuration
+           (name "swaylock")
+           (program (file-append xlockmore "/bin/xlock"))
+           (using-pam? #t)
+           (using-setuid? #f)))
+@end lisp
+
 @end defvar
 
 @deftp {Data Type} screen-locker-configuration
-Data type representing the configuration of
-@code{screen-locker-service-type}.
+Available @code{screen-locker-configuration} fields are:
 
 @table @asis
 @item @code{name} (type: string)
 Name of the screen locker.
 
-@item @code{program} (type: gexp)
+@item @code{program} (type: file-like)
 Path to the executable for the screen locker as a G-Expression.
 
-@item @code{allow-empty-password?} (type: boolean)
+@item @code{allow-empty-password?} (default: @code{#f}) (type: boolean)
 Whether to allow empty passwords.
 
+@item @code{using-pam?} (default: @code{#t}) (type: boolean)
+Whether to setup PAM entry.
+
+@item @code{using-setuid?} (default: @code{#t}) (type: boolean)
+Whether to setup program as setuid binary.
+
 @end table
+
 @end deftp
+
 
 @node Printing Services
 @subsection Printing Services
