@@ -75229,8 +75229,36 @@ including a line breaking iterator.")
     (description "An XML library in pure Rust.")
     (license license:expat)))
 
+(define-public rust-xml5ever-0.17
+  (package
+    (name "rust-xml5ever")
+    (version "0.17.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "xml5ever" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0l76v0c228c92sskiflpsy19c0bgc8q7flhlfanm32zrbb8f2d20"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-mac" ,rust-mac-0.1)
+        ("rust-markup5ever" ,rust-markup5ever-0.11))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-rustc-test" ,rust-rustc-test-0.3))))
+    (home-page
+     "https://github.com/servo/html5ever/blob/master/xml5ever/README.md")
+    (synopsis "Push based streaming parser for xml")
+    (description
+     "Push based streaming parser for xml.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-xml5ever-0.16
   (package
+    (inherit rust-xml5ever-0.17)
     (name "rust-xml5ever")
     (version "0.16.2")
     (source
@@ -75242,7 +75270,6 @@ including a line breaking iterator.")
         (sha256
          (base32
           "0rfqys8yyigkzrqcrn5c6r10v42pwxahccyyzhc293px30w1cd4j"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
@@ -75251,13 +75278,7 @@ including a line breaking iterator.")
         ("rust-time" ,rust-time-0.1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-rustc-test" ,rust-rustc-test-0.3))))
-    (home-page
-     "https://github.com/servo/html5ever/blob/master/xml5ever/README.md")
-    (synopsis "Push based streaming parser for xml")
-    (description
-     "Push based streaming parser for xml.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-rustc-test" ,rust-rustc-test-0.3))))))
 
 (define-public rust-xmlparser-0.13
   (package
