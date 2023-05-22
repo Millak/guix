@@ -32,6 +32,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
 
 (define-public rust-sequoia-autocrypt-0.25
@@ -445,45 +446,50 @@ rules are rather complex.  This crate implements the whole grammar." )
 (define-public sequoia-sq
   (package
     (name "sequoia-sq")
-    (version "0.25.0")
+    (version "0.30.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-sq" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0j26vpp98i7zwwhqsvwj0zknj4s0s0ilfqpynj1vgd5laanhyr0d"))))
+          (base32 "0l3mlhvh93b8s1853gyzzfh1dznjdhbsbyxxcm3bbyxmkyr74wkd"))))
     (build-system cargo-build-system)
     (inputs
-     (list nettle openssl))
+     (list nettle openssl sqlite))
     (native-inputs
      (list clang pkg-config))
     (arguments
-     `(#:tests? #f  ;; tests require data-files not provided in the package
+     `(#:tests? #f  ; `(dyn std::fmt::Display + 'static)` cannot be sent between threads safely
        #:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-buffered-reader" ,rust-buffered-reader-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-itertools" ,rust-itertools-0.9)
-        ("rust-rpassword" ,rust-rpassword-5)
-        ("rust-sequoia-autocrypt" ,rust-sequoia-autocrypt-0.23)
-        ("rust-sequoia-net" ,rust-sequoia-net-0.23)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+        ("rust-dirs" ,rust-dirs-5)
+        ("rust-dot-writer" ,rust-dot-writer-0.1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-rpassword" ,rust-rpassword-6)
+        ("rust-sequoia-autocrypt" ,rust-sequoia-autocrypt-0.25)
+        ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.3)
+        ("rust-sequoia-net" ,rust-sequoia-net-0.27)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-sequoia-wot" ,rust-sequoia-wot-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-subplot-build" ,rust-subplot-build-0.7)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-term-size" ,rust-term-size-0.3)
-        ("rust-tokio" ,rust-tokio-0.2))
+        ("rust-tokio" ,rust-tokio-1))
        #:cargo-development-inputs
-       (("rust-assert-cli" ,rust-assert-cli-0.6))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-other-crypto-features
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("^crypto-cng =" line) (string-append "# " line))
-               (("^crypto-rust =" line) (string-append "# " line))))))))
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-fehler" ,rust-fehler-1)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-subplotlib" ,rust-subplotlib-0.7))))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Command-line frontend for Sequoia OpenPGP")
     (description "This package provides the command-line frontend for Sequoia
