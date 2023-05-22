@@ -11910,6 +11910,30 @@ stream of tokens.")
     (arguments
      (list #:cargo-inputs `(("rust-os-str-bytes" ,rust-os-str-bytes-6))))))
 
+(define-public rust-clap-mangen-0.2
+  (package
+    (name "rust-clap-mangen")
+    (version "0.2.11")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap-mangen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cbp5cnh25qnd6l6mqs3v6ky524vxyyf7assfzg8ba83v48xkjvb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-roff" ,rust-roff-0.2))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-snapbox" ,rust-snapbox-0.4))))
+    (home-page "https://github.com/clap-rs/clap/tree/master/clap_mangen")
+    (synopsis "Manpage generator for clap")
+    (description "This package provides a manpage generator for clap.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clearscreen-1
   (package
     (name "rust-clearscreen")
