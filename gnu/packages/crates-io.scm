@@ -68666,6 +68666,58 @@ etc. distance calculations and string search.")
        (sha256
         (base32 "0v795l496crk3h6yff9zh1cjyrh5s9v23fbgccc4dpz25z70jav2"))))))
 
+(define-public rust-trust-dns-client-0.22
+  (package
+    (name "rust-trust-dns-client")
+    (version "0.22.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "trust-dns-client" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1znkfhzwikii6v9k98ccbn3krwic1xs3bknf6y0b7nx9wqr8qh3c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests require network access.
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-data-encoding" ,rust-data-encoding-2)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-radix-trie" ,rust-radix-trie-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-ring" ,rust-ring-0.16)
+        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.22)
+        ("rust-webpki" ,rust-webpki-0.22))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
+    (home-page "https://trust-dns.org/")
+    (synopsis "DNS library with DNSSEC support")
+    (description
+     "Trust-DNS is a DNS library.  This is the Client library with DNSSEC
+support.  DNSSEC with NSEC validation for negative records, is complete.  The
+client supports dynamic DNS with SIG0 authenticated requests, implementing
+easy to use high level funtions.  Trust-DNS is based on the Tokio and Futures
+libraries, which means it should be easily integrated into other software that
+also use those libraries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-trust-dns-https-0.20
   (package
     (name "rust-trust-dns-https")
