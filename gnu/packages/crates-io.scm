@@ -19751,6 +19751,24 @@ non-persistent vector.")
 for graphs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-dot-writer-0.1
+  (package
+    (name "rust-dot-writer")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "dot-writer" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0yjv36hr3klzq4bpzkkqp64s8479ssabr7zkdxn4163ybsyi26rx"))))
+    (build-system cargo-build-system)
+    (home-page "https://bitbucket.org/DrGabble/dot-writer")
+    (synopsis "Library for writing the Graphviz DOT graph language")
+    (description
+     "This package provides a library for writing the Graphviz DOT graph language.")
+    (license license:expat)))
+
 (define-public rust-dotenv-0.15
   (package
     (name "rust-dotenv")
