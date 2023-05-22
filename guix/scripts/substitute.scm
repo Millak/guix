@@ -400,34 +400,41 @@ server certificates."
                     (drain-input socket)
                     socket))))))))
 
+(define kind-and-args-exception?
+  (exception-predicate &exception-with-kind-and-args))
+
 (define (call-with-cached-connection uri proc)
   (let ((port (open-connection-for-uri/cached uri
                                               #:verify-certificate? #f)))
-    (catch #t
-      (lambda ()
-        (proc port))
-      (lambda (key . args)
-        ;; If PORT was cached and the server closed the connection in the
-        ;; meantime, we get EPIPE.  In that case, open a fresh connection
-        ;; and retry.  We might also get 'bad-response or a similar
-        ;; exception from (web response) later on, once we've sent the
-        ;; request, or a ERROR/INVALID-SESSION from GnuTLS.
-        (if (or (and (eq? key 'system-error)
-                     (= EPIPE (system-error-errno `(,key ,@args))))
-                (and (eq? key 'gnutls-error)
-                     (memq (first args)
-                           (list error/invalid-session
+    (guard (c ((kind-and-args-exception? c)
+               (let ((key (exception-kind c))
+                     (args (exception-args c)))
+                 ;; If PORT was cached and the server closed the connection in the
+                 ;; meantime, we get EPIPE.  In that case, open a fresh connection
+                 ;; and retry.  We might also get 'bad-response or a similar
+                 ;; exception from (web response) later on, once we've sent the
+                 ;; request, or a ERROR/INVALID-SESSION from GnuTLS.
+                 (if (or (and (eq? key 'system-error)
+                              (= EPIPE (system-error-errno `(,key ,@args))))
+                         (and (eq? key 'gnutls-error)
+                              (memq (first args)
+                                    (list error/invalid-session
 
-                                 ;; XXX: These two are not properly handled in
-                                 ;; GnuTLS < 3.7.3, in
-                                 ;; 'write_to_session_record_port'; see
-                                 ;; <https://bugs.gnu.org/47867>.
-                                 error/again error/interrupted)))
-                (memq key '(bad-response bad-header bad-header-component)))
-            (proc (open-connection-for-uri/cached uri
-                                                  #:verify-certificate? #f
-                                                  #:fresh? #t))
-            (apply throw key args))))))
+                                          ;; XXX: These two are not properly handled in
+                                          ;; GnuTLS < 3.7.3, in
+                                          ;; 'write_to_session_record_port'; see
+                                          ;; <https://bugs.gnu.org/47867>.
+                                          error/again error/interrupted)))
+                         (memq key '(bad-response bad-header bad-header-component)))
+                     (proc (open-connection-for-uri/cached uri
+                                                           #:verify-certificate? #f
+                                                           #:fresh? #t))
+                     (raise c))))
+              (#t
+               ;; An exception that's not handled here, such as
+               ;; '&http-get-error'.  Re-raise it.
+               (raise c)))
+      (proc port))))
 
 (define-syntax-rule (with-cached-connection uri port exp ...)
   "Bind PORT with EXP... to a socket connected to URI."
@@ -563,12 +570,10 @@ STATUS-PORT."
                     (bytevector->nix-base32-string expected)
                     (bytevector->nix-base32-string actual)))))))
 
-(define system-error?
-  (let ((kind-and-args? (exception-predicate &exception-with-kind-and-args)))
-    (lambda (exception)
-      "Return true if EXCEPTION is a Guile 'system-error exception."
-      (and (kind-and-args? exception)
-           (eq? 'system-error (exception-kind exception))))))
+(define (system-error? exception)
+  "Return true if EXCEPTION is a Guile 'system-error exception."
+  (and (kind-and-args-exception? exception)
+       (eq? 'system-error (exception-kind exception))))
 
 (define network-error?
   (let ((kind-and-args? (exception-predicate &exception-with-kind-and-args)))
