@@ -14374,29 +14374,51 @@ intrinsics.")
      "This package provides a counts the number of live instances of types.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-cpp-demangle-0.3
+(define-public rust-cpp-demangle-0.4
   (package
     (name "rust-cpp-demangle")
-    (version "0.3.2")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cpp-demangle" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ikd484ja34z3mbc1r1zj3y6ymxv3sc5y1n7wrr63xn7vy5zjxic"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-afl" ,rust-afl-0.12)
+        ("rust-cfg-if" ,rust-cfg-if-1))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-diff" ,rust-diff-0.1))))
+    (home-page "https://github.com/gimli-rs/cpp_demangle")
+    (synopsis "Demangle C++ symbols")
+    (description
+     "This package provides a crate for demangling C++ symbols.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-cpp-demangle-0.3
+  (package
+    (inherit rust-cpp-demangle-0.4)
+    (name "rust-cpp-demangle")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cpp_demangle" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "142knq32bpa2hbp4z0bldjd1x869664l0ff2gdrqx7pryv59x4a4"))))
+        (base32 "0zwvaqfawsfbnzmlhk9d8zngs4v3p5k9r9m2pxq8sygy7zpvgqg5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-afl" ,rust-afl-0.8)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-glob" ,rust-glob-0.3))))
-    (home-page "https://github.com/gimli-rs/cpp_demangle")
-    (synopsis "Demangle C++ symbols")
-    (description
-     "This package provides a crate for demangling C++ symbols.")
-    (license (list license:asl2.0 license:expat))))
+     `(#:cargo-inputs
+       (("rust-afl" ,rust-afl-0.12)
+        ("rust-cfg-if" ,rust-cfg-if-1))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-diff" ,rust-diff-0.1))))))
 
 (define-public rust-cpufeatures-0.2
   (package
