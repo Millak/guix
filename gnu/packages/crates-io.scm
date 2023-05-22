@@ -61945,6 +61945,45 @@ easier in Rust.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-subplotlib-0.7
+  (package
+    (name "rust-subplotlib")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "subplotlib" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cbsrsk9pkyhs3fqzmxgf19x2bhr22pic5wqwvphv3sk4nc1ysiw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-fehler" ,rust-fehler-1)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-fs2" ,rust-fs2-0.4)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-remove-dir-all" ,rust-remove-dir-all-0.8)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-state" ,rust-state-0.5)
+        ("rust-subplot-build" ,rust-subplot-build-0.7)
+        ("rust-subplotlib-derive" ,rust-subplotlib-derive-0.7)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-unescape" ,rust-unescape-0.1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://subplot.tech/")
+    (synopsis "Utility functions and types for @code{subplot codegen}")
+    (description
+     "Utility functions and types for @code{subplot codegen} generated Rust
+based test suites.  Relies on @code{subplotlib-derive} for associated macros.")
+    (license license:expat-0)))
+
 (define-public rust-subplotlib-derive-0.7
   (package
     (name "rust-subplotlib-derive")
