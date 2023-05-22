@@ -64768,6 +64768,37 @@ one body with different resource input parameters.  A test is generated for
 each resource matching the specific resource location pattern.")
     (license license:asl2.0)))
 
+(define-public rust-test-log-0.2
+  (package
+    (name "rust-test-log")
+    (version "0.2.11")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "test-log" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "03pmvrg6lc2qgnby9w2fhn1vzqysbl643p7jy14a0s7bz9aciw1q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-futures" ,rust-tracing-futures-0.2)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/d-e-s-o/test-log")
+    (synopsis "Replacement of the #[test] attribute that initializes logging")
+    (description
+     "This package provides a replacement of the #[test] attribute that initializes
+logging and/or tracing infrastructure before running tests.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-test-strategy-0.2
   (package
     (name "rust-test-strategy")
