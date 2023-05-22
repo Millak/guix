@@ -22641,6 +22641,28 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-fehler-macros-1
+  (package
+    (name "rust-fehler-macros")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fehler-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1y808jbwbngji40zny0b0dvxsw9a76g6fl1c5qigmfsy0jqsrdfc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/withoutboats/fehler")
+    (synopsis "Macros for fehler")
+    (description "This package provides macros for the fehler crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-femme-2
   (package
     (name "rust-femme")
