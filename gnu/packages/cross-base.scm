@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -492,7 +493,11 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                                               hurd "/include")))
                    (for-each (cut setenv <> cpath)
                              ',%gcc-cross-include-paths)
-                   #t)))))))
+                   #t)))))
+         ((#:configure-flags flags)
+          `(cons* ,(string-append "--build=" (%current-system))
+                  ,(string-append "--host=" target)
+                  ,flags))))
 
       (propagated-inputs `(("gnumach-headers" ,xgnumach-headers)
                            ("hurd-headers" ,xhurd-headers)))

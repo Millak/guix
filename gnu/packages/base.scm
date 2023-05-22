@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1427,17 +1428,15 @@ command.")
     (native-inputs
      (modify-inputs (package-native-inputs glibc)
        (prepend (if (%current-target-system)
-                    ;; XXX: When targeting i586-pc-gnu, we need a 32-bit MiG,
-                    ;; hence this hack.
-                    (package (inherit mig)
-                             (arguments `(#:system "i686-linux")))
+                    (let* ((cross-base (resolve-interface '(gnu packages cross-base)))
+                           (cross-mig (module-ref cross-base 'cross-mig)))
+                      (cross-mig (%current-target-system)))
                     mig))))
     (arguments
      (substitute-keyword-arguments (package-arguments glibc)
        ;; We just pass the flags really needed to build the headers.
        ((#:configure-flags flags)
         `(list "--enable-add-ons"
-               "--host=i586-pc-gnu"
                ,@%glibc/hurd-configure-flags))
        ((#:phases _)
         '(modify-phases %standard-phases
@@ -1452,7 +1451,8 @@ command.")
                  (close-port
                   (open-output-file
                    (string-append out "/include/gnu/stubs.h"))))))
-           (delete 'build)))))))                  ; nothing to build
+           (delete 'build)))))                  ; nothing to build
+    (supported-systems %hurd-systems)))
 
 (define-public tzdata
   (package
