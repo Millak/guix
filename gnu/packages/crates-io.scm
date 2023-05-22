@@ -52098,10 +52098,14 @@ Digital Signature Algorithm} (ECDSA).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1z682xp7v38ayq9g9nkbhhfpj6ygralmlx7wdmsfv8rnw99cylrh"))
+       (patches (search-patches "rust-ring-0.16-missing-files.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "pregenerated")
+           ;; Regenerating the curve25519_tables requires python2 and clang-format.
+           ;; Luckily we've added the script back in the patch.
+           (delete-file "crypto/curve25519/curve25519_tables.h")
            ;; Pretend this isn't a relase tarball.
            (with-output-to-file ".git"
              (lambda _
@@ -52120,9 +52124,17 @@ Digital Signature Algorithm} (ECDSA).")
         ("rust-cc" ,rust-cc-1))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'generate-curve25519-tables
+           (lambda _
+             (with-directory-excursion "crypto/curve25519"
+               (with-output-to-file "curve25519_tables.h"
+                 (lambda _
+                   (invoke "python" "make_curve25519_tables.py")))))))))
     (native-inputs
-     (list perl))
+     (list clang perl python-2))
     (home-page "https://github.com/briansmith/ring")
     (synopsis "Safe, fast, small crypto using Rust")
     (description "This package provided safe, fast, small crypto using Rust.")
