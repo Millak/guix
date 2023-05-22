@@ -51770,6 +51770,27 @@ and speed.")
 responses, and headers for the Rocket web framework.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-roff-0.2
+  (package
+    (name "rust-roff")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "roff" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05j324x84xkgp848smhnknnlpl70833xb9lalqg4n2ga6k8dhcxq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-duct" ,rust-duct-0.13)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/rust-cli/roff-rs")
+    (synopsis "ROFF (man page format) generation library")
+    (description "ROFF (man page format) generation library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-romio-0.3
   (package
     (name "rust-romio")
