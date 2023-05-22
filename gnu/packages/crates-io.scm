@@ -3062,8 +3062,29 @@ it outputs messages to Android's logcat.")
 escape codes.")
     (license license:mpl2.0)))
 
+(define-public rust-anstyle-1
+  (package
+    (name "rust-anstyle")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "anstyle" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0zbazbfqs4mfw93573f61iy8c78vbbv824m3w206bbljpy39mva1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-lexopt" ,rust-lexopt-0.3))))
+    (home-page "https://github.com/rust-cli/anstyle")
+    (synopsis "ANSI text styling")
+    (description "This package provides ANSI text styling.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anstyle-0.2
   (package
+    (inherit rust-anstyle-1)
     (name "rust-anstyle")
     (version "0.2.8")
     (source (origin
@@ -3073,14 +3094,9 @@ escape codes.")
               (sha256
                (base32
                 "10kdjcyks9hcvmhk44afagnrxi4pczg6jnldjdadzbi4kyi2wqah"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
-       (("rust-lexopt" ,rust-lexopt-0.3))))
-    (home-page "https://github.com/rust-cli/anstyle")
-    (synopsis "ANSI text styling")
-    (description "This package provides ANSI text styling.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-lexopt" ,rust-lexopt-0.3))))))
 
 (define-public rust-anstyle-parse-0.2
   (package
