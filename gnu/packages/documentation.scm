@@ -296,7 +296,8 @@ objects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ma5gwy93m1djd3zdlnqfrwhgr8ic1qbsz5kkrb9f987ax40lfkd"))))
+                "1ma5gwy93m1djd3zdlnqfrwhgr8ic1qbsz5kkrb9f987ax40lfkd"))
+              (patches (search-patches "python-docrepr-fix-tests.patch"))))
     (build-system python-build-system)
     (arguments
      (list

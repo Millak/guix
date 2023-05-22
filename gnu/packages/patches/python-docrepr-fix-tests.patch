@@ -1,0 +1,16 @@
+Fixes the errors with use of asyncio in docrepr/tests/test_output.py:
+     
+>       await compare_screenshots(test_id, url)
+E       TypeError: 'coroutine' object is not callable
+
+--- a/conftest.py
++++ b/conftest.py
+@@ -65,7 +65,7 @@ def _open_browser(url):
+ 
+ 
+ @pytest.fixture
+-async def compare_screenshots(request):
++def compare_screenshots(request):
+     """Run visual regression test on the output."""
+     async def _compare_screenshots(test_id, url):
+         if (request.config.getoption(COMPARE_SCREENSHOTS_OPTION) or

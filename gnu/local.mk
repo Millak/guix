@@ -1683,6 +1683,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/prusa-slicer-with-cereal-1.3.1.patch	\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
+  %D%/packages/patches/python-docrepr-fix-tests.patch		\
   %D%/packages/patches/python-feedparser-missing-import.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
