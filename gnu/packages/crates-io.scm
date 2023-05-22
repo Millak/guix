@@ -8276,8 +8276,30 @@ programs.")
     (description "FFI wrapper for Botan cryptography library")
     (license license:expat)))
 
+(define-public rust-botan-src-0.21903
+  (package
+    (name "rust-botan-src")
+    (version "0.21903.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "botan-src" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19fhll4g0v8hbyjxg8c790l9ln5xgf4r6xdcnw438mpy81hvrdxy"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (delete-file-recursively "botan")))))
+    (build-system cargo-build-system)
+    (arguments '(#:skip-build? #t))
+    (home-page "https://botan.randombit.net/")
+    (synopsis "Sources of Botan cryptography library")
+    (description "Sources of Botan cryptography library")
+    (license license:expat)))
+
 (define-public rust-botan-src-0.21703
   (package
+    (inherit rust-botan-src-0.21903)
     (name "rust-botan-src")
     (version "0.21703.0")
     (source (origin
@@ -8289,13 +8311,7 @@ programs.")
                 "0s2ad9q84qsrllfsbj7hjhn7gr3hab9ng6lwzwqmimia6yvja8y8"))
               (modules '((guix build utils)))
               (snippet
-               '(begin (delete-file-recursively "botan")))))
-    (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
-    (home-page "https://botan.randombit.net/")
-    (synopsis "Sources of Botan cryptography library")
-    (description "Sources of Botan cryptography library")
-    (license license:expat)))
+               '(begin (delete-file-recursively "botan")))))))
 
 (define-public rust-boxfnonce-0.1
   (package
