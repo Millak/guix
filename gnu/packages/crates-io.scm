@@ -22641,6 +22641,26 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-fehler-1
+  (package
+    (name "rust-fehler")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fehler" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d9nk0nimhrqhlwsm42kmg6bwhfqscnfddj70xawsa50kgj9ywnm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fehler-macros" ,rust-fehler-macros-1))))
+    (home-page "https://github.com/withoutboats/fehler")
+    (synopsis "Library for error-handling syntax in Rust")
+    (description
+     "This package provides a library for error-handling syntax in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fehler-macros-1
   (package
     (name "rust-fehler-macros")
