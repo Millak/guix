@@ -54,6 +54,7 @@
             narinfo-hash-algorithm+value
 
             narinfo-hash->sha256
+            narinfo-preferred-uris
             narinfo-best-uri
 
             valid-narinfo?
@@ -309,9 +310,11 @@ than COMPRESSION2."
     ("gzip" (string=? compression2 "lzip"))
     (_      #f)))
 
-(define* (narinfo-best-uri narinfo #:key fast-decompression?)
-  "Select the \"best\" URI to download NARINFO's nar, and return three values:
-the URI, its compression method (a string), and the compressed file size.
+(define* (narinfo-preferred-uris narinfo #:key fast-decompression?)
+  "Return the sorted list of \"preferred\" nar URIs from NARINFO (preferred
+comes first) where each entry is a tuple containing: the URI, its compression
+method (a string), and the compressed file size.
+
 When FAST-DECOMPRESSION? is true, prefer substitutes with faster
 decompression (typically zstd) rather than substitutes with a higher
 compression ratio (typically lzip)."
@@ -343,6 +346,16 @@ compression ratio (typically lzip)."
          ((uri2 compression2 . _)
           (decompresses-faster? compression2 compression1))))))
 
-  (match (sort choices (if fast-decompression? (negate speed<?) file-size<?))
+  (sort choices (if fast-decompression? (negate speed<?) file-size<?)))
+
+(define* (narinfo-best-uri narinfo #:key fast-decompression?)
+  "Select the \"best\" URI to download NARINFO's nar, and return three values:
+the URI, its compression method (a string), and the compressed file size.
+
+When FAST-DECOMPRESSION? is true, prefer substitutes with faster
+decompression (typically zstd) rather than substitutes with a higher
+compression ratio (typically lzip)."
+  (match (narinfo-preferred-uris narinfo
+                                 #:fast-decompression? fast-decompression?)
     (((uri compression file-size) _ ...)
      (values uri compression file-size))))
