@@ -21256,6 +21256,27 @@ implement enum_primitive.")
 convert enum to u8 slice ref.")
     (license license:bsd-3)))
 
+(define-public rust-enumber-0.3
+  (package
+    (name "rust-enumber")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enumber" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06gd26x1fpxphkzlxnkmyjc7zalrr2vw88lz4yg23x6q62dv8dgs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/kinnison/enumber/")
+    (synopsis "Provide useful impls on numerical enums")
+    (description "Provide useful impls on numerical enums")
+    (license license:bsd-3)))
+
 (define-public rust-enumset-1
   (package
     (name "rust-enumset")
