@@ -35243,8 +35243,35 @@ template engine for Rust.")
      "This package provides a fast, type-safe template engine for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-markup5ever-0.11
+  (package
+    (name "rust-markup5ever")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "markup5ever" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05mhzsp6lfxla1fgd0ac283b405s6kyj27wj5r6d7wq42jxjj9ks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-phf" ,rust-phf-0.10)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.10)
+        ("rust-string-cache" ,rust-string-cache-0.8)
+        ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5)
+        ("rust-tendril" ,rust-tendril-0.4))))
+    (home-page "https://github.com/servo/html5ever")
+    (synopsis "Common code for xml5ever and html5ever")
+    (description
+     "Common code for xml5ever and html5ever.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-markup5ever-0.10
   (package
+    (inherit rust-markup5ever-0.11)
     (name "rust-markup5ever")
     (version "0.10.1")
     (source
@@ -35256,7 +35283,6 @@ template engine for Rust.")
         (sha256
          (base32
           "1zf8iq2czd6kz99fjs3pgf5c17lfz75ds31khkfiqbc50gxl0kx2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
@@ -35264,12 +35290,7 @@ template engine for Rust.")
         ("rust-phf-codegen" ,rust-phf-codegen-0.8)
         ("rust-string-cache" ,rust-string-cache-0.8)
         ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5)
-        ("rust-tendril" ,rust-tendril-0.4))))
-    (home-page "https://github.com/servo/html5ever")
-    (synopsis "Common code for xml5ever and html5ever")
-    (description
-     "Common code for xml5ever and html5ever.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-tendril" ,rust-tendril-0.4))))))
 
 (define-public rust-markup5ever-0.9
   (package
