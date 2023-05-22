@@ -4019,8 +4019,29 @@ library for Rust.")
      "This is a Rust library for parsing and generating ASN.1 data (DER only).")
     (license license:bsd-3)))
 
+(define-public rust-as-slice-0.2
+  (package
+    (name "rust-as-slice")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "as-slice" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05j52y1ws8kir5zjxnl48ann0if79sb56p9nm76hvma01r7nnssi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/japaric/as-slice")
+    (synopsis "AsSlice and AsMutSlice traits")
+    (description "This package provides @code{AsSlice} and @code{AsMutSlice}
+traits.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-as-slice-0.1
   (package
+    (inherit rust-as-slice-0.2)
     (name "rust-as-slice")
     (version "0.1.5")
     (source
@@ -4031,18 +4052,12 @@ library for Rust.")
        (sha256
         (base32
          "1q3a9494ikaq38zjg5px5gwwrbdgnyj23b505224njlmwd4knh25"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-generic-array-0.14" ,rust-generic-array-0.14)
         ("rust-generic-array-0.13" ,rust-generic-array-0.13)
         ("rust-generic-array-0.12" ,rust-generic-array-0.12)
-        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
-    (home-page "https://github.com/japaric/as-slice")
-    (synopsis "AsSlice and AsMutSlice traits")
-    (description "This package provides @code{AsSlice} and @code{AsMutSlice}
-traits.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-ascii-1
   (package
