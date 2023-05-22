@@ -57035,8 +57035,37 @@ for later processing.")
 (compatible with 0.9+)")
     (license license:expat)))
 
+(define-public rust-serde-yaml-0.9
+  (package
+    (name "rust-serde-yaml")
+    (version "0.9.21")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "serde-yaml" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1714w6f5b2g4svha9r96cirz05mc0d9xfaxkcrabzqvxxkiq9mnr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-indexmap" ,rust-indexmap-1)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unsafe-libyaml" ,rust-unsafe-libyaml-0.2))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-indoc" ,rust-indoc-2)
+        ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/dtolnay/serde-yaml")
+    (synopsis "YAML support for Serde")
+    (description "This package provides YAML support for Serde.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-yaml-0.8
   (package
+    (inherit rust-serde-yaml-0.9)
     (name "rust-serde-yaml")
     (version "0.8.26")
     (source
@@ -57046,7 +57075,6 @@ for later processing.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "06y7gxy312mink8nsnmci9cw0ykpgsdcxmayg0snmdbnnwrp92jp"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-indexmap" ,rust-indexmap-1)
@@ -57056,11 +57084,7 @@ for later processing.")
        #:cargo-development-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-indoc" ,rust-indoc-1)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
-    (home-page "https://github.com/dtolnay/serde-yaml")
-    (synopsis "YAML support for Serde")
-    (description "This package provides YAML support for Serde.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-derive" ,rust-serde-derive-1))))))
 
 (define-public rust-serdect-0.2
   (package
