@@ -6,6 +6,7 @@
 ;;; Copyright © 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Rene Saavedra <pacoon@protonmail.com>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,16 +76,6 @@
            (lambda _
              (invoke "make" "install-data")))
          (delete 'build))
-
-       ;; GNU Mach supports only IA32 currently, so cheat so that we can at
-       ;; least install its headers.
-       ,@(if (%current-target-system)
-             '()
-             ;; See <http://lists.gnu.org/archive/html/bug-hurd/2015-06/msg00042.html>
-             ;; <http://lists.gnu.org/archive/html/guix-devel/2015-06/msg00716.html>
-             '(#:configure-flags '("--build=i586-pc-gnu"
-                                   "--host=i686-linux-gnu")))
-
        #:tests? #f))
     (native-inputs
      (list autoconf automake texinfo-4))

@@ -375,6 +375,24 @@ target that libc."
     (inherit gnumach-headers)
     (name (string-append (package-name gnumach-headers)
                          "-cross-" target))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gnumach-headers)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            ;; Cheat by setting the host_cpu variable manually, since using
+            ;; --host= would require a working cross-compiler, which we don't
+            ;; have yet.
+            (add-after 'unpack 'substitute-host-cpu
+              (lambda _
+                (substitute* "configure.ac"
+                  (("AC_CANONICAL_HOST")
+                   #$(string-append
+                      "host_cpu="
+                      (match target
+                        ((? target-x86-32?)
+                         "i386")
+                        ((? target-x86-64?)
+                         "x86_64")))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs gnumach-headers)
        (prepend xgcc xbinutils)))))
