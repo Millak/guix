@@ -11619,22 +11619,21 @@ how to behave across the three main input sources")
 (define-public rust-clap-derive-4
   (package
     (name "rust-clap-derive")
-    (version "4.1.0")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s4c4005xsdw5zlq8z5h02mgjcsqgcd1ydxg6iird49fcxyjfjk8"))))
+        (base32 "0yzjjrww0hwfwy7l2yarmnl2gkjjs8660b4kgw1b8cr9jrrra78r"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-heck" ,rust-heck-0.4)
-             ("rust-proc-macro-error" ,rust-proc-macro-error-1)
              ("rust-proc-macro2" ,rust-proc-macro2-1)
              ("rust-quote" ,rust-quote-1)
-             ("rust-syn" ,rust-syn-1))))
+             ("rust-syn" ,rust-syn-2))))
     (home-page "https://clap.rs/")
     (synopsis "Procedural macro crate for Clap")
     (description
