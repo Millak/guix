@@ -27513,8 +27513,34 @@ hash map.")
         ("rust-rustc-hash" ,rust-rustc-hash-1)
         ("rust-serde-test" ,rust-serde-test-1))))))
 
+(define-public rust-hashlink-0.8
+  (package
+    (name "rust-hashlink")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hashlink" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ap6ar5jlqq6ln7d9r2j5079mbx0zg8643xacqyjwkqw96ws2q87"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hashbrown" ,rust-hashbrown-0.13)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/kyren/hashlink")
+    (synopsis "HashMap-like containers with user controllable order")
+    (description "This package provides HashMap-like containers that hold
+their key-value pairs in a user controllable order.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hashlink-0.7
   (package
+    (inherit rust-hashlink-0.8)
     (name "rust-hashlink")
     (version "0.7.0")
     (source
@@ -27524,19 +27550,13 @@ hash map.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kzs54xq1g41zph39cfdfchiafij99382zw5fk6zq7xwkh9a6jbj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-hashbrown" ,rust-hashbrown-0.11)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-serde-test" ,rust-serde-test-1))))
-    (home-page "https://crates.io/crates/hashlink")
-    (synopsis "HashMap-like containers with user controllable order")
-    (description "This package provides HashMap-like containers that hold
-their key-value pairs in a user controllable order.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-hdrhistogram-6
   (package
