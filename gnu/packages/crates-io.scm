@@ -57380,7 +57380,7 @@ functionality and without weak references.")
 (define-public rust-sha-1-0.10
   (package
     (name "rust-sha-1")
-    (version "0.10.0")
+    (version "0.10.5")
     (source
      (origin
        (method url-fetch)
@@ -57389,15 +57389,18 @@ functionality and without weak references.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "03zag8zk4qlv40n2yryddapv5yxkam3hdr7n53d8qrzr2gali3q2"))))
+         "1jr2a7pi67s8nxm4m09df9nnzsdlpif5hnk29hl8xk55fx975y2y"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; use of undeclared crate or module `sha1`
        #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-cpufeatures" ,rust-cpufeatures-0.2)
         ("rust-digest" ,rust-digest-0.10)
-        ("rust-sha1-asm" ,rust-sha1-asm-0.5))))
+        ("rust-sha1-asm" ,rust-sha1-asm-0.5))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
     (home-page "https://github.com/RustCrypto/hashes")
     (synopsis "SHA-1 hash function")
     (description "This crate provides a SHA-1 hash function.")
