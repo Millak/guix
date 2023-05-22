@@ -47769,8 +47769,43 @@ compliant email address validation.")
         ("rust-regex" ,rust-regex-1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-pulldown-cmark-0.9
+  (package
+    (name "rust-pulldown-cmark")
+    (version "0.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pulldown-cmark" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "166rhmwk42ffirrzhv7lmsh9f3my6xv1ggmb66fgzv57y3qs58bp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unicase" ,rust-unicase-2))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-html5ever" ,rust-html5ever-0.26)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-markup5ever-rcdom" ,rust-markup5ever-rcdom-0.2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tendril" ,rust-tendril-0.4))))
+    (home-page "https://github.com/raphlinus/pulldown-cmark")
+    (synopsis "Pull parser for CommonMark")
+    (description
+     "This package provides a pull parser for CommonMark.")
+    (license license:expat)))
+
 (define-public rust-pulldown-cmark-0.8
   (package
+    (inherit rust-pulldown-cmark-0.9)
     (name "rust-pulldown-cmark")
     (version "0.8.0")
     (source
@@ -47782,7 +47817,6 @@ compliant email address validation.")
         (sha256
           (base32
             "1y6wh446g6vravvj70zsadzswyl2b4pyln9ib76m697jjljf1bgz"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
@@ -47797,12 +47831,7 @@ compliant email address validation.")
          ("rust-markup5ever-rcdom"
           ,rust-markup5ever-rcdom-0.1)
          ("rust-regex" ,rust-regex-1)
-         ("rust-tendril" ,rust-tendril-0.4))))
-    (home-page "https://github.com/raphlinus/pulldown-cmark")
-    (synopsis "Pull parser for CommonMark")
-    (description
-     "This package provides a pull parser for CommonMark.")
-    (license license:expat)))
+         ("rust-tendril" ,rust-tendril-0.4))))))
 
 (define-public rust-pulldown-cmark-0.4
   (package
