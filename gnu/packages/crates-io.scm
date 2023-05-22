@@ -2291,8 +2291,43 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-opaque-debug" ,rust-opaque-debug-0.2)
         ("rust-stream-cipher" ,rust-stream-cipher-0.3))))))
 
+(define-public rust-afl-0.12
+  (package
+    (name "rust-afl")
+    (version "0.12.17")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "afl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05f7wrz15h97b6xqa914syiv6ij849ndgyb5iwmgwkv26qpjzhzn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; We don't want to add AFL as an input.
+       #:cargo-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-fs-extra" ,rust-fs-extra-1)
+        ("rust-home" ,rust-home-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-xdg" ,rust-xdg-2))
+       #:cargo-development-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/rust-fuzz/afl.rs")
+    (synopsis
+     "Fuzzing Rust code with american-fuzzy-lop")
+    (description
+     "Fuzz Rust code with american-fuzzy-lop.")
+    (license license:asl2.0)))
+
 (define-public rust-afl-0.8
   (package
+    (inherit rust-afl-0.12)
     (name "rust-afl")
     (version "0.8.0")
     (source
@@ -2304,7 +2339,6 @@ This package is deprecated and was replaced by the @code{aes} crate.")
        (sha256
         (base32
          "1rw11hycfjhqbc7z1smn75m0sczq519msjwimxh7b8s6n4pzk5r7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -2316,13 +2350,7 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
        (("rust-rustc-version" ,rust-rustc-version-0.2)
-        ("rust-xdg" ,rust-xdg-2))))
-    (home-page "https://github.com/rust-fuzz/afl.rs")
-    (synopsis
-     "Fuzzing Rust code with american-fuzzy-lop")
-    (description
-     "Fuzz Rust code with american-fuzzy-lop.")
-    (license license:asl2.0)))
+        ("rust-xdg" ,rust-xdg-2))))))
 
 (define-public rust-ahash-0.8
   (package
