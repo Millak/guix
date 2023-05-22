@@ -309,6 +309,56 @@ Although the above appear simple to parse, RFC 2822's whitespace and comment
 rules are rather complex.  This crate implements the whole grammar." )
     (license license:gpl3)))
 
+(define-public rust-sequoia-wot-0.8
+  (package
+    (name "rust-sequoia-wot")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sequoia-wot" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rcp7ndjpdd4dkryhkkhakc8axbj93c1gr9qxxksdvrik803alfg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-test-flags
+       (list "--release" "--"
+             ;; Not all files included.
+             "--skip=gpg_trust_roots")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-clap-mangen" ,rust-clap-mangen-0.2)
+        ("rust-crossbeam" ,rust-crossbeam-0.8)
+        ("rust-dot-writer" ,rust-dot-writer-0.1)
+        ("rust-enumber" ,rust-enumber-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-openpgp-cert-d" ,rust-openpgp-cert-d-0.1)
+        ("rust-sequoia-cert-store" ,rust-sequoia-cert-store-0.3)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-sequoia-policy-config" ,rust-sequoia-policy-config-0.6)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs
+     (list nettle openssl sqlite))
+    (native-inputs
+     (list clang pkg-config))
+    (home-page "https://sequoia-pgp.org/")
+    (synopsis "Implementation of OpenPGP's web of trust")
+    (description "An implementation of OpenPGP's web of trust.")
+    (license license:lgpl2.0+)))
+
 (define-public sequoia-sq
   (package
     (name "sequoia-sq")
