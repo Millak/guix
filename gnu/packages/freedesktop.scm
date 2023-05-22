@@ -32,6 +32,7 @@
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2086,6 +2087,9 @@ that wish to perform colour calibration.")
      (list #:configure-flags
            #~(list (string-append "-Dudev_hwdb_dir=" #$output
                                   "/lib/udev/hwdb.d")
+                   (string-append "-Dc_link_args=-Wl,-rpath="
+                                  (search-input-directory %build-inputs
+                                                          "lib/nss"))
                    (string-append "-Dudev_rules_dir=" #$output
                                   "/lib/udev/rules.d"))))
     (native-inputs
