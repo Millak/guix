@@ -23824,16 +23824,17 @@ more helpful error messages.")
 (define-public rust-fs-extra-1
   (package
     (name "rust-fs-extra")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fs_extra" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "151k6dr35mhq5d8pc8krhw55ajhkyiv0pm14s7zzlc5bc9fp28i0"))))
+        (base32 "075i25z70j2mz9r7i9p9r521y8xdj81q7skslyb7zhqnnw33fw22"))))
     (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
+    (arguments
+     `(#:tests? #f))        ; panicked at 'assertion failed: `(left == right)`
     (home-page "https://github.com/webdesus/fs_extra")
     (synopsis "Extra file system methods")
     (description "Expanding opportunities standard library @code{std::fs} and
