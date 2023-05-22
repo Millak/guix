@@ -79,6 +79,7 @@
        #:tests? #f))
     (native-inputs
      (list autoconf automake texinfo-4))
+    (supported-systems %hurd-systems)
     (home-page "https://www.gnu.org/software/hurd/microkernel/mach/gnumach.html")
     (synopsis "GNU Mach kernel headers")
     (description
@@ -189,6 +190,7 @@ communication.")
                              "ac_cv_func_file_futimens=no")
 
          #:tests? #f))
+      (supported-systems %hurd-systems)
       (home-page "https://www.gnu.org/software/hurd/hurd.html")
       (synopsis "GNU Hurd headers")
       (description
@@ -224,6 +226,7 @@ Library and other user programs.")
 
                ;; Build libihash.
                (invoke "make" "-Clibihash" "libihash.a")))))))
+    (supported-systems %hurd-systems)
     (home-page "https://www.gnu.org/software/hurd/hurd.html")
     (synopsis "GNU Hurd libraries")
     (description
@@ -256,6 +259,7 @@ Library for GNU/Hurd.")
                                      directories)
                         #t))))))
     (inputs (list gnumach-headers hurd-headers hurd-minimal))
+    (supported-systems %hurd-systems)
     (synopsis "Union of the Hurd headers and libraries")
     (description
      "This package contains the union of the Mach and Hurd headers and the
@@ -291,7 +295,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
                    mig)
            perl
            texinfo-4))
-    (supported-systems (cons "i686-linux" %hurd-systems))
+    (supported-systems %hurd-systems)
     (synopsis "Microkernel of the GNU system")
     (description
      "GNU Mach is the microkernel upon which a GNU Hurd system is based.")))
