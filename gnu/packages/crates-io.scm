@@ -11665,33 +11665,20 @@ how to behave across the three main input sources")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.1.6")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qzmsg3j2rch16gbh753hsdgvfv6q4vc2xdxgnl66kadsj40a2zc"))))
+        (base32 "1k2s9llgkn7pjr1vsc4dx19vz9dlqxzibnaxww7zfi9236jfgalk"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-test-flags
-           '(list "--release" "--"
-                  ;; Some of the doc tests fail.
-                  "--skip=builder::range::ValueRange::new"
-                  "--skip=builder::value_parser::value_parser")
-           #:cargo-inputs
-           `(("rust-backtrace" ,rust-backtrace-0.3)
-             ("rust-bitflags" ,rust-bitflags-1)
+     (list #:cargo-inputs
+           `(("rust-clap-builder" ,rust-clap-builder-4)
              ("rust-clap-derive" ,rust-clap-derive-4)
-             ("rust-clap-lex" ,rust-clap-lex-0.3)
-             ("rust-is-terminal" ,rust-is-terminal-0.4)
-             ("rust-once-cell" ,rust-once-cell-1)
-             ("rust-strsim" ,rust-strsim-0.10)
-             ("rust-termcolor" ,rust-termcolor-1)
-             ("rust-terminal-size" ,rust-terminal-size-0.2)
-             ("rust-unicase" ,rust-unicase-2)
-             ("rust-unicode-width" ,rust-unicode-width-0.1))
+             ("rust-once-cell" ,rust-once-cell-1))
            #:cargo-development-inputs
            `(("rust-humantime" ,rust-humantime-2)
              ("rust-rustversion" ,rust-rustversion-1)
