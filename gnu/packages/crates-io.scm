@@ -11163,23 +11163,25 @@ Python arrow.humanize.")
 (define-public rust-chrono-tz-0.6
   (package
     (name "rust-chrono-tz")
-    (version "0.6.0")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono-tz" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12qcpjqva4fpj5kdcksbfhsc8dkbdhyi2z56p8dwf9bxc0f1rh34"))))
+        (base32 "1pmv434fhw9pwiqc12pvgaiskrq4v1dh1f238gfsg48r301r5hr9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-chrono-tz-build" ,rust-chrono-tz-build-0.0.2)
-        ("rust-phf" ,rust-phf-0.10)
+        ("rust-chrono-tz-build" ,rust-chrono-tz-build-0.0.3)
+        ("rust-phf" ,rust-phf-0.11)
         ("rust-serde" ,rust-serde-1)
-        ("rust-uncased" ,rust-uncased-0.9))))
+        ("rust-uncased" ,rust-uncased-0.9))
+       #:cargo-development-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/chronotope/chrono-tz")
     (synopsis "TimeZone implementations for rust-chrono from the IANA database")
     (description
