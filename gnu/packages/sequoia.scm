@@ -40,30 +40,29 @@
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls))
 
-(define-public rust-sequoia-autocrypt-0.23
+(define-public rust-sequoia-autocrypt-0.25
   (package
     (name "rust-sequoia-autocrypt")
-    (version "0.23.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "sequoia-autocrypt" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0skj0dv15341v470g6w5pggsl0iy27qb8h24rr8k6rq7vxdjxl7g"))))
+    (version "0.25.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sequoia-autocrypt" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0796mn8kwrpfc8qzliwyyy62mrg2w0j6ax8929jwrkibvwy2axi2"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-base64" ,rust-base64-0.13)
-         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-other-crypto-features
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("^crypto-cng =" line) (string-append "# " line))
-               (("^crypto-rust =" line) (string-append "# " line))))))))
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))
+       #:cargo-development-inputs
+       (("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
+    (native-inputs
+     (list clang pkg-config))
+    (inputs
+     (list gmp nettle))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Deal with Autocrypt encoded data")
     (description "This crate implements low-level functionality like encoding
