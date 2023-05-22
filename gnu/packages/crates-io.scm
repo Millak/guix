@@ -69590,17 +69590,18 @@ the Trust-DNS client to use rustls for TLS.")
 (define-public rust-trycmd-0.14
   (package
     (name "rust-trycmd")
-    (version "0.14.12")
+    (version "0.14.16")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "trycmd" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "10ag8s931glx0g1arj823dph27x77jc37nal733z7pal2g4dwiq3"))))
+               (base32 "13i5bmw4c8pansylgixfzknzm79g5n602rmi3qy1fax1d0cff999"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-escargot" ,rust-escargot-0.5)
+       (("rust-anstream" ,rust-anstream-0.3)
+        ("rust-escargot" ,rust-escargot-0.5)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-humantime" ,rust-humantime-2)
         ("rust-humantime-serde" ,rust-humantime-serde-1)
