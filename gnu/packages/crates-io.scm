@@ -59345,8 +59345,33 @@ stack.")
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1))))))
 
+(define-public rust-smart-default-0.7
+  (package
+    (name "rust-smart-default")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "smart-default" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1hgzs1250559bpayxmn46gzas5ycqn39wkf4srjgqh4461k1ic0f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/idanarye/rust-smart-default")
+    (synopsis "Custom-derive macro for Default with more control on the fields")
+    (description
+     "This package provides a custom-derive macro for Default with more
+control on the fields.")
+    (license license:expat)))
+
 (define-public rust-smart-default-0.6
   (package
+    (inherit rust-smart-default-0.7)
     (name "rust-smart-default")
     (version "0.6.0")
     (source
@@ -59356,19 +59381,12 @@ stack.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xnvxz9wilj4d5b8kg4wbs0yk48wm41fnwkmn3p6wi9rafhmjdhk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/idanarye/rust-smart-default")
-    (synopsis "Custom-derive macro for Default with more control on the fields")
-    (description
-     "This package provides a custom-derive macro for Default with more
-control on the fields.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-smartstring-1
   (package
