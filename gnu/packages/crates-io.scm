@@ -62154,6 +62154,29 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
 values without proliferating generics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-supports-color-2
+  (package
+    (name "rust-supports-color")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "supports-color" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0m5kayz225f23k5jyjin82sfkrqhfdq3j72ianafkazz9cbyfl29"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; panicked at 'assertion failed: `(left == right)`
+       #:cargo-inputs
+       (("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-is-ci" ,rust-is-ci-1))))
+    (home-page "https://github.com/zkat/supports-color")
+    (synopsis "Detects whether a terminal supports color")
+    (description
+     "Detects whether a terminal supports color, and gives details about that support.")
+    (license license:asl2.0)))
+
 (define-public rust-sval-1
   (package
     (name "rust-sval")
