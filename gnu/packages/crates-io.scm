@@ -27239,28 +27239,21 @@ already-hashed or hash-like data.")
 @code{#[derive(Hash32)]}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-hashbrown-0.12
+(define-public rust-hashbrown-0.13
   (package
     (name "rust-hashbrown")
-    (version "0.12.3")
+    (version "0.13.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hashbrown" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1268ka4750pyg2pbgsr43f0289l5zah4arir2k4igx5a8c6fg7la"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Without this line users of hashbrown would be unable to
-               ;; parse the contents of the Cargo.toml.
-               '(substitute* "Cargo.toml"
-                  (("\\[package\\]" m)
-                   (string-append "cargo-features = [\"edition2021\"]\n" m))))))
+                "03ji3n19j4b6mf2wlla81vsixcmlivglp6hgk79d1pcxfcrw38s3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-ahash" ,rust-ahash-0.7)
+       (("rust-ahash" ,rust-ahash-0.8)
         ("rust-bumpalo" ,rust-bumpalo-3)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rayon" ,rust-rayon-1)
@@ -27279,6 +27272,42 @@ already-hashed or hash-like data.")
     (description
      "This package provides a Rust port of Google's SwissTable hash map")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-hashbrown-0.12
+  (package
+    (inherit rust-hashbrown-0.13)
+    (name "rust-hashbrown")
+    (version "0.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hashbrown" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1268ka4750pyg2pbgsr43f0289l5zah4arir2k4igx5a8c6fg7la"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Without this line users of hashbrown would be unable to
+               ;; parse the contents of the Cargo.toml.
+               '(substitute* "Cargo.toml"
+                  (("\\[package\\]" m)
+                   (string-append "cargo-features = [\"edition2021\"]\n" m))))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.7)
+        ("rust-bumpalo" ,rust-bumpalo-3)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde-test" ,rust-serde-test-1))))))
 
 (define-public rust-hashbrown-0.11
   (package
