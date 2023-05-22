@@ -28944,10 +28944,31 @@ HTTP request or response body.")
      "This package provides a Humantime serialization timestamp format.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-humansize-1
+(define-public rust-humansize-2
   (package
     (name "rust-humansize")
-    (version "1.1.0")
+    (version "2.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "humansize" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1msxd1akb3dydsa8qs461sds9krwnn31szvqgaq93p4x0ad1rdbc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libm" ,rust-libm-0.2))))
+    (home-page "https://github.com/LeopoldArkham/humansize")
+    (synopsis "Represent file sizes in a human-readable format")
+    (description "This package provides a configurable crate to easily
+represent file sizes in a human-readable format.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-humansize-1
+  (package
+    (inherit rust-humansize-2)
+    (name "rust-humansize")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
@@ -28955,13 +28976,7 @@ HTTP request or response body.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0piadmwjah1jv6q288im4za9szlgalzjyq2811w35i6gg9ib5jmn"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/LeopoldArkham/humansize")
-    (synopsis "Represent file sizes in a human-readable format")
-    (description "This package provides a configurable crate to easily
-represent file sizes in a human-readable format.")
-    (license (list license:expat license:asl2.0))))
+         "09nh6xyssghjajvip9crd79i4a40nw8r4bdwwg3dg5l7rfb6ja82"))))))
 
 (define-public rust-humantime-2
   (package
