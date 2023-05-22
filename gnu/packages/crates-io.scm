@@ -70967,6 +70967,30 @@ clear display in the output.")
      "Traits and implementations for unchecked downcasting.")
     (license license:expat)))
 
+;; This package was originally transpiled from libyaml, but has seen development
+;; since then, showing that it is in its editable form.
+(define-public rust-unsafe-libyaml-0.2
+  (package
+    (name "rust-unsafe-libyaml")
+    (version "0.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "unsafe-libyaml" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19l0v20x83dvxbr68rqvs9hvawaqd929hia1nldfahlhamm80r8q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `unsafe_libyaml_test_suite`
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/dtolnay/unsafe-libyaml")
+    (synopsis "Libyaml in rust")
+    (description "This package provides libyaml transpiled to rust by c2rust,
+with changes and updated applied to it.")
+    (license license:expat)))
+
 (define-public rust-unsafe-unwrap-0.1
   (package
     (name "rust-unsafe-unwrap")
