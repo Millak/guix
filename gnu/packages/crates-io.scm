@@ -27997,7 +27997,7 @@ compile time.")
   (package
     (inherit rust-hex-literal-0.4)
     (name "rust-hex-literal")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
@@ -28006,7 +28006,7 @@ compile time.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0nzljsyz9rwhh4vi0xs9ya4l5g0ka754wgpy97r1j3v42c75kr11"))))))
+         "1q54yvyy0zls9bdrx15hk6yj304npndy9v4crn1h1vd95sfv5gby"))))))
 
 (define-public rust-hex-literal-0.2
   (package
