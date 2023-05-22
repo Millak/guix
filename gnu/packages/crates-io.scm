@@ -33867,6 +33867,25 @@ high-performance zlib library.")
     (description "This package provides an object pool manager in Rust.")
     (license license:expat)))
 
+(define-public rust-line-col-0.2
+  (package
+    (name "rust-line-col")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "line-col" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1nvqjxn2kkxkph3qdlkc5xq1m2ygla4l0saga778sp2vp3vcsscy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
+    (home-page "https://github.com/TheBerkin/line-col-rs")
+    (synopsis "Convert string slice indices into line/column numbers")
+    (description "Convert string slice indices into line/column numbers")
+    (license license:expat)))
+
 (define-public rust-line-wrap-0.1
   (package
     (name "rust-line-wrap")
