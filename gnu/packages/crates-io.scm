@@ -62099,6 +62099,27 @@ cryptographic implementations.")
         (base32
          "1vm80mxbwfj334izwm8x8l65v1xl9hr0kwrg36r1rq565fkaarrd"))))))
 
+(define-public rust-subtle-ng-2
+  (package
+    (name "rust-subtle-ng")
+    (version "2.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "subtle-ng" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0hj1wp8xl64bjhbvlfffmllqy7wdw2b505f32gn3qqic4vmpcikk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-rand" ,rust-rand-0.7))))
+    (home-page "https://dalek.rs/")
+    (synopsis "Pure-Rust for constant-time cryptographic implementations")
+    (description
+     "This package provides pure-Rust traits and utilities for constant-time
+cryptographic implementations.")
+    (license license:bsd-3)))
+
 (define-public rust-surf-2
   (package
     (name "rust-surf")
