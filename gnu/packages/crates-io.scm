@@ -46816,8 +46816,33 @@ formulas for prime order elliptic curves (Renes-Costello-Batina 2015).  It
 provides a generic over field elements and curve equation coefficients.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-print-bytes-1
+  (package
+    (name "rust-print-bytes")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "print-bytes" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0a1pc0bs0f3mgy86mazdy81k6iaj8s23ly49mcka4in2pj27lzxl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-os-str-bytes" ,rust-os-str-bytes-6))))
+    (home-page "https://github.com/dylni/print_bytes")
+    (synopsis "Print bytes as losslessly as possible")
+    (description "This package contains a Rust library to print bytes as
+losslessly as possible.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-print-bytes-0.5
   (package
+    (inherit rust-print-bytes-1)
     (name "rust-print-bytes")
     (version "0.5.0")
     (source
@@ -46827,17 +46852,11 @@ provides a generic over field elements and curve equation coefficients.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32 "0d4i9y3jx1chi6w97a8rgdbwm9g3cppr53rw53zl6fcaq31qx0b6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
-       (("rust-os-str-bytes" ,rust-os-str-bytes-4))))
-    (home-page "https://github.com/dylni/print_bytes")
-    (synopsis "Print bytes as losslessly as possible")
-    (description "This package contains a Rust library to print bytes as
-losslessly as possible.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-os-str-bytes" ,rust-os-str-bytes-4))))))
 
 (define-public rust-print-bytes-0.4
   (package
