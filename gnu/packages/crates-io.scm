@@ -29510,6 +29510,26 @@ with hyper.")
      "This package provides the IANA time zone for the current system.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-idea-0.5
+  (package
+    (name "rust-idea")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "idea" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0xv4hd9mgrwgzfl7cc5nlwyahm9yni5z9dwb3c1z5mqr8h05fm87"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs (("rust-cipher" ,rust-cipher-0.4))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "IDEA block cipher")
+    (description "IDEA block cipher")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ident-case-1
   (package
     (name "rust-ident-case")
