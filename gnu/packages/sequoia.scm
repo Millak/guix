@@ -564,39 +564,43 @@ This Guix package is built to use the nettle cryptographic library.")
 
 This Guix package is built to use the nettle cryptographic library.")))
 
+;;
+
 (define-public sequoia
   (package
     (name "sequoia")
-    (version "1.6.0")
+    (version "1.16.0")
     (source #f)
     (build-system trivial-build-system)
-    (outputs '("out" "python"))
-    (inputs
-     (list glibc ;; for ldconfig in make-dynamic-linker-cache
-           libsequoia
-           `(,libsequoia "python")
-           sequoia-sq
-           sequoia-sqv))
     (arguments
      (list
-      #:modules '((guix build utils) (guix build gnu-build-system)
-                  (guix build gremlin) (guix elf))
+      #:modules '((guix build utils)
+                  (guix build union)
+                  (guix build gnu-build-system)
+                  (guix build gremlin)
+                  (guix elf))
       #:builder
       #~(begin
-          (use-modules (guix build utils) (guix build gnu-build-system))
+          (use-modules (guix build utils)
+                       (guix build union)
+                       (guix build gnu-build-system)
+                       (ice-9 match))
           (let ((make-dynamic-linker-cache
                  (assoc-ref %standard-phases 'make-dynamic-linker-cache))
                 (ld.so.cache
                  (string-append #$output "/etc/ld.so.cache")))
-            (copy-recursively #$libsequoia #$output)
-            (copy-recursively #$sequoia-sq #$output)
+            (match %build-inputs
+                   (((names . directories) ...)
+                    (union-build #$output directories)))
             (delete-file ld.so.cache)
-            (copy-recursively #$sequoia-sqv #$output)
-            (delete-file ld.so.cache)
-            (copy-recursively #$libsequoia:python #$output:python)
-           (setenv "PATH"
-                   (string-append (getenv "PATH") ":" #$glibc "/sbin"))
-           (make-dynamic-linker-cache #:outputs %outputs)))))
+            (setenv "PATH"
+                    (string-append (getenv "PATH") ":" #$glibc "/sbin"))
+            (make-dynamic-linker-cache #:outputs %outputs)))))
+    (inputs
+     (list ;glibc ;; for ldconfig in make-dynamic-linker-cache
+           sequoia-sq
+           sequoia-sqv
+           sequoia-wot))
     (home-page "https://sequoia-pgp.org")
     (synopsis "New OpenPGP implementation (meta-package)")
     (description "Sequoia is a new OpenPGP implementation, written in Rust,
