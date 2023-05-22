@@ -16613,6 +16613,39 @@ requests.")
 ristretto255 and Curve25519.")
     (license license:bsd-3)))
 
+(define-public rust-curve25519-dalek-ng-4
+  (package
+    (name "rust-curve25519-dalek-ng")
+    (version "4.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "curve25519-dalek-ng" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1j6y6dsqdfp26ifyygibsrm1a8f9f7870i4053xlczil95r9nd8w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-digest" ,rust-digest-0.9)
+        ("rust-packed-simd-2" ,rust-packed-simd-2-0.3)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-subtle-ng" ,rust-subtle-ng-2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.9))))
+    (home-page "https://github.com/zkcrypto/curve25519-dalek-ng")
+    (synopsis "Implementation of group operations on ristretto255 and Curve25519")
+    (description
+     "This package provides a pure-Rust implementation of group operations on
+ristretto255 and Curve25519.")
+    (license license:bsd-3)))
+
 (define-public rust-custom-derive-0.1
   (package
     (name "rust-custom-derive")
