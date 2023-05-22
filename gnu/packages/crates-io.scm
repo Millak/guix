@@ -44478,7 +44478,7 @@ algorithm.")
 (define-public rust-pest-meta-2
   (package
     (name "rust-pest-meta")
-    (version "2.5.3")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
@@ -44487,10 +44487,10 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0lbskklh77xnyk1yr8c387l80s37s30lrfv636s7hild58rz3x0f"))))
+         "04ala2f51zxninvajvvqk5gq80qxyp2v6cpfv3zkj7mpiqplankl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f          ; Not all test files included.
        #:cargo-inputs
        (("rust-once-cell" ,rust-once-cell-1)
         ("rust-pest" ,rust-pest-2)
