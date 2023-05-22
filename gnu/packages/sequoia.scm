@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,51 +71,51 @@ and decoding of Autocrypt headers and setup messages.  Note: Autocrypt is more
 than just headers; it requires tight integration with the MUA.")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-ipc-0.26
+(define-public rust-sequoia-ipc-0.30
   (package
     (name "rust-sequoia-ipc")
-    (version "0.26.0")
+    (version "0.30.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-ipc" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0xyhz55g1igzjw46f667kqmbbk7pgqy2zf5p13zspr6bwv39s1yk"))))
+          (base32 "1fgqjwaw9rz74y394i3n2a6y2vvy0214daamzswn5ahidhycm3x3"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-anyhow" ,rust-anyhow-1)
-         ("rust-buffered-reader" ,rust-buffered-reader-1)
-         ("rust-capnp-rpc" ,rust-capnp-rpc-0.13)
-         ("rust-ctor" ,rust-ctor-0.1)
-         ("rust-dirs" ,rust-dirs-2)
-         ("rust-fs2" ,rust-fs2-0.4)
-         ("rust-futures" ,rust-futures-0.3)
-         ("rust-lalrpop" ,rust-lalrpop-0.19)
-         ("rust-lalrpop-util" ,rust-lalrpop-util-0.19)
-         ("rust-lazy-static" ,rust-lazy-static-1)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-memsec" ,rust-memsec-0.6)
-         ("rust-rand" ,rust-rand-0.7)
-         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
-         ("rust-socket2" ,rust-socket2-0.3)
-         ("rust-tempfile" ,rust-tempfile-3)
-         ("rust-thiserror" ,rust-thiserror-1)
-         ("rust-tokio" ,rust-tokio-0.2)
-         ("rust-tokio-util" ,rust-tokio-util-0.3)
-         ("rust-winapi" ,rust-winapi-0.3))
-        #:cargo-development-inputs
-        (("rust-clap" ,rust-clap-2)
-         ("rust-quickcheck" ,rust-quickcheck-0.9))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-other-crypto-features
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("^crypto-cng =" line) (string-append "# " line))
-               (("^crypto-rust =" line) (string-append "# " line))))))))
+     `(#:features '("sequoia-openpgp/crypto-nettle")
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-buffered-reader" ,rust-buffered-reader-1)
+        ("rust-capnp-rpc" ,rust-capnp-rpc-0.14)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-ctor" ,rust-ctor-0.1)
+        ("rust-dirs" ,rust-dirs-4)
+        ("rust-fs2" ,rust-fs2-0.4)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-lalrpop" ,rust-lalrpop-0.19)
+        ("rust-lalrpop-util" ,rust-lalrpop-util-0.19)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memsec" ,rust-memsec-0.6)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-socket2" ,rust-socket2-0.4)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
+        ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs
+     (list clang pkg-config))
+    (inputs
+     (list nettle))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Interprocess communication infrastructure for Sequoia")
     (description "Interprocess communication infrastructure for Sequoia")
