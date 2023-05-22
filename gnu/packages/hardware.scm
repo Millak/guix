@@ -61,6 +61,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages high-availability)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -1312,6 +1313,37 @@ of your CRT/LCD monitor.")
 libtss2-esys, libtss2-sys, libtss2-mu, libtss2-tcti-device, libtss2-tcti-swtpm
 and libtss2-tcti-mssim.")
     (license license:bsd-2)))
+
+(define-public tpm2-tools
+  (package
+    (name "tpm2-tools")
+    (version "5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/tpm2-software/tpm2-tools/"
+                           "releases/download/" version "/"
+                           "tpm2-tools-" version ".tar.gz"))
+       (sha256
+        (base32 "08y16q92dh7frsyw0zlm3q9gsfqyls0li248s2pgsysk633lknqz"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           curl
+           libtool
+           gnu-gettext
+           openssl
+           pandoc
+           pkg-config
+           tpm2-tss))
+    (home-page "https://github.com/tpm2-software/tpm2-tools")
+    (synopsis "Tools for the Trusted Platform Module (TPM 2.0)")
+    (description
+     "This package provides user tools for the Trusted Computing Group's (TCG)
+TPM2 Software Stack (TSS).  These programs help with common tasks such as key
+management, attestation, encryption, and signing.")
+    (license license:bsd-3)))
 
 (define-public libcpuid
   ;; We need to remove blobs from the source, first we have to isolate the blob
