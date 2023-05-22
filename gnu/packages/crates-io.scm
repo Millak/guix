@@ -28407,32 +28407,59 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winutil" ,rust-winutil-0.1))))))
 
-(define-public rust-html5ever-0.25
+(define-public rust-html5ever-0.26
   (package
     (name "rust-html5ever")
-    (version "0.25.1")
+    (version "0.26.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "html5ever" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1dx3lhfwngi21wa79cpjv5rd4wn5vmklr50wrwbryidq92mqr9my"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-mac" ,rust-mac-0.1)
+        ("rust-markup5ever" ,rust-markup5ever-0.11)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-typed-arena" ,rust-typed-arena-1))))
+    (home-page "https://github.com/servo/html5ever")
+    (synopsis "High-performance browser-grade HTML5 parser")
+    (description
+     "This package provides a high-performance browser-grade HTML5 parser.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-html5ever-0.25
+  (package
+    (inherit rust-html5ever-0.26)
+    (name "rust-html5ever")
+    (version "0.25.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "html5ever" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0szdpwr6l3p21flf01pdlpj6fkpqisqf34lvs918449n3a5g7z5a"))))
+        (base32 "0j1iw2yy3fglr5rxqfrghmhksxzpcfp8ps753qazqkaxisq3zhg5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-mac" ,rust-mac-0.1)
         ("rust-markup5ever" ,rust-markup5ever-0.10)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/servo/html5ever")
-    (synopsis "High-performance browser-grade HTML5 parser")
-    (description
-     "This package provides a high-performance browser-grade HTML5 parser.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-typed-arena" ,rust-typed-arena-1))))))
 
 (define-public rust-html5ever-0.24
   (package
