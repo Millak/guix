@@ -12377,6 +12377,29 @@ CMAKE environmental variable is set.")
      "This package provides bindings to Cocoa Foundation for macOS.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-codegenrs-2
+  (package
+    (name "rust-codegenrs")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "codegenrs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1mld8n8r4ns433gxs2jbndrzqjrxv7v0pwc66pf9a2v2mrgvbv6p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-derive-more" ,rust-derive-more-0.99)
+        ("rust-difference" ,rust-difference-2)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3))))
+    (home-page "https://github.com/crate-ci/codegenrs")
+    (synopsis "Moving code-gen our of build.rs")
+    (description "Moving code-gen our of build.rs")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-codepage-0.1
   (package
     (name "rust-codepage")
