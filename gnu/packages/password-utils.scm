@@ -618,6 +618,12 @@ any X11 window.")
                                  "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
                                  extension-dir
                                  "}\"\n"))))))
+         (add-before 'install 'patch-program-name
+           ;; Use pass not .pass-real in tmpdir and cmd_usage
+           (lambda _
+             (substitute* "src/password-store.sh"
+               (("^PROGRAM=.*$")
+                "PROGRAM=\"pass\"\n"))))
          (add-before 'install 'patch-passmenu-path
            ;; FIXME Wayland support requires ydotool and dmenu-wl packages
            ;; We are ignoring part of the script that gets executed if
