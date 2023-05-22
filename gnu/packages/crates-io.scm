@@ -45150,6 +45150,27 @@ function data structures.")
      "Support code shared by PHF libraries.")
     (license license:expat)))
 
+(define-public rust-pikchr-0.1
+  (package
+    (name "rust-pikchr")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pikchr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1lm6924k84jdwsyjf029r2xwz23dmm19mryb51jaj9q29f9n001w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/kinnison/pikchr")
+    (synopsis "PIC-like diagramming language to SVG converter")
+    (description "PIC-like diagramming language to SVG converter")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pin-project-1
   (package
     (name "rust-pin-project")
