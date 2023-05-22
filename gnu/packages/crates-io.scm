@@ -59696,18 +59696,20 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
 (define-public rust-snapbox-0.4
   (package
     (name "rust-snapbox")
-    (version "0.4.7")
+    (version "0.4.11")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "snapbox" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0gk2ggk4k3vq65yp53akvklg756b8w7bfj21sk7rjcbix270vhh9"))))
+                "0d9q8968hqkq64bain73shj3iqc28pch8c2fj6dghiw30xicvg7n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-backtrace" ,rust-backtrace-0.3)
+       (("rust-anstream" ,rust-anstream-0.3)
+        ("rust-anstyle" ,rust-anstyle-1)
+        ("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-concolor" ,rust-concolor-0.0.11)
         ("rust-content-inspector" ,rust-content-inspector-0.2)
         ("rust-document-features" ,rust-document-features-0.2)
@@ -59715,6 +59717,7 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-escargot" ,rust-escargot-0.5)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
         ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
         ("rust-os-pipe" ,rust-os-pipe-1)
@@ -59724,8 +59727,7 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-windows-sys" ,rust-windows-sys-0.45)
-        ("rust-yansi" ,rust-yansi-0.5))))
+        ("rust-windows-sys" ,rust-windows-sys-0.45))))
     (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
     (synopsis "Snapshot testing toolbox")
     (description
