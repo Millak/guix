@@ -2762,6 +2762,26 @@ address that is aliasable when coerced to a raw pointer")
 types.")
     (license license:expat)))
 
+(define-public rust-aligned-0.4
+  (package
+    (name "rust-aligned")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "aligned" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0md67hsr0yw5qydr9hjlfz4wfxbbl39y7abkhpycf9m682a1p8l0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-as-slice" ,rust-as-slice-0.2))))
+    (home-page "https://github.com/japaric/aligned")
+    (synopsis "Newtype with alignment of at least `A` bytes")
+    (description
+     "This package provides a newtype with alignment of at least `A` bytes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-alloc-no-stdlib-2
   (package
     (name "rust-alloc-no-stdlib")
