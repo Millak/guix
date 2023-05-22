@@ -532,6 +532,38 @@ constraints on the signature into account.
 This Guix package is built to use the nettle cryptographic library.")
     (license license:lgpl2.0+)))
 
+(define-public sequoia-wot
+  (package
+    (inherit rust-sequoia-wot-0.8)
+    (name "sequoia-wot")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-sequoia-wot-0.8)
+       ((#:install-source? _ #t) #f)
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-after 'install 'install-more
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out   (assoc-ref outputs "out"))
+                      (share (string-append out "/share"))
+                      (man1  (string-append share "/man/man1")))
+                 (for-each (lambda (file)
+                             (install-file file man1))
+                           (find-files "target/release" "\\.1$"))
+                 ;; TODO: Install _sq-wot.ps1, sq-wot.elv
+                 (mkdir-p (string-append out "/etc/bash_completion.d"))
+                 (mkdir-p (string-append share "/fish/vendor_completions.d"))
+                 (copy-file (car (find-files "target/release" "sq-wot.bash"))
+                            (string-append out "/etc/bash_completion.d/sq-wot"))
+                 (copy-file (car (find-files "target/release" "sq-wot.fish"))
+                            (string-append
+                              share "/fish/vendor_completions.d/sq-wot.fish"))
+                 (install-file (car (find-files "target/release" "_sq-wot"))
+                               (string-append
+                                 share "/zsh/site-functions")))))))))
+    (description "An implementation of OpenPGP's web of trust.
+
+This Guix package is built to use the nettle cryptographic library.")))
+
 (define-public sequoia
   (package
     (name "sequoia")
