@@ -52325,28 +52325,46 @@ scenario you want to test.")
 floating-point, and complex numbers based on GMP, MPFR and MPC.")
     (license license:lgpl3+)))
 
-(define-public rust-rpassword-5
+(define-public rust-rpassword-6
   (package
     (name "rust-rpassword")
-    (version "5.0.0")
+    (version "6.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rpassword" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0mnrpxvai78mn9wqkqx8wp1gd280jjhn29ixd1dm84l6i2hrkw1b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/conradkleinespel/rpassword")
+    (synopsis "Read passwords in Rust console applications")
+    (description "This package provides a crate for reading passwords in
+console applications.")
+    (license license:asl2.0)))
+
+(define-public rust-rpassword-5
+  (package
+    (inherit rust-rpassword-6)
+    (name "rust-rpassword")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rpassword" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j96nc3dmqhxwb4ql50r5xjs0imwr2x6mrj02mj9i7grq1zj6mfp"))))
-    (build-system cargo-build-system)
+        (base32 "1yry1kmgjcb4qd5wak91203493x42ak3dz9hy1c0r9kyib7kdjgz"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/conradkleinespel/rpassword")
-    (synopsis "Read passwords in Rust console applications")
-    (description "This package provides a crate for reading passwords in
-console applications.")
-  (license license:asl2.0)))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-rpassword-4
   (package
