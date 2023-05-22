@@ -130,10 +130,10 @@ communication.")
   ;; This commit is now slightly behind 0.9.git20220818 as this one needs a
   ;; newer glibc
   (let ((revision "2")
-        (commit "3ff70531ee672f431dbb0c11f286bfe85dce98fc"))
+        (commit "v0.9.git20230216"))
     (package
       (name "hurd-headers")
-      (version (git-version "0.9" revision commit))
+      (version commit)
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -141,11 +141,8 @@ communication.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1jb9f2h2v4lf6acsji1c12aqg3pixkvjdyb4q6axkd8jp22fdgc0"))
-                (file-name (git-file-name name version))
-                (patches (search-patches "hurd-add-without-rump-configure-option.patch"
-                                         "hurd-fix-types-of-read-write-and-readables-methods.patch"
-                                         "hurd-fix-types-of-read-write-and-readables-methods-2.patch"))))
+                  "0jm1dnqkx4kdwmby0z5w0yqp9m5qp4hbxd4jxlyhiqm8nkw9mkvv"))
+                (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (native-inputs
        (list autoconf
@@ -182,7 +179,8 @@ communication.")
                              "ac_cv_func_exec_exec_paths=no"
                              "ac_cv_func__hurd_exec_paths=no"
                              "ac_cv_func__hurd_libc_proc_init=no"
-                             "ac_cv_func_file_futimens=no")
+                             "ac_cv_func_file_futimens=no"
+                             "ac_cv_lib_acpica_acpi_init=no")
 
          #:tests? #f))
       (supported-systems %hurd-systems)
