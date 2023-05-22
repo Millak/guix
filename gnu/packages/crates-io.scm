@@ -30898,6 +30898,25 @@ network configuration for Windows.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winreg" ,rust-winreg-0.6))))))
 
+(define-public rust-is-ci-1
+  (package
+    (name "rust-is-ci")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "is-ci" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ywra2z56x6d4pc02zq24a4x7gvpixynh9524icbpchbf9ydwv31"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/zkat/is_ci")
+    (synopsis "Lightweight CI environment checker")
+    (description
+     "Super lightweight CI environment checker.  Just tells you if you're in CI
+or not without much fuss.")
+    (license license:isc)))
+
 (define-public rust-is-macro-0.1
   (package
     (name "rust-is-macro")
