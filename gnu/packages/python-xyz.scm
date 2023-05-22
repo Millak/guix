@@ -10457,13 +10457,6 @@ computing.")
     (inherit python-ipython)
     (name "python-ipython-documentation")
     (version (package-version python-ipython))
-    (source
-     (origin
-       (inherit (package-source python-ipython))
-       (patches (append (search-patches
-                         "python-ipython-documentation-chars.patch"
-                         "python-ipython-documentation-repro.patch")
-                        (origin-patches (package-source python-ipython))))))
     (arguments
      (list
       #:phases
