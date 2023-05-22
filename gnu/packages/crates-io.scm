@@ -12489,6 +12489,29 @@ diagnostics easy and relatively painless for everyone!")
 sets of intervals.")
     (license license:expat)))
 
+(define-public rust-color-print-proc-macro-0.3
+  (package
+    (name "rust-color-print-proc-macro")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "color-print-proc-macro" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jsijb8b1hiyrmz6hpgcn8544w7ijp00prsfycgjsgfp6yjyl6ym"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nom" ,rust-nom-7)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://gitlab.com/yolenoyer/color-print")
+    (synopsis "Implementation for the package color-print")
+    (description "Implementation for the package color-print")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-color-quant-1
   (package
     (name "rust-color-quant")
