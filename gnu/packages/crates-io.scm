@@ -51672,6 +51672,30 @@ MessagePack format.")
     (description "This crate provides Serde bindings for RMP.")
     (license license:expat)))
 
+(define-public rust-roadmap-0.5
+  (package
+    (name "rust-roadmap")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "roadmap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d0j88wn59sfxwh2k4f609w56n6bmcgf54m0jk9rwc3vci5f8ad1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+        ("rust-textwrap" ,rust-textwrap-0.15)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://gitlab.com/larswirzenius/roadmap")
+    (synopsis "Model a project roadmap as a directed acyclic graph")
+    (description "Model a project roadmap as a directed acyclic graph.")
+    (license license:expat-0)))
+
 (define-public rust-rocket-0.4
   (package
     (name "rust-rocket")
