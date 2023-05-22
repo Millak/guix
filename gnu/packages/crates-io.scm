@@ -74880,6 +74880,34 @@ Diffie-Hellman key exchange, with curve operations provided by
 @code{curve25519-dalek}.")
     (license license:bsd-3)))
 
+(define-public rust-x25519-dalek-ng-1
+  (package
+    (name "rust-x25519-dalek-ng")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "x25519-dalek-ng" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09n35vgrryjy0m6ascfaykc8s0i517rzgj64qdq2jrlri7g78w5z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-curve25519-dalek-ng" ,rust-curve25519-dalek-ng-4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://dalek.rs/")
+    (synopsis "Fork of x25519-dalek")
+    (description "This package provides a fork x25519-dalek, with an updated
+rand_core.")
+    (license license:bsd-3)))
+
 (define-public rust-x509-parser-0.12
   (package
     (name "rust-x509-parser")
