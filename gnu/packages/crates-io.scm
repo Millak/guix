@@ -41834,6 +41834,23 @@ system for OpenSSL.")
     (description "This package provides an OPML parser for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-option-ext-0.2
+  (package
+    (name "rust-option-ext")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "option-ext" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0zbf7cx8ib99frnlanpyikm1bx8qn8x602sw1n7bg6p9x94lyx04"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/soc/option-ext")
+    (synopsis "Extends `Option` with additional operations")
+    (description "Extends `Option` with additional operations")
+    (license license:mpl2.0)))
+
 (define-public rust-option-set-0.1
   (package
     (name "rust-option-set")
