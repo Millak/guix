@@ -71312,7 +71312,7 @@ first byte.")
 (define-public rust-utf8parse-0.2
   (package
     (name "rust-utf8parse")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
@@ -71321,9 +71321,9 @@ first byte.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0wjkvy22cxg023vkmvq2wwkgqyqam0d4pjld3m13blfg594lnvlk"))))
+         "02ip1a0az0qmc2786vxk2nqwsgcwf17d3a38fkf0q7hrmwh9c6vi"))))
     (build-system cargo-build-system)
-    (home-page "https://github.com/jwilm/vte")
+    (home-page "https://github.com/alacritty/vte")
     (synopsis "Table-driven UTF-8 parser")
     (description "This package provides a table-driven UTF-8 parser.")
     (license (list license:asl2.0 license:expat))))
