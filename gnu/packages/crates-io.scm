@@ -11770,6 +11770,52 @@ Command Line Argument Parser.")
         ("rust-version-sync" ,rust-version-sync-0.8))))
     (license license:expat)))
 
+(define-public rust-clap-builder-4
+  (package
+    (name "rust-clap-builder")
+    (version "4.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap-builder" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "141rmj9l6xal8lwy6g6zi4pfgl47frzrqbdsrb4piyyy3qs3whjg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; Some of the doc tests fail.
+             "--skip=builder::range::ValueRange::new"
+             "--skip=builder::value_parser::value_parser")
+       #:cargo-inputs
+       (("rust-anstream" ,rust-anstream-0.3)
+        ("rust-anstyle" ,rust-anstyle-1)
+        ("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-clap-lex" ,rust-clap-lex-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-strsim" ,rust-strsim-0.10)
+        ("rust-terminal-size" ,rust-terminal-size-0.2)
+        ("rust-unicase" ,rust-unicase-2)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-color-print" ,rust-color-print-0.3)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-shlex" ,rust-shlex-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-trycmd" ,rust-trycmd-0.14)
+        ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9))))
+    (home-page "https://github.com/clap-rs/clap")
+    (synopsis "Full-featured Command Line Argument Parser")
+    (description
+     "This package provides a simple to use, efficient, and full-featured
+Command Line Argument Parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-complete-4
   (package
     (name "rust-clap-complete")
