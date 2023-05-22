@@ -44403,7 +44403,7 @@ algorithm.")
 (define-public rust-pest-2
   (package
     (name "rust-pest")
-    (version "2.5.3")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
@@ -44412,13 +44412,11 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "02n3b2hv9ciysybs9qzxza25gp8493dd7r8b57kfkxwi9nhb8ms2"))))
+         "0w3vaad35km41g2liasf0sfkgfhj190rn7mc9q9hf18zn2zq93p6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bytecount" ,rust-bytecount-0.6)
-        ("rust-memchr" ,rust-memchr-2)
+     `(#:cargo-inputs
+       (("rust-memchr" ,rust-memchr-2)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-thiserror" ,rust-thiserror-1)
