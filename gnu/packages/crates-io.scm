@@ -74757,6 +74757,30 @@ serialization.")
      "Contains function definitions for the Windows API library ws2_32.")
     (license license:expat)))
 
+(define-public rust-wycheproof-0.5
+  (package
+    (name "rust-wycheproof")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "wycheproof" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "072rq77c9jp4ida3ag55hd4fn30q8zvi1k5adzvgf6cwyqcggbnc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-num-bigint" ,rust-num-bigint-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/randombit/wycheproof-rs")
+    (synopsis "Wycheproof test vectors")
+    (description "Wycheproof test vectors")
+    (license license:asl2.0)))
+
 (define-public rust-wyhash-0.5
   (package
     (name "rust-wyhash")
