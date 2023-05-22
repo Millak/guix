@@ -1369,7 +1369,10 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
     (package
       (inherit base-linux-libre)
       (inputs (modify-inputs (package-inputs base-linux-libre)
-                (prepend cpio))))))
+                (prepend cpio)))
+      (synopsis "Linux-libre with BPF support")
+      (description "This package provides GNU Linux-Libre with support
+for @acronym{BPF, the Berkeley Packet Filter}."))))
 
 
 ;;;
