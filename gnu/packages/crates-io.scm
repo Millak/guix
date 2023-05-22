@@ -42379,6 +42379,25 @@ platform-native strings.")
      "This package provides a ttf-parser plus support for owned data.")
     (license license:asl2.0)))
 
+(define-public rust-owo-colors-3
+  (package
+    (name "rust-owo-colors")
+    (version "3.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "owo-colors" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0943lynkwz1glq3w7m9anv73lnrhd8yabs09krbh49g1wz4lxp39"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-supports-color" ,rust-supports-color-2))))
+    (home-page "https://github.com/jam1garner/owo-colors")
+    (synopsis "Zero-allocation terminal colors that'll make people go owo")
+    (description "Zero-allocation terminal colors that'll make people go owo")
+    (license license:expat)))
+
 (define-public rust-owned-ttf-parser-0.6
   (package
     (name "rust-owned-ttf-parser")
