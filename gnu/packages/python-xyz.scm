@@ -10516,6 +10516,7 @@ computing.")
            font-gnu-freefont
            graphviz
            python-docrepr
+           python-ipykernel
            python-sphinx
            python-sphinx-rtd-theme
            texinfo
