@@ -161,41 +161,46 @@ than just headers; it requires tight integration with the MUA.")
     (description "Interprocess communication infrastructure for Sequoia")
     (license license:lgpl2.0+)))
 
-(define-public rust-sequoia-net-0.23
+(define-public rust-sequoia-net-0.27
   (package
     (name "rust-sequoia-net")
-    (version "0.23.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "sequoia-net" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "05gv053zqnb00mrai5hva3i4909hn77bnh4z1g4b29cw5qb52cbl"))))
+    (version "0.27.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sequoia-net" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gyk5765hi3s05l64a744f9a4vynfisja92l51az9dpqgfkiw3wn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:features '("sequoia-openpgp/crypto-nettle")
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-base64" ,rust-base64-0.13)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-http" ,rust-http-0.2)
-        ("rust-hyper" ,rust-hyper-0.13)
-        ("rust-hyper-tls" ,rust-hyper-tls-0.4)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-hyper-tls" ,rust-hyper-tls-0.5)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-native-tls" ,rust-native-tls-0.2)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-trust-dns-client" ,rust-trust-dns-client-0.22)
+        ("rust-trust-dns-resolver" ,rust-trust-dns-resolver-0.22)
         ("rust-url" ,rust-url-2)
         ("rust-zbase32" ,rust-zbase32-0.1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-other-crypto-features
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("^crypto-cng =" line) (string-append "# " line))
-               (("^crypto-rust =" line) (string-append "# " line))))))))
+       #:cargo-development-inputs
+       (("rust-hyper" ,rust-hyper-0.14)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sequoia-openpgp" ,rust-sequoia-openpgp-1))))
+    (native-inputs
+     (list clang pkg-config))
+    (inputs
+     (list gmp nettle openssl))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Discover and publish OpenPGP certificates over the network")
     (description "This package provides a crate to access keyservers using the
