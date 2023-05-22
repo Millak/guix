@@ -11208,24 +11208,23 @@ for @code{rust-chrono}.")
         ("rust-parse-zoneinfo" ,rust-parse-zoneinfo-0.3)
         ("rust-serde" ,rust-serde-1))))))
 
-(define-public rust-chrono-tz-build-0.0.2
+(define-public rust-chrono-tz-build-0.0.3
   (package
     (name "rust-chrono-tz-build")
-    (version "0.0.2")
+    (version "0.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono-tz-build" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0schy3z03psvmc6734hgkx52cdb3zvixgzhvhr0mzxmj7x4qs1fv"))))
+        (base32 "031s51dd2vbxdhz7fxk1jpbbvr800w57an14bsq3fd5khwx9ql3g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-parse-zoneinfo" ,rust-parse-zoneinfo-0.3)
-        ("rust-phf" ,rust-phf-0.10)
-        ("rust-phf-codegen" ,rust-phf-codegen-0.10)
+        ("rust-phf" ,rust-phf-0.11)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.11)
         ("rust-regex" ,rust-regex-1)
         ("rust-uncased" ,rust-uncased-0.9))))
     (home-page "https://github.com/chronotope/chrono-tz")
