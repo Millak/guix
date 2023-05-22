@@ -22866,6 +22866,23 @@ prime field implementations in rust.")
 @code{fiat-crypto} libraries.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-file-diff-1
+  (package
+    (name "rust-file-diff")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "file-diff" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19a34rvbqg3b2my6ykax5n1qi2ahwbjacn9y2ji3h9gkp04ak9ri"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/ethanpailes/file_diff-rs")
+    (synopsis "Atomic utility for diffing files in testing")
+    (description "An atomic utility for diffing files in testing.")
+    (license license:bsd-3)))
+
 (define-public rust-filesize-0.2
   (package
     (name "rust-filesize")
