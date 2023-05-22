@@ -16638,6 +16638,25 @@ ristretto255 and Curve25519.")
 attributes.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cvt-0.1
+  (package
+    (name "rust-cvt")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cvt" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wdwg2rbjl86bcrymscl34pw31kyv1ada19jazpkjbdzgzvrpbnj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1))))
+    (home-page "https://github.com/marmistrz/cvt")
+    (synopsis "Expose the cvt function from Rust libstd")
+    (description "Expose the cvt function from Rust libstd.")
+    (license license:asl2.0)))
+
 (define-public rust-cxx-1
   (package
     (name "rust-cxx")
