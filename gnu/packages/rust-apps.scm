@@ -520,6 +520,11 @@ also knows about symlinks, extended attributes, and Git.")
                (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
                (setenv "JEMALLOC_OVERRIDE"
                        (string-append jemalloc "/lib/libjemalloc.so")))))
+         (add-after 'unpack 'adjust-feature-flags
+           (lambda _
+             ;; unstable-grouped was stablized in rust-clap 4.2.0
+             (substitute* "Cargo.toml"
+               ((".*unstable-grouped.*") ""))))
          (add-after 'install 'install-extra
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
