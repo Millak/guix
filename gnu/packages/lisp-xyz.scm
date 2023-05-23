@@ -26455,7 +26455,7 @@ forms conveniently accessible as @code{j:rem}, @code{j:get},
 (define-public sbcl-nactivitypub
   (package
     (name "sbcl-nactivitypub")
-    (version "0.0.4")
+    (version "0.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26464,7 +26464,7 @@ forms conveniently accessible as @code{j:rem}, @code{j:get},
               (file-name (git-file-name "cl-nactivitypub" version))
               (sha256
                (base32
-                "06vzaqwwc9j8r89ld3fd6bbbfd5bl0jh132rlf9wxmr0xcaqwkrl"))))
+                "0m2vwi11zp0bpvr0hglq1svdxlp3cc70yvix30yksfzp6kk3amyn"))))
     (build-system asdf-build-system/sbcl)
     (inputs (list sbcl-cl-str
                   sbcl-dexador
