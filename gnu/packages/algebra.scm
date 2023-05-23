@@ -133,7 +133,7 @@ greatest common divisor operations.")
 (define-public cm
   (package
    (name "cm")
-   (version "0.4.1")
+   (version "0.4.2")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -141,7 +141,7 @@ greatest common divisor operations.")
                   version ".tar.gz"))
             (sha256
              (base32
-              "1avaw6a7lyc2833gr9b7zpk4blvrrrkz8r62sv1grh9xc9i4zg07"))))
+              "1c6m00wiw3rs5f0lq6c80rdr3dzklsvh69l8w3s7bj2r6yha6qbw"))))
    (build-system gnu-build-system)
    (propagated-inputs
      (list mpfrcx zlib)) ; Header files included from cm_common.h.
