@@ -52106,7 +52106,9 @@ Digital Signature Algorithm} (ECDSA).")
            (delete-file-recursively "pregenerated")
            ;; Regenerating the curve25519_tables requires python2 and clang-format.
            ;; Luckily we've added the script back in the patch.
-           (delete-file "crypto/curve25519/curve25519_tables.h")
+           ;; Rust doesn't provide a clear way to regenerate files located in
+           ;; source directories, so for now we don't remove the file here.
+           ;(delete-file "crypto/curve25519/curve25519_tables.h")
            ;; Pretend this isn't a relase tarball.
            (with-output-to-file ".git"
              (lambda _
