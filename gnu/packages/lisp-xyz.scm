@@ -26402,7 +26402,7 @@ instead of #'FOO.
 (define-public sbcl-njson
   (package
     (name "sbcl-njson")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26411,12 +26411,12 @@ instead of #'FOO.
               (file-name (git-file-name "cl-njson" version))
               (sha256
                (base32
-                "1apwccrvivrq57rlrw6vffrn3a5hikk10s0dndszjw5ri29b3qyd"))))
+                "02m9l77am2rlkg83dyp3jvb76ifw1y84xh3wpz6cx7h2wkxkjnl5"))))
     (build-system asdf-build-system/sbcl)
-    (inputs (list sbcl-cl-json))
+    (inputs (list sbcl-cl-json sbcl-jzon))
     (native-inputs (list sbcl-lisp-unit2))
     (arguments
-     '(#:asd-systems '("njson" "njson/cl-json")))
+     '(#:asd-systems '("njson" "njson/cl-json" "njson/jzon")))
     (home-page "https://github.com/atlas-engineer/njson")
     (synopsis "JSON handling framework for Common Lisp")
     (description
@@ -26424,8 +26424,8 @@ instead of #'FOO.
 and process JSON data, in the minimum keystrokes/minutes possible.
 
 NJSON is parser-independent, with existing Common Lisp JSON parsers being
-loadable as additional system.  @code{cl-json} is included by default, though.
-Conveniences that NJSON provides are:
+loadable as additional system.  @code{jzon} and @code{cl-json} backends are
+included by default, though.  Conveniences that NJSON provides are:
 
 @itemize
 @item @code{encode} and @code{decode} as single entry points for JSON reading
