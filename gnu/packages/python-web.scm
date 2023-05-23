@@ -2627,14 +2627,14 @@ internationalized messages within program source text.")
 (define-public python-zope-schema
   (package
     (name "python-zope-schema")
-    (version "6.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zope.schema" version))
        (sha256
         (base32
-          "09jg47bxhfg1ahr1jxb5y0cbiszyk1j6fn1r1r7s6svjl3lbryr0"))))
+          "1fgvx7nim9plxnyiq6vmah1dji7ba5290fws1i0lwk9m0g5xpm7a"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
