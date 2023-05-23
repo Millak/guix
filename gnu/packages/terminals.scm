@@ -1406,7 +1406,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1417,7 +1417,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00ksvn0k451wmppqxkzzsb5gdjllqxqrnxw81gam00k9wsq8bj6q"))))
+        (base32 "1fz5nbx58058lzfhwgvlnrmhpc4bg8sv8fp48gdgp1l82ajbl3lg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
