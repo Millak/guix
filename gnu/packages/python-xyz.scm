@@ -137,6 +137,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
+;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17947,13 +17948,13 @@ to occurrences in strings and comments.")
 (define-public python-py3status
   (package
     (name "python-py3status")
-    (version "3.21")
+    (version "3.50")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py3status" version))
        (sha256
-        (base32 "16z8zq83hxy48g6hh4xczbdz50qvxv9k1aahr4fqq7jis60cc262"))))
+        (base32 "0j2dx9lzpic15r8p0r0s3jmcskxpacahxl640b4864ldn5rlnh9d"))))
     (build-system python-build-system)
     (inputs
      (list file))
