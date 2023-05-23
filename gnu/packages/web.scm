@@ -4770,8 +4770,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "3734a85650cc4a34d5bfa06d151edcc7efe7144e")
-        (revision "40"))
+  (let ((commit "68850065d79ba05dad7201c3ed22f5e2e32680b7")
+        (revision "41"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4783,7 +4783,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1a3li1gfll9w6w7amk4av1565abw8i4a706rfkd5lg36jikkap4q"))))
+                  "0y7a9jbbkzhlhmn639kgmzlkw927w4nrsafm1sj51mrblr5qk4lq"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
