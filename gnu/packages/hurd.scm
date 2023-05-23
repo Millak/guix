@@ -194,37 +194,25 @@ Library and other user programs.")
 (define-public hurd-minimal
   (package (inherit hurd-headers)
     (name "hurd-minimal")
-    (inputs (list glibc/hurd-headers))
+    (inputs (list glibc/hurd-headers gnumach-headers))
     (arguments
      (substitute-keyword-arguments (package-arguments hurd-headers)
+       ((#:make-flags flags '())
+        #~'(#$(string-append "lib-subdirs=libshouldbeinlibc libihash libstore")
+            "prog-subdirs="
+            "other-subdirs="
+            #$@flags))
        ((#:phases _)
-        '(modify-phases %standard-phases
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 ;; We need to copy libihash.a to the output directory manually,
-                 ;; since there is no target for that in the makefile.
-                 (mkdir-p (string-append out "/include"))
-                 (copy-file "libihash/ihash.h"
-                            (string-append out "/include/ihash.h"))
-                 (mkdir-p (string-append out "/lib"))
-                 (copy-file "libihash/libihash.a"
-                            (string-append out "/lib/libihash.a"))
-                 #t)))
-           (replace 'build
-             (lambda _
-               ;; Install <assert-backtrace.h> & co.
-               (invoke "make" "-Clibshouldbeinlibc"
-                       "../include/assert-backtrace.h")
-
-               ;; Build libihash.
-               (invoke "make" "-Clibihash" "libihash.a")))))))
+        #~%standard-phases)
+       ((#:validate-runpath? validate-runpath? #f)
+        #f)))
     (supported-systems %hurd-systems)
     (home-page "https://www.gnu.org/software/hurd/hurd.html")
     (synopsis "GNU Hurd libraries")
     (description
-     "This package provides libihash, needed to build the GNU C
-Library for GNU/Hurd.")
+     "This package provides libshouldbeinlibc, libihash, libstore, libports,
+libiohelp, libfshelp, libtrivfs, and libmachdev, needed to build the GNU C
+Library, Parted and netdde for GNU/Hurd.")
     (license gpl2+)))
 
 (define-public hurd-core-headers

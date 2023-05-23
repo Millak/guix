@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2018, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2019, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
@@ -541,21 +541,35 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                   ,(string-append "--host=" target)
                   ,flags))
          ((#:phases phases)
-          `(modify-phases ,phases
+          #~(modify-phases #$phases
+              (add-after 'unpack 'delete-shared-target
+                ;; Cannot create shared libraries due to missing crt1.o
+                (lambda _
+                  (substitute* "Makeconf"
+                    (("(targets := \\$\\(libname\\)\\.a) \\$\\(libname\\)\\.so" all static)
+                     static)
+                    (("\\$\\(DESTDIR\\)\\$\\(libdir\\)/\\$\\(libname\\)\\.so\\.\\$\\(hurd-version\\)")
+                     "")
+                    (("^libs: .*\\.so\\..*" all)
+                     (string-append "# " all)))))
              (add-before 'configure 'set-cross-headers-path
                (lambda* (#:key inputs #:allow-other-keys)
                  (let* ((glibc-headers (assoc-ref inputs "cross-glibc-hurd-headers"))
-                        (cpath (string-append glibc-headers "/include")))
+                        (mach-headers (assoc-ref inputs "cross-gnumach-headers"))
+                        (cpath (string-append glibc-headers "/include"
+                                              ":" mach-headers "/include")))
                    (for-each (cut setenv <> cpath)
-                             ',%gcc-cross-include-paths)
+                             '#$%gcc-cross-include-paths)
                    #t)))))))
 
-      (inputs `(("cross-glibc-hurd-headers" ,xglibc/hurd-headers)))
+      (inputs `(("cross-glibc-hurd-headers" ,xglibc/hurd-headers)
+                ("cross-gnumach-headers" ,xgnumach-headers)))
 
       (native-inputs `(("cross-gcc" ,xgcc)
                        ("cross-binutils" ,xbinutils)
                        ("cross-mig" ,xmig)
-                       ,@(alist-delete "mig"(package-native-inputs hurd-minimal))))))
+                       ,@(alist-delete "mig"
+                                       (package-native-inputs hurd-minimal))))))
 
   (define xhurd-core-headers
     (package
