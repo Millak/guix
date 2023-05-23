@@ -144,6 +144,8 @@
      (list python-distro
            python-httplib2
            python-oauthlib
+           python-pyparsing
+           python-six
            python-wadllib))
     (home-page "https://launchpad.net/lazr.restfulclient")
     (synopsis "Web client Python library extending wadlib")
