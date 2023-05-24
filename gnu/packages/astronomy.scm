@@ -1987,6 +1987,8 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
 (define-public python-spherical-geometry
   (package
     (name "python-spherical-geometry")
+    ;; XXX: Can't be updated to the latest see:
+    ;; https://github.com/spacetelescope/spherical_geometry/issues/227
     (version "1.2.22")
     (source
      (origin
