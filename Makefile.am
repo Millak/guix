@@ -776,15 +776,30 @@ endef
 # in <https://issues.guix.gnu.org/48963>.  Each 'eval' call below creates a
 # 'make-*-go' phony target that builds the corresponding subset.
 
-first_half :=								\
-  gnu/packages/a% gnu/packages/b% gnu/packages/c% gnu/packages/d%	\
-  gnu/packages/e% gnu/packages/f% gnu/packages/g% gnu/packages/h%	\
-  gnu/packages/i% gnu/packages/j% gnu/packages/k% gnu/packages/l%
+first_fifth :=								\
+  gnu/packages/a% gnu/packages/b% gnu/packages/c%
+
+second_fifth :=								\
+  gnu/packages/d% gnu/packages/e% gnu/packages/f%
+
+third_fifth :=								\
+  gnu/packages/g%  gnu/packages/h% gnu/packages/i%
+
+fourth_fifth :=								\
+  gnu/packages/j% gnu/packages/k% gnu/packages/l% gnu/packages/m% 	\
+  gnu/packages/n% gnu/packages/o%
 
 MODULES_CORE      := guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULES)))
-MODULES_PACKAGES1 := $(filter $(first_half),$(MODULES))
-MODULES_PACKAGES2 := $(filter-out $(first_half),$(filter gnu/packages/%,$(MODULES)))
-MODULES_PACKAGES  := $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)
+MODULES_PACKAGES1 := $(filter $(first_fifth),$(MODULES))
+MODULES_PACKAGES2 := $(filter $(second_fifth),$(MODULES))
+MODULES_PACKAGES3 := $(filter $(third_fifth),$(MODULES))
+MODULES_PACKAGES4 := $(filter $(fourth_fifth),$(MODULES))
+MODULES_PACKAGES5 := $(filter-out $(first_fifth) $(second_fifth)	\
+			$(third_fifth) $(fourth_fifth),			\
+			$(filter gnu/packages/%,$(MODULES)))
+MODULES_PACKAGES  := $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)		\
+			$(MODULES_PACKAGES3) $(MODULES_PACKAGES4)	\
+			$(MODULES_PACKAGES5)
 MODULES_SYSTEM    := gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
 MODULES_CLI       := $(filter guix/scripts/%,$(MODULES))
 MODULES_PO        := guix/build/po.scm
@@ -804,7 +819,27 @@ $(eval $(call guile-compilation-rule,make-packages2-go,	\
   $(words $(MODULES_CORE) $(MODULES_PACKAGES1))))
 .PHONY: make-packages2-go
 
-make-packages-go: make-packages1-go make-packages2-go
+$(eval $(call guile-compilation-rule,make-packages3-go,				\
+  $(MODULES_PACKAGES3) make-core-go make-packages1-go make-packages2-go,	\
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES1) $(MODULES_PACKAGES2))))
+.PHONY: make-packages3-go
+
+$(eval $(call guile-compilation-rule,make-packages4-go,			\
+  $(MODULES_PACKAGES4) make-core-go make-packages1-go make-packages2-go	\
+    make-packages3-go,							\
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)	\
+    $(MODULES_PACKAGES3))))
+.PHONY: make-packages4-go
+
+$(eval $(call guile-compilation-rule,make-packages5-go,			\
+  $(MODULES_PACKAGES5) make-core-go make-packages1-go make-packages2-go	\
+    make-packages3-go make-packages4-go,				\
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)	\
+    $(MODULES_PACKAGES3) $(MODULES_PACKAGES4))))
+.PHONY: make-packages5-go
+
+make-packages-go: make-packages1-go make-packages2-go \
+  make-packages3-go make-packages4-go make-packages5-go
 .PHONY: make-packages-go
 
 $(eval $(call guile-compilation-rule,make-system-go,	\
