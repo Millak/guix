@@ -1651,10 +1651,11 @@ map display.  Downloads map data from a number of websites, including
                      (url "https://github.com/opengribs/XyGrib")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "xygrib-fix-finding-data.patch"))
               (sha256
                (base32
                 "0xzsm8pr0zjk3f8j880fg5n82jyxn8xf1330qmmq1fqv7rsrg9ia"))
+              (patches (search-patches "xygrib-fix-finding-data.patch"
+                                       "xygrib-newer-proj.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1695,7 +1696,7 @@ map display.  Downloads map data from a number of websites, including
            libnova
            libpng
            openjpeg
-           proj-7
+           proj
            qtbase-5
            zlib))
     (native-search-paths
