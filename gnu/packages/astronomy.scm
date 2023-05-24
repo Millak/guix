@@ -1885,16 +1885,21 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "4.1.1")
+    (version "4.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1h8dnsic96bxm5l278vk6jj5h4bh1b143fghsvv5rhigk137vysp"))))
+        (base32 "1j5g0ivsrc5ji9s7jc3kcbi2injfs3y31pm3priycljwcsxspkpm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
+                    "not test_main_nonexisting_module"
+                    " and not test_main_stdlib_module"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'writable-compiler
@@ -1902,26 +1907,10 @@ orbits described in TLE files.")
               (make-file-writable "sunpy/_compiler.c")))
           (add-before 'check 'prepare-test-environment
             (lambda _
-              (setenv "HOME" "/tmp")
-              (make-file-writable "sunpy/_compiler.c")
-              ;; TODO: (Sharlatan-20221106T115800+0000): Review failing tests
-              (substitute* "sunpy/image/tests/test_transform.py"
-                (("def test_clipping") "def __off_test_clipping")
-                (("def test_nans") "def __off_test_nans")
-                (("def test_endian") "def __off_test_endian"))
-              (substitute* "sunpy/map/tests/test_mapbase.py"
-                (("def test_derotating_nonpurerotation_pcij")
-                 "def __off_test_derotating_nonpurerotation_pcij"))
-              (substitute* "sunpy/map/sources/tests/test_mdi_source.py"
-                (("def test_synoptic_source")
-                 "def __off_test_synoptic_source"))
-              (substitute* "sunpy/tests/tests/test_self_test.py"
-                (("def test_main_nonexisting_module")
-                 "def __off_test_main_nonexisting_module")
-                (("def test_main_stdlib_module")
-                 "def __off_test_main_stdlib_module")))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-aiohttp
+     (list opencv ; For tests, includes OpenCV-Python
+           python-aiohttp
            python-extension-helpers
            python-hvpy
            python-packaging
@@ -1950,7 +1939,6 @@ orbits described in TLE files.")
            python-matplotlib
            python-mpl-animators
            python-numpy
-           ;; python-opencv-python ; not packed yet
            python-pandas
            python-reproject
            python-scikit-image
