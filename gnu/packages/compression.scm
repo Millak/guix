@@ -1063,13 +1063,13 @@ tarballs.")
  (package
    (name "cabextract")
    (home-page "https://cabextract.org.uk/")
-   (version "1.9.1")
+   (version "1.11")
    (source (origin
               (method url-fetch)
               (uri (string-append home-page "cabextract-" version ".tar.gz"))
               (sha256
                (base32
-                "19qwhl2r8ip95q4vxzxg2kp4p125hjmc9762sns1dwwf7ikm7hmg"))
+                "1iis7a19n26dax3gsnrw9kb0vwq46rbpicnlyf7p2k2y2nqnsm5m"))
               (modules '((guix build utils)))
               (snippet
                '(begin
