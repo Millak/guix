@@ -476,27 +476,28 @@ in FITS files.")
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio
-        `(begin
-           (delete-file-recursively "cfitsio3490")
-           (substitute* "MANIFEST.in"
-             (("recursive-include cfitsio3490.*$\n") ""))))))
+        #~(begin
+            (delete-file-recursively "cfitsio3490")
+            (substitute* "MANIFEST.in"
+              (("recursive-include cfitsio3490.*$\n") ""))))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-cfitsio
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((cfitsio (assoc-ref inputs "cfitsio"))
-                    (includedir (string-append "\"" cfitsio "/include\""))
-                    (libdir (string-append "\"" cfitsio "/lib\"")))
-               ;; Use Guix' cfitsio instead of the bundled one
-               (substitute* "setup.py"
-                 (("self.use_system_fitsio = False") "pass")
-                 (("self.system_fitsio_includedir = None") "pass")
-                 (("self.system_fitsio_libdir = None") "pass")
-                 (("self.use_system_fitsio") "True")
-                 (("self.system_fitsio_includedir") includedir)
-                 (("self.system_fitsio_libdir") libdir))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-cfitsio
+            (lambda _
+              (let* ((cfitsio #$(this-package-input "cfitsio"))
+                     (includedir (string-append "\"" cfitsio "/include\""))
+                     (libdir (string-append "\"" cfitsio "/lib\"")))
+                ;; Use Guix' cfitsio instead of the bundled one
+                (substitute* "setup.py"
+                  (("self.use_system_fitsio = False") "pass")
+                  (("self.system_fitsio_includedir = None") "pass")
+                  (("self.system_fitsio_libdir = None") "pass")
+                  (("self.use_system_fitsio") "True")
+                  (("self.system_fitsio_includedir") includedir)
+                  (("self.system_fitsio_libdir") libdir))))))))
     (inputs (list curl))
     (propagated-inputs
      (list python-numpy cfitsio))
