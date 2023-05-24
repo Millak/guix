@@ -1280,18 +1280,17 @@ astronomy and astrophysics.")
         (base32 "1vhkzsqlgn3ji5by2rdf2gwklhbyzvpzb1iglalhqjkkrdaaaz1h"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'writable-home
-           (lambda _                    ; some tests need a writable home
-             (setenv "HOME" (getcwd))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "astroquery"
-                       ;; Skip tests that require online data.
-                       "-m" "not remote_data")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'writable-home
+                 (lambda _              ; some tests need a writable home
+                   (setenv "HOME" (getcwd))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "-m" "pytest" "--pyargs" "astroquery"
+                             ;; Skip tests that require online data.
+                             "-m" "not remote_data")))))))
     (propagated-inputs
      (list python-astropy
            python-beautifulsoup4
