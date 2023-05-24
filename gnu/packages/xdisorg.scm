@@ -653,17 +653,17 @@ options are given, the action applies to the focused window.")
 (define-public xeyes
   (package
     (name "xeyes")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.x.org/releases/individual/app/"
                            name "-" version ".tar.bz2"))
        (sha256
-        (base32 "0lq5j7fryx1wn998jq6h3icz1h6pqrsbs3adskjzjyhn5l6yrg2p"))))
+        (base32 "1nxn443pfhddmwl59wplpjkslhlyfk307qx18nrimvvb2hipx8gq"))))
     (build-system gnu-build-system)
     (inputs
-      (list libxext libxmu libxrender libxt))
+      (list libxext libxi libxmu libxrender libxt))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.x.org/")    ; no dedicated Xeyes page exists
