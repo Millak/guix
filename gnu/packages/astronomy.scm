@@ -1937,24 +1937,55 @@ SolarSoft data analysis environment.")
 (define-public python-astral
   (package
     (name "python-astral")
-    (version "2.2")
+    (version "3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astral" version))
        (sha256
-        (base32 "1gkggdibccmdy9glymw3kbrkzm6svvsg0lk56hhy92y4smkrj7g4"))))
-    (build-system python-build-system)
+        (base32 "121xag65rmv6pszbi3d206yz3jfwmpkf0jxjrxrd2scy5r0knz4v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+     (list
+      #:test-flags
+      ;; XXX: Disable tests which require newer version of python-pytz.
+      ;; No time zone found with key Pacific/Auckland
+      #~(list "-k" (string-append
+                    "not test_TimezoneLookup"
+                    " and not test_Sun"
+                    " and not test_Dawn"
+                    " and not test_Sunrise"
+                    " and not test_SolarNoon"
+                    " and not test_Dusk"
+                    " and not test_Sunset"
+                    " and not test_SolarElevation"
+                    " and not test_SolarAzimuth"
+                    " and not test_TimeAtAltitude"
+                    " and not test_MoonNoDate"
+                    " and not test_lookup"
+                    " and not test_tzinfo"
+                    " and not test_australia"
+                    " and not test_adak"
+                    " and not test_australia"
+                    " and not test_Elevation_NonNaive"
+                    " and not test_Wellington"
+                    " and not test_Sun_Local_tzinfo"
+                    " and not test_Sun_Local_str"
+                    " and not test_SolarZenith_London"
+                    " and not test_SolarZenith_Riyadh"
+                    " and not test_moonrise_utc"
+                    " and not test_moonrise_wellington"
+                    " and not test_moonset_wellington"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-freezegun python-setuptools-scm))
+     (list python-freezegun
+           python-poetry-core
+           python-pytest
+           python-setuptools-scm))
     (propagated-inputs
      (list python-dataclasses python-pytest python-pytz))
     (home-page "https://github.com/sffjunkie/astral")
