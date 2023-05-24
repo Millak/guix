@@ -43,7 +43,7 @@
 (define-public fltk
   (package
     (name "fltk")
-    (version "1.3.6")
+    (version "1.3.8")
     (source
      (origin
       (method url-fetch)
@@ -51,7 +51,7 @@
                           (first (string-split version #\-))
                           "/fltk-" version "-source.tar.gz"))
       (sha256
-       (base32 "1arp1niiz3qxm8iacpmilwpc5rinsm6hsk4a6fsxfywvkvppbb4s"))))
+       (base32 "1gyisjwjbdsax4kbdm3hpijp2f0qgh1wk7wgad87l3pb0wmi1hgk"))))
    (build-system gnu-build-system)
    (native-inputs
     (list pkg-config))
