@@ -5414,30 +5414,30 @@ in-window at 640x480 resolution or fullscreen.")
              #t))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DWZ_DISTRIBUTOR=Guix"
-                           "-DWZ_ENABLE_BACKEND_VULKAN=off"
-                           "-DENABLE_DISCORD=off")
-       #:tests? #f ; TODO: Tests seem to be broken, configure.ac is missing.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-utfcpp-include
-           (lambda _
-             (substitute* "lib/framework/wzstring.cpp"
-               (("<utfcpp/source/utf8.h>") "<utf8.h>"))
-             #t))
-         (add-after 'unpack 'link-tests-with-qt
-           (lambda _
-             (substitute* "tests/Makefile.am"
-               (("(framework_linktest_LDADD|maptest_LDADD) = " prefix)
-                (string-append prefix "$(QT5_LIBS) ")))
-             #t))
-         (add-after 'unpack 'fix-ivis-linktest
-           (lambda _
-             (substitute* "tests/ivis_linktest.cpp"
-               (("iV_DrawTextRotated.*;")
-                (string-append "iV_DrawTextRotated(\"Press ESC to exit.\", "
-                               "100, 100, 0.0f, font_regular);")))
-             #t)))))
+     (list #:configure-flags #~'("-DWZ_DISTRIBUTOR=Guix"
+                                 "-DWZ_ENABLE_BACKEND_VULKAN=off"
+                                 "-DENABLE_DISCORD=off")
+           #:tests? #f ; TODO: Tests seem to be broken, configure.ac is missing.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-utfcpp-include
+                 (lambda _
+                   (substitute* "lib/framework/wzstring.cpp"
+                     (("<utfcpp/source/utf8.h>")
+                      "<utf8.h>"))))
+               (add-after 'unpack 'link-tests-with-qt
+                 (lambda _
+                   (substitute* "tests/Makefile.am"
+                     (("(framework_linktest_LDADD|maptest_LDADD) = "
+                       prefix)
+                      (string-append prefix "$(QT5_LIBS) ")))))
+               (add-after 'unpack 'fix-ivis-linktest
+                 (lambda _
+                   (substitute* "tests/ivis_linktest.cpp"
+                     (("iV_DrawTextRotated.*;")
+                      (string-append
+                       "iV_DrawTextRotated(\"Press ESC to exit.\", "
+                       "100, 100, 0.0f, font_regular);"))))))))
     (native-inputs (list asciidoc
                      ruby-asciidoctor
                      gettext-minimal
