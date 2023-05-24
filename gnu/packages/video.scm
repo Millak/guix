@@ -5061,8 +5061,7 @@ video from a Wayland session.")
                 "01qbhhycmy26b2mw2jlri321k478jhp7y0jzlcv87iaq05qr4pc8"))))
     (build-system python-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
      (list python-pygobject
            gtk+
