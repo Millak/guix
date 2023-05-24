@@ -5723,14 +5723,14 @@ Extension.")
 (define-public xclock
   (package
     (name "xclock")
-    (version "1.0.9")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.x.org/releases/individual/app/"
-                           "xclock-" version ".tar.bz2"))
+                           "xclock-" version ".tar.xz"))
        (sha256
-        (base32 "1fr3q4rszgx7x2zxy2ip592a3fgx20hfwac49p2l5b7jqsr1ying"))))
+        (base32 "0b3l1zwz2b1cn46f8pd480b835j9anadf929vqpll107iyzylz6z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
