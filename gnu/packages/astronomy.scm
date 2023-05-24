@@ -1243,23 +1243,19 @@ astronomy and astrophysics.")
        (uri (pypi-uri "astropy_healpix" version))
        (sha256
         (base32 "1n1svmd41iv944zf4anbnsigd47zr4dfjf49vrc7m6928gmq9hw8"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This file is opened in both install and check phases.
-         (add-before 'install 'writable-compiler
-           (lambda _ (make-file-writable "astropy_healpix/_compiler.c")))
-         (add-before 'check 'writable-compiler
-           (lambda _ (make-file-writable "astropy_healpix/_compiler.c")))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Extensions have to be rebuilt before running the tests.
-               (invoke "python" "setup.py" "build_ext" "--inplace")
-               (invoke "python" "-m" "pytest"
-                       "--pyargs" "astropy_healpix")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This file is opened in both install and check phases.
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "astropy_healpix/_compiler.c")))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              ;; Extensions have to be rebuilt before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace")
+              (make-file-writable "astropy_healpix/_compiler.c"))))))
     (native-inputs
      (list python-extension-helpers
            python-hypothesis
