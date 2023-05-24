@@ -1370,11 +1370,6 @@ specifically in the C code.")
        (sha256
         (base32 "0fy1sni87cr05dkljd8wb7vgh7z9agh8wv5kiagxcpbcf8l06jv1"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; FIXME: Test failed a lot with: DeprecationWarning: distutils Version
-     ;; classes are deprecated. Use packaging.version instead (see:
-     ;; https://github.com/astropy/ccdproc/issues/805).
-     (list #:tests? #f))
     (native-inputs (list python-memory-profiler python-pytest-astropy))
     (propagated-inputs
      (list python-astropy
