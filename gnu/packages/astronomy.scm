@@ -1795,13 +1795,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.9.1")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "1msysqbhkfi3bmw29wipk250a008bnng7din56md9ipbwiar8x55"))))
+        (base32 "1ha0a1ja7k09ysd05adffgsapfwzc6m6az34a0av2mhmlwy4zb1q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
