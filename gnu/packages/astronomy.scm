@@ -2601,55 +2601,44 @@ functions, so that they can be called with scalar or array inputs.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "1.2.3")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynbody" version))
        (sha256
-        (base32 "1jxwk2s4qz1znvyak2lj7ld01kl1jh87xp81ki7a8dz1gcy93fkx"))))
-    (build-system python-build-system)
+        (base32 "1yp7ja66zqmbnh7bbwbyimxq1nkrmjrcif2rzfm1hswm0fp2fbga"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'disable-tests-require-testdata
-                 (lambda _
-                   ;; Disable tests which need to download additional 1.0GiB+
-                   ;; of test data archive from
-                   ;; http://star.ucl.ac.uk/~app/testdata.tar.gz
-                   ;;    https://github.com/pynbody/pynbody/blob/ \
-                   ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
-                   ;;    .github/workflows/build-test.yaml#L41
-                   (with-directory-excursion "tests"
-                     (for-each delete-file
-                               '("gravity_test.py"
-                                 "adaptahop_test.py"
-                                 "ahf_halos_test.py"
-                                 "array_test.py"
-                                 "bridge_test.py"
-                                 "family_test.py"
-                                 "partial_tipsy_test.py"
-                                 "snapshot_test.py"
-                                 "test_profile.py"
-                                 "gadget_test.py"
-                                 "gadgethdf_test.py"
-                                 "grafic_test.py"
-                                 "halotools_test.py"
-                                 "nchilada_test.py"
-                                 "ramses_new_ptcl_format_test.py"
-                                 "ramses_test.py"
-                                 "rockstar_test.py"
-                                 "sph_image_test.py"
-                                 "sph_smooth_test.py"
-                                 "subfind_test.py"
-                                 "subfindhdf_gadget4_test.py"
-                                 "tipsy_test.py")))))
-               (replace 'check
-                 (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                   (when tests?
-                     (add-installed-pythonpath inputs outputs)
-                     (setenv "HOME" "/tmp")
-                     (invoke "pytest" "-vv")))))))
+     (list #:test-flags #~(list
+                           ;; Disable tests which need to download additional
+                           ;; 1.0GiB+ of test data archive from
+                           ;; http://star.ucl.ac.uk/~app/testdata.tar.gz
+                           ;;    https://github.com/pynbody/pynbody/blob/ \
+                           ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
+                           ;;    .github/workflows/build-test.yaml#L41
+                           "--ignore=tests/gravity_test.py"
+                           "--ignore=tests/adaptahop_test.py"
+                           "--ignore=tests/ahf_halos_test.py"
+                           "--ignore=tests/array_test.py"
+                           "--ignore=tests/bridge_test.py"
+                           "--ignore=tests/family_test.py"
+                           "--ignore=tests/partial_tipsy_test.py"
+                           "--ignore=tests/snapshot_test.py"
+                           "--ignore=tests/test_profile.py"
+                           "--ignore=tests/gadget_test.py"
+                           "--ignore=tests/gadgethdf_test.py"
+                           "--ignore=tests/grafic_test.py"
+                           "--ignore=tests/halotools_test.py"
+                           "--ignore=tests/nchilada_test.py"
+                           "--ignore=tests/ramses_new_ptcl_format_test.py"
+                           "--ignore=tests/ramses_test.py"
+                           "--ignore=tests/rockstar_test.py"
+                           "--ignore=tests/sph_image_test.py"
+                           "--ignore=tests/sph_smooth_test.py"
+                           "--ignore=tests/subfind_test.py"
+                           "--ignore=tests/subfindhdf_gadget4_test.py"
+                           "--ignore=tests/tipsy_test.py")))
     (native-inputs
      (list python-cython
            python-pandas
