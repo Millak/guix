@@ -2726,13 +2726,13 @@ datetime object.")
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "2.13.0")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "1zixzv4n2fryaszsfchqh2nvp0gzvarhz03fc721yw6iafdadqij"))))
+        (base32 "11s56797l5330kkhppkyz0bsvms016knmyswj4gx91zrxf8iqvv8"))))
     (build-system pyproject-build-system)
     (arguments
      ;; FIXME: Tests fail a lot with
@@ -2743,6 +2743,7 @@ datetime object.")
      `(#:tests? #f))
     (native-inputs
      (list python-astropy
+           python-fsspec
            python-packaging
            python-psutil
            python-pytest
