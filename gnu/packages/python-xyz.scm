@@ -19920,13 +19920,13 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public glances
   (package
   (name "glances")
-  (version "3.3.1.1")
+  (version "3.4.0.3")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "Glances" version))
       (sha256
-        (base32 "16i92vsjpxpnpkab1wa1y2iw931mq1hna0d2gkkjmgxz1hhr58ih"))
+        (base32 "0pf8hxbgwkhv8l5frg61b073vscz5a7bz1al7xhn36fvh10xbcg7"))
       (modules '((guix build utils)))
       (snippet
        '(begin
