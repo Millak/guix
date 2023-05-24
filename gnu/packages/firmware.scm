@@ -481,7 +481,7 @@ provide OpenFirmware functionality on top of an already running system.")
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
     (name name)
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -490,14 +490,15 @@ provide OpenFirmware functionality on top of an already running system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "opensbi" version))
        (sha256
-        (base32 "0xlnhl965286kvizyjm571qbhj3l5n71a02dmbmgxzcqapzgi9wk"))))
+        (base32 "13k76ngmbs6xk8wm0vhc3fjs5w82g34wxs2zf4r27jd79m47xjb5"))))
     (build-system gnu-build-system)
     (native-inputs
      `(,@(if (and (not (string-prefix? "riscv64" (%current-system)))
                   (string-prefix? "riscv64" arch))
            `(("cross-gcc" ,(cross-gcc "riscv64-linux-gnu"))
              ("cross-binutils" ,(cross-binutils "riscv64-linux-gnu")))
-           '())))
+           '())
+        ("python" ,python)))
     (arguments
      `(#:tests? #f ; no check target
        #:make-flags (list (string-append "PLATFORM=" ,platform)
@@ -523,8 +524,7 @@ provide OpenFirmware functionality on top of an already running system.")
                (for-each
                  (lambda (file)
                    (install-file file out))
-                 bin))
-             #t)))))
+                 bin)))))))
     (home-page "https://github.com/riscv-software-src/opensbi")
     (synopsis "RISC-V @acronym{SBI, Supervisor Binary Interface} implementation")
     (description
