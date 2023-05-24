@@ -2974,18 +2974,21 @@ install an implementation package such as asdf-astropy.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "asdf_astropy" version))
+       (uri (pypi-uri "asdf-astropy" version))
        (sha256
-        (base32 "1gp5iav0a9g9q0zb22vhzi3v9vwk5wn2nxvr3mvi3bsdcdj3h23v"))))
+        (base32 "1difb2y1hlalbhrw8znwmmc0vzgg44zfsay98lpllb7y0536fas6"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-home-env
+                          (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-coverage
            python-h5py
-           python-matplotlib
            python-pandas
            python-pytest-astropy
            python-scipy
