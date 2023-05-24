@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -1663,11 +1663,13 @@ map display.  Downloads map data from a number of websites, including
                   ;; Upstream link: https://github.com/opengribs/XyGrib/pull/255
                   (substitute* "src/SkewT.h"
                     (("QMessageBox>") "QMessageBox>\n#include <QPainterPath>"))
-                  #t))))
+                  ;; Accept newer versions of openjpeg
+                  ;; https://github.com/opengribs/XyGrib/pull/298
+                  (substitute* "CMakeLists.txt"
+                    (("openjpeg-2.4") "openjpeg-2.5 openjpeg-2.4"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DGNU_PACKAGE=ON")
-
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-directories
