@@ -2735,12 +2735,12 @@ datetime object.")
         (base32 "11s56797l5330kkhppkyz0bsvms016knmyswj4gx91zrxf8iqvv8"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Tests fail a lot with
-     ;;
-     ;; ERROR  - _pytest.pathlib.ImportPathMismatchError:
-     ;; ('asdf.conftest', '/gnu/sto...
-     ;;
-     `(#:tests? #f))
+     (list #:test-flags
+           #~(list "-k" (string-append
+                         "not test_overwrite"
+                         " and not test_tagging_scalars"
+                         " and not test_info_command"
+                         " and not test_array_inline_threshold_recursive"))))
     (native-inputs
      (list python-astropy
            python-fsspec
