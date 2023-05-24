@@ -5393,7 +5393,7 @@ in-window at 640x480 resolution or fullscreen.")
 (define-public warzone2100
   (package
     (name "warzone2100")
-    (version "4.3.3")
+    (version "4.3.5")
     (source
      (origin
        (method url-fetch)
@@ -5401,7 +5401,7 @@ in-window at 640x480 resolution or fullscreen.")
                            version
                            "/warzone2100_src.tar.xz"))
        (sha256
-        (base32 "17p58wxwva0qp267hm1alas52jd9h74494wh01ahz880hscbjg1w"))
+        (base32 "1hq56hm6bn3s2pksznh5g8hgq6ww6fnl1pspr3bi93k3z7v0imh1"))
        (modules '((guix build utils)))
        (snippet
         '(begin
