@@ -5102,6 +5102,8 @@ video from a Wayland session.")
                (wrap-program (string-append out "/bin/gaupol")
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))))
+         ;; Can't create a GtkStyleContext without a display connection
+         (delete 'sanity-check)
          (add-after 'unpack 'patch-data-dir
            ;; Fix some path variables that setup.py seems to garble.
            (lambda* (#:key outputs #:allow-other-keys)
