@@ -215,6 +215,13 @@ set."
       ("dev/fd"      ("/hurd/magic"    "--directory" "fd")  #o555)
 
       ("dev/rumpdisk" ("/hurd/rumpdisk")                    #o660)
+      ("dev/netdde"  ("/hurd/netdde")                       #o660)
+      ("dev/eth0"    ("/hurd/devnode" "--master-device=/dev/net"
+                      "eth0")
+                                                            #o660)
+      ("dev/eth1"    ("/hurd/devnode" "--master-device=/dev/net"
+                      "eth1")
+                                                            #o660)
 
       ;; Create a number of ttys; syslogd writes to tty12 by default.
       ;; FIXME: Creating /dev/tty12 leads the console client to switch to
@@ -268,6 +275,9 @@ set."
   (false-if-EEXIST (symlink "/dev/fd/2" (scope "dev/stderr")))
   (false-if-EEXIST (symlink "crash-dump-core" (scope "servers/crash")))
   (false-if-EEXIST (symlink "/dev/rumpdisk" (scope "dev/disk")))
+  (false-if-EEXIST (symlink "/dev/netdde" (scope "dev/net")))
+  (false-if-EEXIST (symlink "/servers/socket/2" (scope "servers/socket/inet")))
+  (false-if-EEXIST (symlink "/servers/socket/26" (scope "servers/socket/inet6")))
 
   ;; Make sure /etc/mtab is a symlink to /proc/mounts.
   (false-if-exception (delete-file (scope "etc/mtab")))
