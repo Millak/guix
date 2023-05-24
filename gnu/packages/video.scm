@@ -99,6 +99,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system waf)
@@ -5059,7 +5060,7 @@ video from a Wayland session.")
               (sha256
                (base32
                 "01qbhhycmy26b2mw2jlri321k478jhp7y0jzlcv87iaq05qr4pc8"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
     (inputs
@@ -5086,13 +5087,6 @@ video from a Wayland session.")
              (substitute* "setup.py"
                (("distutils\\.util\\.byte_compile\\(.*")
                 ""))))
-         ;; gaupol's setup.py script does not support one of the Python build
-         ;; system's default flags, "--single-version-externally-managed".
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "python" "setup.py" "install"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     "--root=/")))
          (add-after 'install 'wrap-gaupol
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
