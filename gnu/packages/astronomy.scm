@@ -1496,13 +1496,13 @@ used with local NetDRMS sites.")
 (define-public python-ephem
   (package
     (name "python-ephem")
-    (version "4.1.3")
+    (version "4.1.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ephem" version))
               (sha256
                (base32
-                "0smmm3l8csnw9rrimh8mpyjrm80jaafjl184spnji98vk22qd8bz"))))
+                "0q67z79lgwdylxagbsjm42xvsmk5jmgvghy36m2n5lb2446rz9bk"))))
     (build-system python-build-system)
     (native-inputs (list tzdata))
     (home-page "https://rhodesmill.org/pyephem/")
