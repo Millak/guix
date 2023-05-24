@@ -493,12 +493,13 @@ provide OpenFirmware functionality on top of an already running system.")
         (base32 "13k76ngmbs6xk8wm0vhc3fjs5w82g34wxs2zf4r27jd79m47xjb5"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(,@(if (and (not (string-prefix? "riscv64" (%current-system)))
-                  (string-prefix? "riscv64" arch))
-           `(("cross-gcc" ,(cross-gcc "riscv64-linux-gnu"))
-             ("cross-binutils" ,(cross-binutils "riscv64-linux-gnu")))
-           '())
-        ("python" ,python)))
+     (append
+       (if (and (not (string-prefix? "riscv64" (%current-system)))
+                (string-prefix? "riscv64" arch))
+         (list (cross-gcc "riscv64-linux-gnu")
+               (cross-binutils "riscv64-linux-gnu"))
+         '())
+       (list python)))
     (arguments
      `(#:tests? #f ; no check target
        #:make-flags (list (string-append "PLATFORM=" ,platform)
