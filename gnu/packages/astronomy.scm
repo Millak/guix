@@ -1675,13 +1675,13 @@ Low-Earth Orbit (LEO).")
 (define-public python-poppy
   (package
     (name "python-poppy")
-    (version "1.0.3")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "poppy" version))
               (sha256
                (base32
-                "050cn6aabd1dxbi7zihbqnkl79hz6q6d5n6g25zmrpvc4sii171m"))))
+                "0s8rb61q8dz66s8d3qg44kb6bb5gi40zl41ik9wyccgb4kyf3brp"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      ;; XXX: With python-synphot (marked as optional) package added to the list
