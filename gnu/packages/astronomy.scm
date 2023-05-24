@@ -3018,19 +3018,9 @@ Astropy objects.")
        (uri (pypi-uri "asdf_wcs_schemas" version))
        (sha256
         (base32 "0khyab9mnf2lv755as8kwhk3lqqpd3f4291ny3b9yp3ik86fzhz1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-setuptools-scm
-           python-semantic-version))
+     (list python-pytest python-setuptools-scm python-semantic-version))
     (propagated-inputs
      (list python-asdf))
     (home-page "https://github.com/asdf-format/asdf-wcs-schemas")
