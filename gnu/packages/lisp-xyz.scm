@@ -9769,8 +9769,8 @@ implementation specific equivalent.")
   (sbcl-package->ecl-package sbcl-trivial-macroexpand-all))
 
 (define-public sbcl-serapeum
-  (let ((commit "0810fdef36f34e6149bee3aa7d604f5833ec86e9")
-        (revision "10"))
+  (let ((commit "47217ab69f76673db7e1fa65665ab804fb46d974")
+        (revision "11"))
     (package
       (name "sbcl-serapeum")
       (version (git-version "0.0.0" revision commit))
@@ -9783,7 +9783,7 @@ implementation specific equivalent.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ylxh2za3940ybpnmh9dwkc27jd3vbxj5v003qlbn9z5xqb84ahr"))))
+          (base32 "1mr868z1za6vfhb7gq3j7c1rb606gqfzschxdy7wcqx5xv3ndgpa"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
