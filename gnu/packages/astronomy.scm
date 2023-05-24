@@ -1723,27 +1723,16 @@ interest, and which require portability between platforms or ease of scripting."
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.2.1")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "1ri5yp6903386lkn79mdcmlax7zsfrrrjbcvb91wxydcc9yasc1n"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "--pyargs" "pyvo" "-k"
-                       (string-append   ; these tests use the network
-                        "not test_access_with_string"
-                        " and not test_access_with_list"
-                        " and not test_access_with_expansion"))))))))
+        (base32 "17acv1yhz1jrsx9f35nr1vg276ibaivh4i243qkmp6abzvfyg907"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-astropy python-requests-mock))
+     (list python-pytest-astropy python-requests-mock python-setuptools-scm))
     (propagated-inputs
      (list python-astropy python-mimeparse python-pillow python-requests))
     (home-page "https://github.com/astropy/pyvo")
