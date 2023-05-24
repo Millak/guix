@@ -574,6 +574,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
   games localization lxqt xfce)
 
 (define-member (person "Vagrant Cascadian"
+                       "vagrant@debian.org")
+  embedded)
+
+(define-member (person "Vagrant Cascadian"
                        "vagrant@reproducible-builds.org")
   reproduciblebuilds)
 
