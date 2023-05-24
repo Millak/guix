@@ -2068,14 +2068,14 @@ a 2D editor view.")
 (define-public guile-chickadee
   (package
     (name "guile-chickadee")
-    (version "0.9.0")
+    (version "0.10.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/chickadee/"
                                   "chickadee-" version ".tar.gz"))
               (sha256
                (base32
-                "0b92lld7kj629mvq44vgd8vmf9h7s5gkdawb35vkzlx5q03wjfvk"))))
+                "0x8g0bsvir2z3876ynslfgnmfr5p92ic4666v73526lswnv56bqk"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0")))
