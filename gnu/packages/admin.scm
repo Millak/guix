@@ -4992,14 +4992,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.8.1")
+    (version "2.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "07nsw168aw3mhgzkfw2z5pf92f76l1r4b18zjx7l9hvrkfhmh04p"))))
+                "1y4qmc8i7zg2cqrmz38dxbsj8bb2h7jm1zz23gqcdygkgaymwddw"))))
     (build-system gnu-build-system)
     (arguments
      (list
