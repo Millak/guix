@@ -119,7 +119,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "3.6.0")
+    (version "3.6.1")
     (source
      (origin
        (method url-fetch)
@@ -127,7 +127,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "10b1xa1hpmi62rzh3qgxlw7xrhyigs8kssagccawmrryfxbls14p"))))
+        (base32 "1cj91fyba259vhbxvq55w2yf2p2vj201gr15pa59swx6gjs2nh2m"))))
     (build-system cmake-build-system)
     (inputs
      (list fish-foreign-env ncurses pcre2
