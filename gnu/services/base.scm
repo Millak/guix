@@ -1842,7 +1842,8 @@ proxy of 'guix-daemon'...~%")
     (list (shepherd-service
            (documentation "Run the Guix daemon.")
            (provision '(guix-daemon))
-           (requirement '(user-processes))
+           (requirement `(user-processes
+                          ,@(if discover? '(avahi-daemon) '())))
            (actions (list shepherd-set-http-proxy-action
                           shepherd-discover-action))
            (modules '((srfi srfi-1)
