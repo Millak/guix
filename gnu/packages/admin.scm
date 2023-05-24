@@ -85,6 +85,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
   #:use-module (guix build-system trivial)
@@ -4822,7 +4823,7 @@ LUKS volumes encrypted with the user's log-in password.")
 (define-public jc
   (package
     (name "jc")
-    (version "1.19.0")
+    (version "1.23.2")
     (source
      (origin
        ;; The PyPI tarball lacks the test suite.
@@ -4832,8 +4833,8 @@ LUKS volumes encrypted with the user's log-in password.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "021zk0y8kb6v3qf3hwfg8qjzzmrca039nz3fjywiy2njmbhr8hyi"))))
-    (build-system python-build-system)
+        (base32 "17g2q0h3jwzfm80ldl8inpyh5y0qzzmgvyg10gkk1rp8i34wfgly"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -4842,6 +4843,7 @@ LUKS volumes encrypted with the user's log-in password.")
                  (lambda _
                    (substitute* (find-files "tests" "^test.*\\.py$")
                      (("America/Los_Angeles") "PST8PDT")))))))
+    (native-inputs (list python-pytest))
     (propagated-inputs
      (list python-pygments python-ruamel.yaml python-xmltodict))
     (home-page "https://github.com/kellyjonbrazil/jc")
