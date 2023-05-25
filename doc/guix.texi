@@ -1559,16 +1559,33 @@ be used on Guix System.
 
 @subsubsection Installing the SELinux policy
 @cindex SELinux, policy installation
+
+@quotation Note
+The @code{guix-install.sh} binary installation script offers to perform
+the steps below for you (@pxref{Binary Installation}).
+@end quotation
+
 To install the policy run this command as root:
 
 @example
-semodule -i etc/guix-daemon.cil
+semodule -i /var/guix/profiles/per-user/root/current-guix/share/selinux/guix-daemon.cil
 @end example
 
-Then relabel the file system with @code{restorecon -vR /} or by a
-different mechanism provided by your system.  You may need to remount
-@file{/gnu/store} to make it writable first, e.g. with @code{mount -o
-remount,rw /gnu/store}.
+Then, as root, relabel the file system, possibly after making it
+writable:
+
+@example
+mount -o remount,rw /gnu/store
+restorecon -R /gnu /var/guix
+@end example
+
+At this point you can start or restart @command{guix-daemon}; on a
+distribution that uses systemd as its service manager, you can do that
+with:
+
+@example
+systemctl restart guix-daemon
+@end example
 
 Once the policy is installed, the file system has been relabeled, and
 the daemon has been restarted, it should be running in the
