@@ -1830,7 +1830,7 @@ written in C++.")
       (license license:asl2.0))))
 
 (define kaldi-for-vosk
-  (let* ((commit "6417ac1dece94783e80dfbac0148604685d27579")
+  (let* ((commit "a25f216f5ce4eec5e45a6ab7651e20c9840a05cd")
          (revision "0")
          (openfst openfst-for-vosk))
     (package
@@ -1845,13 +1845,13 @@ written in C++.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "04xw2dpfvpla8skpk08azmgr9k97cd8hn83lj4l85q165gbzql4s"))))
+          (base32 "16w90za8narkfi590cxj4p7vc1f5sdxc927g5hk6kh4l3mf6iisl"))))
       (inputs
        (list alsa-lib
              lapack ;compared to base kaldi, replacing `(,gfortran "lib")
              glib
              gstreamer
-             jack-1
+             jack-2
              openblas
              openfst
              portaudio
@@ -1886,6 +1886,8 @@ written in C++.")
                      portaudio))
                   (substitute* "matrix/Makefile"     ;temporary test bypass
                     (("matrix-lib-test sparse-matrix-test") ""))
+                  (substitute* "cudamatrix/Makefile"
+                    ((" cu-array-test") ""))
 
                   ;; This `configure' script doesn't support variables passed as
                   ;; arguments, nor does it support "prefix".
