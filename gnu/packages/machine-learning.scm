@@ -1848,7 +1848,7 @@ written in C++.")
           (base32 "04xw2dpfvpla8skpk08azmgr9k97cd8hn83lj4l85q165gbzql4s"))))
       (inputs
        (list alsa-lib
-             lapack ;; compared to base kaldi, replacing `(,gfortran "lib")
+             lapack ;compared to base kaldi, replacing `(,gfortran "lib")
              glib
              gstreamer
              jack-1
@@ -1859,17 +1859,17 @@ written in C++.")
       (arguments
        (list
         #:test-target "test"
-        #:make-flags ''("online2" "lm" "rnnlm")
+        #:make-flags '(list "online2" "lm" "rnnlm")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'chdir
               (lambda _ (chdir "src")))
             (replace 'configure
               (lambda _
-                (let* ((portaudio #$(this-package-input "portaudio"))
-                       (lapack    #$(this-package-input "lapack"))
-                       (openfst   #$(this-package-input "openfst"))
-                       (openblas  #$(this-package-input "openblas")))
+                (let ((portaudio #$(this-package-input "portaudio"))
+                      (lapack    #$(this-package-input "lapack"))
+                      (openfst   #$(this-package-input "openfst"))
+                      (openblas  #$(this-package-input "openblas")))
                   #$@(if (target-x86?)
                          '()
                          #~((substitute* "makefiles/linux_openblas.mk"
@@ -1909,11 +1909,11 @@ written in C++.")
                           "--shared"
                           (string-append "--fst-root=" openfst)))))
             (add-after 'configure 'optimize-build
-                       (lambda _ (substitute* "kaldi.mk" ((" -O1") " -O3"))))
+              (lambda _ (substitute* "kaldi.mk" ((" -O1") " -O3"))))
             (replace 'install
               (lambda _
-                (let* ((inc (string-append #$output "/include"))
-                       (lib (string-append #$output "/lib")))
+                (let ((inc (string-append #$output "/include"))
+                      (lib (string-append #$output "/lib")))
                   ;; The build phase installed symlinks to the actual
                   ;; libraries.  Install the actual targets.
                   (for-each (lambda (file)
