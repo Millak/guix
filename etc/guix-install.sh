@@ -606,6 +606,19 @@ fi
     _msg "${PAS}Bash shell prompt successfully customized for Guix"
 }
 
+sys_maybe_setup_selinux()
+{
+    if [ -f /sys/fs/selinux/policy ]
+    then
+	prompt_yes_no "Install SELinux policy required to run guix-daemon?" \
+	    || return
+
+	local var_guix=/var/guix/profiles/per-user/root/current-guix
+	semodule -i "${var_guix}/share/selinux/guix-daemon.cil"
+	restorecon -R /gnu /var/guix
+    fi
+}
+
 welcome()
 {
     local char
@@ -681,6 +694,7 @@ main()
 
     sys_create_store "${GUIX_BINARY_FILE_NAME}" "${tmp_path}"
     sys_create_build_user
+    sys_maybe_setup_selinux
     sys_enable_guix_daemon
     sys_authorize_build_farms
     sys_create_init_profile
