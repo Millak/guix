@@ -24,6 +24,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages valgrind)
+  #:use-module (srfi srfi-1)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -83,7 +84,8 @@ tools.  There are Valgrind tools that can automatically detect many memory
 management and threading bugs, and profile your programs in detail.  You can
 also use Valgrind to build new tools.")
     ;; https://valgrind.org/info/platforms.html
-    (supported-systems (delete "riscv64-linux" %supported-systems))
+    (supported-systems (fold delete %supported-systems
+                             '("armhf-linux" "riscv64-linux")))
     (license gpl2+)
 
     ;; Hide this variant so end users get the "interactive" Valgrind below.
