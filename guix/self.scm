@@ -654,7 +654,26 @@ load path."
                 ;; Use a 'guile' variant that doesn't complain about locales.
                 #:guile (quiet-guile guile)))
 
-(define (miscellaneous-files source)
+(define (selinux-policy source daemon)
+  "Return the SELinux policy file taken from SOURCE and adjusted to refer to
+DAEMON and to the current configuration variables."
+  (define build
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (use-modules (guix build utils))
+
+          (copy-file #+(file-append* source "/etc/guix-daemon.cil.in")
+                     "guix-daemon.cil")
+          (substitute* "guix-daemon.cil"
+            (("@guix_sysconfdir@") #$%sysconfdir)
+            (("@guix_localstatedir@") #$%localstatedir)
+            (("@storedir@") #$%storedir)
+            (("@prefix@") #$daemon))
+          (copy-file "guix-daemon.cil" #$output))))
+
+  (computed-file "guix-daemon.cil" build))
+
+(define (miscellaneous-files source daemon)
   "Return data files taken from SOURCE."
   (file-mapping "guix-misc"
                 `(("etc/bash_completion.d/guix"
@@ -665,6 +684,8 @@ load path."
                    ,(file-append* source "/etc/completion/zsh/_guix"))
                   ("share/fish/vendor_completions.d/guix.fish"
                    ,(file-append* source "/etc/completion/fish/guix.fish"))
+                  ("share/selinux/guix-daemon.cil"
+                   ,(selinux-policy source daemon))
                   ("share/guix/berlin.guix.gnu.org.pub"
                    ,(file-append* source
                                   "/etc/substitutes/berlin.guix.gnu.org.pub"))
@@ -1023,6 +1044,7 @@ itself."
   (cond ((= 1 pull-version)
          ;; The whole package, with a standard file hierarchy.
          (let* ((modules  (built-modules (compose list node-source+compiled)))
+                (daemon   (specification->package "guix-daemon"))
                 (command  (guix-command modules
                                         #:source source
                                         #:dependencies
@@ -1038,10 +1060,10 @@ itself."
                           ;; Include 'guix-daemon'.  XXX: Here we inject an
                           ;; older snapshot of guix-daemon, but that's a good
                           ;; enough approximation for now.
-                          #:daemon (specification->package "guix-daemon")
+                          #:daemon daemon
 
                           #:info (info-manual source)
-                          #:miscellany (miscellaneous-files source)
+                          #:miscellany (miscellaneous-files source daemon)
                           #:guile-version guile-version)))
         ((= 0 pull-version)
          ;; Legacy 'guix pull': return the .scm and .go files as one
