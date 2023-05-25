@@ -1191,6 +1191,28 @@ and inserts a SpongeBob SquarePants ASCII art figure in the current
 buffer.")
       (license license:gpl3+))))
 
+(define-public emacs-prism
+  (package
+    (name "emacs-prism")
+    (version "0.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alphapapa/prism.el")
+                    (commit version)))
+              (sha256
+               (base32
+                "0n2gf7302hqdnhsax1y3ahksfmmpd8cmiv1zgb7rjg8qhcs0iqp2"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-dash))
+    (home-page "https://github.com/alphapapa/prism.el")
+    (synopsis
+     "Disperses bracket-bounded syntax into a spectrum of color by depth")
+    (description
+     "Prism is a Rainbow Blocks-like mode for Emacs.  It preserves non-color
+face properties and allows configuration of faces and colors.")
+    (license license:gpl3+)))
+
 (define-public emacs-project
   (package
     (name "emacs-project")
