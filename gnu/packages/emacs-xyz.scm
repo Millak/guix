@@ -738,10 +738,10 @@ configuration language which makes it trivial to write your own themes.")
     (license license:gpl3+)))
 
 (define-public emacs-inspector
-  (let ((commit "f06e3490cb3fba9335dfca9022d3cc8babaa8654")) ;version bump
+  (let ((commit "baa486ac2e4faed9a362322c0b2914d6f0c59ede")) ;version bump
     (package
       (name "emacs-inspector")
-      (version "0.30")
+      (version "0.31")
       (source
        (origin
          (uri (git-reference
@@ -749,18 +749,16 @@ configuration language which makes it trivial to write your own themes.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "08pxcjbarl9d0hrapspw38axg64m8a518wgxh19nbpik7sm3fzxd"))
+          (base32 "0xdgbs8kmsq1m9h9ykjkdvfn0xqf9gmhckr00lq8dxm0gab7x961"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
        (list
         #:tests? #t
         #:test-command #~(list "emacs" "-Q" "--batch"
-                               "-L" "."
+                               "-l" "inspector.el"
                                "-l" "inspector-tests.el"
-                               "-l" "tree-inspector-tests.el"
                                "-f" "ert-run-tests-batch-and-exit")))
-      (propagated-inputs (list emacs-treeview))
       (home-page "https://github.com/mmontone/emacs-inspector")
       (synopsis "Inspection tool for Emacs Lisp objects")
       (description
