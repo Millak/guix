@@ -78,6 +78,9 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -573,6 +576,42 @@ present in many Western Digital hard drives.  This timer is part of the
 the default timer setting is not well suited to Linux or other *nix systems,
 and can dramatically shorten the lifespan of the drive if left unchecked.")
     (license license:gpl3+)))
+
+(define-public greaseweazle-host-tools
+  (package
+    (name "greaseweazle-host-tools")
+    (version "1.12")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/keirf/greaseweazle")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lpvjlf2xg4ccwik8npiihi0lgw9dx5h12pp4ry343gkz4pwgk9x"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'setuptools-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "1.8")))
+          (add-after 'install 'install-udev-rules
+            (lambda _
+              (install-file "scripts/49-greaseweazle.rules"
+                            (string-append #$output "/lib/udev/rules.d/")))))))
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs
+     (list python-bitarray python-crcmod python-pyserial python-requests))
+    (synopsis "Tools for accessing a floppy drive at the raw flux level")
+    (description
+     "This package provides the host tools for controlling a Greaseweazle: an
+Open Source USB device capable of reading and writing raw data on nearly any
+type of floppy disk")
+    (home-page "https://github.com/keirf/greaseweazle")
+    (license license:public-domain)))
 
 (define-public gparted
   (package
