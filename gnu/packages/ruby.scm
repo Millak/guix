@@ -261,7 +261,7 @@ a focus on simplicity and productivity.")
      (modify-inputs (package-inputs ruby-3.1)
        (prepend libyaml)))))
 
-(define-public ruby ruby-2.7)
+(define-public ruby ruby-3.1)
 
 (define-public mruby
   (package
