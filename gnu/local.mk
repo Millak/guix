@@ -1032,8 +1032,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/curl-use-ssl-cert-env.patch		\
   %D%/packages/patches/cursynth-wave-rand.patch			\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\
-  %D%/packages/patches/c++-gsl-find-system-gtest.patch		\
-  %D%/packages/patches/c++-gsl-move-array-bounds-tests.patch	\
   %D%/packages/patches/date-output-pkg-config-files.patch	\
   %D%/packages/patches/datefudge-gettimeofday.patch		\
   %D%/packages/patches/dbacl-include-locale.h.patch		\

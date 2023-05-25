@@ -224,7 +224,7 @@ range-v3 ranges are an abstraction layer on top of iterators.")
 (define-public c++-gsl
   (package
     (name "c++-gsl")
-    (version "3.1.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -235,12 +235,8 @@ range-v3 ranges are an abstraction layer on top of iterators.")
           (string-append "v" version))))
        (file-name
         (git-file-name name version))
-       (patches
-        (search-patches
-         "c++-gsl-find-system-gtest.patch"
-         "c++-gsl-move-array-bounds-tests.patch"))
        (sha256
-        (base32 "0gbvr48f03830g3154bjhw92b8ggmg6wwh5xyb8nppk9v6w752l0"))))
+        (base32 "0dgb3rb6x2276d3v7x568m3zhqr67rhk8ynqgm3c304avnmcaw3i"))))
     (build-system cmake-build-system)
     (native-inputs
      (list googletest pkg-config))
