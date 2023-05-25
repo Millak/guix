@@ -553,8 +553,8 @@ implementing them.")
     (license gpl2+)))
 
 (define-public netdde
-  (let ((commit "4a1016f130b6f2065d3f088325e5fb0b2997ae12")
-        (revision "1"))
+  (let ((commit "e67c284ac113d939b10b4578334f27dab29d5b08")
+        (revision "2"))
     (package
       (name "netdde")
       ;; The version prefix corresponds to the version of Linux from which the
@@ -565,20 +565,19 @@ implementing them.")
                 (uri (git-reference
                       (url "https://git.savannah.gnu.org/git/hurd/incubator.git")
                       (commit commit)))
+                (patches (list (search-patch "netdde-build-fix.patch")))
                 (sha256
                  (base32
-                  "1njv9dszq4lj05yq4v9j5v247hfghpzvvz4hzy0khjjr35mw7hr8"))
+                  "0vnkls7sr7srzib5mnw6gybzl5qa8c5a4zf3h08w6gdr7zqbndh0"))
                 (file-name (git-file-name name commit))))
       (build-system gnu-build-system)
       (arguments
-       `(#:make-flags
+       `(#:tests? #f                    ;no "check" target
+         #:make-flags
          (list (string-append "SHELL="
                               (search-input-file %build-inputs "/bin/bash"))
                "PKGDIR=libdde_linux26"
-               ,@(if (%current-target-system)
-                     (list "CC=i586-pc-gnu-gcc"
-                           "LINK_PROGRAM=i586-pc-gnu-gcc")
-                     (list "CC=gcc")))
+               (string-append "CC=" ,(cc-for-target)))
          #:configure-flags
          ,#~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
          #:phases
@@ -594,8 +593,7 @@ implementing them.")
                               (string-append dde "/" dir ) dir))
                            '("libdde_linux26" "libddekit")))
                (substitute* "libdde_linux26/mk/rel2abs.sh"
-                 (("/bin/bash") (which "bash")))
-               #t))
+                 (("/bin/bash") (which "bash")))))
            (add-after 'patch-generated-file-shebangs 'build-libdde-linux26
              (lambda* (#:key make-flags #:allow-other-keys)
                (with-directory-excursion "libdde_linux26"
@@ -606,17 +604,23 @@ implementing them.")
                (apply invoke "make" "convert" make-flags)))
            (replace 'build
              (lambda* (#:key make-flags #:allow-other-keys)
-               ;; no-common can be dropped with GCC 10+ where this is the
-               ;; default.
-               (apply invoke "make" "CFLAGS=-fno-common" make-flags)))
+               (apply invoke "make"
+                      ,(string-append "LINK_PROGRAM=" (cc-for-target))
+                      make-flags)
+               ;; This hack to build netdde.static was found in
+               ;; https://salsa.debian.org/hurd-team/netdde/-/blob/b539b2ad7a171371f140c3da58cce33f1a91ac12/debian/rules
+               (delete-file "Makefile.inc")
+               (apply invoke "make"
+                      ,(string-append "LINK_PROGRAM=" (cc-for-target) " -static")
+                      "TARGET=netdde.static"
+                      make-flags)))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
-               (install-file "netdde"
-                             (string-append (assoc-ref outputs "out")
-                                            "/bin"))
-               #t)))))
+               (let ((hurd (string-append (assoc-ref outputs "out") "/hurd")))
+                 (install-file "netdde" hurd)
+                 (install-file "netdde.static" hurd)))))))
       (inputs
-       (list hurd libpciaccess-0.17 zlib))
+       (list hurd libpciaccess-0.17 zlib `(,zlib "static")))
       (native-inputs
        `(("coreutils" ,coreutils)
          ("gawk" ,gawk)
