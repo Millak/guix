@@ -768,6 +768,38 @@ configuration language which makes it trivial to write your own themes.")
 Common Lisp or Smalltalk, but for Emacs Lisp.")
       (license license:gpl3+))))
 
+(define-public emacs-tree-inspector
+  (let ((commit "495ef1874fba9d75842087f4acf0ebd75cf09e97"))
+    (package
+      (name "emacs-tree-inspector")
+      (version "0.3")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mmontone/emacs-tree-inspector")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "011pk5gr2j9m4qnv70qz63bh58ga72nqahv0zkf2qpbr2a5df09c"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-L" "."
+                               "-l" "tree-inspector-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs (list emacs-treeview))
+      (home-page "https://github.com/mmontone/emacs-tree-inspector")
+      (synopsis "Inspection tool for Emacs Lisp objects that uses a tree view")
+      (description
+       "Tree Inspector is an inspection tool for Emacs Lisp objects that uses
+a tree view.  It works together with Emacs Inspector when it is loaded; when
+an object label is clicked on the tree, an inspector is opened on that
+object.")
+      (license license:gpl3+))))
+
 (define-public emacs-terminal-here
   (package
     (name "emacs-terminal-here")
