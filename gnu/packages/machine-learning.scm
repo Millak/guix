@@ -19,6 +19,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3108,6 +3109,46 @@ number of collective algorithms useful for machine learning applications.
 These include a barrier, broadcast, and allreduce.")
       (home-page "https://github.com/facebookincubator/gloo")
       (license license:bsd-3))))
+
+(define-public python-tensorly
+  (package
+    (name "python-tensorly")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tensorly/tensorly")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "184mvs1gwycsh2f8jgdyc3jyhiylbn4xw2srpjd264dz2l9ms2l7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; These tests fail due to missing example, documentation, or tutorial files.
+        "--ignore=doc/sphinx_ext/sphinx_gallery/tests/test_gen_rst.py"
+        ;; XXX There is no "get_marker" method.
+        "--ignore=doc/sphinx_ext/sphinx_gallery/tests/test_gen_gallery.py"
+        "-k"
+        (string-append
+         ;; tutorials/plot_parse.py is not included
+         "not test_jupyter_notebook"
+         ;; nor is examples/plot_quantum.py
+         " and not test_file_is_generated"))))
+    (propagated-inputs (list python-jsmin python-numpy python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov python-sphinx))
+    (home-page "https://github.com/tensorly/tensorly")
+    (synopsis "Tensor learning in Python")
+    (description
+     "This is a Python library that aims at making tensor learning simple and
+accessible.  It allows performing tensor decomposition, tensor learning and
+tensor algebra easily.  Its backend system allows seamlessly perform
+computation with NumPy, PyTorch, JAX, MXNet, TensorFlow or CuPy and run
+methodxs at scale on CPU or GPU.")
+    (license license:bsd-3)))
 
 (define-public python-umap-learn
   (package
