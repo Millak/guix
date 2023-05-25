@@ -4113,7 +4113,7 @@ simple speech recognition.")
                   "library_dirs=["
                   "'" #$vosk-api "/lib'"
                   "],\n\t"
-                  "libraries=['vosk', 'python3.9'],\n\t"
+                  "libraries=['vosk', 'python3.10'],\n\t"
                   "include_dirs=["
                   "'" #$vosk-api "/src'" "])")))
               (substitute* "vosk/__init__.py"
