@@ -12764,7 +12764,7 @@ agree upon.")
 (define-public emacs-undohist-el
   (package
     (name "emacs-undohist-el")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -12773,7 +12773,7 @@ agree upon.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hmx2b20nrxg2lb8vplgrzdh8chgxwlbmjvbq5scddggd302sd56"))))
+        (base32 "1s1574q85lflik7w983v859qgxy1sn6i09hspa78smiawfva1855"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/m2ym/undohist-el")
     (synopsis "Save undo history between sessions")
