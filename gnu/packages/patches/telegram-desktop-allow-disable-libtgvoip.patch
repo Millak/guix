@@ -1,4 +1,4 @@
-From 4d1a8351ee82728912fcf7ad0070049b2910c393 Mon Sep 17 00:00:00 2001
+From 322d2c452bf1a4df7b9fe161d4991a347043550c Mon Sep 17 00:00:00 2001
 From: Klemens Nanni <klemens@posteo.de>
 Date: Wed, 2 Mar 2022 01:07:48 +0100
 Subject: [PATCH] Introduce TDESKTOP_DISABLE_LEGACY_TGVOIP
@@ -19,10 +19,10 @@ and telegram desktop/mobile versions without problems.
  4 files changed, 21 insertions(+), 3 deletions(-)
 
 diff --git a/Telegram/CMakeLists.txt b/Telegram/CMakeLists.txt
-index fb2bf370f..5d9578f2d 100644
+index 008c71b15..291305909 100644
 --- a/Telegram/CMakeLists.txt
 +++ b/Telegram/CMakeLists.txt
-@@ -28,7 +28,9 @@ get_filename_component(res_loc Resources REALPATH)
+@@ -26,7 +26,9 @@ get_filename_component(res_loc Resources REALPATH)
  include(cmake/telegram_options.cmake)
  include(cmake/lib_ffmpeg.cmake)
  include(cmake/lib_stripe.cmake)
@@ -33,7 +33,7 @@ index fb2bf370f..5d9578f2d 100644
  include(cmake/lib_tgcalls.cmake)
  include(cmake/td_export.cmake)
  include(cmake/td_mtproto.cmake)
-@@ -52,9 +54,7 @@ target_prepare_qrc(Telegram)
+@@ -49,9 +51,7 @@ set_target_properties(Telegram PROPERTIES AUTOMOC ON)
  
  target_link_libraries(Telegram
  PRIVATE
@@ -44,7 +44,7 @@ index fb2bf370f..5d9578f2d 100644
      # Order in this list defines the order of include paths in command line.
      # We need to place desktop-app::external_minizip this early to have its
 diff --git a/Telegram/SourceFiles/calls/calls_call.cpp b/Telegram/SourceFiles/calls/calls_call.cpp
-index 6894d5d90..cd03620e7 100644
+index 5fe9ac677..bebf48e70 100644
 --- a/Telegram/SourceFiles/calls/calls_call.cpp
 +++ b/Telegram/SourceFiles/calls/calls_call.cpp
 @@ -39,8 +39,10 @@ class InstanceImpl;
@@ -68,7 +68,7 @@ index 6894d5d90..cd03620e7 100644
  
  [[nodiscard]] base::flat_set<int64> CollectEndpointIds(
  		const QVector<MTPPhoneConnection> &list) {
-@@ -1322,7 +1326,9 @@ Call::~Call() {
+@@ -1332,7 +1336,9 @@ Call::~Call() {
  }
  
  void UpdateConfig(const std::string &data) {
@@ -79,10 +79,10 @@ index 6894d5d90..cd03620e7 100644
  
  } // namespace Calls
 diff --git a/Telegram/cmake/lib_tgcalls.cmake b/Telegram/cmake/lib_tgcalls.cmake
-index 34a5ba418..8a784be2c 100644
+index 94cfdb856..9ac4fe479 100644
 --- a/Telegram/cmake/lib_tgcalls.cmake
 +++ b/Telegram/cmake/lib_tgcalls.cmake
-@@ -267,6 +267,10 @@ PRIVATE
+@@ -268,6 +268,10 @@ PRIVATE
      ${tgcalls_loc}
  )
  
@@ -94,7 +94,7 @@ index 34a5ba418..8a784be2c 100644
  init_target(lib_tgcalls_legacy)
  
 diff --git a/Telegram/cmake/telegram_options.cmake b/Telegram/cmake/telegram_options.cmake
-index 1c3c25431..033f2bc95 100644
+index a5a6d9405..2eb9953f2 100644
 --- a/Telegram/cmake/telegram_options.cmake
 +++ b/Telegram/cmake/telegram_options.cmake
 @@ -4,7 +4,9 @@
@@ -107,7 +107,7 @@ index 1c3c25431..033f2bc95 100644
  set(TDESKTOP_API_ID "0" CACHE STRING "Provide 'api_id' for the Telegram API access.")
  set(TDESKTOP_API_HASH "" CACHE STRING "Provide 'api_hash' for the Telegram API access.")
  
-@@ -40,6 +42,12 @@ if (TDESKTOP_API_ID STREQUAL "0" OR TDESKTOP_API_HASH STREQUAL "")
+@@ -36,6 +38,12 @@ if (TDESKTOP_API_ID STREQUAL "0" OR TDESKTOP_API_HASH STREQUAL "")
      " ")
  endif()
  
@@ -117,9 +117,9 @@ index 1c3c25431..033f2bc95 100644
 +    target_link_libraries(Telegram PRIVATE tdesktop::lib_tgcalls_legacy tdesktop::lib_tgvoip)
 +endif()
 +
- if (DESKTOP_APP_DISABLE_SPELLCHECK)
-     target_compile_definitions(Telegram PRIVATE TDESKTOP_DISABLE_SPELLCHECK)
- else()
+ if (DESKTOP_APP_DISABLE_AUTOUPDATE)
+     target_compile_definitions(Telegram PRIVATE TDESKTOP_DISABLE_AUTOUPDATE)
+ endif()
 -- 
-2.37.3
+2.39.2
 
