@@ -264,7 +264,11 @@ Hurd-minimal package which are needed for both glibc and GCC.")
        ((#:make-flags flags ''())
         `(cons "CFLAGS=-fcommon" ,flags))
        ((#:configure-flags flags ''())
-        `(cons "--enable-kdb" ,flags))            ;enable kernel debugger
+        `(cons* "--enable-kdb" ;enable kernel debugger
+                "--disable-net-group"
+                "--disable-pcmcia-group"
+                "--disable-wireless-group"
+               ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases %standard-phases
            (add-after 'install 'produce-image
