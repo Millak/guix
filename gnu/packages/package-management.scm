@@ -1400,7 +1400,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "11v0c9h5cxm182f5dn8gwb6nhvb786pdqlkdxi6l0nzl9kjxizys"))
+                  "047qqqhpcg5rrzgpp2qlijn6rhlm2ipqhqr1yj1lrnx12dld2kqk"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
