@@ -37282,6 +37282,47 @@ categories and highlighting specific modes that many commands use to
 accomplish different tasks.")
       (license license:asl2.0))))
 
+(define-public emacs-x509-mode
+  (let ((commit "3830cbfdadab4cd68e6f0b6a3a7a4931be8328ea")
+        (revision "1"))
+    (package
+      (name "emacs-x509-mode")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/jobbflykt/x509-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0ff6kpnh9bzhxx15p18fijjjsqv0mcqwsd5pidyx8v2yzq699k7x"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-l" "x509-mode.el"
+                               "-l" "x509-mode-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:include #~(cons "\\.txt$" %default-include)
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'set-openssl-location
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (emacs-substitute-variables "x509-mode.el"
+                           ("x509-openssl-cmd"
+                            (search-input-file inputs "/bin/openssl"))))))))
+      (inputs (list openssl))
+      (home-page "https://github.com/jobbflykt/x509-mode")
+      (synopsis "Major mode for viewing certificates, CRLs, and other
+PKI-related files")
+      (description
+       "This package provides a major mode for viewing certificates, CRLs, and
+other PKI-related files.  It uses OpenSSL for viewing PEM and DER encoded PKI
+entities.")
+      (license license:expat))))
+
 (define-public emacs-totp
   (let ((commit "a5e059b8475b32bc7f5ddadda248cf84449ed722") ;no releases
         (revision "0"))
