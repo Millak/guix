@@ -18,6 +18,7 @@
 ;;; Copyright © 2020 Arthur Margerit <ruhtra.mar@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -912,6 +913,23 @@ libraries.")
      "Glibmm provides a C++ programming interface to the part of GLib that are
 useful for C++.")
     (license license:lgpl2.1+)))
+
+(define-public glibmm-next
+  (package
+   (inherit glibmm)
+   (version "2.76.0")
+   (name "glibmm")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "mirror://gnome/sources/glibmm/"
+                                (version-major+minor version)
+                                "/glibmm-" version ".tar.xz"))
+            (sha256
+             (base32
+              "1cia8vrpwzn8zwalws42mga5hi965840m5s8dvfzv55xx86dhdw6"))))
+   (propagated-inputs
+    (modify-inputs (package-propagated-inputs glibmm)
+      (replace "glib" glib-next)))))
 
  (define-public glibmm-2.64
    (package
