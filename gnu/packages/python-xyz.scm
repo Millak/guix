@@ -529,14 +529,14 @@ workspaces.
 (define-public python-fire
   (package
     (name "python-fire")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fire" version))
        (sha256
         (base32
-         "0qka44n88y3qcj7xz0k0f3qb4phcg4z0wvd4jcii9lcr6rvbiqn5"))))
+         "1imc9ais15dz3gmphawql86l9av5dykbp4hz0883k5n8k2gd9c56"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -545,7 +545,7 @@ workspaces.
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest")))))))
-    (inputs
+    (propagated-inputs
      (list python-six python-termcolor))
     (native-inputs
      (list python-mock python-pytest))
