@@ -55,6 +55,7 @@
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -183,6 +184,28 @@ well as other mediums.")
     (synopsis "Monospace font")
     (description "A monospace font, designed for code listings and the like,
 in print.  With attention to detail for high resolution rendering.")
+    (license license:silofl1.1)))
+
+(define-public font-intel-one-mono
+  (package
+    (name "font-intel-one-mono")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/intel/intel-one-mono")
+                    (commit "9effabe19a60bdd46cbfbdcc6e81facd8a13b762")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12lywni8bgkr8h4pz1lkw4imr2y896rnsvipbqgqv3c1b54b5g7n"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/intel/intel-one-mono")
+    (synopsis "Expressive monospaced font family")
+    (description
+     "This package provides Intel One Mono, an expressive monospaced font
+family that's built with clarity, legibility, and the needs of developers in
+mind.")
     (license license:silofl1.1)))
 
 (define-public font-dejavu
