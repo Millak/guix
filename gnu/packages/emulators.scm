@@ -725,7 +725,7 @@ The following systems are supported:
 (define-public mgba
   (package
     (name "mgba")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch)
@@ -734,7 +734,8 @@ The following systems are supported:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pqfjsr9q61a3mgmvqxxkalxb838k46q9ilz31frpcvvndif0sm1"))
+        (base32
+         "1wwpjcblp2c1svab4z1if5xb7707wsy6zw590lwdz9za35i0h37q"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure we don't use the bundled software.
@@ -750,8 +751,7 @@ The following systems are supported:
        #:configure-flags
        (list "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
              "-DUSE_LIBZIP=OFF")))      ;use "zlib" instead
-    (native-inputs
-     (list pkg-config qttools-5))
+    (native-inputs (list pkg-config qttools-5))
     (inputs
      (list ffmpeg
            libedit
