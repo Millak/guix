@@ -4727,7 +4727,9 @@ the user's @file{~/.config/guix/channels.scm} file, unless @option{-q}
 is passed;
 @item
 the system-wide @file{/etc/guix/channels.scm} file, unless @option{-q}
-is passed;
+is passed (on Guix System, this file can be declared in the operating
+system configuration, @pxref{guix-configuration-channels,
+@code{channels} field of @code{guix-configuration}});
 @item
 the built-in default channels specified in the @code{%default-channels}
 variable.
@@ -19805,6 +19807,20 @@ archive} (@pxref{Invoking guix archive}).  Generating a key pair takes a
 few seconds when enough entropy is available and is only done once; you
 might want to turn it off for instance in a virtual machine that does
 not need it and where the extra boot time is a problem.
+
+@anchor{guix-configuration-channels}
+@item @code{channels} (default: @code{%default-channels})
+List of channels to be specified in @file{/etc/guix/channels.scm}, which
+is what @command{guix pull} uses by default (@pxref{Invoking guix
+pull}).
+
+@quotation Note
+When reconfiguring a system, the existing @file{/etc/guix/channels.scm}
+file is backed up as @file{/etc/guix/channels.scm.bak} if it was
+determined to be a manually modified file.  This is to facilitate
+migration from earlier versions, which allowed for in-place
+modifications to @file{/etc/guix/channels.scm}.
+@end quotation
 
 @item @code{max-silent-time} (default: @code{3600})
 @itemx @code{timeout} (default: @code{(* 3600 24)})
