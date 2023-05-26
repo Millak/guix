@@ -132,7 +132,8 @@ interfacing MPD in the C, C++ & Objective C languages.")
     (arguments
      (list
       #:configure-flags #~(list "-Ddocumentation=enabled"
-                                "-Dsystemd=enabled")
+                                "-Dsystemd=enabled"
+                                "-Dtest=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enable-elogind
@@ -182,7 +183,12 @@ interfacing MPD in the C, C++ & Objective C languages.")
                    yajl
                    zlib
                    zziplib)))
-    (native-inputs (list cmake pkg-config python-sphinx))
+    (native-inputs (list pkg-config python-sphinx googletest
+                         ;; See test/meson.build for information about these
+                         ;; additional dependencies.
+                         ;;
+                         ;; Used when zziplib feature is enabled.
+                         zip))
     ;; Missing optional inputs:
     ;;   libcdio_paranoia
     ;;   libmms
