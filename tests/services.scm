@@ -286,4 +286,54 @@
          ((one) one)
          (x x))))
 
+(test-equal "modify-services: do nothing"
+  '(1 2 3)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (sort (map service-value
+               (modify-services services))
+          <)))
+
+(test-equal "modify-services: delete service"
+  '(1 3)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (sort (map service-value
+               (modify-services services
+                 (delete t2)))
+          <)))
+
+(test-equal "modify-services: change value"
+  '(1 2 33)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (sort (map service-value
+               (modify-services services
+                 (t3 value => 33)))
+          <)))
+
 (test-end)
