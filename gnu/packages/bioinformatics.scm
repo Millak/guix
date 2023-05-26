@@ -20103,6 +20103,114 @@ handling.")))
      "Bíogo is a bioinformatics library for the Go language.")
     (license license:bsd-3)))
 
+(define-public python-gseapy
+  (package
+    (name "python-gseapy")
+    (version "1.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zqfang/GSEApy")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06gh09dwwj2xr5zx8i41smy8arx2pw7rll7sk50np28z419bnyz9"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false
+      #:features '(list "extension-module")
+      #:cargo-test-flags '(list "--features=extension-module")
+      #:cargo-inputs
+      `(("rust-csv" ,rust-csv-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-pyo3" ,rust-pyo3-0.16)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1))
+      #:imported-modules
+      (append %cargo-build-system-modules
+              %pyproject-build-system-modules)
+      #:modules
+      '((guix build cargo-build-system)
+        ((guix build pyproject-build-system) #:prefix py:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'prepare-python-module
+            (lambda _
+              ;; We don't use maturin, nor do we use setuptools-rust.
+              (delete-file "pyproject.toml")
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "\
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools']
+")))
+              (delete-file "setup.py")
+              (call-with-output-file "setup.cfg"
+                (lambda (port)
+                  (format port "\
+[metadata]
+name = gseapy
+version = ~a
+
+[options]
+packages = find:
+
+[options.packages.find]
+exclude =
+  src
+  docs
+  tests
+  Cargo.toml
+" #$version)))))
+          ;; We delete the Cargo checks but run the Python tests later.
+          ;; See https://github.com/zqfang/GSEApy/issues/207
+          (delete 'check)
+          (add-after 'prepare-python-module 'enable-bytecode-determinism
+            (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
+          (add-after 'enable-bytecode-determinism 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install-python-module 'install-python-library
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (mkdir-p site)
+                (copy-file "target/release/libgse.so"
+                           (string-append site "/gseapy/gse.so")))))
+          (add-after 'install-python-library 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests"
+                        ;; These tests need access to the internet
+                        "-k" "not test_enrichr and not test_prerank")))))))
+    (inputs
+     (list python-wrapper))
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           python-pandas
+           python-matplotlib
+           python-requests))
+    (home-page "https://github.com/zqfang/gseapy")
+    (synopsis "Gene Set Enrichment Analysis in Python")
+    (description "GSEApy is a Python/Rust implementation for GSEA and wrapper
+for Enrichr.  GSEApy can be used for RNA-seq, ChIP-seq, Microarray data. It
+can be used for convenient GO enrichment and to produce publication quality
+figures in Python.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
