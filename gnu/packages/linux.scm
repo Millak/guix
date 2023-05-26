@@ -73,6 +73,7 @@
 ;;; Copyright © 2022, 2023 Demis Balbach <db@minikn.xyz>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9822,6 +9823,7 @@ formats.")
              (url "https://github.com/haampie/libtree")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "libtree-fix-check-non-x86.patch"))
        (sha256
         (base32 "1jbc60cslzcfxk9jwva51ncr1zl1nz0fkgfjdckgv81is11nswmb"))))
     (arguments
