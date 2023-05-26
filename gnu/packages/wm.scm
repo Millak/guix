@@ -113,7 +113,6 @@
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
-  #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
