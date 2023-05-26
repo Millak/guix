@@ -146,7 +146,15 @@ interfacing MPD in the C, C++ & Objective C languages.")
                 (("systemd_dep = declare_dependency" all)
                  (string-append "_" all)))
               (substitute* "meson.build"
-                (("systemd_dep,") "systemd_dep, _systemd_dep,")))))))
+                (("systemd_dep,") "systemd_dep, _systemd_dep,"))))
+          (add-after 'install 'split-package
+            (lambda _
+              ;; The HTML manual accounts for over 40% of the disk
+              ;; space used by the package.
+              (let* ((old (string-append #$output "/share/doc"))
+                     (new (string-append #$output:doc "/share/doc")))
+                (mkdir-p (dirname new))
+                (rename-file old new)))))))
     (inputs (append
              (if (target-linux?) (list liburing) '())
              (list ao
@@ -189,6 +197,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                          ;;
                          ;; Used when zziplib feature is enabled.
                          zip))
+    (outputs (list "out" "doc"))
     ;; Missing optional inputs:
     ;;   libcdio_paranoia
     ;;   libmms
