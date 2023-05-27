@@ -25473,26 +25473,15 @@ RFC 8265 and RFC 8266.")
 (define-public python-absl-py
   (package
     (name "python-absl-py")
-    (version "0.6.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "absl-py" version))
        (sha256
         (base32
-         "1mp9lk0b2qa37b7y6ak4lvf6ifw2ylyy6bkf9ik77md3j4xrwlc7"))))
+         "0ga3b0m8lfsv1m3260p83lhis52yvz3d42q8gip4gfj823849hnj"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-version-check
-           (lambda _
-             ;; Python 3.10 is indeed more recent than Python 3.4.
-             (substitute* "setup.py"
-               ((" or py_version\\[0\\] == '3'.*") ":")))))))
-    (propagated-inputs
-     (list python-six))
     (home-page "https://github.com/abseil/abseil-py")
     (synopsis "Abseil Python common libraries")
     (description
