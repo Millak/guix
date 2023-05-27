@@ -1563,6 +1563,36 @@ Taco Hoekwater.")
 
 (define-deprecated-package texlive-fonts-mflogo-font texlive-mflogo-font)
 
+(define-public texlive-mfware
+  (package
+    (name "texlive-mfware")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/man/man1/gftodvi.1"
+                   "doc/man/man1/gftodvi.man1.pdf"
+                   "doc/man/man1/gftopk.1"
+                   "doc/man/man1/gftopk.man1.pdf"
+                   "doc/man/man1/gftype.1"
+                   "doc/man/man1/gftype.man1.pdf"
+                   "doc/man/man1/mft.1"
+                   "doc/man/man1/mft.man1.pdf"
+                   "doc/man/man1/pktogf.1"
+                   "doc/man/man1/pktogf.man1.pdf"
+                   "doc/man/man1/pktype.1"
+                   "doc/man/man1/pktype.man1.pdf"
+                   "mft/base/")
+             (base32
+              "0v8i6w5kinh11xm0vmgb75sxb4lxznf3l1j78dq6xh55a79330ha")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mfware")
+    (synopsis "Supporting tools for use with Metafont")
+    (description
+     "This package provides a collection of programs (as web source) for
+processing the output of Metafont.")
+    (license license:public-domain)))
+
 (define-public texlive-amsfonts
   (package
     (name "texlive-amsfonts")
