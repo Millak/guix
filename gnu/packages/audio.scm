@@ -4448,40 +4448,39 @@ provide high-quality sample rate conversion.")
     (version "0.3.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "http://kokkinizita.linuxaudio.org"
-                    "/linuxaudio/downloads/zita-alsa-pcmi-"
-                    version ".tar.bz2"))
+              (uri (string-append "http://kokkinizita.linuxaudio.org"
+                                  "/linuxaudio/downloads/zita-alsa-pcmi-"
+                                  version ".tar.bz2"))
               (sha256
                (base32
                 "12d7vdg74yh21w69qi0wg57iz4876j94qbiq09bvscih6xz9y78s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "SUFFIX=")
-             (string-append "CXX=" ,(cxx-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-makefile-and-enter-directory
-           (lambda _
-             (substitute* "source/Makefile"
-               (("ldconfig") "true")
-               (("^LIBDIR =.*") "LIBDIR = lib\n")
-               (("CXXFLAGS \\+= -march=native") ""))
-             (chdir "source")
-             #t))
-         (add-after 'install 'install-symlink
-           (lambda _
-             (symlink "libzita-alsa-pcmi.so"
-                      (string-append (assoc-ref %outputs "out")
-                                     "/lib/libzita-alsa-pcmi.so.0"))
-             #t))
-          ;; no configure script
-          (delete 'configure))))
-    (inputs
-     (list alsa-lib fftw))
+     (list #:tests? #f ;no "check" target
+           #:make-flags #~(list (string-append "PREFIX="
+                                               (assoc-ref %outputs "out"))
+                                (string-append "SUFFIX=")
+                                (string-append "CXX="
+                                               #$(cxx-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-makefile-and-enter-directory
+                          (lambda _
+                            (substitute* "source/Makefile"
+                              (("ldconfig")
+                               "true")
+                              (("^LIBDIR =.*")
+                               "LIBDIR = lib\n")
+                              (("CXXFLAGS \\+= -march=native")
+                               ""))
+                            (chdir "source")))
+                        (add-after 'install 'install-symlink
+                          (lambda _
+                            (symlink "libzita-alsa-pcmi.so"
+                                     (string-append (assoc-ref %outputs "out")
+                                      "/lib/libzita-alsa-pcmi.so.0"))))
+                        ;; no configure script
+                        (delete 'configure))))
+    (inputs (list alsa-lib fftw))
     (properties `((tunable? . #t)))
     (home-page "https://kokkinizita.linuxaudio.org")
     (synopsis "C++ wrapper around the ALSA API")
