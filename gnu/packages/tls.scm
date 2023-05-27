@@ -973,12 +973,10 @@ correct OpenSSL include path.  It is intended for use in your
 number generator")
   (license license:perl-license)))
 
-;; The "-apache" variant is the upstreamed prefered variant. A "-gpl"
-;; variant exists in addition to the "-apache" one.
 (define-public mbedtls-apache
   (package
     (name "mbedtls-apache")
-    (version "2.28.5")
+    (version "2.28.7")
     (source
      (origin
        (method git-fetch)
@@ -987,7 +985,7 @@ number generator")
              (commit (string-append "mbedtls-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jlkvvyigpjvv404b8vmx68f1v6g1h2zr6rd78dhc0xgqi018phs"))))
+        (base32 "070i5pxciw04swfqk1rmdprhsafn4cias3dlmkm467pqpjnhb394"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -1007,7 +1005,7 @@ for developers to include cryptographic and SSL/TLS capabilities in their
 (embedded) products, facilitating this functionality with a minimal
 coding footprint.")
     (home-page "https://www.trustedfirmware.org/projects/mbed-tls/")
-    (license license:asl2.0)))
+    (license (list license:asl2.0 license:gpl2+)))) ;dual licensed
 
 ;; The Hiawatha Web server requires some specific features to be enabled.
 (define-public mbedtls-for-hiawatha
