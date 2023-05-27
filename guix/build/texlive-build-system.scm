@@ -207,8 +207,10 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
       (let ((doc-dir (string-append (or doc out) "/share/texmf-dist/doc")))
         (mkdir-p doc-dir)
         (copy-recursively "doc" doc-dir)))
-    ;; Handle runfiles.
-    (let ((texmf (string-append (assoc-ref outputs "out") "/share/texmf-dist")))
+    ;; Install runfiles.  The package may not contain any, though.  Create
+    ;; #$output anyway to handle this situation gracefully.
+    (mkdir-p out)
+    (let ((texmf (string-append out "/share/texmf-dist")))
       (for-each (lambda (root)
                   (let ((destination (string-append texmf "/" root)))
                     (mkdir-p destination)
