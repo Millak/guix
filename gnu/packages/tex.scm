@@ -11014,17 +11014,14 @@ without margins.")
     (version (number->string %texlive-revision))
     (source (texlive-origin
              name version
-             (list "/source/latex/siunitx/siunitx.dtx"
-                   "/doc/latex/siunitx/README.md")
+             (list "doc/latex/siunitx/" "source/latex/siunitx/"
+                   "tex/latex/siunitx/")
              (base32
-              "05kl7yid2npp2gbfshnv2xd08w81fkh5h2n5wd9xcpbhlqjzx9sj")))
+              "05gpl318mpm5gxb9665080yd5qiirmh3hwixg9p4wgydk8wfllnl")))
+    (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/siunitx"
-       #:build-targets '("siunitx.dtx")))
-    (propagated-inputs
-     (list texlive-l3kernel texlive-l3packages))
-    (home-page "http://www.ctan.org/pkg/siunitx")
+    (propagated-inputs (list texlive-l3kernel texlive-l3packages))
+    (home-page "https://www.ctan.org/pkg/siunitx")
     (synopsis "Comprehensive SI units package")
     (description
      "Typesetting values with units requires care to ensure that the combined
