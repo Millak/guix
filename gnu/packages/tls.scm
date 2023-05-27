@@ -1007,6 +1007,21 @@ coding footprint.")
     (home-page "https://www.trustedfirmware.org/projects/mbed-tls/")
     (license (list license:asl2.0 license:gpl2+)))) ;dual licensed
 
+(define-public mbedtls
+  (package
+    (inherit mbedtls-lts)
+    (name "mbedtls")
+    (version "3.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ARMmbed/mbedtls")
+                    (commit (string-append "mbedtls-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wsjrx98h74q0q4zqwsghiqvjz4aqgvigpxb9f8xjw0w4sfsclcm"))))))
+
 (define-public mbedtls-apache
   (deprecated-package "mbedtls-apache" mbedtls-lts))
 
