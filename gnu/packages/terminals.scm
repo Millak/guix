@@ -969,7 +969,7 @@ programmer to write text-based user interfaces.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.34.0")
+    (version "0.41.0")
     (source
      (origin
        (method git-fetch)
@@ -979,7 +979,7 @@ programmer to write text-based user interfaces.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "023ksrmjg99svmkpnlh4k7gssv1sz2nl0v5b6bsr2iragvwrgkf4"))))
+         "1l9nsvziip3azyvg8wi4g3x606fh6w9vpfcbcgjdzdnp2ywqciim"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
