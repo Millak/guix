@@ -461,7 +461,7 @@ the GStreamer multimedia framework.")
 (define-public gstreamer
   (package
     (name "gstreamer")
-    (version "1.22.2")
+    (version "1.22.3")
     (source
      (origin
        (method url-fetch)
@@ -470,7 +470,7 @@ the GStreamer multimedia framework.")
              version ".tar.xz"))
        (sha256
         (base32
-         "08cfz2vkf494rsg0bn75px26fxs3syvxnsc9lj5n074j0cvfgbxj"))))
+         "0x2rdl6vfpbr7wnh1nk0rllw28cgx0js4g9vxfank7rz0naspzlz"))))
     (build-system meson-build-system)
     (arguments
      (list #:disallowed-references (list python)
