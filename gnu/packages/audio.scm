@@ -44,6 +44,7 @@
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4466,7 +4467,8 @@ provide high-quality sample rate conversion.")
            (lambda _
              (substitute* "source/Makefile"
                (("ldconfig") "true")
-               (("^LIBDIR =.*") "LIBDIR = lib\n"))
+               (("^LIBDIR =.*") "LIBDIR = lib\n")
+               (("CXXFLAGS \\+= -march=native") ""))
              (chdir "source")
              #t))
          (add-after 'install 'install-symlink
@@ -4479,6 +4481,7 @@ provide high-quality sample rate conversion.")
           (delete 'configure))))
     (inputs
      (list alsa-lib fftw))
+    (properties `((tunable? . #t)))
     (home-page "https://kokkinizita.linuxaudio.org")
     (synopsis "C++ wrapper around the ALSA API")
     (description
