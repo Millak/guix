@@ -535,14 +535,14 @@ software.")
 (define-public tup
   (package
     (name "tup")
-    (version "0.7.9")
+    (version "0.7.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://gittup.org/tup/releases/tup-v"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0gnd2598xqgwihdkfkx7qn0q6p4n7npam1fy83mp7s04zwj99syc"))
+                "1157qfnhjakm3h07y7h38lrjw5650gkif34k30bnrsypmwl5xyzb"))
               (patches (search-patches "tup-unbundle-dependencies.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -591,7 +591,7 @@ software.")
                    (display "au BufNewFile,BufRead Tupfile,*.tup setf tup")))
                #t))))))
     (inputs
-     (list fuse pcre
+     (list fuse-3 pcre
            `(,pcre "bin") ; pcre-config
            sqlite))
     (native-inputs
