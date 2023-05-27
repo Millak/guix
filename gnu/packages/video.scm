@@ -1057,6 +1057,11 @@ H.264 (MPEG-4 AVC) video streams.")
              "--enable-precompiled-headers=no")
         #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-utfcpp-include
+           (lambda _
+             (substitute* "src/common/strings/utf8.cpp"
+               (("<utf8.h>")
+                "<utf8cpp/utf8.h>"))))
          (add-after 'unpack 'patch-relative-file-names
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))

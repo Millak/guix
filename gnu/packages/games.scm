@@ -5579,7 +5579,7 @@ in-window at 640x480 resolution or fullscreen.")
                  (lambda _
                    (substitute* "lib/framework/wzstring.cpp"
                      (("<utfcpp/source/utf8.h>")
-                      "<utf8.h>"))))
+                      "<utf8cpp/utf8.h>"))))
                (add-after 'unpack 'link-tests-with-qt
                  (lambda _
                    (substitute* "tests/Makefile.am"
