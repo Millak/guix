@@ -1668,6 +1668,27 @@ programmers may assume e-TeX functionality.  The pdftex engine directly
 incorporates the e-TeX extensions.")
     (license license:knuth)))
 
+(define-public texlive-etex-pkg
+  (package
+    (name "texlive-etex-pkg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etex-pkg/" "tex/latex/etex-pkg/")
+             (base32
+              "10bvvn3s3lmzjscnb2qxkj1ba9qxx0q1w2spcsjpwf20dvym19py")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/etex-pkg")
+    (synopsis "E-TeX support package")
+    (description
+     "The package provides support for LaTeX documents to use many of the
+extensions offered by e-TeX; in particular, it modifies LaTeX's register
+allocation macros to make use of the extended register range.  The
+@code{etextools} package provides macros that make more sophisticated use of
+e-TeX's facilities.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-plain
   (package
     (name "texlive-plain")
