@@ -1091,7 +1091,7 @@ binary, but none of the actual plugins.")))
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.22.2")
+    (version "1.22.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1099,7 +1099,7 @@ binary, but none of the actual plugins.")))
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "1bak46bj92gyz613m99mnl0yw0qhbhq5dfxifnvldgp45kcb7wmy"))))
+                "073kii36ncgsyq0b5njbsvprrg1k3kmydr3dxwiccjv3pvxd7gkh"))))
     (build-system meson-build-system)
     (arguments
      (list
