@@ -242,12 +242,13 @@ service is transient."
   ;; for all of SERVICES.
   (let* ((unresolved (filter (compose unspecified? live-service-transient?)
                              services))
-         (values     (or (eval-there
-                          `(and (defined? 'transient?) ;shepherd >= 0.9.0
-                                (map (compose transient? lookup-running)
-                                     ',(map (compose first
-                                                     live-service-provision)
-                                            unresolved))))
+         (values     (or (and (pair? unresolved)
+                              (eval-there
+                               `(and (defined? 'transient?) ;shepherd >= 0.9.0
+                                     (map (compose transient? lookup-running)
+                                          ',(map (compose first
+                                                          live-service-provision)
+                                                 unresolved)))))
                          (make-list (length unresolved) #f)))
          (resolved   (map (lambda (unresolved transient?)
                             (cons unresolved
