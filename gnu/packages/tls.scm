@@ -978,8 +978,6 @@ number generator")
 (define-public mbedtls-apache
   (package
     (name "mbedtls-apache")
-    ;; XXX Check whether ‘-Wformat-signedness’ still breaks mbedtls-for-hiawatha
-    ;; when updating.
     (version "2.28.5")
     (source
      (origin
@@ -1016,26 +1014,6 @@ coding footprint.")
   (hidden-package
    (package
      (inherit mbedtls-apache)
-     (name "mbedtls-apache")
-     (version "2.26.0")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/ARMmbed/mbedtls")
-              (commit (string-append "mbedtls-" version))))
-        (sha256
-         (base32 "0scwpmrgvg6q7rvqkc352d2fqlsx0aylcbyibcp1f1rsn8iiif2m"))
-        (file-name (git-file-name name version))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Can be removed with the next version.
-            ;; Reduce level of format truncation warnings due to false positives.
-            ;; https://github.com/ARMmbed/mbedtls/commit/2065a8d8af27c6cb1e40c9462b5933336dca7434
-            (substitute* "CMakeLists.txt"
-              (("Wformat-truncation=2") "Wformat-truncation"))
-            #t))))
      (arguments
       (substitute-keyword-arguments (package-arguments mbedtls-apache)
         ((#:phases phases)
@@ -1046,9 +1024,6 @@ coding footprint.")
                             (invoke "scripts/config.pl" "set" feature))
                           (list "MBEDTLS_THREADING_C"
                                 "MBEDTLS_THREADING_PTHREAD"))
-                ;; XXX The above enables code that breaks with -Werror…
-                (substitute* "CMakeLists.txt"
-                  ((" -Wformat-signedness") ""))
                 #t)))))))))
 
 (define-public dehydrated
