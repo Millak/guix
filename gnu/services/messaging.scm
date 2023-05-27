@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2015, 2017-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -866,11 +866,13 @@ string, you could instantiate a prosody service like this:
 
                              (make-inetd-constructor
                               (list #$bitlbee* "-I" "-c" #$conf)
-                              (addrinfo:addr
-                               (car (getaddrinfo #$interface
-                                                 #$(number->string port)
-                                                 (logior AI_NUMERICHOST
-                                                         AI_NUMERICSERV))))
+                              (list (endpoint
+                                     (addrinfo:addr
+                                      (car (getaddrinfo #$interface
+                                                        #$(number->string port)
+                                                        (logior AI_NUMERICHOST
+                                                                AI_NUMERICSERV))))))
+                              #:requirements '#$requirement
                               #:service-name-stem "bitlbee"
                               #:user "bitlbee" #:group "bitlbee"
 

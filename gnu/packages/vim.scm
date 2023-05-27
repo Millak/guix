@@ -79,7 +79,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.1303")
+    (version "9.0.1384")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -88,7 +88,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "16difqsdl3v9irjiaj2zqiyn5q94r70ws4i1ygrrcpzk6127mk2q"))))
+               "07a59a0ibklwmks5f26f9a7c2klhppqbj0kdijcs4ayarh5q2qwf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -950,16 +950,16 @@ a nested nvim process.")
 (define-public vim-guix-vim
   (package
     (name "vim-guix-vim")
-    (version "0.3.1")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://gitlab.com/Efraim/guix.vim")
+                     (url "https://git.sr.ht/~efraim/guix.vim")
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "080ni4z23qdr8rkrswjqfqfrrcnpn7qdgrg14glwji46wzvwxqyx"))))
+                "013yn2n2nsspk12bldkc9xn4z4kjx9rvracbllc8i1nngldckxd0"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -971,7 +971,7 @@ a nested nvim process.")
          ("ftplugin" "share/vim/vimfiles/")
          ("plugin" "share/vim/vimfiles/")
          ("syntax" "share/vim/vimfiles/"))))
-    (home-page "https://gitlab.com/Efraim/guix.vim")
+    (home-page "https://git.sr.ht/~efraim/guix.vim")
     (synopsis "Guix integration in Vim")
     (description "This package provides support for GNU Guix in Vim.")
     (license license:vim)))

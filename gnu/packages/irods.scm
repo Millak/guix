@@ -143,7 +143,7 @@
        ("boost" ,boost-for-irods)
        ("cppzmq" ,cppzmq)
        ("fmt" ,fmt-6)
-       ("json" ,json-modern-cxx)
+       ("json" ,nlohmann-json)
        ("libarchive" ,libarchive)
        ("libcxxabi" ,libcxxabi-6) ; we need this for linking with -lc++abi
        ("linux-pam" ,linux-pam)
@@ -247,7 +247,7 @@ stored.")
        ("cppzmq" ,cppzmq)
        ("fmt" ,fmt-6)
        ("irods" ,irods)
-       ("json" ,json-modern-cxx)
+       ("json" ,nlohmann-json)
        ("libarchive" ,libarchive)
        ("libcxxabi" ,libcxxabi-6)     ; we need this for linking with -lc++abi
        ("mit-krb5" ,mit-krb5)

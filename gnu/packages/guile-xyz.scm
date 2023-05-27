@@ -733,7 +733,7 @@ you send to a FIFO file.")
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.5.2")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -742,7 +742,7 @@ you send to a FIFO file.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "056wab749fyabklp4srai72dwzihlm6hkcdy1da7d4gh8iqsyqpi"))))
+                "0llivcgb7idglsapcmvb2qscds7768f2xfgr4lns8mzl2xf5hwvv"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo help2man))
@@ -2034,7 +2034,7 @@ provides tight coupling to Guix.")
 (define-public guile-ics
   (package
     (name "guile-ics")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -2044,7 +2044,7 @@ provides tight coupling to Guix.")
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "1wjkba135iipwqrp14c3q6wpbjhglp9d12is16lj8l81xyv8gjn3"))))
+         "1ipryn69ad4viqai9pnwhkqqpf9wgw0m2qxrwkfrpm1bfdyilw9w"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -3843,7 +3843,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.3.0")
+    (version "0.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3852,22 +3852,19 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1lv2cjzgrr0yshqng96l6bnn8pjmljv8qcn4w3wldh97ns7qigds"))))
+                "1vkhv0dip0na6d9g478i587n5y6046vn5rsjmfnbibi9yx4rkrf8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
-       #:phases
-       (modify-phases %standard-phases
-         ;; Guile-PNG tries to log parser messages to the syslog which is not
-         ;; available during the build.
-         (add-after 'unpack 'fix-tests
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "tests/graphics.scm"
-               (("             \\(png graphics\\)\\)")
-                (string-append "             (png graphics)\n"
-                               "             (png fsm context))\n"
-                               "(log-clear-handlers!)"))))))))
-    (native-inputs (list autoconf automake pkg-config texinfo))
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         ;; needed when cross-compiling.
+                         guile-3.0
+                         guile-lib
+                         guile-zlib
+                         guile-smc))
     (inputs (list bash-minimal guile-3.0 guile-lib guile-zlib))
     (propagated-inputs (list guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-png")
@@ -5208,7 +5205,7 @@ locations.")
 (define-public guile-netlink
   (package
     (name "guile-netlink")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -5218,7 +5215,7 @@ locations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jcl6mzqy04if5drflmygmggbgzsxa42mlmskqb3cfqmksq0zj0y"))))
+         "1s06xbyj0yd49aivfpc9l73c8c12r3zjmskkyislrfwkbpd74hjr"))))
     (build-system gnu-build-system)
     (inputs
      (list guile-3.0))
@@ -5304,7 +5301,7 @@ GitLab instance.")
 (define-public guile-smc
   (package
     (name "guile-smc")
-    (version "0.5.2")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -5314,7 +5311,7 @@ GitLab instance.")
        (file-name (string-append name "-" version))
        (sha256
         (base32
-         "05q20vi59whjs7jb8bgcxnnfy6c3wx26m5ps2fwlsz52nggarxzb"))))
+         "15b8m30kjl46p44xjd65vv1bv60hy130zfskkcsrj10fzahyk9zd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
@@ -5344,7 +5341,15 @@ GitLab instance.")
                    (,(string-append out go)
                     ,(string-append guile-lib go))))))))))
     (native-inputs
-     (list autoconf automake pkg-config texinfo help2man which))
+     (list autoconf
+           automake
+           pkg-config
+           texinfo
+           help2man
+           which
+           ;; needed when cross-compiling.
+           guile-3.0
+           guile-lib))
     (inputs
      (list bash-minimal guile-3.0 guile-lib inetutils))
     (home-page "https://github.com/artyom-poptsov/guile-smc")
@@ -5375,7 +5380,7 @@ with a FSM is being built (for example, from a Makefile.)")
 (define-public guile-ini
   (package
     (name "guile-ini")
-    (version "0.5.2")
+    (version "0.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5384,13 +5389,20 @@ with a FSM is being built (for example, from a Makefile.)")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "17fbys3gsfyx4f77a2fswirx76dlr57il2z27z77wljaz777jk36"))))
+                "03pdbas7f6r2q3jbcn68xpm57hika3byb4rhsf0544kw6yk3bm8q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
        #:phases (modify-phases %standard-phases
                   (delete 'strip))))
-    (native-inputs (list autoconf automake pkg-config texinfo))
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         ;; needed when cross-compiling.
+                         guile-3.0
+                         guile-lib
+                         guile-smc))
     (inputs (list bash-minimal guile-3.0 guile-lib))
     (propagated-inputs (list guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-ini")

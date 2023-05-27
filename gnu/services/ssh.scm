@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2019, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -47,6 +47,27 @@
 
             openssh-configuration
             openssh-configuration?
+            openssh-configuration-openssh
+            openssh-configuration-pid-file
+            openssh-configuration-port-number
+            openssh-configuration-max-connections
+            openssh-configuration-permit-root-login
+            openssh-configuration-allow-empty-passwords?
+            openssh-configuration-password-authentication?
+            openssh-configuration-public-key-authentication?
+            openssh-configuration-x11-forwarding?
+            openssh-configuration-allow-agent-forwarding?
+            openssh-configuration-allow-tcp-forwarding?
+            openssh-configuration-gateway-ports?
+            openssh-configuration-challenge-response-authentication?
+            openssh-configuration-use-pam?
+            openssh-configuration-print-last-log?
+            openssh-configuration-subsystems
+            openssh-configuration-accepted-environment
+            openssh-configuration-log-level
+            openssh-configuration-extra-content
+            openssh-configuration-authorized-keys
+            openssh-configuration-generate-host-keys?
             openssh-service-type
 
             dropbear-configuration
@@ -197,9 +218,11 @@
                      interfaces)))))
 
   (define requires
-    (if (and daemonic? (lsh-configuration-syslog-output? config))
-        '(networking syslogd)
-        '(networking)))
+    `(networking
+      pam
+      ,@(if (and daemonic? (lsh-configuration-syslog-output? config))
+            '(syslogd)
+            '())))
 
   (list (shepherd-service
          (documentation "GNU lsh SSH server")
@@ -340,8 +363,10 @@ The other options should be self-descriptive."
                          (default #f))
 
   ;; Boolean
-  (challenge-response-authentication? openssh-challenge-response-authentication?
-                                      (default #f))
+  (challenge-response-authentication?
+   openssh-configuration-challenge-response-authentication?
+   (default #f))
+
   ;; Boolean
   (use-pam?              openssh-configuration-use-pam?
                          (default #t))
@@ -499,7 +524,8 @@ of user-name/file-like tuples."
            (format port "PidFile ~a\n"
                    #$(openssh-configuration-pid-file config))
            (format port "ChallengeResponseAuthentication ~a\n"
-                   #$(if (openssh-challenge-response-authentication? config)
+                   #$(if (openssh-configuration-challenge-response-authentication?
+                          config)
                          "yes" "no"))
            (format port "UsePAM ~a\n"
                    #$(if (openssh-configuration-use-pam? config)
@@ -566,7 +592,7 @@ of user-name/file-like tuples."
 
   (list (shepherd-service
          (documentation "OpenSSH server.")
-         (requirement '(syslogd loopback))
+         (requirement '(pam syslogd loopback))
          (provision '(ssh-daemon ssh sshd))
 
          (start #~(if #$inetd-style?
@@ -581,6 +607,7 @@ of user-name/file-like tuples."
                                    (make-socket-address AF_INET6 IN6ADDR_ANY
                                                         #$port-number)))
                                  '()))
+                       #:requirements '#$requirement
                        #:max-connections #$max-connections)
                       (make-forkexec-constructor #$openssh-command
                                                  #:pid-file #$pid-file)))

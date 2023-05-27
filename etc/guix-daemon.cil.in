@@ -176,6 +176,11 @@
                 execute_no_trans read write open entrypoint map
                 getattr link unlink)))
 
+  ;; Remounting /gnu/store read-write.
+  (allow guix_daemon_t
+         fs_t
+         (filesystem (remount)))
+
   ;; TODO: unknown
   (allow guix_daemon_t
          root_t
@@ -222,6 +227,9 @@
          (filesystem (getattr mount)))
   (allow guix_daemon_t
          tmpfs_t
+         (file (create open read unlink write)))
+  (allow guix_daemon_t                          ;same as above, but with tmp_t
+         tmp_t
          (file (create open read unlink write)))
   (allow guix_daemon_t
          tmpfs_t

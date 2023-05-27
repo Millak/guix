@@ -5918,7 +5918,7 @@ in LaTeX documents; a jiffy to create slashed characters for physicists.")
            texlive-latex-l3packages
            texlive-listings
            texlive-pgf
-           texlive-latex-tools
+           texlive-tools
            texlive-xstring))
     (home-page "https://www.ctan.org/pkg/ddphonism")
     (synopsis "Dodecaphonic diagrams for LaTeX")
@@ -9372,7 +9372,7 @@ typeset the table of contents in multiple columns.")
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-amsmath texlive-latex-graphics))
+       (list texlive-amsmath texlive-graphics))
       (home-page "https://ctan.org/pkg/ncctools")
       (synopsis "Collection of general packages for LaTeX")
       (description
@@ -12833,6 +12833,10 @@ orientation by conforming PDF viewers.")
             "tex/latex/datetime2/")
       (base32 "0yjkpfic1ni4j2g61rrjj5hjyd43shc9c0sg1aivbbsmqh30dn33")
       #:trivial? #t))
+    (propagated-inputs
+     (list texlive-etoolbox
+           texlive-latex-xkeyval
+           texlive-tracklang))
     (home-page "https://ctan.org/pkg/datetime2")
     (synopsis "Formats for dates, times and time zones")
     (description
@@ -13358,8 +13362,8 @@ syllable.  The package itself does not support UTF-8 input in ordinary
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-generic-etexcmds
-             texlive-generic-infwarerr
+       (list texlive-etexcmds
+             texlive-infwarerr
              texlive-soul))
       (home-page "https://ctan.org/pkg/soulutf8")
       (synopsis "Permit use of UTF-8 characters in @code{soul}")
@@ -13445,7 +13449,7 @@ are provided to:
                     (copy-recursively (string-append origin "/source") source)
                     (copy-recursively (string-append origin "/doc") doc))))))))
       (propagated-inputs
-       (list texlive-latex-graphics))
+       (list texlive-graphics))
       (home-page "https://ctan.org/pkg/totcount")
       (synopsis "Find the last value of a counter")
       (description
@@ -13489,7 +13493,7 @@ changed, the recorded value will usually be the maximum value.")
       (native-inputs
        (list (texlive-updmap.cfg)))
       (propagated-inputs
-       (list texlive-everyshi texlive-latex-graphics))
+       (list texlive-everyshi texlive-graphics))
       (home-page "https://ctan.org/pkg/totpages")
       (synopsis "Count pages in a document, and report last page number")
       (description
@@ -13511,8 +13515,8 @@ itself may be shipped out to the DVI file.")
                "1gmgagvsv2qknrjzjk840ca3wging8wfc20rgq7bnhphm9n87m6q")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-generic-atbegshi
-           texlive-latex-atveryend
+     (list texlive-atbegshi
+           texlive-atveryend
            texlive-babel
            texlive-cm
            texlive-dvipdfmx

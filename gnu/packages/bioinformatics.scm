@@ -1152,20 +1152,19 @@ cpp.find_library('hdf5_cpp', dirs : '~a'), "
                 "0ykjbps1y3z3085q94npw8i9x5gldc6shy8vlc08v76zljsm07hv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (script)
-                  (wrap-program (string-append out "/bin/" script)
-                    `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
-                '("create_annotations_files.bash"
-                  "create_metaplots.bash"
-                  "Ribotaper_ORF_find.sh"
-                  "Ribotaper.sh")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-executables
+            (lambda _
+              (for-each
+               (lambda (script)
+                 (wrap-program (string-append #$output "/bin/" script)
+                   `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))))
+               '("create_annotations_files.bash"
+                 "create_metaplots.bash"
+                 "Ribotaper_ORF_find.sh"
+                 "Ribotaper.sh")))))))
     (inputs
      (list bedtools-2.18
            samtools-0.1
@@ -2475,7 +2474,7 @@ package provides command line tools using the Bio++ library.")
 (define-public blast+
   (package
     (name "blast+")
-    (version "2.11.0")
+    (version "2.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2483,7 +2482,7 @@ package provides command line tools using the Bio++ library.")
                     version "/ncbi-blast-" version "+-src.tar.gz"))
               (sha256
                (base32
-                "0m0r9vkw631ky1za1wilsfk9k9spwqh22nkrb9a57rbwmrc1i3nq"))
+                "003mn7m4y306k7visv3in3ikfgm8m41z0jq9lyvz10iv1hdpyixz"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2519,103 +2518,101 @@ package provides command line tools using the Bio++ library.")
                     (("cksum") "cksum >/dev/null"))))))
     (build-system gnu-build-system)
     (arguments
-     `(;; There are two(!) tests for this massive library, and both fail with
-       ;; "unparsable timing stats".
-       ;; ERR [127] --  [serial/datatool] datatool.sh     (unparsable timing stats)
-       ;; ERR [127] --  [serial/datatool] datatool_xml.sh     (unparsable timing stats)
-       #:tests? #f
-       #:out-of-source? #t
-       #:parallel-build? #f ; not supported
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-HOME
-          ;; $HOME needs to be set at some point during the configure phase
-          (lambda _ (setenv "HOME" "/tmp") #t))
-         (add-after 'unpack 'enter-dir
-          (lambda _ (chdir "c++") #t))
-         (add-after 'enter-dir 'fix-build-system
-          (lambda _
-            (define (which* cmd)
-              (cond ((string=? cmd "date")
-                     ;; make call to "date" deterministic
-                     "date -d @0")
-                    ((which cmd)
-                     => identity)
-                    (else
-                     (format (current-error-port)
-                             "WARNING: Unable to find absolute path for ~s~%"
-                             cmd)
-                     #f)))
+     (list
+      ;; There are two(!) tests for this massive library, and both fail with
+      ;; "unparsable timing stats".
+      ;; ERR [127] --  [serial/datatool] datatool.sh     (unparsable timing stats)
+      ;; ERR [127] --  [serial/datatool] datatool_xml.sh     (unparsable timing stats)
+      #:tests? #f
+      #:out-of-source? #t
+      #:parallel-build? #f              ;not supported
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-HOME
+            ;; $HOME needs to be set at some point during the configure phase
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-after 'unpack 'enter-dir
+            (lambda _ (chdir "c++")))
+          (add-after 'enter-dir 'fix-build-system
+            (lambda _
+              (define (which* cmd)
+                (cond ((string=? cmd "date")
+                       ;; make call to "date" deterministic
+                       "date -d @0")
+                      ((which cmd)
+                       => identity)
+                      (else
+                       (format (current-error-port)
+                               "WARNING: Unable to find absolute path for ~s~%"
+                               cmd)
+                       #false)))
 
-            ;; Rewrite hardcoded paths to various tools
-            (substitute* (append '("src/build-system/configure.ac"
-                                   "src/build-system/configure"
-                                   "src/build-system/helpers/run_with_lock.c"
-                                   "scripts/common/impl/if_diff.sh"
-                                   "scripts/common/impl/run_with_lock.sh"
-                                   "src/build-system/Makefile.configurables.real"
-                                   "src/build-system/Makefile.in.top"
-                                   "src/build-system/Makefile.meta.gmake=no"
-                                   "src/build-system/Makefile.meta.in"
-                                   "src/build-system/Makefile.meta_l"
-                                   "src/build-system/Makefile.meta_p"
-                                   "src/build-system/Makefile.meta_r"
-                                   "src/build-system/Makefile.mk.in"
-                                   "src/build-system/Makefile.requirements"
-                                   "src/build-system/Makefile.rules_with_autodep.in")
-                                 (find-files "scripts/common/check" "\\.sh$"))
-              (("(/usr/bin/|/bin/)([a-z][-_.a-z]*)" all dir cmd)
-               (or (which* cmd) all)))
+              ;; Rewrite hardcoded paths to various tools
+              (substitute* (append '("src/build-system/configure.ac"
+                                     "src/build-system/configure"
+                                     "src/build-system/helpers/run_with_lock.c"
+                                     "scripts/common/impl/if_diff.sh"
+                                     "scripts/common/impl/run_with_lock.sh"
+                                     "src/build-system/Makefile.configurables.real"
+                                     "src/build-system/Makefile.in.top"
+                                     "src/build-system/Makefile.meta.gmake=no"
+                                     "src/build-system/Makefile.meta.in"
+                                     "src/build-system/Makefile.meta_l"
+                                     "src/build-system/Makefile.meta_p"
+                                     "src/build-system/Makefile.meta_r"
+                                     "src/build-system/Makefile.mk.in"
+                                     "src/build-system/Makefile.requirements"
+                                     "src/build-system/Makefile.rules_with_autodep.in")
+                                   (find-files "scripts/common/check" "\\.sh$"))
+                (("(/usr/bin/|/bin/)([a-z][-_.a-z]*(\\+\\+)?)" all dir cmd)
+                 (or (which* cmd) all)))
 
-            (substitute* (find-files "src/build-system" "^config.*")
-              (("LN_S=/bin/\\$LN_S") (string-append "LN_S=" (which "ln")))
-              (("^PATH=.*") ""))
+              (substitute* (find-files "src/build-system" "^config.*")
+                (("LN_S=/bin/\\$LN_S") (string-append "LN_S=" (which "ln")))
+                (("^PATH=.*") ""))
 
-            ;; rewrite "/var/tmp" in check script
-            (substitute* "scripts/common/check/check_make_unix.sh"
-              (("/var/tmp") "/tmp"))
+              ;; rewrite "/var/tmp" in check script
+              (substitute* "scripts/common/check/check_make_unix.sh"
+                (("/var/tmp") "/tmp"))
 
-            ;; do not reset PATH
-            (substitute* (find-files "scripts/common/impl/" "\\.sh$")
-              (("^ *PATH=.*") "")
-              (("action=/bin/") "action=")
-              (("export PATH") ":"))
-            #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out     (assoc-ref outputs "out"))
-                   (lib     (string-append (assoc-ref outputs "lib") "/lib"))
-                   (include (string-append (assoc-ref outputs "include")
-                                           "/include/ncbi-tools++")))
-               ;; The 'configure' script doesn't recognize things like
-               ;; '--enable-fast-install'.
-               (invoke "./configure.orig"
-                       (string-append "--with-build-root=" (getcwd) "/build")
-                       (string-append "--prefix=" out)
-                       (string-append "--libdir=" lib)
-                       (string-append "--includedir=" include)
-                       (string-append "--with-bz2="
-                                      (assoc-ref inputs "bzip2"))
-                       (string-append "--with-z="
-                                      (assoc-ref inputs "zlib"))
-                       (string-append "--with-pcre="
-                                      (assoc-ref inputs "pcre"))
-                       ;; Each library is built twice by default, once
-                       ;; with "-static" in its name, and again
-                       ;; without.
-                       "--without-static"
-                       "--with-dll")
-               #t))))))
+              ;; do not reset PATH
+              (substitute* (find-files "scripts/common/impl/" "\\.sh$")
+                (("^ *PATH=.*") "")
+                (("action=/bin/") "action=")
+                (("export PATH") ":"))))
+          (replace 'configure
+            (lambda _
+              (let ((lib     (string-append #$output:lib "/lib"))
+                    (include (string-append #$output:include
+                                            "/include/ncbi-tools++")))
+                ;; The 'configure' script doesn't recognize things like
+                ;; '--enable-fast-install'.
+                (invoke "./configure.orig"
+                        (string-append "--with-build-root=" (getcwd) "/build")
+                        (string-append "--prefix=" #$output)
+                        (string-append "--libdir=" lib)
+                        (string-append "--includedir=" include)
+                        (string-append "--with-bz2="
+                                       #$(this-package-input "bzip2"))
+                        (string-append "--with-z="
+                                       #$(this-package-input "zlib"))
+                        (string-append "--with-pcre="
+                                       #$(this-package-input "pcre"))
+                        ;; Each library is built twice by default, once
+                        ;; with "-static" in its name, and again
+                        ;; without.
+                        "--without-static"
+                        "--with-dll")))))))
     (outputs '("out"       ;  21 MB
                "lib"       ; 226 MB
                "include")) ;  33 MB
     (inputs
-     `(("bzip2" ,bzip2)
-       ("lmdb" ,lmdb)
-       ("zlib" ,zlib)
-       ("pcre" ,pcre)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)))
+     (list bzip2
+           lmdb
+           zlib
+           pcre
+           perl
+           python-wrapper))
     (native-inputs
      (list cpio))
     (home-page "https://blast.ncbi.nlm.nih.gov")
@@ -3449,31 +3446,31 @@ setup"))))
                 "0115hkjflsnfzn36xppwf9h9avfxlavr43djqmshkkzbgjzsz60i"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/codingquarry")))
-               (install-file "INSTRUCTIONS.pdf" doc)
-               (copy-recursively "QuarryFiles"
-                                 (string-append out "/QuarryFiles"))
-               (install-file "CodingQuarry" bin)
-               (install-file "CufflinksGTF_to_CodingQuarryGFF3.py" bin))
-             #t)))))
-    (inputs (list openmpi))
+     (list
+      #:tests? #f                       ;no "check" target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (doc (string-append #$output "/share/doc/codingquarry")))
+                (install-file "INSTRUCTIONS.pdf" doc)
+                (copy-recursively "QuarryFiles"
+                                  (string-append #$output
+                                                 "/share/codingquarry/QuarryFiles"))
+                (install-file "CodingQuarry" bin)
+                (install-file "CufflinksGTF_to_CodingQuarryGFF3.py" bin)))))))
+    ;; TODO: This package also needs a Python 2 variant of biopython
+    (inputs (list openmpi python-2)) ;Only Python 2 is supported
     (native-search-paths
      (list (search-path-specification
             (variable "QUARRY_PATH")
-            (files '("QuarryFiles")))))
-    (native-inputs `(("python" ,python-2))) ; Only Python 2 is supported
+            (files '("share/codingquarry/QuarryFiles")))))
+    (home-page "https://sourceforge.net/projects/codingquarry/")
     (synopsis "Fungal gene predictor")
     (description "CodingQuarry is a highly accurate, self-training GHMM fungal
 gene predictor designed to work with assembled, aligned RNA-seq transcripts.")
-    (home-page "https://sourceforge.net/projects/codingquarry/")
     (license license:gpl3+)))
 
 (define-public clustal-omega
@@ -3682,28 +3679,26 @@ files.")
 (define-public python-pybigwig
   (package
     (name "python-pybigwig")
-    (version "0.3.17")
+    (version "0.3.22")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyBigWig" version))
               (sha256
                (base32
-                "157x6v48y299zm382krf1dw08fdxg95im8lnabhp5vc94s04zxj1"))
+                "0hr25lkp26mk0fp7irdjdrdsd5lann9kyv0xq9npyyxxakvjci2x"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Delete bundled libBigWig sources
-                  (delete-file-recursively "libBigWig")
-                  #t))))
-    (build-system python-build-system)
+               ;; Delete bundled libBigWig sources
+               '(delete-file-recursively "libBigWig"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
+     '(#:tests? #false      ;only one test exists and it needs internet access
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'link-with-libBigWig
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda _
              (substitute* "setup.py"
-               (("libs=\\[") "libs=[\"BigWig\", "))
-             #t)))))
+               (("libs=\\[") "libs=[\"BigWig\", ")))))))
     (propagated-inputs
      (list python-numpy))
     (inputs
@@ -4032,25 +4027,23 @@ with Python.")
                (base32 "1ibnplgfzj96w8glkx17v7sld3pm402fr5ybmf3h0rlcryabxrqy"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "src/htslib")
-                  #t))))
+               '(delete-file-recursively "src/htslib"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; There are no tests to run.
-       #:make-flags
-       ,#~(list "PARALLEL=1"           ; Allow parallel execution at run-time.
-                (string-append "prefix=" #$output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (add-after 'install 'install-templates
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((templates (string-append (assoc-ref outputs "out")
-                                             "/share/delly/templates")))
-               (mkdir-p templates)
-               (copy-recursively "excludeTemplates" templates)
-               #t))))))
+     (list
+      #:tests? #f                       ;There are no tests to run.
+      #:make-flags
+      #~(list "PARALLEL=1"             ; Allow parallel execution at run-time.
+              (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; There is no configure phase.
+          (add-after 'install 'install-templates
+            (lambda _
+              (let ((templates (string-append #$output
+                                              "/share/delly/templates")))
+                (mkdir-p templates)
+                (copy-recursively "excludeTemplates" templates)))))))
     (inputs
      (list boost bzip2 htslib zlib))
     (home-page "https://github.com/dellytools/delly")
@@ -4219,7 +4212,7 @@ bases are detected.")
 (define-public diamond
   (package
     (name "diamond")
-    (version "0.9.30")
+    (version "2.1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4228,18 +4221,11 @@ bases are detected.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k6f3kb6cniw11xw6763kkbs1sl0yack7xsy7q5fl5v170ssphq4"))))
+                "0kb17jwlsrvgswfahzznrffv1i6ybwwmq99qs7iga5yzbx64jp6q"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-native-compilation
-           (lambda _
-             (substitute* "CMakeLists.txt" (("-march=native") ""))
-             #t)))))
-    (inputs
-     (list zlib))
+     (list #:configure-flags '(list "-DX86=OFF"))) ;avoid SSE4 and AVX2
+    (inputs (list zlib))
     (home-page "https://github.com/bbuchfink/diamond")
     (synopsis "Accelerated BLAST compatible local sequence aligner")
     (description
@@ -4248,7 +4234,7 @@ translated DNA query sequences against a protein reference database (BLASTP
 and BLASTX alignment mode).  The speedup over BLAST is up to 20,000 on short
 reads at a typical sensitivity of 90-99% relative to BLAST depending on the
 data and settings.")
-    (license license:agpl3+)))
+    (license license:gpl3+)))
 
 (define-public discrover
   (package
@@ -4270,7 +4256,7 @@ data and settings.")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-force-source-date
-           ;; for reproducible dates, texlive needs this to respect respect
+           ;; for reproducible dates, texlive needs this to respect
            ;; SOURCE_DATE_EPOCH
            (lambda _
              (setenv "FORCE_SOURCE_DATE" "1")))
@@ -4301,18 +4287,19 @@ data and settings.")
     (inputs
      (list boost cairo rmath-standalone))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-cm
-                                             texlive-amsfonts
-                                             texlive-doi
-                                             texlive-fonts-ec
-                                             texlive-latex-examplep
-                                             texlive-hyperref
-                                             texlive-ms
-                                             texlive-latex-natbib
-                                             texlive-bibtex ;style files used by natbib
-                                             texlive-pgf    ;tikz
-                                             texlive-latex-verbatimbox)))
-       ("imagemagick" ,imagemagick)))
+     (list (texlive-updmap.cfg
+            (list texlive-cm
+                  texlive-amsfonts
+                  texlive-doi
+                  texlive-fonts-ec
+                  texlive-latex-examplep
+                  texlive-hyperref
+                  texlive-ms
+                  texlive-latex-natbib
+                  texlive-bibtex        ;style files used by natbib
+                  texlive-pgf           ;tikz
+                  texlive-latex-verbatimbox))
+           imagemagick))
     (home-page "https://dorina.mdc-berlin.de/public/rajewsky/discrover/")
     (synopsis "Discover discriminative nucleotide sequence motifs")
     (description "Discrover is a motif discovery method to find binding sites
@@ -5653,8 +5640,7 @@ VCF.")
                '(begin
                   ;; Delete pre-built binaries.
                   (delete-file-recursively "lib")
-                  (mkdir-p "lib")
-                  #t))))
+                  (mkdir-p "lib")))))
     (build-system ant-build-system)
     (arguments
      `(#:build-target "picard-jar"
@@ -5684,8 +5670,7 @@ VCF.")
                (("name=\"test\" depends=\"compile, ")
                 "name=\"test\" depends=\"compile-tests, ")
                (("name=\"compile\" depends=\"compile-src, compile-tests\"")
-                "name=\"compile\" depends=\"compile-src\""))
-             #t))
+                "name=\"compile\" depends=\"compile-src\""))))
          (add-after 'unpack 'fix-deflater-path
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "src/java/net/sf/samtools/Defaults.java"
@@ -5693,8 +5678,7 @@ VCF.")
                 (string-append "getStringProperty(\"intel_deflater_so_path\", \""
                                (assoc-ref outputs "out")
                                "/lib/jni/libIntelDeflater.so"
-                               "\")")))
-             #t))
+                               "\")")))))
          ;; Build the deflater library, because we've previously deleted the
          ;; pre-built one.  This can only be built with access to the JDK
          ;; sources.
@@ -5717,31 +5701,27 @@ VCF.")
                        "-c" "-O3" "-fPIC" "IntelDeflater.c")
                (invoke "gcc" "-shared"
                        "-o" "../../../lib/jni/libIntelDeflater.so"
-                       "IntelDeflater.o" "-lz" "-lstdc++"))
-             #t))
+                       "IntelDeflater.o" "-lz" "-lstdc++"))))
          ;; We can only build everything else after building the JNI library.
          (add-after 'build-jni 'build-rest
            (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke `("ant" "all" ,@make-flags))
-             #t))
+             (apply invoke `("ant" "all" ,@make-flags))))
          (add-before 'build 'set-JAVA6_HOME
            (lambda _
-             (setenv "JAVA6_HOME" (getenv "JAVA_HOME"))
-             #t))
+             (setenv "JAVA6_HOME" (getenv "JAVA_HOME"))))
          (replace 'install (install-jars "dist"))
          (add-after 'install 'install-jni-lib
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((jni (string-append (assoc-ref outputs "out")
                                        "/lib/jni")))
                (mkdir-p jni)
-               (install-file "lib/jni/libIntelDeflater.so" jni)
-               #t))))))
+               (install-file "lib/jni/libIntelDeflater.so" jni)))))))
     (inputs
-     `(("java-snappy-1" ,java-snappy-1)
-       ("java-commons-jexl-2" ,java-commons-jexl-2)
-       ("java-cofoja" ,java-cofoja)
-       ("ant" ,ant/java8) ; for bzip2 support at runtime
-       ("zlib" ,zlib)))
+     (list java-snappy-1
+           java-commons-jexl-2
+           java-cofoja
+           ant/java8                    ;for bzip2 support at runtime
+           zlib))
     (native-inputs
      `(("ant-apache-bcel" ,ant-apache-bcel)
        ("ant-junit" ,ant-junit)
@@ -7561,99 +7541,99 @@ simultaneously.")
                 "0m8hlxscidsfqm9x9fyi62q6lpf1dv5115kgjjgnrkl49q9c27m6"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-build? #f ; not supported
-       #:tests? #f ; no "check" target
-       #:make-flags '("HAVE_HDF5=1")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-files-writable
-           (lambda _ (for-each make-file-writable (find-files "." ".*")) #t))
-         (add-before 'configure 'set-perl-search-path
-           (lambda _
-             ;; Work around "dotless @INC" build failure.
-             (setenv "PERL5LIB"
-                     (string-append (getcwd) "/setup:"
-                                    (getenv "PERL5LIB")))
-             #t))
-         ;; See https://github.com/ncbi/ncbi-vdb/issues/14
-         (add-after 'unpack 'patch-krypto-flags
-           (lambda _
-             (substitute* "libs/krypto/Makefile"
-               (("-Wa,-march=generic64\\+aes") "")
-               (("-Wa,-march=generic64\\+sse4") ""))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Override include path for libmagic
-               (substitute* "setup/package.prl"
-                 (("name => 'magic', Include => '/usr/include'")
-                  (string-append "name=> 'magic', Include => '"
-                                 (assoc-ref inputs "libmagic")
-                                 "/include" "'")))
+     (list
+      #:parallel-build? #f              ; not supported
+      #:tests? #f                       ; no "check" target
+      #:make-flags '(list "HAVE_HDF5=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          #;
+          (add-after 'unpack 'make-files-writable
+            (lambda _ (for-each make-file-writable (find-files "." ".*"))))
+          (add-before 'configure 'set-perl-search-path
+            (lambda _
+              ;; Work around "dotless @INC" build failure.
+              (setenv "PERL5LIB"
+                      (string-append (getcwd) "/setup:"
+                                     (getenv "PERL5LIB")))))
+          ;; See https://github.com/ncbi/ncbi-vdb/issues/14
+          (add-after 'unpack 'patch-krypto-flags
+            (lambda _
+              (substitute* "libs/krypto/Makefile"
+                (("-Wa,-march=generic64\\+aes") "")
+                (("-Wa,-march=generic64\\+sse4") ""))))
+          (replace 'configure
+            (lambda _
+              ;; Override include path for libmagic
+              (substitute* "setup/package.prl"
+                (("name => 'magic', Include => '/usr/include'")
+                 (string-append "name=> 'magic', Include => '"
+                                #$(this-package-input "file")
+                                "/include" "'")))
 
-               ;; Install kdf5 library (needed by sra-tools)
-               (substitute* "build/Makefile.install"
-                 (("LIBRARIES_TO_INSTALL =")
-                  "LIBRARIES_TO_INSTALL = kdf5.$(VERSION_LIBX) kdf5.$(VERSION_SHLX)"))
+              ;; Install kdf5 library (needed by sra-tools)
+              (substitute* "build/Makefile.install"
+                (("LIBRARIES_TO_INSTALL =")
+                 "LIBRARIES_TO_INSTALL = kdf5.$(VERSION_LIBX) kdf5.$(VERSION_SHLX)"))
 
-               (substitute* "build/Makefile.env"
-                 (("CFLAGS	=" prefix)
-                  (string-append prefix "-msse2 ")))
+              (substitute* "build/Makefile.env"
+                (("CFLAGS	=" prefix)
+                 (string-append prefix "-msse2 ")))
 
-               ;; Override search path for ngs-java
-               (substitute* "setup/package.prl"
-                 (("/usr/local/ngs/ngs-java")
-                  (assoc-ref inputs "java-ngs")))
+              ;; Override search path for ngs-java
+              (substitute* "setup/package.prl"
+                (("/usr/local/ngs/ngs-java")
+                 #$(this-package-input "java-ngs")))
 
-               ;; The 'configure' script doesn't recognize things like
-               ;; '--enable-fast-install'.
-               (invoke "./configure"
-                       (string-append "--build-prefix=" (getcwd) "/build")
-                       (string-append "--prefix=" (assoc-ref outputs "out"))
-                       (string-append "--debug")
-                       (string-append "--with-xml2-prefix="
-                                      (assoc-ref inputs "libxml2"))
-                       (string-append "--with-ngs-sdk-prefix="
-                                      (assoc-ref inputs "ngs-sdk"))
-                       (string-append "--with-hdf5-prefix="
-                                      (assoc-ref inputs "hdf5")))
-               #t)))
-         (add-after 'install 'install-interfaces
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Install interface libraries.  On i686 the interface libraries
-             ;; are installed to "linux/gcc/i386", so we need to use the Linux
-             ;; architecture name ("i386") instead of the target system prefix
-             ;; ("i686").
-             (mkdir (string-append (assoc-ref outputs "out") "/ilib"))
-             (copy-recursively (string-append
-                                "build/ncbi-vdb/linux/gcc/"
-                                ,(platform-linux-architecture
-                                  (lookup-platform-by-target-or-system
-                                   (or (%current-target-system)
-                                       (%current-system))))
-                                              "/rel/ilib")
-                               (string-append (assoc-ref outputs "out")
-                                              "/ilib"))
-             ;; Install interface headers
-             (copy-recursively "interfaces"
-                               (string-append (assoc-ref outputs "out")
-                                              "/include"))
-             #t))
-         ;; These files are needed by sra-tools.
-         (add-after 'install 'install-configuration-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((target (string-append (assoc-ref outputs "out") "/kfg")))
-               (mkdir target)
-               (install-file "libs/kfg/default.kfg" target)
-               (install-file "libs/kfg/certs.kfg" target))
-             #t)))))
+              ;; The 'configure' script doesn't recognize things like
+              ;; '--enable-fast-install'.
+              (invoke "./configure"
+                      (string-append "--build-prefix=" (getcwd) "/build")
+                      (string-append "--prefix=" #$output)
+                      (string-append "--debug")
+                      (string-append "--with-xml2-prefix="
+                                     #$(this-package-input "libxml2"))
+                      (string-append "--with-ngs-sdk-prefix="
+                                     #$(this-package-input "ngs-sdk"))
+                      (string-append "--with-hdf5-prefix="
+                                     #$(this-package-input "hdf5")))))
+          (add-after 'install 'install-interfaces
+            (lambda _
+              ;; Install interface libraries.  On i686 the interface libraries
+              ;; are installed to "linux/gcc/i386", so we need to use the Linux
+              ;; architecture name ("i386") instead of the target system prefix
+              ;; ("i686").
+              (mkdir (string-append #$output "/ilib"))
+              (copy-recursively (string-append
+                                 "build/ncbi-vdb/linux/gcc/"
+                                 #$(platform-linux-architecture
+                                    (lookup-platform-by-target-or-system
+                                     (or (%current-target-system)
+                                         (%current-system))))
+                                 "/rel/ilib")
+                                (string-append #$output "/ilib"))
+              ;; Install interface headers
+              (copy-recursively "interfaces"
+                                (string-append #$output "/include"))))
+          (add-after 'install-interfaces 'install-libs
+            (lambda _
+              (copy-recursively (string-append
+                                 "build/ncbi-vdb/linux/gcc/"
+                                 #$(platform-linux-architecture
+                                    (lookup-platform-by-target-or-system
+                                     (or (%current-target-system)
+                                         (%current-system))))
+                                 "/rel/lib")
+                                (string-append #$output "/lib"))))
+          ;; These files are needed by sra-tools.
+          (add-after 'install 'install-configuration-files
+            (lambda _
+              (let ((target (string-append #$output "/kfg")))
+                (mkdir target)
+                (install-file "libs/kfg/default.kfg" target)
+                (install-file "libs/kfg/certs.kfg" target)))))))
     (inputs
-     `(("libxml2" ,libxml2)
-       ("ngs-sdk" ,ngs-sdk)
-       ("java-ngs" ,java-ngs)
-       ("libmagic" ,file)
-       ("hdf5" ,hdf5)))
+     (list file hdf5 java-ngs libxml2 ngs-sdk ))
     (native-inputs (list perl))
     ;; NCBI-VDB requires SSE capability.
     (supported-systems '("i686-linux" "x86_64-linux"))
@@ -8013,86 +7993,88 @@ unique transcripts.")
          "1cr2mijkfs5sm35ffjs6861qsd1qkgnhnbavdv65zg5d655abbjf"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-build? #f             ; not supported
-       #:tests? #f                      ; no "check" target
-       #:make-flags
-       ,#~(list (string-append "DEFAULT_CRT="
-                               #$(this-package-input "ncbi-vdb")
-                               "/kfg/certs.kfg")
-                (string-append "DEFAULT_KFG="
-                               #$(this-package-input "ncbi-vdb")
-                               "/kfg/default.kfg")
-                (string-append "VDB_LIBDIR="
-                               #$(this-package-input "ncbi-vdb")
-                               #$(if (string-prefix? "x86_64"
-                                                     (or (%current-target-system)
-                                                         (%current-system)))
-                                     "/lib64"
-                                     "/lib32")))
+     (list
+      #:parallel-build? #f             ; not supported
+      #:tests? #f                      ; no "check" target
+      #:make-flags
+      #~(list (string-append "DEFAULT_CRT="
+                             #$(this-package-input "ncbi-vdb")
+                             "/kfg/certs.kfg")
+              (string-append "DEFAULT_KFG="
+                             #$(this-package-input "ncbi-vdb")
+                             "/kfg/default.kfg")
+              (string-append "VDB_LIBDIR="
+                             #$(this-package-input "ncbi-vdb")
+                             #$(if (string-prefix? "x86_64"
+                                                   (or (%current-target-system)
+                                                       (%current-system)))
+                                   "/lib64"
+                                   "/lib32")))
        #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-perl-search-path
-           (lambda _
-             ;; Work around "dotless @INC" build failure.
-             (setenv "PERL5LIB"
-                     (string-append (getcwd) "/setup:"
-                                    (getenv "PERL5LIB")))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; The build system expects a directory containing the sources and
-             ;; raw build output of ncbi-vdb, including files that are not
-             ;; installed.  Since we are building against an installed version of
-             ;; ncbi-vdb, the following modifications are needed.
-             (substitute* "setup/konfigure.perl"
-               ;; Make the configure script look for the "ilib" directory of
-               ;; "ncbi-vdb" without first checking for the existence of a
-               ;; matching library in its "lib" directory.
-               (("^            my \\$f = File::Spec->catdir\\(\\$libdir, \\$lib\\);")
-                "my $f = File::Spec->catdir($ilibdir, $ilib);")
-               ;; Look for interface libraries in ncbi-vdb's "ilib" directory.
-               (("my \\$ilibdir = File::Spec->catdir\\(\\$builddir, 'ilib'\\);")
-                "my $ilibdir = File::Spec->catdir($dir, 'ilib');"))
+       #~(modify-phases %standard-phases
+           (add-before 'configure 'set-perl-search-path
+             (lambda _
+               ;; Work around "dotless @INC" build failure.
+               (setenv "PERL5LIB"
+                       (string-append (getcwd) "/setup:"
+                                      (getenv "PERL5LIB")))))
+           (replace 'configure
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               ;; The build system expects a directory containing the sources and
+               ;; raw build output of ncbi-vdb, including files that are not
+               ;; installed.  Since we are building against an installed version of
+               ;; ncbi-vdb, the following modifications are needed.
+               (substitute* "setup/konfigure.perl"
+                 ;; Make the configure script look for the "ilib" directory of
+                 ;; "ncbi-vdb" without first checking for the existence of a
+                 ;; matching library in its "lib" directory.
+                 (("^            my \\$f = File::Spec->catdir\\(\\$libdir, \\$lib\\);")
+                  "my $f = File::Spec->catdir($ilibdir, $ilib);")
+                 ;; Look for interface libraries in ncbi-vdb's "ilib" directory.
+                 (("my \\$ilibdir = File::Spec->catdir\\(\\$builddir, 'ilib'\\);")
+                  "my $ilibdir = File::Spec->catdir($dir, 'ilib');"))
 
-             ;; Dynamic linking
-             (substitute* "tools/copycat/Makefile"
-               (("smagic-static") "lmagic"))
-             (substitute* "tools/driver-tool/utf8proc/Makefile"
-               (("CC\\?=gcc") "myCC=gcc")
-               (("\\(CC\\)") "(myCC)"))
+               ;; Dynamic linking
+               (substitute* "tools/copycat/Makefile"
+                 (("smagic-static") "lmagic"))
+               (substitute* "tools/driver-tool/utf8proc/Makefile"
+                 (("CC\\?=gcc") "myCC=gcc")
+                 (("\\(CC\\)") "(myCC)"))
 
-             ;; The 'configure' script doesn't recognize things like
-             ;; '--enable-fast-install'.
-             (invoke "./configure"
-                     (string-append "--build-prefix=" (getcwd) "/build")
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     (string-append "--debug")
-                     (string-append "--with-fuse-prefix="
-                                    (assoc-ref inputs "fuse"))
-                     (string-append "--with-magic-prefix="
-                                    (assoc-ref inputs "libmagic"))
-                     ;; TODO: building with libxml2 fails with linker errors
-                     #;
-                     (string-append "--with-xml2-prefix="
-                                    (assoc-ref inputs "libxml2"))
-                     (string-append "--with-ncbi-vdb-sources="
-                                    (assoc-ref inputs "ncbi-vdb"))
-                     (string-append "--with-ncbi-vdb-build="
-                                    (assoc-ref inputs "ncbi-vdb"))
-                     (string-append "--with-ngs-sdk-prefix="
-                                    (assoc-ref inputs "ngs-sdk"))
-                     (string-append "--with-hdf5-prefix="
-                                    (assoc-ref inputs "hdf5")))
-             #t)))))
+               ;; Don't link libxml2 statically
+               (substitute* "build/ld.linux.exe.sh"
+                 (("grep -q 'OS_DISTRIBUTOR = Ubuntu.*") "true\n"))
+
+               ;; The 'configure' script doesn't recognize things like
+               ;; '--enable-fast-install'.
+               (invoke "./configure"
+                       (string-append "--build-prefix=" (getcwd) "/build")
+                       (string-append "--prefix=" #$output)
+                       (string-append "--debug")
+                       (string-append "--with-fuse-prefix="
+                                      #$(this-package-input "fuse"))
+                       (string-append "--with-magic-prefix="
+                                      #$(this-package-input "file"))
+                       (string-append "--with-xml2-prefix="
+                                      #$(this-package-input "libxml2"))
+                       (string-append "--with-ncbi-vdb-sources="
+                                      #$(this-package-input "ncbi-vdb"))
+                       (string-append "--with-ncbi-vdb-build="
+                                      #$(this-package-input "ncbi-vdb"))
+                       (string-append "--with-ngs-sdk-prefix="
+                                      #$(this-package-input "ngs-sdk"))
+                       (string-append "--with-hdf5-prefix="
+                                      #$(this-package-input "hdf5"))))))))
     (native-inputs (list perl))
     (inputs
-     `(("ngs-sdk" ,ngs-sdk)
-       ("ncbi-vdb" ,ncbi-vdb)
-       ("libmagic" ,file)
-       ("fuse" ,fuse)
-       ("hdf5" ,hdf5-1.10)
-       ("zlib" ,zlib)
-       ("python" ,python-wrapper)))
+     (list ngs-sdk
+           ncbi-vdb
+           file
+           fuse
+           hdf5-1.10
+           libxml2
+           zlib
+           python-wrapper))
     (home-page
      "https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software")
     (synopsis "Tools and libraries for reading and writing sequencing data")
@@ -12628,6 +12610,56 @@ single-cell RNA-seq data.")
 API services.")
     (license license:bsd-3)))
 
+(define-public python-mgatk
+  (package
+    (name "python-mgatk")
+    (version "0.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/caleblareau/mgatk")
+             ;; There is no tag for 0.6.7, but this is the commit
+             ;; corresponding to the version bump.
+             (commit "2633903acb1fb406bb58c787f320c3641f446ee7")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "19iklfv1brwsfg1l5lrs3z8m343nskkn1998c1fs7fdn0lgrki2p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The md5 module has been removed in Python 3
+          (add-after 'unpack 'python3-compatibility
+            (lambda _
+              (substitute* "tests/test_cli.py"
+                (("import md5") "from hashlib import md5")
+                (("md5.new") "md5")
+                (("\\.digest") ".hexdigest")))))))
+    (propagated-inputs
+     (list python-biopython
+           python-click
+           python-numpy
+           python-optparse-pretty
+           python-pandas
+           python-pysam
+           python-regex
+           python-ruamel.yaml
+           snakemake))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/caleblareau/mgatk")
+    (synopsis "Mitochondrial genome analysis toolkit.")
+    (description "This package is a Python-based command line interface for
+processing .bam files with mitochondrial reads and generating high-quality
+heteroplasmy estimation from sequencing data.  The mgatk package places a
+special emphasis on mitochondrial genotypes generated from single-cell
+genomics data, primarily @acronym{mtscATAC-seq, mitochondrial single-cell
+ATAC-sequence}, but is generally applicable across other assays.")
+    (license license:expat)))
+
 (define-public python-multivelo
   (package
     (name "python-multivelo")
@@ -15811,46 +15843,45 @@ Barcoding Kit or Rapid Barcoding Kit.")
          "0bsa5mf9n9q5jz7mmacrra41l7r8rac5vgsn6wv1fb52ya58b970"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (libexec (string-append out "/libexec/jamm"))
-                    (bin (string-append out "/bin")))
-               (substitute* '("JAMM.sh"
-                              "SignalGenerator.sh")
-                 (("^sPath=.*")
-                  (string-append "sPath=\"" libexec "\"\n")))
-               (for-each (lambda (file)
-                           (install-file file libexec))
-                         (list "bincalculator.r"
-                               "peakfinder.r"
-                               "peakhelper.r"
-                               "signalmaker.r"
-                               "xcorr.r"
-                               "xcorrhelper.r"
-                               ;; Perl scripts
-                               "peakfilter.pl"
-                               "readshifter.pl"))
+     (list
+      #:tests? #f                       ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (let ((libexec (string-append #$output "/libexec/jamm"))
+                    (bin (string-append #$output "/bin")))
+                (substitute* '("JAMM.sh"
+                               "SignalGenerator.sh")
+                  (("^sPath=.*")
+                   (string-append "sPath=\"" libexec "\"\n")))
+                (for-each (lambda (file)
+                            (install-file file libexec))
+                          (list "bincalculator.r"
+                                "peakfinder.r"
+                                "peakhelper.r"
+                                "signalmaker.r"
+                                "xcorr.r"
+                                "xcorrhelper.r"
+                                ;; Perl scripts
+                                "peakfilter.pl"
+                                "readshifter.pl"))
 
-               (for-each
-                (lambda (script)
-                  (chmod script #o555)
-                  (install-file script bin)
-                  (wrap-program (string-append bin "/" script)
-                    `("PATH" ":" prefix
-                      (,(string-append (assoc-ref inputs "coreutils") "/bin")
-                       ,(string-append (assoc-ref inputs "gawk") "/bin")
-                       ,(string-append (assoc-ref inputs "perl") "/bin")
-                       ,(string-append (assoc-ref inputs "r-minimal") "/bin")))
-                    `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))
-                    `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE")))))
-                (list "JAMM.sh" "SignalGenerator.sh")))
-             #t)))))
+                (for-each
+                 (lambda (script)
+                   (chmod script #o555)
+                   (install-file script bin)
+                   (wrap-program (string-append bin "/" script)
+                     `("PATH" ":" prefix
+                       (,(string-append #$(this-package-input "coreutils") "/bin")
+                        ,(string-append #$(this-package-input "gawk") "/bin")
+                        ,(string-append #$(this-package-input "perl") "/bin")
+                        ,(string-append #$(this-package-input "r-minimal") "/bin")))
+                     `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))
+                     `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE")))))
+                 (list "JAMM.sh" "SignalGenerator.sh"))))))))
     (inputs
      (list bash
            coreutils
@@ -16474,35 +16505,36 @@ includes a command line tool and an analysis pipeline.")
          "0jx9656ry766vb8z08m1c3im87b0c82qpnjby9wz4kcz8vn87dx2"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((htslib (assoc-ref inputs "htslib")))
-               (substitute* "Makefile"
-                 (("-I\\$\\(HTSLIB\\)/htslib")
-                  (string-append "-I" htslib "/include/htslib"))
-                 ((" \\$\\(HTSLIB\\)/libhts.a")
-                  (string-append " " htslib "/lib/libhts.so"))))
-             (substitute* "run_arriba.sh"
-               (("^STAR ") (string-append (which "STAR") " "))
-               (("samtools --version-only")
-                (string-append (which "samtools") " --version-only"))
-               (("samtools index")
-                (string-append (which "samtools") " index"))
-               (("samtools sort")
-                (string-append (which "samtools") " sort")))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (install-file "arriba" bin)
-               (install-file "run_arriba.sh" bin)
-               (install-file "draw_fusions.R" bin)
-               (wrap-program (string-append bin "/draw_fusions.R")
-                 `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE")))))
-             #t)))))
+     (list
+      #:tests? #f                       ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("-I\\$\\(HTSLIB\\)/htslib")
+                 (string-append "-I"
+                                (search-input-directory inputs "/include/htslib")))
+                ((" \\$\\(HTSLIB\\)/libhts.a")
+                 (string-append " " (search-input-file inputs "/lib/libhts.so"))))
+              (let ((samtools (search-input-file inputs "/bin/samtools")))
+                (substitute* "run_arriba.sh"
+                  (("^STAR ")
+                   (string-append (search-input-file inputs "/bin/STAR") " "))
+                  (("samtools --version-only")
+                   (string-append samtools " --version-only"))
+                  (("samtools index")
+                   (string-append samtools " index"))
+                  (("samtools sort")
+                   (string-append samtools " sort"))))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (install-file "arriba" bin)
+                (install-file "run_arriba.sh" bin)
+                (install-file "draw_fusions.R" bin)
+                (wrap-program (string-append bin "/draw_fusions.R")
+                  `("R_LIBS_SITE" ":" prefix (,(getenv "R_LIBS_SITE"))))))))))
     (inputs
      (list htslib
            r-minimal
@@ -17318,30 +17350,30 @@ significance profiles for each word studied across the sorted genelist.")
     (name "multichoose")
     (version "1.0.3")
     (source (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/ekg/multichoose/")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "0ci5fqvmpamwgxvmyd79ygj6n3bnbl3vc7b6h1sxz58186sm3pfs"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ekg/multichoose/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ci5fqvmpamwgxvmyd79ygj6n3bnbl3vc7b6h1sxz58186sm3pfs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; Tests require node.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (include (string-append out "/include")))
-               ;; TODO: There are Python modules for these programs too.
-               (install-file "multichoose" bin)
-               (install-file "multipermute" bin)
-               (install-file "multichoose.h" include)
-               (install-file "multipermute.h" include))
-             #t)))))
+     (list
+      #:tests? #f                       ;Tests require node.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;There is no configure phase.
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (include (string-append #$output "/include")))
+                ;; TODO: There are Python modules for these programs too.
+                (install-file "multichoose" bin)
+                (install-file "multipermute" bin)
+                (install-file "multichoose.h" include)
+                (install-file "multipermute.h" include)))))))
     (home-page "https://github.com/ekg/multichoose")
     (synopsis "Efficient loopless multiset combination generation algorithm")
     (description "This library implements an efficient loopless multiset
@@ -17715,33 +17747,32 @@ length of a short-read sequencing alignment.")
 (define-public samblaster
   (package
     (name "samblaster")
-    (version "0.1.24")
+    (version "0.1.26")
     (source (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/GregoryFaust/samblaster")
-            (commit (string-append "v." version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32
-        "0iv2ddfw8363vb2x8gr3p8g88whb6mb9m0pf71i2cqsbv6jghap7"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/GregoryFaust/samblaster")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g24fq5hplnfgqkh3xqpg3lgx3wmxwnh9c7m6yw7pbi40lmgl1jv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "samblaster"
-                           (string-append (assoc-ref outputs "out") "/bin"))
-             #t)))))
+     (list
+      #:tests? #f                       ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;There is no configure phase.
+          (replace 'install
+            (lambda _
+              (install-file "samblaster" (string-append #$output "/bin")))))))
     (home-page "https://github.com/GregoryFaust/samblaster")
     (synopsis "Mark duplicates in paired-end SAM files")
     (description "Samblaster is a fast and flexible program for marking
 duplicates in read-id grouped paired-end SAM files.  It can also optionally
 output discordant read pairs and/or split read mappings to separate SAM files,
-and/or unmapped/clipped reads to a separate FASTQ file. When marking
+and/or unmapped/clipped reads to a separate FASTQ file.  When marking
 duplicates, samblaster will require approximately 20MB of memory per 1M read
 pairs.")
     (license license:expat)))
@@ -17793,7 +17824,7 @@ patterns.")
 (define-public methyldackel
   (package
     (name "methyldackel")
-    (version "0.5.1")
+    (version "0.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17802,28 +17833,28 @@ patterns.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sfhf2ap75qxpnmy1ifgmxqs18rq8mah9mcgkby73vc6h0sw99ws"))))
+                "06kj76pyhzxfcjcpm840a3km3fa9994kfq4asglnb228pwak326z"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       ,#~(list "CC=gcc"
-                "CFLAGS=-fcommon"
-                (string-append "prefix=" #$output "/bin/"))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list "CC=gcc"
+              "CFLAGS=-fcommon"
+              "LIBBIGWIG=-lBigWig"
+              (string-append "prefix=" #$output "/bin/"))
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              (substitute* "Makefile"
-               (("-lhts ") "-lhts -lBigWig ")
                (("install MethylDackel \\$\\(prefix\\)" match)
                 (string-append "install -d $(prefix); " match))))))))
     (inputs
-     (list curl ; XXX: needed by libbigwig
-           htslib-1.9 libbigwig zlib))
+     (list curl htslib libbigwig zlib))
     ;; Needed for tests
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (home-page "https://github.com/dpryan79/MethylDackel")
     (synopsis "Universal methylation extractor for BS-seq experiments")
     (description
@@ -17851,44 +17882,43 @@ containing the reference genome as well.")
                 "10lpbllvny923jjbbyrpxahhd1m5h7sbj9gx7rd123rg10mlidki"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       ,#~(list "CC=gcc"
-                (string-append "DESTDIR=" #$output))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Fix syntax
-             (substitute* "test/Makefile"
-               (("        ") "	"))
-             (substitute* "Makefile"
-               (("CLAPACKPATH=/usr/lib")
-                (string-append "CLAPACKPATH="
-                               (assoc-ref inputs "clapack") "/lib")))
-             ;; Renaming the libraries is not necessary with our version of
-             ;; CLAPACK.
-             (substitute* "src/lib/Makefile"
-               (("ifdef CLAPACKPATH") "ifdef UNNECESSARY"))
-             (substitute* "src/make-include.mk"
-               (("-lblaswr") "-lblas")
-               (("-ltmg") "-ltmglib")
-               (("liblapack.a") "liblapack.so")
-               (("libblas.a") "libblas.so")
-               (("libf2c.a") "libf2c.so"))
-             (substitute* "src/Makefile"
-               (("/opt") "/share")
-               (("/usr/") "/"))
-             #t))
-         (replace 'check
-           (lambda _
-             (setenv "PATH"
-                     (string-append (getcwd) "/bin:" (getenv "PATH")))
-             ;; Disable broken test
-             (substitute* "test/Makefile"
-               ((".*if.*hmrc_summary" m) (string-append "#" m)))
-             ;; Only run the msa_view tests because the others fail for
-             ;; unknown reasons.
-             (invoke "make" "-C" "test" "msa_view"))))))
+     (list
+      #:make-flags
+      #~(list "CC=gcc" (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ;; Fix syntax
+              (substitute* "test/Makefile"
+                (("        ") "	"))
+              (substitute* "Makefile"
+                (("CLAPACKPATH=/usr/lib")
+                 (string-append "CLAPACKPATH="
+                                #$(this-package-input "clapack") "/lib")))
+              ;; Renaming the libraries is not necessary with our version of
+              ;; CLAPACK.
+              (substitute* "src/lib/Makefile"
+                (("ifdef CLAPACKPATH") "ifdef UNNECESSARY"))
+              (substitute* "src/make-include.mk"
+                (("-lblaswr") "-lblas")
+                (("-ltmg") "-ltmglib")
+                (("liblapack.a") "liblapack.so")
+                (("libblas.a") "libblas.so")
+                (("libf2c.a") "libf2c.so"))
+              (substitute* "src/Makefile"
+                (("/opt") "/share")
+                (("/usr/") "/"))))
+          (replace 'check
+            (lambda _
+              (setenv "PATH"
+                      (string-append (getcwd) "/bin:" (getenv "PATH")))
+              ;; Disable broken test
+              (substitute* "test/Makefile"
+                ((".*if.*hmrc_summary" m) (string-append "#" m)))
+              ;; Only run the msa_view tests because the others fail for
+              ;; unknown reasons.
+              (invoke "make" "-C" "test" "msa_view"))))))
     (inputs
      (list clapack))
     (native-inputs
@@ -20071,6 +20101,114 @@ handling.")))
     (synopsis "Bioinformatics library for Go")
     (description
      "Bíogo is a bioinformatics library for the Go language.")
+    (license license:bsd-3)))
+
+(define-public python-gseapy
+  (package
+    (name "python-gseapy")
+    (version "1.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zqfang/GSEApy")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06gh09dwwj2xr5zx8i41smy8arx2pw7rll7sk50np28z419bnyz9"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false
+      #:features '(list "extension-module")
+      #:cargo-test-flags '(list "--features=extension-module")
+      #:cargo-inputs
+      `(("rust-csv" ,rust-csv-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-pyo3" ,rust-pyo3-0.16)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1))
+      #:imported-modules
+      (append %cargo-build-system-modules
+              %pyproject-build-system-modules)
+      #:modules
+      '((guix build cargo-build-system)
+        ((guix build pyproject-build-system) #:prefix py:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'prepare-python-module
+            (lambda _
+              ;; We don't use maturin, nor do we use setuptools-rust.
+              (delete-file "pyproject.toml")
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port "\
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools']
+")))
+              (delete-file "setup.py")
+              (call-with-output-file "setup.cfg"
+                (lambda (port)
+                  (format port "\
+[metadata]
+name = gseapy
+version = ~a
+
+[options]
+packages = find:
+
+[options.packages.find]
+exclude =
+  src
+  docs
+  tests
+  Cargo.toml
+" #$version)))))
+          ;; We delete the Cargo checks but run the Python tests later.
+          ;; See https://github.com/zqfang/GSEApy/issues/207
+          (delete 'check)
+          (add-after 'prepare-python-module 'enable-bytecode-determinism
+            (assoc-ref py:%standard-phases 'enable-bytecode-determinism))
+          (add-after 'enable-bytecode-determinism 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install-python-module 'install-python-library
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (mkdir-p site)
+                (copy-file "target/release/libgse.so"
+                           (string-append site "/gseapy/gse.so")))))
+          (add-after 'install-python-library 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv" "tests"
+                        ;; These tests need access to the internet
+                        "-k" "not test_enrichr and not test_prerank")))))))
+    (inputs
+     (list python-wrapper))
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           python-pandas
+           python-matplotlib
+           python-requests))
+    (home-page "https://github.com/zqfang/gseapy")
+    (synopsis "Gene Set Enrichment Analysis in Python")
+    (description "GSEApy is a Python/Rust implementation for GSEA and wrapper
+for Enrichr.  GSEApy can be used for RNA-seq, ChIP-seq, Microarray data. It
+can be used for convenient GO enrichment and to produce publication quality
+figures in Python.")
     (license license:bsd-3)))
 
 ;;;

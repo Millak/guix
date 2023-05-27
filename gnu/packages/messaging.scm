@@ -1225,6 +1225,7 @@ of xmpppy.")
            python-css-parser
            python-dbus
            python-gssapi
+           python-idna
            python-keyring
            python-nbxmpp
            python-packaging
@@ -1454,14 +1455,14 @@ Qt-based XMPP library QXmpp.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.12.2")
+    (version "0.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "05ma72wr6iypr62vq748jhzx8i3lmgnsjshrx6w0z7sg24jfhqmn"))))
+                "0091vc0v8xnxkpdi4qpy4dirn92y4pa09q1qssi40q7l3w1hvnim"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
@@ -2325,7 +2326,7 @@ QMatrixClient project.")
      (list boost
            coeurl
            curl
-           json-modern-cxx
+           nlohmann-json
            libevent
            libsodium
            olm
@@ -2408,7 +2409,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            gst-plugins-base
            gst-plugins-bad              ; sdp & webrtc for voip
            gst-plugins-good-qt          ; rtpmanager for voip
-           json-modern-cxx
+           nlohmann-json
            libevent
            libnice                      ; for voip
            olm
@@ -3382,7 +3383,7 @@ Weechat communicate over the Matrix protocol.")
              (when tests?
                (invoke "pytest")))))))
     (inputs
-     (list python-websocket-client))
+     (list python-mock python-websocket-client))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/wee-slack/wee-slack")

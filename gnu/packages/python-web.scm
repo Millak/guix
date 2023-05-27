@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,6 +120,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module ((guix licenses) #:prefix license:)
@@ -142,6 +144,8 @@
      (list python-distro
            python-httplib2
            python-oauthlib
+           python-pyparsing
+           python-six
            python-wadllib))
     (home-page "https://launchpad.net/lazr.restfulclient")
     (synopsis "Web client Python library extending wadlib")
@@ -1752,6 +1756,54 @@ BOM detection, but the actual implementation for encoders and decoders
 is Python’s.")
     (license license:bsd-3)))
 
+(define-public python-omnipath
+  (package
+    (name "python-omnipath")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "omnipath" version))
+              (sha256
+               (base32
+                "01hmcp1202g5drs8dkxnyyb5v14g503dj4zfiqypghmigi9ipw86"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax
+           (lambda _
+             (substitute* "requirements.txt"
+               (("wrapt>=1.12.0")
+                "wrapt>=1.11.0"))))
+         (add-after 'unpack 'set-home
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-attrs
+           python-docrep
+           python-inflect
+           python-networkx
+           python-packaging
+           python-pandas
+           python-requests
+           python-tqdm
+           python-typing-extensions
+           python-urllib3
+           python-wrapt))
+    (native-inputs
+     (list python-bump2version
+           python-pre-commit
+           python-pytest
+           python-pytest-mock
+           python-requests-mock
+           python-setuptools-scm
+           python-tox))
+    (home-page "https://omnipathdb.org/")
+    (synopsis "Python client for the OmniPath web service")
+    (description "This package provides a Python client for the OmniPath web
+service.")
+    (license license:expat)))
+
 (define-public python-openapi-schema-validator
   (package
     (name "python-openapi-schema-validator")
@@ -1929,20 +1981,29 @@ for clients and servers.")
 (define-public python-cssutils
   (package
     (name "python-cssutils")
-    (version "1.0.2")
+    (version "2.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "cssutils" version))
-        (sha256
-         (base32
-          "1bxchrbqzapwijap0yhlxdil1w9bmwvgx77aizlkhc2mcxjg1z52"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list unzip))               ; for unpacking the source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cssutils" version))
+       (sha256
+        (base32
+         "13l1y0xr3fgbl95w3pinb5av5dqk2ip39pih6vgrz47c3hyd5p7p"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ; tests require python-pbr < 1.7.0
-    (home-page "https://cthedot.de/cssutils/")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "pytest" "-vv" "-k"
+                      ;; disable tests requiring network
+                      (string-append "not test_parseUrl "
+                                     "and not encutils "
+                                     "and not website.logging")))))))
+    (native-inputs
+     (list python-pytest python-jaraco-test))
+    (home-page "https://github.com/jaraco/cssutils")
     (synopsis
       "CSS Cascading Style Sheets library for Python")
     (description
@@ -2435,14 +2496,14 @@ conforming to a given API or contract.")
 (define-public python-zope-exceptions
   (package
     (name "python-zope-exceptions")
-    (version "4.4")
+    (version "4.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zope.exceptions" version))
        (sha256
         (base32
-         "1nkgfwawswmyc6i0b8g3ymvja4mb507m8yhid8s4rbxq3dmqhwhd"))))
+         "1kc3hql2i35ys5alkj9csiaz2s9bx0rff585vnrrgvavqsj297b1"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -2566,14 +2627,14 @@ internationalized messages within program source text.")
 (define-public python-zope-schema
   (package
     (name "python-zope-schema")
-    (version "6.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zope.schema" version))
        (sha256
         (base32
-          "09jg47bxhfg1ahr1jxb5y0cbiszyk1j6fn1r1r7s6svjl3lbryr0"))))
+          "1fgvx7nim9plxnyiq6vmah1dji7ba5290fws1i0lwk9m0g5xpm7a"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -6119,24 +6180,22 @@ major web browsers.")
         (modules '((guix build utils)))
         (snippet
          '(delete-file-recursively "rapidjson"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--rj-include-dir="
-                            (assoc-ref %build-inputs "rapidjson")
-                            "/include/rapidjson"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (invoke "python" "setup.py" "build"
-                     (string-append "--rj-include-dir="
-                                    (assoc-ref %build-inputs "rapidjson")
-                                    "/include/rapidjson"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "tests")))))))
+     (list
+      #:test-flags '(list "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; We cannot seem to use #:configure-flags with the
+          ;; pyproject-build-system to override rj_include_dir.
+          (add-after 'unpack 'override-rapidjson-sources
+            (lambda _
+              (substitute* "setup.py"
+                (("^rj_include_dir =.*")
+                 (string-append "rj_include_dir = '"
+                                #$(this-package-native-input "rapidjson")
+                                "/include/rapidjson" "'"))
+                (("if not os.path.isdir.*") "if False:")))))))
     (native-inputs
      (list rapidjson python-pytest python-pytz))
     (home-page "https://github.com/python-rapidjson/python-rapidjson")

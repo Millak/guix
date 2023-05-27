@@ -18,6 +18,8 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1360,7 +1362,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "0.6.1")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI release
@@ -1369,27 +1371,23 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "124nid27lfq1ipfjd2gkynqcmb4khisjb4r05jv42ckfkk4dbsxs"))))
+        (base32 "12wp98mh67v6v683yi7wbv8zhpafrfz21z349bww4wgi2q7bl3il"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          ;; Benchmarks require the 'macosko2015' data files.
          (add-after 'unpack 'delete-benchmark
-           (lambda _
-             (delete-file-recursively "benchmarks")))
+           (lambda _ (delete-file-recursively "benchmarks")))
          (add-after 'unpack 'skip-test
            (lambda _ ;; TODO: figure out why this test fails.
              (substitute* "tests/test_correctness.py"
                (("def test_iris\\(self\\)") "def _test_iris(self)"))))
          ;; Numba needs a writable dir to cache functions.
          (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (native-inputs
-     (list python-cython))
-    (inputs
-     (list fftw))
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs (list python-cython))
+    (inputs (list fftw))
     (propagated-inputs
      (list python-numpy python-pynndescent python-scikit-learn
            python-scipy))
@@ -1523,23 +1521,20 @@ and a few related numerical optimization tools.")
 (define-public python-cmaes
   (package
     (name "python-cmaes")
-    (version "0.8.2")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch) ;no tests in PyPI
        (uri (git-reference
-             (url "https://github.com/CyberAgent/cmaes")
+             (url "https://github.com/CyberAgentAILab/cmaes")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1jyckaifir528dz6m95nvky8hvqmz5gz6dlp65baahhbca0danzb"))
+        (base32 "1f3143w8ii6i93bdh65iazrq1lryccd805ndnqww5l8h7qnnzpkm"))
        (file-name (git-file-name name version))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-setuptools ;build fails without this
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/CyberAgent/cmaes")
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hypothesis))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/CyberAgentAILab/cmaes")
     (synopsis "CMA-ES implementation for Python")
     (description "This package provides provides an implementation of the
 Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
@@ -1836,7 +1831,7 @@ written in C++.")
       (license license:asl2.0))))
 
 (define kaldi-for-vosk
-  (let* ((commit "6417ac1dece94783e80dfbac0148604685d27579")
+  (let* ((commit "a25f216f5ce4eec5e45a6ab7651e20c9840a05cd")
          (revision "0")
          (openfst openfst-for-vosk))
     (package
@@ -1851,13 +1846,13 @@ written in C++.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "04xw2dpfvpla8skpk08azmgr9k97cd8hn83lj4l85q165gbzql4s"))))
+          (base32 "16w90za8narkfi590cxj4p7vc1f5sdxc927g5hk6kh4l3mf6iisl"))))
       (inputs
        (list alsa-lib
-             lapack ;; compared to base kaldi, replacing `(,gfortran "lib")
+             lapack ;compared to base kaldi, replacing `(,gfortran "lib")
              glib
              gstreamer
-             jack-1
+             jack-2
              openblas
              openfst
              portaudio
@@ -1865,17 +1860,17 @@ written in C++.")
       (arguments
        (list
         #:test-target "test"
-        #:make-flags ''("online2" "lm" "rnnlm")
+        #:make-flags '(list "online2" "lm" "rnnlm")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'chdir
               (lambda _ (chdir "src")))
             (replace 'configure
               (lambda _
-                (let* ((portaudio #$(this-package-input "portaudio"))
-                       (lapack    #$(this-package-input "lapack"))
-                       (openfst   #$(this-package-input "openfst"))
-                       (openblas  #$(this-package-input "openblas")))
+                (let ((portaudio #$(this-package-input "portaudio"))
+                      (lapack    #$(this-package-input "lapack"))
+                      (openfst   #$(this-package-input "openfst"))
+                      (openblas  #$(this-package-input "openblas")))
                   #$@(if (target-x86?)
                          '()
                          #~((substitute* "makefiles/linux_openblas.mk"
@@ -1892,6 +1887,8 @@ written in C++.")
                      portaudio))
                   (substitute* "matrix/Makefile"     ;temporary test bypass
                     (("matrix-lib-test sparse-matrix-test") ""))
+                  (substitute* "cudamatrix/Makefile"
+                    ((" cu-array-test") ""))
 
                   ;; This `configure' script doesn't support variables passed as
                   ;; arguments, nor does it support "prefix".
@@ -1915,11 +1912,11 @@ written in C++.")
                           "--shared"
                           (string-append "--fst-root=" openfst)))))
             (add-after 'configure 'optimize-build
-                       (lambda _ (substitute* "kaldi.mk" ((" -O1") " -O3"))))
+              (lambda _ (substitute* "kaldi.mk" ((" -O1") " -O3"))))
             (replace 'install
               (lambda _
-                (let* ((inc (string-append #$output "/include"))
-                       (lib (string-append #$output "/lib")))
+                (let ((inc (string-append #$output "/include"))
+                      (lib (string-append #$output "/lib")))
                   ;; The build phase installed symlinks to the actual
                   ;; libraries.  Install the actual targets.
                   (for-each (lambda (file)
@@ -3113,6 +3110,46 @@ These include a barrier, broadcast, and allreduce.")
       (home-page "https://github.com/facebookincubator/gloo")
       (license license:bsd-3))))
 
+(define-public python-tensorly
+  (package
+    (name "python-tensorly")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tensorly/tensorly")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "184mvs1gwycsh2f8jgdyc3jyhiylbn4xw2srpjd264dz2l9ms2l7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; These tests fail due to missing example, documentation, or tutorial files.
+        "--ignore=doc/sphinx_ext/sphinx_gallery/tests/test_gen_rst.py"
+        ;; XXX There is no "get_marker" method.
+        "--ignore=doc/sphinx_ext/sphinx_gallery/tests/test_gen_gallery.py"
+        "-k"
+        (string-append
+         ;; tutorials/plot_parse.py is not included
+         "not test_jupyter_notebook"
+         ;; nor is examples/plot_quantum.py
+         " and not test_file_is_generated"))))
+    (propagated-inputs (list python-jsmin python-numpy python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov python-sphinx))
+    (home-page "https://github.com/tensorly/tensorly")
+    (synopsis "Tensor learning in Python")
+    (description
+     "This is a Python library that aims at making tensor learning simple and
+accessible.  It allows performing tensor decomposition, tensor learning and
+tensor algebra easily.  Its backend system allows seamlessly perform
+computation with NumPy, PyTorch, JAX, MXNet, TensorFlow or CuPy and run
+methodxs at scale on CPU or GPU.")
+    (license license:bsd-3)))
+
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
@@ -3431,7 +3468,7 @@ Note: currently this package does not provide GPU support.")
                 "0mqrhq3s23mn8n4i0q791pshn3dgplp0h9ny0pmmp798q0798dzs"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-click
-                             python-fastapi
+                             python-fastapi-for-pytorch-lightning
                              python-multipart
                              python-pyjwt
                              python-requests
@@ -4117,7 +4154,7 @@ simple speech recognition.")
                   "library_dirs=["
                   "'" #$vosk-api "/lib'"
                   "],\n\t"
-                  "libraries=['vosk', 'python3.9'],\n\t"
+                  "libraries=['vosk', 'python3.10'],\n\t"
                   "include_dirs=["
                   "'" #$vosk-api "/src'" "])")))
               (substitute* "vosk/__init__.py"
@@ -4303,3 +4340,23 @@ easily extensible.")
 Brian 2 simulator.")
     (license license:cecill)))
 
+(define-public oneapi-dnnl
+  (package
+    (name "oneapi-dnnl")
+    (version "3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oneapi-src/oneDNN")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jgmb5kl0bf4a2zfn94zlb117672r9lvvkkmwl86ihlyr1mpr3d0"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/oneapi-src/oneDNN")
+    (synopsis "Deep Neural Network Library")
+    (description
+     "OneAPI Deep Neural Network Library (oneDNN) is a cross-platform
+performance library of basic building blocks for deep learning applications.")
+    (license license:asl2.0)))

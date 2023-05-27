@@ -348,7 +348,8 @@ update would trigger a complete rebuild."
            (package-name package)))
 
 (define* (update-package store package version updaters
-                         #:key (key-download 'interactive) warn?)
+                         #:key (key-download 'interactive) key-server
+                         warn?)
   "Update the source file that defines PACKAGE with the new version.
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
 values: 'interactive' (default), 'always', and 'never'.  When WARN? is true,
@@ -356,7 +357,9 @@ warn about packages that have no matching updater."
   (if (lookup-updater package updaters)
       (let ((version output source
                      (package-update store package updaters
-                                     #:key-download key-download #:version version))
+                                     #:version version
+                                     #:key-download key-download
+                                     #:key-server key-server))
             (loc (or (package-field-location package 'version)
                      (package-location package))))
         (when version
@@ -628,6 +631,7 @@ all are dependent packages: ~{~a~^ ~}~%")
                                    (update-spec-package update)
                                    (update-spec-version update)
                                    updaters
+                                   #:key-server (%openpgp-key-server)
                                    #:key-download key-download
                                    #:warn? warn?))
                  update-specs)

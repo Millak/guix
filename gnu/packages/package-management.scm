@@ -68,6 +68,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
@@ -273,6 +274,13 @@ $(prefix)/etc/openrc\n")))
                               (("\"[^\"]*/bin//xz")
                                (string-append "\"" xz "/bin/xz")))))
                         #t))
+                    (add-before 'build 'set-font-path
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        ;; Tell 'dot' where to look for fonts.
+                        (setenv "XDG_DATA_DIRS"
+                                (dirname
+                                 (search-input-directory inputs
+                                                         "share/fonts")))))
                     (add-before 'check 'copy-bootstrap-guile
                       (lambda* (#:key system target inputs #:allow-other-keys)
                         ;; Copy the bootstrap guile tarball in the store
@@ -431,7 +439,8 @@ $(prefix)/etc/openrc\n")))
                        ("automake" ,automake)
                        ("gettext" ,gettext-minimal)
                        ("texinfo" ,texinfo)
-                       ("graphviz" ,graphviz)
+                       ("graphviz" ,graphviz-minimal)
+                       ("font-ghostscript" ,font-ghostscript) ;fonts for 'dot'
                        ("help2man" ,help2man)
                        ("po4a" ,po4a)))
       (inputs
@@ -527,7 +536,7 @@ the Nix package manager.")
     ;; Use a minimum set of dependencies.
     (native-inputs
      (modify-inputs (package-native-inputs guix)
-       (delete "po4a" "graphviz" "help2man")))
+       (delete "po4a" "graphviz" "font-ghostscript" "help2man")))
     (inputs
      (modify-inputs (package-inputs guix)
        (delete "boot-guile" "boot-guile/i686" "util-linux")
@@ -546,6 +555,7 @@ the Nix package manager.")
         #f)
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
+           (delete 'set-font-path)
            (add-after 'unpack 'change-default-guix
              (lambda _
                ;; We need to tell 'guix-daemon' which 'guix' command to use.
@@ -1378,8 +1388,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "3f6473c0d296ed6efab1feebcacd76fc597bb6ef")
-        (revision "81"))
+  (let ((commit "99981dc3270d79ae0b83f94386e26cc75a7162b3")
+        (revision "84"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1390,7 +1400,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0c2k2v15ga4bdmm74f4h385pwjimvsvrgjzsfd04il9a6r4qg319"))
+                  "047qqqhpcg5rrzgpp2qlijn6rhlm2ipqhqr1yj1lrnx12dld2kqk"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1474,27 +1484,21 @@ environments.")
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
-       (append
-        (list (first (assoc-ref (package-native-inputs guix) "guile"))
-              sqlite
-              bash-minimal)
-        (if (hurd-target?)
-            '()
-            (list sqitch))))
+       (list (first (assoc-ref (package-native-inputs guix) "guile"))
+             sqlite
+             bash-minimal
+             sqitch))
       (propagated-inputs
-       (append
-        (list guile-prometheus
-              guile-gcrypt
-              guile-json-4
-              guile-lib
-              guile-lzlib
-              guile-zlib
-              guile-sqlite3
-              guix
-              guile-gnutls)
-        (if (hurd-target?)
-            '()
-            (list guile-fibers-next))))
+       (list guile-prometheus
+             guile-gcrypt
+             guile-json-4
+             guile-lib
+             guile-lzlib
+             guile-zlib
+             guile-sqlite3
+             guix
+             guile-gnutls
+             guile-fibers-next))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1507,63 +1511,6 @@ outputs of those builds.")
   (package
     (inherit guix-build-coordinator)
     (name "guix-build-coordinator-agent-only")
-    (arguments
-     `(#:modules (((guix build guile-build-system)
-                   #:select (target-guile-effective-version))
-                  ,@%gnu-build-system-modules)
-       #:imported-modules ((guix build guile-build-system)
-                           ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-GUILE_AUTO_COMPILE
-           (lambda _
-             ;; To avoid warnings relating to 'guild'.
-             (setenv "GUILE_AUTO_COMPILE" "0")
-             #t))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs target #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (guile (assoc-ref inputs "guile"))
-                    (version (target-guile-effective-version))
-                    (scm (string-append out "/share/guile/site/" version))
-                    (go  (string-append out "/lib/guile/" version "/site-ccache")))
-               (for-each
-                (lambda (file)
-                  (simple-format (current-error-port) "wrapping: ~A\n" file)
-                  (let ((guile-inputs (list
-                                       "guile-json"
-                                       "guile-gcrypt"
-                                       "guix"
-                                       "guile-prometheus"
-                                       "guile-lib"
-                                       "guile-lzlib"
-                                       "guile-zlib"
-                                       "guile-sqlite3"
-                                       "guile-gnutls")))
-                    (wrap-program file
-                      `("PATH" ":" prefix (,bin))
-                      `("GUILE_LOAD_PATH" ":" prefix
-                        (,scm ,(string-join
-                                (map (lambda (input)
-                                       (simple-format
-                                        #f "~A/share/guile/site/~A"
-                                        (assoc-ref inputs input)
-                                        version))
-                                     guile-inputs)
-                                ":")))
-                      `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                        (,go ,(string-join
-                               (map (lambda (input)
-                                      (simple-format
-                                       #f "~A/lib/guile/~A/site-ccache"
-                                       (assoc-ref inputs input)
-                                       version))
-                                    guile-inputs)
-                               ":"))))))
-                (find-files bin)))
-             #t))
-         (delete 'strip))))             ; As the .go files aren't compatible
     (native-inputs
      (list pkg-config
            autoconf
@@ -1581,15 +1528,14 @@ outputs of those builds.")
      (list (first (assoc-ref (package-native-inputs guix) "guile"))
            bash-minimal))
     (propagated-inputs
-     (append
-         (list guile-prometheus
-               guile-gcrypt
-               guile-json-4
-               guile-lib
-               guile-lzlib
-               guile-zlib
-               guix
-               guile-gnutls)))
+     (list guile-prometheus
+           guile-gcrypt
+           guile-json-4
+           guile-lib
+           guile-lzlib
+           guile-zlib
+           guix
+           guile-gnutls))
     (description
      "The Guix Build Coordinator helps with performing lots of builds across
 potentially many machines, and with doing something with the results and
@@ -1687,8 +1633,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "659543cd9ad78f712b4b067863db0613423dd23b")
-        (revision "18"))
+  (let ((commit "efaf8fa580ad197d74ff375ca50bddf9c8ac3a86")
+        (revision "19"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1699,7 +1645,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "09ghbbrk5gazkpqxcvfnn56pp11sndn7hw00ipc8d95wqk53g9qg"))
+                  "169cz6xwx4klcsx0769807yjk0xnck73q4hyrsv289nfgfd9x8a2"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

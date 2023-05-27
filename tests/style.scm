@@ -386,6 +386,142 @@
       (list (package-inputs (@ (my-packages) my-coreutils))
             (read-package-field (@ (my-packages) my-coreutils) 'inputs 4)))))
 
+(test-assert "gexpify arguments, already gexpified"
+  (call-with-test-package '((arguments
+                             (list #:configure-flags #~'("--help"))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+      (define (fingerprint file)
+        (let ((stat (stat file)))
+          (list (stat:mtime stat) (stat:size stat))))
+      (define before
+        (fingerprint file))
+
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "arguments")
+
+      (equal? (fingerprint file) before))))
+
+(test-equal "gexpify arguments, non-gexp arguments, margin comment"
+  (list (list #:tests? #f #:test-target "check")
+        "\
+      (arguments (list #:tests? #f ;no tests
+                       #:test-target \"check\"))\n")
+  (call-with-test-package '((arguments
+                             '(#:tests? #f
+                               #:test-target "check")))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (substitute* file
+        (("#:tests\\? #f" all)
+         (string-append all " ;no tests\n")))
+
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "arguments")
+
+      (load file)
+      (list (package-arguments (@ (my-packages) my-coreutils))
+            (read-package-field (@ (my-packages) my-coreutils) 'arguments 2)))))
+
+(test-equal "gexpify arguments, phases and flags"
+  "\
+        (list #:tests? #f
+              #:configure-flags #~'(\"--fast\")
+              #:make-flags #~(list (string-append \"CC=\"
+                                                  #$(cc-for-target)))
+              #:phases #~(modify-phases %standard-phases
+                           ;; Line comment.
+                           whatever)))\n"
+  (call-with-test-package '((arguments
+                             `(#:tests? #f
+                               #:configure-flags '("--fast")
+                               #:make-flags
+                               (list (string-append "CC=" ,(cc-for-target)))
+                               #:phases (modify-phases %standard-phases
+                                          whatever))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (substitute* file
+        (("whatever")
+         "\n;; Line comment.
+         whatever"))
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "arguments")
+
+      (load file)
+      (read-package-field (@ (my-packages) my-coreutils) 'arguments 7))))
+
+(test-equal "gexpify arguments, append arguments"
+  "\
+        (append (list #:tests? #f
+                      #:configure-flags #~'(\"--fast\"))
+                (package-arguments coreutils)))\n"
+  (call-with-test-package '((arguments
+                             `(#:tests? #f
+                               #:configure-flags '("--fast")
+                               ,@(package-arguments coreutils))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "arguments")
+
+      (load file)
+      (read-package-field (@ (my-packages) my-coreutils) 'arguments 3))))
+
+(test-equal "gexpify arguments, substitute-keyword-arguments"
+  "\
+        (substitute-keyword-arguments (package-arguments coreutils)
+          ((#:tests? _ #f)
+           #t)
+          ((#:make-flags flags
+            #~'())
+           #~(cons \"-DXYZ=yes\"
+                   #$flags))))\n"
+  (call-with-test-package '((arguments
+                             (substitute-keyword-arguments
+                                 (package-arguments coreutils)
+                               ((#:tests? _ #f) #t)
+                               ((#:make-flags flags ''())
+                                `(cons "-DXYZ=yes" ,flags)))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "arguments")
+
+      (load file)
+      (read-package-field (@ (my-packages) my-coreutils) 'arguments 7))))
+
+(test-equal "gexpify arguments, append substitute-keyword-arguments"
+  "\
+        (append (list #:tests? #f)
+                (substitute-keyword-arguments (package-arguments coreutils)
+                  ((#:make-flags flags)
+                   #~(append `(\"-n\" ,%output)
+                             #$flags)))))\n"
+  (call-with-test-package '((arguments
+                             `(#:tests? #f
+                               ,@(substitute-keyword-arguments
+                                     (package-arguments coreutils)
+                                   ((#:make-flags flags)
+                                    `(append `("-n" ,%output) ,flags))))))
+    (lambda (directory)
+      (define file
+        (string-append directory "/my-packages.scm"))
+
+      (system* "guix" "style" "-L" directory "my-coreutils"
+               "-S" "arguments")
+
+      (load file)
+      (read-package-field (@ (my-packages) my-coreutils) 'arguments 5))))
 
 (test-end)
 

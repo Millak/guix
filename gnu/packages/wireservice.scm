@@ -26,6 +26,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages python-web)
@@ -88,10 +89,16 @@
    (description "Leather is a Python charting library for those who need
 charts now and don't care if they're perfect.")))
 
+(define python-agate-locales
+  (make-glibc-utf8-locales
+   glibc
+   #:locales (list "ko_KR")
+   #:name "python-agate-locales"))
+
 (define-public python-agate
   (wireservice-package
    (name "python-agate")
-   (version "1.6.1")
+   (version "1.7.1")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -100,9 +107,10 @@ charts now and don't care if they're perfect.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "077zj8xad8hsa3nqywvf7ircirmx3krxdipl8wr3dynv3l3khcpl"))))
+               "1wqyml7f70hr7zhgwvwqy4bdshlbcmp4jmyc5y12jyx10xp3sk7c"))))
    (native-inputs
-    `(("python-nose" ,python-nose)
+    `(("locales" ,python-agate-locales)
+      ("python-nose" ,python-nose)
       ("python-sphinx" ,python-sphinx)
       ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
       ("python-csselect" ,python-cssselect)
@@ -124,7 +132,7 @@ code.  Agate was previously known as journalism.")))
 (define-public python-agate-sql
   (wireservice-package
    (name "python-agate-sql")
-   (version "0.5.7")
+   (version "0.5.9")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -133,7 +141,7 @@ code.  Agate was previously known as journalism.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1q6ywm0wzkkwcwk0884k0lycf8k7pzwz94rzb1y5ssm8b1gl0i62"))))
+               "112q523w4jf3k8p4ynvjzfqa4j32ri34h2ppvicialp2lz5drvf0"))))
    (native-inputs
     `(("python-nose" ,python-nose)
       ("python-sphinx" ,python-sphinx)
@@ -150,7 +158,7 @@ support to all @code{agate.Table} instances.")))
 (define-public python-agate-dbf
   (wireservice-package
    (name "python-agate-dbf")
-   (version "0.2.1")
+   (version "0.2.2")
    (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -159,7 +167,7 @@ support to all @code{agate.Table} instances.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1y49fi6pmm7gzhajvqmfpcca2sqnwj24fqnsvzwk7r1hg2iaa2gi"))))
+               "03l3qlyw7588jhjjsiy15valqlzs8gjai8f74v18zv2za0zjqbzl"))))
    (native-inputs
     `(("python-nose" ,python-nose)
       ("python-sphinx" ,python-sphinx)
@@ -202,13 +210,13 @@ for xls and xlsx files support to all @code{agate.Table} instances.")))
 (define-public csvkit
   (package
     (name "csvkit")
-    (version "1.0.5")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "csvkit" version))
               (sha256
                (base32
-                "1ffmbzk4rxnl1yhqfl58v7kvl5m9cbvjm8v7xp4mvr00sgs91lvv"))))
+                "08wj0hlmbdmklar12cjzqp91vcxzwifsvmgasszas8kbiyvvgpdy"))))
     (build-system python-build-system)
     (native-inputs
      (list python-psycopg2 ; to test PostgreSQL support

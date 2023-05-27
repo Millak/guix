@@ -113,7 +113,8 @@ Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
 Copyright @copyright{} 2023 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
-Copyright @copyright{} 2023 Karl Hallsby
+Copyright @copyright{} 2023 Karl Hallsby@*
+Copyright @copyright{} 2023 Nathaniel Nicandro@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -1558,16 +1559,33 @@ be used on Guix System.
 
 @subsubsection Installing the SELinux policy
 @cindex SELinux, policy installation
+
+@quotation Note
+The @code{guix-install.sh} binary installation script offers to perform
+the steps below for you (@pxref{Binary Installation}).
+@end quotation
+
 To install the policy run this command as root:
 
 @example
-semodule -i etc/guix-daemon.cil
+semodule -i /var/guix/profiles/per-user/root/current-guix/share/selinux/guix-daemon.cil
 @end example
 
-Then relabel the file system with @code{restorecon -vR /} or by a
-different mechanism provided by your system.  You may need to remount
-@file{/gnu/store} to make it writable first, e.g. with @code{mount -o
-remount,rw /gnu/store}.
+Then, as root, relabel the file system, possibly after making it
+writable:
+
+@example
+mount -o remount,rw /gnu/store
+restorecon -R /gnu /var/guix
+@end example
+
+At this point you can start or restart @command{guix-daemon}; on a
+distribution that uses systemd as its service manager, you can do that
+with:
+
+@example
+systemctl restart guix-daemon
+@end example
 
 Once the policy is installed, the file system has been relabeled, and
 the daemon has been restarted, it should be running in the
@@ -7784,6 +7802,24 @@ The exact set of supported keywords depends on the build system
 @code{#:phases}.  The @code{#:phases} keyword in particular lets you
 modify the set of build phases for your package (@pxref{Build Phases}).
 
+@quotation Compatibility Note
+Until version 1.3.0, the @code{arguments} field would typically use
+@code{quote} (@code{'}) or @code{quasiquote} (@code{`}) and no
+G-expressions, like so:
+
+@lisp
+(package
+  ;; several fields omitted
+  (arguments   ;old-style quoted arguments
+   '(#:tests? #f
+     #:configure-flags '("--enable-frobbing"))))
+@end lisp
+
+To convert from that style to the one shown above, you can run
+@code{guix style -S arguments @var{package}} (@pxref{Invoking guix
+style}).
+@end quotation
+
 @item @code{inputs} (default: @code{'()})
 @itemx @code{native-inputs} (default: @code{'()})
 @itemx @code{propagated-inputs} (default: @code{'()})
@@ -10379,7 +10415,9 @@ Alternatively, @var{file} may be a list of file names, in which case
 they are all subject to the substitutions.
 
 Be careful about using @code{$} to match the end of a line; by itself it
-won't match the terminating newline of a line.
+won't match the terminating newline of a line.  For example, to match a
+whole line ending with a backslash, one needs a regex like
+@code{"(.*)\\\\\n$"}.
 @end defmac
 
 @subsection File Search
@@ -12987,7 +13025,7 @@ builds @code{lapack}:
 
 @example
 guix build lapack \
-  --with-configure-flag=lapack=-DBUILD_COMPLEX=OFF
+  --with-configure-flag=lapack=-DBUILD_SHARED_LIBS=OFF
 @end example
 
 @quotation Note
@@ -14706,6 +14744,39 @@ Rewriting is done in a conservative way: preserving comments and bailing
 out if it cannot make sense of the code that appears in an inputs field.
 The @option{--input-simplification} option described below provides
 fine-grain control over when inputs should be simplified.
+
+@item arguments
+Rewrite package arguments to use G-expressions (@pxref{G-Expressions}).
+For example, consider this package definition:
+
+@lisp
+(define-public my-package
+  (package
+    ;; @dots{}
+    (arguments      ;old-style quoted arguments
+     '(#:make-flags '("V=1")
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))))
+@end lisp
+
+@noindent
+Running @command{guix style -S arguments} on this package would rewrite
+its @code{arguments} field like to:
+
+@lisp
+(define-public my-package
+  (package
+    ;; @dots{}
+    (arguments
+      (list #:make-flags #~'("V=1")
+            #:phases #~(modify-phases %standard-phases
+                         (delete 'build))))))
+@end lisp
+
+Note that changes made by the @code{arguments} rule do not entail a
+rebuild of the affected packages.  Furthermore, if a package definition
+happens to be using G-expressions already, @command{guix style} leaves
+it unchanged.
 @end table
 
 @item --list-stylings
@@ -17526,14 +17597,15 @@ hibernation via the @code{resume} kernel argument
                             file-systems)))))
 
 (kernel-arguments
-  (cons* "resume=/swapfile"
-         "resume_offset=92514304"
+  (cons* "resume=/dev/sda3"        ;device that holds /swapfile
+         "resume_offset=92514304"  ;offset of /swapfile on device
          %default-kernel-arguments))
 @end lisp
 
 This other snippet of @code{operating-system} enables the swap file
-@file{/swapfile} for hibernation by telling the kernel about the file
-(@code{resume} argument) and its offset on disk (@code{resume_offset}
+@file{/swapfile} for hibernation by telling the kernel about the
+partition containing it
+(@code{resume} argument) and its offset on that partition (@code{resume_offset}
 argument).  The latter value can be found in the output of the command
 @command{filefrag -e} as the first number right under the
 @code{physical_offset} column header (the second command extracts its
@@ -20000,6 +20072,12 @@ should listen on---e.g., @code{'("eno1")}.
 When set to @code{'all}, the DHCP client listens on all the available
 non-loopback interfaces that can be activated.  Otherwise the DHCP
 client listens only on the specified interfaces.
+
+@item @code{shepherd-requirement} (default: @code{'()})
+This option can be used to provide a list of symbols naming Shepherd services
+that this service will depend on, such as @code{'wpa-supplicant} or
+@code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
+networks.
 @end table
 @end deftp
 
@@ -20103,7 +20181,7 @@ Data Type representing the configuration of connman.
 @item @code{connman} (default: @var{connman})
 The connman package to use.
 
-@item @code{shepherd-requirement} (default: @code{()})
+@item @code{shepherd-requirement} (default: @code{'()})
 This option can be used to provide a list of symbols naming Shepherd services
 that this service will depend on, such as @code{'wpa-supplicant} or
 @code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
@@ -28708,6 +28786,243 @@ Extra options to pass to the Prometheus node exporter.
 
 @end table
 @end deftp
+
+@anchor{vnstat}
+@subsubheading vnStat Network Traffic Monitor
+@cindex vnstat
+
+vnStat is a network traffic monitor that uses interface statistics provided
+by the kernel rather than traffic sniffing.  This makes it a light resource
+monitor, regardless of network traffic rate.
+
+@defvar vnstat-service-type
+This is the service type for the @uref{https://humdi.net/vnstat/,vnStat} daemon
+and accepts a @code{vnstat-configuration} value.
+
+The following example will configure the service with default values:
+
+@lisp
+(service vnstat-service-type)
+@end lisp
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} vnstat-configuration
+Available @code{vnstat-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{vnstat}) (type: file-like)
+The vnstat package.
+
+@item @code{database-directory} (default: @code{"/var/lib/vnstat"}) (type: string)
+Specifies the directory where the database is to be stored.  A full path
+must be given and a leading '/' isn't required.
+
+@item @code{5-minute-hours} (default: @code{48}) (type: maybe-integer)
+Data retention duration for the 5 minute resolution entries.  The
+configuration defines for how many past hours entries will be stored.
+Set to @code{-1} for unlimited entries or to @code{0} to disable the
+data collection of this resolution.
+
+@item @code{64bit-interface-counters} (default: @code{-2}) (type: maybe-integer)
+Select interface counter handling.  Set to @code{1} for defining that
+all interfaces use 64-bit counters on the kernel side and @code{0} for
+defining 32-bit counter.  Set to @code{-1} for using the old style logic
+used in earlier versions where counter values within 32-bits are assumed
+to be 32-bit and anything larger is assumed to be a 64-bit counter.  This
+may produce false results if a 64-bit counter is reset within the
+32-bits.  Set to @code{-2} for using automatic detection based on
+available kernel datastructures.
+
+@item @code{always-add-new-interfaces?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable automatic creation of new database entries for
+interfaces not currently in the database even if the database file
+already exists when the daemon is started.  New database entries will
+also get created for new interfaces seen while the daemon is running.
+Pseudo interfaces @samp{lo}, @samp{lo0} and @samp{sit0} are always excluded from getting
+added.
+
+@item @code{bandwidth-detection?} (default: @code{#t}) (type: maybe-boolean)
+Try to automatically detect @var{max-bandwidth} value for each monitored
+interface.  Mostly only ethernet interfaces support this feature.
+@var{max-bandwidth} will be used as fallback value if detection fails.
+Any interface specific @var{max-BW} configuration will disable the
+detection for the specified interface.  In Linux, the detection is
+disabled for tun interfaces due to the Linux kernel always reporting 10
+Mbit regardless of the used real interface.
+
+@item @code{bandwidth-detection-interval} (default: @code{5}) (type: maybe-integer)
+How often in minutes interface specific detection of @var{max-bandwidth}
+is done for detecting possible changes when @var{bandwidth-detection} is
+enabled.  Can be disabled by setting to @code{0}.  Value range:
+@samp{0}..@samp{30}
+
+@item @code{boot-variation} (default: @code{15}) (type: maybe-integer)
+Time in seconds how much the boot time reported by system kernel can
+variate between updates.  Value range: @samp{0}..@samp{300}
+
+@item @code{check-disk-space?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the availability check of at least some free disk
+space before a database write.
+
+@item @code{create-directories?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the creation of directories when a configured path
+doesn't exist.  This includes @var{database-directory}.
+
+@item @code{daemon-group} (type: maybe-user-group)
+Specify the group to which the daemon process should switch during
+startup.  Set to @code{%unset-value} to disable group switching.
+
+@item @code{daemon-user} (type: maybe-user-account)
+Specify the user to which the daemon process should switch during
+startup.  Set to @code{%unset-value} to disable user switching.
+
+@item @code{daily-days} (default: @code{62}) (type: maybe-integer)
+Data retention duration for the one day resolution entries.  The
+configuration defines for how many past days entries will be stored.  Set
+to @code{-1} for unlimited entries or to @code{0} to disable the data
+collection of this resolution.
+
+@item @code{database-synchronous} (default: @code{-1}) (type: maybe-integer)
+Change the setting of the SQLite "synchronous" flag which controls how
+much care is taken to ensure disk writes have fully completed when
+writing data to the database before continuing other actions.  Higher
+values take extra steps to ensure data safety at the cost of slower
+performance.  A value of @code{0} will result in all handling being left
+to the filesystem itself.  Set to @code{-1} to select the default value
+according to database mode controlled by
+@var{database-write-ahead-logging} setting.  See SQLite documentation
+for more details regarding values from @code{1} to @code{3}.  Value
+range: @samp{-1}..@samp{3}
+
+@item @code{database-write-ahead-logging?} (default: @code{#f}) (type: maybe-boolean)
+Enable or disable SQLite Write-Ahead Logging mode for the database.  See
+SQLite documentation for more details and note that support for
+read-only operations isn't available in older SQLite versions.
+
+@item @code{hourly-days} (default: @code{4}) (type: maybe-integer)
+Data retention duration for the one hour resolution entries.  The
+configuration defines for how many past days entries will be stored.  Set
+to @code{-1} for unlimited entries or to @code{0} to disable the data
+collection of this resolution.
+
+@item @code{log-file} (type: maybe-string)
+Specify log file path and name to be used if @var{use-logging} is set to
+@code{1}.
+
+@item @code{max-bandwidth} (type: maybe-integer)
+Maximum bandwidth for all interfaces.  If the interface specific traffic
+exceeds the given value then the data is assumed to be invalid and
+rejected.  Set to 0 in order to disable the feature.  Value range:
+@samp{0}..@samp{50000}
+
+@item @code{max-bw} (type: maybe-alist)
+Same as @var{max-bandwidth} but can be used for setting individual
+limits for selected interfaces.  This is an association list of
+interfaces as strings to integer values.  For example,
+@lisp
+(max-bw `(("eth0" .  15000)
+          ("ppp0" .  10000)))
+@end lisp
+@var{bandwidth-detection} is disabled on an interface specific level for
+each @var{max-bw} configuration.  Value range: @samp{0}..@samp{50000}
+
+@item @code{monthly-months} (default: @code{25}) (type: maybe-integer)
+Data retention duration for the one month resolution entries.  The
+configuration defines for how many past months entries will be stored.
+Set to @code{-1} for unlimited entries or to @code{0} to disable the
+data collection of this resolution.
+
+@item @code{month-rotate} (default: @code{1}) (type: maybe-integer)
+Day of month that months are expected to change.  Usually set to 1 but
+can be set to alternative values for example for tracking monthly billed
+traffic where the billing period doesn't start on the first day.  For
+example, if set to 7, days of February up to and including the 6th will
+count for January.  Changing this option will not cause existing data to
+be recalculated.  Value range: @samp{1}..@samp{28}
+
+@item @code{month-rotate-affects-years?} (default: @code{#f}) (type: maybe-boolean)
+Enable or disable @var{month-rotate} also affecting yearly data.
+Applicable only when @var{month-rotate} has a value greater than one.
+
+@item @code{offline-save-interval} (default: @code{30}) (type: maybe-integer)
+How often in minutes cached interface data is saved to file when all
+monitored interfaces are offline.  Value range:
+@var{save-interval}..@samp{60}
+
+@item @code{pid-file} (default: @code{"/var/run/vnstatd.pid"}) (type: maybe-string)
+Specify pid file path and name to be used.
+
+@item @code{poll-interval} (default: @code{5}) (type: maybe-integer)
+How often in seconds interfaces are checked for status changes.  Value
+range: @samp{2}..@samp{60}
+
+@item @code{rescan-database-on-save?} (type: maybe-boolean)
+Automatically discover added interfaces from the database and start
+monitoring.  The rescan is done every @var{save-interval} or
+@var{offline-save-interval} minutes depending on the current activity
+state.
+
+@item @code{save-interval} (default: @code{5}) (type: maybe-integer)
+How often in minutes cached interface data is saved to file.  Value
+range: ( @var{update-interval} / 60 )..@samp{60}
+
+@item @code{save-on-status-change?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the additional saving to file of cached interface data
+when the availability of an interface changes, i.e., when an interface
+goes offline or comes online.
+
+@item @code{time-sync-wait} (default: @code{5}) (type: maybe-integer)
+How many minutes to wait during daemon startup for system clock to sync
+if most recent database update appears to be in the future.  This may be
+needed in systems without a real-time clock (RTC) which require some
+time after boot to query and set the correct time.  @code{0} = wait
+disabled.  Value range: @samp{0}..@samp{60}
+
+@item @code{top-day-entries} (default: @code{20}) (type: maybe-integer)
+Data retention duration for the top day entries.  The configuration
+defines how many of the past top day entries will be stored.  Set to
+@code{-1} for unlimited entries or to @code{0} to disable the data
+collection of this resolution.
+
+@item @code{trafficless-entries?} (default: @code{#t}) (type: maybe-boolean)
+Create database entries even when there is no traffic during the entry's
+time period.
+
+@item @code{update-file-owner?} (default: @code{#t}) (type: maybe-boolean)
+Enable or disable the update of file ownership during daemon process
+startup.  During daemon startup, only database, log and pid files will
+be modified if the user or group change feature ( @var{daemon-user} or
+@var{daemon-group} ) is enabled and the files don't match the requested
+user or group.  During manual database creation, this option will cause
+file ownership to be inherited from the database directory if the
+directory already exists.  This option only has effect when the process
+is started as root or via sudo.
+
+@item @code{update-interval} (default: @code{20}) (type: maybe-integer)
+How often in seconds the interface data is updated.  Value range:
+@var{poll-interval}..@samp{300}
+
+@item @code{use-logging} (default: @code{2}) (type: maybe-integer)
+Enable or disable logging.  Accepted values are: @code{0} = disabled,
+@code{1} = logfile and @code{2} = syslog.
+
+@item @code{use-utc?} (type: maybe-boolean)
+Enable or disable using UTC as timezone in the database for all entries.
+When enabled, all entries added to the database will use UTC regardless
+of the configured system timezone.  When disabled, the configured system
+timezone will be used.  Changing this setting will not result in already
+existing data to be modified.
+
+@item @code{yearly-years} (default: @code{-1}) (type: maybe-integer)
+Data retention duration for the one year resolution entries.  The
+configuration defines for how many past years entries will be stored.
+Set to @code{-1} for unlimited entries or to @code{0} to disable the
+data collection of this resolution.
+
+@end table
+@end deftp
+@c %end of fragment
 
 @subsubheading Zabbix server
 @cindex zabbix zabbix-server
@@ -37557,6 +37872,9 @@ Number of cached nars to generate at a time.
 Location to fetch nars from when computing cached compressions.  By
 default, the storage location will be used.
 
+@item @code{extra-environment-variables} (default: @code{'()})
+Extra environment variables to set via the shepherd service.
+
 @end table
 @end deftp
 
@@ -38182,15 +38500,14 @@ The following is an example @code{dicod-service-type} configuration.
           (handlers (list
                      (dicod-handler
                       (name "wordnet")
-                      (module "dictorg")
+                      (module "wordnet")
                       (options
-                       (list #~(string-append "dbdir=" #$wordnet))))))
+                       (list #~(string-append "wnhome=" #$wordnet))))))
           (databases (list
                       (dicod-database
                        (name "wordnet")
                        (complex? #t)
-                       (handler "wordnet")
-                       (options '("database=wn")))
+                       (handler "wordnet"))
                       %dicod-database:gcide))))
 @end lisp
 
@@ -42660,9 +42977,11 @@ stateless: it can be replicated elsewhere or at another point in time.
 Preparing this list can be relatively tedious though, which is why
 @code{*unspecified*} is kept as a default.
 
-@item @code{authorized-keys} (default: @code{'()})
-This must be a list of file-like objects, each of which containing an
-SSH public key that should be authorized to connect to this machine.
+@item @code{authorized-keys} (default: @code{#false})
+The default @code{#false} value means: Leave any
+@file{~/.ssh/authorized_keys} file alone.  Otherwise, this must be a
+list of file-like objects, each of which containing an SSH public key
+that should be authorized to connect to this machine.
 
 Concretely, these files are concatenated and made available as
 @file{~/.ssh/authorized_keys}.  If an OpenSSH server, @command{sshd}, is
@@ -43084,8 +43403,10 @@ library is used by many applications to access fonts on the system.
 
 @defvar home-fontconfig-service-type
 This is the service type for generating configurations for Fontconfig.
-Its associated value is a list of strings (or gexps) pointing to fonts
-locations.
+Its associated value is a list of either strings (or gexps) pointing to
+fonts locations, or SXML (@pxref{SXML,,, guile, GNU Guile Reference
+Manual}) fragments to be converted into XML and put inside the main
+@code{fontconfig} node.
 
 Generally, it is better to extend this service than to directly
 configure it, as its default value is the default Guix Home's profile
@@ -43093,13 +43414,17 @@ font installation path (@file{~/.guix-home/profile/share/fonts}).  If
 you configure this service directly, be sure to include the above
 directory.
 
-A typical extension for adding an additional font directory might look
-like this:
+A typical extension for adding an additional font directory and setting
+a font as the default monospace font might look like this:
 
 @lisp
 (simple-service 'additional-fonts-service
                 home-fontconfig-service-type
-                (list "~/.nix-profile/share/fonts"))
+                (list "~/.nix-profile/share/fonts"
+                      '(alias
+                        (family "monospace")
+                        (prefer
+                         (family "Liberation Mono")))))
 @end lisp
 @end defvar
 

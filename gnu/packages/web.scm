@@ -911,7 +911,7 @@ similar to live activity monitoring provided with NGINX plus.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.68")
+    (version "1.4.70")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -919,7 +919,7 @@ similar to live activity monitoring provided with NGINX plus.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "111kb3lkcvbxw46dnsrgx9pfbdpzb807ikkn9pd1lgmnaap3fvz5"))))
+                "11gyc77d6g634mshdqmbl50bmx1i7aibg6kp0dz8kfdnyhfbw7lj"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1808,7 +1808,7 @@ and other data, for distribution on the web.")
 (define-public tinyproxy
   (package
     (name "tinyproxy")
-    (version "1.11.0")
+    (version "1.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/tinyproxy/tinyproxy/"
@@ -1816,7 +1816,7 @@ and other data, for distribution on the web.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0cizm8pbh5p557birdirkayj71xdxapaa9q29v1d4lf5qk7q3v61"))))
+                "0z0gnk74y68fv34vlgn2mf0zp1h3s27dbz8a1nwsxl0mh928hqyn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"             ; ‘make check’ silently does nothing
@@ -4770,8 +4770,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "3734a85650cc4a34d5bfa06d151edcc7efe7144e")
-        (revision "40"))
+  (let ((commit "68850065d79ba05dad7201c3ed22f5e2e32680b7")
+        (revision "41"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4783,7 +4783,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1a3li1gfll9w6w7amk4av1565abw8i4a706rfkd5lg36jikkap4q"))))
+                  "0y7a9jbbkzhlhmn639kgmzlkw927w4nrsafm1sj51mrblr5qk4lq"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -8248,6 +8248,9 @@ returned.")
        (sha256
         (base32 "1j3mzjlczjrk4ahc43s6kzpvzypzjmqz4sillnca5yadrwwgjf2x"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; ISO C++17 does not allow dynamic exception specifications
+     `(#:configure-flags '("CXXFLAGS=-std=c++11")))
     (home-page "https://htmlcxx.sourceforge.net/")
     (synopsis "Simple non-validating CSS1 and HTML parser for C++")
     (description "htmlcxx is a simple non-validating CSS1 and HTML parser for

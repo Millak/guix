@@ -70,12 +70,6 @@ PORT."
                 (start-service 'rsync))
              marionette))
 
-          ;; Make sure the PID file is created.
-          (test-assert "PID file"
-            (marionette-eval
-             '(file-exists? "/var/run/rsyncd/rsyncd.pid")
-             marionette))
-
           (test-assert "Test file copied to share"
             (marionette-eval
              '(begin

@@ -59,14 +59,14 @@
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
 ;;; Copyright © 2019, 2023 Jack Hill <jackhill@jackhill.us>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023, Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2019, 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020, 2021, 2022 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2019, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2019, 2021-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Riku Viitanen <riku.viitanen@protonmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 sirgazil <sirgazil@zoho.com>
@@ -583,6 +583,26 @@ and variables you'll need already imported and created.
 scipy and numpy of negative binomial maximum likelihood estimation.")
     (license license:gpl3+)))
 
+(define-public python-docrep
+  (package
+    (name "python-docrep")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "docrep" version))
+              (sha256
+               (base32
+                "0523jrzjj29kxpdllmfhrfj9kysi9mphp2m7ippjkn5b07i1g2pd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-pytest python-pytest-runner))
+    (home-page "https://github.com/Chilipp/docrep")
+    (synopsis "Python package for docstring repetition")
+    (description "Docrep is the documentation repetition module.  This module
+targets developers that develop complex and nested Python APIs and helps them
+to create a well-documented piece of software.")
+    (license license:asl2.0)))
+
 (define-public python-dotmap
   (package
     (name "python-dotmap")
@@ -620,6 +640,29 @@ key:value relationship but you can also get the value:key relationship.  It also
 remembers the order in which the items were inserted and supports almost all the
 features of the Python's built-in dict.")
     (license license:unlicense)))
+
+(define-public python-adjusttext
+  (package
+    (name "python-adjusttext")
+    (version "0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "adjustText" version))
+              (sha256
+               (base32
+                "05zf0xn7ab40dan213fwbp1z4rybih8dphf9mzb2ddmbafxq41mv"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib python-numpy))
+    (home-page "https://github.com/Phlya/adjustText")
+    (synopsis "Adjust text position in matplotlib plots to minimize overlaps")
+    (description
+     "Often when we want to label multiple points on a graph the text will
+start heavily overlapping with both other labels and data points.  This can be
+a major problem requiring manual solution.  However this can be largely
+automatized by smart placing of the labels (difficult) or iterative adjustment
+of their positions to minimize overlaps (relatively easy).  This library
+implements the latter option to help with matplotlib graphs.")
+    (license license:expat)))
 
 (define-public python-argopt
   (package
@@ -1140,6 +1183,67 @@ commits.")
     (description "This package provides a theme plugin for the static site
 generator MkDocs.")
     (license license:expat)))
+
+(define-public python-skranger
+  (package
+    (name "python-skranger")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/crflynn/skranger")
+                    (commit version)
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0njy4xbc98l295k92nyk93njv1348vd1il5pdyrnk8nnzc2anzf0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:test-flags
+      ;; "from sklearn.datasets import load_boston" fails because it has been
+      ;; removed from scikit-learn since version 1.2.
+      '(list "--ignore=tests/conftest.py"
+             "--ignore=tests/test_tools.py"
+             "--ignore=tests/tree/test_regressor.py"
+             "--ignore=tests/ensemble/test_regressor.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests/conftest.py"
+                (("from sklearn.datasets import load_boston") "")
+                (("^_boston_X.*") "_boston_X, _boston_Y = (True, True)\n"))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "buildpre.py")
+              (invoke "python" "build.py" "build_ext" "--inplace")
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages/skranger"))
+                    (lib (match (find-files "build" "\\.so")
+                           ((the-lib) the-lib)
+                           (_ (error "could not find .so")))))
+                (mkdir-p site)
+                (install-file lib site)))))))
+    (propagated-inputs (list python-scikit-learn))
+    (native-inputs
+     (list python-cython
+           python-matplotlib
+           python-pandas
+           python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/crflynn/skranger")
+    (synopsis "Python bindings for C++ ranger random forests")
+    (description "This package provides scikit-learn compatible Python
+bindings to the C++ random forest implementation, ranger, using Cython.")
+    (license license:gpl3+)))
 
 (define-public python-slixmpp
   (package
@@ -2690,6 +2794,26 @@ a library.")
     (description "DiskCache is a disk and file backed persistent cache.")
     (license license:asl2.0)))
 
+(define-public python-optparse-pretty
+  (package
+    (name "python-optparse-pretty")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "optparse-pretty" version))
+       (sha256
+        (base32 "1920wbh2b7a8qn7zx2iiqbcdaax335l81a73x9pp8h11yzs2jdmh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;There are none
+    (home-page "https://github.com/gvalkov/optparse-pretty")
+    (synopsis "Compact help formatter for optparse")
+    (description
+     "This module provides two help formatters for optparse.  They provide
+terser and more customizable option formatting in comparison to the default
+help formatter.")
+    (license license:bsd-3)))
+
 (define-public python-orjson
   (package
     (name "python-orjson")
@@ -2703,9 +2827,14 @@ a library.")
     (build-system cargo-build-system)
     (arguments
      (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'build-python-module
+          (add-after 'install 'prepare-python-module
             (lambda _
               ;; We don't use maturin.
               (delete-file "pyproject.toml")
@@ -2719,10 +2848,9 @@ requires = ['setuptools']
               (call-with-output-file "setup.cfg"
                 (lambda (port)
                   (format port "\
-
 [metadata]
 name = orjson
-version = '~a'
+version = ~a
 
 [options]
 packages = find:
@@ -2733,15 +2861,11 @@ exclude =
   integration
   test
   Cargo.toml
-" #$version)))
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
+" #$version)))))
+          (add-after 'prepare-python-module 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
+            (assoc-ref py:%standard-phases 'install))
           (add-after 'install-python-module 'install-python-library
             (lambda _
               (let ((site (string-append #$output "/lib/python"
@@ -4870,22 +4994,8 @@ recognition library with full Unicode support.  It has features like:
               (sha256
                (base32
                 "1nh75i72584r70alhqc479gys04s5m5g3vq601yf2njbs7z5jzng"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;pypi source does not contains tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _ (invoke "flit" "build")))
-          (replace 'install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs)
-              (for-each
-               (lambda (wheel)
-                 (invoke "python" "-m" "pip" "install"
-                         wheel (string-append "--prefix=" #$output)))
-               (find-files "dist" "\\.whl$")))))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;pypi source does not contains tests
     (native-inputs (list python-flit))
     (propagated-inputs
      (list python-mdurl
@@ -9588,6 +9698,37 @@ module with a few extra procedures.")
 releases.")
     (license license:expat)))
 
+(define-public python-jaraco-test
+  (package
+    (name "python-jaraco-test")
+    (version "5.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jaraco.test" version))
+              (sha256
+               (base32
+                "0h0x8qmvfkfqvwdx2m7kwhn53sg26k8gkaas7s1730ak772zqrvz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda _
+                       (invoke "pytest" "-vv" "-k" "http"))))))
+    (propagated-inputs (list python-jaraco-context python-jaraco-functools))
+    (native-inputs (list python-flake8
+                         python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-flake8
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/jaraco.test")
+    (synopsis "Testing support by jaraco")
+    (description "This package provides testing support by jaraco.")
+    (license license:expat)))
+
 (define-public python-simplegeneric
   (package
     (name "python-simplegeneric")
@@ -11094,27 +11235,7 @@ SVG, EPS, PNG and terminal output.")
               (sha256
                (base32
                 "08vvnp4ps86857imxz2l5xi2vir5xdcdp3apq4badb4b5llifgw9"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:modules '((guix build python-build-system)
-                       (guix build utils)
-                       (ice-9 match))
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'build
-                          (lambda _
-                            (invoke "python" "-m" "build" "--wheel"
-                                    "--no-isolation" ".")))
-                        (replace 'install
-                          (lambda _
-                            (match (find-files "dist" "\\.whl$")
-                              ((wheel _ ...)
-                               (invoke "python" "-m" "pip" "install"
-                                       (string-append "--prefix=" #$output)
-                                       wheel)))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-pandas python-matplotlib python-numpy
                              python-scipy))
     (native-inputs (list python-flit-core python-pypa-build python-pytest))
@@ -11126,7 +11247,6 @@ graphics in Python.  It is built on top of matplotlib and tightly integrated
 with the PyData stack, including support for numpy and pandas data structures
 and statistical routines from scipy and statsmodels.")
     (license license:bsd-3)))
-
 
 (define-public python-session-info
   (package
@@ -11716,7 +11836,37 @@ you do not want to store entirely on disk or on memory.")
                         " and not test_httplib_misuse"
                         ;; Fails with IndexError.
                         " and not test_session_mode_defaults_to"
-                        "_request_mode_in_wsgi_handler"))))))))
+                        "_request_mode_in_wsgi_handler"
+                        ;; Tests below fail with pytest 7
+                        " and not test_leaks"
+                        " and not test_basic"
+                        " and not test_keyboard_interrupt_is_captured"
+                        " and not test_transaction_with_error"
+                        " and not test_transaction_no_error"
+                        " and not test_start_span_to_start_transaction"
+                        " and not test_tracestate_computation"
+                        " and not test_doesnt_add_new_tracestate_to_transaction_when_none_given"
+                        " and not test_adds_tracestate_to_transaction_when_to_traceparent_called"
+                        " and not test_adds_tracestate_to_transaction_when_getting_trace_context"
+                        " and not test_tracestate_is_immutable_once_set"
+                        " and not test_to_traceparent"
+                        " and not test_to_tracestate"
+                        " and not test_sentrytrace_extraction"
+                        " and not test_tracestate_extraction"
+                        " and not test_iter_headers"
+                        " and not test_tracestate_reinflation"
+                        " and not test_continue_from_headers"
+                        " and not test_memory_usage"
+                        " and not test_transactions_do_not_go_through_before_send"
+                        " and not test_start_span_after_finish"
+                        " and not test_span_trimming"
+                        " and not test_transaction_naming"
+                        " and not test_start_transaction"
+                        " and not test_finds_transaction_on_scope"
+                        " and not test_finds_transaction_when_descendent_span_is_on_scope"
+                        " and not test_finds_orphan_span_on_scope"
+                        " and not test_finds_non_orphan_span_on_scope"
+                        " and not test_circular_references"))))))))
     (native-inputs
      (list python-django
            python-executing
@@ -11809,31 +11959,7 @@ plugin for flake8 to check PEP-8 naming conventions.")
        (sha256
         (base32
          "00zahgw9zjfqwf0218bj5k732aibnn68cq1p8f0wmbirb7fy5k31"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build/install procedures copied from
-          ;; python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        ;; Two parameterized test_load tests are currently
-                        ;; failing (see:
-                        ;; https://github.com/FFY00/python-pep621/issues/14).
-                        "-k" "not test_load"))))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-packaging))
     (native-inputs (list python-pypa-build python-pytest python-tomli))
     (home-page "https://github.com/FFY00/python-pyproject-metadata")
@@ -16860,13 +16986,13 @@ ISO 8859, etc.).")
 (define-public python-anyqt
   (package
     (name "python-anyqt")
-    (version "0.0.13")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "AnyQt" version))
        (sha256
-        (base32 "0z7myf0mp1qx4gza6ncqyq9whk67vblmh9n3klk19dv4aakjml2f"))))
+        (base32 "0fvnhdk0nzhlm1xydisvdq1w7lwaakdkbwb1rkyz4vd232wji4jb"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -17253,6 +17379,36 @@ can also be used to get the exact location, font or color of the text.")
     (description "This is Python module for RAR archive reading.  The interface
 is made as zipfile like as possible.")
     (license license:isc)))
+
+(define-public python-slugid
+  (package
+    (name "python-slugid")
+    (version "2.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/taskcluster/slugid.py")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1h64p2jlqv6lsmw8h2j203kx3bhv72cwzpk5gdhsaamw30cp3h1i"))))
+    (build-system python-build-system)
+    (native-inputs (list python-nose))
+    (arguments
+      (list #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key inputs tests? #:allow-other-keys)
+                (when tests?
+                  ;; The project uses tox to run the tests via nose.
+                  (invoke "nosetests" "-v" "test.py")))))))
+    (home-page "http://taskcluster.github.io/slugid.py")
+    (synopsis "Module for Base64 encoded UUID v4 slugs")
+    (description "This package provides a module for generating v4
+UUIDs and encoding them into 22 character URL-safe base64 slug
+representation.")
+    (license license:mpl2.0)))
 
 (define-public python-rich
   (package
@@ -18130,6 +18286,65 @@ specified in POSIX.1-2001 and POSIX.1-2008.")
      "Chai provides an api for mocking, stubbing and spying your python
 objects, patterned after the Mocha library for Ruby.")
     (license license:bsd-3)))
+
+(define-public python-inflect
+  (package
+    (name "python-inflect")
+    (version "6.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "inflect" version))
+              (sha256
+               (base32
+                "1sqj4svg2vbn4vq332nxnvky2433rgxbvjd529lddjmn2yd68hhq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "--ignore=_custom_build/backend.py"
+             "-k" "not mypy-status")
+      #:phases
+      '(modify-phases %standard-phases
+         ;; The build system insists on ignoring the existing environment and
+         ;; running "pip install".
+         (add-after 'unpack 'do-not-use-pip-install
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("^build-backend.*") "\
+build-backend = \"backend\"
+backend_path = [\"_custom_build\"]\n")
+               (("requires = .*") "requires = []\n"))
+             (mkdir-p "_custom_build")
+             (with-output-to-file "_custom_build/backend.py"
+               (lambda _
+                 (display "\
+from setuptools import build_meta as _orig
+from setuptools.build_meta import *
+def get_requires_for_build_wheel(config_settings=None):
+    return []
+def get_requires_for_build_sdist(config_settings=None):
+    return []
+")))
+             (setenv "PYTHONPATH"
+                     (string-append (getcwd) "/_custom_build")))))))
+    (propagated-inputs (list python-pydantic))
+    (native-inputs (list python-flake8
+                         python-pygments
+                         python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-flake8
+                         python-pytest-mypy
+                         ;; For the version number
+                         python-setuptools-scm))
+    (home-page "https://github.com/jaraco/inflect")
+    (synopsis "Correctly generate plurals, singular nouns, ordinals, indefinite articles")
+    (description
+     "This Python module lets you correctly generate plurals, singular nouns,
+ordinals, indefinite articles; it also can convert numbers to words.")
+    (license license:expat)))
 
 (define-public python-inflection
   (package
@@ -22049,14 +22264,14 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
 (define-public python-pyopengl
   (package
     (name "python-pyopengl")
-    (version "3.1.5")
+    (version "3.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyOpenGL" version))
        (sha256
         (base32
-         "091lp9bpqi8yf1nmyg19xmvw611lrzq2q94cl1k5gnlh0c6vl1s1"))))
+         "09syrsfrcknr1k2wmj05gfd5d0dyjfxzbipzbd0agv9775vwi9lf"))))
     (build-system python-build-system)
     (inputs
      (list mesa freeglut glu))
@@ -22094,14 +22309,14 @@ library.")
   (package
     (inherit python-pyopengl)
     (name "python-pyopengl-accelerate")
-    (version "3.1.5")
+    (version "3.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyOpenGL-accelerate" version))
        (sha256
         (base32
-         "01iggy5jwxv7lxnj51zbmlbhag9wcb7dvrbwgi97i90n0a5m3r8j"))))
+         "1hydrpdn4p4z6mlczcg1y4s0z8si3rs6zq8x4ql558pcaq1312md"))))
     (inputs
      (list mesa python-numpy)) ; for cython module
                                         ; numpy_formathandler, thus not propagated
@@ -22727,19 +22942,27 @@ queue.")
 (define-public python-zict
   (package
     (name "python-zict")
-    (version "2.0.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zict" version))
        (sha256
         (base32
-         "05pd1hyhqvpw87rnbvl3vdyf619snpyccbswaxisdj17frwnjacf"))))
-    (build-system python-build-system)
+         "19gvr41xi5fazkzkg33kwrk70sv50hygng0cg70ayym9nriy48g3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This uses "importorskip", but it won't skip.
+      '(list "--ignore=tests/test_lmdb.py")))
     (propagated-inputs
      (list python-heapdict))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-repeat
+           python-pytest-timeout))
     (home-page "https://zict.readthedocs.io/en/latest/")
     (synopsis "Composable mutable mapping tools")
     (description "This package provides abstract @code{MutableMapping} classes
@@ -22806,13 +23029,13 @@ user's @file{~/Trash} directory.")
 (define-public python-yamllint
   (package
     (name "python-yamllint")
-    (version "1.26.1")
+    (version "1.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yamllint" version))
        (sha256
-        (base32 "090krlxj7az0d9yl8i20vjrqi66dfxx7y5xakjhxzsfp7qmldnc7"))))
+        (base32 "0rbs7xq7y7bp3k75z7jamrdrrfyp95hifsz0hwm1cgkk5z8z30rd"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pathspec python-pyyaml python-setuptools))
@@ -24787,16 +25010,38 @@ append on old values.  Partd excels at shuffling operations.")
 (define-public python-fsspec
   (package
     (name "python-fsspec")
-    (version "2022.5.0")
+    (version "2023.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fsspec" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fsspec/filesystem_spec")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1d43qiz8g395042a52yswz6j7q41gvrv3k53wvxn1rs4bk3mjm3s"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ; there are none
+         "0c0brw5s4330rj0yjcrqi56hanvaahn43854jai70qzqg1qvyl88"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              (substitute* "fsspec/__init__.py"
+                (("__version__ = .*")
+                 (string-append "__version__ = \"" #$version "\"")))
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\""))))))
+      #:test-flags
+      '(list
+        ;; requires internet access
+        "--ignore=fsspec/implementations/tests/test_dbfs.py")))
+    (propagated-inputs
+     (list python-aiohttp python-libarchive-c python-requests python-tqdm))
+    (native-inputs
+     (list python-pytest python-pytest-mock python-numpy))
     (home-page "https://github.com/intake/filesystem_spec")
     (synopsis "File-system specification")
     (description "The purpose of this package is to produce a template or
@@ -24810,29 +25055,61 @@ decisions with any given backend.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2022.05.2")
+    (version "2023.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dask/dask/")
-             (commit "8db1597c9745543df3129399bead5fbc95a54571")))
+             (commit "a69a808f75a961504a9ba18058bff5e458be97fb")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xfk3wml972z502w5ii5mn03ls3rg5p4hqgl0hkicgpmzlyz9kph"))
-       (snippet
-        ;; Delete generated copy of python-versioneer.  We recreate it below.
-        '(delete-file "versioneer.py"))))
-    (build-system python-build-system)
+        (base32 "089kz6hcgl4yxwx99br1124sg1gkdy554hf120z9a5cfbrf0ah9y"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'versioneer
-           (lambda _
-             (invoke "versioneer" "install")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv")))))))
+     (list
+      ;; Avoid coverage
+      #:test-flags
+      #~(list "-m" "not gpu and not slow and not network"
+              "-k" (string-append
+                    ;; This one cannot be interrupted.
+                    "not test_interrupt"
+                    ;; This one expects a deprecation warning that never
+                    ;; comes.
+                    " and not test_RandomState_only_funcs")
+              ;; Tests must run from the output directory, because otherwise
+              ;; it complains about the difference between the target
+              ;; directory embedded in the pyc files and the source directory
+              ;; from which we run tests.
+              (getcwd))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'versioneer
+            (lambda _
+              ;; Our version of versioneer needs setup.cfg.  This is adapted
+              ;; from pyproject.toml.
+              (with-output-to-file "setup.cfg"
+                (lambda ()
+                  (display "\
+[versioneer]
+VCS = git
+style = pep440
+versionfile_source = dask/_version.py
+versionfile_build = dask/_version.py
+tag_prefix =
+parentdir_prefix = dask-
+")))
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("versioneer.get_version\\(\\)")
+                 (string-append "\"" #$version "\"")))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; This option is not supported by our version of pytest.
+              (substitute* "pyproject.toml"
+                (("--cov-config=pyproject.toml") ""))))
+          (add-before 'check 'pre-check
+            (lambda _ (chdir "/tmp"))))))
     (propagated-inputs
      (list python-cloudpickle
            python-fsspec
@@ -24843,7 +25120,9 @@ decisions with any given backend.")
            python-toolz
            python-pyyaml))
     (native-inputs
-     (list python-pytest python-pytest-runner python-pytest-rerunfailures
+     (list python-click
+           python-importlib-metadata
+           python-pytest python-pytest-runner python-pytest-rerunfailures
            python-versioneer))
     (home-page "https://github.com/dask/dask/")
     (synopsis "Parallel computing with task scheduling")
@@ -27270,7 +27549,7 @@ information for your operating system.")
        (uri (pypi-uri "canonicaljson" version))
        (sha256
         (base32 "0j5lq191jkd483q6xzc16c9fahxf15lrv03mvah9ka3lq85pcnfa"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -27279,21 +27558,7 @@ information for your operating system.")
            (lambda _
              ;; Permit newer versions of setuptools_scm
              (substitute* "pyproject.toml"
-               ((">= 2.0.0, <3") ">= 2.0.0"))))
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+               ((">= 2.0.0, <3") ">= 2.0.0")))))))
     (native-inputs
      (list python-pypa-build python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
@@ -32614,24 +32879,7 @@ Storage}.")
               (sha256
                (base32
                 "1f3qrygj16y767q2c7pn9j6m95ggcmj9s5cx9v92ygygly4mr3jp"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-v" "tests"))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-click
            python-poetry-core

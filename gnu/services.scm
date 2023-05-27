@@ -403,6 +403,7 @@ directory."
                                           boot-script-entry)))
                 (compose identity)
                 (extend compute-boot-script)
+                (default-value #f)
                 (description
                  "Produce the operating system's boot script, which is spawned
 by the initrd once the root file system is mounted.")))
@@ -661,6 +662,7 @@ system directory."
                                           activation-profile-entry)))
                 (compose identity)
                 (extend second-argument)
+                (default-value #f)
                 (description
                  "Run @dfn{activation} code at boot time and upon
 @command{guix system reconfigure} completion.")))
@@ -803,6 +805,7 @@ directory."
                   (service-extension system-service-type etc-entry)))
                 (compose concatenate)
                 (extend append)
+                (default-value '())
                 (description "Populate the @file{/etc} directory.")))
 
 (define-deprecated (etc-service files)
@@ -869,6 +872,7 @@ executables, making them setuid and/or setgid.")))
                                           packages->profile-entry)))
                 (compose concatenate)
                 (extend append)
+                (default-value '())
                 (description
                  "This is the @dfn{system profile}, available as
 @file{/run/current-system/profile}.  It contains packages that the sysadmin

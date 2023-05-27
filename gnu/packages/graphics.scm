@@ -2328,7 +2328,9 @@ Features include:
                              "cmd/generate_density_map/main.cpp"
                              "cmd/generate_sdf/main.cpp")
                 (("^#include <cxxopts/cxxopts\\.hpp>")
-                 "#include <cxxopts.hpp>"))))))
+                 "#include <cxxopts.hpp>")
+                (("cxxopts::OptionException")
+                 "cxxopts::exceptions::parsing"))))))
       (build-system cmake-build-system)
       (outputs '("out" "bin"))
       (arguments
@@ -2481,7 +2483,7 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
 (define-public f3d
   (package
     (name "f3d")
-    (version "1.3.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -2490,16 +2492,21 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hdfgwf5d24ykab634xg4vv9r09nh96ss7hhnqnh5nmw4abhxzg7"))
+        (base32 "1gcwpdkz3ylaxi133zri1cxkvj6za5s1hbgqqc8fn10q2dkkdd44"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            (delete-file "application/cxxopts.hpp")
-            (delete-file "application/json.hpp")
+            (delete-file "external/cxxopts.hpp")
+            (delete-file "external/json.hpp")
             (substitute* "application/F3DOptionsParser.cxx"
               (("^#include \"cxxopts\\.hpp\"")
                "#include <cxxopts.hpp>")
               (("^#include \"json\\.hpp\"")
+               "#include <nlohmann/json.hpp>")
+              (("cxxopts::OptionException")
+               "cxxopts::exceptions::parsing"))
+            (substitute* "library/src/engine.cxx"
+              (("^#include <json\\.hpp>")
                "#include <nlohmann/json.hpp>"))))))
     (build-system cmake-build-system)
     ;; The package cannot easily be split into out and lib outputs because
@@ -2535,7 +2542,7 @@ a tetrahedral mesh, isovalue discretization and Lagrangian movement;
     (native-inputs
      (list cxxopts
            help2man
-           json-modern-cxx))
+           nlohmann-json))
     (inputs
      (list alembic
            assimp

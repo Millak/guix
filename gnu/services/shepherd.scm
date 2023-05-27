@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2016, 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2018-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -91,7 +91,7 @@
   shepherd-configuration make-shepherd-configuration
   shepherd-configuration?
   (shepherd shepherd-configuration-shepherd
-            (default shepherd-0.9)) ; file-like
+            (default shepherd-0.10)) ; file-like
   (services shepherd-configuration-services
             (default '()))) ; list of <shepherd-service>
 

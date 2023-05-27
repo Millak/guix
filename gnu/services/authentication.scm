@@ -506,19 +506,21 @@ password.")
   (define pam-ldap-module
     #~(string-append #$(nslcd-configuration-nss-pam-ldapd config)
                      "/lib/security/pam_ldap.so"))
-  (lambda (pam)
-    (if (member (pam-service-name pam)
-                (nslcd-configuration-pam-services config))
-        (let ((sufficient
-               (pam-entry
-                (control "sufficient")
-                (module pam-ldap-module))))
-          (pam-service
-           (inherit pam)
-           (auth (cons sufficient (pam-service-auth pam)))
-           (session (cons sufficient (pam-service-session pam)))
-           (account (cons sufficient (pam-service-account pam)))))
-        pam)))
+  (pam-extension
+    (transformer
+     (lambda (pam)
+       (if (member (pam-service-name pam)
+                   (nslcd-configuration-pam-services config))
+           (let ((sufficient
+                  (pam-entry
+                   (control "sufficient")
+                   (module pam-ldap-module))))
+             (pam-service
+              (inherit pam)
+              (auth (cons sufficient (pam-service-auth pam)))
+              (session (cons sufficient (pam-service-session pam)))
+              (account (cons sufficient (pam-service-account pam)))))
+           pam)))))
 
 (define (pam-ldap-pam-services config)
   (list (pam-ldap-pam-service config)))

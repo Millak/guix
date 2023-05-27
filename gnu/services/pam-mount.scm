@@ -88,16 +88,19 @@
     (pam-entry
      (control "optional")
      (module #~(string-append #$pam-mount "/lib/security/pam_mount.so"))))
-  (list (lambda (pam)
-          (if (member (pam-service-name pam)
-                      '("login" "greetd" "su" "slim" "gdm-password" "sddm"))
-              (pam-service
-               (inherit pam)
-               (auth (append (pam-service-auth pam)
-                             (list optional-pam-mount)))
-               (session (append (pam-service-session pam)
-                                (list optional-pam-mount))))
-              pam))))
+  (list
+   (pam-extension
+    (transformer
+     (lambda (pam)
+       (if (member (pam-service-name pam)
+                   '("login" "greetd" "su" "slim" "gdm-password" "sddm"))
+           (pam-service
+            (inherit pam)
+            (auth (append (pam-service-auth pam)
+                          (list optional-pam-mount)))
+            (session (append (pam-service-session pam)
+                             (list optional-pam-mount))))
+           pam))))))
 
 (define pam-mount-service-type
   (service-type

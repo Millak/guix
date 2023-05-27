@@ -3,6 +3,7 @@
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,21 +92,26 @@ Import the latest package named PACKAGE-NAME from an ELPA repository.\n"))
                             (_ #f))
                            (reverse opts))))
     (match args
-      ((package-name)
-       (if (assoc-ref opts 'recursive)
-           (with-error-handling
-             (map (match-lambda
-                    ((and ('package ('name name) . rest) pkg)
-                     `(define-public ,(string->symbol name)
-                        ,pkg))
-                    (_ #f))
+      ((spec)
+       (define-values (package-name version)
+         (package-name->name+version spec))
+       (when version
+         (warning (G_ "this importer does not consider the version~%")))
+       (match (if (assoc-ref opts 'recursive)
                   (elpa-recursive-import package-name
-                                         (or (assoc-ref opts 'repo) 'gnu))))
-           (let ((sexp (elpa->guix-package package-name
-                                           #:repo (assoc-ref opts 'repo))))
-             (unless sexp
-               (leave (G_ "failed to download package '~a'~%") package-name))
-             sexp)))
+                                         (or (assoc-ref opts 'repo) 'gnu))
+                  (elpa->guix-package package-name
+                                      #:repo (assoc-ref opts 'repo)))
+         ((or #f '())
+          (leave (G_ "failed to download meta-data for package '~a'~%") package-name))
+         (('package etc ...) `(package ,etc))
+         ((? list? sexps) (map
+                           (match-lambda
+                             ((and ('package ('name name) . rest) pkg)
+                              `(define-public ,(string->symbol name)
+                                 ,pkg))
+                             (_ #f))
+                           sexps))))
       (()
        (leave (G_ "too few arguments~%")))
       ((many ...)

@@ -10,7 +10,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
@@ -72,26 +72,26 @@
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (%current-target-system)
-                 '((add-after 'install 'patch-non-shebang-references
-                     (lambda* (#:key build inputs #:allow-other-keys)
-                       ;; `patch-shebangs' patches shebangs only, and the Perl
-                       ;; scripts use a re-exec feature that references the
-                       ;; build hosts' perl.  Also, BASH and M4 store references
-                       ;; hide in the scripts.
-                       (let ((bash (dirname (dirname
-                                             (search-input-file inputs "bin/bash"))))
-                             (m4 (dirname (dirname
-                                           (search-input-file inputs "bin/m4"))))
-                             (perl (dirname (dirname
-                                             (search-input-file inputs "bin/perl"))))
-                             (store-directory (%store-directory)))
-                         (substitute* (find-files (string-append #$output "/bin"))
-                           (((string-append store-directory "/[^/]*-bash-[^/]*"))
-                            bash)
-                           (((string-append store-directory "/[^/]*-m4-[^/]*"))
-                            m4)
-                           (((string-append store-directory "/[^/]*-perl-[^/]*"))
-                            perl))))))
+                 #~((add-after 'install 'patch-non-shebang-references
+                      (lambda* (#:key build inputs #:allow-other-keys)
+                        ;; `patch-shebangs' patches shebangs only, and the Perl
+                        ;; scripts use a re-exec feature that references the
+                        ;; build hosts' perl.  Also, BASH and M4 store references
+                        ;; hide in the scripts.
+                        (let ((bash (dirname (dirname
+                                              (search-input-file inputs "bin/bash"))))
+                              (m4 (dirname (dirname
+                                            (search-input-file inputs "bin/m4"))))
+                              (perl (dirname (dirname
+                                              (search-input-file inputs "bin/perl"))))
+                              (store-directory (%store-directory)))
+                          (substitute* (find-files (string-append #$output "/bin"))
+                            (((string-append store-directory "/[^/]*-bash-[^/]*"))
+                             bash)
+                            (((string-append store-directory "/[^/]*-m4-[^/]*"))
+                             m4)
+                            (((string-append store-directory "/[^/]*-perl-[^/]*"))
+                             perl))))))
                  '())
           (add-after 'install 'unpatch-shebangs
             (lambda _
@@ -369,29 +369,29 @@ output is indexed in many ways to simplify browsing.")
                  (string-append "exit 77\n" all "\n")))))
 
           #$@(if (%current-target-system)
-                 '((add-after 'install 'patch-non-shebang-references
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       ;; `patch-shebangs' patches shebangs only, and the Perl
-                       ;; scripts use a re-exec feature that references the
-                       ;; build hosts' perl.  Also, AUTOCONF and BASH store
-                       ;; references hide in the scripts.
-                       (let ((autoconf
-                              (dirname (dirname
-                                        (search-input-file inputs "bin/autoconf"))))
-                             (bash
-                              (dirname (dirname
-                                        (search-input-file inputs "bin/bash"))))
-                             (perl
-                              (dirname (dirname
-                                        (search-input-file inputs "bin/perl"))))
-                             (store-directory (%store-directory)))
-                         (substitute* (find-files (string-append #$output "/bin"))
-                           (((string-append store-directory "/[^/]*-autoconf-[^/]*"))
-                            autoconf)
-                           (((string-append store-directory "/[^/]*-bash-[^/]*"))
-                            bash)
-                           (((string-append store-directory "/[^/]*-perl-[^/]*"))
-                            perl))))))
+                 #~((add-after 'install 'patch-non-shebang-references
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        ;; `patch-shebangs' patches shebangs only, and the Perl
+                        ;; scripts use a re-exec feature that references the
+                        ;; build hosts' perl.  Also, AUTOCONF and BASH store
+                        ;; references hide in the scripts.
+                        (let ((autoconf
+                               (dirname (dirname
+                                         (search-input-file inputs "bin/autoconf"))))
+                              (bash
+                               (dirname (dirname
+                                         (search-input-file inputs "bin/bash"))))
+                              (perl
+                               (dirname (dirname
+                                         (search-input-file inputs "bin/perl"))))
+                              (store-directory (%store-directory)))
+                          (substitute* (find-files (string-append #$output "/bin"))
+                            (((string-append store-directory "/[^/]*-autoconf-[^/]*"))
+                             autoconf)
+                            (((string-append store-directory "/[^/]*-bash-[^/]*"))
+                             bash)
+                            (((string-append store-directory "/[^/]*-perl-[^/]*"))
+                             perl))))))
                  '())
 
           ;; Files like `install-sh', `mdate.sh', etc. must use

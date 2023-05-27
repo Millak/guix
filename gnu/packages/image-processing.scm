@@ -1213,7 +1213,7 @@ in 3D or programmatically using ParaView’s batch processing capabilities.")
            glew
            gmsh
            hdf5
-           ;;json-modern-cxx              ;For ParFlow; build fails
+           ;;nlohmann-json                ;For ParFlow; build fails
            jsoncpp
            libjpeg-turbo
            libogg

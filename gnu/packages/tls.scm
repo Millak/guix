@@ -331,7 +331,8 @@ required structures.")
                     "/guile-gnutls-" version ".tar.gz"))
               (sha256
                (base32
-                "0dp3zsbnwgb4q4p8n6i5vnlwq52v5hp8f5c44ngyag89fcaz2fjx"))))
+                "0dp3zsbnwgb4q4p8n6i5vnlwq52v5hp8f5c44ngyag89fcaz2fjx"))
+              (patches (search-patches "gnutls-cross.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list

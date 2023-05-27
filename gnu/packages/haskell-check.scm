@@ -148,7 +148,13 @@ contains the correct result for the test.")
                 "006bf4gyc30i2gvb17hj1mzrh1kwnwf7l050x3f72wi6c2axl87l"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty")))
-    (inputs (list ghc-tagged ghc-optparse-applicative ghc-ansi-terminal))
+    (inputs
+      (append
+        (list ghc-tagged ghc-optparse-applicative ghc-ansi-terminal)
+        ;; TODO: Add ghc-unbounded-delays unconditionally on next rebuild cycle.
+        (if (member (%current-system) '("i686-linux"))
+            (list ghc-unbounded-delays)
+            '())))
     (home-page "https://github.com/UnkindPartition/tasty")
     (synopsis "Modern and extensible testing framework")
     (description

@@ -1697,6 +1697,8 @@ domains, their live performance and resource utilization statistics.")
              (string-append "XMLTO="
                             (search-input-file %build-inputs
                                                "/bin/xmlto")))
+       #:modules ((ice-9 ftw)
+                  ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
@@ -1719,6 +1721,17 @@ domains, their live performance and resource utilization statistics.")
              (substitute* "criu/include/plugin.h"
                (("/var") (string-append (assoc-ref outputs "out"))))
              ))
+         ;; TODO: use
+         ;; (@@ (guix build python-build-system) ensure-no-mtimes-pre-1980)
+         ;; when it no longer throws due to trying to call UTIME on symlinks.
+         (add-after 'unpack 'ensure-no-mtimes-pre-1980
+           (lambda _
+             (let ((early-1980 315619200))  ; 1980-01-02 UTC
+               (ftw "." (lambda (file stat flag)
+                          (unless (or (<= early-1980 (stat:mtime stat))
+                                      (eq? (stat:type stat) 'symlink))
+                            (utime file early-1980 early-1980))
+                          #t)))))
          (add-before 'build 'fix-symlink
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The file 'images/google/protobuf/descriptor.proto' points to
@@ -1748,7 +1761,6 @@ domains, their live performance and resource utilization statistics.")
                (for-each delete-file (find-files out "\\.a$"))))))))
     (inputs
      `(("protobuf" ,protobuf)
-       ("python" ,python)
        ("python-protobuf" ,python-protobuf)
        ("iproute" ,iproute)
        ("libaio" ,libaio)
@@ -1763,7 +1775,8 @@ domains, their live performance and resource utilization statistics.")
            asciidoc
            xmlto
            docbook-xml
-           docbook-xsl))
+           docbook-xsl
+           python-toolchain))
     (propagated-inputs
      ;; included by 'rpc.pb-c.h'
      (list protobuf-c))

@@ -46,11 +46,15 @@
    (name "iyzsong"))
   ("1A85 8392 E331 EAFD B8C2  7FFB F3C1 A0D9 C1D6 5273"
    (name "janneke"))
+  ("3B1D 7F19 E36B B60C 0F5B  2CA9 A52A A2B4 77B6 DD35"
+   (name "jgart"))
   (;; primary: "1BA4 08C5 8BF2 0EA7 3179  635A 865D C0A3 DED9 B5D0"
    "E31D 9DDE EBA5 4A14 8A20  4550 DA45 97F9 47B4 1025"
    (name "jlicht"))
   ("8141 6036 E81A 5CF7 8F80  1071 ECFC 8398 8B4E 4B9F"
    (name "jonsger"))
+  ("3924 8CD8 41C6 3CC3 36DC  AF2F 505E 40B9 1617 1A8A"
+   (name "jpoiret"))
   ("017D 74E2 7F58 5696 3801  781D F663 943E 08D8 092A"
    (name "lbraun"))
   ("CA4F 8CF4 37D7 478F DA05  5FD4 4213 7701 1A37 8446"
@@ -102,4 +106,6 @@
    (name "vagrantc"))
   (;; primary: "C955 CC5D C048 7FB1 7966  40A9 199A F6A3 67E9 4ABB"
    "7238 7123 8EAC EB63 4548  5857 167F 8EA5 001A FA9C"
-   (name "wigust"))))
+   (name "wigust"))
+  ("705A 29B7 01EE 410E B6F9  236E 92F1 D22C 608E E7E5"
+   (name "zimoun"))))

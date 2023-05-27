@@ -29,7 +29,7 @@
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2022, 2023 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
@@ -163,6 +163,7 @@ a focus on simplicity and productivity.")
   (package
     (inherit ruby-2.6)
     (version "2.7.6")
+    (replacement ruby-2.7-fixed) ; security fixes
     (source
      (origin
        (inherit (package-source ruby-2.6))
@@ -200,7 +201,7 @@ a focus on simplicity and productivity.")
 (define ruby-2.7-fixed
   (package
     (inherit ruby-2.7)
-    (version "2.7.7")
+    (version "2.7.8")
     (source
      (origin
        (inherit (package-source ruby-2.7))
@@ -209,12 +210,12 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.gz"))
        (sha256
         (base32
-         "143vih5jzmrd2r5h94pa3qzml0ldii0qzs6g09jg6zqxd7djf0g1"))))))
+         "182vni66djmiqagwzfsd0za7x9k3zag43b88c590aalgphybdnn2"))))))
 
 (define-public ruby-3.0
   (package
     (inherit ruby-2.7)
-    (version "3.0.5")
+    (version "3.0.6")
     (source
      (origin
        (method url-fetch)
@@ -223,7 +224,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1pnxbdkkh2miq9nqfq2qscvh76nprzg0r620d9ckdzih42xbaz6g"))))
+         "1lfvgm6jbspmwmc3haww83l1l8vl1airzi08ljrcz19dws9yxjxm"))))
     (inputs
      (modify-inputs (package-inputs ruby-2.7)
        (replace "openssl" openssl)))))
@@ -231,7 +232,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.1
   (package
     (inherit ruby-3.0)
-    (version "3.1.3")
+    (version "3.1.4")
     (source
      (origin
        (method url-fetch)
@@ -240,12 +241,12 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "06ipqz45qcs0y1273gk2gwslxwd7jgighz3mzbddzg16k29n3qaf"))))))
+         "0kzr792rk9n9yrqlyrkc1a0cmbk5y194f7v7p4vwjdk0ww860v8v"))))))
 
 (define-public ruby-3.2
   (package
     (inherit ruby-3.1)
-    (version "3.2.1")
+    (version "3.2.2")
     (source
      (origin
        (method url-fetch)
@@ -254,7 +255,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "0333xln2jkqdfk5zwxas6rpyd4rff2910z99qnyrqi15mrhqcv3l"))))
+         "08wy2ishjwbccfsrd0iwmyadbwjzrpyxnk74wcrf7163gq7jsdab"))))
     (inputs
      (modify-inputs (package-inputs ruby-3.1)
        (prepend libyaml)))))

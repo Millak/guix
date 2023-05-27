@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2015, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -64,6 +64,7 @@
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ott Joon <oj@vern.cc>
+;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system waf)
@@ -1028,7 +1030,7 @@ H.264 (MPEG-4 AVC) video streams.")
        ("gettext" ,gettext-minimal)
        ("googletest" ,googletest)
        ("libxslt" ,libxslt)
-       ("json-modern-cxx" ,json-modern-cxx)
+       ("nlohmann-json" ,nlohmann-json)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
@@ -2356,7 +2358,7 @@ images and image hosting sites.")
 (define-public mpv-mpris
   (package
     (name "mpv-mpris")
-    (version "0.9")
+    (version "1.0")
     (source
       (origin
         (method git-fetch)
@@ -2365,7 +2367,7 @@ images and image hosting sites.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1c7avpzcd3sry3q7g5spcl3ywybpjzl2gjarmnlrp74k4nhbprcm"))))
+         (base32 "1vpx4kzyg4pssn1hql2ci4s9x08sdx2v0kphw4aryywnz04yjhzf"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -2569,10 +2571,13 @@ YouTube.com and many more sites.")
         #~(modify-phases #$phases
             ;; See the comment for the corresponding phase in youtube-dl.
             (replace 'default-to-the-ffmpeg-input
-              (lambda _
+              (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "yt_dlp/postprocessor/ffmpeg.py"
-                  (("\\.get_param\\('ffmpeg_location'\\)" match)
-                   (format #f "~a or '~a'" match (which "ffmpeg"))))))
+                  (("location = self.get_param(.*)$")
+                   (string-append
+                     "location = '"
+                     (dirname (search-input-file inputs "bin/ffmpeg"))
+                     "'\n")))))
             (replace 'build-generated-files
               (lambda* (#:key inputs #:allow-other-keys)
                 (if (assoc-ref inputs "pandoc")
@@ -3220,7 +3225,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.14.0")
+    (version "7.16.0")
     (source
      (origin
        (method git-fetch)
@@ -3229,7 +3234,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qiy346dx41a2n94lwsa9p9vsprsrzah7f9wlm6n507k7w7f0sq6"))))
+        (base32 "0aas3zjc9xh7sn01xv67fa26bzlz9sapbgzsplmikwc9lwfl5pqi"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -5049,7 +5054,7 @@ video from a Wayland session.")
 (define-public gaupol
   (package
     (name "gaupol")
-    (version "1.11")
+    (version "1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5058,11 +5063,10 @@ video from a Wayland session.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01qbhhycmy26b2mw2jlri321k478jhp7y0jzlcv87iaq05qr4pc8"))))
-    (build-system python-build-system)
+                "1z9j3r9pm4rdynlmhgsgnwnnaqw5274yfy4kyillgd77msnpbhaw"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
      (list python-pygobject
            gtk+
@@ -5087,13 +5091,6 @@ video from a Wayland session.")
              (substitute* "setup.py"
                (("distutils\\.util\\.byte_compile\\(.*")
                 ""))))
-         ;; gaupol's setup.py script does not support one of the Python build
-         ;; system's default flags, "--single-version-externally-managed".
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "python" "setup.py" "install"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     "--root=/")))
          (add-after 'install 'wrap-gaupol
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -5102,6 +5099,8 @@ video from a Wayland session.")
                (wrap-program (string-append out "/bin/gaupol")
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))))
+         ;; Can't create a GtkStyleContext without a display connection
+         (delete 'sanity-check)
          (add-after 'unpack 'patch-data-dir
            ;; Fix some path variables that setup.py seems to garble.
            (lambda* (#:key outputs #:allow-other-keys)

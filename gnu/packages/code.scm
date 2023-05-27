@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2015, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015, 2018, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -182,14 +182,14 @@ highlighting your own code that seemed comprehensible when you wrote it.")
 (define-public global                             ; a global variable
   (package
     (name "global")
-    (version "6.6.9")
+    (version "6.6.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/global/global-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1mgss7ch4izz7ibb23xah6h4iva77g9dq4pkc9g69jk0ipxa1jxa"))))
+               "1s6c9nzpp4jfq14l3mk9fnyipizljkka8hdr1wwh2g798nlydl9d"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -562,16 +562,19 @@ stack traces.")
                                          (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-pwd
-           ;; Lift the requirement of having a shell in PATH.
-           (lambda _
+         (add-after 'unpack 'patch-references-to-commands
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Lift the requirement of having a shell and 'find' in PATH.
              (substitute* "bin/geninfo"
                (("qw/abs_path/")
                 "qw/abs_path getcwd/"))
              (substitute* '("bin/lcov" "bin/geninfo")
                (("`pwd`")
-                "getcwd()"))
-             #t))
+                "getcwd()")
+               (("`find ")
+                (string-append "`"
+                               (search-input-file inputs "/bin/find")
+                               " ")))))
          (delete 'configure)            ;no configure script
          (add-after 'install 'wrap
            (lambda* (#:key outputs #:allow-other-keys)

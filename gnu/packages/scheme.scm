@@ -639,7 +639,8 @@ threads.")
                                  ""))))
                           (add-before 'install 'build
                             (lambda _
-                              (invoke "makeinfo" "--output=sicp.info"
+                              (invoke "makeinfo" "--no-split"
+                                      "--output=sicp.info"
                                       "sicp-pocket.texi"))))))
       (home-page "https://sarabander.github.io/sicp")
       (synopsis "Structure and Interpretation of Computer Programs")

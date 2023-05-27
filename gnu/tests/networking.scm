@@ -4,7 +4,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -300,6 +300,14 @@ port 7, and a dict service on port 2628."
           (test-runner-current (system-test-runner #$output))
           (test-begin "openvswitch")
 
+          ;; Wait for our configuration to be active (it sets up br0).
+          (test-assert "openvswitch-configuration is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (wait-for-service 'openvswitch-configuration))
+             marionette))
+
           ;; Make sure the bridge is created.
           (test-assert "br0 exists"
             (marionette-eval
@@ -404,8 +412,6 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
     (with-imported-modules '((gnu build marionette))
       #~(begin
           (use-modules (gnu build marionette)
-                       (ice-9 popen)
-                       (ice-9 rdelim)
                        (srfi srfi-64))
 
           (define marionette
@@ -415,16 +421,15 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
           (test-begin "dhcpd")
 
           (test-assert "pid file exists"
-            (marionette-eval
-             '(file-exists?
-               #$(dhcpd-configuration-pid-file dhcpd-v4-configuration))
+            (wait-for-file
+             '#$(dhcpd-configuration-pid-file dhcpd-v4-configuration)
              marionette))
 
           (test-assert "lease file exists"
-            (marionette-eval
-             '(file-exists?
-               #$(dhcpd-configuration-lease-file dhcpd-v4-configuration))
-             marionette))
+            (wait-for-file
+             '#$(dhcpd-configuration-lease-file dhcpd-v4-configuration)
+             marionette
+             #:read '(@ (ice-9 textual-ports) get-string-all)))
 
           (test-assert "run directory exists"
             (marionette-eval
@@ -435,13 +440,8 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
           (test-assert "dhcpd is alive"
             (marionette-eval
              '(begin
-                (use-modules (gnu services herd)
-                             (srfi srfi-1))
-                (live-service-running
-                 (find (lambda (live)
-                         (memq 'dhcpv4-daemon
-                               (live-service-provision live)))
-                       (current-services))))
+                (use-modules (gnu services herd))
+                (wait-for-service 'dhcpv4-daemon))
              marionette))
 
           (test-end))))

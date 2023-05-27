@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +48,7 @@
   #:use-module (guix store)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
@@ -57,7 +59,9 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -106,6 +110,30 @@ Compiler Collection (GCC) on the GNU/Linux system and other systems.  We refer
 to this dialect as GNU C.  If you already know C, you can use this as a
 reference manual.")
       (license license:fdl1.3+))))
+
+(define-public c-rrb
+  (let ((commit "d908617ff84515af90c454ff4d0f98675ae6b456")
+        (revision "0"))
+    (package
+     (name "c-rrb")
+     (version (git-version "0.1.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hypirion/c-rrb")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0zmha3xi80vgdcwzb4vwdllf97dvggjpjfgahrpsb5f5qi3yshxa"))))
+     (build-system gnu-build-system)
+     (inputs (list libgc))
+     (native-inputs (list autoconf automake libtool))
+     (home-page "https://github.com/hypirion/c-rrb")
+     (synopsis "Relaxed Radix Balanced Trees")
+     (description "Relaxed Radix Balanced Trees are an immutable vector-like
+data structure with good performance characteristics for concatenation and
+slicing.")
+     (license license:boost1.0))))
 
 (define-public cproc
   (let ((commit "70fe9ef1810cc6c05bde9eb0970363c35fa7e802")
@@ -1424,3 +1452,65 @@ string.h, but with a utf8* prefix instead of the str* prefix.")
       (description
        "This package provides a header-only unit testing library for C/C++.")
       (license license:unlicense))))
+
+(define-public ispc
+  (package
+    (name "ispc")
+    (version "1.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ispc/ispc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yhcgyzjlrgs920lm0l6kygj2skanfb6qkxbdgm69r8c2xkzkaa3"))))
+    (inputs (list ncurses))
+    (native-inputs (list bison clang flex m4 python))
+    (build-system cmake-build-system)
+    (supported-systems
+     '("x86_64-linux" "i686-linux" "aarch64-linux" "armhf-linux"))
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       `(,,(string-append "-DCMAKE_C_COMPILER=" (cc-for-target))
+         ,,(string-append "-DCMAKE_CXX_COMPILER=" (cxx-for-target))
+         ,(string-append "-DCLANG_EXECUTABLE="
+                         (assoc-ref %build-inputs "clang")
+                         "/bin/clang")
+         ,(string-append "-DCLANGPP_EXECUTABLE="
+                         (assoc-ref %build-inputs "clang")
+                         "/bin/clang++"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'patch-curses-requirement
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("\\bCURSES_CURSES_LIBRARY\\b")
+                "CURSES_LIBRARY"))))
+         ;; Note: This works around the following issue:
+         ;; <https://github.com/ispc/ispc/issues/1865>
+         ;; Because GCC in Guix does not have multilib support.
+         (add-before 'configure 'patch-target-archs
+           (lambda _
+             (substitute* "cmake/GenerateBuiltins.cmake"
+               (("\\bforeach \\(bit 32 64\\)")
+                ,(if (target-64bit?)
+                     "foreach (bit 64)"
+                     "foreach (bit 32)"))
+               (("\\bforeach \\(arch .*?\\)")
+                ,(if (target-x86?)
+                     "foreach (arch \"x86\")"
+                     "foreach (arch \"arm\")"))
+               (("\\bforeach \\(os_name \"windows\" .*?\\)")
+                "foreach (os_name \"linux\")")))))))
+    (synopsis "Implicit SPMD Program Compiler")
+    (description
+     "ISPC is a compiler for a variant of the C programming language, with
+extensions for single program, multiple data programming.  Under the SPMD
+model, the programmer writes a program that generally appears to be a regular
+serial program, though the execution model is actually that a number of
+program instances execute in parallel on the hardware.")
+    (home-page "https://github.com/ispc/ispc")
+    (license license:bsd-3)))

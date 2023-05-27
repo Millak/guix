@@ -74,6 +74,8 @@
 ;;; Copyright © 2022 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
+;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1951,8 +1953,8 @@ and system administrators.")
   ;; recent versions of the build tools.  The latest activity on the
   ;; pre-GNOME version has been in 2014, while GNOME has continued applying
   ;; fixes since.
-  (let ((commit "0997887d97f01be28bf3886dfd3e2002de437930")
-        (revision "3"))
+  (let ((commit "b903dd83aa5aab1b41c7864dd5027d1b6a0a190c")
+        (revision "4"))
     (package
       (name "dia")
       (version (git-version "0.97.3" revision commit))
@@ -1964,7 +1966,7 @@ and system administrators.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "199b4n1jydg1g9lnz0r8xx67h7s2ac2lfj89zp015lbs0qqfkmsh"))))
+                  "0j5q7whwpzzfsinjryp3g0xh3cyy88drwyr0w8x0666mj6h70h6a"))))
       (build-system meson-build-system)
       ;; XXX: Parallel builds may cause: [74/566] [...]
       ;; fatal error: dia-lib-enums.h: No such file or directory
@@ -10408,6 +10410,45 @@ to perfectly fit the GNOME desktop.")
 (define-public gnome-todo
   (deprecated-package "gnome-todo" endeavour))
 
+(define-public dialect
+  (package
+    (name "dialect")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dialect-app/dialect")
+                    (commit version)
+                    (recursive? #t))) ;po module
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wac9r33zslyhvadyj7iaapskk7f9pfvia7zlqfksfhkaji6gmna"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t))
+    (native-inputs (list blueprint-compiler
+                         desktop-file-utils
+                         `(,glib "bin")
+                         gnu-gettext
+                         gobject-introspection
+                         `(,gtk "bin")
+                         pkg-config))
+    (propagated-inputs (list gstreamer
+                             libadwaita
+                             libsoup
+                             python
+                             python-gtts
+                             python-pygobject
+                             python-requests))
+    (home-page "https://apps.gnome.org/app/app.drey.Dialect")
+    (synopsis "Translation application for GNOME")
+    (description
+     "Dialect is a simple translation application that uses Google Translate
+(default), LibreTranslate or Lingva Translate.  It includes features
+like automatic language detection, text-to-speech and clipboard buttons.")
+    (license license:gpl3+)))
+
 (define-public gnome-dictionary
   (package
     (name "gnome-dictionary")
@@ -12305,57 +12346,44 @@ non-privileged user.")
 (define-public geary
   (package
     (name "geary")
-    (version "40.0")
+    (version "43.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.gnome.org/GNOME/geary.git")
-                    (commit (string-append "gnome-" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04hvw86r8sczvjm1z3ls5y5y5h6nyfb648rjkfx05ib00mqq5v1x"))))
+                "05b8c5ljzx1ly7wq8jzpv8psxmsdlz395sr17xwj49nh495nflz5"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       '("-Dprofile=release")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-failing-tests
-                    (lambda _
-                      (substitute* "test/test-client.vala"
-                        (("client.add_suite\\(new Application.CertificateManagerTest\\(\\).suite\\);")
-                         ""))))
-                  (add-after 'unpack 'generate-vapis
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; It’s not possible to generate the GMime vapi, because
-                      ;; there’s custom metadata that gmime didn’t
-                      ;; install. Thus, the vapi should be built and installed
-                      ;; with gmime.
-                      (define gmime
-                        (assoc-ref inputs "gmime"))
-                      (copy-file (string-append gmime "/share/vala/vapi/gmime-3.0.vapi")
-                                 "bindings/vapi/gmime-3.0.vapi")))
-                  (add-after 'unpack 'disable-postinstall-script
-                    (lambda _
-                      (substitute* "build-aux/post_install.py"
-                        (("gtk-update-icon-cache")
-                         "true"))))
-                  (add-before 'check 'setup-home
-                    (lambda _
-                      ;; Tests require a writable HOME.
-                      (setenv "HOME" (getcwd))))
-                  (add-before 'check 'setup-xvfb
-                    (lambda _
-                      (system "Xvfb :1 &")
-                      (setenv "DISPLAY" ":1"))))))
+     (list #:glib-or-gtk? #t
+           #:configure-flags
+           #~(list "-Dprofile=release")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-gtk-update-icon-cache
+                 ;; Don't create 'icon-theme.cache'.
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false"))))
+               (add-before 'check 'setup-home
+                 (lambda _
+                   ;; Tests require a writable HOME.
+                   (setenv "HOME" (getcwd))))
+               (add-before 'check 'setup-xvfb
+                 (lambda _
+                   (system "Xvfb :1 &")
+                   (setenv "DISPLAY" ":1"))))))
     (inputs
      (list enchant
-           folks-with-libsoup2
+           folks
            gcr
            glib
            gmime
-           gnome-online-accounts-3.44
+           gnome-online-accounts
            gsettings-desktop-schemas
            gspell
            gsound
@@ -12370,18 +12398,16 @@ non-privileged user.")
            libstemmer
            libunwind
            sqlite
-           webkitgtk-with-libsoup2
+           webkitgtk
            ytnef))
     (native-inputs
      (list appstream-glib
            cmake-minimal
            desktop-file-utils
            gettext-minimal
-           glib
            `(,glib "bin")
-           gmime
+           gnutls                       ; for certtool
            gobject-introspection
-           gsettings-desktop-schemas
            itstool
            libarchive
            libxml2

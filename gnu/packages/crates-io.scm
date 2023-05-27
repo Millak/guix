@@ -6240,6 +6240,32 @@ portable \"best effort\" constant-time operation and embedded-friendly
     (description "This library provides for encoding and decoding any base.")
     (license license:expat)))
 
+(define-public rust-basic-toml-0.1
+  (package
+    (name "rust-basic-toml")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "basic-toml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d2h378373x0i8j4mi4sfaq8np9hf5xqr2rh9pa7r5irfxk9p09f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/dtolnay/basic-toml")
+    (synopsis "Minimal TOML library with few dependencies")
+    (description "This package provides minimal TOML library with few
+dependencies.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bat-0.18
   (package
     (name "bat")
@@ -68124,24 +68150,25 @@ the Trust-DNS client to use rustls for TLS.")
 (define-public rust-trybuild-1
   (package
     (name "rust-trybuild")
-    (version "1.0.75")
+    (version "1.0.77")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trybuild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wylxysdpbjz3cddaxvjnfk8vadi05chdivwg9l878c7b8hjq8gi"))))
+        (base32 "04rlcx55q7qbc17hv4znypwnm5n5d5ynbh5vsca8wk0nyakaakd4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-dissimilar" ,rust-dissimilar-1)
+       (("rust-basic-toml" ,rust-basic-toml-0.1)
+        ("rust-dissimilar" ,rust-dissimilar-1)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-toml" ,rust-toml-0.5))))
+        ("rust-termcolor" ,rust-termcolor-1))))
     (home-page "https://github.com/dtolnay/trybuild")
     (synopsis "Test harness for ui tests of compiler diagnostics")
     (description

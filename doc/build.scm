@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -284,6 +284,9 @@ actual file name."
                      (loop rest))
                     ((('strong _ ...) _ ...)
                      #t)
+                    ((('span ('@ ('class "category")) ;raw Texinfo 6.8
+                             (? string-or-entity?) ...) rest ...)
+                     #t)
                     ((('span ('@ ('class "symbol-definition-category"))
                              (? string-or-entity?) ...) rest ...)
                      #t)
@@ -507,10 +510,16 @@ its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
 
                   ;; Replace the ugly <strong> used for @deffn etc., which
                   ;; translate to <dt>, with more stylable markup.
-                  (('dt (@ ('id id)) category ... ('strong thing))
+                  (('dt ('@ ('id id))             ;raw Texinfo 6.8
+                        ('span ('@ ('class "category")) category ...)
+                        ('span ('strong thing)
+                               anchor))
                    (highlight-definition id category thing '()))
-                  (('dt (@ ('id id)) category ... ('strong thing)
-                        (? space?) ('em args ...))
+                  (('dt (@ ('id id))
+                        ('span ('@ ('class "category")) category ...)
+                        ('span ('strong thing)
+                               (? space?) ('em args ...)
+                               anchor))
                    (highlight-definition id category thing args))
 
                   ((tag ('@ attributes ...) body ...)

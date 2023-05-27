@@ -57,6 +57,7 @@
 # Copyright © 2022 ( <paren@disroot.org>
 # Copyright © 2022 jgart <jgart@dismail.de>
 # Copyright © 2023 Zheng Junjie <873216071@qq.com>
+# Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -263,6 +264,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/forth.scm			\
   %D%/packages/freedesktop.scm			\
   %D%/packages/freeipmi.scm			\
+  %D%/packages/fsf.scm				\
   %D%/packages/ftp.scm				\
   %D%/packages/fribidi.scm			\
   %D%/packages/fvwm.scm				\
@@ -591,6 +593,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/suckless.scm			\
   %D%/packages/sugar.scm			\
   %D%/packages/swig.scm				\
+  %D%/packages/sycl.scm				\
   %D%/packages/sync.scm			\
   %D%/packages/syncthing.scm			\
   %D%/packages/synergy.scm			\
@@ -795,6 +798,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/version-control.scm			\
   %D%/tests/virtualization.scm			\
   %D%/tests/vnc.scm				\
+  %D%/tests/vnstat.scm				\
   %D%/tests/web.scm
 
 INSTALLER_MODULES =                             \
@@ -1374,6 +1378,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/irrlicht-use-system-libs.patch		\
   %D%/packages/patches/irrlicht-link-against-needed-libs.patch	\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch	\
+  %D%/packages/patches/isync-openssl3-fix.patch			\
   %D%/packages/patches/itk-snap-alt-glibc-compat.patch		\
   %D%/packages/patches/jami-disable-integration-tests.patch	\
   %D%/packages/patches/jami-libjami-headers-search.patch	\
@@ -1433,6 +1438,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kodi-mesa-eglchromium.patch		\
   %D%/packages/patches/kwayland-skip-flaky-test.patch		\
   %D%/packages/patches/laby-make-install.patch			\
+  %D%/packages/patches/laby-use-tmpdir-from-runtime.patch	\
   %D%/packages/patches/ldns-drill-examples.patch		\
   %D%/packages/patches/leela-zero-gtest.patch			\
   %D%/packages/patches/less-hurd-path-max.patch			\
@@ -1541,6 +1547,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lvm2-static-link.patch			\
   %D%/packages/patches/mailutils-variable-lookup.patch		\
   %D%/packages/patches/make-impure-dirs.patch			\
+  %D%/packages/patches/mariadb-rocksdb-atomic-linking.patch	\
   %D%/packages/patches/mathjax-disable-webpack.patch			\
   %D%/packages/patches/mathjax-no-a11y.patch			\
   %D%/packages/patches/mathjax-3.1.2-no-a11y.patch		\
@@ -1559,7 +1566,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/memtest86+-build-reproducibly.patch	\
   %D%/packages/patches/mercurial-hg-extension-path.patch	\
   %D%/packages/patches/mercurial-openssl-compat.patch		\
-  %D%/packages/patches/mesa-opencl-all-targets.patch		\
   %D%/packages/patches/mhash-keygen-test-segfault.patch		\
   %D%/packages/patches/mia-fix-boost-headers.patch		\
   %D%/packages/patches/mia-vtk9.patch				\
@@ -1644,6 +1650,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-10-setsignalhandler.patch        \
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\
+  %D%/packages/patches/openmw-assume-nonconst-SIGSTKSZ.patch    \
   %D%/packages/patches/openssh-hurd.patch			\
   %D%/packages/patches/openssh-trust-guix-store-directory.patch	\
   %D%/packages/patches/openresolv-restartcmd-guix.patch	\
@@ -1958,6 +1965,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tk-find-library.patch			\
   %D%/packages/patches/tla2tools-build-xml.patch		\
   %D%/packages/patches/tlf-support-hamlib-4.2+.patch		\
+  %D%/packages/patches/tofi-32bit-compat.patch			\
   %D%/packages/patches/tootle-glib-object-naming.patch		\
   %D%/packages/patches/tootle-reason-phrase.patch		\
   %D%/packages/patches/transcode-ffmpeg.patch	\
@@ -2072,6 +2080,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/xsane-tighten-default-umask.patch	\
   %D%/packages/patches/xterm-370-explicit-xcursor.patch		\
   %D%/packages/patches/xygrib-fix-finding-data.patch		\
+  %D%/packages/patches/xygrib-newer-proj.patch			\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
   %D%/packages/patches/zig-do-not-link-against-librt.patch	\
   %D%/packages/patches/zig-use-system-paths.patch		\

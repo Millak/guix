@@ -318,7 +318,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.14")
+    (version "0.6.15")
     (source
      (origin
        (method git-fetch)
@@ -327,7 +327,7 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vvqlb8b5f70pl04ff46qim73mk8b8yp1mbbhslx4d4b7ywygjbc"))))
+        (base32 "1g4z1ml5ldk0hxpxs2pa091cpw0kry6cdr6n3dni1avimdm8vmw1"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -653,17 +653,17 @@ options are given, the action applies to the focused window.")
 (define-public xeyes
   (package
     (name "xeyes")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.x.org/releases/individual/app/"
                            name "-" version ".tar.bz2"))
        (sha256
-        (base32 "0lq5j7fryx1wn998jq6h3icz1h6pqrsbs3adskjzjyhn5l6yrg2p"))))
+        (base32 "1nxn443pfhddmwl59wplpjkslhlyfk307qx18nrimvvb2hipx8gq"))))
     (build-system gnu-build-system)
     (inputs
-      (list libxext libxmu libxrender libxt))
+      (list libxext libxi libxmu libxrender libxt))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.x.org/")    ; no dedicated Xeyes page exists
@@ -838,7 +838,7 @@ move windows, switch between desktops, etc.).")
 (define-public scrot
   (package
     (name "scrot")
-    (version "1.7")
+    (version "1.9")
     (source
      (origin
        (method git-fetch)
@@ -848,7 +848,7 @@ move windows, switch between desktops, etc.).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rls08mpalx4xp5ysmg7m5lgx9q8g8m8q40m47f11mqa84z88nd1"))))
+        (base32 "140wczmmxjp5fkrp6qg5rbq4hdwfslxb23jdk91ls8fjxdp9hafz"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf autoconf-archive automake pkg-config))
@@ -859,7 +859,8 @@ move windows, switch between desktops, etc.).")
            libx11
            libxcomposite
            libxext
-           libxfixes))
+           libxfixes
+           libxinerama))
     (home-page "https://github.com/resurrecting-open-source-projects/scrot")
     (synopsis "Command-line screen capture utility for X Window System")
     (description
@@ -1983,7 +1984,7 @@ actions, a built-in clock, a battery monitor and a system tray.")
 (define-public tofi
   (package
     (name "tofi")
-    (version "0.8.1")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1992,9 +1993,10 @@ actions, a built-in clock, a battery monitor and a system tray.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11bfi9his0cc5mzikamr5icv5mh2fyj9jy5l3sbbayj6jk51f68y"))))
+                "1paknsgfsgan27lqwhb2ndsk4gi8ciq9r49b0fpbbdwxk7ljk2cn"))
+              (patches (search-patches "tofi-32bit-compat.patch"))))
     (build-system meson-build-system)
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config scdoc))
     (inputs (list cairo
                   harfbuzz
                   libxkbcommon
@@ -3149,7 +3151,7 @@ such as sway, similar to @command{rofi}.")
                (base32
                 "0hq2qiqxvrw3g515ywcb676ljc8mdw3pyslgxr3vahizfljah1pv"))))
     (build-system meson-build-system)
-    (native-inputs (list json-modern-cxx pkg-config))
+    (native-inputs (list nlohmann-json pkg-config))
     (inputs (list gtk-layer-shell gtkmm-3 librsvg))
     (home-page "https://github.com/nwg-piotr/nwg-launchers")
     (synopsis "Application launchers for wlroots")

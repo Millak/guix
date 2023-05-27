@@ -112,7 +112,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "2.5.2")
+    (version "2.6.0")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -123,7 +123,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "138rqjjyh6ar951v0v5sl1v000ja8zznn141qqw8ymx5h2z44r6w"))))
+        (base32 "19wmzpbc23515ab4v4pw792x68y7bgsqhd2pmlqiq6bp6jxfrykg"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -829,14 +829,14 @@ with tiling window managers.  Features include:
 (define-public qiv
   (package
     (name "qiv")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://spiegl.de/qiv/download/qiv-"
                            version ".tgz"))
        (sha256
-        (base32 "1mc0f2nnas4q0d7zc9r6g4z93i32xlx0p9hl4fn5zkyml24a1q28"))
+        (base32 "011pad6gvmpphiv85yq820w3m79m3spfafarcsrhb2ylwbymy27g"))
        (modules '((guix build utils)))
        (snippet
         '(begin

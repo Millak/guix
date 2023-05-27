@@ -674,6 +674,7 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
     (inputs
      (list alsa-lib
            ao
+           elogind ;for MPRIS support
            faad2
            ffmpeg
            flac
@@ -2268,7 +2269,7 @@ a JACK session.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method git-fetch)
@@ -2280,7 +2281,7 @@ a JACK session.")
         (search-patches "mixxx-link-qtscriptbytearray-qtscript.patch"
                         "mixxx-system-googletest-benchmark.patch"))
        (sha256
-        (base32 "056zn0nxl7xrmg467ljdszsycrszsrzsc8k4s39mp4qxyd9qq4yn"))
+        (base32 "0142xcq5ahk50kzc06s13xilj8m4p0spmd5hqd8s08qjhr37n2il"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
@@ -3538,16 +3539,15 @@ follows a traditional multi-track tape recorder control paradigm.")
              (unless (or (string-prefix? "x86_64" system)
                          (string-prefix? "i686" system))
                (substitute* "wscript"
-                 (("'-msse', '-mfpmath=sse', ") "")))
-             #t)))
-       #:tests? #f))                    ; no tests
+                 (("'-msse', '-mfpmath=sse', ") ""))))))
+       #:tests? #f))                    ;no tests
     (inputs
-     `(("cairo" ,cairo)
-       ("fftw" ,fftw)
-       ("gtk" ,gtk+-2)
-       ("gtkmm" ,gtkmm-2)
-       ("lv2" ,lv2)
-       ("lvtk" ,lvtk)))
+     (list cairo
+           fftw
+           gtk+-2
+           gtkmm-2
+           lv2
+           lvtk))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/blablack/ams-lv2")
@@ -6176,6 +6176,42 @@ audio and MIDI plugins that can also run as standalone JACK applications.")
     (home-page "https://x42-plugins.com/x42/")
     (license license:gpl2+)))
 
+(define-public xuidesigner
+  (package
+    (name "xuidesigner")
+    (version "0.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/brummer10/XUiDesigner")
+                    (commit (string-append "v" version))
+                    ;; For libxputty
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1ap6g2j9lr4x9gpnavdhs4qa3z4dw100xgknpi6ysj0rmzc220mi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no "check" target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (inputs
+     (list cairo libx11 lilv))
+    (native-inputs
+     (list pkg-config which xxd))
+    (home-page "https://github.com/brummer10/XUiDesigner")
+    (synopsis "GUI generator tool to create X11 UIs for LV2 plugins")
+    (description "XUiDesigner parses an LV2 plugin's ttl file and generates
+the needed controller widgets.  The created GUI can be saved as UI-Bundle,
+which then could be built and installed.  For later editing of the UI, a JSON
+file is added, which you could load per drag 'n drop into XUiDesigner.")
+    (license license:bsd-0)))
+
 (define-public zam-plugins
   (package
     (name "zam-plugins")
@@ -6452,7 +6488,7 @@ and as an LV2 plugin.")
     ;; distros to make necessary changes to integrate the software into the
     ;; distribution.
     (name "zrythm")
-    (version "1.0.0-beta.4.5.62")
+    (version "1.0.0-beta.4.9.1")
     (source
      (origin
        (method url-fetch)
@@ -6460,11 +6496,10 @@ and as an LV2 plugin.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1nfb3h3aky8f8xslx6qzvcgcfrhlqa1v50kzanmpjxrx9dcllin7"))))
+         "0skdb4bpw4v5175yw9wijrc6j36mxjq8i7p8nn9650lipxg6bshd"))))
     (build-system meson-build-system)
     (arguments
-     (list #:tests? #f             ;123 pass, 3 fail. Appears network-related.
-           #:glib-or-gtk? #t
+     (list #:glib-or-gtk? #t
            #:configure-flags
            #~(list "-Dtests=true"
                    "-Dmanpage=false"    ;fish-completions breaks this
@@ -6474,9 +6509,43 @@ and as an LV2 plugin.")
                    "-Dguile=enabled"    ;for Guile scripting
                    "-Djack=enabled"     ;for JACK audio/MIDI backend
                    "-Drtmidi=enabled"   ;for RtMidi backend (ALSA sequencer)
-                   "-Dsdl=enabled")   ;for SDL audio backend (which uses ALSA)
+                   "-Dsdl=enabled")     ;for SDL audio backend (which uses ALSA)
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tests
+                 (lambda _
+                   ;; io_mkdir must be called with a GError value, not plain
+                   ;; NULL, or else the assertion in io_mkdir segfaults.
+                   (substitute* "tests/helpers/zrythm.h"
+                     (("success = io_mkdir \\(tmp_log_dir, NULL\\);" m)
+                      (string-append "err = NULL;
+success = io_mkdir (tmp_log_dir, &err);")))
+
+                   ;; zrythm: fails because curl wants to access the internet.
+                   ;; project: unknown failure XXX
+                   ;; The other tests fail with this error:
+                   ;;     error: attempt to map invalid URI `'
+                   ;; This means that lilv is given an empty LV2 plugin URI.
+                   ;; This is probably because we don't provide all LV2
+                   ;; plugins that are needed for running the tests.
+                   (substitute* "tests/meson.build"
+                     (("foreach name, info : tests")
+                      "\
+  disabled_tests = {
+    'zrythm': 0,
+    'project': 0,
+    'audio/midi_track': 0,
+    'integration/recording': 0,
+    'actions/mixer_selections_action': 0,
+    'actions/tracklist_selections': 0
+  }
+  enabled_tests = {}
+  foreach name, info : tests
+    if name not in disabled_tests
+      enabled_tests += {name: info}
+    endif
+  endforeach
+  foreach name, info : enabled_tests"))))
                (add-before 'build 'disable-guile-auto-compilation
                  (lambda _
                    (setenv "GUILE_AUTO_COMPILE" "0")))
@@ -6498,11 +6567,10 @@ and as an LV2 plugin.")
            font-dseg
            gettext-minimal
            glib
-           glibc
            graphviz
            gtk
            gtksourceview
-           guile-2.2
+           guile-3.0
            jack-2
            json-glib
            libadwaita
@@ -6607,7 +6675,7 @@ as JACK standalone applications.")
 (define-public zplugins
   (package
     (name "zplugins")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method git-fetch)
@@ -6618,10 +6686,10 @@ as JACK standalone applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0l6cm6y8j1417mwspraldzixpnps8scx81wd36n2xpx60v4iqss0"))))
+         "0xsnq8kg57pdswqi9yy5nrpjbfgmym2m1qi3cj3hki33kwzx2nn1"))))
     (build-system meson-build-system)
     (inputs
-      (list guile-2.2 libsndfile lv2 ztoolkit-rsvg))
+      (list guile-3.0 libsndfile lv2 ztoolkit-rsvg))
     (native-inputs
       (list pkg-config))
     (synopsis "Audio plugin collection")

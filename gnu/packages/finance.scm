@@ -123,6 +123,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -133,10 +134,12 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnuzilla))
 
-(define-public bitcoin-core-23.0
+(define-public bitcoin-core
+  ;; The support lifetimes for bitcoin-core versions can be found in
+  ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
-    (version "23.0")
+    (version "24.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -144,7 +147,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "01fcb90pqip3v77kljykx51cmg7jdg2cmp7ys0a40svdkps8nx16"))))
+                "0kmgpzknbykgwb8vd7hj3j1xxn35785gf4vii5705k6rnarks2la"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -160,7 +163,8 @@
            libevent
            miniupnpc
            openssl
-           qtbase-5))
+           qtbase-5
+           sqlite))
     (arguments
      `(#:configure-flags
        (list
@@ -210,11 +214,6 @@ collectively by the network.  Bitcoin Core is the reference implementation
 of the bitcoin protocol.  This package provides the Bitcoin Core command
 line client and a client based on Qt.")
     (license license:expat)))
-
-;; The support lifetimes for bitcoin-core versions can be found in
-;; <https://bitcoincore.org/en/lifecycle/#schedule>.
-
-(define-public bitcoin-core bitcoin-core-23.0)
 
 (define-public ghc-hledger
   (package
@@ -289,14 +288,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.6.2")
+    (version "5.6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/sources/"
                                   "homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "1w8nafqr54i3gksd2s0n246ip178qikn0jcmdx4ihg2dw1cdxsqj"))))
+                "0a1qhbnifqs0j59m1w5wfj1ix8iywmy1kc8185zvxndvckspb521"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -1684,72 +1683,6 @@ trezord as a regular user instead of needing to it run as root.")
 Trezor wallet.")
     (license license:lgpl3+)))
 
-(define-public bitcoin-abc
-  (package
-    (name "bitcoin-abc")
-    (version "0.21.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.bitcoinabc.org/"
-                                  version "/src/bitcoin-abc-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1amzwy3gpl8ai90dsy7g0z51qq8vxfzbf642wn4bfynb8jmw3kx5"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config
-           python ; for the tests
-           util-linux ; provides the hexdump command for tests
-           qttools-5))
-    (inputs
-     (list bdb-5.3
-           boost
-           jemalloc
-           libevent
-           miniupnpc
-           openssl
-           protobuf
-           qrencode
-           qtbase-5
-           zeromq
-           zlib))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'make-qt-deterministic
-           (lambda _
-             ;; Make Qt deterministic.
-             (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")
-             #t))
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" (getenv "TMPDIR")) ; tests write to $HOME
-             #t))
-         (add-after 'check 'check-functional
-           (lambda _
-             (invoke
-              "python3" "./test/functional/test_runner.py"
-              (string-append "--jobs=" (number->string (parallel-job-count)))
-              ;; TODO: find why the abc-miner-fund test fails.
-              "--exclude=abc-miner-fund")
-             #t)))))
-    (home-page "https://www.bitcoinabc.org/")
-    (synopsis "Bitcoin ABC peer-to-peer full node for the Bitcoin Cash protocol")
-    (description
-     "Bitcoin Cash brings sound money to the world, fulfilling the original
-promise of Bitcoin as Peer-to-Peer Electronic Cash.  Merchants and users are
-empowered with low fees and reliable confirmations is a digital currency that
-enables instant payments to anyone anywhere in the world.  It uses
-peer-to-peer technology to operate without central authority: managing
-transactions and issuing money are carried out collectively by the network.
-As a fork it implemented changes lowering the time between blocks and now
-offers confimations after less than 5 seconds and have significantly lower
-fees that BTC.  Bitcoin ABC is the reference implementation of the Bitcoin
-Cash protocol.  This package provides the Bitcoin Cash command line client and
-a client based on Qt.  This is a fork of Bitcoin Core.")
-    (license license:expat)))
-
 (define-public libofx
   (package
     (name "libofx")
@@ -1799,7 +1732,7 @@ following three utilities are included with the library:
 (define-public bitcoin-unlimited
   (package
     (name "bitcoin-unlimited")
-    (version "1.10.0.0")
+    (version "2.0.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1808,7 +1741,7 @@ following three utilities are included with the library:
              (commit (string-append "BCHunlimited" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12yb2rbd6hsns43qyxc5dm7h5k4sph9sb64q7kkbqi3xhgrrsjdq"))))
+        (base32 "0s4iyjfhjx21xa3z7433m4skfr115565k0ckza87ha2d4nl8kz5h"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1860,7 +1793,12 @@ following three utilities are included with the library:
              ;; an expired SSL certificate.
              (substitute* "src/qt/test/test_main.cpp"
                (("if \\(QTest::qExec\\(&test2\\) != 0\\)")
-                "if (QTest::qExec(&test2) == 0)"))))
+                "if (QTest::qExec(&test2) == 0)"))
+             ;; The following test passes with OpenSSL 1.1, but fails with
+             ;; OpenSSL 3.
+             (substitute* "src/secp256k1/src/tests.c"
+               (("run_ecdsa_der_parse\\(\\);")
+                ""))))
          (add-before 'check 'set-home
            (lambda _
              ;; Tests write to $HOME
@@ -2261,7 +2199,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.19.0")
+    (version "6.19.2")
     (source
      (origin
        (method git-fetch)
@@ -2269,7 +2207,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "10vaq6ld4sddnpmv9dg71fjvw1jrfaddrp3bq6p3dxhsl153khm4"))
+       (sha256 (base32 "1hgcfq79d5060iryr34bpwf1dvgqmbmn9mm4ccfvp896r10j482h"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
@@ -2303,16 +2241,15 @@ and manipulation.")
     (home-page "https://xmrig.com/")
     (synopsis "Monero miner")
     (description
-     "XMRig is a high performance, cross platform RandomX, KawPow,
-CryptoNight, AstroBWT and GhostRider unified CPU/GPU miner and RandomX
-benchmark.
+     "XMRig is a high-performance, cross-platform RandomX, KawPow,
+CryptoNight and GhostRider unified CPU/GPU miner and RandomX benchmark.
 
 Warning: upstream, by default, receives a percentage of the mining time.  This
-anti-functionality has been neutralised in Guix, but possibly not in all other
+anti-functionality has been neutralized in Guix, but possibly not in all other
 distributions.
 
-Warning: this software, because of it's nature, has high energy consumption.
-Also, the energy expenses might be higher that the cryptocurrency gained by
+Warning: this software, because of its nature, has high energy consumption.
+Also, the energy expenses might be higher than the cryptocurrency gained by
 mining.")
     (license license:gpl3+)))
 

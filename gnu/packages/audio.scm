@@ -32,7 +32,7 @@
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Jonathan Frederickson <jonathan@terracrypt.net>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
@@ -3233,7 +3233,7 @@ lv2-c++-tools.")
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((waf (assoc-ref inputs "python-waf")))
                  (copy-file (string-append waf "/bin/waf") "waf")))))))
-      (inputs (list boost gtkmm lv2))
+      (inputs (list boost gtkmm-2 lv2))
       (native-inputs (list pkg-config python-waf))
       (home-page "https://github.com/lvtk/lvtk")
       (synopsis "C++ libraries for LV2 plugins")
@@ -3322,22 +3322,19 @@ buffers, and audio capture.")
 (define-public patchage
   (package
     (name "patchage")
-    (version "1.0.4")
+    (version "1.0.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/patchage-"
-                                  version
-                                  ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "0gbakiw3mikgbvy3pssrmqmn7z5c7kp4vyaxj5rs4jnkscxgw9vw"))))
-    (build-system waf-build-system)
-    (arguments
-     `(#:tests? #f))                    ; no check target
+                "1m472rkvv7kr57xnvmvds3iq3fj129mbw878427djc21rfg2lq80"))))
+    (build-system meson-build-system)
+    (arguments `(#:tests? #f))                    ;no check target
     (inputs
      (list alsa-lib
-           boost
-           jack-1
+           jack-2
            ganv
            glibmm
            gtkmm-2
@@ -3443,7 +3440,7 @@ background file post-processing.")
 (define-public supercollider
   (package
     (name "supercollider")
-    (version "3.12.1")
+    (version "3.13.0")
     (source
      (origin
        (method git-fetch)
@@ -3455,77 +3452,77 @@ background file post-processing.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0id522338a464j1slcspajwc7klypbc9qpigw5mqjhrw970wij5z"))
+         "1dkpnaly4m2j41ypy7xj5m2yhbl4ykw3vbnam345z4dk6qhyj9b1"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
         ;; The build system doesn't allow us to unbundle the following
         ;; libraries.  hidapi is also heavily patched and upstream not
         ;; actively maintained.
-        '(let ((keep-dirs '("nova-simd" "nova-tt" "hidapi"
-                            "TLSF-2.4.6" "oscpack_1_1_0" "." "..")))
-           (with-directory-excursion "./external_libraries"
-             (for-each
-              delete-file-recursively
-              (scandir "."
-                       (lambda (x)
-                         (and (eq? (stat:type (stat x)) 'directory)
-                              (not (member (basename x) keep-dirs)))))))
-           ;; To find the Guix provided ableton-link library.
-           (substitute* "lang/CMakeLists.txt"
-             (("include\\(\\.\\./external_libraries/link/\
+        #~(let ((keep-dirs '("nova-simd" "nova-tt" "hidapi"
+                             "TLSF-2.4.6" "oscpack_1_1_0" "." "..")))
+            (with-directory-excursion "./external_libraries"
+              (for-each
+               delete-file-recursively
+               (scandir "."
+                        (lambda (x)
+                          (and (eq? (stat:type (stat x)) 'directory)
+                               (not (member (basename x) keep-dirs)))))))
+            ;; To find the Guix provided ableton-link library.
+            (substitute* "lang/CMakeLists.txt"
+              (("include\\(\\.\\./external_libraries/link/\
 AbletonLinkConfig\\.cmake\\)")
-              "find_package(AbletonLink NAMES AbletonLink ableton-link \
+               "find_package(AbletonLink NAMES AbletonLink ableton-link \
 link REQUIRED)"))))))
     (build-system cmake-build-system)
     (outputs
      '("out"                            ;core language
        "ide"))                          ;qt ide
     (arguments
-     `(#:configure-flags '("-DSYSTEM_BOOST=ON"
-                           "-DSYSTEM_YAMLCPP=ON"
-                           "-DSC_QT=ON"
-                           "-DCMAKE_BUILD_TYPE=Release"
-                           "-DFORTIFY=ON"
-                           "-DLIBSCSYNTH=ON"
-                           "-DSC_EL=OFF") ;scel is packaged individually as emacs-scel
-       #:phases
-       (modify-phases %standard-phases
-         ;; HOME must be defined otherwise supercollider throws a "ERROR:
-         ;; Primitive '_FileMkDir' failed." error when generating the doc.
-         ;; The graphical tests also hang without it.
-         (add-after 'unpack 'set-home-directory
-           (lambda _
-             (setenv "HOME" (getcwd))))
-         (add-after 'unpack 'patch-scclass-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (scclass-dir
-                     (string-append out
-                                    "/share/SuperCollider/SCClassLibrary")))
-               (substitute* "lang/LangSource/SC_LanguageConfig.cpp"
-                 (((string-append
-                    "SC_Filesystem::instance\\(\\)\\.getDirectory"
-                    "\\(DirName::Resource\\) / CLASS_LIB_DIR_NAME"))
-                  (string-append "Path(\"" scclass-dir "\")"))))))
-         (add-after 'patch-scclass-dir 'fix-struct-SOUNDFILE-tag
-           (lambda* _
-             (display (getcwd)) (newline)
-             (substitute* "include/plugin_interface/SC_SndBuf.h"
-               (("SNDFILE_tag")
-                "sf_private_tag"))))
-         (add-before 'build 'prepare-x
-           (lambda _
-             (system "Xvfb &")
-             (setenv "DISPLAY" ":0")))
-         (add-before 'install 'install-ide
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (ide (assoc-ref outputs "ide"))
-                    (scide "editors/sc-ide/scide"))
-               (install-file scide
-                             (string-append ide "/bin"))
-               (delete-file scide)))))))
+     (list
+      #:configure-flags
+      #~(list "-DSYSTEM_BOOST=ON"
+              "-DSYSTEM_YAMLCPP=ON"
+              "-DSC_QT=ON"
+              "-DCMAKE_BUILD_TYPE=Release"
+              "-DFORTIFY=ON"
+              "-DLIBSCSYNTH=ON"
+              "-DSC_EL=OFF")      ;scel is packaged individually as emacs-scel
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; HOME must be defined otherwise supercollider throws a "ERROR:
+          ;; Primitive '_FileMkDir' failed." error when generating the doc.
+          ;; The graphical tests also hang without it.
+          (add-after 'unpack 'set-home-directory
+            (lambda _
+              (setenv "HOME" (getcwd))))
+          (add-after 'unpack 'patch-scclass-dir
+            (lambda _
+              (let* ((scclass-dir
+                      (string-append #$output
+                                     "/share/SuperCollider/SCClassLibrary")))
+                (substitute* "lang/LangSource/SC_LanguageConfig.cpp"
+                  (((string-append
+                     "SC_Filesystem::instance\\(\\)\\.getDirectory"
+                     "\\(DirName::Resource\\) / CLASS_LIB_DIR_NAME"))
+                   (string-append "Path(\"" scclass-dir "\")"))))))
+          (add-after 'patch-scclass-dir 'fix-struct-SOUNDFILE-tag
+            (lambda _
+              (display (getcwd)) (newline)
+              (substitute* "include/plugin_interface/SC_SndBuf.h"
+                (("SNDFILE_tag")
+                 "sf_private_tag"))))
+          (add-before 'build 'prepare-x
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0")))
+          (add-before 'install 'install-ide
+            (lambda _
+              (let* ((ide #$output:ide)
+                     (scide "editors/sc-ide/scide"))
+                (install-file scide
+                              (string-append ide "/bin"))
+                (delete-file scide)))))))
     (native-inputs
      (list ableton-link pkg-config qttools-5 xorg-server-for-tests))
     (inputs (list jack-1
@@ -3564,20 +3561,20 @@ using Guix System.")
 (define-public libshout-idjc
   (package
     (name "libshout-idjc")
-    (version "2.4.4")
+    (version "2.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/libshoutidjc.idjc.p"
                            "/libshout-idjc-" version ".tar.gz"))
        (sha256
-        (base32 "1r9z8ggxylr2ab0isaljbm574rplnlcb12758j994h54nh2vikwb"))))
+        (base32 "1cgbym1qms408l4anc0imlcf091yk9kic4s9n7zcri3xzbi8lv1z"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libogg libtheora libvorbis speex))
-    (home-page "https://idjc.sourceforge.net/")
+     (list libogg libshout libtheora libvorbis speex))
+    (home-page "https://idjc.sourceforge.io/")
     (synopsis "Broadcast streaming library with IDJC extensions")
     (description "This package provides libshout plus IDJC extensions.")
     ;; GNU Library (not Lesser) General Public License.
@@ -3965,8 +3962,8 @@ encode and decode wavpack files.")
 
 (define-public libmixed
   ;; Release is much outdated.
-  (let ((commit "91e6b9f2438bca41205fade02c9d8f4f938838b6")
-        (revision "0"))
+  (let ((commit "9b2668e0d85175b0e92864cfbf1b9e58f77c92e0")
+        (revision "1"))
     (package
       (name "libmixed")
       (version (git-version "2.0" revision commit))
@@ -3978,14 +3975,10 @@ encode and decode wavpack files.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "01vwgv8ivpg7a4y95krkgh656mmklsn1k3fmhwp474aj82grd3m4"))))
+          (base32 "0ql2h0hh4jl96sc9i6mk1d6qq261bvsfapinvzr9gx3lpzycpfb7"))))
       (build-system cmake-build-system)
       (arguments
        (list
-        ;; FIXME: (Sharlatan-20230326T121542+0100): Tests failed 1/34, 1 failed,
-        ;; 33 passed. There is not simple way to disable just one test.
-        ;; https://github.com/Shirakumo/libmixed/issues/13
-        #:tests? #f
         #:configure-flags
         #~(list "-DBUILD_STATIC=OFF"
                 "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
@@ -5664,7 +5657,7 @@ with the provided metadata and adhere to well-known best practices.")
 (define-public ztoolkit
   (package
     (name "ztoolkit")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method git-fetch)
@@ -5674,7 +5667,7 @@ with the provided metadata and adhere to well-known best practices.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07xl3cmdaf7k9mm58m93cn8i1jvgimmiifdw1w7v2jl88nx60pm1"))))
+         "1k60zklrrnch4l0iyzwb4q0srdj3gggwq8cpldwgdhn26ddqkl0d"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
@@ -5691,6 +5684,16 @@ audio plugin UIs, where the dependencies often need to be kept to a
 minimum.")
     (home-page "https://git.zrythm.org/zrythm/ztoolkit")
     (license license:agpl3+)))
+
+(define-public ztoolkit-rsvg
+  (package/inherit ztoolkit
+    (name "ztoolkit-rsvg")
+    (arguments
+     (list #:configure-flags '(list "-Denable_rsvg=true")))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs ztoolkit)
+       (prepend (librsvg-for-system))))
+    (synopsis "ZToolkit with SVG support")))
 
 (define-public libinstpatch
   (package
@@ -5722,16 +5725,6 @@ for creating instrument sounds for wavetable synthesis.  libInstPatch provides
 an object framework (based on GObject) to load patch files, which can then be
 edited, converted, compressed and saved.")
     (license license:lgpl2.1)))
-
-(define-public ztoolkit-rsvg
-  (package/inherit ztoolkit
-    (name "ztoolkit-rsvg")
-    (arguments
-     `(#:configure-flags `("-Denable_rsvg=true")))
-    (propagated-inputs
-     `(("librsvg" ,librsvg)
-       ,@(package-propagated-inputs ztoolkit)))
-    (synopsis "ZToolkit with SVG support")))
 
 (define-public lsp-dsp-lib
   (package

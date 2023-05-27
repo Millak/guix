@@ -89,7 +89,7 @@
     (native-inputs
      (list pkg-config))
     (inputs
-     (list argagg asmjit json-modern-cxx))
+     (list argagg asmjit nlohmann-json))
     (home-page "https://comsec.ethz.ch/research/dram/blacksmith")
     (synopsis "Rowhammer fuzzer with non-uniform and frequency-based patterns")
     (description

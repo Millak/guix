@@ -530,9 +530,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
   (package/inherit mesa
     (name "mesa-opencl")
     (source (origin
-              (inherit (package-source mesa))
-              (patches (cons (search-patch "mesa-opencl-all-targets.patch")
-                             (origin-patches (package-source mesa))))))
+              (inherit (package-source mesa))))
     (arguments
      (substitute-keyword-arguments (package-arguments mesa)
        ((#:configure-flags flags)
@@ -679,25 +677,19 @@ extension functionality is exposed in a single header file.")
 (define-public guile-opengl
   (package
     (name "guile-opengl")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/guile-opengl/guile-opengl-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "13qfx4xh8baryxqrv986l848ygd0piqwm6s2s90pxk9c0m9vklim"))))
+               "0rbc2wf9x63ilj3n85h8wyllzc2b22abmhs2p2ghjgc253n8gw5q"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list guile-2.2 mesa glu freeglut))
     (arguments
      '(#:phases (modify-phases %standard-phases
-                 (add-after 'configure 'patch-makefile
-                   (lambda _
-                     ;; Install compiled Guile files in the expected place.
-                     (substitute* '("Makefile")
-                       (("^godir = .*$")
-                        "godir = $(moddir)\n"))))
                  (add-before 'build 'patch-dynamic-link
                    (lambda* (#:key inputs outputs #:allow-other-keys)
                      (substitute* "gl/runtime.scm"
@@ -728,16 +720,6 @@ OpenGL graphics API.")
   (package
     (inherit guile-opengl)
     (name "guile3.0-opengl")
-    (arguments
-     (substitute-keyword-arguments (package-arguments guile-opengl)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'build-with-guile-3.0
-             (lambda _
-               (substitute* "configure"
-                 (("_guile_versions_to_search=\"")
-                  "_guile_versions_to_search=\"3.0 "))
-               #t))))))
     (inputs
      (list guile-3.0 mesa glu freeglut))))
 

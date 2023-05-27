@@ -76,6 +76,8 @@
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -217,6 +219,7 @@
   #:use-module (gnu packages xml)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
@@ -4890,7 +4893,7 @@ Transport Tycoon Deluxe.")
               ("freetype" ,freetype)
               ("icu4c" ,icu4c)
               ("jansson" ,jansson)
-              ("json-modern-cxx" ,json-modern-cxx)
+              ("nlohmann-json" ,nlohmann-json)
               ("libpng" ,libpng)
               ("libzip" ,libzip)
               ("mesa" ,mesa)
@@ -5898,22 +5901,37 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
              (sha256
               (base32
                "1y6nfxcjhqg9bb81hs0wijg7kcwk5kff81rgd8bsv5ps7ia9nj6b"))
-             (patches (search-patches "laby-make-install.patch"))))
-    (build-system gnu-build-system)
+             (patches (search-patches "laby-make-install.patch"
+                                      "laby-use-tmpdir-from-runtime.patch"))))
+    (build-system glib-or-gtk-build-system)
     (inputs
-     (list lablgtk3 ocaml-lablgtk3-sourceview3 ocaml ocaml-findlib ocamlbuild))
+     (list gdk-pixbuf
+           lablgtk3
+           (librsvg-for-system)
+           ocaml-lablgtk3-sourceview3
+           ocaml
+           ocaml-findlib
+           ocamlbuild))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'set-library-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lablgtk (assoc-ref inputs "lablgtk")))
-               (setenv "LD_LIBRARY_PATH"
-                       (string-append lablgtk "/lib/ocaml/stublibs"))))))
-       #:tests? #f ; no 'check' target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")) "all")))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-before 'build 'set-library-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((lablgtk #$(this-package-input "lablgtk")))
+                     (setenv "LD_LIBRARY_PATH"
+                             (string-append lablgtk "/lib/ocaml/stublibs")))))
+               (add-after 'glib-or-gtk-wrap 'wrap-pixbuf
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (let ((laby (string-append #$output "/bin/laby")))
+                      (wrap-program laby
+                        ;; Wrapping GDK_PIXBUF_MODULE_FILE allows laby to
+                        ;; function in pure environments.
+                        `("GDK_PIXBUF_MODULE_FILE" =
+                          (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))
+           #:tests? #f ; no 'check' target
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output) "all")))
     (home-page "https://sgimenez.github.io/laby/")
     (synopsis "Programming game")
     (description "Learn programming, playing with ants and spider webs ;-)

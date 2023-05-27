@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2017, 2019-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,8 +20,11 @@
 (define-module (gnu system pam)
   #:use-module (guix records)
   #:use-module (guix derivations)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
+  #:use-module (guix i18n)
   #:use-module (gnu services)
+  #:use-module (gnu services shepherd)
   #:use-module (gnu system setuid)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
@@ -54,6 +58,10 @@
 
             session-environment-service
             session-environment-service-type
+
+            pam-extension
+            pam-extension-transformer
+            pam-extension-shepherd-requirements
 
             pam-root-service-type
             pam-root-service))
@@ -347,32 +355,71 @@ strings or string-valued gexps."
 ;;; PAM root service.
 ;;;
 
+;; Extension of the PAM configuration.  A PAM transformer consists of a
+;; procedure acting on each PAM entry; 'shepherd-requirements' lists services
+;; that the meta 'pam' Shepherd service will depend on.
+(define-record-type* <pam-extension>
+  pam-extension make-pam-extension pam-extension?
+  (transformer pam-extension-transformer)
+  (shepherd-requirements pam-extension-shepherd-requirements
+                         (default '())))
+
 ;; Overall PAM configuration: a list of services, plus a procedure that takes
 ;; one <pam-service> and returns a <pam-service>.  The procedure is used to
 ;; implement cross-cutting concerns such as the use of the 'elogind.so'
 ;; session module that keeps track of logged-in users.
 (define-record-type* <pam-configuration>
-  pam-configuration make-pam-configuration? pam-configuration?
-  (services  pam-configuration-services)          ;list of <pam-service>
-  (transform pam-configuration-transform))        ;procedure
+  pam-configuration make-pam-configuration pam-configuration?
+  ;list of <pam-service>
+  (services  pam-configuration-services)
+  ;list of procedures <pam-entry> -> <pam-entry>
+  (transformers pam-configuration-transformers)
+  ;list of symbols
+  (shepherd-requirements pam-configuration-shepherd-requirements))
 
 (define (/etc-entry config)
   "Return the /etc/pam.d entry corresponding to CONFIG."
   (match config
-    (($ <pam-configuration> services transform)
-     (let ((services (map transform services)))
+    (($ <pam-configuration> services transformers shepherd-requirements)
+     (let ((services (map (apply compose identity transformers)
+                          services)))
        `(("pam.d" ,(pam-services->directory services)))))))
+
+(define (pam-shepherd-service config)
+  "Return the PAM synchronization shepherd service corresponding to CONFIG."
+  (match config
+    (($ <pam-configuration> services transformers shepherd-requirements)
+     (list (shepherd-service
+            (documentation "Synchronization point for services that need to be
+started for PAM to work.")
+            (provision '(pam))
+            (requirement shepherd-requirements)
+            (start #~(const #t))
+            (stop #~(const #f)))))))
 
 (define (extend-configuration initial extensions)
   "Extend INITIAL with NEW."
-  (let-values (((services procs)
-                (partition pam-service? extensions)))
+  ;; TODO: Remove deprecation shim.
+  (define cleaned-extensions
+    (map (lambda (ext)
+           (if (procedure? ext)
+               (begin
+                 (warning (G_ "'pam-root-service-type' extensions should \
+now use the <pam-extension> record~%"))
+                 (pam-extension (transformer ext)))
+               ext))
+         extensions))
+
+  (let-values (((services pam-extensions)
+                (partition pam-service? cleaned-extensions)))
     (pam-configuration
      (services (append (pam-configuration-services initial)
                        services))
-     (transform (apply compose
-                       (pam-configuration-transform initial)
-                       procs)))))
+     (transformers (append (pam-configuration-transformers initial)
+                           (map pam-extension-transformer pam-extensions)))
+     (shepherd-requirements
+      (append (pam-configuration-shepherd-requirements initial)
+              (append-map pam-extension-shepherd-requirements pam-extensions))))))
 
 (define pam-root-service-type
   (service-type (name 'pam)
@@ -382,7 +429,9 @@ strings or string-valued gexps."
                         (lambda (_)
                           (list (file-like->setuid-program
                                  (file-append linux-pam "/sbin/unix_chkpwd")))))
-                       (service-extension etc-service-type /etc-entry)))
+                       (service-extension etc-service-type /etc-entry)
+                       (service-extension shepherd-root-service-type
+                                          pam-shepherd-service)))
 
                 ;; Arguments include <pam-service> as well as procedures.
                 (compose concatenate)
@@ -394,7 +443,7 @@ such as @command{login} or @command{sshd}, and specifies for instance how the
 program may authenticate users or what it should do when opening a new
 session.")))
 
-(define* (pam-root-service base #:key (transform identity))
+(define* (pam-root-service base #:key (transformers '()) (shepherd-requirements '()))
   "The \"root\" PAM service, which collects <pam-service> instance and turns
 them into a /etc/pam.d directory, including the <pam-service> listed in BASE.
 TRANSFORM is a procedure that takes a <pam-service> and returns a
@@ -402,6 +451,7 @@ TRANSFORM is a procedure that takes a <pam-service> and returns a
 all the PAM services."
   (service pam-root-service-type
            (pam-configuration (services base)
-                              (transform transform))))
+                              (transformers transformers)
+                              (shepherd-requirements shepherd-requirements))))
 
 

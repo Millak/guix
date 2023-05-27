@@ -9769,8 +9769,8 @@ implementation specific equivalent.")
   (sbcl-package->ecl-package sbcl-trivial-macroexpand-all))
 
 (define-public sbcl-serapeum
-  (let ((commit "ce6c3b320cde38767caea2b86afa87ff280b9c11")
-        (revision "9"))
+  (let ((commit "47217ab69f76673db7e1fa65665ab804fb46d974")
+        (revision "11"))
     (package
       (name "sbcl-serapeum")
       (version (git-version "0.0.0" revision commit))
@@ -9783,7 +9783,7 @@ implementation specific equivalent.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0vpxgvxniyn12wkhmav2iq4x4bj12hjrsf2ajwcapp0sh06qg1j9"))))
+          (base32 "1mr868z1za6vfhb7gq3j7c1rb606gqfzschxdy7wcqx5xv3ndgpa"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -18512,39 +18512,37 @@ protocol for Mastodon.")
   (sbcl-package->cl-source-package sbcl-tooter))
 
 (define-public sbcl-croatoan
-  (let ((commit "42e474f4dffe2f4e429905a612be5736c2c3e374")
-        (revision "7"))
-    (package
-      (name "sbcl-croatoan")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/McParen/croatoan")
-               (commit commit)))
-         (file-name (git-file-name "cl-croatoan" version))
-         (sha256
-          (base32 "12hnj8gwk2600j3kn778xvvpx3y6z0428v5dq2qbf4vbzj66vcxj"))))
-      (build-system asdf-build-system/sbcl)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "ncurses/ncurses.lisp"
-                 (("libncursesw.so")
-                  (search-input-file inputs "/lib/libncursesw.so"))))))))
-      (inputs
-       (list ncurses
-             sbcl-cffi
-             sbcl-trivial-gray-streams
-             sbcl-bordeaux-threads))
-      (synopsis "Common Lisp bindings for the ncurses terminal library")
-      (description "Croatoan provides high-level Common Lisp CLOS bindings for
+  (package
+    (name "sbcl-croatoan")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/McParen/croatoan")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-croatoan" version))
+       (sha256
+        (base32 "1whbvwc4df7zz0002xy3aczrpf4s3vk6kmyh9wydgwl112h060pd"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "ncurses/ncurses.lisp"
+               (("libncursesw.so")
+                (search-input-file inputs "/lib/libncursesw.so"))))))))
+    (inputs
+     (list ncurses
+           sbcl-cffi
+           sbcl-trivial-gray-streams
+           sbcl-bordeaux-threads))
+    (synopsis "Common Lisp bindings for the ncurses terminal library")
+    (description "Croatoan provides high-level Common Lisp CLOS bindings for
 the ncurses terminal library.")
-      (home-page "https://github.com/McParen/croatoan")
-      (license license:expat))))
+    (home-page "https://github.com/McParen/croatoan")
+    (license license:expat)))
 
 (define-public ecl-croatoan
   (sbcl-package->ecl-package sbcl-croatoan))
@@ -25547,7 +25545,7 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "1.1.2")
+   (version "1.1.3")
    (source
     (origin
      (method git-fetch)
@@ -25557,7 +25555,7 @@ access lexicographic data from WordNet.")
      (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "1z6xxkr5q325zhpiyy3z03mv663jz85k844cczym4869b845rib2"))
+       "1rndrxqb16wfbi5zkg8gbqm163xhs31ka0algsxvrhb9kf2j8c4q"))
      (modules '((guix build utils)))
      (snippet
       `(begin
@@ -25626,10 +25624,10 @@ change since last write.
            (package-inputs sbcl-nfiles)))))
 
 (define-public sbcl-nasdf
-  (let ((commit "c63a6ff12239f132844cc0703e79ea3b33dae630"))
+  (let ((commit "5d823d97282e11cecd8da9bcb255c4a8ead1ba93"))
     (package
       (name "sbcl-nasdf")
-      (version "0.1.2")
+      (version "0.1.5")
       (source
        (origin
          (method git-fetch)
@@ -25639,7 +25637,7 @@ change since last write.
          (file-name (git-file-name "cl-ntemplate" version))
          (sha256
           (base32
-           "1b57jkyrvr3n0c66lih4m34fqzw3s5yqlk91v7hg2gchcn3v9glg"))))
+           "0vs40ndfyhpx3nj9fc505apk98qgp0pq3cdmqpf67jqkrpcdmnvx"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
@@ -26404,7 +26402,7 @@ instead of #'FOO.
 (define-public sbcl-njson
   (package
     (name "sbcl-njson")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26413,12 +26411,12 @@ instead of #'FOO.
               (file-name (git-file-name "cl-njson" version))
               (sha256
                (base32
-                "1apwccrvivrq57rlrw6vffrn3a5hikk10s0dndszjw5ri29b3qyd"))))
+                "02m9l77am2rlkg83dyp3jvb76ifw1y84xh3wpz6cx7h2wkxkjnl5"))))
     (build-system asdf-build-system/sbcl)
-    (inputs (list sbcl-cl-json))
+    (inputs (list sbcl-cl-json sbcl-jzon))
     (native-inputs (list sbcl-lisp-unit2))
     (arguments
-     '(#:asd-systems '("njson" "njson/cl-json")))
+     '(#:asd-systems '("njson" "njson/cl-json" "njson/jzon")))
     (home-page "https://github.com/atlas-engineer/njson")
     (synopsis "JSON handling framework for Common Lisp")
     (description
@@ -26426,8 +26424,8 @@ instead of #'FOO.
 and process JSON data, in the minimum keystrokes/minutes possible.
 
 NJSON is parser-independent, with existing Common Lisp JSON parsers being
-loadable as additional system.  @code{cl-json} is included by default, though.
-Conveniences that NJSON provides are:
+loadable as additional system.  @code{jzon} and @code{cl-json} backends are
+included by default, though.  Conveniences that NJSON provides are:
 
 @itemize
 @item @code{encode} and @code{decode} as single entry points for JSON reading
@@ -26457,7 +26455,7 @@ forms conveniently accessible as @code{j:rem}, @code{j:get},
 (define-public sbcl-nactivitypub
   (package
     (name "sbcl-nactivitypub")
-    (version "0.0.4")
+    (version "0.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26466,7 +26464,7 @@ forms conveniently accessible as @code{j:rem}, @code{j:get},
               (file-name (git-file-name "cl-nactivitypub" version))
               (sha256
                (base32
-                "06vzaqwwc9j8r89ld3fd6bbbfd5bl0jh132rlf9wxmr0xcaqwkrl"))))
+                "0m2vwi11zp0bpvr0hglq1svdxlp3cc70yvix30yksfzp6kk3amyn"))))
     (build-system asdf-build-system/sbcl)
     (inputs (list sbcl-cl-str
                   sbcl-dexador

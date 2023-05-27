@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
@@ -100,6 +103,9 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  ;; Using autoload to avoid a cycle.
+  ;; Note that (gnu packages serialization) has #:use-module (gnu packages cpp)
+  #:autoload   (gnu packages serialization) (cereal)
   #:use-module (ice-9 match))
 
 (define-public argagg
@@ -595,10 +601,10 @@ converting data between JSON representation and C++ structs.  DTO stands for
 data transfer object.")
     (license license:bsd-3)))
 
-(define-public json-modern-cxx
+(define-public nlohmann-json
   (package
-    (name "json-modern-cxx")
-    (version "3.10.5")
+    (name "nlohmann-json")
+    (version "3.11.2")
     (home-page "https://github.com/nlohmann/json")
     (source
      (origin
@@ -606,49 +612,52 @@ data transfer object.")
        (uri (git-reference (url home-page)
                            (commit (string-append "v" version))))
        (sha256
-        (base32 "1f9mi45ilwjc2w92grjc53sw038840bjpn8yjf6wc6bxs2nijfqd"))
+        (base32 "0g6rfsbkvrxmacchz4kbr741yybj7mls3r4hgyfdd3pdbqhn2is9"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Delete bundled software.  Preserve doctest_compatibility.h, which
-           ;; is a wrapper library added by this package.
-           (install-file "./test/thirdparty/doctest/doctest_compatibility.h" "/tmp")
-           (for-each delete-file-recursively
-                     '("./third_party" "./test/thirdparty"))
-           (install-file "/tmp/doctest_compatibility.h" "./test/thirdparty/doctest")
+        #~(begin
+            ;; Delete bundled software.  Preserve doctest_compatibility.h, which
+            ;; is a wrapper library added by this package.
+            (install-file "./tests/thirdparty/doctest/doctest_compatibility.h"
+                          "/tmp")
+            (delete-file-recursively "./tests/thirdparty")
+            (install-file "/tmp/doctest_compatibility.h"
+                          "./tests/thirdparty/doctest")
 
-           ;; Adjust for the unbundled fifo_map and doctest.
-           (substitute* "./test/thirdparty/doctest/doctest_compatibility.h"
-             (("#include \"doctest\\.h\"")
-              "#include <doctest/doctest.h>"))
-           (with-directory-excursion "test/src"
-             (let ((files (find-files "." "\\.cpp$")))
-               (substitute* files
-                 (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
-                  (string-append
-                   "#include <fifo_map/" fifo-map-hpp ">")))))))))
+            ;; Adjust for the unbundled fifo_map and doctest.
+            (substitute* (find-files "./tests/" "\\.h(pp)?")
+              (("#include \"doctest\\.h\"") "#include <doctest/doctest.h>")
+              (("#include <doctest\\.h>") "#include <doctest/doctest.h>"))
+            (with-directory-excursion "tests/src"
+              (let ((files (find-files "." "\\.cpp$")))
+                (substitute* files
+                  (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
+                   (string-append
+                    "#include <fifo_map/" fifo-map-hpp ">")))))))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DJSON_MultipleHeaders=ON" ; For json_fwd.hpp.
-             (string-append "-DJSON_TestDataDirectory="
-                            (dirname
-                             (search-input-directory %build-inputs
-                                                     "json_nlohmann_tests"))))
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-                      (if tests?
-                          ;; Some tests need git and a full checkout, skip those.
-                          (invoke "ctest" "-LE" "git_required"
-                                  "-j" (if parallel-tests?
-                                           (number->string (parallel-job-count))
-                                           "1"))
-                          (format #t "test suite not run~%")))))))
+     (list
+      #:configure-flags
+      #~(list "-DJSON_MultipleHeaders=ON" ; For json_fwd.hpp.
+              (string-append "-DJSON_TestDataDirectory="
+                             (dirname
+                              (search-input-directory %build-inputs
+                                                      "json_nlohmann_tests"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (if tests?
+                  ;; Some tests need git and a full checkout, skip those.
+                  (invoke "ctest" "-LE" "git_required"
+                          "-j" (if parallel-tests?
+                                   (number->string (parallel-job-count))
+                                   "1"))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
      (list amalgamate
-           (let ((version "3.0.0"))
+           (let ((version "3.1.0"))
              (origin
                (method git-fetch)
                (uri (git-reference
@@ -657,13 +666,16 @@ data transfer object.")
                (file-name (git-file-name "json_test_data" version))
                (sha256
                 (base32
-                 "0nzsjzlvk14dazwh7k2jb1dinb0pv9jbx5jsyn264wvva0y7daiv"))))))
+                 "0nbirc428qx0lpi940p7y24fzdjbwl6xig3h5rdbihyymmdzhvbc"))))))
     (inputs
      (list doctest fifo-map))
     (synopsis "JSON parser and printer library for C++")
-    (description "JSON for Modern C++ is a C++ JSON library that provides
+    (description "@code{nlohmann::json} is a C++ JSON library that provides
 intuitive syntax and trivial integration.")
     (license license:expat)))
+
+(define-public json-modern-cxx
+  (deprecated-package "json-modern-cxx" nlohmann-json))
 
 (define-public xtl
   (package
@@ -680,7 +692,7 @@ intuitive syntax and trivial integration.")
                 "134pgvmf9cx5dxs0m0m3qhp3m3r1gl86ic3xax21zc4sdj8sdq46"))
               (file-name (git-file-name name version))))
     (native-inputs
-     (list doctest googletest json-modern-cxx))
+     (list doctest googletest nlohmann-json))
     (arguments
      '(#:configure-flags
        '("-DBUILD_TESTS=ON")
@@ -1188,7 +1200,7 @@ algorithm called SAscan.")
 (define-public cxxopts
   (package
     (name "cxxopts")
-    (version "3.0.0")
+    (version "3.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1197,7 +1209,7 @@ algorithm called SAscan.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08x7j168l1xwj0r3rv89cgghmfhsx98lpq35r3vkh504m1pd55a6"))))
+                "0d37qpsaq8ik7pl4vk8346vqcqyfzfbnpq8mhsa2gb2zf1lwr4wl"))))
     (build-system cmake-build-system)
     (synopsis "Lightweight C++ command line option parser")
     (description
@@ -1389,6 +1401,94 @@ code will be mixed in with the actual programming logic.  This implementation
 provides a number of utilities to make coding with expected cleaner.")
     (home-page "https://tl.tartanllama.xyz/")
     (license license:cc0)))
+
+(define-public immer
+  (package
+   (name "immer")
+   (version "0.8.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/arximboldi/immer")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32 "11km3l5h3rgsbj8yfyzk3fnx9na55l6zs2sxpx922yvlvs2blh27"))
+            (modules '((guix build utils)))
+            (snippet #~(begin
+                         (delete-file "tools/include/doctest.h")
+                         (delete-file "tools/include/catch.hpp")
+                         (substitute* (find-files "test" "\\.[cih]pp")
+                           (("<catch.hpp>") "<catch2/catch.hpp>")
+                           (("<doctest.h>") "<doctest/doctest.h>"))
+                         (substitute* (find-files "test/oss-fuzz" "\\.cpp")
+                           ;; someone used the wrong header :)
+                           (("<fmt/printf.h>") "<fmt/ostream.h>"))))))
+   (build-system cmake-build-system)
+   (arguments (list #:test-target "check"))
+   (inputs (list boost libgc c-rrb))
+   (native-inputs (list catch2 doctest fmt pkg-config))
+   (home-page "https://sinusoid.es/immer")
+   (synopsis "Immutable data structures")
+   (description "Immer is a library of persistent and immutable data structures
+written in C++.")
+   (license license:boost1.0)))
+
+(define-public zug
+  (let ((commit "d7e814b45fceceee3cb1442997d8b46cee4764ec")
+        (revision "0"))
+    (package
+     (name "zug")
+     (version (git-version "0.0.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arximboldi/zug")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1ww4prh763n81kzzijak8z495varlvqml4ip7i09klqnw6ya72fc"))
+              (modules '((guix build utils)))
+              (snippet #~(delete-file-recursively "tools"))))
+     (build-system cmake-build-system)
+     (arguments (list #:test-target "check"))
+     (native-inputs (list boost catch2))
+     (home-page "https://sinusoid.es/zug")
+     (synopsis "Higher-order sequence transformers")
+     (description "Zug is a C++ library providing transducers, that is,
+composable sequential transformations.")
+     (license license:boost1.0))))
+
+(define-public lager
+  (let ((commit "2016df38be90ee176bcb73ea414be2318bc1ef31")
+        (revision "0"))
+    (package
+     (name "lager")
+     (version (git-version "0.0.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arximboldi/lager")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1b7zxwqrbm7db7wxqbsrk7jjd3znvvi1cwj7jg6zkmf0199071a5"))))
+     (build-system cmake-build-system)
+     (arguments (list #:test-target "check"
+                      #:configure-flags #~(list "-Dlager_BUILD_EXAMPLES=no")
+                      #:phases
+                      #~(modify-phases %standard-phases
+                          (add-after 'unpack 'delete-failing-tests
+                            (lambda _
+                              (delete-file-recursively "test/event_loop"))))))
+     (inputs (list boost immer zug))
+     (native-inputs (list cereal))
+     (home-page "https://sinusoid.es/lager")
+     (synopsis "Library for value-oriented design")
+     (description "Lager is a library for value-oriented design implementing
+the unidirectional data-flow architecture.  Apart from a store and various
+event loops it also provides lenses and cursors.")
+     (license license:expat))))
 
 (define-public atomic-queue
   (package
@@ -1859,7 +1959,7 @@ of reading and writing XML.")
     (native-inputs
      (list googletest pkg-config))
     (inputs
-     (list json-modern-cxx))
+     (list nlohmann-json))
     (home-page "https://jsonnet.org/")
     (synopsis "Data templating language")
     (description "Jsonnet is a templating language extending JSON
@@ -2433,7 +2533,7 @@ queues, resource pools, strings, etc.
 (define-public ftxui
   (package
     (name "ftxui")
-    (version "3.0.0")
+    (version "4.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2441,27 +2541,14 @@ queues, resource pools, strings, etc.
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "10a4yw2h29kixxyhll6cvrwyscsvz9asxry857a9l8nqvbhs946s"))
+                "01h59ln8amsj6ymxmsxhmslld2yp003n82fg3mphgkrh6lf22h6y"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
-    (native-inputs (list googletest))
+    (native-inputs (list googletest benchmark))
     (arguments
      (list #:configure-flags
            #~(list "-DFTXUI_BUILD_TESTS:BOOL=ON"
-                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-cmake-tests
-                 (lambda _
-                   (substitute* "cmake/ftxui_test.cmake"
-                     (("NOT googletest_POPULATED")
-                      "FALSE"))
-                   ;; Disable benchmarks for a while as they require bundled Google
-                   ;; benchmark and when the 'googlebenchmark' is unbundled, there's
-                   ;; a CMake configuration error.
-                   (substitute* "cmake/ftxui_benchmark.cmake"
-                     (("NOT WIN32")
-                      "FALSE")))) )))
+                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF")))
     (home-page "https://github.com/ArthurSonzogni/FTXUI")
     (synopsis "C++ Functional Terminal User Interface")
     (description

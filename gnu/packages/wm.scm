@@ -112,6 +112,7 @@
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
@@ -748,7 +749,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.3.3")
+    (version "3.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -756,7 +757,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "0wyg7lk65kf03brhzrbk158sr8d5cqny5qcyrwypnzpp0chcff71"))))
+                "124w00yq35mj859nf321bpy36ij7a0kblcg95axxahz4l6fhxfxf"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
@@ -1436,7 +1437,7 @@ project derived from the original Calm Window Manager.")
 (define-public dwl
   (package
     (name "dwl")
-    (version "0.3.1")
+    (version "0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1445,7 +1446,7 @@ project derived from the original Calm Window Manager.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0952kajc60ijy6qz14y6s5n7dyyf14ndzrhs4ynxj97k76742z2l"))))
+                "0pj0h3zd2f60hxpavpmgzid1sj7hf9m5cgclbackljqq4gpwlvir"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1705,9 +1706,7 @@ modules for building a Wayland compositor.")
        (sha256
         (base32 "03jrjwlwxkcyd6m9a1bbwapasnz7b7aws7h0y6jigjm4m478phv6"))))
     (build-system meson-build-system)
-    (inputs (list cairo gdk-pixbuf libxkbcommon
-                  ;("linux-pam" ,linux-pam) ; FIXME: Doesn't work.
-                  wayland))
+    (inputs (list cairo gdk-pixbuf libxkbcommon linux-pam wayland))
     (native-inputs (list pango pkg-config scdoc wayland-protocols))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Screen locking utility for Wayland compositors")
@@ -1942,7 +1941,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1951,7 +1950,7 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sa8k74d24ijw6ml1yyy75dk763r2sbm7fgk033g5xnx28kd394j"))))
+        (base32 "195v6lfh9w88nas6pca0v644nvrc645sramj78gzgqdm7nm20rvq"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config scdoc))
@@ -2750,7 +2749,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "2.0.1")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2759,16 +2758,21 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fxfmxl7p63l07lqb83q5lx16hm0rixcidghx00gp08x2yrgr4x9"))))
+                "09ky8wili3ym8qi4dasckdcdcvn4g6ak08dg0yccnwmnlwxiyps6"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dxwayland=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-data-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "meson.build"
-               (("/etc/") (string-append (assoc-ref outputs "out") "/etc"))))))))
+     (list
+      #:configure-flags #~(list "-Dxwayland=true")
+      ;; XXX: Running cagebreak tests need more tools, such as: clang-format,
+      ;; shellcheck, git, gnupg ...
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-data-dir
+            (lambda _
+              (substitute* '("cagebreak.c" "meson.build")
+                (("/etc/") (string-append #$output "/etc/"))
+                (("/usr/share/") (string-append #$output "/usr/share/"))))))))
     (native-inputs (list pandoc pkg-config))
     (inputs (list libevdev pango wlroots))
     (home-page "https://github.com/project-repo/cagebreak")
@@ -2802,6 +2806,47 @@ for wayland conceptually based on the X11 window manager
      (description "libucl implements a configuration language that is easy to
 read and write, and compatible with JSON.")
     (license license:bsd-2)))
+
+(define-public labwc
+  (package
+    (name "labwc")
+    (version "0.6.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/labwc/labwc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zbgj8r8ppvqnz2imh6f825f2lvsqpiqfa0r5g5r4nsvadiipivp"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config gettext-minimal scdoc))
+    (inputs
+     (list cairo
+           glib
+           libxcb
+           libxml2
+           pango
+           wlroots))
+    (home-page "https://labwc.github.io")
+    (synopsis "Window-stacking compositor for Wayland")
+    (description
+     "Labwc is lightweight and independent with a focus on simply stacking
+windows well and rendering some window decorations, it is inspired by Openbox.
+It takes a no-bling/frills approach and says no to features such as icons
+(except window buttons), animations, decorative gradients and any other
+options not required to reasonably render common themes.  It relies on clients
+for panels, screenshots, wallpapers and so on to create a full desktop
+environment.
+
+Labwc tries to stay in keeping with wlroots and sway in terms of general
+approach and coding style.
+
+Labwc has no reliance on any particular Desktop Environment, Desktop Shell or
+session.  Nor does it depend on any UI toolkits such as Qt or GTK.")
+    (license license:gpl2)))
 
 (define-public hikari
   (package

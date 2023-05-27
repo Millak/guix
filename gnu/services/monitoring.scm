@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (gnu services web)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages monitoring)
+  #:use-module (gnu packages networking)
   #:use-module (gnu system shadow)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -34,6 +36,7 @@
   #:use-module ((guix ui) #:select (display-hint G_))
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-35)
   #:export (darkstat-configuration
@@ -44,6 +47,46 @@
             prometheus-node-exporter-configuration-package
             prometheus-node-exporter-web-listen-address
             prometheus-node-exporter-service-type
+
+            vnstat-configuration
+            vnstat-configuration?
+            vnstat-service-type
+            vnstat-configuration-package
+            vnstat-configuration-database-directory
+            vnstat-configuration-5-minute-hours
+            vnstat-configuration-64bit-interface-counters
+            vnstat-configuration-always-add-new-interfaces?
+            vnstat-configuration-bandwidth-detection?
+            vnstat-configuration-bandwidth-detection-interval
+            vnstat-configuration-boot-variation
+            vnstat-configuration-check-disk-space?
+            vnstat-configuration-create-directories?
+            vnstat-configuration-daemon-group
+            vnstat-configuration-daemon-user
+            vnstat-configuration-daily-days
+            vnstat-configuration-database-synchronous
+            vnstat-configuration-database-write-ahead-logging?
+            vnstat-configuration-hourly-days
+            vnstat-configuration-log-file
+            vnstat-configuration-max-bandwidth
+            vnstat-configuration-max-bw
+            vnstat-configuration-monthly-months
+            vnstat-configuration-month-rotate
+            vnstat-configuration-month-rotate-affects-years?
+            vnstat-configuration-offline-save-interval
+            vnstat-configuration-pid-file
+            vnstat-configuration-poll-interval
+            vnstat-configuration-rescan-database-on-save?
+            vnstat-configuration-save-interval
+            vnstat-configuration-save-on-status-change?
+            vnstat-configuration-time-sync-wait
+            vnstat-configuration-top-day-entries
+            vnstat-configuration-trafficless-entries?
+            vnstat-configuration-update-file-owner?
+            vnstat-configuration-update-interval
+            vnstat-configuration-use-logging
+            vnstat-configuration-use-utc?
+            vnstat-configuration-yearly-years
 
             zabbix-server-configuration
             zabbix-server-service-type
@@ -195,6 +238,435 @@ Prometheus.")
      (service-extension shepherd-root-service-type
                         prometheus-node-exporter-shepherd-service)))
    (default-value (prometheus-node-exporter-configuration))))
+
+
+;;;
+;;; vnstat daemon
+;;;
+
+(define* (camelfy-field-name field-name #:key (dromedary? #f))
+  (match (string-split (symbol->string field-name) #\-)
+    ((head tail ...)
+     (string-join (cons (if dromedary? head (string-upcase head 0 1))
+                        (map (cut string-upcase <> 0 1) tail)) ""))))
+
+(define (strip-trailing-?-character field-name)
+  "Drop rightmost '?' character"
+  (let ((str (symbol->string field-name)))
+    (if (string-suffix? "?" str)
+        (string->symbol (string-drop-right str 1))
+        field-name)))
+
+(define (vnstat-serialize-string field-name value)
+  #~(format #f "~a ~s~%"
+            #$(camelfy-field-name field-name)
+            #$value))
+
+(define vnstat-serialize-integer vnstat-serialize-string)
+
+(define (vnstat-serialize-boolean field-name value)
+  #~(format #f "~a ~a~%"
+            #$(camelfy-field-name (strip-trailing-?-character field-name))
+            #$(if value 1 0)))
+
+(define (vnstat-serialize-alist field-name value)
+  (generic-serialize-alist string-append
+                           (lambda (iface val)
+                             (vnstat-serialize-integer
+                              (format #f "MaxBW~a" iface) val))
+                           value))
+
+(define (vnstat-serialize-user-account field-name value)
+  (vnstat-serialize-string field-name (user-account-name value)))
+
+(define (vnstat-serialize-user-group field-name value)
+  (vnstat-serialize-string field-name (user-group-name value)))
+
+(define-maybe string  (prefix vnstat-))
+(define-maybe integer (prefix vnstat-))
+(define-maybe boolean (prefix vnstat-))
+(define-maybe alist   (prefix vnstat-))
+(define-maybe user-account (prefix vnstat-))
+(define-maybe user-group (prefix vnstat-))
+
+(define %vnstat-user
+  (user-account
+   (name "vnstat")
+   (group "vnstat")
+   (system? #t)
+   (home-directory "/var/empty")
+   (shell (file-append shadow "/sbin/nologin"))))
+
+(define %vnstat-group
+  (user-group
+   (name "vnstat")
+   (system? #t)))
+
+;; Documentation strings from vnstat.conf manpage adapted to texinfo.
+;; vnstat checkout: v2.10, commit b3408af1c609aa6265d296cab7bfe59a61d7cf70
+;; Do not reflow these strings or drop the initial \ escape as it makes it
+;; harder to diff against the manpage.
+(define-configuration vnstat-configuration
+  (package
+    (file-like vnstat)
+    "The vnstat package."
+    empty-serializer)
+
+  (database-directory
+   (string "/var/lib/vnstat")
+   "\
+Specifies the directory where the database is to be stored.
+A full path must be given and a leading '/' isn't required."
+   (serializer
+    (lambda (_ value)
+      (vnstat-serialize-string 'database-dir value))))
+
+  (5-minute-hours
+   (maybe-integer 48)
+   "\
+Data retention duration for the 5 minute resolution entries. The configuration
+defines for how many past hours entries will be stored. Set to @code{-1} for
+unlimited entries or to @code{0} to disable the data collection of this
+resolution.")
+
+  (64bit-interface-counters
+   (maybe-integer -2)
+   "\
+Select interface counter handling. Set to @code{1} for defining that all interfaces
+use 64-bit counters on the kernel side and @code{0} for defining 32-bit counter. Set
+to @code{-1} for using the old style logic used in earlier versions where counter
+values within 32-bits are assumed to be 32-bit and anything larger is assumed to
+be a 64-bit counter. This may produce false results if a 64-bit counter is
+reset within the 32-bits. Set to @code{-2} for using automatic detection based on
+available kernel datastructures.")
+
+  (always-add-new-interfaces?
+   (maybe-boolean #t)
+   "\
+Enable or disable automatic creation of new database entries for interfaces not
+currently in the database even if the database file already exists when the
+daemon is started. New database entries will also get created for new interfaces
+seen while the daemon is running. Pseudo interfaces @samp{lo}, @samp{lo0} and @samp{sit0} are always
+excluded from getting added.")
+
+  (bandwidth-detection?
+   (maybe-boolean #t)
+   "\
+Try to automatically detect
+@var{max-bandwidth}
+value for each monitored interface. Mostly only ethernet interfaces support
+this feature.
+@var{max-bandwidth}
+will be used as fallback value if detection fails. Any interface specific
+@var{max-BW}
+configuration will disable the detection for the specified interface.
+In Linux, the detection is disabled for tun interfaces due to the
+Linux kernel always reporting 10 Mbit regardless of the used real interface.")
+
+  (bandwidth-detection-interval
+   (maybe-integer 5)
+   "\
+How often in minutes interface specific detection of
+@var{max-bandwidth}
+is done for detecting possible changes when
+@var{bandwidth-detection}
+is enabled. Can be disabled by setting to @code{0}. Value range: @samp{0}..@samp{30}")
+
+  (boot-variation
+   (maybe-integer 15)
+   "\
+Time in seconds how much the boot time reported by system kernel can variate
+between updates. Value range: @samp{0}..@samp{300}")
+
+  (check-disk-space?
+   (maybe-boolean #t)
+   "\
+Enable or disable the availability check of at least some free disk space before
+a database write.")
+
+  (create-directories?
+   (maybe-boolean #t)
+   "\
+Enable or disable the creation of directories when a configured path doesn't
+exist. This includes @var{database-directory}."
+   (serializer
+    (lambda (_ value)
+      (if (maybe-value-set? value)
+          (vnstat-serialize-boolean 'create-dirs value) ""))))
+
+  ;; Note: Documentation for daemon-group and daemon-user adapted
+  ;; for user-group and user-account record-types.
+  (daemon-group
+   (maybe-user-group %vnstat-group)
+   "\
+Specify the group to which the daemon process should switch during startup.
+Set to @code{%unset-value} to disable group switching.")
+
+  (daemon-user
+   (maybe-user-account %vnstat-user)
+   "\
+Specify the user to which the daemon process should switch during startup.
+Set to @code{%unset-value} to disable user switching.")
+
+  (daily-days
+   (maybe-integer 62)
+   "\
+Data retention duration for the one day resolution entries. The configuration
+defines for how many past days entries will be stored. Set to @code{-1} for
+unlimited entries or to @code{0} to disable the data collection of this
+resolution.")
+
+  (database-synchronous
+   (maybe-integer -1)
+   "\
+Change the setting of the SQLite \"synchronous\" flag which controls how much
+care is taken to ensure disk writes have fully completed when writing data to
+the database before continuing other actions. Higher values take extra steps
+to ensure data safety at the cost of slower performance. A value of @code{0} will
+result in all handling being left to the filesystem itself. Set to @code{-1} to
+select the default value according to database mode controlled by
+@var{database-write-ahead-logging}
+setting. See SQLite documentation for more details regarding values from @code{1}
+to @code{3}. Value range: @samp{-1}..@samp{3}")
+
+  (database-write-ahead-logging?
+   (maybe-boolean #f)
+   "\
+Enable or disable SQLite Write-Ahead Logging mode for the database. See SQLite
+documentation for more details and note that support for read-only operations
+isn't available in older SQLite versions.")
+
+  (hourly-days
+   (maybe-integer 4)
+   "\
+Data retention duration for the one hour resolution entries. The configuration
+defines for how many past days entries will be stored. Set to @code{-1} for
+unlimited entries or to @code{0} to disable the data collection of this
+resolution.")
+
+  (log-file
+   maybe-string
+   "\
+Specify log file path and name to be used if @var{use-logging} is set to @code{1}.")
+
+  (max-bandwidth
+   maybe-integer
+   "\
+Maximum bandwidth for all interfaces. If the interface specific traffic
+exceeds the given value then the data is assumed to be invalid and rejected.
+Set to 0 in order to disable the feature. Value range: @samp{0}..@samp{50000}")
+
+  ;; documentation adapted for alist type
+  (max-bw
+   maybe-alist
+   "\
+Same as
+@var{max-bandwidth}
+but can be used for setting individual limits
+for selected interfaces. This is an association list of interfaces
+as strings to integer values. For example,
+@lisp
+(max-bw
+ `((\"eth0\" . 15000)
+   (\"ppp0\" . 10000)))
+@end lisp
+@var{bandwidth-detection}
+is disabled on an interface specific level for each
+@var{max-bw}
+configuration. Value range: @samp{0}..@samp{50000}"
+   (serializer
+    (lambda (field-name value)
+      (if (maybe-value-set? value)
+          (vnstat-serialize-alist field-name value) ""))))
+
+  (monthly-months
+   (maybe-integer 25)
+   "\
+Data retention duration for the one month resolution entries. The configuration
+defines for how many past months entries will be stored. Set to @code{-1} for
+unlimited entries or to @code{0} to disable the data collection of this
+resolution.")
+
+  (month-rotate
+   (maybe-integer 1)
+   "\
+Day of month that months are expected to change. Usually set to
+1 but can be set to alternative values for example for tracking
+monthly billed traffic where the billing period doesn't start on
+the first day. For example, if set to 7, days of February up to and
+including the 6th will count for January. Changing this option will
+not cause existing data to be recalculated. Value range: @samp{1}..@samp{28}")
+
+  (month-rotate-affects-years?
+   (maybe-boolean #f)
+   "\
+Enable or disable
+@var{month-rotate}
+also affecting yearly data. Applicable only when
+@var{month-rotate}
+has a value greater than one.")
+
+  (offline-save-interval
+   (maybe-integer 30)
+   "\
+How often in minutes cached interface data is saved to file when all monitored
+interfaces are offline. Value range:
+@var{save-interval}..@samp{60}")
+
+  (pid-file
+   (maybe-string "/var/run/vnstat/vnstatd.pid")
+   "\
+Specify pid file path and name to be used.")
+
+  (poll-interval
+   (maybe-integer 5)
+   "\
+How often in seconds interfaces are checked for status changes.
+Value range: @samp{2}..@samp{60}")
+
+  (rescan-database-on-save?
+   maybe-boolean
+   "\
+Automatically discover added interfaces from the database and start monitoring.
+The rescan is done every
+@var{save-interval}
+or
+@var{offline-save-interval}
+minutes depending on the current activity state.")
+
+  (save-interval
+   (maybe-integer 5)
+   "\
+How often in minutes cached interface data is saved to file.
+Value range: (
+@var{update-interval} / 60 )..@samp{60}")
+
+  (save-on-status-change?
+   (maybe-boolean #t)
+   "\
+Enable or disable the additional saving to file of cached interface data
+when the availability of an interface changes, i.e., when an interface goes
+offline or comes online.")
+
+  (time-sync-wait
+   (maybe-integer 5)
+   "\
+How many minutes to wait during daemon startup for system clock to sync if
+most recent database update appears to be in the future. This may be needed
+in systems without a real-time clock (RTC) which require some time after boot
+to query and set the correct time. @code{0} = wait disabled.
+Value range: @samp{0}..@samp{60}")
+
+  (top-day-entries
+   (maybe-integer 20)
+   "\
+Data retention duration for the top day entries. The configuration
+defines how many of the past top day entries will be stored. Set to @code{-1} for
+unlimited entries or to @code{0} to disable the data collection of this
+resolution.")
+
+  (trafficless-entries?
+   (maybe-boolean #t)
+   "\
+Create database entries even when there is no traffic during the entry's time
+period.")
+
+  (update-file-owner?
+   (maybe-boolean #t)
+   "\
+Enable or disable the update of file ownership during daemon process startup.
+During daemon startup, only database, log and pid files will be modified if the
+user or group change feature (
+@var{daemon-user}
+or
+@var{daemon-group}
+) is enabled and the files don't match the requested user or group. During manual
+database creation, this option will cause file ownership to be inherited from the
+database directory if the directory already exists. This option only has effect
+when the process is started as root or via sudo.")
+
+  (update-interval
+   (maybe-integer 20)
+   "\
+How often in seconds the interface data is updated. Value range:
+@var{poll-interval}..@samp{300}")
+
+  (use-logging
+   (maybe-integer 2)
+   "\
+Enable or disable logging. Accepted values are:
+@code{0} = disabled, @code{1} = logfile and @code{2} = syslog.")
+
+  (use-utc?
+   maybe-boolean
+   "\
+Enable or disable using UTC as timezone in the database for all entries. When
+enabled, all entries added to the database will use UTC regardless of the
+configured system timezone. When disabled, the configured system timezone
+will be used. Changing this setting will not result in already existing
+data to be modified."
+   (serializer
+    (lambda (_ value)
+      (if (maybe-value-set? value)
+          (vnstat-serialize-boolean 'use-UTC value) ""))))
+
+  (yearly-years
+   (maybe-integer -1)
+   "\
+Data retention duration for the one year resolution entries. The configuration
+defines for how many past years entries will be stored. Set to @code{-1} for
+unlimited entries or to @code{0} to disable the data collection of this
+resolution.")
+
+  (prefix vnstat-))
+
+(define (vnstat-serialize-configuration config)
+  (mixed-text-file
+   "vnstat.conf"
+   (serialize-configuration config vnstat-configuration-fields)))
+
+(define (vnstat-shepherd-service config)
+  (let ((config-file (vnstat-serialize-configuration config)))
+    (match-record config <vnstat-configuration> (package pid-file)
+      (shepherd-service
+       (documentation "Run vnstatd.")
+       (requirement `(networking file-systems))
+       (provision '(vnstatd))
+       (start #~(make-forkexec-constructor
+                 (list #$(file-append package "/sbin/vnstatd")
+                       "--daemon"
+                       "--config" #$config-file)
+                 #:pid-file #$pid-file))
+       (stop #~(make-kill-destructor))
+       (actions
+        (list (shepherd-configuration-action config-file)
+              (shepherd-action
+               (name 'reload)
+               (documentation "Reload vnstatd.")
+               (procedure
+                #~(lambda (pid)
+                    (if pid
+                        (begin
+                          (kill pid SIGHUP)
+                          (format #t
+                                  "Issued SIGHUP to vnstatd (PID ~a)."
+                                  pid))
+                        (format #t "vnstatd is not running.")))))))))))
+
+(define (vnstat-account-service config)
+  (match-record config <vnstat-configuration> (daemon-group daemon-user)
+    (filter-map maybe-value (list daemon-group daemon-user))))
+
+(define vnstat-service-type
+  (service-type
+   (name 'vnstat)
+   (description "vnStat network-traffic monitor service.")
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             (compose list vnstat-shepherd-service))
+          (service-extension account-service-type
+                             vnstat-account-service)))
+   (default-value (vnstat-configuration))))
 
 
 ;;;

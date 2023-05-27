@@ -4,7 +4,7 @@
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
@@ -608,7 +608,7 @@ recognition engine.")
 (define-public ekho
   (package
     (name "ekho")
-    (version "8.4")
+    (version "8.6")
     (source
      (origin
        (method url-fetch)
@@ -616,7 +616,7 @@ recognition engine.")
         (string-append "mirror://sourceforge/e-guidedog/Ekho/"
                        version "/ekho-" version ".tar.xz"))
        (sha256
-        (base32 "1v476kpw09ljj8mavasj4hya2w11jwlx7q22rh1lsn9jkkam5i2a"))))
+        (base32 "1hxdh8bs4zs83w19z897wb4n8n0kyv0ycjfwbi5w0j7mcxsqwh27"))))
     (native-inputs
      (list pkg-config))
     (inputs

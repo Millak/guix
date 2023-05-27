@@ -1176,9 +1176,7 @@ for and start applications.")
      (list exo
            garcon
            adwaita-icon-theme
-           ;; Greybird is the recommend theme since Xfce 4.14, see:
-           ;; <https://mail.xfce.org/pipermail/xfce4-dev/2018-August/032151.html>
-           ;; TODO: Make it default via "xfconf/xfce/perchannel-xml/xsettinsg.xml"
+           elementary-xfce-icon-theme
            greybird-gtk-theme
            hicolor-icon-theme
            mate-polkit-for-xfce
@@ -1253,7 +1251,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.13.0")
+    (version "0.13.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/ristretto/"
@@ -1261,7 +1259,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
                                   "ristretto-" version ".tar.bz2"))
               (sha256
                (base32
-                "00g3yk06h2xca73bq3dzyiha4ck8ps1vprc3il63knma3ns7crjr"))))
+                "07kraf6k18f53vgx98hvrb20hcm5134m7c958w96fl142nzzy6np"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils
@@ -1416,7 +1414,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.6.0")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1424,7 +1422,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1m0k36fbh1gkxps3yjfagjnka13ndcfk3r588bc9ka5qhb2salr2"))))
+                "0dpzzy03hlw6gljp7ywdi6np41r88p2nr7rypwzy6zdwqwv5832n"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than

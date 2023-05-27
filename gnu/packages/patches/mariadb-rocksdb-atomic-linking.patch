@@ -1,0 +1,54 @@
+https://github.com/MariaDB/server/pull/2477
+https://github.com/MariaDB/server/commit/195c0e81493c41f1d20b91a5bcc6aaaf4979d781.patch
+
+From 195c0e81493c41f1d20b91a5bcc6aaaf4979d781 Mon Sep 17 00:00:00 2001
+From: Daniel Black <daniel@mariadb.org>
+Date: Fri, 3 Feb 2023 11:51:20 +1100
+Subject: [PATCH] MDEV-30554 RockDB libatomic linking on riscv64
+
+The existing storage/rocksdb/CMakeCache.txt defined
+ATOMIC_EXTRA_LIBS when atomics where required. This was
+determined by the toplevel configure.cmake test
+(HAVE_GCC_C11_ATOMICS_WITH_LIBATOMIC).
+
+As build_rocksdb.cmake is included after ATOMIC_EXTRA_LIBS
+was set, we just need to use it. As such no riscv64
+specific macro is needed in build_rocksdb.cmake.
+
+As highlighted by Gianfranco Costamagna (@LocutusOfBorg)
+in #2472 overwriting SYSTEM_LIBS was problematic.
+This is corrected in case in future SYSTEM_LIBS is changed
+elsewhere.
+
+Closes #2472.
+---
+ storage/rocksdb/build_rocksdb.cmake | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/storage/rocksdb/build_rocksdb.cmake b/storage/rocksdb/build_rocksdb.cmake
+index e23862ee65901..647e51e2f90d9 100644
+--- a/storage/rocksdb/build_rocksdb.cmake
++++ b/storage/rocksdb/build_rocksdb.cmake
+@@ -129,10 +129,6 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc64")
+   ADD_DEFINITIONS(-DHAVE_POWER8 -DHAS_ALTIVEC)
+ endif(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc64")
+ 
+-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "riscv64")
+- set(SYSTEM_LIBS ${SYSTEM_LIBS} -latomic)
+-endif()
+-
+ option(WITH_FALLOCATE "build with fallocate" ON)
+ 
+ if(WITH_FALLOCATE AND UNIX)
+@@ -161,9 +157,9 @@ include_directories(SYSTEM ${ROCKSDB_SOURCE_DIR}/third-party/gtest-1.7.0/fused-s
+ 
+ find_package(Threads REQUIRED)
+ if(WIN32)
+-  set(SYSTEM_LIBS ${SYSTEM_LIBS} Shlwapi.lib Rpcrt4.lib)
++  set(SYSTEM_LIBS ${SYSTEM_LIBS} ${ATOMIC_EXTRA_LIBS} Shlwapi.lib Rpcrt4.lib)
+ else()
+-  set(SYSTEM_LIBS ${CMAKE_THREAD_LIBS_INIT} ${LIBRT} ${CMAKE_DL_LIBS})
++  set(SYSTEM_LIBS ${SYSTEM_LIBS} ${CMAKE_THREAD_LIBS_INIT} ${LIBRT} ${CMAKE_DL_LIBS} ${ATOMIC_EXTRA_LIBS})
+ endif()
+ 
+ set(ROCKSDB_LIBS rocksdblib})

@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -968,6 +968,14 @@ Language.")
        #:parallel-tests? ,(target-x86-64?)
        #:phases
        (modify-phases %standard-phases
+         ;; TODO: Move this patch to the source field.
+         ,@(if (target-riscv64?)
+             `((add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                   (invoke "patch" "-p1" "--force" "--input"
+                           (assoc-ref (or native-inputs inputs)
+                                      "patch-file")))))
+             '())
          (add-after 'unpack 'adjust-output-references
            (lambda _
              ;; The build system invariably prepends $CMAKE_INSTALL_PREFIX
@@ -1103,7 +1111,12 @@ Language.")
                 (("-lssl -lcrypto" all)
                  (string-append "-L" openssl " " all)))))))))
     (native-inputs
-     (list bison perl))
+     `(,@(if (target-riscv64?)
+           `(("patch" ,patch)
+             ("patch-file" ,(search-patch "mariadb-rocksdb-atomic-linking.patch")))
+           `())
+        ("bison" ,bison)
+        ("perl" ,perl)))
     (inputs
      (list fmt
            jemalloc
@@ -2646,7 +2659,11 @@ database and supports many programming languages.  It is a NoSQL database.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list "--enable-pthread" "--enable-off64" "--enable-fastest"
+       (list "--enable-pthread" "--enable-off64"
+             ,@(if (target-x86?)
+                 ;; Enables x86 specific cflags.
+                 '("--enable-fastest")
+                 '())
         (string-append "LDFLAGS=-Wl,-rpath="
                        (assoc-ref %outputs "out") "/lib"))))
     (inputs
@@ -3590,7 +3607,7 @@ text search extension.")
 (define-public python-sqlite-utils
   (package
     (name "python-sqlite-utils")
-    (version "3.30")
+    (version "3.32.1")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -3599,7 +3616,7 @@ text search extension.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a58syvh5jp40vi5libsxkqy99z75kj4ckxqmylbhd342ppfy1wp"))))
+                "1qf9zwn9gdkx8825klicwkw8zj5wpidd8csdhjxvybq56nkgnrpm"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -5013,7 +5030,7 @@ a Gtk.Grid Widget.")
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
-           ;; TODO: Unbundle json (json-modern-cxx).
+           ;; TODO: Unbundle json (nlohmann-json).
            #~(list (string-append "-DQSCINTILLA_INCLUDE_DIR="
                                   #$(this-package-input "qscintilla")
                                   "/include/Qsci")

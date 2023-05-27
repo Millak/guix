@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>.
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>.
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -152,12 +152,8 @@ jami account used as part of the jami configuration are left *unspecified*."
     (with-imported-modules (source-module-closure
                             '((gnu build marionette)))
       #~(begin
-          (use-modules (rnrs base)
-                       (srfi srfi-11)
-                       (srfi srfi-64)
+          (use-modules (srfi srfi-64)
                        (gnu build marionette))
-
-          (setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=/var/run/jami/bus")
 
           (define marionette
             (make-marionette (list #$vm)))
@@ -171,6 +167,7 @@ jami account used as part of the jami configuration are left *unspecified*."
             (marionette-eval
              '(let ((libraries '(#$guile-ac-d-bus
                                  #$guile-packrat))) ;used by ac-d-bus
+                (setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=/var/run/jami/bus")
                 (set! %load-path
                       (append %load-path
                               (map (lambda (directory)
@@ -200,7 +197,8 @@ jami account used as part of the jami configuration are left *unspecified*."
           (test-assert "service can be stopped"
             (marionette-eval
              '(begin
-                (use-modules (gnu build jami-service)
+                (use-modules (gnu build dbus-service)
+                             (gnu build jami-service)
                              (gnu services herd)
                              (rnrs base))
                 (assert (jami-service-available?))

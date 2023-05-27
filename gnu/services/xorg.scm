@@ -667,7 +667,7 @@ reboot_cmd " shepherd "/sbin/reboot\n"
 
                        (list (symbol-append 'xorg-server-
                                             (string->symbol vt)))))
-           (requirement '(user-processes host-name udev))
+           (requirement '(pam user-processes host-name udev))
            (start
             #~(lambda ()
                 ;; A stale lock file can prevent SLiM from starting, so remove it to
@@ -1119,7 +1119,7 @@ argument.")))
   (list (shepherd-service
          (documentation "Xorg display server (GDM)")
          (provision '(xorg-server))
-         (requirement '(dbus-system user-processes host-name udev elogind))
+         (requirement '(dbus-system pam user-processes host-name udev elogind))
          (start #~(lambda ()
                     (fork+exec-command
                      (list #$(file-append (gdm-configuration-gdm config)

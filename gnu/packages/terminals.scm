@@ -1406,7 +1406,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1417,7 +1417,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00ksvn0k451wmppqxkzzsb5gdjllqxqrnxw81gam00k9wsq8bj6q"))))
+        (base32 "1fz5nbx58058lzfhwgvlnrmhpc4bg8sv8fp48gdgp1l82ajbl3lg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
@@ -1435,8 +1435,6 @@ basic input/output.")
         ("rust-embed-resource" ,rust-embed-resource-1)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
-        ;; XXX: Adjust `add-absolute-library-references' phase when updating
-        ;; glutin input.
         ("rust-glutin" ,rust-glutin-0.30)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
@@ -1464,39 +1462,28 @@ basic input/output.")
              (substitute* "alacritty/src/config/ui_config.rs"
                (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
          (add-after 'configure 'add-absolute-library-references
-           (lambda* (#:key inputs cargo-inputs vendor-dir #:allow-other-keys)
-             (let* ((glutin-name ,(package-name rust-glutin-0.30))
-                    (glutin-version ,(package-version rust-glutin-0.30))
-                    (glutin-api (string-append glutin-name "-" glutin-version
-                                               ".tar.gz/src/api/"))
-                    (smithay-client-toolkit-name
-                     ,(package-name rust-smithay-client-toolkit-0.16))
-                    (smithay-client-toolkit-version
-                     ,(package-version rust-smithay-client-toolkit-0.16))
-                    (smithay-client-toolkit-src
-                     (string-append smithay-client-toolkit-name "-"
-                                    smithay-client-toolkit-version ".tar.gz/src"))
-                    (libxkbcommon (assoc-ref inputs "libxkbcommon"))
-                    (mesa (assoc-ref inputs "mesa")))
-               ;; Fix dlopen()ing some libraries on pure Wayland (no $DISPLAY):
-               ;; Failed to initialize any backend! Wayland status: NoWaylandLib
-               ;; XXX We patch transitive dependencies that aren't even direct
-               ;; inputs to this package, because of the way Guix's Rust build
-               ;; system currently works.  <http://issues.guix.gnu.org/46399>
-               ;; might fix this and allow patching them directly.
-               (substitute* (string-append vendor-dir "/"
-                                           smithay-client-toolkit-src
-                                           "/seat/keyboard/ffi.rs")
-                 (("libxkbcommon\\.so")
-                  (string-append libxkbcommon "/lib/libxkbcommon.so")))
+           (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+             ;; Fix dlopen()ing some libraries on pure Wayland (no $DISPLAY):
+             ;; Failed to initialize any backend! Wayland status: NoWaylandLib
+             ;; XXX We patch transitive dependencies that aren't even direct
+             ;; inputs to this package, because of the way Guix's Rust build
+             ;; system currently works.  <http://issues.guix.gnu.org/46399>
+             ;; might fix this and allow patching them directly.
+             (substitute* (find-files vendor-dir "\\.rs$")
+               (("libEGL\\.so")
+                (search-input-file inputs "lib/libEGL.so"))
+               (("libGL\\.so")
+                (search-input-file inputs "lib/libGL.so"))
+               ;; Lots of libraries from rust-x11-dl.
+               ;; XXX: Not all X11 libraries are inside the build enclosure.
+               ;(("libX.*\\.so" all)
+               ; (search-input-file inputs (string-append "lib/" all)))
 
-               ;; Mesa is needed everywhere.
-               (substitute*
-                   (string-append vendor-dir "/" glutin-api "glx/mod.rs")
-                 (("libGL.so") (string-append mesa "/lib/libGL.so")))
-               (substitute*
-                   (string-append vendor-dir "/" glutin-api "egl/mod.rs")
-                 (("libEGL.so") (string-append mesa "/lib/libEGL.so"))))))
+               ;; There are several libwayland libraries.
+               (("libwayland-.*\\.so" all)
+                (search-input-file inputs (string-append "lib/" all)))
+               (("libxkbcommon\\.so")
+                (search-input-file inputs "lib/libxkbcommon.so")))))
          (replace 'install
            ;; Upstream install script only takes care of executable.
            (lambda* (#:key inputs outputs #:allow-other-keys)

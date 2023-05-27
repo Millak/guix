@@ -66,7 +66,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
-;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
@@ -485,32 +485,47 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.2-version "6.2.14")
+(define-public linux-libre-6.3-version "6.3.3")
+(define-public linux-libre-6.3-gnu-revision "gnu")
+(define deblob-scripts-6.3
+  (linux-libre-deblob-scripts
+   linux-libre-6.3-version
+   linux-libre-6.3-gnu-revision
+   (base32 "01ivgzq18fwas87q84jx9jipcw58kwdnch7ylwg06d98ncga27px")
+   (base32 "10n0ya7y4k96hggylcmymwfj1d07vhpzkz7qamqz7n96jqj1fnpi")))
+(define-public linux-libre-6.3-pristine-source
+  (let ((version linux-libre-6.3-version)
+        (hash (base32 "1ra4kr9bp1s9d7amvz6ik1q3chwps5lysn37b28770pfdim22xc9")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.3)))
+
+(define-public linux-libre-6.2-version "6.2.16")
 (define-public linux-libre-6.2-gnu-revision "gnu")
 (define deblob-scripts-6.2
   (linux-libre-deblob-scripts
    linux-libre-6.2-version
    linux-libre-6.2-gnu-revision
-   (base32 "15wrksnimwb099qgqc631rp8dgv5b61l6s5kknk23frqdwkp4shp")
-   (base32 "0560xc8l2z79qk2dnv15i0m4igw9mq2ymv2a40nw2z3lcqygcs5x")))
+   (base32 "03jd3ijbdql44m89fnzwp3mlygs735n4ga7mighlfbdybfjzwfyj")
+   (base32 "15q27ji6k67a1m94lj0hs47sd072fmb1p575r7g6mq8pl9yynbrl")))
 (define-public linux-libre-6.2-pristine-source
   (let ((version linux-libre-6.2-version)
-        (hash (base32 "0ab756x6baza5wmi0r836g7z0hkvby65g0k6n1sd95nl16irzg0f")))
+        (hash (base32 "04w76lfkfiq7z4dl3cnq6yiqmiwjayhw3n7n81hv8d3919w0vzq6")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.2)))
 
-(define-public linux-libre-6.1-version "6.1.27")
+(define-public linux-libre-6.1-version "6.1.29")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
-   (base32 "10igxhqvlh5ar98i68xf5w9ywfb9l05vg20s8yxmgc62pj72h0yi")
-   (base32 "0cchdhjra74zanyk14brv2l2dvxpg8dn58rn477lgfb44mcnhq33")))
+   (base32 "1b96867b46m36l88qnq2d4i9y43ghw97z9jajrh11cvb6kq4xi67")
+   (base32 "12p6z91fmdqwnmkw0cjha4gl7kzija8fk7yxciznz1raxix6bq57")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "01grx5y48scyyihpj176knn5yvgpxv2gfkli03rwj31xvnb4pdy2")))
+        (hash (base32 "1yzwp0496j63c6lhvsni1ynr8b2cpn552pli3nd3fdk0pp4nqwqy")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
@@ -518,67 +533,67 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.110")
+(define-public linux-libre-5.15-version "5.15.112")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
-   (base32 "0vj60bra81fmbx3lz924czbhxs4dmvd4d584g9mcs80b7c4q52kg")
-   (base32 "03hwhwbcicwyx5i30d6m715kwgrxz4h21xhk55wnawlk8zhx3r35")))
+   (base32 "0w5wyw8zp124nwydjvpnih7q3lp7gadlgsw60syw45nqq0afvlz3")
+   (base32 "00n8c7ghfs36bvz0yjw6w9daf5zcgj94kxxn27bfyfm274rkddmz")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0nqbhgafl513pdfn55j608829bsw8kn0v616gblxqy4rgg3zqacq")))
+        (hash (base32 "0lfnd8mpb3nzvd0gk0jbls3zx7y5kskc4kgccjgkc34flgdyps5h")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.179")
+(define-public linux-libre-5.10-version "5.10.180")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
    (base32 "0mw7qn77y9c6wrnw4rjvf75cpm1w6n1aqqhf8cnghcb97p2yxxrf")
-   (base32 "1g4vabfswxzf9ahxc06k2ffksf84kcr2csx4m5kx680w0jqqnk80")))
+   (base32 "12jhak2bw1jy2jk70vrm66kjvh0cd6c8f2qiy2bk40rq7bf62mr6")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0abylcqbzpxxh45kmvd9i2cig64aajz87j5c8vm3w1ab2mf49g8v")))
+        (hash (base32 "0a8cicvcyl5w4vi7gxhgd59ny44gj9cbv4z5pnwn9jgny55rm0ys")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.242")
+(define-public linux-libre-5.4-version "5.4.243")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
    linux-libre-5.4-gnu-revision
    (base32 "1nlgk8ajb5wl3aa96h9a0pb9j5a5wmrbpk63varn557x1d00r7wj")
-   (base32 "1d6as1yk9svysh07hdybs8glvn8s9f8gwlbjl7f9m920pdam2r60")))
+   (base32 "070j069sj6spy2wkzfzm1d5jd7pffm0s1m917wblc8d3x8pbgvf8")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0a7wfi84p74qsnbj1vamz4qxzp94v054jp1csyfl0blz3knrlbql")))
+        (hash (base32 "017b1xhmjpmiq48pzzx36wn6jwwgaq2kgia51h7pxr7fxr7ndky3")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.282")
+(define-public linux-libre-4.19-version "4.19.283")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
    linux-libre-4.19-version
    linux-libre-4.19-gnu-revision
    (base32 "06pqv050bkii0hc2v7ymny5264w1bca8db0dp1pw9mfmjg865am5")
-   (base32 "1q0fgpbdwc21wj9wnjjb49dp84ch6ymd5na3iaabadwjs2nmb6bd")))
+   (base32 "05yqb59gj7mq5ha9xg045bz517sdg6janfa2yjq70qa6ahpc5fac")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "02z20879xl4ya957by1p35vi1a7myzxwiqd9cnvm541sgnci99a3")))
+        (hash (base32 "1x2irhiv20aq2mrgqyz18d147shbmghwfxq4qi0sv5vc1k91cwq4")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.314")
+(define-public linux-libre-4.14-version "4.14.315")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -588,7 +603,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1ccggm19nl7pdcxmsm08fkqy8phz8rqfmww5ypizibdmnrmpn2v9")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0lwiykv2ci7lrjvvykbiqavzzizdkf8xxqlybixi9l1as7q02v47")))
+        (hash (base32 "17f9cbinysazllrxkv1qlhgi3x61isi7jqrv0qlfpjh69k1waim3")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -620,6 +635,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (inherit source)
     (patches (append (origin-patches source)
                      patches))))
+
+(define-public linux-libre-6.3-source
+  (source-with-patches linux-libre-6.3-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
 (define-public linux-libre-6.2-source
   (source-with-patches linux-libre-6.2-pristine-source
@@ -736,6 +756,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-6.3
+  (make-linux-libre-headers* linux-libre-6.3-version
+                             linux-libre-6.3-gnu-revision
+                             linux-libre-6.3-source))
 
 (define-public linux-libre-headers-6.2
   (make-linux-libre-headers* linux-libre-6.2-version
@@ -1080,6 +1105,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;;; Generic kernel packages.
 ;;;
 
+(define-public linux-libre-6.3
+  (make-linux-libre* linux-libre-6.3-version
+                     linux-libre-6.3-gnu-revision
+                     linux-libre-6.3-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
+
 (define-public linux-libre-6.2
   (make-linux-libre* linux-libre-6.2-version
                      linux-libre-6.2-gnu-revision
@@ -1088,11 +1121,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-version         linux-libre-6.2-version)
-(define-public linux-libre-gnu-revision    linux-libre-6.2-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-6.2-pristine-source)
-(define-public linux-libre-source          linux-libre-6.2-source)
-(define-public linux-libre                 linux-libre-6.2)
+(define-public linux-libre-version         linux-libre-6.3-version)
+(define-public linux-libre-gnu-revision    linux-libre-6.3-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-6.3-pristine-source)
+(define-public linux-libre-source          linux-libre-6.3-source)
+(define-public linux-libre                 linux-libre-6.3)
 
 (define-public linux-libre-6.1
   (make-linux-libre* linux-libre-6.1-version
@@ -1323,9 +1356,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-6.2-version
-          linux-libre-6.2-gnu-revision
-          linux-libre-6.2-source
+          linux-libre-6.3-version
+          linux-libre-6.3-gnu-revision
+          linux-libre-6.3-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
           #:extra-version "bpf"
@@ -1336,7 +1369,10 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
     (package
       (inherit base-linux-libre)
       (inputs (modify-inputs (package-inputs base-linux-libre)
-                (prepend cpio))))))
+                (prepend cpio)))
+      (synopsis "Linux-libre with BPF support")
+      (description "This package provides GNU Linux-Libre with support
+for @acronym{BPF, the Berkeley Packet Filter}."))))
 
 
 ;;;
@@ -5880,72 +5916,89 @@ and copy/paste text in the console and in xterm.")
 (define-public btrfs-progs
   (package
     (name "btrfs-progs")
-    (version "6.1.2")
+    (version "6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
-                                  "people/kdave/btrfs-progs/"
-                                  "btrfs-progs-v" version ".tar.xz"))
+                                  "people/kdave/btrfs-progs/" "btrfs-progs-v"
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "0ylxszcsm0jqsa5glccd1pv3rcfk1f5wjcf3ayxc0r9xgzcngrkb"))))
+                "0zbampc47nq3h8as3rda2apns5sj93ywxnrkal74kjvyg3zvv820"))))
     (build-system gnu-build-system)
-    (outputs '("out"
-               "static"))      ; static versions of the binaries in "out"
+    (outputs '("out" "static")) ;static versions of the binaries in "out"
     (arguments
-     '(#:configure-flags
-       ;; The ‘Python support’ was never actually installed by previous
-       ;; versions of this package, but did prevent cross-compilation.
-       (list "--disable-python")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-makefile
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "Makefile"
-                        (("\\$\\(DESTDIR\\)\\$\\(udevruledir\\)")
-                         (string-append (assoc-ref outputs "out")
-                                        "/lib/udev/rules.d")))))
-                 (add-after 'build 'build-static
-                   (lambda _ (invoke "make" "static")))
-                 (add-after 'install 'install-bash-completion
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let* ((out (assoc-ref outputs "out"))
-                            (bashcomp (string-append out "/etc/bash_completion.d")))
-                       (mkdir-p bashcomp)
-                       (copy-file "btrfs-completion"
-                                  (string-append bashcomp "/btrfs")))))
-                 (add-after 'install 'install-static
-                   (let ((staticbin (string-append (assoc-ref %outputs "static")
-                                                  "/bin")))
+     (list
+      #:configure-flags
+      #~(append
+         ;; Without --disable-documentation, it complains about missing
+         ;; python-sphinx on systems where this package isn't available
+         ;; (because it requires Rust).
+         (if #$@(member (%current-system)
+                        (package-transitive-supported-systems
+                         python-sphinx))
+             '()
+             (list "--disable-documentation"))
+         ;; The ‘Python support’ was never actually installed by previous
+         ;; versions of this package, but did prevent cross-compilation.
+         (list "--disable-python"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-makefile
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (substitute* "Makefile"
+                         (("\\$\\(DESTDIR\\)\\$\\(udevruledir\\)")
+                          (string-append (assoc-ref outputs "out")
+                                         "/lib/udev/rules.d")))))
+                   (add-after 'build 'build-static
                      (lambda _
-                       (invoke "make"
-                               (string-append "bindir=" staticbin)
-                               "install-static")))))
-       #:tests? #f            ; XXX: require the 'btrfs' kernel module.
+                       (invoke "make" "static")))
+                   (add-after 'install 'install-bash-completion
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (bashcomp (string-append out
+                                                       "/etc/bash_completion.d")))
+                         (mkdir-p bashcomp)
+                         (copy-file "btrfs-completion"
+                                    (string-append bashcomp "/btrfs")))))
+                   (add-after 'install 'install-static
+                     (let ((staticbin (string-append (assoc-ref %outputs
+                                                                "static")
+                                                     "/bin")))
+                       (lambda _
+                         (invoke "make"
+                                 (string-append "bindir=" staticbin)
+                                 "install-static")))))
+       #:tests? #f ;XXX: require the 'btrfs' kernel module.
        #:test-target "test"
-       #:parallel-tests? #f)) ; tests fail when run in parallel
-    (inputs `(("e2fsprogs" ,e2fsprogs)  ; for btrfs-convert
-              ("eudev" ,eudev)
-              ("lzo" ,lzo)
-              ("util-linux:lib" ,util-linux "lib")       ;for libblkid and libuuid
-              ("util-linux:static" ,util-linux "static") ;ditto
-              ("zlib" ,zlib)
-              ("zlib:static" ,zlib "static")
-              ("zstd" ,zstd "lib")
-              ("zstd:static" ,zstd "static")))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ;; For building documentation.
-                     ("python-sphinx" ,python-sphinx)
-                     ;; For tests.
-                     ("acl" ,acl)
-                     ("dmsetup" ,lvm2)
-                     ("grep" ,grep)     ; need Perl regexp support
-                     ("libaio" ,libaio)
-                     ("liburing" ,liburing)
-                     ("util-linux" ,util-linux) ; for fallocate
-                     ("which" ,which)))
+       #:parallel-tests? #f)) ;tests fail when run in parallel
+    (inputs (list e2fsprogs   ;for btrfs-convert
+                  eudev
+                  lzo
+                  `(,util-linux "lib")            ;for libblkid and libuuid
+                  `(,util-linux "static")         ;ditto
+                  zlib
+                  `(,zlib "static")
+                  `(,zstd "lib")
+                  `(,zstd "static")))
+    (native-inputs
+     (append
+      ;; For building documentation.  Since python-sphinx requires Rust, add
+      ;; it conditionally depending on such support.
+      (if (supported-package? python-sphinx)
+          (list python-sphinx)
+          '())
+      (list pkg-config
+            acl                                   ;for tests
+            lvm2                                  ;for dmsetup
+            grep                                  ;need Perl regexp support
+            libaio
+            liburing
+            util-linux                            ;for fallocate
+            which)))
     (home-page "https://btrfs.wiki.kernel.org/index.php/Main_Page")
     (synopsis "Create and manage btrfs copy-on-write file systems")
-    (description "Btrfs is a @acronym{CoW, copy-on-write} file system for Linux
+    (description
+     "Btrfs is a @acronym{CoW, copy-on-write} file system for Linux
 aimed at implementing advanced features while focusing on fault tolerance,
 repair and easy administration.")
     ;; GPL2+: crc32.c, radix-tree.c, raid6.c, rbtree.c.
@@ -8986,7 +9039,7 @@ the superuser to make device nodes.")
 (define-public fakeroot
   (package
     (name "fakeroot")
-    (version "1.30.1")
+    (version "1.31")
     (source
      (origin
        ;; There are no tags in the repository, so take this snapshot.
@@ -8995,7 +9048,7 @@ the superuser to make device nodes.")
                            "fakeroot/fakeroot_" version ".orig.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xba5gfh7ygv6na8n1ckqd2jnpdr9q88qan385qxp85c47sb3srj"))
+        (base32 "0br0gvvribfs2kpkhwr51lsinhl6l36334wx1cbwfmhww50nv233"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet

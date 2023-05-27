@@ -33,6 +33,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system waf)
   #:use-module (gnu packages)
@@ -278,26 +279,24 @@ and triple stores.")
 (define-public serd
   (package
     (name "serd")
-    (version "0.30.8")
+    (version "0.30.16")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/serd-"
-                                 version ".tar.bz2"))
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "11zs53yx40mv62vxsl15mvdh7s17y5v6lgcgahdvzxgnan7w8bk7"))))
-    (build-system waf-build-system)
+               "0ilimkczibiwwvc12i14b8zi6ng42hjf9j907g8dik8rlmnlh3zm"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'configure 'set-ldflags
-          (lambda* (#:key outputs #:allow-other-keys)
-            (setenv "LDFLAGS"
-                    (string-append "-Wl,-rpath="
-                                   (assoc-ref outputs "out") "/lib"))
-            #t)))))
+     (list
+      #:tests? #f                       ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-ldflags
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (home-page "https://drobilla.net/software/serd/")
     (synopsis "Library for RDF syntax supporting Turtle and NTriples")
     (description
@@ -312,26 +311,24 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 (define-public sord
   (package
     (name "sord")
-    (version "0.16.8")
+    (version "0.16.14")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/sord-"
-                                 version ".tar.bz2"))
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "052y7zllrg0bzyky2rmrrwnnf16p6bk7q40rq9mgm0mzm8p9sa3w"))))
-    (build-system waf-build-system)
+               "06vkqk3dnn15zdnzklahib2pvbfspy2zcrnvhmxnw8fbbxyxj3r2"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'configure 'set-ldflags
-          (lambda* (#:key outputs #:allow-other-keys)
-            (setenv "LDFLAGS"
-                    (string-append "-Wl,-rpath="
-                                   (assoc-ref outputs "out") "/lib"))
-            #t)))))
+     (list
+      #:tests? #f                       ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-ldflags
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (inputs
      (list pcre))
     (native-inputs

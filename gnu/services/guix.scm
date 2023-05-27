@@ -133,6 +133,7 @@
             nar-herder-configuration-cached-compression-min-uses
             nar-herder-configuration-cached-compression-workers
             nar-herder-configuration-cached-compression-nar-source
+            nar-herder-configuration-extra-environment-variables
 
             nar-herder-cached-compression-configuration
             nar-herder-cached-compression-configuration?
@@ -858,7 +859,10 @@ ca-certificates.crt file in the system profile."
    (default 2))
   (cached-compression-nar-source
    nar-herder-configuration-cached-compression-nar-source
-   (default #f)))
+   (default #f))
+  (extra-environment-variables
+   nar-herder-configuration-extra-environment-variables
+   (default '())))
 
 (define-record-type* <nar-herder-cached-compression-configuration>
   nar-herder-cached-compression-configuration
@@ -906,7 +910,8 @@ ca-certificates.crt file in the system profile."
              storage storage-limit storage-nar-removal-criteria
              ttl negative-ttl log-level
              cached-compressions cached-compression-min-uses
-             cached-compression-workers cached-compression-nar-source)
+             cached-compression-workers cached-compression-nar-source
+             extra-environment-variables)
 
     (unless (or mirror storage)
       (error "nar-herder: mirror or storage must be set"))
@@ -975,7 +980,8 @@ ca-certificates.crt file in the system profile."
                 #:environment-variables
                 `(,(string-append
                     "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
-                  "LC_ALL=en_US.utf8")
+                  "LC_ALL=en_US.utf8"
+                  #$@extra-environment-variables)
                 #:log-file "/var/log/nar-herder/server.log"))
       (stop #~(make-kill-destructor))))))
 

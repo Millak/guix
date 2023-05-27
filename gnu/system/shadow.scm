@@ -155,11 +155,31 @@ alias grep='grep --color=auto'\n"))
 if [ -f ~/.profile ]; then . ~/.profile; fi
 
 # Honor per-interactive-shell startup file
-if [ -f ~/.bashrc ]; then . ~/.bashrc; fi\n"))
+if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
+
+# Merge search-paths from multiple profiles, the order matters.
+eval \"$(guix package --search-paths \\
+-p $HOME/.config/guix/current \\
+-p $HOME/.guix-profile \\
+-p /run/current-system/profile)\"
+
+# Prepend setuid programs.
+export PATH=/run/setuid-programs:$PATH
+"))
         (bashrc  %default-bashrc)
         (zprofile    (plain-file "zprofile" "\
 # Honor system-wide environment variables
-source /etc/profile\n"))
+source /etc/profile
+
+# Merge search-paths from multiple profiles, the order matters.
+eval \"$(guix package --search-paths \\
+-p $HOME/.config/guix/current \\
+-p $HOME/.guix-profile \\
+-p /run/current-system/profile)\"
+
+# Prepend setuid programs.
+export PATH=/run/setuid-programs:$PATH
+"))
         (xdefaults (plain-file "Xdefaults" "\
 XTerm*utf8: always
 XTerm*metaSendsEscape: true\n"))
@@ -438,6 +458,7 @@ the /etc/skel directory for those."
                                           (const '(user-homes)))
                        (service-extension etc-service-type
                                           etc-files)))
+                (default-value #f)
                 (description
                  "Ensure the specified user accounts and groups exist, as well
 as each account home directory.")))

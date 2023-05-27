@@ -1529,7 +1529,7 @@ the patchset.
 
 @example
 $ git send-email -@var{NUMBER_COMMITS} -v@var{REVISION} \
-      --to @var{ISSUE_NUMBER}@@debbugs.gnu.org
+      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org
 @end example
 
 If need be, you may use @option{--cover-letter --annotate} to send
@@ -1561,7 +1561,7 @@ You can run the following command to have the @code{Mentors} team put in
 CC of a patch series:
 
 @example
-$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org \
+$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org \
   --header-cmd='etc/teams.scm cc-mentors-header-cmd' *.patch
 @end example
 
@@ -1571,7 +1571,7 @@ current Git repository to review, you can run:
 
 @example
 $ guix shell -D guix
-[env]$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org -2
+[env]$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -2
 @end example
 
 @node Tracking Bugs and Patches

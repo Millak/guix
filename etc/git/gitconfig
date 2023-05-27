@@ -1,6 +1,3 @@
-[commit]
-        gpgsign = true
-
 [diff "scheme"]
 	xfuncname = "^(\\(define.*)$"
 

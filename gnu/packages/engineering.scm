@@ -20,7 +20,7 @@
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
@@ -908,45 +908,89 @@ fonts to gEDA.")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:imported-modules `((guix build guile-build-system)
+                             ,@%cmake-build-system-modules)
+        #:modules '((guix build cmake-build-system)
+                    ((guix build guile-build-system) #:prefix guile:)
+                    (guix build utils))
         #:test-target "libfive-test"
-        #:configure-flags
-        #~(list (string-append "-DGUILE_CCACHE_DIR="
-                               #$output "/lib/guile/3.0/site-ccache"))
+        #:configure-flags #~(list
+                             (string-append
+                              "-DPYTHON_SITE_PACKAGES_DIR="
+                              #$output "/lib/python"
+                              #$(version-major+minor
+                                 (package-version
+                                  (this-package-input "python-wrapper")))
+                              "/site-packages"))
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'fix-autocompilation
-              (lambda _ (setenv "HOME" "/tmp")))
             (add-after 'unpack 'remove-native-compilation
               (lambda _
                 (substitute* "CMakeLists.txt" (("-march=native") ""))))
+            (add-after 'unpack 'remove-environment-variable-override
+              (lambda _
+                (substitute* "studio/src/guile/interpreter.cpp"
+                  (("qputenv\\(\"GUILE_LOAD_COMPILED_PATH\".*") ""))))
             (add-after 'unpack 'fix-library-location
               (lambda _
                 (substitute* "libfive/bind/guile/libfive/lib.scm"
                   (("\\(get-environment-variable \"LIBFIVE_FRAMEWORK_DIR\"\\)" m)
                    (string-append m "\n\"" #$output "/lib/\""))
                   (("\\(get-environment-variable \"LIBFIVE_STDLIB_DIR\"\\)" m)
-                   (string-append m "\n\"" #$output "/lib/\"")))))
-            (add-after 'install 'install-scm-files
+                   (string-append m "\n\"" #$output "/lib/\"")))
+                (substitute* "libfive/bind/python/libfive/ffi.py"
+                  (("os.environ.get\\('LIBFIVE_FRAMEWORK_DIR'\\)" m)
+                   (string-append m " or \"" #$output "/lib/\"")))))
+            (add-before 'build 'generate-bindings
               (lambda _
-                (for-each
-                 (lambda (file)
-                   (install-file file
-                                 (string-append #$output
-                                                "/share/guile/site/3.0/libfive")))
-                 (find-files "../source/libfive/bind/guile/libfive"
-                             "\\.scm$")))))))
+                ;; These files already exist but we regenerate them from source
+                (with-directory-excursion "../source/libfive/stdlib"
+                  (substitute* '("gen_scm.py" "gen_c.py" "gen_py.py")
+                    (("datetime.now\\(\\)\\.strftime\\([^)]+)") "\"N/A\"")
+                    (("os\\.getlogin\\(\\)") "\"guix\""))
+                  (invoke "python" "gen_scm.py")
+                  (invoke "python" "gen_c.py")
+                  (invoke "python" "gen_py.py"))))
+            (add-after 'unpack 'do-not-build-guile-bindings
+              (lambda _
+                (delete-file "libfive/bind/guile/CMakeLists.txt")
+                (call-with-output-file
+                    "libfive/bind/guile/CMakeLists.txt"
+                  (lambda (port)
+                    (display "add_custom_target(libfive-guile)\n" port)))))
+            (add-after 'build 'guile-build
+              (lambda args
+                (apply (assoc-ref guile:%standard-phases 'build)
+                       #:source-directory "../source/libfive/bind/guile"
+                       args)))
+            (add-after 'install 'wrap-studio
+              (lambda _
+                (let* ((effective-version (guile:target-guile-effective-version))
+                       (scm (string-append #$output "/share/guile/site/"
+                                           effective-version))
+                       (go (string-append #$output "/lib/guile/"
+                                          effective-version "/site-ccache"))
+                       (py (string-append #$output "/lib/python"
+                                          #$(version-major+minor
+                                             (package-version
+                                              (this-package-input "python-wrapper")))
+                                          "/site-packages")))
+                  (wrap-program (string-append #$output "/bin/Studio")
+                    `("GUILE_LOAD_PATH" ":" prefix (,scm))
+                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,go))
+                    `("GUIX_PYTHONPATH" ":" prefix (,py)))))))))
       (native-inputs
        (list pkg-config))
       (inputs
-       (list boost libpng qtbase-5 eigen guile-3.0))
+       (list bash-minimal boost eigen guile-3.0 libpng python-wrapper qtbase))
       (home-page "https://libfive.com")
       (synopsis "Tool for programmatic computer-aided design")
       (description
        "Libfive is a tool for programmatic computer-aided design (CAD).  In
-libfive, solid models are defined as Scheme scripts, and there are no opaque
-function calls into the geometry kernel: everything is visible to the user.
-Even fundamental, primitive shapes are represented as code in the user-level
-language.")
+libfive, solid models are defined as Scheme or Python scripts, and there are
+no opaque function calls into the geometry kernel: everything is visible to
+the user.  Even fundamental, primitive shapes are represented as code in the
+user-level language.")
       (license (list license:mpl2.0               ;library
                      license:gpl2+))              ;Guile bindings and GUI
 
@@ -2497,7 +2541,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.26.0")
+    (version "0.27.1")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2505,7 +2549,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1v7dag6sm96b18y4p46cjjyqnq9r2r7qmiy0xvdwy3js4zf4iwcv"))
+                "1rh2hq050439azlglqb54cy3jc1ir5y1ps55as4d5j619a7mq9x0"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
@@ -3023,13 +3067,13 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
 (define-public poke
   (package
     (name "poke")
-    (version "3.1")
+    (version "3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/poke/poke-" version
                                   ".tar.gz"))
               (sha256
-               (base32 "0gziizzpdwg1h4znndhapx4ybjqhxycgxdh0f1qyq5h9h6xac1gl"))
+               (base32 "15qd9z3wv7jrdlh6f9hwgni54ssdz8hzrn4lxiacwv1sslfmb3km"))
               (modules '((guix build utils)))
               (snippet
                '(begin

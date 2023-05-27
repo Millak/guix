@@ -535,14 +535,14 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.13.4")
+    (version "0.14.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "19r1g8i8k6ds7ncvqdh58vkm4m5hz4w9zbglmg1mi7xcdqp4ax8h"))
+           "1wcv1sk8igs5kb9fqb8njbxwiqbwzpn0kdx9xkaddq3wn6msma25"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
@@ -851,7 +851,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.14.2")
+    (version "0.15.0")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -864,7 +864,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0qsfkav6a70nvp27ilab7zilmihw4ygga48a0dkxa14q9giwlgwr"))))
+        (base32 "1yy4523lbwkb0abnnvp4v08nv94isxb16wjryrp820idb90c1zfb"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary

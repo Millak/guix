@@ -2530,7 +2530,7 @@ parametrize.  This plugin allows you to use all four.")
 (define-public python-pytest-httpx
   (package
     (name "python-pytest-httpx")
-    (version "0.21.0")
+    (version "0.22.0")
     (source
      (origin
        ;; pypi package doesn't include the tests
@@ -2540,16 +2540,8 @@ parametrize.  This plugin allows you to use all four.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12mcy1f5d5cq3rqrqgi2ar0qvzw62ibys17hw6dsdfd0j2syck4r"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "PYTHONPATH" (getcwd))
-               (invoke "pytest" "-vv")))))))
+        (base32 "1ncpd74hmsz4sadvjg99fnfscxpgh3mc2siini0dhxzwgwdkk5i7"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-httpx))
     (native-inputs (list python-pytest python-pytest-asyncio))
     (home-page "https://colin-b.github.io/pytest_httpx/")
@@ -2606,4 +2598,37 @@ attachments).
 the X11 display server protocol.  It runs in memory and does not require a
 physical display.  Only a network layer is necessary.  Xvfb is useful for
 running acceptance tests on headless servers.")
+    (license license:expat)))
+
+(define-public python-vulture
+  (package
+    (name "python-vulture")
+    (version "2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "vulture" version))
+              (sha256
+               (base32
+                "0cl0v3dadxvff0pgq1j120m064a3nmnbjjylkmcxp7zd2jh81yv7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv" "tests" "-k"
+                                      ;; skip test that uses python-pint
+                                      ;; pint has many dependencies
+                                      "not test_whitelists_with_python")))))))
+    (native-inputs (list python-pytest python-pytest-cov))
+    (propagated-inputs (list python-toml))
+    (home-page "https://github.com/jendrikseipp/vulture")
+    (synopsis "Find dead Python code")
+    (description
+     "Vulture finds unused code in Python programs.  This is useful for
+cleaning up and finding errors in large code bases.  If you run Vulture on
+both your library and test suite you can find untested code.  Due to Python's
+dynamic nature, static code analyzers like Vulture are likely to miss some
+dead code.  Also, code that is only called implicitly may be reported as
+unused.")
     (license license:expat)))

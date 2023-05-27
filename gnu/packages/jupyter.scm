@@ -196,7 +196,7 @@ Messaging Protocol}.")
            python-jupyter-client))
     (inputs
      (list xtl
-           json-modern-cxx
+           nlohmann-json
            cppzmq
            zeromq
            openssl

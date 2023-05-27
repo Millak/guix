@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services configuration)
+  #:use-module (gnu system pam)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages cups)
@@ -500,8 +502,11 @@ programs.")
 
 (define-configuration cups-configuration
   (cups
-   (file-like cups-minimal)
+   (file-like cups)
    "The CUPS package.")
+  (allow-empty-password?
+   (boolean #f)
+   "Specifies whether empty passwords will be allowed when authenticating via PAM.")
   (extensions
    (package-list (list brlaser cups-filters epson-inkjet-printer-escpr
                        foomatic-filters hplip-minimal splix))
@@ -841,8 +846,11 @@ IPP specifications.")
 
 (define-configuration opaque-cups-configuration
   (cups
-   (package cups-minimal)
+   (package cups)
    "The CUPS package.")
+  (allow-empty-password?
+   (boolean #f)
+   "Specifies whether empty passwords will be allowed when authenticating via PAM.")
   (extensions
    (package-list '())
    "Drivers and other extensions to the CUPS package.")
@@ -1006,6 +1014,14 @@ extensions that it uses."
                            "-f" "-c" #$cupsd.conf "-s" #$cups-files.conf)))
            (stop #~(make-kill-destructor))))))
 
+(define (cups-pam-service config)
+  (let ((allow-empty-password?
+         (if (opaque-cups-configuration? config)
+             (opaque-cups-configuration-allow-empty-password? config)
+             (cups-configuration-allow-empty-password? config))))
+    (list (unix-pam-service "cups"
+                            #:allow-empty-passwords? allow-empty-password?))))
+
 (define cups-service-type
   (service-type (name 'cups)
                 (extensions
@@ -1013,6 +1029,8 @@ extensions that it uses."
                                           cups-shepherd-service)
                        (service-extension activation-service-type
                                           (const %cups-activation))
+                       (service-extension pam-root-service-type
+                                          cups-pam-service)
                        (service-extension account-service-type
                                           (const %cups-accounts))))
 

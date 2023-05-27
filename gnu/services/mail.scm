@@ -1578,7 +1578,7 @@ greyed out, instead of only later giving \"not selectable\" popup error.
     (list (shepherd-service
            (documentation "Run the Dovecot POP3/IMAP mail server.")
            (provision '(dovecot))
-           (requirement '(networking))
+           (requirement '(pam networking))
            (start #~(make-forkexec-constructor
                      (list (string-append #$dovecot "/sbin/dovecot")
                            "-F")))
@@ -1676,7 +1676,7 @@ match from local for any action outbound
                        (package config-file shepherd-requirement)
     (list (shepherd-service
            (provision '(smtpd))
-           (requirement `(loopback ,@shepherd-requirement))
+           (requirement `(pam loopback ,@shepherd-requirement))
            (documentation "Run the OpenSMTPD daemon.")
            (start (let ((smtpd (file-append package "/sbin/smtpd")))
                     #~(make-forkexec-constructor

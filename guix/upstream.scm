@@ -330,12 +330,14 @@ than that of PACKAGE."
                                         #$output)))))
 
 (define* (download-tarball store url signature-url
-                           #:key (key-download 'interactive))
+                           #:key (key-download 'interactive) key-server)
   "Download the tarball at URL to the store; check its OpenPGP signature at
 SIGNATURE-URL, unless SIGNATURE-URL is false.  On success, return the tarball
 file name; return #f on failure (network failure or authentication failure).
+
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'interactive' (default), 'always', and 'never'."
+values: 'interactive' (default), 'always', and 'never'; KEY-SERVER specifies
+the OpenPGP key server where the key should be looked up."
   (let ((tarball (download-to-store store url)))
     (if (not signature-url)
         tarball
@@ -356,6 +358,7 @@ values: 'interactive' (default), 'always', and 'never'."
           (let-values (((status data)
                         (if sig
                             (gnupg-verify* sig data
+                                           #:server key-server
                                            #:key-download key-download)
                             (values 'missing-signature data))))
             (match status
@@ -446,7 +449,7 @@ string such as \"xz\".  Otherwise return #f."
             extension)))))
 
 (define* (package-update/url-fetch store package source
-                                   #:key key-download)
+                                   #:key key-download key-server)
   "Return the version, tarball, and SOURCE, to update PACKAGE to
 SOURCE, an <upstream-source>."
   (match source
@@ -470,11 +473,13 @@ SOURCE, an <upstream-source>."
                                         (and (pair? signature-urls)
                                              (or signature-url
                                                  (first signature-urls)))
+                                        #:key-server key-server
                                         #:key-download key-download)))
          (values version tarball source))))))
 
 
-(define* (package-update/git-fetch store package source #:key key-download)
+(define* (package-update/git-fetch store package source
+                                   #:key key-download key-server)
   "Return the version, checkout, and SOURCE, to update PACKAGE to
 SOURCE, an <upstream-source>."
   ;; TODO: it would be nice to authenticate commits, e.g. with
@@ -495,7 +500,8 @@ SOURCE, an <upstream-source>."
 
 (define* (package-update store package
                          #:optional (updaters (force %updaters))
-                         #:key (key-download 'interactive) (version #f))
+                         #:key (version #f)
+                         (key-download 'interactive) key-server)
   "Return the new version, the file name of the new version tarball, and input
 changes for PACKAGE; return #f (three values) when PACKAGE is up-to-date;
 raise an error when the updater could not determine available releases.
@@ -532,6 +538,7 @@ this method: ~s")
                         (location (package-location package)))))))
              ((_ . update)
               (update store package source
+                      #:key-server key-server
                       #:key-download key-download))))
          (values #f #f #f)))
     (#f

@@ -27,6 +27,7 @@
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -800,6 +801,32 @@ Networking and Cryptography library.  These libraries have a stated goal
 of improving usability, security and speed.")
     (license license:asl2.0)))
 
+(define-public python-crcmod
+  (package
+    (name "python-crcmod")
+    (version "1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "crcmod" version))
+              (sha256
+               (base32
+                "07k0hgr42vw2j92cln3klxka81f33knd7459cn3d8aszvfh52w6w"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; As per the Unit Testing subsection in the README.
+                (invoke "python" "-m" "crcmod.test")))))))
+    (synopsis "CRC generator for Python")
+    (description "Python module for generating objects that compute the
+Cyclic Redundancy Check.")
+    (home-page "https://crcmod.sourceforge.net/")
+    (license license:expat)))
+
 (define-public python-blurhash
   (package
     (name "python-blurhash")
@@ -1246,27 +1273,41 @@ Password-Authenticated Key Exchange algorithm.")
 (define-public python-txtorcon
   (package
     (name "python-txtorcon")
-    (version "19.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "txtorcon" version))
-        (sha256
-         (base32
-          "0fxzhsc62bhmr730vj9pzallmw56gz6iykvl28a5agrycm0bfc9p"))))
+    (version "23.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "txtorcon" version))
+              (sha256
+               (base32
+                "09a3k4g90pvs0q006ighka7xic39nnnk9bfrka23g4b8cynzy982"))))
     (build-system python-build-system)
     (arguments
-      ;; The tests fail immediately due to a missing file. Reported upstream:
-      ;; <https://github.com/meejah/txtorcon/issues/330>
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-automat
-           python-idna
-           python-incremental
-           python-pyopenssl
-           python-service-identity
-           python-twisted
-           python-zope-interface))
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'disable-failing-tests
+                          (lambda _
+                            ;; These tests fail
+                            (substitute* "test/test_router.py"
+                              (("\\W+def test_countrycode\\(self\\):" all)
+                               (string-append
+                                "    from unittest import skip as _skip\n"
+                                "    @_skip('Fails during Guix build')\n" all))
+                              (("\\W+def test_get_location_private\\(self\\):"
+                                all)
+                               (string-append
+                                "    @_skip('Fails during Guix build')\n" all)))
+                            ;; This test errors out
+                            (substitute* "test/test_util.py"
+                              (("\\W+def test_real_addr\\(self\\):" all)
+                               (string-append
+                                "    @_skip('Fails during Guix build')\n" all))))))))
+    (propagated-inputs (list python-automat
+                             python-idna
+                             python-incremental
+                             python-pyopenssl
+                             python-service-identity
+                             python-twisted
+                             python-zope-interface))
+    (native-inputs (list python-mock))
     (home-page "https://github.com/meejah/txtorcon")
     (synopsis "Twisted-based Tor controller client")
     (description "This package provides a Twisted-based Tor controller client,
