@@ -1463,6 +1463,28 @@ Knuth, including the plain format, plain base, and the MF logo fonts.")
 
 (define-deprecated-package texlive-fonts-knuth-lib texlive-knuth-lib)
 
+(define-public texlive-knuth-local
+  (package
+    (name "texlive-knuth-local")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "fonts/source/public/knuth-local/"
+                   "fonts/tfm/public/knuth-local/"
+                   "mft/knuth-local/" "tex/plain/knuth-local/")
+             (base32
+              "02cf32f57fr6bngiv9xiw8bh4sq53p9br034ap74s80h3bgcmn1f")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/knuth-local")
+    (native-inputs
+     (list texlive-knuth-lib texlive-metafont))
+    (synopsis "Knuth's local information")
+    (description
+     "This package provides a collection of experimental programs and
+developments based on, or complementary to, the matter in his distribution
+directories.")
+    (license license:public-domain)))
+
 (define-public texlive-latex-fonts
   (package
     (name "texlive-latex-fonts")
