@@ -832,7 +832,7 @@ at the link-layer level.")
              (substitute* "src/supplemental/websocket/CMakeLists.txt"
                (("nng_test\\(wssfile_test\\)") "")))))))
     (native-inputs (list oksh))
-    (inputs (list mbedtls-apache))
+    (inputs (list mbedtls-lts))
     (synopsis "Lightweight messaging library")
     (description "NNG project is a rewrite of the scalability protocols library
 known as libnanomsg, and adds significant new capabilities, while retaining

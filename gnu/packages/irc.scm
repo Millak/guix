@@ -912,7 +912,7 @@ but can also be used independently as a logging bot.")
      (list argon2
            gnutls
            libmaxminddb
-           mbedtls-apache
+           mbedtls-lts
            (list mariadb "dev")
            openldap
            openssl

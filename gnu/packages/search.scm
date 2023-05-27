@@ -374,7 +374,7 @@ for parsing HTML files.")
        (list aspell
              c-ares
              libextractor
-             mbedtls-apache
+             mbedtls-lts
              postgresql
              zlib))
       (synopsis "Feature rich search engine")

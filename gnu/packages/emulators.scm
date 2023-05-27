@@ -351,7 +351,7 @@ console.")
              libxi
              libxrandr
              lzo
-             mbedtls-apache
+             mbedtls-lts
              mesa
              miniupnpc
              openal
@@ -1490,7 +1490,7 @@ as RetroArch.")
            libxml2
            libxrandr
            libxv
-           mbedtls-apache
+           mbedtls-lts
            mesa
            openal
            openssl

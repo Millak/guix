@@ -973,9 +973,9 @@ correct OpenSSL include path.  It is intended for use in your
 number generator")
   (license license:perl-license)))
 
-(define-public mbedtls-apache
+(define-public mbedtls-lts
   (package
-    (name "mbedtls-apache")
+    (name "mbedtls")
     (version "2.28.7")
     (source
      (origin
@@ -1007,13 +1007,16 @@ coding footprint.")
     (home-page "https://www.trustedfirmware.org/projects/mbed-tls/")
     (license (list license:asl2.0 license:gpl2+)))) ;dual licensed
 
+(define-public mbedtls-apache
+  (deprecated-package "mbedtls-apache" mbedtls-lts))
+
 ;; The Hiawatha Web server requires some specific features to be enabled.
 (define-public mbedtls-for-hiawatha
   (hidden-package
    (package
-     (inherit mbedtls-apache)
+     (inherit mbedtls-lts)
      (arguments
-      (substitute-keyword-arguments (package-arguments mbedtls-apache)
+      (substitute-keyword-arguments (package-arguments mbedtls-lts)
         ((#:phases phases)
          #~(modify-phases #$phases
              (add-before 'configure 'configure-extra-features

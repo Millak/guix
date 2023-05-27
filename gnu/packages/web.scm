@@ -6490,7 +6490,7 @@ functions of Tidy.")
              ;; Make sure 'hiawatha' finds 'mbedtls'.
              (let* ((out (assoc-ref outputs "out"))
                     (sbin (string-append out "/sbin"))
-                    (mbed (assoc-ref inputs "mbedtls-apache")))
+                    (mbed (assoc-ref inputs "mbedtls")))
                (wrap-program (string-append sbin "/hiawatha")
                  `("PATH" ":" prefix (,mbed)))))))))
     (inputs

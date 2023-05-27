@@ -2038,7 +2038,7 @@ games.")
            libxi
            libxinerama
            libxrandr
-           mbedtls-apache
+           mbedtls-lts
            mesa
            opusfile
            pcre2
@@ -2280,7 +2280,7 @@ scripted in a Python-like language.")
            libxinerama
            libxkbcommon
            libxrandr
-           mbedtls-apache
+           mbedtls-lts
            mesa
            openxr
            opusfile
