@@ -4460,7 +4460,8 @@ provide high-quality sample rate conversion.")
      `(#:tests? #f ; no "check" target
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "SUFFIX="))
+             (string-append "SUFFIX=")
+             (string-append "CXX=" ,(cxx-for-target)))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-makefile-and-enter-directory
