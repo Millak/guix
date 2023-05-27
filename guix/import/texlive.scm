@@ -300,59 +300,65 @@ of those files are returned that are unexpectedly installed."
              (source (with-store store
                        (download-multi-svn-to-store
                         store ref (string-append name "-svn-multi-checkout")))))
-    (values
-     `(package
-        (name ,name)
-        (version (number->string %texlive-revision))
-        (source (texlive-origin
-                 name version
-                 (list ,@(sort locs string<))
-                 (base32
-                  ,(bytevector->nix-base32-string
-                    (let-values (((port get-hash) (open-sha256-port)))
-                      (write-file source port)
-                      (force-output port)
-                      (get-hash))))))
-        ,@(if (assoc-ref data 'docfiles)
-              '((outputs '("out" "doc")))
-              '())
-        (build-system texlive-build-system)
-        ;; Texlive build system generates font metrics whenever a font metrics
-        ;; file has the same base name as a Metafont file.
-        ,@(or (and-let* ((runfiles (assoc-ref data 'runfiles))
-                         (metrics
-                          (filter-map (lambda (f)
-                                        (and (string-suffix? ".tfm" f)
-                                             (basename f ".tfm")))
-                                      runfiles))
-                         ((not (null? metrics)))
-                         ((any (lambda (f)
-                                 (and (string-suffix? ".mf" f)
-                                      (member (basename f ".mf") metrics)))
-                               runfiles)))
-                '((native-inputs (list texlive-metafont))))
-              '())
-        ,@(match filtered-depends
-            (() '())
-            (inputs
-             `((propagated-inputs
-                (list ,@(map
-                         (lambda (tex-name)
-                           (let ((name (guix-name tex-name)))
-                             (string->symbol name)))
-                         ;; Sort inputs alphabetically.
-                         (reverse inputs)))))))
-        (home-page
-         ,(or (and=> (or (assoc-ref data 'catalogue)
-                         (assoc-ref data 'name))
-                     (lambda (name)
-                       (string-append "https://ctan.org/pkg/" name)))
-              "https://www.tug.org/texlive/"))
-        (synopsis ,(assoc-ref data 'shortdesc))
-        (description ,(and=> (assoc-ref data 'longdesc) beautify-description))
-        (license ,(and=> (assoc-ref data 'catalogue-license)
-                         string->license)))
-     filtered-depends)))
+    (let ((meta-package? (null? locs)))
+      (values
+       `(package
+          (name ,name)
+          (version (number->string %texlive-revision))
+          (source ,(and (not meta-package?)
+                        `(texlive-origin
+                          name version
+                          (list ,@(sort locs string<))
+                          (base32
+                           ,(bytevector->nix-base32-string
+                             (let-values (((port get-hash) (open-sha256-port)))
+                               (write-file source port)
+                               (force-output port)
+                               (get-hash)))))))
+          ,@(if (assoc-ref data 'docfiles)
+                '((outputs '("out" "doc")))
+                '())
+          (build-system texlive-build-system)
+          ;; Texlive build system generates font metrics whenever a font
+          ;; metrics file has the same base name as a Metafont file.
+          ,@(or (and-let* ((runfiles (assoc-ref data 'runfiles))
+                           (metrics
+                            (filter-map (lambda (f)
+                                          (and (string-suffix? ".tfm" f)
+                                               (basename f ".tfm")))
+                                        runfiles))
+                           ((not (null? metrics)))
+                           ((any (lambda (f)
+                                   (and (string-suffix? ".mf" f)
+                                        (member (basename f ".mf") metrics)))
+                                 runfiles)))
+                  '((native-inputs (list texlive-metafont))))
+                '())
+          ,@(match filtered-depends
+              (() '())
+              (inputs
+               `((propagated-inputs
+                  (list ,@(filter-map
+                           (lambda (tex-name)
+                             (let ((name (guix-name tex-name)))
+                               (string->symbol name)))
+                           ;; Sort inputs alphabetically.
+                           (reverse inputs)))))))
+          (home-page
+           ,(cond
+             (meta-package? "https://www.tug.org/texlive/")
+             ((or (assoc-ref data 'catalogue) (assoc-ref data 'name)) =>
+              (cut string-append "https://ctan.org/pkg/" <>))
+             (else "https://www.tug.org/texlive/")))
+          (synopsis ,(assoc-ref data 'shortdesc))
+          (description ,(and=> (assoc-ref data 'longdesc) beautify-description))
+          (license
+           ,(cond
+             (meta-package?
+              '(license:fsf-free "https://www.tug.org/texlive/copying.html"))
+             ((assoc-ref data 'catalogue-license) => string->license)
+             (else #f))))
+       filtered-depends))))
 
 (define texlive->guix-package
   (memoize

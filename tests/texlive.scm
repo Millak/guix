@@ -62,6 +62,11 @@
          .
          ("texmf-dist/tex/latex/chs-physics-report/chs-physics-report.sty"))
         (catalogue-license . "pd cc-by-sa-3")))
+    ("collection-texworks"
+     (name . "collection-texworks")
+     (shortdesc . "TeXworks editor...")
+     (longdesc . "See http...")
+     (depend "texworks" "collection-basic"))
     ("example"
      . ((name . "example")
         (shortdesc . "Typeset examples...")
@@ -395,6 +400,40 @@ completely compatible with Plain TeX.")
                ('synopsis (? string?))
                ('description (? string?))
                ('license ('list 'public-domain 'cc-by-sa3.0)))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, meta-package"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "collection-texworks"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-collection-texworks")
+               ('version _)
+               ('source #f)
+               ('build-system 'texlive-build-system)
+               ('propagated-inputs
+                ('list 'texlive-collection-basic 'texlive-texworks))
+               ('home-page "https://www.tug.org/texlive/")
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license
+                ('license:fsf-free "https://www.tug.org/texlive/copying.html")))
              #true)
             (_
              (begin
