@@ -32998,6 +32998,25 @@ functions
 markdown-compliant strings.")
     (license license:expat)))
 
+(define-public python-zbarlight
+  (package
+    (name "python-zbarlight")
+    (version "3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zbarlight" version))
+              (sha256
+               (base32
+                "1v5c9bim8af6g8kgxp2dhm96n5vkr8sqi56w0bdh1xy49v03lw3g"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pillow))
+    (inputs (list zbar))
+    (home-page "https://github.com/Polyconseil/zbarlight")
+    (synopsis "Simple Python wrapper for the zbar barcode library")
+    (description "Zbarlight is a simple wrapper for the zbar library.  It can
+read all zbar supported codes.")
+    (license license:bsd-3)))
+
 (define-public python-zeroc-ice
   (package
     (name "python-zeroc-ice")
