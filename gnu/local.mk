@@ -1137,7 +1137,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/firebird-riscv64-support-pt1.patch	\
   %D%/packages/patches/firebird-riscv64-support-pt2.patch	\
   %D%/packages/patches/flann-cmake-3.11.patch			\
-  %D%/packages/patches/flashrom-fix-building-on-aarch64.patch	\
   %D%/packages/patches/flatpak-fix-path.patch			\
   %D%/packages/patches/flatpak-unset-gdk-pixbuf-for-sandbox.patch	\
   %D%/packages/patches/fluxbox-1.3.7-no-dynamic-cursor.patch	\
