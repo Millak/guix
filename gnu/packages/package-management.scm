@@ -275,11 +275,11 @@ $(prefix)/etc/openrc\n")))
                                (string-append "\"" xz "/bin/xz")))))
                         #t))
                     (add-before 'build 'set-font-path
-                      (lambda* (#:key inputs #:allow-other-keys)
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
                         ;; Tell 'dot' where to look for fonts.
                         (setenv "XDG_DATA_DIRS"
                                 (dirname
-                                 (search-input-directory inputs
+                                 (search-input-directory (or native-inputs inputs)
                                                          "share/fonts")))))
                     (add-before 'check 'copy-bootstrap-guile
                       (lambda* (#:key system target inputs #:allow-other-keys)
