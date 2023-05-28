@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3085,7 +3086,13 @@ designed for experienced users.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0da1ki1v252avy27j6d7snnc0gyq0xa9fypm3qdmxhw2w79d6q36"))))
+         "0da1ki1v252avy27j6d7snnc0gyq0xa9fypm3qdmxhw2w79d6q36"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; TODO: This is fixed upstream in later versions
+           (substitute* "zulip/tests/test_default_arguments.py"
+             (("optional arguments:") "options:"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
