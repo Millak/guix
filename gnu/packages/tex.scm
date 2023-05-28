@@ -194,13 +194,6 @@ use."
     (sha256 (base32
              "171kg1n9zapw3d2g47d8l0cywa99bl9m54xkqvp9625ks22z78s6"))))
 
-(define texlive-texmf-src
-  (origin
-    (method url-fetch)
-    (uri "ftp://tug.org/historic/systems/texlive/2021/texlive-20210325-texmf.tar.xz")
-    (sha256 (base32
-             "070gczcm1h9rx29w2f02xd3nhd84c4k28nfmm8qgp69yq8vd84pz"))))
-
 (define-public texlive-bin
   (package
     (name "texlive-bin")
@@ -8657,51 +8650,57 @@ documents as well as DVI output.")
 
 (define texlive-texmf
   (package
-   (name "texlive-texmf")
-   (version "20210325")
-   (source texlive-texmf-src)
-   (build-system gnu-build-system)
-   (inputs
-    `(("texlive-bin" ,texlive-bin)
-      ("lua" ,lua)
-      ("perl" ,perl)
-      ("python" ,python)
-      ("ruby" ,ruby)
-      ("tcsh" ,tcsh)))
-   (arguments
-    `(#:modules ((guix build gnu-build-system)
-                 (guix build utils)
-                 (srfi srfi-26))
+    (name "texlive-texmf")
+    (version (package-version texlive-bin))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "ftp://tug.org/historic/systems/texlive/"
+                                  (string-take version 4)
+                                  "/texlive-" version "-texmf.tar.xz"))
+              (sha256
+               (base32
+                "070gczcm1h9rx29w2f02xd3nhd84c4k28nfmm8qgp69yq8vd84pz"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list lua
+           perl
+           python
+           ruby
+           tcsh
+           texlive-bin))
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
 
       ;; This package takes 4 GiB, which we can't afford to distribute from
       ;; our servers.
       #:substitutable? #f
 
       #:phases
-        (modify-phases (map (cut assq <> %standard-phases)
+      #~(modify-phases (map (cut assq <> %standard-phases)
                             '(set-paths unpack patch-source-shebangs))
           (add-after 'unpack 'unset-environment-variables
             (lambda _
               (unsetenv "TEXMF")
-              (unsetenv "TEXMFCNF")
-              #t))
+              (unsetenv "TEXMFCNF")))
           (add-after 'patch-source-shebangs 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((share (string-append (assoc-ref outputs "out") "/share")))
+            (lambda _
+              (let ((share (string-append #$output "/share")))
                 (mkdir-p share)
                 (invoke "mv" "texmf-dist" share))))
           (add-after 'install 'texmf-config
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (share (string-append out "/share"))
+            (lambda _
+              (let* ((share (string-append #$output "/share"))
                      (texmfroot (string-append share "/texmf-dist/web2c"))
                      (texmfcnf (string-append texmfroot "/texmf.cnf"))
                      (fmtutilcnf (string-append texmfroot "/fmtutil.cnf"))
-                     (texlive-bin (assoc-ref inputs "texlive-bin"))
+                     (texlive-bin #$(this-package-input "texlive-bin"))
                      (texbin (string-append texlive-bin "/bin"))
                      (tlpkg (string-append texlive-bin "/share/tlpkg")))
                 ;; LuaJIT is not ported to powerpc64* yet.
-                (if ,(target-ppc64le?)
+                (if #$(target-ppc64le?)
                     (substitute* fmtutilcnf
                       (("^(luajittex|luajithbtex|mfluajit)" m)
                        (string-append "#! " m))))
@@ -8714,7 +8713,7 @@ documents as well as DVI output.")
                   (("!!\\$TEXMFLOCAL") "$TEXMFLOCAL"))
                 ;; Register paths in texmfcnf.lua, needed for context.
                 (substitute* (string-append texmfroot "/texmfcnf.lua")
-                  (("selfautodir:") out)
+                  (("selfautodir:") #$output)
                   (("selfautoparent:") (string-append share "/")))
                 ;; Set path to TeXLive Perl modules
                 (setenv "PERL5LIB"
@@ -8726,17 +8725,17 @@ documents as well as DVI output.")
                 (invoke "updmap-sys" "--nohash" "--syncwithtrees")
                 (invoke "mktexlsr")
                 (invoke "fmtutil-sys" "--all")))))))
-   (properties `((max-silent-time . 9600))) ; don't time out while grafting
-   (synopsis "TeX Live, a package of the TeX typesetting system")
-   (description
-    "TeX Live provides a comprehensive TeX document production system.
+    (properties `((max-silent-time . 9600))) ; don't time out while grafting
+    (synopsis "TeX Live, a package of the TeX typesetting system")
+    (description
+     "TeX Live provides a comprehensive TeX document production system.
 It includes all the major TeX-related programs, macro packages, and fonts
 that are free software, including support for many languages around the
 world.
 
 This package contains the complete tree of texmf-dist data.")
-   (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
-   (home-page "https://www.tug.org/texlive/")))
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
+    (home-page "https://www.tug.org/texlive/")))
 
 (define-public texlive
   (package
