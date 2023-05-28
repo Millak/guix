@@ -117,6 +117,7 @@ Copyright @copyright{} 2023 Karl Hallsby@*
 Copyright @copyright{} 2023 Nathaniel Nicandro@*
 Copyright @copyright{} 2023 Tanguy Le Carrour@*
 Copyright @copyright{} 2023 Brian Cully@*
+Copyright @copyright{} 2023 Felix Lechner@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -38658,6 +38659,94 @@ parameters, can be done as follow:
   (kernel-loadable-modules (list ddcci-driver-linux)))
 @end lisp
 @end defvar
+
+@subsubheading Cachefilesd Service
+
+@cindex cachefilesd
+@cindex fscache, file system caching (Linux)
+The Cachefilesd service starts a daemon that caches network file system
+data locally.  It is especially useful for NFS and AFS shares, where it
+reduces latencies for repeated access when reading files.
+
+The daemon can be configured as follows:
+
+@lisp
+(service cachefilesd-service-type
+         (cachefilesd-configuration
+           (cache-directory "/var/cache/fscache")))
+@end lisp
+
+@defvar cachefilesd-service-type
+The service type for starting @command{cachefilesd}.  The value for this
+service type is a @code{cachefilesd-configuration}, whose only required
+field is @var{cache-directory}.
+
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} cachefilesd-configuration
+Available @code{cachefilesd-configuration} fields are:
+
+@table @asis
+@item @code{cachefilesd} (default: @code{cachefilesd}) (type: file-like)
+The cachefilesd package to use.
+
+@item @code{debug-output?} (default: @code{#f}) (type: boolean)
+Print debugging output to stderr.
+
+@item @code{use-syslog?} (default: @code{#t}) (type: boolean)
+Log to syslog facility instead of stdout.
+
+@item @code{scan?} (default: @code{#t}) (type: boolean)
+Scan for cachable objects.
+
+@item @code{cache-directory} (type: maybe-string)
+Location of the cache directory.
+
+@item @code{cache-name} (default: @code{"CacheFiles"}) (type: maybe-string)
+Name of cache (keep unique).
+
+@item @code{security-context} (type: maybe-string)
+SELinux security context.
+
+@item @code{pause-culling-for-block-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available blocks exceed this percentage.
+
+@item @code{pause-culling-for-file-percentage} (default: @code{7}) (type: maybe-non-negative-integer)
+Pause culling when available files exceed this percentage.
+
+@item @code{resume-culling-for-block-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available blocks drop below this percentage.
+
+@item @code{resume-culling-for-file-percentage} (default: @code{5}) (type: maybe-non-negative-integer)
+Start culling when available files drop below this percentage.
+
+@item @code{pause-caching-for-block-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available blocks drop below this
+percentage.
+
+@item @code{pause-caching-for-file-percentage} (default: @code{1}) (type: maybe-non-negative-integer)
+Pause further allocations when available files drop below this
+percentage.
+
+@item @code{log2-table-size} (default: @code{12}) (type: maybe-non-negative-integer)
+Size of tables holding cullable objects in logarithm of base 2.
+
+@item @code{cull?} (default: @code{#t}) (type: boolean)
+Create free space by culling (consumes system load).
+
+@item @code{trace-function-entry-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function entry in the kernel module (for debugging).
+
+@item @code{trace-function-exit-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace function exit in the kernel module (for debugging).
+
+@item @code{trace-internal-checkpoints-in-kernel-module?} (default: @code{#f}) (type: boolean)
+Trace internal checkpoints in the kernel module (for debugging).
+
+@end table
+@end deftp
+@c %end of fragment
 
 @cindex rasdaemon
 @cindex Platform Reliability, Availability and Serviceability daemon
