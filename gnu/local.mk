@@ -743,6 +743,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/system/images/pine64.scm			\
   %D%/system/images/pinebook-pro.scm		\
   %D%/system/images/rock64.scm			\
+  %D%/system/images/unmatched.scm		\
   %D%/system/images/wsl2.scm			\
 						\
   %D%/machine.scm				\
