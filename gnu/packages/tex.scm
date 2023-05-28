@@ -8739,66 +8739,65 @@ This package contains the complete tree of texmf-dist data.")
 
 (define-public texlive
   (package
-   (name "texlive")
-   (version "20210325")
-   (source #f)
-   (build-system trivial-build-system)
-   (inputs `(("bash" ,bash-minimal)     ;for wrap-program
-             ("texlive-bin" ,texlive-bin)
-             ("texlive-texmf" ,texlive-texmf)))
-   (native-search-paths
-    (list (search-path-specification
-           (variable "TEXMFLOCAL")
-           (files '("share/texmf-local")))))
-   (arguments
-    `(#:modules ((guix build utils))
+    (name "texlive")
+    (version (package-version texlive-bin))
+    (source #f)
+    (build-system trivial-build-system)
+    (inputs
+     (list bash-minimal                 ;for wrap-program
+           texlive-bin
+           texlive-texmf))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TEXMFLOCAL")
+            (files '("share/texmf-local")))))
+    (arguments
+     (list
+      #:modules '((guix build utils))
       #:builder
-        ;; Build the union of texlive-bin and texlive-texmf, but take the
-        ;; conflicting subdirectory share/texmf-dist from texlive-texmf.
-        (begin
+      ;; Build the union of texlive-bin and texlive-texmf, but take the
+      ;; conflicting subdirectory share/texmf-dist from texlive-texmf.
+      #~(begin
           (use-modules (guix build utils))
-          (let ((out (assoc-ref %outputs "out"))
-                (bin (assoc-ref %build-inputs "texlive-bin"))
-                (texmf (assoc-ref %build-inputs "texlive-texmf"))
-                (bash (assoc-ref %build-inputs "bash")))
-               (mkdir out)
-               (with-directory-excursion out
-                 (for-each
-                   (lambda (name)
-                     (symlink (string-append bin "/" name) name))
-                   '("include" "lib"))
-                 (mkdir "bin")
-                 (with-directory-excursion "bin"
-                   (setenv "PATH" (string-append bash "/bin"))
-                   (for-each
-                     (lambda (name)
-                       (symlink name (basename name))
-                       (wrap-program
-                         (basename name)
-                         `("TEXMFCNF" =
-                           (,(string-append texmf "/share/texmf-dist/web2c")))))
-                     (find-files (string-append bin "/bin/") "")))
-                 (mkdir "share")
-                 (with-directory-excursion "share"
-                   (for-each
-                     (lambda (name)
-                       (symlink (string-append bin "/share/" name) name))
-                     '("info" "man" "tlpkg"))
-                   (for-each
-                     (lambda (name)
-                       (symlink (string-append texmf "/share/" name) name))
-                     '("texmf-dist" "texmf-var"))))
-               #t))))
-   (synopsis "TeX Live, a package of the TeX typesetting system")
-   (description
-    "TeX Live provides a comprehensive TeX document production system.
-It includes all the major TeX-related programs, macro packages, and fonts
-that are free software, including support for many languages around the
-world.
+          (let ((bin #$(this-package-input "texlive-bin"))
+                (texmf #$(this-package-input "texlive-texmf"))
+                (bash #$(this-package-input "bash-minimal")))
+            (mkdir #$output)
+            (with-directory-excursion #$output
+              (for-each
+               (lambda (name)
+                 (symlink (string-append bin "/" name) name))
+               '("include" "lib"))
+              (mkdir "bin")
+              (with-directory-excursion "bin"
+                (setenv "PATH" (string-append bash "/bin"))
+                (for-each
+                 (lambda (name)
+                   (symlink name (basename name))
+                   (wrap-program
+                       (basename name)
+                     `("TEXMFCNF" =
+                       (,(string-append texmf "/share/texmf-dist/web2c")))))
+                 (find-files (string-append bin "/bin/") "")))
+              (mkdir "share")
+              (with-directory-excursion "share"
+                (for-each
+                 (lambda (name)
+                   (symlink (string-append bin "/share/" name) name))
+                 '("info" "man" "tlpkg"))
+                (for-each
+                 (lambda (name)
+                   (symlink (string-append texmf "/share/" name) name))
+                 '("texmf-dist" "texmf-var"))))))))
+    (synopsis "TeX Live, a package of the TeX typesetting system")
+    (description
+     "TeX Live provides a comprehensive TeX document production system.
+It includes all the major TeX-related programs, macro packages, and fonts that
+are free software, including support for many languages around the world.
 
 This package contains the complete TeX Live distribution.")
-   (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
-   (home-page "https://www.tug.org/texlive/")))
+    (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
+    (home-page "https://www.tug.org/texlive/")))
 
 (define-public perl-text-bibtex
   (package
