@@ -93,9 +93,11 @@
 (define (ruby-package-name name)
   "Given the NAME of a package on RubyGems, return a Guix-compliant name for
 the package."
-  (if (string-prefix? "ruby-" name)
-      (snake-case name)
-      (string-append "ruby-" (snake-case name))))
+  (if (string=? name "bundler")
+      name                                        ;special case: no prefix
+      (if (string-prefix? "ruby-" name)
+          (snake-case name)
+          (string-append "ruby-" (snake-case name)))))
 
 (define (make-gem-sexp name version hash home-page synopsis description
                        dependencies licenses)
@@ -135,11 +137,7 @@ Optionally include a VERSION string to fetch a specific version gem."
         (let* ((dependencies-names (map gem-dependency-name
                                         (gem-dependencies-runtime
                                          (gem-dependencies gem))))
-               (dependencies (map (lambda (dep)
-                                    (if (string=? dep "bundler")
-                                        "bundler" ; special case, no prefix
-                                        (ruby-package-name dep)))
-                                  dependencies-names))
+               (dependencies (map ruby-package-name dependencies-names))
                (licenses     (map string->license (gem-licenses gem))))
           (values (make-gem-sexp (gem-name gem) (gem-version gem)
                                  (gem-sha256 gem) (gem-home-page gem)

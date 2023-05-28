@@ -182,21 +182,6 @@
               ('home-page "https://example.com")
               ('license #f))                      ;no licensing info
             ('package
-              ('name "ruby-bundler")
-              ('version "1.14.2")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('rubygems-uri "bundler" 'version))
-                 ('sha256
-                  ('base32
-                   "1446xiz7zg0bz7kgx9jv84y0s4hpsg61dj5l3qb0i00avc1kxd9v"))))
-              ('build-system 'ruby-build-system)
-              ('synopsis "Ruby gem bundler")
-              ('description "Ruby gem bundler")
-              ('home-page "https://bundler.io/")
-              ('license 'license:expat))
-            ('package
               ('name "ruby-foo")
               ('version "1.0.0")
               ('source
@@ -248,21 +233,6 @@
               ('description "Another cool gem")
               ('home-page "https://example.com")
               ('license #f))                      ;no licensing info
-            ('package
-              ('name "ruby-bundler")
-              ('version "1.14.2")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('rubygems-uri "bundler" 'version))
-                 ('sha256
-                  ('base32
-                   "1446xiz7zg0bz7kgx9jv84y0s4hpsg61dj5l3qb0i00avc1kxd9v"))))
-              ('build-system 'ruby-build-system)
-              ('synopsis "Ruby gem bundler")
-              ('description "Ruby gem bundler")
-              ('home-page "https://bundler.io/")
-              ('license 'license:expat))
             ('package
               ('name "ruby-foo")
               ('version "2.0.0")
