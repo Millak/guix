@@ -14359,6 +14359,36 @@ guix refresh -L /path/to/channel -u @var{package}
 
 @xref{Creating a Channel}, on how to create a channel.
 
+This command updates the version and source code hash of the package.
+Depending on the updater being used, it can also update the various
+@samp{inputs} fields of the package.  In some cases, the updater might
+get inputs wrong---it might not know about an extra input that's
+necessary, or it might add an input that should be avoided.
+
+@cindex @code{updater-extra-inputs}, package property
+@cindex @code{updater-ignored-inputs}, package property
+To address that, packagers can add properties stating inputs that should
+be added to those found by the updater or inputs that should be ignored:
+the @code{updater-extra-inputs} and @code{updater-ignored-inputs}
+properties pertain to ``regular'' inputs, and there are equivalent
+properties for @samp{native} and @samp{propagated} inputs.  In the
+example below, we tell the updater that we need @samp{openmpi} as an
+additional input:
+
+@lisp
+(define-public python-mpi4py
+  (package
+    (name "python-mpi4py")
+    ;; @dots{}
+    (inputs (list openmpi))
+    (properties
+     '((updater-extra-inputs . ("openmpi"))))))
+@end lisp
+
+That way, @command{guix refresh -u python-mpi4py} will leave the
+@samp{openmpi} input, even if it is not among the inputs it would
+normally add.
+
 @item --select=[@var{subset}]
 @itemx -s @var{subset}
 Select all the packages in @var{subset}, one of @code{core}, @code{non-core}

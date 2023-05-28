@@ -35,7 +35,7 @@ GUIX_TEST_UPDATER_TARGETS='
    ("libreoffice" "" (("1.0" "file:///dev/null")))
    ("idutils" "" (("'$idutils_version'" "file:///dev/null")))
    ("the-test-package" "" (("5.5" "file://'$PWD/$module_dir'/source"
-                                   ("grep" "sed")))))'
+                                   ("grep" "sed" "libreoffice")))))'
 
 # No newer version available.
 guix refresh -t test idutils	# XXX: should return non-zero?
@@ -93,7 +93,8 @@ cat > "$module_dir/sample.scm"<<EOF
               (sha256
                (base32
                 "086vqwk2wl8zfs47sq2xpjc9k066ilmb8z6dn0q6ymwjzlm196cd"))))
-    (inputs (list coreutils tar))))
+    (inputs (list coreutils tar))
+    (properties '((updater-ignored-inputs . ("libreoffice"))))))
 EOF
 guix refresh -t test -L "$module_dir" the-test-package
 guix refresh -t test -L "$module_dir" the-test-package -u \

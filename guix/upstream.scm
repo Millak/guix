@@ -557,11 +557,44 @@ specified in SOURCE, an <upstream-source>."
                    (G_ "~a: expected '~a' value: ~s~%")
                    (package-name package) field new))))
 
+  (define (filtered-inputs source-inputs extra-property ignore-property)
+    ;; Return a procedure that behaves like SOURCE-INPUTS but additionally
+    ;; honors EXTRA-PROPERTY and IGNORE-PROPERTY from PACKAGE.
+    (lambda (source)
+      (let* ((inputs (source-inputs source))
+             (properties (package-properties package))
+             (ignore (or (assoc-ref properties ignore-property) '()))
+             (extra (or (assoc-ref properties extra-property) '())))
+        (append (if (null? ignore)
+                    inputs
+                    (remove (lambda (input)
+                              (member (upstream-input-downstream-name input)
+                                      ignore))
+                            inputs))
+                (map (lambda (name)
+                       (upstream-input
+                        (name name)
+                        (downstream-name name)))
+                     extra)))))
+
+  (define regular-inputs
+    (filtered-inputs upstream-source-regular-inputs
+                     'updater-extra-inputs
+                     'updater-ignored-inputs))
+  (define native-inputs
+    (filtered-inputs upstream-source-native-inputs
+                     'updater-extra-native-inputs
+                     'updater-ignored-native-inputs))
+  (define propagated-inputs
+    (filtered-inputs upstream-source-propagated-inputs
+                     'updater-extra-propagated-inputs
+                     'updater-ignored-propagated-inputs))
+
   (for-each update-field
             '(inputs native-inputs propagated-inputs)
-            (list upstream-source-regular-inputs
-                  upstream-source-native-inputs
-                  upstream-source-propagated-inputs)
+            (list regular-inputs
+                  native-inputs
+                  propagated-inputs)
             (list package-inputs
                   package-native-inputs
                   package-propagated-inputs)))
