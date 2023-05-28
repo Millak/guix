@@ -14341,15 +14341,22 @@ the packages).
 
 @item --update
 @itemx -u
-Update distribution source files (package recipes) in place.  This is
+Update distribution source files (package definitions) in place.  This is
 usually run from a checkout of the Guix source tree (@pxref{Running
 Guix Before It Is Installed}):
 
 @example
-$ ./pre-inst-env guix refresh -s non-core -u
+./pre-inst-env guix refresh -s non-core -u
 @end example
 
 @xref{Defining Packages}, for more information on package definitions.
+You can also run it on packages from a third-party channel:
+
+@example
+guix refresh -L /path/to/channel -u @var{package}
+@end example
+
+@xref{Creating a Channel}, on how to create a channel.
 
 @item --select=[@var{subset}]
 @itemx -s @var{subset}
