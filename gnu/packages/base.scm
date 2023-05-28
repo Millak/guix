@@ -1066,12 +1066,13 @@ with the Linux kernel.")
                (base32
                 "1zvp0qdfbdyqrzydz18d9zg3n5ygy8ps7cmny1bvsp8h1q05c99f"))
               (patches
-               ;; Remove a patch that's become irrelevant and that does not
-               ;; apply to this version.
-               (remove (lambda (patch)
-                         (string=? (basename patch)
-                                   "glibc-hurd-clock_gettime_monotonic.patch"))
-                       (origin-patches (package-source glibc))))))
+               (cons (search-patch "glibc-2.33-riscv64-miscompilation.patch")
+                     ;; Remove a patch that's become irrelevant and that does not
+                     ;; apply to this version.
+                     (remove (lambda (patch)
+                               (string=? (basename patch)
+                                         "glibc-hurd-clock_gettime_monotonic.patch"))
+                             (origin-patches (package-source glibc)))))))
     (arguments
      (substitute-keyword-arguments (package-arguments glibc)
        ((#:configure-flags flags ''())
@@ -1379,6 +1380,9 @@ test environments.")
    (make-glibc-utf8-locales glibc)))
 
 ;; Packages provided to ease use of binaries linked against the previous libc.
+(define-public glibc-locales-2.33
+  (package (inherit (make-glibc-locales glibc-2.33))
+           (name "glibc-locales-2.33")))
 (define-public glibc-locales-2.32
   (package (inherit (make-glibc-locales glibc-2.32))
            (name "glibc-locales-2.32")))
