@@ -272,8 +272,7 @@ $(prefix)/etc/openrc\n")))
                               (("\"[^\"]*/bin/gzip") gzip
                                (string-append "\"" gzip "/bin/gzip"))
                               (("\"[^\"]*/bin//xz")
-                               (string-append "\"" xz "/bin/xz")))))
-                        #t))
+                               (string-append "\"" xz "/bin/xz")))))))
                     (add-before 'build 'set-font-path
                       (lambda* (#:key native-inputs inputs #:allow-other-keys)
                         ;; Tell 'dot' where to look for fonts.
@@ -320,8 +319,7 @@ $(prefix)/etc/openrc\n")))
                           (for-each (lambda (input)
                                       (intern (assoc-ref inputs input) #t))
                                     '("bootstrap/bash" "bootstrap/mkdir"
-                                      "bootstrap/tar" "bootstrap/xz")))
-                        #t))
+                                      "bootstrap/tar" "bootstrap/xz")))))
                     (add-after 'unpack 'disable-failing-tests
                       ;; XXX FIXME: These tests fail within the build container.
                       (lambda _
@@ -334,14 +332,12 @@ $(prefix)/etc/openrc\n")))
                         (when (file-exists? "tests/guix-environment-container.sh")
                           (substitute* "tests/guix-environment-container.sh"
                             (("guix environment --version")
-                             "exit 77\n")))
-                        #t))
+                             "exit 77\n")))))
                     (add-before 'check 'set-SHELL
                       (lambda _
                         ;; 'guix environment' tests rely on 'SHELL' having a
                         ;; correct value, so set it.
-                        (setenv "SHELL" (which "sh"))
-                        #t))
+                        (setenv "SHELL" (which "sh"))))
                     (add-after 'install 'wrap-program
                       (lambda* (#:key inputs native-inputs outputs target
                                 #:allow-other-keys)
