@@ -5091,11 +5091,10 @@ colors are provided.")
         (base32
          "1gzxk5jgdh2xq9r7z09xs306ygzf27vhg3pyfl7ck1755gqii9cx"))))
     (build-system r-build-system)
-    ;; knitr depends on glue, so we can't add knitr here to build the
-    ;; vignettes.
-    #;
-    (native-inputs
-     `(("r-knitr" ,r-knitr)))
+    (properties
+     ;; knitr depends on glue, so we can't add knitr here to build the
+     ;; vignettes.
+     '((updater-ignored-native-inputs . ("r-knitr"))))
     (home-page "https://github.com/tidyverse/glue")
     (synopsis "Interpreted string literals")
     (description
@@ -8782,10 +8781,9 @@ iVAT).")
        (sha256
         (base32 "1jan2ggfywm1g05zszyy8d492wj7vpy35682lrnlklrx4jxsmv6h"))))
     (build-system r-build-system)
-    ;; knitr itself depends on xfun
-    #;
-    (native-inputs
-     `(("r-knitr" ,r-knitr)))
+    (properties
+     ;; knitr itself depends on xfun
+     '((updater-ignored-native-inputs . ("r-knitr"))))
     (home-page "https://github.com/yihui/xfun")
     (synopsis "Miscellaneous functions")
     (description
@@ -8872,11 +8870,10 @@ estimated from a given sample.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang))
-    ;; We can't have r-knitr among the inputs here, because r-vctrs ends up
-    ;; being an eventual input to r-knitr.
-    #;
-    (native-inputs
-     (list r-knitr))
+    (properties
+     ;; We can't have r-knitr among the inputs here, because r-vctrs ends up
+     ;; being an eventual input to r-knitr.
+     '((updater-ignored-native-inputs . ("r-knitr"))))
     (home-page "https://github.com/r-lib/vctrs")
     (synopsis "Vector helpers")
     (description
@@ -25256,15 +25253,14 @@ atmospheric physics.")
        (sha256
         (base32
          "1hk9mblhap429fk77qpgc4hv0j91q5wpahi0y76w118m471zsnb4"))))
-    (properties `((upstream-name . "lifecycle")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-rlang))
-    ;; We can't add this here because via r-stringr this package ends up being
-    ;; an input to r-knitr.
-    #;
-    (native-inputs
-     (list r-knitr)) ; for vignettes
+    (properties
+     ;; We can't add this here because via r-stringr this package ends up
+     ;; being an input to r-knitr.
+     '((updater-ignored-native-inputs . ("r-knitr"))
+       (upstream-name . "lifecycle")))
     (home-page "https://github.com/r-lib/lifecycle")
     (synopsis "Manage the life cycle of your package functions")
     (description
