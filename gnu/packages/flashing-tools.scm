@@ -41,6 +41,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -72,11 +73,20 @@
                (base32
                 "08wn2j5vxzzvigflrjypgxxzjp32c76bshrlkzki5l6cad226lx0"))))
     (build-system meson-build-system)
-    (inputs (list dmidecode pciutils libusb libftdi libjaylink))
+    (inputs (list bash-minimal dmidecode pciutils libusb libftdi libjaylink))
     (native-inputs (list cmocka pkg-config))
     (arguments
      (list #:configure-flags
-           #~'("-Dprogrammer=all")))
+           #~'("-Dprogrammer=all")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((flashrom (string-append #$output "/sbin/flashrom")))
+                     (wrap-program flashrom
+                       `("PATH" ":" prefix
+                         (,(dirname (search-input-file
+                                     inputs "/sbin/dmidecode")))))))))))
     (home-page "https://flashrom.org/")
     (synopsis "Identify, read, write, erase, and verify ROM/flash chips")
     (description
