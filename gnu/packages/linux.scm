@@ -4189,56 +4189,52 @@ to the in-kernel OOM killer.")
               (patches (search-patches "eudev-rules-directory.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'patch-file-names
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-            (substitute* "man/make.sh"
-              (("/usr/bin/xsltproc")
-               (string-append (assoc-ref
-                               (or native-inputs inputs) "xsltproc")
-                               "/bin/xsltproc")))))
-         (add-after 'install 'move-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (static (assoc-ref outputs "static"))
-                    (source (string-append out "/lib/libudev.a"))
-                    (target (string-append static "/lib/libudev.a")))
-               (mkdir-p (dirname target))
-               (link source target)
-               (delete-file source)
-               ;; Remove reference to the static library from the .la file
-               ;; such that Libtool looks for it in the usual places.
-               (substitute* (string-append out "/lib/libudev.la")
-                 (("old_library=.*")
-                  "old_library=''\n")))))
-         (add-after 'install 'build-hwdb
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Build OUT/etc/udev/hwdb.bin.  This allows 'lsusb' and
-             ;; similar tools to display product names.
-             ;;
-             ;; XXX: This can't be done when cross-compiling. Find another way
-             ;; to generate hwdb.bin for cross-built systems.
-             (let ((out (assoc-ref outputs "out")))
-               ,@(if (%current-target-system)
-                     '(#t)
-                     '((invoke (string-append out "/bin/udevadm")
-                               "hwdb" "--update")))))))
-       #:configure-flags (list "--enable-manpages")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'patch-file-names
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (substitute* "man/make.sh"
+                (("/usr/bin/xsltproc")
+                 (search-input-file (or native-inputs inputs) "/bin/xsltproc")))))
+          (add-after 'install 'move-static-library
+            (lambda _
+              (let ((source (string-append #$output "/lib/libudev.a"))
+                    (target (string-append #$output:static "/lib/libudev.a")))
+                (mkdir-p (dirname target))
+                (link source target)
+                (delete-file source)
+                ;; Remove reference to the static library from the .la file
+                ;; such that Libtool looks for it in the usual places.
+                (substitute* (string-append #$output "/lib/libudev.la")
+                  (("old_library=.*")
+                   "old_library=''\n")))))
+          (add-after 'install 'build-hwdb
+            (lambda _
+              ;; Build OUT/etc/udev/hwdb.bin.  This allows 'lsusb' and
+              ;; similar tools to display product names.
+              ;;
+              ;; XXX: This can't be done when cross-compiling. Find another way
+              ;; to generate hwdb.bin for cross-built systems.
+              #$@(if (%current-target-system)
+                     #~(#t)
+                     #~((invoke (string-append #$output "/bin/udevadm")
+                                "hwdb" "--update"))))))
+       #:configure-flags #~(list "--enable-manpages")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gperf" ,gperf)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ;; For tests.
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ;; For documentation.
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxml2" ,libxml2)             ;for $XML_CATALOG_FILES
-       ("xsltproc" ,libxslt)))
+     (list autoconf
+           automake
+           gperf
+           libtool
+           pkg-config
+           ;; For tests.
+           perl
+           python-wrapper
+           ;; For documentation.
+           docbook-xml-4.2
+           docbook-xsl
+           libxml2            ;for $XML_CATALOG_FILES
+           libxslt))
     (inputs
      ;; When linked against libblkid, eudev can populate /dev/disk/by-label
      ;; and similar; it also installs the '60-persistent-storage.rules' file,
