@@ -43168,7 +43168,7 @@ Extra content appended as-is to this @code{Host} block in
 The @uref{https://www.openssh.com, OpenSSH package} includes a daemon,
 the @command{ssh-agent} command, that manages keys to connect to remote
 machines using the @acronym{SSH, secure shell} protocol.  With the
-@code{(gnu home services ssh-agent)} service, you can configure the
+@code{(gnu home services ssh)} service, you can configure the
 OpenSSH ssh-agent to run upon login.  @xref{GNU Privacy Guard,
 @code{home-gpg-agent-service-type}}, for an alternative to OpenSSH's
 @command{ssh-agent}.
