@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,12 @@
                            "--enable-compat-libdns_sd"
                            ,@(if (%current-target-system)
                                  '("ac_cv_prog_have_pkg_config=yes")
+                                 '())
+                           ,@(if (or (%current-target-system)
+                                     (not (member (%current-system)
+                                                  (package-supported-systems
+                                                   libcap))))
+                                 '("--disable-autoipd")
                                  '()))
        #:modules ((srfi srfi-26)
                   (guix build utils)
@@ -92,7 +99,13 @@
        ("expat" ,expat)
        ("gdbm" ,gdbm)
        ("glib" ,glib)
-       ("libcap" ,libcap)            ;to enable chroot support in avahi-daemon
+       ;; Do not use libcap when cross-compiling since it's not quite
+       ;; cross-compilable; and use it only for supported systems.
+       ,@(if (and (not (%current-target-system))
+                  (member (%current-system)
+                          (package-supported-systems libcap)))
+             `(("libcap" ,libcap))   ;to enable chroot support in avahi-daemon
+             '())
        ("libdaemon" ,libdaemon)
        ("libevent" ,libevent)))
     (native-inputs
