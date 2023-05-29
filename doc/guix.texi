@@ -41147,7 +41147,7 @@ The service type for an @emph{extensible} service looks like this:
 @end lisp
 
 This is the service type for the
-@uref{https://wiki.gentoo.org/wiki/Project:Eudev, eudev device
+@uref{https://github.com/eudev-project/eudev, eudev device
 management daemon}.  Compared to the previous example, in addition to an
 extension of @code{shepherd-root-service-type}, we see two new fields:
 
