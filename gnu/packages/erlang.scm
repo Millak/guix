@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Oskar Köök <oskar@maatriks.ee>
 ;;; Copyright © 2021 Cees de Groot <cg@evrl.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 wrobell <wrobell@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -168,7 +169,8 @@
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (substitute* (string-append out "/bin/erl")
-                 (("sed") (which "sed"))))))
+                 (("basename") (which "basename"))
+                 (("dirname") (which "dirname"))))))
          (add-after 'install 'install-doc
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
