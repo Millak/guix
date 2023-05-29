@@ -214,6 +214,12 @@ After installation, the system administrator should generate keys using
                                                    "/libexec/heimdal")))
                   #~()))
        #:phases (modify-phases %standard-phases
+                  ;; Skip the appl folder as obsolete per message from Brian May <brian@linuxpenguins.xyz>
+                  ;; <MDAEMON-F202305111940.AA401569md5001000003030@sequoia-grove.ad.secure-endpoints.com>
+                  (add-after 'unpack 'drop-obsolete-executables
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* '("Makefile.am")
+                        (("appl") ""))))
                   (add-before 'configure 'pre-configure
                     (lambda* (#:key inputs #:allow-other-keys)
                       (invoke (search-input-file inputs "bin/autoreconf") "--install" "--force")
@@ -230,15 +236,6 @@ After installation, the system administrator should generate keys using
                         ;; which confuses heimdal.
                         (("ac_cv_prog_COMPILE_ET=\\$\\{with_cross_tools\\}compile_et")
                          "ac_cv_PROG_COMPILE_ET=compile_et"))
-                      (substitute* '("appl/afsutil/pagsh.c" "appl/su/su.c")
-                        (("/bin/sh")
-                         (search-input-file inputs "bin/sh"))
-                        ;; Use the cross-compiled bash instead of the
-                        ;; native bash (XXX shouldn't _PATH_BSHELL point
-                        ;; to a cross-compiled bash?).
-                        (("_PATH_BSHELL")
-                         (string-append
-                          "\"" (search-input-file inputs "bin/sh") "\"")))
                       (substitute* '("tools/Makefile.in")
                         (("/bin/sh") (which "sh")))))
                   (add-before 'check 'pre-check
