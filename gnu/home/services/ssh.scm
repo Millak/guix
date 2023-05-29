@@ -2,6 +2,7 @@
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,6 +118,8 @@
 (define (serialize-natural-number field value)
   (string-append "  " (serialize-field-name field) " "
                  (number->string value) "\n"))
+
+(define-maybe boolean)
 
 (define (serialize-boolean field value)
   (string-append "  " (serialize-field-name field) " "
@@ -235,19 +238,19 @@ Additionally, the field can be left unset to allow any address family.")
    maybe-string
    "User name on the remote host.")
   (forward-x11?
-   (boolean #f)
+   maybe-boolean
    "Whether to forward remote client connections to the local X11 graphical
 display.")
   (forward-x11-trusted?
-   (boolean #f)
+   maybe-boolean
    "Whether remote X11 clients have full access to the original X11 graphical
 display.")
   (forward-agent?
-   (boolean #f)
+   maybe-boolean
    "Whether the authentication agent (if any) is forwarded to the remote
 machine.")
   (compression?
-   (boolean #f)
+   maybe-boolean
    "Whether to compress data in transit.")
   (proxy-command
    maybe-string

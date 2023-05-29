@@ -33,7 +33,7 @@ Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023 Leo Famulari@*
 Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Jan Nieuwenhuizen@*
@@ -43129,19 +43129,19 @@ TCP port number to connect to.
 @item @code{user} (type: maybe-string)
 User name on the remote host.
 
-@item @code{forward-x11?} (default: @code{#f}) (type: boolean)
+@item @code{forward-x11?} (type: maybe-boolean)
 Whether to forward remote client connections to the local X11 graphical
 display.
 
-@item @code{forward-x11-trusted?} (default: @code{#f}) (type: boolean)
+@item @code{forward-x11-trusted?} (type: maybe-boolean)
 Whether remote X11 clients have full access to the original X11
 graphical display.
 
-@item @code{forward-agent?} (default: @code{#f}) (type: boolean)
+@item @code{forward-agent?} (type: maybe-boolean)
 Whether the authentication agent (if any) is forwarded to the remote
 machine.
 
-@item @code{compression?} (default: @code{#f}) (type: boolean)
+@item @code{compression?} (type: maybe-boolean)
 Whether to compress data in transit.
 
 @item @code{proxy} (type: maybe-proxy-command-or-jump-list)
