@@ -519,6 +519,34 @@ features.")
        (modify-inputs (package-inputs base)
          (delete "qtsvg-5"))))))
 
+(define-public qbittorrent-enhanced
+  (package
+    (inherit qbittorrent)
+    (name "qbittorrent-enhanced")
+    (version "4.5.2.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "18z4panaqbmhbw5i1yn17wpqzslhy6w08zcc5bx2hhlg8slp1r9j"))))
+    (home-page "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
+    (description
+     "qBittorrent Enhanced is a bittorrent client based on qBittorrent with
+the following features:
+
+@itemize
+@item Auto Ban Xunlei, QQ, Baidu, Xfplay, DLBT and Offline downloader
+@item Auto Ban Unknown Peer from China Option (Default: OFF)
+@item Auto Update Public Trackers List (Default: OFF)
+@item Auto Ban BitTorrent Media Player Peer Option (Default: OFF)
+@item Peer whitelist/blacklist
+@end itemize")))
+
 (define-public deluge
   (package
     (name "deluge")
