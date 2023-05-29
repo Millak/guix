@@ -2492,8 +2492,9 @@ exec " gcc "/bin/" program
      `(#:guile ,%bootstrap-guile
        #:implicit-inputs? #f
        ,@(package-arguments m4)
-       ;; Ignore test failure in gnulib for armhf/aarch64.
-       #:tests? ,(not (target-arm?))))))
+       ;; Ignore test failure in gnulib for armhf/aarch64 and Hurd
+       #:tests? ,(and (not (target-arm?))
+                      (not (target-hurd?)))))))
 
 (define bison-boot0
   ;; This Bison is needed to build MiG so we need it early in the process.
