@@ -183,14 +183,7 @@ After installation, the system administrator should generate keys using
                (base32
                 "0f4dblav859p5hn7b2jdj1akw6d8p32as6bj6zym19kghh3s51zx"))
               (patches
-               (search-patches "heimdal-CVE-2022-45142.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "configure"
-                    (("User=.*$") "User=Guix\n")
-                    (("Host=.*$") "Host=GNU")
-                    (("Date=.*$") "Date=2022\n"))))))
+               (search-patches "heimdal-CVE-2022-45142.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -223,7 +216,12 @@ After installation, the system administrator should generate keys using
        #:phases (modify-phases %standard-phases
                   (add-before 'configure 'pre-configure
                     (lambda* (#:key inputs #:allow-other-keys)
+                      (invoke (search-input-file inputs "bin/autoreconf") "--install" "--force")
                       (substitute* "configure"
+                        ;; Reproducible build date, etc.
+                        (("User=.*$") "User=Guix\n")
+                        (("Host=.*$") "Host=GNU\n")
+                        (("Date=.*$") "Date=2022\n")
                         ;; The e2fsprogs input is included for libcom_err,
                         ;; let's use it even if cross-compiling.
                         (("test \"\\$\\{krb_cv_com_err\\}\" = \"yes\"")
@@ -255,12 +253,17 @@ After installation, the system administrator should generate keys using
                           (format #t "#!~a~%exit 1~%" (which "sh")))))))
        ;; Tests fail when run in parallel.
        #:parallel-tests? #f))
-    (native-inputs (list bison
+    (native-inputs (list autoconf
+                         automake
+                         bison
                          e2fsprogs      ;for 'compile_et'
                          flex
+                         libtool
                          texinfo
                          unzip          ;for tests
                          pkg-config
+                         perl
+                         perl-json
                          python))
     (inputs (list readline
                   bash-minimal
