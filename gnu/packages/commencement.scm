@@ -2723,19 +2723,6 @@ memoized as a function of '%current-system'."
                               #$(this-package-native-input "flex")
                               "/lib/")))))))
 
-(define hurd-version-boot0 "0.9-229-ga1efcee8")
-(define hurd-source-boot0
-  (let ((version hurd-version-boot0))
-    (origin
-      (method url-fetch)
-      (uri (list (string-append "mirror://gnu/guix/mirror/hurd-v"
-                                version ".tar.gz")
-                 (string-append "https://lilypond.org/janneke/hurd/"
-                                "hurd-v" version ".tar.gz")))
-      (sha256
-       (base32
-        "0bq2q2jisxcy0kgcm6rz0z2fddwxxm7azsama7li28a2m08kdpzy")))))
-
 (define hurd-headers-boot0
   (with-boot0
    (package
@@ -2760,12 +2747,14 @@ memoized as a function of '%current-system'."
      (inputs '()))))
 
 (define hurd-minimal-boot0
-  (let ((hurd-minimal (package (inherit hurd-minimal)
-                               (version hurd-version-boot0)
-                               (source hurd-source-boot0)
-                               (native-inputs `(("mig" ,mig-boot0)))
-                               (inputs '()))))
-    (with-boot0 (package-with-bootstrap-guile hurd-minimal))))
+  (with-boot0
+   (package
+     (inherit hurd-minimal)
+     (name "hurd-minimal-boot0")
+     (source (package-source hurd-headers-boot0))
+     (native-inputs
+      (list autoconf-boot0 automake-boot0 gnumach-headers-boot0 mig-boot0))
+     (inputs (list gnumach-headers-boot0)))))
 
 (define/system-dependent hurd-core-headers-boot0
   ;; Return the Hurd and Mach headers as well as initial Hurd libraries for
