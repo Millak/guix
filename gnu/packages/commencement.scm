@@ -2664,18 +2664,35 @@ memoized as a function of '%current-system'."
   (with-boot0
    (package
      (inherit gnumach-headers)
-     (version "1.8-116-g28b53508")
-     (source (bootstrap-origin
-              (origin
-                (method url-fetch)
-                (uri (list (string-append "mirror://gnu/guix/mirror/gnumach-"
-                                          version ".tar.gz")
-                           (string-append "https://lilypond.org/janneke/hurd/"
-                                          "gnumach-" version ".tar.gz")))
-                (sha256
-                 (base32
-                  "006i0zgwy81vxarpfm12vip4q6i5mgmi5mmy5ldvxp5hx9h3l0zg")))))
-     (native-inputs '()))))
+     (name "gnumach-headers-boot0")
+     (version "1.8+git20221224")
+     (source
+      (origin
+        (inherit (package-source gnumach-headers))
+        (method
+         (git-fetch-from-tarball
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://git.savannah.gnu.org/cgit/hurd/gnumach.git/snapshot/"
+                  "gnumach-" version ".tar.gz"))
+            (sha256
+             (base32
+              "0vb19ynvrxz302snqxkd0wgizwa5fw2x06a4zjsllqb9ijbq9mc8")))))))
+     (native-inputs (list autoconf-boot0 automake-boot0 texinfo-boot0))
+     (arguments
+      (substitute-keyword-arguments (package-arguments gnumach-headers)
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             (add-after 'unpack 'patch-compat
+               (lambda _
+                 (substitute* '("include/device/device_types.h"
+                                "include/mach_debug/slab_info.h"
+                                "include/mach_debug/vm_info.h")
+                   (("rpc_vm_size_t") "unsigned int")
+                   (("rpc_vm_offset_t") "unsigned int")
+                   (("rpc_long_natural_t") "unsigned long")
+                   (("long_natural_t") "unsigned long")))))))))))
 
 (define mig-boot0
   (let* ((mig (package
