@@ -2695,17 +2695,21 @@ memoized as a function of '%current-system'."
                    (("long_natural_t") "unsigned long")))))))))))
 
 (define mig-boot0
-  (let* ((mig (package
-                 (inherit (package-with-bootstrap-guile mig))
-                 (native-inputs `(("bison" ,bison-boot0)
-                                  ("flex" ,flex-boot0)))
-                 (inputs `(("flex" ,flex-boot0)))
-                 (arguments
-                  ;; TODO: On next rebuild cycle, reuse phases from 'mig'.
-                  `(#:configure-flags
-                    `(,(string-append "LDFLAGS=-Wl,-rpath="
-                                      (assoc-ref %build-inputs "flex") "/lib/")))))))
-    (with-boot0 mig)))
+  (with-boot0
+   (package
+     (inherit mig)
+     (name "mig-boot0")
+     (version "1.8+git20230520")
+     (source (origin (inherit (package-source mig))))
+     (native-inputs (list autoconf-boot0 automake-boot0 bison-boot0 flex-boot0
+                          gnumach-headers-boot0))
+     (inputs (list flex-boot0 gnumach-headers-boot0))
+     (arguments
+      (list
+       #:configure-flags
+       #~(list (string-append "LDFLAGS=-Wl,-rpath="
+                              #$(this-package-native-input "flex")
+                              "/lib/")))))))
 
 (define hurd-version-boot0 "0.9-229-ga1efcee8")
 (define hurd-source-boot0
