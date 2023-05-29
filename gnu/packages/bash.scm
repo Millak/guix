@@ -445,28 +445,27 @@ you to call routines in shared libraries from within Bash.")
 (define-public blesh
   (package
     (name "blesh")
-    (version "0.4.0-devel2")
+    (version "0.4.0-devel3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/akinomyoga/ble.sh")
-                    (commit (string-append "v" version))))
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02fdjyh4x6wr5hg3i86nsxhz8ysgjrvvxdmk6pqr0lm8ngw9p3sh"))))
+                "19y9rmj9srl7akx33gl34l5qgz2ww0vlmi4j2r11029p8sn4s418"))))
     (arguments
      (list #:make-flags #~(list (string-append "PREFIX="
                                                #$output))
            #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'pretend-contrib-.git-exists
-                          (lambda _
-                            (mkdir-p "contrib/.git")))
-                        (add-after 'unpack 'make-readlink-work
+                        (add-after 'unpack 'pretend-.git-exists
                           (lambda _
                             (substitute* "ble.pp"
-                              (("PATH=/bin:/usr/bin readlink")
-                               "readlink"))))
+                              (("#%\\[commit_hash =.*")
+                               (string-append "#%[commit_hash = " #$version "]\n")))
+                            (mkdir-p ".git")))
                         (delete 'configure) ;no configure
                         (add-before 'check 'use-LANG-for-tests
                           (lambda _
@@ -474,7 +473,7 @@ you to call routines in shared libraries from within Bash.")
                                     (getenv "LC_ALL"))
                             (unsetenv "LC_ALL"))))))
     (build-system gnu-build-system)
-    (native-inputs (list less))
+    (native-inputs (list git less))
     (home-page "https://github.com/akinomyoga/ble.sh")
     (synopsis "Bash Line Editor")
     (description
