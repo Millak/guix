@@ -33,6 +33,7 @@
 (define-module (gnu packages commencement)
   #:use-module (gnu packages)
   #:use-module (gnu packages bootstrap)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
@@ -2601,6 +2602,15 @@ memoized as a function of '%current-system'."
 (define with-boot0
   (package-with-explicit-inputs %boot0-inputs
                                 %bootstrap-guile))
+
+(define autoconf-boot0
+  (with-boot0
+   (package
+     (inherit autoconf)
+     (name "autoconf-boot0")
+     (native-inputs (list m4-boot0 perl-boot0))
+     (inputs '())
+     (arguments (list #:tests? #f)))))
 
 (define gnumach-headers-boot0
   (with-boot0
