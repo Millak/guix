@@ -2612,6 +2612,19 @@ memoized as a function of '%current-system'."
      (inputs '())
      (arguments (list #:tests? #f)))))
 
+(define automake-boot0
+  (with-boot0
+   (package
+     (inherit automake)
+     (name "automake-boot0")
+     (source (origin
+               (inherit (package-source automake))
+               (patches '())))        ;test are skipped anyway
+     (native-inputs (list autoconf-boot0 m4-boot0 perl-boot0))
+     (inputs '())
+     (arguments
+      (list #:tests? #f)))))
+
 (define gnumach-headers-boot0
   (with-boot0
    (package
