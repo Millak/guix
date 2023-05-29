@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,9 @@
 
 (define-module (test-gem)
   #:use-module (guix import gem)
+  #:use-module (guix upstream)
+  #:use-module ((guix download) #:select (url-fetch))
+  #:use-module ((guix build-system ruby) #:select (rubygems-uri))
   #:use-module (guix base32)
   #:use-module (gcrypt hash)
   #:use-module (guix tests)
@@ -252,5 +256,32 @@
            #t)
           (x
            (pk 'fail x #f)))))
+
+(test-equal "package-latest-release"
+  (list '("https://rubygems.org/downloads/foo-1.0.0.gem")
+        (list (upstream-input
+               (name "bundler")
+               (downstream-name name)
+               (type 'propagated))
+              (upstream-input
+               (name "bar")
+               (downstream-name "ruby-bar")
+               (type 'propagated))))
+  (mock ((guix http-client) http-fetch
+         (lambda (url . rest)
+           (match url
+             ("https://rubygems.org/api/v1/gems/foo.json"
+              (values (open-input-string test-foo-json)
+                      (string-length test-foo-json)))
+             (_ (error "Unexpected URL: " url)))))
+        (let ((source (package-latest-release
+                       (dummy-package "ruby-foo"
+                                      (version "0.1.2")
+                                      (source (dummy-origin
+                                               (method url-fetch)
+                                               (uri (rubygems-uri "foo"
+                                                                  version))))))))
+          (list (upstream-source-urls source)
+                (upstream-source-inputs source)))))
 
 (test-end "gem")

@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
@@ -176,12 +176,21 @@ package on RubyGems."
   "Return an <upstream-source> for the latest release of PACKAGE."
   (let* ((gem-name (guix-package->gem-name package))
          (gem      (rubygems-fetch gem-name))
+         (inputs   (map (lambda (dependency)
+                          (let ((name (gem-dependency-name dependency)))
+                            (upstream-input
+                             (name name)
+                             (downstream-name
+                              (ruby-package-name name))
+                             (type 'propagated))))
+                        (gem-dependencies-runtime (gem-dependencies gem))))
          (version  (or version (gem-version gem)))
          (url      (rubygems-uri gem-name version)))
     (upstream-source
      (package (package-name package))
      (version version)
-     (urls (list url)))))
+     (urls (list url))
+     (inputs inputs))))
 
 (define %gem-updater
   (upstream-updater
