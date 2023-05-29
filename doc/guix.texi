@@ -41449,8 +41449,8 @@ This is a list of symbols denoting what the service provides.
 
 These are the names that may be passed to @command{herd start},
 @command{herd status}, and similar commands (@pxref{Invoking herd,,,
-shepherd, The GNU Shepherd Manual}).  @xref{Slots of services, the
-@code{provides} slot,, shepherd, The GNU Shepherd Manual}, for details.
+shepherd, The GNU Shepherd Manual}).  @xref{Defining Services,,,
+shepherd, The GNU Shepherd Manual}, for details.
 
 @item @code{requirement} (default: @code{'()})
 List of symbols denoting the Shepherd services this one depends on.
@@ -41581,7 +41581,7 @@ Hello, friend! arguments: ("a" "b" "c")
 @end example
 
 This, as you can see, is a fairly sophisticated way to say hello.
-@xref{Service Convenience,,, shepherd, The GNU Shepherd Manual}, for more
+@xref{Defining Services,,, shepherd, The GNU Shepherd Manual}, for more
 info on actions.
 @end deftp
 
