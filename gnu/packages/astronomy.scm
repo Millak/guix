@@ -2174,6 +2174,48 @@ task}.")
 image processing functions: @code{xyxymatch}, @code{geomap}.")
     (license license:bsd-3)))
 
+(define-public python-stdatamodels
+  (package
+    (name "python-stdatamodels")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stdatamodels" version))
+              (sha256
+               (base32
+                "1lssz5mnkzgraqa9mdg1w39scsikymcp3zpmsjb146r0pqnwnpzw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Disable tests requiring access to CRDS servers to download ~500MiB
+      ;; of data.
+      #:test-flags #~(list "-k" "not test_crds_selectors_vs_datamodel")
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'set-home
+                     (lambda _
+                       (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-asdf
+                             python-asdf-astropy
+                             python-astropy
+                             python-jsonschema
+                             python-numpy
+                             python-psutil))
+    (native-inputs (list python-crds
+                         python-pytest
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-scipy
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stdatamodels")
+    (synopsis
+     "Core support for DataModel classes used in calibration pipelines")
+    (description
+     "Provides DataModel, which is the base class for data models implemented in
+the @acronym{JWST, James Webb Space Telescope} and @acronym{Roman, Nancy Grace
+Roman Space Telescope} calibration software.")
+    (license license:bsd-3)))
+
 (define-public python-stsynphot
   (package
     (name "python-stsynphot")
