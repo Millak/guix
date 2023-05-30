@@ -322,18 +322,29 @@ XXX TODO: use Linux xattr/setxattr to remove (settrans in) /libexec/RUNSYSTEM
 
      (let* ((args    (command-line))
             (system  (find-long-option "gnu.system" args))
-            (to-load (find-long-option "gnu.load" args)))
+            (to-load (find-long-option "gnu.load" args))
+            (profile (string-append system "/profile"))
+            (bin     (string-append profile "/bin"))
+            (sbin    (string-append profile "/bin")))
 
-       (false-if-exception (delete-file "/hurd"))
-       (let ((hurd/hurd (readlink* (string-append system "/profile/hurd"))))
-         (symlink hurd/hurd "/hurd"))
+       (setenv "PATH" (string-append bin ":" sbin))
+
+       (when (file-exists? "/var/run/shepherd/socket")
+         (format #t "Removing stale shepherd socket...\n")
+         (delete-file "/var/run/shepherd/socket"))
 
        (unless (file-exists? "/servers/startup")
          (format #t "Creating essential device nodes...\n")
          (make-hurd-device-nodes))
 
+       (let ((profile/hurd (readlink* (string-append profile "/hurd"))))
+         (when (file-exists? "/hurd")
+           (format #t "Removing stale /hurd link\n")
+           (delete-file "/hurd"))
+         (format #t "Linking /hurd from ~a...\n" profile/hurd)
+         (symlink profile/hurd "/hurd"))
+
        (format #t "Setting-up essential translators...\n")
-       (setenv "PATH" (string-append system "/profile/bin"))
        (set-hurd-device-translators)
 
        (format #t "Starting pager...\n")
