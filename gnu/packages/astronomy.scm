@@ -1425,6 +1425,58 @@ attempting to maintain ISTP compliance
 @end itemize")
     (license license:expat)))
 
+(define-public python-crds
+  (package
+    (name "python-crds")
+    (version "11.17.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "crds" version))
+              (sha256
+               (base32
+                "0sdz1k4hrgrc2jwihp9ns7lx23kcz7f90c222q7aaqf9g3vvpqlr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require Internet access to https://hst-crds.stsci.edu and
+      ;; additional test data. See:
+      ;; https://github.com/spacetelescope/crds/blob/master/setup_test_cache
+      #:tests? #f))
+    (propagated-inputs (list python-asdf
+                             python-astropy
+                             python-boto3
+                             python-filelock
+                             python-lxml
+                             python-numpy
+                             python-parsley
+                             python-pysynphot
+                             python-roman-datamodels
+                             python-stsynphot
+                             python-requests))
+    (native-inputs (list python-flake8
+                         python-ipython
+                         python-lockfile
+                         python-mock
+                         python-nose
+                         python-pylint
+                         python-pytest
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://hst-crds.stsci.edu")
+    (synopsis "Calibration Reference Data System for HST and JWST")
+    (description
+     "CRDS is a package used for working with astronomical reference files for
+the HST and JWST telescopes.  CRDS is useful for performing various operations
+on reference files or reference file assignment rules.  CRDS is used to assign,
+check, and compare reference files and rules, and also to predict those datasets
+which should potentially be reprocessed due to changes in reference files or
+assignment rules.  CRDS has versioned rules which define the assignment of
+references for each type and instrument configuration.  CRDS has web sites
+corresponding to each project (http://hst-crds.stsci.edu or
+https://jwst-crds.stsci.edu/) which record information about reference files and
+provide related services.")
+    (license license:bsd-3)))
+
 (define-public python-czml3
   (package
     (name "python-czml3")
