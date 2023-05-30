@@ -1082,8 +1082,8 @@ for calling methods on remote servers by exchanging JSON objects.")
       (license license:expat))))
 
 (define-public guile-squee
-  (let ((commit "a151fd006fa819945ca1d4749b173854269b9f70")
-        (revision "3"))
+  (let ((commit "fab9d9590792f3ededd4abd8cfa6be5e56659678")
+        (revision "4"))
     (package
       (name "guile-squee")
       (version (string-append "0-" revision "." (string-take commit 7)))
@@ -1095,7 +1095,7 @@ for calling methods on remote servers by exchanging JSON objects.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1jps14z8653ah2kr367iayzyi3ql2s55l77xrafz7gk3mzcvgrrg"))))
+                  "03wdawx14sqs6xkw1vl06s58xyjicg2js2k4syn0z64bjbxxjvps"))))
       (build-system guile-build-system)
       (arguments
        '(#:phases
