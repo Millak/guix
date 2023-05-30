@@ -2216,6 +2216,29 @@ the @acronym{JWST, James Webb Space Telescope} and @acronym{Roman, Nancy Grace
 Roman Space Telescope} calibration software.")
     (license license:bsd-3)))
 
+(define-public python-stpipe
+  (package
+    (name "python-stpipe")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stpipe" version))
+              (sha256
+               (base32
+                "17gnwzhl10vbg059lfprdyci19dlh3whkmb9rl7z25wr593rnvcp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-asdf python-astropy python-crds
+                             python-semantic-version python-stdatamodels))
+    (native-inputs (list python-pytest python-pytest-doctestplus
+                         python-pytest-openfiles python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stpipe")
+    (synopsis "Framework for calibration pipeline software")
+    (description
+     "This package provides base classes and command-line tools for
+implementing calibration pipeline software.")
+    ;; LICENSE Association of Universities for Research in Astronomy (AURA)
+    (license license:bsd-3)))
+
 (define-public python-stsynphot
   (package
     (name "python-stsynphot")
