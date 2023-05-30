@@ -850,12 +850,12 @@ is not available for Guile 2.0.")
     (license license:lgpl3+)))
 
 (define-public guile-fibers-next
-  (let ((commit "745bd409bef17284648805fb985777d21dba79f7")
-        (revision "2"))
+  (let ((commit "99fc3e38048f732de67c43fde52e949fa294aa7d")
+        (revision "1"))
     (package
       (inherit guile-fibers-1.1)
       (name "guile-fibers-next")
-      (version (git-version "1.2.0" revision commit))
+      (version (git-version "1.3.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -864,7 +864,7 @@ is not available for Guile 2.0.")
                 (file-name (git-file-name "guile-fibers" version))
                 (sha256
                  (base32
-                  "0rn6v4phpnb443i0azfx33b38axd5asv40hhxx9b710hi22j4aic")))))))
+                  "1950nf0qa52m1hhc33z0snci5azbdcv4m6hklk5rpqchc90x9h4p")))))))
 
 (define-public guile-fibers
   (package
