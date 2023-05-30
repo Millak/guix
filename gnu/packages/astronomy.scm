@@ -2832,6 +2832,40 @@ Takes a WGS84 (GPS) latitude/longitude as input as well as an UTC or local
 datetime object.")
     (license license:lgpl3+)))
 
+(define-public python-tweakwcs
+  (package
+    (name "python-tweakwcs")
+    (version "0.8.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tweakwcs" version))
+              (sha256
+               (base32
+                "1500w737n9vf5hv16xkybk4shl7g4wfzb2ji9mc4vgzj41gkrwl4"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-astropy
+                             python-gwcs
+                             python-numpy
+                             python-packaging
+                             python-spherical-geometry
+                             python-stsci-imagestats
+                             python-stsci-stimage))
+    (native-inputs (list python-codecov
+                         python-pytest
+                         python-pytest-cov
+                         python-scipy
+                         python-semantic-version
+                         python-setuptools-scm))
+    (home-page "https://tweakwcs.readthedocs.io/en/latest/")
+    (synopsis
+     "Algorithms for matching and aligning catalogs and for tweaking the WCS")
+    (description
+     "@code{tweakwcs} is a package that provides core algorithms for computing
+and applying corrections to @code{WCS} objects such as to minimize mismatch
+between image and reference catalogs. Currently only aligning images with
+@code{FITS WCS} and @code{JWST gWCS} are supported.")
+    (license license:bsd-3)))
+
 (define-public python-asdf
   (package
     (name "python-asdf")
