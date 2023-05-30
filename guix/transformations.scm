@@ -997,6 +997,8 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
       --with-patch=PACKAGE=FILE
                          add FILE to the list of patches of PACKAGE"))
   (display (G_ "
+      --tune[=CPU]       tune relevant packages for CPU--e.g., \"skylake\""))
+  (display (G_ "
       --with-configure-flag=PACKAGE=FLAG
                          append FLAG to the configure flags of PACKAGE"))
   (display (G_ "
