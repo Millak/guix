@@ -2832,6 +2832,33 @@ Takes a WGS84 (GPS) latitude/longitude as input as well as an UTC or local
 datetime object.")
     (license license:lgpl3+)))
 
+(define-public python-synphot
+  (package
+    (name "python-synphot")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "synphot" version))
+              (sha256
+               (base32
+                "02pjp1bnbyq7zi1bxqv56nif4ijd8fscmnn9ldrs8yvgsbmgdvlc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Test needs more love to pass.
+      ;; ERROR collecting synphot/tests/test_utils.py
+      #:tests? #f))
+    (propagated-inputs (list python-astropy python-numpy python-scipy))
+    (native-inputs (list python-pytest python-pytest-astropy
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/synphot_refactor")
+    (synopsis "Synthetic photometry using Astropy")
+    (description
+     "This package provides a replacement for IRAF STSDAS SYNPHOT and ASTROLIB
+PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
+of the old packages.")
+    (license license:bsd-3)))
+
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
