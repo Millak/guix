@@ -2045,6 +2045,34 @@ spherical polygons that represent arbitrary regions of the sky.")
     ;; QD_LIBRARY_LICENSE.rst for bandeled QD source
     (license license:bsd-3)))
 
+(define-public python-stsci-image
+  (package
+    (name "python-stsci-image")
+    (version "2.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.image" version))
+              (sha256
+               (base32
+                "1vnp4256nbdvapa69cmm80sjz11ygxa49abr9nbvssj6nyyp5icb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'build-extensions
+                          (lambda _
+                            ;; Cython extensions have to be built before running
+                            ;; the tests.
+                            (invoke "python" "setup.py" "build_ext"
+                                    "--inplace"))))))
+    (propagated-inputs (list python-numpy python-scipy))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stsci.image")
+    (synopsis "Image array manipulation functions")
+    (description
+     "This package provides Python modules of @acronym{STScI, Space Telescope
+Science Institute} image array manipulation functions.")
+    (license license:bsd-3)))
+
 (define-public libnova
   (package
     (name "libnova")
