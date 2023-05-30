@@ -65,6 +65,7 @@
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ott Joon <oj@vern.cc>
 ;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
+;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -179,6 +180,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -2467,6 +2469,52 @@ To load this plugin, specify the following option when starting mpv:
       (description "This package provides a PHP-based command line application
 to download videos from Austria's national television broadcaster.")
       (license license:gpl2+))))
+
+(define-public yle-dl
+  (package
+    (name "yle-dl")
+    (version "20230611")
+    (source (origin
+              ;; PyPI release doesn't include tests.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aajanki/yle-dl")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04smlq6cswfp08sjif0cxnall0xbxl3bgly849nm5kg1m33ybmqk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-path
+            (lambda _
+              (wrap-program (string-append #$output "/bin/yle-dl")
+                `("PATH" = (,(string-append #$(this-package-input "ffmpeg")
+                                            "/bin")
+                            ,(string-append #$(this-package-input "wget")
+                                            "/bin"))))))
+          ;; Integration tests require internet access.
+          (add-before 'check 'remove-integration-tests
+            (lambda _
+              (delete-file-recursively "tests/integration"))))))
+    (native-inputs
+     (list python-flit-core python-pytest python-pytest-runner))
+    (inputs (list bash-minimal ffmpeg-5 wget))
+    (propagated-inputs
+     (list python-attrs
+           python-configargparse
+           python-lxml
+           python-requests
+           python-xattr))
+    (home-page "https://aajanki.github.io/yle-dl/")
+    (synopsis "Download videos from Yle servers")
+    (description
+     "Yle-dl is a command line program for downloading media files from the
+video streaming services of the Finnish national broadcasting company Yle.")
+    (license license:gpl3+)))
 
 (define-public youtube-dl
   (package
