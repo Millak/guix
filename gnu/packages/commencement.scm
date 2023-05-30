@@ -2737,12 +2737,27 @@ memoized as a function of '%current-system'."
         "0bq2q2jisxcy0kgcm6rz0z2fddwxxm7azsama7li28a2m08kdpzy")))))
 
 (define hurd-headers-boot0
-  (let ((hurd-headers (package (inherit hurd-headers)
-                               (version hurd-version-boot0)
-                               (source hurd-source-boot0)
-                               (native-inputs `(("mig" ,mig-boot0)))
-                               (inputs '()))))
-    (with-boot0 (package-with-bootstrap-guile hurd-headers))))
+  (with-boot0
+   (package
+     (inherit hurd-headers)
+     (name "hurd-headers-boot0")
+     (version "0.9.git20230216")
+     (source
+      (origin
+        (inherit (package-source hurd-headers))
+        (method
+         (git-fetch-from-tarball
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://git.savannah.gnu.org/cgit/hurd/hurd.git/snapshot/"
+                  "hurd-v" version ".tar.gz"))
+            (sha256
+             (base32
+              "1f75nlkcl00dqnnrbrj1frvzs2qibfpygj3gwywqi85aldjl48y7")))))))
+     (native-inputs
+      (list autoconf-boot0 automake-boot0 mig-boot0))
+     (inputs '()))))
 
 (define hurd-minimal-boot0
   (let ((hurd-minimal (package (inherit hurd-minimal)
