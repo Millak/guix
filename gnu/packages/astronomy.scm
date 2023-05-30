@@ -2098,6 +2098,30 @@ replicate core behaviour of the IRAF's
 task}.")
     (license license:bsd-3)))
 
+(define-public python-stsci-stimage
+  (package
+    (name "python-stsci-stimage")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.stimage" version))
+              (sha256
+               (base32
+                "0i7xby1gaiplvbqqv8a4f4cw1is8fwj89mix1z3bqrykqi3n24g0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Fix failing tests. There are errors to load test files.
+      #:tests? #f))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-codecov python-pytest python-pytest-cov
+                         python-setuptools-scm))
+    (home-page "https://stscistimage.readthedocs.io/en/latest/")
+    (synopsis "STScI image processing")
+    (description "This package provides an astronomical Python package with
+image processing functions: @code{xyxymatch}, @code{geomap}.")
+    (license license:bsd-3)))
+
 (define-public libnova
   (package
     (name "libnova")
