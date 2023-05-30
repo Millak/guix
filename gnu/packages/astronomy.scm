@@ -1355,6 +1355,38 @@ be as fast as possible so some of the readability has been sacrificed,
 specifically in the C code.")
     (license license:bsd-3)))
 
+(define-public python-bayesicfitting
+  (package
+    (name "python-bayesicfitting")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dokester/BayesicFitting")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07y9dr9wxhxrvhk0jjakhbyrgal60i92m7z7q14fp12k8x0gl69l"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "unittest" "discover"
+                                      "test")))))))
+    (propagated-inputs (list python-astropy python-future python-matplotlib
+                             python-numpy python-scipy))
+    (home-page "https://www.bayesicfitting.nl")
+    (synopsis "Python Toolbox for Astronimical Bayesian fitting")
+    (description
+     "The BayesicFitting package is a python version of the the fitter classes
+in @acronym{HCSS, Herschel Common Science System}.  HCSS was the all
+encompassing software system for the operations and analysis of the ESA satelite
+Herschel.")
+    (license license:gpl3+)))
+
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
