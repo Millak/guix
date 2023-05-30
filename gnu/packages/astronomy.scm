@@ -2073,6 +2073,31 @@ spherical polygons that represent arbitrary regions of the sky.")
 Science Institute} image array manipulation functions.")
     (license license:bsd-3)))
 
+(define-public python-stsci-imagestats
+  (package
+    (name "python-stsci-imagestats")
+    (version "1.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stsci.imagestats" version))
+              (sha256
+               (base32
+                "14457izlbnks84dyza75ib3nvx2w8nhlqm9vc1zb7hbhknb5gjvw"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f)) ;No tests
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-setuptools-scm))
+    (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
+    (synopsis "Compute sigma-clipped statistics on data arrays")
+    (description
+     "@code{stsci.imagestats} is a package designed to compute various
+statistics on image data using sigma-clipping iterations.  It is designed to
+replicate core behaviour of the IRAF's
+@url{http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?imstatistics, imstatistics
+task}.")
+    (license license:bsd-3)))
+
 (define-public libnova
   (package
     (name "libnova")
