@@ -383,6 +383,8 @@ PATH=@PATH@
 fsck --yes --force /
 fsysopts / --writable
 
+mkdir -p /servers/socket
+rm -f /servers/socket/1
 # Note: this /hurd/ gets substituted
 settrans --create /servers/socket/1 /hurd/pflocal
 
