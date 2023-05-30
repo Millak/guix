@@ -3082,6 +3082,36 @@ the entire transformation pipeline from input coordinates (detector by
 default) to world coordinates.")
     (license license:bsd-3)))
 
+(define-public python-rad
+  (package
+    (name "python-rad")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rad" version))
+              (sha256
+               (base32
+                "0j51pkywxdaqrfz162rdsywlvx1mbb2h0gi5framvhf25i1im7mb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "-k" "not remote_data")))
+    (native-inputs (list python-astropy
+                         python-pytest
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-semantic-version
+                         python-setuptools-scm))
+    (propagated-inputs (list python-asdf python-asdf-astropy))
+    (home-page "https://github.com/spacetelescope/rad")
+    (synopsis "Roman Attribute Dictionary")
+    (description
+     "@acronym{RAD, The Roman Attribute Dictionary} is package which defines
+schemas for the Nancy Grace Roman Space Telescope shared attributes for
+processing and archive.  These schemas are schemas for the ASDF file file
+format, which are used by ASDF to serialize and deserialize data for the Nancy
+Grace Roman Space Telescope.")
+    (license license:bsd-3)))
+
 (define-public python-astroalign
   (package
     (name "python-astroalign")
