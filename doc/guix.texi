@@ -19611,7 +19611,7 @@ Available @code{mcron-configuration} fields are:
 @item @code{mcron} (default: @code{mcron}) (type: file-like)
 The mcron package to use.
 
-@item @code{jobs} (default: @code{()}) (type: list-of-gexps)
+@item @code{jobs} (default: @code{'()}) (type: list-of-gexps)
 This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
 specifications,, mcron,GNU@tie{}mcron}).
@@ -21030,7 +21030,7 @@ Whether to detach from the controlling terminal.
 File containing the @dfn{host key}.  This file must be readable by
 root only.
 
-@item @code{interfaces} (default: @code{()}) (type: list)
+@item @code{interfaces} (default: @code{'()}) (type: list)
 List of host names or addresses that @command{lshd} will listen on.
 If empty, @command{lshd} listens for connections on all the network
 interfaces.
@@ -22328,7 +22328,7 @@ When unspecified, listen for any hosts/IP addresses.
 @item @code{vnc-server-port} (default: @code{5900}) (type: number)
 The TCP port the VNC server should listen to.
 
-@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+@item @code{extra-config} (default: @code{'()}) (type: list-of-strings)
 Extra configuration values to append to the LightDM configuration file.
 
 @end table
@@ -22377,7 +22377,7 @@ The accessibility features to enable, given as list of symbols.
 @item @code{reader} (type: maybe-file-like)
 The command to use to launch a screen reader.
 
-@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+@item @code{extra-config} (default: @code{'()}) (type: list-of-strings)
 Extra configuration values to append to the LightDM GTK Greeter
 configuration file.
 
@@ -22415,7 +22415,7 @@ The Xorg server command to run.
 @item @code{session-wrapper} (type: file-like)
 The xinitrc session wrapper to use.
 
-@item @code{extra-config} (default: @code{()}) (type: list-of-strings)
+@item @code{extra-config} (default: @code{'()}) (type: list-of-strings)
 Extra configuration values to append to the seat configuration section.
 
 @end table
@@ -22442,11 +22442,11 @@ This is a list of font directories to add to the server's @dfn{font path}.
 @item @code{drivers} (default: @code{'()})
 This must be either the empty list, in which case Xorg chooses a graphics
 driver automatically, or a list of driver names that will be tried in this
-order---e.g., @code{("modesetting" "vesa")}.
+order---e.g., @code{'("modesetting" "vesa")}.
 
 @item @code{resolutions} (default: @code{'()})
 When @code{resolutions} is the empty list, Xorg chooses an appropriate screen
-resolution.  Otherwise, it must be a list of resolutions---e.g., @code{((1024
+resolution.  Otherwise, it must be a list of resolutions---e.g., @code{'((1024
 768) (640 480))}.
 
 @cindex keyboard layout, for Xorg
@@ -22974,13 +22974,13 @@ Specifies the URI path to which the access control applies.
 Access controls for all access to this path, in the same format as the
 @code{access-controls} of @code{operation-access-control}.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{location-access-controls} parameter} method-access-control-list method-access-controls
 Access controls for method-specific access to this path.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 Available @code{method-access-controls} fields are:
 
@@ -22994,14 +22994,14 @@ Defaults to @samp{#f}.
 @deftypevr {@code{method-access-controls} parameter} method-list methods
 Methods to which this access control applies.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{method-access-controls} parameter} access-control-list access-controls
 Access control directives, as a list of strings.  Each string should be
 one directive, such as @samp{"Order allow,deny"}.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 @end deftypevr
 @end deftypevr
@@ -23134,7 +23134,7 @@ Defaults to @samp{900}.
 Passes the specified environment variable(s) to child processes; a list
 of strings.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} policy-configuration-list policies
@@ -23193,7 +23193,7 @@ notify-subscriber-user-name notify-user-data"}.
 @deftypevr {@code{policy-configuration} parameter} operation-access-control-list access-controls
 Access control by IPP operation.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 @end deftypevr
 
@@ -23275,7 +23275,7 @@ values are of the form @var{address}:@var{port}, where @var{address} is
 either an IPv6 address enclosed in brackets, an IPv4 address, or
 @code{*} to indicate all addresses.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} ssl-options ssl-options
@@ -23289,7 +23289,7 @@ TLS v1.0.  The @code{DenyCBC} option disables all CBC cipher suites.  The
 @code{DenyTLS1.0} option disables TLS v1.0 support - this sets the minimum
 protocol version to TLS v1.1.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} boolean strict-conformance?
@@ -23586,7 +23586,7 @@ Data type representing the configuration for @code{dbus-root-service-type}.
 @item @code{dbus} (default: @code{dbus}) (type: file-like)
 Package object for dbus.
 
-@item @code{services} (default: @code{()}) (type: list)
+@item @code{services} (default: @code{'()}) (type: list)
 List of packages that provide an @file{etc/dbus-1/system.d} directory
 containing additional D-Bus configuration and policy files.
 For example, to allow avahi-daemon to use the system bus, @var{services}
@@ -25078,7 +25078,7 @@ the ManageSieve service, before authentication.  These may differ from the
 capabilities offered to authenticated users.  If this field is left empty,
 report what the Sieve interpreter supports by default.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{protocol-configuration} parameter} space-separated-string-list managesieve-sieve-capability
@@ -25087,7 +25087,7 @@ the ManageSieve service, before authentication.  These may differ from the
 capabilities offered to authenticated users.  If this field is left empty,
 report what the Sieve interpreter supports by default.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -25121,7 +25121,7 @@ The service kind.  Valid values include @code{director},
 Listeners for the service.  A listener is either a
 @code{unix-listener-configuration}, a @code{fifo-listener-configuration}, or
 an @code{inet-listener-configuration}.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 Available @code{unix-listener-configuration} fields are:
 
@@ -25239,7 +25239,7 @@ Available @code{dict-configuration} fields are:
 
 @deftypevr {@code{dict-configuration} parameter} free-form-fields entries
 A list of key-value pairs that this dict should hold.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @end deftypevr
@@ -25283,7 +25283,7 @@ Defaults to @samp{""}.
 
 @deftypevr {@code{userdb-configuration} parameter} free-form-args override-fields
 Override fields from passwd.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @end deftypevr
@@ -25361,7 +25361,7 @@ Defaults to @samp{#t}.
 
 @deftypevr {@code{namespace-configuration} parameter} mailbox-configuration-list mailboxes
 List of predefined mailboxes in this namespace.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 Available @code{mailbox-configuration} fields are:
 
@@ -25379,7 +25379,7 @@ Defaults to @samp{"no"}.
 List of IMAP @code{SPECIAL-USE} attributes as specified by RFC 6154.
 Valid values are @code{\All}, @code{\Archive}, @code{\Drafts},
 @code{\Flagged}, @code{\Junk}, @code{\Sent}, and @code{\Trash}.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @end deftypevr
@@ -25402,12 +25402,12 @@ allowed to override their IP addresses and ports (for logging and for
 authentication checks).  @samp{disable-plaintext-auth} is also ignored
 for these networks.  Typically you would specify your IMAP proxy servers
 here.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} space-separated-string-list login-access-sockets
 List of login access check sockets (e.g.@: tcpwrap).
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} boolean verbose-proctitle?
@@ -25480,7 +25480,7 @@ List of realms for SASL authentication mechanisms that need them.
 You can leave it empty if you don't want to support multiple realms.
 Many clients simply use the first one listed here, so keep the default
 realm first.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} string auth-default-realm
@@ -25596,13 +25596,13 @@ List of wanted authentication mechanisms.  Supported mechanisms are:
 List of IPs or hostnames to all director servers, including ourself.
 Ports can be specified as ip:port.  The default port is the same as what
 director service's @samp{inet-listener} is using.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} space-separated-string-list director-mail-servers
 List of IPs or hostnames to all backend mail servers.  Ranges are
 allowed too, like 10.0.0.10-10.0.0.30.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} string director-user-expire
@@ -25901,7 +25901,7 @@ too).  This setting doesn't affect @samp{login-chroot}
 which local users can modify, that may lead to root exploit.  Usually
 this should be done only if you don't allow shell access for users.
 <doc/wiki/Chrooting.txt>.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} string mail-chroot
@@ -25929,7 +25929,7 @@ Defaults to @samp{"/usr/lib/dovecot"}.
 @deftypevr {@code{dovecot-configuration} parameter} space-separated-string-list mail-plugins
 List of plugins to load for all services.  Plugins specific to IMAP,
 LDA, etc.@: are added to this list in their own .conf files.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} non-negative-integer mail-cache-min-mail-count
@@ -26357,7 +26357,7 @@ Show \Noselect flags for LSUB replies with LAYOUT=fs (e.g.@: mbox).
 This makes Thunderbird realize they aren't selectable and show them
 greyed out, instead of only later giving "not selectable" popup error.
 @end table
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} string imap-urlauth-host
@@ -26570,7 +26570,7 @@ Defaults to @samp{""}.
 @deftypevr {@code{getmail-retriever-configuration} parameter} list password-command
 Override fields from passwd.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -26598,7 +26598,7 @@ Defaults to @samp{""}.
 @deftypevr {@code{getmail-retriever-configuration} parameter} parameter-alist extra-parameters
 Extra retriever parameters.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -26628,7 +26628,7 @@ Defaults to @samp{""}.
 @deftypevr {@code{getmail-destination-configuration} parameter} parameter-alist extra-parameters
 Extra destination parameters
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -26743,7 +26743,7 @@ Defaults to @samp{#f}.
 @deftypevr {@code{getmail-options-configuration} parameter} parameter-alist extra-parameters
 Extra options to include.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -26756,14 +26756,14 @@ A list of mailboxes that getmail should wait on the server for new mail
 notifications.  This depends on the server supporting the IDLE
 extension.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
 @deftypevr {@code{getmail-configuration} parameter} list environment-variables
 Environment variables to set for getmail.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -26937,7 +26937,7 @@ Defaults to @samp{"/var/lib/prosody"}.
 @deftypevr {@code{prosody-configuration} parameter} file-object-list plugin-paths
 Additional plugin directories.  They are searched in all the specified
 paths in order.  See @url{https://prosody.im/doc/plugins_directory}.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} file-name certificates
@@ -26952,7 +26952,7 @@ This is a list of accounts that are admins for the server.  Note that you
 must create the accounts separately.  See @url{https://prosody.im/doc/admins} and
 @url{https://prosody.im/doc/creating_accounts}.
 Example: @code{(admins '("user1@@example.com" "user2@@example.net"))}
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} boolean use-libevent?
@@ -26966,13 +26966,13 @@ This is the list of modules Prosody will load on startup.  It looks for
 @code{mod_modulename.lua} in the plugins folder, so make sure that exists too.
 Documentation on modules can be found at:
 @url{https://prosody.im/doc/modules}.
-Defaults to @samp{("roster" "saslauth" "tls" "dialback" "disco" "carbons" "private" "blocklist" "vcard" "version" "uptime" "time" "ping" "pep" "register" "admin_adhoc")}.
+Defaults to @samp{'("roster" "saslauth" "tls" "dialback" "disco" "carbons" "private" "blocklist" "vcard" "version" "uptime" "time" "ping" "pep" "register" "admin_adhoc")}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} string-list modules-disabled
 @samp{"offline"}, @samp{"c2s"} and @samp{"s2s"} are auto-loaded, but
 should you want to disable them then add them to this list.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} file-object groups-file
@@ -27070,7 +27070,7 @@ Defaults to @samp{#f}.
 @deftypevr {@code{prosody-configuration} parameter} string-list disable-sasl-mechanisms
 Set of mechanisms that will never be offered.  See
 @url{https://prosody.im/doc/modules/mod_saslauth}.
-Defaults to @samp{("DIGEST-MD5")}.
+Defaults to @samp{'("DIGEST-MD5")}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} boolean s2s-require-encryption?
@@ -27092,14 +27092,14 @@ Many servers don't support encryption or have invalid or self-signed
 certificates.  You can list domains here that will not be required to
 authenticate using certificates.  They will be authenticated using DNS@.  See
 @url{https://prosody.im/doc/s2s#security}.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} string-list s2s-secure-domains
 Even if you leave @code{s2s-secure-auth?} disabled, you can still require
 valid certificates for some domains by specifying a list here.  See
 @url{https://prosody.im/doc/s2s#security}.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} string authentication
@@ -27170,7 +27170,7 @@ internal component, you simply fill the hostname field, and the plugin you wish
 to use for the component.
 
 See @url{https://prosody.im/doc/components}.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 Available @code{int-component-configuration} fields are:
 
@@ -27223,7 +27223,7 @@ Defaults to @samp{20}.
 External components use XEP-0114, which most standalone components
 support.  To add an external component, you simply fill the hostname field.  See
 @url{https://prosody.im/doc/components}.
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 Available @code{ext-component-configuration} fields are:
 
@@ -27240,7 +27240,7 @@ Hostname of the component.
 
 @deftypevr {@code{prosody-configuration} parameter} non-negative-integer-list component-ports
 Port(s) Prosody listens on for component connections.
-Defaults to @samp{(5347)}.
+Defaults to @samp{'(5347)}.
 @end deftypevr
 
 @deftypevr {@code{prosody-configuration} parameter} string component-interface
@@ -28505,7 +28505,7 @@ The list of IP and IPv6 addresses from which @acronym{RPC} requests will
 be accepted when @code{rpc-whitelist-enabled?} is @code{#t}.  Wildcards
 may be specified using @samp{*}.
 
-Defaults to @samp{("127.0.0.1" "::1")}.
+Defaults to @samp{'("127.0.0.1" "::1")}.
 
 @end deftypevr
 
@@ -28526,7 +28526,7 @@ Defaults to @samp{#t}.
 The list of host names recognized by the @acronym{RPC} server when
 @code{rpc-host-whitelist-enabled?} is @code{#t}.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -29104,7 +29104,7 @@ Location of SSL client certificates.
 @item @code{extra-options} (default: @code{""}) (type: extra-options)
 Extra options will be appended to Zabbix server configuration file.
 
-@item @code{include-files} (default: @code{()}) (type: include-files)
+@item @code{include-files} (default: @code{'()}) (type: include-files)
 You may include individual files or all files in a directory in the
 configuration file.
 
@@ -29169,12 +29169,12 @@ Log file name for @code{log-type} @code{file} parameter.
 @item @code{pid-file} (default: @code{"/var/run/zabbix/zabbix_agent.pid"}) (type: string)
 Name of PID file.
 
-@item @code{server} (default: @code{("127.0.0.1")}) (type: list)
+@item @code{server} (default: @code{'("127.0.0.1")}) (type: list)
 List of IP addresses, optionally in CIDR notation, or hostnames of
 Zabbix servers and Zabbix proxies.  Incoming connections will be
 accepted only from the hosts listed here.
 
-@item @code{server-active} (default: @code{("127.0.0.1")}) (type: list)
+@item @code{server-active} (default: @code{'("127.0.0.1")}) (type: list)
 List of IP:port (or hostname:port) pairs of Zabbix servers and Zabbix
 proxies for active checks.  If port is not specified, default port is
 used.  If this parameter is not specified, active checks are disabled.
@@ -29182,7 +29182,7 @@ used.  If this parameter is not specified, active checks are disabled.
 @item @code{extra-options} (default: @code{""}) (type: extra-options)
 Extra options will be appended to Zabbix server configuration file.
 
-@item @code{include-files} (default: @code{()}) (type: include-files)
+@item @code{include-files} (default: @code{'()}) (type: include-files)
 You may include individual files or all files in a directory in the
 configuration file.
 
@@ -29216,7 +29216,7 @@ Available @code{zabbix-front-end-configuration} fields are:
 @item @code{zabbix-server} (default: @code{zabbix-server}) (type: file-like)
 The Zabbix server package to use.
 
-@item @code{nginx} (default: @code{()}) (type: list)
+@item @code{nginx} (default: @code{'()}) (type: list)
 List of @ref{nginx-server-configuration,@code{nginx-server-configuration}}
 blocks for the Zabbix front-end.  When empty, a default that listens on
 port 80 is used.
@@ -29462,7 +29462,7 @@ one of the following symbols: @samp{crit}, @samp{error}, @samp{warning},
 @samp{notice}, @samp{info} or @samp{debug}.  All messages with the
 specified log level or higher are logged.
 
-Defaults to @samp{("/var/log/nslcd" info)}.
+Defaults to @samp{'("/var/log/nslcd" info)}.
 
 @end deftypevr
 
@@ -29470,7 +29470,7 @@ Defaults to @samp{("/var/log/nslcd" info)}.
 The list of LDAP server URIs.  Normally, only the first server will be
 used with the following servers as fall-back.
 
-Defaults to @samp{("ldap://localhost:389/")}.
+Defaults to @samp{'("ldap://localhost:389/")}.
 
 @end deftypevr
 
@@ -29575,7 +29575,7 @@ Specifies the search scope (subtree, onelevel, base or children).  The
 default scope is subtree; base scope is almost never useful for name
 service lookups; children scope is not supported on all servers.
 
-Defaults to @samp{(subtree)}.
+Defaults to @samp{'(subtree)}.
 
 @end deftypevr
 
@@ -29601,7 +29601,7 @@ default RFC 2307 attributes.  It is a list of maps, each consisting of
 the name of a map, the RFC 2307 attribute to match and the query
 expression for the attribute as it is available in the directory.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -29609,7 +29609,7 @@ Defaults to @samp{()}.
 A list of filters consisting of the name of a map to which the filter
 applies and an LDAP search filter expression.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -29854,7 +29854,7 @@ Defaults to @samp{disabled}.
 @deftypevr {@code{nslcd-configuration} parameter} list pam-services
 List of pam service names for which LDAP authentication should suffice.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -31350,7 +31350,7 @@ The certbot package to use.
 The directory from which to serve the Let's Encrypt challenge/response
 files.
 
-@item @code{certificates} (default: @code{()})
+@item @code{certificates} (default: @code{'()})
 A list of @code{certificates-configuration}s for which to generate
 certificates and request signatures.  Each certificate has a @code{name}
 and several @code{domains}.
@@ -31401,7 +31401,7 @@ certificate names, run @code{certbot certificates}.
 
 Its default is the first provided domain.
 
-@item @code{domains} (default: @code{()})
+@item @code{domains} (default: @code{'()})
 The first domain provided will be the subject CN of the certificate, and
 all domains will be Subject Alternative Names on the certificate.
 
@@ -32203,7 +32203,7 @@ Defaults to @samp{"/etc/ddclient/secrets.conf"}.
 @deftypevr {@code{ddclient-configuration} parameter} list extra-options
 Extra options will be appended to @file{ddclient.conf} file.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -32339,7 +32339,7 @@ Use an Inetd-style service, which runs the Xvnc server on demand.
 @item @code{frame-rate} (default: @code{60}) (type: number)
 The maximum number of updates per second sent to each client.
 
-@item @code{security-types} (default: @code{("None")}) (type: security-types)
+@item @code{security-types} (default: @code{'("None")}) (type: security-types)
 The allowed security schemes to use for incoming connections.  The
 default is "None", which is safe given that Xvnc is configured to
 authenticate the user via the display manager, and only for local
@@ -32355,7 +32355,7 @@ used to expose the remote port.
 The log level, a number between 0 and 100, 100 meaning most verbose
 output.  The log messages are output to syslog.
 
-@item @code{extra-options} (default: @code{()}) (type: strings)
+@item @code{extra-options} (default: @code{'()}) (type: strings)
 This can be used to provide extra Xvnc options not exposed via this
 <xvnc-configuration> record.
 
@@ -32467,7 +32467,7 @@ Bind to a specific local port number.
 @item @code{resolv-retry?} (default: @code{#t}) (type: resolv-retry)
 Retry resolving server address.
 
-@item @code{remote} (default: @code{()}) (type: openvpn-remote-list)
+@item @code{remote} (default: @code{'()}) (type: openvpn-remote-list)
 A list of remote servers to connect to.
 
 @deftp {Data Type} openvpn-remote-configuration
@@ -32576,7 +32576,7 @@ The maximum number of clients.
 The status file.  This file shows a small report on current connection.
 It is truncated and rewritten every minute.
 
-@item @code{client-config-dir} (default: @code{()}) (type: openvpn-ccd-list)
+@item @code{client-config-dir} (default: @code{'()}) (type: openvpn-ccd-list)
 The list of configuration for some clients.
 
 @end table
@@ -33964,11 +33964,11 @@ who is a part of the group @var{group} (see below).
 The group to run mpd as.
 
 The default @code{%mpd-group} is a system group with name ``mpd''.
-@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
 A list of symbols naming Shepherd services that this service
 will depend on.
 
-@item @code{environment-variables} (default: @code{("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")}) (type: list-of-strings)
+@item @code{environment-variables} (default: @code{'("PULSE_CLIENTCONFIG=/etc/pulse/client.conf" "PULSE_CONFIG=/etc/pulse/daemon.conf")}) (type: list-of-strings)
 A list of strings specifying environment variables.
 
 @item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
@@ -34009,38 +34009,38 @@ can be specified here.
 @item @code{database} (type: maybe-mpd-plugin)
 MPD database plugin configuration.
 
-@item @code{partitions} (default: @code{()}) (type: list-of-mpd-partition)
+@item @code{partitions} (default: @code{'()}) (type: list-of-mpd-partition)
 List of MPD "partitions".
 
-@item @code{neighbors} (default: @code{()}) (type: list-of-mpd-plugin)
+@item @code{neighbors} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD neighbor plugin configurations.
 
-@item @code{inputs} (default: @code{()}) (type: list-of-mpd-plugin)
+@item @code{inputs} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD input plugin configurations.
 
-@item @code{archive-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+@item @code{archive-plugins} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD archive plugin configurations.
 
 @item @code{input-cache-size} (type: maybe-string)
 MPD input cache size.
 
-@item @code{decoders} (default: @code{()}) (type: list-of-mpd-plugin)
+@item @code{decoders} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD decoder plugin configurations.
 
 @item @code{resampler} (type: maybe-mpd-plugin)
 MPD resampler plugin configuration.
 
-@item @code{filters} (default: @code{()}) (type: list-of-mpd-plugin)
+@item @code{filters} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD filter plugin configurations.
 
 @item @code{outputs} (type: list-of-mpd-plugin-or-output)
 The audio outputs that MPD can use.  By default this is a single output
 using pulseaudio.
 
-@item @code{playlist-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+@item @code{playlist-plugins} (default: @code{'()}) (type: list-of-mpd-plugin)
 List of MPD playlist plugin configurations.
 
-@item @code{extra-options} (default: @code{()}) (type: alist)
+@item @code{extra-options} (default: @code{'()}) (type: alist)
 An association list of option symbols/strings to string values to be
 appended to the configuration.
 
@@ -34060,7 +34060,7 @@ Name.
 @item @code{enabled?} (type: maybe-boolean)
 Whether the plugin is enabled/disabled.
 
-@item @code{extra-options} (default: @code{()}) (type: alist)
+@item @code{extra-options} (default: @code{'()}) (type: alist)
 An association list of option symbols/strings to string values to be
 appended to the plugin configuration.  See
 @uref{https://mpd.readthedocs.io/en/latest/plugins.html,MPD plugin
@@ -34076,7 +34076,7 @@ Data type representing a @command{mpd} partition.
 @item @code{name} (type: string)
 Partition name.
 
-@item @code{extra-options} (default: @code{()}) (type: alist)
+@item @code{extra-options} (default: @code{'()}) (type: alist)
 An association list of option symbols/strings to string values to be
 appended to the partition configuration.  See
 @uref{https://mpd.readthedocs.io/en/latest/user.html#configuring-partitions,Configuring
@@ -34130,7 +34130,7 @@ Gain} is to be applied.  @code{software} uses an internal software
 volume control, @code{mixer} uses the configured (hardware) mixer
 control and @code{none} disables replay gain on this audio output.
 
-@item @code{extra-options} (default: @code{()}) (type: alist)
+@item @code{extra-options} (default: @code{'()}) (type: alist)
 An association list of option symbols/strings to string values to be
 appended to the audio output configuration.
 
@@ -34195,7 +34195,7 @@ Available @code{mympd-configuration} fields are:
 @item @code{package} (default: @code{mympd}) (type: file-like)
 The package object of the myMPD server.
 
-@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 
@@ -34278,10 +34278,10 @@ Whether to preserve caches between service restarts.
 Available @code{mympd-ip-acl} fields are:
 
 @table @asis
-@item @code{allow} (default: @code{()}) (type: list-of-strings)
+@item @code{allow} (default: @code{'()}) (type: list-of-strings)
 Allowed IP addresses.
 
-@item @code{deny} (default: @code{()}) (type: list-of-strings)
+@item @code{deny} (default: @code{'()}) (type: list-of-strings)
 Disallowed IP addresses.
 
 @end table
@@ -34471,7 +34471,7 @@ API access control scheme.
 By default an authenticated user is allowed access to all APIs.  Access
 drivers can place restrictions on this.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -34531,7 +34531,7 @@ Defaults to @samp{#f}.
 @deftypevr {@code{libvirt-configuration} parameter} optional-list tls-allowed-dn-list
 Whitelist of allowed x509 Distinguished Name.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -34539,7 +34539,7 @@ Defaults to @samp{()}.
 Whitelist of allowed SASL usernames.  The format for username depends on
 the SASL authentication mechanism.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -36270,14 +36270,14 @@ Defaults to @samp{#t}.
 List of common prefixes which, when combined with a repository URL,
 generates valid clone URLs for the repository.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
 @deftypevr {@code{cgit-configuration} parameter} list clone-url
 List of @code{clone-url} templates.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -36570,7 +36570,7 @@ Defaults to @samp{""}.
 @deftypevr {@code{cgit-configuration} parameter} mimetype-alist mimetype
 Mimetype for the specified filename extension.
 
-Defaults to @samp{((gif "image/gif") (html "text/html") (jpg
+Defaults to @samp{'((gif "image/gif") (html "text/html") (jpg
 "image/jpeg") (jpeg "image/jpeg") (pdf "application/pdf") (png
 "image/png") (svg "image/svg+xml"))}.
 
@@ -36619,7 +36619,7 @@ A list of subdirectories inside of @code{repository-directory}, relative
 to it, that should loaded as Git repositories.  An empty list means that
 all subdirectories will be loaded.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -36656,7 +36656,7 @@ Defaults to @samp{""}.
 @deftypevr {@code{cgit-configuration} parameter} robots-list robots
 Text used as content for the @code{robots} meta-tag.
 
-Defaults to @samp{("noindex" "nofollow")}.
+Defaults to @samp{'("noindex" "nofollow")}.
 
 @end deftypevr
 
@@ -36697,7 +36697,7 @@ Defaults to @samp{#f}.
 Text which specifies the default set of snapshot formats that cgit
 generates links for.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -36791,7 +36791,7 @@ Defaults to @samp{"/"}.
 @deftypevr {@code{cgit-configuration} parameter} repository-cgit-configuration-list repositories
 A list of @dfn{cgit-repo} records to use with config.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 Available @code{repository-cgit-configuration} fields are:
 
@@ -36799,7 +36799,7 @@ Available @code{repository-cgit-configuration} fields are:
 A mask of snapshot formats for this repo that cgit generates links for,
 restricted by the global @code{snapshots} setting.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -36835,7 +36835,7 @@ Defaults to @samp{""}.
 @deftypevr {@code{repository-cgit-configuration} parameter} repo-list clone-url
 A list of URLs which can be used to clone repo.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -36985,7 +36985,7 @@ Text which will be used as the formatstring for a hyperlink when a
 submodule with the specified subdirectory path is printed in a directory
 listing.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -37036,7 +37036,7 @@ Defaults to @samp{""}.
 @deftypevr {@code{repository-cgit-configuration} parameter} repo-list extra-options
 Extra options will be appended to cgitrc file.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -37045,7 +37045,7 @@ Defaults to @samp{()}.
 @deftypevr {@code{cgit-configuration} parameter} list extra-options
 Extra options will be appended to cgitrc file.
 
-Defaults to @samp{()}.
+Defaults to @samp{'()}.
 
 @end deftypevr
 
@@ -38006,7 +38006,7 @@ list or a string.  For additional information, see @ref{Guile
 Syntax,,Job specification,mcron,the mcron manual}.  By default this is
 set to run weekly on Sunday at 00:00.
 
-@item @code{listed-in} (default: @code{("/etc/fstab" "/proc/self/mountinfo")}) (type: maybe-list-of-strings)
+@item @code{listed-in} (default: @code{'("/etc/fstab" "/proc/self/mountinfo")}) (type: maybe-list-of-strings)
 List of files in fstab or kernel mountinfo format.  All missing or empty
 files are silently ignored.  The evaluation of the list @emph{stops}
 after the first non-empty file.  File systems with
@@ -38551,7 +38551,7 @@ Enable or disable debug output.
 @item @code{enable-iptables?} (default @code{#t})
 Enable or disable the addition of iptables rules.
 
-@item @code{environment-variables} (default: @code{()})
+@item @code{environment-variables} (default: @code{'()})
 List of environment variables to set for @command{dockerd}.
 
 This must be a list of strings where each string has the form
@@ -38845,14 +38845,14 @@ base default configuration that is to be extended with
 @item @code{run-directory} (default: @code{"/var/run/fail2ban"}) (type: string)
 The state directory for the @code{fail2ban} daemon.
 
-@item @code{jails} (default: @code{()}) (type: list-of-fail2ban-jail-configurations)
+@item @code{jails} (default: @code{'()}) (type: list-of-fail2ban-jail-configurations)
 Instances of @code{<fail2ban-jail-configuration>} collected from
 extensions.
 
-@item @code{extra-jails} (default: @code{()}) (type: list-of-fail2ban-jail-configurations)
+@item @code{extra-jails} (default: @code{'()}) (type: list-of-fail2ban-jail-configurations)
 Instances of @code{<fail2ban-jail-configuration>} explicitly provided.
 
-@item @code{extra-content} (default: @code{()}) (type: text-config)
+@item @code{extra-content} (default: @code{'()}) (type: text-config)
 Extra raw content to add to the end of the @file{jail.local} file,
 provided as a list of file-like objects.
 
@@ -38884,7 +38884,7 @@ Available @code{fail2ban-jail-action-configuration} fields are:
 @item @code{name} (type: string)
 Action name.
 
-@item @code{arguments} (default: @code{()}) (type: list-of-arguments)
+@item @code{arguments} (default: @code{'()}) (type: list-of-arguments)
 Action arguments.
 
 @end table
@@ -38955,7 +38955,7 @@ the ban IP address is considered.
 @item @code{ignore-self?} (type: maybe-boolean)
 Never ban the local machine's own IP address.
 
-@item @code{ignore-ip} (default: @code{()}) (type: list-of-strings)
+@item @code{ignore-ip} (default: @code{'()}) (type: list-of-strings)
 A list of IP addresses, CIDR masks or DNS hosts to ignore.
 @code{fail2ban} will not ban a host which matches an address in this
 list.
@@ -38975,13 +38975,13 @@ The default time zone for log lines that do not have one.
 The encoding of the log files handled by the jail.  Possible values are:
 @code{'ascii}, @code{'utf-8} and @code{'auto}.
 
-@item @code{log-path} (default: @code{()}) (type: list-of-strings)
+@item @code{log-path} (default: @code{'()}) (type: list-of-strings)
 The file names of the log files to be monitored.
 
-@item @code{action} (default: @code{()}) (type: list-of-fail2ban-jail-actions)
+@item @code{action} (default: @code{'()}) (type: list-of-fail2ban-jail-actions)
 A list of @code{<fail2ban-jail-action-configuration>}.
 
-@item @code{extra-content} (default: @code{()}) (type: text-config)
+@item @code{extra-content} (default: @code{'()}) (type: text-config)
 Extra content for the jail configuration, provided as a list of file-like
 objects.
 
@@ -39653,7 +39653,7 @@ points of the EFI file system, usually @file{/boot/efi}.  For
 points corresponding to TFTP root directories served by your TFTP
 server.
 
-@item @code{menu-entries} (default: @code{()})
+@item @code{menu-entries} (default: @code{'()})
 A possibly empty list of @code{menu-entry} objects (see below), denoting
 entries to appear in the bootloader menu, in addition to the current
 system entry and the entry pointing to previous system generations.
@@ -39767,9 +39767,9 @@ convention,,, grub, GNU GRUB manual}), for example:
 If the device is specified explicitly as above, then the @code{device}
 field is ignored entirely.
 
-@item @code{linux-arguments} (default: @code{()})
+@item @code{linux-arguments} (default: @code{'()})
 The list of extra Linux kernel command-line arguments---e.g.,
-@code{("console=ttyS0")}.
+@code{'("console=ttyS0")}.
 
 @item @code{initrd} (default: @code{#f})
 A G-Expression or string denoting the file name of the initial RAM disk
@@ -39794,10 +39794,10 @@ For example:
 (file-append mach "/boot/gnumach")
 @end lisp
 
-@item @code{multiboot-arguments} (default: @code{()})
+@item @code{multiboot-arguments} (default: @code{'()})
 The list of extra command-line arguments for the multiboot-kernel.
 
-@item @code{multiboot-modules} (default: @code{()})
+@item @code{multiboot-modules} (default: @code{'()})
 The list of commands for loading Multiboot modules.  For example:
 
 @lisp
@@ -42536,7 +42536,7 @@ that @file{~/.profile} is sourced by @file{~/.bash_profile} and
 Available @code{home-shell-profile-configuration} fields are:
 
 @table @asis
-@item @code{profile} (default: @code{()}) (type: text-config)
+@item @code{profile} (default: @code{'()}) (type: text-config)
 @code{home-shell-profile} is instantiated automatically by
 @code{home-environment}, DO NOT create this service manually, it can
 only be extended.  @code{profile} is a list of file-like objects, which
@@ -42565,13 +42565,13 @@ The Bash package to use.
 Add sane defaults like reading @file{/etc/bashrc} and coloring the output of
 @command{ls} to the top of the @file{.bashrc} file.
 
-@item @code{environment-variables} (default: @code{()}) (type: alist)
+@item @code{environment-variables} (default: @code{'()}) (type: alist)
 Association list of environment variables to set for the Bash session.  The
 rules for the @code{home-environment-variables-service-type} apply
 here (@pxref{Essential Home Services}).  The contents of this field will be
 added after the contents of the @code{bash-profile} field.
 
-@item @code{aliases} (default: @code{()}) (type: alist)
+@item @code{aliases} (default: @code{'()}) (type: alist)
 Association list of aliases to set for the Bash session.  The aliases
 will be defined after the contents of the @code{bashrc} field has been
 put in the @file{.bashrc} file.  The alias will automatically be quoted,
@@ -42587,19 +42587,19 @@ turns into
 alias ls="ls -alF"
 @end example
 
-@item @code{bash-profile} (default: @code{()}) (type: text-config)
+@item @code{bash-profile} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.bash_profile}.
 Used for executing user's commands at start of login shell (In most
 cases the shell started on tty just after login).  @file{.bash_login}
 won't be ever read, because @file{.bash_profile} always present.
 
-@item @code{bashrc} (default: @code{()}) (type: text-config)
+@item @code{bashrc} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.bashrc}.  Used
 for executing user's commands at start of interactive shell (The shell
 for interactive usage started by typing @code{bash} or by terminal app
 or any other program).
 
-@item @code{bash-logout} (default: @code{()}) (type: text-config)
+@item @code{bash-logout} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.bash_logout}.
 Used for executing user's commands at the exit of login shell.  It won't
 be read in some cases (if the shell terminates by exec'ing another
@@ -42636,24 +42636,24 @@ You would then add @code{bash-fancy-prompt-service} to the list in the
 Available @code{home-bash-extension} fields are:
 
 @table @asis
-@item @code{environment-variables} (default: @code{()}) (type: alist)
+@item @code{environment-variables} (default: @code{'()}) (type: alist)
 Additional environment variables to set.  These will be combined with the
 environment variables from other extensions and the base service to form one
 coherent block of environment variables.
 
-@item @code{aliases} (default: @code{()}) (type: alist)
+@item @code{aliases} (default: @code{'()}) (type: alist)
 Additional aliases to set.  These will be combined with the aliases from
 other extensions and the base service.
 
-@item @code{bash-profile} (default: @code{()}) (type: text-config)
+@item @code{bash-profile} (default: @code{'()}) (type: text-config)
 Additional text blocks to add to @file{.bash_profile}, which will be combined
 with text blocks from other extensions and the base service.
 
-@item @code{bashrc} (default: @code{()}) (type: text-config)
+@item @code{bashrc} (default: @code{'()}) (type: text-config)
 Additional text blocks to add to @file{.bashrc}, which will be combined
 with text blocks from other extensions and the base service.
 
-@item @code{bash-logout} (default: @code{()}) (type: text-config)
+@item @code{bash-logout} (default: @code{'()}) (type: text-config)
 Additional text blocks to add to @file{.bash_logout}, which will be combined
 with text blocks from other extensions and the base service.
 
@@ -42675,33 +42675,33 @@ Place all the configs to @file{$XDG_CONFIG_HOME/zsh}.  Makes
 Shell startup process will continue with
 @file{$XDG_CONFIG_HOME/zsh/.zshenv}.
 
-@item @code{environment-variables} (default: @code{()}) (type: alist)
+@item @code{environment-variables} (default: @code{'()}) (type: alist)
 Association list of environment variables to set for the Zsh session.
 
-@item @code{zshenv} (default: @code{()}) (type: text-config)
+@item @code{zshenv} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.zshenv}.  Used
 for setting user's shell environment variables.  Must not contain
 commands assuming the presence of tty or producing output.  Will be read
 always.  Will be read before any other file in @env{ZDOTDIR}.
 
-@item @code{zprofile} (default: @code{()}) (type: text-config)
+@item @code{zprofile} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.zprofile}.  Used
 for executing user's commands at start of login shell (In most cases the
 shell started on tty just after login).  Will be read before
 @file{.zlogin}.
 
-@item @code{zshrc} (default: @code{()}) (type: text-config)
+@item @code{zshrc} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.zshrc}.  Used
 for executing user's commands at start of interactive shell (The shell
 for interactive usage started by typing @code{zsh} or by terminal app or
 any other program).
 
-@item @code{zlogin} (default: @code{()}) (type: text-config)
+@item @code{zlogin} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.zlogin}.  Used
 for executing user's commands at the end of starting process of login
 shell.
 
-@item @code{zlogout} (default: @code{()}) (type: text-config)
+@item @code{zlogout} (default: @code{'()}) (type: text-config)
 List of file-like objects, which will be added to @file{.zlogout}.  Used
 for executing user's commands at the exit of login shell.  It won't be
 read in some cases (if the shell terminates by exec'ing another process
@@ -42747,7 +42747,7 @@ Available @code{home-mcron-configuration} fields are:
 @item @code{mcron} (default: @code{mcron}) (type: file-like)
 The mcron package to use.
 
-@item @code{jobs} (default: @code{()}) (type: list-of-gexps)
+@item @code{jobs} (default: @code{'()}) (type: list-of-gexps)
 This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
 specifications,, mcron,GNU@tie{}mcron}).
@@ -43571,7 +43571,7 @@ Available @code{home-msmtp-configuration} fields are:
 @item @code{defaults} (type: msmtp-configuration)
 The configuration that will be set as default for all accounts.
  
-@item @code{accounts} (default: @code{()}) (type: list-of-msmtp-accounts)
+@item @code{accounts} (default: @code{'()}) (type: list-of-msmtp-accounts)
 A list of @code{msmtp-account} records which contain information about
 all your accounts.
  
