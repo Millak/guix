@@ -79,13 +79,13 @@ Return the value associated with OPTION, or #f on failure."
   (define (scope dir)
     (string-append root (if (string-suffix? "/" root) "" "/") dir))
 
-  (mkdir (scope "dev"))
+  (mkdir-p (scope "dev"))
   ;; Don't create /dev/null etc just yet; the store
   ;; messes-up the permission bits.
   ;; Don't create /dev/console, /dev/vcs, etc.: they are created by
   ;; console-run on first boot.
 
-  (mkdir (scope "servers"))
+  (mkdir-p (scope "servers"))
   (for-each (lambda (file)
               (call-with-output-file (scope (string-append "servers/" file))
                 (lambda (port)
@@ -100,7 +100,8 @@ Return the value associated with OPTION, or #f on failure."
               "kill"
               "suspend"))
 
-  (mkdir (scope "servers/socket"))
+  (mkdir-p (scope "servers/socket"))
+
   ;; Don't create /servers/socket/1 & co: runsystem does that on first boot.
 
   ;; TODO: Set the 'gnu.translator' extended attribute for passive translator
@@ -279,7 +280,8 @@ set."
   (for-each scope-set-translator servers)
   (mkdir* "dev/vcs/1")
   (mkdir* "dev/vcs/2")
-  (rename-file (scope "dev/console") (scope "dev/console-"))
+  (when (file-exists? (scope "dev/console"))
+    (rename-file (scope "dev/console") (scope "dev/console-")))
   (for-each scope-set-translator devices)
 
   (false-if-EEXIST (symlink "/dev/random" (scope "dev/urandom")))
@@ -325,6 +327,10 @@ XXX TODO: use Linux xattr/setxattr to remove (settrans in) /libexec/RUNSYSTEM
        (false-if-exception (delete-file "/hurd"))
        (let ((hurd/hurd (readlink* (string-append system "/profile/hurd"))))
          (symlink hurd/hurd "/hurd"))
+
+       (unless (file-exists? "/servers/startup")
+         (format #t "Creating essential device nodes...\n")
+         (make-hurd-device-nodes))
 
        (format #t "Setting-up essential translators...\n")
        (setenv "PATH" (string-append system "/profile/bin"))
