@@ -2253,6 +2253,35 @@ task}.")
 image processing functions: @code{xyxymatch}, @code{geomap}.")
     (license license:bsd-3)))
 
+(define-public python-stcal
+  (package
+    (name "python-stcal")
+    (version "1.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "stcal" version))
+              (sha256
+               (base32
+                "0yy0pwi3krvhxfby6nzgpgyz5il3sl1j29ihbk81dh9fdh3ys2n9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        ;; XXX: Can't detect opencv-python version. The input
+                        ;; opencv might not set the version correctly.
+                        (delete 'sanity-check))))
+    (propagated-inputs (list opencv ;Provides OpenCV-Python
+                             python-astropy python-numpy python-scipy))
+    (native-inputs (list python-psutil
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-doctestplus
+                         python-pytest-openfiles
+                         python-setuptools-scm))
+    (home-page "https://github.com/spacetelescope/stcal")
+    (synopsis "STScI tools and algorithms used in calibration pipelines")
+    (description "STScI tools and algorithms used in calibration pipelines.")
+    (license license:bsd-3)))
+
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
