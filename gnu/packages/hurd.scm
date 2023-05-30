@@ -317,7 +317,8 @@ Hurd-minimal package which are needed for both glibc and GCC.")
     (name "hurd")
     (source (origin
               (inherit (package-source hurd-headers))
-              (patches (search-patches "hurd-rumpdisk-no-hd.patch"))))
+              (patches (search-patches "hurd-rumpdisk-no-hd.patch"
+                                       "hurd-startup.patch"))))
     (version (package-version hurd-headers))
     (arguments
      `(#:tests? #f                      ;no "check" target
@@ -387,6 +388,9 @@ mkdir -p /servers/socket
 rm -f /servers/socket/1
 # Note: this /hurd/ gets substituted
 settrans --create /servers/socket/1 /hurd/pflocal
+
+# Upon second boot, (file-exists? /dev/null) in hurd-boot-system hangs unless:
+rm -f /dev/urandom
 
 # parse multiboot arguments
 for i in \"$@\"; do

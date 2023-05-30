@@ -1,0 +1,82 @@
+This avoids hanging upon second boot and ensures a declarative /dev.
+
+Upstream status: Not presented upstream.
+
+From a15d281ea012ee360c45376e964d35f6292ac549 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Sat, 27 May 2023 17:28:22 +0200
+Subject: [PATCH] startup: Remove /hurd, /dev, create /servers.
+
+This avoids hanging upon second boot and ensures a declarative /hurd
+and /dev.
+
+* startup/startup.c (rm_r, create_servers): New functions.
+(main): Use them to remove /dev and create /servers.  Remove /hurd
+symlink.
+---
+ startup/startup.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/startup/startup.c b/startup/startup.c
+index feb7d265..5f380194 100644
+--- a/startup/startup.c
++++ b/startup/startup.c
+@@ -732,6 +732,42 @@ parse_opt (int key, char *arg, struct argp_state *state)
+   return 0;
+ }
+ 
++#include <ftw.h>
++static int
++rm_r (char const *file_name)
++{
++  int callback (char const *file_name, struct stat64 const *stat_buffer,
++                int type_flag, struct FTW *ftw_buffer)
++  {
++    fprintf (stderr, "startup: removing: %s\n", file_name);
++    return remove (file_name);
++  }
++
++  return nftw64 (file_name, callback, 0, FTW_DEPTH | FTW_MOUNT | FTW_PHYS);
++}
++
++void
++create_servers (void)
++{
++  char const *servers[] = {
++    "/servers/startup",
++    "/servers/exec",
++    "/servers/proc",
++    "/servers/password",
++    "/servers/default-pager",
++    "/servers/crash-dump-core",
++    "/servers/kill",
++    "/servers/suspend",
++    0,
++  };
++  mkdir ("/servers", 0755);
++  for (char const **p = servers; *p; p++)
++    open (*p, O_WRONLY | O_APPEND | O_CREAT, 0444);
++  mkdir ("/servers/socket", 0755);
++  mkdir ("/servers/bus", 0755);
++  mkdir ("/servers/bus/pci", 0755);
++}
++
+ int
+ main (int argc, char **argv, char **envp)
+ {
+@@ -741,6 +777,12 @@ main (int argc, char **argv, char **envp)
+   mach_port_t consdev;
+   struct argp argp = { options, parse_opt, 0, doc };
+ 
++  /* GNU Guix creates fresh ones in boot-hurd-system. */
++  unlink ("/hurd");
++  rm_r ("/dev");
++  mkdir ("/dev", 0755);
++  create_servers ();
++
+   /* Parse the arguments.  We don't want the vector reordered, we
+      should pass on to our child the exact arguments we got and just
+      ignore any arguments that aren't flags for us.  ARGP_NO_ERRS
+-- 
+2.40.1
+
