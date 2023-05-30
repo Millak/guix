@@ -10118,6 +10118,57 @@ package comprehensively addressing issues ranging from post-alignments
 processing to visualization and annotation.")
     (license license:gpl2)))
 
+(define-public r-mbecs
+  (package
+    (name "r-mbecs")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MBECS" version))
+       (sha256
+        (base32 "0gfr3c5k7xjd342zfdksgh22mrk3ryr4cp89nar0mlpgzxg4l4vz"))))
+    (properties `((upstream-name . "MBECS")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-HOME
+          ;; Fontconfig needs an writable cache
+            (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list r-cluster
+           r-dplyr
+           r-ggplot2
+           r-gridextra
+           r-limma
+           r-lme4
+           r-lmertest
+           r-magrittr
+           r-markdown
+           r-matrix
+           r-pheatmap
+           r-phyloseq
+           r-rmarkdown
+           r-ruv
+           r-sva
+           r-tibble
+           r-tidyr
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/rmolbrich/MBECS")
+    (synopsis
+     "Evaluation and correction of batch effects in microbiome data-sets")
+    (description
+     "The @acronym{MBECS, Microbiome Batch Effect Correction Suite} provides a
+set of functions to evaluate and mitigate unwated noise due to processing in
+batches.  To that end it incorporates a host of batch correcting algorithms
+(BECA) from various packages.  In addition it offers a correction and reporting
+pipeline that provides a preliminary look at the characteristics of a data-set
+before and after correcting for batch effects.")
+    (license license:artistic2.0)))
+
 (define-public r-mbkmeans
   (package
     (name "r-mbkmeans")
