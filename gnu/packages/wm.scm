@@ -1811,7 +1811,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.17")
+    (version "0.9.18")
     (source
      (origin
        (method git-fetch)
@@ -1820,7 +1820,7 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1709ck7931804mhirnki03cvx60c4dxg668fyz6jpzy8djg5xlxi"))))
+        (base32 "11yia2fs5a05jlbrdhxm26c2sgmbj3iwsk3bsqcvjvv3mlsrhxkf"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
