@@ -1182,14 +1182,14 @@ RUV-I, and RUV-III, along with various supporting algorithms.")
 (define-public r-waldo
   (package
     (name "r-waldo")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "waldo" version))
        (sha256
         (base32
-         "0gfrsfxqayysyyhxgxjv7qq0wadf4myp75fhg56s6fcqq5qjnw86"))))
+         "0inzdwna22axhjw0jdrk800g7zbkpcs7g1cmdi83r7j4zxn0ggs5"))))
     (properties `((upstream-name . "waldo")))
     (build-system r-build-system)
     (propagated-inputs
