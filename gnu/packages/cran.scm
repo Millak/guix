@@ -31478,14 +31478,14 @@ multi-state models.")
 (define-public r-scatterpie
   (package
     (name "r-scatterpie")
-    (version "0.1.9")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scatterpie" version))
        (sha256
         (base32
-         "11x6fxxfzm0b8rwfvs52dqb73j8xliff6hr6pc7kz8vs576dczsi"))))
+         "06crdylakwig8ryi1w5a6mmfy67gakmk6gp0xbrg749da1asd7a9"))))
     (properties `((upstream-name . "scatterpie")))
     (build-system r-build-system)
     (propagated-inputs
