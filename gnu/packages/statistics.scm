@@ -1530,13 +1530,13 @@ data derived from /etc/mime.types in UNIX-type systems.")
 (define-public r-markdown
   (package
     (name "r-markdown")
-    (version "1.6")
+    (version "1.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "markdown" version))
               (sha256
                (base32
-                "1sjrynkg42g7s2czwmx4lzk92fssnd73cqj63djlpbk1h66qn8j6"))))
+                "1cfgrlmbn54nsn0k568xdcg08dxb8flhsysmnfrhci0pa93rlayb"))))
     (build-system r-build-system)
     ;; Skip check phase because the tests require the r-knitr package to be
     ;; installed. This prevents installation failures. Knitr normally
