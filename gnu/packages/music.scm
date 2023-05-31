@@ -7346,6 +7346,61 @@ realtime.")
      "This package contains data files for use with Le Biniou.")
     (license license:gpl2+)))
 
+(define-public le-biniou
+  (package
+    (name "le-biniou")
+    (version "3.66.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/lebiniou/lebiniou")
+                    (commit (string-append "version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fvf944i703yd17kkxgja2xyyznb30p006piclz1rmgkhijp0lcp"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list (string-append "LDFLAGS=-Wl,-rpath="
+                                                    #$output "/lib")
+                                     (string-append
+                                      "LEBINIOU_DATADIR="
+                                      #$(this-package-input "le-biniou-data")))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch
+                          (lambda _
+                            (substitute* "src/bulfius_vui.c"
+                              (("xdg-open")
+                               (string-append
+                                #$(this-package-input "xdg-utils")
+                                "/bin/xdg-open"))))))))
+    (native-inputs (list autoconf
+                         automake
+                         libtool
+                         perl ;for pod2man
+                         pkg-config))
+    (inputs (list alsa-lib
+                  curl
+                  ffmpeg
+                  fftw
+                  glib
+                  imagemagick
+                  jack-1
+                  jansson
+                  le-biniou-data
+                  libcaca
+                  libsndfile
+                  pulseaudio
+                  sdl2
+                  ulfius
+                  xdg-utils))
+    (home-page "https://biniou.net/")
+    (synopsis "Audio visualization and VJing tool")
+    (description
+     "Le Biniou is a music visualization & VJing tool.  It creates live
+visuals based on audio performances or existing tracks.")
+    (license license:gpl2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
