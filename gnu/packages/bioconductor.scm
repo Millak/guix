@@ -19674,14 +19674,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "2.7-3")
+    (version "2.7-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "02qmp3ky671fkpjq1vcb083zzvfn5gkf69rhvdlvg7siy5wrjll3"))))
+         "0ibznjhy7vmh2myarvmxy06rvddbpbarbp201px62mig2pb9aq4y"))))
     (build-system r-build-system)
     (inputs
      (list gsl))
@@ -19695,6 +19695,8 @@ on the plot.")
            r-rcpparmadillo
            r-rgraphviz
            r-rjags))
+    (native-inputs
+     (list r-r-rsp))
     (home-page "https://r-bayesian-networks.org/")
     (synopsis "Modelling multivariate data with additive bayesian networks")
     (description
