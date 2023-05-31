@@ -10262,13 +10262,13 @@ fitting of some classes of graphical Markov models.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "1.6.3")
+    (version "1.6.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "1rw8p1wjj3pmmccyqkl0smgnqz2s4f22hy4kyl91w8ck64xmplzs"))))
+                "02ais1y3z85vykxd9975gz33s80d1nhivly6a07y98dbmlzjyr6a"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
     (propagated-inputs (list r-aldex2
