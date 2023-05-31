@@ -378,6 +378,19 @@ without requiring the source code to be rewritten.")
                                (search-patch "guile-hurd-posix-spawn.patch")))
                           (invoke "patch" "--force" "-p1" "-i" patch))))
                    #~())
+            #$@(if (system-hurd?)
+                   #~((add-after 'unpack 'disable-popen.test-no-duplicate
+                        ;; This test hangs on the Hurd.
+                        (lambda _
+                          (substitute* "test-suite/tests/popen.test"
+                            (("\\(pass-if \"no duplicate\".*" all)
+                             (string-append
+                              all
+                              (object->string
+                               '(when (string-ci= "GNU"
+                                                  (vector-ref (uname) 0))
+                                  (throw 'unresolved)))))))))
+                   #~())
             #$@(if (target-ppc32?)
                    #~((add-after 'unpack 'adjust-bootstrap-flags
                         (lambda _
