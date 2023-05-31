@@ -14631,13 +14631,13 @@ were influenced by the drake R package by Will Landau (2018)
 (define-public r-targets
   (package
     (name "r-targets")
-    (version "1.0.0")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "targets" version))
               (sha256
                (base32
-                "1bdhphck6vqcn3qnizfc8iq21bg68w2i5pv6kn53jm6x36cxrgi9"))))
+                "0m5sdbzyhwmfhv08b0bld4fp8vs1ga6zxy8cjpvm8amlskgxxxdm"))))
     (properties `((upstream-name . "targets")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64url
@@ -14653,7 +14653,6 @@ were influenced by the drake R package by Will Landau (2018)
                              r-tibble
                              r-tidyselect
                              r-vctrs
-                             r-withr
                              r-yaml))
     (native-inputs (list r-knitr))
     (home-page "https://docs.ropensci.org/targets/")
