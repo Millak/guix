@@ -38441,14 +38441,14 @@ deleting and uploading forecast data, and downloading scores.")
 (define-public r-zoib
   (package
     (name "r-zoib")
-    (version "1.5.5")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zoib" version))
        (sha256
         (base32
-         "0inm7f2pc68ksqxvq12xp9jc99vj7ydylvs24ip12nksbj5k1n8f"))))
+         "1px4jjjpn6ikngzlxz1i6fgld9cy5lv6nqn1bjin4q6sqqixyx2j"))))
     (properties `((upstream-name . "zoib")))
     (build-system r-build-system)
     (propagated-inputs
