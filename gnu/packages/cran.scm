@@ -27524,14 +27524,14 @@ variable observed over time.")
 (define-public r-fda
   (package
     (name "r-fda")
-    (version "6.0.5")
+    (version "6.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fda" version))
        (sha256
         (base32
-         "1wdq35acxavarh7qrxxmdpcjc9jcs56mp3p9rbb4qa35ziv5fi0l"))))
+         "0595887hv80blx9aq63qnmc9vr022p21zqhgp2wmdjvq1g68x0g2"))))
     (properties `((upstream-name . "fda")))
     (build-system r-build-system)
     (propagated-inputs
