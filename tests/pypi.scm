@@ -302,22 +302,21 @@ files specified by SPECS.  Return its file name."
                         ("/foo/json" 200 ,(lambda (port)
                                             (display (foo-json) port)))))
       (match (pypi->guix-package "foo")
-        (('package
-           ('name "python-foo")
-           ('version "1.0.0")
-           ('source ('origin
-                      ('method 'url-fetch)
-                      ('uri ('pypi-uri "foo" 'version))
-                      ('sha256
-                       ('base32
-                        (? string? hash)))))
-           ('build-system 'pyproject-build-system)
-           ('propagated-inputs ('list 'python-bar 'python-foo))
-           ('native-inputs ('list 'python-pytest))
-           ('home-page "http://example.com")
-           ('synopsis "summary")
-           ('description "summary")
-           ('license 'license:lgpl2.0))
+        (`(package
+            (name "python-foo")
+            (version "1.0.0")
+            (source (origin
+                      (method url-fetch)
+                      (uri (pypi-uri "foo" version))
+                      (sha256
+                       (base32 ,(? string? hash)))))
+            (build-system pyproject-build-system)
+            (propagated-inputs (list python-bar python-foo))
+            (native-inputs (list python-pytest))
+            (home-page "http://example.com")
+            (synopsis "summary")
+            (description "summary")
+            (license license:lgpl2.0))
          (and (string=? default-sha256/base32 hash)
               (equal? (pypi->guix-package "foo" #:version "1.0.0")
                       (pypi->guix-package "foo"))
@@ -344,22 +343,21 @@ to make sure we're testing wheels"))))
       ;; computed in the previous test.
       (invalidate-memoization! pypi->guix-package)
       (match (pypi->guix-package "foo")
-        (('package
-           ('name "python-foo")
-           ('version "1.0.0")
-           ('source ('origin
-                      ('method 'url-fetch)
-                      ('uri ('pypi-uri "foo" 'version))
-                      ('sha256
-                       ('base32
-                        (? string? hash)))))
-           ('build-system 'pyproject-build-system)
-           ('propagated-inputs ('list 'python-bar 'python-baz))
-           ('native-inputs ('list 'python-pytest))
-           ('home-page "http://example.com")
-           ('synopsis "summary")
-           ('description "summary")
-           ('license 'license:lgpl2.0))
+        (`(package
+            (name "python-foo")
+            (version "1.0.0")
+            (source (origin
+                      (method url-fetch)
+                      (uri (pypi-uri "foo" version))
+                      (sha256
+                       (base32 ,(? string? hash)))))
+            (build-system pyproject-build-system)
+            (propagated-inputs (list python-bar python-baz))
+            (native-inputs (list python-pytest))
+            (home-page "http://example.com")
+            (synopsis "summary")
+            (description "summary")
+            (license license:lgpl2.0))
          (string=? default-sha256/base32 hash))
         (x
          (pk 'fail x #f))))))
@@ -375,20 +373,19 @@ to make sure we're testing wheels"))))
       ;; value computed in the previous test.
       (invalidate-memoization! pypi->guix-package)
       (match (pypi->guix-package "foo")
-        (('package
-           ('name "python-foo")
-           ('version "1.0.0")
-           ('source ('origin
-                      ('method 'url-fetch)
-                      ('uri ('pypi-uri "foo" 'version))
-                      ('sha256
-                       ('base32
-                        (? string? hash)))))
-           ('build-system 'pyproject-build-system)
-           ('home-page "http://example.com")
-           ('synopsis "summary")
-           ('description "summary")
-           ('license 'license:lgpl2.0))
+        (`(package
+            (name "python-foo")
+            (version "1.0.0")
+            (source (origin
+                       (method url-fetch)
+                       (uri (pypi-uri "foo" version))
+                       (sha256
+                        (base32 ,(? string? hash)))))
+            (build-system pyproject-build-system)
+            (home-page "http://example.com")
+            (synopsis "summary")
+            (description "summary")
+            (license license:lgpl2.0))
          (string=? default-sha256/base32 hash))
         (x
          (pk 'fail x #f))))))
@@ -403,23 +400,22 @@ to make sure we're testing wheels"))))
                                         (display (foo-json #:name "foo-99")
                                                  port))))
       (match (pypi->guix-package "foo-99")
-        (('package
-           ('name "python-foo-99")
-           ('version "1.0.0")
-           ('source ('origin
-                      ('method 'url-fetch)
-                      ('uri ('pypi-uri "foo-99" 'version))
-                      ('sha256
-                       ('base32
-                        (? string? hash)))))
-           ('properties ('quote (("upstream-name" . "foo-99"))))
-           ('build-system 'pyproject-build-system)
-           ('propagated-inputs ('list 'python-bar 'python-foo))
-           ('native-inputs ('list 'python-pytest))
-           ('home-page "http://example.com")
-           ('synopsis "summary")
-           ('description "summary")
-           ('license 'license:lgpl2.0))
+        (`(package
+            (name "python-foo-99")
+            (version "1.0.0")
+            (source (origin
+                      (method url-fetch)
+                      (uri (pypi-uri "foo-99" version))
+                      (sha256
+                       (base32 ,(? string? hash)))))
+            (properties (quote (("upstream-name" . "foo-99"))))
+            (build-system pyproject-build-system)
+            (propagated-inputs (list python-bar python-foo))
+            (native-inputs (list python-pytest))
+            (home-page "http://example.com")
+            (synopsis "summary")
+            (description "summary")
+            (license license:lgpl2.0))
          (string=? default-sha256/base32 hash))
         (x
          (pk 'fail x #f))))))

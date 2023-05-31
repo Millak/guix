@@ -66,20 +66,20 @@
                       (200 "fake tarball contents"))
     (parameterize ((current-http-proxy (%local-url)))
       (match (elpa->guix-package pkg #:repo 'gnu/http)
-        (('package
-           ('name "emacs-auctex")
-           ('version "11.88.6")
-           ('source
-            ('origin
-              ('method 'url-fetch)
-              ('uri ('string-append
-                     "http://elpa.gnu.org/packages/auctex-" 'version ".tar"))
-              ('sha256 ('base32 (? string? hash)))))
-           ('build-system 'emacs-build-system)
-           ('home-page "http://www.gnu.org/software/auctex/")
-           ('synopsis "Integrated environment for *TeX*")
-           ('description "This is the description.")
-           ('license 'license:gpl3+))
+        (`(package
+            (name "emacs-auctex")
+            (version "11.88.6")
+            (source
+             (origin
+               (method url-fetch)
+               (uri (string-append
+                     "http://elpa.gnu.org/packages/auctex-" version ".tar"))
+               (sha256 (base32 ,(? string? hash)))))
+            (build-system emacs-build-system)
+            (home-page "http://www.gnu.org/software/auctex/")
+            (synopsis "Integrated environment for *TeX*")
+            (description "This is the description.")
+            (license license:gpl3+))
          #t)
         (x
          (pk 'fail x #f))))))

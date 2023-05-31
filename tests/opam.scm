@@ -92,23 +92,22 @@ url {
                   (lambda _
                     (format #t "~a" test-opam-file))))
               (match (opam->guix-package "foo" #:repo (list test-repo))
-                (('package
-                   ('name "ocaml-foo")
-                   ('version "1.0.0")
-                   ('source ('origin
-                              ('method 'url-fetch)
-                              ('uri "https://example.org/foo-1.0.0.tar.gz")
-                              ('sha256
-                               ('base32
-                                (? string? hash)))))
-                   ('build-system 'ocaml-build-system)
-                   ('propagated-inputs ('list 'ocaml-zarith))
-                   ('native-inputs
-                    ('list 'ocaml-alcotest 'ocamlbuild))
-                   ('home-page "https://example.org/")
-                   ('synopsis "Some example package")
-                   ('description "This package is just an example.")
-                   ('license 'license:bsd-3))
+                (`(package
+                    (name "ocaml-foo")
+                    (version "1.0.0")
+                    (source (origin
+                              (method url-fetch)
+                              (uri "https://example.org/foo-1.0.0.tar.gz")
+                              (sha256
+                               (base32 ,(? string? hash)))))
+                    (build-system ocaml-build-system)
+                    (propagated-inputs (list ocaml-zarith))
+                    (native-inputs
+                     (list ocaml-alcotest ocamlbuild))
+                    (home-page "https://example.org/")
+                    (synopsis "Some example package")
+                    (description "This package is just an example.")
+                    (license license:bsd-3))
                  (string=? (bytevector->nix-base32-string
                             test-source-hash)
                            hash))

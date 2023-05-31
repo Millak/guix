@@ -174,27 +174,27 @@ completely compatible with Plain TeX.")
                                              #:package-database
                                              (lambda _ %fake-tlpdb))))
           (match result
-            (('package
-               ('inherit ('simple-texlive-package
+            (`(package
+                (inherit (simple-texlive-package
                           "texlive-texsis"
-                          ('list "bibtex/bst/texsis/"
-                                 "doc/man/man1/"
-                                 "doc/otherformats/texsis/base/"
-                                 "tex/texsis/base/"
-                                 "tex/texsis/config/")
-                          ('base32 (? string? hash))
+                          (list "bibtex/bst/texsis/"
+                                "doc/man/man1/"
+                                "doc/otherformats/texsis/base/"
+                                "tex/texsis/base/"
+                                "tex/texsis/config/")
+                          (base32 ,(? string? hash))
                           #:trivial? #t))
-               ('version . any)
-               ('propagated-inputs
-                ('list 'texlive-cm
-                       'texlive-hyphen-base
-                       'texlive-knuth-lib
-                       'texlive-plain
-                       'texlive-tex))
-               ('home-page (? string?))
-               ('synopsis (? string?))
-               ('description (? string?))
-               ('license 'lppl))
+                (version ,_)
+                (propagated-inputs
+                 (list texlive-cm
+                       texlive-hyphen-base
+                       texlive-knuth-lib
+                       texlive-plain
+                       texlive-tex))
+                (home-page ,(? string?))
+                (synopsis ,(? string?))
+                (description ,(? string?))
+                (license lppl))
              #true)
             (_
              (begin

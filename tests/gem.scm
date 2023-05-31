@@ -105,21 +105,21 @@
                       (string-length test-foo-json)))
              (_ (error "Unexpected URL: " url)))))
     (match (gem->guix-package "foo")
-      (('package
-         ('name "ruby-foo")
-         ('version "1.0.0")
-         ('source ('origin
-                    ('method 'url-fetch)
-                    ('uri ('rubygems-uri "foo" 'version))
-                    ('sha256
-                     ('base32
+      (`(package
+          (name "ruby-foo")
+          (version "1.0.0")
+          (source (origin
+                    (method url-fetch)
+                    (uri (rubygems-uri "foo" version))
+                    (sha256
+                     (base32
                       "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
-         ('build-system 'ruby-build-system)
-         ('propagated-inputs ('list 'bundler 'ruby-bar))
-         ('synopsis "A cool gem")
-         ('description "This package provides a cool gem")
-         ('home-page "https://example.com")
-         ('license ('list 'license:expat 'license:asl2.0)))
+          (build-system ruby-build-system)
+          (propagated-inputs (list bundler ruby-bar))
+          (synopsis "A cool gem")
+          (description "This package provides a cool gem")
+          (home-page "https://example.com")
+          (license (list license:expat license:asl2.0)))
        #t)
       (x
        (pk 'fail x #f)))))
@@ -134,21 +134,21 @@
                       (string-length test-foo-v2-json)))
              (_ (error "Unexpected URL: " url)))))
     (match (gem->guix-package "foo" #:version "2.0.0")
-      (('package
-         ('name "ruby-foo")
-         ('version "2.0.0")
-         ('source ('origin
-                    ('method 'url-fetch)
-                    ('uri ('rubygems-uri "foo" 'version))
-                    ('sha256
-                     ('base32
+      (`(package
+          (name "ruby-foo")
+          (version "2.0.0")
+          (source (origin
+                    (method url-fetch)
+                    (uri (rubygems-uri "foo" version))
+                    (sha256
+                     (base32
                       "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
-         ('build-system 'ruby-build-system)
-         ('propagated-inputs ('list 'bundler 'ruby-bar))
-         ('synopsis "A cool gem")
-         ('description "This package provides a cool gem")
-         ('home-page "https://example.com")
-         ('license ('list 'license:expat 'license:asl2.0)))
+          (build-system ruby-build-system)
+          (propagated-inputs (list bundler ruby-bar))
+          (synopsis "A cool gem")
+          (description "This package provides a cool gem")
+          (home-page "https://example.com")
+          (license (list license:expat license:asl2.0)))
        #t)
       (x
        (pk 'fail x #f)))))
@@ -169,38 +169,38 @@
                       (string-length test-bundler-json)))
              (_ (error "Unexpected URL: " url)))))
         (match (gem-recursive-import "foo")
-          ((('package
-              ('name "ruby-bar")
-              ('version "1.0.0")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('rubygems-uri "bar" 'version))
-                 ('sha256
-                  ('base32
-                   "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
-              ('build-system 'ruby-build-system)
-              ('propagated-inputs ('list 'bundler))
-              ('synopsis "Another cool gem")
-              ('description "Another cool gem")
-              ('home-page "https://example.com")
-              ('license #f))                      ;no licensing info
-            ('package
-              ('name "ruby-foo")
-              ('version "1.0.0")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('rubygems-uri "foo" 'version))
-                 ('sha256
-                  ('base32
-                   "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
-              ('build-system 'ruby-build-system)
-              ('propagated-inputs ('list 'bundler 'ruby-bar))
-              ('synopsis "A cool gem")
-              ('description "This package provides a cool gem")
-              ('home-page "https://example.com")
-              ('license ('list 'license:expat 'license:asl2.0))))
+          (`((package
+               (name "ruby-bar")
+               (version "1.0.0")
+               (source
+                (origin
+                  (method url-fetch)
+                  (uri (rubygems-uri "bar" version))
+                  (sha256
+                   (base32
+                    "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+               (build-system ruby-build-system)
+               (propagated-inputs (list bundler))
+               (synopsis "Another cool gem")
+               (description "Another cool gem")
+               (home-page "https://example.com")
+               (license #f))                      ;no licensing info
+             (package
+               (name "ruby-foo")
+               (version "1.0.0")
+               (source
+                (origin
+                  (method url-fetch)
+                  (uri (rubygems-uri "foo" version))
+                  (sha256
+                   (base32
+                    "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+               (build-system ruby-build-system)
+               (propagated-inputs (list bundler ruby-bar))
+               (synopsis "A cool gem")
+               (description "This package provides a cool gem")
+               (home-page "https://example.com")
+               (license (list license:expat license:asl2.0))))
            #t)
           (x
            (pk 'fail x #f)))))
@@ -221,38 +221,38 @@
                       (string-length test-bundler-json)))
              (_ (error "Unexpected URL: " url)))))
         (match (gem-recursive-import "foo" "2.0.0")
-          ((('package
-              ('name "ruby-bar")
-              ('version "1.0.0")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('rubygems-uri "bar" 'version))
-                 ('sha256
-                  ('base32
-                   "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
-              ('build-system 'ruby-build-system)
-              ('propagated-inputs ('list 'bundler))
-              ('synopsis "Another cool gem")
-              ('description "Another cool gem")
-              ('home-page "https://example.com")
-              ('license #f))                      ;no licensing info
-            ('package
-              ('name "ruby-foo")
-              ('version "2.0.0")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('rubygems-uri "foo" 'version))
-                 ('sha256
-                  ('base32
-                   "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
-              ('build-system 'ruby-build-system)
-              ('propagated-inputs ('list 'bundler 'ruby-bar))
-              ('synopsis "A cool gem")
-              ('description "This package provides a cool gem")
-              ('home-page "https://example.com")
-              ('license ('list 'license:expat 'license:asl2.0))))
+          (`((package
+               (name "ruby-bar")
+               (version "1.0.0")
+               (source
+                (origin
+                  (method url-fetch)
+                  (uri (rubygems-uri "bar" version))
+                  (sha256
+                   (base32
+                    "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+               (build-system ruby-build-system)
+               (propagated-inputs (list bundler))
+               (synopsis "Another cool gem")
+               (description "Another cool gem")
+               (home-page "https://example.com")
+               (license #f))                      ;no licensing info
+             (package
+               (name "ruby-foo")
+               (version "2.0.0")
+               (source
+                (origin
+                  (method url-fetch)
+                  (uri (rubygems-uri "foo" version))
+                  (sha256
+                   (base32
+                    "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+               (build-system ruby-build-system)
+               (propagated-inputs (list bundler ruby-bar))
+               (synopsis "A cool gem")
+               (description "This package provides a cool gem")
+               (home-page "https://example.com")
+               (license (list license:expat license:asl2.0))))
            #t)
           (x
            (pk 'fail x #f)))))

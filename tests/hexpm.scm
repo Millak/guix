@@ -139,22 +139,22 @@
                    "source")
                   (_ (error "url-fetch got unexpected URL: " url))))))))
     (match (hexpm->guix-package "bla")
-      (('package
-         ('name "erlang-bla")
-         ('version "1.5.0")
-         ('source
-          ('origin
-            ('method 'url-fetch)
-            ('uri ('hexpm-uri "bla" 'version))
-            ('sha256
-             ('base32
-              "0zcl4dgcmqwl1g5xb901pd6dz61r1xgmac9mqlwvh022paa6gks1"))))
-         ('build-system 'rebar-build-system)
-         ('inputs ('list 'erlang-blubb 'erlang-fasel))
-         ('synopsis "A cool package")
-         ('description "This package provides a cool package")
-         ('home-page "https://hex.pm/packages/bla")
-         ('license ('list 'license:expat 'license:asl2.0)))
+      (`(package
+          (name "erlang-bla")
+          (version "1.5.0")
+          (source
+           (origin
+             (method url-fetch)
+             (uri (hexpm-uri "bla" version))
+             (sha256
+              (base32
+               "0zcl4dgcmqwl1g5xb901pd6dz61r1xgmac9mqlwvh022paa6gks1"))))
+          (build-system rebar-build-system)
+          (inputs (list erlang-blubb erlang-fasel))
+          (synopsis "A cool package")
+          (description "This package provides a cool package")
+          (home-page "https://hex.pm/packages/bla")
+          (license (list license:expat license:asl2.0)))
        #t)
       (x
        (pk 'fail x #f))))))
@@ -199,53 +199,53 @@
                    "fasel-source")
                   (_ (error "url-fetch got unexpected URL: " url))))))))
         (match (hexpm-recursive-import "bla")
-          ((('package
-              ('name "erlang-blubb")
-              ('version "0.3.1")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('hexpm-uri "blubb" 'version))
-                 ('sha256
-                  ('base32
-                   "17y88b5y8ld7s1c2bcwwwa04pf1cl4402i9zk3inna221ps3ppj2"))))
-              ('build-system 'mix-build-system)
-              ('inputs ('list 'erlang-fasel))
-              ('synopsis "Another cool package")
-              ('description "Another cool package")
-              ('home-page "https://hex.pm/packages/blubb")
-              ('license 'license:expat))
-            ('package
-              ('name "erlang-fasel")
-              ('version "1.2.1")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('hexpm-uri "fasel" 'version))
-                 ('sha256
-                  ('base32
-                   "1k6d70mxwqgq78jrbr7yqnw187yki74jnagybi7nacrj4a67qjha"))))
-              ('build-system 'gnu-build-system)
-              ('synopsis "Yet another cool package")
-              ('description "Yet another cool package")
-              ('home-page "https://hex.pm/packages/fasel")
-              ('license "GPL"))
-            ('package
-              ('name "erlang-bla")
-              ('version "1.5.0")
-              ('source
-               ('origin
-                 ('method 'url-fetch)
-                 ('uri ('hexpm-uri "bla" 'version))
-                 ('sha256
-                  ('base32
-                   "0d3gj746c4swbb1m6ycylxb239jsavvdcizag6bfbg2aqccxwij8"))))
-              ('build-system 'rebar-build-system)
-              ('inputs ('list 'erlang-blubb 'erlang-fasel))
-              ('synopsis "A cool package")
-              ('description "This package provides a cool package")
-              ('home-page "https://hex.pm/packages/bla")
-              ('license ('list 'license:expat 'license:asl2.0))))
+          (`((package
+               (name "erlang-blubb")
+               (version "0.3.1")
+               (source
+                (origin
+                  (method url-fetch)
+                  (uri (hexpm-uri "blubb" version))
+                  (sha256
+                   (base32
+                    "17y88b5y8ld7s1c2bcwwwa04pf1cl4402i9zk3inna221ps3ppj2"))))
+               (build-system mix-build-system)
+               (inputs (list erlang-fasel))
+               (synopsis "Another cool package")
+               (description "Another cool package")
+               (home-page "https://hex.pm/packages/blubb")
+               (license license:expat))
+             (package
+               (name "erlang-fasel")
+               (version "1.2.1")
+               (source
+                (origin
+                  (method url-fetch)
+                  (uri (hexpm-uri "fasel" version))
+                  (sha256
+                   (base32
+                    "1k6d70mxwqgq78jrbr7yqnw187yki74jnagybi7nacrj4a67qjha"))))
+               (build-system gnu-build-system)
+               (synopsis "Yet another cool package")
+               (description "Yet another cool package")
+               (home-page "https://hex.pm/packages/fasel")
+               (license "GPL"))
+             (package
+               (name "erlang-bla")
+               (version "1.5.0")
+               (source
+                (origin
+                  (method url-fetch)
+                  (uri (hexpm-uri "bla" version))
+                  (sha256
+                   (base32
+                    "0d3gj746c4swbb1m6ycylxb239jsavvdcizag6bfbg2aqccxwij8"))))
+               (build-system rebar-build-system)
+               (inputs (list erlang-blubb erlang-fasel))
+               (synopsis "A cool package")
+               (description "This package provides a cool package")
+               (home-page "https://hex.pm/packages/bla")
+               (license (list license:expat license:asl2.0))))
            #t)
           (x
            (pk 'fail x #f))))))

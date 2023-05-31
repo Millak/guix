@@ -73,22 +73,21 @@
     (parameterize ((%metacpan-base-url (%local-url))
                    (current-http-proxy (%local-url)))
       (match (cpan->guix-package "Foo::Bar")
-        (('package
-           ('name "perl-foo-bar")
-           ('version "0.1")
-           ('source ('origin
-                      ('method 'url-fetch)
-                      ('uri ('string-append "http://example.com/Foo-Bar-"
-                                            'version ".tar.gz"))
-                      ('sha256
-                       ('base32
-                        (? string? hash)))))
-           ('build-system 'perl-build-system)
-           ('propagated-inputs ('list 'perl-test-script))
-           ('home-page "https://metacpan.org/release/Foo-Bar")
-           ('synopsis "Fizzle Fuzz")
-           ('description 'fill-in-yourself!)
-           ('license 'perl-license))
+        (`(package
+            (name "perl-foo-bar")
+            (version "0.1")
+            (source (origin
+                      (method url-fetch)
+                      (uri (string-append "http://example.com/Foo-Bar-"
+                                          version ".tar.gz"))
+                      (sha256
+                       (base32 ,(? string? hash)))))
+            (build-system perl-build-system)
+            (propagated-inputs (list perl-test-script))
+            (home-page "https://metacpan.org/release/Foo-Bar")
+            (synopsis "Fizzle Fuzz")
+            (description fill-in-yourself!)
+            (license perl-license))
          (string=? (bytevector->nix-base32-string
                     (call-with-input-string test-source port-sha256))
                    hash))
