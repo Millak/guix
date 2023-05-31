@@ -167,6 +167,11 @@ was found."
 
 (define (cached-narinfo-expiration-time file)
   "Return the expiration time for FILE, which is a cached narinfo."
+  (define max-ttl
+    ;; Upper bound on the TTL used to avoid keeping around cached narinfos for
+    ;; too long, which makes the cache bigger and more expensive to traverse.
+    (* 2 30 24 60 60))                            ;2 months
+
   (catch 'system-error
     (lambda ()
       (call-with-input-file file
@@ -174,10 +179,10 @@ was found."
           (match (read port)
             (('narinfo ('version 2) ('cache-uri uri)
                        ('date date) ('ttl ttl) ('value #f))
-             (+ date ttl))
+             (+ date (min ttl max-ttl)))
             (('narinfo ('version 2) ('cache-uri uri)
                        ('date date) ('ttl ttl) ('value value))
-             (+ date ttl))
+             (+ date (min ttl max-ttl)))
             (x
              0)))))
     (lambda args
