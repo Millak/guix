@@ -397,23 +397,13 @@ used to apply commands with arbitrarily long arguments.")
    (outputs '("out" "debug"))
    (arguments
     `(#:parallel-build? #f            ; help2man may be called too early
-      ,@(if (target-hurd?)
+      ,@(if (system-hurd?)
             '(#:make-flags            ; these tests fail deterministically
-              (list (string-append "XFAIL_TESTS=tests/misc/env-S.pl"
-                                   " tests/misc/kill.sh"
-                                   " tests/misc/nice.sh"
-                                   " tests/misc/pwd-long.sh"
-                                   " tests/split/fail.sh"
-
-                                   ;; /hurd/fifo issue:
-                                   ;; <https://issues.guix.gnu.org/58803>.
-                                   " tests/df/unreadable.sh"
-
+              (list (string-append "XFAIL_TESTS="
                                    ;; Gnulib tests.
                                    " test-fdutimensat"
                                    " test-futimens"
                                    " test-linkat"
-                                   " test-perror2"
                                    " test-renameat"
                                    " test-renameatu"
                                    " test-utimensat")))
@@ -435,10 +425,35 @@ used to apply commands with arbitrarily long arguments.")
                        (("#!/bin/sh") (string-append "#!" (which "sh"))))))
                  (add-after 'unpack 'remove-tests
                    (lambda _
-                     ,@(if (target-hurd?)
-                           '((substitute* "Makefile.in"
-                               ;; this test hangs
-                               (("^ *tests/misc/timeout-group.sh.*") ""))
+                     ,@(if (system-hurd?)
+                           '((substitute*
+                                 ;; These tests hang
+                                 '("tests/cp/sparse-to-pipe.sh"
+                                   "tests/split/fail.sh"
+                                   ;; These tests error
+                                   "tests/dd/nocache.sh"
+                                   ;; These tests fail
+                                   "tests/cp/sparse.sh"
+                                   "tests/cp/special-f.sh"
+                                   "tests/dd/bytes.sh"
+                                   "tests/dd/stats.sh"
+                                   "tests/ls/dangle.sh"
+                                   "tests/ls/follow-slink.sh"
+                                   "tests/ls/hyperlink.sh"
+                                   "tests/ls/infloop.sh"
+                                   "tests/ls/inode.sh"
+                                   "tests/ls/selinux-segfault.sh"
+                                   "tests/misc/env-S.pl"
+                                   "tests/misc/factor-parallel.sh"
+                                   "tests/misc/ls-misc.pl"
+                                   "tests/misc/nice.sh"
+                                   "tests/misc/pwd-long.sh"
+                                   "tests/misc/shred-passes.sh"
+                                   "tests/misc/stat-slash.sh"
+                                   "tests/rm/fail-eperm.xpl"
+                                   "tests/split/filter.sh")
+                               (("^#!.*" all)
+                                (string-append all "exit 77;\n")))
                              (substitute* "gnulib-tests/Makefile.in"
                                ;; This test sometimes fails and sometimes
                                ;; passes, but it does this consistently, so
