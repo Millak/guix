@@ -2553,13 +2553,13 @@ excellent candidate for labeling of a polygon.")
 (define-public r-ecosolver
   (package
     (name "r-ecosolver")
-    (version "0.5.4")
+    (version "0.5.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ECOSolveR" version))
               (sha256
                (base32
-                "0973m346vakgddp92dzqlky0wa196hj341r9y7rz67bc2zl8jx2x"))))
+                "1izc8dwj438wpkmdmhwnnhkijz5skig4gwxgr6f1bzmj08bfv515"))))
     (properties `((upstream-name . "ECOSolveR")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
