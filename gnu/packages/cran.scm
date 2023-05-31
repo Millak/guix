@@ -5707,26 +5707,25 @@ graphics packages that comes with the base installation.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.13.1")
+    (version "1.13.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "1shs3is0d0fzs921larglhzyg70d5dgvric0zcl41qb74gqb6azs"))))
+                "1n38bwcr26vmiwc8jwl0mw15vwbvvkd9gi0mvsr1arzp846lkcyw"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-clipr
            r-curl
-           r-dplyr
            r-httr
            r-jqr
            r-jsonlite
            r-lubridate
            r-nodbi
-           r-rvest
            r-stringi
+           r-tibble
            r-xml2))
     (native-inputs (list r-r-rsp))
     (home-page "https://cran.r-project.org/package=ctrdata")
