@@ -9523,14 +9523,14 @@ of gene-level counts.")
 (define-public r-valr
   (package
     (name "r-valr")
-    (version "0.6.7")
+    (version "0.6.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "valr" version))
        (sha256
         (base32
-         "1s8bjbban2a3cqhwgykmhkv5b748nscamfbv67v4cppjbdvlhb5s"))))
+         "156sqh474synjvdm1j332ab75rqab0n81d674xbgs3rfxlr2ksgz"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
