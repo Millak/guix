@@ -27105,13 +27105,13 @@ clustering.")
 (define-public r-treemap
   (package
     (name "r-treemap")
-    (version "2.4-3")
+    (version "2.4-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "treemap" version))
        (sha256
-        (base32 "1fg8gygw38x7msn32barx2irvcv8flm6wqvipnbj1qkh9w89y3q4"))))
+        (base32 "1h3pas3kn8zrpdpvp9vs745q94kixw5lxkbq74l5lh0n3wkqnnn5"))))
     (properties `((upstream-name . "treemap")))
     (build-system r-build-system)
     (propagated-inputs
