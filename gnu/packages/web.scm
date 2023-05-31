@@ -8795,6 +8795,43 @@ snapshots of the URLs you feed it in several formats.")
     (home-page "https://archivebox.io/")
     (license license:expat)))
 
+(define-public orcania
+  (package
+    (name "orcania")
+    (version "2.3.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/babelouest/orcania")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dhczbhwvf3f9mj38qm46j10rpr77yz1np68mabfw8zcfwhr0pn4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_ORCANIA_TESTING=ON"
+                                     "-DBUILD_ORCANIA_DOCUMENTATION=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'build 'build-doc
+                          (lambda _
+                            (invoke "make" "doc")))
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (let ((doc (string-append #$output
+                                                      "/share/doc/orcania")))
+                              (mkdir-p doc)
+                              (copy-recursively "../source/doc/html" doc)))))))
+    (native-inputs (list check doxygen subunit))
+    (home-page "https://babelouest.github.io/orcania/")
+    (synopsis "Collection of C functions for Ulfius")
+    (description
+     "Orcania is a library with functions that can be shared among C programs.
+It is intended to provide low-level functionalities for the Ulfius and Yder
+libraries.")
+    (license license:lgpl2.1)))
+
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
