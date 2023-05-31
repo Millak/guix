@@ -4725,12 +4725,12 @@ msgid "invoke the garbage collector"
 msgstr ""
 
 #: guix/scripts/gc.scm:263
-msgid "already ~h MiBs available on ~a, nothing to do~%"
-msgstr "er zijn alreeds ~h MiB's beschikbaar op ~a, niets te doen~%"
+msgid "already ~,2h MiBs available on ~a, nothing to do~%"
+msgstr "er zijn alreeds ~,2h MiB's beschikbaar op ~a, niets te doen~%"
 
 #: guix/scripts/gc.scm:266
-msgid "freeing ~h MiBs~%"
-msgstr "~h MiB's aan het vrijmaken~%"
+msgid "freeing ~,2h MiBs~%"
+msgstr "~,2h MiB's aan het vrijmaken~%"
 
 #: guix/scripts/gc.scm:306
 #, scheme-format
@@ -4738,8 +4738,8 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "overmatige argumenten: ~{~a ~}~%"
 
 #: guix/scripts/gc.scm:330 guix/scripts/gc.scm:333
-msgid "freed ~h MiBs~%"
-msgstr "~h MiB's vrijgemaakt~%"
+msgid "freed ~,2h MiBs~%"
+msgstr "~,2h MiB's vrijgemaakt~%"
 
 #: guix/scripts/git.scm:26
 msgid ""

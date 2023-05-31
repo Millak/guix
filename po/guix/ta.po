@@ -4548,12 +4548,12 @@ msgid "invoke the garbage collector"
 msgstr ""
 
 #: guix/scripts/gc.scm:263
-msgid "already ~h MiBs available on ~a, nothing to do~%"
+msgid "already ~,2h MiBs available on ~a, nothing to do~%"
 msgstr "~a பாதையில் ஏற்கனவே ~a MiB வெற்றிடம் உள்ளது, செய்ய ஒன்றுமில்லை~%"
 
 #: guix/scripts/gc.scm:266
-msgid "freeing ~h MiBs~%"
-msgstr "~h எண்ணுன்மிகள் விடுவிக்கப்படுகின்றன~%"
+msgid "freeing ~,2h MiBs~%"
+msgstr "~,2h எண்ணுன்மிகள் விடுவிக்கப்படுகின்றன~%"
 
 #: guix/scripts/gc.scm:306
 #, scheme-format
@@ -4561,8 +4561,8 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "கூடுதலான செயலுருபுகள்: ~{~a ~}~%"
 
 #: guix/scripts/gc.scm:330 guix/scripts/gc.scm:333
-msgid "freed ~h MiBs~%"
-msgstr "~h MiB விடுவிக்கப்பட்டன~%"
+msgid "freed ~,2h MiBs~%"
+msgstr "~,2h MiB விடுவிக்கப்பட்டன~%"
 
 #: guix/scripts/git.scm:26
 msgid ""

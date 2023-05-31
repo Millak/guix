@@ -4875,12 +4875,12 @@ msgid "invoke the garbage collector"
 msgstr "invoquer le ramasse-miette"
 
 #: guix/scripts/gc.scm:263
-msgid "already ~h MiBs available on ~a, nothing to do~%"
-msgstr "déjà ~h Mo disponibles sur ~a, rien à faire~%"
+msgid "already ~,2h MiBs available on ~a, nothing to do~%"
+msgstr "déjà ~,2h Mo disponibles sur ~a, rien à faire~%"
 
 #: guix/scripts/gc.scm:266
-msgid "freeing ~h MiBs~%"
-msgstr "libération de ~h Mo~%"
+msgid "freeing ~,2h MiBs~%"
+msgstr "libération de ~,2h Mo~%"
 
 #: guix/scripts/gc.scm:306
 #, scheme-format
@@ -4888,8 +4888,8 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "arguments superflus : ~{~a ~}~%"
 
 #: guix/scripts/gc.scm:330 guix/scripts/gc.scm:333
-msgid "freed ~h MiBs~%"
-msgstr "~h Mo libérés~%"
+msgid "freed ~,2h MiBs~%"
+msgstr "~,2h Mo libérés~%"
 
 #: guix/scripts/git.scm:26
 msgid ""

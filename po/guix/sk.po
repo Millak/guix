@@ -4828,12 +4828,12 @@ msgid "invoke the garbage collector"
 msgstr "vyvolať zberača odpadkov"
 
 #: guix/scripts/gc.scm:263
-msgid "already ~h MiBs available on ~a, nothing to do~%"
-msgstr "na ~a už je ~h MiB voľného miesta, žiadna činnosť sa nevyžaduje~%"
+msgid "already ~,2h MiBs available on ~a, nothing to do~%"
+msgstr "na ~a už je ~,2h MiB voľného miesta, žiadna činnosť sa nevyžaduje~%"
 
 #: guix/scripts/gc.scm:266
-msgid "freeing ~h MiBs~%"
-msgstr "uvoľňuje sa ~h MiB~%"
+msgid "freeing ~,2h MiBs~%"
+msgstr "uvoľňuje sa ~,2h MiB~%"
 
 #: guix/scripts/gc.scm:306
 #, scheme-format
@@ -4841,8 +4841,8 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "nadbytočné parametre: ~{~a~}~%"
 
 #: guix/scripts/gc.scm:330 guix/scripts/gc.scm:333
-msgid "freed ~h MiBs~%"
-msgstr "uvoľnilo sa ~h MiB~%"
+msgid "freed ~,2h MiBs~%"
+msgstr "uvoľnilo sa ~,2h MiB~%"
 
 #: guix/scripts/git.scm:26
 msgid ""

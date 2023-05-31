@@ -4499,11 +4499,11 @@ msgid "invoke the garbage collector"
 msgstr ""
 
 #: guix/scripts/gc.scm:263
-msgid "already ~h MiBs available on ~a, nothing to do~%"
+msgid "already ~,2h MiBs available on ~a, nothing to do~%"
 msgstr ""
 
 #: guix/scripts/gc.scm:266
-msgid "freeing ~h MiBs~%"
+msgid "freeing ~,2h MiBs~%"
 msgstr ""
 
 #: guix/scripts/gc.scm:306
@@ -4512,7 +4512,7 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr ""
 
 #: guix/scripts/gc.scm:330 guix/scripts/gc.scm:333
-msgid "freed ~h MiBs~%"
+msgid "freed ~,2h MiBs~%"
 msgstr ""
 
 #: guix/scripts/git.scm:26

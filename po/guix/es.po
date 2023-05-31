@@ -4819,12 +4819,12 @@ msgid "invoke the garbage collector"
 msgstr "invocación del recolector de basura"
 
 #: guix/scripts/gc.scm:263
-msgid "already ~h MiBs available on ~a, nothing to do~%"
-msgstr "ya hay ~h MiB disponibles en ~a, nada que hacer~%"
+msgid "already ~,2h MiBs available on ~a, nothing to do~%"
+msgstr "ya hay ~,2h MiB disponibles en ~a, nada que hacer~%"
 
 #: guix/scripts/gc.scm:266
-msgid "freeing ~h MiBs~%"
-msgstr "liberando ~h MiB~%"
+msgid "freeing ~,2h MiBs~%"
+msgstr "liberando ~,2h MiB~%"
 
 # FUZZY
 #: guix/scripts/gc.scm:306
@@ -4833,8 +4833,8 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "parámetros no esperados: ~{~a ~}~%"
 
 #: guix/scripts/gc.scm:330 guix/scripts/gc.scm:333
-msgid "freed ~h MiBs~%"
-msgstr "liberados ~h MiB~%"
+msgid "freed ~,2h MiBs~%"
+msgstr "liberados ~,2h MiB~%"
 
 #: guix/scripts/git.scm:26
 msgid ""

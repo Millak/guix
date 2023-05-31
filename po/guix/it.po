@@ -4776,12 +4776,12 @@ msgid "invoke the garbage collector"
 msgstr ""
 
 #: guix/scripts/gc.scm:263
-msgid "already ~h MiBs available on ~a, nothing to do~%"
-msgstr "già ~MB disponibili su ~a, niente da fare"
+msgid "already ~,2h MiBs available on ~a, nothing to do~%"
+msgstr "già ~,2hMB disponibili su ~a, niente da fare"
 
 #: guix/scripts/gc.scm:266
-msgid "freeing ~h MiBs~%"
-msgstr "Liberando ~MB~%"
+msgid "freeing ~,2h MiBs~%"
+msgstr "Liberando ~,2hMB~%"
 
 #: guix/scripts/gc.scm:306
 #, scheme-format
@@ -4789,8 +4789,8 @@ msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "argomento estraneo: ~{~a ~}~%"
 
 #: guix/scripts/gc.scm:330 guix/scripts/gc.scm:333
-msgid "freed ~h MiBs~%"
-msgstr "Congelati ~MB~%"
+msgid "freed ~,2h MiBs~%"
+msgstr "Congelati ~,2hMB~%"
 
 #: guix/scripts/git.scm:26
 msgid ""
