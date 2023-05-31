@@ -7325,6 +7325,27 @@ the same way, and tries to match each block with one in its brain to play in
 realtime.")
     (license license:gpl2+)))
 
+(define-public le-biniou-data
+  (package
+    (name "le-biniou-data")
+    (version "3.66.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/lebiniou/lebiniou-data")
+                    (commit (string-append "version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1s8dax6ryfqz7aqq8rj5ipxddshp5mjdvj0mn9kk1zzr55hvkfb7"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (home-page "https://biniou.net/")
+    (synopsis "Data files for use with Le Biniou")
+    (description
+     "This package contains data files for use with Le Biniou.")
+    (license license:gpl2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
