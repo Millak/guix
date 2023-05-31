@@ -3554,3 +3554,36 @@ with SRFI 64-based test suites.  It comes with a command-line interface
 to run test collections, and a library that includes a test runner and
 helpers for writing tests.")
     (license license:public-domain)))
+
+(define-public subunit
+  (package
+    (name "subunit")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/testing-cabal/subunit")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16n1zxwnmhb7vzixngvmm5zzk4q5jaqqjwyr6pr6w0ys60b7xja3"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf
+                         automake
+                         check
+                         cppunit
+                         libtool
+                         pkg-config
+                         python-fixtures
+                         python-hypothesis
+                         python-testscenarios))
+    (inputs (list perl python))
+    (propagated-inputs (list python-testtools))
+    (home-page "https://github.com/testing-cabal/subunit")
+    (synopsis "Test reporting and control protocol")
+    (description
+     "Subunit is a streaming protocol for test results.  Subunit comes with
+command line filters to process a subunit stream and language bindings for
+Python, C, C++ and shell.  Bindings are easy to write for other languages.")
+    (license (list license:asl2.0 license:bsd-3)))) ;user can pick
