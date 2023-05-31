@@ -11535,6 +11535,7 @@ Together, these tools can help make your projects more isolated, portable, and
 reproducible.")
     (license license:expat)))
 
+;; TODO: esbuild
 (define-public r-learnr
   (package
     (name "r-learnr")
