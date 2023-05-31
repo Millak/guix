@@ -5926,18 +5926,18 @@ and copy/paste text in the console and in xterm.")
     (arguments
      (list
       #:configure-flags
-      #~(append
+      #~(list
          ;; Without --disable-documentation, it complains about missing
          ;; python-sphinx on systems where this package isn't available
          ;; (because it requires Rust).
-         (if #$@(member (%current-system)
+         #$@(if (member (%current-system)
                         (package-transitive-supported-systems
                          python-sphinx))
-             '()
-             (list "--disable-documentation"))
+                '()
+                '("--disable-documentation"))
          ;; The ‘Python support’ was never actually installed by previous
          ;; versions of this package, but did prevent cross-compilation.
-         (list "--disable-python"))
+         "--disable-python")
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-makefile
                      (lambda* (#:key outputs #:allow-other-keys)
