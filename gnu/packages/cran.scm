@@ -34975,13 +34975,13 @@ package also supersedes the package @code{BBmisc}.")
 (define-public r-mlr3pipelines
   (package
     (name "r-mlr3pipelines")
-    (version "0.4.3")
+    (version "0.5.0-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3pipelines" version))
               (sha256
                (base32
-                "1ycrm4i0k38mkw1r1a5sxp761wdz3p0q72xz6qqg3qsyva4ba0wz"))))
+                "1pn6zi1qy4ql7zkkzmx52b5l9agppr1rlv3pdnm1dy8y0yc7imhd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
@@ -34994,6 +34994,7 @@ package also supersedes the package @code{BBmisc}.")
            r-paradox
            r-r6
            r-withr))
+    (native-inputs (list r-knitr))
     (home-page "https://mlr3pipelines.mlr-org.com/")
     (synopsis "Preprocessing Operators and Pipelines for @code{mlr3}")
     (description "@code{mlr3pipelines} enriches @code{mlr3} with a diverse
