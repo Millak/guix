@@ -3345,293 +3345,293 @@ using the multicore functionality of the parallel package.")
                                   version file)))
          (extensions
           '(((name . "AutoFill")
-             (version . "2.4.0")
+             (version . "2.5.3")
              (files . (("dataTables.autoFill.js"
-                        "098a4kd4cahc618x543nqc388mpg4ximg3mc43dfjs8p9gsjr6pm")
+                        "0r5v76lmysblb4l5g1qgdg6zb2sbkarzfp5fk9zixsyb4c40rrb5")
                        ("autoFill.bootstrap.js"
-                        "1zi7iiq63i5qx3p9cyynn6am4idxwj8xaz8mp4n3klm1x68sc0ja")
+                        "01dwlc9r2dw8pjylp0r3i8snfc10i02r76564qcdby8slbgfxj6g")
                        ("autoFill.bootstrap4.js"
-                        "1vk2smcz14raf0cz88a65yf36a7mnmbml02q03apg2b8bqy91m7w")
+                        "0myiykq7nxa3c9hj387r0yhy9vm3qw2051m5siqsbc0zm5n82nkh")
                        ("autoFill.bootstrap5.js"
-                        "0azvycv5vgny0a60b3yl5m129qa2780bcxij9x4lqhi7jj8g8cdi")
+                        "1sq9164xz5w88hdn01cqraimvdzn6a9lplmy7j3klci8hmlivisy")
                        ("autoFill.bulma.js"
-                        "047fyrq59xa1xvzywc5q1dr201ky0wnr7iiljmc5kpgw9k2hfm8z")
+                        "1zyp1dghay6ndj58krqhx30vhlhd5z4hm38yv4mbk2ph413f2y88")
                        ("autoFill.dataTables.js"
-                        "1rz0d1w8m1xr3y64sy88c0ahs04dff8k353vnf5ck1kmfqz7iyz5")
+                        "0g0z5k9hc575zwjylx58mq7xi9l5id1mx30rvrnqb6afr7l69h4n")
                        ("autoFill.foundation.js"
-                        "0sbcib1461pkglk69fzzqi73g4abylah74f264v0f79dc5247yzz")
+                        "1rz24ai5v2aj4cpwaa5c2xw5ilypfpvygj4cyars4p76y7gfiiir")
                        ("autoFill.jqueryui.js"
-                        "1dw9vbbchzbd2c7id8na2p1cxac2kgjbzjrvqafra715hr0i4z3z")
+                        "059r8vswsasardsrsvr11xfr1kb6d0qqwc77x9qnzjq0bl7ksn1y")
                        ("autoFill.semanticui.js"
-                        "07ck81y6wpqchq8jfym6gjgc57xwj6vv9h5w9grc1gps6p7q9xnr"))))
+                        "0imildga2yhjkps07n5bbfw0b0pqbphszl7151gimrsn79xwqjm6"))))
             ((name . "Buttons")
-             (version . "2.2.3")
+             (version . "2.3.6")
              (files . (("dataTables.buttons.js"
-                        "0yvvnk57qzq50x2z8gb0269636qz2m8050lwp84ic9l98kwkfsqr")
+                        "19am96fj5xzsagp5wgn2ayiad9gm11vch2mz8l3a21l770dc86rl")
                        ("buttons.bootstrap.js"
-                        "11z9m0lnicac0hibh4d87gfgzzql816pa442xykdlraji52jx8h7")
+                        "0dk2f4cs4bww56ldmcpdfaisymf61j914awbqjlb66brdv70p1nb")
                        ("buttons.bootstrap4.js"
-                        "1n2l595jk2ndbq57ns9mjvpzs354xlpnqghhm27a4ipc29hil9i7")
+                        "0cvkgw83xyf601zp2pr9d5xhllbn1pjb8bnalja7yi6cswg7r5mp")
                        ("buttons.bootstrap5.js"
-                        "0qsr748lns5hd52yy4w3w392f9f0y0jn0z382vna6fwynamkpmxi")
+                        "0mnbdx5pm8ybxgg048zdi4v4awwyq1pyykwbgqhww5l4byjvvwpp")
                        ("buttons.bulma.js"
-                        "08f0969mwyd6x2hgg62b74c53aiq1j7aiwivpi5qbhm64r5haxg2")
+                        "11clmyxcn6z8rpv8ikcm3f2vcajp3cikvjcgrmds0d2w7gmzy36i")
                        ("buttons.colVis.js"
-                        "1gc2162lyw1l790973mbqhsbapypdf410g5dlhmarnb6w783awhi")
+                        "1ykzl8ka8lslzi1db9jssm416apr8ha1nyb300kvmb9hwxplx4sj")
                        ("buttons.foundation.js"
-                        "1hhrylxg5jfc0x22gf372bmh2b3nbd0vrl3mi47bp23kgnq7ymdl")
+                        "0zkzkqj2d8swn1fy11bkr9fy7g4jfl99m5p4ihcg5l9lbsr0zirp")
                        ("buttons.html5.js"
-                        "1dvy05j0w1galnwgvnisp0zg3indrjikl66z1qzm0m00zz9d1vjr")
+                        "1gg8jp57kp6m609jjpf70hkxyn1zz4lfpiyhvj3i2fqlfp3pwgaw")
                        ("buttons.jqueryui.js"
-                        "0y2fgadmj1bmdak3bz80rzkjsa55di5py3m5cn5qmd21a0jam5c5")
+                        "18ah16sq41nbgkl3i1yqbllsdg99h48v3yaa2y2g8qwbx2b0aiw6")
                        ("buttons.print.js"
-                        "0fxkla48jda592jk0vg9n5jh39d8czibqmq0hmiz8l5d5dyimwi6")
+                        "14zbjzwk4h0r76wqym7fl9dh33mfqzn5fk1cb1bcj7c3d2jrmd9n")
                        ("buttons.semanticui.js"
-                        "1v2p8fr68jsjnkgych55qk4lwjj7cix51pl6gykqfr140ps4wfv0"))))
+                        "03lqj0l8xlkqh4byqqng3wv0caj611h6n60pzjbjmcsxmz3qaapi"))))
             ((name . "ColReorder")
-             (version . "1.5.6")
+             (version . "1.6.2")
              (files . (("dataTables.colReorder.js"
-                        "0xg1vhrmzy758zygq4n8sriwxkalvqrv4l36rxk4zkgr74iqdcl9")
+                        "1ziqslkvx6rcw0ayb3kd03wa9iqd5vx5sasglczyasm0zahp2h92")
                        ("colReorder.bootstrap.js"
-                        "0crgmjwcn817yz6ibjkji6gsickvv2a4las9asyldfcpj2c99x84")
+                        "1h06rbrb39r3vqf6y9939vad5sl28x73jdzi7a4dc6bgjzj1ggr0")
                        ("colReorder.bootstrap4.js"
-                        "065fhw4v2d9rp3ic9zfb1q5d7pfq4f2949rr24hdjbspf19m3ymd")
+                        "090g98zqiixq7avw2f1ai8vhf1g7y0s0q0kb5m0gb5nibh9grdv0")
                        ("colReorder.bootstrap5.js"
-                        "1bsdixwgjlgj8hfgcj4kz23bzn9pj2w6fay1bywk4k42wy9hkwcd")
+                        "01wfa5mlvksng2r23l43s8lhn088clvlfzgjb30q8wrv1zr456ga")
                        ("colReorder.bulma.js"
-                        "0ld1bvcizcq6rd31sn0dcb9md7ri1b3npi64hd8nwz5jr2ln0izh")
+                        "0bwidf58k0747zamh2db6rqidzzfg4cl8pbzqabp8wrxd0l4fz6v")
                        ("colReorder.foundation.js"
-                        "0nrddc8swkmsfzji518kh6ks55ykyk9p8r4x5fmf8ckr9fhjkh0s")
+                        "16m2rdadjq6bvfip3g30w5389q1rivqr3kxnllz0p56dngsg3qnk")
                        ("colReorder.jqueryui.js"
-                        "1rd8hijz3prg2y36fvqczrpdzixibjy2dxgs2fmgr8wrm8k01rrm")
+                        "1isl25m5asl0krhsbk3p91cyvfhzyf0y3mc6lcjwahzmv609jq68")
                        ("colReorder.semanticui.js"
-                        "17kw143ny0nq0yidsffw3cpghvlg2bzlzavfi0ihkamcn26ymxcp"))))
+                        "0nrfxs7b2bhvzhqw9sxi7404lhrg5h6g8csf9yp4l9bpvb6cicn8"))))
             ((name . "DateTime")
-             (version . "1.1.2")
+             (version . "1.4.1")
              (files . (("dataTables.dateTime.js"
-                        "022znjrf95yxn72j3cbasvsrqnbxcch10jbv2gb1816ngw90ykrd"))))
+                        "048y9d9069499sq6yz3r0j0krv7h2gaawcw26gbp1bbgjrczydqv"))))
             ((name . "FixedColumns")
-             (version . "4.1.0")
+             (version . "4.2.2")
              (files . (("dataTables.fixedColumns.js"
-                        "1mayfgas63gbzxbbliy56d5b4c5rkyqzvmj3mzrpwyvaf90jskxg")
+                        "13qic9ijx211pn05h183bi4nhd3b2ma50shvw2b094mp2wfjz7zf")
                        ("fixedColumns.bootstrap.js"
-                        "0463y93jl926s3kmx35vw7k95zwz18z917kxiygjw1i3flbyw979")
+                        "06dz80c5sqjkzp2la1nxjjqgm1avap2qpslwml15prcjs6xy1mwb")
                        ("fixedColumns.bootstrap4.js"
-                        "04z19y4qb0sqcvlra8h15vbpfw6w2brkwh5msvpn6g8hslq7xfqg")
+                        "0ljyz6dm264hj03n6vwcpdzpjcsf9mx0w2bc6ir5r463h6w5432p")
                        ("fixedColumns.bootstrap5.js"
-                        "1jgwl5v6b44q8fjdaphqliyl749mmd6bjg9qgnss4xspz4ix5600")
+                        "0rq4bjyf0g40dns9wdzzg6yr9khrcc7hys668dx495wy5349cj1h")
                        ("fixedColumns.bulma.js"
-                        "0dvw6adjr0h19vysmwynsg2kjs2ihm6slsybpaw50qz28is6qj1i")
+                        "0g75ds6yvl4995d83v1nj6h9d0c46ryy6z168znw98csb35infms")
                        ("fixedColumns.foundation.js"
-                        "1xmxsxd5phm5r67pvd6r7rqi7l83pw6gp9a9kfjvs7a8s1fbcv7j")
+                        "09m5ri08c7q5c96dlp4yzz8b82f8nbfras07cb9s9zcbpfnf3sz8")
                        ("fixedColumns.jqueryui.js"
-                        "0996m40kl7q8bg9przp4lzmp4z2flr538sv2phg3hsl0mra4yqx2")
+                        "1fmd5bgjfqg7gila9p8q6hhsxf5hz586n14sw7c4g81kkq1f144s")
                        ("fixedColumns.semanticui.js"
-                        "0wwxkk7ias986c1iyd2wfd4gcarla99mcaaancgxcadqil6gs2z7"))))
+                        "1ljnl3817sq58m0rnwyyyasak9x7i1yvy54hm0m0jkdc6xh2pv1y"))))
             ((name . "FixedHeader")
-             (version . "3.2.4")
+             (version . "3.3.2")
              (files . (("dataTables.fixedHeader.js"
-                        "1hz2b1987hw8xnbm7fgf1wifjsx9zzzc2y1jxa4fcdvlhyqcikqh")
+                        "15n2jv0b42k4z202gl167lam53lg89h2h6v91k7yb92ylxbs417y")
                        ("fixedHeader.bootstrap.js"
-                        "1qf3pkb3svpia7g8bwyql7ma3x2g4zj5bp0d14pnv8xpc9h52r93")
+                        "04hlrc6rl3rzn8wihh6rsjyijspwhgb033b651iwffw652ygz3bl")
                        ("fixedHeader.bootstrap4.js"
-                        "19jcvnk7zh4k6fd5si3b743x70qzlkqiw3m10jbc5jzbpz8sj6qd")
+                        "1l1k7nxpjfj694chhpl6lmxg5rf0xdw42dvzqbwkqbmi0lflpb09")
                        ("fixedHeader.bootstrap5.js"
-                        "0p8av4ipbwfqfpkpkz9i32rcihx437rbmi4sq6s58rb97vpj1hjr")
+                        "18ljjgyvjw5y69i46l8pzpzyipw9i8951in347sg2fddvqmbgp14")
                        ("fixedHeader.bulma.js"
-                        "1cs3fwx7y1an06ckr4b95crs81sl8xhgs10ggvjghbqdinzkx42v")
+                        "0ja748f9c1g9vcdd4azzihdvqwzqgyibbw6j0f8gnn385lckhjn6")
                        ("fixedHeader.foundation.js"
-                        "0yd1812jrlrawv1sr4n83rl59n1gfablxbhhs8jp4h3mj3f0881p")
+                        "094k93vbn1lks97xl60lr62l03hqy1ygb4ziw5yc935pms8bcsg8")
                        ("fixedHeader.jqueryui.js"
-                        "1lc0g2cag1sj3bqmh7rh5z00pmfv1srxfhwi32y4mgpzhrzpfzxn")
+                        "0w45c6dvbiqyiyyfsqnv76c9kq4gzsk7nvgbk9z6jbw9c63ajv16")
                        ("fixedHeader.semanticui.js"
-                        "1v0i6dc68h8l8673fb5970igzkl7as36riv504iyg82glfi7n877"))))
+                        "0icn69sbnvpcx1c3dwlyznaanmahl0xv520xmx8cf383l4nkka19"))))
             ((name . "KeyTable")
-             (version . "2.7.0")
+             (version . "2.9.0")
              (files . (("dataTables.keyTable.js"
-                        "0fhpzwdcjcigal2bbh1slq23lvp2xi16f3ninmigczk7p719jfxm")
+                        "10b492r3kkkj1skw3m4ykfdikp7h5hhvdwiag1p4f632m8av4agz")
                        ("keyTable.bootstrap.js"
-                        "0hnhk6am4yl6h6bb7as935k8h2syil9hf8g7nn409yd3ws736xpj")
+                        "0l7zarb10d2bkdvhphyphis6z100s0yb4sl81vk4icd1yqjagf5l")
                        ("keyTable.bootstrap4.js"
-                        "0r85mp5yf9hgl5ayzzs46dfbxa231bjlvgb8lqpyzik1m6afa51i")
+                        "0z3x55xlvhq5qgww5q037ib72qi7lmrjzlx79n562yr47ck3hh8r")
                        ("keyTable.bootstrap5.js"
-                        "0k24shf3v8frjp5m055g4fcdp48m8ird6c51p514m0ky97cdfhrp")
+                        "1d97jx4dgydra9q04qsm5lwcgh78na7lwdfpbq6nlmmdbd90rma5")
                        ("keyTable.bulma.js"
-                        "1fgb5v85b6fblm4dh68y5z2hpwy46b15a2x483aszac5177xw9h1")
+                        "0v70gnb18r0l1lls74gc04a2bj6gvvxjvi34sn18ap1va4hqgj1g")
                        ("keyTable.foundation.js"
-                        "11fr14p33lyvs0wfcx228m600i4qcaqb44q3hk723jxcz59k17dw")
+                        "159zcv9wrvdwiwh9prf6252fqd933997rza9wvwz8gp7nmsfg96g")
                        ("keyTable.jqueryui.js"
-                        "0572rxrvwyprdr8l5jkgacj2bkmhmgxjy5vybm65n54g9j19l6bc")
+                        "1ilwqy485pnii3a3aj7v86lh84wrw12c247v9n1jjf1d39a47wps")
                        ("keyTable.semanticui.js"
-                        "157mqn9mhmmf7vas2das4hbpwipk3wshs8n0808q04rbijr0g2bz"))))
+                        "1klx7v3bm5hi0aqzxlqrlkamn4m0qjxwlckg96gy3d7qfmjk37r6"))))
             ((name . "Responsive")
-             (version . "2.3.0")
+             (version . "2.4.1")
              (files . (("dataTables.responsive.js"
-                        "1pfc8bkg33jmzbjmdbvlvf4qi6jp42f5c9vzg59p017cwlcdai8q")
+                        "0hfsjrc4zr7zb9f7b08qprns8558y02ahm1v0ab417f24zx9xq96")
                        ("responsive.bootstrap.js"
-                        "1xxlh01vmzmfwwlsa611pl2nrl2sx58rp8xmx301bfsylmp2v5b2")
+                        "04d9bm3zzvyvbchbmp0ingh7m0w8i4lc9n9q9rfi33rz4acgv6j1")
                        ("responsive.bootstrap4.js"
-                        "1zjh15p7n1038sggaxv1xvcwbkhw2nk1ndx745s6cxiqb69y3i0h")
+                        "0clymsjfv20sgc9a3v09j968hgxfb1vm0smjwylillj152zxz5xc")
                        ("responsive.bootstrap5.js"
-                        "0c1dwa0hq5dcb2g4h7s5fidzfm5f87gwx79zw63jxw0p6x3qs2qn")
+                        "0y1kflpkzsvfsnmz42p2gybp8wk2acl8miy0v91r81a0s7i7v9hd")
                        ("responsive.bulma.js"
-                        "09gy9v9506am6w3xlkcx12b2sqp3gg09vrs3ns515f1512bnfsrm")
+                        "0dwngvl0wd4qfhj4ba20db6lapb65wam2bvirqwwjr0ndwqkms1i")
                        ("responsive.foundation.js"
-                        "1qgyqw3r8a60rm9csiq5ym9bfazzyybrk8ana3mk8pxjs2cnryq7")
+                        "1b2gvhpbfwjkdbfbndmdp4n7329v1dvgcbys418jni1w9v13alhh")
                        ("responsive.jqueryui.js"
-                        "10nykak2kf4sai64girh26xdmdil29jvw3zja2rpp2qzjg4172z9")
+                        "1zl6sz3bgwdwn3ziq283p3vk3yl1ydnrm27ccav0xd1qkyngmmlw")
                        ("responsive.semanticui.js"
-                        "191d69i7pzh63fjkfwz8xkxh1rlbxk43xywkad7129c6hqsw4gml"))))
+                        "1rj50gz6zcbjyvazlyy6xn86c4yyhvc53c780ld31qsqqlk91h9w"))))
             ((name . "RowGroup")
-             (version . "1.2.0")
+             (version . "1.3.1")
              (files . (("dataTables.rowGroup.js"
-                        "0vl3962x0syhxnxnc5cb6dx3711m3gfsfj1i715b2rc4pyxwbzi2")
+                        "1z5642r2npxbkq7588qmcxmg4gaii22xfd0k039iwma199dql3md")
                        ("rowGroup.bootstrap.js"
-                        "1xfdhqgznz9x1v8spvql6b0wbna13h8cbzvkjza14nqsmccxck66")
+                        "06qvz00qlnhvvfccmxhpgaw0jw9xrnk6fx34qk1ffw230adsz39n")
                        ("rowGroup.bootstrap4.js"
-                        "1xm53sda4fabwdaglngrj09bpiygkn9mm17grxbykn1jazqqdp62")
+                        "1i460lnpsdwwf617p0ngbzn0k3jbrjxk72nmdxsni5q8w0x4hh7v")
                        ("rowGroup.bootstrap5.js"
-                        "1z5ii27dhi5qznp279p458zcx4q322dkwswmk45wh1sx5ws9kxcp")
+                        "02434zhjj0s26g819m689hxspwz0hjmgm23as73x0rncmwh5n0yr")
                        ("rowGroup.bulma.js"
-                        "0bwa2bw7wasbvc35c1m78i7vb2yf4dwr7wp1qclw3lv8sx137i4d")
+                        "1j0vkvgak0czjpyx99knh4fsr2zk527cxnbjp4hvb8hqh81mfxgp")
                        ("rowGroup.foundation.js"
-                        "0832i10vils1wv1sm10qvsnd4i2k2xkhskz6i9y2q0axkmk73hcd")
+                        "12haka0ibz431d0ggwmvncld5aa5mh6ibicbpqlz2wg8ax83xbgi")
                        ("rowGroup.jqueryui.js"
-                        "0n53cd294s9mjblkykkqvd9n414bsc26wpcg5spxdscjl6hxh79p")
+                        "08hpclvm8r7768r017spsvdj582s2i21cdjxfllvdl2yq7k5fdpg")
                        ("rowGroup.semanticui.js"
-                        "010wls5nf387p21fdc2k952bxq89r5kxkv7j4wbvwf8k2a18cmc9"))))
+                        "0jjn91h59vgrbkzrxjr91nx9n2azd569qj693s7v71sq96hhfy6s"))))
             ((name . "RowReorder")
-             (version . "1.2.8")
+             (version . "1.3.3")
              (files . (("dataTables.rowReorder.js"
-                        "1hjh4c5dp82sxyhd38k363dmsdhpq02fmbz3wah0ggns1i4hhpq4")
+                        "0gxi7bxgilqm6x216vpzyrdvbn1b34pz25x8zr2k10jb1m1kbxk8")
                        ("rowReorder.bootstrap.js"
-                        "185if2pxgc940rm49hdgln57pc5h9cszlii3bfpdf3pdc1fjhckm")
+                        "0kjzjvwbn5d2wj6f8bqa9vgwhmwczpvig3i4zsv5rk4rpz4jiiap")
                        ("rowReorder.bootstrap4.js"
-                        "14129x4md57i4ff7j18m49jn5fw8r716np84cdrcawlydgjsxp4a")
+                        "19g8n8kgbi7m42vzkq378q73k2yr0vs0qf03k7aly6ysp4413bbz")
                        ("rowReorder.bootstrap5.js"
-                        "1shq721y56ms72zsn00glpfm44hl120zh6nslj20w3d5maly6xp8")
+                        "13ivzk3vhm9qwifk1nsqqdciifky9pgz2fgigxfsb9lkn3dflw0k")
                        ("rowReorder.bulma.js"
-                        "16rpjsbiwv4vdrmigkcnj9cyxgm2cscnvn0ac079s3qh1gi7ysv0")
+                        "0bc4scmhwnvjybqrbmhi7ja1z5cvxy94yddwc9ij52m821shv2mi")
                        ("rowReorder.foundation.js"
-                        "0zg94jckymxzda2xjyj9p38y5v61cji55kak1ylq72l6a9sw8sg6")
+                        "0a19zkdmg1hw7k48vhv36mx9mcrwk6y0vgbqp6cm2g6di5j3nwb0")
                        ("rowReorder.jqueryui.js"
-                        "08gm419xcixgqw0i5yv2mxyyvafhzviibifp6nv129vdxx0a5d8v")
+                        "127ah9xh3psnasialqff7jrl4xgf4q2lnsbp73azn5gcxxp7n27j")
                        ("rowReorder.semanticui.js"
-                        "1zjrx2rlgw3qannsqa88pcp3i4pc87pwv7rmgfw1dar8namkr9kk"))))
+                        "0isal8vjsrf8igfr45xhwrqi5gpvn6bw58c2z0abvdgb4c0sn26g"))))
             ((name . "Scroller")
-             (version . "2.0.7")
+             (version . "2.1.1")
              (files . (("dataTables.scroller.js"
-                        "0vk7kxv78nmmr5y9rqshh4rglj9wd1fhlq1jzyxz5mpdc4scn82w")
+                        "1qi5qqk65mrbvn8qjnwph209wpgpf9sh21ynz6rrsnnyz5s5g9a4")
                        ("scroller.bootstrap.js"
-                        "19dl40dl8ir21xvs1j7xhm2a4py1m21xbypwn499fg2awj8vaidi")
+                        "0v83q7p5wj9dg7gjqyrl6xr2dr2spgryc7hx8n895038p72srlh6")
                        ("scroller.bootstrap4.js"
-                        "0pbkgncijlafwdmyh4l65dabd18hzjh8r01cad3b9iy8cfif6iwd")
+                        "1cyfvgklyslb23swmfdai1i4qxs3b5w3kvv40zfjvvjagk35d6vy")
                        ("scroller.bootstrap5.js"
-                        "0h257c782ypbncsavrlzrhzc2dpmilkgrpcfmzlyxs964c0lb03d")
+                        "0qnj5cfiap82idp0dlm2kjiw8mg6ni309p8nfrsz01l5v6kf0gld")
                        ("scroller.bulma.js"
-                        "0yn1c4aj64h3h93g8x4q76zf9l8h9r3i5x6havvqx1h5q3xzrz6a")
+                        "17cxrym29b4h7qsn1p2ybdcqvqabxbw0463crnskqjvbma245gvs")
                        ("scroller.foundation.js"
-                        "04bk6ink8wqay7655v93jvv86m3bn6asrsfb22i99rgxdvm8gn1z")
+                        "0k7d9qqflkc8266ixpcrw3j2n6ci8nq3qvrl7gzb6ynpqxsxm6jm")
                        ("scroller.jqueryui.js"
-                        "1md5mpx5in7wzsr38yn801cmv3phm0i0ikdnpd0b1nsna5ccpj14")
+                        "08yp9crq04mxppn8dzif8920isvmapkwc7vcxw73bq9wlmsyg1cx")
                        ("scroller.semanticui.js"
-                        "1dfbblbzbryjgiv31qfdjnijz19lmyijg12win3y8gsgfd4fp9zz"))))
+                        "1p38j8362nw0x4bvvm23k5z1m4xndf4dswd9mcc6p6gfl4qj5j48"))))
             ((name . "SearchBuilder")
-             (version . "1.3.4")
+             (version . "1.4.2")
              (files . (("dataTables.searchBuilder.js"
-                        "02l908xd2r6vnjygwvnbyhv0qckg4nyq00zwcmpz5a2aiqz68vwn")
+                        "1xgbl60d07wvhzvwmgvwwx01sl6srgwiym4lx4lhgdpr965l0bbl")
                        ("searchBuilder.bootstrap.js"
-                        "00a5sb9n180nmpghnks0xiwhpaq8nqf7gsh112vqm4m63b3nfiq7")
+                        "1pgrr55v3ymfdgrs5835963sx1h2cp9jwms2xqxy5d8rla0hjc85")
                        ("searchBuilder.bootstrap4.js"
-                        "1rf58fdfjdwr86ywfapaixclcixhwd46nw0q6zprwrms1h90wbqq")
+                        "1jhc47p5l4b9r2y0x0ixv3zz756nsbn1ks0x1fx1h34p0c4l3h22")
                        ("searchBuilder.bootstrap5.js"
-                        "0wizg55hxf79kapcsrjmzkr2v619bqva64s6l9f8crdzknvfxw06")
+                        "11cvyzrd0i4p0gc89iim23bafjldn3k7wdch80f4l9wb6vjjyak8")
                        ("searchBuilder.bulma.js"
-                        "0sc72fkffggxrms08ffc512r2cj3k2rs0rn75r472b0mkrz7fiaa")
+                        "03vnk9mr4ks339jmpq15rdyx4jjgf9n1w0jlb1p7ni6mc8vkycff")
                        ("searchBuilder.foundation.js"
-                        "0xirkl92gws8yirip39q9vsnaghxh4c86ny9n3a08mswrr5zkl4f")
+                        "0gphbviv09wj1l2p2rdvdg1lp1wkwpmvyx3w63fdxyjqbgp5jd9a")
                        ("searchBuilder.jqueryui.js"
-                        "1h91w1nk5r8a8xhk891p2ljif8bxigl9x0cm0hzkxihiv9bkskyx")
+                        "1a9csbj9mdbn9f2rshxmqn4whlqy0i5llahik1vcywp0mrm43515")
                        ("searchBuilder.semanticui.js"
-                        "15icf6dicb6v1sw58llrd74nsjqkghnjfn50ylyvw3rcbw6a9drl"))))
+                        "17fqc20f4sg281y6lcj9dxbiqc95ashm5z29hi6ikwwcqxvirwa2"))))
             ((name . "SearchPanes")
-             (version . "2.0.2")
+             (version . "2.1.2")
              (files . (("dataTables.searchPanes.js"
-                        "1baxayq9gjkyvyv463cj2ckzplgh88800kvgkr7ji5nmbvd4qhss")
+                        "0wskf7bynrnf0fipx3wjbikx02hxrci5d1ci3861i37kvrsrzqs0")
                        ("searchPanes.bootstrap.js"
-                        "0p3x6345aqhr4aw447pc9dxc0kb9pz31vvf1ikcv8li5bdcgdk4q")
+                        "0393mj4xangzs6c755c2k3z71f9w3d7qxcb8rsx3ibsirl4rp5z1")
                        ("searchPanes.bootstrap4.js"
-                        "1l21c1jnsmakbi6z1kq4cy3ydirm8l25qwhzl5hwvw4kjpc0mi8n")
+                        "060lpbnfjbi0p4yh54mck20b9dcbz9a0yhj8if8a084sz2mka16b")
                        ("searchPanes.bootstrap5.js"
-                        "1sgw7hxhwnm59l8c0bkk4l9vp3blf8mq4wn4zfrv4cvxlawncdr8")
+                        "1kzbmi84svx7js8pw4h8gac2i87sjpjhq0bkglahq3m49f129br7")
                        ("searchPanes.bulma.js"
-                        "0yrabx503jcrzmh97xzpbbs59ba714a17sm9n1ls1yc8pmk3327x")
+                        "0ln096w84aisivkki7k1m0nhxpjs8zk4b2givg5rd9vqjwirxc65")
                        ("searchPanes.foundation.js"
-                        "1f4pzr4h1hjcvnb3s7sdpdps7b29sgp3l7hbclv39dx8lmwv5fx4")
+                        "1mldgkzhxfvvn7z1y095az8czp6qzjv5v09z8ng31dxrc9q6qlb9")
                        ("searchPanes.jqueryui.js"
-                        "1s1xfqdnzj16ad5z1nxpziabf4vfxzc7a7jrfh10mfhnzklzf8sa")
+                        "05qzc36dkch66wxsn3wx13f4jd715jj0jxykmd750kk7qhqc2gfy")
                        ("searchPanes.semanticui.js"
-                        "1qydrghn8033zmaww9zm3fi7maakgb61vvvrqynypyrc56y53w6n"))))
+                        "1g4j2v5757d8ylmb8kn59nq77f1gx9ifj10i215gn982shln3s0h"))))
             ((name . "Select")
-             (version . "1.4.0")
+             (version . "1.6.2")
              (files . (("dataTables.select.js"
-                        "1rz7ljiazy3v7xkyccn33wxij1bcz3mzkn7kpha8a3d4zy1b1n2j")
+                        "0amnwdvmiq1pda9x0m2hfrzrq87jyl7zphil5bw6rgnj7045s36q")
                        ("select.bootstrap.js"
-                        "0mm5ly3p2iprlfi8ajz548rjqx8lz1sbjj5ysgqmwqg14gw7l9k7")
+                        "0fig0dr19k6wdx7dn2ly8dfam0k2b75w7917cxl3izsnfqpxmfj5")
                        ("select.bootstrap4.js"
-                        "1hv6d9lwgflmxhy7mdfb9rvli2wa2cbkdhqjz64zkf1a1a7wlb5q")
+                        "1pzm3azmq8nwkd6drfqc94dfsvkhrgcz8f1zapvpa6m12fx16nnm")
                        ("select.bootstrap5.js"
-                        "0ixzqpkrd24np1p9wkq857ddgvs00zb5jzpw6zwj7nbpws0qf9df")
+                        "1ar77h6ffn452j15wvxw49d5xhh48dm4h49f16rswgshxa17x8s7")
                        ("select.bulma.js"
-                        "14vw871rqz4wfzy8nns9nsmjyfv0g6xdcrv1x3c8i0r53qciymqz")
+                        "15zrswnpchagm9vm8g6ka7jwaj1zii30rwkpp1fglwy1zqkcqlxg")
                        ("select.foundation.js"
-                        "1zzygcbngvrqh7m22x0s23k8m5xj5fv1p466pzjs23p94qq24a2r")
+                        "1wj4vxwx8kifqcga4fxrm8z17lnykpbxz9101xpsr57qjl5ljinx")
                        ("select.jqueryui.js"
-                        "1hv5zlmfifd27hylfqsji09y2hbp3m2hnb7j41418sjrxs63f6x6")
+                        "04s2j9j82qn5hmn7fr016vgdmvhqjsqs15w7j20fzd63fs5n7q9w")
                        ("select.semanticui.js"
-                        "0q6q3vb6pa5nmkxy7zcnjs0bkn4ldw8ykdcfrc04bf1d2hjjaw47"))))
+                        "0dwvmlcdci7s24g3fgglks6iqrxf1bwnb17isvwvbh8nqdnad471"))))
             ((name . "StateRestore")
-             (version . "1.1.1")
+             (version . "1.2.2")
              (files . (("dataTables.stateRestore.js"
-                        "0f1df3kqgvka5kcxs8dxm33g3kgdxhphr95013rz5wmwcxfbgfwb")
+                        "0566zy26bzyyh88fzy3j6v028hnqckxhki2h1n41l9pnjfmpmks2")
                        ("stateRestore.bootstrap.js"
-                        "07n6z3ffdg2hqbkjh15bgp96jv0mr8xbm0zn7ckkwkyfiw7085jf")
+                        "127z438rqaj9gzyk3cy84j0wpsrcj902cjzrqcm9w2vjvk783wri")
                        ("stateRestore.bootstrap4.js"
-                        "15l9ka5vq37y7axfmm8s7kfim12mir2xiqfqqf9s031647kld0am")
+                        "1ylf5832haf4jracsph5pgxsily2v5j2zvvl6g1gnaa8kaf81a89")
                        ("stateRestore.bootstrap5.js"
-                        "1sdcycdnp5m65d9glch2mqd5lbaq2gaxgyl1x91bynzpnwi2q6mc")
+                        "0kq9p0pdmvmyk7scssfpa9ngpn8q8qg2cy9jvdd40hni9dmx7hby")
                        ("stateRestore.bulma.js"
-                        "06ly3r8b2jwb62hj4im6kg694rp6gnjvb0fvzvivndgqk4bqz22s")
+                        "1q1nk1mb1309v5zjfj1l5cwx9404amyf14wyrfjl2p6f3wl7w5js")
                        ("stateRestore.foundation.js"
-                        "17qrf8ihw4k3as9fsxhqz7qndi4k7j3x901sn6kj5yy82cgrvafa")
+                        "1kfv8q2hn3pcqzxgm0maq5mpw1qbzj2q5y1ab53x3xi825dmgrym")
                        ("stateRestore.jqueryui.js"
-                        "0gcbn5n12vg2ifvqhpgb7ligjzz2qr1dp4pzn3jw8nn264warn3p")
+                        "04w2vlx2c2gc31gvjgl6fj92nh00x21k2x1xiaj1yla159qg8ds5")
                        ("stateRestore.semanticui.js"
-                        "0d61jhj2chln9q39hdbapxbw90142gaizjwshh0svlnn2pd3m5nx"))))))
+                        "1dryaqqqsfyswhx69xchx61jycxya77b65l359ry43l53gxnz13z"))))))
          (javascript-sources
-          `(("https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"
-             "16wdm7gvfikwgc9zw7qdjwjc0ry55v60ldmqvza8911las26q93k"
+          `(("https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"
+             "1mk7cc8b0vcnzzqd73rbgm7arvcx69vjkgwa7y742y0zhhfnv0kx"
              "datatables")
-            ("https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap.js"
-             "0r0gxzxg7hr95k3cgv0hscxh058qxddj11f9l1x3czivlx1pbcp4"
+            ("https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap.js"
+             "1ln481fm9xkwqqnza16w4wjhig7nlwxibx2ra4mklms7r4ibkhjy"
              "datatables")
-            ("https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.js"
-             "0p0jbg44ipp6qkpsawndzxaxk34f5dd6jn3k6g86smrn2c8vaknr"
+            ("https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.js"
+             "1v9ws13nsgb91irhqxn30id2v8sfgmrb2fgf1giwmjhn5l2ndcfy"
              "datatables")
-            ("https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.js"
-             "1qzmaqij2hxs0gn6vjqsw5bgx109qgs7qpkp3c4p44pkkmx3g58h"
+            ("https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.js"
+             "0cd8vc3xsv9kipq4h3068n2h47k66k0j49bqyq85rsvvqm63xzjb"
              "datatables")
-            ("https://cdn.datatables.net/1.12.1/js/dataTables.bulma.js"
-             "1gvw4al40i134gphna2pij0hq9h9cqlj1rhmncan435hzpzrxhpb"
+            ("https://cdn.datatables.net/1.13.4/js/dataTables.bulma.js"
+             "012hlz3irm9bq4xqljrx67wjcvp7yap0amakjpc13gy8g6py9v46"
              "datatables")
-            ("https://cdn.datatables.net/1.12.1/js/dataTables.foundation.js"
-             "193hy4kyiig4zz59y4m9714l7p9gk6n9p937qlfg83dr5l9x6kdp"
+            ("https://cdn.datatables.net/1.13.4/js/dataTables.foundation.js"
+             "11xn88rr9fw8rmrqczl4hhna450szsragvgrz1v1rqa6mwnmv3hq"
              "datatables")
-            ("https://cdn.datatables.net/1.12.1/js/dataTables.jqueryui.js"
-             "1k8a31d43jiv56dvcai5xs0ja4y521xp9h25lgsa40ccsyn33k7n"
+            ("https://cdn.datatables.net/1.13.4/js/dataTables.jqueryui.js"
+             "05xwpl9f4w0ig9r858cypfv12x1v7sifkf93hmg6zss1mwhllrfn"
              "datatables")
-            ("https://cdn.datatables.net/1.12.1/js/dataTables.semanticui.js"
-             "01xih6l7bn3ddmhnkvyvf79xdlgdzpasx3cx4fkkijay593gl2vb"
+            ("https://cdn.datatables.net/1.13.4/js/dataTables.semanticui.js"
+             "1yms35h218qm9p4pg3192sk5mlyvgjrspz4av3fj9rfl2qwn19r0"
              "datatables")
             ("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.js"
              "01l5lw49jz2qn6k9i63dk4llar4lvvpd6xp6i45mpwfk49fbxqg2"
@@ -3649,13 +3649,13 @@ using the multicore functionality of the parallel package.")
                           extensions)))))
     (package
       (name "r-dt")
-      (version "0.27")
+      (version "0.28")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "16i82f380ibl0caqvkg010zbxzav0iwwxac8zwy96c745g6xqbz3"))
+                  "0khdl21kvgi9k7dlpfshk1xz9bkly5lq6p41plfh4g2jv1yxaxfr"))
                 (modules '((guix build utils)
                            (ice-9 match)))
                 (snippet
@@ -3699,6 +3699,18 @@ using the multicore functionality of the parallel package.")
                                 (minify source #:target target))))
                            ',javascript-sources)
                  (minify (string-append (assoc-ref inputs "datatables-plugins")
+                                        "/dataRender/ellipsis.js")
+                         #:target "datatables-plugins/dataRender/ellipsis/source.min.js")
+                 (minify (string-append (assoc-ref inputs "datatables-plugins")
+                                        "/filtering/type-based/accent-neutralise.js")
+                         #:target "datatables-plugins/filtering/accent-neutralise/source.min.js")
+                 (minify (string-append (assoc-ref inputs "datatables-plugins")
+                                        "/filtering/type-based/diacritics-neutralise.js")
+                         #:target "datatables-plugins/filtering/diacritics-neutralise/source.min.js")
+                 (minify (string-append (assoc-ref inputs "datatables-plugins")
+                                        "/sorting/natural.js")
+                         #:target "datatables-plugins/sorting/natural/source.min.js")
+                 (minify (string-append (assoc-ref inputs "datatables-plugins")
                                         "/features/scrollResize/dataTables.scrollResize.js")
                          #:target "datatables-plugins/features/scrollResize/source.min.js")
                  (minify (string-append (assoc-ref inputs "datatables-plugins")
@@ -3727,7 +3739,7 @@ using the multicore functionality of the parallel package.")
        `(("r-knitr" ,r-knitr)
          ("uglifyjs" ,node-uglify-js)
          ("datatables-plugins"
-          ,(let ((version "1.12.0"))
+          ,(let ((version "1.13.4"))
              (origin
                (method git-fetch)
                (uri (git-reference
@@ -3736,7 +3748,7 @@ using the multicore functionality of the parallel package.")
                (file-name (git-file-name "datatables-plugins" version))
                (sha256
                 (base32
-                 "15kiqjy0ssd2ksvrqv8jyg9gc92ga3kn542vp1mij5hnfcbj6hf8")))))
+                 "0igrd7pghvk2w8mpad4mnw8ldflw47wma4qpp7ymkzvxy2100k49")))))
          ("js-nouislider"
           ,(let ((version "7.0.10"))
              (origin
