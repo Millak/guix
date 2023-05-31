@@ -1212,18 +1212,18 @@ easier.")
 (define-public r-rticles
   (package
     (name "r-rticles")
-    (version "0.24")
+    (version "0.25")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rticles" version))
        (sha256
         (base32
-         "05idvyfjfa4f244km4sxripg8gndvganx5s0ch00xbi4cqnlr2pq"))))
+         "17nggn3zrbi1nj8g8v0hq3sakjvl742vhljdnxw7h6cx3j7123xg"))))
     (properties `((upstream-name . "rticles")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-knitr r-rmarkdown r-tinytex r-xfun r-yaml))
+     (list r-knitr r-lifecycle r-rmarkdown r-tinytex r-xfun r-yaml))
     (home-page "https://github.com/rstudio/rticles")
     (synopsis "Article formats for R Markdown")
     (description
