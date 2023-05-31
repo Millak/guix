@@ -9144,14 +9144,14 @@ vectors.")
 (define-public r-statnet-common
   (package
     (name "r-statnet-common")
-    (version "4.8.0")
+    (version "4.9.0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "statnet.common" version))
         (sha256
           (base32
-            "1w26g7nzvmawm8jqd0hsjr8lz1jr4l565wzcbwqwpyvk0q9rkyfy"))))
+            "1mrdzhxxrr6a0hwxczs40f8ppkdimlki1gbg6f3kv69s6rpdr1d4"))))
     (properties
       `((upstream-name . "statnet.common")))
     (build-system r-build-system)
