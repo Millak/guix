@@ -1621,16 +1621,22 @@ the system clipboards.")
 (define-public r-clock
   (package
     (name "r-clock")
-    (version "0.6.1")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "clock" version))
               (sha256
                (base32
-                "00hp7k24d599dzkzhhb6xky2pj6xaggdfwgviyb3i592v1gkh37q"))))
+                "0x58xhngpd2rj7da9gr1x1zwz4rliza7aakfadkqsc4c7wxpmral"))))
     (properties `((upstream-name . "clock")))
     (build-system r-build-system)
-    (propagated-inputs (list r-cpp11 r-rlang r-tzdb r-vctrs))
+    (propagated-inputs
+     (list r-cli
+           r-cpp11
+           r-lifecycle
+           r-rlang
+           r-tzdb
+           r-vctrs))
     (native-inputs (list r-knitr))
     (home-page "https://clock.r-lib.org")
     (synopsis "Date-Time types and tools")
