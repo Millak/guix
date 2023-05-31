@@ -7127,13 +7127,13 @@ Calculates confidence intervals for the difference in proportion.")
 (define-public r-desctools
   (package
     (name "r-desctools")
-    (version "0.99.48")
+    (version "0.99.49")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "DescTools" version))
         (sha256
-          (base32 "0axn9sgv8cwzmrnwrpbla8zcfpii1xlsyjxbgk85xlcsmv05iq6v"))))
+          (base32 "0s2zh8xz06c45rbwcypgsa8shby66nm6sj90cb9d1bwb60mws8j5"))))
     (properties `((upstream-name . "DescTools")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7148,7 +7148,8 @@ Calculates confidence intervals for the difference in proportion.")
             r-mvtnorm
             r-rcpp
             r-readxl
-            r-rstudioapi))
+            r-rstudioapi
+            r-withr))
     (native-inputs (list gfortran r-r-rsp))
     (home-page "https://andrisignorell.github.io/DescTools/")
     (synopsis "Tools for Descriptive Statistics")
