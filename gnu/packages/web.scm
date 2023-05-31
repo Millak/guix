@@ -8868,6 +8868,65 @@ libraries.")
 console, a file, syslog, journald, or a callback function.")
     (license license:lgpl2.1)))
 
+(define-public ulfius
+  (package
+    (name "ulfius")
+    (version "2.7.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/babelouest/ulfius")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dfwdpqmqki63dddi53bfv6jd0kzv8gh2w1lxsv6mzk3sxl6qakf"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_ULFIUS_TESTING=ON"
+                                     "-DBUILD_ULFIUS_DOCUMENTATION=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'build 'build-doc
+                          (lambda _
+                            (invoke "make" "doc")))
+                        (replace 'check
+                          (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                            (when tests?
+                              (let ((job-count (number->string
+                                                (or (and parallel-tests?
+                                                         (parallel-job-count))
+                                                    1))))
+                                ;; Skip failing tests that try to start a server.
+                                (invoke "ctest" "--output-on-failure"
+                                        "-j" job-count "-E"
+                                        "(core|framework|example_callbacks)")))))
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (let ((doc (string-append #$output
+                                                      "/share/doc/ulfius")))
+                              (mkdir-p doc)
+                              (copy-recursively "../source/doc/html" doc)))))))
+    (native-inputs (list check doxygen subunit))
+    (inputs (list zlib))
+    (propagated-inputs ;for libulfius.pc
+     (list curl
+           gnutls
+           jansson
+           libgcrypt
+           libmicrohttpd
+           orcania
+           yder))
+    (home-page "https://babelouest.github.io/ulfius/")
+    (synopsis "HTTP Framework for REST Applications in C")
+    (description
+     "Ulfius is a HTTP Framework library for REST Applications written in C.
+It is based on GNU libmicrohttpd for the backend web server, Jansson for the
+JSON manipulation library, and libcurl for the http/smtp client API.  It can
+be used to facilitate creation of web applications in C programs with a small
+memory footprint, as in embedded systems applications.  It can create
+webservices in HTTP or HTTPS mode, stream data, or implement server
+websockets.")
+    (license license:lgpl2.1)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
