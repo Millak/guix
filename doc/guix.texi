@@ -637,18 +637,18 @@ includes POWER9 systems such as the
 RYF Talos II mainboard}. This platform is available as a "technology
 preview": although it is supported, substitutes are not yet available
 from the build farm (@pxref{Substitutes}), and some packages may fail to
-build (@pxref{Tracking Bugs and Patches}).  That said, the Guix
+build (@pxref{Tracking Bugs and Changes}).  That said, the Guix
 community is actively working on improving this support, and now is a
 great time to try it and get involved!
 
 @item riscv64-linux
 little-endian 64-bit RISC-V processors, specifically RV64GC, and
-Linux-Libre kernel. This platform is available as a "technology preview":
-although it is supported, substitutes are not yet available from the
-build farm (@pxref{Substitutes}), and some packages may fail to build
-(@pxref{Tracking Bugs and Patches}).  That said, the Guix community is
-actively working on improving this support, and now is a great time to
-try it and get involved!
+Linux-Libre kernel. This platform is available as a "technology
+preview": although it is supported, substitutes are not yet available
+from the build farm (@pxref{Substitutes}), and some packages may fail to
+build (@pxref{Tracking Bugs and Changes}).  That said, the Guix
+community is actively working on improving this support, and now is a
+great time to try it and get involved!
 
 @end table
 

@@ -26,7 +26,7 @@ choice.
 * Packaging Guidelines::        Growing the distribution.
 * Coding Style::                Hygiene of the contributor.
 * Submitting Patches::          Share your work.
-* Tracking Bugs and Patches::   Keeping it all organized.
+* Tracking Bugs and Changes::   Keeping it all organized.
 * Commit Access::               Pushing to the official repository.
 * Updating the Guix Package::   Updating the Guix package definition.
 * Writing Documentation::       Improving documentation in GNU Guix.
@@ -1161,11 +1161,11 @@ readability of patches.  Seasoned Guix developers may also want to look
 at the section on commit access (@pxref{Commit Access}).
 
 This mailing list is backed by a Debbugs instance, which allows us to
-keep track of submissions (@pxref{Tracking Bugs and Patches}).  Each
-message sent to that mailing list gets a new tracking number assigned;
-people can then follow up on the submission by sending email to
-@code{@var{ISSUE_NUMBER}@@debbugs.gnu.org}, where @var{ISSUE_NUMBER} is
-the tracking number (@pxref{Sending a Patch Series}).
+keep track of submissions (@pxref{Tracking Bugs and Changes}).
+Each message sent to that mailing list gets a new tracking number
+assigned; people can then follow up on the submission by sending email
+to @code{@var{ISSUE_NUMBER}@@debbugs.gnu.org}, where @var{ISSUE_NUMBER}
+is the tracking number (@pxref{Sending a Patch Series}).
 
 Please write commit logs in the ChangeLog format (@pxref{Change Logs,,,
 standards, GNU Coding Standards}); you can check the commit history for
@@ -1257,48 +1257,9 @@ and which optional dependencies should be used.  In particular, avoid adding
 the @code{texlive-tiny} package or @code{texlive-union} procedure instead.
 
 @item
-For important changes, check that dependent packages (if applicable) are
-not affected by the change; @code{guix refresh --list-dependent
-@var{package}} will help you do that (@pxref{Invoking guix refresh}).
-
-@c See <https://lists.gnu.org/archive/html/guix-devel/2016-10/msg00933.html>.
-@cindex branching strategy
-@cindex rebuild scheduling strategy
-Depending on the number of dependent packages and thus the amount of
-rebuilding induced, commits go to different branches, along these lines:
-
-@table @asis
-@item 300 dependent packages or less
-@code{master} branch (non-disruptive changes).
-
-@item between 300 and 1,800 dependent packages
-@code{staging} branch (non-disruptive changes).  This branch is intended
-to be merged in @code{master} every 6 weeks or so.  Topical changes
-(e.g., an update of the GNOME stack) can instead go to a specific branch
-(say, @code{gnome-updates}).  This branch is not expected to be
-buildable or usable until late in its development process.
-
-@item more than 1,800 dependent packages
-@code{core-updates} branch (may include major and potentially disruptive
-changes).  This branch is intended to be merged in @code{master} every
-6 months or so.  This branch is not expected to be buildable or usable
-until late in its development process.
-@end table
-
-All these branches are @uref{https://@value{SUBSTITUTE-SERVER-1},
-tracked by our build farm} and merged into @code{master} once
-everything has been successfully built.  This allows us to fix issues
-before they hit users, and to reduce the window during which pre-built
-binaries are not available.
-
-When we decide to start building the @code{staging} or
-@code{core-updates} branches, they will be forked and renamed with the
-suffix @code{-frozen}, at which time only bug fixes may be pushed to the
-frozen branches.  The @code{core-updates} and @code{staging} branches
-will remain open to accept patches for the next cycle.  Please ask on
-the mailing list or IRC if unsure where to place a patch.
-@c TODO: It would be good with badges on the website that tracks these
-@c branches.  Or maybe even a status page.
+Check that dependent packages (if applicable) are not affected by the
+change; @code{guix refresh --list-dependent @var{package}} will help you
+do that (@pxref{Invoking guix refresh}).
 
 @item
 @cindex determinism, of build processes
@@ -1574,16 +1535,17 @@ $ guix shell -D guix
 [env]$ git send-email --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org -2
 @end example
 
-@node Tracking Bugs and Patches
-@section Tracking Bugs and Patches
+@node Tracking Bugs and Changes
+@section Tracking Bugs and Changes
 
-This section describes how the Guix project tracks its bug reports and
-patch submissions.
+This section describes how the Guix project tracks its bug reports,
+patch submissions and topic branches.
 
 @menu
-* The Issue Tracker::           The official bug and patch tracker.
-* Debbugs User Interfaces::     Ways to interact with Debbugs.
-* Debbugs Usertags::            Tag reports with custom labels.
+* The Issue Tracker::             The official bug and patch tracker.
+* Managing Patches and Branches:: How changes to Guix are managed.
+* Debbugs User Interfaces::       Ways to interact with Debbugs.
+* Debbugs Usertags::              Tag reports with custom labels.
 @end menu
 
 @node The Issue Tracker
@@ -1599,6 +1561,55 @@ against the @code{guix} ``package'' (in Debbugs parlance), by sending
 email to @email{bug-guix@@gnu.org}, while patch submissions are filed
 against the @code{guix-patches} package by sending email to
 @email{guix-patches@@gnu.org} (@pxref{Submitting Patches}).
+
+@node Managing Patches and Branches
+@subsection Managing Patches and Branches
+@cindex branching strategy
+@cindex rebuild scheduling strategy
+
+Changes should be posted to @email{guix-patches@@gnu.org}.  This mailing
+list fills the patch-tracking database (@pxref{The Issue Tracker}).  It
+also allows patches to be picked up and tested by the quality assurance
+tooling; the result of that testing eventually shows up on the dashboard
+at @indicateurl{https://qa.guix.gnu.org/issue/@var{ISSUE_NUMBER}}, where
+@var{ISSUE_NUMBER} is the number assigned by the issue tracker.  Leave
+time for a review, without committing anything.
+
+As an exception, some changes considered ``trivial'' or ``obvious'' may
+be pushed directly to the @code{master} branch.  This includes changes
+to fix typos and reverting commits that caused immediate problems.  This
+is subject to being adjusted, allowing individuals to commit directly on
+non-controversial changes on parts they’re familiar with.
+
+Changes which affect more than 300 dependent packages (@pxref{Invoking
+guix refresh}) should first be pushed to a topic branch other than
+@code{master}; the set of changes should be consistent---e.g., ``GNOME
+update'', ``NumPy update'', etc.  This allows for testing: the branch
+will automatically show up at
+@indicateurl{https://qa.guix.gnu.org/branch/@var{branch}}, with an
+indication of its build status on various platforms.
+
+To help coordinate the merging of branches, you must create a new
+guix-patches issue each time you wish to merge a branch (@pxref{The
+Issue Tracker}).  Normally branches will be merged in a ``first come,
+first merged'' manner, tracked through the guix-patches issues.
+
+If you agree on a different order with those involved, you can track
+this by updating which issues block@footnote{You can mark an issue as
+blocked by another by emailing @email{control@@debbugs.gnu.org} with the
+following line in the body of the email: @code{block XXXXX by YYYYY}.
+Where @code{XXXXX} is the number for the blocked issue, and @code{YYYYY}
+is the number for the issue blocking it.} which other issues.
+Therefore, to know which branch is at the front of the queue, look for
+the oldest issue, or the issue that isn't @dfn{blocked} by any other
+branch merges.  An ordered list of branches with the open issues is
+available at @url{https://qa.guix.gnu.org}.
+
+Once a branch is at the front of the queue, wait until sufficient time
+has passed for the build farms to have processed the changes, and for
+the necessary testing to have happened.  For example, you can check
+@indicateurl{https://qa.guix.gnu.org/branch/@var{branch}} to see
+information on some builds and substitute availability.
 
 @node Debbugs User Interfaces
 @subsection Debbugs User Interfaces
@@ -1816,23 +1827,14 @@ If you get commit access, please make sure to follow the policy below
 (discussions of the policy can take place on
 @email{guix-devel@@gnu.org}).
 
-Changes should be posted to @email{guix-patches@@gnu.org}.  This mailing
-list fills the patch-tracking database (@pxref{Tracking Bugs and
-Patches}).  It also allows patches to be picked up and tested by the
-quality assurance tooling; the result of that testing eventually shows
-up on the dashboard at
-@indicateurl{https://qa.guix.gnu.org/issue/@var{ISSUE_NUMBER}}, where
-@var{ISSUE_NUMBER} is the number assigned by the issue tracker.  Leave
-time for a review, without committing anything (@pxref{Submitting
-Patches}).  If you didn’t receive any reply after one week (two weeks
-for more significant changes), and if you're confident, it's OK to
-commit.
+Ensure you're aware of how the changes should be handled
+(@pxref{Managing Patches and Branches}) prior to being pushed to the
+repository, especially for the @code{master} branch.
 
-As an exception, some changes considered ``trivial'' or ``obvious'' may
-be pushed directly.  This includes changes to fix typos and reverting
-commits that caused immediate problems.  This is subject to being
-adjusted, allowing individuals to commit directly on non-controversial
-changes on parts they’re familiar with.
+If you're committing and pushing your own changes, try and wait at least
+one week (two weeks for more significant changes) after you send them
+for review. After this, if no one else is available to review them and
+if you're confident about the changes, it's OK to commit.
 
 When pushing a commit on behalf of somebody else, please add a
 @code{Signed-off-by} line at the end of the commit log message---e.g.,
