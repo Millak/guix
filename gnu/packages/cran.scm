@@ -28133,14 +28133,14 @@ cluster stability.")
 (define-public r-biclust
   (package
     (name "r-biclust")
-    (version "2.0.3")
+    (version "2.0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "biclust" version))
        (sha256
         (base32
-         "0lgyc2f04dhr65cwga78pradxsdzgjrpp8vphchqn60ab1z95dlp"))))
+         "11fcb6z5lzz6yl8hsa8ppr53i8yn8k4m19k55ynznhkw780184c7"))))
     (properties `((upstream-name . "biclust")))
     (build-system r-build-system)
     (propagated-inputs
