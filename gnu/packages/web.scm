@@ -8831,6 +8831,43 @@ It is intended to provide low-level functionalities for the Ulfius and Yder
 libraries.")
     (license license:lgpl2.1)))
 
+(define-public yder
+  (package
+    (name "yder")
+    (version "1.4.19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/babelouest/yder")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02jgrqby39ykfdhc7z0bh3x5aqisqybz6lnvn7msh9wqbj5zvzi8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DWITH_JOURNALD=OFF"
+                                     "-DBUILD_YDER_TESTING=ON"
+                                     "-DBUILD_YDER_DOCUMENTATION=ON")
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'build 'build-doc
+                          (lambda _
+                            (invoke "make" "doc")))
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (let ((doc (string-append #$output
+                                                      "/share/doc/yder")))
+                              (mkdir-p doc)
+                              (copy-recursively "../source/doc/html" doc)))))))
+    (native-inputs (list check doxygen subunit))
+    (inputs (list orcania))
+    (home-page "https://babelouest.github.io/yder/")
+    (synopsis "Logging library for C applications")
+    (description
+     "Yder is a logging library written in C.  It can log messages to the
+console, a file, syslog, journald, or a callback function.")
+    (license license:lgpl2.1)))
+
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
