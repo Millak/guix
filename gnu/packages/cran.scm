@@ -38814,13 +38814,13 @@ estimating the variogram and then calling @command{gstat}.")
 (define-public r-cartogram
   (package
     (name "r-cartogram")
-    (version "0.2.2")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "cartogram" version))
               (sha256
                (base32
-                "0kz8hwdr5n8llkylwaixnb66f4pzaxxniz57spxhqizmi6qay7yd"))))
+                "1vkcp8k9ajrnm14p2fqrcb4vk67503zd0w51h8amcljg3p21wzkl"))))
     (properties `((upstream-name . "cartogram")))
     (build-system r-build-system)
     (propagated-inputs (list r-packcircles r-sf))
