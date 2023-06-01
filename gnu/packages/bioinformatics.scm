@@ -4659,6 +4659,27 @@ exploration.")
 Illumina paired-end data (for CASAVA 1.8+).")
     (license license:gpl2+)))
 
+(define-public python-pyani
+  (package
+    (name "python-pyani")
+    (version "0.2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyani" version))
+              (sha256
+               (base32
+                "124kdg7168nbh4a5wisfws1fgkd89dd4js9v6dml2lvgclbv4mjg"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-biopython python-matplotlib python-pandas
+           python-scipy python-seaborn))
+    (home-page "https://widdowquinn.github.io/pyani/")
+    (synopsis "Calculate genome-scale average nucleotide identity")
+    (description
+     "Pyani provides a package and script for calculation of genome-scale
+average nucleotide identity.")
+    (license license:expat)))
+
 (define-public exonerate
   (package
     (name "exonerate")
