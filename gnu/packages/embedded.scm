@@ -511,7 +511,7 @@ languages are C and C++.")
 (define-public libjaylink
   (package
     (name "libjaylink")
-    (version "0.2.0")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -520,7 +520,7 @@ languages are C and C++.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ndyfh51hiqyv2yscpj6qd091w7myxxjid3a6rx8f6k233vy826q"))))
+                "1wps72ir2kwdr7dphx4vp6cy0d46dm3nkwbk0mpryn9la09l7lm1"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
