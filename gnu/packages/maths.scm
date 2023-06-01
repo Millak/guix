@@ -8,7 +8,7 @@
 ;;; Copyright © 2015–2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
@@ -4645,7 +4645,8 @@ parts of it.")
 (define-public openblas-ilp64
   (package/inherit openblas
     (name "openblas-ilp64")
-    (supported-systems '("x86_64-linux" "aarch64-linux" "mips64el-linux"))
+    (supported-systems '("x86_64-linux" "aarch64-linux" "mips64el-linux"
+                         "powerpc64le-linux"))
     (arguments
      (substitute-keyword-arguments (package-arguments openblas)
        ((#:make-flags flags #~'())
