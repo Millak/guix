@@ -2763,7 +2763,7 @@ T1/EC and UTF-8 encodings.")
                 (string-append out "/share/texmf-dist/tex/luatex/hyph-utf8/")))
              #t)))))
     (native-inputs
-     (list ruby
+     (list ruby-2.7
            texlive-bin
            ;; The following packages are needed for build "tex.fmt", which we need
            ;; for a working "tex".
