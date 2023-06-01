@@ -1114,6 +1114,23 @@ allows arithmetic operations between them and conversions from and to
 different units.")
     (license license:bsd-3)))
 
+(define-public python-plotext
+  (package
+    (name "python-plotext")
+    (version "5.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "plotext" version))
+              (sha256
+               (base32
+                "1gpy1z2i4vq1mcrhysxahz4339pbl9rzk58rf5m5gf5ym9xji6ii"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (home-page "https://github.com/piccolomo/plotext")
+    (synopsis "Plots in the terminal")
+    (description "Plotext lets you plot directly to the terminal.")
+    (license license:expat)))
+
 (define-public python-plotille
   (package
     (name "python-plotille")
