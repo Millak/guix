@@ -4639,6 +4639,26 @@ analysis tool Scanpy (Genome Biology, 2018).")
 exploration.")
     (license license:gpl3+)))
 
+(define-public python-illumina-utils
+  (package
+    (name "python-illumina-utils")
+    (version "2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "illumina-utils" version))
+              (sha256
+               (base32
+                "0z9g0prj7pmgl5z4vdpxv3v30grzhc194801qnf0wqzgy7w3aj2s"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
+    (propagated-inputs (list python-matplotlib python-numpy python-levenshtein))
+    (home-page "https://github.com/meren/illumina-utils")
+    (synopsis "Library and scripts to work with Illumina paired-end data")
+    (description
+     "This package provides a library and collection of scripts to work with
+Illumina paired-end data (for CASAVA 1.8+).")
+    (license license:gpl2+)))
+
 (define-public exonerate
   (package
     (name "exonerate")
