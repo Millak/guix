@@ -69,6 +69,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
@@ -535,7 +536,7 @@ SEGGER J-Link and compatible devices.")
 (define-public jimtcl
   (package
     (name "jimtcl")
-    (version "0.80")
+    (version "0.82")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -544,23 +545,22 @@ SEGGER J-Link and compatible devices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06rn60cx9sapc175vxvan87b8j5rkhh5gvvz7343xznzwlr0wcgk"))))
+                "01nxqzn41797ypph1vpwjfh3zqgks0l8ihh6932b4kb83apy6f08"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-         ;; This package doesn't use autoconf.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)))))
-         (add-before 'check 'delete-failing-tests
-           (lambda _
-             ;; XXX All but 1 TTY tests fail (Inappropriate ioctl for device).
-             (delete-file "tests/tty.test")
-             #t))
-         )))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 ;; This package doesn't use autoconf.
+                 (lambda _
+                   (invoke "./configure"
+                           (string-append "--prefix=" #$output))))
+               (add-before 'check 'delete-failing-tests
+                 (lambda _
+                   ;; XXX All but 1 SSL tests fail (tries connecting to Google
+                   ;; servers).
+                   (delete-file "tests/ssl.test"))))))
+    (inputs (list openssl))
     (native-inputs
      ;; For tests.
      (list inetutils))       ; for hostname
@@ -592,10 +592,10 @@ language.")
            pkg-config
            texinfo))
     (inputs
-     (list hidapi jimtcl libftdi libjaylink libusb-compat))
+     (list hidapi jimtcl libftdi libjaylink libusb-compat openssl))
     (arguments
      '(#:configure-flags
-       (append (list "LIBS=-lutil"
+       (append (list "LIBS=-lutil -lcrypto -lssl"
                      "--disable-werror"
                      "--enable-sysfsgpio"
                      "--disable-internal-jimtcl"
