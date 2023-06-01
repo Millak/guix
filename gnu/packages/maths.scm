@@ -4587,32 +4587,33 @@ parts of it.")
               ;; of cores of the build machine, which is obviously wrong.
               "NUM_THREADS=128"
 
-              ;; Build the library for all supported CPUs.  This allows
-              ;; switching CPU targets at runtime with the environment variable
-              ;; OPENBLAS_CORETYPE=<type>, where "type" is a supported CPU type.
-              ;; Unfortunately, this is not supported on all architectures,
-              ;; where it leads to failed builds.
-              #$@(let ((system (or (%current-target-system) (%current-system))))
-                   (cond
-                    ((or (string-prefix? "x86_64" system)
-                         (string-prefix? "i686" system)
-                         (string-prefix? "powerpc64le" system)
-                         (string-prefix? "aarch64" system))
-                     ;; Dynamic older enables a few extra CPU architectures that
-                     ;; were released before 2010.
+              ;; DYNAMIC_ARCH is only supported on some architectures.
+              ;; DYNAMIC_ARCH combined with TARGET=GENERIC provides a library
+              ;; which uses the optimizations for the detected CPU.  This can
+              ;; be overridden at runtime with the environment variable
+              ;; OPENBLAS_CORETYPE=<type>, where "type" is a supported CPU
+              ;; type.  On other architectures we target only the baseline CPU
+              ;; supported by Guix.
+              #$@(cond
+                    ((or (target-x86-64?)
+                         (target-x86-32?)
+                         (target-ppc64le?)
+                         (target-aarch64?))
+                     ;; Dynamic older enables a few extra CPU architectures
+                     ;; on x86_64 that were released before 2010.
                      '("DYNAMIC_ARCH=1" "DYNAMIC_OLDER=1" "TARGET=GENERIC"))
-                    ;; On some of these architectures the CPU can't be detected.
+                    ;; On some of these architectures the CPU type can't be detected.
+                    ;; We list the oldest CPU core we want to have support for.
                     ;; On MIPS we force the "SICORTEX" TARGET, as for the other
                     ;; two available MIPS targets special extended instructions
                     ;; for Loongson cores are used.
-                    ((string-prefix? "mips" system)
+                    ((target-mips64el?)
                      '("TARGET=SICORTEX"))
-                    ;; Failed to detect CPU.
-                    ((string-prefix? "armhf" system)
+                    ((target-arm32?)
                      '("TARGET=ARMV7"))
-                    ((string-prefix? "riscv64" system)
+                    ((target-riscv64?)
                      '("TARGET=RISCV64_GENERIC"))
-                    (else '()))))
+                    (else '())))
       ;; no configure script
       #:phases
       #~(modify-phases %standard-phases
