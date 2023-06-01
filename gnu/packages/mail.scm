@@ -647,7 +647,7 @@ operating systems.")
 (define-public neomutt
   (package
     (name "neomutt")
-    (version "20220429")
+    (version "20230517")
     (source
      (origin
        (method git-fetch)
@@ -656,7 +656,7 @@ operating systems.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "106m6al48m22gl8848z8d0hsg2qiaz74vgy4f37hycl4v5d3n5ic"))))
+        (base32 "0kjllp2scgmpkl8yd0hwz6jmm98hr2r7qkb75ps9753fl96i4bfn"))))
     (build-system gnu-build-system)
     (inputs
      (list cyrus-sasl
