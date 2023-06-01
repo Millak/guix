@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -57,6 +57,9 @@
             evaluation-spec
             evaluation-complete?
             evaluation-checkouts
+            evaluation-start-time
+            evaluation-checkout-time
+            evaluation-completion-time
 
             job?
             job-build-id
@@ -174,7 +177,13 @@ corresponding date object."
   (checkouts   evaluation-checkouts "checkouts"   ;<checkout>*
                (lambda (checkouts)
                  (map json->checkout
-                      (vector->list checkouts)))))
+                      (vector->list checkouts))))
+  (start-time       evaluation-start-time "timestamp" ;date
+                    seconds->date)
+  (checkout-time    evaluation-checkout-time "checkouttime" ;date
+                    seconds->date)
+  (completion-time  evaluation-completion-time "evaltime" ;date
+                    seconds->date))
 
 (define %query-limit
   ;; Max number of builds requested in queries.
