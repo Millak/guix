@@ -573,7 +573,7 @@ language.")
 (define-public openocd
   (package
     (name "openocd")
-    (version "0.11.0")
+    (version "0.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -582,7 +582,7 @@ language.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0qi4sixwvw1i7c64sy221fsjs82qf3asmdk86g74ds2jjm3f8pzp"))))
+                "09wb11zlmrw6rx1bql3kafgi3ilzp9mhvb6j6rql216by06csing"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -592,7 +592,7 @@ language.")
            pkg-config
            texinfo))
     (inputs
-     (list hidapi jimtcl libftdi libjaylink libusb-compat openssl))
+     (list hidapi jimtcl libftdi libjaylink openssl))
     (arguments
      '(#:configure-flags
        (append (list "LIBS=-lutil -lcrypto -lssl"
