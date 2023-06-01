@@ -4573,15 +4573,8 @@ parts of it.")
     (arguments
      (list
       #:test-target "test"
-      ;; DYNAMIC_ARCH is only supported on x86.  When it is disabled and no
-      ;; TARGET is specified, OpenBLAS will tune itself to the build host, so
-      ;; we need to disable substitutions.
-      #:substitutable?
-      (let ((system (or (%current-target-system) (%current-system))))
-        (or (string-prefix? "x86_64" system)
-            (string-prefix? "i686" system)
-            (string-prefix? "mips" system)
-            (string-prefix? "aarch64" system)))
+      ;; No default baseline is supplied for powerpc-linux.
+      #:substitutable? (not (target-ppc32?))
       #:make-flags
       #~(list (string-append "PREFIX=" #$output)
               "SHELL=bash"
