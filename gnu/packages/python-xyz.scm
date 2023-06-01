@@ -735,6 +735,28 @@ It uses a plain-text database, a location-independent library, and features
 git integration, command-line support, and a curses-based TUI.")
     (license license:expat)))
 
+(define-public python-colored
+  (package
+    (name "python-colored")
+    (version "1.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/dslackw/colored")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "196ins0m7f90xz5dw764dlx060ziqbcydqzzq40b4ir5858baf3r"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;the tests are not run automatically
+    (home-page "https://gitlab.com/dslackw/colored")
+    (synopsis "Simple library for color and formatting to terminal")
+    (description "This is a very simple Python library for color and
+formatting in the terminal.  It comes with a collection of color codes and
+names for 256 color terminal setups.")
+    (license license:expat)))
+
 (define-public python-colorful
   (package
     (name "python-colorful")
