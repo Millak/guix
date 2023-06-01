@@ -236,7 +236,7 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                         (string-append "File.join(\"" ptex "\"")))
                      (invoke "ruby" "generate-ptex-patterns.rb")))))))))
       (native-inputs
-       (list ruby ruby-hydra-minimal hyph-utf8-scripts))
+       (list ruby-2.7 ruby-hydra-minimal hyph-utf8-scripts))
       (home-page "https://ctan.org/pkg/hyph-utf8"))))
 
 (define texlive-extra-src
