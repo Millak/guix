@@ -10135,7 +10135,7 @@ processing to visualization and annotation.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-HOME
-          ;; Fontconfig needs an writable cache
+            ;; Fontconfig needs a writable cache
             (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-cluster
