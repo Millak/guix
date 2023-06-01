@@ -4597,6 +4597,48 @@ data.  EpiScanpy is the epigenomic extension of the very popular scRNA-seq
 analysis tool Scanpy (Genome Biology, 2018).")
     (license license:bsd-3)))
 
+(define-public python-ete3
+  (package
+    (name "python-ete3")
+    (version "3.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/etetoolkit/ete")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i6533wsm06mz0sdrisqai929j744cnczwjgsmxl847q5k16kngd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; This test crashes Python in the build container
+             (string-append "not test_renderer"
+                            ;; These all need internet access
+                            " and not test_00_update_database"
+                            " and not test_01tree_annotation"
+                            " and not test_get_topology"
+                            " and not test_merged_id"
+                            " and not test_ncbi_compare"
+                            " and not test_ncbiquery")
+             "ete3/test/test_api.py")))
+    (propagated-inputs
+     (list python-lxml
+           python-numpy
+           python-pyqt
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "http://etetoolkit.org")
+    (synopsis "Python environment for phylogenetic tree exploration")
+    (description
+     "This package provides a Python environment for phylogenetic tree
+exploration.")
+    (license license:gpl3+)))
+
 (define-public exonerate
   (package
     (name "exonerate")
