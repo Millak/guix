@@ -470,9 +470,10 @@ number generators, public key cryptography and a plethora of other routines.")
                                          "/lib/libtommath.a"))
              #t))
          (replace 'check
-           (lambda* (#:key test-target make-flags #:allow-other-keys)
-             (apply invoke "make" test-target make-flags)
-             (invoke "sh" "test")))
+           (lambda* (#:key tests? test-target make-flags #:allow-other-keys)
+             (when tests?
+               (apply invoke "make" test-target make-flags)
+               (invoke "sh" "test"))))
          (add-after 'install 'install-static-library
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke "make" "-f" "makefile.unix" "install"
