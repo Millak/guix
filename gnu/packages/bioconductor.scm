@@ -5932,7 +5932,7 @@ only one command.")
                 (string-append
                  m "; if (!is.na(Sys.getenv(\"SOURCE_DATE_EPOCH\"))) {set.seed(100)}\n"))))))))
     (propagated-inputs
-     (list r-bh r-cpp11 r-codetools r-futile-logger r-snow))
+     (list r-bh r-codetools r-cpp11 r-futile-logger r-snow))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/BiocParallel")
