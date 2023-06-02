@@ -312,6 +312,7 @@ expressions and blanks that were read."
    ('define-record-type 2)
    ('define-record-type* 4)
    ('define-configuration 2)
+   ('package/inherit 2)
    ('let 2)
    ('let* 2)
    ('letrec 2)
