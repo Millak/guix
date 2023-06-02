@@ -2720,7 +2720,7 @@ compatible with the well-known scripts of the same name.")
 (define-public libportal
   (package
     (name "libportal")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2729,12 +2729,18 @@ compatible with the well-known scripts of the same name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i4v0wjyiryg7jq9hp9iaplqyhwj1cqy5891s4jfldcdzvcwxwx0"))))
+                "1q1kqq72cs7f5b17gzw7218mxs65hijzkll27mh51s02fpiw8c60"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-Dbackends=gtk4,gtk3,qt5"
-             "-Ddocs=false")))          ; requires unpackaged gi-docgen
+     (list
+      #:configure-flags
+      #~(list "-Ddocs=false")          ; requires unpackaged gi-docgen
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-qt-environment-variables
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Required for tests
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
      (list pkg-config
            docbook-xsl
