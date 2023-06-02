@@ -48,6 +48,7 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system r)
   #:use-module (guix build-system trivial)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
@@ -601,6 +602,33 @@ learning method.  Most interesting features are variable selection, missing
 value imputation, classifier creation, generalization error estimation and
 sample proximities between pairs of cases.")
     (license license:gpl3+)))
+
+(define-public r-rcppml/devel
+  (let ((commit "e685b3bd7909d3ae74c98f85f81bc0bb679bce23")
+        (revision "1"))
+    (package
+      (name "r-rcppml-devel")
+      (version (git-version "0.5.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zdebruine/RcppML")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "18ykh9s9h3x79az7qm3pg48iqm0nmkh2wkppc9wx0lq7kjfqm67a"))))
+      (properties `((upstream-name . "RcppML")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-matrix r-rcpp))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/zdebruine/RcppML")
+      (synopsis "Rcpp machine learning Library")
+      (description
+       "This package provides fast machine learning algorithms including
+matrix factorization and divisive clustering for large sparse and dense
+matrices.")
+      (license license:gpl3+))))
 
 (define-public openfst
   (package
