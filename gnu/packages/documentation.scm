@@ -370,7 +370,7 @@ the Net to search for documents which are not on the local system.")
     (license lgpl2.1+)))
 
 (define-public zeal
-  (let ((commit "d3c5521c501d24050f578348ff1b9d68244b992c")
+  (let ((commit "1cfa7c637f745be9d98777f06b4f8dec90892bf2")
         (revision "1"))
     (package
       (name "zeal")
@@ -383,7 +383,7 @@ the Net to search for documents which are not on the local system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1ky2qi2cmjckc51lm3i28815ixgqdm36j7smixxr16jxpmbqs6sl"))))
+          (base32 "1m7pp3cwc21x03718vhwfd9j2n8md3hv5dp10s234vcsd755s7a3"))))
       (build-system qt-build-system)
       (arguments
        `(#:tests? #f                    ;no tests
