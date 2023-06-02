@@ -872,6 +872,45 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-singlet
+  (let ((commit "765a6c45081807a1522f0e8983e2417822a36f36")
+        (revision "1"))
+    (package
+      (name "r-singlet")
+      (version (git-version "0.99.26" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zdebruine/singlet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "040v8wzl9qr8ribr6qss61fz4698d14cqs8nxbc8hqwiqlpy3vs4"))))
+      (properties `((upstream-name . "singlet")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-dplyr
+                               r-fgsea
+                               r-ggplot2
+                               r-knitr
+                               r-limma
+                               r-matrix
+                               r-msigdbr
+                               r-rcpp
+                               r-rcppml/devel
+                               r-reshape2
+                               r-scuttle
+                               r-seurat))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/zdebruine/singlet")
+      (synopsis "Non-negative Matrix Factorization for single-cell analysis")
+      (description
+       "This is a package for fast @dfn{Non-negative Matrix
+Factorization} (NMF) with automatic rank-determination for dimension reduction
+of single-cell data using Seurat, RcppML nmf, SingleCellExperiments and
+similar.")
+      (license license:gpl2+))))
+
 (define-public r-stringendo
   (let ((commit "83b8f2d82a09b33b9e895438bb523a021138be01")
         (revision "1"))
