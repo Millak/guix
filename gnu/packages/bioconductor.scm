@@ -20000,14 +20000,14 @@ to annotation.")
 (define-public r-megadepth
   (package
     (name "r-megadepth")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "megadepth" version))
        (sha256
         (base32
-         "1sj4z63drafmm1hvs0yhhn9c9mrwiv8i2s0cjj1iam8rbar0xv79"))))
+         "1zzhgfnrr3r5ismbbj9jcqss8mr8ll6p4d3z026ya2khb0i7clc7"))))
     (properties `((upstream-name . "megadepth")))
     (build-system r-build-system)
     (inputs (list megadepth))
