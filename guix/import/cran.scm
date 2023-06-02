@@ -503,7 +503,7 @@ referenced in build system files."
                        packages
                        (list-matches libraries-pattern line))))))))))
     (set)
-    (find-files dir "(Makevars.in*|configure.*)"))))
+    (find-files dir "(Makevars(.in.*)?|configure.*)"))))
 
 (define (directory-needs-pkg-config? dir)
   "Return #T if any of the Makevars files in the src directory DIR reference
