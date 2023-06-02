@@ -524,7 +524,7 @@ in DIR."
   (append (map (lambda (name)
                  (upstream-input
                   (name name)
-                  (downstream-name (cran-guix-name name))))
+                  (downstream-name name)))
                (needed-libraries-in-directory dir))
           (if (directory-needs-esbuild? dir)
               (list (native "esbuild"))
