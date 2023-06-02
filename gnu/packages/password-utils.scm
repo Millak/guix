@@ -102,6 +102,7 @@
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -114,6 +115,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
@@ -303,6 +305,58 @@ platforms.")
        "@command{pwsafe} is a command line tool compatible with
 Counterpane's Passwordsafe.")
       (license license:gpl2+))))
+
+(define-public otpclient
+  (package
+    (name "otpclient")
+    (version "3.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/paolostivanin/OTPClient")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cwn4spddhg099hcqcvzgbws3xpmnd29g1vayk36118x94wmajaf"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules `(((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build cmake-build-system)
+                  (guix build utils))
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%cmake-build-system-modules)
+      #:tests? #f                        ; No tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'wrap 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-compile-schemas))
+          (add-after 'wrap 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+    (inputs (list adwaita-icon-theme
+                  libcotp
+                  libgcrypt
+                  libsecret
+                  libzip
+                  hicolor-icon-theme
+                  gtk+
+                  jansson
+                  protobuf
+                  protobuf-c
+                  qrencode
+                  zbar))
+    (native-inputs (list pkg-config protobuf))
+    (home-page "https://github.com/paolostivanin/OTPClient")
+    (synopsis "Two-factor authentication client")
+    (description "OTPClient is a GTK+-based @acronym{OTP, One Time Password}
+client, supporting @acronym{TOTP, Time-based one time passwords} and
+@acronym{HOTP,HMAC-based one time passwords}.")
+    (license license:gpl3)))
 
 (define-public shroud
   (package
