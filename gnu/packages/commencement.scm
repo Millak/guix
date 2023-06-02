@@ -2333,7 +2333,12 @@ exec " gcc "/bin/" program
              ;; names, which cannot be repacked by BOOTSTRAP-ORIGIN.  Nor
              ;; can it be deleted from Guile, so resort to this evil hack.
              #$(origin-snippet (package-source gcc))
-             (system* #$(file-append coreutils-boot0 "/bin/rm") "-rf"
+             (system* #$(file-append (let-system system
+                                       ;; 'coreutils-boot0' is Linux-only.
+                                       (if (target-hurd? system)
+                                           %bootstrap-coreutils&co
+                                           coreutils-boot0))
+                                     "/bin/rm") "-rf"
                       "gcc/testsuite/go.test/test/fixedbugs/issue27836.dir"))))))
     (arguments
      (cons*
