@@ -37368,11 +37368,40 @@ to archive and assign DOIs to data, software, figures, and more.")
        (uri (cran-uri "dismo" version))
        (sha256
         (base32
-         "1msc75xnc9lbnn8pivd5j4jvb1b9p3xgybfm2ak2mpb2aplz5837"))))
+         "1msc75xnc9lbnn8pivd5j4jvb1b9p3xgybfm2ak2mpb2aplz5837"))
+       (snippet
+        '(for-each delete-file
+                   (list "inst/java/dismo.jar"
+                         "inst/java/maxent.jar")))))
     (properties `((upstream-name . "dismo")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  ((guix build ant-build-system) #:prefix java:))
+      #:imported-modules
+      (cons '(guix build ant-build-system)
+            %r-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-jars
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((maxent (search-input-file inputs
+                                               "/share/java/maxent/maxent.jar")))
+                (install-file maxent "inst/java/")
+                (with-directory-excursion "java"
+                  (invoke "javac" "-cp" maxent "mebridge.java")
+                  (invoke "jar" "cvf" "../inst/java/dismo.jar"
+                          "mebridge.class")))))
+          (add-after 'install 'strip-jar-timestamps
+            (assoc-ref java:%standard-phases 'strip-jar-timestamps)))))
+    (inputs
+     (list java-maxent))
     (propagated-inputs
      (list r-raster r-rcpp r-sp r-terra))
+    (native-inputs
+     (list `(,icedtea-8 "jdk") zip))
     (home-page "https://rspatial.org/raster/sdm/")
     (synopsis "Species distribution modeling")
     (description
