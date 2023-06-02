@@ -2923,7 +2923,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
 (define-public xdg-desktop-portal-wlr
   (package
     (name "xdg-desktop-portal-wlr")
-    (version "0.5.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2932,7 +2932,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ipg35gv8ja39ijwbyi96qlyq2y1fjdggl40s38rv68bsya8zry1"))
+                "1b3hpp3ybjgnnmnwsyb5bsnvz9q5nr3zz0j1alh02g24f68lf00k"))
               (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -2965,6 +2965,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                   bash-minimal
                   grim
                   iniparser
+                  mesa
                   libinih
                   pipewire
                   slurp
