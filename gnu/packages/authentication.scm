@@ -22,17 +22,42 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
+
+(define-public libcotp
+  (package
+    (name "libcotp")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/paolostivanin/libcotp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12ps2msclcbv53gjf936cny10an8sc70b9frp6xxjirfn5jg2h63"))))
+    (build-system cmake-build-system)
+    (inputs (list libgcrypt))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/paolostivanin/libcotp")
+    (synopsis "One-Time Passwords")
+    (description "This package provides a library to generate
+@acronym{HOTP, HMAC-base One-Time Password}s as specified in RFC 4226 and
+@acronym{TOTP, Time-based One-Time Password}s as specified in RFC 6238.")
+    (license license:asl2.0)))
 
 (define-public oath-toolkit
   (package
