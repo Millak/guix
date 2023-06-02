@@ -704,7 +704,7 @@ freedesktop.org project.")
   ;; Updating this will rebuild over 700 packages through libinput-minimal.
   (package
     (name "libinput")
-    (version "1.22.1")
+    (version "1.23.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -712,7 +712,7 @@ freedesktop.org project.")
                     (commit version)))
               (sha256
                (base32
-                "17a5qlym2d6lg2j8fdpxda9k7x5zr35flb4wlj1bz7h0mnkh8326"))))
+                "0wnqfnxxvf9jclh64hrb0scn3s1dmwdkmqf7hp0cfmjz5n5nnv7d"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Ddocumentation=false")
@@ -722,7 +722,7 @@ freedesktop.org project.")
        ;; Meson target anyway.
        #:build-type "release"))
     (native-inputs
-     (append (list check pkg-config)
+     (append (list check pkg-config python-minimal-wrapper python-pytest)
              (if (%current-target-system)
                (list pkg-config-for-build)
                '())))
