@@ -340,10 +340,16 @@ interactive means to merge two files.")
                      (substitute* '("tests/xargs/verbose-quote.sh"
                                     "tests/find/exec-plus-last-file.sh")
                        (("#!/bin/sh")
-                        (string-append "#!" (which "sh")))))))
-      #:make-flags ,(if (target-hurd?)
-                        ''("XFAIL_TESTS=test-strerror_r")
-                        ''())))
+                        (string-append "#!" (which "sh"))))))
+                 ,@(if (system-hurd?)
+                       '((add-after 'unpack 'skip-tests
+                           (lambda _
+                             (substitute*
+                                 ;; This test fails non-deterministically
+                                 "gnulib-tests/test-strerror_r.c"
+                               (("(^| )main *\\(.*" all)
+                                (string-append all "{\n  exit (77);//"))))))
+                       '()))))
    (synopsis "Operating on files matching given criteria")
    (description
     "Findutils supplies the basic file directory searching utilities of the
