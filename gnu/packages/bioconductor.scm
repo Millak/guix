@@ -17655,8 +17655,8 @@ functionality.")
            r-graph
            r-rbgl
            r-rcurl
-           r-xml
-           r-runit))
+           r-runit
+           r-xml))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/biocViews")
     (synopsis "Bioconductor package categorization helper")
