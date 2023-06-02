@@ -5537,6 +5537,89 @@ manipulating HTS data.")
          (add-after 'unpack 'remove-tests
            (lambda _ (delete-file-recursively "src/test") #t)))))))
 
+(define-public java-maxent
+  (package
+    (name "java-maxent")
+    (version "3.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mrmaxent/Maxent")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12q7hhly76l77vm8w8v9icga2gn6xs0bw33a7wb7zikcmvizcyp0"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:jdk icedtea-8
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; See https://github.com/mrmaxent/Maxent/pull/11
+              (substitute* "density/Extractor.java"
+                (("float") "double"))
+              (with-directory-excursion "gnu/getopt/"
+                (invoke "make"))
+              (mkdir-p "ptii")
+              (with-directory-excursion "ptii"
+                (invoke "tar" "xvf" (assoc-ref inputs "ptii")
+                        "--strip-components=1")
+                (copy-recursively "com" "../com"))
+              (delete-file-recursively "ptii")
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "com/microstar/xml" "\\.java$"))
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "density" "\\.java$"))
+
+              ;; This needs the proprietary com.sun.image.codec.jpeg module.
+              (delete-file "ptolemy/plot/servlet/PlotServlet.java")
+              (apply invoke "javac" "-cp"
+                     (string-append (getcwd) ":" (getenv "CLASSPATH")) "-g"
+                     (find-files "ptolemy/plot" "\\.java$"))
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "com" "\\.java$"))
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "gui" "\\.java$"))
+              (apply invoke "jar" "cvfm" "maxent.jar"
+                     (cons* "density/mc.mf"
+                            "density/parameters.csv"
+                            (append (find-files "density" "\\.class$")
+                                    (find-files "density" "\\.html$")
+                                    (find-files "gnu/getopt" ".*")
+                                    (find-files "gui/layouts" "\\.class$")
+                                    (find-files "com/macfaq/io" "\\.class$")
+                                    (find-files "density/tools" "\\.class$")
+                                    (find-files "ptolemy/plot" "\\.class$"))))))
+          (replace 'install
+            (lambda _
+              (install-file "maxent.jar"
+                            (string-append #$output "/share/java/maxent/")))))))
+    (inputs
+     (list java-classpathx-servletapi))
+    (native-inputs
+     `(("make" ,gnu-make)
+       ;; For com.microstar.xml
+       ("ptii"
+        ,(let ((version "4.0.1"))
+           (origin
+             (method url-fetch)
+             (uri (string-append "https://ptolemy.berkeley.edu/ptolemyII/ptII"
+                                 (version-major+minor version)
+                                 "/ptII" version ".src.tar.gz"))
+             (sha256
+              (base32
+               "0ifmmvrcipcnd4b9im1g379ffrs7g7k99sw5vv9d9h3hzq6hqv21")))))))
+    (home-page "http://biodiversityinformatics.amnh.org/open_source/maxent")
+    (synopsis "Model species geographic distributions")
+    (description
+     "Maxent is a stand-alone Java application for modelling species
+geographic distributions.")
+    (license license:expat)))
+
 ;; This version matches java-htsjdk 2.3.0.  Later versions also require a more
 ;; recent version of java-htsjdk, which depends on gradle.
 (define-public java-picard
