@@ -710,6 +710,7 @@ freedesktop.org project.")
               (uri (git-reference
                     (url "https://gitlab.freedesktop.org/libinput/libinput.git")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0wnqfnxxvf9jclh64hrb0scn3s1dmwdkmqf7hp0cfmjz5n5nnv7d"))))
