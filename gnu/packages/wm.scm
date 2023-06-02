@@ -1717,7 +1717,7 @@ modules for building a Wayland compositor.")
   (package
     (inherit swaylock)
     (name "swaylock-effects")
-    (version "1.6.10")
+    (version "1.6.11")
     (source
      (origin
        (method git-fetch)
@@ -1727,7 +1727,7 @@ modules for building a Wayland compositor.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1d8ri7bzwfr53ybgf23acz57wyhcl2f1nqprcda1v9bzfgsqfk2n"))))
+         "0j7dxn66xqlf6iv2arqzz7mxlh7nf85anvpyf30d2frcidarda9h"))))
     (arguments
      (list #:configure-flags #~'("-Dsse=false")))
     (synopsis "Screen locking utility for Wayland compositors with effects")
