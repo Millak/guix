@@ -1298,6 +1298,75 @@ pretty, publication-quality figures for next-generation sequencing
 experiments.")
     (license license:expat)))
 
+(define-public python-cell2cell
+  (package
+    (name "python-cell2cell")
+    (version "0.6.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/earmingol/cell2cell")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hwww0rcv8sc4k312n4d0jhbyix1jjqgv5djg25bw8127q5iym3s"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; We remove the dependency on statannotations because it
+                  ;; will not work with the current version of seaborn.  See
+                  ;; https://github.com/trevismd/statannotations/issues/122
+                  (substitute* "cell2cell/plotting/factor_plot.py"
+                    (("from statannotations.Annotator import Annotator")
+                     "")
+                    (("if statistical_test is not None")
+                     "if False"))
+                  (substitute* "setup.py"
+                    (("'statannotations',") "")
+                    ;; We provide version 1.0.4, which should be fine.
+                    (("'gseapy == 1.0.3'") "'gseapy'")
+                    ;; Using matplotlib 3.5.2 leads to this bug:
+                    ;; https://github.com/earmingol/cell2cell/issues/19 but we
+                    ;; can't package a different minor version of matplotlib
+                    ;; and limit its use to just this package.
+                    (("matplotlib >= 3.2.0,<=3.5.1") ""))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                  ;There are no tests
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs
+     (list python-gseapy
+           python-kneed
+           python-matplotlib
+           python-networkx
+           python-numpy
+           python-openpyxl
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-statsmodels
+           python-scanpy
+           python-seaborn
+           python-tensorly
+           python-tqdm
+           python-umap-learn
+           python-xlrd))
+    (home-page "https://github.com/earmingol/cell2cell")
+    (synopsis "Python library for cell communication analysis")
+    (description
+     "Cell2cell is a Python library for cell communication analysis.
+This is a method to calculate, visualize and analyze communication between
+cell types.  Cell2cell is suitable for single-cell RNA sequencing
+(scRNA-seq) data.")
+    (license license:bsd-3)))
+
 (define-public python-cellbender
   (package
     (name "python-cellbender")
