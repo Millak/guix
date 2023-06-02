@@ -113,6 +113,7 @@
       ((or "GPL (> 2)"
            "GPL (>= 3)"
            "GPL (>= 3.0)"
+           "GPL (>=3)"
            "GNU General Public License (>= 3)")
        (prefix 'gpl3+))
       ((or "GPL-2"
