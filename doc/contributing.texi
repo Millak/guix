@@ -617,7 +617,7 @@ A typical package definition may look like this:
       )))
 @end lisp
 
-@deffn {Scheme Procedure} git-version @var{VERSION} @var{REVISION} @var{COMMIT}
+@deffn {Procedure} git-version @var{VERSION} @var{REVISION} @var{COMMIT}
 Return the version string for packages using @code{git-fetch}.
 
 @lisp
@@ -626,7 +626,7 @@ Return the version string for packages using @code{git-fetch}.
 @end lisp
 @end deffn
 
-@deffn {Scheme Procedure} hg-version @var{VERSION} @var{REVISION} @var{CHANGESET}
+@deffn {Procedure} hg-version @var{VERSION} @var{REVISION} @var{CHANGESET}
 Return the version string for packages using @code{hg-fetch}.  It works
 in the same way as @code{git-version}.
 @end deffn
@@ -970,7 +970,7 @@ When the @var{author} contains hyphens or uppercase letters, as with
 The module @code{(guix build-system elm)} provides the following utilities for
 working with names and related conventions:
 
-@deffn {Scheme procedure} elm-package-origin @var{elm-name} @var{version} @
+@deffn {Procedure} elm-package-origin @var{elm-name} @var{version} @
   @var{hash}
 Returns a Git origin using the repository naming and tagging regime required
 for a published Elm package with the upstream name @var{elm-name} at version
@@ -990,7 +990,7 @@ For example:
 @end lisp
 @end deffn
 
-@deffn {Scheme procedure} elm->package-name @var{elm-name}
+@deffn {Procedure} elm->package-name @var{elm-name}
 Returns the Guix-style package name for an Elm package with upstream name
 @var{elm-name}.
 
@@ -998,13 +998,13 @@ Note that there is more than one possible @var{elm-name} for which
 @code{elm->package-name} will produce a given result.
 @end deffn
 
-@deffn {Scheme procedure} guix-package->elm-name @var{package}
+@deffn {Procedure} guix-package->elm-name @var{package}
 Given an Elm @var{package}, returns the possibly-inferred upstream name, or
 @code{#f} the upstream name is not specified via the @code{'upstream-name}
 property and can not be inferred by @code{infer-elm-package-name}.
 @end deffn
 
-@deffn {Scheme procedure} infer-elm-package-name @var{guix-name}
+@deffn {Procedure} infer-elm-package-name @var{guix-name}
 Given the @var{guix-name} of an Elm package, returns the inferred upstream
 name, or @code{#f} if the upstream name can't be inferred.  If the result is
 not @code{#f}, supplying it to @code{elm->package-name} would produce
