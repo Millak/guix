@@ -134,21 +134,17 @@ command-line arguments, multiple languages, and so on.")
                                  (string-append bin "/fgrep"))
                 (("^exec grep")
                  (string-append "exec " bin "/grep"))))))
-        ,@(if (target-hurd?)
-              '((add-before 'check 'skip-triple-backref-test
+        ,@(if (system-hurd?)
+              '((add-before 'check 'skip-test
                   (lambda _
-                    ;; This test is marked as malfunctioning on glibc systems
-                    ;; due to
-                    ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=11053>
-                    ;; and it triggers a segfault with glibc 2.33 on GNU/Hurd.
-                    ;; Skip it.
-                    (substitute* "tests/triple-backref"
-                      (("^warn_" all)
-                       (string-append "exit 77\n" all))))))
-              '()))
-      #:make-flags ,(if (target-hurd?)
-                        ''("XFAIL_TESTS=test-perror2 equiv-classes") ;XXX
-                        ''())))
+                    (substitute*
+                        ;; This test hangs
+                        '("tests/hash-collision-perf"
+                          ;; This test fails
+                          "tests/file")
+                      (("^#!.*" all)
+                       (string-append all "exit 77;\n"))))))
+              '()))))
    (synopsis "Print lines matching a pattern")
    (description
      "grep is a tool for finding text inside files.  Text is found by
