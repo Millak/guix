@@ -860,6 +860,11 @@ WHILE-LIST."
                                       '())
                                   (map file-system-mapping->bind-mount
                                        mappings))))
+
+       ;; Trigger autoload now: the child process may lack (gnu build install)
+       ;; in its file system view.
+       (identity evaluate-populate-directive)
+
        (exit/status
         (call-with-container file-systems
           (lambda ()
