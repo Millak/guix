@@ -2829,7 +2829,7 @@ and others.")
 (define-public xdg-desktop-portal-gtk
   (package
     (name "xdg-desktop-portal-gtk")
-    (version "1.14.0")
+    (version "1.14.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2837,7 +2837,7 @@ and others.")
                     version "/xdg-desktop-portal-gtk-" version ".tar.xz"))
               (sha256
                (base32
-                "0m29b4hm7lq06gcavxw7gdlgqiiy3vgv3v4yjqfq5kx92q3j28gn"))))
+                "002p19j1q3fc8x338ndzxnicwframpgafw31lwvv5avy329akqiy"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
