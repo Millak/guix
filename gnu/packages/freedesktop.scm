@@ -2765,15 +2765,16 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.14.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/flatpak/xdg-desktop-portal/releases/download/"
-                    version "/xdg-desktop-portal-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1q0djpnwlrqm0h0alyh1r6dlkqdrr7mj5hiam4mqzxqa5jbqkrgj"))))
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/flatpak/xdg-desktop-portal/releases/download/"
+             version "/xdg-desktop-portal-" version ".tar.xz"))
+       (sha256
+        (base32
+         "06cczlh39kc41rvav06v37sad827y61rffy3v29i918ibj8sahav"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
