@@ -25192,14 +25192,18 @@ effect size.")
 (define-public r-rgdal
   (package
     (name "r-rgdal")
-    (version "1.6-6")
+    (version "1.6-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgdal" version))
        (sha256
-        (base32 "16irhw858771bc8ikshxk3ddpd7ymwgqmhnac4g7f160vymdfhnp"))))
-    (properties `((upstream-name . "rgdal")))
+        (base32 "0cxfmm7niixw3dnbqm7a00603dyqjrphajqx0q5vjpdhmpyysp2m"))))
+    (properties
+     `((upstream-name . "rgdal")
+       (updater-extra-inputs . ("gdal" "proj"))
+       ;; These are only needed for Windows
+       (updater-ignored-inputs . ("curl" "openssl" "openssh" "pcre2"))))
     (build-system r-build-system)
     (inputs
      (list gdal proj zlib))
