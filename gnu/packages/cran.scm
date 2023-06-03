@@ -7784,14 +7784,14 @@ or between integer vectors representing generic sequences.")
 (define-public r-ucminf
   (package
     (name "r-ucminf")
-    (version "1.1-4.3")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ucminf" version))
        (sha256
         (base32
-         "1vjrbavj909wlsyb82dq3rybk0nqay6vl81f2qiqrm12ks9pw3js"))))
+         "1x3d3l500kyqamzfjpz4qc38d6d3sha9av3rpxz0m4dhms28zpas"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/ucminf/")
