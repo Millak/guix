@@ -27924,18 +27924,24 @@ classification and regression models.")
 (define-public r-adabag
   (package
     (name "r-adabag")
-    (version "4.3")
+    (version "5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adabag" version))
        (sha256
         (base32
-         "1v4cl50wbv834cpbwkkhaq5wf8s746fp8xkjrwvyw912x6b2zmik"))))
+         "03nnqgia61pavic9l6av0hh81wilxlkrx3g244ypar1fv9ppan7c"))))
     (properties `((upstream-name . "adabag")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-caret r-doparallel r-foreach r-rpart))
+     (list r-caret
+           r-consrank
+           r-doparallel
+           r-dplyr
+           r-foreach
+           r-rpart
+           r-tidyr))
     (home-page "https://cran.r-project.org/web/packages/adabag/")
     (synopsis "Multiclass AdaBoost.M1, SAMME and Bagging")
     (description
