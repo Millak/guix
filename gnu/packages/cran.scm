@@ -31714,14 +31714,14 @@ designed to be distributed and efficient with the following goals:
 (define-public r-shapforxgboost
   (package
     (name "r-shapforxgboost")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SHAPforxgboost" version))
        (sha256
         (base32
-         "106nsf02b1w3yshb55lwnyw1rl1a60162v2wk8znjz3b4ln3mqj5"))))
+         "0b3h6py80a0dmb8f8j4h7a7d0k6ld8l0qr24r8pxxy7dbqbyxh5x"))))
     (properties
      `((upstream-name . "SHAPforxgboost")))
     (build-system r-build-system)
