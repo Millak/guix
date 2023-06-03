@@ -133,10 +133,7 @@
                        #t)))))
 
        ;; When tests fail, we want to know the details.
-       #:make-flags #~'("VERBOSE=yes"
-                        #$@(if (target-hurd?)
-                               '("XFAIL_TESTS=test-perror2")
-                               '()))))
+       #:make-flags #~'("VERBOSE=yes")))
     (home-page "https://www.gnu.org/software/gettext/")
     (synopsis
      "Tools and documentation for translation (used to build other packages)")
