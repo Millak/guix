@@ -3603,7 +3603,7 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
 (define-public gopls
   (package
     (name "gopls")
-    (version "0.11.0")
+    (version "0.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3612,7 +3612,7 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l9y1rp7x51s6dnjn227fhdlnz4z1h41jn3x1aq49qki241w7m73"))))
+                "04bq7rh6d6mgxm0lsi8y9v1x7cgx4nvjlsyvxl89r6rcqh3n1lfb"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "golang.org/x/tools/gopls"

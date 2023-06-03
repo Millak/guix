@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2015-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -33,12 +33,16 @@
 (define-module (guix import pypi)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
-  #:use-module (ice-9 receive)
   #:use-module ((ice-9 rdelim) #:select (read-line))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
+  #:autoload   (gcrypt hash) (port-sha256)
+  #:autoload   (guix base16) (base16-string->bytevector)
+  #:autoload   (guix base32) (bytevector->nix-base32-string)
+  #:autoload   (guix http-client) (http-fetch)
   #:use-module (guix utils)
   #:use-module (guix memoization)
   #:use-module (guix diagnostics)
@@ -55,7 +59,8 @@
   #:use-module (guix packages)
   #:use-module (guix upstream)
   #:use-module ((guix licenses) #:prefix license:)
-  #:export (parse-requires.txt
+  #:export (%pypi-base-url
+            parse-requires.txt
             parse-wheel-metadata
             specification->requirement-name
             guix-package->pypi-name
@@ -66,6 +71,10 @@
 
 ;; The PyPI API (notice the rhyme) is "documented" at:
 ;; <https://warehouse.readthedocs.io/api-reference/json/>.
+
+(define %pypi-base-url
+  ;; Base URL of the PyPI API.
+  (make-parameter "https://pypi.org/pypi/"))
 
 (define non-empty-string-or-false
   (match-lambda
@@ -121,9 +130,15 @@
   (python-version distribution-package-python-version
                   "python_version"))
 
+(define (distribution-sha256 distribution)
+  "Return the SHA256 hash of DISTRIBUTION as a bytevector, or #f."
+  (match (assoc-ref (distribution-digests distribution) "sha256")
+    (#f #f)
+    (str (base16-string->bytevector str))))
+
 (define (pypi-fetch name)
   "Return a <pypi-project> record for package NAME, or #f on failure."
-  (and=> (json-fetch (string-append "https://pypi.org/pypi/" name "/json"))
+  (and=> (json-fetch (string-append (%pypi-base-url) name "/json"))
          json->pypi-project))
 
 ;; For packages found on PyPI that lack a source distribution.
@@ -193,7 +208,9 @@ the input field."
     (()
      '())
     ((package-inputs ...)
-     `((,input-type (list ,@package-inputs))))))
+     `((,input-type (list ,@(map (compose string->symbol
+                                          upstream-input-downstream-name)
+                                 package-inputs)))))))
 
 (define %requirement-name-regexp
   ;; Regexp to match the requirement name in a requirement specification.
@@ -404,23 +421,36 @@ cannot determine package dependencies from source archive: ~a~%")
 
 (define (compute-inputs source-url wheel-url archive)
   "Given the SOURCE-URL and WHEEL-URL of an already downloaded ARCHIVE, return
-a pair of lists, each consisting of a list of name/variable pairs, for the
-propagated inputs and the native inputs, respectively.  Also
-return the unaltered list of upstream dependency names."
+the corresponding list of <upstream-input> records."
+  (define (requirements->upstream-inputs deps type)
+    (filter-map (match-lambda
+                  ("argparse" #f)
+                  (name (upstream-input
+                         (name name)
+                         (downstream-name (python->package-name name))
+                         (type type))))
+                (sort deps string-ci<?)))
 
-  (define (strip-argparse deps)
-    (remove (cut string=? "argparse" <>) deps))
-
-  (define (requirement->package-name/sort deps)
-    (map string->symbol
-         (sort (map python->package-name deps) string-ci<?)))
-
-  (define process-requirements
-    (compose requirement->package-name/sort strip-argparse))
-
+  ;; TODO: Record version number ranges in <upstream-input>.
   (let ((dependencies (guess-requirements source-url wheel-url archive)))
-    (values (map process-requirements dependencies)
-            (concatenate dependencies))))
+    (match dependencies
+      ((propagated native)
+       (append (requirements->upstream-inputs propagated 'propagated)
+               (requirements->upstream-inputs native 'native))))))
+
+(define* (pypi-package-inputs pypi-package #:optional version)
+  "Return the list of <upstream-input> for PYPI-PACKAGE.  This procedure
+downloads the source and possibly the wheel of PYPI-PACKAGE."
+  (let* ((info       (pypi-project-info pypi-package))
+         (version    (or version (project-info-version info)))
+         (dist       (source-release pypi-package version))
+         (source-url (distribution-url dist))
+         (wheel-url  (and=> (wheel-release pypi-package version)
+                            distribution-url)))
+    (call-with-temporary-output-file
+     (lambda (archive port)
+       (and (url-fetch source-url archive)
+            (compute-inputs source-url wheel-url archive))))))
 
 (define (find-project-url name pypi-url)
   "Try different project name substitution until the result is found in
@@ -440,52 +470,85 @@ pypi-uri declaration in the generated package. You may need to replace ~s with
 a substring of the PyPI URI that identifies the package.")  pypi-url name))
 name)))
 
-(define (make-pypi-sexp name version source-url wheel-url home-page synopsis
-                        description license)
-  "Return the `package' s-expression for a python package with the given NAME,
-VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
+(define* (pypi-package->upstream-source pypi-package #:optional version)
+  "Return the upstream source for the given VERSION of PYPI-PACKAGE, a
+<pypi-project> record.  If VERSION is omitted or #f, use the latest version."
+  (let* ((info       (pypi-project-info pypi-package))
+         (version    (or version (project-info-version info)))
+         (dist       (source-release pypi-package version))
+         (source-url (distribution-url dist))
+         (wheel-url  (and=> (wheel-release pypi-package version)
+                            distribution-url)))
+    (let ((extra-inputs (if (string-suffix? ".zip" source-url)
+                            (list (upstream-input
+                                   (name "zip")
+                                   (downstream-name "zip")
+                                   (type 'native)))
+                            '())))
+      (upstream-source
+       (urls (list source-url))
+       (signature-urls
+        (if (distribution-has-signature? dist)
+            (list (string-append source-url ".asc"))
+            #f))
+       (inputs (append (pypi-package-inputs pypi-package)
+                       extra-inputs))
+       (package (project-info-name info))
+       (version version)))))
+
+(define* (make-pypi-sexp pypi-package
+                         #:optional (version (latest-version pypi-package)))
+  "Return the `package' s-expression the given VERSION of PYPI-PACKAGE, a
+<pypi-project> record."
   (define (maybe-upstream-name name)
     (if (string-match ".*\\-[0-9]+" name)
         `((properties ,`'(("upstream-name" . ,name))))
         '()))
-  
-  (call-with-temporary-output-file
-   (lambda (temp port)
-     (and (url-fetch source-url temp)
-          (receive (guix-dependencies upstream-dependencies)
-              (compute-inputs source-url wheel-url temp)
-            (match guix-dependencies
-              ((required-inputs native-inputs)
-               (when (string-suffix? ".zip" source-url)
-                 (set! native-inputs (cons 'unzip native-inputs)))
-               (values
-                `(package
-                   (name ,(python->package-name name))
-                   (version ,version)
-                   (source
-                    (origin
-                      (method url-fetch)
-                      (uri (pypi-uri
-                             ,(find-project-url name source-url)
-                             version
-                             ;; Some packages have been released as `.zip`
-                             ;; instead of the more common `.tar.gz`. For
-                             ;; example, see "path-and-address".
-                             ,@(if (string-suffix? ".zip" source-url)
-                                   '(".zip")
-                                   '())))
-                      (sha256
-                       (base32
-                        ,(guix-hash-url temp)))))
-                   ,@(maybe-upstream-name name)
-                   (build-system pyproject-build-system)
-                   ,@(maybe-inputs required-inputs 'propagated-inputs)
-                   ,@(maybe-inputs native-inputs 'native-inputs)
-                   (home-page ,home-page)
-                   (synopsis ,synopsis)
-                   (description ,(beautify-description description))
-                   (license ,(license->symbol license)))
-                upstream-dependencies))))))))
+
+  (let* ((info (pypi-project-info pypi-package))
+         (name (project-info-name info))
+         (source-url (and=> (source-release pypi-package version)
+                            distribution-url))
+         (sha256 (and=> (source-release pypi-package version)
+                        distribution-sha256))
+         (source (pypi-package->upstream-source pypi-package version)))
+    (values
+     `(package
+        (name ,(python->package-name name))
+        (version ,version)
+        (source
+         (origin
+           (method url-fetch)
+           (uri (pypi-uri
+                 ,(find-project-url name source-url)
+                 version
+                 ;; Some packages have been released as `.zip`
+                 ;; instead of the more common `.tar.gz`. For
+                 ;; example, see "path-and-address".
+                 ,@(if (string-suffix? ".zip" source-url)
+                       '(".zip")
+                       '())))
+           (sha256 (base32
+                    ,(and=> (or sha256
+                                (let* ((port (http-fetch source-url))
+                                       (hash (port-sha256 port)))
+                                  (close-port port)
+                                  hash))
+                            bytevector->nix-base32-string)))))
+        ,@(maybe-upstream-name name)
+        (build-system pyproject-build-system)
+        ,@(maybe-inputs (upstream-source-propagated-inputs source)
+                        'propagated-inputs)
+        ,@(maybe-inputs (upstream-source-native-inputs source)
+                        'native-inputs)
+        (home-page ,(project-info-home-page info))
+        (synopsis ,(project-info-summary info))
+        (description ,(beautify-description
+                       (project-info-summary info)))
+        (license ,(license->symbol
+                   (string->license
+                    (project-info-license info)))))
+     (map upstream-input-name (upstream-source-inputs source)))))
 
 (define pypi->guix-package
   (memoize
@@ -515,16 +578,7 @@ package is available on PyPI, but only as a \"wheel\" containing binaries, not
 source.  To build it from source, refer to the upstream repository at
 @uref{~a}.")
                                               url))))))))))))
-             (make-pypi-sexp (project-info-name info) version
-                             (and=> (source-release project version)
-                                    distribution-url)
-                             (and=> (wheel-release project version)
-                                    distribution-url)
-                             (project-info-home-page info)
-                             (project-info-summary info)
-                             (project-info-summary info)
-                             (string->license
-                              (project-info-license info))))
+             (make-pypi-sexp project version))
            (values #f '()))))))
 
 (define* (pypi-recursive-import package-name #:optional version)
@@ -561,21 +615,7 @@ include a VERSION string to fetch a specific version."
          (pypi-package (pypi-fetch pypi-name)))
     (and pypi-package
          (guard (c ((missing-source-error? c) #f))
-           (let* ((info    (pypi-project-info pypi-package))
-                  (version (or version (project-info-version info)))
-                  (dist    (source-release pypi-package version))
-                  (url     (distribution-url dist)))
-             (upstream-source
-              (urls (list url))
-              (signature-urls
-               (if (distribution-has-signature? dist)
-                   (list (string-append url ".asc"))
-                   #f))
-              (input-changes
-               (changed-inputs package
-                               (pypi->guix-package pypi-name #:version version)))
-              (package (package-name package))
-              (version version)))))))
+           (pypi-package->upstream-source pypi-package version)))))
 
 (define %pypi-updater
   (upstream-updater

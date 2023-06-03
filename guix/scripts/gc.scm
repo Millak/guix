@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2013, 2015-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -260,10 +261,10 @@ is deprecated; use '-D'~%"))
     ;; Attempt to have at least SPACE bytes available in STORE.
     (let ((free (free-disk-space (%store-prefix))))
       (if (> free space)
-          (info (G_ "already ~h MiBs available on ~a, nothing to do~%")
+          (info (G_ "already ~,2h MiBs available on ~a, nothing to do~%")
                 (/ free 1024. 1024.) (%store-prefix))
           (let ((to-free (- space free)))
-            (info (G_ "freeing ~h MiBs~%") (/ to-free 1024. 1024.))
+            (info (G_ "freeing ~,2h MiBs~%") (/ to-free 1024. 1024.))
             (collect-garbage store to-free)))))
 
   (define (delete-generations store pattern)
@@ -327,10 +328,10 @@ is deprecated; use '-D'~%"))
              (ensure-free-space store free-space))
             (min-freed
              (let-values (((paths freed) (collect-garbage store min-freed)))
-              (info (G_ "freed ~h MiBs~%") (/ freed 1024. 1024.))))
+              (info (G_ "freed ~,2h MiBs~%") (/ freed 1024. 1024.))))
             (else
              (let-values (((paths freed) (collect-garbage store)))
-              (info (G_ "freed ~h MiBs~%") (/ freed 1024. 1024.)))))))
+              (info (G_ "freed ~,2h MiBs~%") (/ freed 1024. 1024.)))))))
         ((list-roots)
          (assert-no-extra-arguments)
          (list-roots))

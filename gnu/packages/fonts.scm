@@ -1834,7 +1834,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.39.0")
+    (version "0.40.7")
     (source
      (origin
        (method url-fetch)
@@ -1842,7 +1842,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "19a4a9zsfzkg7xak2sys6jiia7qw1j69206qzn8r2vchrib5lvcz"))))
+        (base32 "01iqc93dmi48n4g3xf472602hxhf9zfwfawy7vhn4rf06yhndv4s"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2990,7 +2990,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.250")
+    (version "1.300")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2998,7 +2998,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "04c1cszxhs2zw3qn7rs3ik2aaczvf8n28gq9ch6iv782fv2p8irn"))))
+                "1vywhvzj8l3hw2j0np5jhmwli037mxgs05s7n3y3xw3z46r7rwx4"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -3012,7 +3012,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "0.932")
+    (version "1.000")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3020,7 +3020,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "12yp3q3hhv847qj7a51cjxxqb2rqm4lvbm54wdr2j4awg3g8lflg"))))
+                "1jhmqwrx7311iwng3b00j3lwjzacam605dm4n6wd8amqc9azi9b2"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description
@@ -3031,7 +3031,7 @@ dialects in Hong Kong and Taiwan.")))
 (define-public font-chiron-sung-hk
   (package
     (name "font-chiron-sung-hk")
-    (version "1.007")
+    (version "1.008")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3040,7 +3040,7 @@ dialects in Hong Kong and Taiwan.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mhw3vgahfc9kyb7sw5w5zswp93a4sz7q12f7qba069f834j5qjq"))))
+                "19rabzmy4ywam4r5kgnqbgbmqzvhsagzddbyis5iicc6y8jrmd1j"))))
     (build-system font-build-system)
     (home-page "https://chiron-fonts.github.io/")
     (synopsis "Traditional Chinese Song typeface")
@@ -3055,7 +3055,7 @@ prevalent typefaces in Traditional Chinese regions.")
   (package
     (inherit font-chiron-sung-hk)
     (name "font-chiron-hei-hk")
-    (version "2.505")
+    (version "2.506")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3064,7 +3064,7 @@ prevalent typefaces in Traditional Chinese regions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h2ps2kdv2s29pp9an4gpb84xwmkizqrgsk4hs5f0g0004897hi5"))))
+                "1v40wcj3h38ai9gacpjfd02nas97scpdkz3g3h8a5yzp0n0pfknw"))))
     (synopsis "Traditional Chinese Gothic typeface")
     (description
      "Chiron Hei HK is a Traditional Chinese Gothic typeface based on the Hong

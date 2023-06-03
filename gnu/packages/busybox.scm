@@ -35,7 +35,7 @@
 (define-public busybox
   (package
     (name "busybox")
-    (version "1.36.0")
+    (version "1.36.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -43,7 +43,7 @@
                     version ".tar.bz2"))
               (sha256
                (base32
-                "19b1mzkc2hc2qsg4fnshdyqfxk1xkzwv900p40767ckwmz4509sl"))))
+                "0573gpj51phcz04sg77iznvcxmf5jnbk9gn3g5r9x02daz4j9k5q"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases

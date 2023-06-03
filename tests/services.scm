@@ -286,4 +286,87 @@
          ((one) one)
          (x x))))
 
+(test-equal "modify-services: do nothing"
+  '(1 2 3)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (sort (map service-value
+               (modify-services services))
+          <)))
+
+(test-equal "modify-services: delete service"
+  '(1)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (sort (map service-value
+               (modify-services services
+                 (delete t3)
+                 (delete t2)))
+          <)))
+
+(test-error "modify-services: delete non-existing service"
+  #t
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2))))
+    (modify-services services
+      (delete t3))))
+
+(test-equal "modify-services: change value"
+  '(2 11 33)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (sort (map service-value
+               (modify-services services
+                 (t1 value => 11)
+                 (t3 value => 33)))
+          <)))
+
+(test-error "modify-services: change value for non-existing service"
+  #t
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t3 3))))
+    (map service-value
+         (modify-services services
+           (t2 value => 22)))))
+
 (test-end)

@@ -5393,7 +5393,7 @@ in-window at 640x480 resolution or fullscreen.")
 (define-public warzone2100
   (package
     (name "warzone2100")
-    (version "4.3.3")
+    (version "4.3.5")
     (source
      (origin
        (method url-fetch)
@@ -5401,7 +5401,7 @@ in-window at 640x480 resolution or fullscreen.")
                            version
                            "/warzone2100_src.tar.xz"))
        (sha256
-        (base32 "17p58wxwva0qp267hm1alas52jd9h74494wh01ahz880hscbjg1w"))
+        (base32 "1hq56hm6bn3s2pksznh5g8hgq6ww6fnl1pspr3bi93k3z7v0imh1"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5414,30 +5414,30 @@ in-window at 640x480 resolution or fullscreen.")
              #t))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DWZ_DISTRIBUTOR=Guix"
-                           "-DWZ_ENABLE_BACKEND_VULKAN=off"
-                           "-DENABLE_DISCORD=off")
-       #:tests? #f ; TODO: Tests seem to be broken, configure.ac is missing.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-utfcpp-include
-           (lambda _
-             (substitute* "lib/framework/wzstring.cpp"
-               (("<utfcpp/source/utf8.h>") "<utf8.h>"))
-             #t))
-         (add-after 'unpack 'link-tests-with-qt
-           (lambda _
-             (substitute* "tests/Makefile.am"
-               (("(framework_linktest_LDADD|maptest_LDADD) = " prefix)
-                (string-append prefix "$(QT5_LIBS) ")))
-             #t))
-         (add-after 'unpack 'fix-ivis-linktest
-           (lambda _
-             (substitute* "tests/ivis_linktest.cpp"
-               (("iV_DrawTextRotated.*;")
-                (string-append "iV_DrawTextRotated(\"Press ESC to exit.\", "
-                               "100, 100, 0.0f, font_regular);")))
-             #t)))))
+     (list #:configure-flags #~'("-DWZ_DISTRIBUTOR=Guix"
+                                 "-DWZ_ENABLE_BACKEND_VULKAN=off"
+                                 "-DENABLE_DISCORD=off")
+           #:tests? #f ; TODO: Tests seem to be broken, configure.ac is missing.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-utfcpp-include
+                 (lambda _
+                   (substitute* "lib/framework/wzstring.cpp"
+                     (("<utfcpp/source/utf8.h>")
+                      "<utf8.h>"))))
+               (add-after 'unpack 'link-tests-with-qt
+                 (lambda _
+                   (substitute* "tests/Makefile.am"
+                     (("(framework_linktest_LDADD|maptest_LDADD) = "
+                       prefix)
+                      (string-append prefix "$(QT5_LIBS) ")))))
+               (add-after 'unpack 'fix-ivis-linktest
+                 (lambda _
+                   (substitute* "tests/ivis_linktest.cpp"
+                     (("iV_DrawTextRotated.*;")
+                      (string-append
+                       "iV_DrawTextRotated(\"Press ESC to exit.\", "
+                       "100, 100, 0.0f, font_regular);"))))))))
     (native-inputs (list asciidoc
                      ruby-asciidoctor
                      gettext-minimal

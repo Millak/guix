@@ -226,23 +226,6 @@ doing it."
                              (G_ "would be edited~%")))
                      str)))
 
-(define (absolute-location loc)
-  "Replace the file name in LOC by an absolute location."
-  (location (if (string-prefix? "/" (location-file loc))
-                (location-file loc)
-
-                ;; 'search-path' might return #f in obscure cases, such as
-                ;; when %LOAD-PATH includes "." or ".." and LOC comes from a
-                ;; file in a subdirectory thereof.
-                (match (search-path %load-path (location-file loc))
-                  (#f
-                   (raise (formatted-message
-                           (G_ "file '~a' not found on load path")
-                           (location-file loc))))
-                  (str str)))
-            (location-line loc)
-            (location-column loc)))
-
 (define (trivial-package-arguments? package)
   "Return true if PACKAGE has zero arguments or only \"trivial\" arguments
 guaranteed not to refer to input labels."

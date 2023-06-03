@@ -7,6 +7,7 @@
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Milran <milranmike@protonmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages freedesktop)
@@ -50,6 +52,8 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages ruby)
+  #:use-module (gnu packages scheme)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages swig)
@@ -917,6 +921,159 @@ and manipulation.")
     (description
      "libskk is a library to deal with Japanese kana-to-kanji conversion method.")
     (license license:gpl3+)))
+
+(define-public skktools
+  (package
+    (name "skktools")
+    (version "1.3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/skk-dev/skktools")
+                    (commit (string-append "skktools-"
+                                           (string-replace-substring version
+                                                                     "." "_")))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zway8jsm18279xq8zlpr84iqiw373x3v0ysay74n9bjqxbl234a"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Maybe requires jgawk
+                          (delete-file "unannotation.awk")
+                          (delete-file "convert2skk/edict2skk.awk")
+                          (delete-file "convert2skk/wnn2skk.awk")
+                          (delete-file "convert2skk/wnn2skk.sed") ;Used with wnn2skk.awk
+                          (delete-file "convert2skk/wnn2skk.sh") ;Depends on 2 files above
+                          ;; Requires jperl
+                          (delete-file "convert2skk/alpha-kana.pl")
+                          (delete-file "convert2skk/atok2skk.pl")
+                          (delete-file "convert2skk/read.me") ;Readme for jperl scripts
+                          (delete-file "convert2skk/wx2skk.pl")
+                          (delete-file-recursively "dbm")
+                          ;; Needs a lot requirements
+                          (delete-file "convert2skk/doc2skk.sh")
+                          ;; Obsolete scripts
+                          (delete-file-recursively "convert2skk/obsolete")
+                          ;; Contains syntax error
+                          (delete-file "convert2skk/pubdic2list")))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:modules ((guix build gnu-build-system)
+                  ((guix build emacs-build-system)
+                   #:prefix emacs:)
+                  (guix build utils)
+                  (guix build emacs-utils))
+       #:imported-modules (,@%gnu-build-system-modules
+                           (guix build emacs-build-system)
+                           (guix build emacs-utils))
+       #:phases (modify-phases %standard-phases
+                  (add-before 'install 'fix-library-loading
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (for-each (lambda (path)
+                                  (substitute* path
+                                    (("require 'skkdictools'")
+                                     "require_relative 'skkdictools'")))
+                                (list "filters/annotation-filter.rb"
+                                      "filters/asayaKe.rb"
+                                      "filters/complete-numerative.rb"
+                                      "filters/conjugation.rb"
+                                      "filters/make-tankan-dic.rb"))))
+                  (add-after 'install 'install-scripts
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((share (string-append (assoc-ref outputs "out")
+                                                  "/share/skktools")))
+                        (install-file "filters/skkdictools.rb" share)
+                        (for-each (lambda (file)
+                                    (invoke "chmod" "755" file)
+                                    (install-file file share))
+                                  (append (find-files "." "\\.rb$")
+                                          (find-files "." "\\.scm$")
+                                          (find-files "." "\\.py$")
+                                          (find-files "convert2skk" "\\.pl")
+                                          (find-files "convert2skk" "\\.rb")
+                                          (list "convert2skk/adddummy"
+                                                "convert2skk/list2skk"
+                                                "convert2skk/removedummy"
+                                                "convert2skk/skk2list")
+                                          (find-files "filters" "\\.rb$"))))))
+                  ;; Install and make autoloads for skk-xml.el.
+                  (add-after 'install 'install-emacs-files
+                    (assoc-ref emacs:%standard-phases
+                               'install))
+                  (add-after 'install-emacs-files 'compile-emacs-files
+                    (assoc-ref emacs:%standard-phases
+                               'build))
+                  (add-after 'compile-emacs-files 'make-autoloads
+                    (assoc-ref emacs:%standard-phases
+                               'make-autoloads))
+                  (add-after 'install 'install-docs
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((doc (string-append (assoc-ref outputs "out")
+                                                "/share/doc/"
+                                                ,name "-"
+                                                ,version)))
+                        (install-file "ChangeLog" doc)
+                        (for-each (lambda (file)
+                                    (install-file file doc))
+                                  (append (find-files "READMEs")))
+                        (copy-file "filters/README.md"
+                                   (string-append doc "/README.filters.md"))
+                        (copy-file "convert2skk/README.md"
+                                   (string-append doc "/README.convert2skk.md")))))
+                  (add-after 'wrap-scripts 'check-scripts
+                    ;; Skipped tests for:
+                    ;; * skk2cdb.py: Requires cdb file
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (string-append (assoc-ref outputs "out")
+                                                "/share/skktools")))
+                        (for-each (lambda (args)
+                                    (apply invoke
+                                           (string-append out "/"
+                                                          (car args))
+                                           (cdr args)))
+                                  '(("abbrev-convert.rb")
+                                    ("abbrev-simplify-keys.rb")
+                                    ("adddummy")
+                                    ("annotation-filter.rb")
+                                    ("aozora2skk.rb")
+                                    ("asayaKe.rb")
+                                    ("canna2skk.rb" "/dev/null")
+                                    ("chasen2skk.rb")
+                                    ("complete-numerative.rb")
+                                    ("conjugation.rb")
+                                    ("ctdicconv.rb")
+                                    ("dic-it2skk.rb" "/dev/null")
+                                    ("ipadic2skk.rb")
+                                    ("list2skk")
+                                    ("make-tankan-dic.rb")
+                                    ("prime2skk.rb")
+                                    ("removedummy")
+                                    ("saihenkan.rb")
+                                    ("skk2list")
+                                    ("/skkdic-diff.scm" "/dev/null"
+                                     "/dev/null")
+                                    ("skk-wordpicker.rb")))))))))
+    (native-inputs (list
+                    ;; for skkdic-expr2
+                    pkg-config
+                    ;; for installing Emacs Lisp files
+                    emacs-minimal))
+    (inputs (list bdb-4.8
+                  glib ;for skkdic-expr2
+                  ;; For scripts
+                  gauche
+                  perl
+                  python-2
+                  ruby))
+    (home-page "https://github.com/skk-dev/skktools")
+    (synopsis "SKK dictionary maintenance tools")
+    (description
+     "The skktools are SKK dictionary maintenance tools.  This includes
+commands such as @command{skkdic-count}, @command{skkdic-expr}, and
+@command{skkdic-sort}.")
+    (license license:gpl2+)))
 
 (define-public mecab
   (package

@@ -272,6 +272,25 @@ the package named PACKAGE-NAME."
                 (assq-ref recipe ':fetcher))
        #f)))
 
+(define (elpa-dependency->upstream-input dependency)
+  "Convert DEPENDENCY, an sexp as returned by 'elpa-package-inputs', into an
+<upstream-input>."
+  (match dependency
+    ((name version)
+     (and (not (emacs-standard-library? (symbol->string name)))
+          (upstream-input
+           (name (symbol->string name))
+           (downstream-name (elpa-guix-name name))
+           (type 'propagated)
+           (min-version (if (pair? version)
+                            (string-join (map number->string version) ".")
+                            #f))
+           (max-version (match version
+                          (() #f)
+                          ((_) #f)
+                          ((_ _) #f)
+                          (_ min-version))))))))
+
 (define default-files-spec
   ;; This contains more than just the things contained in %default-include and
   ;; %default-exclude, presumably because this includes source files (*.in,
@@ -421,12 +440,19 @@ type '<elpa-package>'."
                         (elpa-version->string raw-version))))
             (url     (match info
                        ((_ raw-version reqs synopsis kind . rest)
-                        (package-source-url kind name version repo)))))
+                        (package-source-url kind name version repo))))
+            (inputs  (match info
+                       ((name raw-version reqs . _)
+                        (filter-map elpa-dependency->upstream-input
+                                    (if (eq? 'nil reqs)
+                                        '()
+                                        reqs))))))
        (upstream-source
         (package (package-name package))
         (version version)
         (urls (list url))
-        (signature-urls (list (string-append url ".sig"))))))))
+        (signature-urls (list (string-append url ".sig")))
+        (inputs inputs))))))
 
 (define elpa-repository
   (memoize

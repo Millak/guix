@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +36,7 @@
             location-file
             location-line
             location-column
+            absolute-location
             source-properties->location
             location->source-properties
             location->string
@@ -339,6 +340,23 @@ number of arguments in ARGS matches the escapes in FORMAT."
            #'(condition
               (&formatted-message (format str)
                                   (arguments (list args ...))))))))))
+
+(define (absolute-location loc)
+  "Replace the file name in LOC by an absolute location."
+  (location (if (string-prefix? "/" (location-file loc))
+                (location-file loc)
+
+                ;; 'search-path' might return #f in obscure cases, such as
+                ;; when %LOAD-PATH includes "." or ".." and LOC comes from a
+                ;; file in a subdirectory thereof.
+                (match (search-path %load-path (location-file loc))
+                  (#f
+                   (raise (formatted-message
+                           (G_ "file '~a' not found on load path")
+                           (location-file loc))))
+                  (str str)))
+            (location-line loc)
+            (location-column loc)))
 
 
 (define guix-warning-port

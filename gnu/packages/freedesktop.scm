@@ -2720,7 +2720,7 @@ compatible with the well-known scripts of the same name.")
 (define-public libportal
   (package
     (name "libportal")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2729,12 +2729,18 @@ compatible with the well-known scripts of the same name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i4v0wjyiryg7jq9hp9iaplqyhwj1cqy5891s4jfldcdzvcwxwx0"))))
+                "1q1kqq72cs7f5b17gzw7218mxs65hijzkll27mh51s02fpiw8c60"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-Dbackends=gtk4,gtk3,qt5"
-             "-Ddocs=false")))          ; requires unpackaged gi-docgen
+     (list
+      #:configure-flags
+      #~(list "-Ddocs=false")          ; requires unpackaged gi-docgen
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-qt-environment-variables
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Required for tests
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
      (list pkg-config
            docbook-xsl
@@ -2759,15 +2765,16 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.14.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/flatpak/xdg-desktop-portal/releases/download/"
-                    version "/xdg-desktop-portal-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1q0djpnwlrqm0h0alyh1r6dlkqdrr7mj5hiam4mqzxqa5jbqkrgj"))))
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/flatpak/xdg-desktop-portal/releases/download/"
+             version "/xdg-desktop-portal-" version ".tar.xz"))
+       (sha256
+        (base32
+         "06cczlh39kc41rvav06v37sad827y61rffy3v29i918ibj8sahav"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -2822,7 +2829,7 @@ and others.")
 (define-public xdg-desktop-portal-gtk
   (package
     (name "xdg-desktop-portal-gtk")
-    (version "1.14.0")
+    (version "1.14.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2830,7 +2837,7 @@ and others.")
                     version "/xdg-desktop-portal-gtk-" version ".tar.xz"))
               (sha256
                (base32
-                "0m29b4hm7lq06gcavxw7gdlgqiiy3vgv3v4yjqfq5kx92q3j28gn"))))
+                "002p19j1q3fc8x338ndzxnicwframpgafw31lwvv5avy329akqiy"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -2916,7 +2923,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
 (define-public xdg-desktop-portal-wlr
   (package
     (name "xdg-desktop-portal-wlr")
-    (version "0.5.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2925,7 +2932,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ipg35gv8ja39ijwbyi96qlyq2y1fjdggl40s38rv68bsya8zry1"))
+                "1b3hpp3ybjgnnmnwsyb5bsnvz9q5nr3zz0j1alh02g24f68lf00k"))
               (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -2958,6 +2965,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                   bash-minimal
                   grim
                   iniparser
+                  mesa
                   libinih
                   pipewire
                   slurp

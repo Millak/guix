@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,8 +34,10 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system ocaml)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages ed)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -53,6 +56,7 @@
   #:use-module (gnu packages less)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -61,6 +65,58 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml))
+
+(define-public coccinelle
+  (let ((revision "0")
+        (commit "6608e45f85a10c57a3c910154cf049a5df4d98e4"))
+    (package
+      (name "coccinelle")
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/coccinelle/coccinelle")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (modules '((guix build utils)))
+         (snippet
+          #~(delete-file-recursively "bundles"))
+         (sha256
+          (base32
+           "08nycmjyckqmqjpi78dcqdbmjq1xp18qdc6023dl90gdi6hmxz9l"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'bootstrap 'prepare-version.sh
+                   (lambda _
+                     (setenv "MAKE_COCCI_RELEASE" "y")
+                     (patch-shebang "version.sh")))
+                 (add-before 'check 'set-batch-mode
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("--testall")
+                         "--batch_mode --testall")))))))
+      (propagated-inputs
+       (list ocaml-menhir
+             ocaml-num
+             ocaml-parmap
+             ocaml-pcre
+             ocaml-pyml
+             ocaml-stdcompat))
+      (native-inputs
+       (list autoconf
+             automake
+             ocaml
+             ocaml-findlib
+             pkg-config))
+      (home-page "https://coccinelle.lip6.fr")
+      (synopsis "Transformation of C code using semantic patches")
+      (description "Coccinelle is a tool that allows modification of C code
+using semantic patches in the @acronym{SmPL, Semantic Patch Language} for
+specifying desired matches and transformations in the C code.")
+      (license gpl2))))
 
 (define-public patchutils
   (package

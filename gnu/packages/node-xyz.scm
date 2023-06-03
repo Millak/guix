@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Charles <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
 ;;;
@@ -249,6 +250,30 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
     (description "This package provides a simple test runner that finds and runs
 multiple node.js files, while providing useful information about output and exit
 codes.")
+    (license license:expat)))
+
+(define-public node-global-gradle-clean
+  (package
+    (name "node-global-gradle-clean")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/VarunBarad/global-gradle-clean")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fhm4jimnf7bl5drgwg39mjh8x4rns15hl0fz3bnxi9ikc6dm02y"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f)) ;No tests.
+    (home-page "https://github.com/VarunBarad/global-gradle-clean")
+    (synopsis "Global Gradle Clean")
+    (description
+     "Global Gradle Clean is a Node.js package used to clean all gradle
+projects under a given directory.  It uses the gradle wrapper to execute the
+clean task of each project.")
     (license license:expat)))
 
 (define-public node-long-stack-traces

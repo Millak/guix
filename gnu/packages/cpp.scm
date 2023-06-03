@@ -35,6 +35,7 @@
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -224,7 +225,7 @@ range-v3 ranges are an abstraction layer on top of iterators.")
 (define-public c++-gsl
   (package
     (name "c++-gsl")
-    (version "3.1.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -235,12 +236,8 @@ range-v3 ranges are an abstraction layer on top of iterators.")
           (string-append "v" version))))
        (file-name
         (git-file-name name version))
-       (patches
-        (search-patches
-         "c++-gsl-find-system-gtest.patch"
-         "c++-gsl-move-array-bounds-tests.patch"))
        (sha256
-        (base32 "0gbvr48f03830g3154bjhw92b8ggmg6wwh5xyb8nppk9v6w752l0"))))
+        (base32 "0dgb3rb6x2276d3v7x568m3zhqr67rhk8ynqgm3c304avnmcaw3i"))))
     (build-system cmake-build-system)
     (native-inputs
      (list googletest pkg-config))
@@ -1580,7 +1577,7 @@ standards.")
 (define-public cli11
   (package
     (name "cli11")
-    (version "1.9.1")
+    (version "2.3.2")
     (source
       (origin
         (method git-fetch)
@@ -1589,35 +1586,14 @@ standards.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0hbch0vk8irgmiaxnfqlqys65v1770rxxdfn3d23m2vqyjh0j9l6"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file-recursively "extern")
-                 #t))))
+         (base32 "1iif7kzp3yyjqg4yfar89rqmz44xkbi603gf9kjdqbgraw3f8zy7"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       '("-DCLI11_SINGLE_FILE=OFF"
-         "-DCLI11_BUILD_EXAMPLES=OFF")
-       #:imported-modules ,%cmake-build-system-modules
-       #:modules ((guix build cmake-build-system)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'no-vendor-gtest
-           (lambda _
-             (substitute* "tests/CMakeLists.txt"
-               ;; We provide our own googletest, so this is not really a
-               ;; problem.
-               (("message\\(FATAL_ERROR \"You have requested")
-                "message(TRACE \"You have requested"))
-             (substitute* "cmake/AddGoogletest.cmake"
-               (("^add_subdirectory\\(.*googletest.*$") "find_package(GTest REQUIRED)")
-               (("^set_target_properties\\(gtest gtest_main gmock gmock_main") "")
-               (("^    PROPERTIES FOLDER \"Extern\"\\)") ""))
-             #t)))))
+     (list #:configure-flags
+           #~(list "-DCLI11_SINGLE_FILE=OFF"
+                   "-DCLI11_BUILD_EXAMPLES=OFF")))
     (native-inputs
-     (list doxygen googletest))
+     (list catch2 doxygen googletest))
     (synopsis "Command line parser for C++11")
     (description
      "CLI11 is a command line parser for C++11 and beyond that provides a rich
@@ -2115,29 +2091,35 @@ but implemented for C++11, C++14, C++17 or C++20.")
 (define-public cpp-mustache
   (package
     (name "cpp-mustache")
-    (version "4.1")
+    (version "5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/kainjow/Mustache")
-                    (commit (string-append "v" version))))
+                    (commit "4ed8c0b5a2a43d59394bd6900dc04e738dbf8c02")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r9rbk6v1wpld2ismfsk2lkhbyv3dkf0p03hkjivbj05qkfhvlbb"))))
+                "0qwrg35gby851viwd6dgrc346712701a0gll8a0m4xs8invxavrh"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:configure-flags
+           #~(list
+              (string-append "-DCMAKE_CXX_FLAGS=-I"
+                             #$(this-package-native-input "catch2")
+                             "/include/catch2/"))
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (invoke "./mustache"))))
+                     (invoke "./tests/mustache-unit-tests"))))
                (replace 'install
                  (lambda* (#:key outputs #:allow-other-keys)
                    (install-file "../source/mustache.hpp"
                                  (string-append (assoc-ref outputs "out")
                                                 "/include")))))))
+    (native-inputs (list catch2))
     (home-page "https://github.com/kainjow/Mustache")
     (synopsis "Mustache text templates for modern C++")
     (description "@code{cpp-mustache} is a Mustache implementation for C++ 11

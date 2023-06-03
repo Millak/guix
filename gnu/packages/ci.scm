@@ -58,8 +58,8 @@
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR)))
 
 (define-public cuirass
-  (let ((commit "4a8a4bc1f83924c88740b08b14cbfbc089502997")
-        (revision "15"))
+  (let ((commit "b82596778bf653a572b5fcd483388226b29b96f3")
+        (revision "16"))
     (package
       (name "cuirass")
       (version (git-version "1.1.0" revision commit))
@@ -72,7 +72,7 @@
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0s55yx86wqnb543vwbs2kj6bmnzqrvjgj3mafm7vzvfrxrqj3xgi"))))
+           "1246cs3bmpkp8jis0xxasmrpq622p1ds3s0payrv5bxng9j6dbfp"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build utils)

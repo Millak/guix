@@ -30,6 +30,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system python)
@@ -317,3 +318,30 @@ Optional:
 @end itemize")
       (home-page "https://github.com/tmux-plugins/tmux-resurrect/")
       (license license:expat))))
+
+(define-public tmux-plugin-mem-cpu-load
+  (package
+    (name "tmux-plugin-mem-cpu-load")
+    (version "3.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/thewtex/tmux-mem-cpu-load")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "03bax7g9jlsci44ccs50drh617ya3fzvlplwyvxfyb7mgmh85r72"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (synopsis "CPU, RAM, and load monitor for use with tmux")
+    (description "This package provides a lightweight program for system
+monitoring in the status line of tmux.
+
+The memory monitor displays the used and available memory.
+
+The CPU usage monitor outputs a percent CPU usage over all processors.  It
+also displays a textual bar graph of the current percent usage.
+
+The system load average is also displayed.")
+    (home-page "https://github.com/thewtex/tmux-mem-cpu-load")
+    (license license:asl2.0)))

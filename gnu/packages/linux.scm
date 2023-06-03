@@ -485,55 +485,40 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.3-version "6.3.3")
+(define-public linux-libre-6.3-version "6.3.5")
 (define-public linux-libre-6.3-gnu-revision "gnu")
 (define deblob-scripts-6.3
   (linux-libre-deblob-scripts
    linux-libre-6.3-version
    linux-libre-6.3-gnu-revision
    (base32 "01ivgzq18fwas87q84jx9jipcw58kwdnch7ylwg06d98ncga27px")
-   (base32 "10n0ya7y4k96hggylcmymwfj1d07vhpzkz7qamqz7n96jqj1fnpi")))
+   (base32 "0la20slh52jm4cg4v2liphhqqx4808gm6pfqcxiawj13a4ps9ygk")))
 (define-public linux-libre-6.3-pristine-source
   (let ((version linux-libre-6.3-version)
-        (hash (base32 "1ra4kr9bp1s9d7amvz6ik1q3chwps5lysn37b28770pfdim22xc9")))
+        (hash (base32 "0pl2zypsmrnna69850jadccffxwg9xdfkldg0sv8m44b7n64gkgm")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.3)))
 
-(define-public linux-libre-6.2-version "6.2.16")
-(define-public linux-libre-6.2-gnu-revision "gnu")
-(define deblob-scripts-6.2
-  (linux-libre-deblob-scripts
-   linux-libre-6.2-version
-   linux-libre-6.2-gnu-revision
-   (base32 "03jd3ijbdql44m89fnzwp3mlygs735n4ga7mighlfbdybfjzwfyj")
-   (base32 "15q27ji6k67a1m94lj0hs47sd072fmb1p575r7g6mq8pl9yynbrl")))
-(define-public linux-libre-6.2-pristine-source
-  (let ((version linux-libre-6.2-version)
-        (hash (base32 "04w76lfkfiq7z4dl3cnq6yiqmiwjayhw3n7n81hv8d3919w0vzq6")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-6.2)))
-
-(define-public linux-libre-6.1-version "6.1.29")
+;; The "longterm" kernels — the older releases with long-term upstream support.
+;; Here are the support timelines:
+;; <https://www.kernel.org/category/releases.html>
+(define-public linux-libre-6.1-version "6.1.31")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
    (base32 "1b96867b46m36l88qnq2d4i9y43ghw97z9jajrh11cvb6kq4xi67")
-   (base32 "12p6z91fmdqwnmkw0cjha4gl7kzija8fk7yxciznz1raxix6bq57")))
+   (base32 "1yv15mb278wlrn8gb2yjm0mczirzixy668h221vcpbz416ibxx1m")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "1yzwp0496j63c6lhvsni1ynr8b2cpn552pli3nd3fdk0pp4nqwqy")))
+        (hash (base32 "1hbkw290kmf1dj8a255ik1gk5fk458c88m348dwrc3lrl6xifsg8")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-;; The "longterm" kernels — the older releases with long-term upstream support.
-;; Here are the support timelines:
-;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.112")
+(define-public linux-libre-5.15-version "5.15.114")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -543,12 +528,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00n8c7ghfs36bvz0yjw6w9daf5zcgj94kxxn27bfyfm274rkddmz")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0lfnd8mpb3nzvd0gk0jbls3zx7y5kskc4kgccjgkc34flgdyps5h")))
+        (hash (base32 "1lkpa9wv1qj90qdzzi71qf5dyy7mi95fixx3ymdp6xwz45fym0g9")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.180")
+(define-public linux-libre-5.10-version "5.10.181")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -558,12 +543,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "12jhak2bw1jy2jk70vrm66kjvh0cd6c8f2qiy2bk40rq7bf62mr6")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0a8cicvcyl5w4vi7gxhgd59ny44gj9cbv4z5pnwn9jgny55rm0ys")))
+        (hash (base32 "1rx43dkxspris9529vl11blzhvsxnpaqr6yb3fy089az7yvwxrmc")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.243")
+(define-public linux-libre-5.4-version "5.4.244")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -573,12 +558,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "070j069sj6spy2wkzfzm1d5jd7pffm0s1m917wblc8d3x8pbgvf8")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "017b1xhmjpmiq48pzzx36wn6jwwgaq2kgia51h7pxr7fxr7ndky3")))
+        (hash (base32 "06x20aq7bv86ghv2sdsz3q2rmqh8h389x5zksr53fyzdjl72ixch")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.283")
+(define-public linux-libre-4.19-version "4.19.284")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -588,12 +573,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "05yqb59gj7mq5ha9xg045bz517sdg6janfa2yjq70qa6ahpc5fac")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1x2irhiv20aq2mrgqyz18d147shbmghwfxq4qi0sv5vc1k91cwq4")))
+        (hash (base32 "0gnhgxcpx9s96wa3dqgxmdjb7x12i94yh0gmv7k9nbz5qwhfxfbz")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.315")
+(define-public linux-libre-4.14-version "4.14.316")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -603,7 +588,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1ccggm19nl7pdcxmsm08fkqy8phz8rqfmww5ypizibdmnrmpn2v9")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "17f9cbinysazllrxkv1qlhgi3x61isi7jqrv0qlfpjh69k1waim3")))
+        (hash (base32 "0xlg93va7dbz2w428kiw7vr2sds3542fqq57rwyf51ykq7qii0xc")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -638,11 +623,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 (define-public linux-libre-6.3-source
   (source-with-patches linux-libre-6.3-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
-(define-public linux-libre-6.2-source
-  (source-with-patches linux-libre-6.2-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
@@ -761,11 +741,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-6.3-version
                              linux-libre-6.3-gnu-revision
                              linux-libre-6.3-source))
-
-(define-public linux-libre-headers-6.2
-  (make-linux-libre-headers* linux-libre-6.2-version
-                             linux-libre-6.2-gnu-revision
-                             linux-libre-6.2-source))
 
 (define-public linux-libre-headers-6.1
   (make-linux-libre-headers* linux-libre-6.1-version
@@ -1113,14 +1088,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-6.2
-  (make-linux-libre* linux-libre-6.2-version
-                     linux-libre-6.2-gnu-revision
-                     linux-libre-6.2-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
 (define-public linux-libre-version         linux-libre-6.3-version)
 (define-public linux-libre-gnu-revision    linux-libre-6.3-gnu-revision)
 (define-public linux-libre-pristine-source linux-libre-6.3-pristine-source)
@@ -1177,7 +1144,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
 ;; Linux-Libre.
-;; Reference: https://jxself.org/linux-libre/
+;; Reference: <https://www.kernel.org/category/releases.html>
 
 (define-public linux-libre-lts-version         linux-libre-6.1-version)
 (define-public linux-libre-lts-gnu-revision    linux-libre-6.1-gnu-revision)
@@ -3564,7 +3531,7 @@ processes currently causing I/O.")
 (define-public iotop
   (package
     (name "iotop")
-    (version "1.22")
+    (version "1.23")
     (source
      (origin
        (method git-fetch)
@@ -3573,7 +3540,7 @@ processes currently causing I/O.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04a77qir35s1bwvd39qddx2kfizdbf5jxlnz8zmy1cnrigbwcy1h"))))
+        (base32 "1i5m2w0jzxzxn2xvragygidw35p87skjs6bfjakrz6bd96sxhd70"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -4189,56 +4156,52 @@ to the in-kernel OOM killer.")
               (patches (search-patches "eudev-rules-directory.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'patch-file-names
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-            (substitute* "man/make.sh"
-              (("/usr/bin/xsltproc")
-               (string-append (assoc-ref
-                               (or native-inputs inputs) "xsltproc")
-                               "/bin/xsltproc")))))
-         (add-after 'install 'move-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (static (assoc-ref outputs "static"))
-                    (source (string-append out "/lib/libudev.a"))
-                    (target (string-append static "/lib/libudev.a")))
-               (mkdir-p (dirname target))
-               (link source target)
-               (delete-file source)
-               ;; Remove reference to the static library from the .la file
-               ;; such that Libtool looks for it in the usual places.
-               (substitute* (string-append out "/lib/libudev.la")
-                 (("old_library=.*")
-                  "old_library=''\n")))))
-         (add-after 'install 'build-hwdb
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Build OUT/etc/udev/hwdb.bin.  This allows 'lsusb' and
-             ;; similar tools to display product names.
-             ;;
-             ;; XXX: This can't be done when cross-compiling. Find another way
-             ;; to generate hwdb.bin for cross-built systems.
-             (let ((out (assoc-ref outputs "out")))
-               ,@(if (%current-target-system)
-                     '(#t)
-                     '((invoke (string-append out "/bin/udevadm")
-                               "hwdb" "--update")))))))
-       #:configure-flags (list "--enable-manpages")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'patch-file-names
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (substitute* "man/make.sh"
+                (("/usr/bin/xsltproc")
+                 (search-input-file (or native-inputs inputs) "/bin/xsltproc")))))
+          (add-after 'install 'move-static-library
+            (lambda _
+              (let ((source (string-append #$output "/lib/libudev.a"))
+                    (target (string-append #$output:static "/lib/libudev.a")))
+                (mkdir-p (dirname target))
+                (link source target)
+                (delete-file source)
+                ;; Remove reference to the static library from the .la file
+                ;; such that Libtool looks for it in the usual places.
+                (substitute* (string-append #$output "/lib/libudev.la")
+                  (("old_library=.*")
+                   "old_library=''\n")))))
+          (add-after 'install 'build-hwdb
+            (lambda _
+              ;; Build OUT/etc/udev/hwdb.bin.  This allows 'lsusb' and
+              ;; similar tools to display product names.
+              ;;
+              ;; XXX: This can't be done when cross-compiling. Find another way
+              ;; to generate hwdb.bin for cross-built systems.
+              #$@(if (%current-target-system)
+                     #~(#t)
+                     #~((invoke (string-append #$output "/bin/udevadm")
+                                "hwdb" "--update"))))))
+       #:configure-flags #~(list "--enable-manpages")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gperf" ,gperf)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ;; For tests.
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ;; For documentation.
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxml2" ,libxml2)             ;for $XML_CATALOG_FILES
-       ("xsltproc" ,libxslt)))
+     (list autoconf
+           automake
+           gperf
+           libtool
+           pkg-config
+           ;; For tests.
+           perl
+           python-wrapper
+           ;; For documentation.
+           docbook-xml-4.2
+           docbook-xsl
+           libxml2            ;for $XML_CATALOG_FILES
+           libxslt))
     (inputs
      ;; When linked against libblkid, eudev can populate /dev/disk/by-label
      ;; and similar; it also installs the '60-persistent-storage.rules' file,
@@ -5930,18 +5893,18 @@ and copy/paste text in the console and in xterm.")
     (arguments
      (list
       #:configure-flags
-      #~(append
+      #~(list
          ;; Without --disable-documentation, it complains about missing
          ;; python-sphinx on systems where this package isn't available
          ;; (because it requires Rust).
-         (if #$@(member (%current-system)
+         #$@(if (member (%current-system)
                         (package-transitive-supported-systems
                          python-sphinx))
-             '()
-             (list "--disable-documentation"))
+                '()
+                '("--disable-documentation"))
          ;; The ‘Python support’ was never actually installed by previous
          ;; versions of this package, but did prevent cross-compilation.
-         (list "--disable-python"))
+         "--disable-python")
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-makefile
                      (lambda* (#:key outputs #:allow-other-keys)

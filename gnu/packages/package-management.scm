@@ -272,14 +272,13 @@ $(prefix)/etc/openrc\n")))
                               (("\"[^\"]*/bin/gzip") gzip
                                (string-append "\"" gzip "/bin/gzip"))
                               (("\"[^\"]*/bin//xz")
-                               (string-append "\"" xz "/bin/xz")))))
-                        #t))
+                               (string-append "\"" xz "/bin/xz")))))))
                     (add-before 'build 'set-font-path
-                      (lambda* (#:key inputs #:allow-other-keys)
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
                         ;; Tell 'dot' where to look for fonts.
                         (setenv "XDG_DATA_DIRS"
                                 (dirname
-                                 (search-input-directory inputs
+                                 (search-input-directory (or native-inputs inputs)
                                                          "share/fonts")))))
                     (add-before 'check 'copy-bootstrap-guile
                       (lambda* (#:key system target inputs #:allow-other-keys)
@@ -320,8 +319,7 @@ $(prefix)/etc/openrc\n")))
                           (for-each (lambda (input)
                                       (intern (assoc-ref inputs input) #t))
                                     '("bootstrap/bash" "bootstrap/mkdir"
-                                      "bootstrap/tar" "bootstrap/xz")))
-                        #t))
+                                      "bootstrap/tar" "bootstrap/xz")))))
                     (add-after 'unpack 'disable-failing-tests
                       ;; XXX FIXME: These tests fail within the build container.
                       (lambda _
@@ -334,14 +332,12 @@ $(prefix)/etc/openrc\n")))
                         (when (file-exists? "tests/guix-environment-container.sh")
                           (substitute* "tests/guix-environment-container.sh"
                             (("guix environment --version")
-                             "exit 77\n")))
-                        #t))
+                             "exit 77\n")))))
                     (add-before 'check 'set-SHELL
                       (lambda _
                         ;; 'guix environment' tests rely on 'SHELL' having a
                         ;; correct value, so set it.
-                        (setenv "SHELL" (which "sh"))
-                        #t))
+                        (setenv "SHELL" (which "sh"))))
                     (add-after 'install 'wrap-program
                       (lambda* (#:key inputs native-inputs outputs target
                                 #:allow-other-keys)
@@ -1633,8 +1629,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "efaf8fa580ad197d74ff375ca50bddf9c8ac3a86")
-        (revision "19"))
+  (let ((commit "b27ca4dc0efbb0d9c397fc39347af9b8e8734ab9")
+        (revision "20"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1645,7 +1641,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "169cz6xwx4klcsx0769807yjk0xnck73q4hyrsv289nfgfd9x8a2"))
+                  "075acihpxvw4rkmbn7wiswqixv2afla8d8x7mgxqc26hba090404"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

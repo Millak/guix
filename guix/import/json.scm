@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -37,6 +37,7 @@
 (define* (json-fetch url
                      #:key
                      (http-fetch http-fetch)
+                     (timeout 10)
                      ;; Note: many websites returns 403 if we omit a
                      ;; 'User-Agent' header.
                      (headers `((user-agent . "GNU Guile")
@@ -50,7 +51,7 @@ enable caching, supply 'http-fetch/cached'."
                     (or (= 403 error)
                         (= 404 error))))
              #f))
-    (let* ((port   (http-fetch url #:headers headers))
+    (let* ((port   (http-fetch url #:timeout timeout #:headers headers))
            (result (json->scm port)))
       (close-port port)
       result)))

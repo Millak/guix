@@ -7754,7 +7754,7 @@ powerful general purpose text editor.")
 (define-public zenity
   (package
     (name "zenity")
-    (version "3.43.0")
+    (version "3.44.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/zenity/"
@@ -7762,7 +7762,7 @@ powerful general purpose text editor.")
                                   "zenity-" version ".tar.xz"))
               (sha256
                (base32
-                "0czq2vx636xbvg7zbdqkxq41zgm7v1h048awy0cgls0q1hgcmmxh"))))
+                "1aiyx7z2vnipfmlpk4m20zc5bgjlmh6hx3ix1d61yhb5r6p00m6n"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -7771,7 +7771,7 @@ powerful general purpose text editor.")
                           ;; DESTDIR is unset.
                           (lambda _
                             (setenv "DESTDIR" "/"))))))
-    (native-inputs (list gettext-minimal itstool pkg-config))
+    (native-inputs (list gettext-minimal `(,gtk+ "bin") itstool pkg-config))
     (inputs (list gtk+))
     (synopsis "Display graphical dialog boxes from shell scripts")
     (home-page "https://www.gnome.org")

@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -450,7 +450,8 @@ number generators, public key cryptography and a plethora of other routines.")
                             "download/v" version "/ltm-" version ".tar.xz"))
         (sha256
          (base32
-          "1c8q1qy88cjhdjlk3g24mra94h34c1ldvkjz0n2988c0yvn5xixp"))))
+          "1c8q1qy88cjhdjlk3g24mra94h34c1ldvkjz0n2988c0yvn5xixp"))
+        (patches (search-patches "libtommath-integer-overflow.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -469,9 +470,10 @@ number generators, public key cryptography and a plethora of other routines.")
                                          "/lib/libtommath.a"))
              #t))
          (replace 'check
-           (lambda* (#:key test-target make-flags #:allow-other-keys)
-             (apply invoke "make" test-target make-flags)
-             (invoke "sh" "test")))
+           (lambda* (#:key tests? test-target make-flags #:allow-other-keys)
+             (when tests?
+               (apply invoke "make" test-target make-flags)
+               (invoke "sh" "test"))))
          (add-after 'install 'install-static-library
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke "make" "-f" "makefile.unix" "install"

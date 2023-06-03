@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2017, 2018, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -1829,6 +1829,30 @@ rewriting the location of configuration files of software that doesn't follow
 the XDG directory specification from @file{~/.@var{name}} to
 @file{~/.config/@var{name}}.")
       (license license:gpl2+))))
+
+(define-public squashfuse
+  (package
+    (name "squashfuse")
+    (version "0.1.105")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vasi/squashfuse")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03aw8pw8694jyrzpnbry05rk9718sqw66kiyq878bbb679gl7224"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list attr fuse xz zlib `(,zstd "lib")))
+    (home-page "https://github.com/vasi/squashfuse")
+    (synopsis "Fuse filesystem to mount squashfs archives")
+    (description
+     "Squashfuse lets you mount SquashFS archives in user-space.  It supports
+almost all features of the SquashFS format, yet is still fast and
+memory-efficient.")
+    (license license:bsd-2)))
 
 (define-public tmsu
   (package

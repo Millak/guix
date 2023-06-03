@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -21,7 +21,10 @@
   #:use-module (ice-9 threads)
   #:use-module (web server)
   #:use-module (web server http)
+  #:use-module (web request)
   #:use-module (web response)
+  #:use-module (web uri)
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (ice-9 match)
   #:export (with-http-server
@@ -60,12 +63,13 @@ actually listened at (in case %http-server-port was 0)."
                 (strerror err))
         (values #f #f)))))
 
-(define* (%local-url #:optional (port (%http-server-port)))
+(define* (%local-url #:optional (port (%http-server-port))
+                     #:key (path "/foo/bar"))
   (when (= port 0)
     (error "no web server is running!"))
   ;; URL to use for 'home-page' tests.
   (string-append "http://localhost:" (number->string port)
-                 "/foo/bar"))
+                 path))
 
 (define* (call-with-http-server responses+data thunk)
   "Call THUNK with an HTTP server running and returning RESPONSES+DATA on HTTP
@@ -80,6 +84,18 @@ The port listened at will be set for the dynamic extent of THUNK."
             (list response data))
            (((? integer? code) data)
             (list (build-response #:code code
+                                  #:reason-phrase "Such is life")
+                  data))
+           (((? string? path) (? integer? code) data)
+            (list path
+                  (build-response #:code code
+                                  #:headers
+                                  (if (string? data)
+                                      '()
+                                      '((content-type ;binary data
+                                         . (application/octet-stream
+                                            (charset
+                                             . "ISO-8859-1")))))
                                   #:reason-phrase "Such is life")
                   data)))
          responses+data))
@@ -116,19 +132,37 @@ The port listened at will be set for the dynamic extent of THUNK."
     http-write
     (@@ (web server http) http-close))
 
+  (define bad-request
+    (build-response #:code 400 #:reason-phrase "Unexpected request"))
+
   (define (server-body)
     (define (handle request body)
       (match responses
         (((response data) rest ...)
          (set! responses rest)
-         (values response data))))
+         (values response data))
+        ((((? string?) response data) ...)
+         (let ((path (uri-path (request-uri request))))
+           (match (assoc path responses)
+             (#f (values bad-request ""))
+             ((_ response data)
+              (if (eq? 'GET (request-method request))
+                  ;; Note: Use 'assoc-remove!' to remove only the first entry
+                  ;; with PATH as its key.  That way, RESPONSES can contain
+                  ;; the same path several times.
+                  (let ((rest (assoc-remove! responses path)))
+                    (set! responses rest)
+                    (values response data))
+                  (values bad-request ""))))))))
 
     (let-values (((socket port) (open-http-server-socket)))
       (set! %http-real-server-port port)
       (catch 'quit
         (lambda ()
-          (run-server handle stub-http-server
-                      `(#:socket ,socket)))
+          ;; Let HANDLE refer to '%http-server-port' if needed.
+          (parameterize ((%http-server-port %http-real-server-port))
+            (run-server handle stub-http-server
+                        `(#:socket ,socket))))
         (lambda _
           (close-port socket)))))
 

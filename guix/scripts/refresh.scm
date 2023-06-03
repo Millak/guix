@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -369,42 +369,6 @@ warn about packages that have no matching updater."
                       (G_ "~a: updating from version ~a to version ~a...~%")
                       (package-name package)
                       (package-version package) version)
-                (for-each
-                 (lambda (change)
-                   (define field
-                     (match (upstream-input-change-type change)
-                       ('native 'native-inputs)
-                       ('propagated 'propagated-inputs)
-                       (_ 'inputs)))
-
-                   (define name
-                     (package-name package))
-                   (define loc
-                     (package-field-location package field))
-                   (define change-name
-                     (upstream-input-change-name change))
-
-                   (match (list (upstream-input-change-action change)
-                                (upstream-input-change-type change))
-                     (('add 'regular)
-                      (info loc (G_ "~a: consider adding this input: ~a~%")
-                            name change-name))
-                     (('add 'native)
-                      (info loc (G_ "~a: consider adding this native input: ~a~%")
-                            name change-name))
-                     (('add 'propagated)
-                      (info loc (G_ "~a: consider adding this propagated input: ~a~%")
-                            name change-name))
-                     (('remove 'regular)
-                      (info loc (G_ "~a: consider removing this input: ~a~%")
-                            name change-name))
-                     (('remove 'native)
-                      (info loc (G_ "~a: consider removing this native input: ~a~%")
-                            name change-name))
-                     (('remove 'propagated)
-                      (info loc (G_ "~a: consider removing this propagated input: ~a~%")
-                            name change-name))))
-                 (upstream-source-input-changes source))
                 (let ((hash (file-hash* output)))
                   (update-package-source package source hash)))
               (warning (G_ "~a: version ~a could not be \

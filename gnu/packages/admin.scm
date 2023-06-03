@@ -371,14 +371,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.10
   (package
     (inherit shepherd-0.9)
-    (version "0.10.0")
+    (version "0.10.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0dpbcq4jhqfv39jzc675ccidiyv8ziw5x9qv9kwxv132a5qf8phf"))))))
+                "1720czfchg4pzw44v0zj3rc3k6jhl3ixwnpw4v4v9bqx98ad49yw"))))))
 
 (define-public shepherd shepherd-0.9)
 
@@ -3971,7 +3971,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method git-fetch)
@@ -3981,8 +3981,9 @@ you are running, what theme or icon set you are using, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1w0wzai73rr7iliii77f15ck5ki03xcvrhgzbp72nn7xcpix9wqd"))))
+         "127nwgxcq0fs9wavs0sqv8zqdz7yfahw1nr9pgb6z5yjnc5cdcx3"))))
     (build-system python-build-system)
+    (arguments (list #:tests? #f))      ;no tests
     (inputs (list python-typing-extensions))
     (home-page "https://github.com/hykilpikonna/HyFetch")
     (synopsis "@code{neofetch} with pride flags <3")
@@ -4991,14 +4992,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.8.1")
+    (version "2.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "07nsw168aw3mhgzkfw2z5pf92f76l1r4b18zjx7l9hvrkfhmh04p"))))
+                "1y4qmc8i7zg2cqrmz38dxbsj8bb2h7jm1zz23gqcdygkgaymwddw"))))
     (build-system gnu-build-system)
     (arguments
      (list

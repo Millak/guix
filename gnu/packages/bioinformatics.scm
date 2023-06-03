@@ -872,6 +872,45 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-singlet
+  (let ((commit "765a6c45081807a1522f0e8983e2417822a36f36")
+        (revision "1"))
+    (package
+      (name "r-singlet")
+      (version (git-version "0.99.26" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zdebruine/singlet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "040v8wzl9qr8ribr6qss61fz4698d14cqs8nxbc8hqwiqlpy3vs4"))))
+      (properties `((upstream-name . "singlet")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-dplyr
+                               r-fgsea
+                               r-ggplot2
+                               r-knitr
+                               r-limma
+                               r-matrix
+                               r-msigdbr
+                               r-rcpp
+                               r-rcppml/devel
+                               r-reshape2
+                               r-scuttle
+                               r-seurat))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/zdebruine/singlet")
+      (synopsis "Non-negative Matrix Factorization for single-cell analysis")
+      (description
+       "This is a package for fast @dfn{Non-negative Matrix
+Factorization} (NMF) with automatic rank-determination for dimension reduction
+of single-cell data using Seurat, RcppML nmf, SingleCellExperiments and
+similar.")
+      (license license:gpl2+))))
+
 (define-public r-stringendo
   (let ((commit "83b8f2d82a09b33b9e895438bb523a021138be01")
         (revision "1"))
@@ -1297,6 +1336,75 @@ Format (GFF) with Biopython integration.")
 pretty, publication-quality figures for next-generation sequencing
 experiments.")
     (license license:expat)))
+
+(define-public python-cell2cell
+  (package
+    (name "python-cell2cell")
+    (version "0.6.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/earmingol/cell2cell")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hwww0rcv8sc4k312n4d0jhbyix1jjqgv5djg25bw8127q5iym3s"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; We remove the dependency on statannotations because it
+                  ;; will not work with the current version of seaborn.  See
+                  ;; https://github.com/trevismd/statannotations/issues/122
+                  (substitute* "cell2cell/plotting/factor_plot.py"
+                    (("from statannotations.Annotator import Annotator")
+                     "")
+                    (("if statistical_test is not None")
+                     "if False"))
+                  (substitute* "setup.py"
+                    (("'statannotations',") "")
+                    ;; We provide version 1.0.4, which should be fine.
+                    (("'gseapy == 1.0.3'") "'gseapy'")
+                    ;; Using matplotlib 3.5.2 leads to this bug:
+                    ;; https://github.com/earmingol/cell2cell/issues/19 but we
+                    ;; can't package a different minor version of matplotlib
+                    ;; and limit its use to just this package.
+                    (("matplotlib >= 3.2.0,<=3.5.1") ""))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                  ;There are no tests
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs
+     (list python-gseapy
+           python-kneed
+           python-matplotlib
+           python-networkx
+           python-numpy
+           python-openpyxl
+           python-pandas
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-statsmodels
+           python-scanpy
+           python-seaborn
+           python-tensorly
+           python-tqdm
+           python-umap-learn
+           python-xlrd))
+    (home-page "https://github.com/earmingol/cell2cell")
+    (synopsis "Python library for cell communication analysis")
+    (description
+     "Cell2cell is a Python library for cell communication analysis.
+This is a method to calculate, visualize and analyze communication between
+cell types.  Cell2cell is suitable for single-cell RNA sequencing
+(scRNA-seq) data.")
+    (license license:bsd-3)))
 
 (define-public python-cellbender
   (package
@@ -4597,6 +4705,89 @@ data.  EpiScanpy is the epigenomic extension of the very popular scRNA-seq
 analysis tool Scanpy (Genome Biology, 2018).")
     (license license:bsd-3)))
 
+(define-public python-ete3
+  (package
+    (name "python-ete3")
+    (version "3.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/etetoolkit/ete")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i6533wsm06mz0sdrisqai929j744cnczwjgsmxl847q5k16kngd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; This test crashes Python in the build container
+             (string-append "not test_renderer"
+                            ;; These all need internet access
+                            " and not test_00_update_database"
+                            " and not test_01tree_annotation"
+                            " and not test_get_topology"
+                            " and not test_merged_id"
+                            " and not test_ncbi_compare"
+                            " and not test_ncbiquery")
+             "ete3/test/test_api.py")))
+    (propagated-inputs
+     (list python-lxml
+           python-numpy
+           python-pyqt
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "http://etetoolkit.org")
+    (synopsis "Python environment for phylogenetic tree exploration")
+    (description
+     "This package provides a Python environment for phylogenetic tree
+exploration.")
+    (license license:gpl3+)))
+
+(define-public python-illumina-utils
+  (package
+    (name "python-illumina-utils")
+    (version "2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "illumina-utils" version))
+              (sha256
+               (base32
+                "0z9g0prj7pmgl5z4vdpxv3v30grzhc194801qnf0wqzgy7w3aj2s"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
+    (propagated-inputs (list python-matplotlib python-numpy python-levenshtein))
+    (home-page "https://github.com/meren/illumina-utils")
+    (synopsis "Library and scripts to work with Illumina paired-end data")
+    (description
+     "This package provides a library and collection of scripts to work with
+Illumina paired-end data (for CASAVA 1.8+).")
+    (license license:gpl2+)))
+
+(define-public python-pyani
+  (package
+    (name "python-pyani")
+    (version "0.2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyani" version))
+              (sha256
+               (base32
+                "124kdg7168nbh4a5wisfws1fgkd89dd4js9v6dml2lvgclbv4mjg"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-biopython python-matplotlib python-pandas
+           python-scipy python-seaborn))
+    (home-page "https://widdowquinn.github.io/pyani/")
+    (synopsis "Calculate genome-scale average nucleotide identity")
+    (description
+     "Pyani provides a package and script for calculation of genome-scale
+average nucleotide identity.")
+    (license license:expat)))
+
 (define-public exonerate
   (package
     (name "exonerate")
@@ -5453,6 +5644,89 @@ manipulating HTS data.")
          ;; The tests require the scalatest package.
          (add-after 'unpack 'remove-tests
            (lambda _ (delete-file-recursively "src/test") #t)))))))
+
+(define-public java-maxent
+  (package
+    (name "java-maxent")
+    (version "3.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mrmaxent/Maxent")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12q7hhly76l77vm8w8v9icga2gn6xs0bw33a7wb7zikcmvizcyp0"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:jdk icedtea-8
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; See https://github.com/mrmaxent/Maxent/pull/11
+              (substitute* "density/Extractor.java"
+                (("float") "double"))
+              (with-directory-excursion "gnu/getopt/"
+                (invoke "make"))
+              (mkdir-p "ptii")
+              (with-directory-excursion "ptii"
+                (invoke "tar" "xvf" (assoc-ref inputs "ptii")
+                        "--strip-components=1")
+                (copy-recursively "com" "../com"))
+              (delete-file-recursively "ptii")
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "com/microstar/xml" "\\.java$"))
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "density" "\\.java$"))
+
+              ;; This needs the proprietary com.sun.image.codec.jpeg module.
+              (delete-file "ptolemy/plot/servlet/PlotServlet.java")
+              (apply invoke "javac" "-cp"
+                     (string-append (getcwd) ":" (getenv "CLASSPATH")) "-g"
+                     (find-files "ptolemy/plot" "\\.java$"))
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "com" "\\.java$"))
+              (apply invoke "javac" "-cp" (getcwd) "-g"
+                     (find-files "gui" "\\.java$"))
+              (apply invoke "jar" "cvfm" "maxent.jar"
+                     (cons* "density/mc.mf"
+                            "density/parameters.csv"
+                            (append (find-files "density" "\\.class$")
+                                    (find-files "density" "\\.html$")
+                                    (find-files "gnu/getopt" ".*")
+                                    (find-files "gui/layouts" "\\.class$")
+                                    (find-files "com/macfaq/io" "\\.class$")
+                                    (find-files "density/tools" "\\.class$")
+                                    (find-files "ptolemy/plot" "\\.class$"))))))
+          (replace 'install
+            (lambda _
+              (install-file "maxent.jar"
+                            (string-append #$output "/share/java/maxent/")))))))
+    (inputs
+     (list java-classpathx-servletapi))
+    (native-inputs
+     `(("make" ,gnu-make)
+       ;; For com.microstar.xml
+       ("ptii"
+        ,(let ((version "4.0.1"))
+           (origin
+             (method url-fetch)
+             (uri (string-append "https://ptolemy.berkeley.edu/ptolemyII/ptII"
+                                 (version-major+minor version)
+                                 "/ptII" version ".src.tar.gz"))
+             (sha256
+              (base32
+               "0ifmmvrcipcnd4b9im1g379ffrs7g7k99sw5vv9d9h3hzq6hqv21")))))))
+    (home-page "http://biodiversityinformatics.amnh.org/open_source/maxent")
+    (synopsis "Model species geographic distributions")
+    (description
+     "Maxent is a stand-alone Java application for modelling species
+geographic distributions.")
+    (license license:expat)))
 
 ;; This version matches java-htsjdk 2.3.0.  Later versions also require a more
 ;; recent version of java-htsjdk, which depends on gradle.

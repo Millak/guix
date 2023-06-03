@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
@@ -21,6 +21,8 @@
 
 (define-module (test-elpa)
   #:use-module (guix import elpa)
+  #:use-module (guix upstream)
+  #:use-module ((guix download) #:select (url-fetch))
   #:use-module (guix tests)
   #:use-module (guix tests http)
   #:use-module (srfi srfi-1)
@@ -40,8 +42,20 @@
     (auctex .
             [(11 88 6)
              nil "Integrated environment for *TeX*" tar
-             ((:url . "http://www.gnu.org/software/auctex/"))])))
+             ((:url . "http://www.gnu.org/software/auctex/"))])
+    (taxy-magit-section .
+		        [(0 12 2)
+		         ((emacs
+			   (26 3))
+		          (magit-section
+			   (3 2 1))
+		          (taxy
+			   (0 10)))
+		         "View Taxy structs in a Magit Section buffer" tar
+		         ((:url . "https://github.com/alphapapa/taxy.el")
+		          (:keywords "lisp"))])))
 
+
 (test-begin "elpa")
 
 (define (eval-test-with-elpa pkg)
@@ -52,26 +66,56 @@
                       (200 "fake tarball contents"))
     (parameterize ((current-http-proxy (%local-url)))
       (match (elpa->guix-package pkg #:repo 'gnu/http)
-        (('package
-           ('name "emacs-auctex")
-           ('version "11.88.6")
-           ('source
-            ('origin
-              ('method 'url-fetch)
-              ('uri ('string-append
-                     "http://elpa.gnu.org/packages/auctex-" 'version ".tar"))
-              ('sha256 ('base32 (? string? hash)))))
-           ('build-system 'emacs-build-system)
-           ('home-page "http://www.gnu.org/software/auctex/")
-           ('synopsis "Integrated environment for *TeX*")
-           ('description "This is the description.")
-           ('license 'license:gpl3+))
+        (`(package
+            (name "emacs-auctex")
+            (version "11.88.6")
+            (source
+             (origin
+               (method url-fetch)
+               (uri (string-append
+                     "http://elpa.gnu.org/packages/auctex-" version ".tar"))
+               (sha256 (base32 ,(? string? hash)))))
+            (build-system emacs-build-system)
+            (home-page "http://www.gnu.org/software/auctex/")
+            (synopsis "Integrated environment for *TeX*")
+            (description "This is the description.")
+            (license license:gpl3+))
          #t)
         (x
          (pk 'fail x #f))))))
 
 (test-assert "elpa->guix-package test 1"
   (eval-test-with-elpa "auctex"))
+
+(test-equal "package-latest-release"
+  (list '("https://elpa.gnu.org/packages/taxy-magit-section-0.12.2.tar")
+        '("https://elpa.gnu.org/packages/taxy-magit-section-0.12.2.tar.sig")
+        (list (upstream-input
+               (name "magit-section")
+               (downstream-name "emacs-magit-section")
+               (type 'propagated)
+               (min-version "3.2.1")
+               (max-version min-version))
+              (upstream-input
+               (name "taxy")
+               (downstream-name "emacs-taxy")
+               (type 'propagated)
+               (min-version "0.10")
+               (max-version #f))))
+  (with-http-server `((200 ,(object->string elpa-mock-archive)))
+    (parameterize ((current-http-proxy (%local-url)))
+      (define source
+        (package-latest-release
+         (dummy-package "emacs-taxy-magit-section"
+                        (version "0.0.0")
+                        (source (dummy-origin
+                                 (method url-fetch)
+                                 (uri "https://elpa.gnu.org/xyz"))))
+         (list %elpa-updater)))
+
+      (list (upstream-source-urls source)
+            (upstream-source-signature-urls source)
+            (upstream-source-inputs source)))))
 
 (test-equal "guix-package->elpa-name: without 'upstream-name' property"
   "auctex"

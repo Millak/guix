@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Juliana Sims <jtsims@protonmail.com>
@@ -118,7 +118,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
 (define-public bear
   (package
     (name "bear")
-    (version "3.0.20")
+    (version "3.1.2")
     (source
      (origin
        (method git-fetch)
@@ -127,7 +127,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k89ccp9vz3x71w3r2wfpng9b8s0rxp4qr0ch9q32wq6y1ik847j"))))
+        (base32 "1iq0ciw3x2awpli4k9mhx80c442xbs70y4g6qpwrirbjw15q33n7"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases

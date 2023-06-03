@@ -529,14 +529,14 @@ workspaces.
 (define-public python-fire
   (package
     (name "python-fire")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fire" version))
        (sha256
         (base32
-         "0qka44n88y3qcj7xz0k0f3qb4phcg4z0wvd4jcii9lcr6rvbiqn5"))))
+         "1imc9ais15dz3gmphawql86l9av5dykbp4hz0883k5n8k2gd9c56"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -545,7 +545,7 @@ workspaces.
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (invoke "pytest")))))))
-    (inputs
+    (propagated-inputs
      (list python-six python-termcolor))
     (native-inputs
      (list python-mock python-pytest))
@@ -733,6 +733,28 @@ decorators, including variants of the Python standard library's
      "@command{cobib} is a command-line based bibliography management tool.
 It uses a plain-text database, a location-independent library, and features
 git integration, command-line support, and a curses-based TUI.")
+    (license license:expat)))
+
+(define-public python-colored
+  (package
+    (name "python-colored")
+    (version "1.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/dslackw/colored")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "196ins0m7f90xz5dw764dlx060ziqbcydqzzq40b4ir5858baf3r"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;the tests are not run automatically
+    (home-page "https://gitlab.com/dslackw/colored")
+    (synopsis "Simple library for color and formatting to terminal")
+    (description "This is a very simple Python library for color and
+formatting in the terminal.  It comes with a collection of color codes and
+names for 256 color terminal setups.")
     (license license:expat)))
 
 (define-public python-colorful
@@ -1113,6 +1135,23 @@ quantities: the product of a numerical value and a unit of measurement.  It
 allows arithmetic operations between them and conversions from and to
 different units.")
     (license license:bsd-3)))
+
+(define-public python-plotext
+  (package
+    (name "python-plotext")
+    (version "5.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "plotext" version))
+              (sha256
+               (base32
+                "1gpy1z2i4vq1mcrhysxahz4339pbl9rzk58rf5m5gf5ym9xji6ii"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;there are none
+    (home-page "https://github.com/piccolomo/plotext")
+    (synopsis "Plots in the terminal")
+    (description "Plotext lets you plot directly to the terminal.")
+    (license license:expat)))
 
 (define-public python-plotille
   (package
@@ -10418,13 +10457,6 @@ computing.")
     (inherit python-ipython)
     (name "python-ipython-documentation")
     (version (package-version python-ipython))
-    (source
-     (origin
-       (inherit (package-source python-ipython))
-       (patches (append (search-patches
-                         "python-ipython-documentation-chars.patch"
-                         "python-ipython-documentation-repro.patch")
-                        (origin-patches (package-source python-ipython))))))
     (arguments
      (list
       #:phases
@@ -10484,6 +10516,7 @@ computing.")
            font-gnu-freefont
            graphviz
            python-docrepr
+           python-ipykernel
            python-sphinx
            python-sphinx-rtd-theme
            texinfo
@@ -19920,13 +19953,13 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public glances
   (package
   (name "glances")
-  (version "3.3.1.1")
+  (version "3.4.0.3")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "Glances" version))
       (sha256
-        (base32 "16i92vsjpxpnpkab1wa1y2iw931mq1hna0d2gkkjmgxz1hhr58ih"))
+        (base32 "0pf8hxbgwkhv8l5frg61b073vscz5a7bz1al7xhn36fvh10xbcg7"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -32997,6 +33030,25 @@ functions
     (description "This package allows the programmatic creation of
 markdown-compliant strings.")
     (license license:expat)))
+
+(define-public python-zbarlight
+  (package
+    (name "python-zbarlight")
+    (version "3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zbarlight" version))
+              (sha256
+               (base32
+                "1v5c9bim8af6g8kgxp2dhm96n5vkr8sqi56w0bdh1xy49v03lw3g"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pillow))
+    (inputs (list zbar))
+    (home-page "https://github.com/Polyconseil/zbarlight")
+    (synopsis "Simple Python wrapper for the zbar barcode library")
+    (description "Zbarlight is a simple wrapper for the zbar library.  It can
+read all zbar supported codes.")
+    (license license:bsd-3)))
 
 (define-public python-zeroc-ice
   (package

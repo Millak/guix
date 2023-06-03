@@ -45,6 +45,7 @@
   #:use-module (guix sets)
   #:use-module ((guix ui) #:select (fill-paragraph))
   #:use-module (gnu packages)
+  #:autoload   (ice-9 control) (let/ec)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 receive)
@@ -126,18 +127,26 @@ of the string VERSION is replaced by the symbol 'version."
 (define (call-with-networking-exception-handler thunk)
   "Invoke THUNK, returning #f if one of the usual networking exception is
 thrown."
-  (catch #t
-    (lambda ()
-      (guard (c ((http-get-error? c) #f))
-        (thunk)))
-    (lambda (key . args)
-      ;; Return false and move on upon connection failures and bogus HTTP
-      ;; servers.
-      (unless (memq key '(gnutls-error tls-certificate-error
-                                       system-error getaddrinfo-error
-                                       bad-header bad-header-component))
-        (apply throw key args))
-      #f)))
+  (let/ec return
+    (with-exception-handler
+        (lambda (exception)
+          (cond ((http-get-error? exception)
+                 (return #f))
+                (((exception-predicate &exception-with-kind-and-args) exception)
+                 ;; Return false and move on upon connection failures and bogus
+                 ;; HTTP servers.
+                 (if (memq (exception-kind exception)
+                           '(gnutls-error tls-certificate-error
+                                          system-error getaddrinfo-error
+                                          bad-header bad-header-component))
+                     (return #f)
+                     (raise-exception exception)))
+                (else
+                 (raise-exception exception))))
+      thunk
+
+      ;; Do not unwind to preserve meaningful backtraces.
+      #:unwind? #f)))
 
 (define-syntax-rule (false-if-networking-error exp)
   "Evaluate EXP, returning #f if a networking-related exception is thrown."

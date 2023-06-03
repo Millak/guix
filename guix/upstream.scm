@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -38,6 +38,7 @@
   #:use-module (guix hash)
   #:use-module (guix store)
   #:use-module ((guix derivations) #:select (built-derivations derivation->output-path))
+  #:autoload   (guix read-print) (object->string*)
   #:autoload   (gcrypt hash) (port-sha256)
   #:use-module (guix monads)
   #:use-module (srfi srfi-1)
@@ -55,7 +56,20 @@
             upstream-source-urls
             upstream-source-signature-urls
             upstream-source-archive-types
-            upstream-source-input-changes
+            upstream-source-inputs
+
+            upstream-input-type-predicate
+            upstream-source-regular-inputs
+            upstream-source-native-inputs
+            upstream-source-propagated-inputs
+
+            upstream-input
+            upstream-input?
+            upstream-input-name
+            upstream-input-downstream-name
+            upstream-input-type
+            upstream-input-min-version
+            upstream-input-max-version
 
             url-predicate
             url-prefix-predicate
@@ -67,12 +81,6 @@
             upstream-updater-description
             upstream-updater-predicate
             upstream-updater-import
-
-            upstream-input-change?
-            upstream-input-change-name
-            upstream-input-change-type
-            upstream-input-change-action
-            changed-inputs
 
             %updaters
             lookup-updater
@@ -102,78 +110,40 @@
   (urls           upstream-source-urls)           ;list of strings|git-reference
   (signature-urls upstream-source-signature-urls  ;#f | list of strings
                   (default #f))
-  (input-changes  upstream-source-input-changes
-                  (default '()) (thunked)))
+  (inputs         upstream-source-inputs        ;#f | list of <upstream-input>
+                  (delayed) (default #f))) ;delayed because optional and costly
 
-;; Representation of an upstream input change.
-(define-record-type* <upstream-input-change>
-  upstream-input-change make-upstream-input-change
-  upstream-input-change?
-  (name    upstream-input-change-name)    ;string
-  (type    upstream-input-change-type)    ;symbol: regular | native | propagated
-  (action  upstream-input-change-action)) ;symbol: add | remove
+;; Representation of a dependency as expressed by upstream.
+(define-record-type* <upstream-input>
+  upstream-input make-upstream-input
+  upstream-input?
+  (name         upstream-input-name)               ;upstream package name
+  (downstream-name upstream-input-downstream-name) ;Guix package name
+  (type         upstream-input-type          ;'regular | 'native | 'propagated
+                (default 'regular))
+  (min-version  upstream-input-min-version
+                (default 'any))
+  (max-version  upstream-input-max-version
+                (default 'any)))
 
-(define (changed-inputs package package-sexp)
-  "Return a list of input changes for PACKAGE based on the newly imported
-S-expression PACKAGE-SEXP."
-  (match package-sexp
-    ((and expr ('package fields ...))
-     (let* ((input->name (match-lambda ((name pkg . out) name)))
-            (new-regular
-             (match expr
-               ((path *** ('inputs
-                           ('quasiquote ((label ('unquote sym)) ...)))) label)
-               ((path *** ('inputs
-                           ('list sym ...))) (map symbol->string sym))
-               (_ '())))
-            (new-native
-             (match expr
-               ((path *** ('native-inputs
-                           ('quasiquote ((label ('unquote sym)) ...)))) label)
-               ((path *** ('native-inputs
-                           ('list sym ...))) (map symbol->string sym))
-               (_ '())))
-            (new-propagated
-             (match expr
-               ((path *** ('propagated-inputs
-                           ('quasiquote ((label ('unquote sym)) ...)))) label)
-               ((path *** ('propagated-inputs
-                           ('list sym ...))) (map symbol->string sym))
-               (_ '())))
-            (current-regular
-             (map input->name (package-inputs package)))
-            (current-native
-             (map input->name (package-native-inputs package)))
-            (current-propagated
-             (map input->name (package-propagated-inputs package))))
-       (append-map
-        (match-lambda
-          ((action type names)
-           (map (lambda (name)
-                  (upstream-input-change
-                   (name name)
-                   (type type)
-                   (action action)))
-                names)))
-        `((add regular
-           ,(lset-difference equal?
-                             new-regular current-regular))
-          (remove regular
-           ,(lset-difference equal?
-                             current-regular new-regular))
-          (add native
-           ,(lset-difference equal?
-                             new-native current-native))
-          (remove native
-           ,(lset-difference equal?
-                             current-native new-native))
-          (add propagated
-           ,(lset-difference equal?
-                             new-propagated current-propagated))
-          (remove propagated
-           ,(lset-difference equal?
-                             current-propagated new-propagated))))))
-    (_ '())))
+(define (upstream-input-type-predicate type)
+  "Return a predicate that returns true when passed an <upstream-input> record
+of the given TYPE (a symbol such as 'propagated)."
+  (lambda (source)
+    (eq? type (upstream-input-type source))))
+
+(define (input-type-filter type)
+  "Return a procedure that, given an <upstream-source>, returns the subset of
+its inputs that have the given TYPE (a symbol such as 'native)."
+  (lambda (source)
+    "Return the subset of inputs of SOURCE that have the given TYPE."
+    (filter (lambda (input)
+              (eq? type (upstream-input-type input)))
+            (upstream-source-inputs source))))
+
+(define upstream-source-regular-inputs (input-type-filter 'regular))
+(define upstream-source-native-inputs (input-type-filter 'native))
+(define upstream-source-propagated-inputs (input-type-filter 'propagated))
 
 (define* (url-predicate matching-url?)
   "Return a predicate that returns true when passed a package whose source is
@@ -550,6 +520,85 @@ this method: ~s")
                   (package-name package)))
      (values #f #f #f))))
 
+(define (update-package-inputs package source)
+  "Update the input fields of the definition of PACKAGE according to those
+specified in SOURCE, an <upstream-source>."
+  (define (update-field field source-inputs package-inputs)
+    (define loc
+      (package-field-location package field))
+
+    (define new
+      (map (compose string->symbol upstream-input-downstream-name)
+           (source-inputs source)))
+
+    (define old
+      (match (package-inputs package)
+        (((labels (? package? packages)) ...)
+         labels)
+        (_
+         '())))
+
+    (define unchanged?
+      (equal? new old))
+
+    (if (and loc (not unchanged?))
+        (edit-expression (location->source-properties
+                          (absolute-location loc))
+                         (lambda (str)
+                           (object->string* `(list ,@new)
+                                            (location-column loc))))
+        (unless unchanged?
+          ;; XXX: Bail out when FIELD isn't already present in the source.
+          ;; TODO: Add the field if it's missing.
+          (warning (package-location package)
+                   (G_ "~a: '~a' field not found; leaving it unchanged~%")
+                   (package-name package) field)
+          (warning (package-location package)
+                   (G_ "~a: expected '~a' value: ~s~%")
+                   (package-name package) field new))))
+
+  (define (filtered-inputs source-inputs extra-property ignore-property)
+    ;; Return a procedure that behaves like SOURCE-INPUTS but additionally
+    ;; honors EXTRA-PROPERTY and IGNORE-PROPERTY from PACKAGE.
+    (lambda (source)
+      (let* ((inputs (source-inputs source))
+             (properties (package-properties package))
+             (ignore (or (assoc-ref properties ignore-property) '()))
+             (extra (or (assoc-ref properties extra-property) '())))
+        (append (if (null? ignore)
+                    inputs
+                    (remove (lambda (input)
+                              (member (upstream-input-downstream-name input)
+                                      ignore))
+                            inputs))
+                (map (lambda (name)
+                       (upstream-input
+                        (name name)
+                        (downstream-name name)))
+                     extra)))))
+
+  (define regular-inputs
+    (filtered-inputs upstream-source-regular-inputs
+                     'updater-extra-inputs
+                     'updater-ignored-inputs))
+  (define native-inputs
+    (filtered-inputs upstream-source-native-inputs
+                     'updater-extra-native-inputs
+                     'updater-ignored-native-inputs))
+  (define propagated-inputs
+    (filtered-inputs upstream-source-propagated-inputs
+                     'updater-extra-propagated-inputs
+                     'updater-ignored-propagated-inputs))
+
+  (for-each update-field
+            '(inputs native-inputs propagated-inputs)
+            (list regular-inputs
+                  native-inputs
+                  propagated-inputs)
+            (list package-inputs
+                  package-native-inputs
+                  package-propagated-inputs)))
+
 (define* (update-package-source package source hash)
   "Modify the source file that defines PACKAGE to refer to SOURCE, an
 <upstream-source> whose tarball has SHA256 HASH (a bytevector).  Return the
@@ -604,9 +653,7 @@ new version string if an update was made, and #f otherwise."
               ;; function of the person who uploads the package.  Note that
               ;; package definitions usually concatenate fragments of the URL,
               ;; which is why we only attempt to replace a subset of the URL.
-              (let ((properties (assq-set! (location->source-properties loc)
-                                           'filename file))
-                    (replacements `((,old-version . ,version)
+              (let ((replacements `((,old-version . ,version)
                                     (,old-hash . ,hash)
                                     ,@(if (and old-commit new-commit)
                                           `((,old-commit . ,new-commit))
@@ -615,8 +662,11 @@ new version string if an update was made, and #f otherwise."
                                           `((,(dirname old-url) .
                                              ,(dirname new-url)))
                                           '()))))
-                (and (edit-expression properties
+                (and (edit-expression (location->source-properties
+                                       (absolute-location loc))
                                       (cut update-expression <> replacements))
+                     (or (not (upstream-source-inputs source))
+                         (update-package-inputs package source))
                      version))
               (begin
                 (warning (G_ "~a: could not locate source file")

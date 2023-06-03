@@ -52,7 +52,18 @@
                                         (upstream-source
                                          (package (package-name package))
                                          (version version)
-                                         (urls (list url)))))
+                                         (urls (list url))))
+                                       ((version url (inputs ...))
+                                        (upstream-source
+                                         (package (package-name package))
+                                         (version version)
+                                         (urls (list url))
+                                         (inputs
+                                          (map (lambda (name)
+                                                 (upstream-input
+                                                  (name name)
+                                                  (downstream-name name)))
+                                               inputs)))))
                                      updates)
                                 result)
                         result))))

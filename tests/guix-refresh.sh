@@ -34,7 +34,8 @@ GUIX_TEST_UPDATER_TARGETS='
                  ("1.6.4" "file:///dev/null")))
    ("libreoffice" "" (("1.0" "file:///dev/null")))
    ("idutils" "" (("'$idutils_version'" "file:///dev/null")))
-   ("the-test-package" "" (("5.5" "file://'$PWD/$module_dir'/source"))))'
+   ("the-test-package" "" (("5.5" "file://'$PWD/$module_dir'/source"
+                                   ("grep" "sed" "libreoffice")))))'
 
 # No newer version available.
 guix refresh -t test idutils	# XXX: should return non-zero?
@@ -91,13 +92,16 @@ cat > "$module_dir/sample.scm"<<EOF
                                   ".tar.gz"))
               (sha256
                (base32
-                "086vqwk2wl8zfs47sq2xpjc9k066ilmb8z6dn0q6ymwjzlm196cd"))))))
+                "086vqwk2wl8zfs47sq2xpjc9k066ilmb8z6dn0q6ymwjzlm196cd"))))
+    (inputs (list coreutils tar))
+    (properties '((updater-ignored-inputs . ("libreoffice"))))))
 EOF
 guix refresh -t test -L "$module_dir" the-test-package
 guix refresh -t test -L "$module_dir" the-test-package -u \
      --keyring="$module_dir/keyring.kbx"  # so we don't create $HOME/.config
 grep 'version "5.5"' "$module_dir/sample.scm"
 grep "$(guix hash -H sha256 -f nix-base32 "$module_dir/source")" "$module_dir/sample.scm"
+grep '(inputs (list grep sed))' "$module_dir/sample.scm"
 
 # Specifying a target version.
 guix refresh -t test guile=2.0.0 # XXX: should return non-zero?

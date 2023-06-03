@@ -481,18 +481,29 @@ STATUS-PORT."
        (leave (G_ "unsupported substitute URI scheme: ~a~%")
               (uri->string uri)))))
 
-  (let ((uri compression file-size
-             (narinfo-best-uri narinfo
-                               #:fast-decompression?
-                               %prefer-fast-decompression?)))
-    (unless print-build-trace?
-      (format (current-error-port)
-              (G_ "Downloading ~a...~%") (uri->string uri)))
+  (define (try-fetch choices)
+    (match choices
+      (((uri compression file-size) rest ...)
+       (guard (c ((and (pair? rest) (http-get-error? c))
+                  (warning (G_ "download from '~a' failed, trying next URL~%")
+                           (uri->string uri))
+                  (try-fetch rest)))
+         (let ((port download-size (fetch uri)))
+           (unless print-build-trace?
+             (format (current-error-port)
+                     (G_ "Downloading ~a...~%") (uri->string uri)))
+           (values port uri compression download-size))))
+      (()
+       (leave (G_ "no valid nar URLs for ~a at ~a~%")
+              (narinfo-path narinfo)
+              (narinfo-uri-base narinfo)))))
 
-    (let* ((raw download-size
-                ;; 'guix publish' without '--cache' doesn't specify a
-                ;; Content-Length, so DOWNLOAD-SIZE is #f in this case.
-                (fetch uri))
+  (let ((choices (narinfo-preferred-uris narinfo
+                                         #:fast-decompression?
+                                         %prefer-fast-decompression?)))
+    ;; 'guix publish' without '--cache' doesn't specify a Content-Length, so
+    ;; DOWNLOAD-SIZE is #f in this case.
+    (let* ((raw uri compression download-size (try-fetch choices))
            (progress
             (let* ((dl-size  (or download-size
                                  (and (equal? compression "none")

@@ -898,103 +898,10 @@ create a set of formula connecting your objects together, and on a change nip2
 recalculates.")
     (license license:gpl2+)))
 
-;; This package bundles and extends VTK.  It also reuses the VTK build system
-;; to some degree.  Sadly, it does not seem to be possible to build with an
-;; external VTK, despite the CMake option PARAVIEW_USE_EXTERNAL_VTK.
-(define-public paraview-5.9
-  (package
-    (name "paraview")
-    (version "5.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.paraview.org/files/v"
-                           (version-major+minor version)
-                           "/ParaView-v" version ".tar.xz"))
-       (sha256
-        (base32 "13aczmfshzia324h9r2m675yyrklz2308rf98n444ppmzfv6qj0d"))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:build-type "Release"        ;Build without debug symbols to save space
-      #:configure-flags
-      '(list "-DPARAVIEW_BUILD_WITH_EXTERNAL=ON"
-             "-DPARAVIEW_BUILD_SHARED_LIBS=ON"
-             "-DPARAVIEW_BUILD_DEVELOPER_DOCUMENTATION=OFF"
-             "-DPARAVIEW_USE_PYTHON=ON"
-             "-DPARAVIEW_ENABLE_FFMPEG=ON"
-             "-DPARAVIEW_ENABLE_GDAL=ON"
-             "-DPARAVIEW_ENABLE_WEB=OFF"
-
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_expat=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_glew=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_libxml2=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_lz4=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_lzma=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_theora=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_utf8=ON"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
-
-             "-DVTK_MODULE_USE_EXTERNAL_ParaView_vtkcatalyst=OFF"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_cgns=OFF"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_exprtk=OFF"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_fmt=OFF"
-             "-DVTK_MODULE_USE_EXTERNAL_VTK_ioss=OFF")))
-    (inputs
-     (list ;; XXX: We can't simply #:use-module due to a cycle somewhere.
-           (module-ref
-            (resolve-interface '(gnu packages engineering))
-            'cgns)
-           cli11
-           double-conversion
-           eigen
-           expat
-           ffmpeg-4
-           freetype
-           gdal
-           gl2ps
-           glew
-           hdf5
-           jsoncpp
-           libharu
-           libjpeg-turbo
-           libpng
-           libtheora
-           libtiff
-           libxml2
-           lz4
-           mesa
-           netcdf
-           protobuf
-           pugixml
-           python
-           qtbase-5
-           qtsvg-5
-           qttools-5
-           qtxmlpatterns
-           utfcpp
-           zlib))
-    (home-page "https://www.paraview.org/")
-    (synopsis "Data analysis and visualization application")
-    (description "ParaView is a data analysis and visualization application.
-Users can quickly build visualizations to analyze their data using qualitative
-and quantitative techniques.  The data exploration can be done interactively
-in 3D or programmatically using ParaView’s batch processing capabilities.")
-    (license license:bsd-3)))
-
 (define-public paraview
   (package
     (name "paraview")
-    (version "5.11.0")
+    (version "5.11.1")
     (source
      (origin
        (method git-fetch)
@@ -1004,7 +911,7 @@ in 3D or programmatically using ParaView’s batch processing capabilities.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qifzsbgg8f7zvg5a4934nql6nv5b6sm1f59bylyc6v5bqd0myas"))
+        (base32 "0m1lgkl95f0pyhxp97gq2rf8hibv39v4c49imfj1va40z0flvard"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Also remove unused bundled libraries and plugins?
@@ -1055,7 +962,7 @@ in 3D or programmatically using ParaView’s batch processing capabilities.")
                         "lzma"
                         "mpi4py"
                         "netcdf"
-                        ;;"nlohmannjson" ; ParFlow build fails even with bundled
+                        "nlohmannjson"
                         "ogg"
                         ;;"pegtl"
                         "png"
@@ -1164,7 +1071,7 @@ in 3D or programmatically using ParaView’s batch processing capabilities.")
            "-DVTK_MODULE_USE_EXTERNAL_VTK_lzma=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_mpi4py=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
-           ;;"-DVTK_MODULE_USE_EXTERNAL_VTK_nlohmannjson=ON"
+           "-DVTK_MODULE_USE_EXTERNAL_VTK_nlohmannjson=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_ogg=ON"
            ;;"-DVTK_MODULE_USE_EXTERNAL_VTK_pegtl=ON"
            "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
@@ -1213,7 +1120,7 @@ in 3D or programmatically using ParaView’s batch processing capabilities.")
            glew
            gmsh
            hdf5
-           ;;nlohmann-json                ;For ParFlow; build fails
+           nlohmann-json                ;For ParFlow; build fails
            jsoncpp
            libjpeg-turbo
            libogg

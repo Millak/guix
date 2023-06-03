@@ -2333,7 +2333,12 @@ exec " gcc "/bin/" program
              ;; names, which cannot be repacked by BOOTSTRAP-ORIGIN.  Nor
              ;; can it be deleted from Guile, so resort to this evil hack.
              #$(origin-snippet (package-source gcc))
-             (system* #$(file-append coreutils-boot0 "/bin/rm") "-rf"
+             (system* #$(file-append (let-system system
+                                       ;; 'coreutils-boot0' is Linux-only.
+                                       (if (target-hurd? system)
+                                           %bootstrap-coreutils&co
+                                           coreutils-boot0))
+                                     "/bin/rm") "-rf"
                       "gcc/testsuite/go.test/test/fixedbugs/issue27836.dir"))))))
     (arguments
      (cons*
@@ -2492,8 +2497,9 @@ exec " gcc "/bin/" program
      `(#:guile ,%bootstrap-guile
        #:implicit-inputs? #f
        ,@(package-arguments m4)
-       ;; Ignore test failure in gnulib for armhf/aarch64.
-       #:tests? ,(not (target-arm?))))))
+       ;; Ignore test failure in gnulib for armhf/aarch64 and Hurd
+       #:tests? ,(and (not (target-arm?))
+                      (not (target-hurd?)))))))
 
 (define bison-boot0
   ;; This Bison is needed to build MiG so we need it early in the process.

@@ -35,7 +35,7 @@
 # Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 # Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 # Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
-# Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
+# Copyright © 2020, 2023 Tanguy Le Carrour <tanguy@bioneland.org>
 # Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 # Copyright © 2020 Malte Frank Gerdes <mate.f.gerdes@gmail.com>
 # Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
@@ -94,6 +94,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/fontutils.scm		\
   %D%/home/services/gnupg.scm			\
   %D%/home/services/guix.scm			\
+  %D%/home/services/mail.scm			\
   %D%/home/services/media.scm			\
   %D%/home/services/messaging.scm		\
   %D%/home/services/pm.scm			\
@@ -1032,8 +1033,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/curl-use-ssl-cert-env.patch		\
   %D%/packages/patches/cursynth-wave-rand.patch			\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\
-  %D%/packages/patches/c++-gsl-find-system-gtest.patch		\
-  %D%/packages/patches/c++-gsl-move-array-bounds-tests.patch	\
   %D%/packages/patches/date-output-pkg-config-files.patch	\
   %D%/packages/patches/datefudge-gettimeofday.patch		\
   %D%/packages/patches/dbacl-include-locale.h.patch		\
@@ -1496,6 +1495,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libtirpc-CVE-2021-46828.patch		\
   %D%/packages/patches/libtirpc-hurd.patch			\
   %D%/packages/patches/libtommath-fix-linkage.patch		\
+  %D%/packages/patches/libtommath-integer-overflow.patch	\
   %D%/packages/patches/libtool-grep-compat.patch		\
   %D%/packages/patches/libtool-skip-tests2.patch		\
   %D%/packages/patches/libusb-0.1-disable-tests.patch		\
@@ -1684,6 +1684,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/prusa-slicer-with-cereal-1.3.1.patch	\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
+  %D%/packages/patches/python-docrepr-fix-tests.patch		\
   %D%/packages/patches/python-feedparser-missing-import.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
@@ -1786,8 +1787,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
   %D%/packages/patches/python-hiredis-fix-header.patch		\
   %D%/packages/patches/python-hiredis-use-system-hiredis.patch	\
-  %D%/packages/patches/python-ipython-documentation-chars.patch	\
-  %D%/packages/patches/python-ipython-documentation-repro.patch	\
   %D%/packages/patches/python-keras-integration-test.patch	\
   %D%/packages/patches/python-pdoc3-tests.patch			\
   %D%/packages/patches/python-peachpy-determinism.patch	\
@@ -2049,7 +2048,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/wdl-link-libs-and-fix-jnetlib.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\
-  %D%/packages/patches/webrtc-for-telegram-desktop-fix-gcc12-cstdint.patch   \
   %D%/packages/patches/websocketpp-fix-for-cmake-3.15.patch	\
   %D%/packages/patches/wmctrl-64-fix.patch			\
   %D%/packages/patches/wmfire-update-for-new-gdk-versions.patch	\

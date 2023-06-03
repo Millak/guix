@@ -99,6 +99,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -1278,7 +1279,7 @@ and multimedia programs in the Python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.0.3"))
+        (renpy-version "8.1.0"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
@@ -1288,7 +1289,7 @@ and multimedia programs in the Python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "1nq78mybkvshshdjy5bly6nfq6dnwll648ng62fwmksxpni17486"))
+         (sha256 (base32 "1qj39jqnv334p4wnxc2v5qxyahp7nkqf9hpdd2sgqcmgaqwnqqmj"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1298,22 +1299,22 @@ and multimedia programs in the Python language.")
              (delete-file-recursively "gen-static")))))
       (build-system python-build-system)
       (arguments
-       `(#:tests? #f                ; tests require pygame to be installed first
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'set-paths 'set-sdl-vars
-             (lambda* (#:key inputs #:allow-other-keys)
-               (setenv "PYGAME_SDL2_CFLAGS"
-                       (string-append "-I"
-                                      (assoc-ref inputs "sdl-union")
-                                      "/include/SDL2 -D_REENTRANT"))
-               (setenv "PYGAME_SDL2_LDFLAGS"
-                       (string-append "-L"
-                                      (assoc-ref inputs "sdl-union")
-                                      "/lib -Wl,-rpath,"
-                                      (assoc-ref inputs "sdl-union")
-                                      "/lib -Wl,--enable-new-dtags -lSDL2"))
-               #t)))))
+       (list
+        #:tests? #f               ; tests require pygame to be installed first
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'set-paths 'set-sdl-vars
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "PYGAME_SDL2_CFLAGS"
+                        (string-append "-I"
+                                       (assoc-ref inputs "sdl-union")
+                                       "/include/SDL2 -D_REENTRANT"))
+                (setenv "PYGAME_SDL2_LDFLAGS"
+                        (string-append "-L"
+                                       (assoc-ref inputs "sdl-union")
+                                       "/lib -Wl,-rpath,"
+                                       (assoc-ref inputs "sdl-union")
+                                       "/lib -Wl,--enable-new-dtags -lSDL2")))))))
       (inputs
        (list (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
       (native-inputs
@@ -1329,73 +1330,77 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.0.3")
+    (version "8.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.renpy.org/dl/" version
                            "/renpy-" version "-source.tar.bz2"))
-       (sha256 (base32 "1b49y60pi6304fg06lw5gajzrgg9w80swpfkn6pw0lxbr6djgjgn"))
+       (sha256
+        (base32
+         "08l7z2vwqxkskj3rs2a0w9ahah28ixq8hy48h30k2dm9g19h450h"))
        (modules '((guix build utils)))
-       (patches
-        (search-patches
-         "renpy-use-system-fribidi.patch"))
        (snippet
-        '(with-directory-excursion "module"
-           ;; drop fribidi sources
-           (delete-file-recursively "fribidi-src")
-           ;; drop _renpytfd, as there are missing sources
-           (substitute* "setup.py"
-             (("cython\\(\"_renpytfd\"" all)
-              (string-append "pass # " all)))))))
+        #~(begin
+            ;; Build without sync service.
+            ;; Encryption is only used for enabling this service and requires
+            ;; libhydrogen, which doesn't have a public release, so drop it
+            ;; as well
+            (for-each delete-file
+                      '("renpy/encryption.pyx"
+                        "renpy/common/00sync.rpy"))
+            (substitute* "module/setup.py"
+              (("cython\\(\"renpy\\.encryption\"\\)") ""))
+            (substitute* "renpy/__init__.py"
+              (("import renpy\\.encryption") ""))
+            ;; Trust vc_version.py when it comes to detecting whether a
+            ;; version is official.
+            (substitute* "renpy/__init__.py"
+              (("official = official and .*") ""))))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ; Ren'py doesn't seem to package tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-commands
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "renpy/editor.py"
-               (("xdg-open")
-                (string-append (assoc-ref inputs "xdg-utils")
-                               "/bin/xdg-open")))))
-         (add-after 'unpack 'fix-include-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "module/setup.py"
-               (("/usr/include/fribidi")
-                (search-input-directory inputs "include/fribidi")))))
-         (add-after 'set-paths 'set-build-vars
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (setenv "RENPY_CYTHON"
-                     (search-input-file (or native-inputs inputs)
-                                        "/bin/cython"))
-             (setenv "RENPY_DEPS_INSTALL" (string-join (map cdr inputs) ":"))))
-         (replace 'build
-           (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-             ;; The "module" subdirectory contains a python (really cython)
-             ;; project, which is built using a script, that is thankfully
-             ;; named "setup.py".
-             (with-directory-excursion "module"
-               (apply (assoc-ref %standard-phases 'build) args))
-             ;; The above only builds the cython modules, but nothing else,
-             ;; so we do that here.
-             (invoke "python" "-m" "compileall" "renpy")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-             ;; Again, we have to wrap the module installation.
-             ;; Additionally, we want to install the python code
-             ;; (both source and compiled) in the same directory.
-             (let* ((out (assoc-ref outputs "out"))
-                    (site (string-append "/lib/python"
-                                         (python-version
-                                          (assoc-ref inputs "python"))
-                                         "/site-packages")))
-               (with-directory-excursion "module"
-                 (apply (assoc-ref %standard-phases 'install) args))
-               (copy-recursively "renpy"
-                                 (string-append out site "/renpy"))
-               (delete-file-recursively (string-append out site
-                                                       "/renpy/common"))))))))
+     (list
+      #:tests? #f                       ; Ren'py doesn't seem to package tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "renpy/editor.py"
+                (("xdg-open")
+                 (string-append (assoc-ref inputs "xdg-utils")
+                                "/bin/xdg-open")))))
+          (add-after 'set-paths 'set-build-vars
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (setenv "RENPY_CYTHON"
+                      (search-input-file (or native-inputs inputs)
+                                         "/bin/cython"))
+              (setenv "RENPY_DEPS_INSTALL" (string-join (map cdr inputs) ":"))))
+          (replace 'build
+            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
+              ;; The "module" subdirectory contains a python (really cython)
+              ;; project, which is built using a script, that is thankfully
+              ;; named "setup.py".
+              (with-directory-excursion "module"
+                (apply (assoc-ref %standard-phases 'build) args))
+              ;; The above only builds the cython modules, but nothing else,
+              ;; so we do that here.
+              (invoke "python" "-m" "compileall" "renpy")))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
+              ;; Again, we have to wrap the module installation.
+              ;; Additionally, we want to install the python code
+              ;; (both source and compiled) in the same directory.
+              (let* ((out (assoc-ref outputs "out"))
+                     (site (string-append "/lib/python"
+                                          (python-version
+                                           (assoc-ref inputs "python"))
+                                          "/site-packages")))
+                (with-directory-excursion "module"
+                  (apply (assoc-ref %standard-phases 'install) args))
+                (copy-recursively "renpy"
+                                  (string-append out site "/renpy"))
+                (delete-file-recursively (string-append out site
+                                                        "/renpy/common"))))))))
     (native-inputs (list python-cython))
     (inputs
      (list ffmpeg
@@ -1405,7 +1410,7 @@ developed mainly for Ren'py.")
            libpng
            (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
            xdg-utils))
-    (propagated-inputs (list python-future python-pygame-sdl2))
+    (propagated-inputs (list python-ecdsa python-future python-pygame-sdl2))
     (home-page "https://www.renpy.org/")
     (synopsis "Ren'py python module")
     (description "This package contains the shared libraries and Python modules

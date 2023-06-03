@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -32,182 +32,27 @@
 
 (test-begin "upstream")
 
-;; FIXME: Temporarily skipping this test; see <https://bugs.gnu.org/34229>.
-(test-skip 1)
-
 (test-equal "coalesce-sources same version"
-  (list (upstream-source
-         (package "foo") (version "1")
-         (urls '("ftp://example.org/foo-1.tar.xz"
-                 "ftp://example.org/foo-1.tar.gz"))
-         (signature-urls '("ftp://example.org/foo-1.tar.xz.sig"
-                           "ftp://example.org/foo-1.tar.gz.sig"))))
+  '((source "foo" "1"
+            ("ftp://example.org/foo-1.tar.xz"
+             "ftp://example.org/foo-1.tar.gz")
+            ("ftp://example.org/foo-1.tar.xz.sig"
+             "ftp://example.org/foo-1.tar.gz.sig")))
 
-  (coalesce-sources (list (upstream-source
-                           (package "foo") (version "1")
-                           (urls '("ftp://example.org/foo-1.tar.gz"))
-                           (signature-urls
-                            '("ftp://example.org/foo-1.tar.gz.sig")))
-                          (upstream-source
-                           (package "foo") (version "1")
-                           (urls '("ftp://example.org/foo-1.tar.xz"))
-                           (signature-urls
-                            '("ftp://example.org/foo-1.tar.xz.sig"))))))
-
-(define test-package
-  (package
-    (name "test")
-    (version "2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/hello/hello-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
-    (build-system gnu-build-system)
-    (inputs
-     `(("hello" ,hello)))
-    (native-inputs
-     `(("sed" ,sed)
-       ("tar" ,tar)))
-    (propagated-inputs
-     `(("grep" ,grep)))
-    (home-page "http://localhost")
-    (synopsis "test")
-    (description "test")
-    (license license:gpl3+)))
-
-(define test-package-sexp
-  '(package
-    (name "test")
-    (version "2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/hello/hello-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
-    (build-system gnu-build-system)
-    (inputs
-     `(("hello" ,hello)))
-    (native-inputs
-     `(("sed" ,sed)
-       ("tar" ,tar)))
-    (propagated-inputs
-     `(("grep" ,grep)))
-    (home-page "http://localhost")
-    (synopsis "test")
-    (description "test")
-    (license license:gpl3+)))
-
-(test-equal "changed-inputs returns no changes"
-  '()
-  (changed-inputs test-package test-package-sexp))
-
-(test-assert "changed-inputs returns changes to labelled input list"
-  (let ((changes (changed-inputs
-                  (package
-                    (inherit test-package)
-                    (inputs `(("hello" ,hello)
-                              ("sed" ,sed))))
-                  test-package-sexp)))
-    (match changes
-      ;; Exactly one change
-      (((? upstream-input-change? item))
-       (and (equal? (upstream-input-change-type item)
-                    'regular)
-            (equal? (upstream-input-change-action item)
-                    'remove)
-            (string=? (upstream-input-change-name item)
-                      "sed")))
-      (else (pk else #false)))))
-
-(test-assert "changed-inputs returns changes to all labelled input lists"
-  (let ((changes (changed-inputs
-                  (package
-                    (inherit test-package)
-                    (inputs '())
-                    (native-inputs '())
-                    (propagated-inputs '()))
-                  test-package-sexp)))
-    (match changes
-      (((? upstream-input-change? items) ...)
-       (and (equal? (map upstream-input-change-type items)
-                    '(regular native native propagated))
-            (equal? (map upstream-input-change-action items)
-                    '(add add add add))
-            (equal? (map upstream-input-change-name items)
-                    '("hello" "sed" "tar" "grep"))))
-      (else (pk else #false)))))
-
-(define test-new-package
-  (package
-    (inherit test-package)
-    (inputs
-     (list hello))
-    (native-inputs
-     (list sed tar))
-    (propagated-inputs
-     (list grep))))
-
-(define test-new-package-sexp
-  '(package
-    (name "test")
-    (version "2.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/hello/hello-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list hello))
-    (native-inputs
-     (list sed tar))
-    (propagated-inputs
-     (list grep))
-    (home-page "http://localhost")
-    (synopsis "test")
-    (description "test")
-    (license license:gpl3+)))
-
-(test-assert "changed-inputs returns changes to plain input list"
-  (let ((changes (changed-inputs
-                  (package
-                    (inherit test-new-package)
-                    (inputs (list hello sed)))
-                  test-new-package-sexp)))
-    (match changes
-      ;; Exactly one change
-      (((? upstream-input-change? item))
-       (and (equal? (upstream-input-change-type item)
-                    'regular)
-            (equal? (upstream-input-change-action item)
-                    'remove)
-            (string=? (upstream-input-change-name item)
-                      "sed")))
-      (else (pk else #false)))))
-
-(test-assert "changed-inputs returns changes to all plain input lists"
-  (let ((changes (changed-inputs
-                  (package
-                    (inherit test-new-package)
-                    (inputs '())
-                    (native-inputs '())
-                    (propagated-inputs '()))
-                  test-new-package-sexp)))
-    (match changes
-      (((? upstream-input-change? items) ...)
-       (and (equal? (map upstream-input-change-type items)
-                    '(regular native native propagated))
-            (equal? (map upstream-input-change-action items)
-                    '(add add add add))
-            (equal? (map upstream-input-change-name items)
-                    '("hello" "sed" "tar" "grep"))))
-      (else (pk else #false)))))
+  (map (lambda (source)
+         `(source ,(upstream-source-package source)
+                  ,(upstream-source-version source)
+                  ,(upstream-source-urls source)
+                  ,(upstream-source-signature-urls source)))
+       (coalesce-sources (list (upstream-source
+                                (package "foo") (version "1")
+                                (urls '("ftp://example.org/foo-1.tar.gz"))
+                                (signature-urls
+                                 '("ftp://example.org/foo-1.tar.gz.sig")))
+                               (upstream-source
+                                (package "foo") (version "1")
+                                (urls '("ftp://example.org/foo-1.tar.xz"))
+                                (signature-urls
+                                 '("ftp://example.org/foo-1.tar.xz.sig")))))))
 
 (test-end)

@@ -16537,20 +16537,20 @@ scale statistical machine learning package")
   (sbcl-package->cl-source-package sbcl-clml))
 
 (define-public sbcl-utm-ups
-  (let ((commit "ffcb7b6d5a56fb7d4b2b95b83bbd28ffe6e6961f")
+  (let ((commit "f1e6fd469871051470dfaabdf199afb75f2fa302")
         (revision "0"))
     (package
       (name "sbcl-utm-ups")
-      (version (git-version "1.1" revision commit))
+      (version (git-version "1.2" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://codeberg.org/glv/utm-ups")
                (commit commit)))
-         (file-name (git-file-name "utm-ups" version))
+         (file-name (git-file-name "cl-utm-ups" version))
          (sha256
-          (base32 "1rvyh0srgd81kvbzmq4ysd9y6c0qdwh23naqxc9asw1vh7fq08x1"))))
+          (base32 "19nnnqagfg1c1vzwlqpp8mq2d0hrk8r6r07a46nvdyzmwbnmbwyr"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))

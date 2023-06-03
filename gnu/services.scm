@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2023 Brian Cully <bjc@spork.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -296,20 +297,35 @@ singleton service type NAME, of which the returned service is an instance."
                                   (description "This is a simple service."))))
     (service type value)))
 
-(define-syntax %modify-service
+(define (%delete-service kind services)
+  (let loop ((found #f)
+             (return '())
+             (services services))
+    (match services
+      ('()
+       (if found
+           (values return found)
+           (raise (formatted-message
+                   (G_ "modify-services: service '~a' not found in service list")
+                   (service-type-name kind)))))
+      ((service . rest)
+       (if (eq? (service-kind service) kind)
+           (loop service return rest)
+           (loop found (cons service return) rest))))))
+
+(define-syntax %apply-clauses
   (syntax-rules (=> delete)
-    ((_ svc (delete kind) clauses ...)
-     (if (eq? (service-kind svc) kind)
-         #f
-         (%modify-service svc clauses ...)))
-    ((_ service)
-     service)
-    ((_ svc (kind param => exp ...) clauses ...)
-     (if (eq? (service-kind svc) kind)
-         (let ((param (service-value svc)))
-           (service (service-kind svc)
-                    (begin exp ...)))
-         (%modify-service svc clauses ...)))))
+    ((_ ((delete kind) . rest) services)
+     (%apply-clauses rest (%delete-service kind services)))
+    ((_ ((kind param => exp ...) . rest) services)
+     (call-with-values (lambda () (%delete-service kind services))
+       (lambda (svcs found)
+         (let ((param (service-value found)))
+           (cons (service (service-kind found)
+                          (begin exp ...))
+                 (%apply-clauses rest svcs))))))
+    ((_ () services)
+     services)))
 
 (define-syntax modify-services
   (syntax-rules ()
@@ -345,10 +361,8 @@ all the MINGETTY-SERVICE-TYPE instances, and it deletes instances of the
 UDEV-SERVICE-TYPE.
 
 This is a shorthand for (filter-map (lambda (svc) ...) %base-services)."
-    ((_ services clauses ...)
-     (filter-map (lambda (service)
-                   (%modify-service service clauses ...))
-                 services))))
+    ((_ services . clauses)
+     (%apply-clauses clauses services))))
 
 
 ;;;

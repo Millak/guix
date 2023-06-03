@@ -64,11 +64,11 @@ it writes to GUIX-WARNING-PORT a messages that matches ERROR-RX."
 
 (define (request-substitution item destination)
   "Run 'guix substitute --substitute' to fetch ITEM to DESTINATION."
-  (parameterize ((guix-warning-port (current-error-port)))
-    (with-input-from-string (string-append "substitute " item " "
-                                           destination "\n")
-      (lambda ()
-        (guix-substitute "--substitute")))))
+  (false-if-exception (delete-file destination))
+  (with-input-from-string (string-append "substitute " item " "
+                                         destination "\n")
+    (lambda ()
+      (guix-substitute "--substitute"))))
 
 (define %public-key
   ;; This key is known to be in the ACL by default.
@@ -612,6 +612,32 @@ System: mips64el-linux\n")))
                   (call-with-input-file "substitute-retrieved" get-string-all))
                 (lambda ()
                   (false-if-exception (delete-file "substitute-retrieved")))))))))))
+
+(test-equal "substitute, preferred nar URL is 404, other is 200"
+  "Substitutable data."
+  (with-narinfo* (string-append %narinfo "Signature: " (signature-field %narinfo))
+      %main-substitute-directory
+
+    (with-http-server `((200 ,(string-append %narinfo "Signature: "
+                                             (signature-field %narinfo)
+                                             "\n"
+                                             "URL: example.nar.lz\n"
+                                             "Compression: lzip\n"))
+                        (404 "Sorry, nar.lz is missing!")
+                        (200 ,(call-with-input-file
+                                  (string-append %main-substitute-directory
+                                                 "/example.nar")
+                                get-bytevector-all)))
+      (dynamic-wind
+        (const #t)
+        (lambda ()
+          (parameterize ((substitute-urls (list (%local-url))))
+            (request-substitution (string-append (%store-prefix)
+                                                 "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                                  "substitute-retrieved"))
+          (call-with-input-file "substitute-retrieved" get-string-all))
+        (lambda ()
+          (false-if-exception (delete-file "substitute-retrieved")))))))
 
 (test-quit "substitute, narinfo is available but nar is missing"
     "failed to find alternative substitute"
