@@ -1453,7 +1453,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.10.3")
+   (version "1.10.4")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1463,7 +1463,7 @@ of data to either CD/DVD/BD.")
                                 version ".tar.bz2"))
             (sha256
              (base32
-              "061qixpz8krvpixs6ickl9ha5m0pb078rdd5fjifrkxy8yc1am54"))))
+              "1534h1a3a8b9pl20zpccaifrlsrbsihdcdjndn9nmqalgrl9kwd2"))))
    (build-system gnu-build-system)
    (native-inputs
     (list pkg-config intltool
