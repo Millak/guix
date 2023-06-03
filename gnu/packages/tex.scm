@@ -4510,18 +4510,20 @@ in the same way as BSD/GNU @code{getopt_long(3)} functions do.")
                    "doc/man/man1/texlua.man1.pdf"
                    "doc/man/man1/texluac.1"
                    "doc/man/man1/texluac.man1.pdf"
-                   "tex/generic/config/"
+                   "tex/generic/config/luatex-unicode-letters.tex"
+                   "tex/generic/config/luatexiniconfig.tex"
                    "web2c/texmfcnf.lua")
              (base32
-              "1g5z1mjfclb85ppcxclwndmkkgjmczrq1547vhg4kl3cclg8348q")))
+              "1iskvy3i7kq0m39x7k8bs3w2l9bvqzcyzyfllfqr4rwpk4373k30")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:texlive-latex-base #f))
+    (arguments
+     (list #:texlive-latex-base #f
+           #:create-formats #~(list "dviluatex" "luatex")))
     (propagated-inputs
      (list texlive-cm
            texlive-etex
-           texlive-hyph-utf8
-           texlive-hyphen-base
+           texlive-hyphen-complete
            texlive-knuth-lib
            texlive-plain
            texlive-tex-ini-files
