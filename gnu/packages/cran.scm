@@ -1927,13 +1927,13 @@ Prism-look is achieved with @code{theme_prism()} and
 (define-public r-ggrastr
   (package
     (name "r-ggrastr")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggrastr" version))
               (sha256
                (base32
-                "07sx5wlawfyb0zy5am2q1ajhkdym5r9ih47p57l8bv4dlc7ykml2"))))
+                "1l90mlb6bqq98ifmlbs5481vch9inmzdnvnz192adklrr9nl09yb"))))
     (properties `((upstream-name . "ggrastr")))
     (build-system r-build-system)
     (propagated-inputs (list r-cairo r-ggbeeswarm r-ggplot2 r-png r-ragg))
