@@ -10804,15 +10804,17 @@ methods.")
 (define-public r-catdap
   (package
     (name "r-catdap")
-    (version "1.3.5")
+    (version "1.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "catdap" version))
        (sha256
         (base32
-         "0fyhl69z2lznymvpzxra9qvcg85ggzkfjy68c6mzdmf1ja44d2k5"))))
+         "0z84bx808hy70bkzdda9l42ljh9i9pz07isxq756axi7nr0ky6p9"))))
     (build-system r-build-system)
+    (propagated-inputs
+     (list r-rcolorbrewer))
     (native-inputs
      (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/catdap/")
