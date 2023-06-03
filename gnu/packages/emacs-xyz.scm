@@ -31783,22 +31783,22 @@ format.")
 (define-public emacs-ox-pandoc
   (package
     (name "emacs-ox-pandoc")
-    (version "20180510")
+    (version "2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/kawabata/ox-pandoc")
-                    (commit "aa37dc7e94213d4ebedb85c384c1ba35007da18e")))
+                    (url "https://github.com/emacsorphanage/ox-pandoc")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0iibxplgdp34bpq1yll2gmqjd8d8lnqn4mqjvx6cdf0y438yr4jz"))))
+                "0sh8l18lc2hngbmb1vv99xb8cp4sfy90j9cbf7b09l82jmnlqmk1"))))
     (build-system emacs-build-system)
     (inputs
      (list pandoc))
     (propagated-inputs
      (list emacs-dash emacs-ht))
-    (home-page "https://github.com/kawabata/ox-pandoc")
+    (home-page "https://github.com/emacsorphanage/ox-pandoc")
     (synopsis "Org exporter for Pandoc")
     (description "@code{ox-pandoc} is an exporter for converting Org-mode
 files to numerous other formats via Pandoc.")
