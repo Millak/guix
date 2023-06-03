@@ -4883,6 +4883,7 @@ available as part of the AMS-LaTeX distribution.")
     (build-system texlive-build-system)
     (arguments
      (list
+      #:texlive-latex-base #f
       #:phases
       #~(modify-phases %standard-phases
           ;; This package tries to produce babel.aux twice but refuses to
@@ -4897,8 +4898,7 @@ available as part of the AMS-LaTeX distribution.")
                 (mkdir-p locale-directory)
                 (with-directory-excursion "source/latex/babel/"
                   (invoke "unzip" "locale.zip" "-d" locale-directory))))))))
-    (native-inputs
-     (list unzip))
+    (native-inputs (list texlive-docstrip texlive-pdftex unzip))
     (home-page "https://www.ctan.org/pkg/babel")
     (synopsis "Multilingual support for Plain TeX or LaTeX")
     (description
