@@ -8852,18 +8852,20 @@ e-TeX.")
                    "fonts/tfm/public/pdftex/"
                    "fonts/type1/public/pdftex/"
                    "scripts/simpdftex/"
-                   "tex/generic/config/"
+                   "tex/generic/config/pdftex-dvi.tex"
                    "tex/generic/pdftex/")
              (base32
-              "1d2fvz0j7picfks57sacm5j4lwl4r231iia99fv5z71id9blr2vc")))
+              "182q6cy2crn2wwaljsq35g0kcmrngyjc307b4sh2zjdnkf8n58xx")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments
+     (list
+      #:texlive-latex-base #f
+      #:create-formats #~(list "etex" "pdfetex" "pdftex")))
     (propagated-inputs
      (list texlive-cm
-           texlive-dehyph
            texlive-etex
-           texlive-hyph-utf8
-           texlive-hyphen-base
+           texlive-hyphen-complete
            texlive-knuth-lib
            texlive-kpathsea
            texlive-plain
