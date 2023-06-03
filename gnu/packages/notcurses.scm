@@ -1,5 +1,6 @@
 ;;; Copyright © 2021 Blake Shaw <blake@nonconstructivism.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,6 +60,10 @@
          "-DUSE_COVERAGE=off"
          ;; Do not build HTML documentation
          "-DUSE_DOXYGEN=off"
+         ;; Unfortunately this disables the manpages.
+         ,@(if (supported-package? pandoc)
+             '()
+             '("-DUSE_PANDOC=off"))
          ;; Don't include mouse support
          "-DUSE_GPM=off"
          ;; Use FFmpeg for multimedia support
@@ -66,9 +71,12 @@
          ;; Follow the Debian Free Software Guidelines, omitting nonfree content.
          "-DDFSG_BUILD=ON")))
     (native-inputs
-     (list pkg-config
-           pandoc
-           doctest))
+     (append
+       (list pkg-config)
+       (if (supported-package? pandoc)
+         (list pandoc)
+         '())
+       (list doctest)))
     (inputs
      (list ffmpeg
            libdeflate
