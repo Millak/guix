@@ -187,6 +187,160 @@ use."
     (description #f)
     (license #f)))
 
+(define-public texlive-hyphen-complete
+  (package
+    (name "texlive-hyphen-complete")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/dehyph-exptl/"
+                   "doc/generic/elhyphen"
+                   "doc/generic/huhyphen"
+                   "doc/generic/hyph-utf8/"
+                   "doc/luatex/hyph-utf8/"
+                   "doc/generic/ukrhyph/"
+                   "source/generic/hyph-utf8/"
+                   "source/luatex/hyph-utf8/"
+                   "source/generic/ruhyphen/"
+                   "tex/generic/config/"
+                   "tex/generic/dehyph/"
+                   "tex/generic/dehyph-exptl/"
+                   "tex/generic/hyph-utf8/"
+                   "tex/generic/hyphen/"
+                   "tex/generic/ruhyphen/"
+                   "tex/generic/ukrhyph/"
+                   "tex/luatex/hyph-utf8/")
+             (base32
+              "1k7rsi1a74xqvbqr7a84fyqj38jan82sz6h8dcxkx5cg3wa43pji")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:texlive-latex-base #f
+      #:tex-engine "tex"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-ruby-byebug-dependency
+            ;; Avoid dependency on byebug to reduce package closure
+            ;; significantly, see <https://issues.guix.gnu.org/55997>.
+            (lambda _
+              (substitute* "source/generic/hyph-utf8/lib/tex/hyphen/language.rb"
+                (("require 'byebug'") ""))))
+          (add-before 'build 'regenerate-converters
+            (lambda _
+              (let ((root (getcwd)))
+                (for-each delete-file
+                          (find-files "tex/generic/hyph-utf8/conversions/"))
+                (with-directory-excursion "source/generic/hyph-utf8"
+                  (substitute* "generate-converters.rb"
+                    (("\\$path_root=File.*")
+                     (string-append "$path_root=\"" root "\"\n"))
+                    ;; Avoid error with newer Ruby.
+                    (("#1\\{%") "#1{%%"))
+                  (invoke "ruby" "generate-converters.rb")))))
+          (add-before 'build 'regenerate-patterns
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((root (getcwd))
+                     (hyph-utf8 (string-append root "/tex/generic/hyph-utf8"))
+                     (loaders (string-append hyph-utf8 "/loadhyph"))
+                     (patterns (string-append hyph-utf8 "/patterns/txt"))
+                     (ptex (string-append hyph-utf8 "/patterns/ptex"))
+                     (quote (string-append hyph-utf8 "/patterns/quote")))
+                ;; Initial clean-up.  Some files are not generated and need to
+                ;; be preserved.
+                (for-each delete-file (find-files loaders))
+                (let ((preserved (list "hyph-sr-cyrl.hyp.txt"
+                                       "hyph-sr-cyrl.pat.txt"
+                                       "hyph-de-1901.ec.tex"
+                                       "hyph-de-1996.ec.tex"
+                                       "hyph-ru.t2a.tex"
+                                       "hyph-uk.t2a.tex"
+                                       "hyph-zh-latn-pinyin.ec.tex")))
+                  (for-each
+                   (lambda (directory)
+                     (for-each delete-file
+                               (find-files directory
+                                           (lambda (f _)
+                                             (not (member (basename f)
+                                                          preserved))))))
+                   (list patterns ptex quote)))
+                ;; Generate plain patterns.  Write to the local directory.
+                ;; Install phase will take care of moving the files to the
+                ;; output.
+                (with-directory-excursion "source/generic/hyph-utf8/"
+                  (substitute* "lib/tex/hyphen/path.rb"
+                    (("^([[:blank:]]+)TeXROOT = .*" _ indent)
+                     (string-append indent "TeXROOT = \"" root "\"\n")))
+                  (substitute* "generate-plain-patterns.rb"
+                    ;; Ruby 2 does not need this.
+                    (("require 'unicode'") "")
+                    (("File\\.join\\(PATH::TXT")
+                     (string-append "File.join(\"" patterns "\""))
+                    (("File\\.join\\(PATH::QUOTE")
+                     (string-append "File.join(\"" quote "\"")))
+                  (invoke "ruby" "generate-plain-patterns.rb")
+                  ;; Build pattern loaders.
+                  (substitute* "generate-pattern-loaders.rb"
+                    (("File\\.join\\(PATH::LOADER")
+                     (string-append "File.join(\"" loaders "\"")))
+                  (invoke "ruby" "generate-pattern-loaders.rb")
+                  ;; Build ptex patterns.
+                  (substitute* "generate-ptex-patterns.rb"
+                    (("File\\.join\\(PATH::PTEX")
+                     (string-append "File.join(\"" ptex "\"")))
+                  (invoke "ruby" "generate-ptex-patterns.rb"))))))))
+    (native-inputs
+     (list ruby
+           ruby-hydra-minimal
+           texlive-docstrip
+           texlive-tex))
+    (home-page "https://ctan.org/pkg/hyph-utf8")
+    (synopsis "Hyphenation patterns expressed in UTF-8")
+    (description
+     "Modern native UTF-8 engines such as XeTeX and LuaTeX need hyphenation
+patterns in UTF-8 format, whereas older systems require hyphenation patterns
+in the 8-bit encoding of the font in use (such encodings are codified in the
+LaTeX scheme with names like OT1, T2A, TS1, OML, LY1, etc).  The present
+package offers a collection of conversions of existing patterns to UTF-8
+format, together with converters for use with 8-bit fonts in older systems.
+
+This Guix-specific package provides hyphenation patterns for all languages
+supported in TeX Live.  It is a strict super-set of code{hyphen-base} package
+and should be preferred to it whenever a package would otherwise depend on
+@code{hyph-utf8}.")
+    ;; Individual files each have their own license.  Most of these files are
+    ;; independent hyphenation patterns.
+    (license
+     (list license:asl2.0
+           license:bsd-3
+           license:cc0
+           license:expat
+           license:gpl2
+           license:gpl2+
+           license:gpl3+
+           license:knuth
+           license:lgpl2.1
+           license:lgpl2.1+
+           license:lgpl3+
+           license:lppl
+           license:lppl1.0+
+           license:lppl1.2+
+           license:lppl1.3
+           license:lppl1.3+
+           license:lppl1.3a+
+           license:mpl1.1
+           license:public-domain
+           license:wtfpl2
+           (license:fsf-free
+            "/tex/generic/hyph-utf8/patterns/tex/hyph-eu.tex")
+           (license:non-copyleft
+            "file:///tex/generic/hyph-utf8/patterns/tex/hyph-bg.tex"
+            "Ancestral BSD variant")
+           (license:non-copyleft
+            "file:///tex/generic/hyph-utf8/patterns/tex/hyph-en-us.tex"
+            "FSF all permissive license")))))
+
+
 (define texlive-extra-src
   (origin
     (method url-fetch)
