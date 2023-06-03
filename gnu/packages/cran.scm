@@ -31900,6 +31900,33 @@ a Huber regression warm start.  Confidence intervals for regression
 coefficients are constructed using multiplier bootstrap.")
     (license license:gpl3)))
 
+(define-public r-consrank
+  (package
+    (name "r-consrank")
+    (version "2.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ConsRank" version))
+              (sha256
+               (base32
+                "0v1dr7zj2fpgncymakv5qszdrlqzvc5zxfyc3yrsj09gbm0gvyby"))))
+    (properties `((upstream-name . "ConsRank")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-gtools r-proxy r-rgl r-rlist r-tidyr))
+    (home-page "https://www.r-project.org/")
+    (synopsis
+     "Compute median rankings according to Kemeny's axiomatic approach")
+    (description
+     "This package lets you compute the median ranking according to Kemeny's
+axiomatic approach.  Rankings can or cannot contain ties, rankings can be both
+complete or incomplete.  The package contains both branch-and-bound algorithms
+and heuristic solutions recently proposed.  The searching space of the
+solution can either be restricted to the universe of the permutations or
+unrestricted to all possible ties.  The package also provides some useful
+utilities for deal with preference rankings, including both element-weight
+Kemeny distance and correlation coefficient.")
+    (license license:gpl3)))
+
 (define-public r-fastshap
   (package
     (name "r-fastshap")
