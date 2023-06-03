@@ -10313,17 +10313,18 @@ fitting of some classes of graphical Markov models.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "1.6.5")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "02ais1y3z85vykxd9975gz33s80d1nhivly6a07y98dbmlzjyr6a"))))
+                "0rw2nrmnniff5hb56r21rk0mphba74fppxsa5ps2xamg1a63qfyw"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
     (propagated-inputs (list r-aldex2
                              r-aplot
+                             r-circlize
                              r-deseq2
                              r-dplyr
                              r-edger
@@ -10341,6 +10342,7 @@ fitting of some classes of graphical Markov models.")
                              r-summarizedexperiment
                              r-tibble
                              r-tidyr))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/cafferychen777/ggpicrust2")
     (synopsis "Make PICRUSt2 output analysis and visualization easier")
     (description
