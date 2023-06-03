@@ -303,9 +303,15 @@ differences.")
             (patches (search-patches "diffutils-fix-signal-processing.patch"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:make-flags ,(if (target-hurd?)
-                        ''("XFAIL_TESTS=test-perror2 large-subopt")
-                        ''())))
+    (list
+     #:phases (if (system-hurd?)
+                  #~(modify-phases %standard-phases
+                      (add-after 'unpack 'skip-tests
+                        (lambda _
+                          (substitute* "tests/large-subopt"
+                            (("^#!.*" all)
+                             (string-append all "exit 77;\n"))))))
+                  #~%standard-phases)))
    (native-inputs (list perl))
    (synopsis "Comparing and merging files")
    (description
