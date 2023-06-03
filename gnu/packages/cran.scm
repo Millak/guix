@@ -18578,14 +18578,14 @@ packages.")
 (define-public r-assertive-code
   (package
     (name "r-assertive-code")
-    (version "0.0-3")
+    (version "0.0-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "assertive.code" version))
        (sha256
         (base32
-         "1qhbp668zfvhqs8avkhg9amp4zyazz6dsy4fc6kpdmw3sv8yi07g"))))
+         "11qkhbjyxw0njzhcszyc2452518yrn3jr5l4n9jnzq10xms090ig"))))
     (properties
      `((upstream-name . "assertive.code")))
     (build-system r-build-system)
