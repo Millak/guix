@@ -3764,60 +3764,34 @@ and @code{pdfxmltex}.")
     (build-system texlive-build-system)
     (arguments
      (list
+      #:create-formats #~(list "pdfxmltex" "xmltex")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'generate-formats
-            (lambda _
-              (let ((web2c (string-append (getcwd) "/web2c")))
-                (mkdir "web2c")
-                (with-directory-excursion "tex/xmltex/base/"
-                  (invoke "fmtutil-sys"
-                          "--byfmt" "xmltex"
-                          (string-append"--fmtdir=" web2c))
-                  (invoke "fmtutil-sys"
-                          "--byfmt" "pdfxmltex"
-                          (string-append "--fmtdir=" web2c))))))
-          (add-after 'install 'install-formats-and-wrappers
+          (add-after 'install 'install-wrappers
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((pdftex (search-input-file inputs "/bin/pdftex"))
                     (web2c (string-append #$output "/share/texmf-dist/web2c")))
-                (mkdir-p web2c)
-                (copy-recursively "web2c" web2c)
-                (for-each delete-file (find-files web2c "\\.log$"))
-                ;; Create convenience command wrappers.
                 (mkdir-p (string-append #$output "/bin"))
                 (symlink pdftex (string-append #$output "/bin/xmltex"))
                 (symlink pdftex (string-append #$output "/bin/pdfxmltex"))))))))
-    (native-inputs
-     (list texlive-tex-ini-files
-           texlive-xmltexconfig))
     (propagated-inputs
-     (list (texlive-updmap.cfg
-            (list texlive-amsfonts
-                  texlive-babel
-                  texlive-courier
-                  texlive-helvetic
-                  texlive-hyperref
-                  texlive-latex-fonts
-                  texlive-stmaryrd
-                  texlive-symbol
-                  texlive-times
-                  texlive-tipa
-                  texlive-wasy
-                  texlive-zapfding))
-           texlive-atbegshi
+     (list texlive-atbegshi
            texlive-atveryend
            texlive-babel
            texlive-cm
-           texlive-dehyph
            texlive-everyshi
            texlive-firstaid
-           texlive-hyph-utf8
-           texlive-hyphen-base
+           texlive-hyphen-complete
            texlive-l3backend
            texlive-l3kernel
            texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-latexconfig
+           texlive-pdftex
+           texlive-tex
            texlive-tex-ini-files
+           texlive-unicode-data
            texlive-xmltexconfig))
     (home-page "https://ctan.org/pkg/xmltex")
     (synopsis "Support for parsing XML documents")
