@@ -19,7 +19,7 @@
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Mohammed Sadiq <sadiq@sadiqpk.org>
 ;;; Copyright © 2018 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2018 Gabriel Hondet <gabrielhondet@gmail.com>
@@ -2845,18 +2845,7 @@ optimized for using musical symbols inline with regular text.")
          (file-name (string-append name "-" version ".zip"))
          (sha256
           (base32 "1j8iv2dl695zrabs2knb7jsky8mjis29a2ddpna4by8mlvqrf0ml"))))
-      (outputs '("out" "woff2"))
       (build-system font-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'install-woff2
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((dest (string-append (assoc-ref outputs "woff2")
-                                          "/share/fonts/woff2")))
-                 (for-each (lambda (file)
-                             (install-file file dest))
-                           (find-files "." "\\.woff2$"))))))))
       (home-page "https://practicaltypography.com/charter.html")
       (synopsis "Charter fonts in OpenType and TrueType formats")
       (description "Charter was designed by Matthew Carter in 1987 and was
