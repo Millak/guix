@@ -830,7 +830,7 @@ libraries.")
 (define glibmm
   (package
     (name "glibmm")
-    (version "2.72.1")
+    (version "2.76.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/glibmm/"
@@ -838,7 +838,7 @@ libraries.")
                                   "/glibmm-" version ".tar.xz"))
               (sha256
                (base32
-                "1n2w2pcpbxjbsxynmar3i5ibr7src6gnrdxb9nn57p5miai4jxia"))))
+                "1cia8vrpwzn8zwalws42mga5hi965840m5s8dvfzv55xx86dhdw6"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -878,20 +878,6 @@ libraries.")
      "Glibmm provides a C++ programming interface to the part of GLib that are
 useful for C++.")
     (license license:lgpl2.1+)))
-
-(define-public glibmm-next
-  (package
-   (inherit glibmm)
-   (version "2.76.0")
-   (name "glibmm")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/glibmm/"
-                                (version-major+minor version)
-                                "/glibmm-" version ".tar.xz"))
-            (sha256
-             (base32
-              "1cia8vrpwzn8zwalws42mga5hi965840m5s8dvfzv55xx86dhdw6"))))))
 
  (define-public glibmm-2.64
    (package

@@ -320,7 +320,7 @@
               crc32c
               ffmpeg
               glib
-              glibmm-next
+              glibmm
               libdrm
               libglvnd
               libjpeg-turbo
@@ -492,7 +492,7 @@ Telegram project, for its use in telegram desktop client.")
            fcitx5-qt
            ffmpeg
            glib
-           glibmm-next
+           glibmm
            gtk+
            hime
            hunspell
