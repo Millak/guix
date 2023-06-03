@@ -740,6 +740,44 @@ Knuth's TeX book; this source is there to read, as an example of writing TeX ;
 it should not be processed without Knuth's direct permission.")
     (license license:knuth)))
 
+(define-public texlive-latex
+  (package
+    (name "texlive-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/base/" "makeindex/latex/"
+                   "source/latex/base/" "tex/latex/base/")
+             (base32
+              "0k2b6qi281cl4zml6l537iyps1zwaq7pip81qq8vlkhb9h5ggpnw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:texlive-latex-base #f
+      #:tex-engine "tex"
+      #:tex-format #f
+      #:build-targets #~(list "unpack.ins")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-lua-build
+            ;; The literal tab in the dtx file is translated to the string
+            ;; "^^I" in the generated Lua file, which causes a syntax error.
+            (lambda _
+              (substitute* "source/latex/base/ltluatex.dtx"
+                (("\t") "  ")))))))
+    (propagated-inputs
+     (list texlive-latex-fonts
+           texlive-latexconfig
+           texlive-luatex
+           texlive-pdftex))
+    (home-page "https://ctan.org/pkg/latex")
+    (synopsis "TeX macro package that defines LaTeX")
+    (description
+     "LaTeX is a widely-used macro package for TeX, providing many basic
+document formating commands extended by a wide range of packages.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-bidi
   (package
     (name "texlive-bidi")
