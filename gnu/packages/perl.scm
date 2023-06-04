@@ -3620,6 +3620,31 @@ order to create the appropriate objects.")
 extension that parses almost all ISO8601 date and time formats.")
     (license license:perl-license)))
 
+(define-public perl-datetime-format-mysql
+  (package
+    (name "perl-datetime-format-mysql")
+    (version "0.0701")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/X/XM/XMIKEW/DateTime-Format-MySQL-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1pb0ri9npbwpaf1lzmm51w4wfyj96n80yg7wga7ig34c0hg4a463"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-datetime
+                             perl-datetime-format-builder))
+    (home-page "https://metacpan.org/release/DateTime-Format-MySQL")
+    (synopsis "Parse and format MySQL dates and times")
+    (description
+     "This module understands the formats used by MySQL for its DATE,
+DATETIME, TIME, and TIMESTAMP data types.  It can be used to parse these
+formats in order to create DateTime objects, and it can take a DateTime object
+and produce a string representing it in the MySQL format.")
+    (license license:perl-license)))
+
 (define-public perl-datetime-format-natural
   (package
     (name "perl-datetime-format-natural")
