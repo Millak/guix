@@ -464,3 +464,90 @@ revoke assertions which in turn is used for computing confidence values
 associated with individual signatures.")
     (license license:perl-license)))
 
+(define-public spamassassin
+  (package
+    (name "spamassassin")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/S/SI/SIDNEY/Mail-SpamAssassin-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0djgm04kvgq0iab4hhv66gxhl2bhyhj1lfpjcdsw7qq3s6krv5v5"))
+              (modules '((guix build utils)))
+              (snippet #~(delete-file "spamc/configure"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'configure 'setup
+                          (lambda _
+                            (delete-file "t/debug.t") ;hangs
+                            (delete-file "t/dnsbl_subtests.t") ;6 failures
+                            (delete-file "t/spamc_x_e.t") ;3 failures
+                            (setenv "CONFIG_SHELL" (which "sh"))
+                            (with-directory-excursion "spamc"
+                              (invoke "autoreconf" "-vif"))))
+                        (add-after 'install 'fix-lib-path
+                          (lambda _
+                            (let ((bin (string-append #$output "/bin/")))
+                              (for-each
+                               (lambda (file)
+                                 (substitute* file
+                                   ;; TODO: Can we find a way to keep -T?
+                                   (("perl -T")
+                                    "perl"))
+                                 (wrap-program file
+                                   `("PERL5LIB" ":" prefix
+                                     (,(getenv "PERL5LIB")
+                                      ,(string-append
+                                        #$output
+                                        "/lib/perl5/site_perl")))))
+                               (map (lambda (file)
+                                      (string-append bin file))
+                                    '("spamd" "sa-awl" "sa-check_spamd"
+                                      "sa-compile" "sa-learn"
+                                      "sa-update" "spamassassin")))))))))
+    (native-inputs (list autoconf
+                         automake
+                         perl-devel-cycle
+                         perl-net-dns
+                         perl-critic
+                         perl-critic-policy-perlsecret
+                         perl-test-most
+                         perl-test-pod
+                         perl-text-diff))
+    (propagated-inputs (list perl-archive-zip
+                             perl-bsd-resource
+                             perl-dbd-sqlite
+                             perl-dbi
+                             perl-email-address-xs
+                             perl-encode-detect
+                             perl-geo-ip
+                             perl-html-parser
+                             perl-io-socket-inet6
+                             perl-io-socket-ssl
+                             perl-io-string
+                             perl-libwww
+                             perl-mail-dkim
+                             perl-mail-dmarc
+                             perl-mail-spf
+                             perl-net-cidr-lite
+                             perl-net-dns
+                             perl-net-ip
+                             perl-net-libidn
+                             perl-net-patricia
+                             perl-netaddr-ip
+                             perl-razor2-client-agent))
+    (home-page "https://metacpan.org/release/Mail-SpamAssassin")
+    (synopsis
+     "Extensible email filter used to identify spam")
+    (description
+     "Apache SpamAssassin is an anti-spam platform giving system
+administrators a filter to classify email and block spam (unsolicited bulk
+email).  It uses a robust scoring framework and plug-ins to integrate a wide
+range of advanced heuristic and statistical analysis tests on email headers
+and body text including text analysis, Bayesian filtering, DNS blocklists,
+and collaborative filtering databases.")
+    (license license:asl2.0)))
