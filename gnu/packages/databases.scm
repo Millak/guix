@@ -2691,6 +2691,38 @@ parts of SQL are handled (CREATE, ALTER), not the manipulation of
 data (INSERT, UPDATE, DELETE).")
     (license license:perl-license)))
 
+(define-public perl-test-postgresql
+  (package
+    (name "perl-test-postgresql")
+    (version "1.29")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/T/TJ/TJC/Test-PostgreSQL-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "17jgiqdyprb8q4855anica2kr0lxdi9rnq27vsfclk6ai7jzgb0q"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:tests? #f)) ;2/41 fail, require running Postgres server
+    (native-inputs (list perl-module-build-tiny
+                         perl-test-sharedfork))
+    (propagated-inputs (list perl-dbd-pg
+                             perl-dbi
+                             perl-file-which
+                             perl-function-parameters
+                             perl-moo
+                             perl-tie-hash-method
+                             perl-try-tiny
+                             perl-type-tiny))
+    (home-page "https://metacpan.org/release/Test-PostgreSQL")
+    (synopsis "PostgreSQL runner for tests")
+    (description
+     "@code{Test::PostgreSQL} automatically setups a PostgreSQL instance in a
+temporary directory, and destroys it when the perl script exits.")
+    (license license:artistic2.0)))
+
 (define-public unixodbc
   (package
    (name "unixodbc")
