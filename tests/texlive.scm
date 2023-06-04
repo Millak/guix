@@ -50,6 +50,25 @@
         (runfiles
          . ("texmf-dist/tex/latex/12many/12many.sty"))
         (catalogue-license . "lppl")))
+    ("adforn"
+     (name . "adforn")
+     (shortdesc . "OrnementsADF font with TeX/LaTeX support")
+     (longdesc . "The bundle provides the Ornements ADF font...")
+     (execute "addMap OrnementsADF.map")
+     (docfiles
+      "texmf-dist/doc/fonts/adforn/COPYING"
+      "texmf-dist/doc/fonts/adforn/NOTICE"
+      "texmf-dist/doc/fonts/adforn/README"
+      "texmf-dist/doc/fonts/adforn/adforn.pdf")
+     (runfiles
+      "texmf-dist/fonts/afm/arkandis/adforn/OrnementsADF.afm"
+      "texmf-dist/fonts/enc/dvips/adforn/OrnementsADF.enc"
+      "texmf-dist/fonts/map/dvips/adforn/OrnementsADF.map"
+      "texmf-dist/fonts/tfm/arkandis/adforn/OrnementsADF.tfm"
+      "texmf-dist/fonts/type1/arkandis/adforn/OrnementsADF.pfb"
+      "texmf-dist/tex/latex/adforn/adforn.sty"
+      "texmf-dist/tex/latex/adforn/uornementsadf.fd")
+     (catalogue-license . "lppl gpl2"))
     ("chs-physics-report"
      . ((name . "ch-physics-report")
         (shortdesc . "Physics lab reports...")
@@ -75,6 +94,39 @@
          .
          ("texmf-dist/tex/latex/example/example.sty"))
         (catalogue-license . "gpl")))
+    ("lollipop"
+     (name . "lollipop")
+     (shortdesc . "TeX made easy")
+     (longdesc . "Lollipop is TeX made easy...")
+     (execute "AddFormat name=lollipop engine=tex options=\"lollipop.ini\"...")
+     (docfiles
+      "texmf-dist/doc/otherformats/lollipop/README"
+      "texmf-dist/doc/otherformats/lollipop/manual/address.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/appendix.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/btxmac.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/comm.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/comment.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/example.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/extern.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/head.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/list.tex"
+      "texmf-dist/doc/otherformats/lollipop/manual/lollipop-manual.bib"
+      "texmf-dist/doc/otherformats/lollipop/manual/lollipop-manual.pdf")
+     (runfiles
+      "texmf-dist/tex/lollipop/lollipop-define.tex"
+      "texmf-dist/tex/lollipop/lollipop-document.tex"
+      "texmf-dist/tex/lollipop/lollipop-float.tex"
+      "texmf-dist/tex/lollipop/lollipop-fontdefs.tex"
+      "texmf-dist/tex/lollipop/lollipop-fonts.tex"
+      "texmf-dist/tex/lollipop/lollipop-heading.tex"
+      "texmf-dist/tex/lollipop/lollipop-lists.tex"
+      "texmf-dist/tex/lollipop/lollipop-output.tex"
+      "texmf-dist/tex/lollipop/lollipop-plain.tex"
+      "texmf-dist/tex/lollipop/lollipop-text.tex"
+      "texmf-dist/tex/lollipop/lollipop-tools.tex"
+      "texmf-dist/tex/lollipop/lollipop.ini"
+      "texmf-dist/tex/lollipop/lollipop.tex")
+     (catalogue-license . "gpl3"))
     ("stricttex"
      . ((name
          . "stricttex")
@@ -434,6 +486,75 @@ completely compatible with Plain TeX.")
                ('description (? string?))
                ('license
                 ('license:fsf-free "https://www.tug.org/texlive/copying.html")))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, with TeX format"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "lollipop"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-lollipop")
+               ('version _)
+               ('source ('texlive-origin
+                         'name 'version
+                         ('list "doc/otherformats/lollipop/"
+                                "tex/lollipop/")
+                         ('base32 (? string? hash))))
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('arguments ('list '#:create-formats ('gexp ('list "lollipop"))))
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license 'gpl3))
+             #true)
+            (_
+             (begin
+               (format #t "~s~%" result)
+               (pk 'fail result #f)))))))
+
+(test-assert "texlive->guix-package, execute but no TeX format"
+  ;; Replace network resources with sample data.
+  (mock ((guix build svn) svn-fetch
+         (lambda* (url revision directory
+                       #:key (svn-command "svn")
+                       (user-name #f)
+                       (password #f)
+                       (recursive? #t))
+           (mkdir-p directory)
+           (with-output-to-file (string-append directory "/foo")
+             (lambda ()
+               (display "source")))))
+        (let ((result (texlive->guix-package "adforn"
+                                             #:package-database
+                                             (lambda _ %fake-tlpdb))))
+          (match result
+            (('package
+               ('name "texlive-adforn")
+               ('version _)
+               ('source _)
+               ('outputs ''("out" "doc"))
+               ('build-system 'texlive-build-system)
+               ('home-page (? string?))
+               ('synopsis (? string?))
+               ('description (? string?))
+               ('license _))
              #true)
             (_
              (begin
