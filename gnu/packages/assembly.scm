@@ -553,3 +553,34 @@ family of command line utility wrappers in the default output.  Each of the cli
 tools is named like @code{xed*}.  Documentation for the cli tools is sparse, so
 this is a case where ``the code is the documentation.''")
     (license license:asl2.0)))
+
+(define-public neon2sse
+  (let ((commit "097a5ecacd527d5b5c3006e360fb9cb1c1c48a1f")
+        (version "0")
+        (revision "1"))
+    (package
+      (name "neon2sse")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/intel/ARM_NEON_2_x86_SSE")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17mf788b8asrvjl6dnyzrm5xrz20wx9j5f8n6drgc6qgwqxpx4hv"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f)) ;no tests
+      (home-page "https://github.com/intel/ARM_NEON_2_x86_SSE")
+      (synopsis "Header file to simplify ARM->IA32 porting")
+      (description
+       "The @file{NEON_2_SSE.h} file is intended to simplify ARM-to-IA32
+porting.  It makes the correspondence (or a real porting) of ARM NEON
+intrinsics as defined in the @file{arm_neon.h} header and x86 SSE (up to
+SSE4.2) intrinsic functions as defined in corresponding x86 compilers headers
+files.")
+      (license license:bsd-2))))
+
+
