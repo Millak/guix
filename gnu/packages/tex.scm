@@ -13612,6 +13612,7 @@ itself may be shipped out to the DVI file.")
               "15bjr41p9l5d6837hy3nrhkkylgv04b0150vysyg5730svh3fnan")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
+    (arguments (list #:create-formats #~(list "xelatex" "xetex")))
     (propagated-inputs
      (list texlive-atbegshi
            texlive-atveryend
@@ -13625,7 +13626,7 @@ itself may be shipped out to the DVI file.")
            texlive-l3backend
            texlive-l3kernel
            texlive-l3packages
-           texlive-latex-base
+           texlive-latex
            texlive-latex-fonts
            texlive-lm
            texlive-plain
