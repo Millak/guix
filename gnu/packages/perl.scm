@@ -13588,6 +13588,32 @@ minimal handling of languages which doesn't use whitespaces between
 words (like Chinese and Japanese) is supported.")
     (license (package-license perl))))
 
+(define-public perl-text-xslate
+  (package
+    (name "perl-text-xslate")
+    (version "3.5.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/S/SK/SKAJI/Text-Xslate-v" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "103lhyqqv53x9rqsnxcba3pc4qkbwnjsw3gpyd7rjm0aw65mrj20"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-file-copy-recursive
+                         perl-module-build
+                         perl-module-build-xsutil
+                         perl-test-requires))
+    (propagated-inputs (list perl-data-messagepack perl-mouse))
+    (home-page "https://metacpan.org/release/Text-Xslate")
+    (synopsis "Scalable template engine for Perl5")
+    (description
+     "Xslate is a template engine, tuned for persistent applications, safe as
+an HTML generator, and with rich features.  The core design principle is that
+template logic does not have access outside the template without permission.")
+    (license (package-license perl))))
+
 (define-public perl-regexp-pattern
   (package
     (name "perl-regexp-pattern")
