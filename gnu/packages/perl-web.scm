@@ -144,3 +144,29 @@ a prefix, and the remainder of the URI is another URI.")
     (description "This package provides a HTML and XML DOM parser.  It also
 supports CSS selectors.")
     (license license:artistic2.0)))
+
+(define-public perl-gravatar-url
+ (package
+    (name "perl-gravatar-url")
+    (version "1.07")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MS/MSCHWERN/Gravatar-URL-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1mxnd70xsb7kxd1sf8s7phcds2nf0m8b8asmy3ikv76wzfpbvji3"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build
+                         perl-test-mockrandom
+                         perl-test-warn))
+    (propagated-inputs (list perl-net-dns perl-uri))
+    (home-page "https://metacpan.org/release/Gravatar-URL")
+    (synopsis "Make URLs for Gravatars from an email address")
+    (description
+     "This module looks up the Gravatar for any email address by constructing
+a URL to get the image from @url{gravatar.com}.  A Gravatar is a Globally
+Recognized Avatar for a given email address. This allows you to have a global
+picture associated with your email address.")
+    (license license:perl-license)))
