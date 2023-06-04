@@ -12340,6 +12340,26 @@ time values and formatting dates into ASCII strings.")
 and time() calls.")
     (license (package-license perl))))
 
+(define-public perl-time-warp
+  (package
+    (name "perl-time-warp")
+    (version "0.55")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MA/MANWAR/Time-Warp-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1a7g3i9nad7m2qvwl7bssnq083s2nsdnzxq42k2x6j8bimfgm8sc"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Time-Warp")
+    (synopsis "Control over the measurement of time")
+    (description
+     "The @code{Time::Warp} module offers developers control over the
+measurement of time.")
+    (license license:perl-license)))
+
 (define-public perl-tree-simple
   (package
     (name "perl-tree-simple")
