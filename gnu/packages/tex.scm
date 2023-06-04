@@ -4827,13 +4827,18 @@ available.")
                    "tex/csplain/opmac/")
              (base32
               "068g31l2ralz03gsv58j67dm85vy0ad58dvdkh93ws0yzf0rnr5f")))
+    (arguments
+     (list #:create-formats #~(list "csplain" "luacsplain" "pdfcsplain")))
     (build-system texlive-build-system)
     (propagated-inputs
      (list texlive-cm
            texlive-cs
            texlive-enctex
-           texlive-hyph-utf8
-           texlive-hyphen-base
+           texlive-hyphen-complete
+           texlive-luatex
+           texlive-luatex85
+           texlive-plain
+           texlive-tex
            texlive-tex-ini-files))
     (home-page "https://petr.olsak.net/csplain-e.html")
     (synopsis "Plain TeX multilanguage support")
