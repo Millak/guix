@@ -11930,6 +11930,27 @@ algorism to indicate multiplication by 1000.")
 Text::Wrap will reformat lines into paragraphs.")
     (license (package-license perl))))
 
+(define-public perl-text-tabulardisplay
+  (package
+    (name "perl-text-tabulardisplay")
+    (version "1.38")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DA/DARREN/Text-TabularDisplay-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1s46s4pg5mpfllx3icf4vnqz9iadbbdbsr5p7pr6gdjnzbx902gb"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Text-TabularDisplay")
+    (synopsis "Display text in formatted table output")
+    (description
+     "@code{Text::TabularDisplay} simplifies displaying textual data in a
+table.  The output is identical to the columnar display of query results in
+the mysql text monitor.")
+    (license license:gpl2)))
+
 (define-public perl-text-template
   (package
     (name "perl-text-template")
