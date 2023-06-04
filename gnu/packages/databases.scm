@@ -2324,6 +2324,32 @@ flexible than @code{DBIx::Class::Schema::Versioned}, hence the use of Moose
 and lots of roles.")
     (license license:perl-license)))
 
+(define-public perl-dbix-simple
+  (package
+    (name "perl-dbix-simple")
+    (version "1.37")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/J/JU/JUERD/DBIx-Simple-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1qyaj01zb6xplzcp7pj0b9609fvd89c9c4an3i00g2g05jm13ls6"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-dbi))
+    (home-page "https://metacpan.org/release/DBIx-Simple")
+    (synopsis "Object-oriented interface to DBI")
+    (description
+     "DBIx::Simple provides a simplified interface to DBI, Perl's powerful
+database module.  This module is aimed at rapid development and easy
+maintenance.  Query preparation and execution are combined in a single method,
+the result object (which is a wrapper around the statement handle) provides
+easy row-by-row and slurping methods.")
+    ;; The POD info says: "Pick your favorite OSI-approved license"
+    ;; Use unlicense because it has the least restrictions.
+    (license license:unlicense)))
+
 (define-public perl-dbd-pg
   (package
     (name "perl-dbd-pg")
