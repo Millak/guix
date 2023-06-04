@@ -11790,6 +11790,43 @@ diff (difference) data.  Diff data is produced by Text::Diff module or
 by the standard @code{diff} utility.")
     (license license:gpl2+)))
 
+(define-public perl-text-recordparser
+  (package
+    (name "perl-text-recordparser")
+    (version "1.6.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/K/KC/KCLARK/"
+                                  "Text-RecordParser-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0nn33c058bl957v38xhqig4ld34lifl4arqiilhxky339i0q2fys"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-home
+                          (lambda _
+                            (setenv "HOME" "/tmp"))))))
+    (native-inputs (list graphviz
+                         perl-module-install
+                         perl-test-exception))
+    (propagated-inputs (list perl-class-accessor
+                             perl-graphviz
+                             perl-io-stringy
+                             perl-list-moreutils
+                             perl-readonly
+                             perl-text-autoformat
+                             perl-text-tabulardisplay))
+    (home-page "https://metacpan.org/release/Text-RecordParser")
+    (synopsis "Parse record-oriented data in a text file")
+    (description
+     "This module is for reading record-oriented data in a delimited text
+file. The most common example have records separated by newlines and fields
+separated by commas or tabs, but this module aims to provide a consistent
+interface for handling sequential records in a file however they may be
+delimited.")
+    (license license:gpl2)))
+
 (define-public perl-text-roman
   (package
     (name "perl-text-roman")
