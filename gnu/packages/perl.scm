@@ -9139,6 +9139,36 @@ default if it's installed, and should be preferred in all environments with a
 compiler.")
     (license (package-license perl))))
 
+(define-public perl-package-variant
+  (package
+    (name "perl-package-variant")
+    (version "1.003002")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MS/MSTROUT/Package-Variant-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1p1n2ny5fb15bcbykyn523w6sv968gqs7nhjfm36dpac5yfq9vdj"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-moo perl-test-fatal perl-test-most))
+    (propagated-inputs (list perl-carp
+                             perl-import-into
+                             perl-module-runtime
+                             perl-strictures-2))
+    (home-page "https://metacpan.org/release/Package-Variant")
+    (synopsis "Parameterizable packages")
+    (description
+     "This module allows you to build a variable package that contains a
+package template and can use it to build variant packages at runtime.  Your
+variable package will export a subroutine which will build a variant package,
+combining its arguments with the template, and return the name of the new
+variant package.  The implementation does not care about what kind of packages
+it builds, be they simple function exporters, classes, singletons or something
+else.")
+    (license license:perl-license)))
+
 (define-public perl-padwalker
   (package
     (name "perl-padwalker")
