@@ -72,6 +72,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
@@ -5246,6 +5247,30 @@ provide a quick dropin when such functionality is needed.")
 are @code{owned} by a user (typically your user) and to solve the various issues
 that arise trying to find them consistently across a wide variety of
 platforms.")
+    (license (package-license perl))))
+
+(define-public perl-file-libmagic
+  (package
+    (name "perl-file-libmagic")
+    (version "1.23")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DR/DROLSKY/File-LibMagic-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1vk775386z4pz4y8m916rhlczs5rw12s36s3vx67mn5jgkfb3rjj"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:tests? #f)) ;1/33 fails, "gzip file is application/pdf ..."
+    (native-inputs (list perl-config-autoconf perl-test-fatal))
+    (inputs (list file))
+    (home-page "https://metacpan.org/release/File-LibMagic")
+    (synopsis "Determine MIME types of data or files using libmagic")
+    (description
+     "The @code{File::LibMagic} module is a simple perl interface to libmagic
+from the file package.")
     (license (package-license perl))))
 
 (define-public perl-file-path
