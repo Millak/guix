@@ -11703,6 +11703,29 @@ you want to do full file globbing use the File::Glob module instead.")
 @url{http://haml.info/docs/yardoc/file.REFERENCE.html} specification.")
     (license license:artistic2.0)))
 
+(define-public perl-text-iconv
+  (package
+    (name "perl-text-iconv")
+    (version "1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MP/MPIOTR/Text-Iconv-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1hymsbkjkl43wg74p7hgpyjl8yx1chc9g25spj9l7lq9wzavg02v"))))
+    (build-system perl-build-system)
+    (inputs (list libiconv))
+    (home-page "https://metacpan.org/release/Text-Iconv")
+    (synopsis "Perl interface to iconv() codeset conversion function")
+    (description
+     "This module provides a Perl interface to the @code{iconv()} codeset
+conversion function, as defined by the Single UNIX Specification.  For
+more details see the POD documentation embedded in the file @file{Iconv.pm},
+which will also be installed as @code{Text::Iconv(3)} man page.")
+    (license license:perl-license)))
+
 (define-public perl-text-neattemplate
   (package
     (name "perl-text-neattemplate")
