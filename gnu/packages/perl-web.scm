@@ -22,12 +22,21 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (guix packages)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages databases)
+  #:use-module (gnu packages libidn)
+  #:use-module (gnu packages mail)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
-  #:use-module (guix download)
+  #:use-module (gnu packages perl-compression)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages xml)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system perl)
-  #:use-module (gnu packages web))
+  #:use-module (guix download)
+  #:use-module (guix gexp))
 
 (define-public perl-mojolicious
   (package
@@ -357,3 +366,50 @@ take either IPv4 or IPv6 addresses transparently.")
 @code{Net::IMAP::Simple} object.  It takes one required parameter which is the
 server to connect to, and additional optional parameters.")
     (license license:perl-license)))
+
+(define-public perl-mail-dmarc
+  (package
+    (name "perl-mail-dmarc")
+    (version "1.20230215")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MB/MBRADSHAW/Mail-DMARC-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "00xrgq7cz75aj2m6bpfrb162fi0kyr016579as7494nbb53zbp2p"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:tests? #f)) ;some require network, like 03.Base and 06.Result
+    (native-inputs (list perl-file-sharedir-install
+                         perl-module-build
+                         perl-test-exception
+                         perl-test-file-sharedir
+                         perl-test-output))
+    (propagated-inputs (list perl-config-tiny
+                             perl-dbd-sqlite
+                             perl-dbix-simple
+                             perl-email-mime
+                             perl-email-sender
+                             perl-email-simple
+                             perl-file-sharedir
+                             perl-io-socket-ssl
+                             perl-mail-dkim
+                             perl-net-dns
+                             perl-net-idn-encode
+                             perl-net-imap-simple
+                             perl-net-ip
+                             perl-net-smtps
+                             perl-net-ssleay
+                             perl-regexp-common
+                             perl-socket6
+                             perl-uri
+                             perl-xml-libxml))
+    (home-page "https://metacpan.org/release/Mail-DMARC")
+    (synopsis "Perl implementation of DMARC")
+    (description
+     "This module is a suite of tools for implementing DMARC. It adheres to
+the 2013 DMARC draft, intending to implement every MUST and every SHOULD.")
+    (license license:perl-license)))
+
