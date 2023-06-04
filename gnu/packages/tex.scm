@@ -4542,6 +4542,25 @@ stub package provides a compatibility layer to allow existing packages to
 upgrade smoothly to the new support structure.")
     (license license:lppl1.3+)))
 
+(define-public texlive-luatex85
+  (package
+    (name "texlive-luatex85")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/luatex85/"
+                   "source/generic/luatex85/"
+                   "tex/generic/luatex85/")
+             (base32
+              "02j42g9c5smgbrk898fpvrgqlxqcqi8xch23awvnbvg6y54cs573")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luatex85")
+    (synopsis "pdfTeX aliases for LuaTeX")
+    (description
+     "The package provides emulation of pdfTeX primitives for LuaTeX v0.85+.")
+    (license license:lppl1.3+)))
+
 ;; TODO: We should be able to build this from the sources on Github with
 ;; texlive-l3build, but I haven't been able to get it to work.
 (define-public texlive-luaotfload
