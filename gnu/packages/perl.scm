@@ -11530,6 +11530,27 @@ string mappings, or get at the original form of the data as a list of simple
 values (strings, macros, or numbers) pasted together.")
     (license license:perl-license)))
 
+(define-public perl-text-brew
+  (package
+    (name "perl-text-brew")
+    (version "0.02")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/K/KC/KCIVEY/Text-Brew-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "0k7nxglbx5pxl693zrj1fsi094sf1a3vqsrn73inzz7r3j28a6xa"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Text-Brew")
+    (synopsis "An implementation of the Brew edit distance")
+    (description
+     "This module implements the Brew edit distance that is very close to the
+dynamic programming technique used for the Wagner-Fischer (and so for the
+Levenshtein) edit distance.")
+    (license (package-license perl))))
+
 (define-public perl-text-charwidth
   (package
     (name "perl-text-charwidth")
