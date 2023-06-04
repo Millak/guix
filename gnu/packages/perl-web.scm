@@ -313,3 +313,25 @@ by IP Address.")
 over-SSL/STARTTLS support.  This module inherits most of all the methods from
 @code{Net::SMTP}(2.X).")
     (license license:perl-license)))
+
+(define-public perl-net-ip
+  (package
+    (name "perl-net-ip")
+    (version "1.26")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/M/MA/MANU/Net-IP-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0ffn2xqqbkfi7v303sp5dwgbv36jah3vg8r4nxhxfiv60vric3q4"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Net-IP")
+    (synopsis "Perl extension for manipulating IPv4/IPv6 addresses")
+    (description
+     "This module provides functions to deal with IPv4/IPv6 addresses.  The
+module can be used as a class, allowing the user to instantiate IP objects,
+which can be single IP addresses, prefixes, or ranges of addresses.  There is
+also a procedural way of accessing most of the functions. Most subroutines can
+take either IPv4 or IPv6 addresses transparently.")
+    (license license:perl-license)))
