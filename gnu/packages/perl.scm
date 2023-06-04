@@ -2425,6 +2425,32 @@ will even support rules that contradict Conway.  All rules can easily be
 configured or disabled to your liking.")
     (license license:perl-license)))
 
+(define-public perl-critic-policy-perlsecret
+  (package
+    (name "perl-critic-policy-perlsecret")
+    (version "0.0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/L/LA/LANCEW/Perl-Critic-Policy-Perlsecret-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0gmagglqq6vxprk9a5c42w8nhj621fplvzvc2wnb7jaky57r2rl8"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-critic
+                         perl-test-failwarnings
+                         perl-test-fatal))
+    (propagated-inputs (list perl-critic))
+    (home-page "https://metacpan.org/release/Perl-Critic-Policy-Perlsecret")
+    (synopsis "Prevent perlsecrets entering your codebase")
+    (description
+     "This policy checks for perlsecret operators in your code and warns you
+about them.  You can override the secrets that are allowed or disallowed using
+the parameters @code{allow_secrets} and @code{disallow_secrets}.  The default
+is to simply disallow everything.")
+    (license license:gpl3)))
+
 (define-public perl-crypt-cbc
   (package
     (name "perl-crypt-cbc")
