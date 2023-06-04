@@ -2863,6 +2863,31 @@ constants describing the native integer type.  Both signed and
 unsigned representations are handled.")
     (license license:perl-license)))
 
+(define-public perl-data-messagepack
+  (package
+    (name "perl-data-messagepack")
+    (version "1.02")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/S/SY/SYOHEX/Data-MessagePack-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1dxih8s9a5rd0vg0nd9i0gb0m5zyvxw26bl88x0jb3daj13v8gf3"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build
+                         perl-module-build-xsutil
+                         perl-test-requires))
+    (home-page "https://metacpan.org/release/Data-MessagePack")
+    (synopsis "MessagePack serializing/deserializing")
+    (description
+     "This module converts Perl data structures to MessagePack and vice versa.
+MessagePack is a binary-based efficient object serialization format. It
+enables to exchange structured objects between many languages like JSON.  But
+unlike JSON, it is very fast and small.")
+    (license license:perl-license)))
+
 (define-public perl-data-uniqid
   (package
     (name "perl-data-uniqid")
