@@ -62,6 +62,7 @@
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Jonathan Brielamier <jonathan.brielmaier@web.de>
+;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1685,6 +1686,29 @@ modules for building a Wayland compositor.")
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Wayland compositor compatible with i3")
     (description "Sway is a i3-compatible Wayland compositor.")
+    (license license:expat)))
+
+(define-public swayfx
+  (package
+    (inherit sway)
+    (name "swayfx")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/WillPower3309/swayfx")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1550n9xnqbl1am4cwlnj8ip5cs7kgdzx96ga2hkcw29cpyian7rv"))))
+    (build-system meson-build-system)
+    (home-page "https://github.com/WillPower3309/swayfx")
+    (synopsis "Sway Fork with extra options and effects")
+    (description
+     "Fork of Sway, a Wayland compositor compatible with i3.  SwayFX
+adds extra options and effects to the original Sway, such as blur, rounded
+corners, shadows, inactive window dimming, etc.")
     (license license:expat)))
 
 (define-public swayidle
