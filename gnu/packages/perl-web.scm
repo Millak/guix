@@ -290,3 +290,26 @@ SpamAssassin.")
      "The Perl module @code{Geo::IP} looks up location and network information
 by IP Address.")
     (license license:perl-license)))
+
+(define-public perl-net-smtps
+  (package
+    (name "perl-net-smtps")
+    (version "0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/T/TO/TOMO/src/Net-SMTPS-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1w6h7yjbk6a8xyi6rxgb0xlp2yqn55axl23wnqx687fy9y7gmzx9"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-authen-sasl
+                             perl-io-socket-ssl))
+    (home-page "https://metacpan.org/release/Net-SMTPS")
+    (synopsis "SSL/STARTTLS support for Net::SMTP")
+    (description
+     "This module implements a wrapper for @code{Net::SMTP}, enabling
+over-SSL/STARTTLS support.  This module inherits most of all the methods from
+@code{Net::SMTP}(2.X).")
+    (license license:perl-license)))
