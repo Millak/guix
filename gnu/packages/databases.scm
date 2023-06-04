@@ -2398,6 +2398,37 @@ Ipdate or create actions will set the specified columns to the value returned
 by the callback you specified as a method name or code reference.")
     (license license:perl-license)))
 
+(define-public perl-dbix-class-timestamp
+  (package
+    (name "perl-dbix-class-timestamp")
+    (version "0.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/R/RI/RIBASUSHI/DBIx-Class-TimeStamp-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1zhr4r5ffihqsh2imap7zmps2y0h71piqqhg2nqhcwkjhvlxb958"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-class-accessor-grouped
+                         perl-datetime-format-mysql
+                         perl-datetime-format-sqlite
+                         perl-dbd-sqlite
+                         perl-module-install
+                         perl-test-pod
+                         perl-time-warp))
+    (propagated-inputs (list perl-datetime
+                             perl-dbix-class
+                             perl-dbix-class-dynamicdefault))
+    (home-page "https://metacpan.org/release/DBIx-Class-TimeStamp")
+    (synopsis
+     "DBIx::Class extension to update and create date and time based fields")
+    (description
+     "This package works in conjunction with @code{InflateColumn::DateTime} to
+automatically set update and create date and time based fields in a table.")
+    (license license:perl-license)))
+
 (define-public perl-dbd-pg
   (package
     (name "perl-dbd-pg")
