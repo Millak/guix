@@ -5654,6 +5654,28 @@ defining functions and methods with parameter lists. At minimum this saves you
 from having to unpack @code{@@_} manually, but this module can do much more.")
     (license license:perl-license)))
 
+(define-public perl-gd
+  (package
+    (name "perl-gd")
+    (version "2.77")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/R/RU/RURBAN/GD-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1dbg040nkbv8jjgabzjpmay5ysvg3cgxsqmv5771dq1vxyw8hv5m"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-extutils-pkgconfig perl-test-fork))
+    (inputs (list gd))
+    (home-page "https://metacpan.org/release/GD")
+    (synopsis "Perl interface to the libgd graphics library")
+    (description
+     "@file{GD.pm} is a Perl interface to the gd graphics library.  GD allows
+you to create color drawings using a large number of graphics primitives, and
+emit the drawings as PNG files.")
+    (license license:perl-license)))
+
 (define-public perl-getopt-argvfile
   (package
     (name "perl-getopt-argvfile")
