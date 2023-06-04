@@ -590,6 +590,19 @@ Description: 1st line,
       (match-record rec <with-thunked> (normal thunked)
         (list normal thunked)))))
 
+(test-equal "match-record, ellipsis in body"
+  #t
+  (begin
+    (define-record-type* <foo> foo make-foo foo?
+      (value foo-value))
+    (define bar (foo (value '(1 2 3))))
+    (match-record bar <foo> (value)
+      (match value
+        ((one two ...)
+         #t)
+        (_
+         #f)))))
+
 (test-equal "match-record-lambda"
   '("thing: foo" "thing: bar")
   (begin
