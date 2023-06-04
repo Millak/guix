@@ -637,6 +637,33 @@ attributes.")
 files.")
     (license perl-license)))
 
+(define-public perl-test-file-sharedir
+  (package
+    (name "perl-test-file-sharedir")
+    (version "1.001002")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/K/KE/KENTNL/Test-File-ShareDir-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1bbs6cx69wcinq77gif4i4pmrj8a7lwb92sgvvxzrwmjnk5lfdmk"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-fatal))
+    (propagated-inputs (list perl-class-tiny
+                             perl-file-copy-recursive
+                             perl-file-sharedir
+                             perl-path-tiny
+                             perl-scope-guard))
+    (home-page "https://metacpan.org/release/Test-File-ShareDir")
+    (synopsis "Create a Fake ShareDir for your modules for testing.")
+    (description
+     "@code{Test::File::ShareDir} is some low level plumbing to enable a
+distribution to perform tests while consuming its own share directories in a
+manner similar to how they will be once installed.")
+    (license perl-license)))
+
 (define-public perl-test-file-sharedir-dist
   (package
     (name "perl-test-file-sharedir-dist")
