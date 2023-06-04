@@ -190,3 +190,45 @@ picture associated with your email address.")
      "Package extracted from SOAP::Lite.  Slightly modified to work on
 multiple platforms.")
     (license license:perl-license)))
+
+(define-public perl-soap-lite
+  (package
+    (name "perl-soap-lite")
+    (version "1.27")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PH/PHRED/SOAP-Lite-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "00fkvmnxiy5mr45rj5qmxmflw0xdkw2gihm48iha2i8smdmi0ng3"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch
+                          (lambda _
+                            (substitute* "t/Issues/rt53375.t"
+                              (("XML::Parser::Lite")
+                               "XML::Parser")))))))
+    (native-inputs (list perl-test-most perl-test-warn))
+    (propagated-inputs (list perl-class-inspector
+                             perl-constant
+                             perl-io-compress
+                             perl-io-sessiondata
+                             perl-io-socket-ssl
+                             perl-libwww
+                             perl-lwp-protocol-https
+                             perl-mime-base64
+                             perl-scalar-list-utils
+                             perl-task-weaken
+                             perl-uri
+                             perl-xml-parser))
+    (home-page "https://metacpan.org/release/SOAP-Lite")
+    (synopsis "Client/server interface to the Simple Object Access Protocol")
+    (description
+     "@code{SOAP::Lite} is a collection of Perl modules that provide a
+simple and lightweight interface to the
+@acronym{SOAP, Simple Object Access Protocol}, both on client and server
+side.")
+    (license license:perl-license)))
