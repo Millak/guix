@@ -48,6 +48,29 @@
 ;;;
 
 
+(define-public perl-fennec-lite
+  (package
+    (name "perl-fennec-lite")
+    (version "0.004")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/E/EX/EXODIST/Fennec-Lite-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1aywy5vswrl9mv669cdp3kl9is06bi090bd55bwjyb3n68wqxqnw"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (home-page "https://metacpan.org/release/Fennec-Lite")
+    (synopsis "Set of testing-related modules")
+    (description
+     "Fennec ties together several testing related modules and enhances their
+functionality in ways you don't get loading them individually.
+@code{Fennec::Lite} takes a minimalist approach to do for Fennec what Mouse
+does for Moose.")
+    (license perl-license)))
+
 (define-public perl-mock-config
   (package
     (name "perl-mock-config")
