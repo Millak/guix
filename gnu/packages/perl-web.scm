@@ -260,3 +260,33 @@ format.  The data was collected before MaxMind changed the license and format
 of their databases.  It is intended only as a compatability package for
 SpamAssassin.")
      (license license:cc-by-sa4.0))))
+
+(define-public perl-geo-ip
+  (package
+    (name "perl-geo-ip")
+    (version "1.51")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MA/MAXMIND/Geo-IP-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1fka8fr7fw6sh3xa9glhs1zjg3s2gfkhi7n7da1l2m2wblqj0c0n"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch
+                          (lambda _
+                            (substitute* "lib/Geo/IP.pm"
+                              (("/usr/local/share/GeoIP/GeoIP.dat")
+                               (string-append
+                                #$(this-package-input "geolite-country-data")
+                                "/share/GeoIP/GeoIP.dat"))))))))
+    (inputs (list geolite-country-data))
+    (home-page "https://metacpan.org/release/Geo-IP")
+    (synopsis "Look up location and network information by IP Address")
+    (description
+     "The Perl module @code{Geo::IP} looks up location and network information
+by IP Address.")
+    (license license:perl-license)))
