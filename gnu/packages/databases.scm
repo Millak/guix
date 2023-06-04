@@ -2639,6 +2639,58 @@ claim to be a parser or query verifier.  It just creates sane tokens from a
 valid SQL query.")
     (license license:perl-license)))
 
+(define-public perl-sql-translator
+  (package
+    (name "perl-sql-translator")
+    (version "1.63")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/V/VE/VEESH/SQL-Translator-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0cric118ms3dcnb3m2a1jdhdxmai8wwp5jbx34mf72s9jd6b11aq"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-file-sharedir-install
+                         perl-json-maybexs
+                         perl-test-differences
+                         perl-test-exception
+                         perl-test-most
+                         perl-xml-writer
+                         perl-yaml))
+    (propagated-inputs (list perl-carp-clan
+                             perl-dbi
+                             perl-file-sharedir
+                             perl-gd
+                             perl-graph
+                             perl-graphviz
+                             perl-moo
+                             perl-package-variant
+                             perl-parse-recdescent
+                             perl-spreadsheet-parseexcel
+                             perl-strictures-2
+                             perl-sub-quote
+                             perl-template-toolkit
+                             perl-text-recordparser
+                             perl-try-tiny
+                             perl-xml-libxml))
+    (home-page "https://metacpan.org/release/SQL-Translator")
+    (synopsis "Manipulate structured data definitions (SQL and more)")
+    (description
+     "@code{SQL::Translator} is a group of Perl modules that converts
+vendor-specific SQL table definitions into other formats, such as other
+vendor-specific SQL, ER diagrams, documentation (POD and HTML), XML, and
+@code{Class::DBI} classes. The main focus is SQL, but parsers exist for other
+structured data formats, including Excel spreadsheets and arbitrarily
+delimited text files. Through the separation of the code into parsers and
+producers with an object model in between, it's possible to combine any parser
+with any producer, to plug in custom parsers or producers, or to manipulate
+the parsed data via the built-in object model. Presently only the definition
+parts of SQL are handled (CREATE, ALTER), not the manipulation of
+data (INSERT, UPDATE, DELETE).")
+    (license license:perl-license)))
+
 (define-public unixodbc
   (package
    (name "unixodbc")
