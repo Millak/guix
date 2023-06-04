@@ -11827,6 +11827,31 @@ interface for handling sequential records in a file however they may be
 delimited.")
     (license license:gpl2)))
 
+(define-public perl-text-reform
+  (package
+    (name "perl-text-reform")
+    (version "1.20")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/C/CH/CHORNY/Text-Reform-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "0qdfnhfn8frnkbpkkw64fhnnxsbb6mmb6dr30c0p1jdaq7c2syd8"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (home-page "https://metacpan.org/release/Text-Reform")
+    (synopsis "Manual text wrapping and reformatting")
+    (description
+     "The @code{form()} subroutine may be exported from the module.  It takes
+a series of format (or \"picture\") strings followed by replacement values,
+interpolates those values into each picture string, and returns the result.
+The effect is similar to the inbuilt perl format mechanism, although the
+field specification syntax is simpler and some of the formatting behaviour is
+more sophisticated.")
+    (license license:perl-license)))
+
 (define-public perl-text-roman
   (package
     (name "perl-text-roman")
