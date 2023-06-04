@@ -170,3 +170,23 @@ a URL to get the image from @url{gravatar.com}.  A Gravatar is a Globally
 Recognized Avatar for a given email address. This allows you to have a global
 picture associated with your email address.")
     (license license:perl-license)))
+
+(define-public perl-io-sessiondata
+  (package
+    (name "perl-io-sessiondata")
+    (version "1.03")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PH/PHRED/IO-SessionData-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1p9d77pqy9a8dbgw7h7vmmkg0rlckk19dchd4c8gvcyv7qm73934"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/IO-SessionData")
+    (synopsis "Supporting module for SOAP::Lite")
+    (description
+     "Package extracted from SOAP::Lite.  Slightly modified to work on
+multiple platforms.")
+    (license license:perl-license)))
