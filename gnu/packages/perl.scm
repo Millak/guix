@@ -2163,6 +2163,28 @@ power move up to @code{Config::Simple}, @code{Config::General} or one of the
 many other @code{Config::*} modules.")
     (license license:perl-license)))
 
+(define-public perl-config-simple
+  (package
+    (name "perl-config-simple")
+    (version "4.58")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/S/SH/SHERZODR/Config-Simple-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1d7dhvis1i03xlj8z3g5l8mz88kf7dn13zngbjhq94qgdxq9b6fx"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Config-Simple")
+    (synopsis "Simple configuration file class")
+    (description
+     "@code{Config::Simple} is a class representing configuration file object.
+It supports several configuration file syntax and tries to identify the file
+syntax automatically.  The library supports parsing, updating and creating
+configuration files.")
+    (license license:perl-license)))
+
 (define-public perl-const-fast
   (package
     (name "perl-const-fast")
