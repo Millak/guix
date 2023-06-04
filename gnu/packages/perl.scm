@@ -7235,6 +7235,32 @@ the argument to the CACHESIZE parameter, will be cached.")
 perspective, how much memory a process is using at any given time.")
     (license license:perl-license)))
 
+(define-public perl-meta-builder
+  (package
+    (name "perl-meta-builder")
+    (version "0.004")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/E/EX/EXODIST/Meta-Builder-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1zjnrwwvjxbw1baicr2amsyy7gr18nkmflxq3sr9vsq6fam9kd5c"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-fennec-lite
+                         perl-module-build
+                         perl-test-exception))
+    (home-page "https://metacpan.org/release/Meta-Builder")
+    (synopsis "Tools for creating Meta objects to track custom metrics")
+    (description
+     "@code{Meta::Builder} is designed to be a generic tool for writing Meta
+objects.  Unlike specialized tools, @code{Meta::Builder} makes no assumptions
+about what metrics you will care about.  @code{Meta::Builder} also makes it
+simple for others to extend your meta-object based tools by providing hooks
+for other packages to add metrics to your meta object.")
+    (license license:perl-license)))
+
 (define-public perl-mime-base64
   (package
     (name "perl-mime-base64")
