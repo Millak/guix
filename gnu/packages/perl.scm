@@ -7418,6 +7418,29 @@ just write a method to handle handles, and methods for handling strings and
 file names are added for you.")
     (license (package-license perl))))
 
+(define-public perl-mldbm
+  (package
+    (name "perl-mldbm")
+    (version "2.05")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/C/CH/CHORNY/MLDBM-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "18hp5bq5jl6v1prc9sz6xkpys0q27vhlfivkysxim0101knq0s2q"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-carp perl-data-dumper perl-storable))
+    (home-page "https://metacpan.org/release/MLDBM")
+    (synopsis "Store a Perl hash structure in single level tied hash")
+    (description
+     "This module can serve as a transparent interface to any TIEHASH package
+that is required to store arbitrary perl data, including nested references.
+Thus, this module can be used for storing references and other arbitrary data
+within DBM databases.")
+    (license (package-license perl))))
+
 (define-public perl-modern-perl
   (package
     (name "perl-modern-perl")
