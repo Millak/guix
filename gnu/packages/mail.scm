@@ -188,6 +188,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -4039,16 +4040,20 @@ servers.  The 4rev1 and 4 versions of IMAP are supported.")
 (define-public urlscan
   (package
     (name "urlscan")
-    (version "0.9.10")
+    (version "1.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urlscan" version))
         (sha256
-         (base32 "1ir6dxifkd8hv048p65jyz4wyg6ll002fzvbmajpdnvs6mvkj1md"))))
-    (build-system python-build-system)
+         (base32 "0rxqdrss34rgnfmbn8ab976dchjbz72wp4ywqrdib119a5xnhqzh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ; No tests.
     (propagated-inputs
      (list python-urwid))
+    (native-inputs
+     (list python-hatch-vcs python-hatchling))
     (home-page "https://github.com/firecat53/urlscan")
     (synopsis "View/select the URLs in an email message or file")
     (description
