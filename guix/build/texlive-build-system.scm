@@ -44,6 +44,12 @@
            (negate
             (cut member <> '("." ".." "build" "doc" "source")))))
 
+(define (texlive-input? input)
+  "Return #t if INPUT is a texlive input, #f otherwise."
+  (match input
+    (((or "source" (? (cut string-prefix? "texlive-" <>))) . _) #t)
+    (_ #f)))
+
 (define (install-as-runfiles dir regexp)
   "Install files under DIR matching REGEXP on top of existing runfiles in the
 current tree.  Sub-directories below DIR are preserved when looking for the
@@ -97,8 +103,6 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
   ;; each sub-directory as a separate font source.
   (define (font-sources root metrics)
     (delete-duplicates (map dirname (font-files root metrics))))
-  (define (texlive-input? input)
-    (string-prefix? "texlive-" input))
   (and-let* ((local-metrics (font-metrics "fonts/tfm"))
              (local-sources (font-sources "fonts/source" local-metrics))
              ((not (null? local-sources))) ;nothing to generate: bail out
@@ -113,7 +117,7 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
              (font-inputs
               (delete-duplicates
                (append-map (match-lambda
-                             (((? (negate texlive-input?)) . _) '())
+                             ((? (negate texlive-input?)) '())
                              (("texlive-bin" . _) '())
                              (("texlive-metafont" . _)
                               (list (string-append metafont "/metafont/base")))
@@ -148,6 +152,29 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
        ;; Refresh font metrics at the appropriate location.
        (install-as-runfiles "build" "\\.tfm$"))
      local-sources)))
+
+(define* (create-formats #:key create-formats inputs #:allow-other-keys)
+  (define (collect-locations inputs pred)
+    (delete-duplicates
+     (append-map (match-lambda
+                   ((? (negate texlive-input?)) '())
+                   ((_ . dir)
+                    (if pred
+                        (map dirname (find-files dir pred))
+                        (list dir))))
+                 inputs)))
+  (when create-formats
+    (setenv "TFMFONTS"
+            (string-join (collect-locations inputs "\\.tfm$") ":"))
+    (setenv "TEXINPUTS"
+            (string-join (collect-locations inputs #f) "//:" 'suffix))
+    (setenv "LUAINPUTS"
+            (string-join (collect-locations inputs "\\.lua$") ":"))
+    (mkdir-p "web2c")
+    (for-each (cut invoke "fmtutil-sys" "--byfmt" <> "--fmtdir=web2c")
+              create-formats)
+    ;; Remove cruft.
+    (for-each delete-file (find-files "web2c" "\\.log$"))))
 
 (define (compile-with-latex engine format output file)
   (invoke engine
@@ -224,6 +251,7 @@ runfile to replace.  If a file has no matching runfile, it is ignored."
     (add-before 'build 'delete-drv-files delete-drv-files)
     (add-after 'delete-drv-files 'generate-font-metrics generate-font-metrics)
     (replace 'build build)
+    (add-after 'build 'create-formats create-formats)
     (delete 'check)
     (replace 'install install)))
 
