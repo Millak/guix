@@ -3703,6 +3703,30 @@ function that is the reverse of `strftime(3)`, for `DateTime`.  While
 takes a string and a pattern and returns the `DateTime` object associated.")
     (license license:artistic2.0)))
 
+(define-public perl-datetime-format-sqlite
+  (package
+    (name "perl-datetime-format-sqlite")
+    (version "0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/C/CF/CFAERBER/DateTime-Format-SQLite-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1d4ln8x5bjpqmgnbbi2h16knfz674dsgvk6x7m60v6ykw454w7yc"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-datetime
+                             perl-datetime-format-builder))
+    (home-page "https://metacpan.org/release/DateTime-Format-SQLite")
+    (synopsis "Parse and format SQLite dates and times")
+    (description
+     "This module understands the formats used by SQLite for its date,
+datetime and time functions.  It can be used to parse these formats in order
+to create DateTime objects, and it can take a DateTime object and produce a
+timestring accepted by SQLite.")
+    (license license:perl-license)))
+
 (define-public perl-datetime-locale
   (package
     (name "perl-datetime-locale")
