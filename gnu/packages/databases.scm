@@ -2280,6 +2280,50 @@ DBIx::Class::Schema by scanning database table definitions and setting up the
 columns, primary keys, unique constraints and relationships.")
     (license license:perl-license)))
 
+(define-public perl-dbix-class-deploymenthandler
+  (package
+    (name "perl-dbix-class-deploymenthandler")
+    (version "0.002233")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MM/MMCCLIMON/DBIx-Class-DeploymentHandler-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1bikp1q3pm1xphfdr8kmsqvzzpk06an3112mhb6gl8vlpg81ch4m"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-aliased
+                         perl-dbd-sqlite
+                         perl-dbix-class-schema-loader
+                         perl-test-fatal
+                         perl-test-most
+                         perl-test-requires))
+    (propagated-inputs (list perl-carp-clan
+                             perl-context-preserve
+                             perl-dbix-class
+                             perl-log-contextual
+                             perl-module-runtime
+                             perl-moose
+                             perl-moosex-role-parameterized
+                             perl-namespace-autoclean
+                             perl-path-class
+                             perl-sql-splitstatement
+                             perl-sql-translator
+                             perl-sub-exporter-progressive
+                             perl-sub-quote
+                             perl-text-brew
+                             perl-try-tiny
+                             perl-yaml))
+    (home-page "https://metacpan.org/release/DBIx-Class-DeploymentHandler")
+    (synopsis "Extensible DBIx::Class deployment")
+    (description
+     "@code{DBIx::Class::DeploymentHandler} is a tool for deploying and
+upgrading databases with @code{DBIx::Class}.  It is designed to be much more
+flexible than @code{DBIx::Class::Schema::Versioned}, hence the use of Moose
+and lots of roles.")
+    (license license:perl-license)))
+
 (define-public perl-dbd-pg
   (package
     (name "perl-dbd-pg")
