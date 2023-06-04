@@ -442,6 +442,7 @@ Home Services
 * Guix: Guix Home Services.     Services for Guix.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
+* Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
 
