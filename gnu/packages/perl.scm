@@ -6647,6 +6647,31 @@ logging mechanism.")
 @code{Log::Any} adapter using @code{Log::Log4perl} for logging.")
     (license (package-license perl))))
 
+(define-public perl-log-contextual
+  (package
+    (name "perl-log-contextual")
+    (version "0.008001")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/F/FR/FREW/Log-Contextual-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "14qr8p4hkji0bzp4xhajq440hqx5rm1h5c736v452vbrp3xvqg5r"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-fatal))
+    (propagated-inputs (list perl-data-dumper-concise
+                             perl-exporter-declare
+                             perl-moo))
+    (home-page "https://metacpan.org/release/Log-Contextual")
+    (synopsis "Simple logging interface with a contextual log")
+    (description
+     "This module is a simple interface to extensible logging. It exists to
+abstract your logging interface so that logging is as painless as possible,
+while still allowing you to switch from one logger to another.")
+    (license license:perl-license)))
+
 (define-public perl-log-message
   (package
    (name "perl-log-message")
