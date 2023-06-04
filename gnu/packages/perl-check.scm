@@ -963,6 +963,33 @@ to particular interfaces with very little code.  You don't have to reimplement
 the behavior, just the input and the output.")
     (license perl-license)))
 
+(define-public perl-test-mockrandom
+  (package
+    (name "perl-test-mockrandom")
+    (version "1.01")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DA/DAGOLDEN/Test-MockRandom-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1q6c474ya9najgj4wzgj0waj56ykrj3fxhgvkb1ylpgwhh6r6516"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Test-MockRandom")
+    (synopsis
+     "Replaces random number generation with non-random number generation")
+    (description
+     "This module can test routines that manipulate random numbers by
+providing a known output from @code{rand}.  Given a list of seeds with
+@code{srand}, it will return each in turn.  After seeded random numbers are
+exhausted, it will always return 0.  Seed numbers must be of a form that
+meets the expected output from @code{rand} as called with no arguments: they
+must be between 0 (inclusive) and 1 (exclusive).  In order to facilitate
+generating and testing a nearly-one number, this module exports the function
+@code{oneish}, which returns a number just fractionally less than one.")
+    (license asl2.0)))
+
 (define-public perl-test-mocktime
   (package
     (name "perl-test-mocktime")
