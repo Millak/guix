@@ -3282,173 +3282,25 @@ formats.")
     (arguments
      (list
       #:texlive-latex-base #f
-      #:modules '((guix build texlive-build-system)
-                  (guix build utils)
-                  (ice-9 match)
-                  (srfi srfi-26))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The literal tab in the dtx file is translated to the string "^^I"
-          ;; in the generated Lua file, which causes a syntax error.
-          (add-after 'unpack 'fix-lua-sources
-            (lambda _
-              (substitute* "source/latex/base/ltluatex.dtx"
-                (("\t") "  "))))
-          (replace 'build
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Find required fonts
-              (setenv "TFMFONTS"
-                      (string-join
-                       (map (match-lambda
-                              ((pkg-name . dir)
-                               (string-append
-                                (assoc-ref inputs pkg-name)
-                                "/share/texmf-dist/fonts/tfm/public"
-                                dir)))
-                            '(("texlive-etex" . "/etex")
-                              ("texlive-cm" . "/cm")
-                              ("texlive-latex-fonts" . "/latex-fonts")
-                              ("texlive-knuth-lib" . "/knuth-lib")))
-                       ":"))
-              (let ((cwd (getcwd)))
-                (setenv "TEXINPUTS"
-                        (string-append
-                         cwd "//:"
-                         cwd "/source/latex/base//:"
-                         cwd "/build:"
-                         (string-join
-                          (map (match-lambda ((_ . dir) dir)) inputs)
-                          "//:")))
-                (setenv "LUAINPUTS" (string-append cwd "/build:")))
-
-              ;; This is the actual build step.
-              (mkdir "build")
-              (invoke "tex" "-ini" "-interaction=scrollmode"
-                      "-output-directory=build" "unpack.ins")
-
-              ;; XXX: We can't build all formats at this point, nor are they
-              ;; part of the LaTeX base, so we disable them.  Actually, we
-              ;; should be running this all in a profile hook, so that only
-              ;; selected formats and hyphenation patterns are included, but it
-              ;; takes long and TeX Live isn't designed to be modular like
-              ;; that.  Everything operates on a shared directory, which we
-              ;; would only have at profile generation time.
-              (let ((disabled-formats
-                     '("aleph aleph" "lamed aleph" "uptex uptex" "euptex euptex"
-                       "eptex eptex" "ptex ptex" "pdfxmltex pdftex" "platex eptex"
-                       "platex-dev eptex" "uplatex-dev euptex"
-                       "csplain pdftex" "mf mf-nowin" "mex pdftex" "pdfmex pdftex"
-                       "luacsplain luatex" "optex luatex"
-                       ;; LuaJIT is not ported to powerpc64le* or riscv64 yet and
-                       ;; building these fail on powerpc.
-                       #$@(if (or (target-powerpc?)
-                                  (target-riscv64?))
-                              '("luajittex" "luajithbtex" "mfluajit") '())
-                       "cont-en xetex" "cont-en pdftex" "pdfcsplain xetex"
-                       "pdfcsplain pdftex" "pdfcsplain luatex" "cslatex pdftex"
-                       "mptopdf pdftex" "uplatex euptex" "jadetex pdftex"
-                       "amstex pdftex" "pdfcslatex pdftex" "lollipop tex"
-                       "xmltex pdftex" "pdfjadetex pdftex" "eplain pdftex"
-                       "texsis pdftex" "mltex pdftex" "utf8mex pdftex")))
-                (mkdir "web2c")
-                (install-file (string-append
-                               (assoc-ref inputs "texlive-kpathsea")
-                               "/share/texmf-dist/web2c/fmtutil.cnf")
-                              "web2c")
-                (make-file-writable "web2c/fmtutil.cnf")
-                (substitute* "web2c/fmtutil.cnf"
-                  (((string-append "^(" (string-join disabled-formats "|") ")") m)
-                   (string-append "#! " m))
-                  (("translate-file=cp227")
-                   (format #f "translate-file=~a/share/texmf-dist/web2c/cp227"
-                           (assoc-ref inputs "texlive-kpathsea")))))
-              (invoke "fmtutil-sys" "--all"
-                      "--fmtdir=web2c"
-                      (string-append "--cnffile=web2c/fmtutil.cnf"))
-              ;; We don't actually want to install it.
-              (delete-file "web2c/fmtutil.cnf")
-              ;; Also remove cruft.
-              (for-each delete-file (find-files "web2c" "\\.log$")))))))
-    (native-inputs
-     (list texlive-bin
+      #:tex-engine "tex"
+      #:tex-format #f
+      #:build-targets #~(list "unpack.ins")
+      #:create-formats #~(list "dvilualatex" "latex" "lualatex" "pdflatex")))
+    (propagated-inputs
+     (list texlive-babel
            texlive-cm
            texlive-etex
+           texlive-hyphen-complete
            texlive-knuth-lib
            texlive-kpathsea
-           texlive-latex-fonts
-           texlive-luatex
-           texlive-plain
-           texlive-tex-ini-files))
-    (propagated-inputs
-     (list texlive-dehyph-exptl
-           texlive-etex
-           texlive-hyph-utf8
-           texlive-hyphen-afrikaans
-           texlive-hyphen-ancientgreek
-           texlive-hyphen-armenian
-           texlive-hyphen-base
-           texlive-hyphen-basque
-           texlive-hyphen-belarusian
-           texlive-hyphen-bulgarian
-           texlive-hyphen-catalan
-           texlive-hyphen-chinese
-           texlive-hyphen-churchslavonic
-           texlive-hyphen-coptic
-           texlive-hyphen-croatian
-           texlive-hyphen-czech
-           texlive-hyphen-danish
-           texlive-hyphen-dutch
-           texlive-hyphen-english
-           texlive-hyphen-esperanto
-           texlive-hyphen-estonian
-           texlive-hyphen-ethiopic
-           texlive-hyphen-finnish
-           texlive-hyphen-french
-           texlive-hyphen-friulan
-           texlive-hyphen-galician
-           texlive-hyphen-georgian
-           texlive-hyphen-german
-           texlive-hyphen-greek
-           texlive-hyphen-hungarian
-           texlive-hyphen-icelandic
-           texlive-hyphen-indic
-           texlive-hyphen-indonesian
-           texlive-hyphen-interlingua
-           texlive-hyphen-irish
-           texlive-hyphen-italian
-           texlive-hyphen-kurmanji
-           texlive-hyphen-latin
-           texlive-hyphen-latvian
-           texlive-hyphen-lithuanian
-           texlive-hyphen-macedonian
-           texlive-hyphen-mongolian
-           texlive-hyphen-norwegian
-           texlive-hyphen-occitan
-           texlive-hyphen-pali
-           texlive-hyphen-piedmontese
-           texlive-hyphen-polish
-           texlive-hyphen-portuguese
-           texlive-hyphen-romanian
-           texlive-hyphen-romansh
-           texlive-hyphen-russian
-           texlive-hyphen-sanskrit
-           texlive-hyphen-schoolfinnish
-           texlive-hyphen-serbian
-           texlive-hyphen-slovak
-           texlive-hyphen-slovenian
-           texlive-hyphen-spanish
-           texlive-hyphen-swedish
-           texlive-hyphen-thai
-           texlive-hyphen-turkish
-           texlive-hyphen-turkmen
-           texlive-hyphen-ukrainian
-           texlive-hyphen-uppersorbian
-           texlive-hyphen-welsh
            texlive-l3backend
            texlive-l3kernel
+           texlive-latex-fonts
            texlive-latexconfig
-           texlive-ruhyphen
-           texlive-ukrhyph
+           texlive-luatex
+           texlive-pdftex
+           texlive-plain
+           texlive-tex-ini-files
            texlive-unicode-data
            ;; TODO: This dependency isn't needed for LaTeX version 2021-06-01
            ;; and later. See:
