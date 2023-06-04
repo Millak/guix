@@ -78,6 +78,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages language)
@@ -5807,6 +5808,35 @@ internationalization functions provided by the C library.")
     (description "This is @code{Graph}, a Perl module for dealing with graphs,
 the abstract data structures.")
     (license (package-license perl))))
+
+(define-public perl-graphviz
+  (package
+    (name "perl-graphviz")
+    (version "2.26")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/E/ET/ETJ/GraphViz-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0a3kv92z9gykwgh8py5y67wygy25lijdfb97fl2g6ar6nch2apcs"))))
+    (build-system perl-build-system)
+    (inputs (list graphviz))
+    (propagated-inputs (list perl-file-which
+                             perl-ipc-run
+                             perl-libwww
+                             perl-parse-recdescent
+                             perl-xml-twig
+                             perl-xml-xpath))
+    (home-page "https://metacpan.org/release/GraphViz")
+    (synopsis "Perl interface to Graphviz")
+    (description
+     "This module provides an interface to layout and image generation of
+directed and undirected graphs in a variety of formats (PostScript, PNG, etc.)
+using the @code{dot}, @code{neato}, @code{twopi}, @code{circo}, and @code{fdp}
+programs from the Graphviz project.  This package is deprecated in favour of
+GraphViz2.")
+    (license license:perl-license)))
 
 (define-public perl-guard
   (package
