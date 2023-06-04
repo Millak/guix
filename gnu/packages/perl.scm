@@ -11445,6 +11445,32 @@ into tables.")
 used to justify strings to various alignment styles.")
     (license license:x11)))
 
+(define-public perl-text-autoformat
+  (package
+    (name "perl-text-autoformat")
+    (version "1.75")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/N/NE/NEILB/Text-Autoformat-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0wdpqq1cds68i1clx2y22bnnm558d12sr7dmypdv9i5f7p7g9m4x"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-text-reform))
+    (home-page "https://metacpan.org/release/Text-Autoformat")
+    (synopsis "Automatic text wrapping and reformatting")
+    (description
+     "The fundamental task of the autoformat subroutine is to identify and
+rearrange independent paragraphs in a text.  Paragraphs typically consist of a
+series of lines containing at least one non-whitespace character, followed by
+one or more lines containing only optional whitespace.  This is a more liberal
+definition than many other formatters use: most require an empty line to
+terminate a paragraph.  Paragraphs may also be denoted by bulleting, numbering,
+or quoting (see the following sections).")
+    (license license:perl-license)))
+
 (define-public perl-text-balanced
   (package
     (name "perl-text-balanced")
