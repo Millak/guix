@@ -599,7 +599,8 @@ to thunked values.  Raise a syntax violation when the field is not found."
       ((_ record field offset ())
        (syntax-violation 'match-record
                          "unknown record type field"
-                         s #'field))
+                         ;; Attach the local source data to the field.
+                         (datum->syntax #f (syntax->datum #'field) #:source s)))
       ((_ record field offset ((head normal) tail ...))
        (free-identifier=? #'field #'head)
        #'(values offset identity))
