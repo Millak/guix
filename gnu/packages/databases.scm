@@ -2375,6 +2375,29 @@ a fresh database for every test, you don't have to worry about cleaning up
 after your tests, ordering of tests affecting failure, etc.")
     (license license:perl-license)))
 
+(define-public perl-dbix-class-dynamicdefault
+  (package
+    (name "perl-dbix-class-dynamicdefault")
+    (version "0.04")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MS/MSTROUT/DBIx-Class-DynamicDefault-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1yssda00988hn9v96jl95apbzib74vgbcgf69m5mhhj64amm33r2"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-dbicx-testdatabase perl-module-install))
+    (propagated-inputs (list perl-dbix-class))
+    (home-page "https://metacpan.org/release/DBIx-Class-DynamicDefault")
+    (synopsis "Automatically set and update fields")
+    (description
+     "Automatically set and update fields with values calculated at runtime.
+Ipdate or create actions will set the specified columns to the value returned
+by the callback you specified as a method name or code reference.")
+    (license license:perl-license)))
+
 (define-public perl-dbd-pg
   (package
     (name "perl-dbd-pg")
