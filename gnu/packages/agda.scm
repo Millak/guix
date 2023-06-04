@@ -155,46 +155,41 @@ Agda.  It also aids the input of Unicode characters.")
     (license (package-license agda))))
 
 (define-public agda-ial
-  (package
-    (name "agda-ial")
-    (version "1.5.0")
-    (home-page "https://github.com/cedille/ial")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0dlis6v6nzbscf713cmwlx8h9n2gxghci8y21qak3hp18gkxdp0g"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list agda))
-    (arguments
-     `(#:parallel-build? #f
+  (let ((revision "1")
+        ;; There hasn't been a release in a long time, and the last one
+        ;; doesn't build with Agda 2.6.
+        (commit "ded30c410d5d40142249686572aa1acd1b2f8cc7"))
+   (package
+     (name "agda-ial")
+     (version (git-version "1.5.0" revision commit))
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference (url "https://github.com/cedille/ial")
+                                   (commit commit)))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0xn6zvp1wnm0i84pz1rfbzfmayd15ch4i5s11ycd88d22pxd55dc"))))
+     (build-system agda-build-system)
+     (arguments
+      (list
+       #:gnu-and-haskell? #t
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'patch-dependencies
-           (lambda _ (patch-shebang "find-deps.sh") #t))
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (include (string-append out "/include/agda/ial")))
-               (for-each (lambda (file)
-                           (make-file-writable file)
-                           (install-file file include))
-                         (find-files "." "\\.agdai?(-lib)?$"))
-               #t))))))
-    (synopsis "The Iowa Agda Library")
-    (description
-     "The goal is to provide a concrete library focused on verification
+       #~(modify-phases %standard-phases
+           (add-before 'build 'patch-dependencies
+             (lambda _ (patch-shebang "find-deps.sh")))
+           (replace 'build
+             (lambda _
+               (invoke "make"))))))
+     (home-page "https://github.com/cedille/ial")
+     (synopsis "The Iowa Agda Library")
+     (description
+      "The goal is to provide a concrete library focused on verification
 examples, as opposed to mathematics.  The library has a good number
 of theorems for booleans, natural numbers, and lists.  It also has
 trees, tries, vectors, and rudimentary IO.  A number of good ideas
 come from Agda's standard library.")
-    (license license:expat)))
+     (license license:expat))))
 
 (define-public agda-stdlib
   (package
