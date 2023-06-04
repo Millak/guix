@@ -4699,6 +4699,34 @@ provides a highly flexible interface, with an implementation optimised for the
 common case.")
     (license (package-license perl))))
 
+(define-public perl-exporter-declare
+  (package
+    (name "perl-exporter-declare")
+    (version "0.114")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/E/EX/EXODIST/Exporter-Declare-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1r6ly42g5x8highwng13y5c3lndqjfnd8666wjknnvvglxn0vmsb"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-fennec-lite
+                         perl-module-build
+                         perl-test-exception))
+    (propagated-inputs (list perl-aliased
+                             perl-meta-builder))
+    (home-page "https://metacpan.org/release/Exporter-Declare")
+    (synopsis "Meta-driven exporting tool")
+    (description
+     "@code{Exporter::Declare} is a meta-driven exporting tool.  It tries to
+adopt all the good features of other exporting tools, while replacing bad
+interfaces. @code{Exporter::Declare} also provides hooks that allow you to add
+options and arguments for import.  @code{Exporter::Declare}'s meta-driven
+system allows for top-notch introspection.")
+    (license license:perl-license)))
+
 (define-public perl-exporter-lite
   (package
     (name "perl-exporter-lite")
