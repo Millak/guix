@@ -10296,6 +10296,45 @@ Excel95, 97 and 2000 format files.")
 Microsoft Excel 2007 xlsx files.")
     (license license:perl-license)))
 
+(define-public perl-spreadsheet-parseexcel
+  (package
+    (name "perl-spreadsheet-parseexcel")
+    (version "0.65")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DO/DOUGW/Spreadsheet-ParseExcel-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1v2vcz0q2xlbrh4qzij023zm2vy46ps1c8g11xj833fmkd1cpi3f"))))
+    (build-system perl-build-system)
+    (arguments
+     (list #:tests? #f ;2/32 fail (tests 10 and 11)
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-md5
+                          (lambda _
+                            (substitute* (find-files "." "\\.pm$")
+                              (("Digest::Perl::MD5")
+                               "Digest::MD5"))
+                            ;; avoid decoding-error when parsing
+                            ;; 03_regression.t
+                            (substitute* (find-files "." "\\.[1-9]\\.t$")
+                              (("Digest::Perl::MD5")
+                               "Digest::MD5")))))))
+    (native-inputs (list perl-test-most))
+    (propagated-inputs (list perl-crypt-rc4
+                             perl-digest-md5
+                             perl-io-stringy
+                             perl-ole-storage-lite))
+    (home-page "https://metacpan.org/release/Spreadsheet-ParseExcel")
+    (synopsis "Reads information from an Excel file")
+    (description
+     "The @code{Spreadsheet::ParseExcel} module can be used to read
+information from Excel 95-2003 binary files.  The module cannot read files in
+the Excel 2007 Open XML XLSX format.")
+    (license license:perl-license)))
+
 (define-public perl-want
   (package
     (name "perl-want")
