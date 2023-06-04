@@ -413,3 +413,25 @@ server to connect to, and additional optional parameters.")
 the 2013 DMARC draft, intending to implement every MUST and every SHOULD.")
     (license license:perl-license)))
 
+(define-public perl-net-libidn
+  (package
+    (name "perl-net-libidn")
+    (version "0.12")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/T/TH/THOR/Net-LibIDN-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "05xvpn9z7dpv62a5wgjx1n9kxblkqsgl9kb3vk3nx1mk8aacr2ig"))))
+    (build-system perl-build-system)
+    (inputs (list libidn))
+    (home-page "https://metacpan.org/release/Net-LibIDN")
+    (synopsis "Perl bindings for GNU Libidn")
+    (description
+     "The package provides bindings for GNU Libidn, a C library for handling
+Internationalized Domain Names according to IDNA (RFC 3490), in a way very
+much inspired by Turbo Fredriksson's PHP-IDN.")
+    (license (list license:gpl1+ license:clarified-artistic))))
+
