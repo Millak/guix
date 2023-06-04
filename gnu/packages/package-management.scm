@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +56,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages cpio)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -731,7 +732,7 @@ high-performance computing} clusters.")
 (define-public nix
   (package
     (name "nix")
-    (version "2.5.1")
+    (version "2.16.0")
     (source
      (origin
        (method git-fetch)
@@ -740,7 +741,7 @@ high-performance computing} clusters.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m8rmv8i6lg83pmalvjlq1fn8mcghn3ngjv3kw1kqsa45ymj5sqq"))
+        (base32 "0jizpci4zspqpqqy3n780m4wh8dzhfywaiz953xv70c7in810dra"))
        (patches
         (search-patches "nix-dont-build-html-doc.diff"))))
     (build-system gnu-build-system)
@@ -757,7 +758,19 @@ high-performance computing} clusters.")
                 (apply invoke "make" "install"
                        (string-append "sysconfdir=" etc)
                        (string-append "profiledir=" etc "/profile.d")
-                       make-flags)))))))
+                       make-flags))))
+          (replace 'check
+            (lambda args
+              ;; Some test expect environment variable NIX_STORE to be
+              ;; "/nix/store"
+              (let ((original-NIX_STORE (getenv "NIX_STORE")))
+                (dynamic-wind
+                  (lambda ()
+                    (setenv "NIX_STORE" "/nix/store"))
+                  (lambda ()
+                    (apply (assoc-ref %standard-phases 'check) args))
+                  (lambda ()
+                    (setenv "NIX_STORE" original-NIX_STORE)))))))))
     (native-inputs
      (list autoconf
            autoconf-archive
@@ -767,7 +780,8 @@ high-performance computing} clusters.")
            googletest
            jq
            libtool
-           pkg-config))
+           pkg-config
+           rapidcheck))
     (inputs
      (append (list boost
                    brotli
@@ -779,6 +793,7 @@ high-performance computing} clusters.")
                    libseccomp
                    libsodium
                    lowdown
+                   nlohmann-json
                    openssl
                    sqlite
                    xz
