@@ -12125,6 +12125,28 @@ operations can also be performed on the IxHash.")
 by modifying the @code{seek()} and @code{tell()} calls.")
     (license license:asl2.0)))
 
+(define-public perl-tie-hash-method
+  (package
+    (name "perl-tie-hash-method")
+    (version "0.02")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/Y/YV/YVES/Tie-Hash-Method-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1a9jxhg1jl5rcxnhcmgadl3wcznzjihwxgd1chgcmxqk2jszn4ym"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Tie-Hash-Method")
+    (synopsis "Tied hash with specific methods overriden by callbacks")
+    (description
+     "@code{Tie::Hash::Method} provides a way to create a tied hash with
+specific overriden behaviour without having to create a new class to do it.  A
+tied hash with no methods overriden is functionally equivalent to a normal
+hash.")
+    (license (package-license perl))))
+
 (define-public perl-tie-simple
   (package
     (name "perl-tie-simple")
