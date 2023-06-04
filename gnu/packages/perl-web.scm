@@ -335,3 +335,25 @@ which can be single IP addresses, prefixes, or ranges of addresses.  There is
 also a procedural way of accessing most of the functions. Most subroutines can
 take either IPv4 or IPv6 addresses transparently.")
     (license license:perl-license)))
+
+(define-public perl-net-imap-simple
+  (package
+    (name "perl-net-imap-simple")
+    (version "1.2212")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/J/JE/JETTERO/Net-IMAP-Simple-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0mbzbfn0v1x1brd8nsyw8bzdkz31lw9qp7h6nrl3fcxylc5cs4lq"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-parse-recdescent))
+    (home-page "https://metacpan.org/release/Net-IMAP-Simple")
+    (synopsis "Perl extension for simple IMAP account handling.")
+    (description
+     "This package provides a class method constructs a new
+@code{Net::IMAP::Simple} object.  It takes one required parameter which is the
+server to connect to, and additional optional parameters.")
+    (license license:perl-license)))
