@@ -435,3 +435,32 @@ Internationalized Domain Names according to IDNA (RFC 3490), in a way very
 much inspired by Turbo Fredriksson's PHP-IDN.")
     (license (list license:gpl1+ license:clarified-artistic))))
 
+(define-public perl-razor2-client-agent
+  ;; TODO: Package razor-agents and razor-agents-sdk
+  (package
+    (name "perl-razor2-client-agent")
+    (version "2.86")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/T/TO/TODDR/Razor2-Client-Agent-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0pw4jhxhm2naqkz0h3gjgdjnygf4019zmvp712vj8pmnxc12w1jy"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-digest-sha1 perl-uri))
+    (home-page "https://metacpan.org/release/Razor2-Client-Agent")
+    (synopsis "Collaborative, content-based spam filtering network agent.")
+    (description
+     "This package provides a client library for Vipul's Razor.  Vipul's Razor
+is a distributed, collaborative, spam detection and filtering network.
+Through user contribution, Razor establishes a distributed and constantly
+updating catalogue of spam in propagation that is consulted by email clients
+to filter out known spam.  Detection is done with statistical and randomized
+signatures that efficiently spot mutating spam content.  User input is
+validated through reputation assignments based on consensus on report and
+revoke assertions which in turn is used for computing confidence values
+associated with individual signatures.")
+    (license license:perl-license)))
+
