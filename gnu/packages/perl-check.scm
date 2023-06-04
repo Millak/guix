@@ -736,6 +736,29 @@ and directories.  For instance, the @code{file_ok} helper can test whether the
 contents of a file is equal to a particular string.")
     (license perl-license)))
 
+(define-public perl-test-fork
+  (package
+    (name "perl-test-fork")
+    (version "0.02")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/M/MS/MSCHWERN/Test-Fork-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "0gnh8m81fdrwmzy1fix12grfq7sf7nn0gbf24zlap1gq4kxzpzpw"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (home-page "https://metacpan.org/release/Test-Fork")
+    (synopsis "Test code which forks")
+    (description
+     "Testing code which forks is problematic because each test has a number
+associated with it.  Coordinating the test number amongst the parent and child
+processes is complicated. @code{Test::Fork} provides a function to smooth over
+the complications.")
+    (license perl-license)))
+
 (define-public perl-test-harness
   (package
     (name "perl-test-harness")
