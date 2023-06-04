@@ -10858,7 +10858,7 @@ subroutines.  Particularly useful for mocking in tests.")
 (define-public perl-sub-quote
   (package
     (name "perl-sub-quote")
-    (version "2.006006")
+    (version "2.006008")
     (source
      (origin
        (method url-fetch)
@@ -10866,7 +10866,7 @@ subroutines.  Particularly useful for mocking in tests.")
              "mirror://cpan/authors/id/H/HA/HAARG/Sub-Quote-"
              version ".tar.gz"))
        (sha256
-        (base32 "17fq4iskrisnqs96amrz493vxikwvqbj9s7014k6vyl84gs2lkkf"))))
+        (base32 "1chm1n08l8qcqq87231pfa085bw79mcvrwm27vl64mzm198bvgll"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-test-fatal))
