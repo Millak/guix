@@ -7092,6 +7092,27 @@ simple means to send email from a perl script.  The module only
 requires Perl5 and a network connection.")
     (license license:perl-license)))
 
+(define-public perl-mail-rfc822-address
+  (package
+    (name "perl-mail-rfc822-address")
+    (version "0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PD/PDWARREN/Mail-RFC822-Address-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "19y8hhb7hywyfpmiws1wwnkx2hw2mqzj824hwv55wryb9q8g87im"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Mail-RFC822-Address")
+    (synopsis
+     "Perl extension for validating email addresses according to RFC822")
+    (description
+     "@code{Mail::RFC822::Address} validates email addresses against the
+grammar described in RFC 822 using regular expressions.")
+    (license license:expat)))
+
 (define-public perl-math-bezier
   (package
     (name "perl-math-bezier")
