@@ -8138,100 +8138,73 @@ of ink traps which typify the Kurier font.")
     (build-system texlive-build-system)
     (arguments
      (list
+      #:create-formats #~(list "jadetex" "pdfjadetex")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'build 'bring-ini-files
-            (lambda _
-              (for-each (lambda (f) (install-file f "build"))
-                        (find-files "tex/jadetex/base"))))
-          (add-after 'bring-ini-files 'generate-formats
-            (lambda* (#:key inputs #:allow-other-keys)
-              (mkdir "web2c")
-              (with-directory-excursion "build"
-                (invoke "fmtutil-sys" "--byfmt" "jadetex"
-                        "--fmtdir=../web2c")
-                (invoke "fmtutil-sys" "--byfmt" "pdfjadetex"
-                        "--fmtdir=../web2c"))))
-          (add-after 'install 'install-formats-and-wrappers
+          (add-after 'install 'install-wrappers
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((pdftex (search-input-file inputs "/bin/pdftex"))
                     (web2c (string-append #$output "/share/texmf-dist/web2c")))
-                (mkdir-p web2c)
-                (copy-recursively "web2c" web2c)
-                (for-each delete-file (find-files web2c "\\.log$"))
-                ;; Create convenience command wrappers.
                 (mkdir-p (string-append #$output "/bin"))
                 (symlink pdftex
                          (string-append #$output "/bin/jadetex"))
                 (symlink pdftex
                          (string-append #$output "/bin/pdfjadetex"))))))))
-    (native-inputs
-     (list texlive-amsfonts
-           texlive-cm                   ;for cmex10 and others
-           texlive-colortbl
-           texlive-fancyhdr
-           texlive-graphics             ;for color.sty
-           texlive-hyperref
-           ;; The t1cmr.fd file of texlive-latex-base refers to the ecrm font,
-           ;; provided by the jknapltx package collection.
-           texlive-jknapltx
-           texlive-latex-fonts          ;for lasy6
-           texlive-letltxmacro
-           texlive-marvosym
-           texlive-tex-ini-files        ;for pdftexconfig
-           texlive-tools                ;for array.sty
-           texlive-ulem))               ;for fmtutil.cnf template
     (propagated-inputs
-     (list
-      (texlive-updmap.cfg
-       (list texlive-amsfonts
-             texlive-atbegshi
-             texlive-atveryend
-             texlive-auxhook
-             texlive-bigintcalc
-             texlive-bitset
-             texlive-colortbl
-             texlive-dehyph
-             texlive-ec
-             texlive-etexcmds
-             texlive-everyshi
-             texlive-fancyhdr
-             texlive-firstaid
-             texlive-hycolor
-             texlive-hyperref
-             texlive-hyph-utf8
-             texlive-hyphen-base
-             texlive-latexconfig
-             texlive-iftex
-             texlive-infwarerr
-             texlive-intcalc
-             texlive-kvdefinekeys
-             texlive-kvoptions
-             texlive-kvsetkeys
-             texlive-l3backend
-             texlive-l3kernel
-             texlive-l3packages
-             texlive-latexconfig
-             texlive-letltxmacro
-             texlive-ltxcmds
-             texlive-marvosym
-             texlive-passivetex
-             texlive-pdfescape
-             texlive-pdftex
-             texlive-pdftexcmds
-             texlive-rerunfilecheck
-             texlive-stmaryrd
-             texlive-symbol
-             texlive-tipa
-             texlive-ulem
-             texlive-unicode-data
-             texlive-uniquecounter
-             texlive-url
-             texlive-wasysym
-             ;; Propagate the texlive-updmap.cfg input used by xmltex,
-             ;; which provides the required fonts for its use.
-             texlive-xmltex
-             texlive-zapfding))))
+     (list texlive-amsfonts
+           texlive-atbegshi
+           texlive-atveryend
+           texlive-auxhook
+           texlive-babel
+           texlive-bigintcalc
+           texlive-bitset
+           texlive-cm
+           texlive-colortbl
+           texlive-cyrillic
+           texlive-ec
+           texlive-etexcmds
+           texlive-everyshi
+           texlive-fancyhdr
+           texlive-firstaid
+           texlive-graphics
+           texlive-graphics-cfg
+           texlive-graphics-def
+           texlive-hycolor
+           texlive-hyperref
+           texlive-hyphen-complete
+           texlive-iftex
+           texlive-infwarerr
+           texlive-intcalc
+           texlive-kvdefinekeys
+           texlive-kvoptions
+           texlive-kvsetkeys
+           texlive-l3backend
+           texlive-l3kernel
+           texlive-l3packages
+           texlive-latex
+           texlive-latex-fonts
+           texlive-latexconfig
+           texlive-letltxmacro
+           texlive-ltxcmds
+           texlive-marvosym
+           texlive-passivetex
+           texlive-pdfescape
+           texlive-pdftex
+           texlive-pdftexcmds
+           texlive-psnfss
+           texlive-rerunfilecheck
+           texlive-stmaryrd
+           texlive-symbol
+           texlive-tex
+           texlive-tex-ini-files
+           texlive-tipa
+           texlive-tools
+           texlive-ulem
+           texlive-unicode-data
+           texlive-uniquecounter
+           texlive-url
+           texlive-wasysym
+           texlive-zapfding))
     (home-page "https://www.ctan.org/pkg/jadetex/")
     (synopsis "TeX macros to produce TeX output using OpenJade")
     (description "JadeTeX is a companion package to the OpenJade DSSSL
