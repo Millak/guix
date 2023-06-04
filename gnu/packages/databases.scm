@@ -2350,6 +2350,31 @@ easy row-by-row and slurping methods.")
     ;; Use unlicense because it has the least restrictions.
     (license license:unlicense)))
 
+(define-public perl-dbicx-testdatabase
+  (package
+    (name "perl-dbicx-testdatabase")
+    (version "0.05")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/J/JR/JROCKWAY/DBICx-TestDatabase-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1kqaiygxiarrqkgqbq1s3xilx77msbdsqrdaqf4628811d9w4fwf"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-dbix-class perl-module-install))
+    (propagated-inputs (list perl-dbd-sqlite
+                             perl-sql-translator))
+    (home-page "https://metacpan.org/release/DBICx-TestDatabase")
+    (synopsis "Create a temporary database from a DBIx::Class::Schema")
+    (description
+     "This module creates a temporary SQLite database, deploys a DBIC schema,
+and then connects to it. This lets you easily test DBIC schema. Since you have
+a fresh database for every test, you don't have to worry about cleaning up
+after your tests, ordering of tests affecting failure, etc.")
+    (license license:perl-license)))
+
 (define-public perl-dbd-pg
   (package
     (name "perl-dbd-pg")
