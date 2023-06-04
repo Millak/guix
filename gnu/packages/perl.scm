@@ -2210,6 +2210,28 @@ configuration files.")
 scalars, arrays, and hashes.")
     (license (package-license perl))))
 
+(define-public perl-constant
+  (package
+    (name "perl-constant")
+    (version "1.33")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/R/RJ/RJBS/constant-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "015my616h5l2fswh52x4dp3n007gk5lax83ww9q6cmzb610mv5kr"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/constant")
+    (synopsis "Perl pragma to declare constants")
+    (description
+     "This pragma allows you to declare constants at compile-time.  When a
+constant is used in an expression, Perl replaces it with its value at compile
+time, and may then optimize the expression further.  In particular, any code
+in an @code{if (CONSTANT)} block will be optimized away if the constant is
+false.")
+    (license license:perl-license)))
+
 (define-public perl-context-preserve
   (package
     (name "perl-context-preserve")
