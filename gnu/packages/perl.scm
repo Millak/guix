@@ -9965,6 +9965,27 @@ and @code{deserialize_regexp}.")
        (sha256
         (base32 "11qn516352yhi794www3ykwa9xv2gxpfnhn9jcn10x0ahl95gflj"))))))
 
+(define-public perl-safe-hole
+  (package
+    (name "perl-safe-hole")
+    (version "0.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/T/TO/TODDR/Safe-Hole-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "01gc2lfli282dj6a2pkpxb0vmpyavs323cbdw15gxi06pn5nxxgl"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (home-page "https://metacpan.org/release/Safe-Hole")
+    (synopsis "Use main compartment subroutines from the Safe compartment")
+    (description
+     "@code{Safe::Hole} can execute outside defined subroutines in the
+original main compartment from the Safe compartment.")
+    (license license:perl-license)))
+
 (define-public perl-safe-isa
   (package
     (name "perl-safe-isa")
